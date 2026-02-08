@@ -18,5 +18,7 @@ export const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   }
 `;
 
-export const CheckboxItem = styled.div``;
+export const CheckboxItem = styled.div`
+  padding: 0 !important;
+`;
 export const TextWrapper = styled.div``;

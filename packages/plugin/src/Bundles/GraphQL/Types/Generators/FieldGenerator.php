@@ -71,10 +71,10 @@ class FieldGenerator extends AbstractGenerator
             new FieldType(
                 [
                     'name' => $typeName,
-                    'fields' => function () use ($fields) {
+                    'fields' => static function () use ($fields) {
                         return $fields;
                     },
-                    'resolveType' => function () use ($typeName) {
+                    'resolveType' => static function () use ($typeName) {
                         return $typeName;
                     },
                 ]
@@ -95,7 +95,7 @@ class FieldGenerator extends AbstractGenerator
             'name' => 'attributes',
             'type' => $attributesType,
             'description' => "Field's attributes",
-            'resolve' => function ($source) {
+            'resolve' => static function ($source) {
                 return $source->getAttributes();
             },
         ];
@@ -124,22 +124,16 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_NUMBER === $typeName) {
-            $fieldDefinitions['minLength'] = [
-                'name' => 'minLength',
-                'type' => Type::int(),
-                'description' => 'Minimum length of the number',
-            ];
-
             $fieldDefinitions['minValue'] = [
                 'name' => 'minValue',
                 'type' => Type::int(),
-                'description' => 'Minimum value of the number',
+                'description' => 'The minimum value for this field',
             ];
 
             $fieldDefinitions['maxValue'] = [
                 'name' => 'maxValue',
                 'type' => Type::int(),
-                'description' => 'Maximum value of the number',
+                'description' => 'The maximum value for this field',
             ];
 
             $fieldDefinitions['decimalCount'] = [
@@ -375,6 +369,12 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_OPINION_SCALE === $typeName) {
+            $fieldDefinitions['defaultValue'] = [
+                'name' => 'defaultValue',
+                'type' => Type::string(),
+                'description' => 'Default value',
+            ];
+
             $fieldDefinitions['scales'] = [
                 'name' => 'scales',
                 'type' => Type::listOf(OpinionScaleInterface::getType()),
@@ -385,7 +385,7 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'legends',
                 'type' => Type::listOf(Type::string()),
                 'description' => 'Opinion field legends',
-                'resolve' => function (OpinionScaleField $source) {
+                'resolve' => static function (OpinionScaleField $source) {
                     $legends = $source->getLegends();
 
                     return array_map(static function ($item) {
@@ -424,6 +424,12 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_RATING === $typeName) {
+            $fieldDefinitions['defaultValue'] = [
+                'name' => 'defaultValue',
+                'type' => Type::string(),
+                'description' => 'Default value',
+            ];
+
             $fieldDefinitions['maxValue'] = [
                 'name' => 'maxValue',
                 'type' => Type::int(),
@@ -514,10 +520,28 @@ class FieldGenerator extends AbstractGenerator
                 'description' => 'Should the built-in javascript for handling table rows be used',
             ];
 
+            $fieldDefinitions['limitRows'] = [
+                'name' => 'limitRows',
+                'type' => Type::string(),
+                'description' => 'Limit type: empty, min, max, range, or exact',
+            ];
+
+            $fieldDefinitions['minRows'] = [
+                'name' => 'minRows',
+                'type' => Type::int(),
+                'description' => 'Minimum number of rows this table must have',
+            ];
+
             $fieldDefinitions['maxRows'] = [
                 'name' => 'maxRows',
                 'type' => Type::int(),
                 'description' => 'Number of maximum allowed rows this table can have',
+            ];
+
+            $fieldDefinitions['exactRows'] = [
+                'name' => 'exactRows',
+                'type' => Type::int(),
+                'description' => 'Exact number of rows (no add/remove)',
             ];
 
             $fieldDefinitions['addButtonLabel'] = [
@@ -548,7 +572,7 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'tableLayout',
                 'type' => Type::string(),
                 'description' => 'JSON of the table layout',
-                'resolve' => function (TableField $source, $arguments, $context, ResolveInfo $resolveInfo) {
+                'resolve' => static function (TableField $source, $arguments, $context, ResolveInfo $resolveInfo) {
                     return json_encode($source->getTableLayout());
                 },
             ];
@@ -585,13 +609,14 @@ class FieldGenerator extends AbstractGenerator
         }
 
         $minLengthTypes = [
+            FreeformFieldInterface::TYPE_NUMBER,
             FreeformFieldInterface::TYPE_PASSWORD,
         ];
         if (\in_array($typeName, $minLengthTypes, true)) {
             $fieldDefinitions['minLength'] = [
                 'name' => 'minLength',
                 'type' => Type::int(),
-                'description' => 'The minimum length of characters for this field',
+                'description' => 'The minimum length of characters/digits for this field',
             ];
         }
 
@@ -613,7 +638,7 @@ class FieldGenerator extends AbstractGenerator
             $fieldDefinitions['maxLength'] = [
                 'name' => 'maxLength',
                 'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
+                'description' => 'The maximum length of characters/digits for this field',
             ];
         }
 
@@ -644,7 +669,7 @@ class FieldGenerator extends AbstractGenerator
             'name' => 'value'.($isMultiple ? 's' : ''),
             'type' => ($isMultiple ? Type::listOf(Type::string()) : Type::string()),
             'description' => "Field's value",
-            'resolve' => function ($source) use ($isHtml) {
+            'resolve' => static function ($source) use ($isHtml) {
                 if ($isHtml) {
                     $value = $source->getContent();
                 } else {

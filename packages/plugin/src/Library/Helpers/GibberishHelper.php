@@ -482,7 +482,7 @@ class GibberishHelper
     {
         $normalize = strtoupper(preg_replace('/[^A-Z]/i', '', $value) ?? '');
         $allowedTerms = array_map(
-            fn ($allowedTerm) => strtoupper(preg_replace('/[^A-Z]/i', '', $allowedTerm) ?? ''),
+            static fn ($allowedTerm) => strtoupper(preg_replace('/[^A-Z]/i', '', $allowedTerm) ?? ''),
             $combinedAllowedTerms
         );
 

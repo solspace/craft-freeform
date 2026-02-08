@@ -498,7 +498,7 @@ class Freeform extends Plugin
         Event::on(
             CraftVariable::class,
             CraftVariable::EVENT_INIT,
-            function (Event $event) {
+            static function (Event $event) {
                 $event->sender->set('freeform', FreeformVariable::class);
                 $event->sender->set('freeformServices', FreeformServicesVariable::class);
                 $event->sender->set('freeformBanners', FreeformBannersVariable::class);
@@ -526,7 +526,7 @@ class Freeform extends Plugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 $event->types[] = FormFieldType::class;
                 $event->types[] = SubmissionFieldType::class;
             }
@@ -551,7 +551,7 @@ class Freeform extends Plugin
         Event::on(
             Sites::class,
             Sites::EVENT_AFTER_SAVE_SITE,
-            function (SiteEvent $event) {
+            static function (SiteEvent $event) {
                 if ($event->site->primary && (int) $event->site->id !== (int) $event->oldPrimarySiteId) {
                     $oldId = $event->oldPrimarySiteId;
                     $newId = $event->site->id;
@@ -586,7 +586,7 @@ class Freeform extends Plugin
         Event::on(
             Search::class,
             Search::EVENT_BEFORE_SEARCH,
-            function (SearchEvent $event) {
+            static function (SearchEvent $event) {
                 if ($event->elementQuery instanceof SubmissionQuery) {
                     SearchHelper::adjustSearchQuery($event->query);
                 }
@@ -596,7 +596,7 @@ class Freeform extends Plugin
         Event::on(
             Search::class,
             Search::EVENT_BEFORE_INDEX_KEYWORDS,
-            function (IndexKeywordsEvent $event) {
+            static function (IndexKeywordsEvent $event) {
                 if ($event->element instanceof Submission) {
                     SearchHelper::alignSearchableAttributes($event);
                 }
@@ -621,7 +621,7 @@ class Freeform extends Plugin
 
         \Craft::$app->view->hook(
             'freeform-beta-widget',
-            function (array $context) use ($view) {
+            static function (array $context) use ($view) {
                 $view->registerAssetBundle(BetaBundle::class, View::POS_END);
 
                 return $view->renderTemplate('freeform/_beta/feedback-widget');
@@ -639,7 +639,7 @@ class Freeform extends Plugin
         Event::on(
             SubmissionsController::class,
             SubmissionsController::EVENT_REGISTER_INDEX_ASSETS,
-            function (RegisterEvent $event) {
+            static function (RegisterEvent $event) {
                 $event->getView()->registerAssetBundle(PaymentsBundle::class);
             }
         );
@@ -647,7 +647,7 @@ class Freeform extends Plugin
         Event::on(
             SubmissionsController::class,
             SubmissionsController::EVENT_REGISTER_EDIT_ASSETS,
-            function (RegisterEvent $event) {
+            static function (RegisterEvent $event) {
                 $event->getView()->registerAssetBundle(PaymentsBundle::class);
             }
         );
@@ -657,7 +657,7 @@ class Freeform extends Plugin
     {
         \Craft::$app->setContainer([
             'definitions' => [
-                Serializer::class => function () {
+                Serializer::class => static function () {
                     return new FreeformSerializer();
                 },
             ],

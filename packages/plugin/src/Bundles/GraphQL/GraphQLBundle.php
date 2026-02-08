@@ -48,7 +48,7 @@ class GraphQLBundle extends FeatureBundle
         $request = \Craft::$app->getRequest();
         if ($request->getIsCpRequest()) {
             $path = '/'.ltrim($request->getPathInfo(), '/');
-            if (preg_match('#(^|/)(graphiql|graphql)(/|$)#', $path)) {
+            if (preg_match('#(^|/)graphiql(/|$)#', $path)) {
                 return;
             }
         }
@@ -69,7 +69,7 @@ class GraphQLBundle extends FeatureBundle
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_TYPES,
-            function (RegisterGqlTypesEvent $event) {
+            static function (RegisterGqlTypesEvent $event) {
                 $event->types[] = FreeformInterface::class;
                 $event->types[] = FormInterface::class;
                 $event->types[] = FieldInterface::class;
@@ -101,7 +101,7 @@ class GraphQLBundle extends FeatureBundle
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_QUERIES,
-            function (RegisterGqlQueriesEvent $event) {
+            static function (RegisterGqlQueriesEvent $event) {
                 $event->queries = array_merge(
                     $event->queries,
                     FreeformQuery::getQueries()
@@ -112,7 +112,7 @@ class GraphQLBundle extends FeatureBundle
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_MUTATIONS,
-            function (RegisterGqlMutationsEvent $event) {
+            static function (RegisterGqlMutationsEvent $event) {
                 $event->mutations = array_merge(
                     $event->mutations,
                     SubmissionMutation::getMutations()
@@ -123,7 +123,7 @@ class GraphQLBundle extends FeatureBundle
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_SCHEMA_COMPONENTS,
-            function (RegisterGqlSchemaComponentsEvent $event) use ($freeform) {
+            static function (RegisterGqlSchemaComponentsEvent $event) use ($freeform) {
                 $group = $freeform->name;
                 $forms = $freeform->forms->getAllForms();
 

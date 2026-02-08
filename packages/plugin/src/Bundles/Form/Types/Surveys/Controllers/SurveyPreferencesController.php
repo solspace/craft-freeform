@@ -43,7 +43,7 @@ class SurveyPreferencesController extends BaseApiController
                 'reports' => $canManageReports,
             ],
             'fieldSettings' => array_map(
-                function (SurveyPreferencesRecord $preference) {
+                static function (SurveyPreferencesRecord $preference) {
                     return [
                         'id' => $preference->fieldId,
                         'chartType' => $preference->chartType,

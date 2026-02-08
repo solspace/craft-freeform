@@ -14,8 +14,17 @@ class Table extends BaseCategory
     #[SetDefaultValue(true)]
     public BoolItem $javascript;
 
+    #[Label('Limit Rows')]
+    public TextItem $limitRows;
+
+    #[Label('Minimum number of rows')]
+    public TextItem $minRows;
+
     #[Label('Maximum number of rows')]
     public TextItem $maxRows;
+
+    #[Label('Exact number of rows')]
+    public TextItem $exactRows;
 
     #[Label('Add Button Label')]
     #[SetDefaultValue('Add')]

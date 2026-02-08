@@ -65,7 +65,7 @@ class AttributesGenerator extends AbstractGenerator
 
         return GqlEntityRegistry::createEntity($typeName, new (self::getTypeClass())([
             'name' => $typeName,
-            'fields' => fn () => $fields,
+            'fields' => static fn () => $fields,
             'interfaces' => [AttributesInterface::getType()],
             'description' => 'Attributes groups available for '.$fieldTypeShorthand,
         ]));

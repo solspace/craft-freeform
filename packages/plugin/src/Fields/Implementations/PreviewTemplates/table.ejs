@@ -1,5 +1,17 @@
+<%
+    const notConfiguredText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'Table field has not been configured yet.')
+            : 'Table field has not been configured yet.';
+
+    const sampleText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'Sample data')
+            : 'Sample data';
+%>
+
 <% if (!tableLayout.length) { %>
-    Table field has not been configured yet.
+    <%= notConfiguredText %>
 <% } %>
 
 <table class="table-cell-preview data fullwidth columns-<%= tableLayout.length %>">
@@ -45,11 +57,11 @@
                                 <% }); %>
                             </div>
                         <% } else if (column.type === 'textarea') { %>
-                            <textarea placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %>Sample data<% } %></textarea>
+                            <textarea placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %></textarea>
                         <% } else { %>
                             <input
                                     type="text"
-                                    value="<% if (column.value.length > 0) { %><%= column.value %><% } else { %>Sample data<% } %>"
+                                    value="<% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %>"
                                     placeholder="<%= column.placeholder %>"
                             />
                         <% } %>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import CrossIcon from '@ff-client/assets/icons/delete.svg';
 import type { Recipient } from '@ff-client/types/notifications';
@@ -34,70 +35,77 @@ const RecipientsController: React.FC<Props> = React.memo(
     };
 
     return (
-      <RecipientWrapper>
-        {!value.length && (
-          <RecipientItem>
-            <Icon>
-              <MailIcon />
-            </Icon>
-            <EmailInput
-              type="text"
-              className={classes('text', 'fullwidth', 'code')}
-              placeholder="john.doe@example.com"
-              onClick={() => addCell()}
-              onFocus={() => addCell()}
-            />
-          </RecipientItem>
-        )}
-        {value &&
-          value.map((recipient, index) => (
-            <RecipientItem key={index}>
+      <>
+        <RecipientWrapper>
+          {!value.length && (
+            <RecipientItem>
               <Icon>
                 <MailIcon />
               </Icon>
               <EmailInput
                 type="text"
-                data-1p-ignore
                 className={classes('text', 'fullwidth', 'code')}
-                autoFocus={activeCell === `${index}:0`}
-                ref={(element) => setCellRef(element, index, 0)}
-                onFocus={() => setActiveCell(index, 0)}
                 placeholder="john.doe@example.com"
-                value={recipient.email}
-                onKeyDown={keyPressHandler({
-                  onEnter: ({ shiftKey }) => {
-                    const next = shiftKey ? index + 1 : value.length;
-                    setActiveCell(next, 0);
-                    onChange(addRecipient(value, shiftKey ? index : undefined));
-                  },
-                  onDelete: () => {
-                    onChange(removeRecipient(value, index));
-                    setActiveCell(index - 1, 0);
-                  },
-                })}
-                onChange={(event) =>
-                  onChange(
-                    updateRecipient(
-                      index,
-                      { ...recipient, email: event.target.value },
-                      value
-                    )
-                  )
-                }
+                onClick={() => addCell()}
+                onFocus={() => addCell()}
               />
-
-              <Button
-                tabIndex={-1}
-                onClick={() => {
-                  onChange(removeRecipient(value, index));
-                  setActiveCell(Math.max(index - 1, 0), 0);
-                }}
-              >
-                <CrossIcon />
-              </Button>
             </RecipientItem>
-          ))}
-      </RecipientWrapper>
+          )}
+          {value &&
+            value.map((recipient, index) => (
+              <RecipientItem key={index}>
+                <Icon>
+                  <MailIcon />
+                </Icon>
+                <EmailInput
+                  type="text"
+                  data-1p-ignore
+                  className={classes('text', 'fullwidth', 'code')}
+                  autoFocus={activeCell === `${index}:0`}
+                  ref={(element) => setCellRef(element, index, 0)}
+                  onFocus={() => setActiveCell(index, 0)}
+                  placeholder="john.doe@example.com"
+                  value={recipient.email}
+                  onKeyDown={keyPressHandler({
+                    onEnter: ({ shiftKey }) => {
+                      const next = shiftKey ? index + 1 : value.length;
+                      setActiveCell(next, 0);
+                      onChange(
+                        addRecipient(value, shiftKey ? index : undefined)
+                      );
+                    },
+                    onDelete: () => {
+                      onChange(removeRecipient(value, index));
+                      setActiveCell(index - 1, 0);
+                    },
+                  })}
+                  onChange={(event) =>
+                    onChange(
+                      updateRecipient(
+                        index,
+                        { ...recipient, email: event.target.value },
+                        value
+                      )
+                    )
+                  }
+                />
+
+                <Button
+                  tabIndex={-1}
+                  onClick={() => {
+                    onChange(removeRecipient(value, index));
+                    setActiveCell(Math.max(index - 1, 0), 0);
+                  }}
+                >
+                  <CrossIcon />
+                </Button>
+              </RecipientItem>
+            ))}
+        </RecipientWrapper>
+        {value.length > 0 && (
+          <AddButtonArea label="Add a recipient" onClick={addCell} />
+        )}
+      </>
     );
   }
 );

@@ -173,7 +173,7 @@ class LayoutsService extends BaseService
         $rowCollection = $layout->getRows();
         $currentRows = array_filter(
             $allRows,
-            fn ($row) => $row['layoutUid'] === $layout->getUid()
+            static fn ($row) => $row['layoutUid'] === $layout->getUid()
         );
 
         foreach ($currentRows as $rowData) {
@@ -181,7 +181,7 @@ class LayoutsService extends BaseService
 
             $currentFields = array_filter(
                 $allFields,
-                fn (?FieldInterface $field) => $field?->getRowId() === $row->getId()
+                static fn (?FieldInterface $field) => $field?->getRowId() === $row->getId()
             );
 
             foreach ($currentFields as $field) {

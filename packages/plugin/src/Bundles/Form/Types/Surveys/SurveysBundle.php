@@ -18,7 +18,7 @@ class SurveysBundle extends FeatureBundle
         Event::on(
             TypesService::class,
             TypesService::EVENT_REGISTER_FORM_TYPES,
-            function (RegisterFormTypeEvent $event) {
+            static function (RegisterFormTypeEvent $event) {
                 $event->addType(Survey::class);
             }
         );
@@ -26,7 +26,7 @@ class SurveysBundle extends FeatureBundle
         Event::on(
             View::class,
             View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
-            function ($event) {
+            static function ($event) {
                 $event->roots['freeform-surveys'] = __DIR__.'/Templates';
             }
         );

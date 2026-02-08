@@ -61,7 +61,7 @@ class SubmissionGenerator extends Generator implements GeneratorInterface, Singl
 
         return GqlEntityRegistry::createEntity($typeName, new SubmissionType([
             'name' => $typeName,
-            'fields' => function () use ($fields) {
+            'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]));

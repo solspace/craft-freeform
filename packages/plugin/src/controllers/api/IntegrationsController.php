@@ -129,7 +129,7 @@ class IntegrationsController extends BaseApiController
                 'type' => $type,
                 'instances' => array_values(
                     array_map(
-                        fn ($integration) => [
+                        static fn ($integration) => [
                             'id' => $integration->id,
                             'uid' => $integration->uid,
                             'name' => $integration->name,
@@ -137,7 +137,7 @@ class IntegrationsController extends BaseApiController
                         ],
                         array_filter(
                             $integrations,
-                            fn ($integration) => $integration->class === $type->class
+                            static fn ($integration) => $integration->class === $type->class
                         ),
                     )
                 ),
@@ -155,7 +155,7 @@ class IntegrationsController extends BaseApiController
             ];
         }
 
-        usort($categorized, function ($a, $b) {
+        usort($categorized, static function ($a, $b) {
             $aOrder = self::NAVIGATION_ORDER[$a['handle']] ?? 100;
             $bOrder = self::NAVIGATION_ORDER[$b['handle']] ?? 100;
 

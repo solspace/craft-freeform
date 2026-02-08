@@ -15,7 +15,7 @@ class PropertyCollection implements \IteratorAggregate
         return current(
             array_filter(
                 $this->properties,
-                fn ($property) => $property->handle === $handle
+                static fn ($property) => $property->handle === $handle
             )
         ) ?: null;
     }
@@ -26,7 +26,7 @@ class PropertyCollection implements \IteratorAggregate
             $this->properties[] = $property;
         }
 
-        usort($this->properties, fn ($a, $b) => $a->order <=> $b->order);
+        usort($this->properties, static fn ($a, $b) => $a->order <=> $b->order);
 
         return $this;
     }
@@ -52,7 +52,7 @@ class PropertyCollection implements \IteratorAggregate
             return 1;
         }
 
-        $existingOrders = array_map(fn ($prop) => $prop->order ?? 1, $this->properties);
+        $existingOrders = array_map(static fn ($prop) => $prop->order ?? 1, $this->properties);
         $order = 0;
         do {
             ++$order;

@@ -113,7 +113,7 @@ class Entry extends ElementIntegration
             $entry->siteId = $siteId;
         }
 
-        $supportedSiteIds = array_map(fn ($site) => $site['siteId'], $entry->supportedSites);
+        $supportedSiteIds = array_map(static fn ($site) => $site['siteId'], $entry->supportedSites);
         if (!\in_array($entry->siteId, $supportedSiteIds)) {
             $entry->siteId = reset($supportedSiteIds);
         }

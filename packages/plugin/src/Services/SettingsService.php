@@ -13,7 +13,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\helpers\App;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -23,6 +22,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Templates\TemplateLocator;
 use Solspace\Freeform\Models\Settings;
@@ -169,62 +169,62 @@ class SettingsService extends BaseService
 
     public function isFormSubmitDisable(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->formSubmitDisable);
+        return BooleanHelper::normalize($this->getSettingsModel()->formSubmitDisable);
     }
 
     public function isRememberSubmitOrder(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->rememberPageSubmitOrder);
+        return BooleanHelper::normalize($this->getSettingsModel()->rememberPageSubmitOrder);
     }
 
     public function isAutoScrollToErrors(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->autoScrollToErrors);
+        return BooleanHelper::normalize($this->getSettingsModel()->autoScrollToErrors);
     }
 
     public function isAutoScroll(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->autoScroll);
+        return BooleanHelper::normalize($this->getSettingsModel()->autoScroll);
     }
 
     public function isUseIdempotencyKey(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->useIdempotencyKey);
+        return BooleanHelper::normalize($this->getSettingsModel()->useIdempotencyKey);
     }
 
     public function isRemoveNewlines(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->removeNewlines);
+        return BooleanHelper::normalize($this->getSettingsModel()->removeNewlines);
     }
 
     public function isExportLabels(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->exportLabels);
+        return BooleanHelper::normalize($this->getSettingsModel()->exportLabels);
     }
 
     public function isExportHandlesAsNames(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->exportHandlesAsNames);
+        return BooleanHelper::normalize($this->getSettingsModel()->exportHandlesAsNames);
     }
 
     public function isSitesEnabled(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->sitesEnabled);
+        return BooleanHelper::normalize($this->getSettingsModel()->sitesEnabled);
     }
 
     public function isFillWithGet(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->fillWithGet);
+        return BooleanHelper::normalize($this->getSettingsModel()->fillWithGet);
     }
 
     public function isAllowDashesInFieldHandles(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->allowDashesInFieldHandles);
+        return BooleanHelper::normalize($this->getSettingsModel()->allowDashesInFieldHandles);
     }
 
     public function isUpdateSearchIndexes(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->updateSearchIndexes);
+        return BooleanHelper::normalize($this->getSettingsModel()->updateSearchIndexes);
     }
 
     public function getPurgableSubmissionAgeInDays(): ?int
@@ -334,12 +334,12 @@ class SettingsService extends BaseService
 
     public function isSpamFolderEnabled(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->spamFolderEnabled);
+        return BooleanHelper::normalize($this->getSettingsModel()->spamFolderEnabled);
     }
 
     public function isDisplayFeed(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->displayFeed);
+        return BooleanHelper::normalize($this->getSettingsModel()->displayFeed);
     }
 
     public function isAjaxEnabledByDefault(): bool
@@ -417,7 +417,7 @@ class SettingsService extends BaseService
 
     public function isDigestOnlyOnProduction(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->digestOnlyOnProduction);
+        return BooleanHelper::normalize($this->getSettingsModel()->digestOnlyOnProduction);
     }
 
     public function getBadgeCount(): ?int
@@ -473,27 +473,27 @@ class SettingsService extends BaseService
 
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->formFieldShowOnlyAllowedForms);
+        return BooleanHelper::normalize($this->getSettingsModel()->formFieldShowOnlyAllowedForms);
     }
 
     public function isNotificationQueueEnabled(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForEmailNotifications);
+        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForEmailNotifications);
     }
 
     public function isIntegrationQueueEnabled(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForIntegrations);
+        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForIntegrations);
     }
 
     public function isAiFieldQueueEnabled(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForAiFields);
+        return BooleanHelper::normalize($this->getSettingsModel()->useQueueForAiFields);
     }
 
     public function isBypassSpamCheckOnLoggedInUsers(): bool
     {
-        return App::parseBooleanEnv($this->getSettingsModel()->bypassSpamCheckOnLoggedInUsers);
+        return BooleanHelper::normalize($this->getSettingsModel()->bypassSpamCheckOnLoggedInUsers);
     }
 
     public function isFormMonitorEnabledAndAuthorized(): bool
@@ -565,7 +565,7 @@ class SettingsService extends BaseService
     private function getRecipientCollection(string $emails): RecipientCollection
     {
         $recipients = array_map(
-            fn (string $email) => new Recipient($email),
+            static fn (string $email) => new Recipient($email),
             StringHelper::extractSeparatedValues($emails)
         );
 

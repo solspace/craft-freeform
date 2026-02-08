@@ -56,7 +56,7 @@ class CheckboxesProcessor extends AbstractFieldProcessor
         $baseDefault = $this->getBaseMetadata($formField)['defaultValue'] ?? null;
         if (!empty($baseDefault)) {
             if (\is_array($baseDefault)) {
-                $defaults = array_map(fn ($v) => (string) $v, $baseDefault);
+                $defaults = array_map(static fn ($v) => (string) $v, $baseDefault);
             } elseif (\is_string($baseDefault) && '' !== $baseDefault) {
                 $defaults = [(string) $baseDefault];
             }
@@ -75,11 +75,11 @@ class CheckboxesProcessor extends AbstractFieldProcessor
         // Fallback to other methods if still no defaults
         if (empty($defaults)) {
             if (property_exists($formField, 'defaultValues') && \is_array($formField->defaultValues)) {
-                $defaults = array_map(fn ($v) => (string) $v, $formField->defaultValues);
+                $defaults = array_map(static fn ($v) => (string) $v, $formField->defaultValues);
             } elseif (method_exists($formField, 'getDefaultValue')) {
                 $value = $formField->getDefaultValue();
                 if (\is_array($value)) {
-                    $defaults = array_map(fn ($v) => (string) $v, $value);
+                    $defaults = array_map(static fn ($v) => (string) $v, $value);
                 } elseif (\is_string($value) && '' !== $value) {
                     $defaults = [(string) $value];
                 }

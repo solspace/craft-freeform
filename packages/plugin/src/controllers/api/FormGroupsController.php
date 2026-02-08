@@ -146,14 +146,14 @@ class FormGroupsController extends BaseApiController
         $forms = array_values(
             array_filter(
                 $allForms,
-                fn ($form) => null === $form->dateArchived
+                static fn ($form) => null === $form->dateArchived
             )
         );
 
         $archivedForms = array_values(
             array_filter(
                 $allForms,
-                fn ($form) => null !== $form->dateArchived
+                static fn ($form) => null !== $form->dateArchived
             )
         );
 
@@ -176,13 +176,13 @@ class FormGroupsController extends BaseApiController
                     ->all()
                 ;
 
-                $formIds = array_map(fn ($entry) => $entry->formId, $groupFormsEntries);
+                $formIds = array_map(static fn ($entry) => $entry->formId, $groupFormsEntries);
                 $formIdsInGroups = array_merge($formIdsInGroups, $formIds);
 
                 $groupedForms = array_values(
                     array_filter(
                         $forms,
-                        fn ($form) => \in_array($form->id, $formIds)
+                        static fn ($form) => \in_array($form->id, $formIds)
                     )
                 );
 
@@ -199,7 +199,7 @@ class FormGroupsController extends BaseApiController
             $remainingForms = array_values(
                 array_filter(
                     $forms,
-                    fn ($form) => !\in_array($form->id, $formIdsInGroups)
+                    static fn ($form) => !\in_array($form->id, $formIdsInGroups)
                 )
             );
 

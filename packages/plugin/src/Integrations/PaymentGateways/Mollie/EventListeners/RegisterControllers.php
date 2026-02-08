@@ -20,7 +20,7 @@ class RegisterControllers extends FeatureBundle
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            static function (RegisterUrlRulesEvent $event) {
                 $event->rules[] = new UrlRule([
                     'pattern' => 'freeform/payments/mollie/create',
                     'route' => 'freeform/mollie/index',

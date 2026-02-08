@@ -115,7 +115,7 @@ class NotificationsController extends BaseApiController
 
         $template = NotificationTemplateRecord::find()
             ->where(['id' => $id])
-            ->andWhere('formId IS NOT NULL')
+            ->andWhere('"formId" IS NOT NULL')
             ->one()
         ;
 

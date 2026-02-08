@@ -130,7 +130,7 @@ class ManifestTransformer
             ->all()
         ;
 
-        return array_map(function ($group) {
+        return array_map(static function ($group) {
             return [
                 'id' => (int) $group['id'],
                 'uid' => $group['uid'],

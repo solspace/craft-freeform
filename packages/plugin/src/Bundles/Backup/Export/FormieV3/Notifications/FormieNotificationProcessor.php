@@ -261,7 +261,7 @@ class FormieNotificationProcessor
 
         $parts = preg_split('/[,;]+/', $value) ?: [];
 
-        return array_values(array_filter(array_map('trim', $parts), fn ($v) => '' !== $v));
+        return array_values(array_filter(array_map('trim', $parts), static fn ($v) => '' !== $v));
     }
 
     private function getSystemEmail(): ?string

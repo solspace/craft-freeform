@@ -112,7 +112,7 @@ class IntegrationsService extends BaseService
             Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
 
             $types = $event->getTypes();
-            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
+            usort($types, static fn (Type $a, Type $b) => strcmp($a->name, $b->name));
         }
 
         return $types;
@@ -502,17 +502,17 @@ class IntegrationsService extends BaseService
             if ($isClassType) {
                 $integrations = array_filter(
                     $integrations,
-                    fn (IntegrationModel $model) => is_a($model->class, $type, true)
+                    static fn (IntegrationModel $model) => is_a($model->class, $type, true)
                 );
             }
 
             $integrations = array_filter(
                 $integrations,
-                fn (IntegrationModel $model) => $model->enabled
+                static fn (IntegrationModel $model) => $model->enabled
             );
 
             $integrationIds = array_map(
-                fn (IntegrationModel $model) => $model->id,
+                static fn (IntegrationModel $model) => $model->id,
                 $integrations
             );
 
@@ -551,14 +551,14 @@ class IntegrationsService extends BaseService
             }
 
             $integrationObjects = array_map(
-                fn (IntegrationModel $record) => $record->getIntegrationObject(),
+                static fn (IntegrationModel $record) => $record->getIntegrationObject(),
                 $integrations
             );
 
             if (null !== $enabled) {
                 $integrationObjects = array_filter(
                     $integrationObjects,
-                    fn (IntegrationInterface $integration) => $integration->isEnabled() === $enabled
+                    static fn (IntegrationInterface $integration) => $integration->isEnabled() === $enabled
                 );
             }
 
@@ -568,7 +568,7 @@ class IntegrationsService extends BaseService
 
             $eligibleIntegrationObjects = array_filter(
                 $integrationObjects,
-                fn (IntegrationInterface $integration) => $integration->getTypeDefinition()->editionCheck($freeformEdition),
+                static fn (IntegrationInterface $integration) => $integration->getTypeDefinition()->editionCheck($freeformEdition),
             );
 
             $cache[$key] = $eligibleIntegrationObjects;

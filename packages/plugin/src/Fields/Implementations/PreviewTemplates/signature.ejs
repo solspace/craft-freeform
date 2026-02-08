@@ -92,7 +92,14 @@ m-90 -321 c-25 -25 -70 -64 -100 -87 -30 -22 -69 -54 -87 -70 -40 -38 -63 -31
         </svg>
     </div>
 
+    <%
+        const clearLabel =
+            (typeof Craft !== 'undefined' && Craft.t)
+                ? Craft.t('freeform', 'Clear')
+                : 'Clear';
+    %>
+
     <% if (showClearButton) { %>
-        <button style="margin-top: 10px;">Clear</button>
+        <button style="margin-top: 10px;"><%= clearLabel %></button>
     <% } %>
 </div>

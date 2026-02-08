@@ -30,7 +30,7 @@ class NotificationLoopVariables extends FeatureBundle
             ->getLayout()
             ->getFields()
             ->getFiltered(
-                fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
+                static fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
             )
             ->getFiltered(
                 fn (FieldInterface $field) => !$this->validator->isFieldHidden($event->getForm(), $field)
@@ -61,10 +61,10 @@ class NotificationLoopVariables extends FeatureBundle
             ->getLayout()
             ->getFields()
             ->getFiltered(
-                fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
+                static fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
             )
             ->getFiltered(
-                fn (FieldInterface $field) => !empty($field->getValue())
+                static fn (FieldInterface $field) => !empty($field->getValue())
             )
         ;
 
@@ -78,7 +78,7 @@ class NotificationLoopVariables extends FeatureBundle
             ->getLayout()
             ->getFields()
             ->getFiltered(
-                fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
+                static fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
             )
             ->getFiltered(
                 fn (FieldInterface $field) => !$this->validator->isFieldHidden($form, $field)

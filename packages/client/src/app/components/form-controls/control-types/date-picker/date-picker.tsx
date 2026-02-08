@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
+import config from '@config/freeform/freeform.config';
 import type { DateTimeProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import { loadLocale } from '@ff-client/utils/locales';
+import type { Locale } from 'date-fns';
 import { formatISO, parseISO } from 'date-fns';
 
 import { Control } from '../../control';
@@ -12,6 +15,12 @@ import { DatePickerWrapper } from './date-picker.styles';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const ISO_FORMAT = 'yyyy-MM-dd';
+
+const {
+  metadata: {
+    craft: { locale: CraftLocale },
+  },
+} = config;
 
 const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
   value,
@@ -27,10 +36,19 @@ const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
 
   const selectedDate = value ? parseISO(value) : undefined;
 
+  const [locale, setLocale] = useState<Locale>(undefined);
+
+  useEffect(() => {
+    loadLocale(CraftLocale)
+      .then(setLocale)
+      .catch(() => setLocale(undefined));
+  }, [CraftLocale]);
+
   return (
     <Control property={property} errors={errors}>
       <DatePickerWrapper>
         <DatePicker
+          locale={locale}
           id={property.handle}
           minDate={min}
           maxDate={max}

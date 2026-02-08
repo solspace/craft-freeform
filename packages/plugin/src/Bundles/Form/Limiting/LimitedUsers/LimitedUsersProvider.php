@@ -35,7 +35,7 @@ class LimitedUsersProvider
 
     public function applySettings(array $defaults, array $settings): array
     {
-        $callback = function (string $prefix, BaseItemType $item) use ($settings, &$callback) {
+        $callback = static function (string $prefix, BaseItemType $item) use ($settings, &$callback) {
             $id = $prefix ? $prefix.'.'.$item->id : $item->id;
 
             $value = $settings[$id] ?? null;

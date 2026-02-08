@@ -1,5 +1,87 @@
 # Solspace Freeform Changelog
 
+## 5.14.12 - 2026-02-07
+
+### Added
+- **Table** field type settings and validation options:
+  - _Minimum Number of Rows_
+  - _Maximum Number of Rows_
+  - _Minimum/Maximum Range of Rows_
+  - _Exact Number of Rows_
+- **Predefined Options**:
+  - New _Full (translated)_ option that provides translatable values (e.g., `Sunday`, `Monday` for _Days of the Week_).
+  - Includes Dutch, German, Italian, and French translations.
+
+### Fixed
+- Refactored **Conditional Rules** validation to support additional scenarios.
+- Fixed an error that could occur when deleting form notification templates on PostgreSQL databases.
+- Fixed an issue where empty environment variables could cause 500 errors due to `null` values being passed to string rendering.
+
+## 5.14.11 - 2026-02-05
+
+### Added
+- Added a **Minimum Length** setting for **Number** fields.
+- Added the ability to set a **default value** for **Rating** and **Opinion Scale** fields.
+
+### Fixed
+- **Freeform 4 → 5 migration:**
+  - Preserves the default selected option for fields generated from **Dynamic Recipients**.
+  - **Rating** fields now preserve the configured **Maximum Number of Stars** (previously forced to `5`).
+  - Preserves **Max Length** values for **Textarea** fields.
+  - Correctly migrates **Dropdown** fields populated by Craft **Entries**.
+  - Preserves **Duplicate Check** and **Stop Submissions After Date** settings.
+- **GraphQL:**
+  - Fixes bundle-loading compatibility with **Craft 5.9.x** and **4.17.x**.
+  - Fixes errors related to the **Confirmation** field type.
+- Fixed spacing for the **Add a row** control in **Opinion Scale** fields.
+
+## 5.14.10 - 2026-02-04
+
+### Added
+- Added a `freeform/submissions/fix-table-names` console command to manually resolve submission table name issues.
+
+### Changed
+- Freeform now requires **Craft 5.9.x+** and **4.17.x+** (for Craft 5 and Craft 4 respectively) to avoid compatibility issues.
+
+### Fixed
+- Fixed a submission table name compatibility issue with **Craft 5.9.x** and **4.17.x**.
+- Fixed an issue where **Structure** appeared as an order-by option in the **Entries** element populator for non-structured sections.
+- Fixed several Dutch control panel translations.
+
+## 5.14.9 - 2026-02-02
+
+### Added
+- Added a **Submissions** management shortcut link in the form builder for quicker access to submissions.
+- Added _Add new item_ buttons throughout the builder to improve add-item interactions in forms.
+
+### Changed
+- **Dropdowns:** improved Structure sorting to account for leading whitespaces in option labels.
+- **Option-based fields:** moved the _Selected_ toggle into its own column for better readability.
+
+### Fixed
+- The **Site ID** option in Entries element populator now displays only when more than one site exists.
+- Options for **Rating** fields now appear correctly in **User Select** notifications.
+- Fixed display issues on smaller screens in the **Form List** view.
+- Fixed translation issues in the date picker for the **Stop Submissions After Date** setting.
+- Fixed a blank **Site** dropdown on the CP submission detail page in Craft 4.
+- Fixed an error when saving submissions that have no storable fields.
+- Fixed an error when translating page labels that are missing a UID.
+- Fixed a bug where **Invisible** field values set at the template level were not appearing in the CP Submissions views and email notifications.
+- Prevented a crash in **Export** when a submission title is `null`.
+- Corrected user-element mapping for label/value fields in the Freeform 4 migration.
+
+### Security
+- Updated **lodash** to the latest compatible version.
+
+## 5.14.8 - 2026-01-28
+
+### Added
+- Verified support for **Craft 5.9.x**.
+
+### Fixed
+- Fixed compatibility issues with **Craft 5.9.x** and **4.17.x**.
+- Fixed missing translations in the form builder.
+
 ## 5.14.7 - 2026-01-22
 
 ### Added
@@ -2047,6 +2129,16 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.31 - 2026-02-05
+
+### Added
+- Verified support for **Craft 4.17.x**.
+
+### Fixed
+- Fixed settings compatibility issues with **Craft 4.17.x**.
+- Fixed the form builder's property editor not always saving option-based field values correctly.
+- Fixed a potential **Table** field issue with GraphQL.
 
 ## 4.1.30 - 2026-01-15
 

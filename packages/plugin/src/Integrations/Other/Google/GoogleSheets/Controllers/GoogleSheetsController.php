@@ -84,7 +84,7 @@ class GoogleSheetsController extends BaseApiController
         $integration = $this->integrationProvider->getFirstForForm(
             $form,
             GoogleSheetsIntegrationInterface::class,
-            filter: fn (IntegrationInterface $integration) => $integration->getId() === (int) $integrationId,
+            filter: static fn (IntegrationInterface $integration) => $integration->getId() === (int) $integrationId,
         );
 
         if (!$integration) {

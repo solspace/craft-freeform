@@ -65,7 +65,7 @@ class FormieLayoutBuilder
             $page->label = $pageData->label ?? 'Page '.($pageIndex + 1);
 
             // Get rows that belong to this page
-            $pageRows = array_filter($rows, function ($row) use ($pageData) {
+            $pageRows = array_filter($rows, static function ($row) use ($pageData) {
                 return $row->pageId === $pageData->id;
             });
 

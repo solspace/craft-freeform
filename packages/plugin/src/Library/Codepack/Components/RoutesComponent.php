@@ -40,7 +40,7 @@ class RoutesComponent extends AbstractJsonComponent
             if (isset($route->urlParts, $route->template) && \is_array($route->urlParts)) {
                 $urlParts = $route->urlParts;
 
-                array_walk_recursive($urlParts, function (&$value) {
+                array_walk_recursive($urlParts, static function (&$value) {
                     $value = stripslashes($value);
                 });
 

@@ -1,3 +1,11 @@
-<p>Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.</p>
+<%
+  const descriptionText =
+    (typeof Craft !== 'undefined' && Craft.t)
+      ? Craft.t(
+          'freeform',
+          'Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.'
+        )
+      : 'Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.';
+%>
 
-
+<p><%= descriptionText %></p>

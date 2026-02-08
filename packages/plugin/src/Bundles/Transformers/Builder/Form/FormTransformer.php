@@ -121,6 +121,19 @@ class FormTransformer
         // Only forms made in the last hour are considered new
         $isNew = $form->getDateCreated()->greaterThanOrEqualTo(Carbon::now()->subHour());
 
+        $submissions = $this->submissionsService->getSubmissionCountByForm();
+        $submissionCount = $submissions[$form->getId()] ?? 0;
+
+        $canManageSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        if (!$canManageSubmissions) {
+            $canManageSubmissions = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $form->getId()
+                )
+            );
+        }
+
         return (object) [
             'id' => $form->getId(),
             'uid' => $form->getUid(),
@@ -133,12 +146,14 @@ class FormTransformer
             'isNew' => $isNew,
             'dateArchived' => $form->getDateArchived(),
             'formMonitor' => $this->formMonitorService->getStatus($form),
+            'canManageSubmissions' => $canManageSubmissions,
+            'submissionCount' => $submissionCount,
         ];
     }
 
     private function decorateWithSubmissionStatistics(array $forms): array
     {
-        $formIds = array_map(fn ($form) => $form->id, $forms);
+        $formIds = array_map(static fn ($form) => $form->id, $forms);
 
         $chartData = $this->chartsService->getMinimalSubmissionChartData($formIds);
         $submissions = $this->submissionsService->getSubmissionCountByForm();
@@ -202,7 +217,7 @@ class FormTransformer
     private function attachLinks(array $forms, array $transformed): array
     {
         foreach ($transformed as $data) {
-            $form = array_filter($forms, fn (Form $form) => $form->getId() === $data->id);
+            $form = array_filter($forms, static fn (Form $form) => $form->getId() === $data->id);
             $form = reset($form) ?? new \stdClass();
 
             $event = new GenerateLinksEvent($form, $data);

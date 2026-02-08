@@ -51,7 +51,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     public function ids(): array
     {
         return array_map(
-            fn (FieldInterface $field) => $field->getId(),
+            static fn (FieldInterface $field) => $field->getId(),
             $this->fields
         );
     }
@@ -85,7 +85,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         $list = array_values(
             array_filter(
                 $this->fields,
-                function (FieldInterface $field) use ($implements, $strategy) {
+                static function (FieldInterface $field) use ($implements, $strategy) {
                     if (self::STRATEGY_EXCLUDES === $strategy) {
                         foreach ($implements as $implement) {
                             if ($field instanceof $implement || $field->getType() === $implement) {
@@ -150,7 +150,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return \in_array(
             $type,
             array_map(
-                fn ($field) => $field->getType(),
+                static fn ($field) => $field->getType(),
                 $this->fields
             ),
             true

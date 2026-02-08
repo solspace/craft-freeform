@@ -322,7 +322,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 $fieldsArray[] = $field;
             }
             $fields = array_map(
-                fn (FieldInterface $field) => $alias.'.[['.Submission::getFieldColumnName($field).']] as '.$field->getHandle(),
+                static fn (FieldInterface $field) => $alias.'.[['.Submission::getFieldColumnName($field).']] as '.$field->getHandle(),
                 $fieldsArray
             );
 

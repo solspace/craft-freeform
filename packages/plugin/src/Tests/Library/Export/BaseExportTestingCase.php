@@ -48,7 +48,7 @@ abstract class BaseExportTestingCase extends TestCase
                 $mock = $this->createMock(Submission::class);
                 App::configure($mock, $row);
 
-                $callback = function ($fieldId) use ($row) {
+                $callback = static function ($fieldId) use ($row) {
                     return $row[$fieldId] ?? null;
                 };
 

@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
-use Stringy\Stringy;
 
 class ImplementationProvider
 {
@@ -35,7 +35,7 @@ class ImplementationProvider
             $this->cleanUpInterfaceNames(
                 $this->filterExcludedInterfaces(
                     array_map(
-                        fn ($interface) => new \ReflectionClass($interface),
+                        static fn ($interface) => new \ReflectionClass($interface),
                         $implementations
                     )
                 )
@@ -46,7 +46,7 @@ class ImplementationProvider
     private function cleanUpInterfaceNames(array $interfaces): array
     {
         return array_map(
-            function ($interface) {
+            static function ($interface) {
                 $name = $interface->getShortName();
                 $name = preg_replace(
                     '/Interface$/',
@@ -58,10 +58,10 @@ class ImplementationProvider
 
                 if (!empty($matches)) {
                     $match = $matches[1];
-                    $name = str_replace($match, Stringy::create($match)->toLowerCase(), $name);
+                    $name = str_replace($match, StringHelper::toLowerCase($match), $name);
                 }
 
-                return Stringy::create($name)->camelize()->toString();
+                return StringHelper::toCamelCase($name);
             },
             $interfaces
         );
@@ -71,7 +71,7 @@ class ImplementationProvider
     {
         return array_filter(
             $interfaces,
-            fn ($interfaceReflection) => !\in_array(
+            static fn ($interfaceReflection) => !\in_array(
                 $interfaceReflection->getName(),
                 self::EXCLUDED_INTERFACES,
                 true

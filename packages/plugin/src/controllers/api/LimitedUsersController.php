@@ -42,7 +42,7 @@ class LimitedUsersController extends BaseApiController
         $records = LimitedUsersRecord::find()->all();
 
         return array_map(
-            fn (LimitedUsersRecord $record) => [
+            static fn (LimitedUsersRecord $record) => [
                 'id' => $record->id,
                 'name' => $record->name,
                 'description' => $record->description,

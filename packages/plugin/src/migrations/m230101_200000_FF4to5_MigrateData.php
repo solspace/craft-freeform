@@ -348,6 +348,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         return match ($data->type) {
             'select', 'checkbox_group', 'radio_group', 'multiple_select' => $this->processOptions($data),
+            'rating' => $this->processRating($data),
             'opinion_scale' => $this->processOpinionScale($data),
             'dynamic_recipients' => $this->processDynamicRecipients($data),
             'rich_text', 'html' => [
@@ -355,26 +356,44 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ],
             'number' => [
                 'minMaxValues' => [$data->minValue ?? null, $data->maxValue ?? null],
+                'minLength' => $data->minLength ?? null,
+                'maxLength' => $data->maxLength ?? null,
             ],
-            'confirmation' => [
+            'confirm' => [
+                'maxLength' => $data->maxLength ?? null,
                 'targetField' => isset($this->fieldMap[$targetFieldHash]) ? $this->fieldMap[$targetFieldHash]->uid : null,
             ],
             'mailing_list' => [
                 'checkedByDefault' => (bool) ($data->value ?? false),
             ],
+            'text', 'textarea', 'datetime', 'email' => [
+                'maxLength' => $data->maxLength ?? null,
+            ],
             default => [],
         };
+    }
+
+    private function processRating(\stdClass $data): array
+    {
+        return [
+            'maxValue' => $data->maxValue ?? null,
+            'defaultValue' => $data->value ?? null,
+            'colorIdle' => $data->colorIdle ?? '#DDDDDD',
+            'colorHover' => $data->colorHover ?? '#FFD700',
+            'colorSelected' => $data->colorSelected ?? '#FF7700',
+        ];
     }
 
     private function processOpinionScale(\stdClass $data): array
     {
         return [
+            'defaultValue' => $data->value ?? null,
             'scales' => array_map(
-                fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
+                static fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
                 $data->scales ?? [],
             ),
             'legends' => array_map(
-                fn ($legend) => [$legend->legend ?? ''],
+                static fn ($legend) => [$legend->legend ?? ''],
                 $data->legends ?? [],
             ),
         ];
@@ -387,60 +406,68 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         return match ($source) {
             'entries' => [
+                'defaultValue' => $data->value ?? null,
                 'optionConfiguration' => [
                     'source' => 'elements',
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'title',
-                        'value' => $configuration->value ?? 'id',
+                        'label' => $configuration->labelField ?? 'title',
+                        'value' => $configuration->valueField ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
                         'sectionId' => $configuration->sectionId ?? null,
                         'entryTypeId' => $data->target ?? null,
                     ],
+                    'emptyOption' => $configuration->emptyOption ?? null,
                 ],
             ],
             'categories' => [
+                'defaultValue' => $data->value ?? null,
                 'optionConfiguration' => [
                     'source' => 'elements',
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Categories',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'title',
-                        'value' => $configuration->value ?? 'id',
+                        'label' => $configuration->labelField ?? 'title',
+                        'value' => $configuration->valueField ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
                         'groupId' => $data->target ?? null,
                     ],
+                    'emptyOption' => $configuration->emptyOption ?? null,
                 ],
             ],
             'users' => [
+                'defaultValue' => $data->value ?? null,
                 'optionConfiguration' => [
                     'source' => 'elements',
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'username',
-                        'value' => $configuration->value ?? 'id',
+                        'label' => $configuration->labelField ?? 'username',
+                        'value' => $configuration->valueField ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
                         'groupId' => $data->target ?? null,
                     ],
+                    'emptyOption' => $configuration->emptyOption ?? null,
                 ],
             ],
             'tags' => [
+                'defaultValue' => $data->value ?? null,
                 'optionConfiguration' => [
                     'source' => 'elements',
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'title',
-                        'value' => $configuration->value ?? 'id',
+                        'label' => $configuration->labelField ?? 'title',
+                        'value' => $configuration->valueField ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
                         'groupId' => $data->target ?? null,
                     ],
+                    'emptyOption' => $configuration->emptyOption ?? null,
                 ],
             ],
             'predefined' => [
@@ -461,42 +488,27 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     private function processDynamicRecipients(\stdClass $data): array
     {
-        $selectedEmail = $data->value ?? '';
-        if (isset($data->showAsCheckboxes) && $data->showAsCheckboxes) {
-            $selectedEmail = $data->values ?? [];
+        $values = $data->values ?? [];
+
+        // Normalize legacy/odd shapes
+        if (\is_string($values) || \is_int($values)) {
+            $values = [(string) $values];
+        } elseif (!\is_array($values)) {
+            $values = [];
         }
 
-        $emailIndexes = [];
-        $options = [];
-        $iterator = 1;
-        foreach ($data->options as $option) {
-            $emailIndexes[$option->value] = $option->label;
+        $isCheckboxes = !empty($data->showAsCheckboxes);
 
-            $options[] = [
-                'value' => $option->label,
-                'label' => $option->label,
-            ];
-
-            ++$iterator;
-        }
-
-        if (\is_array($selectedEmail)) {
-            $selectedEmail = array_filter(
-                array_map(
-                    fn ($email) => $emailIndexes[$email] ?? null,
-                    $selectedEmail,
-                )
-            );
-        } else {
-            $selectedEmail = $emailIndexes[$selectedEmail] ?? '';
-        }
+        $defaultValue = $isCheckboxes
+            ? array_values(array_filter(array_map('strval', $values), static fn ($value) => '' !== $value))
+            : (string) ($values[0] ?? '');
 
         return [
-            'defaultValue' => $selectedEmail,
+            'defaultValue' => $defaultValue,
             'optionConfiguration' => [
                 'source' => 'custom',
-                'options' => $options,
-                'useCustomValues' => false,
+                'options' => $data->options ?? [],
+                'useCustomValues' => (bool) ($data->showCustomValues ?? false),
             ],
         ];
     }
@@ -666,7 +678,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'enabled' => true,
             'template' => $notificationId,
             'recipients' => array_map(
-                fn ($recipient) => [
+                static fn ($recipient) => [
                     'name' => '',
                     'email' => $recipient,
                 ],
@@ -701,7 +713,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'template' => $notificationId,
             'recipients' => [],
             'recipientMapping' => array_map(
-                fn ($option) => [
+                static fn ($option) => [
                     'value' => $option->label,
                     'template' => '',
                     'recipients' => [['name' => '', 'email' => $option->value]],

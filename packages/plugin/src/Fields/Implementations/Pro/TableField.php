@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
@@ -47,6 +48,12 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
     public const COLUMN_TYPE_RADIO = 'radio';
     public const COLUMN_TYPE_TEXTAREA = 'textarea';
+
+    public const LIMIT_ROWS_NO_LIMIT = '';
+    public const LIMIT_ROWS_MINIMUM = 'min';
+    public const LIMIT_ROWS_MAXIMUM = 'max';
+    public const LIMIT_ROWS_RANGE = 'range';
+    public const LIMIT_ROWS_EXACT = 'exact';
 
     public array $columns = [];
 
@@ -85,6 +92,34 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[Input\Boolean('Use built-in javascript for adding and removing rows')]
     protected bool $useScript = true;
 
+    #[Section('limits', 'Limit Rows')]
+    #[Limitation('props.table', 'limitRows')]
+    #[DefaultValue('props.table.limitRows')]
+    #[Input\Select(
+        label: 'Limit Rows',
+        instructions: 'Set limits on the number of rows, including minimum, maximum, exact number, or range.',
+        options: [
+            self::LIMIT_ROWS_NO_LIMIT => 'Do not limit',
+            self::LIMIT_ROWS_MINIMUM => 'A minimum of…',
+            self::LIMIT_ROWS_MAXIMUM => 'A maximum of…',
+            self::LIMIT_ROWS_RANGE => 'A range of…',
+            self::LIMIT_ROWS_EXACT => 'Exactly…',
+        ]
+    )]
+    protected string $limitRows = '';
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limitRows === "'.self::LIMIT_ROWS_MINIMUM.'" || properties.limitRows === "'.self::LIMIT_ROWS_RANGE.'"')]
+    #[Limitation('props.table', 'minRows')]
+    #[DefaultValue('props.table.minRows')]
+    #[Input\Integer(
+        label: 'Minimum number of rows',
+        instructions: 'Set the minimum number of rows. At least this many rows will be shown by default; rows cannot be removed below this count.',
+    )]
+    protected ?int $minRows = null;
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limitRows === "'.self::LIMIT_ROWS_MAXIMUM.'" || properties.limitRows === "'.self::LIMIT_ROWS_RANGE.'" || properties.limitRows === ""')]
     #[Limitation('props.table', 'maxRows')]
     #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(
@@ -92,6 +127,16 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
     protected ?int $maxRows = null;
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limitRows === "'.self::LIMIT_ROWS_EXACT.'"')]
+    #[Limitation('props.table', 'exactRows')]
+    #[DefaultValue('props.table.exactRows')]
+    #[Input\Integer(
+        label: 'Exact number of rows',
+        instructions: 'Set the exact number of rows. This many rows will be shown with no option to add or remove.',
+    )]
+    protected ?int $exactRows = null;
 
     #[Limitation('props.table', 'addButtonLabel')]
     #[DefaultValue('props.table.addButtonLabel')]
@@ -213,9 +258,24 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         return $this->useScript;
     }
 
+    public function getLimitRows(): string
+    {
+        return $this->limitRows;
+    }
+
+    public function getMinRows(): ?int
+    {
+        return $this->minRows;
+    }
+
     public function getMaxRows(): ?int
     {
         return $this->maxRows;
+    }
+
+    public function getExactRows(): ?int
+    {
+        return $this->exactRows;
     }
 
     public function getAddButtonLabel(): string
@@ -355,15 +415,29 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $values = $this->getValue();
 
         if (empty($values)) {
-            $values = [];
+            $initialRowCount = 1;
+            $limitRows = $this->getLimitRows();
+            if (self::LIMIT_ROWS_EXACT === $limitRows) {
+                $exactRows = $this->getExactRows();
+                if (null !== $exactRows && $exactRows > 0) {
+                    $initialRowCount = $exactRows;
+                }
+            } elseif (self::LIMIT_ROWS_MINIMUM === $limitRows || self::LIMIT_ROWS_RANGE === $limitRows) {
+                $minRows = $this->getMinRows();
+                if (null !== $minRows && $minRows > 0) {
+                    $initialRowCount = max(1, $minRows);
+                }
+            }
+
+            $defaultRow = [];
             foreach ($layout as $column) {
                 match ($column->type) {
-                    self::COLUMN_TYPE_CHECKBOX => $values[] = null,
-                    default => $values[] = $column->value,
+                    self::COLUMN_TYPE_CHECKBOX => $defaultRow[] = null,
+                    default => $defaultRow[] = $column->value,
                 };
             }
 
-            $values = [$values];
+            $values = array_fill(0, $initialRowCount, $defaultRow);
         }
 
         $attributes = $this->getTableAttributes();
@@ -376,10 +450,52 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
         if ($this->isUseScript()) {
             $tableAttributes->set('data-scripts-enabled', true);
+            $tableAttributes->set('data-remove-button-label', $this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel());
         }
 
-        if ($this->getMaxRows()) {
-            $tableAttributes->set('data-max-rows', $this->getMaxRows());
+        $limitRows = $this->getLimitRows();
+        if ('' !== $limitRows) {
+            $tableAttributes->set('data-limit-rows', $limitRows);
+        }
+
+        switch ($limitRows) {
+            case self::LIMIT_ROWS_MINIMUM:
+                if (null !== $this->getMinRows()) {
+                    $tableAttributes->set('data-min-rows', $this->getMinRows());
+                }
+
+                break;
+
+            case self::LIMIT_ROWS_MAXIMUM:
+                if (null !== $this->getMaxRows()) {
+                    $tableAttributes->set('data-max-rows', $this->getMaxRows());
+                }
+
+                break;
+
+            case self::LIMIT_ROWS_RANGE:
+                if (null !== $this->getMinRows()) {
+                    $tableAttributes->set('data-min-rows', $this->getMinRows());
+                }
+                if (null !== $this->getMaxRows()) {
+                    $tableAttributes->set('data-max-rows', $this->getMaxRows());
+                }
+
+                break;
+
+            case self::LIMIT_ROWS_EXACT:
+                if (null !== $this->getExactRows()) {
+                    $tableAttributes->set('data-exact-rows', $this->getExactRows());
+                }
+
+                break;
+
+            default:
+                if (null !== $this->getMaxRows()) {
+                    $tableAttributes->set('data-max-rows', $this->getMaxRows());
+                }
+
+                break;
         }
 
         $rowAttributes = $attributes->getRow();
@@ -415,6 +531,9 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $columnAttributes = $attributes->getColumn();
 
         $output .= '<tbody>';
+        $limitRowsForRow = $this->getLimitRows();
+        $minRowsForRemove = (self::LIMIT_ROWS_MINIMUM === $limitRowsForRow || self::LIMIT_ROWS_RANGE === $limitRowsForRow)
+            ? $this->getMinRows() : null;
         foreach ($values as $rowIndex => $row) {
             $output .= '<tr'.$rowAttributes.'>';
 
@@ -533,29 +652,31 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $output .= '</td>';
             }
 
-            if ($this->getRemoveButtonMarkup()) {
+            $showRemoveButton = self::LIMIT_ROWS_EXACT !== $limitRowsForRow
+                && (null === $minRowsForRemove || $rowIndex >= $minRowsForRemove);
+            if ($showRemoveButton && $this->getRemoveButtonMarkup()) {
                 $output .= '<td'.$columnAttributes.'>';
                 $output .= $this->getRemoveButtonMarkup();
                 $output .= '</td>';
-            } else {
-                if ($this->isUseScript()) {
-                    $output .= '<td'.$columnAttributes.'>';
+            } elseif ($showRemoveButton && $this->isUseScript()) {
+                $output .= '<td'.$columnAttributes.'>';
 
-                    $buttonAttributes = $attributes
-                        ->getRemoveButton()
-                        ->clone()
-                        ->replace('data-freeform-table-remove-row')
-                        ->setIfEmpty('type', 'button')
-                    ;
+                $buttonAttributes = $attributes
+                    ->getRemoveButton()
+                    ->clone()
+                    ->replace('data-freeform-table-remove-row')
+                    ->setIfEmpty('type', 'button')
+                ;
 
-                    $output .= Html::tag(
-                        'button',
-                        $this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel(),
-                        $buttonAttributes->toHtmlTagArray()
-                    );
+                $output .= Html::tag(
+                    'button',
+                    $this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel(),
+                    $buttonAttributes->toHtmlTagArray()
+                );
 
-                    $output .= '</td>';
-                }
+                $output .= '</td>';
+            } elseif (!$showRemoveButton) {
+                $output .= '<td'.$columnAttributes.'></td>';
             }
 
             $output .= '</tr>';
@@ -563,25 +684,24 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $output .= '</tbody>';
         $output .= '</table>';
 
-        if ($this->getAddButtonMarkup()) {
+        $showAddButton = self::LIMIT_ROWS_EXACT !== $this->getLimitRows();
+        if ($showAddButton && $this->getAddButtonMarkup()) {
             $output .= $this->getAddButtonMarkup();
-        } else {
-            if ($this->isUseScript()) {
-                $buttonAttributes = $attributes
-                    ->getAddButton()
-                    ->clone()
-                    ->replace('data-freeform-table-add-row')
-                    ->replace('data-target', $id)
-                    ->setIfEmpty('type', 'button')
-                ;
+        } elseif ($showAddButton && $this->isUseScript()) {
+            $buttonAttributes = $attributes
+                ->getAddButton()
+                ->clone()
+                ->replace('data-freeform-table-add-row')
+                ->replace('data-target', $id)
+                ->setIfEmpty('type', 'button')
+            ;
 
-                $output .= Html::tag('div', '');
-                $output .= Html::tag(
-                    'button',
-                    $this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel(),
-                    $buttonAttributes->toHtmlTagArray()
-                );
-            }
+            $output .= Html::tag('div', '');
+            $output .= Html::tag(
+                'button',
+                $this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel(),
+                $buttonAttributes->toHtmlTagArray()
+            );
         }
 
         return $output;

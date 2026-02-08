@@ -133,7 +133,7 @@ class FormFieldType extends Field
             'values' => $this->forms,
             'errors' => $this->getErrors('forms'),
             'options' => array_map(
-                fn ($name, $id) => ['label' => $name, 'value' => $id],
+                static fn ($name, $id) => ['label' => $name, 'value' => $id],
                 $forms,
                 array_keys($forms)
             ),

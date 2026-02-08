@@ -156,7 +156,7 @@ class SubmissionsController extends BaseController
 
         $tabs = array_reduce(
             array_map(
-                fn (Page $page) => [
+                static fn (Page $page) => [
                     'tabId' => 'page'.$page->getIndex(),
                     'selected' => 0 === $page->getIndex(),
                     'url' => '#tab-'.$page->getIndex(),
@@ -164,7 +164,7 @@ class SubmissionsController extends BaseController
                 ],
                 $layout->getPages()->getIterator()->getArrayCopy()
             ),
-            function ($result, $item) {
+            static function ($result, $item) {
                 $result['page'.$item['tabId']] = $item;
 
                 return $result;
@@ -184,7 +184,7 @@ class SubmissionsController extends BaseController
             ];
         } else {
             $supportedSites = ElementHelper::supportedSitesForElement($submission, true);
-            $propSites = array_values(array_filter($supportedSites, fn ($site) => $site['propagate']));
+            $propSites = array_values(array_filter($supportedSites, static fn ($site) => $site['propagate']));
             $propSiteIds = array_column($propSites, 'siteId');
             $isMultiSiteElement = \count($supportedSites) > 1;
 

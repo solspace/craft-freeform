@@ -62,6 +62,20 @@ export const registerAddButton = (instance: Freeform) => {
             }
           }
 
+          const minRows = table.getAttribute('data-min-rows');
+          if (minRows) {
+            const lastCell = cloneRow.querySelector('td:last-child');
+            if (lastCell && !lastCell.querySelector('[data-freeform-table-remove-row]')) {
+              const removeLabel = table.getAttribute('data-remove-button-label') || 'Remove';
+              const removeBtn = document.createElement('button');
+              removeBtn.type = 'button';
+              removeBtn.setAttribute('data-freeform-table-remove-row', '');
+              removeBtn.textContent = removeLabel;
+              lastCell.innerHTML = '';
+              lastCell.appendChild(removeBtn);
+            }
+          }
+
           instance._dispatchEvent(events.table.onAddRow, {
             table,
             row: cloneRow,
@@ -81,11 +95,23 @@ export const registerAddButton = (instance: Freeform) => {
   });
 };
 
-const toggleAddButton = (table: Element, button: HTMLButtonElement) => {
-  const maxRows: number | string = table.getAttribute('data-max-rows');
-  const totalRows = table.querySelectorAll<HTMLTableRowElement>('tbody > tr').length;
+const toggleAddButton = (table: Element, button: HTMLButtonElement | null) => {
+  if (!button) {
+    return;
+  }
 
-  if (maxRows && button) {
-    button.style.display = totalRows >= parseInt(maxRows, 10) ? 'none' : 'block';
+  const totalRows = table.querySelectorAll<HTMLTableRowElement>('tbody > tr').length;
+  const exactRows = table.getAttribute('data-exact-rows');
+  const maxRows = table.getAttribute('data-max-rows');
+
+  if (exactRows) {
+    const exact = parseInt(exactRows, 10);
+    button.style.display = totalRows >= exact ? 'none' : 'block';
+    return;
+  }
+
+  if (maxRows) {
+    const max = parseInt(maxRows, 10);
+    button.style.display = totalRows >= max ? 'none' : 'block';
   }
 };

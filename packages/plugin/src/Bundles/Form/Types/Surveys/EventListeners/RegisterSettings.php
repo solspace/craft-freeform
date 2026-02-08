@@ -17,7 +17,7 @@ class RegisterSettings extends FeatureBundle
         Event::on(
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
-            function (RegisterSettingsNavigationEvent $event) {
+            static function (RegisterSettingsNavigationEvent $event) {
                 if (!PermissionHelper::checkPermission(SurveysBundle::PERMISSION_SURVEYS_ACCESS)) {
                     return;
                 }

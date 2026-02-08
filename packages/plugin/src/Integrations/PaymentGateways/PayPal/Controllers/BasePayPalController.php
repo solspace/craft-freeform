@@ -44,7 +44,7 @@ abstract class BasePayPalController extends BaseApiController
             $form,
             Type::TYPE_PAYMENT_GATEWAYS,
             true,
-            filter: fn ($integration) => $integration->getId() === $integrationId,
+            filter: static fn ($integration) => $integration->getId() === $integrationId,
         );
 
         if (null === $integration) {

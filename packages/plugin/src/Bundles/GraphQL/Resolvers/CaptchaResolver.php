@@ -22,7 +22,7 @@ class CaptchaResolver extends Resolver
             return null;
         }
 
-        $enabled = array_filter($integrations, fn ($integration) => $integration->isEnabled());
+        $enabled = array_filter($integrations, static fn ($integration) => $integration->isEnabled());
         if (!$enabled) {
             return null;
         }
@@ -47,7 +47,7 @@ class CaptchaResolver extends Resolver
             return null;
         }
 
-        $enabled = array_filter($integrations, fn ($integration) => $integration->isEnabled());
+        $enabled = array_filter($integrations, static fn ($integration) => $integration->isEnabled());
         if (!$enabled) {
             return null;
         }

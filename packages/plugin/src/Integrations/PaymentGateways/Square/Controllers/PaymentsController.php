@@ -165,7 +165,7 @@ class PaymentsController extends BaseApiController
             $form,
             Type::TYPE_PAYMENT_GATEWAYS,
             true,
-            filter: fn ($i) => $i->getId() === $integrationId,
+            filter: static fn ($i) => $i->getId() === $integrationId,
         );
 
         if (!$integration) {

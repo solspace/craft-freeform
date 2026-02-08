@@ -13,7 +13,6 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
@@ -38,7 +37,6 @@ class Dynamic extends BaseNotification
         emptyOption: 'Select a field',
         implements: [
             OptionsInterface::class,
-            BooleanInterface::class,
         ],
     )]
     protected ?FieldInterface $field;

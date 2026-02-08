@@ -42,7 +42,7 @@ class DotdigitalAccountInfoListener extends FeatureBundle
         $json = json_decode((string) $response->getBody());
 
         if (isset($json)) {
-            $properties = array_filter($json->properties, fn ($property) => 'ApiEndpoint' === $property->name);
+            $properties = array_filter($json->properties, static fn ($property) => 'ApiEndpoint' === $property->name);
             $properties = array_values($properties);
 
             if (!empty($properties) && \count($properties) > 0) {

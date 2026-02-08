@@ -45,7 +45,7 @@ class Custom implements OptionsConfigurationInterface
         $collection = new OptionCollection();
         foreach ($this->options as $option) {
             if (\is_array($translations)) {
-                $translatedOption = array_find($translations, fn ($item) => $item->value === $option->getValue());
+                $translatedOption = array_find($translations, static fn ($item) => $item->value === $option->getValue());
                 if ($translatedOption) {
                     $option = new Option(
                         $option->getValue(),
@@ -75,7 +75,7 @@ class Custom implements OptionsConfigurationInterface
             'source' => $this->getSource(),
             'useCustomValues' => $this->useCustomValues,
             'options' => array_map(
-                fn (Option $option) => [
+                static fn (Option $option) => [
                     'label' => $option->getLabel(),
                     'value' => $option->getValue(),
                     'optgroup' => $option->isOptGroup(),

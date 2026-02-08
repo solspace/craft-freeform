@@ -11,6 +11,7 @@ use Solspace\Freeform\Bundles\Form\Submissions\FakeDataProvider;
 use Solspace\Freeform\Commands\Fix\TitleFixMigration;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Form\Managers\ContentFixManager;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use yii\console\ExitCode;
@@ -148,7 +149,7 @@ class SubmissionsController extends Controller
         } else {
             $statuses = explode(',', $this->status);
             $statuses = array_map(
-                function ($status) use ($allStatuses) {
+                static function ($status) use ($allStatuses) {
                     if (is_numeric($status)) {
                         return $allStatuses[$status]?->id;
                     }
@@ -243,6 +244,27 @@ class SubmissionsController extends Controller
         $migration->run();
 
         $this->stdout('Submission titles fixed.'.\PHP_EOL, Console::FG_YELLOW);
+
+        return ExitCode::OK;
+    }
+
+    public function actionFixTableNames(): int
+    {
+        $this->stdout('Fixing submission table names...'.\PHP_EOL, Console::FG_YELLOW);
+
+        $manager = new ContentFixManager();
+
+        $manager->onRename = function (string $table, string $oldTable, string $newTable) {
+            $this->stdout("Renaming table {$oldTable} to {$newTable}".\PHP_EOL, Console::FG_YELLOW);
+        };
+
+        $manager->onNotFound = function (string $table) {
+            $this->stdout("Could not find form handle for submission table {$table}".\PHP_EOL, Console::FG_YELLOW);
+        };
+
+        $count = $manager->fixTableNames();
+
+        $this->stdout($count.' submission table names fixed.'.\PHP_EOL, Console::FG_YELLOW);
 
         return ExitCode::OK;
     }

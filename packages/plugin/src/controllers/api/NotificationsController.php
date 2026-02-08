@@ -168,7 +168,8 @@ class NotificationsController extends BaseApiController
         if (!empty($handle)) {
             do {
                 $exists = NotificationTemplateRecord::find()
-                    ->where(['handle' => $handle, 'formId' => $formId])
+                    ->where(['handle' => $handle])
+                    ->andWhere('"formId" = :formId', [':formId' => $formId])
                     ->exists()
                 ;
 

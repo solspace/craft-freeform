@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.14.12 - 2026-02-07
+
+### Added
+- **Table** field type settings and validation options:
+  - _Minimum Number of Rows_
+  - _Maximum Number of Rows_
+  - _Minimum/Maximum Range of Rows_
+  - _Exact Number of Rows_
+- **Predefined Options**:
+  - New _Full (translated)_ option that provides translatable values (e.g., `Sunday`, `Monday` for _Days of the Week_).
+  - Includes Dutch, German, Italian, and French translations.
+
+### Fixed
+- Refactored **Conditional Rules** validation to support additional scenarios.
+- Fixed an error that could occur when deleting form notification templates on PostgreSQL databases.
+- Fixed an issue where empty environment variables could cause 500 errors due to `null` values being passed to string rendering.
+
 ## 5.14.11 - 2026-02-05
 
 ### Added

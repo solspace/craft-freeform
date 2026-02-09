@@ -24,8 +24,6 @@ use Solspace\Freeform\Integrations\EmailMarketing\Dotdigital\BaseDotdigitalInteg
 )]
 class DotdigitalV3 extends BaseDotdigitalIntegration
 {
-    protected const API_VERSION = 'v2';
-
     // ==========================================
     //               Contact Data
     // ==========================================
@@ -45,14 +43,6 @@ class DotdigitalV3 extends BaseDotdigitalIntegration
         ],
     )]
     protected ?FieldMapping $contactDataMapping = null;
-
-    public function getApiRootUrl(): string
-    {
-        $url = $this->getApiUrl();
-        $url = rtrim($url, '/');
-
-        return $url.'/'.self::API_VERSION;
-    }
 
     public function push(Form $form, Client $client): void
     {
@@ -85,18 +75,26 @@ class DotdigitalV3 extends BaseDotdigitalIntegration
             return;
         }
 
+        $dataFieldsMap = [];
+        $contactDataMapping = $this->processMapping($form, $this->contactDataMapping, self::CATEGORY_CONTACT_DATA);
+        foreach ($contactDataMapping as $key => $value) {
+            if (null === $value || '' === $value) {
+                continue;
+            }
+
+            $dataFieldsMap[$key] = $value;
+        }
+
         $email = strtolower($email);
+        $encodedEmail = rawurlencode($email);
 
         $contactData = [
-            'dataFields' => [],
-            'lists' => [
-                $listId,
-            ],
             'identifiers' => [
                 'email' => $email,
             ],
-            'preferences' => [
-                'isOptedIn' => true,
+            'dataFields' => $dataFieldsMap ?: new \stdClass(),
+            'lists' => [
+                (int) $listId,
             ],
             'channelProperties' => [
                 'email' => [
@@ -108,21 +106,15 @@ class DotdigitalV3 extends BaseDotdigitalIntegration
             ],
         ];
 
-        $contactDataMapping = $this->processMapping($form, $this->contactDataMapping, self::CATEGORY_CONTACT_DATA);
-        foreach ($contactDataMapping as $key => $value) {
-            $contactData['dataFields'][] = [
-                'key' => $key,
-                'value' => $value,
-            ];
-        }
+        $this->logger->debug('Contact Data', $contactData);
 
-        $response = $client->put(
-            "https://r1-api.dotdigital.com/contacts/v3/email/{$email}",
+        $response = $client->patch(
+            $this->getEndpoint("/contacts/v3/email/{$encodedEmail}?merge-option=overwrite-if-not-empty"),
             ['json' => $contactData],
         );
 
-        $this->logger->info('New Contact created', ['email' => $email]);
-        $this->logger->debug('With Mapping', $contactDataMapping);
+        $this->logger->info('Contact imported/updated', ['email' => $email]);
+        $this->logger->debug('Contact Mapping', $contactDataMapping);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_DATA, $response);
     }

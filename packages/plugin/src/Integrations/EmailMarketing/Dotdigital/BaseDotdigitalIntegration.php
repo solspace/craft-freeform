@@ -80,9 +80,14 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     public function checkConnection(Client $client): bool
     {
-        $response = $client->get($this->getEndpoint('/account-info'));
+        $response = $client->get($this->getEndpoint('/v2/account-info'));
 
         return 200 === $response->getStatusCode();
+    }
+
+    public function getApiRootUrl(): string
+    {
+        return rtrim($this->getApiUrl(), '/');
     }
 
     public function getApiUrl(): string
@@ -119,7 +124,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     public function fetchFields(ListObject $list, string $category, Client $client): array
     {
-        $response = $client->get($this->getEndpoint('/data-fields'));
+        $response = $client->get($this->getEndpoint('/v2/data-fields'));
         $json = json_decode((string) $response->getBody());
 
         $fieldList = [];
@@ -147,7 +152,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     public function fetchLists(Client $client): array
     {
-        $response = $client->get($this->getEndpoint('/address-books'));
+        $response = $client->get($this->getEndpoint('/v2/address-books'));
         $json = json_decode((string) $response->getBody());
 
         $lists = [];

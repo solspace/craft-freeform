@@ -3,7 +3,7 @@ import { ButtonGroup } from '@components/elements/button-group/button-group';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { WYSIWYGProperty } from '@ff-client/types/properties';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { WysiwygPlain } from './wysiwyg.plain';
 import { WysiwygRich } from './wysiwyg.rich';
@@ -45,7 +45,7 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
     // When switching to simple mode, strip HTML tags
     if (newMode === EditorMode.Plain && value) {
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = sanitize(value);
+      tempDiv.innerHTML = DOMPurify.sanitize(value);
       updateValue(tempDiv.textContent || '');
     }
   };

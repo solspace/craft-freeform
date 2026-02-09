@@ -266,6 +266,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getInputType(): string
     {
+        if (!$this->isUseNativeTypes() && !$this->isUseDatepicker()) {
+            return 'text';
+        }
+
         if ($this->isUseDatepicker()) {
             return 'text';
         }

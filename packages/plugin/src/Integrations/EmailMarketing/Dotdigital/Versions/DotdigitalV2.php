@@ -24,8 +24,6 @@ use Solspace\Freeform\Integrations\EmailMarketing\Dotdigital\BaseDotdigitalInteg
 )]
 class DotdigitalV2 extends BaseDotdigitalIntegration
 {
-    protected const API_VERSION = 'v2';
-
     // ==========================================
     //               Contact Data
     // ==========================================
@@ -45,14 +43,6 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
         ],
     )]
     protected ?FieldMapping $contactDataMapping = null;
-
-    public function getApiRootUrl(): string
-    {
-        $url = $this->getApiUrl();
-        $url = rtrim($url, '/');
-
-        return $url.'/'.self::API_VERSION;
-    }
 
     public function push(Form $form, Client $client): void
     {
@@ -103,7 +93,7 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
         }
 
         $response = $client->post(
-            $this->getEndpoint('/address-books/'.$listId.'/contacts'),
+            $this->getEndpoint('/v2/address-books/'.$listId.'/contacts'),
             ['json' => $contactData],
         );
 

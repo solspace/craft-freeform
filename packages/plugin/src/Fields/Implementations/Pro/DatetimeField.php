@@ -78,22 +78,23 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected ?string $locale = null;
 
-    #[Limitation('props.date', 'datepicker')]
-    #[DefaultValue('props.date.datepicker')]
-    #[Input\Boolean(
-        label: 'Use built-in datepicker',
-        order: 2,
-    )]
-    protected bool $useDatepicker = true;
-
     #[Limitation('props.date', 'nativeTypes')]
     #[DefaultValue('props.date.nativeTypes')]
     #[Input\Boolean(
         label: 'Use native input types',
         instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
-        order: 3,
+        order: 2,
     )]
     protected bool $useNativeTypes = false;
+
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[Limitation('props.date', 'datepicker')]
+    #[DefaultValue('props.date.datepicker')]
+    #[Input\Boolean(
+        label: 'Use built-in datepicker',
+        order: 3,
+    )]
+    protected bool $useDatepicker = true;
 
     #[Limitation('props.date', 'formatAsPlaceholder')]
     #[DefaultValue('props.date.formatAsPlaceholder')]
@@ -254,7 +255,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getInputType(): string
     {
-        if ($this->useDatepicker || !$this->useNativeTypes) {
+        if ($this->isUseDatepicker()) {
             return 'text';
         }
 
@@ -344,7 +345,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function isUseDatepicker(): bool
     {
-        return $this->useDatepicker;
+        return $this->useDatepicker && !$this->isUseNativeTypes();
     }
 
     public function isUseNativeTypes(): bool
@@ -487,6 +488,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         return implode(' ', $formatParts);
     }
 
+    public function getNativeFormat(): string
+    {
+        return match ($this->getDateTimeType()) {
+            self::DATETIME_TYPE_DATE => 'Y-m-d',
+            self::DATETIME_TYPE_TIME => 'H:i',
+            default => 'Y-m-d H:i',
+        };
+    }
+
     public function getDateFormat(): string
     {
         $month = $this->isDateLeadingZero() ? 'm' : 'n';
@@ -572,6 +582,12 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         $hasDate = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_DATE], true);
         $locale = $this->locale ?: \Craft::$app->locale->id;
 
+        if ($this->isUseNativeTypes()) {
+            $value = $this->getCarbon()->format($this->getNativeFormat());
+        } else {
+            $value = $this->getValue();
+        }
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
@@ -580,7 +596,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->setIfEmpty('type', $this->getInputType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('placeholder', $this->getPlaceholder())
-            ->setIfEmpty('value', $this->getValue())
+            ->setIfEmpty('value', $value)
             ->set($this->getRequiredAttribute())
             ->set('data-datepicker', true)
             ->set('data-datepicker-enabled', $this->isUseDatepicker())
@@ -595,6 +611,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
         if ($this->isUseDatepicker()) {
             $attributes->append('class', 'form-datepicker');
+        }
+
+        if ($this->isUseNativeTypes()) {
+            $attributes
+                ->set('min', $this->getGeneratedMinDate($this->getNativeFormat()))
+                ->set('max', $this->getGeneratedMaxDate($this->getNativeFormat()))
+            ;
         }
 
         return Html::tag(

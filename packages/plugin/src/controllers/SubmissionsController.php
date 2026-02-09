@@ -99,12 +99,12 @@ class SubmissionsController extends BaseController
         $this->checkPermissions($form);
 
         $fieldDescriptors = (new FieldDescriptorCollection())
-            ->add(new FieldDescriptor('id', 'ID'))
-            ->add(new FieldDescriptor('title', 'Title'))
-            ->add(new FieldDescriptor('ip', 'IP Address'))
-            ->add(new FieldDescriptor('dateCreated', 'Date Created'))
-            ->add(new FieldDescriptor('status', 'Status'))
-            ->add(new FieldDescriptor('userId', 'Author'))
+            ->add(new FieldDescriptor('id', \Craft::t('app', 'ID')))
+            ->add(new FieldDescriptor('title', \Craft::t('app', 'Title')))
+            ->add(new FieldDescriptor('ip', Freeform::t('IP Address')))
+            ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))
+            ->add(new FieldDescriptor('status', \Craft::t('app', 'Status')))
+            ->add(new FieldDescriptor('userId', \Craft::t('app', 'Author')))
         ;
 
         foreach ($submission->getFieldCollection() as $field) {

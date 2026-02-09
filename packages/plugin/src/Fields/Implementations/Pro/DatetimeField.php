@@ -68,41 +68,45 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected string $initialValue = '';
 
-    #[Translatable]
-    #[Limitation('props.date', 'locale')]
-    #[DefaultValue('props.date.locale')]
-    #[Input\Text(
-        label: 'Force a locale',
-        instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
-        order: 1,
-    )]
-    protected ?string $locale = null;
-
-    #[Limitation('props.date', 'datepicker')]
-    #[DefaultValue('props.date.datepicker')]
-    #[Input\Boolean(
-        label: 'Use built-in datepicker',
-        order: 2,
-    )]
-    protected bool $useDatepicker = true;
-
     #[Limitation('props.date', 'nativeTypes')]
     #[DefaultValue('props.date.nativeTypes')]
     #[Input\Boolean(
         label: 'Use native input types',
         instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
-        order: 3,
+        order: 1,
     )]
     protected bool $useNativeTypes = false;
 
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[Limitation('props.date', 'datepicker')]
+    #[DefaultValue('props.date.datepicker')]
+    #[Input\Boolean(
+        label: 'Use built-in datepicker',
+        order: 3,
+    )]
+    protected bool $useDatepicker = true;
+
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[Limitation('props.date', 'formatAsPlaceholder')]
     #[DefaultValue('props.date.formatAsPlaceholder')]
     #[Input\Boolean(
         label: 'Use date format as placeholder',
-        order: 3,
+        order: 4,
     )]
     protected bool $generatePlaceholder = true;
 
+    #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[Limitation('props.date', 'locale')]
+    #[DefaultValue('props.date.locale')]
+    #[Input\Text(
+        label: 'Force a locale',
+        instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
+        order: 4,
+    )]
+    protected ?string $locale = null;
+
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('properties.generatePlaceholder === false')]
     #[Input\Text(
         instructions: "The text that will be shown if the field doesn't have a value.",
@@ -117,6 +121,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 2,
     )]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateOrder')]
     #[DefaultValue('props.date.dateOrder')]
@@ -133,6 +138,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'date4DigitYear')]
     #[DefaultValue('props.date.date4DigitYear')]
@@ -141,6 +147,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateLeadingZero')]
     #[DefaultValue('props.date.dateLeadingZero')]
@@ -152,6 +159,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateSeparator')]
     #[DefaultValue('props.date.dateSeparator')]
@@ -197,6 +205,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 3,
     )]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clock24h')]
     #[DefaultValue('props.date.clock24h')]
@@ -205,6 +214,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockSeparator')]
     #[DefaultValue('props.date.clockSeparator')]
@@ -223,6 +233,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.clock24h === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockAMPMSeparate')]
     #[DefaultValue('props.date.clockAMPMSeparate')]
@@ -254,7 +266,11 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getInputType(): string
     {
-        if ($this->useDatepicker || !$this->useNativeTypes) {
+        if (!$this->isUseNativeTypes() && !$this->isUseDatepicker()) {
+            return 'text';
+        }
+
+        if ($this->isUseDatepicker()) {
             return 'text';
         }
 
@@ -344,7 +360,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function isUseDatepicker(): bool
     {
-        return $this->useDatepicker;
+        return $this->useDatepicker && !$this->isUseNativeTypes();
     }
 
     public function isUseNativeTypes(): bool
@@ -487,6 +503,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         return implode(' ', $formatParts);
     }
 
+    public function getNativeFormat(): string
+    {
+        return match ($this->getDateTimeType()) {
+            self::DATETIME_TYPE_DATE => 'Y-m-d',
+            self::DATETIME_TYPE_TIME => 'H:i',
+            default => 'Y-m-d H:i',
+        };
+    }
+
     public function getDateFormat(): string
     {
         $month = $this->isDateLeadingZero() ? 'm' : 'n';
@@ -572,6 +597,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         $hasDate = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_DATE], true);
         $locale = $this->locale ?: \Craft::$app->locale->id;
 
+        if ($this->isUseNativeTypes()) {
+            $carbon = $this->getCarbon();
+            $value = $carbon
+                ? $carbon->format($this->getNativeFormat())
+                : null;
+        } else {
+            $value = $this->getValue();
+        }
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
@@ -580,7 +614,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->setIfEmpty('type', $this->getInputType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('placeholder', $this->getPlaceholder())
-            ->setIfEmpty('value', $this->getValue())
+            ->setIfEmpty('value', $value)
             ->set($this->getRequiredAttribute())
             ->set('data-datepicker', true)
             ->set('data-datepicker-enabled', $this->isUseDatepicker())
@@ -595,6 +629,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
         if ($this->isUseDatepicker()) {
             $attributes->append('class', 'form-datepicker');
+        }
+
+        if ($this->isUseNativeTypes()) {
+            $attributes
+                ->set('min', $this->getGeneratedMinDate($this->getNativeFormat()))
+                ->set('max', $this->getGeneratedMaxDate($this->getNativeFormat()))
+            ;
         }
 
         return Html::tag(

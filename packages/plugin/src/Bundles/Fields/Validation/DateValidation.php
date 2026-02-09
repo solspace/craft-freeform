@@ -88,17 +88,19 @@ class DateValidation extends FeatureBundle
         }
 
         $minDate = new Carbon($generatedMinDate);
+        // TODO: risky change - do not reset time if the field input is not DATE only
         $minDate->setTime(0, 0, 0);
 
         try {
-            $date = Carbon::createFromFormat($field->getFormat(), $value);
+            $format = $field->isUseNativeTypes() ? 'Y-m-d\TH:i' : $field->getFormat();
+            $date = Carbon::createFromFormat($format, $value);
 
             if ($date->lt($minDate)) {
                 $field->addError(
                     Freeform::t(
                         'Date "{date}" must be after "{minDate}"',
                         [
-                            'date' => $value,
+                            'date' => $date->format($field->getFormat()),
                             'minDate' => $field->getGeneratedMinDate($field->getDateFormat()),
                         ]
                     )
@@ -126,10 +128,12 @@ class DateValidation extends FeatureBundle
         }
 
         $maxDate = new Carbon($generatedMaxDate);
+        // TODO: risky change - do not reset time if the field input is not DATE only
         $maxDate->setTime(23, 59, 59);
 
         try {
-            $date = Carbon::createFromFormat($field->getFormat(), $value);
+            $format = $field->isUseNativeTypes() ? 'Y-m-d\TH:i' : $field->getFormat();
+            $date = Carbon::createFromFormat($format, $value);
 
             if ($date->gt($maxDate)) {
                 $field->addError(

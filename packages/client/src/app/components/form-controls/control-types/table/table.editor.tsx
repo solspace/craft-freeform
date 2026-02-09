@@ -29,7 +29,7 @@ import type {
   TableProperty,
 } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
 import { TableDropdownEditor } from './editor/table.input.dropdown';
@@ -196,7 +196,7 @@ export const TableEditor: React.FC<Props> = ({
       <HelpText>
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(
+            __html: DOMPurify.sanitize(
               translate(
                 'Press <b>enter</b> while editing a cell to add a new row.'
               )

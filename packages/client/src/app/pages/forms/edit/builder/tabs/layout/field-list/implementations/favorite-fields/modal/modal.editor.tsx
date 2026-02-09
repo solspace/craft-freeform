@@ -17,7 +17,7 @@ import type {
 import type { GenericValue } from '@ff-client/types/properties';
 import { type Property } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { FavoriteFieldComponent } from './modal.editor.field';
 
@@ -73,10 +73,12 @@ export const FavoritesEditor: React.FC<Props> = ({
   return (
     <>
       <Title>
-        <Icon dangerouslySetInnerHTML={{ __html: sanitize(type.icon) }} />
+        <Icon
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(type.icon) }}
+        />
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(displayName),
+            __html: DOMPurify.sanitize(displayName),
           }}
         />
       </Title>

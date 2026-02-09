@@ -7,7 +7,7 @@ import { addNewNotification } from '@editor/store/thunks/notifications';
 import type { NotificationType } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-import { capitalize } from 'lodash';
+import capitalize from 'lodash/capitalize';
 import { v4 } from 'uuid';
 
 import { Icon, Link } from './item.styles';

@@ -71,6 +71,7 @@ export default merge(baseConfig, {
                   createStyledComponentsTransformer.default(),
                 ],
               }),
+              configFile: resolve(__dirname, '../../tsconfig.build.json'),
               transpileOnly: true,
             },
           },

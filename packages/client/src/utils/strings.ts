@@ -22,5 +22,7 @@ export const generateHandle = (
     handle = camelCase(handle);
   }
 
+  handle = handle.replace(/^[^a-z]+/gi, '');
+
   return handle;
 };

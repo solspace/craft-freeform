@@ -1,6 +1,6 @@
 import React from 'react';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { NoContent, PreviewWrapper } from '../table/table.preview.styles';
 
@@ -15,7 +15,7 @@ export const WysiwygPreview: React.FC<Props> = ({ value }) => {
     <PreviewWrapper data-edit={translate('Click to edit data')}>
       <PreviewContainer>
         {!value && <NoContent>{translate('Not configured yet')}</NoContent>}
-        <div dangerouslySetInnerHTML={{ __html: sanitize(value) }} />
+        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
       </PreviewContainer>
     </PreviewWrapper>
   );

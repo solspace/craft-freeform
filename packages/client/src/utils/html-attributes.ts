@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash';
+import kebabCase from 'lodash/kebabCase';
 
 export const createId = (name?: string): string => {
   return kebabCase(name);

@@ -4,7 +4,7 @@ import type { GenericValue } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 import './fields.persistence';
 

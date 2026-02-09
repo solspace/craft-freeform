@@ -14,7 +14,17 @@ module.exports = merge(baseConfig, {
       {
         test: /\.ts(x?)$/,
         exclude: /node_modules/,
-        use: [{ loader: 'ts-loader' }],
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              configFile: require('path').resolve(
+                __dirname,
+                '../../tsconfig.build.json'
+              ),
+            },
+          },
+        ],
       },
     ],
   },

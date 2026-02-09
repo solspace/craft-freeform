@@ -4,6 +4,8 @@
     "outDir": "../plugin/src/Resources/js/client/",
     "jsx": "react",
     "lib": ["ESNext", "DOM"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "types": ["jest", "node"],
     "typeRoots": [

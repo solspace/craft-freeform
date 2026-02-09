@@ -3,7 +3,7 @@ import React from 'react';
 import config from '@config/freeform/freeform.config';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import CircleIcon from './icons/circle.icon.svg';
 import DeleteIcon from './icons/delete.icon.svg';
@@ -63,7 +63,7 @@ export const Notices: React.FC = () => {
           </Icon>
           <Message
             dangerouslySetInnerHTML={{
-              __html: sanitize(
+              __html: DOMPurify.sanitize(
                 translate(
                   'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.',
                   {

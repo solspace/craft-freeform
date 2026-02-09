@@ -1,5 +1,5 @@
 import transliterateFn from '@sindresorhus/transliterate';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 type HandleOptions = {
   transliterate?: boolean;

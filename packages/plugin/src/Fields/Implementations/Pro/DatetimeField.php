@@ -68,22 +68,12 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected string $initialValue = '';
 
-    #[Translatable]
-    #[Limitation('props.date', 'locale')]
-    #[DefaultValue('props.date.locale')]
-    #[Input\Text(
-        label: 'Force a locale',
-        instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
-        order: 1,
-    )]
-    protected ?string $locale = null;
-
     #[Limitation('props.date', 'nativeTypes')]
     #[DefaultValue('props.date.nativeTypes')]
     #[Input\Boolean(
         label: 'Use native input types',
         instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
-        order: 2,
+        order: 1,
     )]
     protected bool $useNativeTypes = false;
 
@@ -96,14 +86,27 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected bool $useDatepicker = true;
 
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[Limitation('props.date', 'formatAsPlaceholder')]
     #[DefaultValue('props.date.formatAsPlaceholder')]
     #[Input\Boolean(
         label: 'Use date format as placeholder',
-        order: 3,
+        order: 4,
     )]
     protected bool $generatePlaceholder = true;
 
+    #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[Limitation('props.date', 'locale')]
+    #[DefaultValue('props.date.locale')]
+    #[Input\Text(
+        label: 'Force a locale',
+        instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
+        order: 4,
+    )]
+    protected ?string $locale = null;
+
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('properties.generatePlaceholder === false')]
     #[Input\Text(
         instructions: "The text that will be shown if the field doesn't have a value.",
@@ -118,6 +121,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 2,
     )]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateOrder')]
     #[DefaultValue('props.date.dateOrder')]
@@ -134,6 +138,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'date4DigitYear')]
     #[DefaultValue('props.date.date4DigitYear')]
@@ -142,6 +147,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateLeadingZero')]
     #[DefaultValue('props.date.dateLeadingZero')]
@@ -153,6 +159,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateSeparator')]
     #[DefaultValue('props.date.dateSeparator')]
@@ -198,6 +205,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 3,
     )]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clock24h')]
     #[DefaultValue('props.date.clock24h')]
@@ -206,6 +214,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockSeparator')]
     #[DefaultValue('props.date.clockSeparator')]
@@ -224,6 +233,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[Translatable]
+    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.clock24h === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockAMPMSeparate')]
     #[DefaultValue('props.date.clockAMPMSeparate')]
@@ -583,7 +594,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         $locale = $this->locale ?: \Craft::$app->locale->id;
 
         if ($this->isUseNativeTypes()) {
-            $value = $this->getCarbon()->format($this->getNativeFormat());
+            $carbon = $this->getCarbon();
+            $value = $carbon
+                ? $carbon->format($this->getNativeFormat())
+                : null;
         } else {
             $value = $this->getValue();
         }

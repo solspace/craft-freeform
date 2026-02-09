@@ -1,5 +1,5 @@
 import type { FieldBase, FieldType } from '@ff-client/types/fields';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 
 export const cloneFieldTypeFromForm = (
   field: FieldBase,

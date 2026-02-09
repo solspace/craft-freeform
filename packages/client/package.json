@@ -21,7 +21,12 @@
   ],
   "author": "Solspace Inc.",
   "license": "MIT",
-  "sideEffects": ["*.css", "config/**"],
+  "sideEffects": [
+    "*.css",
+    "config/**",
+    "src/**/persistence.ts",
+    "src/**/*.persistence.ts"
+  ],
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "@reduxjs/toolkit": "^2.11.2",

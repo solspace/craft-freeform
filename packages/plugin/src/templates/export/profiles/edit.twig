@@ -137,8 +137,8 @@
                                 }) }}
                             </td>
                             <td>
-                                {{ field.label }}
-                                <input type="hidden" name="fieldSettings[{{ field.id }}][label]" value="{{ field.label }}" />
+                                {{ field.label|t('freeform') }}
+                                <input type="hidden" name="fieldSettings[{{ field.id }}][label]" value="{{ field.label|t('freeform') }}" />
                             </td>
                         </tr>
                     {% endfor %}

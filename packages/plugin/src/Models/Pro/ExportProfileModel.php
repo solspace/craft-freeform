@@ -95,7 +95,7 @@ class ExportProfileModel extends Model
 
         if (!empty($this->fields)) {
             foreach ($this->fields as $fieldId => $item) {
-                $label = $item['label'];
+                $label = Freeform::t($item['label']);
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
@@ -119,16 +119,16 @@ class ExportProfileModel extends Model
 
         if (0 === $collection->count()) {
             $collection
-                ->add(new FieldDescriptor('id', 'ID'))
-                ->add(new FieldDescriptor('title', 'Title'))
-                ->add(new FieldDescriptor('ip', 'IP Address'))
-                ->add(new FieldDescriptor('dateCreated', 'Date Created'))
-                ->add(new FieldDescriptor('status', 'Status'))
+                ->add(new FieldDescriptor('id', Freeform::t('ID')))
+                ->add(new FieldDescriptor('title', \Craft::t('app', 'Title')))
+                ->add(new FieldDescriptor('ip', Freeform::t('IP Address')))
+                ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))
+                ->add(new FieldDescriptor('status', \Craft::t('app', 'Status')))
             ;
         }
 
         if (!$collection->has('userId')) {
-            $collection->add(new FieldDescriptor('userId', 'Author'));
+            $collection->add(new FieldDescriptor('userId', \Craft::t('app', 'Author')));
         }
 
         foreach ($form->getLayout()->getFields() as $field) {

@@ -90,7 +90,8 @@
                 </div>
                 <div class="checkbox-select">
                     {% for fieldId, fieldSetting in fields %}
-                        {% set label     = fieldSetting.label %}
+                        {% set label     = fieldSetting.label|t('freeform') %}
+                        {% set label     = label|t('app') %}
                         {% set isChecked = fieldSetting.checked %}
 
                         <div class="checkbox-list-item">
@@ -98,7 +99,7 @@
                                 <input
                                     type="hidden"
                                     name="export_fields[{{ form.id }}][{{ fieldId }}][label]"
-                                    value="{{ fieldSetting.label }}"
+                                    value="{{ label }}"
                                 />
                                 <input type="hidden"
                                     name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
@@ -111,7 +112,7 @@
                                     {{ isChecked ? 'checked' }}
                                     id="{{ form.id ~ '-' ~ fieldId }}"
                                 />
-                                <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label }}</label>
+                                <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label|t('freeform') }}</label>
                             </div>
                         </div>
                     {% endfor %}

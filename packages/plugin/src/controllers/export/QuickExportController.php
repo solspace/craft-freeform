@@ -86,30 +86,30 @@ class QuickExportController extends BaseController
 
             if (empty($fieldSetting)) {
                 $fieldSetting['id'] = [
-                    'label' => 'ID',
+                    'label' => Freeform::t('ID'),
                     'checked' => true,
                 ];
                 $fieldSetting['title'] = [
-                    'label' => 'Title',
+                    'label' => \Craft::t('app', 'Title'),
                     'checked' => true,
                 ];
                 $fieldSetting['ip'] = [
-                    'label' => 'IP Address',
+                    'label' => Freeform::t('IP Address'),
                     'checked' => true,
                 ];
                 $fieldSetting['status'] = [
-                    'label' => 'Status',
+                    'label' => \Craft::t('app', 'Status'),
                     'checked' => true,
                 ];
                 $fieldSetting['dateCreated'] = [
-                    'label' => 'Date Created',
+                    'label' => \Craft::t('app', 'Date Created'),
                     'checked' => true,
                 ];
             }
 
             if (!isset($fieldSetting['userId'])) {
                 $fieldSetting['userId'] = [
-                    'label' => 'Author',
+                    'label' => \Craft::t('app', 'Author'),
                     'checked' => true,
                 ];
             }

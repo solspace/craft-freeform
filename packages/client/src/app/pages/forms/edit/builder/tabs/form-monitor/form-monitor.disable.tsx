@@ -14,7 +14,7 @@ import {
 import { QKForms } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { FormWrapper } from './form-monitor.action.modal.styles';
 
@@ -118,7 +118,7 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
           </div>
           <div
             dangerouslySetInnerHTML={{
-              __html: sanitize(
+              __html: DOMPurify.sanitize(
                 translate(
                   'To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:'
                 )

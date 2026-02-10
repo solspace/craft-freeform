@@ -1,6 +1,6 @@
 import React from 'react';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { NoContent, PreviewWrapper } from '../table/table.preview.styles';
 
@@ -19,7 +19,9 @@ export const AiBoxPreview: React.FC<Props> = ({ value }) => {
         <div
           style={{ lineHeight: '2.0' }}
           dangerouslySetInnerHTML={{
-            __html: sanitize(generateValue(value, '<mark>...</mark>')),
+            __html: DOMPurify.sanitize(
+              generateValue(value, '<mark>...</mark>')
+            ),
           }}
         />
       </PreviewContainer>

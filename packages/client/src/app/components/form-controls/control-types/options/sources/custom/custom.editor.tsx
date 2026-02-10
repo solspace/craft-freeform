@@ -20,7 +20,7 @@ import { PreviewEditor } from '@components/form-controls/preview/previewable-com
 import { useDebounce } from '@ff-client/hooks/use-debounce';
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import type {
   ConfigurationProps,
@@ -353,7 +353,7 @@ export const CustomEditor: React.FC<
       <HelpText>
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(
+            __html: DOMPurify.sanitize(
               translate(
                 'Press <b>enter</b> while editing a cell to add a new row.'
               )

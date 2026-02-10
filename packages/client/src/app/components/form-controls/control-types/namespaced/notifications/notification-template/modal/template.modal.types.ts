@@ -10,7 +10,7 @@ import type {
 import translate from '@ff-client/utils/translations';
 import transliterate from '@sindresorhus/transliterate';
 import axios from 'axios';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 import { AssetsInput } from './inputs/assets';
 import { BooleanInput } from './inputs/boolean';

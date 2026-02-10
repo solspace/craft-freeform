@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
-import config from '@config/freeform/freeform.config';
+import config, { TemplateMethod } from '@config/freeform/freeform.config';
 import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
 import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/items/type.skeleton';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
@@ -19,6 +19,8 @@ import { Icon, Link, Name } from './items/item.styles';
 import { NotificationItemEmpty } from './items/type.styles';
 import IconManager from './icon.manager.svg';
 import { ScrollableList } from './list.styles';
+
+const templateMethod = config.templates.method;
 
 export const List: React.FC = () => {
   const limitations = config.limitations;
@@ -95,12 +97,14 @@ export const List: React.FC = () => {
             </NotificationTypeItem>
           ))}
 
-        <Link onClick={() => setLastTab(uid)} to={`manager`}>
-          <Icon>
-            <IconManager />
-          </Icon>
-          <Name>{translate('Template Manager')}</Name>
-        </Link>
+        {templateMethod !== TemplateMethod.Global && (
+          <Link onClick={() => setLastTab(uid)} to={`manager`}>
+            <Icon>
+              <IconManager />
+            </Icon>
+            <Name>{translate('Template Manager')}</Name>
+          </Link>
+        )}
       </ScrollableList>
     </Sidebar>
   );

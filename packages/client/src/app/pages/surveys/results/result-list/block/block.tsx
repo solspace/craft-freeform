@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useFieldType } from '@ff-client/queries/field-types';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { useQuerySurveyPreferences } from '../../results.queries';
 import type { Result } from '../../results.types';
@@ -93,7 +93,7 @@ export const Block: React.FC<Props> = ({
         --{' '}
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(
+            __html: DOMPurify.sanitize(
               translate('Question <b>{index}</b> Hidden', {
                 index: bulletin,
               })
@@ -114,7 +114,9 @@ export const Block: React.FC<Props> = ({
         <Heading>
           {fieldType && (
             <span
-              dangerouslySetInnerHTML={{ __html: sanitize(fieldType.icon) }}
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(fieldType.icon),
+              }}
             />
           )}
           {field.label}

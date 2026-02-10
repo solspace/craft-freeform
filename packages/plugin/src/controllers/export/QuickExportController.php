@@ -86,7 +86,7 @@ class QuickExportController extends BaseController
 
             if (empty($fieldSetting)) {
                 $fieldSetting['id'] = [
-                    'label' => \Craft::t('app', 'ID'),
+                    'label' => Freeform::t('ID'),
                     'checked' => true,
                 ];
                 $fieldSetting['title'] = [

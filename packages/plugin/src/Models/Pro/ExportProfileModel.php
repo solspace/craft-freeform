@@ -119,7 +119,7 @@ class ExportProfileModel extends Model
 
         if (0 === $collection->count()) {
             $collection
-                ->add(new FieldDescriptor('id', \Craft::t('app', 'ID')))
+                ->add(new FieldDescriptor('id', Freeform::t('ID')))
                 ->add(new FieldDescriptor('title', \Craft::t('app', 'Title')))
                 ->add(new FieldDescriptor('ip', Freeform::t('IP Address')))
                 ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))

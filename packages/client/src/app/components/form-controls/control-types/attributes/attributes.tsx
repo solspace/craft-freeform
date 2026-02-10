@@ -5,7 +5,7 @@ import { PreviewableComponent } from '@components/form-controls/preview/previewa
 import type { ControlType } from '@components/form-controls/types';
 import { useDebounce } from '@ff-client/hooks/use-debounce';
 import type { AttributeProperty } from '@ff-client/types/properties';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 import { AttributesEditor } from './attributes.editor';
 import { cleanAttributes } from './attributes.operations';

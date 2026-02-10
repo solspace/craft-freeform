@@ -151,12 +151,24 @@ class StripeCallbackService
                 )
             ;
 
+            $paymentMetadata = $paymentIntent->metadata->toArray();
+            $event = new UpdateMetadataEvent($form, $integration, $paymentMetadata);
+            Event::trigger(Stripe::class, Stripe::EVENT_UPDATE_PAYMENT_METADATA, $event);
+
+            $paymentMetadata = $event->getCompiledMetadata();
+            if (isset($paymentMetadata['description'])) {
+                $description = $paymentMetadata['description'];
+                unset($paymentMetadata['description']);
+            }
+
             $submissionMetadata = [
                 'submission' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
             ];
 
             $event = new UpdateMetadataEvent($form, $integration, $submissionMetadata);
             Event::trigger(Stripe::class, Stripe::EVENT_AFTER_UPDATE_PAYMENT_METADATA, $event);
+
+            $submissionMetadata = $event->getCompiledMetadata();
 
             $logger->debug('Stripe payment metadata updated', ['submissionMetadata' => $submissionMetadata]);
 
@@ -179,7 +191,7 @@ class StripeCallbackService
                     'description' => $description,
                     'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
                     'metadata' => array_merge(
-                        $paymentIntent->metadata->toArray(),
+                        $paymentMetadata,
                         $submissionMetadata,
                     ),
                 ]

@@ -14,7 +14,7 @@ import config from '@config/freeform/freeform.config';
 import type { Message } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-import { capitalize } from 'lodash';
+import capitalize from 'lodash/capitalize';
 
 import { useRenderContext } from './context/render.context';
 import { FormErrorList } from './error-list';

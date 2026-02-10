@@ -5,7 +5,7 @@ import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
 import type { CardsProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 import Sortable from 'sortablejs';
 
 import { addCard } from '../cards.operations';
@@ -98,7 +98,7 @@ export const CardsEditor: React.FC<Props> = ({
       <HelpText>
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(
+            __html: DOMPurify.sanitize(
               translate(
                 'Press <b>enter</b> while editing a cell to add a new row.'
               )

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import type { Suggestion } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { ItemWrapper } from './item.styles';
 
@@ -27,7 +27,7 @@ export const Item: React.FC<Props> = ({ item, onClick }) => {
       ref={ref}
       className={classes(item?.active && 'active')}
       onClick={() => onClick?.(item)}
-      dangerouslySetInnerHTML={{ __html: sanitize(item.shortName) }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.shortName) }}
     />
   );
 };

@@ -8,7 +8,7 @@ import { useAssetQuery } from '@ff-client/queries/assets';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
 import { type FieldType } from '@ff-client/types/fields';
 import { PropertyType } from '@ff-client/types/properties';
-import { template } from 'lodash';
+import template from 'lodash/template';
 
 export const useFieldPreview = (
   field?: Field,

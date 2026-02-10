@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { generateUrl } from '@ff-client/utils/urls';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 type Item = {
   title?: string;
@@ -40,7 +40,7 @@ export const SettingsSidebar: React.FC = () => {
                       <a
                         href={generateUrl(`settings/${key}`)}
                         dangerouslySetInnerHTML={{
-                          __html: sanitize(item.title),
+                          __html: DOMPurify.sanitize(item.title),
                         }}
                       />
                     )}

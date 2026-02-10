@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useHover } from '@ff-client/hooks/use-hover';
 import { useFieldType } from '@ff-client/queries/field-types';
 import CrossIcon from '@ff-icons/actions/delete.svg';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { Icon, Name, Remove, Wrapper } from './modal.list-item.styles';
 
@@ -24,7 +24,7 @@ export const FieldItem: React.FC<Props> = ({ typeClass }) => {
 
   return (
     <Wrapper data-id={typeClass} ref={fieldItemRef} title={name}>
-      <Icon dangerouslySetInnerHTML={{ __html: sanitize(icon) }} />
+      <Icon dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(icon) }} />
       <Name>{name}</Name>
 
       {hovering && (

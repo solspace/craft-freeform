@@ -37,10 +37,6 @@ class NotificationLoopVariables extends FeatureBundle
             )
         ;
 
-        if (!\count($fields)) {
-            return;
-        }
-
         $this->renderMarkup($fields, $event, 'all');
     }
 

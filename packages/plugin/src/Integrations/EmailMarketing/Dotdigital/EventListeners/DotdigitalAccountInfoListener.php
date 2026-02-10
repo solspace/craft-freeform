@@ -46,7 +46,7 @@ class DotdigitalAccountInfoListener extends FeatureBundle
             $properties = array_values($properties);
 
             if (!empty($properties) && \count($properties) > 0) {
-                $integration->setApiUrl($properties[0]->value);
+                $integration->setApiUrl(str_replace('dotmailer.com', 'dotdigital.com', $properties[0]->value));
             }
         }
     }

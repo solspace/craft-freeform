@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 5.14.13 - 2026-02-10
+
+### Changed
+- Default built-in columns such as _Title_, _IP Address_, _Status_, etc. are now translated throughout the Control Panel and in exported files.
+- Auto-generated form and field handles now always start with a letter to ensure GraphQL compatibility. To preserve legacy, existing handles remain unchanged, and handles can still be manually overridden to start with a number if needed.
+- Improved support and behavior for handling **Date & Time** fields as native date inputs.
+- Forms now correctly re-enable the submit button after an internal form error occurs.
+- Optimized and reduced the overall size of the form builder application.
+
+### Fixed
+- Fixed a potential performance issue in the Control Panel Submissions area.
+- Fixed an issue where the **Stripe** custom metadata description override was not working.
+- Fixed a bug where the **Template Manager** button appeared in the **Notifications** tab of the form builder when form-specific notifications are not used.
+- Fixed an issue where files from **File Upload Drag & Drop** fields were not attached to email notifications when **Include Attachments** was enabled.
+- Fixed several issues with the **DotDigital** integration.
+
 ## 5.14.12 - 2026-02-07
 
 ### Added

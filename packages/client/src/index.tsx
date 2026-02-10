@@ -40,6 +40,8 @@ import App from './App';
 
 import './styles.css';
 
+const showDevtools = process.env.DEBUG_MODE;
+
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
 
@@ -67,7 +69,9 @@ root.render(
                     <ModalProvider>
                       <Breadcrumb id="root" label="Freeform" url="/forms" />
                       <ManualStyles />
-                      <ReactQueryDevtools initialIsOpen={false} />
+                      {showDevtools ? (
+                        <ReactQueryDevtools initialIsOpen={false} />
+                      ) : null}
                       <CpNavigation />
                       <Routes>
                         <Route path="/" element={<App />}>

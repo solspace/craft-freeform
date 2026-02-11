@@ -129,7 +129,8 @@ class SubmissionQuery extends ElementQuery
         $request = \Craft::$app->getRequest();
 
         $isCpRequest = $request->getIsCpRequest();
-        $isSubmissionElementType = Submission::class === $request->getBodyParam('elementType');
+        $isConsoleRequest = $request->getIsConsoleRequest();
+        $isSubmissionElementType = !$isConsoleRequest && Submission::class === $request->getBodyParam('elementType');
 
         $path = '/'.ltrim($request->getPathInfo(), '/');
         $isElementIndexAction = str_contains($path, 'actions/element-indexes/');

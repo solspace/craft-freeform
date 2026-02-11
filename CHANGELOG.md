@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.14.14 - 2026-02-11
+
+### Fixed
+- Fixed a bug where the **File -> Asset Source** form builder default setting was not working correctly for _File Upload_ and _File Drag & Drop_ fields.
+- Fixed an issue where console requests were not properly detected before calling `getBodyParam()` in submission queries.
+
+### Security
+- Updated the **axios** dependency to the latest compatible version.
+
 ## 5.14.13 - 2026-02-10
 
 ### Changed

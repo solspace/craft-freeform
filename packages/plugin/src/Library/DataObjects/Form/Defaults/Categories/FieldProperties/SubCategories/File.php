@@ -27,7 +27,7 @@ class File extends BaseCategory
     #[EmptyValue('')]
     #[OptionsGenerator(AssetSourceOptions::class)]
     #[SetDefaultValue('')]
-    public SelectItem $initialValue;
+    public SelectItem $source;
 
     #[Label('Upload Location')]
     public TextItem $uploadLocation;

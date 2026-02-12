@@ -98,7 +98,7 @@ class SubmissionQuery extends ElementQuery
 
     public function skipContent(bool $value): self
     {
-        $this->skipContent = true;
+        $this->skipContent = $value;
 
         return $this;
     }
@@ -126,6 +126,94 @@ class SubmissionQuery extends ElementQuery
         static $formHandleToIdMap;
         static $formIdToHandleMap;
 
+        $request = \Craft::$app->getRequest();
+
+        $isCpRequest = $request->getIsCpRequest();
+        $isConsoleRequest = $request->getIsConsoleRequest();
+
+        $pathInfo = !$isConsoleRequest ? ($request->getPathInfo() ?? '') : '';
+        $path = '/'.ltrim($pathInfo, '/');
+
+        $isElementIndexAction = str_contains($path, 'actions/element-indexes/');
+        $isSubmissionElementType = (!$isConsoleRequest) && (Submission::class === $request->getBodyParam('elementType'));
+        $isCpSubmissionIndexRequest = $isCpRequest && $isElementIndexAction && $isSubmissionElementType;
+
+        // Requested CP table columns (element attributes, field handles, field column names, or field IDs)
+        $requestedFieldHandles = [];
+        $requestedLookup = [];
+        $requestedFieldIdLookup = [];
+
+        if ($isCpSubmissionIndexRequest) {
+            $viewState = $request->getBodyParam('viewState') ?? [];
+            if (\is_array($viewState)) {
+                $tableColumns = $viewState['tableColumns'] ?? $viewState['columns'] ?? $viewState['attributes'] ?? [];
+                if (\is_array($tableColumns)) {
+                    foreach ($tableColumns as $tableColumn) {
+                        if (\is_string($tableColumn)) {
+                            $requestedFieldHandles[] = $tableColumn;
+                        } elseif (\is_array($tableColumn)) {
+                            $requestedFieldHandles[] = $tableColumn['attribute'] ?? $tableColumn['key'] ?? null;
+                        }
+                    }
+                }
+            }
+
+            $requestedFieldHandles = array_values(array_filter(array_unique($requestedFieldHandles)));
+            if ($requestedFieldHandles) {
+                $normalizedRequestedFieldHandles = [];
+
+                foreach ($requestedFieldHandles as $requestedFieldHandle) {
+                    if (!\is_string($requestedFieldHandle)) {
+                        continue;
+                    }
+
+                    if (preg_match('/^form_\d+__(.+)$/', $requestedFieldHandle, $matches)) {
+                        $normalizedRequestedFieldHandles[] = $matches[1];
+
+                        continue;
+                    }
+
+                    if (preg_match('/^field:(.+)$/', $requestedFieldHandle, $matches)) {
+                        $normalizedRequestedFieldHandles[] = $matches[1];
+
+                        continue;
+                    }
+
+                    $normalizedRequestedFieldHandles[] = $requestedFieldHandle;
+                }
+
+                $requestedFieldHandles = array_values(array_filter(array_unique($normalizedRequestedFieldHandles)));
+            }
+
+            $requestedLookup = $requestedFieldHandles ? array_flip($requestedFieldHandles) : [];
+
+            // CP is sending numeric strings for field IDs. e.g. "20"
+            foreach ($requestedFieldHandles as $requested) {
+                if (\is_string($requested) && ctype_digit($requested)) {
+                    $requestedFieldIdLookup[$requested] = true;
+                }
+            }
+
+            $source = $request->getBodyParam('source') ?? $request->getQueryParam('source');
+            if (\is_array($source)) {
+                $source = $source[0] ?? null;
+            }
+            $source = \is_string($source) ? trim($source) : null;
+
+            // If source="*" but Craft has already limited formId to a single allowed form (e.g. [1]), treat it as a single-form query so custom fields can still render safely.
+            if ('*' === $source) {
+                if (\is_array($this->formId) && 1 === \count($this->formId)) {
+                    $this->formId = (int) $this->formId[0];
+
+                    $this->skipContent = false;
+                } else {
+                    $this->skipContent = true;
+                }
+            } else {
+                $this->skipContent = false;
+            }
+        }
+
         if (null === $formHandleToIdMap) {
             $forms = Freeform::getInstance()->forms->getAllForms();
             foreach ($forms as $form) {
@@ -150,7 +238,7 @@ class SubmissionQuery extends ElementQuery
             $this->form = $this->form->getHandle();
         }
 
-        if ($this->form && $formHandleToIdMap[$this->form]) {
+        if ($this->form && isset($formHandleToIdMap[$this->form])) {
             $this->formId = $formHandleToIdMap[$this->form];
         }
 
@@ -202,10 +290,44 @@ class SubmissionQuery extends ElementQuery
                 $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
                 $this->subQuery->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
 
+                // If the CP request includes numeric field IDs, we can safely treat it as a "requested fields" filter.
+                // Otherwise, only treat it as such if we see a match by handle/column name.
+                $hasAnyRequestedFieldsOnThisForm = false;
+
+                if ($requestedFieldIdLookup) {
+                    $hasAnyRequestedFieldsOnThisForm = true;
+                } elseif ($requestedLookup) {
+                    $storableFieldsForDetect = $form->getLayout()->getFields()->getExcludedList(NoStorageInterface::class);
+                    foreach ($storableFieldsForDetect as $fieldForDetect) {
+                        $handleForDetect = $fieldForDetect->getHandle();
+                        $columnForDetect = Submission::getFieldColumnName($fieldForDetect);
+
+                        if (isset($requestedLookup[$handleForDetect]) || isset($requestedLookup[$columnForDetect])) {
+                            $hasAnyRequestedFieldsOnThisForm = true;
+
+                            break;
+                        }
+                    }
+                }
+
                 $storableFields = $form->getLayout()->getFields()->getExcludedList(NoStorageInterface::class);
                 foreach ($storableFields as $field) {
-                    $fieldHandle = Submission::getFieldColumnName($field);
-                    $select[] = "[[fc{$formId}]].[[{$fieldHandle}]] as [[form_{$formId}__{$fieldHandle}]]";
+                    $handle = $field->getHandle();
+                    $column = Submission::getFieldColumnName($field);
+
+                    $fieldId = null;
+                    if (\is_object($field) && method_exists($field, 'getId')) {
+                        $fieldId = (string) $field->getId();
+                    }
+
+                    if ($hasAnyRequestedFieldsOnThisForm) {
+                        $isRequested = ($requestedLookup && (isset($requestedLookup[$handle]) || isset($requestedLookup[$column]))) || ($fieldId && isset($requestedFieldIdLookup[$fieldId]));
+                        if (!$isRequested) {
+                            continue;
+                        }
+                    }
+
+                    $select[] = "[[fc{$formId}]].[[{$column}]] as [[form_{$formId}__{$column}]]";
                 }
             }
         }
@@ -247,10 +369,7 @@ class SubmissionQuery extends ElementQuery
 
         $this->query->select($select);
 
-        $request = \Craft::$app->request;
-
         $isEmptyFormId = empty($this->formId);
-        $isCpRequest = $request->getIsCpRequest();
         $isIndex = !$request->getIsConsoleRequest() && 'index' === $request->post('context');
         if ($isEmptyFormId && $isCpRequest && $isIndex) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();

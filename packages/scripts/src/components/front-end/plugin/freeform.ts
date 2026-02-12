@@ -706,90 +706,97 @@ export default class Freeform {
       data,
       method,
       request,
-    }).then((serverResponse) => {
-      this._removeMessages();
+    })
+      .then((serverResponse) => {
+        this._removeMessages();
 
-      if (serverResponse.status === 200) {
-        const response = serverResponse.data as FreeformResponseWithToken;
-        const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
+        if (serverResponse.status === 200) {
+          const response = serverResponse.data as FreeformResponseWithToken;
+          const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
 
-        const onBeforeSuccess = this._dispatchEvent(events.form.ajaxBeforeSuccess, { request, response });
-        if (onBeforeSuccess.defaultPrevented) {
-          return;
-        }
+          const onBeforeSuccess = this._dispatchEvent(events.form.ajaxBeforeSuccess, { request, response });
+          if (onBeforeSuccess.defaultPrevented) {
+            return;
+          }
 
-        if (!actions.length) {
-          if (success) {
-            if (finished && response.onSuccess === SuccessBehavior.RedirectReturnUrl && returnUrl) {
-              const redirectEvent = this._dispatchEvent(events.form.ajaxSuccess, { request, response });
+          if (!actions.length) {
+            if (success) {
+              if (finished && response.onSuccess === SuccessBehavior.RedirectReturnUrl && returnUrl) {
+                const redirectEvent = this._dispatchEvent(events.form.ajaxSuccess, { request, response });
 
-              if (redirectEvent.defaultPrevented) {
+                if (redirectEvent.defaultPrevented) {
+                  return;
+                }
+
+                window.location.href = returnUrl;
                 return;
               }
 
-              window.location.href = returnUrl;
-              return;
-            }
-
-            if (response.html !== null && !this.options.skipHtmlReload) {
-              form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
-            }
-
-            if (!this.options.skipHtmlReload) {
-              this._resetHandlers();
-              this._setUp();
-            }
-
-            if (finished) {
-              if (!this.options.disableReset) {
-                // Reset the form so that the user may enter fresh information
-                // if a submission is not being edited
-                form.reset();
-                this._dispatchEvent(events.form.reset);
+              if (response.html !== null && !this.options.skipHtmlReload) {
+                form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
               }
 
-              if (response.onSuccess === SuccessBehavior.Reload) {
-                this._renderSuccessBanner();
+              if (!this.options.skipHtmlReload) {
+                this._resetHandlers();
+                this._setUp();
               }
-            }
 
-            this._dispatchEvent(events.form.ajaxSuccess, { request, response });
-          } else if (errors || formErrors) {
-            this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
-            this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
-            this._renderFieldErrors(errors);
-            this._renderFormErrors(formErrors);
+              if (finished) {
+                if (!this.options.disableReset) {
+                  // Reset the form so that the user may enter fresh information
+                  // if a submission is not being edited
+                  form.reset();
+                  this._dispatchEvent(events.form.reset);
+                }
+
+                if (response.onSuccess === SuccessBehavior.Reload) {
+                  this._renderSuccessBanner();
+                }
+              }
+
+              this._dispatchEvent(events.form.ajaxSuccess, { request, response });
+            } else if (errors || formErrors) {
+              this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
+              this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
+              this._renderFieldErrors(errors);
+              this._renderFormErrors(formErrors);
+            }
+          } else {
+            this._dispatchEvent(events.form.handleActions, { response, actions, cancelable: false });
+          }
+
+          const payload = response?.freeform_payload;
+          if (payload) {
+            const payloadInput = form.querySelector<HTMLInputElement>('input[name^=freeform_payload]');
+            if (payloadInput) {
+              payloadInput.value = payload;
+            }
+          }
+
+          this._dispatchEvent(events.form.ajaxAfterSubmit, {
+            data,
+            request,
+            response,
+            cancelable: false,
+          });
+
+          if (this.options.autoScroll) {
+            this._scrollToForm();
           }
         } else {
-          this._dispatchEvent(events.form.handleActions, { response, actions, cancelable: false });
+          const response = request.response;
+
+          this._dispatchEvent(events.form.ajaxError, { request, response });
         }
 
-        const payload = response?.freeform_payload;
-        if (payload) {
-          const payloadInput = form.querySelector<HTMLInputElement>('input[name^=freeform_payload]');
-          if (payloadInput) {
-            payloadInput.value = payload;
-          }
-        }
+        this.unlockSubmit();
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+        this.unlockSubmit();
 
-        this._dispatchEvent(events.form.ajaxAfterSubmit, {
-          data,
-          request,
-          response,
-          cancelable: false,
-        });
-
-        if (this.options.autoScroll) {
-          this._scrollToForm();
-        }
-      } else {
-        const response = request.response;
-
-        this._dispatchEvent(events.form.ajaxError, { request, response });
-      }
-
-      this.unlockSubmit();
-    });
+        this._dispatchEvent(events.form.ajaxError, { request, response: error });
+      });
   };
 
   _getMainSubmitButton = (): HTMLButtonElement | HTMLInputElement | undefined =>

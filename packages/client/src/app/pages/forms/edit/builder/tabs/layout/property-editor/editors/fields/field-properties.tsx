@@ -12,7 +12,7 @@ import {
 } from '@ff-client/queries/field-types';
 import { type Property } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { CloseLink, Icon, Title } from '../../property-editor.styles';
 import { SectionBlock } from '../../section-block';
@@ -71,7 +71,9 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
     return (
       <FieldPropertiesWrapper>
         <Title>
-          <Icon dangerouslySetInnerHTML={{ __html: sanitize(type.icon) }} />
+          <Icon
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(type.icon) }}
+          />
           <span>{translate(type.name)}</span>
         </Title>
         <SectionWrapper>
@@ -90,7 +92,9 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         <FavoriteButton field={field} />
       )}
       <Title>
-        <Icon dangerouslySetInnerHTML={{ __html: sanitize(type.icon) }} />
+        <Icon
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(type.icon) }}
+        />
         <span>{translate(type.name)}</span>
       </Title>
       <SectionWrapper>{sectionBlocks}</SectionWrapper>

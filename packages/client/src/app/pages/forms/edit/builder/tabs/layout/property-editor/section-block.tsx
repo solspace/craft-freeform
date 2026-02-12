@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import React from 'react';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import {
   SectionBlockContainer,
@@ -20,7 +20,9 @@ const renderIcon = (icon?: string | ReactNode): ReactNode => {
 
   if (typeof icon === 'string') {
     return (
-      <SectionBlockIcon dangerouslySetInnerHTML={{ __html: sanitize(icon) }} />
+      <SectionBlockIcon
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(icon) }}
+      />
     );
   }
 

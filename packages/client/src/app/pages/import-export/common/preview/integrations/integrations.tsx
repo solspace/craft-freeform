@@ -2,7 +2,7 @@ import React from 'react';
 import { Checkbox } from '@components/elements/checkbox/checkbox';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import type { Integration } from '../../../import/import.types';
 import {
@@ -75,7 +75,7 @@ export const PreviewIntegrations: React.FC<Props> = ({
               {!!integration.icon && (
                 <Icon
                   dangerouslySetInnerHTML={{
-                    __html: sanitize(integration.icon),
+                    __html: DOMPurify.sanitize(integration.icon),
                   }}
                 />
               )}

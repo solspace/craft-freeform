@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import React from 'react';
 import classes from '@ff-client/utils/classes';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
 import { Content, Instructions, MarkdownWrapper } from './readme.styles';
@@ -24,7 +24,9 @@ export const Readme: FC<Props> = ({ active, content }) => {
     <MarkdownWrapper>
       <Instructions className={classes('markdown-body', active && 'active')}>
         <Content
-          dangerouslySetInnerHTML={{ __html: sanitize(parsedContent) }}
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(parsedContent),
+          }}
         />
       </Instructions>
     </MarkdownWrapper>

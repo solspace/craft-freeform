@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Fields\Implementations\FileUpload;
 
 use Carbon\Carbon;
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Elements\Submission;
@@ -88,7 +89,12 @@ class FileUploadBundle extends FeatureBundle
 
         $ids = [];
         foreach ($uids as $uid) {
-            $asset = \Craft::$app->getElements()->getElementByUid($uid);
+            if (StringHelper::isUUID($uid)) {
+                $asset = \Craft::$app->getElements()->getElementByUid($uid);
+            } else {
+                $asset = \Craft::$app->assets->getAssetById($uid);
+            }
+
             if ($asset) {
                 $ids[] = $asset->id;
             }

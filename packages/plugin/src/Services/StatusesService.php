@@ -80,9 +80,9 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         $list = [];
         foreach ($this->getAllStatuses() as $status) {
             if ($indexById) {
-                $list[$status->id] = $status->name;
+                $list[$status->id] = Freeform::t($status->name);
             } else {
-                $list[] = $status->name;
+                $list[] = Freeform::t($status->name);
             }
         }
 

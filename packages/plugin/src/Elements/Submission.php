@@ -711,7 +711,7 @@ class Submission extends Element
                 'status' => ['label' => \Craft::t('app', 'Status')],
                 'form' => ['label' => Freeform::t('Form')],
                 'dateCreated' => ['label' => \Craft::t('app', 'Date Created')],
-                'id' => ['label' => \Craft::t('app', 'ID')],
+                'id' => ['label' => Freeform::t('ID')],
                 'incrementalId' => ['label' => Freeform::t('Freeform ID')],
                 'ip' => ['label' => Freeform::t('IP Address')],
                 'spamReasons' => ['label' => Freeform::t('Spam Reasons')],

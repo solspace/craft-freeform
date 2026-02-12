@@ -1,5 +1,5 @@
 import transliterateFn from '@sindresorhus/transliterate';
-import { camelCase } from 'lodash';
+import camelCase from 'lodash/camelCase';
 
 type HandleOptions = {
   transliterate?: boolean;
@@ -21,6 +21,8 @@ export const generateHandle = (
   if (camelize) {
     handle = camelCase(handle);
   }
+
+  handle = handle.replace(/^[^a-z]+/gi, '');
 
   return handle;
 };

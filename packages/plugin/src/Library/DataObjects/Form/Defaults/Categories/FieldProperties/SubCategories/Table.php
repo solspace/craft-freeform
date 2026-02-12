@@ -3,9 +3,11 @@
 namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories;
 
 use Solspace\Freeform\Attributes\Defaults\Label;
+use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\BoolItem;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Table extends BaseCategory
@@ -15,7 +17,15 @@ class Table extends BaseCategory
     public BoolItem $javascript;
 
     #[Label('Limit Rows')]
-    public TextItem $limitRows;
+    #[SetDefaultValue('')]
+    #[OptionsGenerator([
+        '' => 'Do not limit',
+        'min' => 'A minimum of…',
+        'max' => 'A maximum of…',
+        'range' => 'A range of…',
+        'exact' => 'Exactly…',
+    ])]
+    public SelectItem $limitRows;
 
     #[Label('Minimum number of rows')]
     public TextItem $minRows;

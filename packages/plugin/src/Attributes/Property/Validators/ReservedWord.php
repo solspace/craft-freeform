@@ -11,6 +11,7 @@ class ReservedWord implements PropertyValidatorInterface
 {
     private array $reservedWords = [
         'ancestors',
+        'assets',
         'archived',
         'attributeLabel',
         'attributes',

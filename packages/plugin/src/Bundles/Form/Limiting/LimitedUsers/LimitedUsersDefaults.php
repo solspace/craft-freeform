@@ -199,7 +199,10 @@ class LimitedUsersDefaults
                     (new Toggles('table', 'Table'))
                         ->setValues([
                             'javascript',
+                            'limitRows',
+                            'minRows',
                             'maxRows',
+                            'exactRows',
                             'addButtonLabel',
                             'addButtonMarkup',
                             'removeButtonLabel',
@@ -208,7 +211,10 @@ class LimitedUsersDefaults
                         ])
                         ->setOptions([
                             'javascript' => 'Use built-in javascript for adding and removing rows',
+                            'limitRows' => 'Limit Rows',
+                            'minRows' => 'Minimum number of rows',
                             'maxRows' => 'Maximum number of rows',
+                            'exactRows' => 'Exact number of rows',
                             'addButtonLabel' => 'Add Button Label',
                             'addButtonMarkup' => 'Add Button Markup',
                             'removeButtonLabel' => 'Remove Button Label',

@@ -130,10 +130,12 @@ class SubmissionQuery extends ElementQuery
 
         $isCpRequest = $request->getIsCpRequest();
         $isConsoleRequest = $request->getIsConsoleRequest();
-        $isSubmissionElementType = !$isConsoleRequest && Submission::class === $request->getBodyParam('elementType');
 
-        $path = '/'.ltrim($request->getPathInfo(), '/');
+        $pathInfo = !$isConsoleRequest ? ($request->getPathInfo() ?? '') : '';
+        $path = '/'.ltrim($pathInfo, '/');
+
         $isElementIndexAction = str_contains($path, 'actions/element-indexes/');
+        $isSubmissionElementType = (!$isConsoleRequest) && (Submission::class === $request->getBodyParam('elementType'));
         $isCpSubmissionIndexRequest = $isCpRequest && $isElementIndexAction && $isSubmissionElementType;
 
         // Requested CP table columns (element attributes, field handles, field column names, or field IDs)

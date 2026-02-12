@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.14.15 - 2026-02-12
+
+### Fixed
+- Fixed an issue where using `assets` as a field handle could cause errors. `assets` is now treated as a reserved word.
+- Fixed an issue where the **SendNotificationsJob** queue job could fail with a `Calling unknown method: craft\console\Request::getPathInfo()` error.
+- Fixed an issue where some newly added **Table** field settings were not included in the **Limited Users** feature.
+
 ## 5.14.14 - 2026-02-11
 
 ### Fixed

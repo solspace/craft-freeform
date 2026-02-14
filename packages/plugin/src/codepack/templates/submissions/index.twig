@@ -13,11 +13,14 @@
     {% if craft.app.request.segment(3) %}
 
         {% set form = freeform.form(formHandle) %}
-        {% set submissions = freeform.submissions({
-            form: formHandle,
+
+        {% paginate freeform.submissions({
+            form: form.handle,
             isSpam: spamMode|default(false),
+            limit: 50,
             orderBy: 'dateCreated DESC'
-        }).all %}
+        }) as pageInfo, submissions %}
+
         {% set submissionCount = freeform.submissions({formId: form.id}).count %}
         {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
 
@@ -108,7 +111,25 @@
                 </tbody>
             </table>
         </div>
-    
+
+        {% if pageInfo.totalPages > 1 %}
+            <nav style="padding: 20px;text-align: center;" role="navigation" aria-label="Pagination">
+                {% if pageInfo.prevUrl %}
+                    <a href="{{ pageInfo.prevUrl }}">← Previous</a>&nbsp;&nbsp;
+                {% endif %}
+                {% for page, url in pageInfo.getPrevUrls(2) %}
+                    <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
+                {% endfor %}
+                <strong>{{ pageInfo.currentPage }}</strong>&nbsp;&nbsp;
+                {% for page, url in pageInfo.getNextUrls(2) %}
+                    <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
+                {% endfor %}
+                {% if pageInfo.nextUrl %}
+                    <a href="{{ pageInfo.nextUrl }}">Next →</a>
+                {% endif %}
+            </nav>
+        {% endif %}
+
     {% else %}
 
         <div class="freeform-page-heading">

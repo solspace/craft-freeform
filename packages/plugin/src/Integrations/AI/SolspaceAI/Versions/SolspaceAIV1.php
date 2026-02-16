@@ -1,4 +1,4 @@
-sk<?php
+<?php
 
 namespace Solspace\Freeform\Integrations\AI\SolspaceAI\Versions;
 

@@ -1200,6 +1200,8 @@ return [
     "Enable this to have fields with options use the submission's option labels instead of values when exporting." => 'Schakel dit in om velden met opties de optielabels van de inzending te laten gebruiken in plaats van waarden bij het exporteren.',
     'Use Field Handles for Headings when Exporting' => 'Gebruik veldhandles voor koppen bij het exporteren',
     'Enable this to use field handles as headings instead of field labels when exporting submissions.' => 'Schakel dit in om veldhandvatten als kopteksten te gebruiken in plaats van veldlabels bij het exporteren van inzendingen.',
+    'Include Tracked URL Parameters when Exporting' => 'Getrackte URL-parameters opnemen bij exporteren',
+    'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.' => 'Schakel dit in om getrackte URL-parameterwaarden (bijv. UTM-campagnegegevens) op te nemen in de geëxporteerde inzendingsgegevens.',
     'Fields' => 'Velden',
     'Fill Form Values from the GET Query String' => 'Vul formulierwaarden in vanuit de GET-queryreeks',
     'Enable this to be able to fill form field values from a GET query string in URI.' => 'Schakel dit in om formulierveldwaarden te kunnen invullen vanuit een GET-queryreeks in URI.',

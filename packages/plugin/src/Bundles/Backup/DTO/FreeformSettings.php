@@ -15,6 +15,7 @@ class FreeformSettings
     public ?bool $removeNewlines = null;
     public ?bool $exportLabels = null;
     public ?bool $exportHandlesAsNames = null;
+    public ?bool $exportTrackedUrlParameters = null;
     public ?bool $footerScripts = null;
     public ?string $scriptInsertLocation = null;
     public ?string $scriptInsertType = null;

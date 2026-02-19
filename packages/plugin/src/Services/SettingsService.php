@@ -207,6 +207,11 @@ class SettingsService extends BaseService
         return BooleanHelper::normalize($this->getSettingsModel()->exportHandlesAsNames);
     }
 
+    public function isExportTrackedUrlParameters(): bool
+    {
+        return BooleanHelper::normalize($this->getSettingsModel()->exportTrackedUrlParameters);
+    }
+
     public function isSitesEnabled(): bool
     {
         return BooleanHelper::normalize($this->getSettingsModel()->sitesEnabled);

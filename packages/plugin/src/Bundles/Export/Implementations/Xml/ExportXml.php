@@ -84,8 +84,21 @@ class ExportXml extends AbstractSubmissionExport
                             }
                         }
                     } else {
-                        $xml->writeAttribute('label', $label);
-                        $xml->text(htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
+                        if (\is_array($value) || \is_object($value)) {
+                            foreach ($value as $key => $item) {
+                                $xml->startElement('item');
+
+                                if (!is_numeric($key)) {
+                                    $xml->writeAttribute('key', $key);
+                                }
+
+                                $xml->text(htmlspecialchars($item, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
+                                $xml->endElement();
+                            }
+                        } else {
+                            $xml->writeAttribute('label', $label);
+                            $xml->text(htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
+                        }
                     }
 
                     $xml->endElement(); // $handle

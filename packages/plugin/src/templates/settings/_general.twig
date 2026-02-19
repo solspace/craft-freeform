@@ -152,6 +152,16 @@
         disabled: readOnly,
     }) }}
 
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
+        label: "Use Tracked URL Parameters when Exporting"|t('freeform'),
+        instructions: "Enable this to add values from the URL Parameter Tracking integration to the exported data."|t('freeform'),
+        name: "settings[exportTrackedUrlParameters]",
+        value: settings.exportTrackedUrlParameters,
+        errors: settings.errors("exportTrackedUrlParameters"),
+        disabled: readOnly,
+    }) }}
+
     <hr>
 
     <h2>{{ "Fields"|t('freeform') }}</h2>

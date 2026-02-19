@@ -229,7 +229,8 @@ class ExportProfilesService extends Component
             $settings->isRemoveNewlines(),
             $settings->isExportLabels(),
             $timezone,
-            $settings->isExportHandlesAsNames()
+            $settings->isExportHandlesAsNames(),
+            $settings->isExportTrackedUrlParameters(),
         );
     }
 

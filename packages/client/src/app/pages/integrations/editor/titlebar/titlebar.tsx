@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { RemoveButton } from '@components/elements/remove-button/remove';
 import config from '@config/freeform/freeform.config';
 import { QKIntegrations } from '@ff-client/queries/integrations';
+import classes from '@ff-client/utils/classes';
 import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
@@ -11,12 +12,14 @@ import axios from 'axios';
 import DOMPurify from 'dompurify';
 
 import type { AuthState, Integration } from '../../integration.types';
+import { useTitlebarFavorites } from '../../titlebar-favorites';
 import { Readme } from '../readme/readme';
 
 import {
   FormMonitorTitlebarActions,
   isFormMonitor,
 } from './form-monitor/titlebar.actions';
+import IconFavorite from './icon.favorite.svg';
 import IconInfo from './icon.info.svg';
 import IconRefresh from './icon.refresh.svg';
 import IconShield from './icon.shield.svg';
@@ -28,6 +31,7 @@ import {
   AuthChecker,
   Dot,
   ErrorList,
+  FavoriteButton,
   Icon,
   Indicator,
   MessageBox,
@@ -49,6 +53,8 @@ export const Titlebar: FC<Props> = ({ integration }) => {
   const [state, setState] = useState<AuthState>('pending');
   const [errors, setErrors] = useState<string[]>([]);
   const [activeReadme, setActiveReadme] = useState(false);
+
+  const { toggleFavorite, hasFavorite } = useTitlebarFavorites();
   const { data, isFetching, refetch } = useAuthCheck(integration);
 
   useEffect(() => {
@@ -84,6 +90,8 @@ export const Titlebar: FC<Props> = ({ integration }) => {
 
   const canManage = config.permissions.integrations === 'manage';
   const canRemove = canManage && integration.id && integration.supported;
+
+  const isFavorite = hasFavorite(integration.type);
   const hasReadme = !!integration.type.readmeContent;
   const showAuthChecker =
     canManage &&
@@ -104,6 +112,15 @@ export const Titlebar: FC<Props> = ({ integration }) => {
         {integration.type.version && (
           <VersionString>{integration.type.version}</VersionString>
         )}
+
+        <FavoriteButton
+          type="button"
+          className={classes(isFavorite && 'active')}
+          onClick={() => toggleFavorite(integration.type)}
+          title={translate('Favorite')}
+        >
+          <IconFavorite />
+        </FavoriteButton>
 
         {showAuthChecker && (
           <AuthChecker>

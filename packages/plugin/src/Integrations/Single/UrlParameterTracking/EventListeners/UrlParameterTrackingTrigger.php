@@ -37,8 +37,9 @@ class UrlParameterTrackingTrigger extends FeatureBundle
         // Get clean $_GET parameters from the parameters defined here
         $trackedParameters = [];
         foreach ($parameters as $parameter) {
-            if (isset($_GET[$parameter])) {
-                $trackedParameters[$parameter] = htmlspecialchars($_GET[$parameter], \ENT_QUOTES, 'UTF-8');
+            $value = $_GET[$parameter] ?? $_POST[$parameter] ?? null;
+            if ($value !== null) {
+                $trackedParameters[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
             }
         }
 

@@ -30,6 +30,7 @@ return (new PhpCsFixer\Config())
         'ternary_to_null_coalescing' => true,
         'multiline_whitespace_before_semicolons' => ['strategy' => 'new_line_for_chained_calls'],
         'php_unit_internal_class' => false,
+        'yoda_style' => false,
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)

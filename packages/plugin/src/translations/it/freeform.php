@@ -657,6 +657,7 @@ return [
     'email marketing' => 'Email Marketing',
     'crm' => 'CRM',
     'payment gateways' => 'Gateway di pagamento',
+    'Payment Gateways' => 'Gateway di pagamento',
     'other' => 'Altro',
     'captchas' => 'Captcha',
     'Attribute Mapping' => 'Mappatura degli attributi',
@@ -1877,6 +1878,7 @@ return [
     'View payment' => 'Visualizza pagamento',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhook',
     'Webhooks' => 'Webhook',
     'The URL to send the POST request to.' => 'L’URL a cui inviare la richiesta POST.',
     'Message' => 'Messaggio',

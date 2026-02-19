@@ -5,16 +5,16 @@ import axios from 'axios';
 
 import type { TypeDefinition } from '../integration.types';
 
+export type Entry = {
+  type: TypeDefinition;
+  instances: Instance[];
+};
+
 type Instance = {
   id: string;
   uid: string;
   name: string;
   handle: string;
-};
-
-type Entry = {
-  type: TypeDefinition;
-  instances: Instance[];
 };
 
 type Category = {

@@ -656,7 +656,8 @@ return [
     'elements' => 'Elementen',
     'email marketing' => 'E-mailmarketing',
     'crm' => 'CRM',
-    'payment gateways' => 'Betalingsgateways',
+    'payment gateways' => 'Betaalgateways',
+    'Payment Gateways' => 'Betaalgateways',
     'other' => 'Andere',
     'captchas' => "Captcha's",
     'Attribute Mapping' => 'Kenmerktoewijzing',
@@ -1877,6 +1878,7 @@ return [
     'View payment' => 'Bekijk betaling',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhooks',
     'Webhooks' => 'Webhooks',
     'The URL to send the POST request to.' => 'De URL waarnaar het POST-verzoek moet worden verzonden.',
     'Message' => 'Bericht',

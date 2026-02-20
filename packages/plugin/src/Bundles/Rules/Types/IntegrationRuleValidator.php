@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Rules\Types;
 
 use Solspace\Freeform\Bundles\Rules\ConditionValidator;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
@@ -40,6 +41,9 @@ class IntegrationRuleValidator
             }
 
             $postedValue = $field->getValue();
+            if ($field instanceof CheckboxField) {
+                $postedValue = $field->isChecked() ? '1' : '';
+            }
 
             $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
             if ($valueMatch) {

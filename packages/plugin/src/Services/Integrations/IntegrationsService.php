@@ -29,6 +29,7 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
 use Solspace\Freeform\Jobs\FormJobInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
@@ -239,6 +240,30 @@ class IntegrationsService extends BaseService
         );
     }
 
+    public function getFirstEnabledSolspaceAIIntegration(): ?IntegrationModel
+    {
+        $models = $this->getAllIntegrations(Type::TYPE_AI);
+        foreach ($models as $model) {
+            if (!$model->enabled) {
+                continue;
+            }
+
+            try {
+                $integration = $model->getIntegrationObject();
+            } catch (IntegrationNotFoundException) {
+                continue;
+            }
+            if (!$integration instanceof BaseSolspaceAIIntegration) {
+                continue;
+            }
+            if ($model->connectionEstablished || '' !== $integration->getApiKey()) {
+                return $model;
+            }
+        }
+
+        return null;
+    }
+
     public function setConnectionEstablished(IntegrationInterface $integration): void
     {
         $record = IntegrationRecord::findOne(['id' => $integration->getId()]);
@@ -259,6 +284,26 @@ class IntegrationsService extends BaseService
         }
 
         $isNew = !$model->id;
+
+        if ($isNew && $integration instanceof BaseSolspaceAIIntegration) {
+            $existingAiIntegrations = $this->getAllIntegrations(Type::TYPE_AI);
+            foreach ($existingAiIntegrations as $existingModel) {
+                try {
+                    $existingIntegration = $existingModel->getIntegrationObject();
+                } catch (IntegrationNotFoundException) {
+                    continue;
+                }
+
+                if ($existingIntegration instanceof BaseSolspaceAIIntegration) {
+                    $model->addError(
+                        'integration',
+                        Freeform::t('Only one Solspace AI integration is allowed.')
+                    );
+
+                    return false;
+                }
+            }
+        }
 
         $beforeSaveEvent = new SaveEvent($model, $integration, $isNew);
         if ($triggerEvents) {

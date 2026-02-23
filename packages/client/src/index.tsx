@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 import './scripts';
 
+import { AiDashboard } from './app/pages/ai/dashboard';
 import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
@@ -91,6 +92,7 @@ root.render(
                               element={<IntegrationsEditor />}
                             />
                           </Route>
+                          <Route path="ai" element={<AiDashboard />} />
                           <Route path="import" element={<ImportExport />}>
                             <Route
                               path="forms"

@@ -67,6 +67,12 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
+        $solspaceAiEnabled = $canAccessIntegrations
+            && null !== $freeform->integrations->getFirstEnabledSolspaceAIIntegration();
+        if ($solspaceAiEnabled) {
+            $event->addSubnavItem('ai', Freeform::t('AI'), 'freeform/ai', 'submissions');
+        }
+
         $showImportExport = (
             $canAccessExportProfiles
             || $canAccessExportNotifications

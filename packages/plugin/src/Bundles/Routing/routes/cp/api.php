@@ -45,6 +45,11 @@ return [
     'freeform/api/forms/<formId:\d+>/rules/notifications' => 'freeform/api/forms/rules/get-notifications',
     'freeform/api/forms/<formId:\d+>/rules/integrations' => 'freeform/api/forms/rules/get-integrations',
 
+    // AI (Solspace AI usage)
+    'freeform/api/ai/solspace-ai-status' => 'freeform/api/ai/solspace-ai-status',
+    'freeform/api/ai/usage' => 'freeform/api/ai/usage',
+    'freeform/api/ai/spend-report' => 'freeform/api/ai/spend-report',
+
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',

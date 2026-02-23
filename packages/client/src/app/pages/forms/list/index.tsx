@@ -13,12 +13,14 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { useCreateFormModal } from './modals/hooks/use-create-form-modal';
 import { useCreateWithAiFormModal } from './modals/hooks/use-create-with-ai-form-modal';
+import { useAiIntegrations } from './modals/modal.form.create-with-ai.queries';
 import { FormGrid } from './views/grid/grid';
 import { FormList } from './views/list/list';
 import {
   AiButton,
   Button,
   ButtonGroup,
+  EnableAiLink,
   Header,
   Title,
   ViewButtons,
@@ -33,10 +35,12 @@ export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
   const openCreateFormModal = useCreateFormModal();
   const openCreateWithAiFormModal = useCreateWithAiFormModal();
+  const { data: aiIntegrations } = useAiIntegrations();
 
   const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
   const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
+  const showEnableAi = aiIntegrations && aiIntegrations.length === 0;
 
   queryClient.prefetchQuery({
     queryKey: QKFieldTypes.all,
@@ -80,14 +84,24 @@ export const ListProvider: React.FC = () => {
             >
               {translate('Add new Form')}
             </Button>
-            <AiButton
-              type="button"
-              className="btn add icon"
-              data-icon="sparkles"
-              onClick={openCreateWithAiFormModal}
-            >
-              {translate('Create with AI')}
-            </AiButton>
+            {showEnableAi ? (
+              <EnableAiLink
+                to="/integrations/ai/SolspaceAIV1"
+                className="btn add icon"
+                data-icon="sparkles"
+              >
+                {translate('Enable AI')}
+              </EnableAiLink>
+            ) : (
+              <AiButton
+                type="button"
+                className="btn add icon"
+                data-icon="sparkles"
+                onClick={openCreateWithAiFormModal}
+              >
+                {translate('Create with AI')}
+              </AiButton>
+            )}
           </ButtonGroup>
         )}
       </Header>

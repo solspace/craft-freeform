@@ -8,10 +8,12 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\Traits\DefaultTemperatureTrait;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
+use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 
 abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiIntegrationInterface
 {
     use DefaultTemperatureTrait;
+    use EnabledByDefaultTrait;
 
     public const LOG_CATEGORY = 'SolspaceAI';
 
@@ -19,28 +21,39 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Validators\Required]
-    #[Input\Text(
-        label: 'API Key',
-        instructions: 'Your SolspaceAI (LiteLLM proxy) master key or virtual key.',
-    )]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
-        label: 'API Base URL',
-        instructions: 'Base URL of your LiteLLM proxy (e.g. http://localhost:4000 or https://your-proxy.example.com). Do not include /v1.',
-        placeholder: 'http://localhost:4000',
-    )]
-    protected string $apiBaseUrl = 'http://localhost:4000';
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $apiBaseUrl = 'http://host.docker.internal:4000/v1';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
-        label: 'Model',
-        instructions: 'The model name configured in your proxy (e.g. smollm2).',
-        placeholder: 'smollm2',
-    )]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
     protected string $model = 'smollm2';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Contact Email',
+        instructions: 'Email address for your Solspace AI account. Used when enabling AI. Can be set via environment variable.',
+        placeholder: 'you@example.com',
+    )]
+    protected string $contactEmail = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Site URL',
+        instructions: 'The public URL of your site (e.g. https://yoursite.com). Used when enabling AI. Can be set via environment variable.',
+        placeholder: 'https://yoursite.com',
+    )]
+    protected string $siteUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(
@@ -56,9 +69,16 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
         return $this->getProcessedValue($this->apiKey);
     }
 
+    public function setApiKey(string $apiKey): self
+    {
+        $this->apiKey = $apiKey;
+
+        return $this;
+    }
+
     public function getApiBaseUrl(): string
     {
-        return rtrim($this->getProcessedValue($this->apiBaseUrl) ?: 'http://localhost:4000', '/');
+        return $this->getProcessedValue($this->apiBaseUrl);
     }
 
     public function getModel(): string
@@ -69,6 +89,16 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     public function getMaxTokens(): int
     {
         return $this->maxTokens;
+    }
+
+    public function getContactEmail(): string
+    {
+        return trim($this->getProcessedValue($this->contactEmail) ?? '');
+    }
+
+    public function getSiteUrl(): string
+    {
+        return trim($this->getProcessedValue($this->siteUrl) ?? '');
     }
 
     public function getTemperature(): ?float

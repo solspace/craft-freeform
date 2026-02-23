@@ -11,9 +11,12 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
+use yii\base\Event;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\TooManyRequestsHttpException;
 
 class FormsController extends BaseApiController
 {
@@ -130,6 +133,63 @@ class FormsController extends BaseApiController
         $this->getFormsService()->deleteById($id);
 
         return $this->asEmptyResponse(204);
+    }
+
+    public function actionGenerateFromAi(): Response
+    {
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        $userId = \Craft::$app->getUser()->getId();
+        $cacheKey = 'freeform-ai-form-gen-'.($userId ?? 'guest');
+        $cache = \Craft::$app->getCache();
+        $rateLimit = $cache->get($cacheKey);
+        $limit = 10;
+        $window = 3600; // 1 hour
+        if ($rateLimit) {
+            $rateLimit = (array) $rateLimit;
+            if (($rateLimit['ts'] ?? 0) + $window < time()) {
+                $rateLimit = ['count' => 0, 'ts' => time()];
+            }
+            $rateLimit['count'] = ($rateLimit['count'] ?? 0) + 1;
+            if ($rateLimit['count'] > $limit) {
+                throw new TooManyRequestsHttpException(Freeform::t('Rate limit exceeded. Try again later.'));
+            }
+            $cache->set($cacheKey, $rateLimit, $window);
+        } else {
+            $cache->set($cacheKey, ['count' => 1, 'ts' => time()], $window);
+        }
+
+        $body = json_decode($this->request->getRawBody(), true) ?: [];
+        $prompt = isset($body['prompt']) && \is_string($body['prompt']) ? trim($body['prompt']) : '';
+        $name = isset($body['name']) && \is_string($body['name']) ? trim($body['name']) : null;
+        $integrationUid = isset($body['integrationUid']) && \is_string($body['integrationUid']) ? trim($body['integrationUid']) : '';
+
+        if ('' === $prompt) {
+            throw new BadRequestHttpException(Freeform::t('Prompt is required.'));
+        }
+        if ('' === $integrationUid) {
+            throw new BadRequestHttpException(Freeform::t('AI integration is required.'));
+        }
+
+        try {
+            $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid);
+            $afterEvent = new PersistFormEvent((object) ['form' => (object) []], $form->getId());
+            $afterEvent->setForm($form);
+            Event::trigger(self::class, self::EVENT_AFTER_SAVE_FORM, $afterEvent);
+
+            $this->response->statusCode = 201;
+
+            return $this->asJson(Freeform::getInstance()->formGeneration->transformForm($form));
+        } catch (\InvalidArgumentException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        } catch (\RuntimeException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
     }
 
     protected function get(): array

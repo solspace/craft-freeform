@@ -21,8 +21,26 @@ export const Title = styled.h1`
   line-height: 34px;
 `;
 
-export const Button = styled.button`
+export const ButtonGroup = styled.div`
   grid-area: button;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.sm};
+`;
+
+export const Button = styled.button`
+  flex-shrink: 0;
+`;
+
+export const AiButton = styled(Button)`
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    color: #fff;
+  }
 `;
 
 export const ViewButtons = styled.section`

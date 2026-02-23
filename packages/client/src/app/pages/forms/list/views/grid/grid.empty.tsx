@@ -3,7 +3,9 @@ import config from '@config/freeform/freeform.config';
 import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
+import { AiButton } from '../../list-view.styles';
 import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
+import { useCreateWithAiFormModal } from '../../modals/hooks/use-create-with-ai-form-modal';
 
 import { Card } from './card/card';
 import { chartDataset } from './grid.empty.datasets';
@@ -61,6 +63,7 @@ const generateFormData = (
 
 export const GridEmpty: React.FC = () => {
   const openCreateFormModal = useCreateFormModal();
+  const openCreateWithAiFormModal = useCreateWithAiFormModal();
   const { canCreate } = config.metadata.freeform;
 
   return (
@@ -73,9 +76,23 @@ export const GridEmpty: React.FC = () => {
             )}
           </p>
 
-          <button className="btn submit add icon" onClick={openCreateFormModal}>
-            {translate('Create a new Form')}
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              className="btn submit add icon"
+              onClick={openCreateFormModal}
+            >
+              {translate('Create a new Form')}
+            </button>
+            <AiButton
+              type="button"
+              className="btn add icon"
+              data-icon="sparkles"
+              onClick={openCreateWithAiFormModal}
+            >
+              {translate('Create with AI')}
+            </AiButton>
+          </div>
         </>
       )}
 

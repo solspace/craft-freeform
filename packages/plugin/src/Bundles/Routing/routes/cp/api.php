@@ -27,6 +27,7 @@ return [
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',

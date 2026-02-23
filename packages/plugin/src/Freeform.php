@@ -80,6 +80,7 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\SubmitService;
 use Solspace\Freeform\Services\Form\TranslationsService;
 use Solspace\Freeform\Services\Form\TypesService;
+use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\FormGroupsService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
@@ -150,6 +151,7 @@ use yii\web\View;
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
  * @property AiService                   $ai
+ * @property FormGenerationService       $formGeneration
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
  * @property TypesService                $formTypes
@@ -455,6 +457,7 @@ class Freeform extends Plugin
                 'diagnostics' => DiagnosticsService::class,
                 'digest' => DigestService::class,
                 'ai' => AiService::class,
+                'formGeneration' => FormGenerationService::class,
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,

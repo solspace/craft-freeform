@@ -12,9 +12,17 @@ import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useCreateFormModal } from './modals/hooks/use-create-form-modal';
+import { useCreateWithAiFormModal } from './modals/hooks/use-create-with-ai-form-modal';
 import { FormGrid } from './views/grid/grid';
 import { FormList } from './views/list/list';
-import { Button, Header, Title, ViewButtons } from './list-view.styles';
+import {
+  AiButton,
+  Button,
+  ButtonGroup,
+  Header,
+  Title,
+  ViewButtons,
+} from './list-view.styles';
 
 enum View {
   List,
@@ -24,6 +32,7 @@ enum View {
 export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
   const openCreateFormModal = useCreateFormModal();
+  const openCreateWithAiFormModal = useCreateWithAiFormModal();
 
   const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
   const isCraft5 = config.metadata.craft.is5;
@@ -64,9 +73,22 @@ export const ListProvider: React.FC = () => {
         </ViewButtons>
 
         {canCreate && (
-          <Button className="btn submit add icon" onClick={openCreateFormModal}>
-            {translate('Add new Form')}
-          </Button>
+          <ButtonGroup>
+            <Button
+              className="btn submit add icon"
+              onClick={openCreateFormModal}
+            >
+              {translate('Add new Form')}
+            </Button>
+            <AiButton
+              type="button"
+              className="btn add icon"
+              data-icon="sparkles"
+              onClick={openCreateWithAiFormModal}
+            >
+              {translate('Create with AI')}
+            </AiButton>
+          </ButtonGroup>
         )}
       </Header>
 

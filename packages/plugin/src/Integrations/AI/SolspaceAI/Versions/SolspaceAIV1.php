@@ -20,18 +20,20 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration
 {
     public function getApiRootUrl(): string
     {
-        return $this->getApiBaseUrl().'/v1';
+        return $this->getApiBaseUrl();
     }
 
     public function checkConnection(Client $client): bool
     {
         try {
-            $response = $client->get($this->getEndpoint('/models'), [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getApiKey(),
-                ],
-            ]);
-            $data = json_decode((string) $response->getBody(), true);
+            $response = $client->get($this->getEndpoint('/models'));
+            $statusCode = $response->getStatusCode();
+            $body = (string) $response->getBody();
+            $data = json_decode($body, true);
+
+            if (200 !== $statusCode) {
+                return false;
+            }
 
             return isset($data['data']) && \is_array($data['data']);
         } catch (\Exception $e) {
@@ -57,7 +59,6 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration
         array $options = []
     ): string {
         $payload = [
-            'model' => $options['model'] ?? $this->getModel(),
             'messages' => [
                 [
                     'role' => 'system',

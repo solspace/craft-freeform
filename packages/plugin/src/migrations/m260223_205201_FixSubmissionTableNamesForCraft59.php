@@ -9,15 +9,6 @@ class m260223_205201_FixSubmissionTableNamesForCraft59 extends Migration
 {
     public function safeUp(): bool
     {
-        $craftVersion = \Craft::$app->getVersion();
-
-        $runForCraft4 = version_compare($craftVersion, '4.17.0', '>=') && version_compare($craftVersion, '5.0.0', '<');
-        $runForCraft5 = version_compare($craftVersion, '5.9.0', '>=');
-
-        if (!($runForCraft4 || $runForCraft5)) {
-            return true;
-        }
-
         $manager = new ContentFixManager();
 
         $manager->onNotFound = static function ($table) {

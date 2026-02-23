@@ -12,13 +12,28 @@ use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
-use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
-use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
+use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
+use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
+use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
+use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
+use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
+use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -33,10 +48,13 @@ class FormGenerationService
     private const AI_MAX_TOKENS = 3000;
     private const AI_TIMEOUT_SECONDS = 30;
 
-    /** Number of fields per row in the layout (creates a grid-style form). */
-    private const FIELDS_PER_ROW = 2;
+    /** Field types that take the full row (one per row). Others share 2 per row. */
+    private const FULL_WIDTH_TYPES = [
+        'Textarea', 'RichText', 'Html', 'FileUpload', 'FileDragAndDrop', 'Image',
+        'Signature', 'Cards', 'OpinionScale', 'Calculation',
+    ];
 
-    /** @var array<string, string> short type => typeClass (v1 safe subset) */
+    /** @var array<string, string> short type => typeClass (all Freeform field types) */
     private const ALLOWED_FIELD_TYPES = [
         'Text' => TextField::class,
         'Email' => EmailField::class,
@@ -47,8 +65,23 @@ class FormGenerationService
         'Checkboxes' => CheckboxesField::class,
         'Radios' => RadiosField::class,
         'Hidden' => HiddenField::class,
+        'Html' => HtmlField::class,
+        'FileUpload' => FileUploadField::class,
+        'MultipleSelect' => MultipleSelectField::class,
         'Phone' => PhoneField::class,
         'Website' => WebsiteField::class,
+        'Datetime' => DatetimeField::class,
+        'Rating' => RatingField::class,
+        'OpinionScale' => OpinionScaleField::class,
+        'Password' => PasswordField::class,
+        'Confirmation' => ConfirmationField::class,
+        'RichText' => RichTextField::class,
+        'Signature' => SignatureField::class,
+        'Regex' => RegexField::class,
+        'Image' => ImageField::class,
+        'FileDragAndDrop' => FileDragAndDropField::class,
+        'Cards' => CardsField::class,
+        'Calculation' => CalculationField::class,
     ];
 
     public function __construct(
@@ -130,13 +163,22 @@ class FormGenerationService
             Output format:
             {"name": "Form Name", "fields": [ ... ]}
 
-            Each field must have: "type", "label", "handle". You may include optional properties so the form renders correctly (not everything as a plain text box):
+            Each field must have: "type", "label", "handle". Optional properties by type:
 
-            - Text, Email, Phone, Website, Hidden: optional "placeholder", "instructions", "required" (boolean), "defaultValue"
-            - Textarea: optional "placeholder", "instructions", "required", "rows" (number, e.g. 3 or 4)
-            - Number: optional "instructions", "required", "defaultValue", "min", "max"
-            - Dropdown, Radios, Checkboxes: optional "instructions", "required", "defaultValue", and MUST include "options" (array of option labels, e.g. ["Option A", "Option B"] or [{"label": "Display A", "value": "valueA"}, ...])
-            - Checkbox: optional "instructions", "defaultValue" (e.g. true/false for checked by default)
+            - Text, Email, Phone, Website, Hidden, Regex: "placeholder", "instructions", "required", "defaultValue"
+            - Textarea: "placeholder", "instructions", "required", "rows" (number)
+            - Number: "instructions", "required", "defaultValue", "min", "max"
+            - Dropdown, Radios, Checkboxes, MultipleSelect, Cards: "instructions", "required", "defaultValue", and MUST include "options" (array e.g. ["A", "B"] or [{"label": "A", "value": "a"}, ...])
+            - Checkbox: "instructions", "defaultValue" (true/false for checked by default)
+            - Datetime: "instructions", "required", "defaultValue" (e.g. "now" or "today")
+            - Rating: "instructions", "required", "maxValue" (number 1-10, default 5)
+            - OpinionScale: "instructions", "required", "options" (array of scale values/labels)
+            - Password: "placeholder", "instructions", "required"
+            - Confirmation: "instructions", "required" (use when confirming email/password; label often "Confirm Email" etc.)
+            - RichText, Html: "instructions" (Html is static content/heading, no user input)
+            - Signature: "instructions", "required"
+            - FileUpload, Image, FileDragAndDrop: "instructions", "required"
+            - Calculation: "instructions", "defaultValue" (formula or display value)
 
             Sample output (manifest):
             {$manifest}
@@ -144,7 +186,7 @@ class FormGenerationService
             Rules:
             - "name": string, optional form title.
             - "handle" must be camelCase or snake_case, unique in the form (e.g. fullName, emailAddress, messageBody).
-            - Use the correct "type" for each field (Email for emails, Textarea for long text, Dropdown/Radios for choices, etc.) and include "options" for any choice field.
+            - Use the correct "type" for each field. Include "options" for Dropdown, Radios, Checkboxes, MultipleSelect, Cards, OpinionScale.
             - Return only the JSON object, no code block or other text.
             PROMPT;
     }
@@ -171,8 +213,11 @@ class FormGenerationService
             'fields' => [
                 ['type' => 'Text', 'label' => 'Full Name', 'handle' => 'fullName', 'required' => true, 'placeholder' => 'Your name'],
                 ['type' => 'Email', 'label' => 'Email Address', 'handle' => 'emailAddress', 'required' => true],
+                ['type' => 'Phone', 'label' => 'Phone', 'handle' => 'phone', 'placeholder' => '(555) 000-0000'],
                 ['type' => 'Textarea', 'label' => 'Message', 'handle' => 'message', 'required' => true, 'rows' => 4],
                 ['type' => 'Dropdown', 'label' => 'Subject', 'handle' => 'subject', 'required' => true, 'options' => ['General', 'Support', 'Sales']],
+                ['type' => 'Rating', 'label' => 'Satisfaction', 'handle' => 'satisfaction', 'maxValue' => 5],
+                ['type' => 'Checkbox', 'label' => 'Subscribe to newsletter', 'handle' => 'subscribe', 'defaultValue' => false],
             ],
         ];
 
@@ -237,6 +282,9 @@ class FormGenerationService
             }
             if (\array_key_exists('max', $field) && is_numeric($field['max'])) {
                 $item['max'] = (int) $field['max'];
+            }
+            if (\array_key_exists('maxValue', $field) && is_numeric($field['maxValue'])) {
+                $item['maxValue'] = (int) $field['maxValue'];
             }
 
             $normalized[] = $item;
@@ -320,6 +368,45 @@ class FormGenerationService
     }
 
     /**
+     * Assigns each field to a row index. Full-width types (Textarea, FileUpload, etc.) get their own row;
+     * compact types (Text, Email, Dropdown, etc.) share 2 per row.
+     *
+     * @param list<array{type: string, ...}> $fieldsData
+     * @return list<int> row index for each field
+     */
+    private function computeRowIndices(array $fieldsData): array
+    {
+        $indices = [];
+        $currentRow = 0;
+        $slotsUsed = 0;
+        $slotsPerRow = 2;
+
+        foreach ($fieldsData as $item) {
+            $type = $item['type'] ?? 'Text';
+            $fullWidth = \in_array($type, self::FULL_WIDTH_TYPES, true);
+
+            if ($fullWidth) {
+                if ($slotsUsed > 0) {
+                    ++$currentRow;
+                    $slotsUsed = 0;
+                }
+                $indices[] = $currentRow;
+                ++$currentRow;
+                $slotsUsed = 0;
+            } else {
+                if ($slotsUsed >= $slotsPerRow) {
+                    ++$currentRow;
+                    $slotsUsed = 0;
+                }
+                $indices[] = $currentRow;
+                ++$slotsUsed;
+            }
+        }
+
+        return $indices;
+    }
+
+    /**
      * Builds a persist payload that matches Freeform's form + layout structure so the
      * generated form looks and behaves like one created in the CP (settings, page buttons, rows).
      *
@@ -367,9 +454,11 @@ class FormGenerationService
             'buttons' => $pageButtons,
         ]];
 
+        $rowIndices = $this->computeRowIndices($fieldsData);
+
         $rowUids = [];
         $rows = [];
-        $numRows = (int) ceil(\count($fieldsData) / self::FIELDS_PER_ROW) ?: 1;
+        $numRows = (\count($rowIndices) > 0) ? (max($rowIndices) + 1) : 1;
         for ($i = 0; $i < $numRows; ++$i) {
             $rowUid = StringHelper::UUID();
             $rowUids[] = $rowUid;
@@ -382,7 +471,7 @@ class FormGenerationService
 
         $fields = [];
         foreach ($fieldsData as $order => $item) {
-            $rowIndex = (int) floor($order / self::FIELDS_PER_ROW);
+            $rowIndex = $rowIndices[$order] ?? 0;
             $rowUid = $rowUids[$rowIndex] ?? $rowUids[0];
 
             $typeClass = self::ALLOWED_FIELD_TYPES[$item['type']] ?? TextField::class;
@@ -421,6 +510,7 @@ class FormGenerationService
             DropdownField::class,
             RadiosField::class,
             CheckboxesField::class,
+            MultipleSelectField::class,
         ];
 
         if (isset($fromAi['options']) && \in_array($typeClass, $optionTypes, true)) {
@@ -430,6 +520,22 @@ class FormGenerationService
                 'options' => $this->normalizeOptions($fromAi['options']),
             ];
             unset($fromAi['options']);
+        }
+
+        if (OpinionScaleField::class === $typeClass && isset($fromAi['options']) && \is_array($fromAi['options'])) {
+            $scales = [];
+            foreach ($fromAi['options'] as $i => $opt) {
+                $value = \is_string($opt) ? $opt : (string) ($opt['value'] ?? $opt['label'] ?? $i);
+                $label = \is_array($opt) && isset($opt['label']) ? (string) $opt['label'] : $value;
+                $scales[] = ['value' => $value, 'label' => $label];
+            }
+            $fromAi['scales'] = $scales;
+            unset($fromAi['options']);
+        }
+
+        if (RatingField::class === $typeClass && isset($fromAi['maxValue']) && is_numeric($fromAi['maxValue'])) {
+            $max = (int) $fromAi['maxValue'];
+            $fromAi['maxValue'] = max(1, min(10, $max));
         }
 
         if (NumberField::class === $typeClass && (\array_key_exists('min', $fromAi) || \array_key_exists('max', $fromAi))) {

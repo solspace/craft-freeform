@@ -17,9 +17,6 @@ use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
-use Solspace\Freeform\Fields\Implementations\RadiosField;
-use Solspace\Freeform\Fields\Implementations\TextareaField;
-use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -34,6 +31,9 @@ use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
+use Solspace\Freeform\Fields\Implementations\RadiosField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -372,6 +372,7 @@ class FormGenerationService
      * compact types (Text, Email, Dropdown, etc.) share 2 per row.
      *
      * @param list<array{type: string, ...}> $fieldsData
+     *
      * @return list<int> row index for each field
      */
     private function computeRowIndices(array $fieldsData): array

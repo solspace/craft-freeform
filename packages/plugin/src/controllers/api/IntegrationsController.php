@@ -26,11 +26,11 @@ class IntegrationsController extends BaseApiController
 {
     private const NAVIGATION_ORDER = [
         'single' => 0,
-        'email-marketing' => 10,
-        'crm' => 20,
-        'elements' => 30,
-        'captchas' => 40,
-        'spam-blocking' => 50,
+        'spam-blocking' => 10,
+        'captchas' => 20,
+        'email-marketing' => 30,
+        'crm' => 40,
+        'elements' => 50,
         'payment-gateways' => 60,
         'webhooks' => 70,
         'ai' => 80,

@@ -152,6 +152,20 @@
         disabled: readOnly,
     }) }}
 
+    {% if craft.freeform.pro %}
+
+        {{ forms.booleanMenuField({
+            includeEnvVars: true,
+            label: "Include Tracked URL Parameters when Exporting"|t('freeform'),
+            instructions: "Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data."|t('freeform'),
+            name: "settings[exportTrackedUrlParameters]",
+            value: settings.exportTrackedUrlParameters,
+            errors: settings.errors("exportTrackedUrlParameters"),
+            disabled: readOnly,
+        }) }}
+
+    {% endif %}
+
     <hr>
 
     <h2>{{ "Fields"|t('freeform') }}</h2>

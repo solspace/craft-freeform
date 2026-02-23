@@ -657,6 +657,7 @@ return [
     'email marketing' => 'Email Marketing',
     'crm' => 'CRM',
     'payment gateways' => 'Gateway di pagamento',
+    'Payment Gateways' => 'Gateway di pagamento',
     'other' => 'Altro',
     'captchas' => 'Captcha',
     'Attribute Mapping' => 'Mappatura degli attributi',
@@ -1199,6 +1200,8 @@ return [
     "Enable this to have fields with options use the submission's option labels instead of values when exporting." => 'Abilita questa opzione per fare in modo che i campi con opzioni utilizzino le etichette delle opzioni invece dei valori durante l’esportazione.',
     'Use Field Handles for Headings when Exporting' => 'Usa i Handle dei Campi come Intestazioni durante l’Esportazione',
     'Enable this to use field handles as headings instead of field labels when exporting submissions.' => 'Abilita questa opzione per utilizzare gli handle dei campi come intestazioni anziché le etichette dei campi durante l’esportazione delle sottomissioni.',
+    'Include Tracked URL Parameters when Exporting' => 'Includi i parametri URL tracciati durante l’esportazione',
+    'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.' => 'Abilita questa opzione per includere i valori dei parametri URL tracciati (ad es. i dati delle campagne UTM) nei dati di invio esportati.',
     'Fields' => 'Campi',
     'Fill Form Values from the GET Query String' => 'Riempi i Valori dei Moduli dalla Stringa di Query GET',
     'Enable this to be able to fill form field values from a GET query string in URI.' => 'Abilita questa opzione per poter riempire i valori dei campi del modulo da una stringa di query GET nell’URI.',
@@ -1877,6 +1880,7 @@ return [
     'View payment' => 'Visualizza pagamento',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhook',
     'Webhooks' => 'Webhook',
     'The URL to send the POST request to.' => 'L’URL a cui inviare la richiesta POST.',
     'Message' => 'Messaggio',

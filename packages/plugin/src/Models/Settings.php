@@ -93,6 +93,7 @@ class Settings extends Model
     public string $removeNewlines = 'false';
     public string $exportLabels = 'false';
     public string $exportHandlesAsNames = 'false';
+    public string $exportTrackedUrlParameters = 'false';
 
     /** @deprecated use $scriptInsertLocation instead */
     public bool $footerScripts = false;

@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.14.16 - 2026-02-19
+
+### Added
+- Added the ability to mark integrations as **Favorites** in the **Integrations** area so they remain pinned to the top of the list.
+- Added a setting to allow exporting URL tracking parameter data collected by the **URL Parameter Tracking** integration in submissions.
+
+### Changed
+- **URL Parameter Tracking**: Now tracks POST URL parameters.
+- Updated the **Demo Templates** to include pagination on the Submissions index.
+
+### Fixed
+- Fixed an issue where attachments from **File Upload** fields were not included in email notifications when using the Queue.
+- Fixed an issue where the **Tailwind 4** sample templates did not work correctly with **Confirm** fields.
+
 ## 5.14.15 - 2026-02-12
 
 ### Fixed

@@ -38,7 +38,23 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        loader: '@svgr/webpack',
+        use: [
+          {
+            loader: '@svgr/webpack',
+            options: {
+              svgoConfig: {
+                plugins: [
+                  {
+                    name: 'prefixIds',
+                    params: {
+                      prefix: false,
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,

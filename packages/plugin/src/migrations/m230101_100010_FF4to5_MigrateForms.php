@@ -186,7 +186,12 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 continue;
             }
 
-            $formHandle = StringHelper::toSnakeCase($formHandle);
+            // DO NOT use StringHelper::toSnakeCase()
+            // Its behavior changed in Craft 5.9 (Stringy to Laravel Str::snake) and no longer replaces hyphens with underscores.
+            $formHandle = preg_replace('/([a-z\d])([A-Z])/', '$1_$2', $formHandle); // camelCase
+            $formHandle = preg_replace('/[^a-z0-9]+/i', '_', $formHandle);          // non-alphanumeric
+            $formHandle = strtolower($formHandle);
+            $formHandle = trim($formHandle, '_');
             $formHandle = StringHelper::truncate($formHandle, $maxHandleSize, '');
             $formHandle = trim($formHandle, '-_');
 

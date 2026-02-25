@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.14.17 - 2026-02-25
+
+### Fixed
+- Fixed an issue where, in rare circumstances, some submission table names were generated incorrectly.
+- Fixed an issue where integration conditional rules did not work with single **Checkbox** fields.
+
 ## 5.14.16 - 2026-02-19
 
 ### Added

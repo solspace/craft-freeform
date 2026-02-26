@@ -18,6 +18,7 @@ class TemplateLocator
             return [];
         }
 
+        $existingFilePaths = [];
         $files = [];
 
         $fileIterator = $this->finder
@@ -29,7 +30,12 @@ class TemplateLocator
         ;
 
         foreach ($fileIterator as $file) {
+            if (\in_array($file->getRealPath(), $existingFilePaths)) {
+                continue;
+            }
+
             $files[] = new FormTemplate($file->getRealPath(), $templateDirectory);
+            $existingFilePaths[] = $file->getRealPath();
         }
 
         /** @var SplFileInfo[] $fileIterator */
@@ -43,7 +49,12 @@ class TemplateLocator
         ;
 
         foreach ($fileIterator as $file) {
+            if (\in_array($file->getRealPath(), $existingFilePaths)) {
+                continue;
+            }
+
             $files[] = new FormTemplate($file->getRealPath(), $templateDirectory);
+            $existingFilePaths[] = $file->getRealPath();
         }
 
         return $files;

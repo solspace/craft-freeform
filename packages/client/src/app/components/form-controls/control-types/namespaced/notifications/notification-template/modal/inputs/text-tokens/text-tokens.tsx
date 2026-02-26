@@ -24,6 +24,11 @@ export const TextTokens: FC<InputControl> = (props) => {
 
   const { value, onChange } = props;
 
+  const sanitizeValue = (value: string): string =>
+    DOMPurify.sanitize(value, {
+      ADD_ATTR: ['contenteditable', 'data-freeform-token'],
+    });
+
   const backend: TokenBackend = useMemo(
     () => ({
       getRange: () =>
@@ -65,7 +70,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         const span = document.createElement('span');
         span.contentEditable = 'false';
         span.dataset.freeformToken = item.token;
-        span.innerHTML = DOMPurify.sanitize(item.name);
+        span.innerHTML = sanitizeValue(item.name);
 
         tokenRange.deleteContents();
         tokenRange.insertNode(span);
@@ -78,7 +83,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         selection.addRange(newRange);
 
         // Update your state if needed
-        onChange(DOMPurify.sanitize(wrapperRef.current?.innerHTML ?? ''));
+        onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ''));
       },
       store,
       handlers: {
@@ -120,13 +125,13 @@ export const TextTokens: FC<InputControl> = (props) => {
       const span = document.createElement('span');
       span.contentEditable = 'false';
       span.dataset.freeformToken = item.token;
-      span.innerHTML = DOMPurify.sanitize(item.name);
+      span.innerHTML = sanitizeValue(item.name);
 
       const range = lastRangeRef.current;
       // if no range is selected, we insert at the end of the text
       if (!range) {
         wrapperRef.current?.appendChild(span);
-        onChange(DOMPurify.sanitize(wrapperRef.current.innerHTML));
+        onChange(sanitizeValue(wrapperRef.current.innerHTML));
         return;
       }
 
@@ -158,7 +163,7 @@ export const TextTokens: FC<InputControl> = (props) => {
       selection.addRange(newRange);
 
       // Update your state if needed
-      onChange(DOMPurify.sanitize(wrapperRef.current?.innerHTML ?? ''));
+      onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ''));
     },
     store,
     handlers: {
@@ -204,7 +209,7 @@ export const TextTokens: FC<InputControl> = (props) => {
 
   useEffect(() => {
     if (wrapperRef.current && wrapperRef.current.innerHTML !== value) {
-      wrapperRef.current.innerHTML = DOMPurify.sanitize(value);
+      wrapperRef.current.innerHTML = sanitizeValue(value);
     }
   }, [value]);
 
@@ -218,7 +223,7 @@ export const TextTokens: FC<InputControl> = (props) => {
       }
 
       if (wrapperRef.current) {
-        onChange(DOMPurify.sanitize(wrapperRef.current.innerHTML));
+        onChange(sanitizeValue(wrapperRef.current.innerHTML));
       }
     },
     [backend, onChange]

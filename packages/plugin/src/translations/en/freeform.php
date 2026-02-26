@@ -657,6 +657,7 @@ return [
     'email marketing' => 'Email Marketing',
     'crm' => 'CRM',
     'payment gateways' => 'Payment Gateways',
+    'Payment Gateways' => 'Payment Gateways',
     'other' => 'Other',
     'captchas' => 'Captchas',
     'Attribute Mapping' => 'Attribute Mapping',
@@ -1199,6 +1200,8 @@ return [
     "Enable this to have fields with options use the submission's option labels instead of values when exporting." => "Enable this to have fields with options use the submission's option labels instead of values when exporting.",
     'Use Field Handles for Headings when Exporting' => 'Use Field Handles for Headings when Exporting',
     'Enable this to use field handles as headings instead of field labels when exporting submissions.' => 'Enable this to use field handles as headings instead of field labels when exporting submissions.',
+    'Include Tracked URL Parameters when Exporting' => 'Include Tracked URL Parameters when Exporting',
+    'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.' => 'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.',
     'Fields' => 'Fields',
     'Fill Form Values from the GET Query String' => 'Fill Form Values from the GET Query String',
     'Enable this to be able to fill form field values from a GET query string in URI.' => 'Enable this to be able to fill form field values from a GET query string in URI.',
@@ -1877,6 +1880,7 @@ return [
     'View payment' => 'View payment',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhooks',
     'Webhooks' => 'Webhooks',
     'The URL to send the POST request to.' => 'The URL to send the POST request to.',
     'Message' => 'Message',

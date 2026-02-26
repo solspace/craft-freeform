@@ -656,7 +656,8 @@ return [
     'elements' => 'Elemente',
     'email marketing' => 'E-Mail-Marketing',
     'crm' => 'CRM',
-    'payment gateways' => 'Zahlungsgateways',
+    'payment gateways' => 'Zahlungs-Gateways',
+    'Payment Gateways' => 'Zahlungs-Gateways',
     'other' => 'Andere',
     'captchas' => 'CAPTCHAs',
     'Attribute Mapping' => 'Attributzuordnung',
@@ -1199,6 +1200,8 @@ return [
     "Enable this to have fields with options use the submission's option labels instead of values when exporting." => 'Aktivieren Sie diese Option, um Felder mit Optionen zu verwenden, bei denen die Beschriftungen der Einreichungsoptionen anstelle von Werten beim Export verwendet werden.',
     'Use Field Handles for Headings when Exporting' => 'Feld-Handles für Überschriften beim Export verwenden',
     'Enable this to use field handles as headings instead of field labels when exporting submissions.' => 'Aktivieren Sie diese Option, um Feld-Handles anstelle von Feldbeschriftungen als Überschriften beim Export von Einreichungen zu verwenden.',
+    'Include Tracked URL Parameters when Exporting' => 'Verfolgte URL-Parameter beim Export einbeziehen',
+    'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.' => 'Aktivieren Sie dies, um verfolgte URL-Parameterwerte (z. B. UTM-Kampagnendaten) in die exportierten Übermittlungsdaten einzubeziehen.',
     'Fields' => 'Felder',
     'Fill Form Values from the GET Query String' => 'Formularwerte aus der GET-Abfragezeichenfolge ausfüllen',
     'Enable this to be able to fill form field values from a GET query string in URI.' => 'Aktivieren Sie diese Option, um Formularfeldwerte aus einer GET-Abfragezeichenfolge in der URI ausfüllen zu können.',
@@ -1877,6 +1880,7 @@ return [
     'View payment' => 'Zahlung anzeigen',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhooks',
     'Webhooks' => 'Webhooks',
     'The URL to send the POST request to.' => 'Die URL, an die die POST-Anfrage gesendet werden soll.',
     'Message' => 'Nachricht',

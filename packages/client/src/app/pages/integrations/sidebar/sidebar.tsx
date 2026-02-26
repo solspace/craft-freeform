@@ -1,29 +1,25 @@
+import type { FC } from 'react';
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
 import { Search } from '@components/search/search';
-import config from '@config/freeform/freeform.config';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
+import translate from '@ff-client/utils/translations';
 
+import { useTitlebarFavorites } from '../titlebar-favorites';
+
+import { EntryComponent } from './sidebar.entry';
 import { useIntegrationNavigation } from './sidebar.queries';
 import {
   Category,
   CategoryList,
   CategoryTitle,
-  Icon,
-  Integration,
   IntegrationList,
-  IntegrationTitle,
   SearchWrapper,
   SidebarNavigation,
-  StatusIndicator,
-  Version,
 } from './sidebar.styles';
 
-export const Sidebar: React.FC = () => {
-  const edition = config.editions.edition;
-  const { pathname: currentUrl } = useLocation();
+export const Sidebar: FC = () => {
   const { data, isFetching } = useIntegrationNavigation();
+
+  const { hasFavorite } = useTitlebarFavorites();
 
   const [query, setQuery] = useState('');
 
@@ -44,6 +40,17 @@ export const Sidebar: React.FC = () => {
     }))
     .filter((category) => category.entries.length > 0);
 
+  const favorites = filteredData.flatMap((category) =>
+    category.entries.filter((entry) => hasFavorite(entry.type))
+  );
+
+  const categorizedData = filteredData
+    .map((category) => ({
+      ...category,
+      entries: category.entries.filter((entry) => !hasFavorite(entry.type)),
+    }))
+    .filter((category) => category.entries.length > 0);
+
   return (
     <SidebarNavigation>
       <SearchWrapper>
@@ -51,66 +58,24 @@ export const Sidebar: React.FC = () => {
       </SearchWrapper>
 
       <CategoryList>
-        {filteredData.map((category) => (
+        {favorites.length > 0 && (
+          <Category key="favorites">
+            <CategoryTitle>{translate('Favorites')}</CategoryTitle>
+            <IntegrationList>
+              {favorites.map((entry) => (
+                <EntryComponent key={entry.type.shortName} entry={entry} />
+              ))}
+            </IntegrationList>
+          </Category>
+        )}
+
+        {categorizedData.map((category) => (
           <Category key={category.handle}>
             <CategoryTitle>{category.title}</CategoryTitle>
             <IntegrationList>
-              {category.entries.map((entry) => {
-                const key = entry.type.class;
-                const type = entry.type;
-                const title = entry.type.name;
-
-                const isStatusActive = entry.instances.length > 0;
-                const isUnsupportedEdition =
-                  entry.type.editions.length > 0 &&
-                  !entry.type.editions.includes(edition);
-
-                const instances = entry.instances.length;
-                const indicatorText = instances > 1 ? instances : '';
-
-                let url = `${type.type}/${type.shortName}`;
-                const isActive = currentUrl.includes(url);
-                if (instances > 0) {
-                  url += `/${entry.instances[0].id}`;
-                }
-
-                return (
-                  <Integration key={key}>
-                    <NavLink
-                      to={url}
-                      className={classes(
-                        isActive && 'active',
-                        isUnsupportedEdition && 'unsupported'
-                      )}
-                    >
-                      <StatusIndicator
-                        className={classes(
-                          isStatusActive && !isUnsupportedEdition && 'active',
-                          isUnsupportedEdition && 'unsupported'
-                        )}
-                      >
-                        {indicatorText}
-                      </StatusIndicator>
-
-                      {entry.type.iconSvg && (
-                        <Icon
-                          dangerouslySetInnerHTML={{
-                            __html: DOMPurify.sanitize(entry.type.iconSvg),
-                          }}
-                        />
-                      )}
-                      {!entry.type.iconSvg && (
-                        <Icon>
-                          <i className="fa-solid fa-cog" />
-                        </Icon>
-                      )}
-
-                      <IntegrationTitle>{title}</IntegrationTitle>
-                      {type.version && <Version>{type.version}</Version>}
-                    </NavLink>
-                  </Integration>
-                );
-              })}
+              {category.entries.map((entry) => (
+                <EntryComponent key={entry.type.shortName} entry={entry} />
+              ))}
             </IntegrationList>
           </Category>
         ))}

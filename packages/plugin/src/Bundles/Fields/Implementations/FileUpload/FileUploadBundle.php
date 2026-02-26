@@ -70,7 +70,9 @@ class FileUploadBundle extends FeatureBundle
             return;
         }
 
-        $event->setValue($field->getValue());
+        if (null === $event->getValue()) {
+            $event->setValue($field->getValue());
+        }
     }
 
     public function handleDnDPost(TransformValueEvent $event): void

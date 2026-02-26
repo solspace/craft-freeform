@@ -90,7 +90,7 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
 
             $output = $field->getInputHtml();
 
-            return preg_replace('/<(\w+)[^\/>]*\/?>/', "<$1{$attributes}>", $output);
+            return preg_replace('/<(\w+)[^>]/', "<$1{$attributes}/", $output);
         } catch (FreeformException $exception) {
             return '<input'.$this->getAttributes()->getInput().' />';
         }

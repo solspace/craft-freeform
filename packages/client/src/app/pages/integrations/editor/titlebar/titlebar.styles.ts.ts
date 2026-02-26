@@ -22,6 +22,37 @@ export const VersionString = styled.small`
   color: ${colors.gray300};
 `;
 
+export const FavoriteButton = styled.button`
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  svg {
+    width: 20px;
+    height: 20px;
+
+    .star-filler {
+      fill: transparent;
+    }
+  }
+
+  &:hover {
+    svg {
+      fill: ${colors.yellow600};
+    }
+  }
+
+  &.active {
+    svg .star-filler {
+      fill: ${colors.yellow500};
+    }
+  }
+`;
+
 export const Icon = styled.div`
   svg {
     width: 30px;

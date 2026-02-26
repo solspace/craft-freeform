@@ -8,7 +8,8 @@ class ExportSettings
         private bool $removeNewlines = false,
         private bool $exportLabels = false,
         private ?string $timezone = null,
-        private bool $handlesAsNames = false
+        private bool $handlesAsNames = false,
+        private bool $exportTrackedUrlParameters = false,
     ) {}
 
     public function isRemoveNewlines(): bool
@@ -55,6 +56,18 @@ class ExportSettings
     public function setHandlesAsNames(bool $handlesAsNames): self
     {
         $this->handlesAsNames = $handlesAsNames;
+
+        return $this;
+    }
+
+    public function isExportTrackedUrlParameters(): bool
+    {
+        return $this->exportTrackedUrlParameters;
+    }
+
+    public function setExportTrackedUrlParameters(bool $exportTrackedUrlParameters): self
+    {
+        $this->exportTrackedUrlParameters = $exportTrackedUrlParameters;
 
         return $this;
     }

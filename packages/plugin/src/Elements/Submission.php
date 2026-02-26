@@ -292,7 +292,12 @@ class Submission extends Element
 
         $maxHandleSize = 36 - $prefixLength;
 
-        $handle = CraftStringHelper::toSnakeCase($handle);
+        // DO NOT use StringHelper::toSnakeCase()
+        // Its behavior changed in Craft 5.9 (Stringy to Laravel Str::snake) and no longer replaces hyphens with underscores.
+        $handle = preg_replace('/([a-z\d])([A-Z])/', '$1_$2', $handle); // camelCase
+        $handle = preg_replace('/[^a-z0-9]+/i', '_', $handle);          // non-alphanumeric
+        $handle = strtolower($handle);
+        $handle = trim($handle, '_');
         $handle = CraftStringHelper::truncate($handle, $maxHandleSize, '');
         $handle = trim($handle, '-_');
 

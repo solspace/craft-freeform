@@ -657,6 +657,7 @@ return [
     'email marketing' => 'Marketing par e-mail',
     'crm' => 'CRM',
     'payment gateways' => 'Passerelles de paiement',
+    'Payment Gateways' => 'Passerelles de paiement',
     'other' => 'Autre',
     'captchas' => 'Captchas',
     'Attribute Mapping' => 'Mappage des attributs',
@@ -1199,6 +1200,8 @@ return [
     "Enable this to have fields with options use the submission's option labels instead of values when exporting." => "Activez cette option pour que les champs avec options utilisent les étiquettes d'option de la contribution au lieu des valeurs lors de l'exportation.",
     'Use Field Handles for Headings when Exporting' => 'Utiliser les identifiants de champ comme en-têtes lors de l’exportation',
     'Enable this to use field handles as headings instead of field labels when exporting submissions.' => 'Activez cette option pour utiliser les identifiants de champ comme en-têtes au lieu des étiquettes de champ lors de l’exportation des soumissions.',
+    'Include Tracked URL Parameters when Exporting' => 'Inclure les paramètres d’URL suivis lors de l’exportation',
+    'Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data.' => 'Activez cette option pour inclure les valeurs des paramètres d’URL suivis (p. ex. les données de campagne UTM) dans les données de soumission exportées.',
     'Fields' => 'Champs',
     'Fill Form Values from the GET Query String' => 'Remplir les valeurs du formulaire à partir de la chaîne de requête GET',
     'Enable this to be able to fill form field values from a GET query string in URI.' => 'Activez cette option pour pouvoir remplir les valeurs des champs du formulaire à partir d’une chaîne de requête GET dans l’URI.',
@@ -1877,6 +1880,7 @@ return [
     'View payment' => 'Voir le paiement',
 
     // Integrations // Webhooks
+    'webhooks' => 'Webhooks',
     'Webhooks' => 'Webhooks',
     'The URL to send the POST request to.' => 'L’URL à laquelle envoyer la requête POST.',
     'Message' => 'Message',

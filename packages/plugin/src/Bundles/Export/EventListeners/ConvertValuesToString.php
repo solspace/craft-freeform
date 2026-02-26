@@ -39,6 +39,10 @@ class ConvertValuesToString extends FeatureBundle
             return;
         }
 
+        if ('trackingParameters' === $event->getDescriptor()->getId()) {
+            $value = array_map(static fn ($value, $key) => "{$key}: {$value}", $value, array_keys($value));
+        }
+
         if (\is_array($value) || \is_object($value)) {
             $value = StringHelper::implodeRecursively(', ', (array) $value);
         }

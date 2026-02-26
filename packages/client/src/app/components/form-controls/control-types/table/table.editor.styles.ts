@@ -1,4 +1,4 @@
-import { colors } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 import {
@@ -8,10 +8,20 @@ import {
 
 export const TableEditorWrapper = styled(PreviewEditor)`
   gap: 0;
+  padding: 0;
 `;
 
 export const TableContainer = styled(PreviewEditorContainer)`
+  border-radius: ${borderRadius.lg};
   background-color: white;
+`;
+
+export const ColumnEditor = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.lg};
+
+  padding: ${spacings.lg};
 `;
 
 export const TabularOptions = styled.table`

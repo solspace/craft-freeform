@@ -1,4 +1,6 @@
-import { colors } from '@ff-client/styles/variables';
+import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
+import { scrollBar } from '@ff-client/styles/mixins';
+import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const OptionContainer = styled.div`
@@ -66,5 +68,26 @@ export const CheckboxContainer = styled.div`
 
   label {
     display: block;
+  }
+`;
+
+export const TableColumnTabs = styled(TabsWrapper)`
+  width: 100%;
+  overflow: hidden;
+  overflow-x: auto;
+  align-self: flex-start;
+
+  padding: ${spacings.md} ${spacings.md} 0;
+  box-shadow: ${shadows.bottom};
+
+  ${scrollBar};
+
+  a {
+    cursor: pointer;
+
+    display: flex;
+    gap: 5px;
+
+    user-select: none;
   }
 `;

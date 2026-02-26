@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.14.18 - 2026-02-26
+
+### Fixed
+- Fixed an issue where tokens in the **Subject** of form-based notification templates were being converted to plain text.
+- Fixed an issue where some fields were not fully populated with sample data in form-based notification templates.
+
+## 5.14.17 - 2026-02-25
+
+### Fixed
+- Fixed an issue where, in rare circumstances, some submission table names were generated incorrectly.
+- Fixed an issue where integration conditional rules did not work with single **Checkbox** fields.
+
 ## 5.14.16 - 2026-02-19
 
 ### Added

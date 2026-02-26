@@ -17,6 +17,11 @@ class HtmlTemplateParser
                 $token = $item['token'] ?? null;
                 $name = $item['name'] ?? null;
 
+                if (!$token || !$name) {
+                    continue;
+                }
+
+                // Replace {{ token }} with a non-editable <span> token
                 $parsedTemplate = preg_replace_callback(
                     '/{{\s*([^}]+)\s*}}/',
                     static function ($matches) use ($name, $token) {
@@ -40,9 +45,9 @@ class HtmlTemplateParser
             return $parsedTemplate;
         }
 
-        // Replace Field tokens
+        // Replace Field tokens: {{ fieldUids['...'] }}
         return preg_replace_callback(
-            '/{{\s*fieldUids\[\'([^]\']+)\']\s*}}/',
+            '/{{\s*fieldUids\[\'([^]\']+)\'\]\s*}}/',
             static function ($matches) use ($form) {
                 $fieldUid = trim($matches[1]);
                 $fieldLabel = $form->get($fieldUid)?->getLabel() ?? $fieldUid;
@@ -59,8 +64,12 @@ class HtmlTemplateParser
 
     public function toTwig(string $template): string
     {
+        // Convert any <span ... data-freeform-token="...">...</span> back into {{ token }}
+        // - contenteditable="false" may or may not be present
+        // - attribute order may vary
+        // - inner HTML may include newlines
         return preg_replace_callback(
-            '/<span contenteditable="false" data-freeform-token="([^\"]+)">.*?<\/span>/',
+            '/<span\b[^>]*\bdata-freeform-token="([^"]+)"[^>]*>.*?<\/span>/s',
             static fn ($matches) => \sprintf('{{ %s }}', $matches[1]),
             $template
         );

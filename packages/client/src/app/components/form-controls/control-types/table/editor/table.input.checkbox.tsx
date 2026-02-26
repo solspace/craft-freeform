@@ -14,8 +14,8 @@ export const TableCheckboxEditor: React.FC<TableEditorProps> = ({
   const isChecked = column.checked ?? false;
 
   return (
-    <FlexColumn gap={spacings.lg}>
-      <FlexRow alignItems="center">
+    <FlexColumn $gap={spacings.lg}>
+      <FlexRow $alignItems="center">
         <Checkbox
           id={id}
           checked={isChecked}

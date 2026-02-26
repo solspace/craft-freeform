@@ -11,7 +11,7 @@ export const TableTextEditor: React.FC<TableEditorProps> = ({
   onUpdate,
 }) => {
   return (
-    <FlexColumn gap={spacings.lg}>
+    <FlexColumn $gap={spacings.lg}>
       <Control label={translate('Default value')} handle="value">
         {column.type === 'textarea' ? (
           <textarea

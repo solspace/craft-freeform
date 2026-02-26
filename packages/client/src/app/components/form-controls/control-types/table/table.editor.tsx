@@ -10,6 +10,7 @@ import {
   TableEditorWrapper,
 } from '@components/form-controls/control-types/table/table.editor.styles';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
+import IconCross from '@components/form-controls/icons/cross.svg';
 import { FlexRow } from '@components/layout/blocks/flex';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
@@ -26,11 +27,15 @@ import IconPlus from './editor/icon.plus.svg';
 import IconRadio from './editor/icon.radios.svg';
 import IconText from './editor/icon.text.svg';
 import IconTextarea from './editor/icon.textarea.svg';
-import { AddColumnButton, TableColumnTabs } from './editor/table.editor.styles';
+import {
+  AddColumnButton,
+  RemoveColumnButton,
+  TableColumnTabs,
+} from './editor/table.editor.styles';
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
 import { TableDropdownEditor } from './editor/table.input.dropdown';
 import { TableTextEditor } from './editor/table.input.text';
-import { updateColumn } from './table.operations';
+import { deleteColumn, updateColumn } from './table.operations';
 
 type Props = {
   columnTypes: PropertyOption[];
@@ -116,6 +121,24 @@ export const TableEditor: React.FC<Props> = ({
     setTabIndex(newIndex);
   };
 
+  const removeTab = (index: number): void => {
+    if (columnValues.length <= 1) {
+      return;
+    }
+
+    const nextColumns = deleteColumn(index, columnValues);
+    let nextTabIndex = tabIndex;
+
+    if (tabIndex > index) {
+      nextTabIndex = tabIndex - 1;
+    } else if (tabIndex === index) {
+      nextTabIndex = Math.max(0, index - 1);
+    }
+
+    updateValue(nextColumns);
+    setTabIndex(nextTabIndex);
+  };
+
   return (
     <TableEditorWrapper>
       <TableContainer>
@@ -132,7 +155,22 @@ export const TableEditor: React.FC<Props> = ({
                   onClick={() => setTabIndex(index)}
                 >
                   <Icon>{typeIcons[column.type as ColumnType]}</Icon>
+
                   {translate(columnValues[index].label)}
+
+                  {index === tabIndex && columnValues.length > 1 && (
+                    <RemoveColumnButton
+                      type="button"
+                      title={translate('Remove column')}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        removeTab(index);
+                      }}
+                    >
+                      <IconCross />
+                    </RemoveColumnButton>
+                  )}
                 </a>
               ))}
           </TableColumnTabs>

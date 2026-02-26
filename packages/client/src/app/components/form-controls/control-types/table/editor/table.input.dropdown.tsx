@@ -204,29 +204,27 @@ export const TableDropdownEditor: React.FC<TableEditorProps> = ({
                           }
                         },
                       })}
-                      onChange={(event) =>
-                        setLocalOptions((previousOptions) => {
-                          const nextOptions = updateOption(
-                            index,
-                            event.target.value,
-                            previousOptions
-                          );
-                          const currentColumn = columnRef.current;
+                      onChange={(event) => {
+                        const nextOptions = updateOption(
+                          index,
+                          event.target.value,
+                          localOptions
+                        );
+                        const currentColumn = columnRef.current;
 
-                          if (currentColumn.value === option) {
-                            const nextColumn = {
-                              ...currentColumn,
-                              value: event.target.value,
-                              options: nextOptions,
-                            };
+                        if (currentColumn.value === option) {
+                          const nextColumn = {
+                            ...currentColumn,
+                            value: event.target.value,
+                            options: nextOptions,
+                          };
 
-                            columnRef.current = nextColumn;
-                            onUpdateRef.current(nextColumn);
-                          }
+                          columnRef.current = nextColumn;
+                          onUpdateRef.current(nextColumn);
+                        }
 
-                          return nextOptions;
-                        })
-                      }
+                        setLocalOptions(nextOptions);
+                      }}
                     />
                   </Cell>
 

@@ -108,12 +108,42 @@ export const AddColumnButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   flex: 0 0 auto;
+
   width: 34px;
   height: 34px;
   margin-bottom: 8px;
+
   border: 1px solid rgba(51, 64, 77, 0.1);
   border-radius: ${borderRadius.md};
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+`;
+
+export const RemoveColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: 2px;
+
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.sm};
+  background: rgba(51, 64, 77, 0.08);
+  color: ${colors.gray500};
+
+  &:hover {
+    color: ${colors.gray700};
+    background: rgba(51, 64, 77, 0.2);
+  }
 
   svg {
     width: 14px;

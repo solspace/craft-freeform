@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { Icon } from '@components/elements/custom-dropdown/dropdown.styles';
 import type { UpdateValue } from '@components/form-controls';
 import { Control } from '@components/form-controls/control';
 import {
   ColumnEditor,
+  ColumnTabsWrapper,
   TableContainer,
   TableEditorWrapper,
 } from '@components/form-controls/control-types/table/table.editor.styles';
@@ -21,10 +22,11 @@ import translate from '@ff-client/utils/translations';
 
 import IconCheckbox from './editor/icon.checkbox.svg';
 import IconDropdown from './editor/icon.dropdown.svg';
+import IconPlus from './editor/icon.plus.svg';
 import IconRadio from './editor/icon.radios.svg';
 import IconText from './editor/icon.text.svg';
 import IconTextarea from './editor/icon.textarea.svg';
-import { TableColumnTabs } from './editor/table.editor.styles';
+import { AddColumnButton, TableColumnTabs } from './editor/table.editor.styles';
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
 import { TableDropdownEditor } from './editor/table.input.dropdown';
 import { TableTextEditor } from './editor/table.input.text';
@@ -56,6 +58,9 @@ export const TableEditor: React.FC<Props> = ({
 }) => {
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { getTranslation, willTranslate } = useTranslations(context);
+  const labelInputRef = useRef<HTMLInputElement>(null);
+  const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
+  const shouldScrollContentRef = useRef(false);
 
   const isTranslating = willTranslate(property.handle);
   const translation = getTranslation<ColumnDescription[]>(
@@ -81,22 +86,66 @@ export const TableEditor: React.FC<Props> = ({
     }, [] as PropertyOption[]);
   }, [columnTypes]);
 
+  useEffect(() => {
+    labelInputRef.current?.focus();
+  }, [tabIndex, columnValues.length]);
+
+  useEffect(() => {
+    tabRefs.current[tabIndex]?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'nearest',
+    });
+
+    if (shouldScrollContentRef.current) {
+      shouldScrollContentRef.current = false;
+      labelInputRef.current?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+      });
+    }
+  }, [tabIndex, columnValues.length]);
+
+  const addTab = (): void => {
+    const newIndex = columnValues.length;
+    updateValue([
+      ...columnValues,
+      { label: 'New column', type: 'text', value: '' },
+    ]);
+    shouldScrollContentRef.current = true;
+    setTabIndex(newIndex);
+  };
+
   return (
     <TableEditorWrapper>
       <TableContainer>
-        <TableColumnTabs>
-          {columnValues.length > 0 &&
-            columnValues.map((column, index) => (
-              <a
-                key={index}
-                className={classes(index === tabIndex && 'active')}
-                onClick={() => setTabIndex(index)}
-              >
-                <Icon>{typeIcons[column.type as ColumnType]}</Icon>
-                {translate(columnValues[index].label)}
-              </a>
-            ))}
-        </TableColumnTabs>
+        <ColumnTabsWrapper>
+          <TableColumnTabs>
+            {columnValues.length > 0 &&
+              columnValues.map((column, index) => (
+                <a
+                  key={index}
+                  className={classes(index === tabIndex && 'active')}
+                  ref={(element) => {
+                    tabRefs.current[index] = element;
+                  }}
+                  onClick={() => setTabIndex(index)}
+                >
+                  <Icon>{typeIcons[column.type as ColumnType]}</Icon>
+                  {translate(columnValues[index].label)}
+                </a>
+              ))}
+          </TableColumnTabs>
+
+          <AddColumnButton
+            type="button"
+            className="btn"
+            title={translate('Add column')}
+            onClick={addTab}
+          >
+            <IconPlus />
+          </AddColumnButton>
+        </ColumnTabsWrapper>
 
         <ColumnEditor>
           <FlexRow>
@@ -104,6 +153,7 @@ export const TableEditor: React.FC<Props> = ({
               <input
                 type="text"
                 className="text fullwidth"
+                ref={labelInputRef}
                 value={column.label}
                 onChange={(event) =>
                   updateValue(

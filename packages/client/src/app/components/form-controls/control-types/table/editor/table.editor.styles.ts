@@ -1,6 +1,11 @@
 import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
 import { scrollBar } from '@ff-client/styles/mixins';
-import { colors, shadows, spacings } from '@ff-client/styles/variables';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const OptionContainer = styled.div`
@@ -72,12 +77,11 @@ export const CheckboxContainer = styled.div`
 `;
 
 export const TableColumnTabs = styled(TabsWrapper)`
-  width: 100%;
-  overflow: hidden;
+  flex: 1;
   overflow-x: auto;
   align-self: flex-start;
 
-  padding: ${spacings.md} ${spacings.md} 0;
+  padding: ${spacings.md} 1px 0;
   box-shadow: ${shadows.bottom};
 
   ${scrollBar};
@@ -89,5 +93,31 @@ export const TableColumnTabs = styled(TabsWrapper)`
     gap: 5px;
 
     user-select: none;
+  }
+`;
+
+export const TableColumnTabsWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: ${spacings.sm};
+  width: 100%;
+  padding-inline: ${spacings.md};
+`;
+
+export const AddColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px;
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.md};
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
   }
 `;

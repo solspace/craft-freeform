@@ -1,10 +1,17 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 import {
   PreviewEditor,
   PreviewEditorContainer,
 } from '../../preview/previewable-component.styles';
+
+import { TableColumnTabsWrapper } from './editor/table.editor.styles';
 
 export const TableEditorWrapper = styled(PreviewEditor)`
   gap: 0;
@@ -14,6 +21,13 @@ export const TableEditorWrapper = styled(PreviewEditor)`
 export const TableContainer = styled(PreviewEditorContainer)`
   border-radius: ${borderRadius.lg};
   background-color: white;
+`;
+
+export const ColumnTabsWrapper = styled(TableColumnTabsWrapper)`
+  padding: 0 ${spacings.lg};
+
+  background: ${colors.gray050};
+  box-shadow: ${shadows.bottom};
 `;
 
 export const ColumnEditor = styled.div`

@@ -33,11 +33,11 @@ class CallbackController extends BaseStripeController
 
         $request = $this->request;
 
-        $token = $request->get('token');
+        $token = $request->get('stripe_token');
         $paymentIntentId = $request->get('payment_intent');
 
         if (!$token) {
-            throw new NotFoundHttpException('Token not found');
+            throw new NotFoundHttpException('Stripe Token not found');
         }
 
         if (!$paymentIntentId) {

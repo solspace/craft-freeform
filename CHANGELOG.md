@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.14.19 - 2026-03-02
+
+### Fixed
+- **Stripe webhooks** now return a `200` status code when the event is unrelated to Freeform.
+- Fixed the **Stripe** integration when using wallet payments (e.g. _Apple Pay_).
+- Fixed an **Invalid Token** error when submitting a form with a **Stripe** payment field in **Craft 5.9.x** and **4.17.x**.
+
 ## 5.14.18 - 2026-02-26
 
 ### Fixed

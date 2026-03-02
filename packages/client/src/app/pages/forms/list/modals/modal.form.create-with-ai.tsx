@@ -91,9 +91,20 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
     {
       callback: (event: KeyboardEvent): void => {
         if (event.key !== 'Enter') return;
-        // In "Describe your form" textarea, Enter should add a new line, not submit
-        const active = document.activeElement;
+        const active = document.activeElement as HTMLElement | null;
+
+        if (active?.id === 'prompt') {
+          event.preventDefault();
+          const nameInput = document.getElementById(
+            'name'
+          ) as HTMLInputElement as HTMLInputElement | null;
+          nameInput?.focus({ preventScroll: true });
+          return;
+        }
+
+        // For any other textarea, keep Enter for new lines.
         if (active?.tagName === 'TEXTAREA') return;
+
         handleSubmit();
       },
     },

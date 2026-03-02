@@ -125,7 +125,7 @@ class FormGenerationService
         $formHandle = $this->generateHandle($formName);
         $fieldsData = $parsed['fields'] ?? [];
 
-        $payload = $this->buildPersistPayload($formName, $formHandle, $fieldsData);
+        $payload = $this->buildPersistPayload($formName, $formHandle, $fieldsData, $parsed['pages'] ?? null);
         $event = new PersistFormEvent($payload);
 
         if (empty(trim($formName))) {
@@ -160,10 +160,19 @@ class FormGenerationService
 
             Allowed field types (use exactly these for "type"): {$typeList}
 
-            Output format:
-            {"name": "Form Name", "fields": [ ... ]}
+            You can structure the form in one of two ways:
+            1) Single-page form:
+               {"name": "Form Name", "fields": [ ... ]}
+            2) Multi-page form:
+               {
+                 "name": "Form Name",
+                 "pages": [
+                   { "label": "Page 1 label", "fields": [ ... ] },
+                   { "label": "Page 2 label", "fields": [ ... ] }
+                 ]
+               }
 
-            Each field must have: "type", "label", "handle". Optional properties by type:
+            For each field you output, the field object must have: "type", "label", "handle". Optional properties by type:
 
             - Text, Email, Phone, Website, Hidden, Regex: "placeholder", "instructions", "required", "defaultValue"
             - Textarea: "placeholder", "instructions", "required", "rows" (number)
@@ -175,7 +184,7 @@ class FormGenerationService
             - OpinionScale: "instructions", "required", "options" (array of scale values/labels)
             - Password: "placeholder", "instructions", "required"
             - Confirmation: "instructions", "required" (use when confirming email/password; label often "Confirm Email" etc.)
-            - RichText, Html: "instructions" (Html is static content/heading, no user input)
+            - RichText, Html: "content" (HTML string), and optionally "instructions". Use these for static sections, headings, or helper text. Keep content short and well-structured HTML (paragraphs, lists, small headings).
             - Signature: "instructions", "required"
             - FileUpload, Image, FileDragAndDrop: "instructions", "required"
             - Calculation: "instructions", "defaultValue" (formula or display value)
@@ -215,6 +224,7 @@ class FormGenerationService
                 ['type' => 'Email', 'label' => 'Email Address', 'handle' => 'emailAddress', 'required' => true],
                 ['type' => 'Phone', 'label' => 'Phone', 'handle' => 'phone', 'placeholder' => '(555) 000-0000'],
                 ['type' => 'Textarea', 'label' => 'Message', 'handle' => 'message', 'required' => true, 'rows' => 4],
+                ['type' => 'RichText', 'label' => 'Introduction', 'handle' => 'introduction', 'content' => '<p>Please fill out this form and we&apos;ll get back to you as soon as possible.</p>'],
                 ['type' => 'Dropdown', 'label' => 'Subject', 'handle' => 'subject', 'required' => true, 'options' => ['General', 'Support', 'Sales']],
                 ['type' => 'Rating', 'label' => 'Satisfaction', 'handle' => 'satisfaction', 'maxValue' => 5],
                 ['type' => 'Checkbox', 'label' => 'Subscribe to newsletter', 'handle' => 'subscribe', 'defaultValue' => false],
@@ -225,7 +235,22 @@ class FormGenerationService
     }
 
     /**
-     * @return array{name?: string, fields: list<array{type: string, label: string, handle: string, required?: bool, placeholder?: string, instructions?: string, rows?: int, options?: array, defaultValue?: mixed}>}
+     * @return array{
+     *   name?: string,
+     *   fields: list<array{
+     *     type: string,
+     *     label: string,
+     *     handle: string,
+     *     pageIndex?: int,
+     *     required?: bool,
+     *     placeholder?: string,
+     *     instructions?: string,
+     *     rows?: int,
+     *     options?: array,
+     *     defaultValue?: mixed
+     *   }>,
+     *   pages?: list<array{label: string}>
+     * }
      */
     private function parseAiResponse(string $response): array
     {
@@ -244,53 +269,106 @@ class FormGenerationService
             throw new \RuntimeException(Freeform::t('AI did not return valid JSON. Please try again or rephrase your request.'));
         }
         $name = isset($decoded['name']) && \is_string($decoded['name']) ? trim($decoded['name']) : null;
-        $fields = isset($decoded['fields']) && \is_array($decoded['fields']) ? $decoded['fields'] : [];
+
+        $pagesMeta = [];
         $normalized = [];
-        foreach ($fields as $i => $field) {
-            if (!\is_array($field)) {
-                continue;
-            }
-            $type = isset($field['type']) && \is_string($field['type']) ? trim($field['type']) : 'Text';
-            if (!isset(self::ALLOWED_FIELD_TYPES[$type])) {
-                $type = 'Text';
-            }
-            $label = isset($field['label']) && \is_string($field['label']) ? trim($field['label']) : ('Field '.($i + 1));
-            $handle = isset($field['handle']) && \is_string($field['handle']) ? trim($field['handle']) : $this->handleFromLabel($label, $i);
 
-            $item = ['type' => $type, 'label' => $label, 'handle' => $handle];
+        // Prefer explicit pages if provided.
+        if (isset($decoded['pages']) && \is_array($decoded['pages']) && \count($decoded['pages']) > 0) {
+            foreach ($decoded['pages'] as $pageIndex => $page) {
+                if (!\is_array($page)) {
+                    continue;
+                }
 
-            if (isset($field['required'])) {
-                $item['required'] = (bool) $field['required'];
+                $pageLabel = isset($page['label']) && \is_string($page['label'])
+                    ? trim($page['label'])
+                    : Freeform::t('Page {n}', ['n' => $pageIndex + 1]);
+
+                $pagesMeta[] = ['label' => $pageLabel];
+
+                $fields = isset($page['fields']) && \is_array($page['fields']) ? $page['fields'] : [];
+                foreach ($fields as $i => $field) {
+                    if (!\is_array($field)) {
+                        continue;
+                    }
+
+                    $normalized[] = $this->normalizeFieldFromAi($field, $i, $pageIndex);
+                }
             }
-            if (isset($field['placeholder']) && \is_string($field['placeholder'])) {
-                $item['placeholder'] = trim($field['placeholder']);
-            }
-            if (isset($field['instructions']) && \is_string($field['instructions'])) {
-                $item['instructions'] = trim($field['instructions']);
-            }
-            if (isset($field['rows']) && is_numeric($field['rows'])) {
-                $item['rows'] = (int) $field['rows'];
-            }
-            if (isset($field['options']) && \is_array($field['options'])) {
-                $item['options'] = $field['options'];
-            }
-            if (\array_key_exists('defaultValue', $field)) {
-                $item['defaultValue'] = $field['defaultValue'];
-            }
-            if (\array_key_exists('min', $field) && is_numeric($field['min'])) {
-                $item['min'] = (int) $field['min'];
-            }
-            if (\array_key_exists('max', $field) && is_numeric($field['max'])) {
-                $item['max'] = (int) $field['max'];
-            }
-            if (\array_key_exists('maxValue', $field) && is_numeric($field['maxValue'])) {
-                $item['maxValue'] = (int) $field['maxValue'];
+        } else {
+            // Fallback: single-page form with flat fields array.
+            $fields = isset($decoded['fields']) && \is_array($decoded['fields']) ? $decoded['fields'] : [];
+            foreach ($fields as $i => $field) {
+                if (!\is_array($field)) {
+                    continue;
+                }
+
+                $normalized[] = $this->normalizeFieldFromAi($field, $i, 0);
             }
 
-            $normalized[] = $item;
+            if (\count($normalized) > 0) {
+                $pagesMeta[] = ['label' => Freeform::t('Page 1')];
+            }
         }
 
-        return ['name' => $name, 'fields' => $normalized];
+        return ['name' => $name, 'fields' => $normalized, 'pages' => $pagesMeta];
+    }
+
+    /**
+     * Normalize a single AI-provided field into our internal structure.
+     *
+     * @param array<string, mixed> $field
+     *
+     * @return array<string, mixed>
+     */
+    private function normalizeFieldFromAi(array $field, int $index, int $pageIndex): array
+    {
+        $type = isset($field['type']) && \is_string($field['type']) ? trim($field['type']) : 'Text';
+        if (!isset(self::ALLOWED_FIELD_TYPES[$type])) {
+            $type = 'Text';
+        }
+        $label = isset($field['label']) && \is_string($field['label']) ? trim($field['label']) : ('Field '.($index + 1));
+        $handle = isset($field['handle']) && \is_string($field['handle']) ? trim($field['handle']) : $this->handleFromLabel($label, $index);
+
+        $item = [
+            'type' => $type,
+            'label' => $label,
+            'handle' => $handle,
+            'pageIndex' => max(0, $pageIndex),
+        ];
+
+        if (isset($field['required'])) {
+            $item['required'] = (bool) $field['required'];
+        }
+        if (isset($field['placeholder']) && \is_string($field['placeholder'])) {
+            $item['placeholder'] = trim($field['placeholder']);
+        }
+        if (isset($field['instructions']) && \is_string($field['instructions'])) {
+            $item['instructions'] = trim($field['instructions']);
+        }
+        if (isset($field['rows']) && is_numeric($field['rows'])) {
+            $item['rows'] = (int) $field['rows'];
+        }
+        if (isset($field['options']) && \is_array($field['options'])) {
+            $item['options'] = $field['options'];
+        }
+        if (\array_key_exists('defaultValue', $field)) {
+            $item['defaultValue'] = $field['defaultValue'];
+        }
+        if (\array_key_exists('min', $field) && is_numeric($field['min'])) {
+            $item['min'] = (int) $field['min'];
+        }
+        if (\array_key_exists('max', $field) && is_numeric($field['max'])) {
+            $item['max'] = (int) $field['max'];
+        }
+        if (\array_key_exists('maxValue', $field) && is_numeric($field['maxValue'])) {
+            $item['maxValue'] = (int) $field['maxValue'];
+        }
+        if (isset($field['content']) && \is_string($field['content'])) {
+            $item['content'] = trim($field['content']);
+        }
+
+        return $item;
     }
 
     /**
@@ -409,16 +487,28 @@ class FormGenerationService
 
     /**
      * Builds a persist payload that matches Freeform's form + layout structure so the
-     * generated form looks and behaves like one created in the CP (settings, page buttons, rows).
+     * generated form looks and behaves like one created in the CP (settings, page buttons, rows, pages).
      *
-     * @param list<array{type: string, label: string, handle: string, required?: bool, placeholder?: string, instructions?: string, rows?: int, options?: array, defaultValue?: mixed, min?: int, max?: int}> $fieldsData
+     * @param list<array{
+     *   type: string,
+     *   label: string,
+     *   handle: string,
+     *   pageIndex?: int,
+     *   required?: bool,
+     *   placeholder?: string,
+     *   instructions?: string,
+     *   rows?: int,
+     *   options?: array,
+     *   defaultValue?: mixed,
+     *   min?: int,
+     *   max?: int
+     * }> $fieldsData
+     * @param null|list<array{label: string}> $pagesMeta
      */
-    private function buildPersistPayload(string $formName, string $formHandle, array $fieldsData): \stdClass
+    private function buildPersistPayload(string $formName, string $formHandle, array $fieldsData, ?array $pagesMeta = null): \stdClass
     {
         $formUid = StringHelper::UUID();
         $layoutUid = StringHelper::UUID();
-        $pageUid = StringHelper::UUID();
-
         $form = (object) [
             'uid' => $formUid,
             'type' => Regular::class,
@@ -435,7 +525,16 @@ class FormGenerationService
             ],
         ];
 
-        $layouts = [(object) ['uid' => $layoutUid]];
+        // Build page metadata (single or multi-page), plus one layout per page.
+        $pagesMeta = $pagesMeta && \count($pagesMeta) > 0 ? array_values($pagesMeta) : [['label' => Freeform::t('Page 1')]];
+
+        $layouts = [];
+        $pageLayoutUids = [];
+        foreach ($pagesMeta as $index => $_meta) {
+            $uid = StringHelper::UUID();
+            $pageLayoutUids[$index] = $uid;
+            $layouts[] = (object) ['uid' => $uid];
+        }
 
         $pageButtons = (object) [
             'layout' => 'submit',
@@ -446,44 +545,76 @@ class FormGenerationService
             'saveLabel' => Freeform::t('Save'),
             'saveRedirectUrl' => '',
         ];
-
-        $pages = [(object) [
-            'uid' => $pageUid,
-            'layoutUid' => $layoutUid,
-            'order' => 0,
-            'label' => Freeform::t('Page 1'),
-            'buttons' => $pageButtons,
-        ]];
-
-        $rowIndices = $this->computeRowIndices($fieldsData);
-
-        $rowUids = [];
-        $rows = [];
-        $numRows = (\count($rowIndices) > 0) ? (max($rowIndices) + 1) : 1;
-        for ($i = 0; $i < $numRows; ++$i) {
-            $rowUid = StringHelper::UUID();
-            $rowUids[] = $rowUid;
-            $rows[] = (object) [
-                'uid' => $rowUid,
-                'layoutUid' => $layoutUid,
-                'order' => $i,
+        // Build pages, each tied to its own layout.
+        $pages = [];
+        foreach ($pagesMeta as $index => $meta) {
+            $pageUid = StringHelper::UUID();
+            $pages[] = (object) [
+                'uid' => $pageUid,
+                'layoutUid' => $pageLayoutUids[$index] ?? $layoutUid,
+                'order' => $index,
+                'label' => $meta['label'] ?? Freeform::t('Page {n}', ['n' => $index + 1]),
+                'buttons' => $pageButtons,
             ];
         }
 
-        $fields = [];
-        foreach ($fieldsData as $order => $item) {
-            $rowIndex = $rowIndices[$order] ?? 0;
-            $rowUid = $rowUids[$rowIndex] ?? $rowUids[0];
+        // Group fields by page index.
+        $grouped = [];
+        foreach ($fieldsData as $idx => $item) {
+            $pageIndex = isset($item['pageIndex']) && \is_int($item['pageIndex'])
+                ? max(0, $item['pageIndex'])
+                : 0;
 
-            $typeClass = self::ALLOWED_FIELD_TYPES[$item['type']] ?? TextField::class;
-            $properties = $this->mergeFieldProperties($typeClass, $item);
-            $fields[] = (object) [
-                'uid' => StringHelper::UUID(),
-                'rowUid' => $rowUid,
-                'typeClass' => $typeClass,
-                'order' => $order,
-                'properties' => (object) $properties,
-            ];
+            if (!isset($grouped[$pageIndex])) {
+                $grouped[$pageIndex] = [];
+            }
+
+            $grouped[$pageIndex][] = ['index' => $idx, 'item' => $item];
+        }
+
+        ksort($grouped);
+
+        $rows = [];
+        $fields = [];
+        $rowOrder = 0;
+
+        foreach ($grouped as $pageIndex => $entries) {
+            $layoutForPage = $pageLayoutUids[$pageIndex] ?? $layoutUid;
+
+            // Compute row indices for this page's fields.
+            $pageFields = array_map(static fn ($entry) => $entry['item'], $entries);
+            $localRowIndices = $this->computeRowIndices($pageFields);
+
+            // Create rows for this page.
+            $pageRowUids = [];
+            $maxLocalRow = \count($localRowIndices) > 0 ? max($localRowIndices) : -1;
+            for ($i = 0; $i <= $maxLocalRow; ++$i) {
+                $rowUid = StringHelper::UUID();
+                $pageRowUids[$i] = $rowUid;
+                $rows[] = (object) [
+                    'uid' => $rowUid,
+                    'layoutUid' => $layoutForPage,
+                    'order' => $rowOrder++,
+                ];
+            }
+
+            // Assign fields to rows for this page.
+            foreach ($entries as $i => $entry) {
+                $originalIndex = $entry['index'];
+                $fieldData = $entry['item'];
+                $localRowIndex = $localRowIndices[$i] ?? 0;
+                $rowUid = $pageRowUids[$localRowIndex] ?? reset($pageRowUids);
+
+                $typeClass = self::ALLOWED_FIELD_TYPES[$fieldData['type']] ?? TextField::class;
+                $properties = $this->mergeFieldProperties($typeClass, $fieldData);
+                $fields[] = (object) [
+                    'uid' => StringHelper::UUID(),
+                    'rowUid' => $rowUid,
+                    'typeClass' => $typeClass,
+                    'order' => $originalIndex,
+                    'properties' => (object) $properties,
+                ];
+            }
         }
 
         $layout = (object) [

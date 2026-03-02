@@ -143,6 +143,75 @@ export const AiDashboard: React.FC = () => {
               </CardValue>
             </Card>
           </CardsGrid>
+
+          <Section>
+            <SectionTitle>
+              <Skeleton width={140} height={12} />
+            </SectionTitle>
+            <UsageChart>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart
+                  data={Array.from({ length: 6 }).map((_, idx) => ({
+                    date: idx,
+                    spend: Math.random() * 0.005,
+                  }))}
+                >
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="date" hide />
+                  <YAxis hide />
+                  <Bar
+                    dataKey="spend"
+                    fill={colors.gray200}
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={40}
+                    isAnimationActive={false}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </UsageChart>
+          </Section>
+
+          <Section>
+            <SectionTitle>
+              <Skeleton width={160} height={12} />
+            </SectionTitle>
+            <MetricsTable>
+              <MetricsTableHead>
+                <tr>
+                  <MetricsTableHeaderCell>
+                    <Skeleton width={80} height={10} />
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    <Skeleton width={60} height={10} />
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    <Skeleton width={90} height={10} />
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    <Skeleton width={200} height={10} />
+                  </MetricsTableHeaderCell>
+                </tr>
+              </MetricsTableHead>
+              <tbody>
+                {Array.from({ length: 4 }).map((_, idx) => (
+                  <MetricsTableRow key={idx}>
+                    <MetricsTableCell>
+                      <Skeleton width={110} height={10} />
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      <Skeleton width={70} height={10} />
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      <Skeleton width={130} height={10} />
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      <Skeleton width={220} height={10} />
+                    </MetricsTableCell>
+                  </MetricsTableRow>
+                ))}
+              </tbody>
+            </MetricsTable>
+          </Section>
         </DashboardWrapper>
       </div>
     );

@@ -16,7 +16,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
-use yii\web\TooManyRequestsHttpException;
 
 class FormsController extends BaseApiController
 {
@@ -142,26 +141,6 @@ class FormsController extends BaseApiController
 
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
-        }
-
-        $userId = \Craft::$app->getUser()->getId();
-        $cacheKey = 'freeform-ai-form-gen-'.($userId ?? 'guest');
-        $cache = \Craft::$app->getCache();
-        $rateLimit = $cache->get($cacheKey);
-        $limit = 10;
-        $window = 3600; // 1 hour
-        if ($rateLimit) {
-            $rateLimit = (array) $rateLimit;
-            if (($rateLimit['ts'] ?? 0) + $window < time()) {
-                $rateLimit = ['count' => 0, 'ts' => time()];
-            }
-            $rateLimit['count'] = ($rateLimit['count'] ?? 0) + 1;
-            if ($rateLimit['count'] > $limit) {
-                throw new TooManyRequestsHttpException(Freeform::t('Rate limit exceeded. Try again later.'));
-            }
-            $cache->set($cacheKey, $rateLimit, $window);
-        } else {
-            $cache->set($cacheKey, ['count' => 1, 'ts' => time()], $window);
         }
 
         $body = json_decode($this->request->getRawBody(), true) ?: [];

@@ -4,10 +4,24 @@ import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
+import { colors } from '@ff-client/styles/variables';
 import translate from '@ff-client/utils/translations';
 import axios from 'axios';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
-import { isSolspaceAiUsageResponse, useAiUsageQuery } from './ai.queries';
+import {
+  createCheckoutSession,
+  isSolspaceAiUsageResponse,
+  useAiUsageQuery,
+} from './ai.queries';
 import {
   Card,
   CardLabel,
@@ -16,6 +30,14 @@ import {
   DashboardWrapper,
   EmptyState,
   EmptyStateTitle,
+  MetricsTable,
+  MetricsTableCell,
+  MetricsTableHead,
+  MetricsTableHeaderCell,
+  MetricsTableRow,
+  Section,
+  SectionTitle,
+  UsageChart,
 } from './dashboard.styles';
 
 function formatSpend(value: number): string {
@@ -28,7 +50,8 @@ function formatSpend(value: number): string {
 }
 
 export const AiDashboard: React.FC = () => {
-  useSidebarSelect('ai');
+  useSidebarSelect('freeform/ai');
+  const [addCreditLoading, setAddCreditLoading] = React.useState(false);
 
   const { data, isFetching, error, isError } = useAiUsageQuery();
   const isNotFound =
@@ -149,7 +172,15 @@ export const AiDashboard: React.FC = () => {
   }
 
   const summary = isSolspaceAiUsageResponse(data) ? data.summary : undefined;
-  const totalSpend = summary?.total_spend;
+  const dailyMetrics = data?.daily_metrics ?? [];
+  const sortedMetrics = [...dailyMetrics].sort((a, b) =>
+    a.date.localeCompare(b.date)
+  );
+  const totalSpend =
+    summary?.total_spend ??
+    (sortedMetrics.length
+      ? sortedMetrics.reduce((acc, item) => acc + (item.spend ?? 0), 0)
+      : undefined);
   const hasAnyData = totalSpend !== undefined || summary != null;
 
   function formatDate(iso: string | null | undefined): string {
@@ -167,7 +198,41 @@ export const AiDashboard: React.FC = () => {
   return (
     <div>
       <Breadcrumb id="ai" label="AI" url="ai" />
-      <HeaderContainer>{translate('AI')}</HeaderContainer>
+      <HeaderContainer
+        extra={
+          (summary?.credit_remaining != null || summary?.max_budget != null) &&
+          summary !== undefined && (
+            <button
+              type="button"
+              className="btn submit"
+              disabled={addCreditLoading}
+              onClick={async () => {
+                setAddCreditLoading(true);
+                try {
+                  const currentUrl = window.location.href;
+                  const res = await createCheckoutSession(
+                    currentUrl,
+                    currentUrl
+                  );
+                  if (res?.url) {
+                    window.location.href = res.url;
+                  } else {
+                    setAddCreditLoading(false);
+                  }
+                } catch {
+                  setAddCreditLoading(false);
+                }
+              }}
+            >
+              {addCreditLoading
+                ? translate('Loading…')
+                : translate('Add credit')}
+            </button>
+          )
+        }
+      >
+        {translate('AI')}
+      </HeaderContainer>
       <DashboardWrapper>
         <CardsGrid>
           {totalSpend !== undefined && (
@@ -204,7 +269,113 @@ export const AiDashboard: React.FC = () => {
               </CardValue>
             </Card>
           )}
+          {summary?.credit_remaining != null && (
+            <Card>
+              <CardLabel>{translate('Credit remaining')}</CardLabel>
+              <CardValue style={{ fontSize: 14 }}>
+                {formatSpend(summary.credit_remaining)}
+              </CardValue>
+            </Card>
+          )}
         </CardsGrid>
+
+        {sortedMetrics.length > 0 && (
+          <Section>
+            <SectionTitle>{translate('Daily spend')}</SectionTitle>
+            <UsageChart>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={sortedMetrics}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(value: string) =>
+                      new Date(value).toLocaleDateString(undefined, {
+                        month: 'short',
+                        day: 'numeric',
+                      })
+                    }
+                  />
+                  <YAxis
+                    tickFormatter={(value: number) =>
+                      `$${value.toFixed(3)}` as string
+                    }
+                  />
+                  <RechartsTooltip
+                    formatter={(value: number) => formatSpend(value as number)}
+                    labelFormatter={(label: string) =>
+                      new Date(label).toLocaleDateString(undefined, {
+                        dateStyle: 'medium',
+                      })
+                    }
+                  />
+                  <Bar
+                    dataKey="spend"
+                    fill={colors.blue500}
+                    stroke={colors.blue500}
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={40}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </UsageChart>
+          </Section>
+        )}
+
+        {sortedMetrics.length > 0 && (
+          <Section>
+            <SectionTitle>{translate('Recent daily usage')}</SectionTitle>
+            <MetricsTable>
+              <MetricsTableHead>
+                <tr>
+                  <MetricsTableHeaderCell>
+                    {translate('Date')}
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    {translate('Spend')}
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    {translate('Requests')}
+                  </MetricsTableHeaderCell>
+                  <MetricsTableHeaderCell>
+                    {translate('Tokens (prompt / completion / total)')}
+                  </MetricsTableHeaderCell>
+                </tr>
+              </MetricsTableHead>
+              <tbody>
+                {sortedMetrics.map((item) => (
+                  <MetricsTableRow key={item.date}>
+                    <MetricsTableCell>
+                      {new Date(item.date).toLocaleDateString(undefined, {
+                        dateStyle: 'medium',
+                      })}
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      {formatSpend(item.spend)}
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      <span style={{ color: colors.success }}>
+                        {item.successful_requests.toLocaleString()}{' '}
+                        {translate('success')}
+                      </span>{' '}
+                      /{' '}
+                      <span style={{ color: colors.error }}>
+                        {item.failed_requests.toLocaleString()}{' '}
+                        {translate('failed')}
+                      </span>
+                      {' · '}
+                      {`${item.api_requests.toLocaleString()} ${translate('total')}`}
+                    </MetricsTableCell>
+                    <MetricsTableCell>
+                      {item.prompt_tokens.toLocaleString()} /{' '}
+                      {item.completion_tokens.toLocaleString()} /{' '}
+                      {item.total_tokens.toLocaleString()}
+                    </MetricsTableCell>
+                  </MetricsTableRow>
+                ))}
+              </tbody>
+            </MetricsTable>
+          </Section>
+        )}
 
         {!hasAnyData && (
           <EmptyState>

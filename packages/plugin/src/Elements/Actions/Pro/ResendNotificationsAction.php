@@ -27,7 +27,7 @@ class ResendNotificationsAction extends ElementAction
         $mailer = Freeform::getInstance()->mailer;
 
         /** @var Submission $submission */
-        foreach ($query->all() as $submission) {
+        foreach ($query->skipContent(false)->all() as $submission) {
             $form = $submission->getForm();
             $form->valuesFromSubmission($submission);
 

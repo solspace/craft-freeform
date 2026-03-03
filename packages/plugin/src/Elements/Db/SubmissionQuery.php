@@ -32,6 +32,7 @@ class SubmissionQuery extends ElementQuery
     public bool $skipContent = false;
     public mixed $formSiteId = null;
     private mixed $freeformStatus = null;
+    private bool $skipContentExplicit = false;
 
     public function formSiteId(mixed $value): self
     {
@@ -99,6 +100,7 @@ class SubmissionQuery extends ElementQuery
     public function skipContent(bool $value): self
     {
         $this->skipContent = $value;
+        $this->skipContentExplicit = true;
 
         return $this;
     }
@@ -201,16 +203,18 @@ class SubmissionQuery extends ElementQuery
             $source = \is_string($source) ? trim($source) : null;
 
             // If source="*" but Craft has already limited formId to a single allowed form (e.g. [1]), treat it as a single-form query so custom fields can still render safely.
-            if ('*' === $source) {
-                if (\is_array($this->formId) && 1 === \count($this->formId)) {
-                    $this->formId = (int) $this->formId[0];
+            if (!$this->skipContentExplicit) {
+                if ('*' === $source) {
+                    if (\is_array($this->formId) && 1 === \count($this->formId)) {
+                        $this->formId = (int) $this->formId[0];
 
-                    $this->skipContent = false;
+                        $this->skipContent = false;
+                    } else {
+                        $this->skipContent = true;
+                    }
                 } else {
-                    $this->skipContent = true;
+                    $this->skipContent = false;
                 }
-            } else {
-                $this->skipContent = false;
             }
         }
 

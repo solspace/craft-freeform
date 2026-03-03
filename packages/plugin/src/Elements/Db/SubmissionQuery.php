@@ -134,9 +134,15 @@ class SubmissionQuery extends ElementQuery
         $pathInfo = !$isConsoleRequest ? ($request->getPathInfo() ?? '') : '';
         $path = '/'.ltrim($pathInfo, '/');
 
+        $plugins = \Craft::$app->getPlugins();
+        $orderClass = 'craft\commerce\elements\Order';
+        $commerceAvailable = $plugins->isPluginInstalled('commerce') && $plugins->isPluginEnabled('commerce') && class_exists($orderClass);
+
         $isElementIndexAction = str_contains($path, 'actions/element-indexes/');
         $isSubmissionElementType = (!$isConsoleRequest) && (Submission::class === $request->getBodyParam('elementType'));
+        $isOrderElementType = $commerceAvailable && (!$isConsoleRequest) && ($orderClass === $request->getBodyParam('elementType'));
         $isCpSubmissionIndexRequest = $isCpRequest && $isElementIndexAction && $isSubmissionElementType;
+        $isCpOrderIndexRequest = $isCpRequest && $isElementIndexAction && $isOrderElementType;
 
         // Requested CP table columns (element attributes, field handles, field column names, or field IDs)
         $requestedFieldHandles = [];
@@ -212,6 +218,10 @@ class SubmissionQuery extends ElementQuery
             } else {
                 $this->skipContent = false;
             }
+        }
+
+        if ($isCpOrderIndexRequest) {
+            $this->skipContent = true;
         }
 
         if (null === $formHandleToIdMap) {

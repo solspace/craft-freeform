@@ -9,7 +9,10 @@ import {
   TableContainer,
   TableEditorWrapper,
 } from '@components/form-controls/control-types/table/table.editor.styles';
-import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
+import type {
+  ColumnDescription,
+  TableColumnMetadata,
+} from '@components/form-controls/control-types/table/table.types';
 import IconCross from '@components/form-controls/icons/cross.svg';
 import { FlexRow } from '@components/layout/blocks/flex';
 import type { Field } from '@editor/store/slices/layout/fields';
@@ -23,6 +26,7 @@ import translate from '@ff-client/utils/translations';
 
 import IconCheckbox from './editor/icon.checkbox.svg';
 import IconDropdown from './editor/icon.dropdown.svg';
+import IconFile from './editor/icon.file.svg';
 import IconPlus from './editor/icon.plus.svg';
 import IconRadio from './editor/icon.radios.svg';
 import IconText from './editor/icon.text.svg';
@@ -34,6 +38,7 @@ import {
 } from './editor/table.editor.styles';
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
 import { TableDropdownEditor } from './editor/table.input.dropdown';
+import { TableFileEditor } from './editor/table.input.file';
 import { TableTextEditor } from './editor/table.input.text';
 import { deleteColumn, updateColumn } from './table.operations';
 
@@ -45,13 +50,51 @@ type Props = {
   context: Field;
 };
 
-type ColumnType = 'text' | 'textarea' | 'select' | 'radio' | 'checkbox';
+type ColumnType =
+  | 'text'
+  | 'textarea'
+  | 'select'
+  | 'radio'
+  | 'checkbox'
+  | 'file';
+
+const FILE_COLUMN_DEFAULT_METADATA: TableColumnMetadata = {
+  fileCount: 1,
+  maxFileSizeKB: 2048,
+  fileKinds: ['image'],
+  assetSourceId: null,
+  uploadLocation: null,
+};
+
+const getColumnForType = (
+  column: ColumnDescription,
+  type: string
+): ColumnDescription => {
+  if (type === 'file') {
+    return {
+      ...column,
+      type,
+      metadata: {
+        ...FILE_COLUMN_DEFAULT_METADATA,
+        ...(column.metadata || {}),
+      },
+    };
+  }
+
+  return {
+    ...column,
+    type,
+    metadata: {},
+  };
+};
+
 const typeIcons: Record<ColumnType, JSX.Element> = {
   text: <IconText />,
   textarea: <IconTextarea />,
   select: <IconDropdown />,
   radio: <IconRadio />,
   checkbox: <IconCheckbox />,
+  file: <IconFile />,
 };
 
 export const TableEditor: React.FC<Props> = ({
@@ -215,7 +258,7 @@ export const TableEditor: React.FC<Props> = ({
                   updateValue(
                     updateColumn(
                       tabIndex,
-                      { ...column, type: value },
+                      getColumnForType(column, value),
                       columnValues
                     )
                   );
@@ -223,8 +266,11 @@ export const TableEditor: React.FC<Props> = ({
               />
             </Control>
           </FlexRow>
-          {renderCellEditor(column, (col: ColumnDescription) =>
-            updateValue(updateColumn(tabIndex, col, columnValues))
+          {renderCellEditor(
+            column,
+            (col: ColumnDescription) =>
+              updateValue(updateColumn(tabIndex, col, columnValues)),
+            property
           )}
         </ColumnEditor>
       </TableContainer>
@@ -234,7 +280,8 @@ export const TableEditor: React.FC<Props> = ({
 
 const renderCellEditor = (
   column: ColumnDescription,
-  update: (col: ColumnDescription) => void
+  update: (col: ColumnDescription) => void,
+  property: TableProperty
 ): React.ReactNode => {
   if (['text', 'textarea'].includes(column.type)) {
     return <TableTextEditor column={column} onUpdate={update} />;
@@ -246,6 +293,12 @@ const renderCellEditor = (
 
   if (column.type === 'checkbox') {
     return <TableCheckboxEditor column={column} onUpdate={update} />;
+  }
+
+  if (column.type === 'file') {
+    return (
+      <TableFileEditor column={column} onUpdate={update} property={property} />
+    );
   }
 
   return null;

@@ -4,10 +4,12 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
+use craft\fields\data\SingleOptionFieldData;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -136,6 +138,20 @@ class ElementEditBundle extends FeatureBundle
 
                 if (!$field instanceof MultiValueInterface && \is_array($value)) {
                     $value = implode(', ', $value);
+                }
+
+                if ($field instanceof BooleanInterface) {
+                    $field->setChecked($value);
+                }
+
+                if ($value instanceof SingleOptionFieldData) {
+                    $options = $value->getOptions();
+
+                    foreach ($options as $option) {
+                        if ($option->selected) {
+                            $value = $option->value;
+                        }
+                    }
                 }
 
                 $field->setValue($value);

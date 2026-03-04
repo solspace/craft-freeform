@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.14.20 - 2026-03-04
+
+### Fixed
+- Fixed an issue where **Group** fields and their contents could not be duplicated in the form builder.
+- Fixed an issue where submission data would be missing when resending an email notification.
+- Fixed a `too many columns` error when viewing the **Orders** control panel index page in **Craft Commerce**.
+- Improved **Stripe** webhook status responses and debugging information.
+
 ## 5.14.19 - 2026-03-02
 
 ### Fixed

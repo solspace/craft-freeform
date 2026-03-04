@@ -53,8 +53,15 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
       const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
       returnUrl.searchParams.append('integration', integration);
-      returnUrl.searchParams.append('token', token);
+      returnUrl.searchParams.append('stripe_token', token);
       returnUrl.searchParams.append('site', site);
+
+      const { error: submitError } = await elements.submit();
+      if (submitError) {
+        event.freeform._renderFormErrors([submitError.message]);
+        event.freeform._scrollToForm();
+        return false;
+      }
 
       const { error } = await stripe.confirmPayment({
         elements,

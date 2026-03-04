@@ -146,6 +146,32 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
     public function getInputHtml(): string
     {
+        $preview = '';
+
+        $assets = $this->getAssets()->all();
+        if (!empty($assets)) {
+            $items = '';
+
+            foreach ($assets as $asset) {
+                if ($asset->kind === 'image') {
+                    $items .= Html::tag('img', '', [
+                        'src' => $asset->getUrl([
+                            'width' => 150,
+                            'height' => 150,
+                            'mode' => 'crop',
+                        ]),
+                        'alt' => Html::encode($asset->filename),
+                    ]);
+                } else {
+                    $items .= Html::tag('span', Html::encode($asset->filename));
+                }
+            }
+
+            $preview = Html::tag('div', $items, [
+                'class' => 'form-input-asset-files',
+            ]);
+        }
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
@@ -156,11 +182,13 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             ->set($this->getRequiredAttribute())
         ;
 
-        return Html::tag(
+        $input = Html::tag(
             $attributes->getTag('input'),
             '',
             $attributes->toHtmlTagArray(['field' => $this])
         );
+
+        return $preview.$input;
     }
 
     public function getContentGqlType(): array|GQLType

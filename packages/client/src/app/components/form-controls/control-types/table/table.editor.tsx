@@ -235,7 +235,7 @@ export const TableEditor: React.FC<Props> = ({
                 type="text"
                 className="text fullwidth"
                 ref={labelInputRef}
-                value={column.label}
+                value={column?.label}
                 onChange={(event) =>
                   updateValue(
                     updateColumn(
@@ -252,7 +252,7 @@ export const TableEditor: React.FC<Props> = ({
               <Dropdown
                 showSelectedIcon
                 emptyOption="Select Type"
-                value={column.type}
+                value={column?.type}
                 options={typeOptions}
                 onChange={(value) => {
                   updateValue(
@@ -283,6 +283,10 @@ const renderCellEditor = (
   update: (col: ColumnDescription) => void,
   property: TableProperty
 ): React.ReactNode => {
+  if (!column) {
+    return null;
+  }
+
   if (['text', 'textarea'].includes(column.type)) {
     return <TableTextEditor column={column} onUpdate={update} />;
   }

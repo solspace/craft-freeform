@@ -13,6 +13,7 @@ use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -133,18 +134,75 @@ class FileUploadBundle extends FeatureBundle
      */
     private function getUnfinalizedFileRecords(Form $form): array
     {
-        $fields = $form->getLayout()->getFields(FileUploadField::class);
         $assetIds = [];
 
-        /** @var FileUploadInterface $field */
+        /** @var FileUploadInterface[] $fields */
+        $fields = $form->getLayout()->getFields(FileUploadField::class);
         foreach ($fields as $field) {
             $assetIds = array_merge($assetIds, $field->getValue() ?? []);
         }
+
+        /** @var TableField[] $tableFields */
+        $tableFields = $form->getLayout()->getFields(TableField::class);
+        foreach ($tableFields as $tableField) {
+            $assetIds = array_merge($assetIds, $this->extractTableFileAssetIds($tableField));
+        }
+
+        $assetIds = array_values(array_unique(array_filter(
+            array_map('intval', $assetIds),
+            static fn (int $id) => $id > 0
+        )));
 
         if (empty($assetIds)) {
             return [];
         }
 
         return UnfinalizedFileRecord::findAll(['assetId' => $assetIds]);
+    }
+
+    private function extractTableFileAssetIds(TableField $field): array
+    {
+        if (!$field->hasFileUploadColumns()) {
+            return [];
+        }
+
+        $layout = $field->getTableLayout();
+        $fileColumnIndexes = [];
+        foreach ($layout as $index => $column) {
+            if (TableField::COLUMN_TYPE_FILE === ($column->type ?? null)) {
+                $fileColumnIndexes[] = $index;
+            }
+        }
+
+        if (empty($fileColumnIndexes)) {
+            return [];
+        }
+
+        $assetIds = [];
+        $value = $field->getValue();
+        if (!\is_array($value)) {
+            return [];
+        }
+
+        foreach ($value as $row) {
+            if (!\is_array($row)) {
+                continue;
+            }
+
+            foreach ($fileColumnIndexes as $columnIndex) {
+                $cellValue = $row[$columnIndex] ?? [];
+                if (!\is_array($cellValue)) {
+                    if (null === $cellValue || '' === $cellValue) {
+                        $cellValue = [];
+                    } else {
+                        $cellValue = [$cellValue];
+                    }
+                }
+
+                $assetIds = array_merge($assetIds, $cellValue);
+            }
+        }
+
+        return $assetIds;
     }
 }

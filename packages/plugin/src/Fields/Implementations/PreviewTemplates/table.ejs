@@ -58,6 +58,8 @@
                             </div>
                         <% } else if (column.type === 'textarea') { %>
                             <textarea placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %></textarea>
+                        <% } else if (column.type === 'file') { %>
+                            <input type="file" />
                         <% } else { %>
                             <input
                                     type="text"

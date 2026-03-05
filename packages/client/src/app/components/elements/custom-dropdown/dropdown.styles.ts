@@ -145,4 +145,26 @@ export const DropdownWrapper = styled.div`
 export const Icon = styled.span`
   display: flex;
   align-items: center;
+
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+`;
+
+export const OptionIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
 `;

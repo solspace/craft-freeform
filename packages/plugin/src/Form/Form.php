@@ -39,6 +39,7 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Form\Bags\PropertyBag;
@@ -939,6 +940,17 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     {
         $settings = $this->getSettings();
         $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
+
+        if (!$isMultipart) {
+            $tableFields = $this->getLayout()->getFields(TableField::class);
+            foreach ($tableFields as $tableField) {
+                if ($tableField->hasFileUploadColumns()) {
+                    $isMultipart = true;
+
+                    break;
+                }
+            }
+        }
 
         $object = [
             'id' => $this->getId(),

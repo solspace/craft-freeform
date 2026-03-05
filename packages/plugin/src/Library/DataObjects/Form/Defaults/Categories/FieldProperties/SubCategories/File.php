@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class File extends BaseCategory
 {
-    #[Label('File Count')]
+    #[Label('Max Files')]
     #[SetDefaultValue(1)]
     public TextItem $count;
 

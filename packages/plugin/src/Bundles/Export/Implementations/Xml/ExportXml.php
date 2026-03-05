@@ -67,7 +67,13 @@ class ExportXml extends AbstractSubmissionExport
                                         $xml->writeAttribute('label', $layout[$index]->label);
                                     }
 
-                                    if ($columnValue) {
+                                    if (\is_array($columnValue) || \is_object($columnValue)) {
+                                        foreach ((array) $columnValue as $item) {
+                                            $xml->startElement('item');
+                                            $xml->text(htmlspecialchars((string) $item, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
+                                            $xml->endElement(); // item
+                                        }
+                                    } elseif ($columnValue) {
                                         $xml->text(htmlspecialchars($columnValue, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
                                     }
 

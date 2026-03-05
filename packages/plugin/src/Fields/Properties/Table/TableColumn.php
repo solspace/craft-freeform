@@ -11,4 +11,5 @@ class TableColumn
     public string $placeholder = '';
     public bool $checked = false;
     public bool $required = false;
+    public array $metadata = [];
 }

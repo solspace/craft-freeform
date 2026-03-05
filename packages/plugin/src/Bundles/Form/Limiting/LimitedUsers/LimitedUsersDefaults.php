@@ -179,7 +179,7 @@ class LimitedUsersDefaults
                             'dialogSelector',
                         ])
                         ->setOptions([
-                            'count' => 'File Count',
+                            'count' => 'Max Files',
                             'source' => 'Asset Source',
                             'uploadLocation' => 'Upload Location',
                             'fileKinds' => 'File Kinds',

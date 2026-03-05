@@ -198,6 +198,8 @@ export type TableProperty = BaseProperty<
   PropertyType.Table
 > & {
   options: Option[];
+  assetSourceOptions?: OptionCollection;
+  fileKindsOptions?: OptionCollection;
 };
 
 export type CardsProperty = BaseProperty<Card[], PropertyType.Cards>;

@@ -79,7 +79,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
   return (
     <FlexColumn $gap={spacings.lg}>
       <FlexRow $gap={spacings.md}>
-        <Control width={40} label={translate('Max files')} handle="fileCount">
+        <Control width={40} label={translate('Max Files')} handle="fileCount">
           <input
             type="number"
             min={1}
@@ -95,7 +95,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
         <Control
           width={60}
-          label={translate('Max size (KB)')}
+          label={translate('Maximum File Size (KB)')}
           handle="maxFileSizeKB"
         >
           <input
@@ -115,9 +115,11 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
       <FlexRow>
         <Control
           width={40}
-          label={translate('Asset source')}
+          label={translate('Asset Source')}
           handle="assetSourceId"
-          instructions={translate('Select an asset source for the uploads.')}
+          instructions={translate(
+            'Select an asset source to be able to store user uploaded files.'
+          )}
         >
           <Dropdown
             emptyOption={translate('Select source')}
@@ -133,10 +135,10 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
         <Control
           width={60}
-          label={translate('Upload location')}
+          label={translate('Upload Location')}
           handle="uploadLocation"
           instructions={translate(
-            'Optional subfolder path for uploads in this column.'
+            'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.'
           )}
         >
           <input
@@ -150,7 +152,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
         </Control>
       </FlexRow>
 
-      <Control label={translate('File kinds')} handle="fileKinds">
+      <Control label={translate('File Kinds')} handle="fileKinds">
         <FileKindOptionsContainer>
           {fileKindOptions.map((kindOption) => (
             <label key={kindOption.value}>

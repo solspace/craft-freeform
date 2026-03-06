@@ -39,7 +39,7 @@ class ABTestVariantProvider
         /** @var AbTestVariantRecord[] $variants */
         $variants = $test->getVariants()->all();
 
-        $total = array_sum(array_map(fn (AbTestVariantRecord $variant) => $variant->weight, $variants)); // 110
+        $total = array_sum(array_map(static fn (AbTestVariantRecord $variant) => $variant->weight, $variants)); // 110
         $rand = random_int(1, $total);
 
         $running = 0;

@@ -49,7 +49,7 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('submissions', Freeform::t('Submissions'), 'freeform/submissions');
         }
 
-        if ($canAccessAb) {
+        if ($canAccessAb && $freeform->isPro() && $freeform->settings->isAbTestsEnabled()) {
             $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 

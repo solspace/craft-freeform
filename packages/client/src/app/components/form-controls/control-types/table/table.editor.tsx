@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { Icon } from '@components/elements/custom-dropdown/dropdown.styles';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import type { UpdateValue } from '@components/form-controls';
 import { Control } from '@components/form-controls/control';
 import {
@@ -258,6 +259,7 @@ export const TableEditor: React.FC<Props> = ({
                   key={getColumnKey(column)}
                   className={classes(
                     'table-column-tab',
+                    column.required && 'required',
                     index === tabIndex && 'active'
                   )}
                   ref={(element) => {
@@ -314,7 +316,7 @@ export const TableEditor: React.FC<Props> = ({
 
         <ColumnEditor>
           <FlexRow>
-            <Control width={70} label={translate('Label')} handle="label">
+            <Control width={60} label={translate('Label')} handle="label">
               <input
                 type="text"
                 className="text fullwidth"
@@ -343,6 +345,26 @@ export const TableEditor: React.FC<Props> = ({
                     updateColumn(
                       tabIndex,
                       getColumnForType(column, value),
+                      columnValues
+                    )
+                  );
+                }}
+              />
+            </Control>
+
+            <Control
+              width={10}
+              label={translate('Required')}
+              handle="required"
+              justify="center"
+            >
+              <LightSwitch
+                enabled={!!column?.required}
+                onClick={(value) => {
+                  updateValue(
+                    updateColumn(
+                      tabIndex,
+                      { ...column, required: value },
                       columnValues
                     )
                   );

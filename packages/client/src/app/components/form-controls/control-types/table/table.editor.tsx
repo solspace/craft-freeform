@@ -14,6 +14,7 @@ import type {
   TableColumnMetadata,
 } from '@components/form-controls/control-types/table/table.types';
 import IconCross from '@components/form-controls/icons/cross.svg';
+import MoveIcon from '@components/form-controls/icons/move.svg';
 import { FlexRow } from '@components/layout/blocks/flex';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
@@ -23,6 +24,7 @@ import {
 } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import Sortable from 'sortablejs';
 
 import IconCheckbox from './editor/icon.checkbox.svg';
 import IconDropdown from './editor/icon.dropdown.svg';
@@ -34,13 +36,15 @@ import IconTextarea from './editor/icon.textarea.svg';
 import {
   AddColumnButton,
   RemoveColumnButton,
+  ReorderColumnButton,
+  TableColumnTabLabel,
   TableColumnTabs,
 } from './editor/table.editor.styles';
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
 import { TableDropdownEditor } from './editor/table.input.dropdown';
 import { TableFileEditor } from './editor/table.input.file';
 import { TableTextEditor } from './editor/table.input.text';
-import { deleteColumn, updateColumn } from './table.operations';
+import { deleteColumn, moveColumn, updateColumn } from './table.operations';
 
 type Props = {
   columnTypes: PropertyOption[];
@@ -107,8 +111,11 @@ export const TableEditor: React.FC<Props> = ({
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { getTranslation, willTranslate } = useTranslations(context);
   const labelInputRef = useRef<HTMLInputElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const shouldScrollContentRef = useRef(false);
+  const columnKeyMapRef = useRef(new WeakMap<ColumnDescription, string>());
+  const columnKeyCounterRef = useRef(0);
 
   const isTranslating = willTranslate(property.handle);
   const translation = getTranslation<ColumnDescription[]>(
@@ -120,6 +127,18 @@ export const TableEditor: React.FC<Props> = ({
   const column = useMemo<ColumnDescription>(() => {
     return columnValues[tabIndex];
   }, [tabIndex, columnValues]);
+
+  const getColumnKey = (column: ColumnDescription): string => {
+    const existingKey = columnKeyMapRef.current.get(column);
+    if (existingKey) {
+      return existingKey;
+    }
+
+    const key = `table-column-${columnKeyCounterRef.current++}`;
+    columnKeyMapRef.current.set(column, key);
+
+    return key;
+  };
 
   const typeOptions = useMemo(() => {
     return columnTypes.reduce((options, option) => {
@@ -154,6 +173,52 @@ export const TableEditor: React.FC<Props> = ({
     }
   }, [tabIndex, columnValues.length]);
 
+  useEffect(() => {
+    if (!tabsRef.current || columnValues.length < 2) {
+      return;
+    }
+
+    const sortable = Sortable.create(tabsRef.current, {
+      animation: 150,
+      draggable: '.table-column-tab',
+      handle: '.column-drag-handle',
+      onEnd: (event) => {
+        const fromIndex = event.oldIndex;
+        const toIndex = event.newIndex;
+
+        if (
+          fromIndex === undefined ||
+          toIndex === undefined ||
+          fromIndex === toIndex
+        ) {
+          return;
+        }
+
+        updateValue(moveColumn(fromIndex, toIndex, columnValues));
+
+        setTabIndex((activeIndex) => {
+          if (activeIndex === fromIndex) {
+            return toIndex;
+          }
+
+          if (fromIndex < activeIndex && activeIndex <= toIndex) {
+            return activeIndex - 1;
+          }
+
+          if (toIndex <= activeIndex && activeIndex < fromIndex) {
+            return activeIndex + 1;
+          }
+
+          return activeIndex;
+        });
+      },
+    });
+
+    return () => {
+      sortable.destroy();
+    };
+  }, [columnValues, updateValue]);
+
   const addTab = (): void => {
     const newIndex = columnValues.length;
     updateValue([
@@ -186,12 +251,15 @@ export const TableEditor: React.FC<Props> = ({
     <TableEditorWrapper>
       <TableContainer>
         <ColumnTabsWrapper>
-          <TableColumnTabs>
+          <TableColumnTabs ref={tabsRef}>
             {columnValues.length > 0 &&
               columnValues.map((column, index) => (
                 <a
-                  key={index}
-                  className={classes(index === tabIndex && 'active')}
+                  key={getColumnKey(column)}
+                  className={classes(
+                    'table-column-tab',
+                    index === tabIndex && 'active'
+                  )}
                   ref={(element) => {
                     tabRefs.current[index] = element;
                   }}
@@ -199,7 +267,23 @@ export const TableEditor: React.FC<Props> = ({
                 >
                   <Icon>{typeIcons[column.type as ColumnType]}</Icon>
 
-                  {translate(columnValues[index].label)}
+                  <TableColumnTabLabel>
+                    {translate(column.label)}
+                  </TableColumnTabLabel>
+
+                  {columnValues.length > 1 && (
+                    <ReorderColumnButton
+                      type="button"
+                      className="column-drag-handle"
+                      title={translate('Reorder column')}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }}
+                    >
+                      <MoveIcon />
+                    </ReorderColumnButton>
+                  )}
 
                   {index === tabIndex && columnValues.length > 1 && (
                     <RemoveColumnButton

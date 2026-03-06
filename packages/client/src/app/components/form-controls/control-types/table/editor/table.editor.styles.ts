@@ -96,6 +96,16 @@ export const TableColumnTabs = styled(TabsWrapper)`
   }
 `;
 
+export const TableColumnTabLabel = styled.span`
+  display: block;
+
+  max-width: 100px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
 export const TableColumnTabsWrapper = styled.div`
   display: flex;
   align-items: flex-end;
@@ -139,6 +149,34 @@ export const RemoveColumnButton = styled.button`
   border-radius: ${borderRadius.sm};
   background: rgba(51, 64, 77, 0.08);
   color: ${colors.gray500};
+
+  &:hover {
+    color: ${colors.gray700};
+    background: rgba(51, 64, 77, 0.2);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+`;
+
+export const ReorderColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: auto;
+
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.sm};
+  background: rgba(51, 64, 77, 0.08);
+  color: ${colors.gray500};
+  cursor: move;
 
   &:hover {
     color: ${colors.gray700};

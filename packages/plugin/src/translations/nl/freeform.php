@@ -351,6 +351,8 @@ return [
     'Column Type' => 'Kolomtype',
     'Add column' => 'Kolom toevoegen',
     'Remove column' => 'Kolom verwijderen',
+    'Reorder column' => 'Kolom herschikken',
+    'Required' => 'Vereist',
     'Min Length' => 'Min. lengte',
     'The minimum number of characters allowed in the field.' => 'Het minimum aantal toegestane tekens in het veld.',
     'Use Character Variability' => 'Gebruik karaktervariabiliteit',

@@ -126,14 +126,14 @@ class TableValidation extends FeatureBundle
         }
 
         $layout = $field->getTableLayout();
-        $requiredColumnIndexes = [];
+        $requiredColumns = [];
         foreach ($layout as $index => $column) {
             if ($column->required) {
-                $requiredColumnIndexes[] = $index;
+                $requiredColumns[$index] = $column->type ?? TableField::COLUMN_TYPE_STRING;
             }
         }
 
-        if (0 === \count($requiredColumnIndexes)) {
+        if (empty($requiredColumns)) {
             return;
         }
 
@@ -148,9 +148,10 @@ class TableValidation extends FeatureBundle
             return;
         }
 
-        foreach ($value as $row) {
-            foreach ($requiredColumnIndexes as $columnIndex) {
-                if (empty($row[$columnIndex])) {
+        foreach ($value as $rowIndex => $row) {
+            foreach ($requiredColumns as $columnIndex => $columnType) {
+                $columnValue = $row[$columnIndex] ?? null;
+                if (!$this->hasRequiredColumnValue($field, (int) $rowIndex, (int) $columnIndex, $columnType, $columnValue)) {
                     $field->addError($message);
 
                     return;
@@ -242,5 +243,39 @@ class TableValidation extends FeatureBundle
         return ArrayHelper::every($rows, static function (array $row) {
             return ArrayHelper::someRecursive($row, static fn ($item) => '' !== $item && null !== $item);
         });
+    }
+
+    private function hasRequiredColumnValue(
+        TableField $field,
+        int $rowIndex,
+        int $columnIndex,
+        string $columnType,
+        mixed $value,
+    ): bool {
+        if (TableField::COLUMN_TYPE_FILE === $columnType) {
+            if (\is_array($value)) {
+                $value = array_values(array_filter(
+                    $value,
+                    static fn (mixed $item) => null !== $item && '' !== $item
+                ));
+
+                if (!empty($value)) {
+                    return true;
+                }
+            } elseif (null !== $value && '' !== $value) {
+                return true;
+            }
+
+            $files = $_FILES[$field->getHandle()] ?? null;
+            if (\is_array($files)) {
+                $pendingUploads = $this->fileValidationHelper->extractNestedFilesInput($files, $rowIndex, $columnIndex);
+
+                return !empty($pendingUploads);
+            }
+
+            return false;
+        }
+
+        return !empty($value);
     }
 }

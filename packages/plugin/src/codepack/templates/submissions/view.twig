@@ -105,7 +105,14 @@
                                             {% for row in submission[field.handle].value %}
                                                 <tr>
                                                 {% for index, column in field.tableLayout %}
-                                                    <td>{{ row[index] }}</td>
+                                                    <td>
+                                                        {% set cell = row[index] ?? null %}
+                                                        {% if cell is iterable %}
+                                                            {{ cell|join(', ') }}
+                                                        {% else %}
+                                                            {{ cell }}
+                                                        {% endif %}
+                                                    </td>
                                                 {% endfor %}
                                                 </tr>
                                             {% endfor %}

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import type React from "react";
+import { useState } from "react";
 
-import DeleteIcon from './delete.svg';
-import { useRemoveAnimation } from './remove.animations';
-import { RemoveButtonWrapper } from './remove.styles';
+import DeleteIcon from "./delete.svg";
+import { useRemoveAnimation } from "./remove.animations";
+import { RemoveButtonWrapper } from "./remove.styles";
 
 type Props = {
   onClick: () => void;

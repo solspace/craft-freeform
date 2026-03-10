@@ -1,27 +1,28 @@
-import React, { useCallback, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import type { Page } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { contextActions, FocusType } from '@editor/store/slices/context';
-import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import SpinnerIcon from '@ff-client/assets/icons/spinner.icon.svg';
-import { useAssetQuery } from '@ff-client/queries/assets';
-import classes from '@ff-client/utils/classes';
+import type { Page } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { contextActions, FocusType } from "@editor/store/slices/context";
+import { contextSelectors } from "@editor/store/slices/context/context.selectors";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import SpinnerIcon from "@ff-client/assets/icons/spinner.icon.svg";
+import { useAssetQuery } from "@ff-client/queries/assets";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useCallback, useMemo } from "react";
+import { useSelector } from "react-redux";
 
-import { PageFieldLayoutWrapper } from '../../layout/layout.styles';
+import { PageFieldLayoutWrapper } from "../../layout/layout.styles";
 
-import { getButtonGroups } from './page-buttons.operations';
-import { Button, ButtonGroup, ButtonGroupWrapper } from './page-buttons.styles';
+import { getButtonGroups } from "./page-buttons.operations";
+import { Button, ButtonGroup, ButtonGroupWrapper } from "./page-buttons.styles";
 
 type Props = {
   page: Page;
 };
 
 const buttonClasses: Record<string, string> = {
-  back: 'btn',
-  save: 'btn',
-  submit: 'btn btn-submit',
+  back: "btn",
+  save: "btn",
+  submit: "btn btn-submit",
 };
 
 export const PageButtons: React.FC<Props> = ({ page }) => {
@@ -45,7 +46,7 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
     .map((button) => button.assetId)
     .filter(Boolean);
 
-  const { data: assetPreviews, isFetching } = useAssetQuery(assetIds, '');
+  const { data: assetPreviews, isFetching } = useAssetQuery(assetIds, "");
 
   const getIcon = useCallback(
     (assetId: number) => {
@@ -54,21 +55,21 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         return <SpinnerIcon />;
       }
 
-      return <img src={url} />;
+      return <img src={url} alt={`${assetId}Alt`} />;
     },
-    [assetPreviews, isFetching]
+    [assetPreviews, isFetching],
   );
 
   return (
     <PageFieldLayoutWrapper>
       <ButtonGroupWrapper
-        className={classes(isActive && 'active')}
+        className={classes(isActive && "active")}
         onClick={() => {
           dispatch(
             contextActions.setFocusedItem({
               type: FocusType.Page,
               uid: page.uid,
-            })
+            }),
           );
         }}
       >
@@ -80,9 +81,9 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
                 key={index}
                 type="button"
               >
-                {assetId && iconPosition === 'left' && getIcon(assetId)}
+                {assetId && iconPosition === "left" && getIcon(assetId)}
                 {getTranslation(`${handle}Label`, label)}
-                {assetId && iconPosition === 'right' && getIcon(assetId)}
+                {assetId && iconPosition === "right" && getIcon(assetId)}
               </Button>
             ))}
           </ButtonGroup>

@@ -1,19 +1,19 @@
-import type { FC, FormEvent } from 'react';
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { ControlBlock } from '@components/form-controls/control.block';
-import { useAppStore } from '@editor/store';
-import type { Suggestion } from '@ff-client/types/notifications';
-import DOMPurify from 'dompurify';
+import { ControlBlock } from "@components/form-controls/control.block";
+import { useAppStore } from "@editor/store";
+import type { Suggestion } from "@ff-client/types/notifications";
+import DOMPurify from "dompurify";
+import type { FC, FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import type { InputControl } from '../../template.modal.types';
-import { hide, show } from '../html-body/tokens/operations/dropdown';
-import type { TokenBackend } from '../html-body/tokens/tokens.types';
+import type { InputControl } from "../../template.modal.types";
+import { hide, show } from "../html-body/tokens/operations/dropdown";
+import type { TokenBackend } from "../html-body/tokens/tokens.types";
 
 import {
   AddButton,
   TextTokenContainer,
   TextTokenWrapper,
-} from './text-tokens.styles';
+} from "./text-tokens.styles";
 
 export const TextTokens: FC<InputControl> = (props) => {
   const store = useAppStore();
@@ -24,10 +24,13 @@ export const TextTokens: FC<InputControl> = (props) => {
 
   const { value, onChange } = props;
 
-  const sanitizeValue = (value: string): string =>
-    DOMPurify.sanitize(value, {
-      ADD_ATTR: ['contenteditable', 'data-freeform-token'],
-    });
+  const sanitizeValue = useCallback(
+    (value: string): string =>
+      DOMPurify.sanitize(value, {
+        ADD_ATTR: ["contenteditable", "data-freeform-token"],
+      }),
+    [],
+  );
 
   const backend: TokenBackend = useMemo(
     () => ({
@@ -47,12 +50,12 @@ export const TextTokens: FC<InputControl> = (props) => {
 
         const textNode = range.startContainer as Text;
         const caretOffset = range.startOffset;
-        const text = textNode.textContent ?? '';
+        const text = textNode.textContent ?? "";
 
         // Walk backwards from caret to find '@'
         let atIndex = -1;
         for (let i = caretOffset - 1; i >= 0; i--) {
-          if (text[i] === '@') {
+          if (text[i] === "@") {
             atIndex = i;
             break;
           }
@@ -67,8 +70,8 @@ export const TextTokens: FC<InputControl> = (props) => {
         tokenRange.setEnd(textNode, caretOffset);
 
         // Replace "@filter" with token span
-        const span = document.createElement('span');
-        span.contentEditable = 'false';
+        const span = document.createElement("span");
+        span.contentEditable = "false";
         span.dataset.freeformToken = item.token;
         span.innerHTML = sanitizeValue(item.name);
 
@@ -83,29 +86,29 @@ export const TextTokens: FC<InputControl> = (props) => {
         selection.addRange(newRange);
 
         // Update your state if needed
-        onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ''));
+        onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ""));
       },
       store,
       handlers: {
         on: {
           down: (callback) => {
-            wrapperRef.current?.addEventListener('keydown', callback);
+            wrapperRef.current?.addEventListener("keydown", callback);
           },
           up: (callback) => {
-            wrapperRef.current?.addEventListener('keyup', callback);
+            wrapperRef.current?.addEventListener("keyup", callback);
           },
         },
         off: {
           down: (callback) => {
-            wrapperRef.current?.removeEventListener('keydown', callback);
+            wrapperRef.current?.removeEventListener("keydown", callback);
           },
           up: (callback) => {
-            wrapperRef.current?.removeEventListener('keyup', callback);
+            wrapperRef.current?.removeEventListener("keyup", callback);
           },
         },
       },
     }),
-    [store, onChange]
+    [store, onChange, sanitizeValue],
   );
 
   const buttonBackend: TokenBackend = {
@@ -122,8 +125,8 @@ export const TextTokens: FC<InputControl> = (props) => {
     },
     getRect: () => null,
     insert: (item: Suggestion): void => {
-      const span = document.createElement('span');
-      span.contentEditable = 'false';
+      const span = document.createElement("span");
+      span.contentEditable = "false";
       span.dataset.freeformToken = item.token;
       span.innerHTML = sanitizeValue(item.name);
 
@@ -163,24 +166,24 @@ export const TextTokens: FC<InputControl> = (props) => {
       selection.addRange(newRange);
 
       // Update your state if needed
-      onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ''));
+      onChange(sanitizeValue(wrapperRef.current?.innerHTML ?? ""));
     },
     store,
     handlers: {
       on: {
         down: (callback) => {
-          document?.addEventListener('keydown', callback);
+          document?.addEventListener("keydown", callback);
         },
         up: (callback) => {
-          document.addEventListener('keyup', callback);
+          document.addEventListener("keyup", callback);
         },
       },
       off: {
         down: (callback) => {
-          document.removeEventListener('keydown', callback);
+          document.removeEventListener("keydown", callback);
         },
         up: (callback) => {
-          document.removeEventListener('keyup', callback);
+          document.removeEventListener("keyup", callback);
         },
       },
     },
@@ -211,14 +214,14 @@ export const TextTokens: FC<InputControl> = (props) => {
     if (wrapperRef.current && wrapperRef.current.innerHTML !== value) {
       wrapperRef.current.innerHTML = sanitizeValue(value);
     }
-  }, [value]);
+  }, [value, sanitizeValue]);
 
   const handleInput = useCallback(
     (event: FormEvent<HTMLDivElement>): void => {
       const nativeEvent = event.nativeEvent as InputEvent;
-      const data = nativeEvent.data || '';
+      const data = nativeEvent.data || "";
 
-      if (data === '@') {
+      if (data === "@") {
         show(backend);
       }
 
@@ -226,7 +229,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         onChange(sanitizeValue(wrapperRef.current.innerHTML));
       }
     },
-    [backend, onChange]
+    [backend, onChange, sanitizeValue],
   );
 
   return (

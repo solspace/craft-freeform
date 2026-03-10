@@ -1,9 +1,8 @@
-import type { FC, MutableRefObject } from 'react';
-import React from 'react';
-import type { EnvironmentSuggestionCategories } from '@ff-client/queries/autosuggest';
+import type { EnvironmentSuggestionCategories } from "@ff-client/queries/autosuggest";
+import type { FC, MutableRefObject } from "react";
 
-import { useFilteredSuggestions } from './suggestions.filter';
-import { useFocusTracking } from './suggestions.hooks';
+import { useFilteredSuggestions } from "./suggestions.filter";
+import { useFocusTracking } from "./suggestions.hooks";
 import {
   Dash,
   Hint,
@@ -13,7 +12,7 @@ import {
   SuggestionCategory,
   SuggestionsWrapper,
   Title,
-} from './suggestions.styles';
+} from "./suggestions.styles";
 
 type Props = {
   inputRef?: MutableRefObject<HTMLInputElement>;

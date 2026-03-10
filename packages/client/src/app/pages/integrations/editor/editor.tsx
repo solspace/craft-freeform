@@ -1,40 +1,39 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import String from '@components/form-controls/control-types/string/string';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config from '@config/freeform/freeform.config';
-import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import StringInput from "@components/form-controls/control-types/string/string";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import config from "@config/freeform/freeform.config";
+import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
 import type {
   APIError,
   ErrorCollection,
   ErrorList,
-} from '@ff-client/types/api';
-import { IntegrationType } from '@ff-client/types/integrations';
-import type { GenericValue } from '@ff-client/types/properties';
-import { PropertyType } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import { generateHandle } from '@ff-client/utils/strings';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/types/api";
+import { IntegrationType } from "@ff-client/types/integrations";
+import type { GenericValue } from "@ff-client/types/properties";
+import { PropertyType } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import { generateHandle } from "@ff-client/utils/strings";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 
-import { useIntegrationNavigation } from '../sidebar/sidebar.queries';
-
-import { Titlebar } from './titlebar/titlebar';
-import { EditorInput } from './editor.input';
-import { EditorLoader } from './editor.loader';
-import { VersionUpgradeOverlay } from './editor.overlay';
+import { useIntegrationNavigation } from "../sidebar/sidebar.queries";
+import { EditorInput } from "./editor.input";
+import { EditorLoader } from "./editor.loader";
+import { VersionUpgradeOverlay } from "./editor.overlay";
 import {
   useIntegrationMutation,
   useIntegrationProperties,
-} from './editor.queries';
+} from "./editor.queries";
 import {
   ActionsWrapper,
   EditorContainer,
   EditorTabsWrapper,
   EditorWrapper,
-} from './editor.styles';
-import type { IntegrationState } from './editor.types';
+} from "./editor.styles";
+import type { IntegrationState } from "./editor.types";
+import { Titlebar } from "./titlebar/titlebar";
 
 type Params = {
   type: IntegrationType;
@@ -57,7 +56,7 @@ export const IntegrationsEditor: FC = () => {
       }
 
       const entry = category.entries.find(
-        (entry) => entry.type.shortName === integration
+        (entry) => entry.type.shortName === integration,
       );
 
       if (entry) {
@@ -69,11 +68,11 @@ export const IntegrationsEditor: FC = () => {
         }
       }
     }
-  }, [navData]);
+  }, [navData, integration, id, navigate, type]);
 
   const [values, setValues] = useState<IntegrationState>({
-    name: '',
-    handle: '',
+    name: "",
+    handle: "",
     enabled: true,
     metadata: {},
   });
@@ -91,14 +90,14 @@ export const IntegrationsEditor: FC = () => {
       const list: ErrorList = { metadata: {} };
       Object.entries(error.errors).forEach(([key, messages]) => {
         if (/^metadata\./.test(key)) {
-          list.metadata[key.replace(/^metadata\./, '')] = messages;
+          list.metadata[key.replace(/^metadata\./, "")] = messages;
         } else {
           list[key] = messages;
         }
       });
 
       setErrors(list);
-    }
+    },
   );
 
   useEffect(() => {
@@ -114,7 +113,7 @@ export const IntegrationsEditor: FC = () => {
           acc[property.handle] = property.value;
           return acc;
         },
-        {} as Record<string, GenericValue>
+        {} as Record<string, GenericValue>,
       );
 
       setValues({
@@ -126,8 +125,8 @@ export const IntegrationsEditor: FC = () => {
     }
   }, [data]);
 
-  const canManage = config.permissions.integrations === 'manage';
-  const isAddNew = id === 'new';
+  const canManage = config.permissions.integrations === "manage";
+  const isAddNew = id === "new";
   const isLoading = isFetching || !data;
 
   const saveHandler = (): void => {
@@ -170,18 +169,20 @@ export const IntegrationsEditor: FC = () => {
             <div className="btngroup">
               {instanceCount > 0 && type !== IntegrationType.Singles && (
                 <button
-                  className={classes('btn', 'add', 'icon', 'disabled')}
-                  title={translate('Add new integration of the same type')}
+                  type="button"
+                  title={translate("Add new integration of the same type")}
+                  className={classes("btn", "add", "icon", "disabled")}
                 />
               )}
               <button
+                type="button"
                 className={classes(
-                  'btn',
-                  data?.supported && 'submit',
-                  'disabled'
+                  "btn",
+                  data?.supported && "submit",
+                  "disabled",
                 )}
               >
-                {translate('Save')}
+                {translate("Save")}
               </button>
             </div>
           </ActionsWrapper>
@@ -197,7 +198,7 @@ export const IntegrationsEditor: FC = () => {
       <Breadcrumb
         id="integration-edit"
         label={data.name}
-        url={`integrations/${type}/${integration}${id ? `/${id}` : ''}`}
+        url={`integrations/${type}/${integration}${id ? `/${id}` : ""}`}
       />
 
       <VersionUpgradeOverlay integration={data} />
@@ -214,7 +215,7 @@ export const IntegrationsEditor: FC = () => {
           ))}
           {isAddNew && (
             <a className="active">
-              <span>{translate('Create a new instance')}</span>
+              <span>{translate("Create a new instance")}</span>
             </a>
           )}
         </EditorTabsWrapper>
@@ -225,28 +226,30 @@ export const IntegrationsEditor: FC = () => {
           <div className="btngroup">
             {instanceCount > 0 && type !== IntegrationType.Singles && (
               <button
+                type="button"
+                title={translate("Add new integration of the same type")}
                 className={classes(
-                  'btn',
-                  'add',
-                  'icon',
-                  !data.supported && 'disabled'
+                  "btn",
+                  "add",
+                  "icon",
+                  !data.supported && "disabled",
                 )}
                 onClick={() =>
                   navigate(`/integrations/${type}/${integration}/new`)
                 }
-                title={translate('Add new integration of the same type')}
               />
             )}
             <button
-              className={classes('btn', data.supported ? 'submit' : 'disabled')}
+              type="button"
+              className={classes("btn", data.supported ? "submit" : "disabled")}
               onClick={saveHandler}
             >
               <LoadingText
                 loading={isMutating}
-                loadingText={translate('Saving')}
+                loadingText={translate("Saving")}
                 spinner
               >
-                {translate('Save')}
+                {translate("Save")}
               </LoadingText>
             </button>
           </div>
@@ -256,13 +259,13 @@ export const IntegrationsEditor: FC = () => {
       <EditorWrapper>
         <Titlebar integration={data} />
 
-        <String
+        <StringInput
           property={{
-            handle: 'name',
-            label: 'Name',
+            handle: "name",
+            label: "Name",
             required: true,
             instructions: translate(
-              'What this integration will be called in the CP.'
+              "What this integration will be called in the CP.",
             ),
             type: PropertyType.String,
           }}

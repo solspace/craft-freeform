@@ -1,5 +1,5 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 type Props = {
   fieldUid: string;
@@ -18,13 +18,11 @@ export const BooleanValueRule: React.FC<Props> = ({
         id={`${fieldUid}-rule-checkbox`}
         type="checkbox"
         className="checkbox"
-        onChange={(event) =>
-          onChange && onChange(event.target.checked ? '1' : '')
-        }
+        onChange={(event) => onChange?.(event.target.checked ? "1" : "")}
         checked={Boolean(value)}
       />
       <label htmlFor={`${fieldUid}-rule-checkbox`}>
-        {translate(value ? 'Checked' : 'Unchecked')}
+        {translate(value ? "Checked" : "Unchecked")}
       </label>
     </div>
   );

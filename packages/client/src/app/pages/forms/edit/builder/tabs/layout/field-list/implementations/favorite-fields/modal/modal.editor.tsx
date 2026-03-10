@@ -1,25 +1,24 @@
-import React from 'react';
-import { RenderContextProvider } from '@components/form-controls/context/render.context';
-import { SectionWrapper } from '@editor/builder/tabs/form-settings/settings.sidebar.styles';
+import { RenderContextProvider } from "@components/form-controls/context/render.context";
+import { SectionWrapper } from "@editor/builder/tabs/form-settings/settings.sidebar.styles";
 import {
   Icon,
   Title,
-} from '@editor/builder/tabs/layout/property-editor/property-editor.styles';
-import { SectionBlock } from '@editor/builder/tabs/layout/property-editor/section-block';
+} from "@editor/builder/tabs/layout/property-editor/property-editor.styles";
+import { SectionBlock } from "@editor/builder/tabs/layout/property-editor/section-block";
 import {
   useFetchFieldPropertySections,
   useFieldType,
-} from '@ff-client/queries/field-types';
+} from "@ff-client/queries/field-types";
 import type {
   FieldFavorite,
   PropertyValueCollection,
-} from '@ff-client/types/fields';
-import type { GenericValue } from '@ff-client/types/properties';
-import { type Property } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@ff-client/types/fields";
+import type { GenericValue, Property } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
 
-import { FavoriteFieldComponent } from './modal.editor.field';
+import { FavoriteFieldComponent } from "./modal.editor.field";
 
 type Props = {
   field: FieldFavorite;
@@ -66,7 +65,7 @@ export const FavoritesEditor: React.FC<Props> = ({
               updateValueCallback={updateValueCallback}
             />
           ))}
-        </SectionBlock>
+        </SectionBlock>,
       );
     });
 
@@ -82,7 +81,7 @@ export const FavoritesEditor: React.FC<Props> = ({
           }}
         />
       </Title>
-      <RenderContextProvider size={'small'}>
+      <RenderContextProvider size={"small"}>
         <SectionWrapper>{sectionBlocks}</SectionWrapper>
       </RenderContextProvider>
     </>

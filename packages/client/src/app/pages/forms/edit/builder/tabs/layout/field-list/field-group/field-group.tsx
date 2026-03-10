@@ -1,10 +1,10 @@
-import type { ReactNode } from 'react';
-import React from 'react';
-import type { Edition } from '@config/freeform/freeform.config';
-import config from '@config/freeform/freeform.config';
-import classes from '@ff-client/utils/classes';
+import type { Edition } from "@config/freeform/freeform.config";
+import config from "@config/freeform/freeform.config";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import type { ReactNode } from "react";
 
-import { FieldGroupWrapper, GroupTitle } from './field-group.styles';
+import { FieldGroupWrapper, GroupTitle } from "./field-group.styles";
 
 type FieldGroupProps = {
   title: string;
@@ -30,7 +30,7 @@ export const FieldGroup: React.FC<FieldGroupProps> = ({
     minEdition !== undefined ? editions.isAtLeast(minEdition) : true;
 
   return (
-    <FieldGroupWrapper className={classes(disabled && 'disabled')}>
+    <FieldGroupWrapper className={classes(disabled && "disabled")}>
       <GroupTitle>
         {title}
         {button && matchesMinEdition && (

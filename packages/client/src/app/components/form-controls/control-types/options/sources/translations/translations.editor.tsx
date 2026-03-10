@@ -1,24 +1,24 @@
-import React, { useRef } from 'react';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import {
   Cell,
   Input,
   Row,
   TableContainer,
   TabularOptions,
-} from '@components/form-controls/control-types/table/table.editor.styles';
-import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
-import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { Property } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import cloneDeep from 'lodash/cloneDeep';
+} from "@components/form-controls/control-types/table/table.editor.styles";
+import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
+import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type { Property } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import cloneDeep from "lodash/cloneDeep";
+import React, { useRef } from "react";
 
-import type { Option, OptionsConfiguration } from '../../options.types';
+import type { Option, OptionsConfiguration } from "../../options.types";
 
-import { OriginalValuePreview } from './translations.editor.styles';
-import type { OptionTranslations } from './translations.types';
+import { OriginalValuePreview } from "./translations.editor.styles";
+import type { OptionTranslations } from "./translations.types";
 
 type Props = {
   value: OptionsConfiguration;
@@ -36,7 +36,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
   field,
 }) => {
   const { getTranslation, updateTranslation } = useTranslations(field);
-  const options = (value.source === 'custom' && value.options) || [];
+  const options = (value.source === "custom" && value.options) || [];
 
   const translation = getTranslation<OptionTranslations>(property.handle, {});
   const optionTranslations: Option[] = translation.options || [];
@@ -45,7 +45,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
 
   const refs = useRef([]);
   refs.current = options.map(
-    (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>()
+    (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>(),
   );
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
@@ -58,7 +58,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
           <tbody>
             {options.map((option, index) => {
               const optTranslation = optionTranslations.find(
-                (opt) => opt.value === option.value
+                (opt) => opt.value === option.value,
               );
 
               let isChecked = false;
@@ -85,7 +85,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                 <Row key={index}>
                   <Cell style={{ width: 200 }}>
                     <OriginalValuePreview className="code" title={option.value}>
-                      {option.value || translate('Empty')}
+                      {option.value || translate("Empty")}
                     </OriginalValuePreview>
                   </Cell>
 
@@ -93,7 +93,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                     <Input
                       type="text"
                       value={label}
-                      placeholder={translate('Label')}
+                      placeholder={translate("Label")}
                       autoFocus={activeCell === `${index}:0`}
                       ref={(element) => setCellRef(element, index, 0)}
                       onFocus={() => setActiveCell(index, 0)}
@@ -101,7 +101,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                       onChange={(event) => {
                         const updatedOptions = cloneDeep(optionTranslations);
                         const translationIndex = updatedOptions.findIndex(
-                          (opt) => opt.value === option.value
+                          (opt) => opt.value === option.value,
                         );
 
                         if (translationIndex === -1) {
@@ -129,14 +129,14 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                         if (!isMultiple) {
                           updateTranslation(property.handle, {
                             ...translation,
-                            defaultValue: value ? option.value : '',
+                            defaultValue: value ? option.value : "",
                           });
 
                           return;
                         }
 
                         let updatedValues: string[];
-                        if (typeof defaultValueTranslations === 'object') {
+                        if (typeof defaultValueTranslations === "object") {
                           updatedValues = [...defaultValueTranslations];
                         } else {
                           updatedValues = [];
@@ -150,7 +150,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                         ) {
                           updatedValues.splice(
                             updatedValues.indexOf(option.value),
-                            1
+                            1,
                           );
                         }
 

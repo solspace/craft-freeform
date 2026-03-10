@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { useHover } from '@ff-client/hooks/use-hover';
-import DeleteIcon from '@ff-icons/actions/trash-can.svg';
+import { useHover } from "@ff-client/hooks/use-hover";
+import DeleteIcon from "@ff-icons/actions/trash-can.svg";
+import type React from "react";
+import { useRef } from "react";
 
-import { useRemoveAnimation } from './remove.animations';
-import { RemoveButtonWrapper } from './remove.styles';
+import { useRemoveAnimation } from "./remove.animations";
+import { RemoveButtonWrapper } from "./remove.styles";
 
 type Props = {
   active: boolean;

@@ -1,34 +1,35 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { contextActions } from '@editor/store/slices/context';
-import { formActions } from '@editor/store/slices/form';
-import { fieldActions } from '@editor/store/slices/layout/fields';
-import { layoutActions } from '@editor/store/slices/layout/layouts';
+import { contextActions } from "@editor/store/slices/context";
+import { formActions } from "@editor/store/slices/form";
+import { fieldActions } from "@editor/store/slices/layout/fields";
+import { layoutActions } from "@editor/store/slices/layout/layouts";
 import {
   useQueryFormSettings,
   useQuerySingleForm,
-} from '@ff-client/queries/forms';
+} from "@ff-client/queries/forms";
 import {
   useFormIntegrationsQueryReset,
   useQueryFormIntegrations,
-} from '@ff-client/queries/integrations';
+} from "@ff-client/queries/integrations";
 import {
   useNotificationQueryReset,
   useQueryFormNotifications,
-} from '@ff-client/queries/notifications';
+} from "@ff-client/queries/notifications";
 import {
   useQueryFormRules,
   useQueryNotificationRules,
   useRulesQueryReset,
-} from '@ff-client/queries/rules';
+} from "@ff-client/queries/rules";
+import type React from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-import { Builder } from './builder/builder';
-import { LoaderBuilder } from './builder/builder.loader';
-import { pageActions } from './store/slices/layout/pages';
-import { rowActions } from './store/slices/layout/rows';
-import { translationActions } from './store/slices/translations';
-import { addNewPage } from './store/thunks/pages';
-import { useAppDispatch } from './store';
+import { Builder } from "./builder/builder";
+import { LoaderBuilder } from "./builder/builder.loader";
+import { useAppDispatch } from "./store";
+import { pageActions } from "./store/slices/layout/pages";
+import { rowActions } from "./store/slices/layout/rows";
+import { translationActions } from "./store/slices/translations";
+import { addNewPage } from "./store/thunks/pages";
 
 type RouteParams = {
   formId: string;
@@ -47,7 +48,7 @@ export const Edit: React.FC = () => {
   useQueryFormNotifications(formId && Number(formId));
   useQueryFormIntegrations(formId && Number(formId));
   const { data, isFetching, isError, error } = useQuerySingleForm(
-    formId && Number(formId)
+    formId && Number(formId),
   );
 
   useEffect(() => {
@@ -76,7 +77,14 @@ export const Edit: React.FC = () => {
     } else {
       dispatch(contextActions.setPage(pages.find(Boolean)?.uid));
     }
-  }, [data, formId]);
+  }, [
+    data,
+    formId,
+    dispatch,
+    resetFormIntegrations,
+    resetNotifications,
+    resetRules,
+  ]);
 
   if (isFetching) {
     return <LoaderBuilder />;

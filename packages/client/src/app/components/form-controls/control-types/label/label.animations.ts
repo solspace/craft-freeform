@@ -1,6 +1,6 @@
-import type { SpringValue } from 'react-spring';
-import { useSpring } from 'react-spring';
-import { colors } from '@ff-client/styles/variables';
+import { colors } from "@ff-client/styles/variables";
+import type { SpringValue } from "react-spring";
+import { useSpring } from "react-spring";
 
 type EditButtonAnimation = {
   opacity: SpringValue<number>;
@@ -8,11 +8,11 @@ type EditButtonAnimation = {
 };
 
 export const useEditButtonAnimations = (
-  hover: boolean
+  hover: boolean,
 ): EditButtonAnimation => {
   return useSpring({
     opacity: hover ? 1 : 0,
-    transform: hover ? 'rotate(0deg)' : 'rotate(-30deg)',
+    transform: hover ? "rotate(0deg)" : "rotate(-30deg)",
     config: {
       tension: 500,
     },

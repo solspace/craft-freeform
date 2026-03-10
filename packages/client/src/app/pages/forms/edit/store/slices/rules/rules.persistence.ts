@@ -1,5 +1,5 @@
-import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
+import type { SaveSubscriber } from "@editor/store/middleware/state-persist";
+import { TOPIC_SAVE } from "@editor/store/middleware/state-persist";
 
 const persist: SaveSubscriber = (_, data) => {
   const { getState, persist } = data;

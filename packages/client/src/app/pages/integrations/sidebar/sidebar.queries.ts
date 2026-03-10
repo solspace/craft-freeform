@@ -1,9 +1,9 @@
-import { QKIntegrations } from '@ff-client/queries/integrations';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { QKIntegrations } from "@ff-client/queries/integrations";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-import type { TypeDefinition } from '../integration.types';
+import type { TypeDefinition } from "../integration.types";
 
 export type Entry = {
   type: TypeDefinition;
@@ -31,7 +31,7 @@ export const useIntegrationNavigation =
       queryKey: QKIntegrations.navigation,
       queryFn: () =>
         axios
-          .get<NavigationResponse>('/api/integrations/navigation')
+          .get<NavigationResponse>("/api/integrations/navigation")
           .then((res) => res.data),
       gcTime: Infinity,
       staleTime: Infinity,

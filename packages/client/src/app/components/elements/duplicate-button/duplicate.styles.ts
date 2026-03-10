@@ -1,5 +1,5 @@
-import { animated } from 'react-spring';
-import styled from 'styled-components';
+import { animated } from "react-spring";
+import styled from "styled-components";
 
 export const DuplicateButtonWrapper = styled(animated.button)`
   display: flex;

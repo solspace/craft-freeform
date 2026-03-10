@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
-const { merge } = require('webpack-merge');
-const baseConfig = require('./base.config.js');
+const { merge } = require("webpack-merge");
+const baseConfig = require("./base.config.js");
+const tagifyPathPattern = /node_modules[\\/]@yaireo[\\/]tagify[\\/]/;
 
 module.exports = merge(baseConfig, {
   performance: {
@@ -12,15 +12,20 @@ module.exports = merge(baseConfig, {
   module: {
     rules: [
       {
-        test: /\.ts(x?)$/,
-        exclude: /node_modules/,
+        test: /\.(t|j)s(x?)$/,
+        exclude: (modulePath) =>
+          /node_modules/.test(modulePath) &&
+          !tagifyPathPattern.test(modulePath),
         use: [
           {
-            loader: 'ts-loader',
+            loader: "ts-loader",
             options: {
-              configFile: require('path').resolve(
+              compilerOptions: {
+                allowJs: true,
+              },
+              configFile: require("node:path").resolve(
                 __dirname,
-                '../../tsconfig.build.json'
+                "../../tsconfig.build.json",
               ),
             },
           },
@@ -45,8 +50,8 @@ module.exports = merge(baseConfig, {
       cacheGroups: {
         vendor: {
           test: /node_modules/,
-          chunks: 'initial',
-          name: 'vendor',
+          chunks: "initial",
+          name: "vendor",
           enforce: true,
         },
       },

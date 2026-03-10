@@ -1,38 +1,46 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import { createScript } from '@lib/plugin/helpers/html';
-import type { FreeformHandler } from 'types/form';
+import type Freeform from "@components/front-end/plugin/freeform";
+import { createScript } from "@lib/plugin/helpers/html";
+import type { FreeformHandler } from "types/form";
 
 class Signature implements FreeformHandler {
   freeform: Freeform;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
-    if (!this.freeform.has('data-scripts-signature')) {
+    if (!this.freeform.has("data-scripts-signature")) {
       return;
     }
 
-    createScript('//cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js', { onLoad: this.reload });
+    createScript(
+      "//cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js",
+      { onLoad: this.reload },
+    );
   }
 
   reload = () => {
-    if (!this.freeform.has('data-scripts-signature')) {
+    if (!this.freeform.has("data-scripts-signature")) {
       return;
     }
 
-    const canvasFields = this.freeform.form.querySelectorAll<HTMLCanvasElement>('canvas[data-signature-field]');
+    const canvasFields = this.freeform.form.querySelectorAll<HTMLCanvasElement>(
+      "canvas[data-signature-field]",
+    );
     canvasFields.forEach((canvas) => {
       const onEnd = () => {
         input.value = signaturePad.toDataURL();
       };
 
-      const { borderColor, backgroundColor, penColor, dotSize } = canvas.dataset;
+      const { borderColor, backgroundColor, penColor, dotSize } =
+        canvas.dataset;
 
-      canvas.style.borderWidth = '1px';
-      canvas.style.borderStyle = 'solid';
+      canvas.style.borderWidth = "1px";
+      canvas.style.borderStyle = "solid";
       canvas.style.borderColor = borderColor;
 
       const input = canvas.previousSibling as HTMLInputElement;
-      const clearButton = canvas.parentNode.querySelector<HTMLButtonElement>('[data-signature-clear]');
+      const clearButton = canvas.parentNode.querySelector<HTMLButtonElement>(
+        "[data-signature-clear]",
+      );
       const value = input.value;
 
       // @ts-expect-error: SignaturePad types are not included
@@ -46,9 +54,9 @@ class Signature implements FreeformHandler {
       });
 
       if (clearButton) {
-        clearButton.addEventListener('click', () => {
+        clearButton.addEventListener("click", () => {
           signaturePad.clear();
-          input.value = '';
+          input.value = "";
         });
       }
 
@@ -57,7 +65,9 @@ class Signature implements FreeformHandler {
         signaturePad.clear();
         img.src = value;
         img.onload = () => {
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas
+            .getContext("2d")
+            .drawImage(img, 0, 0, canvas.width, canvas.height);
         };
       }
     });

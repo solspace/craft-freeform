@@ -1,10 +1,10 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import type { TestStats } from '@ff-client/types/form-monitor';
-import translate from '@ff-client/utils/translations';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import type { TestStats } from "@ff-client/types/form-monitor";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { NavLink } from "react-router-dom";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-import { FormMonitorStats } from './card.monitor.stats';
+import { FormMonitorStats } from "./card.monitor.stats";
 import {
   CardBody,
   CardWrapper,
@@ -15,22 +15,22 @@ import {
   LinkList,
   PaddedChartFooter,
   TitleLink,
-} from './card.styles';
+} from "./card.styles";
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const titles = [
-  'Contact Us',
-  'Feedback',
-  'Survey',
-  'Registration',
-  'Application',
-  'Subscription',
+  "Contact Us",
+  "Feedback",
+  "Survey",
+  "Registration",
+  "Application",
+  "Subscription",
 ];
 
 export const CardPreview: React.FC = () => {
-  const color = '#dfdfdf';
+  const color = "#dfdfdf";
 
   const data = Array.from({ length: 10 }, () => ({
     value: randomSubmissions(0, Math.random() > 0.9 ? 8 : 4),
@@ -62,10 +62,10 @@ export const CardPreview: React.FC = () => {
 
             <LinkList>
               <li>
-                <a href="#">3 {translate('Submissions')}</a>
+                <a href="#">3 {translate("Submissions")}</a>
               </li>
               <li>
-                <a href="#">0 {translate('Spam')}</a>
+                <a href="#">0 {translate("Spam")}</a>
               </li>
             </LinkList>
           </FormBodyContent>
@@ -101,7 +101,7 @@ export const CardPreview: React.FC = () => {
             </defs>
             <Area
               type="monotone"
-              dataKey={'value'}
+              dataKey={"value"}
               stroke={color}
               strokeWidth={1}
               strokeOpacity={1}

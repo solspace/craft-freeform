@@ -1,12 +1,11 @@
-import React from 'react';
-import { Action } from '@editor/builder/tabs/rules/conditions/table/condition-table.styles';
-import type { RecipientMapping } from '@ff-client/types/notifications';
-import DeleteIcon from '@ff-icons/actions/delete.svg';
-
-import { Recipients } from './recipients/recipients';
-import { Template } from './template/template';
-import { Value } from './value/value';
-import { BlockWrapper } from './block.styles';
+import { Action } from "@editor/builder/tabs/rules/conditions/table/condition-table.styles";
+import type { RecipientMapping } from "@ff-client/types/notifications";
+import DeleteIcon from "@ff-icons/actions/delete.svg";
+import type React from "react";
+import { BlockWrapper } from "./block.styles";
+import { Recipients } from "./recipients/recipients";
+import { Template } from "./template/template";
+import { Value } from "./value/value";
 
 export type RecipientMappingUpdate = (value: RecipientMapping) => void;
 

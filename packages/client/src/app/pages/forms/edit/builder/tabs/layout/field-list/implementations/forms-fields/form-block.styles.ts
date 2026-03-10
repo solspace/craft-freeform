@@ -1,12 +1,12 @@
-import { animated } from 'react-spring';
-import { scrollBar } from '@ff-client/styles/mixins';
+import { scrollBar } from "@ff-client/styles/mixins";
 import {
   beziers,
   borderRadius,
   colors,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import { animated } from "react-spring";
+import styled from "styled-components";
 
 export const FormTitle = styled.div`
   cursor: pointer;

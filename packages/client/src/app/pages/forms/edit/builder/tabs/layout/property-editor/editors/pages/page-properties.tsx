@@ -1,19 +1,19 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useSelector } from 'react-redux';
-import { useAppDispatch } from '@editor/store';
-import { contextActions } from '@editor/store/slices/context';
-import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
-import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
-import { useFetchPageButtonType } from '@ff-client/queries/page-types';
-import type { Property } from '@ff-client/types/properties';
+import { useAppDispatch } from "@editor/store";
+import { contextActions } from "@editor/store/slices/context";
+import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
+import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid.svg";
+import { useFetchPageButtonType } from "@ff-client/queries/page-types";
+import type { Property } from "@ff-client/types/properties";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
 
-import { CloseLink, Title } from '../../property-editor.styles';
-import { SectionBlock } from '../../section-block';
-import { SectionWrapper } from '../../section-block.styles';
+import { CloseLink, Title } from "../../property-editor.styles";
+import { SectionBlock } from "../../section-block";
+import { SectionWrapper } from "../../section-block.styles";
 
-import { PageComponent } from './page-component';
-import { PagePropertiesWrapper } from './page-properties.styles';
+import { PageComponent } from "./page-component";
+import { PagePropertiesWrapper } from "./page-properties.styles";
 
 type Props = {
   uid: string;
@@ -68,7 +68,7 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
             property={property}
           />
         ))}
-      </SectionBlock>
+      </SectionBlock>,
     );
   });
 

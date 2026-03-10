@@ -1,7 +1,6 @@
-import type { FC } from 'react';
-import React from 'react';
-import translate from '@ff-client/utils/translations';
-import styled from 'styled-components';
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import styled from "styled-components";
 
 export const EnvLine: FC = () => {
   return (
@@ -9,14 +8,14 @@ export const EnvLine: FC = () => {
       <span className="icon" aria-hidden="true" />
       <span className="visually-hidden">Tip: </span>
       <span>
-        {translate('This can begin with an environment variable.')}{' '}
+        {translate("This can begin with an environment variable.")}{" "}
         <a
           href="https://craftcms.com/docs/5.x/configure.html#control-panel-settings"
           className="go"
           target="_blank"
           rel="noopener noreferrer"
         >
-          {translate('Learn more')}
+          {translate("Learn more")}
         </a>
       </span>
     </Paragraph>

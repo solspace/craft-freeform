@@ -1,16 +1,16 @@
-import type { FC } from 'react';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { QKIntegrations } from '@ff-client/queries/integrations';
-import { notifications } from '@ff-client/utils/notifications';
-import translate from '@ff-client/utils/translations';
-import { useQueryClient } from '@tanstack/react-query';
+import { QKIntegrations } from "@ff-client/queries/integrations";
+import { notifications } from "@ff-client/utils/notifications";
+import translate from "@ff-client/utils/translations";
+import { useQueryClient } from "@tanstack/react-query";
+import type { FC } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { disableAndDeleteFormMonitor, disableFormMonitor } from './actions';
+import { disableAndDeleteFormMonitor, disableFormMonitor } from "./actions";
 import {
   DisableAndDeleteMonitoringModal,
   DisableMonitoringModal,
-} from './titlebar.modal';
+} from "./titlebar.modal";
 
 type Integration = {
   id: string;
@@ -35,11 +35,15 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
 
   return (
     <>
-      <button className="btn small" onClick={onDisableMonitoring}>
-        <span>{translate('Disable Monitoring')}</span>
+      <button type="button" className="btn small" onClick={onDisableMonitoring}>
+        <span>{translate("Disable Monitoring")}</span>
       </button>
-      <button className="btn small" onClick={onDisableAndDeleteMonitoring}>
-        <span>{translate('Disable & Delete Monitoring Data')}</span>
+      <button
+        type="button"
+        className="btn small"
+        onClick={onDisableAndDeleteMonitoring}
+      >
+        <span>{translate("Disable & Delete Monitoring Data")}</span>
       </button>
 
       {showDisable && (
@@ -53,7 +57,7 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
             queryClient.invalidateQueries({
               queryKey: QKIntegrations.single(Number(integration.id)),
             });
-            notifications.success(translate('Monitoring disabled.'));
+            notifications.success(translate("Monitoring disabled."));
           }}
         />
       )}
@@ -70,9 +74,9 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
               queryKey: QKIntegrations.single(Number(integration.id)),
             });
             notifications.success(
-              translate('Monitoring disabled and data deleted.')
+              translate("Monitoring disabled and data deleted."),
             );
-            navigate('/integrations', { replace: true });
+            navigate("/integrations", { replace: true });
           }}
         />
       )}
@@ -82,4 +86,4 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
 
 export const isFormMonitor = (integration: Integration): boolean =>
   integration.type.class ===
-  'Solspace\\Freeform\\Integrations\\Single\\FormMonitor\\FormMonitor';
+  "Solspace\\Freeform\\Integrations\\Single\\FormMonitor\\FormMonitor";

@@ -1,7 +1,7 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import { PreviewTable } from '../table/table.preview.styles';
+import { PreviewTable } from "../table/table.preview.styles";
 
 export const PreviewContainer = styled(PreviewTable)`
   padding: ${spacings.sm};

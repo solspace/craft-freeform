@@ -1,100 +1,100 @@
-import { vi } from 'vitest';
+import { describe, expect, it, vi } from "vitest";
 
-import injectInto from './inject-into';
+import injectInto from "./inject-into";
 
-describe('injectInto middleware', () => {
-  it('calls injector with correct arguments, returns self', () => {
+describe("injectInto middleware", () => {
+  it("calls injector with correct arguments, returns self", () => {
     const callback = vi.fn();
     const result = injectInto(
-      'My Test Value',
-      { target: 'myProp' },
+      "My Test Value",
+      { target: "myProp" },
       undefined,
-      callback
+      callback,
     );
 
-    expect(result).toBe('My Test Value');
+    expect(result).toBe("My Test Value");
 
     expect(callback).toHaveBeenCalled();
-    expect(callback).toHaveBeenCalledWith('myProp', 'My Test Value');
+    expect(callback).toHaveBeenCalledWith("myProp", "My Test Value");
   });
 
-  it('calls injector with camelize on and receives camelized string', () => {
+  it("calls injector with camelize on and receives camelized string", () => {
     const callback = vi.fn();
     injectInto(
-      'My Test Value',
-      { target: 'myProp', camelize: true },
+      "My Test Value",
+      { target: "myProp", camelize: true },
       undefined,
-      callback
+      callback,
     );
 
-    expect(callback).toHaveBeenCalledWith('myProp', 'myTestValue');
+    expect(callback).toHaveBeenCalledWith("myProp", "myTestValue");
   });
 
-  describe('conditional injector', () => {
-    it('bypasses injector with condition that matches', () => {
+  describe("conditional injector", () => {
+    it("bypasses injector with condition that matches", () => {
       const callback = vi.fn();
       injectInto(
-        'My Test Value',
+        "My Test Value",
         {
-          target: 'myProp',
-          bypassConditions: [{ name: 'myCondition', isTrue: true }],
+          target: "myProp",
+          bypassConditions: [{ name: "myCondition", isTrue: true }],
         },
         { myCondition: true },
-        callback
+        callback,
       );
 
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('bypasses injector with several conditions with one matching', () => {
+    it("bypasses injector with several conditions with one matching", () => {
       const callback = vi.fn();
       injectInto(
-        'My Test Value',
+        "My Test Value",
         {
-          target: 'myProp',
+          target: "myProp",
           bypassConditions: [
-            { name: 'myCondition', isTrue: true },
-            { name: 'myCondition2', isTrue: true },
+            { name: "myCondition", isTrue: true },
+            { name: "myCondition2", isTrue: true },
           ],
         },
         { myCondition2: true },
-        callback
+        callback,
       );
 
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('bypasses injector with several conditions that should not match', () => {
+    it("bypasses injector with several conditions that should not match", () => {
       const callback = vi.fn();
       injectInto(
-        'My Test Value',
+        "My Test Value",
         {
-          target: 'myProp',
+          target: "myProp",
           bypassConditions: [
-            { name: 'myCondition', isTrue: false },
-            { name: 'myCondition2', isTrue: false },
+            { name: "myCondition", isTrue: false },
+            { name: "myCondition2", isTrue: false },
           ],
         },
         { myCondition: true, myCondition2: false },
-        callback
+        callback,
       );
 
       expect(callback).not.toHaveBeenCalled();
     });
 
-    it('calls injector when condition does not match', () => {
+    it("calls injector when condition does not match", () => {
       const callback = vi.fn();
       injectInto(
-        'My Test Value',
+        "My Test Value",
         {
-          target: 'myProp',
-          bypassConditions: [{ name: 'myCondition', isTrue: true }],
+          target: "myProp",
+          bypassConditions: [{ name: "myCondition", isTrue: true }],
         },
         { myCondition2: true },
-        callback
+        callback,
       );
 
-      expect(callback).toHaveBeenCalledWith('myProp', 'My Test Value');
+      expect(callback).toHaveBeenCalledWith("myProp", "My Test Value");
     });
   });
 });

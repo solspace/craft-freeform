@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Callback = (event: MessageEvent) => void;
 type Listener = [string, Callback];
@@ -51,58 +51,61 @@ export const useProgressEvent = (): ProgressEvent => {
     setListeners((prev) => [...(prev || []), [eventName, callback]]);
   };
 
-  const attachListeners = (source: EventSource): void => {
-    source.onopen = () => {
-      setDisplayProgress(true);
-    };
+  const attachListeners = useCallback(
+    (source: EventSource): void => {
+      source.onopen = () => {
+        setDisplayProgress(true);
+      };
 
-    source.onerror = () => {
-      console.error('An error occurred during import');
-      source.close();
-      setActive(false);
-      setDisplayProgress(false);
-    };
+      source.onerror = () => {
+        console.error("An error occurred during import");
+        source.close();
+        setActive(false);
+        setDisplayProgress(false);
+      };
 
-    source.addEventListener('progress', (event) => {
-      const progress = parseInt(event.data);
-      setProgress((prev) => [prev[0] + progress, prev[1] + progress]);
-    });
+      source.addEventListener("progress", (event) => {
+        const progress = parseInt(event.data, 10);
+        setProgress((prev) => [prev[0] + progress, prev[1] + progress]);
+      });
 
-    source.addEventListener('total', (event) => {
-      setTotal([parseInt(event.data), 0]);
-      setErrors([]);
-    });
+      source.addEventListener("total", (event) => {
+        setTotal([parseInt(event.data, 10), 0]);
+        setErrors([]);
+      });
 
-    source.addEventListener('info', (event) => {
-      setInfo(event.data);
-    });
+      source.addEventListener("info", (event) => {
+        setInfo(event.data);
+      });
 
-    source.addEventListener('err', (event) => {
-      const message = event.data;
-      setErrors((prev) =>
-        prev === undefined ? [message] : [...prev, message]
-      );
-    });
+      source.addEventListener("err", (event) => {
+        const message = event.data;
+        setErrors((prev) =>
+          prev === undefined ? [message] : [...prev, message],
+        );
+      });
 
-    source.addEventListener('reset', (event) => {
-      setTotal((prev) => [prev[0], parseInt(event.data)]);
-      setProgress((prev) => [prev[0], 0]);
-    });
+      source.addEventListener("reset", (event) => {
+        setTotal((prev) => [prev[0], parseInt(event.data, 10)]);
+        setProgress((prev) => [prev[0], 0]);
+      });
 
-    source.addEventListener('exit', () => {
-      source.close();
-      setDisplayProgress(false);
-      setActive(false);
-      setShowDone(true);
-      setTimeout(() => {
-        setShowDone(false);
-      }, 5000);
-    });
+      source.addEventListener("exit", () => {
+        source.close();
+        setDisplayProgress(false);
+        setActive(false);
+        setShowDone(true);
+        setTimeout(() => {
+          setShowDone(false);
+        }, 5000);
+      });
 
-    listeners.forEach(([eventName, callback]) => {
-      source.addEventListener(eventName, callback);
-    });
-  };
+      listeners.forEach(([eventName, callback]) => {
+        source.addEventListener(eventName, callback);
+      });
+    },
+    [listeners],
+  );
 
   useEffect(() => {
     if (source.current) {
@@ -115,7 +118,7 @@ export const useProgressEvent = (): ProgressEvent => {
 
     source.current = new EventSource(url);
     attachListeners(source.current);
-  }, [url]);
+  }, [url, attachListeners]);
 
   return {
     progress: {

@@ -1,5 +1,5 @@
-import type { IntegrationType } from '@ff-client/types/integrations';
-import type { Property } from '@ff-client/types/properties';
+import type { IntegrationType } from "@ff-client/types/integrations";
+import type { Property } from "@ff-client/types/properties";
 
 export type TypeDefinition = {
   editions: string[];
@@ -25,4 +25,4 @@ export type Integration = {
   errors?: Record<string, string[]>;
 };
 
-export type AuthState = 'authorized' | 'unauthorized' | 'pending' | 'error';
+export type AuthState = "authorized" | "unauthorized" | "pending" | "error";

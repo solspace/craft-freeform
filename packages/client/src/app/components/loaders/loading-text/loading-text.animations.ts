@@ -1,7 +1,7 @@
-import type { SpringConfig, SpringValues } from 'react-spring';
-import { useSpring } from 'react-spring';
+import type { SpringConfig, SpringValues } from "react-spring";
+import { useSpring } from "react-spring";
 
-import type { Dimensions } from './loading-text';
+import type { Dimensions } from "./loading-text";
 
 const config: SpringConfig = {
   tension: 300,
@@ -9,7 +9,7 @@ const config: SpringConfig = {
 
 export const useSpinnerAnimation = (
   loading: boolean,
-  instant: boolean
+  instant: boolean,
 ): SpringValues<{ width: number; opacity: number }> =>
   useSpring({
     width: loading ? 20 : 0,
@@ -21,7 +21,7 @@ export const useSpinnerAnimation = (
 export const useDotAnimation = (
   loading: boolean,
   instant: boolean,
-  xl?: boolean
+  xl?: boolean,
 ): SpringValues<{ width: number; opacity: number }> =>
   useSpring({
     width: loading ? (xl ? 30 : 15) : 0,
@@ -34,7 +34,7 @@ export const useTextContainerAnimation = (
   loading: boolean,
   loadingText: string | undefined,
   dimensions: Dimensions,
-  instant: boolean
+  instant: boolean,
 ): SpringValues<{ width: number; height: number }> =>
   useSpring({
     width:
@@ -49,12 +49,12 @@ export const useTextContainerAnimation = (
 export const useTextAnimation = (
   loading: boolean,
   loadingText: string | undefined,
-  instant: boolean
+  instant: boolean,
 ): SpringValues<{ opacity: number; transform: string }> =>
   useSpring({
     opacity: loading && !!loadingText ? 0 : 1,
     transform:
-      loading && !!loadingText ? 'translateY(-30px)' : 'translateY(0px)',
+      loading && !!loadingText ? "translateY(-30px)" : "translateY(0px)",
     immediate: instant,
     cancel: !loadingText,
     config,
@@ -62,11 +62,11 @@ export const useTextAnimation = (
 
 export const useReverseTextAnimation = (
   loading: boolean,
-  instant: boolean
+  instant: boolean,
 ): SpringValues<{ opacity: number; transform: string }> =>
   useSpring({
     opacity: loading ? 1 : 0,
-    transform: loading ? 'translateY(0px)' : 'translateY(30px)',
+    transform: loading ? "translateY(0px)" : "translateY(30px)",
     immediate: instant,
     config,
   });

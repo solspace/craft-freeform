@@ -1,5 +1,5 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
 
 export const FormModalLoading: React.FC = () => {
   return (
@@ -14,8 +14,8 @@ export const FormModalLoading: React.FC = () => {
       </div>
       <div
         style={{
-          display: 'flex',
-          alignItems: 'center',
+          display: "flex",
+          alignItems: "center",
           gap: 10,
         }}
       >

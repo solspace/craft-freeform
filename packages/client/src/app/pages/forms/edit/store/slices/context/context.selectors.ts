@@ -1,8 +1,8 @@
-import type { Page } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
-import { hasErrors } from '@ff-client/utils/errors';
+import type { Page } from "@editor/builder/types/layout";
+import type { RootState } from "@editor/store";
+import { hasErrors } from "@ff-client/utils/errors";
 
-import type { Focus, State } from '.';
+import type { Focus, State } from ".";
 
 export const contextSelectors = {
   currentPage: (state: RootState): Page | undefined => {
@@ -19,7 +19,7 @@ export const contextSelectors = {
       const pageHasErrors = false;
 
       const layoutUid = state.layout.pages.find(
-        (page) => page.uid === uid
+        (page) => page.uid === uid,
       ).layoutUid;
 
       state.layout.rows
@@ -27,7 +27,7 @@ export const contextSelectors = {
         .some((row) =>
           state.layout.fields
             .filter((field) => field.rowUid === row.uid)
-            .some((field) => hasErrors(field.errors))
+            .some((field) => hasErrors(field.errors)),
         );
 
       return pageHasErrors;

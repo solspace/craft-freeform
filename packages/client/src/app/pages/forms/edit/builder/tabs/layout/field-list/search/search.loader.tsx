@@ -1,8 +1,8 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { SearchBar, SearchBlock, SearchIcon, Wrapper } from './search.style';
-import SearchIconSVG from './search.svg';
+import { SearchBar, SearchBlock, SearchIcon, Wrapper } from "./search.style";
+import SearchIconSVG from "./search.svg";
 export const LoaderSearch: React.FC = () => {
   return (
     <Wrapper>
@@ -13,7 +13,7 @@ export const LoaderSearch: React.FC = () => {
         <SearchBar
           disabled
           className="fullwidth text"
-          placeholder={translate('Search')}
+          placeholder={translate("Search")}
         />
       </SearchBlock>
     </Wrapper>

@@ -1,11 +1,11 @@
-import { useEffect } from 'react';
-import type { ConnectDragPreview, ConnectDragSource } from 'react-dnd';
-import { useDrag } from 'react-dnd';
-import type { DragItem } from '@editor/builder/types/drag';
-import { Drag } from '@editor/builder/types/drag';
-import type { Field } from '@editor/store/slices/layout/fields';
+import type { DragItem } from "@editor/builder/types/drag";
+import { Drag } from "@editor/builder/types/drag";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useEffect } from "react";
+import type { ConnectDragPreview, ConnectDragSource } from "react-dnd";
+import { useDrag } from "react-dnd";
 
-import { useDragContext } from '../../drag.context';
+import { useDragContext } from "../../drag.context";
 
 type DropResult = {
   isDragging: boolean;
@@ -31,7 +31,7 @@ export const useFieldDrag = (field: Field, index: number): FieldDrag => {
         index,
       },
     }),
-    [field]
+    [field],
   );
 
   const { dragOn, dragOff } = useDragContext();
@@ -42,7 +42,7 @@ export const useFieldDrag = (field: Field, index: number): FieldDrag => {
     } else {
       dragOff();
     }
-  }, [isDragging]);
+  }, [isDragging, dragOn, dragOff]);
 
   return { isDragging, drag, preview };
 };

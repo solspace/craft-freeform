@@ -1,15 +1,15 @@
-import React from 'react';
-import classes from '@ff-client/utils/classes';
+import classes from "@ff-client/utils/classes";
+import type React from "react";
 
-import SettingsIcon from '../../../assets/icons/settings.svg';
-import { Chart } from '../../results.types';
+import SettingsIcon from "../../../assets/icons/settings.svg";
+import { Chart } from "../../results.types";
 
-import { useSettingsMutation } from './block.settings.queries';
+import { useSettingsMutation } from "./block.settings.queries";
 import {
   DropdownItem,
   DropdownWrapper,
   SettingsButton,
-} from './block.settings.styles';
+} from "./block.settings.styles";
 
 const chartOptions = Object.keys(Chart);
 
@@ -32,7 +32,7 @@ export const SettingsBlock: React.FC<Props> = ({
 
   return (
     <SettingsButton
-      className={classes(isPending && 'loading', isShown && 'open')}
+      className={classes(isPending && "loading", isShown && "open")}
       onClick={toggle}
     >
       <SettingsIcon />
@@ -41,7 +41,7 @@ export const SettingsBlock: React.FC<Props> = ({
           {chartOptions.map((type) => (
             <DropdownItem
               key={type}
-              className={selectedChartType === type && 'selected'}
+              className={selectedChartType === type && "selected"}
               onClick={() => {
                 changeType(type as Chart);
                 mutate({ fieldId, chartType: type as Chart });

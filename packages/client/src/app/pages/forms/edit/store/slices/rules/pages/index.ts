@@ -1,11 +1,10 @@
-import type { Condition, PageRule } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import { Combinator } from '@ff-client/types/rules';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 } from 'uuid';
+import type { Condition, PageRule } from "@ff-client/types/rules";
+import { Combinator, Operator } from "@ff-client/types/rules";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
-import type { RuleState } from '..';
+import type { RuleState } from "..";
 
 type PageRulesState = RuleState<PageRule>;
 
@@ -25,7 +24,7 @@ type ChangeCombinator = {
 };
 
 export const pageRulesSlice = createSlice({
-  name: 'rules/pages',
+  name: "rules/pages",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<PageRule[]>) => {
@@ -43,9 +42,9 @@ export const pageRulesSlice = createSlice({
         conditions: [
           {
             uid: v4(),
-            field: '',
+            field: "",
             operator: Operator.Equals,
-            value: '',
+            value: "",
           },
         ],
       });
@@ -65,7 +64,7 @@ export const pageRulesSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.items.splice(
         state.items.findIndex((rule) => rule.uid === action.payload),
-        1
+        1,
       );
     },
   },

@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from "react";
 
 export const useForceUpdate = (): void => {
   // Most efficient way to force a re-render

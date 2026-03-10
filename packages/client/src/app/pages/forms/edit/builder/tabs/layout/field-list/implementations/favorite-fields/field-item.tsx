@@ -1,13 +1,13 @@
-import React from 'react';
-import { useAppDispatch } from '@editor/store';
-import { fieldThunks } from '@editor/store/thunks/fields';
-import { useFieldType } from '@ff-client/queries/field-types';
-import type { FieldFavorite } from '@ff-client/types/fields';
+import { useAppDispatch } from "@editor/store";
+import { fieldThunks } from "@editor/store/thunks/fields";
+import { useFieldType } from "@ff-client/queries/field-types";
+import type { FieldFavorite } from "@ff-client/types/fields";
+import type React from "react";
 
-import { Field } from '../../field-group/field/field';
-import { useBaseFieldDrag } from '../base-fields/field-item.drag';
+import { Field } from "../../field-group/field/field";
+import { useBaseFieldDrag } from "../base-fields/field-item.drag";
 
-import { cloneFieldTypeFromFavorite } from './field-item.operations';
+import { cloneFieldTypeFromFavorite } from "./field-item.operations";
 
 type Props = {
   favorite: FieldFavorite;

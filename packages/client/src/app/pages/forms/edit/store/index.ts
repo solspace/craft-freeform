@@ -1,18 +1,18 @@
-import type { TypedUseSelectorHook } from 'react-redux';
-import { useDispatch, useSelector, useStore } from 'react-redux';
-import type { Action, AnyAction, Store } from '@reduxjs/toolkit';
-import { configureStore } from '@reduxjs/toolkit';
-import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import type { Action, AnyAction, Store } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
+import type { TypedUseSelectorHook } from "react-redux";
+import { useDispatch, useSelector, useStore } from "react-redux";
+import type { ThunkAction, ThunkDispatch } from "redux-thunk";
 
-import { statePersistMiddleware } from './middleware/state-persist';
-import context from './slices/context';
-import form from './slices/form';
-import integrations from './slices/integrations';
-import layout from './slices/layout';
-import notifications from './slices/notifications';
-import rules from './slices/rules';
-import search from './slices/search';
-import translations from './slices/translations';
+import { statePersistMiddleware } from "./middleware/state-persist";
+import context from "./slices/context";
+import form from "./slices/form";
+import integrations from "./slices/integrations";
+import layout from "./slices/layout";
+import notifications from "./slices/notifications";
+import rules from "./slices/rules";
+import search from "./slices/search";
+import translations from "./slices/translations";
 
 export const store = configureStore({
   middleware: (getDefaultMiddleware) =>

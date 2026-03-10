@@ -1,51 +1,41 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-const path = require('path');
-const webpack = require('webpack');
+const path = require("node:path");
+const webpack = require("webpack");
 
 module.exports = {
-  mode: 'production',
-  target: ['web', 'es5'],
+  mode: "production",
+  target: ["web", "es5"],
 
   entry: {
-    client: path.resolve(__dirname, '../../src/index.tsx'),
+    client: path.resolve(__dirname, "../../src/index.tsx"),
   },
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    publicPath: '/',
-    path: path.resolve(__dirname, '../../../plugin/src/Resources/js/client'),
+    filename: "[name].js",
+    chunkFilename: "[name].js",
+    publicPath: "/",
+    path: path.resolve(__dirname, "../../../plugin/src/Resources/js/client"),
   },
 
   module: {
     parser: {
       javascript: {
-        dynamicImportMode: 'eager',
+        dynamicImportMode: "eager",
       },
     },
     rules: [
       {
-        test: /\.jsx$/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: { presets: ['@babel/preset-env', '@babel/preset-react'] },
-          },
-        ],
-      },
-      {
         test: /\.css$/,
-        use: ['style-loader', { loader: 'css-loader' }],
+        use: ["style-loader", { loader: "css-loader" }],
       },
       {
         test: /\.svg$/,
         use: [
           {
-            loader: '@svgr/webpack',
+            loader: "@svgr/webpack",
             options: {
               svgoConfig: {
                 plugins: [
                   {
-                    name: 'prefixIds',
+                    name: "prefixIds",
                     params: {
                       prefix: false,
                     },
@@ -58,7 +48,7 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
-        use: [{ loader: 'url-loader' }],
+        use: [{ loader: "url-loader" }],
       },
     ],
   },
@@ -66,27 +56,27 @@ module.exports = {
   devtool: false,
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.DEBUG_MODE': JSON.stringify(
-        process.env.NODE_ENV === 'development'
+      "process.env.DEBUG_MODE": JSON.stringify(
+        process.env.NODE_ENV === "development",
       ),
     }),
     new webpack.ProvidePlugin({
-      React: 'react',
+      React: "react",
     }),
   ],
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensions: [".ts", ".tsx", ".js", ".jsx"],
     alias: {
-      '@config': path.resolve(__dirname, '../../config/'),
-      '@editor': path.resolve(__dirname, '../../src/app/pages/forms/edit/'),
-      '@components': path.resolve(__dirname, '../../src/app/components/'),
-      '@form-controls': path.resolve(
+      "@config": path.resolve(__dirname, "../../config/"),
+      "@editor": path.resolve(__dirname, "../../src/app/pages/forms/edit/"),
+      "@components": path.resolve(__dirname, "../../src/app/components/"),
+      "@form-controls": path.resolve(
         __dirname,
-        '../../src/app/components/form-controls'
+        "../../src/app/components/form-controls",
       ),
-      '@ff-icons': path.resolve(__dirname, '../../src/assets/icons/'),
-      '@ff-client': path.resolve(__dirname, '../../src/'),
+      "@ff-icons": path.resolve(__dirname, "../../src/assets/icons/"),
+      "@ff-client": path.resolve(__dirname, "../../src/"),
     },
   },
 };

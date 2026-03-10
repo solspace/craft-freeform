@@ -1,10 +1,10 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
-import { useDoneAnimation, useProgressAnimation } from './progress.animations';
-import { ProgressBar } from './progress.bar';
-import type { ProgressEvent } from './progress.hooks';
-import { Done, DoneWrapper, ProgressWrapper } from './progress.styles';
+import { useDoneAnimation, useProgressAnimation } from "./progress.animations";
+import { ProgressBar } from "./progress.bar";
+import type { ProgressEvent } from "./progress.hooks";
+import { Done, DoneWrapper, ProgressWrapper } from "./progress.styles";
 
 type Props = {
   label: string;

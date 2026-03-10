@@ -1,25 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { SketchPicker } from 'react-color';
-import { Tooltip } from 'react-tippy';
-import { FormComponent } from '@components/form-controls';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { FormComponent } from "@components/form-controls";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalType } from '@components/modals/modal.types';
-import { useGroupMutation } from '@editor/builder/tabs/layout/property-editor/editors/fields/groups/groups.queries';
-import { useFetchGroups } from '@ff-client/queries/groups';
-import type { ErrorList } from '@ff-client/types/api';
-import type { FieldListRefs, Group } from '@ff-client/types/groups';
-import { PropertyType } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import CrossIcon from '@ff-icons/actions/delete.svg';
-import MoveIcon from '@ff-icons/actions/move.svg';
+} from "@components/modals/modal.styles";
+import type { ModalType } from "@components/modals/modal.types";
+import { useGroupMutation } from "@editor/builder/tabs/layout/property-editor/editors/fields/groups/groups.queries";
+import { useFetchGroups } from "@ff-client/queries/groups";
+import type { ErrorList } from "@ff-client/types/api";
+import type { FieldListRefs, Group } from "@ff-client/types/groups";
+import { PropertyType } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import CrossIcon from "@ff-icons/actions/delete.svg";
+import MoveIcon from "@ff-icons/actions/move.svg";
+import { useEffect, useRef, useState } from "react";
+import { SketchPicker } from "react-color";
+import { Tooltip } from "react-tippy";
 
-import { FieldItem } from './modal.list-item';
-import { useGroupOperations } from './modal.operations';
+import { FieldItem } from "./modal.list-item";
+import { useGroupOperations } from "./modal.operations";
 import {
   CloseAndMoveWrapper,
   ColorCircle,
@@ -35,11 +35,11 @@ import {
   ManagerWrapper,
   UHField,
   UHFieldWrapper,
-} from './modal.styles';
+} from "./modal.styles";
 import {
   initializeGroupedSortable,
   initializeSortable,
-} from './sortable.initializer';
+} from "./sortable.initializer";
 
 type ColorPickerProps = {
   groupUid: string | null;
@@ -56,7 +56,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   const { addGroup, updateGroupInfo, syncFromRefs } = useGroupOperations(
     state,
     setState,
-    fieldListRefs
+    fieldListRefs,
   );
 
   const { data } = useFetchGroups();
@@ -85,19 +85,19 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   const isLoading = updateMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: '70%' }}>
+    <ModalContainer style={{ maxWidth: "70%" }}>
       <ModalHeader>
-        <h1>{translate('Field Type Manager')}</h1>
+        <h1>{translate("Field Type Manager")}</h1>
       </ModalHeader>
       <ManagerWrapper>
         <GroupWrapper
           ref={(el) => (fieldListRefs.current.groupWrapper = el)}
           $empty={translate(
-            "Click the 'Add Group' button on the right to begin."
+            "Click the 'Add Group' button on the right to begin.",
           )}
         >
           {errors?.length && (
-            <ErrorBlock>{translate('Something went wrong!')}</ErrorBlock>
+            <ErrorBlock>{translate("Something went wrong!")}</ErrorBlock>
           )}
           {state.groups?.grouped?.map((group) => (
             <GroupLayout key={group.uid} data-id={group.uid}>
@@ -122,7 +122,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                             })
                           }
                           onChangeComplete={(color) => {
-                            updateGroupInfo('color', color.hex, group.uid);
+                            updateGroupInfo("color", color.hex, group.uid);
                           }}
                         />
                       </ColorPicker>
@@ -145,12 +145,12 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                       handle: group.uid,
                     }}
                     updateValue={(value: string) =>
-                      updateGroupInfo('label', value, group.uid)
+                      updateGroupInfo("label", value, group.uid)
                     }
                   />
                 </GroupHeader>
                 <GroupItemWrapper
-                  $empty={translate('Drag and drop any field here')}
+                  $empty={translate("Drag and drop any field here")}
                   ref={(el) => {
                     initializeGroupedSortable(el, group.uid, fieldListRefs);
                   }}
@@ -162,10 +162,10 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 </GroupItemWrapper>
               </GroupType>
               <CloseAndMoveWrapper>
-                <button className="group-remove">
+                <button type="button" className="group-remove">
                   <CrossIcon />
                 </button>
-                <button className="handle">
+                <button type="button" className="handle">
                   <MoveIcon />
                 </button>
               </CloseAndMoveWrapper>
@@ -178,15 +178,15 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             type="button"
             className="btn add icon dashed"
           >
-            {translate('Add Group')}
+            {translate("Add Group")}
           </button>
           <UHFieldWrapper>
             <UHField className="unassigned">
-              <h3>{translate('Unassigned')}</h3>
+              <h3>{translate("Unassigned")}</h3>
 
               <FieldTypes
                 $empty={translate(
-                  'Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.'
+                  "Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.",
                 )}
                 ref={(el) => (fieldListRefs.current.unassigned = el)}
               >
@@ -196,11 +196,11 @@ export const CreateModal: ModalType = ({ closeModal }) => {
               </FieldTypes>
             </UHField>
             <UHField>
-              <h3>{translate('Hidden')}</h3>
+              <h3>{translate("Hidden")}</h3>
 
               <FieldTypes
                 $empty={translate(
-                  'Drag and drop any fields here to hide them.'
+                  "Drag and drop any fields here to hide them.",
                 )}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >
@@ -219,16 +219,16 @@ export const CreateModal: ModalType = ({ closeModal }) => {
           onClick={closeModal}
           disabled={isLoading}
         >
-          {translate('Cancel')}
+          {translate("Cancel")}
         </button>
         <button type="button" className="btn submit">
           <LoadingText
-            loadingText={translate('Saving')}
+            loadingText={translate("Saving")}
             loading={isLoading}
             onClick={() => updateMutation.mutate(syncFromRefs())}
             spinner
           >
-            {translate('Save')}
+            {translate("Save")}
           </LoadingText>
         </button>
       </ModalFooter>

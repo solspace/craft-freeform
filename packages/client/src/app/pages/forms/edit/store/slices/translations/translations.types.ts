@@ -1,6 +1,6 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
-export type TranslationType = 'fields' | 'form' | 'pages';
+export type TranslationType = "fields" | "form" | "pages";
 
 export type TranslationItems = Record<string, GenericValue>;
 export type TranslationSet = Record<string, TranslationItems>;

@@ -1,30 +1,25 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { useEditorAnimations } from '@components/form-controls/preview/previewable-component.animations';
-import SpinnerIcon from '@components/loaders/spinner.svg';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import type { OptionCollection } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { useEditorAnimations } from "@components/form-controls/preview/previewable-component.animations";
+import SpinnerIcon from "@components/loaders/spinner.svg";
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
+import type { OptionCollection } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { PopUpPortal } from '../pop-up-portal';
+import { PopUpPortal } from "../pop-up-portal";
 
-import CloseIcon from './close.svg';
+import CloseIcon from "./close.svg";
 import {
   findOptionByValue,
   findShadowIndexByValue,
   findValueByShadowIndex,
   useFilteredOptions,
-} from './dropdown.operations';
-import { Options } from './dropdown.options';
+} from "./dropdown.operations";
+import { Options } from "./dropdown.options";
 import {
   CloseButton,
   CurrentValue,
@@ -34,7 +29,7 @@ import {
   ListWrapper,
   Search,
   SpinnerWrapper,
-} from './dropdown.styles';
+} from "./dropdown.styles";
 
 export type DropdownProps = {
   loading?: boolean;
@@ -58,7 +53,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   loading = false,
 }) => {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [focusIndex, setFocusIndex] = useState(0);
 
   const searchRef = useRef<HTMLInputElement>(null);
@@ -66,7 +61,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const containerRef = useClickOutside<HTMLDivElement>({
     callback: () => setOpen(false),
     isEnabled: open,
-    excludeClassNames: ['dropdown-rollout'],
+    excludeClassNames: ["dropdown-rollout"],
   });
 
   const { editorAnimation } = useEditorAnimations({
@@ -84,17 +79,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,
     query,
-    emptyOption
+    emptyOption,
   );
 
   const selectedOption = useMemo(
     () => findOptionByValue(options, value),
-    [options, value, loading]
+    [options, value],
   );
 
   const selectedIndex = useMemo(
     () => findShadowIndexByValue(filteredOptions, value),
-    [options, value, loading]
+    [filteredOptions, value],
   );
 
   useEscapeStack(() => setOpen(false), open);
@@ -102,79 +97,78 @@ export const Dropdown: React.FC<DropdownProps> = ({
   useOnKeypress(
     {
       meetsCondition: open,
-      type: 'keydown',
+      type: "keydown",
       callback: (event) => {
-        if (event.key === 'ArrowDown' && focusIndex < optionCount - 1) {
+        if (event.key === "ArrowDown" && focusIndex < optionCount - 1) {
           setFocusIndex((prev) => prev + 1);
         }
 
-        if (event.key === 'ArrowUp' && focusIndex > 0) {
+        if (event.key === "ArrowUp" && focusIndex > 0) {
           setFocusIndex((prev) => prev - 1);
         }
       },
     },
-    [focusIndex, optionCount]
+    [focusIndex, optionCount],
   );
 
   useOnKeypress(
     {
       meetsCondition: open,
-      type: 'keyup',
+      type: "keyup",
       callback: (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
           const value = findValueByShadowIndex(filteredOptions, focusIndex);
           onChange?.(value);
           setOpen(false);
         }
       },
     },
-    [filteredOptions, focusIndex]
+    [filteredOptions, focusIndex],
   );
 
   useEffect(() => {
     if (loading && open) {
       setOpen(false);
     }
-  }, [loading]);
+  }, [loading, open]);
 
   useEffect(() => {
     if (open) {
       searchRef.current?.focus();
       setFocusIndex(selectedIndex || 0);
     } else {
-      setQuery('');
+      setQuery("");
     }
-  }, [open, query]);
+  }, [open, selectedIndex]);
 
   const onOptionClick = useCallback(
     (value: string) => {
       onChange?.(value);
       setOpen(false);
     },
-    [onChange]
+    [onChange],
   );
 
   return (
     <DropdownWrapper
       ref={containerRef}
-      className={classes(open && 'open')}
+      className={classes(open && "open")}
       onClick={toggleOpen}
     >
       <CurrentValue
         className={classes(
-          loading && 'disabled',
-          (value === '' || value === null) && 'empty'
+          loading && "disabled",
+          (value === "" || value === null) && "empty",
         )}
       >
         {showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>}
         <span
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
-              selectedOption?.label || translate(emptyOption)
+              selectedOption?.label || translate(emptyOption),
             ),
           }}
         />
-
         {loading && (
           <SpinnerWrapper>
             <SpinnerIcon />
@@ -192,12 +186,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
               <CloseIcon />
             </CloseButton>
             <Search
-              placeholder={translate('Search...')}
+              placeholder={translate("Search...")}
               ref={searchRef}
               value={query}
               onClick={(event) => event.stopPropagation()}
               onKeyDown={(event) => {
-                if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                if (["ArrowUp", "ArrowDown"].includes(event.key)) {
                   event.preventDefault();
                 }
               }}

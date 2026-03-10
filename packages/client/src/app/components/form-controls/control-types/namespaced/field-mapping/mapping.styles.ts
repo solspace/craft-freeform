@@ -1,7 +1,7 @@
-import { animations } from '@ff-client/styles/animations';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { animations } from "@ff-client/styles/animations";
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const RefreshButton = styled.button`
   position: absolute;
@@ -95,7 +95,7 @@ export const TypeButtonGroup = styled.div`
   display: flex;
 `;
 
-const radius = '8px';
+const radius = "8px";
 
 export const TypeButton = styled.button`
   display: flex;

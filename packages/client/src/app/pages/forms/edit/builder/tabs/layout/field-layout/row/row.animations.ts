@@ -1,5 +1,5 @@
-import type { SpringValue } from 'react-spring';
-import { useSpring } from 'react-spring';
+import type { SpringValue } from "react-spring";
+import { useSpring } from "react-spring";
 
 type MountAnimation = {
   opacity: SpringValue<number>;
@@ -12,12 +12,12 @@ export const useOnMountAnimation = (): MountAnimation => {
     from: {
       opacity: 0,
       minHeight: 1,
-      transform: 'scaleY(0)',
+      transform: "scaleY(0)",
     },
     to: {
       opacity: 1,
       minHeight: 72,
-      transform: 'scaleY(1)',
+      transform: "scaleY(1)",
     },
     config: {
       friction: 11,
@@ -33,7 +33,7 @@ type PlaceholderAnimation = {
 };
 
 export const usePlaceholderAnimation = (
-  isOver: boolean
+  isOver: boolean,
 ): PlaceholderAnimation => {
   return useSpring({
     to: {

@@ -1,8 +1,8 @@
 import {
   PreviewEditor,
   PreviewEditorContainer,
-} from '@form-controls/preview/previewable-component.styles';
-import styled from 'styled-components';
+} from "@form-controls/preview/previewable-component.styles";
+import styled from "styled-components";
 
 export const CardsEditorWrapper = styled(PreviewEditor)`
   width: 60vw;

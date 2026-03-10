@@ -1,13 +1,23 @@
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-export const FlexColumn = styled.div`
+type FlexProps = {
+  $gap?: number | string;
+  $justifyContent?: React.CSSProperties["justifyContent"];
+  $alignItems?: React.CSSProperties["alignItems"];
+};
+
+export const FlexColumn = styled.div<FlexProps>`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.sm};
+  justify-content: ${(props) => props.$justifyContent || "flex-start"};
+  align-items: ${(props) => props.$alignItems || "stretch"};
+  gap: ${(props) => props.$gap || spacings.sm};
 `;
 
-export const FlexRow = styled.div`
+export const FlexRow = styled.div<FlexProps>`
   display: flex;
-  gap: ${spacings.sm};
+  justify-content: ${(props) => props.$justifyContent || "flex-start"};
+  align-items: ${(props) => props.$alignItems || "stretch"};
+  gap: ${(props) => props.$gap || spacings.sm};
 `;

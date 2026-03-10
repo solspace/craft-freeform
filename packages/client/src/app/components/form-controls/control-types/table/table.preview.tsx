@@ -1,9 +1,9 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
-import type { Option as PropertyOption } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import type { ColumnDescription } from "@components/form-controls/control-types/table/table.types";
+import type { Option as PropertyOption } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 import {
   NoContent,
@@ -11,7 +11,7 @@ import {
   PreviewRow,
   PreviewTable,
   PreviewWrapper,
-} from './table.preview.styles';
+} from "./table.preview.styles";
 
 type Props = {
   columnTypes: PropertyOption[];
@@ -27,10 +27,10 @@ export const TablePreview: React.FC<Props> = ({
   columns: options,
 }) => {
   return (
-    <PreviewWrapper data-edit={translate('Click to edit data')}>
+    <PreviewWrapper data-edit={translate("Click to edit data")}>
       <PreviewTable>
         {!options.length && (
-          <NoContent>{translate('Not configured yet')}</NoContent>
+          <NoContent>{translate("Not configured yet")}</NoContent>
         )}
         {options.map((option, index) => (
           <PreviewRow
@@ -38,12 +38,12 @@ export const TablePreview: React.FC<Props> = ({
             data-title={getColumnTypeLabel(types, option.type)}
           >
             <PreviewData
-              data-empty={translate('empty')}
-              className={classes(option.required && 'required')}
+              data-empty={translate("empty")}
+              className={classes(option.required && "required")}
             >
               {option.label}
             </PreviewData>
-            <PreviewData data-empty={translate('empty')}>
+            <PreviewData data-empty={translate("empty")}>
               {renderPreview(option)}
             </PreviewData>
           </PreviewRow>
@@ -54,13 +54,13 @@ export const TablePreview: React.FC<Props> = ({
 };
 
 const renderPreview = (column: ColumnDescription): React.ReactNode => {
-  if (column.type === 'checkbox') {
+  if (column.type === "checkbox") {
     return <Checkbox readOnly checked={!!column.checked} />;
   }
 
-  if (column.type === 'select') {
+  if (column.type === "select") {
     return (
-      <div className={classes('small select')}>
+      <div className={classes("small select")}>
         <select disabled>
           <option>{column.value}</option>
         </select>

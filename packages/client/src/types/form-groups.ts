@@ -1,4 +1,4 @@
-import type { FormWithStats } from './forms';
+import type { FormWithStats } from "./forms";
 
 export type GroupItem = {
   uid: string;

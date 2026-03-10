@@ -1,14 +1,14 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import events from '@lib/plugin/constants/event-types';
-import { ajax } from '@lib/plugin/helpers/ajax';
-import { CancelToken } from '@lib/plugin/helpers/ajax/ajax.classes';
-import { filesize } from 'filesize';
+import type Freeform from "@components/front-end/plugin/freeform";
+import events from "@lib/plugin/constants/event-types";
+import { ajax } from "@lib/plugin/helpers/ajax";
+import { CancelToken } from "@lib/plugin/helpers/ajax/ajax.classes";
+import { filesize } from "filesize";
 
-import { askForConfirmation } from './confirm';
-import { addFieldErrors } from './error-handling';
-import { createInput, createPreviewContainer } from './preview';
-import type { FieldError, FileMetadata } from './types';
-import { ErrorTypes, isImage } from './types';
+import { askForConfirmation } from "./confirm";
+import { addFieldErrors } from "./error-handling";
+import { createInput, createPreviewContainer } from "./preview";
+import type { FieldError, FileMetadata } from "./types";
+import { ErrorTypes, isImage } from "./types";
 
 type OnUploadProgressEvent = Event & {
   name: string;
@@ -24,22 +24,25 @@ type OnChangeEvent = Event & {
   container: HTMLElement;
 };
 
-export const loadExistingUploads = (container: HTMLElement, freeform: Freeform): void => {
-  const fileCount = parseInt(container.dataset.fileCount || '0');
+export const loadExistingUploads = (
+  container: HTMLElement,
+  freeform: Freeform,
+): void => {
+  const fileCount = parseInt(container.dataset.fileCount || "0", 10);
   if (fileCount) {
-    const previewZone = container.querySelector('[data-preview-zone]');
+    const previewZone = container.querySelector("[data-preview-zone]");
     const { freeformFileUpload: handle } = container.dataset;
 
     const formData = new FormData(freeform.form as HTMLFormElement);
-    formData.delete('action');
-    formData.append('handle', handle);
+    formData.delete("action");
+    formData.append("handle", handle);
 
-    const baseUrl = container.getAttribute('data-base-url');
+    const baseUrl = container.getAttribute("data-base-url");
 
     ajax
       .post<FileMetadata[]>(`${baseUrl}/files`, formData, {
         headers: {
-          'Freeform-Preflight': true,
+          "Freeform-Preflight": true,
         },
       })
       .then(({ data }) => {
@@ -47,18 +50,21 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
           const previewContainer = createPreviewContainer(file, freeform);
 
           if (isImage(file.extension)) {
-            const thumbnail = previewContainer.querySelector<HTMLElement>('[data-thumbnail]');
-            thumbnail.setAttribute('data-has-preview', '');
+            const thumbnail =
+              previewContainer.querySelector<HTMLElement>("[data-thumbnail]");
+            thumbnail.setAttribute("data-has-preview", "");
           }
 
           const deleteFormData = new FormData(freeform.form as HTMLFormElement);
-          deleteFormData.delete('action');
-          deleteFormData.append('handle', handle);
-          deleteFormData.append('id', file.id);
+          deleteFormData.delete("action");
+          deleteFormData.append("handle", handle);
+          deleteFormData.append("id", file.id);
 
-          const removeButton = previewContainer.querySelector<HTMLElement>('[data-remove-button]');
-          removeButton.addEventListener('click', () => {
-            if (confirm('Are you sure?')) {
+          const removeButton = previewContainer.querySelector<HTMLElement>(
+            "[data-remove-button]",
+          );
+          removeButton.addEventListener("click", () => {
+            if (confirm("Are you sure?")) {
               ajax
                 .post(`${baseUrl}/files/delete`, deleteFormData)
                 .then(() => {
@@ -72,7 +78,7 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
           });
 
           previewContainer.appendChild(createInput(handle, file));
-          previewContainer.setAttribute('data-completed', '');
+          previewContainer.setAttribute("data-completed", "");
           previewZone.appendChild(previewContainer);
         });
 
@@ -87,7 +93,7 @@ export const handleFileUpload = (
   handle: string,
   container: HTMLElement,
   previewZone: Element,
-  freeform: Freeform
+  freeform: Freeform,
 ): Promise<void> => {
   const token = new CancelToken();
   const handleCancelRequest = () => {
@@ -97,31 +103,37 @@ export const handleFileUpload = (
   const matches = file.name.match(/.(\w+)$/i);
   const name = file.name;
   const size = filesize(file.size, { round: 1 });
-  const extension = matches !== null ? matches[1].toLowerCase() : 'n/a';
+  const extension = matches !== null ? matches[1].toLowerCase() : "n/a";
 
-  const previewContainer = createPreviewContainer({ name, extension, size }, freeform);
-  const thumbnail = previewContainer.querySelector<HTMLElement>('[data-thumbnail]');
-  const removeButton = previewContainer.querySelector<HTMLElement>('[data-remove-button]');
+  const previewContainer = createPreviewContainer(
+    { name, extension, size },
+    freeform,
+  );
+  const thumbnail =
+    previewContainer.querySelector<HTMLElement>("[data-thumbnail]");
+  const removeButton = previewContainer.querySelector<HTMLElement>(
+    "[data-remove-button]",
+  );
 
   if (isImage(extension)) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
-      thumbnail.setAttribute('data-has-preview', '');
+      thumbnail.setAttribute("data-has-preview", "");
       thumbnail.style.backgroundImage = `url(${reader.result.toString()})`;
     };
   }
 
   previewZone.appendChild(previewContainer);
-  removeButton.addEventListener('click', handleCancelRequest);
+  removeButton.addEventListener("click", handleCancelRequest);
   dispatchChange(container, freeform);
 
   const formData = new FormData(freeform.form as HTMLFormElement);
-  formData.delete('action');
-  formData.append('handle', handle);
+  formData.delete("action");
+  formData.append("handle", handle);
   formData.append(handle, file);
 
-  const baseUrl = container.getAttribute('data-base-url');
+  const baseUrl = container.getAttribute("data-base-url");
 
   return ajax
     .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
@@ -133,25 +145,25 @@ export const handleFileUpload = (
         freeform._dispatchEvent(
           events.dragAndDrop.onUploadProgress,
           { total, loaded, percent },
-          container
+          container,
         ) as OnUploadProgressEvent;
 
-        previewContainer.style.setProperty('--progress', `${percent}%`);
+        previewContainer.style.setProperty("--progress", `${percent}%`);
 
         if (percent >= 98) {
           // Prevent files from being removed if they're uploaded already, but still being processed
-          removeButton.removeEventListener('click', handleCancelRequest);
+          removeButton.removeEventListener("click", handleCancelRequest);
         }
       },
     })
     .then((response) => {
       const deleteFormData = new FormData(freeform.form as HTMLFormElement);
-      deleteFormData.delete('action');
-      deleteFormData.append('handle', handle);
-      deleteFormData.append('id', response.data.id);
+      deleteFormData.delete("action");
+      deleteFormData.append("handle", handle);
+      deleteFormData.append("id", response.data.id);
 
-      removeButton.removeEventListener('click', handleCancelRequest);
-      removeButton.addEventListener('click', async () => {
+      removeButton.removeEventListener("click", handleCancelRequest);
+      removeButton.addEventListener("click", async () => {
         const isConfirmed = await askForConfirmation(container);
         if (isConfirmed) {
           ajax
@@ -167,17 +179,17 @@ export const handleFileUpload = (
       });
 
       previewContainer.appendChild(createInput(handle, response.data));
-      previewContainer.setAttribute('data-completed', '');
+      previewContainer.setAttribute("data-completed", "");
     })
     .catch((error) => {
-      if (error.message === 'Request aborted') {
+      if (error.message === "Request aborted") {
         previewZone.removeChild(previewContainer);
         dispatchChange(container, freeform);
         return;
       }
 
-      removeButton.removeEventListener('click', handleCancelRequest);
-      removeButton.addEventListener('click', () => {
+      removeButton.removeEventListener("click", handleCancelRequest);
+      removeButton.addEventListener("click", () => {
         previewZone.removeChild(previewContainer);
         dispatchChange(container, freeform);
       });
@@ -192,10 +204,18 @@ export const handleFileUpload = (
         console.warn(error);
       }
 
-      freeform._dispatchEvent(events.dragAndDrop.afterErrors, { container, messages }, container);
+      freeform._dispatchEvent(
+        events.dragAndDrop.afterErrors,
+        { container, messages },
+        container,
+      );
     });
 };
 
 const dispatchChange = (container: HTMLElement, freeform: Freeform) => {
-  freeform._dispatchEvent(events.dragAndDrop.onChange, { freeform, container }, container) as OnChangeEvent;
+  freeform._dispatchEvent(
+    events.dragAndDrop.onChange,
+    { freeform, container },
+    container,
+  ) as OnChangeEvent;
 };

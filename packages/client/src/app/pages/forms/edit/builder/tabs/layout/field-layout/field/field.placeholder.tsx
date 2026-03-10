@@ -1,7 +1,7 @@
-import React from 'react';
-import { animated, useSpring } from 'react-spring';
-import { borderRadius } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius } from "@ff-client/styles/variables";
+import type React from "react";
+import { animated, useSpring } from "react-spring";
+import styled from "styled-components";
 
 type Props = {
   isActive: boolean;

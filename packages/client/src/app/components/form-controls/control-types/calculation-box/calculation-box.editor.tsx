@@ -1,23 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
-import type { CalculationProperty } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import type Tagify from '@yaireo/tagify';
-import { MixedTags } from '@yaireo/tagify/dist/react.tagify.jsx';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
+import type { CalculationProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type Tagify from "@yaireo/tagify";
+import { MixedTags } from "@yaireo/tagify/dist/react.tagify.jsx";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   CalculationBoxWrapper,
   PreviewTitle,
   TagMenu,
-} from './calculation-box.editor.styles';
-import { CalculationBoxHelp } from './calculation-box.help';
+} from "./calculation-box.editor.styles";
+import { CalculationBoxHelp } from "./calculation-box.help";
 import {
   generateValue,
   useCalculationFieldHandles,
-} from './calculation-box.hooks';
+} from "./calculation-box.hooks";
 
-import '@yaireo/tagify/dist/tagify.css';
+import "@yaireo/tagify/dist/tagify.css";
 
 type Props = {
   value: string;
@@ -32,19 +33,22 @@ export const CalculationBoxEditor: React.FC<Props> = ({
   property,
   updateValue,
 }) => {
-  const [calculationBoxValue, setCalculationBoxValue] = useState('');
+  const [calculationBoxValue, setCalculationBoxValue] = useState("");
 
   const handles = useCalculationFieldHandles(property);
   const tagifyRef = useRef<Tagify>(null);
 
-  const onChange = useCallback((event: TagifyChangeEvent): void => {
-    updateValue(
-      event.detail.tagify.DOM.input.textContent
-        .replace(/\u200B/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-    );
-  }, []);
+  const onChange = useCallback(
+    (event: TagifyChangeEvent): void => {
+      updateValue(
+        event.detail.tagify.DOM.input.textContent
+          .replace(/\u200B/g, "")
+          .replace(/\s+/g, " ")
+          .trim(),
+      );
+    },
+    [updateValue],
+  );
 
   const addTag = (value: string): void => {
     if (!value) {
@@ -56,20 +60,20 @@ export const CalculationBoxEditor: React.FC<Props> = ({
     });
 
     tagifyRef.current.injectAtCaret(tagElm);
-    const elm = tagifyRef.current.insertAfterTag(tagElm, '');
+    const elm = tagifyRef.current.insertAfterTag(tagElm, "");
     tagifyRef.current.placeCaretAfterNode(elm);
   };
 
   useEffect(() => {
     setCalculationBoxValue(generateValue(value));
-  }, []);
+  }, [value]);
 
   return (
     <PreviewEditor>
       <PreviewTitle>
         <TagMenu>
           <Dropdown
-            emptyOption={translate('Insert Field')}
+            emptyOption={translate("Insert Field")}
             options={handles.map((handle) => ({
               value: handle,
               label: handle,

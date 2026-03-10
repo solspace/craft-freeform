@@ -1,13 +1,13 @@
-import React from 'react';
-import config from '@config/freeform/freeform.config';
-import type { FormWithStats } from '@ff-client/types/forms';
-import translate from '@ff-client/utils/translations';
+import config from "@config/freeform/freeform.config";
+import type { FormWithStats } from "@ff-client/types/forms";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
+import { useCreateFormModal } from "../../modals/hooks/use-create-form-modal";
 
-import { ListTableRow } from './list.table.row';
-import { ListTableRowLoading } from './list.table.row.loading';
-import { Table, TableScrollWrapper } from './list.table.styles';
+import { ListTableRow } from "./list.table.row";
+import { ListTableRowLoading } from "./list.table.row.loading";
+import { Table, TableScrollWrapper } from "./list.table.styles";
 
 type Props = {
   forms: FormWithStats[] | undefined;
@@ -25,15 +25,15 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
       <Table className="table data">
         <thead>
           <tr>
-            <th>{translate('Name')}</th>
-            <th>{translate('Handle')}</th>
-            <th>{translate('Description')}</th>
-            <th>{translate('Chart')}</th>
-            {hasFormMonitor && <th>{translate('Monitoring')}</th>}
-            {hasFormMonitor && <th>{translate('Last Test')}</th>}
-            <th>{translate('Submissions')}</th>
-            <th>{translate('Spam')}</th>
-            <th>{translate('Manage')}</th>
+            <th>{translate("Name")}</th>
+            <th>{translate("Handle")}</th>
+            <th>{translate("Description")}</th>
+            <th>{translate("Chart")}</th>
+            {hasFormMonitor && <th>{translate("Monitoring")}</th>}
+            {hasFormMonitor && <th>{translate("Last Test")}</th>}
+            <th>{translate("Submissions")}</th>
+            <th>{translate("Spam")}</th>
+            <th>{translate("Manage")}</th>
           </tr>
         </thead>
         <tbody>
@@ -51,15 +51,16 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
               <td colSpan={hasFormMonitor ? 9 : 7}>
                 <p>
                   {translate(
-                    `You don't have any forms yet. Create your first form now...`
+                    `You don't have any forms yet. Create your first form now...`,
                   )}
                 </p>
 
                 <button
+                  type="button"
                   className="btn submit add icon"
                   onClick={openCreateFormModal}
                 >
-                  {translate('Create a new Form')}
+                  {translate("Create a new Form")}
                 </button>
               </td>
             </tr>

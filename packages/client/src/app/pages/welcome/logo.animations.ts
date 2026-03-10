@@ -1,5 +1,5 @@
-import type { SpringValues } from 'react-spring';
-import { useChain, useSpring, useSpringRef, useTrail } from 'react-spring';
+import type { SpringValues } from "react-spring";
+import { useChain, useSpring, useSpringRef, useTrail } from "react-spring";
 
 type SpringReturnType = {
   opacity?: number;
@@ -78,7 +78,7 @@ export const useLogoAnimation = (): UseLogoAnimation => {
 
   useChain(
     [borderRef, linesRef, checkRef, pencilRef, lettersRef],
-    [0, 0.8, 0.6, 1, 0.8]
+    [0, 0.8, 0.6, 1, 0.8],
   );
 
   return {

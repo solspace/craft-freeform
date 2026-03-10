@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
+/** biome-ignore-all lint/suspicious/noExplicitAny: Can't know the types here */
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
+
 type Config = {
   applicationId: string;
   locationId: string;
@@ -17,8 +18,8 @@ type PaymentResponse = {
   errors?: Array<string | { message?: string }>;
 };
 
-const SELECTOR = '[data-freeform-square]';
-const CARD_SELECTOR = '[data-freeform-square-card]';
+const SELECTOR = "[data-freeform-square]";
+const CARD_SELECTOR = "[data-freeform-square-card]";
 
 declare global {
   interface Window {
@@ -31,15 +32,17 @@ async function loadSquareSDK(sandbox: boolean): Promise<void> {
     return;
   }
   await new Promise<void>((resolve, reject) => {
-    const script = document.createElement('script');
-    const host = sandbox ? 'https://sandbox.web.squarecdn.com' : 'https://web.squarecdn.com';
+    const script = document.createElement("script");
+    const host = sandbox
+      ? "https://sandbox.web.squarecdn.com"
+      : "https://web.squarecdn.com";
     script.src = `${host}/v1/square.js`;
     script.async = true;
     script.onload = () => {
       resolve();
     };
     script.onerror = () => {
-      reject(new Error('Failed to load Square SDK'));
+      reject(new Error("Failed to load Square SDK"));
     };
     document.head.appendChild(script);
   });
@@ -47,7 +50,7 @@ async function loadSquareSDK(sandbox: boolean): Promise<void> {
 
 function parseConfig(root: HTMLElement): Config | null {
   try {
-    const json = root.getAttribute('data-config');
+    const json = root.getAttribute("data-config");
     if (!json) return null;
     return JSON.parse(json) as Config;
   } catch {
@@ -55,16 +58,20 @@ function parseConfig(root: HTMLElement): Config | null {
   }
 }
 
-async function createPayment(form: HTMLFormElement, config: Config, token: string) {
-  const res = await fetch('/freeform/payments/square/payments', {
-    method: 'POST',
+async function createPayment(
+  form: HTMLFormElement,
+  config: Config,
+  token: string,
+) {
+  const res = await fetch("/freeform/payments/square/payments", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'FF-SQUARE-INTEGRATION': config.integration,
+      "Content-Type": "application/json",
+      "FF-SQUARE-INTEGRATION": config.integration,
     },
     body: JSON.stringify({
       nonce: token,
-      currency: config.currency || 'USD',
+      currency: config.currency || "USD",
       values: Object.fromEntries(new FormData(form) as any),
     }),
   });
@@ -92,7 +99,9 @@ export async function initSquare(): Promise<void> {
     return;
   }
 
-  const configs: (Config | null)[] = Array.from(roots).map((root) => parseConfig(root));
+  const configs: (Config | null)[] = Array.from(roots).map((root) =>
+    parseConfig(root),
+  );
   const validConfigs = configs.filter((c): c is Config => !!c);
   if (validConfigs.length === 0) {
     return;
@@ -110,9 +119,11 @@ export async function initSquare(): Promise<void> {
     if (!config) {
       return;
     }
-    const tokenInput = root.querySelector<HTMLInputElement>('input[data-freeform-square-token]');
+    const tokenInput = root.querySelector<HTMLInputElement>(
+      "input[data-freeform-square-token]",
+    );
     const cardMount = root.querySelector<HTMLElement>(CARD_SELECTOR);
-    const form = root.closest<HTMLFormElement>('form');
+    const form = root.closest<HTMLFormElement>("form");
     if (!tokenInput) {
       return;
     }
@@ -124,7 +135,10 @@ export async function initSquare(): Promise<void> {
     }
 
     try {
-      const payments = (window as any).Square.payments(config.applicationId, config.locationId);
+      const payments = (window as any).Square.payments(
+        config.applicationId,
+        config.locationId,
+      );
       payments.card().then((card: any) => {
         card.attach(cardMount);
 
@@ -141,36 +155,49 @@ export async function initSquare(): Promise<void> {
             const result = await card.tokenize();
             const freeform = (form as any).freeform;
 
-            if (!(result?.status === 'OK' && result?.token)) {
+            if (!(result?.status === "OK" && result?.token)) {
               const message =
-                result?.errors?.[0]?.message || 'Card tokenization failed. Please check your card details.';
+                result?.errors?.[0]?.message ||
+                "Card tokenization failed. Please check your card details.";
               renderErrors(freeform, [message]);
               return false;
             }
 
             try {
-              const { ok, data } = await createPayment(form, config, result.token);
+              const { ok, data } = await createPayment(
+                form,
+                config,
+                result.token,
+              );
               if (ok) {
-                const paymentId = data?.payment?.id || '';
+                const paymentId = data?.payment?.id || "";
                 tokenInput.value = paymentId || result.token;
 
                 // Store redirect URLs for after form submission
                 if (config.redirectSuccess) {
-                  (form as any).freeform.squareRedirectSuccess = config.redirectSuccess;
+                  (form as any).freeform.squareRedirectSuccess =
+                    config.redirectSuccess;
                 }
                 if (config.redirectFailed) {
-                  (form as any).freeform.squareRedirectFailed = config.redirectFailed;
+                  (form as any).freeform.squareRedirectFailed =
+                    config.redirectFailed;
                 }
 
                 return true; // Allow form to submit normally
               }
 
               const messages: string[] = Array.isArray(data?.errors)
-                ? (data.errors.map((e) => (typeof e === 'string' ? e : e?.message)).filter(Boolean) as string[])
+                ? (data.errors
+                    .map((e) => (typeof e === "string" ? e : e?.message))
+                    .filter(Boolean) as string[])
                 : [];
               renderErrors(
                 freeform,
-                messages.length ? messages : ['Payment failed. Please check your details and try again.']
+                messages.length
+                  ? messages
+                  : [
+                      "Payment failed. Please check your details and try again.",
+                    ],
               );
 
               if (config.redirectFailed) {
@@ -179,7 +206,9 @@ export async function initSquare(): Promise<void> {
               }
               return false;
             } catch {
-              renderErrors((form as any).freeform, ['Payment error. Please try again.']);
+              renderErrors((form as any).freeform, [
+                "Payment error. Please try again.",
+              ]);
 
               if (config.redirectFailed) {
                 window.location.href = config.redirectFailed;
@@ -193,7 +222,10 @@ export async function initSquare(): Promise<void> {
         // Handle redirects after successful form submission
         addListeners(form, [events.form.ajaxSuccess], (freeformEvent: any) => {
           const freeform = (form as any).freeform;
-          if (freeform.squareRedirectSuccess && freeformEvent.response?.success) {
+          if (
+            freeform.squareRedirectSuccess &&
+            freeformEvent.response?.success
+          ) {
             window.location.href = freeform.squareRedirectSuccess;
           }
         });
@@ -204,6 +236,6 @@ export async function initSquare(): Promise<void> {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   initSquare().catch(() => {});
 });

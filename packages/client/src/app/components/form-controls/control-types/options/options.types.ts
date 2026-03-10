@@ -1,30 +1,30 @@
-import config from '@config/freeform/freeform.config';
+import config from "@config/freeform/freeform.config";
 import type {
   GenericValue,
   OptionCollection,
   OptionsProperty,
   Property,
-} from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 
 export enum Source {
-  Custom = 'custom',
-  Elements = 'elements',
-  Predefined = 'predefined',
+  Custom = "custom",
+  Elements = "elements",
+  Predefined = "predefined",
 }
 
 export const sourceLabels: OptionCollection = [
-  config.limitations.can('layout.options.custom') && {
-    value: 'custom',
-    label: translate('Custom'),
+  config.limitations.can("layout.options.custom") && {
+    value: "custom",
+    label: translate("Custom"),
   },
-  config.limitations.can('layout.options.elements') && {
-    value: 'elements',
-    label: translate('Elements'),
+  config.limitations.can("layout.options.elements") && {
+    value: "elements",
+    label: translate("Elements"),
   },
-  config.limitations.can('layout.options.predefined') && {
-    value: 'predefined',
-    label: translate('Predefined'),
+  config.limitations.can("layout.options.predefined") && {
+    value: "predefined",
+    label: translate("Predefined"),
   },
 ].filter(Boolean);
 

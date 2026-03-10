@@ -1,10 +1,10 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { ControlBlock } from '@components/form-controls/control.block';
-import type { OptionCollection } from '@ff-client/types/properties';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { ControlBlock } from "@components/form-controls/control.block";
+import type { OptionCollection } from "@ff-client/types/properties";
+import type { FC } from "react";
+import { useEffect, useState } from "react";
 
-import type { InputControl } from '../template.modal.types';
+import type { InputControl } from "../template.modal.types";
 
 export const DropdownInput: FC<InputControl> = (props) => {
   const { optionDefinition, emptyOption, value, onChange } = props;
@@ -13,7 +13,7 @@ export const DropdownInput: FC<InputControl> = (props) => {
   const [options, setOptions] = useState<OptionCollection>([]);
 
   useEffect(() => {
-    if (typeof optionDefinition === 'function') {
+    if (typeof optionDefinition === "function") {
       setLoading(true);
       optionDefinition()
         .then((data) => {

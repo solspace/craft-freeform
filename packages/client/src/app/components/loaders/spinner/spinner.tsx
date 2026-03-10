@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from "react";
 
-import SpinnerIcon from '../spinner.svg';
+import SpinnerIcon from "../spinner.svg";
 
-import { SpinnerContainer } from './spinner.styles';
+import { SpinnerContainer } from "./spinner.styles";
 
 type Props = {
   size?: number;

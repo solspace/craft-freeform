@@ -1,20 +1,20 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import config from '@config/freeform/freeform.config';
-import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
-import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields';
-import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
-import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
-import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
-import { submitFormRuleSelectors } from '@editor/store/slices/rules/submit-form/submit-form.selectors';
-import { useFieldType } from '@ff-client/queries/field-types';
-import type { PageButtonType } from '@ff-client/types/rules';
-import { operatorTypes } from '@ff-client/types/rules';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
+import config from "@config/freeform/freeform.config";
+import { useLastTab } from "@editor/builder/tabs/tabs.hooks";
+import type { Field as FieldTypeProp } from "@editor/store/slices/layout/fields";
+import { buttonRuleSelectors } from "@editor/store/slices/rules/buttons/buttons.selectors";
+import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
+import { pageRuleSelectors } from "@editor/store/slices/rules/pages/page-rules.selectors";
+import { submitFormRuleSelectors } from "@editor/store/slices/rules/submit-form/submit-form.selectors";
+import { useFieldType } from "@ff-client/queries/field-types";
+import type { PageButtonType } from "@ff-client/types/rules";
+import { operatorTypes } from "@ff-client/types/rules";
+import classes from "@ff-client/utils/classes";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { Layout } from '../layout/layout';
+import { Layout } from "../layout/layout";
 
 import {
   FieldInfo,
@@ -22,18 +22,18 @@ import {
   GroupWrapper,
   Icon,
   Label,
-} from './field.styles';
+} from "./field.styles";
 
 type Props = {
   field: FieldTypeProp;
 };
 
 export const Field: React.FC<Props> = ({ field }) => {
-  const canEdit = config.limitations.can('rules.tab.fields');
+  const canEdit = config.limitations.can("rules.tab.fields");
   const { uid: activeFieldUid, button: activeButton } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { setLastTab } = useLastTab('rules');
+  const { setLastTab } = useLastTab("rules");
 
   const type = useFieldType(field?.typeClass);
   const currentField = activeFieldUid === field.uid;
@@ -42,28 +42,28 @@ export const Field: React.FC<Props> = ({ field }) => {
   const activePageRule = useSelector(pageRuleSelectors.one(activeFieldUid));
   const submitFormRule = useSelector(submitFormRuleSelectors.one);
   const buttonRule = useSelector(
-    buttonRuleSelectors.one(activeFieldUid, activeButton as PageButtonType)
+    buttonRuleSelectors.one(activeFieldUid, activeButton as PageButtonType),
   );
 
   const hasRule = useSelector(fieldRuleSelectors.hasRule(field.uid));
 
-  const isSubmitFormRuleOpen = location.pathname.endsWith('/rules/submit');
+  const isSubmitFormRuleOpen = location.pathname.endsWith("/rules/submit");
   const isInCondition = useSelector(
-    fieldRuleSelectors.isInCondition(field.uid)
+    fieldRuleSelectors.isInCondition(field.uid),
   );
 
   const isInActiveCondition =
     activeRule?.conditions.find((condition) => condition.field === field.uid) ||
     activePageRule?.conditions.find(
-      (condition) => condition.field === field.uid
+      (condition) => condition.field === field.uid,
     ) ||
     (isSubmitFormRuleOpen &&
       submitFormRule?.conditions.find(
-        (condition) => condition.field === field.uid
+        (condition) => condition.field === field.uid,
       )) ||
     (activeButton &&
       buttonRule?.conditions.find(
-        (condition) => condition.field === field.uid
+        (condition) => condition.field === field.uid,
       ));
 
   if (field?.properties === undefined) {
@@ -75,20 +75,20 @@ export const Field: React.FC<Props> = ({ field }) => {
       onClick={(event) => {
         event.stopPropagation();
         if (canEdit) {
-          const tab = activeFieldUid === field.uid ? '' : `field/${field.uid}`;
+          const tab = activeFieldUid === field.uid ? "" : `field/${field.uid}`;
           setLastTab(tab);
           navigate(tab);
         }
       }}
       className={classes(
-        type?.type === 'group' && 'group',
-        currentField && 'active',
-        hasRule && 'has-rule',
-        isInCondition && 'is-in-condition',
-        isInActiveCondition && 'is-in-condition-active',
-        !canEdit && 'read-only',
+        type?.type === "group" && "group",
+        currentField && "active",
+        hasRule && "has-rule",
+        isInCondition && "is-in-condition",
+        isInActiveCondition && "is-in-condition-active",
+        !canEdit && "read-only",
         operatorTypes.negative.includes(isInActiveCondition?.operator) &&
-          'not-equals'
+          "not-equals",
       )}
     >
       <FieldInfo>
@@ -102,7 +102,7 @@ export const Field: React.FC<Props> = ({ field }) => {
         />
       </FieldInfo>
 
-      {type?.type === 'group' && (
+      {type?.type === "group" && (
         <GroupWrapper>
           <Layout layoutUid={field.properties.layout} />
         </GroupWrapper>

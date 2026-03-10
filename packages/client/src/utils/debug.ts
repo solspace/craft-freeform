@@ -1,11 +1,11 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
 const urlParams = new URLSearchParams(window.location.search);
-const debugMode = process.env.DEBUG_MODE || urlParams.get('mode') === 'debug';
+const debugMode = process.env.DEBUG_MODE || urlParams.get("mode") === "debug";
 
 const colors = {
-  blue: 'color: #068FFE',
-  reset: '',
+  blue: "color: #068FFE",
+  reset: "",
 } as const;
 
 type DebugConsole = Console & {
@@ -15,21 +15,21 @@ type DebugConsole = Console & {
 
 export const debug: DebugConsole = new Proxy(console as DebugConsole, {
   get: (target: DebugConsole, prop: keyof DebugConsole) => {
-    if (prop === 'colors') {
+    if (prop === "colors") {
       return colors;
     }
 
-    if (prop === 'dbg') {
+    if (prop === "dbg") {
       if (!debugMode) {
         return () => {};
       }
 
       return (...messages: GenericValue[]) => {
-        target.log('🀄️🔆🔆🔆🀄️', ...messages);
+        target.log("🀄️🔆🔆🔆🀄️", ...messages);
       };
     }
 
-    if (typeof target[prop] === 'function' && !debugMode) {
+    if (typeof target[prop] === "function" && !debugMode) {
       return () => {};
     }
 

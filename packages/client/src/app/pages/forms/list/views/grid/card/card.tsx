@@ -1,34 +1,34 @@
-import type { MouseEventHandler } from 'react';
-import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import type { TooltipProps } from 'react-tippy';
-import { Tooltip } from 'react-tippy';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import { QKGroups } from '@ff-client/queries/form-groups';
-import { useFMFormStatsQuery } from '@ff-client/queries/form-monitor';
-import { QKForms } from '@ff-client/queries/forms';
-import type { FormWithStats } from '@ff-client/types/forms';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import ArchiveIcon from '@ff-icons/actions/archive.svg';
-import CloneIcon from '@ff-icons/actions/clone.svg';
-import CrossIcon from '@ff-icons/actions/delete.svg';
-import MoveIcon from '@ff-icons/actions/move.svg';
-import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useDeleteFormModal } from "@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useCheckOverflow } from "@ff-client/hooks/use-check-overflow";
+import { QKGroups } from "@ff-client/queries/form-groups";
+import { useFMFormStatsQuery } from "@ff-client/queries/form-monitor";
+import { QKForms } from "@ff-client/queries/forms";
+import type { FormWithStats } from "@ff-client/types/forms";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import ArchiveIcon from "@ff-icons/actions/archive.svg";
+import CloneIcon from "@ff-icons/actions/clone.svg";
+import CrossIcon from "@ff-icons/actions/delete.svg";
+import MoveIcon from "@ff-icons/actions/move.svg";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import type React from "react";
+import type { MouseEventHandler } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import type { TooltipProps } from "react-tippy";
+import { Tooltip } from "react-tippy";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
-} from '../grid.mutations';
+} from "../grid.mutations";
 
-import { FMLoading } from './card.loading';
-import { FormMonitorStats } from './card.monitor.stats';
+import { FMLoading } from "./card.loading";
+import { FormMonitorStats } from "./card.monitor.stats";
 import {
   CardBody,
   CardWrapper,
@@ -43,7 +43,7 @@ import {
   Subtitle,
   Title,
   TitleLink,
-} from './card.styles';
+} from "./card.styles";
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -54,9 +54,9 @@ type Props = {
   isExpressEdition?: boolean;
 };
 
-const tooltipProps: Omit<TooltipProps, 'children'> = {
-  position: 'top',
-  animation: 'fade',
+const tooltipProps: Omit<TooltipProps, "children"> = {
+  position: "top",
+  animation: "fade",
   delay: [100, 0] as unknown as number,
 };
 
@@ -96,16 +96,16 @@ export const Card: React.FC<Props> = ({
 
   const onNavigate: MouseEventHandler<HTMLHeadingElement> = (event): void => {
     if (event.metaKey || event.ctrlKey || event.button === 1) {
-      window.open(generateUrl(`forms/${id}`), '_blank');
+      window.open(generateUrl(`forms/${id}`), "_blank");
     } else {
       queryClient.invalidateQueries({ queryKey: QKForms.single(Number(id)) });
       navigate(`${id}`);
     }
   };
 
-  const hasTitleLink = form.links.filter(({ type }) => type === 'title').length;
-  const linkList = form.links.filter(({ type }) => type === 'linkList');
-  const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
+  const hasTitleLink = form.links.filter(({ type }) => type === "title").length;
+  const linkList = form.links.filter(({ type }) => type === "linkList");
+  const formMonitorLink = form.links.find(({ type }) => type === "formMonitor");
 
   const { data: formMonitorStats, isLoading: isStatsLoading } =
     useFMFormStatsQuery(form.id, {
@@ -116,21 +116,21 @@ export const Card: React.FC<Props> = ({
     <CardWrapper
       data-id={form.id}
       className={classes(
-        isDisabled && 'disabled',
-        isSuccess && 'archived',
-        isDraggingInProgress && 'dragging'
+        isDisabled && "disabled",
+        isSuccess && "archived",
+        isDraggingInProgress && "dragging",
       )}
     >
       <Controls>
         {!isExpressEdition && !isProEdition && (
-          <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
+          <Tooltip title={translate("Move this Form Card")} {...tooltipProps}>
             <ControlButton className="handle">
               <MoveIcon />
             </ControlButton>
           </Tooltip>
         )}
         {!isExpressEdition && (
-          <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
+          <Tooltip title={translate("Duplicate this Form")} {...tooltipProps}>
             <ControlButton
               onClick={() => {
                 cloneMutation.mutate(id);
@@ -141,7 +141,7 @@ export const Card: React.FC<Props> = ({
           </Tooltip>
         )}
         {!isExpressEdition && !dateArchived && (
-          <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
+          <Tooltip title={translate("Archive this Form")} {...tooltipProps}>
             <ControlButton
               onClick={() => {
                 archiveMutation.mutate(id);
@@ -152,7 +152,7 @@ export const Card: React.FC<Props> = ({
           </Tooltip>
         )}
         {canDelete && (
-          <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
+          <Tooltip title={translate("Delete this Form")} {...tooltipProps}>
             <ControlButton
               onClick={async (event) => {
                 if (event.metaKey && event.shiftKey) {
@@ -209,7 +209,7 @@ export const Card: React.FC<Props> = ({
                   {...tooltipProps}
                   position="bottom"
                   distance={10}
-                  style={{ display: 'block' }}
+                  style={{ display: "block" }}
                 >
                   <Subtitle ref={descriptionRef}>{description}</Subtitle>
                 </Tooltip>
@@ -228,7 +228,7 @@ export const Card: React.FC<Props> = ({
                     <li key={idx}>
                       <a href={link.url}>{link.label}</a>
                     </li>
-                  )
+                  ),
                 )}
               </LinkList>
             )}
@@ -277,7 +277,7 @@ export const Card: React.FC<Props> = ({
             </defs>
             <Area
               type="monotone"
-              dataKey={'uv'}
+              dataKey={"uv"}
               stroke={color}
               strokeWidth={1}
               strokeOpacity={1}

@@ -1,12 +1,12 @@
-import config from '@config/freeform/freeform.config';
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import config from "@config/freeform/freeform.config";
+import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
-import type { Notice } from './notices.types';
+import type { Notice } from "./notices.types";
 
 export const QKNotices = {
-  all: ['notices'],
+  all: ["notices"],
 } as const;
 
 type NoticesResponse = {
@@ -18,7 +18,7 @@ export const useNoticesQuery = (): UseQueryResult<NoticesResponse> => {
   return useQuery({
     queryKey: QKNotices.all,
     queryFn: () =>
-      axios.get<NoticesResponse>('/api/notices').then((res) => res.data),
+      axios.get<NoticesResponse>("/api/notices").then((res) => res.data),
     enabled: config.feed,
   });
 };

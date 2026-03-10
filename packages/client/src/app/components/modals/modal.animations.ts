@@ -1,22 +1,22 @@
-import type { SpringValues, TransitionFn } from 'react-spring';
-import { useSpring, useTransition } from 'react-spring';
+import type { SpringValues, TransitionFn } from "react-spring";
+import { useSpring, useTransition } from "react-spring";
 
-import type { ModalType } from './modal.types';
+import type { ModalType } from "./modal.types";
 
 export const useAnimateOverlay = (
-  active: boolean
+  active: boolean,
 ): SpringValues<{ opacity: number; backgroundColor: string }> =>
   useSpring({
     to: {
       opacity: active ? 1 : 0,
       backgroundColor: active
-        ? 'rgba(123, 135, 147, 0.35)'
-        : 'rgba(123, 135, 147, 0)',
+        ? "rgba(123, 135, 147, 0.35)"
+        : "rgba(123, 135, 147, 0)",
     },
   });
 
 export const useAnimateModals = (
-  modals: ModalType[]
+  modals: ModalType[],
 ): TransitionFn<ModalType, { y: number; opacity: number }> => {
   return useTransition(modals, {
     from: {

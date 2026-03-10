@@ -1,9 +1,9 @@
-import { animated } from 'react-spring';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { spacings } from "@ff-client/styles/variables";
+import { animated } from "react-spring";
+import styled from "styled-components";
 
-import { Wrapper } from './field-group/field/field.styles';
+import { Wrapper } from "./field-group/field/field.styles";
 
 export const FieldListWrapper = styled(animated.div)`
   position: relative;

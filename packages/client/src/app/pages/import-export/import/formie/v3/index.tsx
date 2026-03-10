@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { ContentContainer } from '@components/layout/blocks/content-container';
-import { Field } from '@components/layout/blocks/field';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import axios from 'axios';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { ContentContainer } from "@components/layout/blocks/content-container";
+import { Field } from "@components/layout/blocks/field";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import axios from "axios";
+import type React from "react";
+import { useState } from "react";
 
-import { Preview } from '../../../common/preview/preview';
-import { Progress } from '../../../common/progress/progress';
-import { useProgressEvent } from '../../../common/progress/progress.hooks';
-import { Strategy } from '../../../common/strategy/strategy';
-import { isAllOptionsEmpty } from '../../../export/export.operations';
-import type { ImportOptions } from '../../import.types';
-import type { StrategyCollection } from '../../import.types';
-import { createImportOptions } from '../../import.types';
+import { Preview } from "../../../common/preview/preview";
+import { Progress } from "../../../common/progress/progress";
+import { useProgressEvent } from "../../../common/progress/progress.hooks";
+import { Strategy } from "../../../common/strategy/strategy";
+import { isAllOptionsEmpty } from "../../../export/export.operations";
+import type { ImportOptions, StrategyCollection } from "../../import.types";
+import { createImportOptions } from "../../import.types";
 
-import { useFormieDataQuery } from './fomie.queries';
+import { useFormieDataQuery } from "./fomie.queries";
 
 export const ImportFormie: React.FC = () => {
   const [options, setOptions] = useState<ImportOptions>(createImportOptions());
@@ -30,9 +30,9 @@ export const ImportFormie: React.FC = () => {
   const onClick = async (): Promise<void> => {
     progressEvent.clearProgress();
 
-    const { data } = await axios.post('/api/import/prepare', {
+    const { data } = await axios.post("/api/import/prepare", {
       exporter:
-        '\\Solspace\\Freeform\\Bundles\\Backup\\Export\\FormieV3Exporter',
+        "\\Solspace\\Freeform\\Bundles\\Backup\\Export\\FormieV3Exporter",
       options,
     });
 
@@ -41,11 +41,11 @@ export const ImportFormie: React.FC = () => {
   };
 
   if (isFetching) {
-    return <ContentContainer>{translate('Loading...')}</ContentContainer>;
+    return <ContentContainer>{translate("Loading...")}</ContentContainer>;
   }
 
   if (!data) {
-    return <ContentContainer>{translate('No data found')}</ContentContainer>;
+    return <ContentContainer>{translate("No data found")}</ContentContainer>;
   }
 
   if (
@@ -56,7 +56,7 @@ export const ImportFormie: React.FC = () => {
     !data.templates.success.length &&
     !data.formSubmissions.length
   ) {
-    return <ContentContainer>{translate('No data found')}</ContentContainer>;
+    return <ContentContainer>{translate("No data found")}</ContentContainer>;
   }
 
   return (
@@ -68,7 +68,7 @@ export const ImportFormie: React.FC = () => {
         url="import/formie3"
       />
       {data && (
-        <Field label={translate('Select Data')}>
+        <Field label={translate("Select Data")}>
           <Preview
             disabled={active}
             data={data}
@@ -91,27 +91,28 @@ export const ImportFormie: React.FC = () => {
       />
 
       <button
-        className={classes(
-          'field btn',
-          'submit',
-          active && 'disabled',
-          isAllOptionsEmpty(options) && 'disabled'
-        )}
+        type="button"
         disabled={active}
         onClick={onClick}
+        className={classes(
+          "field btn",
+          "submit",
+          active && "disabled",
+          isAllOptionsEmpty(options) && "disabled",
+        )}
       >
         <LoadingText
-          loadingText={translate('Processing')}
+          loadingText={translate("Processing")}
           loading={active}
           spinner
         >
-          {translate('Begin Import')}
+          {translate("Begin Import")}
         </LoadingText>
       </button>
 
       <Progress
-        label={translate('Import')}
-        finishLabel={translate('Import completed successfully!')}
+        label={translate("Import")}
+        finishLabel={translate("Import completed successfully!")}
         event={progressEvent}
       />
     </ContentContainer>

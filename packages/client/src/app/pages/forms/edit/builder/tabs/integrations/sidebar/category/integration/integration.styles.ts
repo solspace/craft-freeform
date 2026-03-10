@@ -1,5 +1,5 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const Wrapper = styled.div`
   > a {
@@ -75,11 +75,11 @@ export const Status = styled.div<StatusProps>`
   height: 10px;
 
   border: 1px solid
-    ${({ $enabled }): string => ($enabled ? 'transparent' : colors.gray550)};
+    ${({ $enabled }): string => ($enabled ? "transparent" : colors.gray550)};
   border-radius: 100%;
 
   background-color: ${({ $enabled: enabled }): string =>
-    enabled ? colors.teal550 : 'transparent'};
+    enabled ? colors.teal550 : "transparent"};
 
   transition: all 0.3s ease-out;
 `;

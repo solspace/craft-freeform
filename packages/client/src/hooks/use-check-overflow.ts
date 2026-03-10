@@ -1,5 +1,5 @@
-import type { MutableRefObject } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import type { MutableRefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export const useCheckOverflow = <T extends HTMLElement>(): [
   MutableRefObject<T>,
@@ -16,11 +16,11 @@ export const useCheckOverflow = <T extends HTMLElement>(): [
       }
     };
 
-    window.addEventListener('resize', checkOverflow);
+    window.addEventListener("resize", checkOverflow);
     checkOverflow();
 
-    return () => window.removeEventListener('resize', checkOverflow);
-  }, [textRef]);
+    return () => window.removeEventListener("resize", checkOverflow);
+  }, []);
 
   return [textRef, isOverflowing];
 };

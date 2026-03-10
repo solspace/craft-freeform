@@ -1,15 +1,15 @@
-const glob = require('glob');
-const path = require('path');
+const glob = require("glob");
+const path = require("node:path");
 
-const isProd = process.env.NODE_ENV === 'production';
+const isProd = process.env.NODE_ENV === "production";
 
 module.exports = {
-  mode: isProd ? 'production' : 'development',
-  context: path.resolve(__dirname, '.'),
-  target: ['web', 'es5'],
+  mode: isProd ? "production" : "development",
+  context: path.resolve(__dirname, "."),
+  target: ["web", "es5"],
 
   entry: () =>
-    glob.sync('./src/components/**/!(*.*).{js,ts}').reduce((obj, el) => {
+    glob.sync("./src/components/**/!(*.*).{js,ts}").reduce((obj, el) => {
       obj[`./${el}`] = `./${el}`;
 
       return obj;
@@ -17,40 +17,31 @@ module.exports = {
   output: {
     filename: (pathData) => {
       const { name } = pathData.chunk;
-      return name.replace('./src/components/', '').replace(/\.ts$/, '.js');
+      return name.replace("./src/components/", "").replace(/\.ts$/, ".js");
     },
-    path: path.resolve(__dirname, '../plugin/src/Resources/js/scripts'),
+    path: path.resolve(__dirname, "../plugin/src/Resources/js/scripts"),
   },
 
   module: {
     rules: [
       {
-        test: /\.js(x?)$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: 'babel-loader',
-          },
-        ],
-      },
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.(j|t)sx?$/,
+        use: "ts-loader",
         exclude: /node_modules/,
       },
       {
         test: /\.css$/,
-        use: ['style-loader', { loader: 'css-loader' }],
+        use: ["style-loader", { loader: "css-loader" }],
       },
     ],
   },
 
-  devtool: isProd ? false : 'eval-source-map',
+  devtool: isProd ? false : "eval-source-map",
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: [".tsx", ".ts", ".js"],
     alias: {
-      '@lib': path.resolve(__dirname, 'src/lib/'),
-      '@components': path.resolve(__dirname, 'src/components/'),
+      "@lib": path.resolve(__dirname, "src/lib/"),
+      "@components": path.resolve(__dirname, "src/components/"),
     },
   },
 };

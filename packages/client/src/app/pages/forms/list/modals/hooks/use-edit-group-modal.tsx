@@ -1,10 +1,10 @@
-import { useModal } from '@components/modals/modal.context';
+import { useModal } from "@components/modals/modal.context";
 
-import { EditGroupModal } from '../modal.group.edit';
+import { EditGroupModal } from "../modal.group.edit";
 
-type EditGroupModal = () => () => void;
+type EditGroupModalType = () => () => void;
 
-export const useEditGroupModal: EditGroupModal = () => {
+export const useEditGroupModal: EditGroupModalType = () => {
   const { openModal } = useModal();
 
   return (): void => {

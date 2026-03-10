@@ -1,8 +1,8 @@
-import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { fireEvent, render, screen } from "@testing-library/react";
+import type React from "react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { useClickOutside } from './use-click-outside';
+import { useClickOutside } from "./use-click-outside";
 
 const callback = vi.fn();
 
@@ -10,7 +10,7 @@ const MockComponent: React.FC = () => {
   const ref = useClickOutside<HTMLDivElement>({
     callback,
     isEnabled: true,
-    excludeClassNames: ['wont-trigger', 'nested-exclude'],
+    excludeClassNames: ["wont-trigger", "nested-exclude"],
   });
 
   return (
@@ -18,7 +18,7 @@ const MockComponent: React.FC = () => {
       <div ref={ref} data-testid="inside-div">
         Inside
       </div>
-      <button>Click me</button>
+      <button type="button">Click me</button>
       <div className="wont-trigger" data-testid="wont-trigger">
         Won't trigger
       </div>
@@ -27,7 +27,9 @@ const MockComponent: React.FC = () => {
         <div>
           <ul>
             <li>
-              <button data-testid="nested-button">wont trigger button</button>
+              <button type="button" data-testid="nested-button">
+                wont trigger button
+              </button>
             </li>
           </ul>
         </div>
@@ -36,19 +38,19 @@ const MockComponent: React.FC = () => {
   );
 };
 
-describe('useClickOutside', () => {
+describe("useClickOutside", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('should not close when clicking refObject', () => {
+  it("should not close when clicking refObject", () => {
     render(<MockComponent />);
 
-    fireEvent.click(screen.getByTestId('inside-div'));
+    fireEvent.click(screen.getByTestId("inside-div"));
     expect(callback).toHaveBeenCalledTimes(0);
   });
 
-  it('should close when clicking body', () => {
+  it("should close when clicking body", () => {
     render(<MockComponent />);
 
     fireEvent.click(document.body);
@@ -58,21 +60,21 @@ describe('useClickOutside', () => {
   it('should close when clicking "will-trigger"', () => {
     render(<MockComponent />);
 
-    fireEvent.click(screen.getByTestId('will-trigger'));
+    fireEvent.click(screen.getByTestId("will-trigger"));
     expect(callback).toHaveBeenCalledTimes(1);
   });
 
   it('should not close when clicking "wont-trigger"', () => {
     render(<MockComponent />);
 
-    fireEvent.click(screen.getByTestId('wont-trigger'));
+    fireEvent.click(screen.getByTestId("wont-trigger"));
     expect(callback).toHaveBeenCalledTimes(0);
   });
 
   it('should not close when clicking "wont-trigger-button"', () => {
     render(<MockComponent />);
 
-    fireEvent.click(screen.getByTestId('nested-button'));
+    fireEvent.click(screen.getByTestId("nested-button"));
     expect(callback).toHaveBeenCalledTimes(0);
   });
 });

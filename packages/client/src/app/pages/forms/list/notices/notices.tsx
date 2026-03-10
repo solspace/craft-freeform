@@ -1,23 +1,23 @@
-import type { ReactNode } from 'react';
-import React from 'react';
-import config from '@config/freeform/freeform.config';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import DOMPurify from 'dompurify';
+import config from "@config/freeform/freeform.config";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import DOMPurify from "dompurify";
+import type React from "react";
+import type { ReactNode } from "react";
 
-import CircleIcon from './icons/circle.icon.svg';
-import DeleteIcon from './icons/delete.icon.svg';
-import InfoIcon from './icons/info.icon.svg';
-import NewIcon from './icons/new.icon.svg';
-import TriangleIcon from './icons/triangle.icon.svg';
-import { useNoticeDeleteMutation, useNoticesQuery } from './notices.queries';
+import CircleIcon from "./icons/circle.icon.svg";
+import DeleteIcon from "./icons/delete.icon.svg";
+import InfoIcon from "./icons/info.icon.svg";
+import NewIcon from "./icons/new.icon.svg";
+import TriangleIcon from "./icons/triangle.icon.svg";
+import { useNoticeDeleteMutation, useNoticesQuery } from "./notices.queries";
 import {
   CloseButton,
   Icon,
   Message,
   NoticeItem,
   NoticesList,
-} from './notices.styles';
+} from "./notices.styles";
 
 const icons: Record<string, ReactNode> = {
   info: <InfoIcon />,
@@ -67,10 +67,10 @@ export const Notices: React.FC = () => {
                 translate(
                   'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.',
                   {
-                    link: generateUrl('settings/error-log'),
+                    link: generateUrl("settings/error-log"),
                     errors: data.errors,
-                  }
-                )
+                  },
+                ),
               ),
             }}
           />

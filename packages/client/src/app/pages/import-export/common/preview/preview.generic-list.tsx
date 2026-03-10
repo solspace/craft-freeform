@@ -1,8 +1,7 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import classes from '@ff-client/utils/classes';
-import { stripTags } from '@ff-client/utils/html-attributes';
-import kebabCase from 'lodash/kebabCase';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import classes from "@ff-client/utils/classes";
+import { stripTags } from "@ff-client/utils/html-attributes";
+import kebabCase from "lodash/kebabCase";
 
 import {
   BlockItem,
@@ -11,7 +10,7 @@ import {
   Label,
   ListItem,
   Spacer,
-} from './preview.styles';
+} from "./preview.styles";
 
 type Props<O> = {
   id?: string;
@@ -62,8 +61,8 @@ export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
           <ListItem
             key={item[selectionKey] as string}
             className={classes(
-              'selectable',
-              selection.includes(item[selectionKey] as string) && 'selected'
+              "selectable",
+              selection.includes(item[selectionKey] as string) && "selected",
             )}
           >
             <Blocks>
@@ -75,17 +74,17 @@ export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
                     onUpdate(
                       selection.includes(item[selectionKey] as string)
                         ? selection.filter((uid) => uid !== item[selectionKey])
-                        : [...selection, item[selectionKey] as string]
+                        : [...selection, item[selectionKey] as string],
                     )
                   }
                 />
               </BlockItem>
               <Spacer $dash $width={nested ? 2 : undefined} />
               {icon}
-              {itemIcon && itemIcon(item)}
+              {itemIcon?.(item)}
               <Label htmlFor={`${id}-${item[selectionKey]}`}>
                 {stripTags(item[labelKey] as string)}
-                {labelExtras && labelExtras(item)}
+                {labelExtras?.(item)}
               </Label>
             </Blocks>
           </ListItem>

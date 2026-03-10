@@ -1,12 +1,12 @@
-import type { MutableRefObject } from 'react';
-import { useEffect, useState } from 'react';
-import type { ConnectDropTarget } from 'react-dnd';
-import { useDrop } from 'react-dnd';
-import type { DragItem } from '@editor/builder/types/drag';
-import { Drag } from '@editor/builder/types/drag';
-import type { Row } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { fieldThunks } from '@editor/store/thunks/fields';
+import type { DragItem } from "@editor/builder/types/drag";
+import { Drag } from "@editor/builder/types/drag";
+import type { Row } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { fieldThunks } from "@editor/store/thunks/fields";
+import type { MutableRefObject } from "react";
+import { useEffect, useState } from "react";
+import type { ConnectDropTarget } from "react-dnd";
+import { useDrop } from "react-dnd";
 
 type FieldDrop = {
   isOver: boolean;
@@ -32,7 +32,7 @@ export const useRowFieldDrop = (
   row: Row,
   fieldCount: number,
   width: number,
-  offsetX: number
+  offsetX: number,
 ): FieldDropHook => {
   const dispatch = useAppDispatch();
   const [fieldWidth, setFieldWidth] = useState<number>();
@@ -87,8 +87,8 @@ export const useRowFieldDrop = (
             fieldThunks.move.existingField.existingRow(
               item.data,
               row,
-              hoverPosition
-            )
+              hoverPosition,
+            ),
           );
         } else if (item.type === Drag.FieldType) {
           dispatch(
@@ -96,14 +96,14 @@ export const useRowFieldDrop = (
               fieldType: item.data,
               row,
               order: hoverPosition,
-            })
+            }),
           );
         }
 
         setHoverPosition(undefined);
       },
     },
-    [wrapperRef, row, fieldCount, hoverPosition, width]
+    [wrapperRef, row, fieldCount, hoverPosition, width],
   );
 
   useEffect(() => {

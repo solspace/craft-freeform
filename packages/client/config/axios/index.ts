@@ -1,6 +1,6 @@
-import { APIError } from '@ff-client/types/api';
-import { generateUrl } from '@ff-client/utils/urls';
-import axios from 'axios';
+import { APIError } from "@ff-client/types/api";
+import { generateUrl } from "@ff-client/utils/urls";
+import axios from "axios";
 
 interface CraftGlobal {
   Craft: {
@@ -11,25 +11,25 @@ interface CraftGlobal {
 
 declare let global: CraftGlobal;
 
-axios.defaults.baseURL = generateUrl('/');
+axios.defaults.baseURL = generateUrl("/");
 
 if (axios.defaults.headers.get) {
-  axios.defaults.headers.get['Accept'] = 'application/json';
+  axios.defaults.headers.get.Accept = "application/json";
 }
 
 if (axios.defaults.headers.post) {
-  axios.defaults.headers.post['Accept'] = 'application/json';
+  axios.defaults.headers.post.Accept = "application/json";
 }
 
 // Inject the Craft CSRF token in all POST requests
 axios.interceptors.request.use((config) => {
-  if (['post', 'put', 'patch', 'delete'].includes(config.method)) {
+  if (["post", "put", "patch", "delete"].includes(config.method)) {
     if (config.data === undefined) {
       config.data = {};
     }
 
     if (global.Craft !== undefined) {
-      config.headers['X-CSRF-Token'] = global.Craft.csrfTokenValue;
+      config.headers["X-CSRF-Token"] = global.Craft.csrfTokenValue;
     }
   }
 

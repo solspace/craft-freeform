@@ -1,13 +1,13 @@
-import React from 'react';
-import type { Layout as LayoutType } from '@editor/builder/types/layout';
-import { useAppSelector } from '@editor/store';
-import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
-import translate from '@ff-client/utils/translations';
+import type { Layout as LayoutType } from "@editor/builder/types/layout";
+import { useAppSelector } from "@editor/store";
+import { rowSelectors } from "@editor/store/slices/layout/rows/rows.selectors";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { Row } from '../row/row';
+import { Row } from "../row/row";
 
-import { useLayoutDrop } from './layout.drop';
-import { DropZone, EmptyLayout, PageFieldLayoutWrapper } from './layout.styles';
+import { useLayoutDrop } from "./layout.drop";
+import { DropZone, EmptyLayout, PageFieldLayoutWrapper } from "./layout.styles";
 
 type Props = {
   layout: LayoutType;
@@ -15,7 +15,7 @@ type Props = {
 
 export const Layout: React.FC<Props> = ({ layout }) => {
   const rows = useAppSelector((state) =>
-    rowSelectors.inLayout(state, layout?.uid)
+    rowSelectors.inLayout(state, layout?.uid),
   );
 
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
@@ -24,14 +24,14 @@ export const Layout: React.FC<Props> = ({ layout }) => {
     <PageFieldLayoutWrapper ref={dropRef} className="field-layout">
       {!rows.length && (
         <EmptyLayout>
-          {translate('Drag or click fields to add them to the layout')}
+          {translate("Drag or click fields to add them to the layout")}
         </EmptyLayout>
       )}
       {rows.map((row) => (
         <Row row={row} key={row.uid} />
       ))}
       <DropZone style={placeholderAnimation}>
-        {translate('+ insert row')}
+        {translate("+ insert row")}
       </DropZone>
     </PageFieldLayoutWrapper>
   );

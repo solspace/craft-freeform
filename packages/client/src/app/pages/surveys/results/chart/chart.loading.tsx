@@ -1,27 +1,27 @@
-import React from 'react';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { range } from '@ff-client/utils/arrays';
-import translate from '@ff-client/utils/translations';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import { range } from "@ff-client/utils/arrays";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-import { ChartWrapper, ExtraColor, Title } from './chart.styles';
+import { ChartWrapper, ExtraColor, Title } from "./chart.styles";
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const data = range(0, 60).map((i) => ({
-  name: '',
+  name: "",
   y: i > 30 ? randomSubmissions(0, Math.random() > 0.5 ? 4 : 1) : 0,
 }));
 
 export const ChartLoadingSkeleton: React.FC = () => {
-  const color = '#cccccc';
+  const color = "#cccccc";
 
   return (
     <ChartWrapper $color={color}>
       <Title>
         <LoadingText loading instant xl>
-          {translate('Loading')}
+          {translate("Loading")}
         </LoadingText>
       </Title>
       <ResponsiveContainer width="100%" height={80}>

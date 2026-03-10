@@ -1,5 +1,5 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled, { css } from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const FormMonitorWrapper = styled.div`
   display: flex;
@@ -62,45 +62,45 @@ const dotSizeStyles = {
 
 export const StatusIndicator = styled.div<{
   $status:
-    | 'success'
-    | 'failed'
-    | 'pending'
-    | 'disabled'
-    | 'active'
-    | 'inactive';
-  $size?: 'sm' | 'md' | 'lg' | 'xl';
+    | "success"
+    | "failed"
+    | "pending"
+    | "disabled"
+    | "active"
+    | "inactive";
+  $size?: "sm" | "md" | "lg" | "xl";
 }>`
   display: inline-flex;
   align-items: center;
   font-weight: 500;
   text-transform: uppercase;
   border-radius: 999px;
-  ${({ $size = 'sm' }) => sizeStyles[$size]}
+  ${({ $size = "sm" }) => sizeStyles[$size]}
   background-color: ${({ $status }) => {
     switch ($status) {
-      case 'success':
-      case 'active':
-        return 'rgba(34, 197, 94, 0.2)';
-      case 'failed':
-        return 'rgba(239, 68, 68, 0.2)';
-      case 'pending':
-        return 'rgba(55, 65, 81, 0.2)';
-      case 'inactive':
-        return 'rgba(107, 114, 128, 0.2)';
+      case "success":
+      case "active":
+        return "rgba(34, 197, 94, 0.2)";
+      case "failed":
+        return "rgba(239, 68, 68, 0.2)";
+      case "pending":
+        return "rgba(55, 65, 81, 0.2)";
+      case "inactive":
+        return "rgba(107, 114, 128, 0.2)";
       default:
-        return 'rgba(156, 163, 175, 0.2)';
+        return "rgba(156, 163, 175, 0.2)";
     }
   }};
   color: ${({ $status }) => {
     switch ($status) {
-      case 'success':
-      case 'active':
+      case "success":
+      case "active":
         return colors.green600;
-      case 'failed':
+      case "failed":
         return colors.red600;
-      case 'pending':
+      case "pending":
         return colors.gray700;
-      case 'inactive':
+      case "inactive":
         return colors.gray600;
       default:
         return colors.gray600;
@@ -109,23 +109,23 @@ export const StatusIndicator = styled.div<{
 `;
 
 export const StatusDot = styled.span<{
-  $size?: 'sm' | 'md' | 'lg' | 'xl';
+  $size?: "sm" | "md" | "lg" | "xl";
   $status?:
-    | 'success'
-    | 'failed'
-    | 'pending'
-    | 'disabled'
-    | 'active'
-    | 'inactive';
+    | "success"
+    | "failed"
+    | "pending"
+    | "disabled"
+    | "active"
+    | "inactive";
 }>`
   display: inline-block;
   border-radius: 50%;
   background-color: currentColor;
   position: relative;
-  ${({ $size = 'sm' }) => dotSizeStyles[$size]}
+  ${({ $size = "sm" }) => dotSizeStyles[$size]}
 
   ${({ $status }) =>
-    $status === 'pending' &&
+    $status === "pending" &&
     css`
       background-color: transparent;
       color: currentColor;

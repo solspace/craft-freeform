@@ -4,7 +4,7 @@ type NumericValueParser = (
     min?: number;
     max?: number;
     unsigned?: boolean;
-  }
+  },
 ) => number | undefined;
 
 const NumericRegex = /^-?\d*\.?\d*$/;
@@ -12,16 +12,16 @@ const NumericRegex = /^-?\d*\.?\d*$/;
 export const parseNumericValue: NumericValueParser = (input, config = {}) => {
   const { min, max, unsigned } = config;
 
-  if (typeof input === 'string') {
-    if (input === '-') {
+  if (typeof input === "string") {
+    if (input === "-") {
       return 0;
     }
 
     if (!NumericRegex.test(input)) {
-      input = input.replaceAll(/[^0-9.-]/g, '');
+      input = input.replaceAll(/[^0-9.-]/g, "");
     }
 
-    if (input === '') {
+    if (input === "") {
       return;
     }
 
@@ -32,7 +32,7 @@ export const parseNumericValue: NumericValueParser = (input, config = {}) => {
     return;
   }
 
-  if (typeof unsigned === 'boolean' && unsigned && input < 0) {
+  if (typeof unsigned === "boolean" && unsigned && input < 0) {
     input = Math.abs(input);
   }
 
@@ -51,7 +51,7 @@ export const inRange = (
   current: number,
   min: number,
   max: number,
-  inclusive: boolean = true
+  inclusive: boolean = true,
 ): boolean => {
   const minimum = Math.min(min, max);
   const maximum = Math.max(min, max);

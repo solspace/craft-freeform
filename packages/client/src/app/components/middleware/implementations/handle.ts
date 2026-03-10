@@ -1,11 +1,11 @@
-import transliterate from '@sindresorhus/transliterate';
+import transliterate from "@sindresorhus/transliterate";
 
-import type { MiddlewareImplementation } from '../middleware';
+import type { MiddlewareImplementation } from "../middleware";
 
 const middleware: MiddlewareImplementation<string> = (value) => {
   value = transliterate(value);
 
-  return value.replace(/[^a-zA-Z0-9\-_]/g, '');
+  return value.replace(/[^a-zA-Z0-9\-_]/g, "");
 };
 
 export default middleware;

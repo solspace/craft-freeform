@@ -5,16 +5,14 @@
     "dev": "npm run clean && npm run build && sass --no-source-map --watch src/:../plugin/src/Resources/css",
     "build": "npm run clean && sass --no-source-map --style=compressed src/:../plugin/src/Resources/css",
     "clean": "rm -rf ../plugin/src/Resources/css",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
     "test": ""
   },
   "author": "Solspace Inc.",
   "license": "MIT",
+  "dependencies": {},
   "devDependencies": {
-    "sass": "^1.66.1",
-    "y18n": "^5.0.8"
-  },
-  "dependencies": {
-    "craftcms-sass": "^3.5.7",
-    "react-tippy": "^1.4.0"
+    "sass": "^1.66.1"
   }
 }

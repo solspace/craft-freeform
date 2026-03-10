@@ -1,14 +1,14 @@
-import cmp from 'semver-compare';
+import cmp from "semver-compare";
 
 export const objectHasAnyKey = (
   object: Record<string, unknown>,
-  keys: string[]
+  keys: string[],
 ): boolean => {
-  if (!object || typeof object !== 'object' || !Array.isArray(keys)) {
+  if (!object || typeof object !== "object" || !Array.isArray(keys)) {
     return false;
   }
 
-  return keys.some((key) => Object.prototype.hasOwnProperty.call(object, key));
+  return keys.some((key) => Object.hasOwn(object, key));
 };
 
 type Comparison = (version: string) => boolean;

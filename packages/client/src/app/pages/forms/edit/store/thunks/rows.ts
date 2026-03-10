@@ -1,14 +1,14 @@
-import type { AppDispatch, RootState } from '..';
-import { rowActions } from '../slices/layout/rows';
+import type { AppDispatch, RootState } from "..";
+import { rowActions } from "../slices/layout/rows";
 
 export const removeEmptyRows = (
   state: RootState,
-  dispatch: AppDispatch
+  dispatch: AppDispatch,
 ): void => {
   const removeUids: string[] = [];
   state.layout.rows.forEach((row) => {
     const fieldCount = state.layout.fields.filter(
-      (field) => field.rowUid === row.uid
+      (field) => field.rowUid === row.uid,
     ).length;
 
     if (fieldCount === 0) {
@@ -16,5 +16,7 @@ export const removeEmptyRows = (
     }
   });
 
-  removeUids.forEach((uid) => dispatch(rowActions.remove(uid)));
+  removeUids.forEach((uid) => {
+    dispatch(rowActions.remove(uid));
+  });
 };

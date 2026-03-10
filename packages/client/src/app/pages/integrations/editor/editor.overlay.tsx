@@ -1,12 +1,11 @@
-import type { FC } from 'react';
-import React from 'react';
-import { EmptyBlock } from '@components/empty-block/empty-block';
-import config from '@config/freeform/freeform.config';
-import EmptyIcon from '@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon.svg';
-import translate from '@ff-client/utils/translations';
-import styled from 'styled-components';
+import { EmptyBlock } from "@components/empty-block/empty-block";
+import config from "@config/freeform/freeform.config";
+import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon.svg";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import styled from "styled-components";
 
-import type { Integration } from '../integration.types';
+import type { Integration } from "../integration.types";
 
 type Props = {
   integration: Integration;
@@ -23,18 +22,18 @@ export const VersionUpgradeOverlay: FC<Props> = ({ integration }) => {
   return (
     <VersionOverlay>
       <EmptyBlock
-        title={translate('Not available for {edition} edition', { edition })}
+        title={translate("Not available for {edition} edition", { edition })}
         subtitle={translate(
-          'Upgrade to Pro to get access to this integration.'
+          "Upgrade to Pro to get access to this integration.",
         )}
         icon={<EmptyIcon />}
       >
         <a
-          href={Craft.getCpUrl('plugin-store/freeform')}
+          href={Craft.getCpUrl("plugin-store/freeform")}
           target="_blank"
           rel="noreferrer"
         >
-          {translate('Plugin Store')}
+          {translate("Plugin Store")}
         </a>
       </EmptyBlock>
     </VersionOverlay>

@@ -1,9 +1,9 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { TokenInput } from '@components/elements/token-input/token-input';
-import { useFieldOptions } from '@components/options/use-field-options';
-import type { Field } from '@editor/store/slices/layout/fields';
-import type { FieldType } from '@ff-client/types/fields';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { TokenInput } from "@components/elements/token-input/token-input";
+import { useFieldOptions } from "@components/options/use-field-options";
+import type { Field } from "@editor/store/slices/layout/fields";
+import type { FieldType } from "@ff-client/types/fields";
+import type React from "react";
 
 type Props = {
   field: Field;
@@ -31,7 +31,7 @@ export const GeneratedOptionsRuleValue: React.FC<Props> = ({
         inputValue = value;
       }
     } else {
-      inputValue = '';
+      inputValue = "";
     }
 
     return (
@@ -41,13 +41,15 @@ export const GeneratedOptionsRuleValue: React.FC<Props> = ({
             value={inputValue}
             options={options
               .map((option) => {
-                if ('value' in option) {
+                if ("value" in option) {
                   return {
                     value: option.value,
                     name: option.label,
                     editable: false,
                   };
                 }
+
+                return null;
               })
               .filter(Boolean)}
             allowCustom={false}
@@ -64,7 +66,7 @@ export const GeneratedOptionsRuleValue: React.FC<Props> = ({
       value={value}
       options={options}
       loading={loading}
-      onChange={(selectedValue) => onChange && onChange(selectedValue)}
+      onChange={(selectedValue) => onChange?.(selectedValue)}
     />
   );
 };

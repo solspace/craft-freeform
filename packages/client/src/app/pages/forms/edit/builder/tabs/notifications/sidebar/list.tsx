@@ -1,24 +1,24 @@
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Sidebar } from '@components/layout/sidebar/sidebar';
-import config, { TemplateMethod } from '@config/freeform/freeform.config';
-import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
-import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/items/type.skeleton';
-import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
+import { Sidebar } from "@components/layout/sidebar/sidebar";
+import config, { TemplateMethod } from "@config/freeform/freeform.config";
+import { NotificationTypeItem } from "@editor/builder/tabs/notifications/sidebar/items/type";
+import { CategorySkeleton } from "@editor/builder/tabs/notifications/sidebar/items/type.skeleton";
+import { notificationSelectors } from "@editor/store/slices/notifications/notifications.selectors";
 import {
   useQueryFormNotifications,
   useQueryNotificationTypes,
-} from '@ff-client/queries/notifications';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/queries/notifications";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-import { useLastTab } from '../../tabs.hooks';
-
-import { NotificationItem } from './items/item';
-import { Icon, Link, Name } from './items/item.styles';
-import { NotificationItemEmpty } from './items/type.styles';
-import IconManager from './icon.manager.svg';
-import { ScrollableList } from './list.styles';
+import { useLastTab } from "../../tabs.hooks";
+import IconManager from "./icon.manager.svg";
+import { NotificationItem } from "./items/item";
+import { Icon, Link, Name } from "./items/item.styles";
+import { NotificationItemEmpty } from "./items/type.styles";
+import { ScrollableList } from "./list.styles";
 
 const templateMethod = config.templates.method;
 
@@ -27,7 +27,7 @@ export const List: React.FC = () => {
   const { formId, uid } = useParams();
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const { lastTab, setLastTab } = useLastTab('notifications');
+  const { lastTab, setLastTab } = useLastTab("notifications");
 
   const { data: notificationTypes, isFetching } = useQueryNotificationTypes();
   useQueryFormNotifications(formId ? Number(formId) : undefined);
@@ -37,10 +37,10 @@ export const List: React.FC = () => {
     if (lastTab) {
       navigate(lastTab);
     }
-  }, []);
+  }, [lastTab, navigate]);
 
   useEffect(() => {
-    if (pathname.endsWith('/manager')) {
+    if (pathname.endsWith("/manager")) {
       return;
     }
 
@@ -51,7 +51,15 @@ export const List: React.FC = () => {
         navigate(first.uid);
       }
     }
-  }, [uid, notificationTypes, notifications, lastTab]);
+  }, [
+    uid,
+    notificationTypes,
+    notifications,
+    lastTab,
+    navigate,
+    pathname,
+    setLastTab,
+  ]);
 
   if (!notificationTypes && isFetching) {
     return (
@@ -70,28 +78,27 @@ export const List: React.FC = () => {
       <ScrollableList>
         {notificationTypes
           .filter((type) =>
-            limitations.can(`notifications.tab.${type.className}`)
+            limitations.can(`notifications.tab.${type.className}`),
           )
           .map((type) => (
             <NotificationTypeItem key={type.className} type={type}>
-              {notifications &&
-                notifications
-                  ?.filter(
-                    (notification) => notification.className === type.className
-                  )
-                  .map((notification) => (
-                    <NotificationItem
-                      key={notification.uid}
-                      icon={type.icon}
-                      notification={notification}
-                    />
-                  ))}
+              {notifications
+                ?.filter(
+                  (notification) => notification.className === type.className,
+                )
+                .map((notification) => (
+                  <NotificationItem
+                    key={notification.uid}
+                    icon={type.icon}
+                    notification={notification}
+                  />
+                ))}
 
               {!notifications?.filter(
-                (notification) => notification.className === type.className
+                (notification) => notification.className === type.className,
               )?.length && (
                 <NotificationItemEmpty>
-                  {translate('None configured')}
+                  {translate("None configured")}
                 </NotificationItemEmpty>
               )}
             </NotificationTypeItem>
@@ -102,7 +109,7 @@ export const List: React.FC = () => {
             <Icon>
               <IconManager />
             </Icon>
-            <Name>{translate('Template Manager')}</Name>
+            <Name>{translate("Template Manager")}</Name>
           </Link>
         )}
       </ScrollableList>

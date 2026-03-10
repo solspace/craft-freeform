@@ -1,26 +1,27 @@
-import React, { useMemo } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useSelector } from 'react-redux';
-import config from '@config/freeform/freeform.config';
-import { useAppDispatch } from '@editor/store';
-import { contextActions } from '@editor/store/slices/context';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
+import config from "@config/freeform/freeform.config";
+import { useAppDispatch } from "@editor/store";
+import { contextActions } from "@editor/store/slices/context";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid.svg";
 import {
   useFetchFieldPropertySections,
   useFieldType,
-} from '@ff-client/queries/field-types';
-import { type Property } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@ff-client/queries/field-types";
+import type { Property } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
 
-import { CloseLink, Icon, Title } from '../../property-editor.styles';
-import { SectionBlock } from '../../section-block';
-import { SectionWrapper } from '../../section-block.styles';
+import { CloseLink, Icon, Title } from "../../property-editor.styles";
+import { SectionBlock } from "../../section-block";
+import { SectionWrapper } from "../../section-block.styles";
 
-import { FavoriteButton } from './favorite/favorite.button';
-import { FieldComponent } from './field-component';
-import { FieldPropertiesWrapper } from './field-properties.styles';
+import { FavoriteButton } from "./favorite/favorite.button";
+import { FieldComponent } from "./field-component";
+import { FieldPropertiesWrapper } from "./field-properties.styles";
 
 const sectionFilter = (handle: string) => (property: Property) =>
   property.section === handle;
@@ -56,7 +57,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
                 property={property}
               />
             ))}
-          </SectionBlock>
+          </SectionBlock>,
         );
       });
 
@@ -88,7 +89,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
       <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
         <CloseIcon />
       </CloseLink>
-      {config.limitations.can('layout.favorite') && (
+      {config.limitations.can("layout.favorite") && (
         <FavoriteButton field={field} />
       )}
       <Title>

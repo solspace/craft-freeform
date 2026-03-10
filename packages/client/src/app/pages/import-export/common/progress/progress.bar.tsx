@@ -1,18 +1,18 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import classes from '@ff-client/utils/classes';
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
-import { ProgressBarElement, ProgressContainer } from './progress.styles';
+import { ProgressBarElement, ProgressContainer } from "./progress.styles";
 
 const color = {
-  primary: '#e12d39',
-  secondary: '#B0BEC5',
+  primary: "#e12d39",
+  secondary: "#B0BEC5",
 };
 
 type Props = {
   show?: boolean;
   active?: boolean;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
   value: number;
   max: number;
   width?: number | string;
@@ -21,7 +21,7 @@ type Props = {
 export const ProgressBar: React.FC<PropsWithChildren<Props>> = ({
   show,
   active,
-  variant = 'primary',
+  variant = "primary",
   value,
   max,
   width,
@@ -39,7 +39,7 @@ export const ProgressBar: React.FC<PropsWithChildren<Props>> = ({
         $color={color[variant]}
         $value={value}
         $max={max}
-        className={classes(active && 'active')}
+        className={classes(active && "active")}
       />
     </ProgressContainer>
   );

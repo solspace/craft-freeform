@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 interface GroupItemWrapperProps {
   $empty: string;
@@ -80,7 +80,7 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
 `;
 
 GroupItemWrapper.defaultProps = {
-  $empty: 'Drag and drop any field here',
+  $empty: "Drag and drop any field here",
   color: colors.black,
 };
 
@@ -110,7 +110,7 @@ export const FieldTypes = styled.div<EmptyProps>`
 `;
 
 FieldTypes.defaultProps = {
-  $empty: 'Drag and drop any field here',
+  $empty: "Drag and drop any field here",
 };
 
 export const UHFieldWrapper = styled.div`

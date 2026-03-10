@@ -1,12 +1,12 @@
 import type {
   Notification,
   NotificationType,
-} from '@ff-client/types/notifications';
-import type { GenericValue } from '@ff-client/types/properties';
+} from "@ff-client/types/notifications";
+import type { GenericValue } from "@ff-client/types/properties";
 
-import type { AppThunk } from '..';
-import { notificationActions } from '../slices/notifications';
-import { notificationSelectors } from '../slices/notifications/notifications.selectors';
+import type { AppThunk } from "..";
+import { notificationActions } from "../slices/notifications";
+import { notificationSelectors } from "../slices/notifications/notifications.selectors";
 
 export const addNewNotification =
   (notificationType: NotificationType, uid: string): AppThunk =>
@@ -28,7 +28,7 @@ export const addNewNotification =
         enabled: true,
         ...values,
         name,
-      })
+      }),
     );
   };
 

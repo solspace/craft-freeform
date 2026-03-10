@@ -1,6 +1,6 @@
-import type { Row } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
-import { createSelector } from '@reduxjs/toolkit';
+import type { Row } from "@editor/builder/types/layout";
+import type { RootState } from "@editor/store";
+import { createSelector } from "@reduxjs/toolkit";
 
 export const rowSelectors = {
   inLayout: createSelector(
@@ -9,6 +9,6 @@ export const rowSelectors = {
     (rows, layoutUid) =>
       [...rows]
         .filter((row) => row.layoutUid === layoutUid)
-        .sort((a, b) => a.order - b.order)
+        .sort((a, b) => a.order - b.order),
   ),
 } as const;

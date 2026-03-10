@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import type { SpringValues } from 'react-spring';
-import { useSpring } from 'react-spring';
+import { useState } from "react";
+import type { SpringValues } from "react-spring";
+import { useSpring } from "react-spring";
 
-import { usePosition } from './previewable-component.hooks';
+import { usePosition } from "./previewable-component.hooks";
 
 type EditorAnimations = (options: {
   wrapper: HTMLDivElement;
@@ -29,17 +29,17 @@ export const useEditorAnimations: EditorAnimations = ({
 
   const editorAnimation = useSpring({
     immediate: (key) =>
-      ['top', 'left', 'width', 'pointerEvents', 'transformOrigin'].includes(
-        key
+      ["top", "left", "width", "pointerEvents", "transformOrigin"].includes(
+        key,
       ),
     to: {
       top,
       left,
       width,
       opacity: isEditing ? 1 : 0,
-      transformOrigin: 'top left',
-      transform: isEditing ? 'scaleY(1)' : 'scaleY(0.5)',
-      pointerEvents: isEditing ? 'initial' : 'none',
+      transformOrigin: "top left",
+      transform: isEditing ? "scaleY(1)" : "scaleY(0.5)",
+      pointerEvents: isEditing ? "initial" : "none",
     },
     config: {
       tension: 700,

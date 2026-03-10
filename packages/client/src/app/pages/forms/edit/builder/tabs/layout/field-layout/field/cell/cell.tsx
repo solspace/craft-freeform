@@ -1,20 +1,21 @@
-import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import SpinnerIcon from '@components/loaders/spinner.svg';
-import { useAppDispatch } from '@editor/store';
-import { contextActions, FocusType } from '@editor/store/slices/context';
-import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import { useFieldType } from '@ff-client/queries/field-types';
-import { Type } from '@ff-client/types/fields';
-import classes from '@ff-client/utils/classes';
-import { hasErrors } from '@ff-client/utils/errors';
-import DOMPurify from 'dompurify';
+import SpinnerIcon from "@components/loaders/spinner.svg";
+import { useAppDispatch } from "@editor/store";
+import { contextActions, FocusType } from "@editor/store/slices/context";
+import { contextSelectors } from "@editor/store/slices/context/context.selectors";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import { useFieldType } from "@ff-client/queries/field-types";
+import { Type } from "@ff-client/types/fields";
+import classes from "@ff-client/utils/classes";
+import { hasErrors } from "@ff-client/utils/errors";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
-import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-layout';
+import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
 
-import { useLoaderAnimation } from './cell.animations';
+import { useLoaderAnimation } from "./cell.animations";
 import {
   FieldCellWrapper,
   HtmlPreviewElement,
@@ -24,9 +25,9 @@ import {
   LabelIcon,
   LabelText,
   Row,
-} from './cell.styles';
-import { FieldAssociationsBadges } from './cell-badges';
-import { useFieldPreview } from './use-field-preview';
+} from "./cell.styles";
+import { FieldAssociationsBadges } from "./cell-badges";
+import { useFieldPreview } from "./use-field-preview";
 
 type Props = {
   field: Field;
@@ -43,8 +44,8 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     uid: contextUid,
   } = useSelector(contextSelectors.focus);
   const noLabel = useMemo(
-    () => type?.implements?.includes('noLabel') || false,
-    [type]
+    () => type?.implements?.includes("noLabel") || false,
+    [type],
   );
   const isActive = useMemo(() => {
     return active && contextType === FocusType.Field && contextUid === uid;
@@ -60,20 +61,20 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     return null;
   }
 
-  const label = getTranslation('label', field.properties.label || type?.name);
+  const label = getTranslation("label", field.properties.label || type?.name);
   const instructions = getTranslation(
-    'instructions',
-    field.properties.instructions
+    "instructions",
+    field.properties.instructions,
   );
 
   return (
     <FieldCellWrapper
       data-field-type={type.type}
       className={classes(
-        hasErrors(field.errors) && 'errors',
-        type.type === Type.Group && 'group',
-        isActive && 'active',
-        'field'
+        hasErrors(field.errors) && "errors",
+        type.type === Type.Group && "group",
+        isActive && "active",
+        "field",
       )}
       onClick={(event): void => {
         event.stopPropagation();
@@ -108,24 +109,21 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}
 
-      {type.type !== Type.Group && (
-        <>
-          {noLabel ? (
-            <Row>
-              <HtmlPreviewElement
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(preview),
-                }}
-              />
-              <FieldAssociationsBadges uid={uid} />
-            </Row>
-          ) : (
-            <div
-              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(preview) }}
+      {type.type !== Type.Group &&
+        (noLabel ? (
+          <Row>
+            <HtmlPreviewElement
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(preview),
+              }}
             />
-          )}
-        </>
-      )}
+            <FieldAssociationsBadges uid={uid} />
+          </Row>
+        ) : (
+          <div
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(preview) }}
+          />
+        ))}
     </FieldCellWrapper>
   );
 };

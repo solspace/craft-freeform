@@ -1,30 +1,30 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Sidebar } from '@components/layout/sidebar/sidebar';
-import config from '@config/freeform/freeform.config';
-import { SettingsOwnership } from '@editor/builder/tabs/form-settings/settings.ownership';
-import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { useQueryFormSettings } from '@ff-client/queries/forms';
-import classes from '@ff-client/utils/classes';
-import { hasErrors } from '@ff-client/utils/errors';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { Sidebar } from "@components/layout/sidebar/sidebar";
+import config from "@config/freeform/freeform.config";
+import { SettingsOwnership } from "@editor/builder/tabs/form-settings/settings.ownership";
+import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
+import classes from "@ff-client/utils/classes";
+import { hasErrors } from "@ff-client/utils/errors";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { useLastTab } from '../tabs.hooks';
+import { useLastTab } from "../tabs.hooks";
 
-import NewsIcon from './news.icon.svg';
-import { TAB_USAGE } from './settings';
+import NewsIcon from "./news.icon.svg";
+import { TAB_USAGE } from "./settings";
 import {
   SectionIcon,
   SectionLink,
   SectionWrapper,
-} from './settings.sidebar.styles';
+} from "./settings.sidebar.styles";
 
 export const SettingsSidebar: React.FC = () => {
   const limitations = config.limitations;
   const navigate = useNavigate();
-  const { setLastTab } = useLastTab('settings');
+  const { setLastTab } = useLastTab("settings");
   const { sectionHandle } = useParams();
   const isCraft5 = config.metadata.craft.is5;
 
@@ -53,7 +53,7 @@ export const SettingsSidebar: React.FC = () => {
         {data.map((namespace) =>
           namespace.sections
             .filter((section) =>
-              limitations.can(`settings.tab.${section.handle}`)
+              limitations.can(`settings.tab.${section.handle}`),
             )
             .map((section) => (
               <SectionLink
@@ -63,8 +63,8 @@ export const SettingsSidebar: React.FC = () => {
                   navigate(`${section.handle}`);
                 }}
                 className={classes(
-                  sectionHandle === section.handle && 'active',
-                  sectionsWithErrors.includes(section.handle) && 'errors'
+                  sectionHandle === section.handle && "active",
+                  sectionsWithErrors.includes(section.handle) && "errors",
                 )}
               >
                 <SectionIcon
@@ -74,7 +74,7 @@ export const SettingsSidebar: React.FC = () => {
                 />
                 {translate(section.label)}
               </SectionLink>
-            ))
+            )),
         )}
 
         {isCraft5 && (
@@ -83,12 +83,12 @@ export const SettingsSidebar: React.FC = () => {
               setLastTab(TAB_USAGE);
               navigate(TAB_USAGE);
             }}
-            className={classes(sectionHandle === TAB_USAGE && 'active')}
+            className={classes(sectionHandle === TAB_USAGE && "active")}
           >
             <SectionIcon>
               <NewsIcon />
             </SectionIcon>
-            {translate('Usage in Elements')}
+            {translate("Usage in Elements")}
           </SectionLink>
         )}
       </SectionWrapper>

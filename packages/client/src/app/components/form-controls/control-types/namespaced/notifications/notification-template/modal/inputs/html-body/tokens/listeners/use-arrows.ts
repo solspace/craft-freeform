@@ -1,8 +1,8 @@
-import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
-import { useEffect } from 'react';
-import type { SuggestionCategory } from '@ff-client/types/notifications';
+import type { SuggestionCategory } from "@ff-client/types/notifications";
+import type { Dispatch, MutableRefObject, SetStateAction } from "react";
+import { useEffect } from "react";
 
-import type { TokenBackend } from '../tokens.types';
+import type { TokenBackend } from "../tokens.types";
 
 type Props = {
   backend: TokenBackend;
@@ -26,22 +26,22 @@ export const useArrowNavigation = ({
   close,
 }: Props): void => {
   useEffect(() => {
-    const keyDown = (event: KeyboardEvent): void | boolean => {
+    const keyDown = (event: KeyboardEvent): undefined | boolean => {
       switch (event.key) {
-        case 'Escape':
+        case "Escape":
           event.preventDefault();
           close();
 
           break;
 
-        case 'ArrowRight':
-        case 'ArrowLeft':
+        case "ArrowRight":
+        case "ArrowLeft":
           event.preventDefault();
           close();
 
           break;
 
-        case 'ArrowDown':
+        case "ArrowDown":
           event.preventDefault();
 
           setIndex((prev) => {
@@ -56,7 +56,7 @@ export const useArrowNavigation = ({
 
           break;
 
-        case 'ArrowUp':
+        case "ArrowUp":
           event.preventDefault();
           if (index > 0) {
             setIndex((prev) => {
@@ -70,7 +70,7 @@ export const useArrowNavigation = ({
 
           break;
 
-        case 'Enter':
+        case "Enter":
           event.preventDefault();
           event.stopPropagation();
           event.stopImmediatePropagation();
@@ -84,7 +84,7 @@ export const useArrowNavigation = ({
               backend.insert(item, filter);
             }
           }
-          setFilter('');
+          setFilter("");
           close();
 
           return false;
@@ -102,5 +102,14 @@ export const useArrowNavigation = ({
     return () => {
       backend.handlers.off.down(keyDown);
     };
-  }, [index, close, backend, suggestions]);
+  }, [
+    index,
+    close,
+    backend,
+    suggestions,
+    filter,
+    setFilter,
+    setIndex,
+    itemCountRef,
+  ]);
 };

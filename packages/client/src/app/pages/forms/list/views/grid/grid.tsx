@@ -1,21 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useFetchFormGroups } from '@ff-client/queries/form-groups';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import EditIcon from '@ff-icons/actions/edit.svg';
-import axios from 'axios';
-import DOMPurify from 'dompurify';
-import Sortable from 'sortablejs';
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useFetchFormGroups } from "@ff-client/queries/form-groups";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import EditIcon from "@ff-icons/actions/edit.svg";
+import axios from "axios";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import Sortable from "sortablejs";
 
-import { useEditGroupModal } from '../../modals/hooks/use-edit-group-modal';
-import { Notices } from '../../notices/notices';
+import { useEditGroupModal } from "../../modals/hooks/use-edit-group-modal";
+import { Notices } from "../../notices/notices";
 
-import { Archived } from './archived/archived';
-import { Card } from './card/card';
-import { CardLoading } from './card/card.loading';
-import { CardPreview } from './card/card.preview';
-import { GridEmpty } from './grid.empty';
+import { Archived } from "./archived/archived";
+import { Card } from "./card/card";
+import { CardLoading } from "./card/card.loading";
+import { CardPreview } from "./card/card.preview";
+import { GridEmpty } from "./grid.empty";
 import {
   ArchivedAndGroupWrapper,
   Cards,
@@ -25,7 +26,7 @@ import {
   GroupTitle,
   GroupWrap,
   Wrapper,
-} from './grid.styles';
+} from "./grid.styles";
 
 export const FormGrid: React.FC = () => {
   const { data, isFetching } = useFetchFormGroups();
@@ -33,7 +34,7 @@ export const FormGrid: React.FC = () => {
 
   const isForms = data?.forms.length > 0;
   const isGroups = data?.formGroups?.groups.some(
-    (group) => group.forms.length > 0
+    (group) => group.forms.length > 0,
   );
   const isEmpty = !isFetching && !isForms && !isGroups;
 
@@ -45,15 +46,15 @@ export const FormGrid: React.FC = () => {
 
   const [isDragging, setIsDragging] = useState(false);
 
-  const onSortEnd = (): void => {
+  const onSortEnd = useCallback((): void => {
     const orderedFormIds = sortableRef.current.toArray();
-    axios.post('/api/forms/sort', { orderedFormIds });
+    axios.post("/api/forms/sort", { orderedFormIds });
 
     setIsDragging(false);
-  };
+  }, []);
 
   useEffect(() => {
-    document.title = translate('Forms');
+    document.title = translate("Forms");
   }, []);
 
   useEffect(() => {
@@ -61,13 +62,13 @@ export const FormGrid: React.FC = () => {
       sortableRef.current = new Sortable(gridRef.current, {
         animation: 150,
         onEnd: onSortEnd,
-        handle: '.handle',
+        handle: ".handle",
         onStart: () => {
           setIsDragging(true);
         },
       });
     }
-  }, [data]);
+  }, [onSortEnd]);
 
   return (
     <ContentContainer>
@@ -95,26 +96,25 @@ export const FormGrid: React.FC = () => {
                         ))}
                       </Cards>
                     </GroupWrap>
-                  ) : null
+                  ) : null,
                 )}
               {!isEmpty && isForms && (
                 <GroupWrap>
                   {isGroups && <hr />}
-                  {isGroups && <GroupTitle>{translate('Other')}</GroupTitle>}
+                  {isGroups && <GroupTitle>{translate("Other")}</GroupTitle>}
 
                   <Cards
                     ref={gridRef}
-                    className={classes(isDragging && 'dragging')}
+                    className={classes(isDragging && "dragging")}
                   >
-                    {data?.forms &&
-                      data.forms.map((form) => (
-                        <Card
-                          isDraggingInProgress={isDragging}
-                          isExpressEdition={isExpressEdition}
-                          key={form.id}
-                          form={form}
-                        />
-                      ))}
+                    {data?.forms?.map((form) => (
+                      <Card
+                        isDraggingInProgress={isDragging}
+                        isExpressEdition={isExpressEdition}
+                        key={form.id}
+                        form={form}
+                      />
+                    ))}
                     {isExpressEdition && (
                       <>
                         <CardPreview />
@@ -140,8 +140,8 @@ export const FormGrid: React.FC = () => {
                 __html: DOMPurify.sanitize(
                   translate(
                     'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.',
-                    { link: Craft.getCpUrl('plugin-store/freeform') }
-                  )
+                    { link: Craft.getCpUrl("plugin-store/freeform") },
+                  ),
                 ),
               }}
             />
@@ -158,7 +158,7 @@ export const FormGrid: React.FC = () => {
                 onClick={openEditGroupModal}
               >
                 <EditIcon />
-                {translate('Manage Form Groups')}
+                {translate("Manage Form Groups")}
               </GroupsButton>
             )}
           </ArchivedAndGroupWrapper>

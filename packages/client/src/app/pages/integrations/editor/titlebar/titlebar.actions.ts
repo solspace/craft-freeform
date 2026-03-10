@@ -19,21 +19,21 @@ export const showAuthWindow: AuthWindow = (id, callback) => {
 
   const optionsString = Object.entries(options)
     .map(([key, value]) => `${key}=${value}`)
-    .join(',');
+    .join(",");
 
-  const popup = window.open(url, 'OAuthFlow', optionsString);
+  const popup = window.open(url, "OAuthFlow", optionsString);
 
   const listener = (event: MessageEvent): void => {
     if (event.origin !== window.location.origin) {
       return;
     }
 
-    if (event.data.type === 'oauth2') {
+    if (event.data.type === "oauth2") {
       popup?.close();
       callback();
-      window.removeEventListener('message', listener);
+      window.removeEventListener("message", listener);
     }
   };
 
-  window.addEventListener('message', listener);
+  window.addEventListener("message", listener);
 };

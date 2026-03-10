@@ -1,5 +1,5 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 type WrapperProps = {
   $lean?: boolean;
@@ -13,7 +13,7 @@ export const Sidebar = styled.div<WrapperProps>`
   flex-shrink: 0;
   width: 300px;
   padding: ${({ $lean, $noPadding }): string =>
-    $lean ? spacings.sm : $noPadding ? '0' : spacings.lg};
+    $lean ? spacings.sm : $noPadding ? "0" : spacings.lg};
   box-sizing: border-box;
 
   border-bottom-left-radius: ${borderRadius.lg};

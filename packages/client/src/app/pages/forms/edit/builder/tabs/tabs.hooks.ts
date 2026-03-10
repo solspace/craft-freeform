@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type Tabs = Record<string, null | string>;
 type LastTab = {
@@ -7,11 +7,11 @@ type LastTab = {
   setLastTab: (tab: string) => void;
 };
 
-const SESSION_NAMESPACE = 'freeform-builder-tabs';
+const SESSION_NAMESPACE = "freeform-builder-tabs";
 
 const getSessionTabs = (formId: string): Tabs => {
   const storedTabs = JSON.parse(
-    sessionStorage.getItem(SESSION_NAMESPACE) || '{}'
+    sessionStorage.getItem(SESSION_NAMESPACE) || "{}",
   );
 
   return storedTabs[formId] || {};
@@ -19,12 +19,12 @@ const getSessionTabs = (formId: string): Tabs => {
 
 const setSessionTabs = (formId: string, tabs: Tabs): void => {
   const previousState = JSON.parse(
-    sessionStorage.getItem(SESSION_NAMESPACE) || '{}'
+    sessionStorage.getItem(SESSION_NAMESPACE) || "{}",
   );
 
   sessionStorage.setItem(
     SESSION_NAMESPACE,
-    JSON.stringify({ ...previousState, [formId]: tabs })
+    JSON.stringify({ ...previousState, [formId]: tabs }),
   );
 };
 

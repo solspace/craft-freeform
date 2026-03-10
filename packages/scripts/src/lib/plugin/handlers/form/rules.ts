@@ -1,24 +1,24 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import events from '@lib/plugin/constants/event-types';
-import { isEqual } from '@lib/plugin/helpers/comparisons';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { FreeformHandler } from 'types/form';
+import type Freeform from "@components/front-end/plugin/freeform";
+import events from "@lib/plugin/constants/event-types";
+import { isEqual } from "@lib/plugin/helpers/comparisons";
+import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
+import type { FreeformHandler } from "types/form";
 
-export const enum Operator {
-  Equals = 'equals',
-  NotEquals = 'notEquals',
-  GreaterThan = 'greaterThan',
-  GreaterThanOrEquals = 'greaterThanOrEquals',
-  LessThan = 'lessThan',
-  LessThanOrEquals = 'lessThanOrEquals',
-  Contains = 'contains',
-  NotContains = 'notContains',
-  StartsWith = 'startsWith',
-  EndsWith = 'endsWith',
-  IsEmpty = 'isEmpty',
-  IsNotEmpty = 'isNotEmpty',
-  IsOneOf = 'isOneOf',
-  IsNotOneOf = 'isNotOneOf',
+export enum Operator {
+  Equals = "equals",
+  NotEquals = "notEquals",
+  GreaterThan = "greaterThan",
+  GreaterThanOrEquals = "greaterThanOrEquals",
+  LessThan = "lessThan",
+  LessThanOrEquals = "lessThanOrEquals",
+  Contains = "contains",
+  NotContains = "notContains",
+  StartsWith = "startsWith",
+  EndsWith = "endsWith",
+  IsEmpty = "isEmpty",
+  IsNotEmpty = "isNotEmpty",
+  IsOneOf = "isOneOf",
+  IsNotOneOf = "isNotOneOf",
 }
 
 type FormSnapshot = Record<string, string>;
@@ -34,8 +34,8 @@ type RulesData = {
 };
 
 type Rule = {
-  display: 'show' | 'hide';
-  combinator: 'and' | 'or';
+  display: "show" | "hide";
+  combinator: "and" | "or";
   conditions: RuleCondition[];
 };
 
@@ -58,7 +58,9 @@ const filterMatchingRules = (element: Element) => (rule: Rule) =>
     const elementName = (element as HTMLInputElement).name;
     const conditionName = condition.field;
 
-    return conditionName === elementName || `${conditionName}[]` === elementName;
+    return (
+      conditionName === elementName || `${conditionName}[]` === elementName
+    );
   });
 
 class RuleHandler implements FreeformHandler {
@@ -75,12 +77,15 @@ class RuleHandler implements FreeformHandler {
   }
 
   reload = () => {
-    const rulesElement = this.form.querySelector<HTMLDivElement>('[data-rules-json]');
+    const rulesElement =
+      this.form.querySelector<HTMLDivElement>("[data-rules-json]");
     if (!rulesElement) {
       return;
     }
 
-    const { rules, values }: RulesData = JSON.parse(rulesElement.dataset.rulesJson);
+    const { rules, values }: RulesData = JSON.parse(
+      rulesElement.dataset.rulesJson,
+    );
     this.values = values;
     if (rules.fields.length === 0 && rules.buttons.length === 0) {
       return;
@@ -89,8 +94,12 @@ class RuleHandler implements FreeformHandler {
     // Iterate through all form elements
     Array.from(this.form.elements).forEach((element) => {
       // Find matching rules that are relying on this field
-      const matchedFieldRules: FieldRule[] = rules.fields.filter(filterMatchingRules(element));
-      const matchedButtonRules: ButtonRule[] = rules.buttons.filter(filterMatchingRules(element));
+      const matchedFieldRules: FieldRule[] = rules.fields.filter(
+        filterMatchingRules(element),
+      );
+      const matchedButtonRules: ButtonRule[] = rules.buttons.filter(
+        filterMatchingRules(element),
+      );
 
       const combinedRules = [...matchedFieldRules, ...matchedButtonRules];
 
@@ -100,31 +109,32 @@ class RuleHandler implements FreeformHandler {
 
       let listener: string | string[];
       switch (element.tagName) {
-        case 'TEXTAREA':
-        case 'INPUT':
+        case "TEXTAREA":
+        case "INPUT": {
           const input = element as HTMLInputElement;
-          if (input.type === 'hidden') {
+          if (input.type === "hidden") {
             return;
           }
 
           switch (input.type) {
-            case 'radio':
-            case 'checkbox':
-              listener = 'change';
+            case "radio":
+            case "checkbox":
+              listener = "change";
               break;
-            case 'number':
-              listener = ['keyup', 'change'];
+            case "number":
+              listener = ["keyup", "change"];
               break;
 
             default:
-              listener = 'keyup';
+              listener = "keyup";
               break;
           }
 
           break;
+        }
 
-        case 'SELECT':
-          listener = 'change';
+        case "SELECT":
+          listener = "change";
           break;
       }
 
@@ -136,7 +146,9 @@ class RuleHandler implements FreeformHandler {
       // Create a callback which will be called when a field is changed
       const callback: EventListenerOrEventListenerObject = () => {
         // Trigger the main rule applying for this field
-        combinedRules.forEach((rule) => this.applyRule(rule));
+        combinedRules.forEach((rule) => {
+          this.applyRule(rule);
+        });
 
         // Trigger any related rules which are affected by this field
         // this allows for nested rules to work
@@ -147,21 +159,31 @@ class RuleHandler implements FreeformHandler {
         });
       };
 
-      const listeners: string[] = !Array.isArray(listener) ? [listener] : listener;
+      const listeners: string[] = !Array.isArray(listener)
+        ? [listener]
+        : listener;
 
       // Attach event listeners
-      listeners.forEach((listener) => element.addEventListener(listener, callback));
+      listeners.forEach((listener) => {
+        element.addEventListener(listener, callback);
+      });
     });
 
     triggerUntilStateSettled(this.form, () => {
-      rules.fields.forEach((rule) => this.applyRule(rule, false));
-      rules.buttons.forEach((rule) => this.applyRule(rule, false));
+      rules.fields.forEach((rule) => {
+        this.applyRule(rule, false);
+      });
+      rules.buttons.forEach((rule) => {
+        this.applyRule(rule, false);
+      });
     });
   };
 
   applyRule = (rule: FieldRule | ButtonRule, emitEvent = true) => {
     const selector =
-      'field' in rule ? `[data-field-container="${rule.field}"]` : `[data-button-container="${rule.button}"]`;
+      "field" in rule
+        ? `[data-field-container="${rule.field}"]`
+        : `[data-button-container="${rule.button}"]`;
 
     const container = this.form.querySelector<HTMLDivElement>(selector);
     if (!container) {
@@ -173,30 +195,33 @@ class RuleHandler implements FreeformHandler {
     // Either all conditions must be true, or at least one must be true
     // based on the combinator value
     const shouldDisplay =
-      combinator === 'and' ? conditions.every(this.verifyCondition) : conditions.some(this.verifyCondition);
+      combinator === "and"
+        ? conditions.every(this.verifyCondition)
+        : conditions.some(this.verifyCondition);
 
-    const prevDisplay = container.style.display || '';
+    const prevDisplay = container.style.display || "";
     const prevHidden = container.dataset.hidden !== undefined;
 
     // Change the `display` property in the styles based on the the rule's "show"/"hide" setting
-    let nextDisplay = '';
+    let nextDisplay = "";
     let nextHidden = false;
-    if (display === 'show') {
-      nextDisplay = shouldDisplay ? '' : 'none';
+    if (display === "show") {
+      nextDisplay = shouldDisplay ? "" : "none";
       nextHidden = !shouldDisplay;
     } else {
-      nextDisplay = shouldDisplay ? 'none' : '';
+      nextDisplay = shouldDisplay ? "none" : "";
       nextHidden = shouldDisplay;
     }
 
-    const displayChanged = prevDisplay !== nextDisplay || prevHidden !== nextHidden;
+    const displayChanged =
+      prevDisplay !== nextDisplay || prevHidden !== nextHidden;
     if (!displayChanged) {
       return false;
     }
 
     container.style.display = nextDisplay;
     if (nextHidden) {
-      container.dataset.hidden = '';
+      container.dataset.hidden = "";
     } else {
       delete container.dataset.hidden;
     }
@@ -211,12 +236,17 @@ class RuleHandler implements FreeformHandler {
   private verifyCondition = (condition: RuleCondition): boolean => {
     let currentValue: string | string[] | null = null;
 
-    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${condition.field}"]`);
+    const fieldContainer = document.querySelector<HTMLDivElement>(
+      `[data-field-container="${condition.field}"]`,
+    );
     if (fieldContainer) {
-      const field = this.form[condition.field] || this.form[`${condition.field}[]`];
+      const field =
+        this.form[condition.field] || this.form[`${condition.field}[]`];
 
-      const isCheckbox = fieldContainer.getAttribute('data-field-type') === 'checkbox';
-      const isMultipleCheckboxes = fieldContainer.getAttribute('data-field-type') === 'checkboxes';
+      const isCheckbox =
+        fieldContainer.getAttribute("data-field-type") === "checkbox";
+      const isMultipleCheckboxes =
+        fieldContainer.getAttribute("data-field-type") === "checkboxes";
 
       // Default the value to `null` if the field is hidden, which will help
       // with triggering nested rules
@@ -227,7 +257,7 @@ class RuleHandler implements FreeformHandler {
       } else {
         if (isCheckbox) {
           const checkboxField = field[1] as HTMLInputElement;
-          currentValue = checkboxField.checked ? '1' : '';
+          currentValue = checkboxField.checked ? "1" : "";
         } else if (isMultipleCheckboxes) {
           currentValue = Array.from(field)
             .filter((checkbox) => (checkbox as HTMLInputElement).checked)
@@ -241,23 +271,23 @@ class RuleHandler implements FreeformHandler {
             .filter((checkbox) => (checkbox as HTMLInputElement).checked)
             .map((checkbox) => (checkbox as HTMLInputElement).value);
 
-          currentValue = currentValue.length > 0 ? currentValue[0] : '';
+          currentValue = currentValue.length > 0 ? currentValue[0] : "";
         } else {
           currentValue = field.value;
         }
       }
     } else {
-      const storedValue = this.values[condition.field] || '';
-      if (typeof storedValue === 'boolean') {
-        currentValue = storedValue ? '1' : '';
-      } else if (typeof storedValue === 'number') {
+      const storedValue = this.values[condition.field] || "";
+      if (typeof storedValue === "boolean") {
+        currentValue = storedValue ? "1" : "";
+      } else if (typeof storedValue === "number") {
         currentValue = `${storedValue}`;
       } else {
         currentValue = storedValue;
       }
     }
 
-    if (typeof currentValue === 'object') {
+    if (typeof currentValue === "object") {
       switch (condition.operator) {
         case Operator.Equals:
           return isEqual(currentValue, [condition.value]);
@@ -278,16 +308,23 @@ class RuleHandler implements FreeformHandler {
           return currentValue?.length > 0;
 
         case Operator.IsOneOf:
-        case Operator.IsNotOneOf:
+        case Operator.IsNotOneOf: {
           const checkPositive = condition.operator === Operator.IsOneOf;
-          const parsedValue = (condition.value ? JSON.parse(condition.value) : []).map((v: string) => v.toLowerCase());
-          const hasCommonValues = currentValue.some((value) => parsedValue.includes(value.toLowerCase()));
+          const parsedValue = (
+            condition.value ? JSON.parse(condition.value) : []
+          ).map((v: string) => v.toLowerCase());
+          const hasCommonValues = currentValue.some((value) =>
+            parsedValue.includes(value.toLowerCase()),
+          );
 
           if (parsedValue.length === 0) {
-            return checkPositive ? currentValue.length !== 0 : currentValue.length === 0;
+            return checkPositive
+              ? currentValue.length !== 0
+              : currentValue.length === 0;
           }
 
           return checkPositive ? hasCommonValues : !hasCommonValues;
+        }
 
         default:
           return false;
@@ -296,10 +333,14 @@ class RuleHandler implements FreeformHandler {
 
     switch (condition.operator) {
       case Operator.Equals:
-        return `${currentValue}`.toLowerCase() === `${condition.value}`.toLowerCase();
+        return (
+          `${currentValue}`.toLowerCase() === `${condition.value}`.toLowerCase()
+        );
 
       case Operator.NotEquals:
-        return `${currentValue}`.toLowerCase() !== `${condition.value}`.toLowerCase();
+        return (
+          `${currentValue}`.toLowerCase() !== `${condition.value}`.toLowerCase()
+        );
 
       case Operator.GreaterThan:
         return parseFloat(currentValue) > parseFloat(condition.value);
@@ -314,16 +355,24 @@ class RuleHandler implements FreeformHandler {
         return parseFloat(currentValue) <= parseFloat(condition.value);
 
       case Operator.Contains:
-        return `${currentValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
+        return `${currentValue}`
+          .toLowerCase()
+          .includes(`${condition.value}`.toLowerCase());
 
       case Operator.NotContains:
-        return !`${currentValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
+        return !`${currentValue}`
+          .toLowerCase()
+          .includes(`${condition.value}`.toLowerCase());
 
       case Operator.StartsWith:
-        return `${currentValue}`.toLowerCase().startsWith(`${condition.value}`.toLowerCase());
+        return `${currentValue}`
+          .toLowerCase()
+          .startsWith(`${condition.value}`.toLowerCase());
 
       case Operator.EndsWith:
-        return `${currentValue}`.toLowerCase().endsWith(`${condition.value}`.toLowerCase());
+        return `${currentValue}`
+          .toLowerCase()
+          .endsWith(`${condition.value}`.toLowerCase());
 
       case Operator.IsEmpty:
         return currentValue === null || currentValue.length === 0;
@@ -332,16 +381,21 @@ class RuleHandler implements FreeformHandler {
         return currentValue?.length > 0;
 
       case Operator.IsOneOf:
-      case Operator.IsNotOneOf:
+      case Operator.IsNotOneOf: {
         const checkPositive = condition.operator === Operator.IsOneOf;
-        const parsedValue = (condition.value ? JSON.parse(condition.value) : []).map((v: string) => v.toLowerCase());
+        const parsedValue = (
+          condition.value ? JSON.parse(condition.value) : []
+        ).map((v: string) => v.toLowerCase());
         const containsValue = parsedValue.includes(currentValue.toLowerCase());
 
         if (parsedValue.length === 0) {
-          return checkPositive ? currentValue.length === 0 : currentValue.length !== 0;
+          return checkPositive
+            ? currentValue.length === 0
+            : currentValue.length !== 0;
         }
 
         return checkPositive ? containsValue : !containsValue;
+      }
 
       default:
         return false;
@@ -351,7 +405,10 @@ class RuleHandler implements FreeformHandler {
 
 export default RuleHandler;
 
-const triggerUntilStateSettled = (form: HTMLFormElement, callback: () => void) => {
+const triggerUntilStateSettled = (
+  form: HTMLFormElement,
+  callback: () => void,
+) => {
   let prevSnapshot: FormSnapshot;
   let currSnapshot: FormSnapshot = {};
   let iterations = 0;
@@ -363,15 +420,22 @@ const triggerUntilStateSettled = (form: HTMLFormElement, callback: () => void) =
 
     currSnapshot = getVisibilitySnapshot(form);
     iterations++;
-  } while (JSON.stringify(prevSnapshot) !== JSON.stringify(currSnapshot) && iterations < maxIterations);
+  } while (
+    JSON.stringify(prevSnapshot) !== JSON.stringify(currSnapshot) &&
+    iterations < maxIterations
+  );
 };
 
 const getVisibilitySnapshot = (form: HTMLFormElement): FormSnapshot => {
   const snapshot: FormSnapshot = {};
-  form.querySelectorAll('[data-field-container], [data-button-container]').forEach((el) => {
-    const key = el.getAttribute('data-field-container') || el.getAttribute('data-button-container');
-    snapshot[key!] = (el as HTMLElement).style.display || '';
-  });
+  form
+    .querySelectorAll("[data-field-container], [data-button-container]")
+    .forEach((el) => {
+      const key =
+        el.getAttribute("data-field-container") ||
+        el.getAttribute("data-button-container");
+      snapshot[key!] = (el as HTMLElement).style.display || "";
+    });
 
   return snapshot;
 };

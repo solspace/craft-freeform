@@ -1,5 +1,5 @@
-declare module '*.svg' {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare module "*.svg" {
+  // biome-ignore lint/suspicious/noExplicitAny: we don't have a better type
   const content: any;
   export default content;
 }

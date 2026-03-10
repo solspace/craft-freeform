@@ -1,4 +1,4 @@
-type ColumnType = 'text' | 'select';
+type ColumnType = "text" | "select";
 
 export type ColumnConfiguration = {
   key: string;

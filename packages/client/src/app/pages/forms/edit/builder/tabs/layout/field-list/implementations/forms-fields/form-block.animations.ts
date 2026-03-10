@@ -1,7 +1,7 @@
-import { type SpringValues, useSpring } from 'react-spring';
+import { type SpringValues, useSpring } from "react-spring";
 
 export const useFormBlockAnimations = (
-  open: boolean
+  open: boolean,
 ): SpringValues<{ maxHeight: number }> => {
   return useSpring({
     maxHeight: open ? 200 : 0,

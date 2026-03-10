@@ -1,7 +1,7 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import type { Field } from '@editor/store/slices/layout/fields';
-import type { OptionCollection } from '@ff-client/types/properties';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import type { Field } from "@editor/store/slices/layout/fields";
+import type { OptionCollection } from "@ff-client/types/properties";
+import type React from "react";
 
 type Props = {
   field: Field;
@@ -25,7 +25,7 @@ export const OpinionScaleRuleValue: React.FC<Props> = ({
       emptyOption="Select a scale value"
       value={value}
       options={options}
-      onChange={(selectedValue) => onChange && onChange(selectedValue)}
+      onChange={(selectedValue) => onChange?.(selectedValue)}
     />
   );
 };

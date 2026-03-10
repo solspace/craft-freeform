@@ -1,21 +1,20 @@
-import type { FC } from 'react';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { colors, spacings } from '@ff-client/styles/variables';
-import type { FieldRule } from '@ff-client/types/rules';
-import { Combinator, Display, Operator } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
-import styled from 'styled-components';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { colors, spacings } from "@ff-client/styles/variables";
+import type { FieldRule } from "@ff-client/types/rules";
+import { Combinator, Display, Operator } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type { FC } from "react";
+import { useSelector } from "react-redux";
+import styled from "styled-components";
 
-import { CombinatorSelect } from '../conditions/combinator/combinator';
-import { DisplaySelect } from '../conditions/display/display';
-import { ConditionTable } from '../conditions/table/condition-table';
+import { CombinatorSelect } from "../conditions/combinator/combinator";
+import { DisplaySelect } from "../conditions/display/display";
+import { ConditionTable } from "../conditions/table/condition-table";
 
-import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field.editor.styles';
+import { ConfigurationDescription, Label } from "./editor.styles";
+import { RulesEditorWrapper } from "./field.editor.styles";
 
 type Props = {
   label: string;
@@ -24,8 +23,8 @@ type Props = {
 export const UpsellEditor: FC<Props> = ({ label }) => {
   const fields = useSelector(fieldSelectors.all);
 
-  const firstField = fields.length > 0 ? fields[0].uid : '';
-  const secondField = fields.length > 1 ? fields[1].uid : '';
+  const firstField = fields.length > 0 ? fields[0].uid : "";
+  const secondField = fields.length > 1 ? fields[1].uid : "";
 
   const rule: FieldRule = {
     combinator: Combinator.Or,
@@ -33,20 +32,20 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
       {
         field: firstField,
         operator: Operator.Contains,
-        value: 'John Doe',
-        uid: 'test-1',
+        value: "John Doe",
+        uid: "test-1",
       },
       {
         field: secondField,
         operator: Operator.EndsWith,
-        value: '@gmail.com',
-        uid: 'test-2',
+        value: "@gmail.com",
+        uid: "test-2",
       },
     ],
     display: Display.Show,
     enabled: true,
-    field: '',
-    uid: 'rule-1',
+    field: "",
+    uid: "rule-1",
   };
 
   return (
@@ -65,8 +64,8 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
             __html: DOMPurify.sanitize(
               translate(
                 '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.',
-                { link: Craft.getCpUrl('plugin-store/freeform') }
-              )
+                { link: Craft.getCpUrl("plugin-store/freeform") },
+              ),
             ),
           }}
         />
@@ -75,11 +74,11 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
           <ConfigurationDescription>
             <DisplaySelect value={rule.display} />
 
-            {translate('this field when')}
+            {translate("this field when")}
 
             <CombinatorSelect value={rule.combinator} />
 
-            {translate('of the following rules match:')}
+            {translate("of the following rules match:")}
           </ConfigurationDescription>
 
           <ConditionTable

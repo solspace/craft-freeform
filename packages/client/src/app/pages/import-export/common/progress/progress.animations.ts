@@ -1,8 +1,8 @@
-import type { SpringValues } from 'react-spring';
-import { useSpring } from 'react-spring';
+import type { SpringValues } from "react-spring";
+import { useSpring } from "react-spring";
 
 export const useProgressAnimation = (
-  loading: boolean
+  loading: boolean,
 ): SpringValues<{ opacity: number }> =>
   useSpring({
     opacity: loading ? 1 : 0,
@@ -14,7 +14,7 @@ export const useProgressAnimation = (
   });
 
 export const useDoneAnimation = (
-  show: boolean
+  show: boolean,
 ): SpringValues<{ opacity: number }> =>
   useSpring({
     opacity: show ? 1 : 0,

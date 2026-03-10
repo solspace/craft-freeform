@@ -1,9 +1,9 @@
-import { useMemo } from 'react';
-import type { EnvironmentSuggestionCategories } from '@ff-client/queries/autosuggest';
+import type { EnvironmentSuggestionCategories } from "@ff-client/queries/autosuggest";
+import { useMemo } from "react";
 
 export const useFilteredSuggestions = (
   suggestions: EnvironmentSuggestionCategories,
-  filter?: string
+  filter?: string,
 ): EnvironmentSuggestionCategories => {
   const filtered = useMemo(() => {
     if (!suggestions || suggestions.length === 0) {

@@ -1,6 +1,6 @@
-import { animated } from 'react-spring';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { animated } from "react-spring";
+import styled from "styled-components";
 
 export const ModalHub = styled.div``;
 

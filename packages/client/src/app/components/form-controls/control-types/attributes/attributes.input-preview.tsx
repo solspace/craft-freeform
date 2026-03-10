@@ -1,5 +1,5 @@
-import React from 'react';
-import type { AttributeTab } from '@ff-client/types/properties';
+import type { AttributeTab } from "@ff-client/types/properties";
+import type React from "react";
 
 import {
   CodeBlock,
@@ -7,9 +7,9 @@ import {
   Operator,
   Quote,
   Value,
-} from './attributes.input-preview.styles';
-import { attributesToArray } from './attributes.operations';
-import type { AttributeEntry } from './attributes.types';
+} from "./attributes.input-preview.styles";
+import { attributesToArray } from "./attributes.operations";
+import type { AttributeEntry } from "./attributes.types";
 
 type Props = {
   tab: AttributeTab;
@@ -18,15 +18,15 @@ type Props = {
 
 export const InputPreview: React.FC<Props> = ({ tab, attributes }) => {
   const tag: string =
-    attributes.find(([key]) => key.toLowerCase() === 'tag')?.[1] ||
+    attributes.find(([key]) => key.toLowerCase() === "tag")?.[1] ||
     tab.previewTag;
 
   return (
     <CodeBlock>
-      {'<'}
+      {"<"}
       {tag}
       {attributesToArray(attributes)
-        .filter(([name]) => name !== 'tag')
+        .filter(([name]) => name !== "tag")
         .map(([name, value], idx) => (
           <span key={idx}>
             <Name> {name}</Name>
@@ -40,7 +40,7 @@ export const InputPreview: React.FC<Props> = ({ tab, attributes }) => {
             )}
           </span>
         ))}
-      {' />'}
+      {" />"}
     </CodeBlock>
   );
 };

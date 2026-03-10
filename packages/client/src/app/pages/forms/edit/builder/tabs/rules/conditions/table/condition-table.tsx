@@ -1,15 +1,14 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import type { Condition } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
-import DeleteIcon from '@ff-icons/actions/delete.svg';
-import { v4 } from 'uuid';
-
-import { FieldSelect } from './field/field';
-import { OperatorSelect } from './operator/operator';
-import { ValueInput } from './value/value';
-import { Action, Table } from './condition-table.styles';
+import type { Condition } from "@ff-client/types/rules";
+import { Operator } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import DeleteIcon from "@ff-icons/actions/delete.svg";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { v4 } from "uuid";
+import { Action, Table } from "./condition-table.styles";
+import { FieldSelect } from "./field/field";
+import { OperatorSelect } from "./operator/operator";
+import { ValueInput } from "./value/value";
 
 type Props = {
   conditions: Condition[];
@@ -47,8 +46,7 @@ export const ConditionTable: React.FC<Props> = ({
               <FieldSelect
                 condition={condition}
                 onChange={(fieldUid) =>
-                  onChange &&
-                  onChange([
+                  onChange?.([
                     ...conditions.slice(0, index),
                     { ...condition, field: fieldUid },
                     ...conditions.slice(index + 1),
@@ -60,8 +58,7 @@ export const ConditionTable: React.FC<Props> = ({
               <OperatorSelect
                 condition={condition}
                 onChange={(operator) =>
-                  onChange &&
-                  onChange([
+                  onChange?.([
                     ...conditions.slice(0, index),
                     { ...condition, operator },
                     ...conditions.slice(index + 1),
@@ -100,20 +97,21 @@ export const ConditionTable: React.FC<Props> = ({
           <tr>
             <td colSpan={4}>
               <button
+                type="button"
                 className="btn add icon fullwidth"
                 onClick={() => {
                   onChange?.([
                     ...conditions,
                     {
                       uid: v4(),
-                      field: '',
+                      field: "",
                       operator: Operator.Equals,
-                      value: '',
+                      value: "",
                     },
                   ]);
                 }}
               >
-                {translate(buttonLabel || 'Add a condition')}
+                {translate(buttonLabel || "Add a condition")}
               </button>
             </td>
           </tr>

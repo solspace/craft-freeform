@@ -1,6 +1,6 @@
-import { animations } from '@ff-client/styles/animations';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { animations } from "@ff-client/styles/animations";
+import { colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const DropdownContainer = styled.div`
   display: grid;

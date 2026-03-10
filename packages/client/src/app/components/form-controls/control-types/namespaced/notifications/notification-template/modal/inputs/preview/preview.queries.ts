@@ -1,11 +1,11 @@
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-import type { PushState } from '../../template.modal';
+import type { PushState } from "../../template.modal";
 
-import type { Address } from './components/address';
-import type { Attachment } from './components/attachments';
+import type { Address } from "./components/address";
+import type { Attachment } from "./components/attachments";
 
 type Result = {
   to: string;
@@ -19,12 +19,12 @@ type Result = {
 };
 
 export const QKPreview = {
-  preview: ['notifications', 'templates', 'preview'],
-  test: ['notifications', 'templates', 'send-test'],
+  preview: ["notifications", "templates", "preview"],
+  test: ["notifications", "templates", "send-test"],
 } as const;
 
 export const usePreviewQuery = (
-  state: PushState
+  state: PushState,
 ): UseQueryResult<Result, Error> => {
   return useQuery({
     enabled: false,

@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { useHover } from '@ff-client/hooks/use-hover';
+import { useHover } from "@ff-client/hooks/use-hover";
+import type React from "react";
+import { useRef } from "react";
 
-import { useDuplicateAnimation } from './duplicate.animations';
-import { DuplicateButtonWrapper } from './duplicate.styles';
-import DuplicateIcon from './duplicate.svg';
+import { useDuplicateAnimation } from "./duplicate.animations";
+import { DuplicateButtonWrapper } from "./duplicate.styles";
+import DuplicateIcon from "./duplicate.svg";
 
 type Props = {
   active: boolean;

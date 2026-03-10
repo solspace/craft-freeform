@@ -1,6 +1,6 @@
-import { errorAlert } from '@ff-client/styles/mixins';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { errorAlert } from "@ff-client/styles/mixins";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const TabWrapper = styled.nav`
   position: relative;

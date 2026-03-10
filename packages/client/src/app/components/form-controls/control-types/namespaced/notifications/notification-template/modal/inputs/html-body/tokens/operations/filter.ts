@@ -1,14 +1,14 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
-import type { SuggestionCategory } from '@ff-client/types/notifications';
+import type { SuggestionCategory } from "@ff-client/types/notifications";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
 
-import type { TokenBackend } from '../tokens.types';
+import type { TokenBackend } from "../tokens.types";
 
-import { useSuggestions } from './suggestions';
+import { useSuggestions } from "./suggestions";
 
 type FilteredSuggestions = (
   backend: TokenBackend,
-  index: number
+  index: number,
 ) => {
   suggestions: SuggestionCategory[];
   filter: string;
@@ -18,7 +18,7 @@ type FilteredSuggestions = (
 export const useFilteredSuggestions: FilteredSuggestions = (backend, index) => {
   const allSuggestions = useSuggestions(backend);
   const [suggestions, setSuggestions] = useState<SuggestionCategory[]>([]);
-  const [filter, setFilter] = useState<string>('');
+  const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
     let currentIndex = 0;
@@ -28,7 +28,7 @@ export const useFilteredSuggestions: FilteredSuggestions = (backend, index) => {
         ...category,
         items: category.items
           .filter((item) =>
-            item.name.toLowerCase().includes(filter.toLowerCase())
+            item.name.toLowerCase().includes(filter.toLowerCase()),
           )
           .map((item) => ({
             ...item,

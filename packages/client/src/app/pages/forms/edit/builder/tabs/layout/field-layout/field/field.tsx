@@ -1,19 +1,20 @@
-import React, { memo, useState } from 'react';
-import { DragPreviewImage } from 'react-dnd';
-import { DuplicateButton } from '@components/elements/duplicate-button/duplicate';
-import { RemoveButton } from '@components/elements/remove-button/remove';
-import config from '@config/freeform/freeform.config';
-import type { Row } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { contextActions } from '@editor/store/slices/context';
-import type { Field as FieldPropType } from '@editor/store/slices/layout/fields';
-import { fieldThunks } from '@editor/store/thunks/fields';
+import { DuplicateButton } from "@components/elements/duplicate-button/duplicate";
+import { RemoveButton } from "@components/elements/remove-button/remove";
+import config from "@config/freeform/freeform.config";
+import type { Row } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { contextActions } from "@editor/store/slices/context";
+import type { Field as FieldPropType } from "@editor/store/slices/layout/fields";
+import { fieldThunks } from "@editor/store/thunks/fields";
+import type React from "react";
+import { memo, useState } from "react";
+import { DragPreviewImage } from "react-dnd";
 
-import { FieldCell } from './cell/cell';
-import { useFieldDragAnimation } from './field.animations';
-import { useFieldDrag } from './field.drag';
-import { createPreview } from './field.drag.preview';
-import { FieldWrapper } from './field.styles';
+import { FieldCell } from "./cell/cell";
+import { useFieldDragAnimation } from "./field.animations";
+import { useFieldDrag } from "./field.drag";
+import { createPreview } from "./field.drag.preview";
+import { FieldWrapper } from "./field.styles";
 
 type Props = {
   field: FieldPropType;
@@ -53,7 +54,7 @@ export const Field: React.FC<Props> = memo(
       hoverPosition,
     });
 
-    const canDuplicate = config.limitations.can('layout.fields.clone');
+    const canDuplicate = config.limitations.can("layout.fields.clone");
 
     return (
       <>
@@ -87,7 +88,7 @@ export const Field: React.FC<Props> = memo(
         </FieldWrapper>
       </>
     );
-  }
+  },
 );
 
-Field.displayName = 'Field';
+Field.displayName = "Field";

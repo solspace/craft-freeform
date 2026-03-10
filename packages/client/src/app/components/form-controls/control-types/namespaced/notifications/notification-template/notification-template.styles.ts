@@ -1,6 +1,6 @@
-import { animated } from 'react-spring';
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { spacings } from "@ff-client/styles/variables";
+import { animated } from "react-spring";
+import styled from "styled-components";
 
 export const NotificationTemplateSelector = styled(animated.div)`
   display: flex;

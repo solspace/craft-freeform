@@ -1,15 +1,15 @@
-import type { Layout } from '@editor/builder/types/layout';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { Layout } from "@editor/builder/types/layout";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import './layouts.persistence';
+import "./layouts.persistence";
 
 type LayoutState = Layout[];
 
 const initialState: LayoutState = [];
 
 export const layoutsSlice = createSlice({
-  name: 'layout/layouts',
+  name: "layout/layouts",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<LayoutState>) => {
@@ -21,7 +21,7 @@ export const layoutsSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.splice(
         state.findIndex((layout) => layout.uid === action.payload),
-        1
+        1,
       );
     },
   },

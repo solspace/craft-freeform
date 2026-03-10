@@ -1,6 +1,6 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import {
   CardBody,
@@ -10,7 +10,7 @@ import {
   FormBodyContent,
   LinkList,
   PaddedChartFooter,
-} from './card.styles';
+} from "./card.styles";
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -25,7 +25,7 @@ export const FMLoading: React.FC = () => {
 };
 
 export const CardLoading: React.FC = () => {
-  const color = '#dfdfdf';
+  const color = "#dfdfdf";
 
   const data = Array.from({ length: 10 }, () => ({
     value: randomSubmissions(0, Math.random() > 0.9 ? 8 : 4),
@@ -65,7 +65,7 @@ export const CardLoading: React.FC = () => {
           </defs>
           <Area
             type="monotone"
-            dataKey={'value'}
+            dataKey={"value"}
             stroke={color}
             strokeWidth={1}
             strokeOpacity={1}

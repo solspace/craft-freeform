@@ -1,7 +1,7 @@
-import React from 'react';
-import type { ConnectDragSource } from 'react-dnd';
+import type React from "react";
+import type { ConnectDragSource } from "react-dnd";
 
-import { Icon, Name, Wrapper } from './field.styles';
+import { Icon, Name, Wrapper } from "./field.styles";
 
 type Props = {
   icon: string;

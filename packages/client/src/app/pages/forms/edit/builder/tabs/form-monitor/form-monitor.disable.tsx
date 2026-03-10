@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import { Modal } from '@ff-client/app/components/modals/modal';
-import { QKFormMonitor } from '@ff-client/queries/form-monitor';
+} from "@components/modals/modal.styles";
+import { Modal } from "@ff-client/app/components/modals/modal";
+import { QKFormMonitor } from "@ff-client/queries/form-monitor";
 import {
   useDisableAndClearMonitoringMutation,
   useDisableMonitoringMutation,
-} from '@ff-client/queries/form-monitor.mutations';
-import { QKForms } from '@ff-client/queries/forms';
-import translate from '@ff-client/utils/translations';
-import { useQueryClient } from '@tanstack/react-query';
-import DOMPurify from 'dompurify';
+} from "@ff-client/queries/form-monitor.mutations";
+import { QKForms } from "@ff-client/queries/forms";
+import translate from "@ff-client/utils/translations";
+import { useQueryClient } from "@tanstack/react-query";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { FormWrapper } from './form-monitor.action.modal.styles';
+import { FormWrapper } from "./form-monitor.action.modal.styles";
 
 interface ModalProps {
   formId: number;
@@ -44,25 +45,26 @@ export const DisableMonitoringModal: React.FC<ModalProps> = ({
     <Modal closeModal={onClose}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Disable Monitoring')}</h1>
+          <h1>{translate("Disable Monitoring")}</h1>
         </ModalHeader>
         <FormWrapper>
           <div>
             {translate(
-              'Are you sure you want to disable monitoring for this form?'
+              "Are you sure you want to disable monitoring for this form?",
             )}
           </div>
         </FormWrapper>
         <ModalFooter>
-          <button className="btn cancel" onClick={onClose}>
-            {translate('Cancel')}
+          <button type="button" className="btn cancel" onClick={onClose}>
+            {translate("Cancel")}
           </button>
           <button
+            type="button"
             className="btn submit"
             onClick={handleDisable}
             disabled={disableMonitoringMutation.isPending}
           >
-            {translate('Disable')}
+            {translate("Disable")}
           </button>
         </ModalFooter>
       </ModalContainer>
@@ -78,7 +80,7 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [enabled, setEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const disableAndClearMonitoringMutation =
     useDisableAndClearMonitoringMutation(formId, {
@@ -101,27 +103,27 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
   };
 
   useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === 'CONFIRM');
+    setEnabled(inputValue.toUpperCase() === "CONFIRM");
   }, [inputValue]);
 
   return (
     <Modal closeModal={onClose}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Disable & Delete Monitoring Data')}</h1>
+          <h1>{translate("Disable & Delete Monitoring Data")}</h1>
         </ModalHeader>
         <FormWrapper>
           <div>
             {translate(
-              'Are you sure you want to disable monitoring and delete all monitoring data for this form?'
+              "Are you sure you want to disable monitoring and delete all monitoring data for this form?",
             )}
           </div>
           <div
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 translate(
-                  'To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:'
-                )
+                  "To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:",
+                ),
               ),
             }}
           />
@@ -135,15 +137,16 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
           />
         </FormWrapper>
         <ModalFooter>
-          <button className="btn cancel" onClick={onClose}>
-            {translate('Cancel')}
+          <button type="button" className="btn cancel" onClick={onClose}>
+            {translate("Cancel")}
           </button>
           <button
-            className={`btn submit ${!enabled ? 'disabled' : ''}`}
+            type="button"
+            className={`btn submit ${!enabled ? "disabled" : ""}`}
             onClick={handleDisableAndDelete}
             disabled={disableAndClearMonitoringMutation.isPending || !enabled}
           >
-            {translate('Disable & Delete')}
+            {translate("Disable & Delete")}
           </button>
         </ModalFooter>
       </ModalContainer>

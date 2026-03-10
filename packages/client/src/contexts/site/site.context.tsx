@@ -1,16 +1,17 @@
-import type { PropsWithChildren } from 'react';
-import React, {
+import config from "@config/freeform/freeform.config";
+import type { Site } from "@ff-client/types/sites";
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useState,
-} from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import config from '@config/freeform/freeform.config';
-import type { Site } from '@ff-client/types/sites';
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const DEFAULT_HANDLE = 'default';
+const DEFAULT_HANDLE = "default";
 
 type ContextType = {
   current?: Site;
@@ -23,7 +24,7 @@ type ContextType = {
 const SiteContext = createContext<ContextType>({
   isPrimary: false,
   change: () => void {},
-  getCurrentHandleWithFallback: () => '',
+  getCurrentHandleWithFallback: () => "",
 });
 
 export const useSiteContext = (): ContextType => useContext(SiteContext);
@@ -34,7 +35,7 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const [current, setCurrent] = useState<Site>(() => {
     const currentSite = config.sites.list.find(
-      (site) => site.id === config.sites.current
+      (site) => site.id === config.sites.current,
     );
 
     return (
@@ -48,11 +49,11 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const links = document.querySelectorAll('#nav a[href*="site="]');
     links.forEach((link) => {
-      const href = link.getAttribute('href');
+      const href = link.getAttribute("href");
       if (href) {
         link.setAttribute(
-          'href',
-          href.replace(/([?&])site=[^&]+/, `$1site=${current?.handle || ''}`)
+          "href",
+          href.replace(/([?&])site=[^&]+/, `$1site=${current?.handle || ""}`),
         );
       }
     });
@@ -66,12 +67,12 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
         setIsPrimary(foundSite.primary);
 
         const params = new URLSearchParams(location.search);
-        params.set('site', foundSite.handle);
+        params.set("site", foundSite.handle);
 
-        navigate(location.pathname + '?' + params.toString());
+        navigate(`${location.pathname}?${params.toString()}`);
       }
     },
-    [config.sites, current, location]
+    [location, navigate],
   );
 
   return (

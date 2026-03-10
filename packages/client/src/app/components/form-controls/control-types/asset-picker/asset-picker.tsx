@@ -1,9 +1,9 @@
-import React from 'react';
-import { CraftAssetPicker } from '@components/elements/craft-asset-picker/craft-asset-picker';
-import type { ControlType } from '@components/form-controls/types';
-import type { AssetPickerProperty } from '@ff-client/types/properties';
+import { CraftAssetPicker } from "@components/elements/craft-asset-picker/craft-asset-picker";
+import type { ControlType } from "@components/form-controls/types";
+import type { AssetPickerProperty } from "@ff-client/types/properties";
+import type React from "react";
 
-import { Control } from '../../control';
+import { Control } from "../../control";
 
 const AssetPicker: React.FC<ControlType<AssetPickerProperty>> = ({
   value,

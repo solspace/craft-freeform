@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
-import { useHover } from '@ff-client/hooks/use-hover';
-import type { FormWithStats } from '@ff-client/types/forms';
-import CrossIcon from '@ff-icons/actions/delete.svg';
+import { useHover } from "@ff-client/hooks/use-hover";
+import type { FormWithStats } from "@ff-client/types/forms";
+import CrossIcon from "@ff-icons/actions/delete.svg";
+import type React from "react";
+import { useRef } from "react";
 
 import {
   FormDetails,
@@ -9,7 +10,7 @@ import {
   PaddedFooter,
   Remove,
   Wrapper,
-} from './modal.list-item.styles';
+} from "./modal.list-item.styles";
 
 type Props = {
   form: FormWithStats;

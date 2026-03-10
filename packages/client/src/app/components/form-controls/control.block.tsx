@@ -36,6 +36,8 @@ export type ControlProps = {
   messages?: Message[];
   preContent?: React.ReactNode;
   extraContent?: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
+  justify?: 'start' | 'center' | 'end';
 };
 
 export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
@@ -55,6 +57,8 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   isEncrypted,
   preContent,
   extraContent,
+  align,
+  justify,
 }) => {
   const { size } = useRenderContext();
   const {
@@ -97,7 +101,15 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
         )}
       </LabelGroup>
 
-      <FormField>{children}</FormField>
+      <FormField
+        className={classes(
+          align && `align-${align}`,
+          justify && `justify-${justify}`
+        )}
+      >
+        {children}
+      </FormField>
+
       <FormErrorList errors={errors} />
       <FormMessageList messages={messages} />
     </ControlWrapper>

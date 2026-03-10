@@ -7,6 +7,7 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -16,6 +17,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -48,12 +50,15 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
     public const COLUMN_TYPE_RADIO = 'radio';
     public const COLUMN_TYPE_TEXTAREA = 'textarea';
+    public const COLUMN_TYPE_FILE = 'file';
 
     public const LIMIT_ROWS_NO_LIMIT = '';
     public const LIMIT_ROWS_MINIMUM = 'min';
     public const LIMIT_ROWS_MAXIMUM = 'max';
     public const LIMIT_ROWS_RANGE = 'range';
     public const LIMIT_ROWS_EXACT = 'exact';
+
+    private const FILE_COLUMN_DEFAULT_FILE_COUNT = 1;
 
     public array $columns = [];
 
@@ -83,7 +88,13 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 'value' => self::COLUMN_TYPE_DROPDOWN,
                 'label' => 'Dropdown',
             ],
+            [
+                'value' => self::COLUMN_TYPE_FILE,
+                'label' => 'File Upload',
+            ],
         ],
+        assetSourceOptions: AssetSourceOptions::class,
+        fileKindsOptions: FileKindsOptionsGenerator::class,
     )]
     protected TableLayout $tableLayout;
 
@@ -253,6 +264,17 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         return $layout;
     }
 
+    public function hasFileUploadColumns(): bool
+    {
+        foreach ($this->getTableLayout() as $column) {
+            if (self::COLUMN_TYPE_FILE === $column->type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function isUseScript(): bool
     {
         return $this->useScript;
@@ -328,12 +350,14 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             $hasSingleValue = false;
             $rowValues = [];
             foreach ($layout as $index => $column) {
-                $value = $row[$index] ?? '';
-                if ($value) {
+                $rawValue = $row[$index] ?? null;
+                $normalizedValue = $this->normalizeColumnValue($column->type, $rawValue);
+
+                if ($this->hasColumnValue($column->type, $normalizedValue)) {
                     $hasSingleValue = true;
                 }
 
-                $rowValues[$index] = $value;
+                $rowValues[$index] = $normalizedValue;
             }
 
             if (!$hasSingleValue) {
@@ -433,6 +457,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             foreach ($layout as $column) {
                 match ($column->type) {
                     self::COLUMN_TYPE_CHECKBOX => $defaultRow[] = null,
+                    self::COLUMN_TYPE_FILE => $defaultRow[] = [],
                     default => $defaultRow[] = $column->value,
                 };
             }
@@ -632,6 +657,34 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
                         break;
 
+                    case self::COLUMN_TYPE_FILE:
+                        $metadata = \is_array($column->metadata ?? null) ? $column->metadata : [];
+                        $fileCount = (int) ($metadata['fileCount'] ?? self::FILE_COLUMN_DEFAULT_FILE_COUNT);
+                        if ($fileCount < self::FILE_COLUMN_DEFAULT_FILE_COUNT) {
+                            $fileCount = self::FILE_COLUMN_DEFAULT_FILE_COUNT;
+                        }
+
+                        $fileName = $name;
+                        if ($fileCount > 1) {
+                            $fileName .= '[]';
+                        }
+
+                        $inputAttributes = $attributes
+                            ->getInput()
+                            ->clone()
+                            ->replace('type', 'file')
+                            ->replace('name', $fileName)
+                            ->replace('data-default-value', '')
+                        ;
+
+                        if ($fileCount > 1) {
+                            $inputAttributes->replace('multiple', true);
+                        }
+
+                        $output .= Html::tag('input', '', $inputAttributes->toHtmlTagArray());
+
+                        break;
+
                     case self::COLUMN_TYPE_STRING:
                     default:
                         $inputAttributes = $attributes
@@ -705,5 +758,50 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         }
 
         return $output;
+    }
+
+    private function normalizeColumnValue(string $columnType, mixed $value): mixed
+    {
+        if (self::COLUMN_TYPE_FILE === $columnType) {
+            return $this->normalizeFileColumnValue($value);
+        }
+
+        if (null === $value) {
+            return '';
+        }
+
+        return $value;
+    }
+
+    private function normalizeFileColumnValue(mixed $value): array
+    {
+        if (!\is_array($value)) {
+            if (null === $value || '' === $value) {
+                return [];
+            }
+
+            $value = [$value];
+        }
+
+        $normalized = [];
+        foreach ($value as $item) {
+            if (\is_scalar($item) && is_numeric((string) $item)) {
+                $assetId = (int) $item;
+                if ($assetId > 0) {
+                    $normalized[] = $assetId;
+                }
+            }
+        }
+
+        return array_values(array_unique($normalized));
+    }
+
+    private function hasColumnValue(string $columnType, mixed $value): bool
+    {
+        if (self::COLUMN_TYPE_FILE === $columnType) {
+            return \is_array($value) && !empty($value);
+        }
+
+        return '' !== $value && null !== $value;
     }
 }

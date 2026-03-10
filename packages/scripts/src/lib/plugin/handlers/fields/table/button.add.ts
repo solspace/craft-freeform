@@ -1,7 +1,7 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 
-const PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
+const PATTERN = /([^[]+)\[(\d+)\](\[\d+\](?:\[\])?)$/g;
 const ID_PATTERN = /^(labeled-.*)-(\d+)-(\d+)-(\d+)$/g;
 
 export const registerAddButton = (instance: Freeform) => {
@@ -57,6 +57,8 @@ export const registerAddButton = (instance: Freeform) => {
               item.checked = item.value === defaultValue;
             } else if (item.tagName === 'INPUT' && item.type === 'checkbox') {
               item.checked = defaultValue === '1';
+            } else if (item.tagName === 'INPUT' && item.type === 'file') {
+              item.value = '';
             } else {
               item.value = defaultValue;
             }

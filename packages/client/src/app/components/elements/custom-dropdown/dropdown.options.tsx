@@ -12,6 +12,7 @@ import {
   LabelValueDisplay,
   List,
 } from './dropdown.options.styles';
+import { OptionIcon } from './dropdown.styles';
 
 type Props = DropdownProps & {
   focusIndex: number;
@@ -94,7 +95,7 @@ export const Options: React.FC<Props> = ({
                 )}
 
                 <LabelContainer>
-                  {option.icon && option.icon}
+                  {option.icon && <OptionIcon>{option.icon}</OptionIcon>}
                   <div>
                     <span
                       dangerouslySetInnerHTML={{

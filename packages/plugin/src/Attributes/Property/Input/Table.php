@@ -17,6 +17,8 @@ class Table extends Property implements OptionsInterface
         ?array $value = null,
         ?int $width = null,
         public array|OptionCollection|string|null $options = null,
+        public array|OptionCollection|string|null $assetSourceOptions = null,
+        public array|OptionCollection|string|null $fileKindsOptions = null,
     ) {
         parent::__construct(
             label: $label,

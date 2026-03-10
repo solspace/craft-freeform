@@ -351,6 +351,8 @@ return [
     'Column Type' => 'Tipo di colonna',
     'Add column' => 'Aggiungi colonna',
     'Remove column' => 'Rimuovi colonna',
+    'Reorder column' => 'Riordina colonna',
+    'Required' => 'Obbligatorio',
     'Min Length' => 'Lunghezza minima',
     'The minimum number of characters allowed in the field.' => 'Il numero minimo di caratteri consentiti nel campo.',
     'Use Character Variability' => 'Usa variabilità dei caratteri',

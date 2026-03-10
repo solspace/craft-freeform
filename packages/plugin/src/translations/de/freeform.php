@@ -351,6 +351,8 @@ return [
     'Column Type' => 'Spaltentyp',
     'Add column' => 'Spalte hinzufügen',
     'Remove column' => 'Spalte entfernen',
+    'Reorder column' => 'Spalte neu anordnen',
+    'Required' => 'Erforderlich',
     'Min Length' => 'Mindestlänge',
     'The minimum number of characters allowed in the field.' => 'Die minimale Anzahl an Zeichen, die im Feld erlaubt sind.',
     'Use Character Variability' => 'Zeichenvariabilität verwenden',

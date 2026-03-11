@@ -135,6 +135,7 @@ class SubmissionQuery extends ElementQuery
 
         $pathInfo = !$isConsoleRequest ? ($request->getPathInfo() ?? '') : '';
         $path = '/'.ltrim($pathInfo, '/');
+        $normalizedPath = trim($pathInfo, '/');
 
         $plugins = \Craft::$app->getPlugins();
         $orderClass = 'craft\commerce\elements\Order';
@@ -145,6 +146,7 @@ class SubmissionQuery extends ElementQuery
         $isOrderElementType = $commerceAvailable && (!$isConsoleRequest) && ($orderClass === $request->getBodyParam('elementType'));
         $isCpSubmissionIndexRequest = $isCpRequest && $isElementIndexAction && $isSubmissionElementType;
         $isCpOrderIndexRequest = $isCpRequest && $isElementIndexAction && $isOrderElementType;
+        $isCpOrderDetailRequest = $commerceAvailable && $isCpRequest && (bool) preg_match('#^commerce/orders/\d+$#', $normalizedPath);
 
         // Requested CP table columns (element attributes, field handles, field column names, or field IDs)
         $requestedFieldHandles = [];
@@ -224,7 +226,7 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
-        if ($isCpOrderIndexRequest) {
+        if ($isCpOrderIndexRequest || $isCpOrderDetailRequest) {
             $this->skipContent = true;
         }
 

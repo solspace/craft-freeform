@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -16,7 +17,7 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class SolspaceAIV1 extends BaseSolspaceAIIntegration
+class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegrationInterface
 {
     public function getApiRootUrl(): string
     {
@@ -69,7 +70,6 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration
                     'content' => $userContent,
                 ],
             ],
-            'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
         ];
 
         $response = $client->post($this->getEndpoint('/chat/completions'), [

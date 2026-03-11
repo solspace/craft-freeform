@@ -19,7 +19,6 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
 
     public const CATEGORY_AI = 'ai';
 
-    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
@@ -28,12 +27,7 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected string $apiBaseUrl = 'https://ai.solspace.net/v1';
-
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected string $model = 'smollm2';
+    protected string $apiBaseUrl = 'http://host.docker.internal:4000/v1';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
@@ -55,15 +49,6 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     )]
     protected string $siteUrl = '';
 
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Integer(
-        label: 'Max Tokens',
-        instructions: 'Maximum number of tokens to generate.',
-        min: 1,
-        max: 128000,
-    )]
-    protected int $maxTokens = 4096;
-
     public function getApiKey(): string
     {
         return $this->getProcessedValue($this->apiKey);
@@ -83,12 +68,12 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
 
     public function getModel(): string
     {
-        return $this->getProcessedValue($this->model) ?: 'smollm2';
+        return '';
     }
 
-    public function getMaxTokens(): int
+    public function getMaxTokens(): ?int
     {
-        return $this->maxTokens;
+        return null;
     }
 
     public function getContactEmail(): string

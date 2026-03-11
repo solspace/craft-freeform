@@ -58,6 +58,10 @@ export const CardValue = styled.div`
   line-height: 1.2;
 `;
 
+export const CardValueSmall = styled(CardValue)`
+  font-size: 14px;
+`;
+
 export const Section = styled.section`
   margin-bottom: ${spacings.xl};
 

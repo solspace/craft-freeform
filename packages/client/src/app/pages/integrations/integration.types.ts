@@ -8,6 +8,7 @@ export type TypeDefinition = {
   name: string;
   type: IntegrationType;
   version?: string;
+  singleton?: boolean;
   nameWithVersion: string;
   readmeContent?: string;
   iconSvg?: string;

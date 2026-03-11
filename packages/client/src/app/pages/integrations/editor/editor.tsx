@@ -144,9 +144,9 @@ export const IntegrationsEditor: FC = () => {
 
   const instanceCount = currentIntegrationInstances?.length || 0;
   const showTabs = instanceCount > 1 || isAddNew;
-  const isSolspaceAi = integration === 'SolspaceAIV1';
+  const isSingleton = Boolean(data?.type?.singleton);
   const showAddButton =
-    instanceCount > 0 && type !== IntegrationType.Singles && !isSolspaceAi;
+    instanceCount > 0 && type !== IntegrationType.Singles && !isSingleton;
 
   if (!type || !integration) {
     return null;

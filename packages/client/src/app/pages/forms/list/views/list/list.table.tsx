@@ -22,7 +22,10 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
   const openCreateWithAiFormModal = useCreateWithAiFormModal();
   const { data: aiIntegrations } = useAiIntegrations();
   const { canCreate } = config.metadata.freeform;
-  const showEnableAi = aiIntegrations && aiIntegrations.length === 0;
+  const canViewIntegrations = config.permissions.integrations !== 'none';
+  const showAiButtons = canViewIntegrations;
+  const showEnableAi =
+    showAiButtons && aiIntegrations && aiIntegrations.length === 0;
 
   const hasFormMonitor = forms?.some((form) => form.formMonitor?.enabled);
 
@@ -61,6 +64,25 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
                   )}
                 </p>
 
+                {showAiButtons &&
+                  (showEnableAi ? (
+                    <EnableAiLink
+                      to="/integrations/ai/SolspaceAIV1"
+                      className="btn add icon"
+                      data-icon="sparkles"
+                    >
+                      {translate('Enable AI')}
+                    </EnableAiLink>
+                  ) : (
+                    <AiButton
+                      type="button"
+                      className="btn add icon"
+                      data-icon="sparkles"
+                      onClick={openCreateWithAiFormModal}
+                    >
+                      {translate('Create with AI')}
+                    </AiButton>
+                  ))}
                 <button
                   type="button"
                   className="btn submit add icon"
@@ -68,24 +90,6 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
                 >
                   {translate('Create a new Form')}
                 </button>
-                {showEnableAi ? (
-                  <EnableAiLink
-                    to="/integrations/ai/SolspaceAIV1"
-                    className="btn add icon"
-                    data-icon="sparkles"
-                  >
-                    {translate('Enable AI')}
-                  </EnableAiLink>
-                ) : (
-                  <AiButton
-                    type="button"
-                    className="btn add icon"
-                    data-icon="sparkles"
-                    onClick={openCreateWithAiFormModal}
-                  >
-                    {translate('Create with AI')}
-                  </AiButton>
-                )}
               </td>
             </tr>
           )}

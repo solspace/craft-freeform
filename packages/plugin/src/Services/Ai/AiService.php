@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Ai;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
@@ -8,6 +8,8 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\Fields\AiField;
+use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
+use Solspace\Freeform\Services\BaseService;
 
 class AiService extends BaseService
 {
@@ -85,10 +87,11 @@ class AiService extends BaseService
         $content = $this->prepareContentForAnalysis($form, $field);
         $systemPrompt = $this->prepareSystemPrompt($field);
 
-        $options = [
-            'model' => $integration->getModel(),
-            'max_tokens' => $field->getMaxTokens(),
-        ];
+        $options = [];
+        if (!$integration instanceof BaseSolspaceAIIntegration) {
+            $options['model'] = $integration->getModel();
+            $options['max_tokens'] = $field->getMaxTokens();
+        }
 
         $integrationTemperature = $integration->getTemperature();
         if (null !== $integrationTemperature) {

@@ -69,7 +69,7 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
-use Solspace\Freeform\Services\AiService;
+use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ErrorNotificationsService;

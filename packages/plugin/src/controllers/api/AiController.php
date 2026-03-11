@@ -39,8 +39,8 @@ class AiController extends BaseApiController
             throw new NotFoundHttpException('Solspace AI is not enabled.');
         }
 
-        $licenseKey = $this->getLicenseKey();
-        if ('' === $licenseKey) {
+        $licenseKey = trim($this->getLicenseKey());
+        if (empty($licenseKey)) {
             $this->response->statusCode = 400;
 
             return $this->asJson([
@@ -72,8 +72,8 @@ class AiController extends BaseApiController
             throw new NotFoundHttpException('Solspace AI is not enabled.');
         }
 
-        $licenseKey = $this->getLicenseKey();
-        if ('' === $licenseKey) {
+        $licenseKey = trim($this->getLicenseKey());
+        if (empty($licenseKey)) {
             $this->response->statusCode = 400;
 
             return $this->asJson([
@@ -106,8 +106,8 @@ class AiController extends BaseApiController
             'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         ];
-        $apiKey = $integration->getApiKey();
-        if ($apiKey !== '') {
+        $apiKey = trim($integration->getApiKey());
+        if (!empty($apiKey)) {
             $headers['Authorization'] = 'Bearer '.$apiKey;
         }
 

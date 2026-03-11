@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Attributes\Integration;
 
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
+use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Serializer\Attribute\Groups;
 
@@ -66,6 +67,11 @@ class Type implements \Stringable
     public function implements(string $interface): bool
     {
         return (new \ReflectionClass($this->class))->implementsInterface($interface);
+    }
+
+    public function isSingleton(): bool
+    {
+        return $this->implements(SingletonIntegrationInterface::class);
     }
 
     #[Ignore]

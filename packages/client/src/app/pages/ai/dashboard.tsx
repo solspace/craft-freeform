@@ -27,6 +27,7 @@ import {
   CardLabel,
   CardsGrid,
   CardValue,
+  CardValueSmall,
   DashboardWrapper,
   EmptyState,
   EmptyStateTitle,
@@ -313,37 +314,33 @@ export const AiDashboard: React.FC = () => {
           {summary?.account_email && (
             <Card>
               <CardLabel>{translate('Account')}</CardLabel>
-              <CardValue style={{ fontSize: 14 }}>
-                {summary.account_email}
-              </CardValue>
+              <CardValueSmall>{summary.account_email}</CardValueSmall>
             </Card>
           )}
           {summary?.created_at != null && (
             <Card>
               <CardLabel>{translate('Created')}</CardLabel>
-              <CardValue style={{ fontSize: 14 }}>
-                {formatDate(summary.created_at)}
-              </CardValue>
+              <CardValueSmall>{formatDate(summary.created_at)}</CardValueSmall>
             </Card>
           )}
           {summary && (
             <Card>
               <CardLabel>{translate('Budget')}</CardLabel>
-              <CardValue style={{ fontSize: 14 }}>
+              <CardValueSmall>
                 {summary.budget_unlimited ||
                 summary.max_budget == null ||
                 summary.max_budget <= 0
                   ? translate('Unlimited')
                   : formatSpend(summary.max_budget)}
-              </CardValue>
+              </CardValueSmall>
             </Card>
           )}
           {summary?.credit_remaining != null && (
             <Card>
               <CardLabel>{translate('Credit remaining')}</CardLabel>
-              <CardValue style={{ fontSize: 14 }}>
+              <CardValueSmall>
                 {formatSpend(summary.credit_remaining)}
-              </CardValue>
+              </CardValueSmall>
             </Card>
           )}
         </CardsGrid>

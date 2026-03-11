@@ -7,16 +7,20 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class CarbonNormalizer implements NormalizerInterface
 {
-    /**
-     * @param Carbon $object
-     */
-    public function normalize($object, ?string $format = null, array $context = []): string
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array|\ArrayObject|bool|float|int|string|null
     {
-        return $object->toIso8601String();
+        return $data->toIso8601String();
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof Carbon;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Carbon::class => true,
+        ];
     }
 }

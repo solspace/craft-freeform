@@ -11,7 +11,6 @@ use Stripe\Event;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\PaymentIntent;
 use Stripe\Webhook;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -48,6 +47,11 @@ class StripeWebhookController extends BaseStripeController
         $this->logger->debug('Received a Stripe Webhook', json_decode($payload, true) ?? []);
 
         if (!$json || !$header) {
+            $this->logger->warning('Stripe Webhook missing JSON or Stripe Signature', [
+                'json' => $json,
+                'header' => $header,
+            ]);
+
             return $this->asEmptyResponse(400);
         }
 
@@ -57,12 +61,18 @@ class StripeWebhookController extends BaseStripeController
             return $this->asEmptyResponse();
         }
 
-        try {
-            $hash = $json->data->object->subscription_details->metadata->hash ?? $json->data->object->metadata->hash;
-        } catch (\Exception $exception) {
-            $this->logger->error('Received a Stripe Webhook that does not contain a valid hash');
+        $hash = $json->data->object->subscription_details->metadata->hash
+            ?? $json->data->object->metadata->hash
+            ?? null;
 
-            throw new BadRequestHttpException('Request did not contain a valid Freeform hash');
+        if (!$hash) {
+            $this->logger->error('Received a Stripe Webhook that does not contain a valid Freeform hash', [
+                'type' => $json->type,
+                'json' => $json,
+            ]);
+
+            // Return 200 so Stripe doesn't keep retrying
+            return $this->asEmptyResponse(200);
         }
 
         [, $integration] = $this->getRequestItems($hash);
@@ -97,14 +107,24 @@ class StripeWebhookController extends BaseStripeController
         /** @var PaymentIntent $paymentIntent */
         $paymentIntent = $event->data->object;
 
-        $hash = $paymentIntent?->metadata?->hash;
+        $hash = $paymentIntent->metadata->hash ?? null;
+
+        if (!$hash) {
+            $this->logger->error('Received a Stripe Webhook that does not contain a valid Freeform hash', [
+                'event' => $event,
+            ]);
+
+            // Return 200 so Stripe doesn't keep retrying
+            return $this->asEmptyResponse(200);
+        }
 
         try {
             [$form, $integration, $field] = $this->getRequestItems($hash);
         } catch (NotFoundHttpException $exception) {
-            $this->logger->error('Stripe Webhook error', ['error' => $exception->getMessage()]);
+            $this->logger->error('Stripe Webhook not related to Freeform', ['error' => $exception->getMessage()]);
 
-            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
+            // Return 200 so Stripe doesn't keep retrying
+            return $this->asEmptyResponse(200);
         }
 
         $savedForm = SavedFormRecord::findOne([

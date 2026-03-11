@@ -6,44 +6,50 @@ import type { Property } from '@ff-client/types/properties';
 import { ControlBlock } from './control.block';
 
 type Props = {
-  property: Property;
+  property?: Property;
+  label?: string;
+  handle?: string;
+  required?: boolean;
+  instructions?: string;
+  width?: number;
+  disabled?: boolean;
   errors?: string[];
   context?: unknown;
   preContent?: React.ReactNode;
+  align?: 'start' | 'center' | 'end';
+  justify?: 'start' | 'center' | 'end';
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({
   children,
   property,
+  label,
+  handle,
+  required,
+  instructions,
+  width,
+  disabled,
   errors,
   context,
   preContent,
+  align,
+  justify,
 }) => {
   const { hasTranslation, removeTranslation, isTranslationsEnabled } =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useTranslations(context as any);
 
-  const {
-    edition,
-    label,
-    handle,
-    required,
-    instructions,
-    width,
-    disabled,
-    translatable,
-    messages,
-  } = property;
+  const { edition, translatable, messages } = property || {};
 
   return (
     <ControlBlock
       edition={edition}
-      label={label}
-      handle={handle}
-      required={required}
-      instructions={instructions}
-      width={width}
-      disabled={disabled}
+      label={property?.label || label}
+      handle={property?.handle || handle}
+      required={property?.required || required}
+      instructions={property?.instructions || instructions}
+      width={property?.width || width}
+      disabled={property?.disabled || disabled}
       errors={errors}
       messages={messages}
       translatable={isTranslationsEnabled && translatable}
@@ -51,6 +57,8 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       isEncrypted={property?.flags?.includes('encrypted')}
       removeTranslation={() => removeTranslation(handle)}
       preContent={preContent}
+      align={align}
+      justify={justify}
     >
       {children}
     </ControlBlock>

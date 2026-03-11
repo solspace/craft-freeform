@@ -24,9 +24,13 @@ const addErrors = (event: FreeformEvent) => {
         const cell = cells[index];
         const input = cell.querySelector<HTMLInputElement>('input, textarea, select');
 
-        let isFilled = Boolean(input.value);
+        let isFilled = Boolean(input?.value);
         if (['radio', 'checkbox'].includes(input?.type || '')) {
-          isFilled = input.checked;
+          isFilled = Boolean(input?.checked);
+        }
+
+        if (input?.type === 'file') {
+          isFilled = Boolean(input.files?.length);
         }
 
         if (!input || !isFilled) {

@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Export\AbstractSubmissionExport;
 use Solspace\Freeform\Bundles\Export\Interfaces\StringValueExportInterface;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 
 class ExportCsv extends AbstractSubmissionExport implements StringValueExportInterface
 {
@@ -92,6 +93,9 @@ class ExportCsv extends AbstractSubmissionExport implements StringValueExportInt
         $layout = $field->getTableLayout();
         foreach ($layout as $index => $column) {
             $tableColumnValue = $tableValues[$rowIndex][$index] ?? null;
+            if (\is_array($tableColumnValue) || \is_object($tableColumnValue)) {
+                $tableColumnValue = StringHelper::implodeRecursively(', ', (array) $tableColumnValue);
+            }
 
             $values[] = $tableColumnValue;
         }

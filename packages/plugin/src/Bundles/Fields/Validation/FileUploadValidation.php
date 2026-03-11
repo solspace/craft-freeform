@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use craft\helpers\Assets;
 use Solspace\Freeform\Bundles\Fields\Implementations\FileUpload\FileUploadAssetBundle;
+use Solspace\Freeform\Bundles\Fields\Validation\Helpers\FileUploadValidationHelper;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -18,16 +19,10 @@ use yii\base\InvalidArgumentException;
 
 class FileUploadValidation extends FeatureBundle
 {
-    private const FILE_KEYS = [
-        'name',
-        'tmp_name',
-        'error',
-        'size',
-        'type',
-    ];
-
-    public function __construct(private FilesService $filesService)
-    {
+    public function __construct(
+        private FilesService $filesService,
+        private FileUploadValidationHelper $validationHelper,
+    ) {
         Event::on(
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
@@ -57,16 +52,10 @@ class FileUploadValidation extends FeatureBundle
         $uploadedFiles = 0;
         $handle = $field->getHandle();
 
-        $exists = isset($_FILES[$handle]) && !empty($_FILES[$handle]['name']);
-
-        if ($exists && !\is_array($_FILES[$handle]['name'])) {
-            foreach (self::FILE_KEYS as $key) {
-                $_FILES[$handle][$key] = [$_FILES[$handle][$key]];
-            }
-        }
-
-        if ($exists && is_countable($_FILES[$handle]['name'])) {
-            $fileCount = \count($_FILES[$handle]['name']);
+        $exists = isset($_FILES[$handle]);
+        if ($exists) {
+            $files = $this->validationHelper->normalizeFilesInput($_FILES[$handle]);
+            $fileCount = \count($files);
 
             if ($fileCount > $field->getFileCount()) {
                 $field->addError(
@@ -77,55 +66,16 @@ class FileUploadValidation extends FeatureBundle
                 );
             }
 
-            foreach ($_FILES[$handle]['name'] as $index => $name) {
-                $extension = pathinfo($name, \PATHINFO_EXTENSION);
-                $validExtensions = $this->filesService->getValidExtensions($field);
-
-                $tmpName = $_FILES[$handle]['tmp_name'][$index];
-                $errorCode = $_FILES[$handle]['error'][$index];
-
-                if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
-                    continue;
+            $validExtensions = $this->filesService->getValidExtensions($field);
+            foreach ($files as $file) {
+                if ($this->validationHelper->validateFileEntry(
+                    $file,
+                    $validExtensions,
+                    $field->getMaxFileSizeKB(),
+                    static fn (string $message) => $field->addError($message),
+                )) {
+                    ++$uploadedFiles;
                 }
-
-                if (empty($tmpName)) {
-                    switch ($errorCode) {
-                        case \UPLOAD_ERR_INI_SIZE:
-                        case \UPLOAD_ERR_FORM_SIZE:
-                            $field->addError(Freeform::t('File size too large'));
-
-                            break;
-
-                        case \UPLOAD_ERR_PARTIAL:
-                            $field->addError(Freeform::t('The file was only partially uploaded'));
-
-                            break;
-                    }
-
-                    $field->addError(Freeform::t('Could not upload file'));
-                }
-
-                // Check for the correct file extension
-                if (!\in_array(strtolower($extension), $validExtensions, true)) {
-                    $field->addError(
-                        Freeform::t(
-                            "'{extension}' is not an allowed file extension",
-                            ['extension' => $extension]
-                        )
-                    );
-                }
-
-                $fileSizeKB = ceil($_FILES[$handle]['size'][$index] / 1024);
-                if ($fileSizeKB > $field->getMaxFileSizeKB()) {
-                    $field->addError(
-                        Freeform::t(
-                            'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
-                            ['fileSize' => $fileSizeKB, 'maxFileSize' => $field->getMaxFileSizeKB()]
-                        )
-                    );
-                }
-
-                ++$uploadedFiles;
             }
         }
 

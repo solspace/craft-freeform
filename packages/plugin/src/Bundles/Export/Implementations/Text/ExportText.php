@@ -40,15 +40,17 @@ class ExportText extends AbstractSubmissionExport implements StringValueExportIn
 
                     if ($field instanceof FieldInterface) {
                         if ($field instanceof TableField) {
-                            $value = StringHelper::implodeRecursively(', ', $field->getValue());
-                        } else {
-                            $value = $field->getValueAsString();
+                            $value = StringHelper::implodeRecursively(', ', (array) $value);
                         }
+                    }
+
+                    if (\is_array($value) || \is_object($value)) {
+                        $value = StringHelper::implodeRecursively(', ', (array) $value);
                     }
 
                     $descriptor = $isHandlesAsNames ? $id : $label;
 
-                    fwrite($resource, $descriptor.': '.trim($value)."\n");
+                    fwrite($resource, $descriptor.': '.trim((string) $value)."\n");
                 }
 
                 fwrite($resource, "\n");

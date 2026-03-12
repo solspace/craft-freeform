@@ -49,10 +49,13 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
           data={chartData}
           margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid stroke="#e5e7eb99" vertical={false} />
 
           <XAxis
             dataKey="date"
+            axisLine={false}
+            tickLine={false}
+            interval={2}
             tickFormatter={(value) =>
               new Date(value).toLocaleDateString('en-US', {
                 month: 'short',
@@ -61,7 +64,11 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
             }
           />
 
-          <YAxis tickFormatter={(value) => `${value}${isRate ? '%' : ''}`} />
+          <YAxis
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(value) => `${value}${isRate ? '%' : ''}`}
+          />
 
           <Tooltip
             formatter={(value: number) =>
@@ -78,7 +85,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
           {test.variants.map((variant, index) => (
             <Line
               key={variant.id}
-              type="monotone"
+              type="linear"
               dataKey={`variant-${variant.id}`}
               stroke={lineColors[index % lineColors.length]}
               strokeWidth={2}

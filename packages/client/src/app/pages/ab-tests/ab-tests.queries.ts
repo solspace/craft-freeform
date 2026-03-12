@@ -58,3 +58,21 @@ export const useAbTestUpsertMutation = (
     },
   });
 };
+
+export const useAbTestDeleteMutation = (): UseMutationResult<
+  { success: boolean },
+  unknown,
+  number
+> => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) =>
+      axios
+        .post<{ success: boolean }>(`/api/ab-tests/${id}/delete`)
+        .then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QKAbTests.base });
+    },
+  });
+};

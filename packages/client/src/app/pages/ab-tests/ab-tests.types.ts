@@ -7,6 +7,7 @@ export type MetricTab =
 export type ABTest = {
   id: number;
   name: string;
+  handle: string;
   description: string;
   startDate?: string | null;
   endDate?: string | null;
@@ -58,6 +59,7 @@ export type ABTestDashboardVariant = {
 export type ABTestDashboardItem = {
   id: number;
   name: string;
+  handle: string;
   description: string;
   startDate: string | null;
   endDate: string | null;

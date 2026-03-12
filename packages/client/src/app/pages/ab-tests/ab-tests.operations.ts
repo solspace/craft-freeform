@@ -1,3 +1,5 @@
+import { generateHandle } from '../../../utils/strings';
+
 import type {
   ABTestDashboardItem,
   ABTestDashboardSeriesPoint,
@@ -30,6 +32,7 @@ export const toEditorPayload = (
 ): ABTestWithVariants => ({
   id: test.id,
   name: test.name,
+  handle: test.handle,
   description: test.description,
   startDate: test.startDate,
   endDate: test.endDate,
@@ -57,5 +60,12 @@ export const mergeChartData = (
     });
 
     return row;
+  });
+};
+
+export const generateABTestHandle = (name: string): string => {
+  return generateHandle(name, {
+    transliterate: true,
+    camelize: true,
   });
 };

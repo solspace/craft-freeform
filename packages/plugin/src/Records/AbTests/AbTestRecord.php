@@ -25,6 +25,7 @@ class AbTestRecord extends ActiveRecord
     public function rules(): array
     {
         return [
+            [['name', 'handle'], 'required'],
             [['handle'], 'unique'],
         ];
     }

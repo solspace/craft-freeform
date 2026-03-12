@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\controllers;
 
 use craft\db\Query;
+use craft\helpers\StringHelper;
+use Solspace\Freeform\Bundles\ABTesting\Providers\ABTestWinnerResolver;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Records\AbTests\AbTestRecord;
@@ -92,6 +94,7 @@ class AbTestsController extends BaseController
         $errorCollection = new ErrorCollection();
 
         $record->name = $post['name'] ?? '';
+        $record->handle = $post['handle'] ?? StringHelper::toHandle($record->name);
         $record->description = $post['description'] ?? '';
         $record->startDate = $this->normalizeDate($post['startDate'] ?? null);
         $record->endDate = $this->normalizeDate($post['endDate'] ?? null);
@@ -149,8 +152,23 @@ class AbTestsController extends BaseController
         return $this->asJson($serialized);
     }
 
+    public function actionDelete(int $id): Response
+    {
+        $this->requirePostRequest();
+
+        $record = AbTestRecord::findOne(['id' => $id]);
+        if (!$record) {
+            throw new NotFoundHttpException('A/B Test group not found');
+        }
+
+        $record->delete();
+
+        return $this->asJson(['success' => true]);
+    }
+
     public function actionDashboard(): Response
     {
+        $winnerResolver = new ABTestWinnerResolver();
         $tests = AbTestRecord::find()->with('variants')->all();
         $formTitles = $this->getFormTitles($tests);
         $totals = $this->getTotalsByVariantIds($tests);
@@ -194,12 +212,26 @@ class AbTestsController extends BaseController
                 ];
             }
 
-            $winnerVariantId = $this->resolveWinnerVariantId($variantData);
+            $winnerVariantId = $winnerResolver->resolveWinnerVariantId(
+                array_reduce(
+                    $variantData,
+                    static function (array $carry, array $variant): array {
+                        $carry[(int) $variant['id']] = [
+                            'served' => (int) $variant['stats']['served'],
+                            'completed' => (int) $variant['stats']['completed'],
+                        ];
+
+                        return $carry;
+                    },
+                    []
+                )
+            );
             $isActive = $this->isActive($test, \count($variants) > 0);
 
             $result[] = [
                 'id' => (int) $test->id,
                 'name' => $test->name,
+                'handle' => $test->handle,
                 'description' => $test->description,
                 'startDate' => $this->formatDate($test->startDate),
                 'endDate' => $this->formatDate($test->endDate),
@@ -257,6 +289,7 @@ class AbTestsController extends BaseController
         return [
             'id' => (int) $test->id,
             'name' => $test->name,
+            'handle' => $test->handle,
             'description' => $test->description,
             'startDate' => $this->formatDate($test->startDate),
             'endDate' => $this->formatDate($test->endDate),
@@ -468,29 +501,6 @@ class AbTestsController extends BaseController
         }
 
         return $series;
-    }
-
-    private function resolveWinnerVariantId(array $variants): ?int
-    {
-        if (empty($variants)) {
-            return null;
-        }
-
-        usort($variants, static function (array $a, array $b): int {
-            $rateDiff = $b['stats']['conversionRate'] <=> $a['stats']['conversionRate'];
-            if (0 !== $rateDiff) {
-                return $rateDiff;
-            }
-
-            $completedDiff = $b['stats']['completed'] <=> $a['stats']['completed'];
-            if (0 !== $completedDiff) {
-                return $completedDiff;
-            }
-
-            return $a['id'] <=> $b['id'];
-        });
-
-        return $variants[0]['id'] ?? null;
     }
 
     private function isActive(AbTestRecord $test, bool $hasVariants): bool

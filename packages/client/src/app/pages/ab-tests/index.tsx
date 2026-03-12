@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
+import { FlexRow } from '@components/layout/blocks/flex';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
 import { useModal } from '@components/modals/modal.context';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
@@ -9,6 +10,7 @@ import translate from '@ff-client/utils/translations';
 import { ABTestCard } from './ab-tests.card';
 import { ABTestChart } from './ab-tests.chart';
 import { ABTestModal } from './ab-tests.modal';
+import { ABTestDeleteModal } from './ab-tests.modal.delete';
 import { toEditorPayload } from './ab-tests.operations';
 import { useAbTestsDashboard } from './ab-tests.queries';
 import {
@@ -101,13 +103,28 @@ export const AbTests: React.FC = () => {
                     </Meta>
                   </div>
 
-                  <button
-                    type="button"
-                    className="btn small"
-                    onClick={() => openEditor(test)}
-                  >
-                    {translate('Edit')}
-                  </button>
+                  <FlexRow>
+                    <button
+                      type="button"
+                      className="btn icon delete"
+                      onClick={() =>
+                        openModal(ABTestDeleteModal, {
+                          id: test.id,
+                          name: test.name,
+                        })
+                      }
+                    >
+                      {translate('Delete')}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn icon edit"
+                      onClick={() => openEditor(test)}
+                    >
+                      {translate('Edit')}
+                    </button>
+                  </FlexRow>
                 </CardHeader>
 
                 <ABTestChart

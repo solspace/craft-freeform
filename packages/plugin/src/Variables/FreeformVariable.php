@@ -123,12 +123,12 @@ class FreeformVariable
         );
     }
 
-    public function abTest(string $testName, ?array $renderProperties = null): ?Form
+    public function abTest(string $handle, ?array $renderProperties = null): ?Form
     {
         $provider = \Craft::$container->get(ABTestVariantProvider::class);
         $testingBundle = \Craft::$container->get(ABTestingBundle::class);
 
-        $variant = $provider->getVariant($testName);
+        $variant = $provider->getVariant($handle);
         if (!$variant) {
             return null;
         }

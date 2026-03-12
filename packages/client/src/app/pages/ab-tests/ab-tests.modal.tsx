@@ -16,6 +16,7 @@ import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
+import { generateABTestHandle } from './ab-tests.operations';
 import { useAbTestUpsertMutation } from './ab-tests.queries';
 import {
   DateRow,
@@ -32,6 +33,7 @@ type ModalData = {
 const getInitialState = (test?: ABTestWithVariants): ABTestWithVariants => ({
   id: test?.id,
   name: test?.name || '',
+  handle: test?.handle || '',
   description: test?.description || '',
   startDate: test?.startDate || null,
   endDate: test?.endDate || null,
@@ -46,6 +48,9 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
   const [state, setState] = useState<ABTestWithVariants>(
     getInitialState(initial)
   );
+  const [handleManuallyEdited, setHandleManuallyEdited] = useState<boolean>(
+    !!initial?.handle && initial.handle !== generateABTestHandle(initial.name)
+  );
   const { data: forms } = useQueryFormsWithStats();
   const mutation = useAbTestUpsertMutation(initial?.id);
 
@@ -56,6 +61,7 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
 
   const canSave =
     state.name.trim().length > 0 &&
+    state.handle?.trim().length > 0 &&
     state.variants.length > 0 &&
     state.variants.every((variant) => !!variant.formId);
 
@@ -72,13 +78,35 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
       <ModalBody>
         <String
           value={state.name}
-          updateValue={(value) =>
-            setState((prev) => ({ ...prev, name: value }))
-          }
+          updateValue={(value) => {
+            setState((prev) => ({
+              ...prev,
+              name: value,
+              handle: handleManuallyEdited
+                ? prev.handle
+                : generateABTestHandle(value),
+            }));
+          }}
           property={{
             type: PropertyType.String,
             handle: 'name',
             label: translate('Name'),
+          }}
+        />
+
+        <String
+          value={state.handle || ''}
+          updateValue={(value) => {
+            setHandleManuallyEdited(true);
+            setState((prev) => ({
+              ...prev,
+              handle: generateABTestHandle(value),
+            }));
+          }}
+          property={{
+            type: PropertyType.String,
+            handle: 'handle',
+            label: translate('Handle'),
           }}
         />
 

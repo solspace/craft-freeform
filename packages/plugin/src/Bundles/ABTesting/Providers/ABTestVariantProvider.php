@@ -9,13 +9,16 @@ use Solspace\Freeform\Records\AbTests\AbTestVariantRecord;
 
 class ABTestVariantProvider
 {
+    private const WINNER_CACHE_TTL = 300;
+
     public function __construct(
         private ABTestVariantPersistence $persistence,
+        private ABTestWinnerResolver $winnerResolver,
     ) {}
 
-    public function getVariant(string $testName): ?AbTestVariantRecord
+    public function getVariant(string $handle): ?AbTestVariantRecord
     {
-        $test = AbTestRecord::findOne(['name' => $testName]);
+        $test = AbTestRecord::findOne(['handle' => $handle]);
         if (!$test) {
             return null;
         }
@@ -78,6 +81,16 @@ class ABTestVariantProvider
             return null;
         }
 
+        $cacheKey = 'freeform:ab-test:winner:'.$test->id;
+        $cachedWinnerId = \Craft::$app->cache->get($cacheKey);
+        if (false !== $cachedWinnerId) {
+            foreach ($variants as $variant) {
+                if ((int) $variant->id === (int) $cachedWinnerId) {
+                    return $variant;
+                }
+            }
+        }
+
         $variantIds = array_map(static fn (AbTestVariantRecord $variant) => (int) $variant->id, $variants);
 
         $rows = (new Query())
@@ -122,32 +135,17 @@ class ABTestVariantProvider
             $scores[$variantId]['rate'] = $served > 0 ? $data['completed'] / $served : 0.0;
         }
 
-        $winnerId = null;
-        foreach ($variantIds as $variantId) {
-            if (null === $winnerId) {
-                $winnerId = $variantId;
+        $winnerId = $this->winnerResolver->resolveWinnerVariantId(
+            array_map(
+                static fn (array $item): array => [
+                    'served' => (int) $item['served'],
+                    'completed' => (int) $item['completed'],
+                ],
+                $scores
+            )
+        );
 
-                continue;
-            }
-
-            $current = $scores[$variantId];
-            $best = $scores[$winnerId];
-
-            if (
-                $current['rate'] > $best['rate']
-                || (
-                    $current['rate'] === $best['rate']
-                    && $current['completed'] > $best['completed']
-                )
-                || (
-                    $current['rate'] === $best['rate']
-                    && $current['completed'] === $best['completed']
-                    && $variantId < $winnerId
-                )
-            ) {
-                $winnerId = $variantId;
-            }
-        }
+        \Craft::$app->cache->set($cacheKey, $winnerId, self::WINNER_CACHE_TTL);
 
         foreach ($variants as $variant) {
             if ((int) $variant->id === $winnerId) {

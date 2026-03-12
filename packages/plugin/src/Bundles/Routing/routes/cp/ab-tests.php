@@ -27,6 +27,11 @@ return [
         'verb' => ['POST'],
     ]),
     new UrlRule([
+        'pattern' => 'freeform/api/ab-tests/<id:\d+>/delete',
+        'route' => 'freeform/ab-tests/delete',
+        'verb' => ['POST'],
+    ]),
+    new UrlRule([
         'pattern' => 'freeform/api/ab-tests/statistics',
         'route' => 'freeform/ab-tests/statistics',
         'verb' => ['GET'],

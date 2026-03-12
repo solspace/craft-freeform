@@ -31,4 +31,9 @@ return [
         'route' => 'freeform/ab-tests/statistics',
         'verb' => ['GET'],
     ]),
+    new UrlRule([
+        'pattern' => 'freeform/api/ab-tests/dashboard',
+        'route' => 'freeform/ab-tests/dashboard',
+        'verb' => ['GET'],
+    ]),
 ];

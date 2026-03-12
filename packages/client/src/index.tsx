@@ -19,8 +19,6 @@ import '../config';
 import './scripts';
 
 import { AbTests } from './app/pages/ab-tests';
-import { AbTestsEditor } from './app/pages/ab-tests/editor/editor';
-import { AbTestsEmptyView } from './app/pages/ab-tests/editor/editor.empty';
 import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
@@ -118,10 +116,7 @@ root.render(
                             />
                             <Route index element={<LimitedUsers />} />
                           </Route>
-                          <Route path="ab-tests" element={<AbTests />}>
-                            <Route index element={<AbTestsEmptyView />} />
-                            <Route path=":id" element={<AbTestsEditor />} />
-                          </Route>
+                          <Route path="ab-tests" element={<AbTests />} />
                         </Route>
                       </Routes>
                     </ModalProvider>

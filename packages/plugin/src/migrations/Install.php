@@ -467,8 +467,11 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_ab_tests'))
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string(255)->notNull())
+                ->addField('handle', $this->string(255)->notNull())
                 ->addField('description', $this->text())
-                ->addField('startDate', $this->dateTime()),
+                ->addField('startDate', $this->dateTime())
+                ->addField('endDate', $this->dateTime())
+                ->addIndex(['handle'], true, name: 'idx_ab_tests_handle'),
 
             (new Table('freeform_ab_tests_assignments'))
                 ->addField('id', $this->primaryKey())

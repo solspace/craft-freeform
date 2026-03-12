@@ -8,8 +8,10 @@ use yii\db\ActiveQuery;
 /**
  * @property int    $id
  * @property string $name
+ * @property string $handle
  * @property string $description
  * @property string $startDate
+ * @property string $endDate
  */
 class AbTestRecord extends ActiveRecord
 {
@@ -23,7 +25,7 @@ class AbTestRecord extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['name'], 'unique'],
+            [['handle'], 'unique'],
         ];
     }
 

@@ -6,13 +6,20 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class CustomNormalizer implements NormalizerInterface
 {
-    public function normalize($object, ?string $format = null, array $context = [])
+    public function normalize(mixed $data, ?string $format = null, array $context = []): array|\ArrayObject|bool|float|int|string|null
     {
-        return $object->normalize();
+        return $data->normalize();
     }
 
-    public function supportsNormalization($data, ?string $format = null): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof CustomNormalizerInterface;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            CustomNormalizerInterface::class => true,
+        ];
     }
 }

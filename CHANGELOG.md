@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.14.21 - 2026-03-11
+
+### Fixed
+- Fixed a `too many columns` error when viewing the **Orders** control panel index page in **Craft Commerce**.
+- Fixed compatibility issues with newer **Symfony Serializer** versions that could trigger errors related to deprecated serializer components and interfaces.
+- Fixed an issue where editing existing elements through the **Element Edit** feature did not always populate the form with all existing values.
+
 ## 5.14.20 - 2026-03-04
 
 ### Fixed

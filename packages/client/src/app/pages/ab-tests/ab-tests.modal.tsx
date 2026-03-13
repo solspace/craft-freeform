@@ -169,7 +169,7 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                   }));
                 }}
               >
-                <option value="">{translate('Select form')}</option>
+                <option value="">{translate('Select form...')}</option>
                 {formOptions.map((form) => (
                   <option key={form.id} value={form.id}>
                     {form.name}
@@ -232,13 +232,13 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
         <button type="button" className="btn submit" disabled={!canSave}>
           <LoadingText
             loading={mutation.isPending}
-            loadingText={translate('Saving')}
+            loadingText={translate('Saving...')}
             spinner
             onClick={() =>
               mutation.mutate(state, {
                 onSuccess: () => {
                   notifications.success(
-                    translate('A/B Test Group saved successfully')
+                    translate('A/B Test Group saved successfully.')
                   );
                   closeModal();
                 },

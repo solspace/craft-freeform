@@ -49,10 +49,6 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('submissions', Freeform::t('Submissions'), 'freeform/submissions');
         }
 
-        if ($canAccessAb && $freeform->isPro() && $freeform->settings->isAbTestsEnabled()) {
-            $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
-        }
-
         $isSpamFolderEnabled = $freeform->settings->isSpamFolderEnabled();
         if ($canAccessSubmissions && $isSpamFolderEnabled) {
             $spamCount = $freeform->spamSubmissions->getSubmissionCount(null, null, true) ?: null;
@@ -62,6 +58,10 @@ class NavigationBundle extends FeatureBundle
                 'freeform/spam',
                 extraOptions: ['badgeCount' => $spamCount],
             );
+        }
+
+        if ($canAccessAb && $freeform->isPro() && $freeform->settings->isAbTestsEnabled()) {
+            $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
         if ($canAccessNotifications) {

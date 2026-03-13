@@ -47,13 +47,13 @@ export const ABTestDeleteModal: React.FC<ModalContainerProps<ModalData>> = ({
         <button type="button" className="btn submit">
           <LoadingText
             loading={mutation.isPending}
-            loadingText={translate('Deleting')}
+            loadingText={translate('Deleting...')}
             spinner
             onClick={() =>
               mutation.mutate(data?.id, {
                 onSuccess: () => {
                   notifications.success(
-                    translate('A/B Test Group deleted successfully')
+                    translate('A/B Test Group deleted successfully.')
                   );
                   closeModal();
                 },

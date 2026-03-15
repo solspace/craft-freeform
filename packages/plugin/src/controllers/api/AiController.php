@@ -54,15 +54,35 @@ class AiController extends BaseApiController
         return $this->fetchSolspaceAiUsage($url);
     }
 
+    public function actionPlans(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
+        $integration = $this->getSolspaceAIIntegration();
+        if (!$integration) {
+            throw new NotFoundHttpException('Solspace AI is not enabled.');
+        }
+
+        $request = \Craft::$app->getRequest();
+        $currency = $request->getQueryParam('currency');
+        $locale = \Craft::$app->locale->id;
+
+        $params = ['locale' => $locale];
+        if (\is_string($currency) && \in_array(strtolower($currency), ['eur', 'usd'], true)) {
+            $params['currency'] = strtolower($currency);
+        }
+
+        $baseUrl = rtrim($integration->getApiBaseUrl(), '/');
+        $url = $baseUrl.'/freeform/plans?'.http_build_query($params);
+
+        return $this->fetchSolspaceAiUsage($url);
+    }
+
     public function actionSpendReport(?string $start_date = null, ?string $end_date = null): Response
     {
         return $this->actionUsage();
     }
 
-    /**
-     * Create a Stripe Checkout session for adding AI credit. Returns { "url": "<checkout_url>" }.
-     * Call server-side only; redirect the user to the returned URL to complete payment.
-     */
     public function actionCreateCheckoutSession(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
@@ -82,15 +102,11 @@ class AiController extends BaseApiController
         }
 
         $request = \Craft::$app->getRequest();
-        $successUrl = $request->getBodyParam('success_url') ?: $request->getQueryParam('success_url');
-        $cancelUrl = $request->getBodyParam('cancel_url') ?: $request->getQueryParam('cancel_url');
-        if (empty($successUrl) || empty($cancelUrl)) {
-            $body = $request->getIsPost() ? json_decode($request->getRawBody(), true) : null;
-            if (\is_array($body)) {
-                $successUrl = $successUrl ?: ($body['success_url'] ?? null);
-                $cancelUrl = $cancelUrl ?: ($body['cancel_url'] ?? null);
-            }
-        }
+        $rawBody = $request->getIsPost() ? json_decode($request->getRawBody(), true) : null;
+        $body = \is_array($rawBody) ? $rawBody : [];
+
+        $successUrl = $request->getBodyParam('success_url') ?: $request->getQueryParam('success_url') ?: ($body['success_url'] ?? null);
+        $cancelUrl = $request->getBodyParam('cancel_url') ?: $request->getQueryParam('cancel_url') ?: ($body['cancel_url'] ?? null);
         if (empty($successUrl) || empty($cancelUrl)) {
             $this->response->statusCode = 400;
 
@@ -111,14 +127,19 @@ class AiController extends BaseApiController
             $headers['Authorization'] = 'Bearer '.$apiKey;
         }
 
+        $payload = array_filter([
+            'license_key' => $licenseKey,
+            'success_url' => $successUrl,
+            'cancel_url' => $cancelUrl,
+            'plan' => $body['plan'] ?? null,
+            'bundle_key' => $body['bundle_key'] ?? null,
+            'currency' => $body['currency'] ?? null,
+        ], static function ($v): bool { return $v !== null && $v !== ''; });
+
         try {
             $client = new Client(['timeout' => 15]);
             $response = $client->post($url, [
-                'json' => [
-                    'license_key' => $licenseKey,
-                    'success_url' => $successUrl,
-                    'cancel_url' => $cancelUrl,
-                ],
+                'json' => $payload,
                 'headers' => $headers,
                 'http_errors' => false,
             ]);

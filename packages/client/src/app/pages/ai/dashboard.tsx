@@ -3,7 +3,6 @@ import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
-import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import { colors } from '@ff-client/styles/variables';
 import translate from '@ff-client/utils/translations';
 import axios from 'axios';
@@ -17,11 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 
-import {
-  createCheckoutSession,
-  isSolspaceAiUsageResponse,
-  useAiUsageQuery,
-} from './ai.queries';
+import { useAiUsageQuery } from './ai.queries';
 import {
   Card,
   CardLabel,
@@ -41,19 +36,7 @@ import {
   UsageChart,
 } from './dashboard.styles';
 
-function formatSpend(value: number): string {
-  if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
-  if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
-  if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
-  if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
-  if (value < 0.01 && value > 0) return `$${value.toFixed(6)}`;
-  return `$${value.toFixed(2)}`;
-}
-
 export const AiDashboard: React.FC = () => {
-  useSidebarSelect('freeform/ai');
-  const [addCreditLoading, setAddCreditLoading] = React.useState(false);
-
   const { data, isFetching, error, isError } = useAiUsageQuery();
   const isNotFound =
     isError && axios.isAxiosError(error) && error.response?.status === 404;
@@ -64,7 +47,8 @@ export const AiDashboard: React.FC = () => {
     return (
       <div>
         <Breadcrumb id="ai" label="AI" url="ai" />
-        <HeaderContainer>{translate('AI')}</HeaderContainer>
+        <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
+        <HeaderContainer>{translate('Dashboard')}</HeaderContainer>
         <DashboardWrapper>
           <EmptyState>
             <EmptyStateTitle>
@@ -90,7 +74,8 @@ export const AiDashboard: React.FC = () => {
     return (
       <div>
         <Breadcrumb id="ai" label="AI" url="ai" />
-        <HeaderContainer>{translate('AI')}</HeaderContainer>
+        <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
+        <HeaderContainer>{translate('Dashboard')}</HeaderContainer>
         <DashboardWrapper>
           <EmptyState>
             <EmptyStateTitle>
@@ -154,14 +139,14 @@ export const AiDashboard: React.FC = () => {
                 <BarChart
                   data={Array.from({ length: 6 }).map((_, idx) => ({
                     date: idx,
-                    spend: Math.random() * 0.005,
+                    credits: Math.floor(Math.random() * 20),
                   }))}
                 >
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="date" hide />
                   <YAxis hide />
                   <Bar
-                    dataKey="spend"
+                    dataKey="credits"
                     fill={colors.gray200}
                     radius={[4, 4, 0, 0]}
                     maxBarSize={40}
@@ -241,17 +226,8 @@ export const AiDashboard: React.FC = () => {
     );
   }
 
-  const summary = isSolspaceAiUsageResponse(data) ? data.summary : undefined;
-  const dailyMetrics = data?.daily_metrics ?? [];
-  const sortedMetrics = [...dailyMetrics].sort((a, b) =>
-    a.date.localeCompare(b.date)
-  );
-  const totalSpend =
-    summary?.total_spend ??
-    (sortedMetrics.length
-      ? sortedMetrics.reduce((acc, item) => acc + (item.spend ?? 0), 0)
-      : undefined);
-  const hasAnyData = totalSpend !== undefined || summary != null;
+  const summary = data ?? undefined;
+  const hasAnyData = summary != null;
 
   function formatDate(iso: string | null | undefined): string {
     if (!iso) return '—';
@@ -268,116 +244,120 @@ export const AiDashboard: React.FC = () => {
   return (
     <div>
       <Breadcrumb id="ai" label="AI" url="ai" />
+      <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
       <HeaderContainer
         extra={
-          (summary?.credit_remaining != null || summary?.max_budget != null) &&
-          summary !== undefined && (
-            <button
-              type="button"
-              className="btn submit"
-              disabled={addCreditLoading}
-              onClick={async () => {
-                setAddCreditLoading(true);
-                try {
-                  const currentUrl = window.location.href;
-                  const res = await createCheckoutSession(
-                    currentUrl,
-                    currentUrl
-                  );
-                  if (res?.url) {
-                    window.location.href = res.url;
-                  } else {
-                    setAddCreditLoading(false);
-                  }
-                } catch {
-                  setAddCreditLoading(false);
-                }
-              }}
-            >
-              {addCreditLoading
-                ? translate('Loading…')
-                : translate('Add credit')}
-            </button>
+          summary && (
+            <Link to="/ai/plans" className="btn submit">
+              {translate('Add credits')}
+            </Link>
           )
         }
       >
-        {translate('AI')}
+        {translate('Dashboard')}
       </HeaderContainer>
       <DashboardWrapper>
         <CardsGrid>
-          {totalSpend !== undefined && (
-            <Card>
-              <CardLabel>{translate('Total spend')}</CardLabel>
-              <CardValue>{formatSpend(totalSpend)}</CardValue>
-            </Card>
-          )}
-          {summary?.account_email && (
-            <Card>
-              <CardLabel>{translate('Account')}</CardLabel>
-              <CardValueSmall>{summary.account_email}</CardValueSmall>
-            </Card>
-          )}
-          {summary?.created_at != null && (
-            <Card>
-              <CardLabel>{translate('Created')}</CardLabel>
-              <CardValueSmall>{formatDate(summary.created_at)}</CardValueSmall>
-            </Card>
-          )}
           {summary && (
-            <Card>
-              <CardLabel>{translate('Budget')}</CardLabel>
-              <CardValueSmall>
-                {summary.budget_unlimited ||
-                summary.max_budget == null ||
-                summary.max_budget <= 0
-                  ? translate('Unlimited')
-                  : formatSpend(summary.max_budget)}
-              </CardValueSmall>
-            </Card>
-          )}
-          {summary?.credit_remaining != null && (
-            <Card>
-              <CardLabel>{translate('Credit remaining')}</CardLabel>
-              <CardValueSmall>
-                {formatSpend(summary.credit_remaining)}
-              </CardValueSmall>
-            </Card>
+            <>
+              <Card>
+                <CardLabel>{translate('Status')}</CardLabel>
+                <CardValueSmall>
+                  {summary.mode === 'trial' && translate('Free trial')}
+                  {summary.mode === 'plan' && translate('Active plan')}
+                  {summary.mode === 'blocked' &&
+                    translate('Usage limit reached')}
+                  {(!summary.mode || summary.mode === 'unknown') &&
+                    translate('Not configured')}
+                </CardValueSmall>
+              </Card>
+              {summary.trial_days_remaining != null &&
+                summary.mode === 'trial' && (
+                  <Card>
+                    <CardLabel>{translate('Trial')}</CardLabel>
+                    <CardValueSmall>
+                      {translate('{days} days left', {
+                        days: summary.trial_days_remaining,
+                      })}
+                    </CardValueSmall>
+                  </Card>
+                )}
+              {summary.plan_name && (
+                <Card>
+                  <CardLabel>{translate('Plan')}</CardLabel>
+                  <CardValueSmall>{summary.plan_name}</CardValueSmall>
+                </Card>
+              )}
+              {(summary.credits_remaining != null ||
+                summary.credits_total != null) && (
+                <Card>
+                  <CardLabel>{translate('Credits remaining')}</CardLabel>
+                  <CardValue>
+                    {summary.credits_remaining != null
+                      ? summary.credits_remaining.toLocaleString()
+                      : '—'}
+                    {summary.credits_total != null && (
+                      <CardValueSmall style={{ marginTop: '0.25rem' }}>
+                        {translate('of {total} total', {
+                          total: summary.credits_total.toLocaleString(),
+                        })}
+                      </CardValueSmall>
+                    )}
+                  </CardValue>
+                </Card>
+              )}
+              {summary.trial_percent_used != null &&
+                summary.mode === 'trial' &&
+                summary.credits_remaining == null &&
+                summary.credits_total == null && (
+                  <Card>
+                    <CardLabel>{translate('AI credits used')}</CardLabel>
+                    <CardValueSmall>
+                      {Math.round(summary.trial_percent_used)}%
+                    </CardValueSmall>
+                  </Card>
+                )}
+              {summary.created_at && (
+                <Card>
+                  <CardLabel>{translate('Started')}</CardLabel>
+                  <CardValueSmall>
+                    {formatDate(summary.created_at)}
+                  </CardValueSmall>
+                </Card>
+              )}
+            </>
           )}
         </CardsGrid>
 
-        {sortedMetrics.length > 0 && (
+        {summary?.daily_metrics && summary.daily_metrics.length > 0 && (
           <Section>
-            <SectionTitle>{translate('Daily spend')}</SectionTitle>
+            <SectionTitle>{translate('Requests (last 30 days)')}</SectionTitle>
             <UsageChart>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={sortedMetrics}>
+              <ResponsiveContainer width="100%" height={260}>
+                <BarChart data={summary.daily_metrics}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis
                     dataKey="date"
-                    tickFormatter={(value: string) =>
+                    tickFormatter={(value) =>
                       new Date(value).toLocaleDateString(undefined, {
                         month: 'short',
                         day: 'numeric',
                       })
                     }
                   />
-                  <YAxis
-                    tickFormatter={(value: number) =>
-                      `$${value.toFixed(3)}` as string
-                    }
-                  />
+                  <YAxis />
                   <RechartsTooltip
-                    formatter={(value: number) => formatSpend(value as number)}
-                    labelFormatter={(label: string) =>
-                      new Date(label).toLocaleDateString(undefined, {
-                        dateStyle: 'medium',
-                      })
-                    }
+                    formatter={(value: number, name: string) => {
+                      if (name === 'credits')
+                        return [value.toLocaleString(), translate('Credits')];
+                      if (name === 'api_requests')
+                        return [value.toString(), translate('Requests')];
+                      return [value.toString(), name];
+                    }}
                   />
                   <Bar
-                    dataKey="spend"
-                    fill={colors.blue500}
-                    stroke={colors.blue500}
+                    dataKey="credits"
+                    fill={colors.blue400}
                     radius={[4, 4, 0, 0]}
                     maxBarSize={40}
                   />
@@ -387,9 +367,9 @@ export const AiDashboard: React.FC = () => {
           </Section>
         )}
 
-        {sortedMetrics.length > 0 && (
+        {summary?.request_logs && summary.request_logs.length > 0 && (
           <Section>
-            <SectionTitle>{translate('Recent daily usage')}</SectionTitle>
+            <SectionTitle>{translate('Request log')}</SectionTitle>
             <MetricsTable>
               <MetricsTableHead>
                 <tr>
@@ -397,44 +377,36 @@ export const AiDashboard: React.FC = () => {
                     {translate('Date')}
                   </MetricsTableHeaderCell>
                   <MetricsTableHeaderCell>
-                    {translate('Spend')}
+                    {translate('Status')}
                   </MetricsTableHeaderCell>
                   <MetricsTableHeaderCell>
-                    {translate('Requests')}
+                    {translate('Credits')}
                   </MetricsTableHeaderCell>
                   <MetricsTableHeaderCell>
-                    {translate('Tokens (prompt / completion / total)')}
+                    {translate('Request ID')}
                   </MetricsTableHeaderCell>
                 </tr>
               </MetricsTableHead>
               <tbody>
-                {sortedMetrics.map((item) => (
-                  <MetricsTableRow key={item.date}>
+                {summary.request_logs.map((log, idx) => (
+                  <MetricsTableRow key={log.request_id ?? idx}>
                     <MetricsTableCell>
-                      {new Date(item.date).toLocaleDateString(undefined, {
-                        dateStyle: 'medium',
-                      })}
+                      {log.date ? formatDate(log.date) : translate('Unknown')}
                     </MetricsTableCell>
                     <MetricsTableCell>
-                      {formatSpend(item.spend)}
+                      {log.status === 'success'
+                        ? translate('Success')
+                        : log.status === 'failure'
+                          ? translate('Failed')
+                          : log.status || '—'}
                     </MetricsTableCell>
                     <MetricsTableCell>
-                      <span style={{ color: colors.success }}>
-                        {item.successful_requests.toLocaleString()}{' '}
-                        {translate('success')}
-                      </span>{' '}
-                      /{' '}
-                      <span style={{ color: colors.error }}>
-                        {item.failed_requests.toLocaleString()}{' '}
-                        {translate('failed')}
-                      </span>
-                      {' · '}
-                      {`${item.api_requests.toLocaleString()} ${translate('total')}`}
+                      {log.credits != null
+                        ? `${log.credits.toLocaleString()} ${translate('credits')}`
+                        : '—'}
                     </MetricsTableCell>
                     <MetricsTableCell>
-                      {item.prompt_tokens.toLocaleString()} /{' '}
-                      {item.completion_tokens.toLocaleString()} /{' '}
-                      {item.total_tokens.toLocaleString()}
+                      <code>{log.request_id}</code>
                     </MetricsTableCell>
                   </MetricsTableRow>
                 ))}
@@ -448,7 +420,7 @@ export const AiDashboard: React.FC = () => {
             <EmptyStateTitle>{translate('No usage data yet')}</EmptyStateTitle>
             <p>
               {translate(
-                'Usage and spend will appear here once you use Solspace AI.'
+                'Usage will appear here once you start using Solspace AI.'
               )}
             </p>
           </EmptyState>

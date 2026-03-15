@@ -48,6 +48,7 @@ return [
     // Solspace AI
     'freeform/api/ai/solspace-ai-status' => 'freeform/api/ai/solspace-ai-status',
     'freeform/api/ai/usage' => 'freeform/api/ai/usage',
+    'freeform/api/ai/plans' => 'freeform/api/ai/plans',
     'freeform/api/ai/spend-report' => 'freeform/api/ai/spend-report',
     'freeform/api/ai/create-checkout-session' => 'freeform/api/ai/create-checkout-session',
 

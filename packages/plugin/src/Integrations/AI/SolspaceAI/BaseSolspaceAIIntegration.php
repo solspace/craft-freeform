@@ -27,7 +27,7 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected string $apiBaseUrl = 'http://host.docker.internal:4000/v1';
+    protected string $apiBaseUrl = 'https://ai.solspace.net/v1';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]

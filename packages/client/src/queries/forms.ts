@@ -35,6 +35,8 @@ export const useQueryFormsWithStats = (): UseQueryResult<
           params: { site: current?.handle },
         })
         .then((res) => res.data),
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 };
 
@@ -92,4 +94,18 @@ export const useQueryFormUsage = (): UseQueryResult<FormUsage, AxiosError> => {
         .get(`/api/forms/${formId}/elements?site=${current.id}`)
         .then((res) => res.data),
   });
+};
+
+type FormColors = Record<number, string | null>;
+export const useQueryFormColors = (): FormColors => {
+  const { data: forms } = useQueryFormsWithStats();
+
+  const formColors =
+    forms?.reduce<FormColors>((carry, form) => {
+      carry[form.id] = form.settings?.general?.color || null;
+
+      return carry;
+    }, {}) || {};
+
+  return formColors;
 };

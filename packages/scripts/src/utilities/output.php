@@ -60,7 +60,7 @@ return [
   'Hidden' => 'Hidden',
   'Drag and drop any fields here to hide them.' => 'Drag and drop any fields here to hide them.',
   'Cancel' => 'Cancel',
-  'Saving' => 'Saving',
+  'Saving...' => 'Saving...',
   'Save' => 'Save',
   'Favorites' => 'Favorites',
   'Edit Favorites' => 'Edit Favorites',

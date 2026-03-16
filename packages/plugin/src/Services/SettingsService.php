@@ -217,6 +217,11 @@ class SettingsService extends BaseService
         return BooleanHelper::normalize($this->getSettingsModel()->sitesEnabled);
     }
 
+    public function isAbTestsEnabled(): bool
+    {
+        return BooleanHelper::normalize($this->getSettingsModel()->abTests);
+    }
+
     public function isFillWithGet(): bool
     {
         return BooleanHelper::normalize($this->getSettingsModel()->fillWithGet);

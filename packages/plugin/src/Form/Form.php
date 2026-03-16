@@ -402,6 +402,18 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         return $this->layout;
     }
 
+    public function getFieldErrors(): array
+    {
+        $fieldErrors = [];
+        foreach ($this->getLayout()->getFields() as $field) {
+            if ($field->hasErrors()) {
+                $fieldErrors[$field->getHandle()] = $field->getErrors();
+            }
+        }
+
+        return $fieldErrors;
+    }
+
     public function getErrors(): array
     {
         return $this->errors;

@@ -40,6 +40,7 @@ export type DropdownProps = {
   showHints?: boolean;
   showSelectedIcon?: boolean;
   onChange?: (value: string) => void;
+  className?: string;
 };
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -50,6 +51,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   showHints,
   showSelectedIcon,
   onChange,
+  className,
   loading = false,
 }) => {
   const [open, setOpen] = useState(false);
@@ -152,7 +154,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <DropdownWrapper
       ref={containerRef}
-      className={classes(open && "open")}
+      className={classes(open && 'open', className)}
       onClick={toggleOpen}
     >
       <CurrentValue

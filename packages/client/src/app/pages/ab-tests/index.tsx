@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
@@ -94,6 +94,26 @@ export const AbTests: React.FC = () => {
               status.at(0)?.toUpperCase() + status.slice(1) || ''
             );
 
+            const {
+              totalImpressions,
+              totalInteractions,
+              totalFailures,
+              totalConversions,
+            } = test;
+
+            const chunks = [
+              <Dot key="status" $status={status} />,
+              translate(statusLabel),
+              !isInFuture && translate('{days} days', { days: test.days }),
+              translate('{count} variants', { count: test.variantCount }),
+              translate('{count} impressions', { count: totalImpressions }),
+              translate('{count} interactions', { count: totalInteractions }),
+              translate('{failures} failures', { failures: totalFailures }),
+              translate('{conversions} conversions', {
+                conversions: totalConversions,
+              }),
+            ].filter(Boolean);
+
             return (
               <Card key={test.id}>
                 <CardHeader>
@@ -102,28 +122,9 @@ export const AbTests: React.FC = () => {
                     {!!test.description && <p>{test.description}</p>}
 
                     <Meta>
-                      <Dot $status={status} />
-                      <span>{translate(statusLabel)}</span>
-                      {!isInFuture && (
-                        <>
-                          <span>•</span>
-                          <span>
-                            {translate('{days} days', { days: test.days })}
-                          </span>
-                        </>
-                      )}
-                      <span>•</span>
-                      <span>
-                        {translate('{count} variants', {
-                          count: test.variantCount,
-                        })}
-                      </span>
-                      <span>•</span>
-                      <span>
-                        {translate('{count} impressions', {
-                          count: test.totalImpressions.toLocaleString(),
-                        })}
-                      </span>
+                      {chunks.map((chunk, idx) => (
+                        <span key={idx}>{chunk}</span>
+                      ))}
                     </Meta>
                   </div>
 

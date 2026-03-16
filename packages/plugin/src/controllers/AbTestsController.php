@@ -181,6 +181,9 @@ class AbTestsController extends BaseController
 
             $variantData = [];
             $totalImpressions = 0;
+            $totalInteractions = 0;
+            $totalFailures = 0;
+            $totalConversions = 0;
             foreach ($variants as $variant) {
                 $variantId = (int) $variant->id;
                 $stats = $totals[$variantId] ?? [
@@ -195,6 +198,9 @@ class AbTestsController extends BaseController
                     : 0.0;
 
                 $totalImpressions += $stats['served'];
+                $totalInteractions += $stats['interacted'];
+                $totalFailures += $stats['failed'];
+                $totalConversions += $stats['completed'];
 
                 $variantData[] = [
                     'id' => $variantId,
@@ -239,6 +245,9 @@ class AbTestsController extends BaseController
                 'days' => $this->calculateDays($test->startDate, $test->endDate),
                 'variantCount' => \count($variantData),
                 'totalImpressions' => $totalImpressions,
+                'totalInteractions' => $totalInteractions,
+                'totalFailures' => $totalFailures,
+                'totalConversions' => $totalConversions,
                 'winnerVariantId' => $winnerVariantId,
                 'variants' => $variantData,
             ];

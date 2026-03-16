@@ -68,6 +68,17 @@ export const Meta = styled.div`
   margin-top: 8px;
 
   color: ${colors.gray700};
+
+  > span {
+    &:nth-child(n + 3) {
+      &::before {
+        content: '•';
+        display: inline-block;
+        margin-right: ${spacings.sm};
+        color: ${colors.gray400};
+      }
+    }
+  }
 `;
 
 export const Dot = styled.span<{ $status?: ABStatus }>`

@@ -70,6 +70,9 @@ export type ABTestDashboardItem = {
   days: number;
   variantCount: number;
   totalImpressions: number;
+  totalInteractions: number;
+  totalFailures: number;
+  totalConversions: number;
   winnerVariantId: number | null;
   variants: ABTestDashboardVariant[];
 };

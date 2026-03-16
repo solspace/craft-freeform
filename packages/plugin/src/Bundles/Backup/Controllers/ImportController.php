@@ -19,6 +19,8 @@ use yii\web\Response;
 
 class ImportController extends BaseApiController
 {
+    private const QUERY_PARAM_SERVER_TOKEN = 'server-token';
+
     public function actionExpressForms(): Response
     {
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
@@ -135,10 +137,10 @@ class ImportController extends BaseApiController
     public function actionImport(): void
     {
         App::maxPowerCaptain();
-        $token = $this->request->get('token');
+        $serverToken = $this->request->get(self::QUERY_PARAM_SERVER_TOKEN);
 
         $sse = new SSE();
-        $config = \Craft::$app->cache->get("freeform-import-{$token}");
+        $config = \Craft::$app->cache->get("freeform-import-{$serverToken}");
 
         if (!$config) {
             $sse->message('err', 'Invalid or Expired token');

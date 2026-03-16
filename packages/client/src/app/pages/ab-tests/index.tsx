@@ -33,6 +33,7 @@ import type {
 
 export const AbTests: React.FC = () => {
   useSidebarSelect('ab-tests');
+
   const { openModal } = useModal();
   const [searchParams] = useSearchParams();
   const { data } = useAbTestsDashboard();

@@ -94,7 +94,7 @@ export const ImportFreeformData: React.FC = () => {
       },
     });
 
-    const url = generateUrl(`/api/import?token=${data.token}`);
+    const url = generateUrl(`/api/import?server-token=${data.token}`);
     progressEvent.triggerProgress(url);
   };
 

@@ -237,7 +237,7 @@ export const AiDashboard: React.FC = () => {
         ? iso
         : d.toLocaleDateString(undefined, { dateStyle: 'medium' });
     } catch {
-      return iso ?? '—';
+      return iso;
     }
   }
 

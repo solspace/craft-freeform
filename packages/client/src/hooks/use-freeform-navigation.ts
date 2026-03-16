@@ -64,21 +64,21 @@ export const useFreeformNavigation = (): void => {
   }, [navigate]);
 
   useEffect(() => {
-    const link = findLink('/freeform/ab-tests');
+    const link = findLink("/freeform/ab-tests");
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
-      navigate('/ab-tests');
+      navigate("/ab-tests");
 
       return false;
     };
 
     if (link) {
-      link.addEventListener('click', onClick);
+      link.addEventListener("click", onClick);
     }
 
     return () => {
       if (link) {
-        link.removeEventListener('click', onClick);
+        link.removeEventListener("click", onClick);
       }
     };
   }, [navigate]);

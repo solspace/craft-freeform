@@ -1,19 +1,20 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { HeaderContainer } from '@components/layout/blocks/header-container';
-import { useModal } from '@components/modals/modal.context';
-import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
-import translate from '@ff-client/utils/translations';
-import { isFuture, isPast } from 'date-fns';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { HeaderContainer } from "@components/layout/blocks/header-container";
+import { useModal } from "@components/modals/modal.context";
+import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
+import translate from "@ff-client/utils/translations";
+import { isFuture, isPast } from "date-fns";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
-import { ABTestActions } from './ab-tests.actions';
-import { ABTestCard } from './ab-tests.card';
-import { ABTestChart } from './ab-tests.chart';
-import { ABTestModal } from './ab-tests.modal';
-import { ABTestDeleteModal } from './ab-tests.modal.delete';
-import { toEditorPayload } from './ab-tests.operations';
-import { useAbTestsDashboard } from './ab-tests.queries';
+import { ABTestActions } from "./ab-tests.actions";
+import { ABTestCard } from "./ab-tests.card";
+import { ABTestChart } from "./ab-tests.chart";
+import { ABTestModal } from "./ab-tests.modal";
+import { ABTestDeleteModal } from "./ab-tests.modal.delete";
+import { toEditorPayload } from "./ab-tests.operations";
+import { useAbTestsDashboard } from "./ab-tests.queries";
 import {
   Card,
   CardHeader,
@@ -24,15 +25,15 @@ import {
   Meta,
   PageWrapper,
   Variants,
-} from './ab-tests.styles';
+} from "./ab-tests.styles";
 import type {
   ABStatus,
   ABTestDashboardItem,
   MetricTab,
-} from './ab-tests.types';
+} from "./ab-tests.types";
 
 export const AbTests: React.FC = () => {
-  useSidebarSelect('ab-tests');
+  useSidebarSelect("ab-tests");
 
   const { openModal } = useModal();
   const [searchParams] = useSearchParams();
@@ -41,12 +42,15 @@ export const AbTests: React.FC = () => {
   const [tabState, setTabState] = useState<Record<number, MetricTab>>({});
   const autoOpenRef = useRef<string | null>(null);
 
-  const openEditor = (test?: ABTestDashboardItem): void => {
-    openModal(ABTestModal, test ? { test: toEditorPayload(test) } : {});
-  };
+  const openEditor = useCallback(
+    (test?: ABTestDashboardItem): void => {
+      openModal(ABTestModal, test ? { test: toEditorPayload(test) } : {});
+    },
+    [openModal],
+  );
 
   useEffect(() => {
-    const editId = searchParams.get('edit');
+    const editId = searchParams.get("edit");
     if (!editId || !data || autoOpenRef.current === editId) {
       return;
     }
@@ -58,40 +62,44 @@ export const AbTests: React.FC = () => {
 
     autoOpenRef.current = editId;
     openEditor(test);
-  }, [searchParams, data]);
+  }, [searchParams, data, openEditor]);
 
   return (
     <>
       <Breadcrumb id="ab-tests-list" label="A/B Tests" url="/ab-tests" />
       <HeaderRow>
-        <HeaderContainer>{translate('A/B Tests')}</HeaderContainer>
-        <button className="btn submit add icon" onClick={() => openEditor()}>
-          {translate('Add Test')}
+        <HeaderContainer>{translate("A/B Tests")}</HeaderContainer>
+        <button
+          type="button"
+          className="btn submit add icon"
+          onClick={() => openEditor()}
+        >
+          {translate("Add Test")}
         </button>
       </HeaderRow>
 
       <PageWrapper>
         {!data?.length && (
           <EmptyState>
-            {translate('No A/B Tests found. Create your first test.')}
+            {translate("No A/B Tests found. Create your first test.")}
           </EmptyState>
         )}
 
         <Cards>
           {data?.map((test) => {
-            const activeTab = tabState[test.id] || 'conversionRate';
+            const activeTab = tabState[test.id] || "conversionRate";
             const isInFuture = test.startDate && isFuture(test.startDate);
             const isInPast = test.endDate && isPast(test.endDate);
 
-            let status: ABStatus = 'active';
+            let status: ABStatus = "active";
             if (isInFuture) {
-              status = 'scheduled';
+              status = "scheduled";
             } else if (isInPast) {
-              status = 'ended';
+              status = "ended";
             }
 
             const statusLabel = translate(
-              status.at(0)?.toUpperCase() + status.slice(1) || ''
+              status.at(0)?.toUpperCase() + status.slice(1) || "",
             );
 
             const {
@@ -104,12 +112,12 @@ export const AbTests: React.FC = () => {
             const chunks = [
               <Dot key="status" $status={status} />,
               translate(statusLabel),
-              !isInFuture && translate('{days} days', { days: test.days }),
-              translate('{count} variants', { count: test.variantCount }),
-              translate('{count} impressions', { count: totalImpressions }),
-              translate('{count} interactions', { count: totalInteractions }),
-              translate('{failures} failures', { failures: totalFailures }),
-              translate('{conversions} conversions', {
+              !isInFuture && translate("{days} days", { days: test.days }),
+              translate("{count} variants", { count: test.variantCount }),
+              translate("{count} impressions", { count: totalImpressions }),
+              translate("{count} interactions", { count: totalInteractions }),
+              translate("{failures} failures", { failures: totalFailures }),
+              translate("{conversions} conversions", {
                 conversions: totalConversions,
               }),
             ].filter(Boolean);

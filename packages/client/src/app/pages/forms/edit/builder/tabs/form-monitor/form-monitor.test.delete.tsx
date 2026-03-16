@@ -128,7 +128,7 @@ export const DeleteTestModal: React.FC<Props> = ({
           >
             <LoadingText
               loadingText={translate(
-                isBulkDelete ? 'Clearing...' : 'Deleting...'
+                isBulkDelete ? "Clearing..." : "Deleting...",
               )}
               loading={isLoading}
               spinner

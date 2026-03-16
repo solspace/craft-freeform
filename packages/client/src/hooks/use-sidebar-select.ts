@@ -2,16 +2,16 @@ import { useEffect } from "react";
 
 const setSelected = (element: HTMLLIElement, selected: boolean): void => {
   const child = <HTMLDivElement>element.children[0];
-  const sidebar = element.querySelector('.sidebar-action--sub');
+  const sidebar = element.querySelector(".sidebar-action--sub");
 
   if (selected) {
-    child.classList.add('sel');
-    sidebar?.classList.add('sel');
-    sidebar?.setAttribute('aria-current', 'page');
+    child.classList.add("sel");
+    sidebar?.classList.add("sel");
+    sidebar?.setAttribute("aria-current", "page");
   } else {
-    child.classList.remove('sel');
-    sidebar?.classList.remove('sel');
-    sidebar?.removeAttribute('aria-current');
+    child.classList.remove("sel");
+    sidebar?.classList.remove("sel");
+    sidebar?.removeAttribute("aria-current");
   }
 };
 

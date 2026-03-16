@@ -139,7 +139,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
         </button>
         <button type="button" className="btn submit" onClick={handleSave}>
           <LoadingText
-            loadingText={translate('Saving...')}
+            loadingText={translate("Saving...")}
             loading={isSaving}
             spinner
           >

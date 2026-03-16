@@ -3,10 +3,10 @@ import {
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import type { ABStatus } from './ab-tests.types';
+import type { ABStatus } from "./ab-tests.types";
 
 export const PageWrapper = styled.div`
   display: flex;
@@ -89,9 +89,9 @@ export const Dot = styled.span<{ $status?: ABStatus }>`
   border-radius: 50%;
   background: ${({ $status }) => {
     switch ($status) {
-      case 'active':
+      case "active":
         return colors.green600;
-      case 'scheduled':
+      case "scheduled":
         return colors.yellow500;
       default:
         return colors.gray400;

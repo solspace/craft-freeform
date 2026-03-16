@@ -154,7 +154,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <DropdownWrapper
       ref={containerRef}
-      className={classes(open && 'open', className)}
+      className={classes(open && "open", className)}
       onClick={toggleOpen}
     >
       <CurrentValue

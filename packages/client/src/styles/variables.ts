@@ -21,14 +21,14 @@ export const borderRadius = {
 };
 
 export const shadows = {
-  panel: '0 0 20px 10px rgb(205 216 228 / 50%)',
-  box: '0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%)',
-  boxSubtle: '0 2px 8px rgba(0, 0, 0, 0.1)',
-  bottom: 'inset 0 -1px 0 0 rgb(154 165 177 / 25%)',
-  top: 'inset 0 1px 0 0 rgb(154 165 177 / 25%)',
-  left: 'inset 1px 0 0 0 rgb(154 165 177 / 25%)',
-  right: 'inset -1px 0 0 0 rgb(154 165 177 / 25%)',
-  autosuggest: '0 1px 5px -1px rgba(31,41,51,.2)',
+  panel: "0 0 20px 10px rgb(205 216 228 / 50%)",
+  box: "0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%)",
+  boxSubtle: "0 2px 8px rgba(0, 0, 0, 0.1)",
+  bottom: "inset 0 -1px 0 0 rgb(154 165 177 / 25%)",
+  top: "inset 0 1px 0 0 rgb(154 165 177 / 25%)",
+  left: "inset 1px 0 0 0 rgb(154 165 177 / 25%)",
+  right: "inset -1px 0 0 0 rgb(154 165 177 / 25%)",
+  autosuggest: "0 1px 5px -1px rgba(31,41,51,.2)",
   container:
     "0 0 0 1px rgba(31, 41, 51, 0.1), 0 5px 20px rgba(31, 41, 51, 0.25)",
 };

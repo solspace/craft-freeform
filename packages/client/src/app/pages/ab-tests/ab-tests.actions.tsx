@@ -1,8 +1,8 @@
-import React from 'react';
-import { ActionMenu } from '@components/action-menu/action-menu';
-import translate from '@ff-client/utils/translations';
-import EditIcon from '@ff-icons/actions/pencil.svg';
-import TrashIcon from '@ff-icons/actions/trash-can.svg';
+import { ActionMenu } from "@components/action-menu/action-menu";
+import translate from "@ff-client/utils/translations";
+import EditIcon from "@ff-icons/actions/pencil.svg";
+import TrashIcon from "@ff-icons/actions/trash-can.svg";
+import type React from "react";
 
 type Props = {
   onDelete: () => void;
@@ -14,13 +14,13 @@ export const ABTestActions: React.FC<Props> = ({ onDelete, onEdit }) => (
     choices={[
       {
         icon: <EditIcon />,
-        label: translate('Edit'),
+        label: translate("Edit"),
         onClick: onEdit,
       },
       {
         destructive: true,
         icon: <TrashIcon />,
-        label: translate('Delete'),
+        label: translate("Delete"),
         onClick: onDelete,
       },
     ]}

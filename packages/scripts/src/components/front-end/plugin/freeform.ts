@@ -1,26 +1,40 @@
-import events from '@lib/plugin/constants/event-types';
-import { SuccessBehavior } from '@lib/plugin/constants/form';
-import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
-import CardsHandler from '@lib/plugin/handlers/fields/cards';
-import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
-import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
-import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
-import RatingHandler from '@lib/plugin/handlers/fields/rating';
-import SignatureHandler from '@lib/plugin/handlers/fields/signature';
-import TableHandler from '@lib/plugin/handlers/fields/table';
-import AbTestHandler from '@lib/plugin/handlers/form/ab-test';
-import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
-import IdempotencyHandler from '@lib/plugin/handlers/form/idempotency';
-import RuleHandler from '@lib/plugin/handlers/form/rules';
-import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
-import { ajax } from '@lib/plugin/helpers/ajax';
-import { isSafari } from '@lib/plugin/helpers/browser-check';
-import { getClassQuery } from '@lib/plugin/helpers/classes';
-import { fetchCsrf } from '@lib/plugin/helpers/csrf';
-import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { Callback, FreeformEvent, FreeformResponseWithToken } from 'types/events';
-import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
+import events from "@lib/plugin/constants/event-types";
+import { SuccessBehavior } from "@lib/plugin/constants/form";
+import BackButtonHandler from "@lib/plugin/handlers/fields/back-button";
+import CardsHandler from "@lib/plugin/handlers/fields/cards";
+import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
+import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
+import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
+import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SignatureHandler from "@lib/plugin/handlers/fields/signature";
+import TableHandler from "@lib/plugin/handlers/fields/table";
+import AbTestHandler from "@lib/plugin/handlers/form/ab-test";
+import GoogleTagManager from "@lib/plugin/handlers/form/google-tag-manager";
+import IdempotencyHandler from "@lib/plugin/handlers/form/idempotency";
+import RuleHandler from "@lib/plugin/handlers/form/rules";
+import SaveFormHandler from "@lib/plugin/handlers/form/save-form";
+import { ajax } from "@lib/plugin/helpers/ajax";
+import { isSafari } from "@lib/plugin/helpers/browser-check";
+import { getClassQuery } from "@lib/plugin/helpers/classes";
+import { fetchCsrf } from "@lib/plugin/helpers/csrf";
+import {
+  addClass,
+  getClassArray,
+  removeClass,
+  removeElement,
+} from "@lib/plugin/helpers/elements";
+import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
+import type {
+  Callback,
+  FreeformEvent,
+  FreeformResponseWithToken,
+} from "types/events";
+import type {
+  FreeformEventParameters,
+  FreeformHandler,
+  FreeformHandlerConstructor,
+  FreeformOptions,
+} from "types/form";
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = "form_previous_page_button";

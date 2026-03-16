@@ -3,6 +3,7 @@ import React from 'react';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import CheckIcon from '@ff-icons/actions/checkmark.svg';
+import { isPast } from 'date-fns';
 
 import { formatRate, lineColors } from './ab-tests.operations';
 import {
@@ -26,13 +27,14 @@ type Props = {
 
 export const ABTestCard: FC<Props> = ({ variant, test }) => {
   const isWinner = variant.id === test.winnerVariantId;
+  const isInPast = test.endDate && isPast(test.endDate);
 
   return (
     <VariantCardWrapper key={variant.id}>
       {isWinner && (
         <Winner>
           <div>
-            <CheckIcon /> {translate('Winning')}
+            <CheckIcon /> {translate(isInPast ? 'Winner' : 'Winning')}
           </div>
         </Winner>
       )}

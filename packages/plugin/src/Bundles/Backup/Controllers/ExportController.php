@@ -15,6 +15,8 @@ use yii\web\Response;
 
 class ExportController extends BaseApiController
 {
+    private const QUERY_PARAM_SERVER_TOKEN = 'server-token';
+
     private array $unlinkFiles = [];
 
     public function actionFreeform(): Response
@@ -48,8 +50,8 @@ class ExportController extends BaseApiController
 
     public function actionDownload(): Response
     {
-        $token = $this->request->get('token');
-        $file = \Craft::$app->cache->get("freeform-export-file-{$token}");
+        $serverToken = $this->request->get(self::QUERY_PARAM_SERVER_TOKEN);
+        $file = \Craft::$app->cache->get("freeform-export-file-{$serverToken}");
 
         if (!$file) {
             throw new NotFoundHttpException('Invalid token');
@@ -82,8 +84,8 @@ class ExportController extends BaseApiController
         $sse = new SSE();
         $serializer = $this->getSerializer();
 
-        $token = $this->request->get('token');
-        $post = \Craft::$app->cache->get("freeform-export-{$token}");
+        $serverToken = $this->request->get(self::QUERY_PARAM_SERVER_TOKEN);
+        $post = \Craft::$app->cache->get("freeform-export-{$serverToken}");
         if (!$post) {
             $sse->message('err', json_encode(['Invalid token']));
             $sse->message('exit', 'error');

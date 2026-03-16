@@ -31,8 +31,8 @@ export const ExportFreeform: React.FC = () => {
   const { data, isFetching } = useFormsDataQuery();
   const { mutate, isPending } = useFormsExportMutation({
     onSuccess: (res) => {
-      const token = res.data.token;
-      triggerProgress(generateUrl(`/api/export?token=${token}`));
+      const serverToken = res.data.token;
+      triggerProgress(generateUrl(`/api/export?server-token=${serverToken}`));
     },
   });
 
@@ -41,8 +41,10 @@ export const ExportFreeform: React.FC = () => {
 
   useEffect(() => {
     attachListener('file-token', async (event) => {
-      const token = event.data;
-      const url = generateUrl(`/api/export/download?token=${token}`);
+      const serverToken = event.data;
+      const url = generateUrl(
+        `/api/export/download?server-token=${serverToken}`
+      );
 
       const res = await axios.get(url, { responseType: 'blob' });
 

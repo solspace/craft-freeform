@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.14.22 - 2026-03-16
+
+### Fixed
+- Fixed an issue where exporting form data could error due to a `token` name collision.
+
 ## 5.14.21 - 2026-03-11
 
 ### Fixed

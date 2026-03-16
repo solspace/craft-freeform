@@ -6,6 +6,8 @@ import {
 } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+import type { ABStatus } from './ab-tests.types';
+
 export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -68,13 +70,22 @@ export const Meta = styled.div`
   color: ${colors.gray700};
 `;
 
-export const Dot = styled.span<{ $active?: boolean }>`
+export const Dot = styled.span<{ $status?: ABStatus }>`
   display: inline-block;
   width: 10px;
   height: 10px;
 
   border-radius: 50%;
-  background: ${({ $active }) => ($active ? colors.green600 : colors.gray400)};
+  background: ${({ $status }) => {
+    switch ($status) {
+      case 'active':
+        return colors.green600;
+      case 'scheduled':
+        return colors.yellow500;
+      default:
+        return colors.gray400;
+    }
+  }};
 `;
 
 export const ChartArea = styled.div`

@@ -4,6 +4,8 @@ export type MetricTab =
   | 'interactions'
   | 'failures';
 
+export type ABStatus = 'active' | 'scheduled' | 'ended';
+
 export type ABTest = {
   id: number;
   name: string;

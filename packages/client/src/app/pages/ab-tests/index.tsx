@@ -6,6 +6,7 @@ import { HeaderContainer } from '@components/layout/blocks/header-container';
 import { useModal } from '@components/modals/modal.context';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import translate from '@ff-client/utils/translations';
+import { isFuture, isPast } from 'date-fns';
 
 import { ABTestCard } from './ab-tests.card';
 import { ABTestChart } from './ab-tests.chart';
@@ -24,7 +25,11 @@ import {
   PageWrapper,
   Variants,
 } from './ab-tests.styles';
-import type { ABTestDashboardItem, MetricTab } from './ab-tests.types';
+import type {
+  ABStatus,
+  ABTestDashboardItem,
+  MetricTab,
+} from './ab-tests.types';
 
 export const AbTests: React.FC = () => {
   useSidebarSelect('ab-tests');
@@ -73,6 +78,19 @@ export const AbTests: React.FC = () => {
         <Cards>
           {data?.map((test) => {
             const activeTab = tabState[test.id] || 'conversionRate';
+            const isInFuture = test.startDate && isFuture(test.startDate);
+            const isInPast = test.endDate && isPast(test.endDate);
+
+            let status: ABStatus = 'active';
+            if (isInFuture) {
+              status = 'scheduled';
+            } else if (isInPast) {
+              status = 'ended';
+            }
+
+            const statusLabel = translate(
+              status.at(0)?.toUpperCase() + status.slice(1) || ''
+            );
 
             return (
               <Card key={test.id}>
@@ -82,12 +100,16 @@ export const AbTests: React.FC = () => {
                     {!!test.description && <p>{test.description}</p>}
 
                     <Meta>
-                      <Dot $active={test.active} />
-                      <span>{translate(test.active ? 'Active' : 'Ended')}</span>
-                      <span>•</span>
-                      <span>
-                        {translate('{days} days', { days: test.days })}
-                      </span>
+                      <Dot $status={status} />
+                      <span>{translate(statusLabel)}</span>
+                      {!isInFuture && (
+                        <>
+                          <span>•</span>
+                          <span>
+                            {translate('{days} days', { days: test.days })}
+                          </span>
+                        </>
+                      )}
                       <span>•</span>
                       <span>
                         {translate('{count} variants', {

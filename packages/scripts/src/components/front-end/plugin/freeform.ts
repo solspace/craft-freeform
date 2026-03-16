@@ -8,6 +8,7 @@ import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import RatingHandler from '@lib/plugin/handlers/fields/rating';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import TableHandler from '@lib/plugin/handlers/fields/table';
+import AbTestHandler from '@lib/plugin/handlers/form/ab-test';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import IdempotencyHandler from '@lib/plugin/handlers/form/idempotency';
 import RuleHandler from '@lib/plugin/handlers/form/rules';
@@ -60,6 +61,7 @@ export default class Freeform {
   _initializedHandlers: FreeformHandler[] = [];
   _handlers: FreeformHandlerConstructor[] = [
     IdempotencyHandler,
+    AbTestHandler,
     BackButtonHandler,
     RuleHandler,
     DatePickerHandler,

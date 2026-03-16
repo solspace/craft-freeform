@@ -3,25 +3,19 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 
-class PrepareAjaxResponsePayloadEvent extends ArrayableEvent
+class PrepareAjaxResponsePayloadEvent extends ArrayableEvent implements FormEventInterface
 {
-    /** @var Form */
-    private $form;
-
-    /** @var array */
-    private $payload;
-
-    public function __construct(Form $form, array $payload = [])
-    {
-        $this->form = $form;
-        $this->payload = $payload;
-
+    public function __construct(
+        private Form $form,
+        private array $payload = []
+    ) {
         parent::__construct([]);
     }
 
-    public function fields()
+    public function fields(): array
     {
         return ['form', 'payload'];
     }

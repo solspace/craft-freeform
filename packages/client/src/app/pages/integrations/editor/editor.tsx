@@ -243,7 +243,7 @@ export const IntegrationsEditor: FC = () => {
             >
               <LoadingText
                 loading={isMutating}
-                loadingText={translate('Saving')}
+                loadingText={translate('Saving...')}
                 spinner
               >
                 {translate('Save')}

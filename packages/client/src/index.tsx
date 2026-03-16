@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 import './scripts';
 
+import { AbTests } from './app/pages/ab-tests';
 import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
@@ -115,6 +116,7 @@ root.render(
                             />
                             <Route index element={<LimitedUsers />} />
                           </Route>
+                          <Route path="ab-tests" element={<AbTests />} />
                         </Route>
                       </Routes>
                     </ModalProvider>

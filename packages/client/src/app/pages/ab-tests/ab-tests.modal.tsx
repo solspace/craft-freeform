@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { RemoveButton } from '@components/elements/remove-button/remove';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { Control } from '@components/form-controls/control';
 import DatePickerControl from '@components/form-controls/control-types/date-picker/date-picker';
 import String from '@components/form-controls/control-types/string/string';
 import Textarea from '@components/form-controls/control-types/textarea/textarea';
@@ -18,12 +19,7 @@ import { v4 } from 'uuid';
 
 import { generateABTestHandle } from './ab-tests.operations';
 import { useAbTestUpsertMutation } from './ab-tests.queries';
-import {
-  DateRow,
-  ModalBody,
-  VariantEditor,
-  VariantEditorList,
-} from './ab-tests.styles';
+import { DateRow, ModalBody } from './ab-tests.styles';
 import type { ABTestWithVariants } from './ab-tests.types';
 
 type ModalData = {
@@ -153,76 +149,92 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
           />
         </DateRow>
 
-        <VariantEditorList>
-          {state.variants.map((variant, index) => (
-            <VariantEditor key={variant.id || index}>
-              <select
-                className="text fullwidth"
-                value={variant.formId || ''}
-                onChange={(event) => {
-                  const formId = Number(event.target.value);
-                  setState((prev) => ({
-                    ...prev,
-                    variants: prev.variants.map((item, itemIndex) =>
-                      itemIndex === index ? { ...item, formId } : item
-                    ),
-                  }));
-                }}
-              >
-                <option value="">{translate('Select form...')}</option>
-                {formOptions.map((form) => (
-                  <option key={form.id} value={form.id}>
-                    {form.name}
-                  </option>
+        <Control label="Variants">
+          <div>
+            <table className="table editable fullwidth">
+              <thead>
+                <tr>
+                  <th>{translate('Form')}</th>
+                  <th>{translate('Weight')}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {state.variants.map((variant, index) => (
+                  <tr key={variant.id || index}>
+                    <td>
+                      <Dropdown
+                        emptyOption="Select form..."
+                        value={variant.formId?.toString() || ''}
+                        onChange={(value) => {
+                          const formId = Number(value);
+                          setState((prev) => ({
+                            ...prev,
+                            variants: prev.variants.map((item, itemIndex) =>
+                              itemIndex === index ? { ...item, formId } : item
+                            ),
+                          }));
+                        }}
+                        options={formOptions.map((form) => ({
+                          label: form.name,
+                          value: form.id.toString(),
+                        }))}
+                      />
+                    </td>
+                    <td className="singleline-cell textual thin weight">
+                      <input
+                        className="text fullwidth"
+                        type="number"
+                        min={0}
+                        value={variant.weight}
+                        onChange={(event) => {
+                          const weight = Number(event.target.value);
+                          setState((prev) => ({
+                            ...prev,
+                            variants: prev.variants.map((item, itemIndex) =>
+                              itemIndex === index ? { ...item, weight } : item
+                            ),
+                          }));
+                        }}
+                      />
+                    </td>
+                    <td className="thin action">
+                      <button
+                        type="button"
+                        title={translate('Delete')}
+                        className="delete icon"
+                        onClick={() =>
+                          setState((prev) => ({
+                            ...prev,
+                            variants: prev.variants.filter(
+                              (_, idx) => idx !== index
+                            ),
+                          }))
+                        }
+                      />
+                    </td>
+                  </tr>
                 ))}
-              </select>
+              </tbody>
+            </table>
 
-              <input
-                className="text fullwidth"
-                type="number"
-                min={0}
-                max={100}
-                value={variant.weight}
-                onChange={(event) => {
-                  const weight = Number(event.target.value);
-                  setState((prev) => ({
-                    ...prev,
-                    variants: prev.variants.map((item, itemIndex) =>
-                      itemIndex === index ? { ...item, weight } : item
-                    ),
-                  }));
-                }}
-              />
-
-              <RemoveButton
-                active
-                type="button"
-                onClick={() =>
-                  setState((prev) => ({
-                    ...prev,
-                    variants: prev.variants.filter((_, idx) => idx !== index),
-                  }))
-                }
-              />
-            </VariantEditor>
-          ))}
-        </VariantEditorList>
-
-        <button
-          type="button"
-          className="btn add icon dashed"
-          onClick={() =>
-            setState((prev) => ({
-              ...prev,
-              variants: [
-                ...prev.variants,
-                { id: v4(), formId: undefined, weight: 50 },
-              ],
-            }))
-          }
-        >
-          {translate('Add Variant')}
-        </button>
+            <button
+              type="button"
+              className="btn dashed add icon"
+              onClick={() =>
+                setState((prev) => ({
+                  ...prev,
+                  variants: [
+                    ...prev.variants,
+                    { id: v4(), formId: undefined, weight: 50 },
+                  ],
+                }))
+              }
+            >
+              {translate('Add Variant')}
+            </button>
+          </div>
+        </Control>
       </ModalBody>
 
       <ModalFooter>

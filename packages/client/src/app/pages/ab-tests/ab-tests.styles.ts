@@ -245,6 +245,10 @@ export const ModalBody = styled.div`
   padding: ${spacings.lg} ${spacings.xl};
 
   overflow: auto;
+
+  td.weight {
+    vertical-align: middle;
+  }
 `;
 
 export const DateRow = styled.div`

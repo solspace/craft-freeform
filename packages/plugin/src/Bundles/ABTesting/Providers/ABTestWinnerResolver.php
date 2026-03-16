@@ -13,6 +13,16 @@ class ABTestWinnerResolver
             return null;
         }
 
+        $anyScore = max(
+            0,
+            array_sum(array_column($scoresByVariantId, 'served')),
+            array_sum(array_column($scoresByVariantId, 'completed'))
+        );
+
+        if (0 === $anyScore) {
+            return null;
+        }
+
         $winnerId = null;
         foreach ($scoresByVariantId as $variantId => $score) {
             if (null === $winnerId) {
@@ -21,23 +31,23 @@ class ABTestWinnerResolver
                 continue;
             }
 
-            $currentRate = $this->rate($score['completed'], $score['served']);
-            $winnerRate = $this->rate(
-                $scoresByVariantId[$winnerId]['completed'],
-                $scoresByVariantId[$winnerId]['served']
-            );
+            $completed = $score['completed'];
+            $served = $score['served'];
+            $winnerCompleted = $scoresByVariantId[$winnerId]['completed'];
+            $winnerServed = $scoresByVariantId[$winnerId]['served'];
+
+            $currentRate = $this->rate($completed, $served);
+            $winnerRate = $this->rate($winnerCompleted, $winnerServed);
+
+            $isRateBetter = $currentRate > $winnerRate;
+            $isRateEqual = $currentRate === $winnerRate;
+            $isCompletedBetter = $completed > $winnerCompleted;
+            $isCompletedEqual = $completed === $winnerCompleted;
 
             if (
-                $currentRate > $winnerRate
-                || (
-                    $currentRate === $winnerRate
-                    && $score['completed'] > $scoresByVariantId[$winnerId]['completed']
-                )
-                || (
-                    $currentRate === $winnerRate
-                    && $score['completed'] === $scoresByVariantId[$winnerId]['completed']
-                    && (int) $variantId < $winnerId
-                )
+                $isRateBetter
+                || ($isRateEqual && $isCompletedBetter)
+                || ($isRateEqual && $isCompletedEqual && (int) $variantId < $winnerId)
             ) {
                 $winnerId = (int) $variantId;
             }

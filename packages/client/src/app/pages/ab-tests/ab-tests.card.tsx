@@ -5,7 +5,7 @@ import translate from '@ff-client/utils/translations';
 import CheckIcon from '@ff-icons/actions/checkmark.svg';
 import { isPast } from 'date-fns';
 
-import { formatRate, lineColors } from './ab-tests.operations';
+import { formatRate, getVariantColor } from './ab-tests.operations';
 import {
   VariantCard,
   VariantCardWrapper,
@@ -28,6 +28,7 @@ type Props = {
 export const ABTestCard: FC<Props> = ({ variant, test }) => {
   const isWinner = variant.id === test.winnerVariantId;
   const isInPast = test.endDate && isPast(test.endDate);
+  const variantIndex = test.variants.indexOf(variant);
 
   return (
     <VariantCardWrapper key={variant.id}>
@@ -43,11 +44,10 @@ export const ABTestCard: FC<Props> = ({ variant, test }) => {
         <VariantHeader>
           <VariantLetter
             style={{
-              backgroundColor:
-                lineColors[test.variants.indexOf(variant) % lineColors.length],
+              backgroundColor: getVariantColor(variant, variantIndex),
             }}
           >
-            {String.fromCharCode(65 + test.variants.indexOf(variant))}
+            {String.fromCharCode(65 + variantIndex)}
           </VariantLetter>
 
           {variant.formName}

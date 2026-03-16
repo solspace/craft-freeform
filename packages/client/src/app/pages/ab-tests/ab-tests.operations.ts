@@ -18,6 +18,13 @@ export const lineColors = [
   '#2d6a4f',
 ];
 
+export const getVariantColor = (
+  variant: Pick<ABTestDashboardVariant, 'formColor' | 'id'>,
+  index: number
+): string => {
+  return variant.formColor || lineColors[index % lineColors.length];
+};
+
 export const metricTabs: Array<{ id: MetricTab; label: string }> = [
   { id: 'conversionRate', label: 'Conversion Rate' },
   { id: 'impressions', label: 'Impressions' },

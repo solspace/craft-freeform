@@ -36,7 +36,8 @@ export const AbTests: React.FC = () => {
 
   const { openModal } = useModal();
   const [searchParams] = useSearchParams();
-  const { data } = useAbTestsDashboard();
+  const data = useAbTestsDashboard();
+
   const [tabState, setTabState] = useState<Record<number, MetricTab>>({});
   const autoOpenRef = useRef<string | null>(null);
 

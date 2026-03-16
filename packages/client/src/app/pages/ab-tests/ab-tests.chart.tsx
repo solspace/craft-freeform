@@ -13,7 +13,7 @@ import {
 
 import {
   formatRate,
-  lineColors,
+  getVariantColor,
   mergeChartData,
   metricTabs,
 } from './ab-tests.operations';
@@ -87,7 +87,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
               key={variant.id}
               type="linear"
               dataKey={`variant-${variant.id}`}
-              stroke={lineColors[index % lineColors.length]}
+              stroke={getVariantColor(variant, index)}
               strokeWidth={2}
               dot={false}
               name={variant.formName || `Variant ${index + 1}`}

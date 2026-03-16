@@ -53,6 +53,7 @@ export type ABTestDashboardVariant = {
   id: number;
   formId: number;
   formName: string | null;
+  formColor: string | null;
   weight: number;
   stats: ABTestDashboardVariantStats;
   series: ABTestDashboardSeriesPoint[];

@@ -102,9 +102,9 @@ export const Tab = styled.button<{ $active?: boolean }>`
 
 export const Variants = styled.div`
   display: grid;
-  justify-content: end;
+  justify-content: start;
   align-items: end;
-  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: ${spacings.md};
 
   padding: ${spacings.lg} ${spacings.xl} ${spacings.xl};

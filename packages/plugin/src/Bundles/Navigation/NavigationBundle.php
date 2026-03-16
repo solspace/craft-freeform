@@ -31,6 +31,7 @@ class NavigationBundle extends FeatureBundle
 
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
+        $canAccessAb = PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
@@ -57,6 +58,10 @@ class NavigationBundle extends FeatureBundle
                 'freeform/spam',
                 extraOptions: ['badgeCount' => $spamCount],
             );
+        }
+
+        if ($canAccessAb && $freeform->isPro() && $freeform->settings->isAbTestsEnabled()) {
+            $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
         if ($canAccessNotifications) {

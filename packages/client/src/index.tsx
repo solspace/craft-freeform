@@ -18,6 +18,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 import './scripts';
 
+import { AbTests } from './app/pages/ab-tests';
 import { AiDashboard } from './app/pages/ai/dashboard';
 import { AiLayout } from './app/pages/ai/layout';
 import { AiPlans } from './app/pages/ai/plans';
@@ -122,6 +123,7 @@ root.render(
                             />
                             <Route index element={<LimitedUsers />} />
                           </Route>
+                          <Route path="ab-tests" element={<AbTests />} />
                         </Route>
                       </Routes>
                     </ModalProvider>

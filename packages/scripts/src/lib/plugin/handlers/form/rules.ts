@@ -281,7 +281,7 @@ class RuleHandler implements FreeformHandler {
         case Operator.IsNotOneOf:
           const checkPositive = condition.operator === Operator.IsOneOf;
           const parsedValue = (condition.value ? JSON.parse(condition.value) : []).map((v: string) => v.toLowerCase());
-          const hasCommonValues = currentValue.some((value) => parsedValue.includes(value.toLowerCase()));
+          const hasCommonValues = currentValue?.some((value) => parsedValue.includes(value.toLowerCase()));
 
           if (parsedValue.length === 0) {
             return checkPositive ? currentValue.length !== 0 : currentValue.length === 0;

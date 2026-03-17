@@ -1,3 +1,4 @@
+import { HexColorInput } from "@components/elements/hex-color-input/hex-color-input";
 import { FormComponent } from "@components/form-controls";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
@@ -7,6 +8,7 @@ import {
 } from "@components/modals/modal.styles";
 import type { ModalType } from "@components/modals/modal.types";
 import { useGroupMutation } from "@editor/builder/tabs/layout/property-editor/editors/fields/groups/groups.queries";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useFetchGroups } from "@ff-client/queries/groups";
 import type { ErrorList } from "@ff-client/types/api";
 import type { FieldListRefs, Group } from "@ff-client/types/groups";
@@ -14,16 +16,16 @@ import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import CrossIcon from "@ff-icons/actions/delete.svg";
 import MoveIcon from "@ff-icons/actions/move.svg";
+import type React from "react";
 import { useEffect, useRef, useState } from "react";
-import { SketchPicker } from "react-color";
-import { Tooltip } from "react-tippy";
 
 import { FieldItem } from "./modal.list-item";
 import { useGroupOperations } from "./modal.operations";
 import {
   CloseAndMoveWrapper,
   ColorCircle,
-  ColorPicker,
+  ColorPickerWrapper,
+  ColorPopover,
   ErrorBlock,
   FieldListWrapper,
   FieldTypes,
@@ -41,14 +43,42 @@ import {
   initializeSortable,
 } from "./sortable.initializer";
 
-type ColorPickerProps = {
-  groupUid: string | null;
-  color: string;
+type GroupColorPickerProps = {
+  color?: string;
+  onChange: (color: string) => void;
+};
+
+const GroupColorPicker: React.FC<GroupColorPickerProps> = ({
+  color,
+  onChange,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useClickOutside<HTMLDivElement>({
+    callback: () => setIsOpen(false),
+    isEnabled: isOpen,
+  });
+
+  return (
+    <ColorPickerWrapper ref={wrapperRef}>
+      <ColorCircle
+        type="button"
+        color={color}
+        aria-expanded={isOpen}
+        aria-label={translate("Select Color")}
+        onClick={() => setIsOpen((current) => !current)}
+      />
+
+      {isOpen && (
+        <ColorPopover>
+          <HexColorInput value={color} onChange={onChange} />
+        </ColorPopover>
+      )}
+    </ColorPickerWrapper>
+  );
 };
 
 export const CreateModal: ModalType = ({ closeModal }) => {
   const [state, setState] = useState<Group>({});
-  const [colorPicker, setColorPicker] = useState<ColorPickerProps>();
   const [errors, setErrors] = useState<ErrorList>();
   const [loaded, setLoaded] = useState(false);
 
@@ -105,41 +135,13 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             <GroupLayout key={group.uid} data-id={group.uid}>
               <GroupType>
                 <GroupHeader>
-                  <Tooltip
-                    trigger="click"
-                    position="right"
-                    interactive
-                    interactiveBorder={0}
-                    size="small"
-                    theme="light"
-                    arrow
-                    html={
-                      <ColorPicker>
-                        <SketchPicker
-                          color={colorPicker?.color || group.color}
-                          onChange={(color) =>
-                            setColorPicker({
-                              groupUid: group.uid,
-                              color: color.hex,
-                            })
-                          }
-                          onChangeComplete={(color) => {
-                            updateGroupInfo("color", color.hex, group.uid);
-                          }}
-                        />
-                      </ColorPicker>
+                  <GroupColorPicker
+                    color={group.color}
+                    onChange={(color) =>
+                      updateGroupInfo("color", color, group.uid)
                     }
-                  >
-                    <ColorCircle
-                      color={group.color}
-                      onClick={() =>
-                        setColorPicker({
-                          groupUid: group.uid,
-                          color: group.color,
-                        })
-                      }
-                    />
-                  </Tooltip>
+                  />
+
                   <FormComponent
                     value={group.label}
                     property={{

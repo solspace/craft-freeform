@@ -1,14 +1,7 @@
-import {
-  Overlay,
-  Popover,
-  SelectedColor,
-  Swatch,
-} from "@components/form-controls/control-types/color-picker/color-picker.styles";
+import { HexColorInput } from "@components/elements/hex-color-input/hex-color-input";
 import type { ControlType } from "@components/form-controls/types";
 import type { ColorProperty } from "@ff-client/types/properties";
 import type React from "react";
-import { useState } from "react";
-import { SketchPicker } from "react-color";
 
 import { Control } from "../../control";
 
@@ -19,22 +12,9 @@ const ColorPicker: React.FC<ControlType<ColorProperty>> = ({
   updateValue,
   context,
 }) => {
-  const [showColorPicker, setShowColorPicker] = useState(false);
-
   return (
     <Control property={property} errors={errors} context={context}>
-      <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
-        <SelectedColor style={{ backgroundColor: value }} />
-      </Swatch>
-      {showColorPicker && (
-        <Popover>
-          <Overlay onClick={() => setShowColorPicker(false)} />
-          <SketchPicker
-            color={value}
-            onChangeComplete={({ hex }) => updateValue(hex)}
-          />
-        </Popover>
-      )}
+      <HexColorInput value={value} onChange={updateValue} />
     </Control>
   );
 };

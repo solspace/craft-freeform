@@ -20,7 +20,7 @@ export type ProgressEvent = {
 };
 
 export const useProgressEvent = (): ProgressEvent => {
-  const source = useRef<EventSource>();
+  const source = useRef<EventSource | null>(null);
   const [url, setUrl] = useState<string>();
 
   const [active, setActive] = useState(false);

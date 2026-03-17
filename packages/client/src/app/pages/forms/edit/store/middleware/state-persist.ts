@@ -3,11 +3,10 @@ import type { APIError } from "@ff-client/types/api";
 import type { GenericValue } from "@ff-client/types/properties";
 import type { AxiosResponse } from "axios";
 import axios from "axios";
-import PubSub from "pubsub-js";
 import type { Middleware } from "redux";
-
 import { save } from "../actions/form";
 import { contextActions, State } from "../slices/context";
+import PubSub from "./pubsub";
 
 export const TOPIC_SAVE = Symbol("form.save");
 export const TOPIC_ERRORS = Symbol("form.save.errors");
@@ -118,7 +117,7 @@ export const statePersistMiddleware: Middleware =
       persist: {},
     };
 
-    PubSub.publishSync(TOPIC_SAVE, data);
+    PubSub.publish(TOPIC_SAVE, data);
 
     const formId = getState().form.id;
     if (formId) {

@@ -12,7 +12,7 @@ import HourglassIcon from "@ff-icons/actions/hourglass.svg";
 import CameraIcon from "@ff-icons/camera.svg";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
-import React, { useRef } from "react";
+import React, { type ReactNode, useRef } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import type { TooltipProps } from "react-tippy";
 import { Tooltip } from "react-tippy";
@@ -80,7 +80,7 @@ const tooltipProps: Omit<TooltipProps, "children"> = {
   delay: [100, 0] as unknown as number,
 };
 
-const getStatusIcon = (status: string): JSX.Element => {
+const getStatusIcon = (status: string): ReactNode => {
   switch (status) {
     case "success":
       return <CheckmarkIcon />;

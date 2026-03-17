@@ -21,7 +21,12 @@ export const Layout: React.FC<Props> = ({ layout }) => {
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (
-    <PageFieldLayoutWrapper ref={dropRef} className="field-layout">
+    <PageFieldLayoutWrapper
+      ref={(el) => {
+        dropRef(el);
+      }}
+      className="field-layout"
+    >
       {!rows.length && (
         <EmptyLayout>
           {translate("Drag or click fields to add them to the layout")}

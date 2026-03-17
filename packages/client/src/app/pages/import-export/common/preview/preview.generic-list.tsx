@@ -2,7 +2,7 @@ import { Checkbox } from "@components/elements/checkbox/checkbox";
 import classes from "@ff-client/utils/classes";
 import { stripTags } from "@ff-client/utils/html-attributes";
 import kebabCase from "lodash/kebabCase";
-
+import type { ReactNode } from "react";
 import {
   BlockItem,
   Blocks,
@@ -15,18 +15,18 @@ import {
 type Props<O> = {
   id?: string;
   label: string;
-  icon?: JSX.Element;
-  itemIcon?: (item: O) => JSX.Element | string;
+  icon?: ReactNode;
+  itemIcon?: (item: O) => ReactNode;
   items: O[];
   labelKey: keyof O;
   selectionKey: keyof O;
   selection: string[];
   onUpdate: (selection: string[]) => void;
-  labelExtras?: (item: O) => JSX.Element | string;
+  labelExtras?: (item: O) => ReactNode;
   nested?: boolean;
 };
 
-export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
+export const PreviewGenericList = <T,>(props: Props<T>): ReactNode => {
   const { label, icon, itemIcon, labelExtras } = props;
   const { items, selection, onUpdate } = props;
   const { labelKey, selectionKey, nested } = props;

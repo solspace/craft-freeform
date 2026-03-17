@@ -46,7 +46,7 @@ export const Block: React.FC<Props> = ({
 
   const { data: preferences } = useQuerySurveyPreferences();
 
-  const ref = useRef<HTMLLIElement>();
+  const ref = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
     if (preferences) {

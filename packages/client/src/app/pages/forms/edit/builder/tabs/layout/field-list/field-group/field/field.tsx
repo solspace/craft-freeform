@@ -12,7 +12,15 @@ type Props = {
 
 export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
   return (
-    <Wrapper ref={dragRef} onClick={onClick} title={label}>
+    <Wrapper
+      ref={(el) => {
+        if (dragRef) {
+          dragRef(el);
+        }
+      }}
+      onClick={onClick}
+      title={label}
+    >
       <Icon dangerouslySetInnerHTML={{ __html: icon }} />
       <Name dangerouslySetInnerHTML={{ __html: label }} />
     </Wrapper>

@@ -1,3 +1,4 @@
+import PubSub from "@editor/store/middleware/pubsub";
 import type {
   ErrorsSubscriber,
   SaveSubscriber,

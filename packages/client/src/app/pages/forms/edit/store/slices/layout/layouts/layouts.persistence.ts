@@ -1,3 +1,4 @@
+import PubSub from "@editor/store/middleware/pubsub";
 import type { SaveSubscriber } from "@editor/store/middleware/state-persist";
 import { TOPIC_SAVE } from "@editor/store/middleware/state-persist";
 

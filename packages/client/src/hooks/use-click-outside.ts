@@ -1,11 +1,11 @@
 import { elementTreeHasClass } from "@ff-client/utils/classes";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 
 type ClickOutsideOptions<T extends HTMLElement> = {
   callback: () => void;
   isEnabled: boolean;
-  refObject?: MutableRefObject<T>;
+  refObject?: RefObject<T | null>;
   excludeClassNames?: string[];
 };
 
@@ -14,8 +14,8 @@ export const useClickOutside = <T extends HTMLElement>({
   isEnabled,
   refObject,
   excludeClassNames,
-}: ClickOutsideOptions<T>): MutableRefObject<T> => {
-  const ref = useRef<T>();
+}: ClickOutsideOptions<T>): RefObject<T | null> => {
+  const ref = useRef<T | null>(null);
   const usableRef = refObject || ref;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: Works as expected

@@ -84,7 +84,9 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
 
       <ManagerWrapper>
         <GroupWrapper
-          ref={(el) => (formGroupsListRefs.current.groupWrapper = el)}
+          ref={(el) => {
+            formGroupsListRefs.current.groupWrapper = el;
+          }}
           $empty={translate(
             "Click the 'Add Group' button on the right to begin.",
           )}
@@ -142,7 +144,9 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
                 $empty={translate(
                   "Drag and drop any form here. Unassigned form will display at the bottom of the list of Groups.",
                 )}
-                ref={(el) => (formGroupsListRefs.current.unassigned = el)}
+                ref={(el) => {
+                  formGroupsListRefs.current.unassigned = el;
+                }}
               >
                 {state?.forms
                   ?.filter((form) => form.dateArchived === null)

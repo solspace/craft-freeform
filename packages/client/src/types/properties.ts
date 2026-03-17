@@ -7,7 +7,7 @@ import type {
   TabularData,
 } from "@components/form-controls/control-types/tabular-data/tabular-data.types";
 import type { Edition } from "@config/freeform/freeform.config";
-
+import type { ReactNode } from "react";
 import type { FieldMapping } from "./integrations";
 import type { Recipient, RecipientMapping } from "./notifications";
 
@@ -60,13 +60,13 @@ export type VisibilityFilter = string;
 export type Option = {
   value: string;
   label: string;
-  icon?: string | JSX.Element;
+  icon?: string | ReactNode;
   hint?: string;
   shadowIndex?: number;
 };
 export type OptionGroup = {
   label: string;
-  icon?: string | JSX.Element;
+  icon?: string | ReactNode;
   children: OptionCollection;
 };
 

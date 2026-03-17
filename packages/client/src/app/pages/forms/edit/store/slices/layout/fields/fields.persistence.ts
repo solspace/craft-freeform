@@ -1,3 +1,4 @@
+import PubSub from "@editor/store/middleware/pubsub";
 import type { ErrorsSubscriber } from "@editor/store/middleware/state-persist";
 import {
   TOPIC_ERRORS,

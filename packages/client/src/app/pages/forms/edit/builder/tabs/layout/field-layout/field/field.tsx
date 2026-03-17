@@ -65,7 +65,9 @@ export const Field: React.FC<Props> = memo(
         <FieldWrapper
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}
-          ref={drag}
+          ref={(el) => {
+            drag(el);
+          }}
           style={style}
         >
           {canDuplicate && (

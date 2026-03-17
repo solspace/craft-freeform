@@ -5,7 +5,7 @@ import { useCodeblockText } from "@ff-client/hooks/use-codeblock-text";
 import { useAutosuggestEnvVariables } from "@ff-client/queries/autosuggest";
 import type { BooleanEnvProperty } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
-
+import type { ReactNode } from "react";
 import { useEnvOptions } from "./bool-env.options";
 import { EnvLine } from "./env.line";
 
@@ -18,7 +18,7 @@ const BoolEnv = ({
   property,
   errors,
   context,
-}: ControlType<BooleanEnvProperty>): JSX.Element => {
+}: ControlType<BooleanEnvProperty>): ReactNode => {
   const translated = translate(translationString);
   const codeblock = useCodeblockText(translated);
 

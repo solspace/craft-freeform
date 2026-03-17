@@ -1,3 +1,4 @@
+import PubSub from "@editor/store/middleware/pubsub";
 import type { UpdatedSubscriber } from "@editor/store/middleware/state-persist";
 import { TOPIC_UPSERTED } from "@editor/store/middleware/state-persist";
 

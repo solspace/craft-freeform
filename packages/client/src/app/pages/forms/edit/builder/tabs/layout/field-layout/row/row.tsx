@@ -52,7 +52,11 @@ const Row: React.FC<Props> = memo(({ row }) => {
 
   return (
     <RowWrapper ref={ref}>
-      <DropZone ref={rowDropRef}>
+      <DropZone
+        ref={(el) => {
+          rowDropRef(el);
+        }}
+      >
         <DropZoneAnimation style={placeholderAnimation} />
       </DropZone>
       <RowFieldsContainer style={rowAnimation}>

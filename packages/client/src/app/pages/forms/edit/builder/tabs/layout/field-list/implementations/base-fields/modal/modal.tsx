@@ -91,7 +91,9 @@ export const CreateModal: ModalType = ({ closeModal }) => {
       </ModalHeader>
       <ManagerWrapper>
         <GroupWrapper
-          ref={(el) => (fieldListRefs.current.groupWrapper = el)}
+          ref={(el) => {
+            fieldListRefs.current.groupWrapper = el;
+          }}
           $empty={translate(
             "Click the 'Add Group' button on the right to begin.",
           )}
@@ -188,7 +190,9 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 $empty={translate(
                   "Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.",
                 )}
-                ref={(el) => (fieldListRefs.current.unassigned = el)}
+                ref={(el) => {
+                  fieldListRefs.current.unassigned = el;
+                }}
               >
                 {state.types?.map((item) => (
                   <FieldItem key={item} typeClass={item} />
@@ -202,7 +206,9 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 $empty={translate(
                   "Drag and drop any fields here to hide them.",
                 )}
-                ref={(el) => (fieldListRefs.current.hidden = el)}
+                ref={(el) => {
+                  fieldListRefs.current.hidden = el;
+                }}
               >
                 {state.groups?.hidden?.map((item) => (
                   <FieldItem key={item} typeClass={item} />

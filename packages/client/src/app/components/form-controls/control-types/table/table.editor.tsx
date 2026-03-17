@@ -25,7 +25,7 @@ import type {
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Sortable from "sortablejs";
 
 import IconCheckbox from "./editor/icon.checkbox.svg";
@@ -94,7 +94,7 @@ const getColumnForType = (
   };
 };
 
-const typeIcons: Record<ColumnType, JSX.Element> = {
+const typeIcons: Record<ColumnType, ReactNode> = {
   text: <IconText />,
   textarea: <IconTextarea />,
   select: <IconDropdown />,
@@ -391,7 +391,7 @@ const renderCellEditor = (
   column: ColumnDescription,
   update: (col: ColumnDescription) => void,
   property: TableProperty,
-): React.ReactNode => {
+): ReactNode => {
   if (!column) {
     return null;
   }

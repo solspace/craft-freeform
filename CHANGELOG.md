@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.14.23 - 2026-03-17
+
+### Fixed
+- Fixed an issue where conditional rules scripts could break when a second-level nested element was hidden.
+- Fixed compatibility issues with newer **Symfony Serializer** versions in Craft 4.
+
 ## 5.14.22 - 2026-03-16
 
 ### Fixed

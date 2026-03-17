@@ -16,7 +16,7 @@
   "dependencies": {
     "@paypal/paypal-js": "^8.4.2",
     "@stripe/stripe-js": "^2.1.9",
-    "expression-language": "^2.5.3",
+    "expression-language": "^2.5.4",
     "filesize": "^10.0.12"
   },
   "devDependencies": {

@@ -14,9 +14,6 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "expression-language": {
-      "locutus": "3.0.5"
-    },
     "monaco-editor": {
       "dompurify": "3.3.2"
     }

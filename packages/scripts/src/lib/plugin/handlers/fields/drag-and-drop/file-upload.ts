@@ -2,7 +2,6 @@ import type Freeform from "@components/front-end/plugin/freeform";
 import events from "@lib/plugin/constants/event-types";
 import { ajax } from "@lib/plugin/helpers/ajax";
 import { CancelToken } from "@lib/plugin/helpers/ajax/ajax.classes";
-import { filesize } from "filesize";
 
 import { askForConfirmation } from "./confirm";
 import { addFieldErrors } from "./error-handling";
@@ -102,7 +101,7 @@ export const handleFileUpload = (
 
   const matches = file.name.match(/.(\w+)$/i);
   const name = file.name;
-  const size = filesize(file.size, { round: 1 });
+  const size = formatFileSize(file.size);
   const extension = matches !== null ? matches[1].toLowerCase() : "n/a";
 
   const previewContainer = createPreviewContainer(
@@ -218,4 +217,24 @@ const dispatchChange = (container: HTMLElement, freeform: Freeform) => {
     { freeform, container },
     container,
   ) as OnChangeEvent;
+};
+
+const formatFileSize = (bytes: number): string => {
+  const units = ["B", "KB", "MB", "GB", "TB"];
+
+  if (bytes < 1024) {
+    return `${bytes} B`;
+  }
+
+  let value = bytes;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  const rounded = value.toFixed(1).replace(/\.0$/, "");
+
+  return `${rounded} ${units[unitIndex]}`;
 };

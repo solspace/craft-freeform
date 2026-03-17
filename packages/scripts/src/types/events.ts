@@ -1,6 +1,7 @@
 import type Freeform from "@components/front-end/plugin/freeform";
 
-export type Callback = () => Promise<undefined | boolean>;
+// biome-ignore lint/suspicious/noConfusingVoidType: It is not confusing at all.
+export type Callback = () => Promise<undefined | void | boolean>;
 
 export type FreeformEvent = CustomEvent & {
   freeform: Freeform;

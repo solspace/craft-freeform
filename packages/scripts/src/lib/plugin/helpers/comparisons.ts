@@ -1,4 +1,5 @@
-// biome-ignore lint/suspicious/noExplicitAny: This is a utility function that needs to handle any type of value, so using `any` is appropriate here.
+/** biome-ignore-all lint/suspicious/noExplicitAny: We don't support ES2022 */
+/** biome-ignore-all lint/suspicious/noPrototypeBuiltins: We don't support ES2022 */
 export const isEqual = (value: any, other: any): boolean => {
   // Check if both values are the same reference or strictly equal
   if (value === other) {
@@ -42,7 +43,10 @@ export const isEqual = (value: any, other: any): boolean => {
 
     // Recursively compare object properties
     return valueKeys.every((key) => {
-      return Object.hasOwn(other, key) && isEqual(value[key], other[key]);
+      return (
+        Object.prototype.hasOwnProperty.call(other, key) &&
+        isEqual(value[key], other[key])
+      );
     });
   }
 

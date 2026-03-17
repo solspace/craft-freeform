@@ -14,6 +14,7 @@ import IdempotencyHandler from "@lib/plugin/handlers/form/idempotency";
 import RuleHandler from "@lib/plugin/handlers/form/rules";
 import SaveFormHandler from "@lib/plugin/handlers/form/save-form";
 import { ajax } from "@lib/plugin/helpers/ajax";
+import type { ResponseObject } from "@lib/plugin/helpers/ajax/ajax.types";
 import { isSafari } from "@lib/plugin/helpers/browser-check";
 import { getClassQuery } from "@lib/plugin/helpers/classes";
 import { fetchCsrf } from "@lib/plugin/helpers/csrf";

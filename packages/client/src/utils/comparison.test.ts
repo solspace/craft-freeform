@@ -35,5 +35,15 @@ describe("comparisons", () => {
       expect(compare.below("1.0.1")).toBe(true);
       expect(compare.above("1.0.1")).toBe(false);
     });
+
+    it("should compare versions with different segment lengths", () => {
+      const compare = createSemverCompare("5.8");
+
+      expect(compare("5.8.0")).toBe(true);
+      expect(compare.atLeast("5.7.9")).toBe(true);
+      expect(compare.atMost("5.8.1")).toBe(true);
+      expect(compare.below("5.8.1")).toBe(true);
+      expect(compare.above("5.7.9")).toBe(true);
+    });
   });
 });

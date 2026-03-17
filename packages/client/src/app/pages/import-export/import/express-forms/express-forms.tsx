@@ -36,7 +36,7 @@ export const ImportExpressForms: React.FC = () => {
       options,
     });
 
-    const url = generateUrl(`/api/import?token=${data.token}`);
+    const url = generateUrl(`/api/import?server-token=${data.token}`);
     progressEvent.triggerProgress(url);
   };
 

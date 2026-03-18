@@ -1,5 +1,5 @@
 import { generateColor } from "@ff-client/utils/colors";
-import { interpolateTurbo as colorScale } from "d3-scale-chromatic";
+import { interpolateTurbo as colorScale } from "@ff-client/utils/interpolate-turbo";
 import type React from "react";
 import type { PieLabel } from "recharts";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";

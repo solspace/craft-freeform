@@ -1,4 +1,8 @@
 import { RemoveButton } from "@components/elements/remove-button/remove";
+import {
+  Tooltip,
+  type TooltipProps,
+} from "@components/elements/tooltip/tooltip";
 import { useHover } from "@ff-client/hooks/use-hover";
 import type {
   FormTest,
@@ -14,8 +18,6 @@ import type { UseQueryResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import React, { type ReactNode, useRef } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
-import type { TooltipProps } from "react-tippy";
-import { Tooltip } from "react-tippy";
 
 import { FormMonitorDetailsLoader } from "../form-monitor.loader";
 import { useScreenshotModal } from "../form-monitor.screenshot.modal.hooks";

@@ -1,3 +1,7 @@
+import {
+  Tooltip,
+  type TooltipProps,
+} from "@components/elements/tooltip/tooltip";
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useDeleteFormModal } from "@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
@@ -18,8 +22,6 @@ import axios from "axios";
 import type React from "react";
 import type { MouseEventHandler } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import type { TooltipProps } from "react-tippy";
-import { Tooltip } from "react-tippy";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import {

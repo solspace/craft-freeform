@@ -3,7 +3,6 @@ import { Outlet } from "react-router-dom";
 import { AppWrapper } from "./App.styles";
 import { useFreeformNavigation } from "./hooks/use-freeform-navigation";
 
-import "react-tippy/dist/tippy.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 const App: React.FC = () => {

@@ -1,3 +1,7 @@
+import {
+  Tooltip,
+  type TooltipProps,
+} from "@components/elements/tooltip/tooltip";
 import { FlexRow } from "@components/layout/blocks/flex";
 import { Truncate } from "@components/layout/blocks/truncate";
 import config, { Edition } from "@config/freeform/freeform.config";
@@ -15,8 +19,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type React from "react";
 import { Link, NavLink } from "react-router-dom";
-import type { TooltipProps } from "react-tippy";
-import { Tooltip } from "react-tippy";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 import { useDeleteFormModal } from "../../modals/hooks/use-delete-form-modal";

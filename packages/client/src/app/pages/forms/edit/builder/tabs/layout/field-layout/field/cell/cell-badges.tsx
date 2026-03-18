@@ -1,3 +1,4 @@
+import { Tooltip } from "@components/elements/tooltip/tooltip";
 import { integrationSelectors } from "@editor/store/slices/integrations/integrations.selectors";
 import { notificationSelectors } from "@editor/store/slices/notifications/notifications.selectors";
 import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
@@ -7,7 +8,6 @@ import EmailNotificationIcon from "@ff-icons/fields/email-notifications.svg";
 import IntegrationIcon from "@ff-icons/fields/integrations.svg";
 import type React from "react";
 import { useSelector } from "react-redux";
-import { Tooltip } from "react-tippy";
 
 import { CellBadgesWrapper } from "./cell-badges.styles";
 

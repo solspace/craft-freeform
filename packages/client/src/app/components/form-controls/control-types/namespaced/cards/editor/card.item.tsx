@@ -1,5 +1,6 @@
 import { CraftAssetPicker } from "@components/elements/craft-asset-picker/craft-asset-picker";
 import { RemoveButton } from "@components/elements/remove-button/remove";
+import { Tooltip } from "@components/elements/tooltip/tooltip";
 import { ControlBlock } from "@components/form-controls/control.block";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import type { GenericValue } from "@ff-client/types/properties";
@@ -8,7 +9,6 @@ import translate from "@ff-client/utils/translations";
 import { Editor } from "@monaco-editor/react";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
-import { Tooltip } from "react-tippy";
 
 import type { Card } from "../cards.types";
 

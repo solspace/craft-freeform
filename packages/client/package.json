@@ -28,6 +28,7 @@
     "src/**/*.persistence.ts"
   ],
   "dependencies": {
+    "@floating-ui/react": "^0.27.19",
     "@monaco-editor/react": "^4.7.0",
     "@reduxjs/toolkit": "^2.11.2",
     "@sindresorhus/transliterate": "^2.3.1",
@@ -50,7 +51,6 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.13.1",
     "react-spring": "^10.0.3",
-    "react-tippy": "^1.4.0",
     "react-zoom-pan-pinch": "^3.7.0",
     "recharts": "^2.15.0",
     "redux": "^5.0.1",

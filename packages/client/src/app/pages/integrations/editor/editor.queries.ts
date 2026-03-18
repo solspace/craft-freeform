@@ -68,8 +68,7 @@ export const useIntegrationMutation = (
 
       notifications.success(translate("Integration saved successfully"));
 
-      queryClient.invalidateQueries({ queryKey: QKIntegrations.navigation });
-      queryClient.invalidateQueries({ queryKey: QKIntegrations.single(id) });
+      queryClient.invalidateQueries({ queryKey: QKIntegrations.all });
 
       if (id) {
         navigate(`/integrations/${type}/${integration}/${id}`);

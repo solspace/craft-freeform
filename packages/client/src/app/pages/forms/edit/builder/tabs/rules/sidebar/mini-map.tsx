@@ -22,7 +22,7 @@ export const MiniMap: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (lastTab !== undefined) {
+    if (lastTab) {
       navigate(lastTab);
     }
   }, [lastTab, navigate]);

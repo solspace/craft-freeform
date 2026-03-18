@@ -23,11 +23,18 @@ export const QKNotifications = {
   single: (id: number) => [...QKNotifications.all, "forms", id] as const,
 };
 
-export const useNotificationQueryReset = (): (() => void) => {
+export const useNotificationQueryReset = (formId?: number): (() => void) => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.removeQueries({ queryKey: QKNotifications.all });
+    if (!formId) {
+      return;
+    }
+
+    queryClient.removeQueries({ queryKey: QKNotifications.single(formId) });
+    queryClient.removeQueries({
+      queryKey: QKNotifications.formTemplates(formId),
+    });
   };
 };
 

@@ -23,7 +23,7 @@ export const useFreeformNavigation = (): void => {
           queryKey: QKNotifications.single(Number(formId)),
         });
         queryClient.invalidateQueries({
-          queryKey: QKIntegrations.single(Number(formId)),
+          queryKey: QKIntegrations.form(Number(formId)),
         });
       }
 

@@ -19,11 +19,7 @@ type Integration = {
   };
 };
 
-type Props = {
-  integration: Integration;
-};
-
-export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
+export const FormMonitorTitlebarActions: FC = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [showDisable, setShowDisable] = useState(false);
@@ -51,12 +47,7 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
           onClose={() => setShowDisable(false)}
           onConfirm={async () => {
             await disableFormMonitor();
-            queryClient.invalidateQueries({
-              queryKey: QKIntegrations.navigation,
-            });
-            queryClient.invalidateQueries({
-              queryKey: QKIntegrations.single(Number(integration.id)),
-            });
+            queryClient.invalidateQueries({ queryKey: QKIntegrations.all });
             notifications.success(translate("Monitoring disabled."));
           }}
         />
@@ -67,12 +58,7 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
           onClose={() => setShowDisableDelete(false)}
           onConfirm={async () => {
             await disableAndDeleteFormMonitor();
-            queryClient.invalidateQueries({
-              queryKey: QKIntegrations.navigation,
-            });
-            queryClient.invalidateQueries({
-              queryKey: QKIntegrations.single(Number(integration.id)),
-            });
+            queryClient.invalidateQueries({ queryKey: QKIntegrations.all });
             notifications.success(
               translate("Monitoring disabled and data deleted."),
             );

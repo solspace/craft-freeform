@@ -34,11 +34,15 @@ type FormRules = {
   buttons: ButtonRule[];
 };
 
-export const useRulesQueryReset = (): (() => void) => {
+export const useRulesQueryReset = (formId?: number): (() => void) => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.removeQueries({ queryKey: QKRules.all });
+    if (!formId) {
+      return;
+    }
+
+    queryClient.removeQueries({ queryKey: QKRules.form(formId) });
   };
 };
 

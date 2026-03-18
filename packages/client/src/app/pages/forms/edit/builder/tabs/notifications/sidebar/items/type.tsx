@@ -1,4 +1,5 @@
 import config from "@config/freeform/freeform.config";
+import { useLastTab } from "@editor/builder/tabs/tabs.hooks";
 import { useAppDispatch } from "@editor/store";
 import { addNewNotification } from "@editor/store/thunks/notifications";
 import type { NotificationType } from "@ff-client/types/notifications";
@@ -29,6 +30,7 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { setLastTab } = useLastTab("notifications");
   const { name, edition } = type;
 
   const { isAtLeast } = config.editions;
@@ -64,10 +66,12 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
       <LabelWrapper>
         <Label>{translate(name)}</Label>
         <Button
+          type="button"
           className={classes("btn", "add", "icon", "small", "dashed")}
           onClick={() => {
             const uid = v4();
             dispatch(addNewNotification(type, uid));
+            setLastTab(uid);
             navigate(uid);
           }}
         >

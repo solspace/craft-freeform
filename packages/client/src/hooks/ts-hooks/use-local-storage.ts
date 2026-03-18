@@ -1,5 +1,5 @@
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useEventCallback } from "./use-event-callback";
 import { useEventListener } from "./use-event-listener";
@@ -23,31 +23,40 @@ export function useLocalStorage<T>(
   initialValue: T | (() => T),
   options: UseLocalStorageOptions<T> = {},
 ): [T, Dispatch<SetStateAction<T>>, () => void] {
-  const { initializeWithValue = true } = options;
+  const {
+    deserializer: customDeserializer,
+    initializeWithValue = true,
+    serializer: customSerializer,
+  } = options;
+  const initialValueRef = useRef(initialValue);
+
+  const getInitialValue = useCallback((): T => {
+    const value = initialValueRef.current;
+    return value instanceof Function ? value() : value;
+  }, []);
 
   const serializer = useCallback<(value: T) => string>(
     (value) => {
-      if (options.serializer) {
-        return options.serializer(value);
+      if (customSerializer) {
+        return customSerializer(value);
       }
 
       return JSON.stringify(value);
     },
-    [options],
+    [customSerializer],
   );
 
   const deserializer = useCallback<(value: string) => T>(
     (value) => {
-      if (options.deserializer) {
-        return options.deserializer(value);
+      if (customDeserializer) {
+        return customDeserializer(value);
       }
       // Support 'undefined' as a value
       if (value === "undefined") {
         return undefined as unknown as T;
       }
 
-      const defaultValue =
-        initialValue instanceof Function ? initialValue() : initialValue;
+      const defaultValue = getInitialValue();
 
       let parsed: unknown;
       try {
@@ -59,14 +68,13 @@ export function useLocalStorage<T>(
 
       return parsed as T;
     },
-    [options, initialValue],
+    [customDeserializer, getInitialValue],
   );
 
   // Get from local storage then
   // parse stored json or return initialValue
   const readValue = useCallback((): T => {
-    const initialValueToUse =
-      initialValue instanceof Function ? initialValue() : initialValue;
+    const initialValueToUse = getInitialValue();
 
     // Prevent build error "window is undefined" but keep working
     if (IS_SERVER) {
@@ -80,14 +88,14 @@ export function useLocalStorage<T>(
       console.warn(`Error reading localStorage key “${key}”:`, error);
       return initialValueToUse;
     }
-  }, [initialValue, key, deserializer]);
+  }, [deserializer, getInitialValue, key]);
 
   const [storedValue, setStoredValue] = useState(() => {
     if (initializeWithValue) {
       return readValue();
     }
 
-    return initialValue instanceof Function ? initialValue() : initialValue;
+    return getInitialValue();
   });
 
   // Return a wrapped version of useState's setter function that ...
@@ -125,8 +133,7 @@ export function useLocalStorage<T>(
       );
     }
 
-    const defaultValue =
-      initialValue instanceof Function ? initialValue() : initialValue;
+    const defaultValue = getInitialValue();
 
     // Remove the key from local storage
     window.localStorage.removeItem(key);
@@ -139,7 +146,10 @@ export function useLocalStorage<T>(
   });
 
   useEffect(() => {
-    setStoredValue(readValue());
+    setStoredValue((currentValue) => {
+      const nextValue = readValue();
+      return Object.is(currentValue, nextValue) ? currentValue : nextValue;
+    });
   }, [readValue]);
 
   const handleStorageChange = useCallback(

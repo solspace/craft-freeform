@@ -72,10 +72,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
       confirm(translate("Are you sure you want to remove this integration?"))
     ) {
       axios.post(`/api/integrations/${integration.id}/delete`).then(() => {
-        queryClient.invalidateQueries({ queryKey: QKIntegrations.navigation });
-        queryClient.invalidateQueries({
-          queryKey: QKIntegrations.single(integration.id),
-        });
+        queryClient.invalidateQueries({ queryKey: QKIntegrations.all });
         navigate("/integrations");
 
         notifications.success(translate("Integration deleted successfully."));
@@ -165,9 +162,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
           formMonitor &&
           state === "authorized" && (
             <Actions>
-              <FormMonitorTitlebarActions
-                integration={{ ...integration, id: String(integration.id) }}
-              />
+              <FormMonitorTitlebarActions />
             </Actions>
           )}
 

@@ -313,7 +313,7 @@ class RuleHandler implements FreeformHandler {
           const parsedValue = (
             condition.value ? JSON.parse(condition.value) : []
           ).map((v: string) => v.toLowerCase());
-          const hasCommonValues = currentValue.some((value) =>
+          const hasCommonValues = currentValue?.some((value) =>
             parsedValue.includes(value.toLowerCase()),
           );
 

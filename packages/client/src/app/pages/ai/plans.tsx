@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
 import config from '@config/freeform/freeform.config';
-import { colors } from '@ff-client/styles/variables';
 import translate from '@ff-client/utils/translations';
 import axios from 'axios';
 
@@ -16,6 +16,7 @@ import {
 import {
   DashboardWrapper,
   EmptyState,
+  EmptyStateActions,
   EmptyStateTitle,
   MetricsTable,
   MetricsTableCell,
@@ -23,18 +24,19 @@ import {
   MetricsTableHeaderCell,
   MetricsTableRow,
   PlansHeaderActions,
-  PlansSelect,
+  PlansTrialNotice,
   Section,
+  SectionContent,
   SectionTitle,
 } from './dashboard.styles';
 
 function formatBundlePrice(
   price: number,
-  _bundleCurrency: string,
+  bundleCurrency: string,
   siteCurrency?: string
 ): string {
   const locale = config.metadata?.craft?.locale;
-  const currency = (siteCurrency || _bundleCurrency || 'usd').toLowerCase();
+  const currency = (siteCurrency || bundleCurrency || 'usd').toLowerCase();
   const formatted = locale
     ? price.toLocaleString(locale, {
         maximumFractionDigits: 0,
@@ -46,28 +48,28 @@ function formatBundlePrice(
   return `${formatted} ${currency.toUpperCase()}`;
 }
 
-const CURRENCY_OPTIONS: { value: string; label: string }[] = [
-  { value: 'usd', label: 'USD' },
-  { value: 'eur', label: 'EUR' },
+type CurrencyOption = { value: string; label: string };
+
+const CURRENCY_OPTIONS: CurrencyOption[] = [
+  { value: 'usd', label: 'USD ($)' },
+  { value: 'eur', label: 'EUR (€)' },
 ];
 
 export const AiPlans: React.FC = () => {
-  const [addCreditLoading, setAddCreditLoading] = React.useState(false);
-  const [selectedBundleKey, setSelectedBundleKey] = React.useState<string>('');
-  const [selectedCurrency, setSelectedCurrency] = React.useState<string | null>(
-    null
-  );
+  const [addCreditLoading, setAddCreditLoading] = useState(false);
+  const [selectedBundleKey, setSelectedBundleKey] = useState<string>('');
+  const [selectedCurrency, setSelectedCurrency] = useState<string | null>(null);
 
   const {
     data: plans,
     isFetching,
     error,
     isError,
-  } = useAiPlansQuery(selectedCurrency === null ? undefined : selectedCurrency);
+  } = useAiPlansQuery(selectedCurrency);
   const { data: usage } = useAiUsageQuery();
   const bundles = plans?.bundles ?? [];
-  const hasSyncedCurrency = React.useRef(false);
-  React.useEffect(() => {
+  const hasSyncedCurrency = useRef(false);
+  useEffect(() => {
     if (plans?.currency && !hasSyncedCurrency.current) {
       setSelectedCurrency(plans.currency);
       hasSyncedCurrency.current = true;
@@ -82,28 +84,30 @@ export const AiPlans: React.FC = () => {
       : '100';
   const bundleKeyToUse = selectedBundleKey || defaultBundleKey;
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (
       bundles.length > 0 &&
-      !bundles.some((b) => String(b.key) === selectedBundleKey)
+      !bundles.some((bundle) => String(bundle.key) === selectedBundleKey)
     ) {
       setSelectedBundleKey(defaultBundleKey);
     }
   }, [bundles, defaultBundleKey, selectedBundleKey]);
 
-  const isNotFound =
-    isError && axios.isAxiosError(error) && error.response?.status === 404;
-  const isForbidden =
-    isError && axios.isAxiosError(error) && error.response?.status === 403;
+  const axiosError = axios.isAxiosError(error) ? error : null;
+  const status = axiosError?.response?.status;
+  const isNotFound = isError && status === 404;
+  const isForbidden = isError && status === 403;
 
-  const emptyTitle = isNotFound
-    ? translate('Solspace AI is not enabled')
-    : translate('Authorize Solspace AI to view plans');
-  const emptyMessage = isNotFound
-    ? translate('Enable Solspace AI in the Integrations area to view plans.')
-    : translate(
-        'Authorize Solspace AI in the Integrations area to view plans.'
-      );
+  const emptyTitle = translate(
+    isNotFound
+      ? 'Solspace AI is not enabled'
+      : 'Authorize Solspace AI to view plans'
+  );
+  const emptyMessage = translate(
+    isNotFound
+      ? 'Enable Solspace AI in the Integrations area to view plans.'
+      : 'Authorize Solspace AI in the Integrations area to view plans.'
+  );
 
   if (isNotFound || isForbidden) {
     return (
@@ -116,11 +120,11 @@ export const AiPlans: React.FC = () => {
             <EmptyStateTitle>{emptyTitle}</EmptyStateTitle>
             <p>{emptyMessage}</p>
             {isNotFound && (
-              <p style={{ marginTop: '1rem' }}>
+              <EmptyStateActions>
                 <Link to="/integrations" className="btn submit">
                   {translate('Go to Integrations')}
                 </Link>
-              </p>
+              </EmptyStateActions>
             )}
           </EmptyState>
         </DashboardWrapper>
@@ -149,7 +153,7 @@ export const AiPlans: React.FC = () => {
             <SectionTitle>
               <Skeleton width={140} height={14} />
             </SectionTitle>
-            <div style={{ marginTop: '0.5rem' }}>
+            <SectionContent>
               <MetricsTable>
                 <MetricsTableHead>
                   <MetricsTableRow>
@@ -174,13 +178,13 @@ export const AiPlans: React.FC = () => {
                   ))}
                 </tbody>
               </MetricsTable>
-            </div>
+            </SectionContent>
           </Section>
           <Section>
             <SectionTitle>
               <Skeleton width={120} height={14} />
             </SectionTitle>
-            <div style={{ marginTop: '0.5rem' }}>
+            <SectionContent>
               <MetricsTable>
                 <MetricsTableHead>
                   <MetricsTableRow>
@@ -211,7 +215,7 @@ export const AiPlans: React.FC = () => {
                   ))}
                 </tbody>
               </MetricsTable>
-            </div>
+            </SectionContent>
           </Section>
         </DashboardWrapper>
       </div>
@@ -226,29 +230,27 @@ export const AiPlans: React.FC = () => {
         extra={
           bundles.length > 0 && (
             <PlansHeaderActions>
-              <PlansSelect
+              <Dropdown
                 value={currencyToUse}
-                onChange={(e) => setSelectedCurrency(e.target.value)}
-                aria-label={translate('Currency')}
-              >
-                {CURRENCY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </PlansSelect>
+                options={CURRENCY_OPTIONS.map((opt) => ({
+                  value: opt.value,
+                  label: opt.label,
+                }))}
+                onChange={(value) => setSelectedCurrency(value)}
+              />
               {bundles.length > 1 && (
-                <PlansSelect
+                <Dropdown
                   value={bundleKeyToUse}
-                  onChange={(e) => setSelectedBundleKey(e.target.value)}
-                >
-                  {bundles.map((b) => (
-                    <option key={b.key} value={b.key}>
-                      {formatBundlePrice(b.price, b.currency, plans?.currency)}{' '}
-                      — {b.credits.toLocaleString()} credits
-                    </option>
-                  ))}
-                </PlansSelect>
+                  options={bundles.map((bundle) => ({
+                    value: String(bundle.key),
+                    label: `${formatBundlePrice(
+                      bundle.price,
+                      bundle.currency,
+                      plans?.currency
+                    )} — ${bundle.credits.toLocaleString()} credits`,
+                  }))}
+                  onChange={(value) => setSelectedBundleKey(value)}
+                />
               )}
               <button
                 type="button"
@@ -289,18 +291,13 @@ export const AiPlans: React.FC = () => {
           <>
             <Section>
               <SectionTitle>{translate('Credit bundles')}</SectionTitle>
-              <div style={{ marginTop: '0.5rem' }}>
+              <SectionContent>
                 {plans.trial_credits != null && plans.trial_credits > 0 && (
-                  <p
-                    style={{
-                      marginBottom: '0.75rem',
-                      color: colors.gray600,
-                    }}
-                  >
+                  <PlansTrialNotice>
                     {translate('New users get {count} free credits.', {
                       count: plans.trial_credits.toLocaleString(),
                     })}
-                  </p>
+                  </PlansTrialNotice>
                 )}
                 <MetricsTable>
                   <MetricsTableHead>
@@ -314,29 +311,29 @@ export const AiPlans: React.FC = () => {
                     </MetricsTableRow>
                   </MetricsTableHead>
                   <tbody>
-                    {bundles.map((b) => (
-                      <MetricsTableRow key={b.key}>
+                    {bundles.map((bundle) => (
+                      <MetricsTableRow key={bundle.key}>
                         <MetricsTableCell>
                           {formatBundlePrice(
-                            b.price,
-                            b.currency,
+                            bundle.price,
+                            bundle.currency,
                             plans?.currency
                           )}
                         </MetricsTableCell>
                         <MetricsTableCell>
-                          {b.credits.toLocaleString()}
+                          {bundle.credits.toLocaleString()}
                         </MetricsTableCell>
                       </MetricsTableRow>
                     ))}
                   </tbody>
                 </MetricsTable>
-              </div>
+              </SectionContent>
             </Section>
 
             {usage?.payment_history && usage.payment_history.length > 0 && (
               <Section>
                 <SectionTitle>{translate('Payment history')}</SectionTitle>
-                <div style={{ marginTop: '0.5rem' }}>
+                <SectionContent>
                   <MetricsTable>
                     <MetricsTableHead>
                       <MetricsTableRow>
@@ -378,7 +375,7 @@ export const AiPlans: React.FC = () => {
                         ))}
                     </tbody>
                   </MetricsTable>
-                </div>
+                </SectionContent>
               </Section>
             )}
           </>

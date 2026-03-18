@@ -134,7 +134,7 @@ class AiController extends BaseApiController
             'plan' => $body['plan'] ?? null,
             'bundle_key' => $body['bundle_key'] ?? null,
             'currency' => $body['currency'] ?? null,
-        ], static function ($v): bool { return $v !== null && $v !== ''; });
+        ], static fn ($v) => $v !== null && $v !== '');
 
         try {
             $client = new Client(['timeout' => 15]);

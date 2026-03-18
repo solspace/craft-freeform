@@ -10,7 +10,7 @@ import { useAiIntegrations } from '../../modals/modal.form.create-with-ai.querie
 
 import { Card } from './card/card';
 import { chartDataset } from './grid.empty.datasets';
-import { MutedWrapper } from './grid.empty.styles';
+import { ActionsRow, MutedWrapper } from './grid.empty.styles';
 
 const color = '#e0e0e0';
 const generateFormData = (
@@ -79,7 +79,7 @@ export const GridEmpty: React.FC = () => {
             )}
           </p>
 
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <ActionsRow>
             <button
               type="button"
               className="btn submit add icon"
@@ -105,7 +105,7 @@ export const GridEmpty: React.FC = () => {
                 {translate('Create with AI')}
               </AiButton>
             )}
-          </div>
+          </ActionsRow>
         </>
       )}
 

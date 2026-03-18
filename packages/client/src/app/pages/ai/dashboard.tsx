@@ -1,5 +1,4 @@
 import React from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { HeaderContainer } from '@components/layout/blocks/header-container';
@@ -17,6 +16,11 @@ import {
 } from 'recharts';
 
 import { useAiUsageQuery } from './ai.queries';
+import { formatAiDate, getSummaryModeLabel } from './ai.utils';
+import {
+  AiDashboardAccessState,
+  AiDashboardLoadingState,
+} from './dashboard.placeholders';
 import {
   Card,
   CardLabel,
@@ -44,163 +48,15 @@ export const AiDashboard: React.FC = () => {
     isError && axios.isAxiosError(error) && error.response?.status === 403;
 
   if (isNotFound) {
-    return (
-      <div>
-        <Breadcrumb id="ai" label="AI" url="ai" />
-        <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
-        <HeaderContainer>{translate('Dashboard')}</HeaderContainer>
-        <DashboardWrapper>
-          <EmptyState>
-            <EmptyStateTitle>
-              {translate('Solspace AI is not enabled')}
-            </EmptyStateTitle>
-            <p>
-              {translate(
-                'Enable Solspace AI in the Integrations area to view usage and spend.'
-              )}
-            </p>
-            <p style={{ marginTop: '1rem' }}>
-              <Link to="/integrations" className="btn submit">
-                {translate('Go to Integrations')}
-              </Link>
-            </p>
-          </EmptyState>
-        </DashboardWrapper>
-      </div>
-    );
+    return <AiDashboardAccessState />;
   }
 
   if (isForbidden) {
-    return (
-      <div>
-        <Breadcrumb id="ai" label="AI" url="ai" />
-        <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
-        <HeaderContainer>{translate('Dashboard')}</HeaderContainer>
-        <DashboardWrapper>
-          <EmptyState>
-            <EmptyStateTitle>
-              {translate('Authorize Solspace AI to view usage')}
-            </EmptyStateTitle>
-            <p>
-              {translate(
-                'Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage and spend.'
-              )}
-            </p>
-            <p style={{ marginTop: '1rem' }}>
-              <Link to="/integrations" className="btn submit">
-                {translate('Go to Integrations')}
-              </Link>
-            </p>
-          </EmptyState>
-        </DashboardWrapper>
-      </div>
-    );
+    return <AiDashboardAccessState isForbidden />;
   }
 
   if (isFetching && !data) {
-    return (
-      <div>
-        <Breadcrumb id="ai" label="AI" url="ai" />
-        <HeaderContainer>{translate('AI')}</HeaderContainer>
-        <DashboardWrapper>
-          <CardsGrid>
-            <Card>
-              <CardLabel>
-                <Skeleton width={80} height={10} />
-              </CardLabel>
-              <CardValue>
-                <Skeleton width={100} height={24} />
-              </CardValue>
-            </Card>
-            <Card>
-              <CardLabel>
-                <Skeleton width={80} height={10} />
-              </CardLabel>
-              <CardValue>
-                <Skeleton width={140} height={18} />
-              </CardValue>
-            </Card>
-            <Card>
-              <CardLabel>
-                <Skeleton width={80} height={10} />
-              </CardLabel>
-              <CardValue>
-                <Skeleton width={120} height={18} />
-              </CardValue>
-            </Card>
-          </CardsGrid>
-
-          <Section>
-            <SectionTitle>
-              <Skeleton width={140} height={12} />
-            </SectionTitle>
-            <UsageChart>
-              <ResponsiveContainer width="100%" height={220}>
-                <BarChart
-                  data={Array.from({ length: 6 }).map((_, idx) => ({
-                    date: idx,
-                    credits: Math.floor(Math.random() * 20),
-                  }))}
-                >
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                  <XAxis dataKey="date" hide />
-                  <YAxis hide />
-                  <Bar
-                    dataKey="credits"
-                    fill={colors.gray200}
-                    radius={[4, 4, 0, 0]}
-                    maxBarSize={40}
-                    isAnimationActive={false}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </UsageChart>
-          </Section>
-
-          <Section>
-            <SectionTitle>
-              <Skeleton width={160} height={12} />
-            </SectionTitle>
-            <MetricsTable>
-              <MetricsTableHead>
-                <tr>
-                  <MetricsTableHeaderCell>
-                    <Skeleton width={80} height={10} />
-                  </MetricsTableHeaderCell>
-                  <MetricsTableHeaderCell>
-                    <Skeleton width={60} height={10} />
-                  </MetricsTableHeaderCell>
-                  <MetricsTableHeaderCell>
-                    <Skeleton width={90} height={10} />
-                  </MetricsTableHeaderCell>
-                  <MetricsTableHeaderCell>
-                    <Skeleton width={200} height={10} />
-                  </MetricsTableHeaderCell>
-                </tr>
-              </MetricsTableHead>
-              <tbody>
-                {Array.from({ length: 4 }).map((_, idx) => (
-                  <MetricsTableRow key={idx}>
-                    <MetricsTableCell>
-                      <Skeleton width={110} height={10} />
-                    </MetricsTableCell>
-                    <MetricsTableCell>
-                      <Skeleton width={70} height={10} />
-                    </MetricsTableCell>
-                    <MetricsTableCell>
-                      <Skeleton width={130} height={10} />
-                    </MetricsTableCell>
-                    <MetricsTableCell>
-                      <Skeleton width={220} height={10} />
-                    </MetricsTableCell>
-                  </MetricsTableRow>
-                ))}
-              </tbody>
-            </MetricsTable>
-          </Section>
-        </DashboardWrapper>
-      </div>
-    );
+    return <AiDashboardLoadingState />;
   }
 
   if (isError) {
@@ -229,18 +85,6 @@ export const AiDashboard: React.FC = () => {
   const summary = data ?? undefined;
   const hasAnyData = summary != null;
 
-  function formatDate(iso: string | null | undefined): string {
-    if (!iso) return '—';
-    try {
-      const d = new Date(iso);
-      return Number.isNaN(d.getTime())
-        ? iso
-        : d.toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return iso;
-    }
-  }
-
   return (
     <div>
       <Breadcrumb id="ai" label="AI" url="ai" />
@@ -263,12 +107,7 @@ export const AiDashboard: React.FC = () => {
               <Card>
                 <CardLabel>{translate('Status')}</CardLabel>
                 <CardValueSmall>
-                  {summary.mode === 'trial' && translate('Free trial')}
-                  {summary.mode === 'plan' && translate('Active plan')}
-                  {summary.mode === 'blocked' &&
-                    translate('Usage limit reached')}
-                  {(!summary.mode || summary.mode === 'unknown') &&
-                    translate('Not configured')}
+                  {translate(getSummaryModeLabel(summary))}
                 </CardValueSmall>
               </Card>
               {summary.trial_days_remaining != null &&
@@ -321,7 +160,7 @@ export const AiDashboard: React.FC = () => {
                 <Card>
                   <CardLabel>{translate('Started')}</CardLabel>
                   <CardValueSmall>
-                    {formatDate(summary.created_at)}
+                    {formatAiDate(summary.created_at)}
                   </CardValueSmall>
                 </Card>
               )}
@@ -391,7 +230,7 @@ export const AiDashboard: React.FC = () => {
                 {summary.request_logs.map((log, idx) => (
                   <MetricsTableRow key={log.request_id ?? idx}>
                     <MetricsTableCell>
-                      {log.date ? formatDate(log.date) : translate('Unknown')}
+                      {log.date ? formatAiDate(log.date) : translate('Unknown')}
                     </MetricsTableCell>
                     <MetricsTableCell>
                       {log.status === 'success'

@@ -11,12 +11,7 @@ import type { ModalContainerProps } from '@components/modals/modal.types';
 import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { Form } from '@ff-client/types/forms';
-import type {
-  SelectProperty,
-  StringProperty,
-  TextareaProperty,
-} from '@ff-client/types/properties';
-import { PropertyType } from '@ff-client/types/properties';
+import { PropertyType, type SelectProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import axios from 'axios';
 
@@ -62,30 +57,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
     [integrationOptions]
   );
 
-  const promptProperty = useMemo<TextareaProperty>(
-    () => ({
-      type: PropertyType.Textarea,
-      handle: 'prompt',
-      label: translate('Describe your form'),
-      instructions: translate('Describe the fields and purpose of the form.'),
-      required: true,
-      rows: 4,
-      placeholder: translate(
-        'e.g. Contact form with name, email, phone, and a message box'
-      ),
-    }),
-    []
-  );
-
-  const nameProperty = useMemo<StringProperty>(
-    () => ({
-      type: PropertyType.String,
-      handle: 'name',
-      label: translate('Form name') + ' (' + translate('optional') + ')',
-      placeholder: translate('e.g. Contact Form'),
-    }),
-    []
-  );
+  const nameLabel = `${translate('Form name')} (${translate('optional')})`;
 
   useOnKeypress(
     {
@@ -138,22 +110,14 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
       navigate(`/forms/${form.id}`);
       closeModal();
     } catch (err: unknown) {
-      let message: string | null = null;
-      if (err && typeof err === 'object' && 'response' in err) {
-        const res = (err as { response?: { data?: unknown } }).response?.data;
-        if (typeof res === 'string') {
-          message = res;
-        } else if (
-          res &&
-          typeof res === 'object' &&
-          'message' in res &&
-          typeof (res as { message: unknown }).message === 'string'
-        ) {
-          message = (res as { message: string }).message;
-        }
-      }
+      const message =
+        axios.isAxiosError(err) &&
+        typeof err.response?.data?.message === 'string'
+          ? err.response.data.message
+          : null;
+
       setError(
-        message ||
+        message ??
           translate('Form generation failed. Please try again or rephrase.')
       );
     } finally {
@@ -176,13 +140,30 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         />
 
         <FormComponent
-          property={promptProperty}
+          property={{
+            type: PropertyType.Textarea,
+            handle: 'prompt',
+            label: translate('Describe your form'),
+            instructions: translate(
+              'Describe the fields and purpose of the form.'
+            ),
+            required: true,
+            rows: 4,
+            placeholder: translate(
+              'e.g. Contact form with name, email, phone, and a message box'
+            ),
+          }}
           value={prompt}
           updateValue={(v) => setPrompt(String(v ?? ''))}
         />
 
         <FormComponent
-          property={nameProperty}
+          property={{
+            type: PropertyType.String,
+            handle: 'name',
+            label: nameLabel,
+            placeholder: translate('e.g. Contact Form'),
+          }}
           value={name}
           updateValue={(v) => setName(String(v ?? ''))}
         />

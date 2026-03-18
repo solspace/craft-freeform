@@ -1,5 +1,5 @@
-import type { SpringValue } from "react-spring";
-import { useSpring } from "react-spring";
+import type { SpringValue } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
 import { useDragContext } from "../../drag.context";
 

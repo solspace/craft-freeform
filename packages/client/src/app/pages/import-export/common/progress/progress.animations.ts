@@ -1,5 +1,5 @@
-import type { SpringValues } from "react-spring";
-import { useSpring } from "react-spring";
+import type { SpringValues } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
 export const useProgressAnimation = (
   loading: boolean,

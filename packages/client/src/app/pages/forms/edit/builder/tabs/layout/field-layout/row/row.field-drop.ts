@@ -3,7 +3,7 @@ import { Drag } from "@editor/builder/types/drag";
 import type { Row } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 import type { ConnectDropTarget } from "react-dnd";
 import { useDrop } from "react-dnd";
@@ -28,7 +28,7 @@ type FieldDropHook = {
 };
 
 export const useRowFieldDrop = (
-  wrapperRef: MutableRefObject<HTMLDivElement>,
+  wrapperRef: RefObject<HTMLDivElement>,
   row: Row,
   fieldCount: number,
   width: number,

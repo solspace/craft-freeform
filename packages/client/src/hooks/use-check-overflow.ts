@@ -1,8 +1,8 @@
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 
 export const useCheckOverflow = <T extends HTMLElement>(): [
-  MutableRefObject<T>,
+  RefObject<T>,
   boolean,
 ] => {
   const textRef = useRef<T>(null);

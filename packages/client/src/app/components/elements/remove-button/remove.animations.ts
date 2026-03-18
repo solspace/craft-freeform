@@ -1,6 +1,6 @@
 import { colors } from "@ff-client/styles/variables";
-import type { SpringValue } from "react-spring";
-import { useSpring } from "react-spring";
+import type { SpringValue } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
 type RemoveAnimation = (options: { active: boolean; hovering: boolean }) => {
   opacity: SpringValue<number>;

@@ -1,6 +1,6 @@
+import type { SpringValues } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 import { useState } from "react";
-import type { SpringValues } from "react-spring";
-import { useSpring } from "react-spring";
 
 import { usePosition } from "./previewable-component.hooks";
 

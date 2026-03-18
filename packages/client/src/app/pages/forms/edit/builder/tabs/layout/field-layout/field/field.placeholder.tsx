@@ -1,6 +1,6 @@
 import { borderRadius } from "@ff-client/styles/variables";
+import { animated, useSpring } from "@react-spring/web";
 import type React from "react";
-import { animated, useSpring } from "react-spring";
 import styled from "styled-components";
 
 type Props = {

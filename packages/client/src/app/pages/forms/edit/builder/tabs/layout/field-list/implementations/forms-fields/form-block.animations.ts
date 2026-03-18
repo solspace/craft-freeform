@@ -1,4 +1,4 @@
-import { type SpringValues, useSpring } from "react-spring";
+import { type SpringValues, useSpring } from "@react-spring/web";
 
 export const useFormBlockAnimations = (
   open: boolean,

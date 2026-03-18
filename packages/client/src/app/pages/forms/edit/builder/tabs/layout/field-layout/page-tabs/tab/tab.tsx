@@ -14,7 +14,7 @@ import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import TranslateIcon from "@ff-icons/translate.icon.svg";
 import type React from "react";
-import type { KeyboardEvent, MutableRefObject } from "react";
+import type { KeyboardEvent, RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -97,7 +97,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
 
   const connectedRef = dropRef(
     wrapperRef,
-  ) as unknown as MutableRefObject<HTMLDivElement>;
+  ) as unknown as RefObject<HTMLDivElement>;
 
   return (
     <TabWrapper

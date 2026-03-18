@@ -1,4 +1,5 @@
 import type { FormGroupsListRefs } from "@ff-client/types/form-groups";
+import type { RefObject } from "react";
 import Sortable from "sortablejs";
 
 type SortableOptions = { [key: string]: Sortable.Options };
@@ -7,7 +8,7 @@ const putCondition = (_to: Sortable, from: Sortable): boolean =>
   from.options.handle !== ".handle";
 
 export const initializeSortable = (
-  formListRefs: React.MutableRefObject<FormGroupsListRefs>,
+  formListRefs: RefObject<FormGroupsListRefs>,
 ): void => {
   const initialize = (
     selector: keyof FormGroupsListRefs,
@@ -50,7 +51,7 @@ export const initializeSortable = (
 export const initializeGroupedSortable = (
   el: HTMLDivElement | null,
   uid: string,
-  formGroupsListRefs: React.MutableRefObject<FormGroupsListRefs>,
+  formGroupsListRefs: RefObject<FormGroupsListRefs>,
 ): void => {
   if (el) {
     Sortable.create(el, {

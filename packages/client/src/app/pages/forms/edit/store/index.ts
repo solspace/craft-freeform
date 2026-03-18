@@ -1,8 +1,7 @@
-import type { Action, AnyAction, Store } from "@reduxjs/toolkit";
+import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { configureStore } from "@reduxjs/toolkit";
 import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector, useStore } from "react-redux";
-import type { ThunkAction, ThunkDispatch } from "redux-thunk";
 
 import { statePersistMiddleware } from "./middleware/state-persist";
 import context from "./slices/context";
@@ -29,10 +28,11 @@ export const store = configureStore({
   },
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = ThunkDispatch<RootState, void, Action>;
-export type AppThunk<R = void> = ThunkAction<R, RootState, unknown, AnyAction>;
+export type AppStore = typeof store;
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
+export type AppThunk<R = void> = ThunkAction<R, RootState, unknown, Action>;
 
-export const useAppDispatch = (): AppDispatch => useDispatch<AppDispatch>();
+export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
-export const useAppStore = (): Store<RootState> => useStore<RootState>();
+export const useAppStore = useStore.withTypes<AppStore>();

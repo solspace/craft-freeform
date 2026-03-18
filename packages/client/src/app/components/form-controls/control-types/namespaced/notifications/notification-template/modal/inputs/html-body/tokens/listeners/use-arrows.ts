@@ -1,5 +1,5 @@
 import type { SuggestionCategory } from "@ff-client/types/notifications";
-import type { Dispatch, MutableRefObject, SetStateAction } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import { useEffect } from "react";
 
 import type { TokenBackend } from "../tokens.types";
@@ -10,7 +10,7 @@ type Props = {
   filter: string;
   setIndex: Dispatch<SetStateAction<number>>;
   setFilter: Dispatch<SetStateAction<string>>;
-  itemCountRef: MutableRefObject<number>;
+  itemCountRef: RefObject<number>;
   suggestions: SuggestionCategory[];
   close: () => void;
 };
@@ -45,11 +45,11 @@ export const useArrowNavigation = ({
           event.preventDefault();
 
           setIndex((prev) => {
-            if (prev >= itemCountRef.current - 1) {
-              return itemCountRef.current - 1;
+            if (prev >= (itemCountRef.current ?? 0) - 1) {
+              return (itemCountRef.current ?? 0) - 1;
             }
 
-            return prev < itemCountRef.current
+            return prev < (itemCountRef.current ?? 0)
               ? prev + 1
               : itemCountRef.current - 1;
           });

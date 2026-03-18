@@ -5,9 +5,9 @@ import { useFieldType } from "@ff-client/queries/field-types";
 import classes from "@ff-client/utils/classes";
 import HeartFullIcon from "@ff-icons/heart-check.svg";
 import HeartEmptyIcon from "@ff-icons/heart-empty.svg";
+import { useSpring } from "@react-spring/web";
 import type React from "react";
 import { useEffect, useState } from "react";
-import { useSpring } from "react-spring";
 
 import { FavoriteForm } from "./favorite.form";
 import { useFavoritesMutation } from "./favorite.queries";

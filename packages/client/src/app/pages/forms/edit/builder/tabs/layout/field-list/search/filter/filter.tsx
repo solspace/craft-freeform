@@ -1,8 +1,8 @@
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import translate from "@ff-client/utils/translations";
+import { useSpring } from "@react-spring/web";
 import type React from "react";
 import { useState } from "react";
-import { useSpring } from "react-spring";
 
 import FilterIconSVG from "../sliders.svg";
 

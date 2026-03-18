@@ -1,8 +1,8 @@
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { useCallback, useEffect, useState } from "react";
 
 export const useRowDimensions = (
-  ref: MutableRefObject<HTMLDivElement>,
+  ref: RefObject<HTMLDivElement>,
 ): [number, number] => {
   const [width, setWidth] = useState<number>(0);
   const [offsetX, setOffsetX] = useState<number>(0);

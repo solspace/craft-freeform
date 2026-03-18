@@ -4,7 +4,7 @@ import type {
   FormWithGroup,
   UpdateFormGroup,
 } from "@ff-client/types/form-groups";
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import { useCallback } from "react";
 import Sortable from "sortablejs";
 import { v4 } from "uuid";
@@ -20,7 +20,7 @@ type GroupOperations = {
 export const useFormGroupsOperations = (
   initialState: FormWithGroup,
   setState: StateSetter<FormWithGroup>,
-  formGroupsListRefs: React.MutableRefObject<FormGroupsListRefs>,
+  formGroupsListRefs: RefObject<FormGroupsListRefs>,
 ): GroupOperations => {
   const { getCurrentHandleWithFallback, current } = useSiteContext();
 

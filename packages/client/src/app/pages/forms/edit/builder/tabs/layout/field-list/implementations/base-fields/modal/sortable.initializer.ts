@@ -1,4 +1,5 @@
 import type { FieldListRefs } from "@ff-client/types/groups";
+import type { RefObject } from "react";
 import Sortable from "sortablejs";
 
 type SortableOptions = { [key: string]: Sortable.Options };
@@ -7,7 +8,7 @@ const putCondition = (_to: Sortable, from: Sortable): boolean =>
   from.options.handle !== ".handle";
 
 export const initializeSortable = (
-  fieldListRefs: React.MutableRefObject<FieldListRefs>,
+  fieldListRefs: RefObject<FieldListRefs>,
 ): void => {
   const initialize = (
     selector: keyof FieldListRefs,
@@ -58,7 +59,7 @@ export const initializeSortable = (
 export const initializeGroupedSortable = (
   el: HTMLDivElement | null,
   uid: string,
-  fieldListRefs: React.MutableRefObject<FieldListRefs>,
+  fieldListRefs: RefObject<FieldListRefs>,
 ): void => {
   if (el) {
     Sortable.create(el, {

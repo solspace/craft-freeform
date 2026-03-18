@@ -2,8 +2,8 @@
   "name": "@ff/scripts",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npm run clean && npm run watch",
-    "build": "npm run clean && NODE_ENV=production npm run compile",
+    "dev": "pnpm run clean && pnpm run watch",
+    "build": "pnpm run clean && NODE_ENV=production pnpm run compile",
     "watch": "webpack --watch",
     "clean": "rm -rf ../plugin/src/Resources/js/scripts",
     "lint": "biome check",

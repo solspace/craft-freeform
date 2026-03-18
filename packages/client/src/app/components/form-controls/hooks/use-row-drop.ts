@@ -1,10 +1,11 @@
 import type { OptionRowDragItem } from "@editor/builder/types/drag";
 import { Drag } from "@editor/builder/types/drag";
-import type { Identifier, XYCoord } from "dnd-core";
-import type { MutableRefObject } from "react";
-import type { ConnectDropTarget, DropTargetMonitor } from "react-dnd";
+//import type { Identifier, XYCoord } from "dnd-core";
+import type { RefObject } from "react";
+import type { ConnectDropTarget, DropTargetMonitor, XYCoord } from "react-dnd";
 import { useDrop } from "react-dnd";
 
+type Identifier = string | symbol;
 type CollectedProps = { handlerId: Identifier | null };
 
 type RowDropHook = {
@@ -14,7 +15,7 @@ type RowDropHook = {
 
 export const useRowDrop = (
   index: number,
-  previewRef: MutableRefObject<HTMLTableRowElement>,
+  previewRef: RefObject<HTMLTableRowElement>,
   onDrop: (fromIndex: number, toIndex: number) => void,
 ): RowDropHook => {
   const [{ handlerId }, drop] = useDrop<

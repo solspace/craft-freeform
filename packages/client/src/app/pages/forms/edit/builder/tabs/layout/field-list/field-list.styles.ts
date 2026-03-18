@@ -1,6 +1,6 @@
 import { scrollBar } from "@ff-client/styles/mixins";
 import { spacings } from "@ff-client/styles/variables";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 import { Wrapper } from "./field-group/field/field.styles";

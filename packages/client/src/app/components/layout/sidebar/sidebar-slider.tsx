@@ -1,7 +1,7 @@
 import { shadows } from "@ff-client/styles/variables";
+import { animated, useSprings } from "@react-spring/web";
 import type React from "react";
 import type { PropsWithChildren, ReactElement } from "react";
-import { animated, useSprings } from "react-spring";
 import styled from "styled-components";
 
 import { Sidebar } from "./sidebar";

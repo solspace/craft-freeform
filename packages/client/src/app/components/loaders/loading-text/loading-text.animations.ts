@@ -1,5 +1,5 @@
-import type { SpringConfig, SpringValues } from "react-spring";
-import { useSpring } from "react-spring";
+import type { SpringConfig, SpringValues } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
 import type { Dimensions } from "./loading-text";
 

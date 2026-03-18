@@ -1,6 +1,6 @@
 import { errorAlert } from "@ff-client/styles/mixins";
 import { colors } from "@ff-client/styles/variables";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const TabWrapper = styled(animated.div)`

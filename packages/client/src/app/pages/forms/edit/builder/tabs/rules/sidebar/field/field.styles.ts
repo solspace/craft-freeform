@@ -1,5 +1,5 @@
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const FieldInfo = styled.div`

@@ -1,5 +1,5 @@
 import { spacings } from "@ff-client/styles/variables";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import styled, { keyframes } from "styled-components";
 
 export const ProgressWrapper = styled(animated.div)`

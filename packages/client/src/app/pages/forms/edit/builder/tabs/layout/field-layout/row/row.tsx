@@ -2,7 +2,7 @@ import type { Row as RowType } from "@editor/builder/types/layout";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
 import { useDimensionsObserver } from "@ff-client/hooks/use-height-animation";
 import type React from "react";
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { memo } from "react";
 import { useSelector } from "react-redux";
 
@@ -46,9 +46,7 @@ const Row: React.FC<Props> = memo(({ row }) => {
     fieldWidth,
   } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
 
-  const ref = fieldDropRef(
-    wrapperRef,
-  ) as unknown as MutableRefObject<HTMLDivElement>;
+  const ref = fieldDropRef(wrapperRef) as unknown as RefObject<HTMLDivElement>;
 
   return (
     <RowWrapper ref={ref}>

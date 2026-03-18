@@ -1,6 +1,6 @@
 import { DuplicateButtonWrapper } from "@components/elements/duplicate-button/duplicate.styles";
 import { RemoveButtonWrapper } from "@components/elements/remove-button/remove.styles";
-import { animated } from "react-spring";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const FieldWrapper = styled(animated.div)`

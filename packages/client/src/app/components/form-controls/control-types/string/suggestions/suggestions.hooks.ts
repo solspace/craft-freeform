@@ -1,8 +1,8 @@
-import type { MutableRefObject } from "react";
+import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 
 export const useFocusTracking = (
-  inputRef: MutableRefObject<HTMLInputElement | null>,
+  inputRef: RefObject<HTMLInputElement | null>,
 ): boolean => {
   const [active, setActive] = useState(false);
 

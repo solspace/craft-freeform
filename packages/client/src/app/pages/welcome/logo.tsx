@@ -1,5 +1,5 @@
+import { animated } from "@react-spring/web";
 import type React from "react";
-import { animated } from "react-spring";
 import styled from "styled-components";
 
 import { useLogoAnimation } from "./logo.animations";

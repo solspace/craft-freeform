@@ -1,5 +1,5 @@
-import type { SpringValues, TransitionFn } from "react-spring";
-import { useSpring, useTransition } from "react-spring";
+import type { SpringValues, TransitionFn } from "@react-spring/web";
+import { useSpring, useTransition } from "@react-spring/web";
 
 import type { ModalType } from "./modal.types";
 

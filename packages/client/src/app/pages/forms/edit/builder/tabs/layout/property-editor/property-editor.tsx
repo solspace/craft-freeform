@@ -5,9 +5,9 @@ import { contextActions } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import { useTransition } from "@react-spring/web";
 import type React from "react";
 import { useSelector } from "react-redux";
-import { useTransition } from "react-spring";
 
 import { FieldProperties } from "./editors/fields/field-properties";
 import { PageProperties } from "./editors/pages/page-properties";

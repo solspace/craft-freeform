@@ -3,10 +3,10 @@ import { Drag } from "@editor/builder/types/drag";
 import type { Layout } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
+import type { PickAnimated, SpringValues } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 import type { ConnectDropTarget } from "react-dnd";
 import { useDrop } from "react-dnd";
-import type { PickAnimated, SpringValues } from "react-spring";
-import { useSpring } from "react-spring";
 
 type LayoutDropHook = {
   dropRef: ConnectDropTarget;

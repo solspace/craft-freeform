@@ -1,5 +1,5 @@
 import type { FieldListRefs, Group, GroupItem } from "@ff-client/types/groups";
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import { useCallback } from "react";
 import Sortable from "sortablejs";
 import { v4 } from "uuid";
@@ -24,7 +24,7 @@ const generateRandomColor = (): string =>
 export const useGroupOperations = (
   initialState: Group,
   setState: StateSetter<Group>,
-  fieldListRefs: React.MutableRefObject<FieldListRefs>,
+  fieldListRefs: RefObject<FieldListRefs>,
 ): GroupOperations => {
   const addGroup = useCallback(() => {
     setState((prevState) => ({

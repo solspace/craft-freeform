@@ -1,5 +1,7 @@
 declare module "*.svg" {
-  // biome-ignore lint/suspicious/noExplicitAny: we don't have a better type
-  const content: any;
-  export default content;
+  import type { FC, SVGProps } from "react";
+
+  const Component: FC<SVGProps<SVGSVGElement> & { title?: string }>;
+
+  export default Component;
 }

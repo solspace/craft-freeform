@@ -3,11 +3,9 @@
   "version": "1.0.0",
   "description": "Freeform Client",
   "scripts": {
-    "dev": "NODE_ENV=development pnpm run watch",
-    "build": "pnpm run clean && NODE_ENV=production pnpm run compile",
-    "watch": "webpack serve --config ./config/webpack/dev.config.js",
+    "dev": "vite",
+    "build": "vite build",
     "clean": "rm -rf ../plugin/src/Resources/js/client",
-    "compile": "webpack --config ./config/webpack/prod.config.js",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "test": "vitest --config ./config/vitest/vitest.config.ts",
@@ -59,8 +57,7 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
-    "@svgr/webpack": "^8.1.0",
+    "@vitejs/plugin-react": "^5.0.0",
     "@tanstack/react-query-devtools": "^5.90.2",
     "@types/lodash": "^4.17.24",
     "@types/node": "^22.10.6",
@@ -68,21 +65,11 @@
     "@types/react-dom": "^19.2.3",
     "@types/sortablejs": "^1.15.8",
     "@types/yaireo__tagify": "^4.18.0",
-    "css-loader": "^7.1.2",
     "immutability-helper": "^3.1.1",
     "jsdom": "^26.0.0",
-    "react-refresh": "^0.16.0",
-    "react-refresh-typescript": "^2.0.10",
-    "style-loader": "^3.3.3",
-    "terser-webpack-plugin": "^5.3.11",
-    "ts-loader": "^9.5.4",
-    "typescript-plugin-styled-components": "^3.0.0",
-    "url-loader": "^4.1.1",
+    "vite": "^7.0.0",
+    "vite-plugin-svgr": "^4.0.0",
     "vitest": "^4.0.18",
-    "vitest-tsconfig-paths": "^3.4.1",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.2.2",
-    "webpack-merge": "^5.9.0"
+    "vitest-tsconfig-paths": "^3.4.1"
   }
 }

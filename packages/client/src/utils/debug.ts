@@ -1,7 +1,7 @@
 import type { GenericValue } from "@ff-client/types/properties";
 
 const urlParams = new URLSearchParams(window.location.search);
-const debugMode = process.env.DEBUG_MODE || urlParams.get("mode") === "debug";
+const debugMode = import.meta.env.DEV || urlParams.get("mode") === "debug";
 
 const colors = {
   blue: "color: #068FFE",

@@ -71,6 +71,7 @@ use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\AiService;
 use Solspace\Freeform\Services\ChartsService;
+use Solspace\Freeform\Services\ClientAssetsService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
@@ -139,6 +140,7 @@ use yii\web\View;
  * @property IntegrationsService         $integrations
  * @property IntegrationsQueueService    $integrationsQueue
  * @property ChartsService               $charts
+ * @property ClientAssetsService         $clientAssets
  * @property WidgetsService              $widgets
  * @property ExportService               $export
  * @property ExportProfilesService       $exportProfiles
@@ -453,6 +455,7 @@ class Freeform extends Plugin
         $this->setComponents(
             [
                 'charts' => ChartsService::class,
+                'clientAssets' => ClientAssetsService::class,
                 'crm' => CrmService::class,
                 'diagnostics' => DiagnosticsService::class,
                 'digest' => DigestService::class,

@@ -1,3 +1,5 @@
+import "vite/modulepreload-polyfill";
+
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { BreadcrumbProvider } from "@components/breadcrumbs/breadcrumbs.context";
 import { CpNavigation } from "@components/cp-navigation/cp-navigation";
@@ -40,7 +42,7 @@ import { generateUrl } from "./utils/urls";
 
 import "./styles.css";
 
-const showDevtools = process.env.DEBUG_MODE;
+const showDevtools = import.meta.env.DEV;
 
 const container = document.getElementById("freeform-client");
 const root = ReactDOM.createRoot(container);

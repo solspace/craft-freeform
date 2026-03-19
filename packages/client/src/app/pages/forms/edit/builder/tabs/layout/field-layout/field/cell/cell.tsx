@@ -96,9 +96,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
           </LabelIcon>
 
           <LabelText>{label}</LabelText>
-
           {field.properties.required && <span className="required" />}
-
           <FieldAssociationsBadges uid={uid} />
         </Label>
       )}

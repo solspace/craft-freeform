@@ -1,0 +1,53 @@
+{
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js": {
+    "file": "assets/de-CWEZEpOD.js",
+    "name": "de",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js": {
+    "file": "assets/fr-Dyf3Y5ME.js",
+    "name": "fr",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js": {
+    "file": "assets/it-BXL032ZL.js",
+    "name": "it",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js": {
+    "file": "assets/nl-B_uapvlG.js",
+    "name": "nl",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "src/index.tsx": {
+    "file": "assets/index-BOBDW0zK.js",
+    "name": "index",
+    "src": "src/index.tsx",
+    "isEntry": true,
+    "dynamicImports": [
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js"
+    ],
+    "css": [
+      "assets/index-nQtHp0q_.css"
+    ]
+  }
+}

@@ -2,7 +2,7 @@
   "name": "@ff/styles",
   "version": "1.0.0",
   "scripts": {
-    "dev": "pnpm run clean && pnpm run build && sass --no-source-map --watch src/:../plugin/src/Resources/css",
+    "dev": "pnpm run clean && sass --no-source-map --watch src/:../plugin/src/Resources/css",
     "build": "pnpm run clean && sass --no-source-map --style=compressed src/:../plugin/src/Resources/css",
     "clean": "rm -rf ../plugin/src/Resources/css",
     "lint": "biome check",

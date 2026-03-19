@@ -3,30 +3,26 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "pnpm run clean && pnpm run watch",
-    "build": "pnpm run clean && NODE_ENV=production pnpm run compile",
-    "watch": "webpack --watch",
+    "build": "pnpm run clean && node build.mjs --production",
+    "watch": "node build.mjs --watch",
     "clean": "rm -rf ../plugin/src/Resources/js/scripts",
     "lint": "biome check",
     "lint:fix": "biome check --write",
-    "compile": "webpack",
+    "compile": "node build.mjs --production",
     "test": ""
   },
   "author": "Solspace Inc.",
   "license": "MIT",
   "dependencies": {
-    "@paypal/paypal-js": "^8.4.2",
-    "@stripe/stripe-js": "^2.1.9",
+    "@paypal/paypal-js": "^9.4.0",
+    "@stripe/stripe-js": "^8.11.0",
     "expression-language": "^2.5.4"
   },
   "devDependencies": {
-    "@types/grecaptcha": "^3.0.4",
-    "@types/jquery": "^3.5.16",
-    "css-loader": "^6.8.1",
+    "@types/grecaptcha": "^3.0.9",
+    "@types/jquery": "^4.0.0",
+    "esbuild": "^0.27.4",
     "glob": "^13.0.6",
-    "style-loader": "^4.0.0",
-    "ts-loader": "^9.5.4",
-    "typescript": "^5.9.3",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^6.0.1"
+    "typescript": "^5.9.3"
   }
 }

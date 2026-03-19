@@ -1,13 +1,16 @@
 import type { Locale } from "date-fns";
+import { enUS } from "date-fns/locale/en-US";
 
-const cache = new Map<string, Locale>();
+const cache = new Map<string, Locale>([
+  ["en", enUS],
+  ["en-US", enUS],
+]);
 
 const importers: Record<string, () => Promise<Locale>> = {
   nl: async () => (await import("date-fns/locale/nl")).nl,
   de: async () => (await import("date-fns/locale/de")).de,
   fr: async () => (await import("date-fns/locale/fr")).fr,
   it: async () => (await import("date-fns/locale/it")).it,
-  "en-US": async () => (await import("date-fns/locale/en-US")).enUS,
 };
 
 const normalizeLocale = (input: unknown): string => {

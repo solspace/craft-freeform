@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 
 import { List } from "../../field-group/field-group.styles";
 
-import ChevronIcon from "./chevron.svg";
+import ChevronIcon from "./chevron";
 import { FieldItem } from "./field-item";
 import { useFormBlockAnimations } from "./form-block.animations";
 import {

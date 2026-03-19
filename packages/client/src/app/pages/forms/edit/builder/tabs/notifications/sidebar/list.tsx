@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 import { useLastTab } from "../../tabs.hooks";
-import IconManager from "./icon.manager.svg";
+import IconManager from "./icon.manager";
 import { NotificationItem } from "./items/item";
 import { Icon, Link, Name } from "./items/item.styles";
 import { NotificationItemEmpty } from "./items/type.styles";

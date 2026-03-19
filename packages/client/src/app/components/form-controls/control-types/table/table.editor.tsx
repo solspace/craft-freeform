@@ -13,8 +13,8 @@ import type {
   ColumnDescription,
   TableColumnMetadata,
 } from "@components/form-controls/control-types/table/table.types";
-import IconCross from "@components/form-controls/icons/cross.svg";
-import MoveIcon from "@components/form-controls/icons/move.svg";
+import IconCross from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
 import { FlexRow } from "@components/layout/blocks/flex";
 import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
@@ -28,13 +28,13 @@ import type React from "react";
 import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import Sortable from "sortablejs";
 
-import IconCheckbox from "./editor/icon.checkbox.svg";
-import IconDropdown from "./editor/icon.dropdown.svg";
-import IconFile from "./editor/icon.file.svg";
-import IconPlus from "./editor/icon.plus.svg";
-import IconRadio from "./editor/icon.radios.svg";
-import IconText from "./editor/icon.text.svg";
-import IconTextarea from "./editor/icon.textarea.svg";
+import IconCheckbox from "./editor/icon.checkbox";
+import IconDropdown from "./editor/icon.dropdown";
+import IconFile from "./editor/icon.file";
+import IconPlus from "./editor/icon.plus";
+import IconRadio from "./editor/icon.radios";
+import IconText from "./editor/icon.text";
+import IconTextarea from "./editor/icon.textarea";
 import {
   AddColumnButton,
   RemoveColumnButton,

@@ -1,5 +1,5 @@
 import { EmptyBlock } from "@components/empty-block/empty-block";
-import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon.svg";
+import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 

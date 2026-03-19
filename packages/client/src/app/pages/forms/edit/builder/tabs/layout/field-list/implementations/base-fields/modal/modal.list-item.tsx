@@ -1,6 +1,6 @@
 import { useHover } from "@ff-client/hooks/use-hover";
 import { useFieldType } from "@ff-client/queries/field-types";
-import CrossIcon from "@ff-icons/actions/delete.svg";
+import CrossIcon from "@ff-icons/actions/delete";
 import DOMPurify from "dompurify";
 import type React from "react";
 import { useRef } from "react";

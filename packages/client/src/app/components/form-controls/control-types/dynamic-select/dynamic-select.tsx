@@ -9,7 +9,7 @@ import type {
   DynamicSelectProperty,
   OptionCollection,
 } from "@ff-client/types/properties";
-import RefreshIcon from "@ff-icons/actions/refresh.svg";
+import RefreshIcon from "@ff-icons/actions/refresh";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import type React from "react";

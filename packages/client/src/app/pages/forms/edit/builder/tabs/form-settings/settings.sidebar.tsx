@@ -13,7 +13,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { useLastTab } from "../tabs.hooks";
 
-import NewsIcon from "./news.icon.svg";
+import NewsIcon from "./news.icon";
 import { TAB_USAGE } from "./settings";
 import {
   SectionIcon,

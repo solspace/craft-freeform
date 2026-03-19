@@ -1,7 +1,7 @@
 import classes from "@ff-client/utils/classes";
 import type React from "react";
 
-import SettingsIcon from "../../../assets/icons/settings.svg";
+import SettingsIcon from "../../../assets/icons/settings";
 import { Chart } from "../../results.types";
 
 import { useSettingsMutation } from "./block.settings.queries";

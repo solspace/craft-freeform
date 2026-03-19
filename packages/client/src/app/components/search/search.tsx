@@ -2,6 +2,7 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import { useSearchFocus } from "./search.hooks";
+import SearchIconSVG from "./search.icon";
 import {
   SearchBar,
   SearchBlock,
@@ -9,7 +10,6 @@ import {
   SearchKeyHelper,
   Wrapper,
 } from "./search.style";
-import SearchIconSVG from "./search.svg";
 
 type Props = {
   placeholder?: string;

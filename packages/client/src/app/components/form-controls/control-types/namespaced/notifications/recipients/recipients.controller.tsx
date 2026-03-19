@@ -1,11 +1,11 @@
 import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
-import CrossIcon from "@ff-client/assets/icons/delete.svg";
+import CrossIcon from "@ff-client/assets/icons/delete";
 import type { Recipient } from "@ff-client/types/notifications";
 import classes from "@ff-client/utils/classes";
 import React from "react";
 
-import MailIcon from "./mail-icon.svg";
+import MailIcon from "./mail-icon";
 import {
   addRecipient,
   removeRecipient,

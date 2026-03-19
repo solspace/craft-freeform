@@ -5,11 +5,11 @@ import DOMPurify from "dompurify";
 import type React from "react";
 import type { ReactNode } from "react";
 
-import CircleIcon from "./icons/circle.icon.svg";
-import DeleteIcon from "./icons/delete.icon.svg";
-import InfoIcon from "./icons/info.icon.svg";
-import NewIcon from "./icons/new.icon.svg";
-import TriangleIcon from "./icons/triangle.icon.svg";
+import CircleIcon from "./icons/circle.icon";
+import DeleteIcon from "./icons/delete.icon";
+import InfoIcon from "./icons/info.icon";
+import NewIcon from "./icons/new.icon";
+import TriangleIcon from "./icons/triangle.icon";
 import { useNoticeDeleteMutation, useNoticesQuery } from "./notices.queries";
 import {
   CloseButton,

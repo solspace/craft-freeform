@@ -2,7 +2,7 @@ import type { OptionCollection } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
 import DOMPurify from "dompurify";
 import { type FC, useEffect, useRef } from "react";
-import CheckIcon from "./check.svg";
+import CheckIcon from "./check";
 import type { DropdownProps } from "./dropdown";
 import {
   CheckMark,

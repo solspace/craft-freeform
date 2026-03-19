@@ -2,8 +2,8 @@ import { AddButtonArea } from "@components/elements/add-button-area/add-button-a
 import { HelpText } from "@components/elements/help-text";
 import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
-import CrossIcon from "@components/form-controls/icons/cross.svg";
-import MoveIcon from "@components/form-controls/icons/move.svg";
+import CrossIcon from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";

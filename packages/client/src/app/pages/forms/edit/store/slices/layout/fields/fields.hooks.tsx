@@ -1,6 +1,6 @@
 import { useAppStore } from "@editor/store";
-import GroupIcon from "@ff-client/assets/icons/fields/group.svg";
-import PageIcon from "@ff-client/assets/icons/fields/page.svg";
+import GroupIcon from "@ff-client/assets/icons/fields/group";
+import PageIcon from "@ff-client/assets/icons/fields/page";
 import { useFieldTypeSearch } from "@ff-client/queries/field-types";
 import type { OptionCollection } from "@ff-client/types/properties";
 import { useMemo } from "react";

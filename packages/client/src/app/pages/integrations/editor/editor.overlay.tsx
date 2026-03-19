@@ -1,6 +1,6 @@
 import { EmptyBlock } from "@components/empty-block/empty-block";
 import config from "@config/freeform/freeform.config";
-import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon.svg";
+import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import styled from "styled-components";

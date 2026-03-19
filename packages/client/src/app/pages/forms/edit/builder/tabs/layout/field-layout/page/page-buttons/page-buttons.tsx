@@ -3,7 +3,7 @@ import { useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
-import SpinnerIcon from "@ff-client/assets/icons/spinner.icon.svg";
+import SpinnerIcon from "@ff-client/assets/icons/spinner.icon";
 import { useAssetQuery } from "@ff-client/queries/assets";
 import classes from "@ff-client/utils/classes";
 import type React from "react";

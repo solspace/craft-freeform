@@ -5,11 +5,11 @@ import type {
   FormTestsResponse,
 } from "@ff-client/types/form-monitor";
 import translate from "@ff-client/utils/translations";
-import BroomIcon from "@ff-icons/actions/broom.svg";
-import EllipsisIcon from "@ff-icons/actions/ellipsis.svg";
-import LoadingIcon from "@ff-icons/actions/loading.svg";
-import StopIcon from "@ff-icons/actions/stop.svg";
-import TrashIcon from "@ff-icons/actions/trash.svg";
+import BroomIcon from "@ff-icons/actions/broom";
+import EllipsisIcon from "@ff-icons/actions/ellipsis";
+import LoadingIcon from "@ff-icons/actions/loading";
+import StopIcon from "@ff-icons/actions/stop";
+import TrashIcon from "@ff-icons/actions/trash";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import React from "react";

@@ -1,7 +1,7 @@
 import { ActionMenu } from "@components/action-menu/action-menu";
 import translate from "@ff-client/utils/translations";
-import EditIcon from "@ff-icons/actions/pencil.svg";
-import TrashIcon from "@ff-icons/actions/trash-can.svg";
+import EditIcon from "@ff-icons/actions/pencil";
+import TrashIcon from "@ff-icons/actions/trash-can";
 import type React from "react";
 
 type Props = {

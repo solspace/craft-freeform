@@ -7,9 +7,9 @@ import isEqual from "lodash/isEqual";
 import type React from "react";
 import type { ReactNode } from "react";
 
-import BackIcon from "./icons/back.svg";
-import SaveIcon from "./icons/save.svg";
-import SubmitIcon from "./icons/submit.svg";
+import BackIcon from "./icons/back";
+import SaveIcon from "./icons/save";
+import SubmitIcon from "./icons/submit";
 import {
   Button,
   ButtonGroup,

@@ -4,7 +4,7 @@ import { generateUrl } from "@ff-client/utils/urls";
 import type React from "react";
 import { NavLink } from "react-router-dom";
 
-import CheckIcon from "./check.icon.svg";
+import CheckIcon from "./check.icon";
 import { Logo } from "./logo";
 import { useWelcomeAnimations } from "./welcome.animations";
 import {

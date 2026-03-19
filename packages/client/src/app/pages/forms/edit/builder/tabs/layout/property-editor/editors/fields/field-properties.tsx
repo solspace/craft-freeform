@@ -2,7 +2,7 @@ import config from "@config/freeform/freeform.config";
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
-import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid.svg";
+import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid";
 import {
   useFetchFieldPropertySections,
   useFieldType,

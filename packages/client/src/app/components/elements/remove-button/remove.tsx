@@ -1,5 +1,5 @@
 import { useHover } from "@ff-client/hooks/use-hover";
-import DeleteIcon from "@ff-icons/actions/trash-can.svg";
+import DeleteIcon from "@ff-icons/actions/trash-can";
 import type React from "react";
 import { useRef } from "react";
 

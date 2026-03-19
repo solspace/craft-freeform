@@ -5,7 +5,7 @@ import classes from "@ff-client/utils/classes";
 import type React from "react";
 import { useRef, useState } from "react";
 
-import EditIcon from "./edit-icon.svg";
+import EditIcon from "./edit-icon";
 import { useEditButtonAnimations, useLabelAnimation } from "./label.animations";
 import { EditableLabelWrapper, EditButton, LabelElement } from "./label.styles";
 

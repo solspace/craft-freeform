@@ -4,7 +4,7 @@ import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
 import type { OptionCollection } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
-import RemoveIcon from "@ff-icons/actions/delete.svg";
+import RemoveIcon from "@ff-icons/actions/delete";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 

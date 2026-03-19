@@ -19,10 +19,10 @@ import {
   FormMonitorTitlebarActions,
   isFormMonitor,
 } from "./form-monitor/titlebar.actions";
-import IconFavorite from "./icon.favorite.svg";
-import IconInfo from "./icon.info.svg";
-import IconRefresh from "./icon.refresh.svg";
-import IconShield from "./icon.shield.svg";
+import IconFavorite from "./icon.favorite";
+import IconInfo from "./icon.info";
+import IconRefresh from "./icon.refresh";
+import IconShield from "./icon.shield";
 import { showAuthWindow } from "./titlebar.actions";
 import { useAuthCheck } from "./titlebar.queries";
 import {

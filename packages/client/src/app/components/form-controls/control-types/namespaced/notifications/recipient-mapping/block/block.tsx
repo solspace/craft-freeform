@@ -1,6 +1,6 @@
 import { Action } from "@editor/builder/tabs/rules/conditions/table/condition-table.styles";
 import type { RecipientMapping } from "@ff-client/types/notifications";
-import DeleteIcon from "@ff-icons/actions/delete.svg";
+import DeleteIcon from "@ff-icons/actions/delete";
 import type React from "react";
 import { BlockWrapper } from "./block.styles";
 import { Recipients } from "./recipients/recipients";

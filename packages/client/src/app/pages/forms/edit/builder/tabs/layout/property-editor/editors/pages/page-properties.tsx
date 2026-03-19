@@ -1,7 +1,7 @@
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
-import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid.svg";
+import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid";
 import { useFetchPageButtonType } from "@ff-client/queries/page-types";
 import type { Property } from "@ff-client/types/properties";
 import type React from "react";

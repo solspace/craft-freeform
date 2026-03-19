@@ -11,8 +11,8 @@ import {
 } from "@components/form-controls/control-types/table/table.editor.styles";
 import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
-import CrossIcon from "@components/form-controls/icons/cross.svg";
-import MoveIcon from "@components/form-controls/icons/move.svg";
+import CrossIcon from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type {
   GenericValue,

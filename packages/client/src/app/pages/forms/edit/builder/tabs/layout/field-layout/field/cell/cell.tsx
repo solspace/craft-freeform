@@ -1,4 +1,4 @@
-import SpinnerIcon from "@components/loaders/spinner.svg";
+import SpinnerIcon from "@components/loaders/spinner";
 import { useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";

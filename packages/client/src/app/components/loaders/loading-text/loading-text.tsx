@@ -1,7 +1,7 @@
 import type { ComponentPropsWithRef } from "react";
 import React, { useEffect, useState } from "react";
 
-import SpinnerIcon from "../spinner.svg";
+import SpinnerIcon from "../spinner";
 
 import {
   useDotAnimation,

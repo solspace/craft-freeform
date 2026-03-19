@@ -7,7 +7,7 @@ import type React from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-import CogIcon from "./cog-icon.svg";
+import CogIcon from "./cog-icon";
 import { Icon, Name, Status, Wrapper } from "./integration.styles";
 
 export const Integration: React.FC<IntegrationType> = ({

@@ -3,8 +3,8 @@ import type React from "react";
 import { useRef } from "react";
 
 import { useDuplicateAnimation } from "./duplicate.animations";
+import DuplicateIcon from "./duplicate.icon";
 import { DuplicateButtonWrapper } from "./duplicate.styles";
-import DuplicateIcon from "./duplicate.svg";
 
 type Props = {
   active: boolean;

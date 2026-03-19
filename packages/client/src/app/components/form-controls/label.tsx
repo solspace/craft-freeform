@@ -1,7 +1,7 @@
 import { colors } from "@ff-client/styles/variables";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import TranslateIcon from "@ff-icons/translate.icon.svg";
+import TranslateIcon from "@ff-icons/translate.icon";
 import type React from "react";
 
 import {

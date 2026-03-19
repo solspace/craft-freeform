@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Layout } from "../layout/layout";
 
 import { Buttons } from "./buttons/buttons";
-import PageIconSvg from "./page-icon.svg";
+import PageIconSvg from "./page-icon";
 import {
   PageBody,
   PageButton,

@@ -8,9 +8,9 @@ import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { FieldSelect } from "./field-select";
-import CustomIcon from "./icons/custom.svg";
-import ListIcon from "./icons/list.svg";
-import RelationIcon from "./icons/relation.svg";
+import CustomIcon from "./icons/custom";
+import ListIcon from "./icons/list";
+import RelationIcon from "./icons/relation";
 import {
   MappingContainer,
   MappingWrapper,

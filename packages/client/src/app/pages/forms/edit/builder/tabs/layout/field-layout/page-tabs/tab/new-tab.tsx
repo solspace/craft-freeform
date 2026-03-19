@@ -2,7 +2,7 @@ import { useAppDispatch } from "@editor/store";
 import { addNewPage } from "@editor/store/thunks/pages";
 import type React from "react";
 
-import AddIcon from "./add-icon.svg";
+import AddIcon from "./add-icon";
 import { NewTabWrapper } from "./new-tab.styles";
 
 export const NewTab: React.FC = () => {

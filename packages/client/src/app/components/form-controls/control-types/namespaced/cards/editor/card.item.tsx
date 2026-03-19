@@ -21,10 +21,10 @@ import {
   StatusStrip,
   TextArea,
 } from "./card.item.styles";
-import CodeIcon from "./code.icon.svg";
-import CrossIcon from "./cross.icon.svg";
-import GripIcon from "./grip.icon.svg";
-import SuccessIcon from "./success.icon.svg";
+import CodeIcon from "./code.icon";
+import CrossIcon from "./cross.icon";
+import GripIcon from "./grip.icon";
+import SuccessIcon from "./success.icon";
 
 type Props = {
   card: Card;

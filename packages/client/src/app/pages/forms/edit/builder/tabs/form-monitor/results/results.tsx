@@ -10,10 +10,10 @@ import type {
   TestGroup,
 } from "@ff-client/types/form-monitor";
 import translate from "@ff-client/utils/translations";
-import CheckmarkIcon from "@ff-icons/actions/checkmark.svg";
-import DeleteIcon from "@ff-icons/actions/delete.svg";
-import HourglassIcon from "@ff-icons/actions/hourglass.svg";
-import CameraIcon from "@ff-icons/camera.svg";
+import CheckmarkIcon from "@ff-icons/actions/checkmark";
+import DeleteIcon from "@ff-icons/actions/delete";
+import HourglassIcon from "@ff-icons/actions/hourglass";
+import CameraIcon from "@ff-icons/camera";
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import React, { type ReactNode, useRef } from "react";

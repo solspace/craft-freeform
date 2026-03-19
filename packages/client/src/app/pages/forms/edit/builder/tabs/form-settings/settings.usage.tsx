@@ -7,7 +7,7 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useResolvedPath } from "react-router-dom";
 
-import NewsIcon from "./empty.icon.svg";
+import NewsIcon from "./empty.icon";
 import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 
 export const FormUsage: React.FC = () => {

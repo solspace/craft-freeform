@@ -2,7 +2,7 @@ import config, { Edition } from "@config/freeform/freeform.config";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import EditIcon from "@ff-icons/actions/edit.svg";
+import EditIcon from "@ff-icons/actions/edit";
 import axios from "axios";
 import DOMPurify from "dompurify";
 import type React from "react";

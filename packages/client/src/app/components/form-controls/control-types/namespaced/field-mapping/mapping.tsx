@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useParams } from "react-router-dom";
 
-import RefreshIcon from "./icons/refresh.svg";
+import RefreshIcon from "./icons/refresh";
 import { FieldMappingController } from "./mapping.controller";
 import { RefreshButton } from "./mapping.styles";
 import type { SourceField } from "./mapping.types";

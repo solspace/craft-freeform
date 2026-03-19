@@ -1,7 +1,7 @@
 import type React from "react";
 import { useState } from "react";
 
-import DeleteIcon from "./delete.svg";
+import DeleteIcon from "./delete";
 import { useRemoveAnimation } from "./remove.animations";
 import { RemoveButtonWrapper } from "./remove.styles";
 

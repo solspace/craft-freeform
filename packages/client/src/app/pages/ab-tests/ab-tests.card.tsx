@@ -1,6 +1,6 @@
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import CheckIcon from "@ff-icons/actions/checkmark.svg";
+import CheckIcon from "@ff-icons/actions/checkmark";
 import { isPast } from "date-fns";
 import type { FC } from "react";
 

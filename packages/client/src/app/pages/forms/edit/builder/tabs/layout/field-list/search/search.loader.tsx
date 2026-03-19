@@ -1,8 +1,7 @@
 import translate from "@ff-client/utils/translations";
 import type React from "react";
-
+import SearchIconSVG from "./search.icon";
 import { SearchBar, SearchBlock, SearchIcon, Wrapper } from "./search.style";
-import SearchIconSVG from "./search.svg";
 export const LoaderSearch: React.FC = () => {
   return (
     <Wrapper>

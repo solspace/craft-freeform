@@ -1,7 +1,7 @@
 import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { HelpText } from "@components/elements/help-text";
 import type { UpdateValue } from "@components/form-controls";
-import CrossIcon from "@components/form-controls/icons/cross.svg";
+import CrossIcon from "@components/form-controls/icons/cross";
 import type {
   AttributeProperty,
   AttributeTab,

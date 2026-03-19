@@ -3,7 +3,7 @@ import config from "@config/freeform/freeform.config";
 import { useFetchFavorites } from "@ff-client/queries/field-favorites";
 import { useFieldTypeSearch } from "@ff-client/queries/field-types";
 import translate from "@ff-client/utils/translations";
-import EditIcon from "@ff-icons/actions/edit.svg";
+import EditIcon from "@ff-icons/actions/edit";
 import type React from "react";
 
 import { FieldGroup } from "../../field-group/field-group";

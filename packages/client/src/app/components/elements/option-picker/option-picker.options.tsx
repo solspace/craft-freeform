@@ -3,7 +3,7 @@ import classes from "@ff-client/utils/classes";
 import type React from "react";
 import { useEffect, useRef } from "react";
 
-import CheckIcon from "../custom-dropdown/check.svg";
+import CheckIcon from "../custom-dropdown/check";
 import {
   CheckMark,
   Item,

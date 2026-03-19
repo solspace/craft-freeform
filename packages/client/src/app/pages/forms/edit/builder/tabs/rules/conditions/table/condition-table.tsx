@@ -1,7 +1,7 @@
 import type { Condition } from "@ff-client/types/rules";
 import { Operator } from "@ff-client/types/rules";
 import translate from "@ff-client/utils/translations";
-import DeleteIcon from "@ff-icons/actions/delete.svg";
+import DeleteIcon from "@ff-icons/actions/delete";
 import type React from "react";
 import Skeleton from "react-loading-skeleton";
 import { v4 } from "uuid";

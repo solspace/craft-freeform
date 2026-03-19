@@ -2,7 +2,7 @@ import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import EllipsisIcon from "@ff-icons/actions/ellipsis.svg";
+import EllipsisIcon from "@ff-icons/actions/ellipsis";
 import type { FC } from "react";
 import { useState } from "react";
 

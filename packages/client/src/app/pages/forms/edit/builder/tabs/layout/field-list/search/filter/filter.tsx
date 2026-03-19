@@ -4,7 +4,7 @@ import { useSpring } from "@react-spring/web";
 import type React from "react";
 import { useState } from "react";
 
-import FilterIconSVG from "../sliders.svg";
+import FilterIconSVG from "../sliders";
 
 import {
   DropDownWrapper,

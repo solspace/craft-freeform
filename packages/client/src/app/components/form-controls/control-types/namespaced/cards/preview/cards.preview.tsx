@@ -14,8 +14,8 @@ import {
   PreviewCardsList,
   SpinnerWrapper,
 } from "./cards.preview.styles";
-import PlaceholderIcon from "./placeholder.icon.svg";
-import SpinnerIcon from "./spinner.icon.svg";
+import PlaceholderIcon from "./placeholder.icon";
+import SpinnerIcon from "./spinner.icon";
 
 type Props = {
   cards: Card[];

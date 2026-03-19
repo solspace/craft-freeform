@@ -1,8 +1,8 @@
 import type { TestStats } from "@ff-client/types/form-monitor";
 import translate from "@ff-client/utils/translations";
-import CheckIcon from "@ff-icons/actions/check.svg";
-import ExclamationIcon from "@ff-icons/actions/exclamation.svg";
-import HourglassIcon from "@ff-icons/actions/hourglass.svg";
+import CheckIcon from "@ff-icons/actions/check";
+import ExclamationIcon from "@ff-icons/actions/exclamation";
+import HourglassIcon from "@ff-icons/actions/hourglass";
 import type React from "react";
 
 import {

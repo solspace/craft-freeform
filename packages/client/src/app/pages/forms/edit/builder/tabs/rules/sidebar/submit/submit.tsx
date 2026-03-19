@@ -7,7 +7,7 @@ import type React from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import SubmitIcon from "./submit.icon.svg";
+import SubmitIcon from "./submit.icon";
 import { Label, SubmitFormWrapper } from "./submit.styles";
 
 export const SubmitForm: React.FC = () => {

@@ -1,6 +1,6 @@
 import type React from "react";
 
-import SpinnerIcon from "../spinner.svg";
+import SpinnerIcon from "../spinner";
 
 import { SpinnerContainer } from "./spinner.styles";
 

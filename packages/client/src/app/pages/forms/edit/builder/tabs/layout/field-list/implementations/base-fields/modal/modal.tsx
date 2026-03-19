@@ -14,8 +14,8 @@ import type { ErrorList } from "@ff-client/types/api";
 import type { FieldListRefs, Group } from "@ff-client/types/groups";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
-import CrossIcon from "@ff-icons/actions/delete.svg";
-import MoveIcon from "@ff-icons/actions/move.svg";
+import CrossIcon from "@ff-icons/actions/delete";
+import MoveIcon from "@ff-icons/actions/move";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 

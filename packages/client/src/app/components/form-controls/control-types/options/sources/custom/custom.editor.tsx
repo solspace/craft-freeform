@@ -12,8 +12,8 @@ import {
 } from "@components/form-controls/control-types/table/table.editor.styles";
 import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
-import CrossIcon from "@components/form-controls/icons/cross.svg";
-import MoveIcon from "@components/form-controls/icons/move.svg";
+import CrossIcon from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
 import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
 import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
 import { useDebounce } from "@ff-client/hooks/use-debounce";

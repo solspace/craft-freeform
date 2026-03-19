@@ -3,9 +3,9 @@ import { integrationSelectors } from "@editor/store/slices/integrations/integrat
 import { notificationSelectors } from "@editor/store/slices/notifications/notifications.selectors";
 import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
 import translate from "@ff-client/utils/translations";
-import RuleIcon from "@ff-icons/fields/conditional-rules.svg";
-import EmailNotificationIcon from "@ff-icons/fields/email-notifications.svg";
-import IntegrationIcon from "@ff-icons/fields/integrations.svg";
+import RuleIcon from "@ff-icons/fields/conditional-rules";
+import EmailNotificationIcon from "@ff-icons/fields/email-notifications";
+import IntegrationIcon from "@ff-icons/fields/integrations";
 import type React from "react";
 import { useSelector } from "react-redux";
 

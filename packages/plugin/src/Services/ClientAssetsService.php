@@ -113,7 +113,7 @@ class ClientAssetsService extends BaseService
 
     private function isDevModeEnabled(): bool
     {
-        return filter_var(App::env(self::ENV_ENABLED), \FILTER_VALIDATE_BOOLEAN);
+        return App::env(self::ENV_ENABLED) ?? false;
     }
 
     private function isDevServerAvailable(): bool

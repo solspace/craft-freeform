@@ -11,6 +11,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
+import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 export const QKNotifications = {
@@ -26,7 +27,7 @@ export const QKNotifications = {
 export const useNotificationQueryReset = (formId?: number): (() => void) => {
   const queryClient = useQueryClient();
 
-  return () => {
+  return useCallback(() => {
     if (!formId) {
       return;
     }
@@ -35,7 +36,7 @@ export const useNotificationQueryReset = (formId?: number): (() => void) => {
     queryClient.removeQueries({
       queryKey: QKNotifications.formTemplates(formId),
     });
-  };
+  }, [formId, queryClient]);
 };
 
 export const useQueryNotificationTypes = (): UseQueryResult<

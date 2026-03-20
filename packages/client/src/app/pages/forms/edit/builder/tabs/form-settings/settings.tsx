@@ -39,6 +39,7 @@ export const FormSettings: React.FC = () => {
       const firstSection = data?.[0]?.sections.filter((section) =>
         limitations.can(`settings.tab.${section.handle}`),
       )?.[0];
+
       if (firstSection) {
         setLastTab(firstSection.handle);
         navigate(`${firstSection.handle}`);

@@ -1,53 +1,40 @@
 {
-  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-CbCmxFVu.js",
-    "name": "de",
-    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "src/index.tsx"
-    ]
+  "_date-fns-BTAAV4UA.js": {
+    "file": "assets/date-fns-BTAAV4UA.js",
+    "name": "date-fns",
+    "isDynamicEntry": true
   },
-  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-CV6vtXgV.js",
-    "name": "fr",
-    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "src/index.tsx"
-    ]
+  "_vendor-BOeeMEG-.css": {
+    "file": "assets/vendor-BOeeMEG-.css",
+    "src": "_vendor-BOeeMEG-.css"
   },
-  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-CY1mfsPB.js",
-    "name": "it",
-    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js",
-    "isDynamicEntry": true,
+  "_vendor-C21SoWVJ.js": {
+    "file": "assets/vendor-C21SoWVJ.js",
+    "name": "vendor",
     "imports": [
-      "src/index.tsx"
-    ]
-  },
-  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-CttR96f6.js",
-    "name": "nl",
-    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "src/index.tsx"
+      "_date-fns-BTAAV4UA.js"
+    ],
+    "css": [
+      "assets/vendor-BOeeMEG-.css"
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-ksoGR2nK.js",
+    "file": "assets/index-tCjofHdi.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
+    "imports": [
+      "_vendor-C21SoWVJ.js",
+      "_date-fns-BTAAV4UA.js"
+    ],
     "dynamicImports": [
-      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
-      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
-      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
-      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js"
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js"
     ],
     "css": [
-      "assets/index-nQtHp0q_.css"
+      "assets/index-C970reu7.css"
     ]
   }
 }

@@ -51,11 +51,24 @@ export default defineConfig(({ mode, command }) => {
     build: {
       target: "es2020",
       emptyOutDir: true,
-      sourcemap: true,
+      sourcemap: false,
       manifest: "manifest.json",
       outDir: path.resolve(__dirname, "../plugin/src/Resources/js/client"),
       rollupOptions: {
         input: path.resolve(__dirname, "./src/index.tsx"),
+        output: {
+          manualChunks: (id) => {
+            if (!id.includes("node_modules")) {
+              return;
+            }
+
+            if (id.includes("node_modules/date-fns/")) {
+              return "date-fns";
+            }
+
+            return "vendor";
+          },
+        },
       },
     },
   };

@@ -4,6 +4,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
+import { useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 export const QKIntegrations = {
@@ -20,13 +21,13 @@ export const useFormIntegrationsQueryReset = (
 ): (() => void) => {
   const queryClient = useQueryClient();
 
-  return () => {
+  return useCallback(() => {
     if (!formId) {
       return;
     }
 
     queryClient.removeQueries({ queryKey: QKIntegrations.form(formId) });
-  };
+  }, [formId, queryClient]);
 };
 
 export const useQueryFormIntegrations = (

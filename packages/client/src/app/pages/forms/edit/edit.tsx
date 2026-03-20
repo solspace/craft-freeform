@@ -37,19 +37,20 @@ type RouteParams = {
 
 export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
+  const numericFormId = formId ? Number(formId) : undefined;
+
   const dispatch = useAppDispatch();
-  const resetNotifications = useNotificationQueryReset();
-  const resetFormIntegrations = useFormIntegrationsQueryReset();
-  const resetRules = useRulesQueryReset();
+  const resetNotifications = useNotificationQueryReset(numericFormId);
+  const resetFormIntegrations = useFormIntegrationsQueryReset(numericFormId);
+  const resetRules = useRulesQueryReset(numericFormId);
 
   useQueryFormSettings();
-  useQueryFormRules(formId && Number(formId));
-  useQueryNotificationRules(formId && Number(formId));
-  useQueryFormNotifications(formId && Number(formId));
-  useQueryFormIntegrations(formId && Number(formId));
-  const { data, isFetching, isError, error } = useQuerySingleForm(
-    formId && Number(formId),
-  );
+  useQueryFormRules(numericFormId);
+  useQueryNotificationRules(numericFormId);
+  useQueryFormNotifications(numericFormId);
+  useQueryFormIntegrations(numericFormId);
+  const { data, isFetching, isError, error } =
+    useQuerySingleForm(numericFormId);
 
   useEffect(() => {
     if (formId === undefined || !data) return;

@@ -1,11 +1,11 @@
-import React from 'react';
 import type {
   Suggestion,
   SuggestionCategory,
-} from '@ff-client/types/notifications';
+} from "@ff-client/types/notifications";
+import type React from "react";
 
-import { CategoryWrapper, Label } from './category.styles';
-import { Item } from './item';
+import { CategoryWrapper, Label } from "./category.styles";
+import { Item } from "./item";
 
 type Props = {
   category: SuggestionCategory;

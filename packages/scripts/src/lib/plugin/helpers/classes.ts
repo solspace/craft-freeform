@@ -1,13 +1,13 @@
-export const DND_PREFIX = 'freeform-file-dnd';
+export const DND_PREFIX = "freeform-file-dnd";
 
 type ClassAddType = (element: HTMLElement, ...classNames: string[]) => void;
 
 export const addClass: ClassAddType = (element, ...classNames) => {
-  element.classList.add(classNames.join('__'));
+  element.classList.add(classNames.join("__"));
 };
 
 export const removeClass: ClassAddType = (element, ...classNames) => {
-  element.classList.remove(classNames.join('__'));
+  element.classList.remove(classNames.join("__"));
 };
 
 export const addDnDClass: ClassAddType = (element, ...classNames) => {
@@ -19,9 +19,9 @@ export const removeDnDClass: ClassAddType = (element, ...classNames) => {
 };
 
 export const getClassQuery = (classNames: string | string[]): string => {
-  if (typeof classNames === 'string') {
-    classNames = classNames.split(' ');
+  if (typeof classNames === "string") {
+    classNames = classNames.split(" ");
   }
 
-  return classNames.map((className) => `.${className}`).join('');
+  return classNames.map((className) => `.${className}`).join("");
 };

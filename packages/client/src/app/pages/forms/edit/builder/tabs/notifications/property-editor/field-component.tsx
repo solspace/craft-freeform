@@ -1,10 +1,10 @@
-import React from 'react';
-import type * as ControlTypes from '@components/form-controls';
-import { FormComponent } from '@components/form-controls';
-import { useAppDispatch } from '@editor/store';
-import { notificationActions } from '@editor/store/slices/notifications';
-import type { Notification } from '@ff-client/types/notifications';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type * as ControlTypes from "@components/form-controls";
+import { FormComponent } from "@components/form-controls";
+import { useAppDispatch } from "@editor/store";
+import { notificationActions } from "@editor/store/slices/notifications";
+import type { Notification } from "@ff-client/types/notifications";
+import type { GenericValue, Property } from "@ff-client/types/properties";
+import type React from "react";
 
 type Props = {
   notification: Notification;

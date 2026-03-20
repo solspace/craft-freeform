@@ -1,5 +1,5 @@
-import type { Notification } from '@ff-client/types/notifications';
-import type { GenericValue } from '@ff-client/types/properties';
+import type { Notification } from "@ff-client/types/notifications";
+import type { GenericValue } from "@ff-client/types/properties";
 
 export type NotificationModificationPayload = {
   uid: string;

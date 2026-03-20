@@ -1,11 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback } from "react";
 
-import { useOnKeypress } from './use-on-keypress';
+import { useOnKeypress } from "./use-on-keypress";
 
 export const useSaveShortcut = (callback: () => void): void => {
   const saveOnCmdS = useCallback(
-    (event: KeyboardEvent): boolean | void => {
-      if (event.key === 's') {
+    (event: KeyboardEvent): boolean | undefined => {
+      if (event.key === "s") {
         const isMac = window.navigator.platform.match(/Mac/);
         if (isMac && !event.metaKey) {
           return;
@@ -22,8 +22,8 @@ export const useSaveShortcut = (callback: () => void): void => {
         return false;
       }
     },
-    [callback]
+    [callback],
   );
 
-  useOnKeypress({ callback: saveOnCmdS, type: 'keydown' }, [callback]);
+  useOnKeypress({ callback: saveOnCmdS, type: "keydown" }, [callback]);
 };

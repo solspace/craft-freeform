@@ -1,44 +1,44 @@
-import React from 'react';
-import config from '@config/freeform/freeform.config';
-import type { FormWithStats } from '@ff-client/types/forms';
-import translate from '@ff-client/utils/translations';
+import config from "@config/freeform/freeform.config";
+import type { FormWithStats } from "@ff-client/types/forms";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
+import { useCreateFormModal } from "../../modals/hooks/use-create-form-modal";
 
-import { Card } from './card/card';
-import { chartDataset } from './grid.empty.datasets';
-import { MutedWrapper } from './grid.empty.styles';
+import { Card } from "./card/card";
+import { chartDataset } from "./grid.empty.datasets";
+import { MutedWrapper } from "./grid.empty.styles";
 
-const color = '#e0e0e0';
+const color = "#e0e0e0";
 const generateFormData = (
   name: string,
   description: string,
   chartData: Array<{ uv: number }>,
   submissions: number,
-  spam: number
+  spam: number,
 ): FormWithStats => ({
-  uid: '',
-  type: '',
+  uid: "",
+  type: "",
   name,
-  handle: '',
+  handle: "",
   description,
   isNew: true,
   chartData,
   links: [
     {
       count: submissions,
-      label: translate('{count} Submissions', { count: submissions }),
-      handle: 'submissions',
-      type: 'linkList',
-      url: '',
+      label: translate("{count} Submissions", { count: submissions }),
+      handle: "submissions",
+      type: "linkList",
+      url: "",
       internal: false,
     },
     {
       count: spam,
-      label: translate('{count} Spam', { count: spam }),
-      handle: 'spam',
-      type: 'linkList',
-      url: '',
+      label: translate("{count} Spam", { count: spam }),
+      handle: "spam",
+      type: "linkList",
+      url: "",
       internal: true,
     },
   ],
@@ -51,8 +51,8 @@ const generateFormData = (
   },
   settings: {
     general: {
-      namespaceType: 'settings',
-      namespace: 'general',
+      namespaceType: "settings",
+      namespace: "general",
       color,
     },
   },
@@ -69,12 +69,16 @@ export const GridEmpty: React.FC = () => {
         <>
           <p>
             {translate(
-              `You don't have any forms yet. Create your first form now...`
+              `You don't have any forms yet. Create your first form now...`,
             )}
           </p>
 
-          <button className="btn submit add icon" onClick={openCreateFormModal}>
-            {translate('Create a new Form')}
+          <button
+            type="button"
+            className="btn submit add icon"
+            onClick={openCreateFormModal}
+          >
+            {translate("Create a new Form")}
           </button>
         </>
       )}
@@ -84,29 +88,29 @@ export const GridEmpty: React.FC = () => {
       <MutedWrapper>
         <Card
           form={generateFormData(
-            'Contact Form',
-            'Main contact form.',
+            "Contact Form",
+            "Main contact form.",
             chartDataset[0],
             14,
-            5
+            5,
           )}
         />
         <Card
           form={generateFormData(
-            'Customer Survey',
-            'Customer satisfaction survey.',
+            "Customer Survey",
+            "Customer satisfaction survey.",
             chartDataset[1],
             72,
-            18
+            18,
           )}
         />
         <Card
           form={generateFormData(
-            'Newsletter',
-            'Newsletter signup form.',
+            "Newsletter",
+            "Newsletter signup form.",
             chartDataset[2],
             138,
-            7
+            7,
           )}
         />
       </MutedWrapper>

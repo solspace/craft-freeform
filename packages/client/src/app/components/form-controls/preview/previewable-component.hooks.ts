@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { usePortal } from '@editor/builder/contexts/portal.context';
-import { SectionWrapper } from '@editor/builder/tabs/layout/property-editor/section-block.styles';
+import { usePortal } from "@editor/builder/contexts/portal.context";
+import { SectionWrapper } from "@editor/builder/tabs/layout/property-editor/section-block.styles";
+import { useCallback, useEffect, useState } from "react";
 
-import { calculateTopOffset } from './previewable-component.operations';
+import { calculateTopOffset } from "./previewable-component.operations";
 
 type Position = {
   top: number;
@@ -12,7 +12,7 @@ type Position = {
 export const usePosition = (
   wrapper: HTMLDivElement,
   editor: HTMLDivElement,
-  isEditing: boolean
+  isEditing: boolean,
 ): Position => {
   const { dimensions } = usePortal();
   const [top, setTop] = useState(0);
@@ -20,7 +20,7 @@ export const usePosition = (
 
   // RAF-throttled updater to avoid excessive state churn on scroll/resize
   let rafId: number | null = null;
-  const updatePosition = (): void => {
+  const updatePosition = useCallback((): void => {
     if (rafId !== null) return;
     rafId = requestAnimationFrame(() => {
       rafId = null;
@@ -30,8 +30,9 @@ export const usePosition = (
         setLeft(currentLeft - dimensions.left);
       }
     });
-  };
+  }, [wrapper, editor, dimensions, rafId]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This is by design - we only want to update position when editing state changes, not on every render
   useEffect(() => {
     updatePosition();
   }, [isEditing]);
@@ -47,15 +48,15 @@ export const usePosition = (
       const resizeObserver = new ResizeObserver(resizeCallback);
       resizeObserver.observe(editor);
 
-      window.addEventListener('resize', resizeCallback);
-      window.addEventListener('scroll', resizeCallback);
-      sectionWrapper?.addEventListener('scroll', resizeCallback);
+      window.addEventListener("resize", resizeCallback);
+      window.addEventListener("scroll", resizeCallback);
+      sectionWrapper?.addEventListener("scroll", resizeCallback);
 
       return () => {
         resizeObserver.disconnect();
-        window.removeEventListener('resize', resizeCallback);
-        window.removeEventListener('scroll', resizeCallback);
-        sectionWrapper?.removeEventListener('scroll', resizeCallback);
+        window.removeEventListener("resize", resizeCallback);
+        window.removeEventListener("scroll", resizeCallback);
+        sectionWrapper?.removeEventListener("scroll", resizeCallback);
 
         // Cancel any pending frame
         if (rafId !== null) {
@@ -63,7 +64,7 @@ export const usePosition = (
         }
       };
     }
-  }, [editor]);
+  }, [editor, rafId, updatePosition]);
 
   return {
     top,

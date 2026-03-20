@@ -1,19 +1,19 @@
-import { useEffect } from 'react';
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
+import { useEffect } from "react";
 
 type OnKeypress = (
   options: {
     callback: (event: KeyboardEvent) => void;
     meetsCondition?: boolean;
-    type?: 'keyup' | 'keydown';
+    type?: "keyup" | "keydown";
     ref?: React.RefObject<HTMLElement>;
   },
-  deps?: GenericValue[]
+  deps?: GenericValue[],
 ) => void;
 
 export const useOnKeypress: OnKeypress = (
-  { meetsCondition, callback, type = 'keyup', ref },
-  deps = []
+  { meetsCondition, callback, type = "keyup", ref },
+  deps = [],
 ): void => {
   const target = ref?.current ?? document;
 
@@ -29,5 +29,5 @@ export const useOnKeypress: OnKeypress = (
     return () => {
       target.removeEventListener(type, callback);
     };
-  }, [meetsCondition, ...deps]);
+  }, [meetsCondition, callback, target, type, ...deps]);
 };

@@ -1,16 +1,15 @@
-import type { FC } from 'react';
-import React from 'react';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
-import { ControlBlock } from '@components/form-controls/control.block';
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
+import { ControlBlock } from "@components/form-controls/control.block";
 import {
   CheckboxItem,
   CheckboxWrapper,
   TextWrapper,
-} from '@components/form-controls/control-types/bool/bool.styles';
-import FormInstructions from '@components/form-controls/instructions';
-import translate from '@ff-client/utils/translations';
+} from "@components/form-controls/control-types/bool/bool.styles";
+import FormInstructions from "@components/form-controls/instructions";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
 
-import type { InputControl } from '../template.modal.types';
+import type { InputControl } from "../template.modal.types";
 
 export const BooleanInput: FC<InputControl> = (props) => {
   const { value, label, handle, instructions, onChange } = props;

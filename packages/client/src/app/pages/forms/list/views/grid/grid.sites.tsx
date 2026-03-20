@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import config from '@config/freeform/freeform.config';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import classes from '@ff-client/utils/classes';
+import config from "@config/freeform/freeform.config";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useState } from "react";
 
-import { Button } from '../../list-view.styles';
+import { Button } from "../../list-view.styles";
 
-import { ButtonWrapper, PopupMenu } from './grid.sites.styles';
+import { ButtonWrapper, PopupMenu } from "./grid.sites.styles";
 
 export const GridSites: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -29,7 +30,7 @@ export const GridSites: React.FC = () => {
   }
 
   return (
-    <div style={{ gridArea: 'sites' }}>
+    <div style={{ gridArea: "sites" }}>
       <ButtonWrapper>
         <Button
           className="btn menubtn"
@@ -39,14 +40,14 @@ export const GridSites: React.FC = () => {
           {current.name}
         </Button>
 
-        <PopupMenu style={{ top: '100%', display: open ? 'block' : 'none' }}>
+        <PopupMenu style={{ top: "100%", display: open ? "block" : "none" }}>
           <ul className="padded">
             {list.map((site) => (
               <li key={site.id}>
                 <a
                   className={classes(
-                    'menu-item',
-                    current.handle === site.handle && 'sel'
+                    "menu-item",
+                    current.handle === site.handle && "sel",
                   )}
                   onClick={(event) => {
                     change(site.handle);

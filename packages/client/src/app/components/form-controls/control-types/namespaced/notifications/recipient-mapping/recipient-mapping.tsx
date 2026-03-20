@@ -1,20 +1,22 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import { useFieldOptions } from '@components/options/use-field-options';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { useFieldType } from '@ff-client/queries/field-types';
-import type { Notification } from '@ff-client/types/notifications';
-import { RecipientMapping } from '@ff-client/types/notifications';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import { useFieldOptions } from "@components/options/use-field-options";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useFieldType } from "@ff-client/queries/field-types";
+import type {
+  Notification,
+  RecipientMapping as RecipientMappingType,
+} from "@ff-client/types/notifications";
 import type {
   Option,
   RecipientMappingProperty,
-} from '@ff-client/types/properties';
+} from "@ff-client/types/properties";
+import type React from "react";
+import { useSelector } from "react-redux";
 
-import { RecipientMappingBlock } from './block/block';
-import { MappingOption } from './mapping.option';
-import { RecipientMappingWrapper } from './recipient-mapping.styles';
+import { RecipientMappingBlock } from "./block/block";
+import { MappingOption } from "./mapping.option";
+import { RecipientMappingWrapper } from "./recipient-mapping.styles";
 
 const RecipientMapping: React.FC<
   ControlType<RecipientMappingProperty, Notification>
@@ -25,7 +27,9 @@ const RecipientMapping: React.FC<
 
   const [generatedOptions] = useFieldOptions(field, fieldType);
 
-  const findMapping = (entryValue: string): RecipientMapping | undefined => {
+  const findMapping = (
+    entryValue: string,
+  ): RecipientMappingType | undefined => {
     return value?.find((mapping) => mapping.value === entryValue);
   };
 
@@ -34,7 +38,7 @@ const RecipientMapping: React.FC<
       <RecipientMappingWrapper>
         {!!generatedOptions &&
           generatedOptions
-            .filter((option) => 'value' in option)
+            .filter((option) => "value" in option)
             .map((option: Option, idx) => (
               <MappingOption
                 key={idx}
@@ -49,7 +53,7 @@ const RecipientMapping: React.FC<
           value.map((mapping, idx) => {
             if (
               generatedOptions.find(
-                (option: Option) => option?.value === mapping.value
+                (option: Option) => option?.value === mapping.value,
               )
             ) {
               return null;

@@ -1,12 +1,12 @@
-import React from 'react';
-import { Modal } from '@components/modals/modal';
+import { Modal } from "@components/modals/modal";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import translate from '@ff-client/utils/translations';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 type ConfirmSubmissionsModalData = {
   url: string;
@@ -24,21 +24,21 @@ export const ConfirmSubmissionsModal: React.FC<
     <Modal closeModal={closeModal}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Leave the form builder?')}</h1>
+          <h1>{translate("Leave the form builder?")}</h1>
         </ModalHeader>
 
         <div style={{ padding: 20 }}>
           {translate(
-            'You are about to leave the form builder. Any unsaved changes may be lost if you continue.'
+            "You are about to leave the form builder. Any unsaved changes may be lost if you continue.",
           )}
         </div>
 
         <ModalFooter>
-          <button className="btn cancel" onClick={closeModal}>
-            {translate('Cancel')}
+          <button type="button" className="btn cancel" onClick={closeModal}>
+            {translate("Cancel")}
           </button>
-          <button className="btn submit" onClick={onContinue}>
-            {translate('Continue')}
+          <button type="button" className="btn submit" onClick={onContinue}>
+            {translate("Continue")}
           </button>
         </ModalFooter>
       </ModalContainer>

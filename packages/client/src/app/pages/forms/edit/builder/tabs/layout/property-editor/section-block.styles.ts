@@ -1,8 +1,8 @@
-import { labelText, scrollBar } from '@ff-client/styles/mixins';
-import { colors, shadows, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { labelText, scrollBar } from "@ff-client/styles/mixins";
+import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import { Icon } from './property-editor.styles';
+import { Icon } from "./property-editor.styles";
 
 export const SectionWrapper = styled.div`
   display: flex;

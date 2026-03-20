@@ -1,18 +1,18 @@
-import React from 'react';
-import type { TestGroup } from '@ff-client/types/form-monitor';
-import translate from '@ff-client/utils/translations';
-import type { TooltipProps } from 'recharts';
+import type { TestGroup } from "@ff-client/types/form-monitor";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import type { TooltipProps } from "recharts";
 import {
   Area,
   AreaChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip as RechartsTooltip,
+  ResponsiveContainer,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
-import { StatusDot, StatusIndicator } from '../monitor.styles';
+import { StatusDot, StatusIndicator } from "../monitor.styles";
 
 import {
   ChartTestTooltip,
@@ -20,7 +20,7 @@ import {
   ChartTestTooltipHeader,
   ChartWrapper,
   SubmissionDurationChartContainer,
-} from './results.styles';
+} from "./results.styles";
 
 type SubmissionDurationChartProps = {
   groups: TestGroup[];
@@ -48,7 +48,7 @@ export const SubmissionDurationChart: React.FC<
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
-      const dateString = date.toISOString().split('T')[0];
+      const dateString = date.toISOString().split("T")[0];
 
       const dayGroup = groups.find((group) => group.date === dateString);
       const testsForDay = dayGroup?.tests || [];
@@ -62,8 +62,8 @@ export const SubmissionDurationChart: React.FC<
             date: dateString,
             duration: test.submissionDuration,
             testId: test.id || 0,
-            status: test.status?.toLowerCase() || 'pending',
-            dateAttempted: test.dateAttempted || '',
+            status: test.status?.toLowerCase() || "pending",
+            dateAttempted: test.dateAttempted || "",
           });
         }
       });
@@ -73,8 +73,8 @@ export const SubmissionDurationChart: React.FC<
           date: dateString,
           duration: 0,
           testId: null,
-          status: 'no-tests',
-          dateAttempted: '',
+          status: "no-tests",
+          dateAttempted: "",
         });
       }
     }
@@ -89,7 +89,7 @@ export const SubmissionDurationChart: React.FC<
     .reverse();
 
   const datesToShow = uniqueDates.filter(
-    (_, index) => index === 0 || index % 5 === 0
+    (_, index) => index === 0 || index % 5 === 0,
   );
 
   const CustomTooltip = ({
@@ -100,7 +100,7 @@ export const SubmissionDurationChart: React.FC<
     if (active && payload && payload.length) {
       const dataPoint = payload[0].payload;
 
-      if (dataPoint.status === 'no-tests') {
+      if (dataPoint.status === "no-tests") {
         return (
           <ChartTestTooltip>
             <ChartTestTooltipContent>
@@ -165,12 +165,12 @@ export const SubmissionDurationChart: React.FC<
                 const firstIndex = chartData.findIndex((d) => d.date === value);
                 if (index === firstIndex && datesToShow.includes(value)) {
                   const date = new Date(value);
-                  return date.toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
                   });
                 }
-                return '';
+                return "";
               }}
             />
             <YAxis
@@ -179,10 +179,10 @@ export const SubmissionDurationChart: React.FC<
               ticks={[2, 4, 6, 8, 10]}
               tickFormatter={(value) => `${value}s`}
               label={{
-                value: translate('Submit Time'),
+                value: translate("Submit Time"),
                 angle: -90,
-                position: 'insideLeft',
-                style: { textAnchor: 'middle' },
+                position: "insideLeft",
+                style: { textAnchor: "middle" },
               }}
             />
             <RechartsTooltip content={<CustomTooltip />} />

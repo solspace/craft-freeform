@@ -1,41 +1,43 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import type { TooltipProps } from 'react-tippy';
-import { Tooltip } from 'react-tippy';
-import { FlexRow } from '@components/layout/blocks/flex';
-import { Truncate } from '@components/layout/blocks/truncate';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { QKGroups } from '@ff-client/queries/form-groups';
-import { useFMFormStatsQuery } from '@ff-client/queries/form-monitor';
-import { QKForms } from '@ff-client/queries/forms';
-import type { TestStats } from '@ff-client/types/form-monitor';
-import type { FormWithStats } from '@ff-client/types/forms';
-import translate from '@ff-client/utils/translations';
-import ArchiveIcon from '@ff-icons/actions/archive.svg';
-import CloneIcon from '@ff-icons/actions/clone.svg';
-import CrossIcon from '@ff-icons/actions/delete.svg';
-import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import {
+  Tooltip,
+  type TooltipProps,
+} from "@components/elements/tooltip/tooltip";
+import { FlexRow } from "@components/layout/blocks/flex";
+import { Truncate } from "@components/layout/blocks/truncate";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { QKGroups } from "@ff-client/queries/form-groups";
+import { useFMFormStatsQuery } from "@ff-client/queries/form-monitor";
+import { QKForms } from "@ff-client/queries/forms";
+import type { TestStats } from "@ff-client/types/form-monitor";
+import type { FormWithStats } from "@ff-client/types/forms";
+import translate from "@ff-client/utils/translations";
+import ArchiveIcon from "@ff-icons/actions/archive";
+import CloneIcon from "@ff-icons/actions/clone";
+import CrossIcon from "@ff-icons/actions/delete";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import type React from "react";
+import { Link, NavLink } from "react-router-dom";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
-import { useDeleteFormModal } from '../../modals/hooks/use-delete-form-modal';
+import { useDeleteFormModal } from "../../modals/hooks/use-delete-form-modal";
 import {
   FormMonitorStats,
   getLastTestStatus,
-} from '../grid/card/card.monitor.stats';
-import { ErrorMessage } from '../grid/card/card.monitor.stats.styles';
-import { ControlButton } from '../grid/card/card.styles';
+} from "../grid/card/card.monitor.stats";
+import { ErrorMessage } from "../grid/card/card.monitor.stats.styles";
+import { ControlButton } from "../grid/card/card.styles";
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
-} from '../grid/grid.mutations';
+} from "../grid/grid.mutations";
 
-import { SampleSkeleton } from './list.table.row.loading';
+import { SampleSkeleton } from "./list.table.row.loading";
 
-const tooltipProps: Omit<TooltipProps, 'children'> = {
-  position: 'top',
-  animation: 'fade',
+const tooltipProps: Omit<TooltipProps, "children"> = {
+  position: "top",
+  animation: "fade",
   delay: [100, 0] as unknown as number,
 };
 
@@ -59,12 +61,12 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
     form;
   const color = settings.general.color;
 
-  const hasTitleLink = form.links.some(({ type }) => type === 'title');
+  const hasTitleLink = form.links.some(({ type }) => type === "title");
   const submissionLink = form.links.find(
-    (link) => link.handle === 'submissions'
+    (link) => link.handle === "submissions",
   );
-  const spamLink = form.links.find((link) => link.handle === 'spam');
-  const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
+  const spamLink = form.links.find((link) => link.handle === "spam");
+  const formMonitorLink = form.links.find(({ type }) => type === "formMonitor");
 
   const { data: formMonitorStats, isLoading: isStatsLoading } =
     useFMFormStatsQuery(form.id, {
@@ -109,7 +111,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
             </defs>
             <Area
               type="monotone"
-              dataKey={'uv'}
+              dataKey={"uv"}
               stroke={color}
               strokeWidth={1}
               strokeOpacity={1}
@@ -156,7 +158,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
                       ...formMonitorStats,
                       enabled: formMonitor?.enabled,
                     } as TestStats & { enabled: boolean },
-                    'lg'
+                    "lg",
                   )
                 ) : null}
               </NavLink>
@@ -173,21 +175,21 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
       <td>
         <FlexRow>
           {isLiteAndUp && (
-            <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
+            <Tooltip title={translate("Duplicate this Form")} {...tooltipProps}>
               <ControlButton onClick={() => cloneMutation.mutate(id)}>
                 <CloneIcon />
               </ControlButton>
             </Tooltip>
           )}
           {isLiteAndUp && !dateArchived && (
-            <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
+            <Tooltip title={translate("Archive this Form")} {...tooltipProps}>
               <ControlButton onClick={() => archiveMutation.mutate(id)}>
                 <ArchiveIcon />
               </ControlButton>
             </Tooltip>
           )}
           {canDelete && (
-            <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
+            <Tooltip title={translate("Delete this Form")} {...tooltipProps}>
               <ControlButton
                 onClick={async (event) => {
                   if (event.metaKey && event.shiftKey) {

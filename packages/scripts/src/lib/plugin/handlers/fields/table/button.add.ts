@@ -1,5 +1,5 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import events from '@lib/plugin/constants/event-types';
+import type Freeform from "@components/front-end/plugin/freeform";
+import events from "@lib/plugin/constants/event-types";
 
 const PATTERN = /([^[]+)\[(\d+)\](\[\d+\](?:\[\])?)$/g;
 const ID_PATTERN = /^(labeled-.*)-(\d+)-(\d+)-(\d+)$/g;
@@ -7,9 +7,11 @@ const ID_PATTERN = /^(labeled-.*)-(\d+)-(\d+)-(\d+)$/g;
 export const registerAddButton = (instance: Freeform) => {
   let button: HTMLButtonElement;
 
-  const tables = instance.form.querySelectorAll('[data-freeform-table]');
+  const tables = instance.form.querySelectorAll("[data-freeform-table]");
   tables.forEach((table) => {
-    button = table.parentNode.querySelector<HTMLButtonElement>('[data-freeform-table-add-row]');
+    button = table.parentNode.querySelector<HTMLButtonElement>(
+      "[data-freeform-table-add-row]",
+    );
     toggleAddButton(table, button);
 
     if (button) {
@@ -18,7 +20,9 @@ export const registerAddButton = (instance: Freeform) => {
       });
 
       const getNextMaxIndex = () => {
-        const inputs = table.querySelectorAll<HTMLInputElement>('textarea, input, select');
+        const inputs = table.querySelectorAll<HTMLInputElement>(
+          "textarea, input, select",
+        );
         let maxIndex = 0;
         for (let i = 0; i < inputs.length; i++) {
           const input = inputs[i];
@@ -28,23 +32,27 @@ export const registerAddButton = (instance: Freeform) => {
             continue;
           }
 
-          const index = parseInt(matches[2]);
+          const index = parseInt(matches[2], 10);
           maxIndex = Math.max(maxIndex, index);
         }
 
         return ++maxIndex;
       };
 
-      button.addEventListener('click', () => {
-        const referenceRow = table.querySelector<HTMLTableRowElement>('tbody > tr:last-child');
+      button.addEventListener("click", () => {
+        const referenceRow = table.querySelector<HTMLTableRowElement>(
+          "tbody > tr:last-child",
+        );
 
         if (referenceRow) {
           const cloneRow = referenceRow.cloneNode(true) as HTMLTableRowElement;
-          const inputs = cloneRow.querySelectorAll<HTMLInputElement>('textarea, input, select');
+          const inputs = cloneRow.querySelectorAll<HTMLInputElement>(
+            "textarea, input, select",
+          );
           const maxIndex = getNextMaxIndex();
           for (let i = 0; i < inputs.length; i++) {
             const item = inputs[i];
-            const defaultValue = item.dataset.defaultValue || '';
+            const defaultValue = item.dataset.defaultValue || "";
             item.name = item.name.replace(PATTERN, `$1[${maxIndex}]$3`);
 
             if (item.id && ID_PATTERN.test(item.id)) {
@@ -53,27 +61,31 @@ export const registerAddButton = (instance: Freeform) => {
               label.htmlFor = item.id;
             }
 
-            if (item.tagName === 'INPUT' && item.type === 'radio') {
+            if (item.tagName === "INPUT" && item.type === "radio") {
               item.checked = item.value === defaultValue;
-            } else if (item.tagName === 'INPUT' && item.type === 'checkbox') {
-              item.checked = defaultValue === '1';
-            } else if (item.tagName === 'INPUT' && item.type === 'file') {
-              item.value = '';
+            } else if (item.tagName === "INPUT" && item.type === "checkbox") {
+              item.checked = defaultValue === "1";
+            } else if (item.tagName === "INPUT" && item.type === "file") {
+              item.value = "";
             } else {
               item.value = defaultValue;
             }
           }
 
-          const minRows = table.getAttribute('data-min-rows');
+          const minRows = table.getAttribute("data-min-rows");
           if (minRows) {
-            const lastCell = cloneRow.querySelector('td:last-child');
-            if (lastCell && !lastCell.querySelector('[data-freeform-table-remove-row]')) {
-              const removeLabel = table.getAttribute('data-remove-button-label') || 'Remove';
-              const removeBtn = document.createElement('button');
-              removeBtn.type = 'button';
-              removeBtn.setAttribute('data-freeform-table-remove-row', '');
+            const lastCell = cloneRow.querySelector("td:last-child");
+            if (
+              lastCell &&
+              !lastCell.querySelector("[data-freeform-table-remove-row]")
+            ) {
+              const removeLabel =
+                table.getAttribute("data-remove-button-label") || "Remove";
+              const removeBtn = document.createElement("button");
+              removeBtn.type = "button";
+              removeBtn.setAttribute("data-freeform-table-remove-row", "");
               removeBtn.textContent = removeLabel;
-              lastCell.innerHTML = '';
+              lastCell.innerHTML = "";
               lastCell.appendChild(removeBtn);
             }
           }
@@ -83,7 +95,7 @@ export const registerAddButton = (instance: Freeform) => {
             row: cloneRow,
           });
 
-          table.querySelector('tbody').appendChild(cloneRow);
+          table.querySelector("tbody").appendChild(cloneRow);
 
           instance._dispatchEvent(events.table.afterRowAdded, {
             table,
@@ -102,18 +114,19 @@ const toggleAddButton = (table: Element, button: HTMLButtonElement | null) => {
     return;
   }
 
-  const totalRows = table.querySelectorAll<HTMLTableRowElement>('tbody > tr').length;
-  const exactRows = table.getAttribute('data-exact-rows');
-  const maxRows = table.getAttribute('data-max-rows');
+  const totalRows =
+    table.querySelectorAll<HTMLTableRowElement>("tbody > tr").length;
+  const exactRows = table.getAttribute("data-exact-rows");
+  const maxRows = table.getAttribute("data-max-rows");
 
   if (exactRows) {
     const exact = parseInt(exactRows, 10);
-    button.style.display = totalRows >= exact ? 'none' : 'block';
+    button.style.display = totalRows >= exact ? "none" : "block";
     return;
   }
 
   if (maxRows) {
     const max = parseInt(maxRows, 10);
-    button.style.display = totalRows >= max ? 'none' : 'block';
+    button.style.display = totalRows >= max ? "none" : "block";
   }
 };

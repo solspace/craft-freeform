@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react';
-import Bool from '@components/form-controls/control-types/bool/bool';
-import Select from '@components/form-controls/control-types/select/select';
-import Textarea from '@components/form-controls/control-types/textarea/textarea';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import { PropertyType } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
+import Bool from "@components/form-controls/control-types/bool/bool";
+import Select from "@components/form-controls/control-types/select/select";
+import Textarea from "@components/form-controls/control-types/textarea/textarea";
+import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
+import { PropertyType } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useRef, useState } from "react";
 
-import { BulkEditorWrapper } from './custom.bulk.styles';
+import { BulkEditorWrapper } from "./custom.bulk.styles";
 
 type Props = {
   open?: boolean;
@@ -15,30 +16,30 @@ type Props = {
 };
 
 export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
-  const [separator, setSeparator] = useState('|');
+  const [separator, setSeparator] = useState("|");
   const [append, setAppend] = useState(true);
-  const [bulk, setBulk] = useState('');
+  const [bulk, setBulk] = useState("");
 
   const textarea = useRef<HTMLTextAreaElement>(null);
 
   const executeBulkImport = (): void => {
     bulkImport(bulk, separator, append);
-    setBulk('');
+    setBulk("");
     close();
   };
 
   useOnKeypress(
     {
       callback: (event) => {
-        if (event.key === 'Enter' && event.metaKey) {
+        if (event.key === "Enter" && event.metaKey) {
           executeBulkImport();
         }
       },
       meetsCondition: open,
-      type: 'keydown',
+      type: "keydown",
       ref: textarea,
     },
-    [bulk, separator, append]
+    [bulk, separator, append],
   );
 
   return (
@@ -47,19 +48,19 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         value={separator}
         updateValue={(value) => setSeparator(value)}
         property={{
-          label: translate('Separator'),
+          label: translate("Separator"),
           instructions: translate(
-            'Select the separator used to separate the option label and value when using custom values for option labels.'
+            "Select the separator used to separate the option label and value when using custom values for option labels.",
           ),
-          handle: 'separator',
+          handle: "separator",
           type: PropertyType.Select,
-          value: '|',
+          value: "|",
           options: [
-            { value: '|', label: '|' },
-            { value: ',', label: ',' },
-            { value: ';', label: ';' },
-            { value: '=>', label: '=>' },
-            { value: ' ', label: 'Space' },
+            { value: "|", label: "|" },
+            { value: ",", label: "," },
+            { value: ";", label: ";" },
+            { value: "=>", label: "=>" },
+            { value: " ", label: "Space" },
           ],
         }}
       />
@@ -68,8 +69,8 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         updateValue={(value) => setAppend(value)}
         value={append}
         property={{
-          label: translate('Append Values'),
-          handle: 'append',
+          label: translate("Append Values"),
+          handle: "append",
           type: PropertyType.Boolean,
         }}
       />
@@ -80,21 +81,21 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         focus={open}
         ref={textarea}
         property={{
-          label: translate('Bulk Editor'),
+          label: translate("Bulk Editor"),
           instructions: translate(
-            'Enter bulk values separated by new lines. If using custom values for option labels, you can provide a label and a value separated by a separator. For example, if you used `{separator}` you would write: `Label{separator}value`.',
-            { separator }
+            "Enter bulk values separated by new lines. If using custom values for option labels, you can provide a label and a value separated by a separator. For example, if you used `{separator}` you would write: `Label{separator}value`.",
+            { separator },
           ),
-          handle: 'bulkEditor',
+          handle: "bulkEditor",
           type: PropertyType.Textarea,
           rows: 10,
         }}
       />
-      <button className="btn submit" onClick={executeBulkImport}>
+      <button type="button" className="btn submit" onClick={executeBulkImport}>
         {translate(
           append
-            ? 'Append Options with Bulk Import'
-            : 'Replace Options with Bulk Import'
+            ? "Append Options with Bulk Import"
+            : "Replace Options with Bulk Import",
         )}
       </button>
     </BulkEditorWrapper>

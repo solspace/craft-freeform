@@ -1,51 +1,52 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Icon } from '@components/elements/custom-dropdown/dropdown.styles';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
-import type { UpdateValue } from '@components/form-controls';
-import { Control } from '@components/form-controls/control';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Icon } from "@components/elements/custom-dropdown/dropdown.styles";
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
+import type { UpdateValue } from "@components/form-controls";
+import { Control } from "@components/form-controls/control";
 import {
   ColumnEditor,
   ColumnTabsWrapper,
   TableContainer,
   TableEditorWrapper,
-} from '@components/form-controls/control-types/table/table.editor.styles';
+} from "@components/form-controls/control-types/table/table.editor.styles";
 import type {
   ColumnDescription,
   TableColumnMetadata,
-} from '@components/form-controls/control-types/table/table.types';
-import IconCross from '@components/form-controls/icons/cross.svg';
-import MoveIcon from '@components/form-controls/icons/move.svg';
-import { FlexRow } from '@components/layout/blocks/flex';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import {
-  type Option as PropertyOption,
-  type TableProperty,
-} from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import Sortable from 'sortablejs';
+} from "@components/form-controls/control-types/table/table.types";
+import IconCross from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
+import { FlexRow } from "@components/layout/blocks/flex";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type {
+  Option as PropertyOption,
+  TableProperty,
+} from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import Sortable from "sortablejs";
 
-import IconCheckbox from './editor/icon.checkbox.svg';
-import IconDropdown from './editor/icon.dropdown.svg';
-import IconFile from './editor/icon.file.svg';
-import IconPlus from './editor/icon.plus.svg';
-import IconRadio from './editor/icon.radios.svg';
-import IconText from './editor/icon.text.svg';
-import IconTextarea from './editor/icon.textarea.svg';
+import IconCheckbox from "./editor/icon.checkbox";
+import IconDropdown from "./editor/icon.dropdown";
+import IconFile from "./editor/icon.file";
+import IconPlus from "./editor/icon.plus";
+import IconRadio from "./editor/icon.radios";
+import IconText from "./editor/icon.text";
+import IconTextarea from "./editor/icon.textarea";
 import {
   AddColumnButton,
   RemoveColumnButton,
   ReorderColumnButton,
   TableColumnTabLabel,
   TableColumnTabs,
-} from './editor/table.editor.styles';
-import { TableCheckboxEditor } from './editor/table.input.checkbox';
-import { TableDropdownEditor } from './editor/table.input.dropdown';
-import { TableFileEditor } from './editor/table.input.file';
-import { TableTextEditor } from './editor/table.input.text';
-import { deleteColumn, moveColumn, updateColumn } from './table.operations';
+} from "./editor/table.editor.styles";
+import { TableCheckboxEditor } from "./editor/table.input.checkbox";
+import { TableDropdownEditor } from "./editor/table.input.dropdown";
+import { TableFileEditor } from "./editor/table.input.file";
+import { TableTextEditor } from "./editor/table.input.text";
+import { deleteColumn, moveColumn, updateColumn } from "./table.operations";
 
 type Props = {
   columnTypes: PropertyOption[];
@@ -56,26 +57,26 @@ type Props = {
 };
 
 type ColumnType =
-  | 'text'
-  | 'textarea'
-  | 'select'
-  | 'radio'
-  | 'checkbox'
-  | 'file';
+  | "text"
+  | "textarea"
+  | "select"
+  | "radio"
+  | "checkbox"
+  | "file";
 
 const FILE_COLUMN_DEFAULT_METADATA: TableColumnMetadata = {
   fileCount: 1,
   maxFileSizeKB: 2048,
-  fileKinds: ['image'],
+  fileKinds: ["image"],
   assetSourceId: null,
   uploadLocation: null,
 };
 
 const getColumnForType = (
   column: ColumnDescription,
-  type: string
+  type: string,
 ): ColumnDescription => {
-  if (type === 'file') {
+  if (type === "file") {
     return {
       ...column,
       type,
@@ -93,7 +94,7 @@ const getColumnForType = (
   };
 };
 
-const typeIcons: Record<ColumnType, JSX.Element> = {
+const typeIcons: Record<ColumnType, ReactNode> = {
   text: <IconText />,
   textarea: <IconTextarea />,
   select: <IconDropdown />,
@@ -121,7 +122,7 @@ export const TableEditor: React.FC<Props> = ({
   const isTranslating = willTranslate(property.handle);
   const translation = getTranslation<ColumnDescription[]>(
     property.handle,
-    columns
+    columns,
   );
 
   const columnValues = isTranslating ? translation : columns;
@@ -154,22 +155,24 @@ export const TableEditor: React.FC<Props> = ({
     }, [] as PropertyOption[]);
   }, [columnTypes]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to trigger this when the tab index changes, not when the column values change
   useEffect(() => {
     labelInputRef.current?.focus();
   }, [tabIndex, columnValues.length]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to trigger this when the tab index changes, not when the column values change
   useEffect(() => {
     tabRefs.current[tabIndex]?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'nearest',
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
     });
 
     if (shouldScrollContentRef.current) {
       shouldScrollContentRef.current = false;
       labelInputRef.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
+        behavior: "smooth",
+        block: "nearest",
       });
     }
   }, [tabIndex, columnValues.length]);
@@ -181,8 +184,8 @@ export const TableEditor: React.FC<Props> = ({
 
     const sortable = Sortable.create(tabsRef.current, {
       animation: 150,
-      draggable: '.table-column-tab',
-      handle: '.column-drag-handle',
+      draggable: ".table-column-tab",
+      handle: ".column-drag-handle",
       onEnd: (event) => {
         const fromIndex = event.oldIndex;
         const toIndex = event.newIndex;
@@ -224,7 +227,7 @@ export const TableEditor: React.FC<Props> = ({
     const newIndex = columnValues.length;
     updateValue([
       ...columnValues,
-      { label: 'New column', type: 'text', value: '' },
+      { label: "New column", type: "text", value: "" },
     ]);
     shouldScrollContentRef.current = true;
     setTabIndex(newIndex);
@@ -258,9 +261,9 @@ export const TableEditor: React.FC<Props> = ({
                 <a
                   key={getColumnKey(column)}
                   className={classes(
-                    'table-column-tab',
-                    column.required && 'required',
-                    index === tabIndex && 'active'
+                    "table-column-tab",
+                    column.required && "required",
+                    index === tabIndex && "active",
                   )}
                   ref={(element) => {
                     tabRefs.current[index] = element;
@@ -277,7 +280,7 @@ export const TableEditor: React.FC<Props> = ({
                     <ReorderColumnButton
                       type="button"
                       className="column-drag-handle"
-                      title={translate('Reorder column')}
+                      title={translate("Reorder column")}
                       onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
@@ -290,7 +293,7 @@ export const TableEditor: React.FC<Props> = ({
                   {index === tabIndex && columnValues.length > 1 && (
                     <RemoveColumnButton
                       type="button"
-                      title={translate('Remove column')}
+                      title={translate("Remove column")}
                       onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
@@ -307,7 +310,7 @@ export const TableEditor: React.FC<Props> = ({
           <AddColumnButton
             type="button"
             className="btn"
-            title={translate('Add column')}
+            title={translate("Add column")}
             onClick={addTab}
           >
             <IconPlus />
@@ -316,7 +319,7 @@ export const TableEditor: React.FC<Props> = ({
 
         <ColumnEditor>
           <FlexRow>
-            <Control width={60} label={translate('Label')} handle="label">
+            <Control width={60} label={translate("Label")} handle="label">
               <input
                 type="text"
                 className="text fullwidth"
@@ -327,14 +330,14 @@ export const TableEditor: React.FC<Props> = ({
                     updateColumn(
                       tabIndex,
                       { ...column, label: event.target.value },
-                      columnValues
-                    )
+                      columnValues,
+                    ),
                   )
                 }
               />
             </Control>
 
-            <Control width={30} label={translate('Column Type')} handle="type">
+            <Control width={30} label={translate("Column Type")} handle="type">
               <Dropdown
                 showSelectedIcon
                 emptyOption="Select Type"
@@ -345,8 +348,8 @@ export const TableEditor: React.FC<Props> = ({
                     updateColumn(
                       tabIndex,
                       getColumnForType(column, value),
-                      columnValues
-                    )
+                      columnValues,
+                    ),
                   );
                 }}
               />
@@ -354,7 +357,7 @@ export const TableEditor: React.FC<Props> = ({
 
             <Control
               width={10}
-              label={translate('Required')}
+              label={translate("Required")}
               handle="required"
               justify="center"
             >
@@ -365,8 +368,8 @@ export const TableEditor: React.FC<Props> = ({
                     updateColumn(
                       tabIndex,
                       { ...column, required: value },
-                      columnValues
-                    )
+                      columnValues,
+                    ),
                   );
                 }}
               />
@@ -376,7 +379,7 @@ export const TableEditor: React.FC<Props> = ({
             column,
             (col: ColumnDescription) =>
               updateValue(updateColumn(tabIndex, col, columnValues)),
-            property
+            property,
           )}
         </ColumnEditor>
       </TableContainer>
@@ -387,25 +390,25 @@ export const TableEditor: React.FC<Props> = ({
 const renderCellEditor = (
   column: ColumnDescription,
   update: (col: ColumnDescription) => void,
-  property: TableProperty
-): React.ReactNode => {
+  property: TableProperty,
+): ReactNode => {
   if (!column) {
     return null;
   }
 
-  if (['text', 'textarea'].includes(column.type)) {
+  if (["text", "textarea"].includes(column.type)) {
     return <TableTextEditor column={column} onUpdate={update} />;
   }
 
-  if (['select', 'radio'].includes(column.type)) {
+  if (["select", "radio"].includes(column.type)) {
     return <TableDropdownEditor column={column} onUpdate={update} />;
   }
 
-  if (column.type === 'checkbox') {
+  if (column.type === "checkbox") {
     return <TableCheckboxEditor column={column} onUpdate={update} />;
   }
 
-  if (column.type === 'file') {
+  if (column.type === "file") {
     return (
       <TableFileEditor column={column} onUpdate={update} property={property} />
     );

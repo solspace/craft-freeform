@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const PaddedSpan = styled.span`
   padding-left: 10px !important;

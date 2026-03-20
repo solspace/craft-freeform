@@ -1,5 +1,5 @@
-import { borderRadius, shadows } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, shadows } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const IntegrationsWrapper = styled.div`
   display: flex;

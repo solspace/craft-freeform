@@ -1,6 +1,6 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { Area, AreaChart, ResponsiveContainer } from 'recharts';
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -12,7 +12,7 @@ export const SampleSkeleton: React.FC = () => (
 );
 
 export const ListTableRowLoading: React.FC = () => {
-  const color = '#dfdfdf';
+  const color = "#dfdfdf";
   const data = Array.from({ length: 10 }, () => ({
     value: randomSubmissions(0, Math.random() > 0.9 ? 8 : 4),
   }));
@@ -42,7 +42,7 @@ export const ListTableRowLoading: React.FC = () => {
             </defs>
             <Area
               type="monotone"
-              dataKey={'value'}
+              dataKey={"value"}
               stroke={color}
               strokeWidth={1}
               strokeOpacity={1}

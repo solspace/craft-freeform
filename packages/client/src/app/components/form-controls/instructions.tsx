@@ -1,28 +1,31 @@
-import React, { memo, useMemo } from 'react';
-import { useCodeblockText } from '@ff-client/hooks/use-codeblock-text';
-import translate from '@ff-client/utils/translations';
+import { useCodeblockText } from "@ff-client/hooks/use-codeblock-text";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { memo, useMemo } from "react";
 
-import { Instructions } from './control.styles';
+import { Instructions } from "./control.styles";
 
 type Props = {
   instructions: string;
 };
 
 const FormInstructions: React.FC<Props> = memo(({ instructions }) => {
-  if (!instructions) {
-    return null;
-  }
+  const translatedInstructions = useMemo(() => {
+    if (!instructions) {
+      return null;
+    }
 
-  const translatedInstructions = useMemo(
-    () => translate(instructions),
-    [instructions]
-  );
+    return translate(instructions);
+  }, [instructions]);
 
   const compiledInstructions = useCodeblockText(translatedInstructions);
+  if (!compiledInstructions) {
+    return null;
+  }
 
   return <Instructions>{compiledInstructions}</Instructions>;
 });
 
-FormInstructions.displayName = 'FormInstructions';
+FormInstructions.displayName = "FormInstructions";
 
 export default FormInstructions;

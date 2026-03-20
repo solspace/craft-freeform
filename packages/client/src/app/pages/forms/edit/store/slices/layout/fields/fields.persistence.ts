@@ -1,10 +1,11 @@
-import type { ErrorsSubscriber } from '@editor/store/middleware/state-persist';
+import PubSub from "@editor/store/middleware/pubsub";
+import type { ErrorsSubscriber } from "@editor/store/middleware/state-persist";
 import {
   TOPIC_ERRORS,
   TOPIC_UPSERTED,
-} from '@editor/store/middleware/state-persist';
+} from "@editor/store/middleware/state-persist";
 
-import { fieldActions } from '.';
+import { fieldActions } from ".";
 
 // const persistFields: SaveSubscriber = (_, data) => {
 //   const { state, persist } = data;

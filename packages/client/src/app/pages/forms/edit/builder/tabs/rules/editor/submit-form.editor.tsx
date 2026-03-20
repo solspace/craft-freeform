@@ -1,21 +1,20 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useAppDispatch } from '@editor/store';
-import { submitFormRuleActions } from '@editor/store/slices/rules/submit-form';
-import { submitFormRuleSelectors } from '@editor/store/slices/rules/submit-form/submit-form.selectors';
-import { useQueryFormRules } from '@ff-client/queries/rules';
-import translate from '@ff-client/utils/translations';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useAppDispatch } from "@editor/store";
+import { submitFormRuleActions } from "@editor/store/slices/rules/submit-form";
+import { submitFormRuleSelectors } from "@editor/store/slices/rules/submit-form/submit-form.selectors";
+import { useQueryFormRules } from "@ff-client/queries/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { CombinatorSelect } from '../conditions/combinator/combinator';
-import { ConditionTable } from '../conditions/table/condition-table';
-
-import { Remove } from './remove-button/remove';
-import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field.editor.styles';
-import { UpsellEditor } from './upsell.editor';
+import { CombinatorSelect } from "../conditions/combinator/combinator";
+import { ConditionTable } from "../conditions/table/condition-table";
+import { ConfigurationDescription, Label } from "./editor.styles";
+import { RulesEditorWrapper } from "./field.editor.styles";
+import { Remove } from "./remove-button/remove";
+import { UpsellEditor } from "./upsell.editor";
 
 export const SubmitFormRulesEditor: React.FC = () => {
   const { formId } = useParams();
@@ -28,7 +27,7 @@ export const SubmitFormRulesEditor: React.FC = () => {
 
   const isPro = config.editions.is(Edition.Pro);
   if (!isPro) {
-    return <UpsellEditor label={translate('Submit Form Early')} />;
+    return <UpsellEditor label={translate("Submit Form Early")} />;
   }
 
   if (!rule) {
@@ -36,18 +35,19 @@ export const SubmitFormRulesEditor: React.FC = () => {
       <RulesEditorWrapper>
         <Label>
           <LoadingText
-            loadingText={translate('Loading data')}
+            loadingText={translate("Loading data")}
             loading={isFetching}
           >
-            {translate('Submit Form Early')}
+            {translate("Submit Form Early")}
           </LoadingText>
         </Label>
         {!isFetching && (
           <button
+            type="button"
             className="btn add icon dashed"
             onClick={() => dispatch(submitFormRuleActions.add())}
           >
-            {translate('Add rules')}
+            {translate("Add rules")}
           </button>
         )}
       </RulesEditorWrapper>
@@ -59,22 +59,22 @@ export const SubmitFormRulesEditor: React.FC = () => {
       <Remove
         onClick={() => {
           dispatch(submitFormRuleActions.remove());
-          navigate('..');
+          navigate("..");
         }}
       />
 
       <Label>
         <LoadingText
-          loadingText={translate('Loading data')}
+          loadingText={translate("Loading data")}
           loading={isFetching}
         >
-          {translate('Submit Form Early')}
+          {translate("Submit Form Early")}
         </LoadingText>
       </Label>
       {!isFetching && (
         <>
           <ConfigurationDescription>
-            {translate('Submit this form when ')}
+            {translate("Submit this form when ")}
 
             <CombinatorSelect
               value={rule.combinator}
@@ -83,7 +83,7 @@ export const SubmitFormRulesEditor: React.FC = () => {
               }
             />
 
-            {translate('of the following rules match:')}
+            {translate("of the following rules match:")}
           </ConfigurationDescription>
 
           <ConditionTable

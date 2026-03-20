@@ -3,15 +3,15 @@ import {
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 import {
   PreviewEditor,
   PreviewEditorContainer,
-} from '../../preview/previewable-component.styles';
+} from "../../preview/previewable-component.styles";
 
-import { TableColumnTabsWrapper } from './editor/table.editor.styles';
+import { TableColumnTabsWrapper } from "./editor/table.editor.styles";
 
 export const TableEditorWrapper = styled(PreviewEditor)`
   gap: 0;
@@ -65,9 +65,9 @@ type CellProps = {
 };
 export const Cell = styled.td<CellProps>`
   width: ${({ $tiny, $width }) =>
-    $tiny ? '32px' : $width ? `${$width}px` : 'auto'};
+    $tiny ? "32px" : $width ? `${$width}px` : "auto"};
 
-  padding: ${({ $tiny }) => ($tiny ? '6px 9px !important' : '0 !important')};
+  padding: ${({ $tiny }) => ($tiny ? "6px 9px !important" : "0 !important")};
 
   border: 1px solid rgba(0, 0, 0, 0.1);
 

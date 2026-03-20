@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import type { FormWithStats } from '@ff-client/types/forms';
-import translate from '@ff-client/utils/translations';
+import type { FormWithStats } from "@ff-client/types/forms";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useState } from "react";
 
-import { ArchivedItem } from './archived.item';
-import { ArchivedItems, Button, Wrapper } from './archived.styles';
+import { ArchivedItem } from "./archived.item";
+import { ArchivedItems, Button, Wrapper } from "./archived.styles";
 
 type Props = {
   data: FormWithStats[];
@@ -18,7 +19,7 @@ export const Archived: React.FC<Props> = ({ data }) => {
   return (
     <Wrapper>
       <Button onClick={() => setIsVisible(!isVisible)}>
-        {translate(isVisible ? 'Hide archived forms' : 'Show archived forms')}
+        {translate(isVisible ? "Hide archived forms" : "Show archived forms")}
       </Button>
       {isVisible && (
         <ArchivedItems>

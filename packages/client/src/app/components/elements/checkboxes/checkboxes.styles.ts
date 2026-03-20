@@ -1,5 +1,5 @@
-import { shadows } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { shadows } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const SelectAllWrapper = styled.div`
   position: relative;

@@ -5,55 +5,33 @@
     "packages/scripts",
     "packages/styles"
   ],
+  "packageManager": "pnpm@10.17.1",
   "private": true,
   "description": "Freeform plugin for Craft CMS",
-  "dependencies": {
-    "@eslint/compat": "^1.2.5",
-    "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.18.0",
-    "axios": "^1.13.5",
-    "dom-to-image": "^2.6.0",
-    "dompurify": "^3.3.1",
-    "globals": "^15.14.0",
-    "install": "^0.13.0",
-    "qs": ">=6.14.1"
-  },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.26.5",
-    "@types/d3-scale-chromatic": "^3.1.0",
-    "@types/jest": "^30.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.20.0",
-    "@typescript-eslint/parser": "^8.20.0",
-    "browserslist": "^4.28.1",
-    "concurrently": "^9.1.2",
-    "d3-scale-chromatic": "^3.1.0",
-    "eslint": "9.39.2",
-    "eslint-config-prettier": "^10.0.1",
-    "eslint-config-react": "^1.1.7",
-    "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-import": "^2.31.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-simple-import-sort": "^12.1.1",
-    "eslint-plugin-unused-imports": "^4.1.4",
+    "@biomejs/biome": "2.4.6",
+    "concurrently": "^9.2.1",
     "husky": "^9.1.7",
-    "postcss": "^8.5.0",
-    "prettier": "^3.4.2",
-    "prettier-eslint": "^16.3.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.9.3"
   },
-  "overrides": {
-    "diff": "^8.0.3"
+  "pnpm": {
+    "overrides": {
+      "monaco-editor>dompurify": "3.3.2"
+    },
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "core-js-pure"
+    ]
   },
   "scripts": {
-    "dev": "concurrently -n client,scripts,styles \"npm run -w @ff/client dev\" \"npm run -w @ff/scripts dev\" \"npm run -w @ff/styles dev\"",
-    "client": "npm run -w @ff/client dev",
-    "front-end": "concurrently -n scripts,styles \"npm run -w @ff/scripts dev\" \"npm run -w @ff/styles dev\"",
-    "build": "npm run -ws --if-present build",
-    "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",
-    "format:verify": "prettier --list-different '**/*.{ts,tsx,md,json,js,jsx,css}'",
-    "lint": "npm run -ws --if-present lint",
-    "test": "npm run -ws --if-present test",
+    "dev": "concurrently -n client,scripts,styles \"pnpm --filter @ff/client dev\" \"pnpm --filter @ff/scripts dev\" \"pnpm --filter @ff/styles dev\"",
+    "client": "pnpm --filter @ff/client dev",
+    "front-end": "concurrently -n scripts,styles \"pnpm --filter @ff/scripts dev\" \"pnpm --filter @ff/styles dev\"",
+    "build": "pnpm -r --if-present build",
+    "format": "biome check --write",
+    "format:verify": "biome check",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test",
     "prepare": "husky"
   },
   "author": "Solspace, Inc.",

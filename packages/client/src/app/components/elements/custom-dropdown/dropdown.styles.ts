@@ -1,12 +1,12 @@
-import { animated } from 'react-spring';
-import { scrollBar } from '@ff-client/styles/mixins';
+import { scrollBar } from "@ff-client/styles/mixins";
 import {
   borderRadius,
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
 export const Search = styled.input`
   width: 100%;

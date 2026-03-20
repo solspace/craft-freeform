@@ -1,7 +1,7 @@
-import React from 'react';
+import type React from "react";
 
-import { LoaderFieldLayout } from './field-layout/field-layout.loader';
-import { LoaderFieldList } from './field-list/field-list.loader';
+import { LoaderFieldLayout } from "./field-layout/field-layout.loader";
+import { LoaderFieldList } from "./field-list/field-list.loader";
 
 export const LoaderFormLayout: React.FC = () => {
   return (

@@ -1,18 +1,18 @@
-import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import config from '@config/freeform/freeform.config';
-import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { QKGroups } from '@ff-client/queries/form-groups';
-import { QKForms } from '@ff-client/queries/forms';
-import type { FormWithStats } from '@ff-client/types/forms';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import { format, parseISO } from 'date-fns';
+import config from "@config/freeform/freeform.config";
+import { useDeleteFormModal } from "@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { QKGroups } from "@ff-client/queries/form-groups";
+import { QKForms } from "@ff-client/queries/forms";
+import type { FormWithStats } from "@ff-client/types/forms";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import { format, parseISO } from "date-fns";
+import type React from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
-import { useArchiveFormMutation } from '../grid.mutations';
+import { useArchiveFormMutation } from "../grid.mutations";
 
 import {
   Item,
@@ -20,7 +20,7 @@ import {
   ItemMeta,
   ItemTitle,
   ItemTitleLink,
-} from './archived.item.styles';
+} from "./archived.item.styles";
 
 type Props = {
   form: FormWithStats;
@@ -46,15 +46,15 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
     navigate(`${id}`);
   };
 
-  const hasTitleLink = links.filter(({ type }) => type === 'title').length;
-  const linkList = form.links.filter(({ type }) => type === 'linkList');
+  const hasTitleLink = links.filter(({ type }) => type === "title").length;
+  const linkList = form.links.filter(({ type }) => type === "linkList");
 
   const getFormattedDate = (date: string): string =>
-    format(parseISO(date), 'yyyy-MM-dd');
+    format(parseISO(date), "yyyy-MM-dd");
 
   return (
     <Item
-      className={classes(isDisabled && 'disabled', isSuccess && 'restored')}
+      className={classes(isDisabled && "disabled", isSuccess && "restored")}
     >
       {hasTitleLink ? (
         <ItemTitleLink onClick={onNavigate}>{name}</ItemTitleLink>
@@ -63,7 +63,7 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
       )}
       {dateArchived && (
         <ItemDate>
-          ({translate('archived')} {getFormattedDate(dateArchived)})
+          ({translate("archived")} {getFormattedDate(dateArchived)})
         </ItemDate>
       )}
       {linkList.length > 0 &&
@@ -78,20 +78,22 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
               <ItemMeta key={idx}>
                 <a href={link.url}>{link.label}</a>
               </ItemMeta>
-            )
+            ),
           )}
       <ItemMeta>
         <button
+          type="button"
           onClick={() => {
             archiveMutation.mutate(id);
           }}
         >
-          {translate('Restore this Form')}
+          {translate("Restore this Form")}
         </button>
       </ItemMeta>
       {canDelete && (
         <ItemMeta>
           <button
+            type="button"
             onClick={async (event) => {
               if (event.metaKey && event.shiftKey) {
                 await axios.post(`/api/forms/delete`, { id });
@@ -106,7 +108,7 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
               }
             }}
           >
-            {translate('Delete this Form and its Submissions')}
+            {translate("Delete this Form and its Submissions")}
           </button>
         </ItemMeta>
       )}

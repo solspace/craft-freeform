@@ -1,9 +1,9 @@
-import React from 'react';
-import type { TestStats } from '@ff-client/types/form-monitor';
-import translate from '@ff-client/utils/translations';
-import CheckIcon from '@ff-icons/actions/check.svg';
-import ExclamationIcon from '@ff-icons/actions/exclamation.svg';
-import HourglassIcon from '@ff-icons/actions/hourglass.svg';
+import type { TestStats } from "@ff-client/types/form-monitor";
+import translate from "@ff-client/utils/translations";
+import CheckIcon from "@ff-icons/actions/check";
+import ExclamationIcon from "@ff-icons/actions/exclamation";
+import HourglassIcon from "@ff-icons/actions/hourglass";
+import type React from "react";
 
 import {
   ErrorMessage,
@@ -12,22 +12,22 @@ import {
   MonitorStatus,
   StatsChartContainer,
   TestStatusIcon,
-} from './card.monitor.stats.styles';
+} from "./card.monitor.stats.styles";
 
-export type StatusSize = 'sm' | 'lg';
-export type StatsAlign = 'left' | 'right';
-export type TestStatus = 'success' | 'failed' | 'pending';
+export type StatusSize = "sm" | "lg";
+export type StatsAlign = "left" | "right";
+export type TestStatus = "success" | "failed" | "pending";
 
 const DEFAULT_PROPS = {
-  align: 'left' as const,
-  width: '70%',
+  align: "left" as const,
+  width: "70%",
   showLastTest: false,
-  size: 'lg' as const,
+  size: "lg" as const,
 };
 
 export const getLastTestStatus = (
   stats: TestStats,
-  size: StatusSize = DEFAULT_PROPS.size
+  size: StatusSize = DEFAULT_PROPS.size,
 ): React.JSX.Element | null => {
   if (!stats?.lastTest) {
     return (
@@ -92,15 +92,15 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
   const pending = isPending ? 100 : formMonitor.percentage?.pending || 0;
 
   const progressStyle = {
-    '--success': `${success}%`,
-    '--failed': `${success + failed}%`,
-    '--pending': `${success + failed + pending}%`,
+    "--success": `${success}%`,
+    "--failed": `${success + failed}%`,
+    "--pending": `${success + failed + pending}%`,
   } as React.CSSProperties;
 
   return (
     <StatsChartContainer
       $align={align}
-      style={isPending ? { marginTop: '10px' } : undefined}
+      style={isPending ? { marginTop: "10px" } : undefined}
     >
       {showLastTest && formMonitor.lastTest && (
         <LastTestStatus>
@@ -110,8 +110,8 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
       <LineIndicator $width={width} style={progressStyle} />
       <MonitorStatus>
         {isPending
-          ? translate('Uptime: Pending')
-          : `${translate('Uptime')}: ${success}%`}
+          ? translate("Uptime: Pending")
+          : `${translate("Uptime")}: ${success}%`}
       </MonitorStatus>
     </StatsChartContainer>
   );

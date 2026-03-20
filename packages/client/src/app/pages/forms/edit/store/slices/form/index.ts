@@ -1,24 +1,24 @@
-import type { FormSettingNamespace } from '@ff-client/types/forms';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 } from 'uuid';
+import type { FormSettingNamespace } from "@ff-client/types/forms";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
-import './form.persistence';
-import './form-monitor.persistence';
+import "./form.persistence";
+import "./form-monitor.persistence";
 
 import type {
   FormErrors,
   FormState,
   ModifyProps,
   UpdateProps,
-} from './form.types';
+} from "./form.types";
 
 const initialState: FormState = {
   id: null,
   uid: v4(),
-  type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-  name: 'Create a new Form',
-  handle: 'newForm',
+  type: "Solspace\\Freeform\\Form\\Types\\Regular",
+  name: "Create a new Form",
+  handle: "newForm",
   isNew: true,
   settings: {},
   errors: {},
@@ -29,7 +29,7 @@ const initialState: FormState = {
 };
 
 export const formSlice = createSlice({
-  name: 'form',
+  name: "form",
   initialState,
   reducers: {
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
@@ -37,13 +37,13 @@ export const formSlice = createSlice({
     },
     setInitialSettings: (
       state,
-      action: PayloadAction<FormSettingNamespace[]>
+      action: PayloadAction<FormSettingNamespace[]>,
     ) => {
       if (Object.entries(state.settings).length > 0) return;
 
       for (const namespace of action.payload) {
         state.settings[namespace.handle] = {
-          namespaceType: 'settings',
+          namespaceType: "settings",
           namespace: namespace.handle,
         };
         for (const property of namespace.properties) {
@@ -59,7 +59,7 @@ export const formSlice = createSlice({
 
       if (!state.settings[namespace]) {
         state.settings[namespace] = {
-          namespaceType: 'settings',
+          namespaceType: "settings",
           namespace: namespace,
         };
       }

@@ -8,7 +8,7 @@ interface Params {
 
 export const replace = (string: string, params: Params = {}): string => {
   for (const [key, value] of Object.entries(params)) {
-    const pattern = new RegExp('\\{' + key + '\\}', 'g');
+    const pattern = new RegExp(`\\{${key}\\}`, "g");
     string = string.replace(pattern, value.toString());
   }
 
@@ -17,14 +17,14 @@ export const replace = (string: string, params: Params = {}): string => {
 
 export const translate = (
   string: string | undefined | null,
-  params: Params = {}
+  params: Params = {},
 ): string => {
   if (!string) {
-    return '';
+    return "";
   }
 
-  if (typeof Craft !== 'undefined') {
-    return Craft.t('freeform', string, params);
+  if (typeof Craft !== "undefined") {
+    return Craft.t("freeform", string, params);
   }
 
   return replace(string, params);

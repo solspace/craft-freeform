@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { QKForms } from '@ff-client/queries/forms';
-import { QKIntegrations } from '@ff-client/queries/integrations';
-import { QKNotifications } from '@ff-client/queries/notifications';
-import { useQueryClient } from '@tanstack/react-query';
+import { QKForms } from "@ff-client/queries/forms";
+import { QKIntegrations } from "@ff-client/queries/integrations";
+import { QKNotifications } from "@ff-client/queries/notifications";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const useFreeformNavigation = (): void => {
   const { formId } = useParams();
@@ -11,7 +11,7 @@ export const useFreeformNavigation = (): void => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const link = findLink('/freeform/forms');
+    const link = findLink("/freeform/forms");
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
 
@@ -23,62 +23,62 @@ export const useFreeformNavigation = (): void => {
           queryKey: QKNotifications.single(Number(formId)),
         });
         queryClient.invalidateQueries({
-          queryKey: QKIntegrations.single(Number(formId)),
+          queryKey: QKIntegrations.form(Number(formId)),
         });
       }
 
-      navigate('/forms');
+      navigate("/forms");
 
       return false;
     };
 
     if (link) {
-      link.addEventListener('click', onClick);
+      link.addEventListener("click", onClick);
     }
 
     return () => {
       if (link) {
-        link.removeEventListener('click', onClick);
+        link.removeEventListener("click", onClick);
       }
     };
   }, [formId, navigate, queryClient]);
 
   useEffect(() => {
-    const link = findLink('/freeform/integrations');
+    const link = findLink("/freeform/integrations");
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
-      navigate('/integrations');
+      navigate("/integrations");
 
       return false;
     };
 
     if (link) {
-      link.addEventListener('click', onClick);
+      link.addEventListener("click", onClick);
     }
 
     return () => {
       if (link) {
-        link.removeEventListener('click', onClick);
+        link.removeEventListener("click", onClick);
       }
     };
   }, [navigate]);
 
   useEffect(() => {
-    const link = findLink('/freeform/ab-tests');
+    const link = findLink("/freeform/ab-tests");
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
-      navigate('/ab-tests');
+      navigate("/ab-tests");
 
       return false;
     };
 
     if (link) {
-      link.addEventListener('click', onClick);
+      link.addEventListener("click", onClick);
     }
 
     return () => {
       if (link) {
-        link.removeEventListener('click', onClick);
+        link.removeEventListener("click", onClick);
       }
     };
   }, [navigate]);
@@ -87,13 +87,13 @@ export const useFreeformNavigation = (): void => {
 const findLink = (path: string): HTMLAnchorElement | null => {
   // Craft 5
   let link = document.querySelector<HTMLAnchorElement>(
-    `ul.nav-item__subnav li a[href*="${path}"]`
+    `ul.nav-item__subnav li a[href*="${path}"]`,
   );
 
   if (!link) {
     // Craft 4
     link = document.querySelector<HTMLAnchorElement>(
-      `ul.subnav li a[href*="${path}"]`
+      `ul.subnav li a[href*="${path}"]`,
     );
   }
 

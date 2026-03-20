@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const MarkdownWrapper = styled.div`
   margin: 0 -24px;

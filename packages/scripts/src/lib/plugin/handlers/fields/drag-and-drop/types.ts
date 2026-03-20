@@ -1,4 +1,4 @@
-import type { FreeformEvent } from 'types/events';
+import type { FreeformEvent } from "types/events";
 
 export type FileMetadata = {
   id?: string;
@@ -9,7 +9,7 @@ export type FileMetadata = {
 };
 
 export enum ErrorTypes {
-  FieldError = 'field-error',
+  FieldError = "field-error",
 }
 
 export type FieldError = {
@@ -35,5 +35,6 @@ export type FreeformEventWithContainer<T = unknown> = FreeformEvent &
     container: HTMLElement;
   };
 
-const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
-export const isImage = (extension: string): boolean => imageExtensions.includes(extension.toLowerCase());
+const imageExtensions = ["png", "jpg", "jpeg", "gif"];
+export const isImage = (extension: string): boolean =>
+  imageExtensions.includes(extension.toLowerCase());

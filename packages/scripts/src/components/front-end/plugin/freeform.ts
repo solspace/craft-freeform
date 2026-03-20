@@ -1,29 +1,44 @@
-import events from '@lib/plugin/constants/event-types';
-import { SuccessBehavior } from '@lib/plugin/constants/form';
-import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
-import CardsHandler from '@lib/plugin/handlers/fields/cards';
-import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
-import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
-import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
-import RatingHandler from '@lib/plugin/handlers/fields/rating';
-import SignatureHandler from '@lib/plugin/handlers/fields/signature';
-import TableHandler from '@lib/plugin/handlers/fields/table';
-import AbTestHandler from '@lib/plugin/handlers/form/ab-test';
-import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
-import IdempotencyHandler from '@lib/plugin/handlers/form/idempotency';
-import RuleHandler from '@lib/plugin/handlers/form/rules';
-import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
-import { ajax } from '@lib/plugin/helpers/ajax';
-import { isSafari } from '@lib/plugin/helpers/browser-check';
-import { getClassQuery } from '@lib/plugin/helpers/classes';
-import { fetchCsrf } from '@lib/plugin/helpers/csrf';
-import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { Callback, FreeformEvent, FreeformResponseWithToken } from 'types/events';
-import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
+import events from "@lib/plugin/constants/event-types";
+import { SuccessBehavior } from "@lib/plugin/constants/form";
+import BackButtonHandler from "@lib/plugin/handlers/fields/back-button";
+import CardsHandler from "@lib/plugin/handlers/fields/cards";
+import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
+import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
+import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
+import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SignatureHandler from "@lib/plugin/handlers/fields/signature";
+import TableHandler from "@lib/plugin/handlers/fields/table";
+import AbTestHandler from "@lib/plugin/handlers/form/ab-test";
+import GoogleTagManager from "@lib/plugin/handlers/form/google-tag-manager";
+import IdempotencyHandler from "@lib/plugin/handlers/form/idempotency";
+import RuleHandler from "@lib/plugin/handlers/form/rules";
+import SaveFormHandler from "@lib/plugin/handlers/form/save-form";
+import { ajax } from "@lib/plugin/helpers/ajax";
+import type { ResponseObject } from "@lib/plugin/helpers/ajax/ajax.types";
+import { isSafari } from "@lib/plugin/helpers/browser-check";
+import { getClassQuery } from "@lib/plugin/helpers/classes";
+import { fetchCsrf } from "@lib/plugin/helpers/csrf";
+import {
+  addClass,
+  getClassArray,
+  removeClass,
+  removeElement,
+} from "@lib/plugin/helpers/elements";
+import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
+import type {
+  Callback,
+  FreeformEvent,
+  FreeformResponseWithToken,
+} from "types/events";
+import type {
+  FreeformEventParameters,
+  FreeformHandler,
+  FreeformHandlerConstructor,
+  FreeformOptions,
+} from "types/form";
 
 export default class Freeform {
-  static _BACK_BUTTON_NAME = 'form_previous_page_button';
+  static _BACK_BUTTON_NAME = "form_previous_page_button";
   static instances = new WeakMap<HTMLFormElement, Freeform>();
   static instantiatedForms = new WeakMap<HTMLFormElement, boolean>();
 
@@ -40,17 +55,18 @@ export default class Freeform {
     showProcessingSpinner: false,
     showProcessingText: false,
     processingText: null,
-    prevButtonName: 'form_previous_page_button',
+    prevButtonName: "form_previous_page_button",
 
     skipHtmlReload: false,
 
-    successBannerMessage: 'Form has been submitted successfully!',
-    errorBannerMessage: 'Sorry, there was an error submitting the form. Please try again.',
+    successBannerMessage: "Form has been submitted successfully!",
+    errorBannerMessage:
+      "Sorry, there was an error submitting the form. Please try again.",
 
-    errorClassBanner: 'freeform-form-errors',
-    errorClassList: 'freeform-errors',
-    errorClassField: 'freeform-has-errors',
-    successClassBanner: 'freeform-form-success',
+    errorClassBanner: "freeform-form-errors",
+    errorClassList: "freeform-errors",
+    errorClassField: "freeform-has-errors",
+    successClassBanner: "freeform-form-success",
 
     removeMessages: null,
     renderSuccess: null,
@@ -79,10 +95,12 @@ export default class Freeform {
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
-  static getInstance = (form: HTMLFormElement): Freeform => Freeform.instances.get(form);
+  static getInstance = (form: HTMLFormElement): Freeform =>
+    Freeform.instances.get(form);
 
   constructor(form: HTMLFormElement) {
     if (Freeform.instances.get(form)) {
+      // biome-ignore lint/correctness/noConstructorReturn: Too late to fix this
       return Freeform.instances.get(form);
     }
 
@@ -92,17 +110,19 @@ export default class Freeform {
     this._setInstances();
 
     const options: FreeformOptions = {
-      ajax: form.getAttribute('data-ajax') !== null,
-      disableReset: form.getAttribute('data-disable-reset') !== null,
-      scrollToAnchor: form.getAttribute('data-scroll-to-anchor') !== null,
-      autoScroll: form.getAttribute('data-auto-scroll') !== null,
-      disableSubmit: form.getAttribute('data-disable-submit') !== null,
-      showProcessingSpinner: form.getAttribute('data-show-processing-spinner') !== null,
-      showProcessingText: form.getAttribute('data-show-processing-text') !== null,
-      processingText: form.getAttribute('data-processing-text'),
-      successBannerMessage: form.getAttribute('data-success-message'),
-      errorBannerMessage: form.getAttribute('data-error-message'),
-      skipHtmlReload: form.getAttribute('data-skip-html-reload') !== null,
+      ajax: form.getAttribute("data-ajax") !== null,
+      disableReset: form.getAttribute("data-disable-reset") !== null,
+      scrollToAnchor: form.getAttribute("data-scroll-to-anchor") !== null,
+      autoScroll: form.getAttribute("data-auto-scroll") !== null,
+      disableSubmit: form.getAttribute("data-disable-submit") !== null,
+      showProcessingSpinner:
+        form.getAttribute("data-show-processing-spinner") !== null,
+      showProcessingText:
+        form.getAttribute("data-show-processing-text") !== null,
+      processingText: form.getAttribute("data-processing-text"),
+      successBannerMessage: form.getAttribute("data-success-message"),
+      errorBannerMessage: form.getAttribute("data-error-message"),
+      skipHtmlReload: form.getAttribute("data-skip-html-reload") !== null,
     };
 
     this.options = {
@@ -110,13 +130,15 @@ export default class Freeform {
       ...options,
     };
 
-    this.disableSubmit('init');
+    this.disableSubmit("init");
 
     const stateCheck = setInterval(async () => {
-      if (document.readyState === 'complete') {
+      if (document.readyState === "complete") {
         clearInterval(stateCheck);
 
-        const readyEvent = this._dispatchEvent(events.form.ready, { options: {} });
+        const readyEvent = this._dispatchEvent(events.form.ready, {
+          options: {},
+        });
 
         this.options = {
           ...this.options,
@@ -126,7 +148,7 @@ export default class Freeform {
         this._setUp();
         this._initHandlers();
 
-        this.enableSubmit('init');
+        this.enableSubmit("init");
 
         const { scrollToAnchor } = this.options;
         if (scrollToAnchor) {
@@ -138,12 +160,16 @@ export default class Freeform {
 
   _scrollToForm = (): void => {
     const { scrollOffset, scrollElement } = this.options;
-    const y = this.form.getBoundingClientRect().top + window.scrollY + scrollOffset;
-    scrollElement.scrollTo({ top: y, behavior: this._isReducedMotion() ? 'instant' : 'smooth' });
+    const y =
+      this.form.getBoundingClientRect().top + window.scrollY + scrollOffset;
+    scrollElement.scrollTo({
+      top: y,
+      behavior: this._isReducedMotion() ? "instant" : "smooth",
+    });
   };
 
   _isReducedMotion = (): boolean => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     return !mediaQuery || mediaQuery.matches;
   };
@@ -165,37 +191,42 @@ export default class Freeform {
   };
 
   _resetHandlers = (): void => {
-    this._initializedHandlers.forEach((handler) => (handler.reload ? handler.reload() : null));
+    this._initializedHandlers.forEach((handler) => {
+      handler.reload ? handler.reload() : null;
+    });
   };
 
   has = (attribute: string): boolean => {
     return this.form.getAttribute(attribute) !== null;
   };
 
-  setOption = <K extends keyof FreeformOptions>(name: K, value: FreeformOptions[K]) => {
+  setOption = <K extends keyof FreeformOptions>(
+    name: K,
+    value: FreeformOptions[K],
+  ) => {
     this.options[name] = value;
   };
 
   disableForm = (): void => {
-    this.form.dataset.freeformDisabled = '';
+    this.form.dataset.freeformDisabled = "";
   };
 
   enableForm = (): void => {
     delete this.form.dataset.freeformDisabled;
   };
 
-  disableSubmit = (id: string = 'freeform') => {
+  disableSubmit = (id: string = "freeform") => {
     this._disableList.add(id);
 
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = true;
-      submit.ariaDisabled = 'true';
-      submit.dataset.disabled = 'true';
+      submit.ariaDisabled = "true";
+      submit.dataset.disabled = "true";
     }
   };
 
-  enableSubmit = (id: string = 'freeform') => {
+  enableSubmit = (id: string = "freeform") => {
     this._disableList.delete(id);
 
     if (this._disableList.size > 0) {
@@ -210,7 +241,7 @@ export default class Freeform {
     }
   };
 
-  lockSubmit = (id: string = 'freeform') => {
+  lockSubmit = (id: string = "freeform") => {
     this._lockList.add(id);
 
     // Perform the actual lock only initially
@@ -218,7 +249,8 @@ export default class Freeform {
       return;
     }
 
-    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
+    const { disableSubmit, showProcessingSpinner, showProcessingText } =
+      this.options;
 
     if (disableSubmit) {
       this.disableSubmit(id);
@@ -226,12 +258,13 @@ export default class Freeform {
 
     let lastButton: HTMLButtonElement | undefined = this._lastButtonPressed;
     if (!lastButton) {
-      lastButton = (this._getSubmitButtons()[0] as HTMLButtonElement) || undefined;
+      lastButton =
+        (this._getSubmitButtons()[0] as HTMLButtonElement) || undefined;
     }
 
     if (lastButton) {
       if (showProcessingSpinner) {
-        lastButton.classList.add('freeform-processing');
+        lastButton.classList.add("freeform-processing");
       }
 
       if (showProcessingText) {
@@ -240,7 +273,7 @@ export default class Freeform {
     }
   };
 
-  unlockSubmit = (id: string = 'freeform'): void => {
+  unlockSubmit = (id: string = "freeform"): void => {
     this._lockList.delete(id);
     if (this._lockList.size > 0) {
       return;
@@ -274,7 +307,8 @@ export default class Freeform {
   };
 
   _unlockSubmitButtons = (id?: string): void => {
-    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
+    const { disableSubmit, showProcessingSpinner, showProcessingText } =
+      this.options;
 
     if (disableSubmit) {
       this.enableSubmit(id);
@@ -285,7 +319,7 @@ export default class Freeform {
       const submit = submitButtons[i];
 
       if (showProcessingSpinner) {
-        submit.classList.remove('freeform-processing');
+        submit.classList.remove("freeform-processing");
       }
 
       if (showProcessingText) {
@@ -307,37 +341,52 @@ export default class Freeform {
   _attachListeners = (): void => {
     const form = this.form;
 
-    const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
+    const actionInput = this.form.querySelector<HTMLInputElement>(
+      "input[name=freeform-action]",
+    );
     if (actionInput) {
-      const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
-      actionButtons.forEach((button) =>
-        button.addEventListener('click', () => {
-          this._lastButtonPressed = button;
-          actionInput.value = button.getAttribute('data-freeform-action');
-        })
+      const actionButtons = form.querySelectorAll<HTMLButtonElement>(
+        "[data-freeform-action]",
       );
+      actionButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          this._lastButtonPressed = button;
+          actionInput.value = button.getAttribute("data-freeform-action");
+        });
+      });
     }
 
-    const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
-    inputs.forEach((input) =>
-      input.addEventListener('change', (event) => {
-        this._removeMessageFrom(event.target as HTMLInputElement);
-      })
+    const inputs = form.querySelectorAll<HTMLInputElement>(
+      "input, select, textarea",
     );
+    inputs.forEach((input) => {
+      input.addEventListener("change", (event) => {
+        this._removeMessageFrom(event.target as HTMLInputElement);
+      });
+    });
 
     if (!Freeform.instantiatedForms.has(form)) {
       Freeform.instantiatedForms.set(form, true);
 
-      form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
-        const actionInput = event.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
-        if (actionInput) {
-          actionInput.value = 'submit';
-        }
-      });
+      form.addEventListener(
+        events.form.ajaxAfterSubmit,
+        (event: FreeformEvent) => {
+          const actionInput = event.form.querySelector<HTMLInputElement>(
+            "input[name=freeform-action]",
+          );
+          if (actionInput) {
+            actionInput.value = "submit";
+          }
+        },
+      );
 
-      form.addEventListener('submit', this._onSubmit);
-      form.addEventListener('keydown', (event: KeyboardEvent) => {
-        const isEnter = event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+      form.addEventListener("submit", this._onSubmit);
+      form.addEventListener("keydown", (event: KeyboardEvent) => {
+        const isEnter =
+          event.key === "Enter" &&
+          !event.shiftKey &&
+          !event.ctrlKey &&
+          !event.metaKey;
         const isInput = event.target instanceof HTMLInputElement;
         if (isEnter && isInput) {
           event.preventDefault();
@@ -367,7 +416,7 @@ export default class Freeform {
 
     const pressedButton = event.submitter as HTMLButtonElement;
     let isBackButtonPressed = false;
-    if (pressedButton && pressedButton.name && pressedButton.name === Freeform._BACK_BUTTON_NAME) {
+    if (pressedButton?.name === Freeform._BACK_BUTTON_NAME) {
       isBackButtonPressed = true;
     }
 
@@ -400,7 +449,9 @@ export default class Freeform {
       const callbackResult = await callback();
       if (callbackResult === false) {
         this.forceUnlockSubmit();
-        this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
+        this._dispatchEvent(events.form.afterFailedSubmit, {
+          cancelable: false,
+        });
         return false;
       }
     }
@@ -413,10 +464,12 @@ export default class Freeform {
 
     const csrf = await fetchCsrf();
     if (csrf) {
-      let csrfInput = this.form.querySelector<HTMLInputElement>(`input[name="${csrf.name}"]`);
+      let csrfInput = this.form.querySelector<HTMLInputElement>(
+        `input[name="${csrf.name}"]`,
+      );
       if (!csrfInput) {
-        csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
+        csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
         csrfInput.name = csrf.name;
         this.form.appendChild(csrfInput);
       }
@@ -436,18 +489,28 @@ export default class Freeform {
       return;
     }
 
-    if (typeof this.options.removeMessages === 'function') {
+    if (typeof this.options.removeMessages === "function") {
       this.options.removeMessages = this.options.removeMessages.bind(this);
-      return this.options.removeMessages();
+      this.options.removeMessages();
+      return;
     }
 
     const { form, options } = this;
-    const { successClassBanner, errorClassBanner, errorClassList, errorClassField } = options;
+    const {
+      successClassBanner,
+      errorClassBanner,
+      errorClassList,
+      errorClassField,
+    } = options;
 
     // Remove any existing errors that are being shown
-    removeElement(form.querySelectorAll(`.${getClassArray(errorClassList).join('.')}`));
+    removeElement(
+      form.querySelectorAll(`.${getClassArray(errorClassList).join(".")}`),
+    );
 
-    const fieldsWithErrors = form.querySelectorAll<HTMLInputElement>(`.${getClassArray(errorClassField).join('.')}`);
+    const fieldsWithErrors = form.querySelectorAll<HTMLInputElement>(
+      `.${getClassArray(errorClassField).join(".")}`,
+    );
     fieldsWithErrors.forEach((field) => {
       this._removeMessageFrom(field);
     });
@@ -458,7 +521,9 @@ export default class Freeform {
   };
 
   _removeMessageFrom = (field: HTMLInputElement): void => {
-    const event = this._dispatchEvent(events.form.fieldRemoveMessages, { field });
+    const event = this._dispatchEvent(events.form.fieldRemoveMessages, {
+      field,
+    });
     if (event.defaultPrevented) {
       return;
     }
@@ -468,14 +533,23 @@ export default class Freeform {
 
     let errorContainerNode = field.parentNode;
     if (field.type) {
-      if (field.type === 'radio' || (field.type === 'checkbox' && /\[]$/.test(field.name))) {
+      if (
+        field.type === "radio" ||
+        (field.type === "checkbox" && /\[]$/.test(field.name))
+      ) {
         errorContainerNode = field.parentNode.parentNode;
       }
     }
 
-    removeElement(errorContainerNode.querySelector<HTMLElement>(getClassQuery(errorClassList)));
+    removeElement(
+      errorContainerNode.querySelector<HTMLElement>(
+        getClassQuery(errorClassList),
+      ),
+    );
 
-    const fields = errorContainerNode.querySelectorAll<HTMLInputElement>('input, select, textarea');
+    const fields = errorContainerNode.querySelectorAll<HTMLInputElement>(
+      "input, select, textarea",
+    );
     for (let i = 0; i < fields.length; i++) {
       removeClass(fields[i], errorClassField);
     }
@@ -493,18 +567,19 @@ export default class Freeform {
       return;
     }
 
-    if (typeof this.options.renderSuccess === 'function') {
+    if (typeof this.options.renderSuccess === "function") {
       this.options.renderSuccess = this.options.renderSuccess.bind(this);
-      return this.options.renderSuccess();
+      this.options.renderSuccess();
+      return;
     }
 
     const { form, options } = this;
     const { successBannerMessage, successClassBanner } = options;
 
-    const successMessage = document.createElement('div');
+    const successMessage = document.createElement("div");
     addClass(successMessage, successClassBanner);
 
-    const paragraph = document.createElement('p');
+    const paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode(successBannerMessage));
 
     successMessage.appendChild(paragraph);
@@ -513,13 +588,16 @@ export default class Freeform {
   };
 
   _renderFieldErrors = (errors: Record<string, string[]>) => {
-    const event = this._dispatchEvent(events.form.renderFieldErrors, { errors });
+    const event = this._dispatchEvent(events.form.renderFieldErrors, {
+      errors,
+    });
     if (event.defaultPrevented) {
       return false;
     }
 
-    if (typeof this.options.renderFieldErrors === 'function') {
-      this.options.renderFieldErrors = this.options.renderFieldErrors.bind(this);
+    if (typeof this.options.renderFieldErrors === "function") {
+      this.options.renderFieldErrors =
+        this.options.renderFieldErrors.bind(this);
       return this.options.renderFieldErrors(errors);
     }
 
@@ -528,19 +606,27 @@ export default class Freeform {
 
     for (const key in errors) {
       const messages = errors[key];
-      const errorsList = document.createElement('ul');
-      errorsList.setAttribute('data-field-errors', '');
+      const errorsList = document.createElement("ul");
+      errorsList.setAttribute("data-field-errors", "");
       addClass(errorsList, errorClassList);
 
-      for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
+      for (
+        let messageIndex = 0;
+        messageIndex < messages.length;
+        messageIndex++
+      ) {
         const message = messages[messageIndex];
-        const listItem = document.createElement('li');
+        const listItem = document.createElement("li");
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
       }
 
-      const container = form.querySelector<HTMLElement>(`[data-field-container="${key}"]`);
-      const errorAppendTarget = form.querySelector<HTMLElement>(`[data-error-append-target="${key}"]`);
+      const container = form.querySelector<HTMLElement>(
+        `[data-field-container="${key}"]`,
+      );
+      const errorAppendTarget = form.querySelector<HTMLElement>(
+        `[data-error-append-target="${key}"]`,
+      );
       const inputList = form.querySelectorAll(
         `
           [name="${key}"],
@@ -550,7 +636,7 @@ export default class Freeform {
           [type=radio][name="${key}"],
           select[multiple][name="${key}[]"],
           [data-freeform-file-upload="${key}"]
-        `
+        `,
       );
 
       if (!container) {
@@ -576,7 +662,7 @@ export default class Freeform {
       return false;
     }
 
-    if (typeof this.options.renderFormErrors === 'function') {
+    if (typeof this.options.renderFormErrors === "function") {
       this.options.renderFormErrors = this.options.renderFormErrors.bind(this);
       return this.options.renderFormErrors(errors);
     }
@@ -584,18 +670,18 @@ export default class Freeform {
     const { form, options } = this;
     const { errorClassBanner, errorBannerMessage } = options;
 
-    const errorBlock = document.createElement('div');
+    const errorBlock = document.createElement("div");
     addClass(errorBlock, errorClassBanner);
 
-    const paragraph = document.createElement('p');
+    const paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode(errorBannerMessage));
     errorBlock.appendChild(paragraph);
 
     if (errors.length) {
-      const errorsList = document.createElement('ul');
+      const errorsList = document.createElement("ul");
       for (let messageIndex = 0; messageIndex < errors.length; messageIndex++) {
         const message = errors[messageIndex];
-        const listItem = document.createElement('li');
+        const listItem = document.createElement("li");
 
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
@@ -618,8 +704,8 @@ export default class Freeform {
       for (let i = 0; i < form.elements.length; i++) {
         const element = form.elements[i] as HTMLInputElement;
 
-        if (element.type === 'file') {
-          if (element.value === '') {
+        if (element.type === "file") {
+          if (element.value === "") {
             data.delete(element.name);
           }
         }
@@ -629,21 +715,27 @@ export default class Freeform {
     return data;
   };
 
-  quickSave = async (secret: string, token?: string): Promise<string | false | undefined> => {
+  quickSave = async (
+    secret: string,
+    token?: string,
+  ): Promise<string | false | undefined> => {
     const { form } = this;
     const data = this._prepareFormData();
-    data.set('action', 'freeform/submit/quick-save');
-    data.set('storage-secret', secret);
+    data.set("action", "freeform/submit/quick-save");
+    data.set("storage-secret", secret);
     if (token) {
-      data.set('token', token);
+      data.set("token", token);
     }
 
-    let response;
+    let response: ResponseObject<FreeformResponseWithToken>;
     try {
-      response = await ajax<FreeformResponseWithToken>(form.getAttribute('action') || window.location.href, {
-        method: form.getAttribute('method'),
-        data,
-      });
+      response = await ajax<FreeformResponseWithToken>(
+        form.getAttribute("action") || window.location.href,
+        {
+          method: form.getAttribute("method"),
+          data,
+        },
+      );
     } catch (error) {
       if (error?.response?.status === 417) {
         this.unlockSubmit();
@@ -664,8 +756,15 @@ export default class Freeform {
       }
 
       if (errors || formErrors) {
-        this._dispatchEvent(events.form.ajaxError, { request: response, response: responseData, errors, formErrors });
-        this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
+        this._dispatchEvent(events.form.ajaxError, {
+          request: response,
+          response: responseData,
+          errors,
+          formErrors,
+        });
+        this._dispatchEvent(events.form.afterFailedSubmit, {
+          cancelable: false,
+        });
         this._renderFieldErrors(errors);
         this._renderFormErrors(formErrors);
       }
@@ -674,7 +773,10 @@ export default class Freeform {
         this._scrollToForm();
       }
     } else {
-      this._dispatchEvent(events.form.ajaxError, { request: response, response: responseData });
+      this._dispatchEvent(events.form.ajaxError, {
+        request: response,
+        response: responseData,
+      });
       this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
     }
 
@@ -690,14 +792,17 @@ export default class Freeform {
     const request = new XMLHttpRequest();
 
     const submitter = event.submitter as HTMLButtonElement | undefined;
-    if (submitter && submitter.name) {
-      data.append(submitter.name, '1');
+    if (submitter?.name) {
+      data.append(submitter.name, "1");
     }
 
-    const method = form.getAttribute('method') || 'POST';
-    const url = form.getAttribute('action') || window.location.href;
+    const method = form.getAttribute("method") || "POST";
+    const url = form.getAttribute("action") || window.location.href;
 
-    const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });
+    const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, {
+      data,
+      request,
+    });
     if (submitEvent.defaultPrevented) {
       return;
     }
@@ -712,17 +817,34 @@ export default class Freeform {
 
         if (serverResponse.status === 200) {
           const response = serverResponse.data as FreeformResponseWithToken;
-          const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
+          const {
+            success,
+            finished,
+            actions = [],
+            errors,
+            formErrors,
+            returnUrl,
+          } = response;
 
-          const onBeforeSuccess = this._dispatchEvent(events.form.ajaxBeforeSuccess, { request, response });
+          const onBeforeSuccess = this._dispatchEvent(
+            events.form.ajaxBeforeSuccess,
+            { request, response },
+          );
           if (onBeforeSuccess.defaultPrevented) {
             return;
           }
 
           if (!actions.length) {
             if (success) {
-              if (finished && response.onSuccess === SuccessBehavior.RedirectReturnUrl && returnUrl) {
-                const redirectEvent = this._dispatchEvent(events.form.ajaxSuccess, { request, response });
+              if (
+                finished &&
+                response.onSuccess === SuccessBehavior.RedirectReturnUrl &&
+                returnUrl
+              ) {
+                const redirectEvent = this._dispatchEvent(
+                  events.form.ajaxSuccess,
+                  { request, response },
+                );
 
                 if (redirectEvent.defaultPrevented) {
                   return;
@@ -733,7 +855,9 @@ export default class Freeform {
               }
 
               if (response.html !== null && !this.options.skipHtmlReload) {
-                form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
+                form.innerHTML = response.html
+                  .replace(/<form[^>]*>/, "")
+                  .replace("</form>", "");
               }
 
               if (!this.options.skipHtmlReload) {
@@ -754,20 +878,36 @@ export default class Freeform {
                 }
               }
 
-              this._dispatchEvent(events.form.ajaxSuccess, { request, response });
+              this._dispatchEvent(events.form.ajaxSuccess, {
+                request,
+                response,
+              });
             } else if (errors || formErrors) {
-              this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
-              this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
+              this._dispatchEvent(events.form.ajaxError, {
+                request,
+                response,
+                errors,
+                formErrors,
+              });
+              this._dispatchEvent(events.form.afterFailedSubmit, {
+                cancelable: false,
+              });
               this._renderFieldErrors(errors);
               this._renderFormErrors(formErrors);
             }
           } else {
-            this._dispatchEvent(events.form.handleActions, { response, actions, cancelable: false });
+            this._dispatchEvent(events.form.handleActions, {
+              response,
+              actions,
+              cancelable: false,
+            });
           }
 
           const payload = response?.freeform_payload;
           if (payload) {
-            const payloadInput = form.querySelector<HTMLInputElement>('input[name^=freeform_payload]');
+            const payloadInput = form.querySelector<HTMLInputElement>(
+              "input[name^=freeform_payload]",
+            );
             if (payloadInput) {
               payloadInput.value = payload;
             }
@@ -792,20 +932,25 @@ export default class Freeform {
         this.unlockSubmit();
       })
       .catch((error) => {
-        console.error('Error submitting form:', error);
+        console.error("Error submitting form:", error);
         this.unlockSubmit();
 
-        this._dispatchEvent(events.form.ajaxError, { request, response: error });
+        this._dispatchEvent(events.form.ajaxError, {
+          request,
+          response: error,
+        });
       });
   };
 
   _getMainSubmitButton = (): HTMLButtonElement | HTMLInputElement | undefined =>
-    this.form.querySelector<HTMLButtonElement | HTMLInputElement>(`*[type=submit][data-freeform-action="submit"]`);
+    this.form.querySelector<HTMLButtonElement | HTMLInputElement>(
+      `*[type=submit][data-freeform-action="submit"]`,
+    );
 
   _getSubmitButtons = (): NodeListOf<HTMLButtonElement | HTMLInputElement> => {
-    const buttons = this.form.querySelectorAll<HTMLButtonElement | HTMLInputElement>(
-      `*[type=submit][data-freeform-action]`
-    );
+    const buttons = this.form.querySelectorAll<
+      HTMLButtonElement | HTMLInputElement
+    >(`*[type=submit][data-freeform-action]`);
 
     if (buttons.length) {
       return buttons;
@@ -817,14 +962,14 @@ export default class Freeform {
 
   _getBackButtons = (): NodeListOf<HTMLButtonElement | HTMLInputElement> => {
     return this.form.querySelectorAll<HTMLButtonElement | HTMLInputElement>(
-      `*[type=submit][data-freeform-action="back"]`
+      `*[type=submit][data-freeform-action="back"]`,
     );
   };
 
   _dispatchEvent = <T extends object = Record<string, never>>(
     name: string,
     parameters?: FreeformEventParameters<T>,
-    element?: HTMLElement
+    element?: HTMLElement,
   ): Event & T => {
     const event = dispatchCustomEvent(
       name,
@@ -833,7 +978,7 @@ export default class Freeform {
         form: this.form,
         freeform: this,
       },
-      element
+      element,
     );
 
     document.dispatchEvent(event);
@@ -844,13 +989,13 @@ export default class Freeform {
 }
 
 // Attach to all forms
-const forms = document.querySelectorAll<HTMLFormElement>('form[data-freeform]');
+const forms = document.querySelectorAll<HTMLFormElement>("form[data-freeform]");
 forms.forEach((form) => {
   new Freeform(form);
 });
 
 const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-  if (node.nodeName === 'FORM' && node.dataset?.freeform !== undefined) {
+  if (node.nodeName === "FORM" && node.dataset?.freeform !== undefined) {
     new Freeform(node);
   }
 
@@ -860,7 +1005,7 @@ const recursiveFreeformAttachment = (node: HTMLFormElement) => {
 // Add an observer which listens for new forms
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    if (mutation.type !== 'childList') {
+    if (mutation.type !== "childList") {
       return;
     }
 
@@ -875,7 +1020,7 @@ let timeout: ReturnType<typeof setTimeout>;
 
 const runObserver = () => {
   if (retries > 25) {
-    console.warn('Freeform observer timed out');
+    console.warn("Freeform observer timed out");
     return clearTimeout(timeout);
   }
 

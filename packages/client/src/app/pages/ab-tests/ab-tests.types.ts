@@ -1,10 +1,10 @@
 export type MetricTab =
-  | 'conversionRate'
-  | 'impressions'
-  | 'interactions'
-  | 'failures';
+  | "conversionRate"
+  | "impressions"
+  | "interactions"
+  | "failures";
 
-export type ABStatus = 'active' | 'scheduled' | 'ended';
+export type ABStatus = "active" | "scheduled" | "ended";
 
 export type ABTest = {
   id: number;

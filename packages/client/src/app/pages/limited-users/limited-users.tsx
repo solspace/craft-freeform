@@ -1,19 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { EmptyBlock } from '@components/empty-block/empty-block';
-import { HeaderContainer } from '@components/layout/blocks/header-container';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { EmptyBlock } from "@components/empty-block/empty-block";
+import { HeaderContainer } from "@components/layout/blocks/header-container";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { Link } from "react-router-dom";
 
 import {
   useLimitedUsersDeleteMutation,
   useLimitedUsersQuery,
-} from './limited-users.queries';
-import { SettingsSidebar } from './limited-users.sidebar';
-import { ContentContainer } from './limited-users.styles';
+} from "./limited-users.queries";
+import { SettingsSidebar } from "./limited-users.sidebar";
+import { ContentContainer } from "./limited-users.styles";
 
 export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
@@ -21,7 +21,7 @@ export const LimitedUsers: React.FC = () => {
   const isPro = config.editions.isAtLeast(Edition.Pro);
   const isCraft5 = config.metadata.craft.is5;
 
-  useSidebarSelect('freeform/settings');
+  useSidebarSelect("freeform/settings");
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -31,13 +31,13 @@ export const LimitedUsers: React.FC = () => {
     <div>
       <Breadcrumb
         id="settings"
-        label={translate('Settings')}
+        label={translate("Settings")}
         url="."
         external
       />
       <Breadcrumb
         id="limited-users"
-        label={translate('Limited Users')}
+        label={translate("Limited Users")}
         url="settings/limited-users"
       />
 
@@ -45,19 +45,19 @@ export const LimitedUsers: React.FC = () => {
         extra={
           isPro && (
             <Link to="new" className="btn submit add icon">
-              {translate('New Group')}
+              {translate("New Group")}
             </Link>
           )
         }
       >
-        {translate('Limited Users')}
+        {translate("Limited Users")}
       </HeaderContainer>
 
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar />
         <ContentContainer
           id="content-container"
-          className={classes(!isCraft5 && 'craft-4')}
+          className={classes(!isCraft5 && "craft-4")}
         >
           <div id="content" className="content-pane">
             {isPro && (
@@ -66,8 +66,8 @@ export const LimitedUsers: React.FC = () => {
                   <table className="data fullwidth">
                     <thead>
                       <tr>
-                        <th>{translate('Name')}</th>
-                        <th>{translate('Description')}</th>
+                        <th>{translate("Name")}</th>
+                        <th>{translate("Description")}</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -81,13 +81,13 @@ export const LimitedUsers: React.FC = () => {
                           <td className="thin">
                             <a
                               className="delete icon"
-                              title={translate('Delete')}
+                              title={translate("Delete")}
                               onClick={() => {
                                 if (
                                   confirm(
                                     translate(
-                                      'Are you sure you want to delete this?'
-                                    )
+                                      "Are you sure you want to delete this?",
+                                    ),
                                   )
                                 ) {
                                   mutation.mutate(item.id);
@@ -102,11 +102,11 @@ export const LimitedUsers: React.FC = () => {
                 )}
 
                 {data.length === 0 && (
-                  <div style={{ padding: '100px 0 100px' }}>
+                  <div style={{ padding: "100px 0 100px" }}>
                     <EmptyBlock
-                      title={translate('No groups exist yet')}
+                      title={translate("No groups exist yet")}
                       subtitle={translate(
-                        `Click on the "New Group" button to set up your first Limited User permission group.`
+                        `Click on the "New Group" button to set up your first Limited User permission group.`,
                       )}
                     />
                   </div>
@@ -118,7 +118,7 @@ export const LimitedUsers: React.FC = () => {
               <EmptyBlock
                 lite
                 title={translate(
-                  'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.'
+                  "Upgrade to the Freeform Pro edition to get access to the Limited Users feature.",
                 )}
               />
             )}

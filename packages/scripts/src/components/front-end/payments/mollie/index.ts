@@ -1,10 +1,10 @@
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
 
-import type { MollieConfig } from './mollie.types';
+import type { MollieConfig } from "./mollie.types";
 
 // Data attribute selector for Mollie hidden input
-const SELECTOR = '[data-freeform-mollie]';
+const SELECTOR = "[data-freeform-mollie]";
 
 // Freeform submit event shape used by addListeners
 type FreeformSubmitEvent = Event & {
@@ -28,7 +28,9 @@ interface FreeformRuntimeApi {
 }
 
 function getFreeformRuntime(form: HTMLFormElement): FreeformRuntimeApi | null {
-  return (form as unknown as { freeform?: FreeformRuntimeApi }).freeform ?? null;
+  return (
+    (form as unknown as { freeform?: FreeformRuntimeApi }).freeform ?? null
+  );
 }
 
 function setFormError(form: HTMLFormElement, errors: string[]): void {
@@ -40,16 +42,20 @@ function setFormError(form: HTMLFormElement, errors: string[]): void {
 }
 
 function getCsrfToken(): string {
-  const meta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
-  return meta?.content ?? '';
+  const meta = document.querySelector(
+    'meta[name="csrf-token"]',
+  ) as HTMLMetaElement | null;
+  return meta?.content ?? "";
 }
 
 function parseConfig(element: HTMLElement): MollieConfig | null {
   try {
-    let json = element.getAttribute('data-mollie-config');
+    let json = element.getAttribute("data-mollie-config");
     if (!json) {
-      const configElement = element.parentElement?.querySelector('[data-mollie-config]') as HTMLElement | null;
-      json = configElement?.getAttribute('data-mollie-config') || null;
+      const configElement = element.parentElement?.querySelector(
+        "[data-mollie-config]",
+      ) as HTMLElement | null;
+      json = configElement?.getAttribute("data-mollie-config") || null;
     }
     return json ? (JSON.parse(json) as MollieConfig) : null;
   } catch {
@@ -59,7 +65,7 @@ function parseConfig(element: HTMLElement): MollieConfig | null {
 
 async function createPayment(
   form: HTMLFormElement,
-  config: MollieConfig
+  config: MollieConfig,
 ): Promise<{ ok: boolean; data: MolliePaymentResponse }> {
   const formData = new FormData(form);
   const values: Record<string, unknown> = {};
@@ -76,17 +82,17 @@ async function createPayment(
     values,
     metadata: {
       formId: form.dataset.id,
-      fieldHandle: form.querySelector<HTMLInputElement>(SELECTOR)?.name || '',
+      fieldHandle: form.querySelector<HTMLInputElement>(SELECTOR)?.name || "",
     },
   };
 
   try {
     const url = `/freeform/payments/mollie/create?integration=${encodeURIComponent(config.integration)}`;
     const res = await fetch(url, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-Token': getCsrfToken(),
+        "Content-Type": "application/json",
+        "X-CSRF-Token": getCsrfToken(),
       },
       body: JSON.stringify(paymentData),
     });
@@ -95,7 +101,10 @@ async function createPayment(
     try {
       data = (await res.json()) as MolliePaymentResponse;
     } catch {
-      return { ok: false, data: { success: false, error: 'Invalid JSON response' } };
+      return {
+        ok: false,
+        data: { success: false, error: "Invalid JSON response" },
+      };
     }
 
     return { ok: res.ok && data.success === true, data };
@@ -119,7 +128,7 @@ export async function initMollie(): Promise<void> {
       return;
     }
 
-    const form = element.closest<HTMLFormElement>('form');
+    const form = element.closest<HTMLFormElement>("form");
     if (!form) {
       return;
     }
@@ -137,45 +146,49 @@ export async function initMollie(): Promise<void> {
 
     processedForms.add(form);
 
-    addListeners(form, [events.form.submit], (freeformEvent: FreeformSubmitEvent) => {
-      freeformEvent.addCallback(async () => {
-        if (freeformEvent.isBackButtonPressed) {
-          return true;
-        }
-
-        const mollieInput = form.querySelector<HTMLInputElement>(SELECTOR);
-        if (!mollieInput) {
-          return true;
-        }
-
-        if (mollieInput.value) {
-          return true;
-        }
-
-        const firstElement = mollieElements[0];
-        const config = parseConfig(firstElement);
-        if (!config) {
-          return true;
-        }
-
-        try {
-          const { ok, data } = await createPayment(form, config);
-          if (ok && data?.checkoutUrl) {
-            mollieInput.value = data.paymentId || 'pending';
-            form.dataset.mollieCheckoutUrl = data.checkoutUrl;
+    addListeners(
+      form,
+      [events.form.submit],
+      (freeformEvent: FreeformSubmitEvent) => {
+        freeformEvent.addCallback(async () => {
+          if (freeformEvent.isBackButtonPressed) {
             return true;
           }
-          setFormError(form, ['Payment creation failed. Please try again.']);
-          return false;
-        } catch {
-          setFormError(form, ['Payment error. Please try again.']);
-          return false;
-        }
-      }, 100);
-    });
+
+          const mollieInput = form.querySelector<HTMLInputElement>(SELECTOR);
+          if (!mollieInput) {
+            return true;
+          }
+
+          if (mollieInput.value) {
+            return true;
+          }
+
+          const firstElement = mollieElements[0];
+          const config = parseConfig(firstElement);
+          if (!config) {
+            return true;
+          }
+
+          try {
+            const { ok, data } = await createPayment(form, config);
+            if (ok && data?.checkoutUrl) {
+              mollieInput.value = data.paymentId || "pending";
+              form.dataset.mollieCheckoutUrl = data.checkoutUrl;
+              return true;
+            }
+            setFormError(form, ["Payment creation failed. Please try again."]);
+            return false;
+          } catch {
+            setFormError(form, ["Payment error. Please try again."]);
+            return false;
+          }
+        }, 100);
+      },
+    );
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   void initMollie();
 });

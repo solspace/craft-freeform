@@ -1,5 +1,5 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled, { css } from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const SectionWrapper = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ export const SidebarMeta = styled.p`
 
 export const SidebarMetaUserLink = styled.a`
   color: ${colors.gray400};
-  text-decoration: ${(props) => (props.href ? 'underline' : 'none')};
+  text-decoration: ${(props) => (props.href ? "underline" : "none")};
   font-weight: ${(props) => (props.href ? 600 : 400)};
 
   ${({ href }) =>

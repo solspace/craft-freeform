@@ -1,47 +1,49 @@
-// @ts-ignore
-import ExpressionLanguage from 'expression-language';
+// @ts-expect-error
+import ExpressionLanguage from "expression-language";
 
 const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
 const expressionLanguage = new ExpressionLanguage();
 
 // Register sqrt function
 expressionLanguage.register(
-  'sqrt',
+  "sqrt",
   // Compiler function - returns string representation
   (value: string) => {
     return `Math.sqrt(${value})`;
   },
   // Evaluator function - performs actual calculation
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (args: Record<string, any>, value: number) => {
-    if (typeof value !== 'number') {
+  // biome-ignore lint/suspicious/noExplicitAny: Allow any for expression language arguments
+  (_args: Record<string, any>, value: number) => {
+    if (typeof value !== "number") {
       return value;
     }
     return Math.sqrt(value);
-  }
+  },
 );
 
-const extractValue = (element: HTMLInputElement | HTMLSelectElement): string | number | boolean | null => {
+const extractValue = (
+  element: HTMLInputElement | HTMLSelectElement,
+): string | number | boolean | null => {
   const value = element.value;
 
   // Return null if the value is an empty string
-  if (value === '') {
+  if (value === "") {
     return null;
   }
 
-  if (element.type === 'number') {
+  if (element.type === "number") {
     return Number(value);
   }
 
   const lowercasedValue = value.toLowerCase();
 
-  if (lowercasedValue === 'true') {
+  if (lowercasedValue === "true") {
     return true;
-  } else if (lowercasedValue === 'false') {
+  } else if (lowercasedValue === "false") {
     return false;
   }
 
-  if (isNaN(Number(value))) {
+  if (Number.isNaN(Number(value))) {
     return value;
   }
 
@@ -49,18 +51,21 @@ const extractValue = (element: HTMLInputElement | HTMLSelectElement): string | n
 };
 
 const attachCalculations = (input: HTMLInputElement) => {
-  const calculations = input.getAttribute('data-calculations');
-  const decimal = input.getAttribute('data-decimal');
+  const calculations = input.getAttribute("data-calculations");
+  const decimal = input.getAttribute("data-decimal");
 
   // Get calculation logic & decimal count
-  const calculationsLogic = calculations.replace(getVariablesPattern, (_, variable) => variable);
+  const calculationsLogic = calculations.replace(
+    getVariablesPattern,
+    (_, variable) => variable,
+  );
   const decimalCount = decimal ? Number(decimal) : null;
 
   // Get variables
   const variables: Record<string, string | number | boolean> = {};
-  let match;
-  while ((match = getVariablesPattern.exec(calculations)) !== null) {
-    variables[match[1]] = '';
+  const match = getVariablesPattern.exec(calculations);
+  while (match !== null) {
+    variables[match[1]] = "";
   }
 
   const handleCalculation = () => {
@@ -68,7 +73,9 @@ const attachCalculations = (input: HTMLInputElement) => {
       return;
     }
 
-    const isAllValuesFilled = Object.values(variables).every((value) => value !== null && value !== '');
+    const isAllValuesFilled = Object.values(variables).every(
+      (value) => value !== null && value !== "",
+    );
     if (!isAllValuesFilled) {
       return;
     }
@@ -78,16 +85,16 @@ const attachCalculations = (input: HTMLInputElement) => {
 
     const updateInputValue = (value: string | number) => {
       input.value = value.toString();
-      input.dispatchEvent(new Event('change'));
+      input.dispatchEvent(new Event("change"));
     };
 
-    if (input.type !== 'hidden') {
+    if (input.type !== "hidden") {
       updateInputValue(result);
       return;
     }
 
     const container = input.parentElement;
-    const pTag = container.querySelector('.freeform-calculation-plain-field');
+    const pTag = container.querySelector(".freeform-calculation-plain-field");
 
     if (pTag) {
       pTag.textContent = result;
@@ -97,9 +104,9 @@ const attachCalculations = (input: HTMLInputElement) => {
   };
 
   Object.keys(variables).forEach((variable) => {
-    const inputElements = input.form.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-      `input[name="${variable}"], select[name="${variable}"]`
-    );
+    const inputElements = input.form.querySelectorAll<
+      HTMLInputElement | HTMLSelectElement
+    >(`input[name="${variable}"], select[name="${variable}"]`);
     if (inputElements.length === 0) {
       return;
     }
@@ -107,7 +114,7 @@ const attachCalculations = (input: HTMLInputElement) => {
     inputElements.forEach((element) => {
       const updateVariables = () => {
         if (element instanceof HTMLInputElement) {
-          if (element.type === 'radio' && !element.checked) {
+          if (element.type === "radio" && !element.checked) {
             return;
           }
           variables[variable] = extractValue(element);
@@ -124,22 +131,22 @@ const attachCalculations = (input: HTMLInputElement) => {
       updateVariables(); // Initial update
 
       if (element instanceof HTMLInputElement) {
-        if (element.type === 'radio') {
-          element.addEventListener('change', updateVariablesAndCalculate);
+        if (element.type === "radio") {
+          element.addEventListener("change", updateVariablesAndCalculate);
         } else {
-          element.addEventListener('input', updateVariablesAndCalculate);
+          element.addEventListener("input", updateVariablesAndCalculate);
         }
       } else if (element instanceof HTMLSelectElement) {
-        element.addEventListener('change', updateVariablesAndCalculate);
+        element.addEventListener("change", updateVariablesAndCalculate);
       }
     });
   });
 
   // Trigger initial calculation if all values are present
   const areDefaultValuesSet = Object.keys(variables).every((variable) => {
-    const inputElements = input.form.querySelectorAll<HTMLInputElement | HTMLSelectElement>(
-      `input[name="${variable}"], select[name="${variable}"]`
-    );
+    const inputElements = input.form.querySelectorAll<
+      HTMLInputElement | HTMLSelectElement
+    >(`input[name="${variable}"], select[name="${variable}"]`);
 
     if (inputElements.length === 0) {
       return false; // No matching inputs found for the variable
@@ -149,7 +156,7 @@ const attachCalculations = (input: HTMLInputElement) => {
 
     inputElements.forEach((element) => {
       if (element instanceof HTMLInputElement) {
-        if (element.type === 'radio') {
+        if (element.type === "radio") {
           if (element.checked) {
             value = extractValue(element);
           }
@@ -164,7 +171,7 @@ const attachCalculations = (input: HTMLInputElement) => {
     variables[variable] = value;
 
     // Ensure the variable has a non-null, non-empty value
-    return value !== null && value !== '';
+    return value !== null && value !== "";
   });
 
   if (areDefaultValuesSet) {
@@ -173,7 +180,9 @@ const attachCalculations = (input: HTMLInputElement) => {
 };
 
 const registerCalculationInputs = async (container: HTMLElement) => {
-  const input = container.querySelector<HTMLInputElement>('input[data-calculations]');
+  const input = container.querySelector<HTMLInputElement>(
+    "input[data-calculations]",
+  );
   if (!input) {
     return;
   }
@@ -181,14 +190,18 @@ const registerCalculationInputs = async (container: HTMLElement) => {
   attachCalculations(input);
 };
 
-document.querySelectorAll<HTMLInputElement>('*[data-field-type=calculation]').forEach(registerCalculationInputs);
+document
+  .querySelectorAll<HTMLInputElement>("*[data-field-type=calculation]")
+  .forEach(registerCalculationInputs);
 
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+    if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       mutation.addedNodes.forEach((node) => {
         if (node instanceof HTMLElement) {
-          const input = node.querySelector<HTMLInputElement>('input[data-calculations]');
+          const input = node.querySelector<HTMLInputElement>(
+            "input[data-calculations]",
+          );
           if (input) {
             attachCalculations(input);
           }

@@ -1,6 +1,6 @@
-import type { FC } from 'react';
-import React, { useEffect, useRef } from 'react';
-import styled from 'styled-components';
+import type { FC } from "react";
+import { useEffect, useRef } from "react";
+import styled from "styled-components";
 
 type Props = {
   body: string;
@@ -19,10 +19,10 @@ export const IframeBlock: FC<Props> = ({ body }) => {
         doc.close();
 
         const setHeight = (): void => {
-          if (iframe && iframe.contentWindow && iframe.contentWindow.document) {
+          if (iframe?.contentWindow?.document) {
             const height = iframe.contentWindow.document.body.scrollHeight;
             iframe.style.height = `${height}px`;
-            iframe.contentWindow.document.body.style.overflow = 'hidden';
+            iframe.contentWindow.document.body.style.overflow = "hidden";
           }
         };
 

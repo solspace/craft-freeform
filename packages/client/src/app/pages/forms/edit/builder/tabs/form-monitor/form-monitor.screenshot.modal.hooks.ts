@@ -1,6 +1,6 @@
-import { useModal } from '@components/modals/modal.context';
+import { useModal } from "@components/modals/modal.context";
 
-import { ScreenshotModal } from './form-monitor.screenshot.modal';
+import { ScreenshotModal } from "./form-monitor.screenshot.modal";
 
 type ScreenshotModalData = {
   screenshot?: string;

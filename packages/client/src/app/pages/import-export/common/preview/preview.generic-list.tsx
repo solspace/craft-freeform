@@ -1,9 +1,8 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import classes from '@ff-client/utils/classes';
-import { stripTags } from '@ff-client/utils/html-attributes';
-import kebabCase from 'lodash/kebabCase';
-
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import classes from "@ff-client/utils/classes";
+import { stripTags } from "@ff-client/utils/html-attributes";
+import kebabCase from "lodash/kebabCase";
+import type { ReactNode } from "react";
 import {
   BlockItem,
   Blocks,
@@ -11,23 +10,23 @@ import {
   Label,
   ListItem,
   Spacer,
-} from './preview.styles';
+} from "./preview.styles";
 
 type Props<O> = {
   id?: string;
   label: string;
-  icon?: JSX.Element;
-  itemIcon?: (item: O) => JSX.Element | string;
+  icon?: ReactNode;
+  itemIcon?: (item: O) => ReactNode;
   items: O[];
   labelKey: keyof O;
   selectionKey: keyof O;
   selection: string[];
   onUpdate: (selection: string[]) => void;
-  labelExtras?: (item: O) => JSX.Element | string;
+  labelExtras?: (item: O) => ReactNode;
   nested?: boolean;
 };
 
-export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
+export const PreviewGenericList = <T,>(props: Props<T>): ReactNode => {
   const { label, icon, itemIcon, labelExtras } = props;
   const { items, selection, onUpdate } = props;
   const { labelKey, selectionKey, nested } = props;
@@ -62,8 +61,8 @@ export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
           <ListItem
             key={item[selectionKey] as string}
             className={classes(
-              'selectable',
-              selection.includes(item[selectionKey] as string) && 'selected'
+              "selectable",
+              selection.includes(item[selectionKey] as string) && "selected",
             )}
           >
             <Blocks>
@@ -75,17 +74,17 @@ export const PreviewGenericList = <T,>(props: Props<T>): JSX.Element => {
                     onUpdate(
                       selection.includes(item[selectionKey] as string)
                         ? selection.filter((uid) => uid !== item[selectionKey])
-                        : [...selection, item[selectionKey] as string]
+                        : [...selection, item[selectionKey] as string],
                     )
                   }
                 />
               </BlockItem>
               <Spacer $dash $width={nested ? 2 : undefined} />
               {icon}
-              {itemIcon && itemIcon(item)}
+              {itemIcon?.(item)}
               <Label htmlFor={`${id}-${item[selectionKey]}`}>
                 {stripTags(item[labelKey] as string)}
-                {labelExtras && labelExtras(item)}
+                {labelExtras?.(item)}
               </Label>
             </Blocks>
           </ListItem>

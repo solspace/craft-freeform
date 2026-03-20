@@ -1,7 +1,7 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect } from 'react';
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect } from "react";
 
-import type { TokenBackend } from '../tokens.types';
+import type { TokenBackend } from "../tokens.types";
 
 type Props = {
   backend: TokenBackend;
@@ -23,22 +23,22 @@ export const useKeyboard = ({ backend, setFilter, close }: Props): void => {
       // Check if we're still in text content
       if (currentNode.nodeType === 3) {
         const textContent = currentNode.textContent;
-        let searchText = '';
+        let searchText = "";
 
         // Look backwards from cursor to find '@' or determine if it was deleted
         let foundAt = false;
         for (let i = currentOffset - 1; i >= 0; i--) {
-          if (textContent[i] === '@') {
+          if (textContent[i] === "@") {
             foundAt = true;
             searchText = textContent.substring(i + 1, currentOffset);
             break;
           }
         }
 
-        if (!foundAt || event.key === 'Escape') {
+        if (!foundAt || event.key === "Escape") {
           // @ was deleted or Escape was pressed, hide dropdown
           close();
-          setFilter('');
+          setFilter("");
         } else {
           setFilter(searchText);
         }

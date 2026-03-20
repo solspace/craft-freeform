@@ -1,11 +1,11 @@
-import type { FieldForm } from '@ff-client/types/fields';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+import type { FieldForm } from "@ff-client/types/fields";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
 
 export const QKForms = {
-  all: ['field-forms'] as const,
+  all: ["field-forms"] as const,
 };
 
 type FetchFormsQuery = (options?: {

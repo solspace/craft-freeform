@@ -3,8 +3,8 @@ import {
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const ActionMenuWrapper = styled.div`
   position: relative;

@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
-import { useHover } from '@ff-client/hooks/use-hover';
+import { useHover } from "@ff-client/hooks/use-hover";
+import type React from "react";
+import { useRef } from "react";
 
-import { useDuplicateAnimation } from './duplicate.animations';
-import { DuplicateButtonWrapper } from './duplicate.styles';
-import DuplicateIcon from './duplicate.svg';
+import { useDuplicateAnimation } from "./duplicate.animations";
+import DuplicateIcon from "./duplicate.icon";
+import { DuplicateButtonWrapper } from "./duplicate.styles";
 
 type Props = {
   active: boolean;
@@ -23,12 +24,10 @@ export const DuplicateButton: React.FC<
 
   return (
     <DuplicateButtonWrapper
+      type="button"
       ref={ref}
       style={style}
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick?.();
-      }}
+      onClick={onClick}
       {...rest}
     >
       <DuplicateIcon />

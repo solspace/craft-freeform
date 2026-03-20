@@ -1,18 +1,18 @@
-import React from 'react';
-import { useResolvedPath } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { EmptyBlock } from '@components/empty-block/empty-block';
-import config from '@config/freeform/freeform.config';
-import { useQueryFormUsage } from '@ff-client/queries/forms';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { EmptyBlock } from "@components/empty-block/empty-block";
+import config from "@config/freeform/freeform.config";
+import { useQueryFormUsage } from "@ff-client/queries/forms";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useResolvedPath } from "react-router-dom";
 
-import NewsIcon from './empty.icon.svg';
-import { FormSettingsContainer, SectionHeader } from './settings.editor.styles';
+import NewsIcon from "./empty.icon";
+import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 
 export const FormUsage: React.FC = () => {
   const { data, isFetching } = useQueryFormUsage();
-  const currentPath = useResolvedPath('');
+  const currentPath = useResolvedPath("");
   const isCraft5 = config.metadata.craft.is5;
 
   if (!isCraft5) {
@@ -23,7 +23,7 @@ export const FormUsage: React.FC = () => {
     <FormSettingsContainer>
       <Breadcrumb
         id="settings-usage"
-        label={translate('Usage in Elements')}
+        label={translate("Usage in Elements")}
         url={currentPath.pathname}
       />
 
@@ -31,9 +31,9 @@ export const FormUsage: React.FC = () => {
 
       {!isFetching && data?.length === 0 && (
         <EmptyBlock
-          title={translate('No results found')}
+          title={translate("No results found")}
           subtitle={translate(
-            'This form is currently not attached to any elements.'
+            "This form is currently not attached to any elements.",
           )}
           icon={<NewsIcon />}
           iconFade
@@ -42,14 +42,14 @@ export const FormUsage: React.FC = () => {
 
       {data?.length > 0 && (
         <>
-          <SectionHeader>{translate('Usage in Elements')}</SectionHeader>
+          <SectionHeader>{translate("Usage in Elements")}</SectionHeader>
 
           <table className="data fullwidth collapsible">
             <thead>
               <tr>
-                <th>{translate('Element')}</th>
-                <th>{translate('Type')}</th>
-                <th>{translate('Status')}</th>
+                <th>{translate("Element")}</th>
+                <th>{translate("Type")}</th>
+                <th>{translate("Status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -60,8 +60,8 @@ export const FormUsage: React.FC = () => {
                       <div className="chip-content">
                         <span
                           className={classes(
-                            'status',
-                            usage.status.toLowerCase()
+                            "status",
+                            usage.status.toLowerCase(),
                           )}
                           role="img"
                         />

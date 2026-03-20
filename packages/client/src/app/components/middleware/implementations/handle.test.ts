@@ -1,30 +1,31 @@
-import { handle } from '.';
+import { describe, expect, it } from "vitest";
+import { handle } from ".";
 
-describe('handle middleware', () => {
-  it('generates a proper handle value', () => {
-    const string = 'ThisIs a RaNDoM_String 55 -=!?+_-"\'';
-
-    const result = handle(string);
-
-    expect(result).toEqual('ThisIsaRaNDoM_String55-_-');
-  });
-
-  it('does not escape underscores and dashes', () => {
-    const string = 'this_is-underscored$!#@%^&*';
+describe("handle middleware", () => {
+  it("generates a proper handle value", () => {
+    const string = "ThisIs a RaNDoM_String 55 -=!?+_-\"'";
 
     const result = handle(string);
 
-    expect(result).toEqual('this_is-underscored');
+    expect(result).toEqual("ThisIsaRaNDoM_String55-_-");
   });
 
-  it('converts unicode characters to Latin characters', () => {
+  it("does not escape underscores and dashes", () => {
+    const string = "this_is-underscored$!#@%^&*";
+
+    const result = handle(string);
+
+    expect(result).toEqual("this_is-underscored");
+  });
+
+  it("converts unicode characters to Latin characters", () => {
     const string =
-      'Visi cilvēki piedzimst brīvi un vienlīdzīgi savā pašcieņā un tiesībās';
+      "Visi cilvēki piedzimst brīvi un vienlīdzīgi savā pašcieņā un tiesībās";
 
     const result = handle(string);
 
     expect(result).toEqual(
-      'Visicilvekipiedzimstbriviunvienlidzigisavapascienauntiesibas'
+      "Visicilvekipiedzimstbriviunvienlidzigisavapascienauntiesibas",
     );
   });
 });

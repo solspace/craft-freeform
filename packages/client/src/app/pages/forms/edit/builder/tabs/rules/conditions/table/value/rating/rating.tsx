@@ -1,8 +1,8 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import type { Field } from '@editor/store/slices/layout/fields';
-import type { OptionCollection } from '@ff-client/types/properties';
-import { range } from '@ff-client/utils/arrays';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import type { Field } from "@editor/store/slices/layout/fields";
+import type { OptionCollection } from "@ff-client/types/properties";
+import { range } from "@ff-client/utils/arrays";
+import type React from "react";
 
 type Props = {
   field: Field;
@@ -26,7 +26,7 @@ export const RatingRuleValue: React.FC<Props> = ({
       emptyOption="Select a rating"
       value={value}
       options={options}
-      onChange={(selectedValue) => onChange && onChange(selectedValue)}
+      onChange={(selectedValue) => onChange?.(selectedValue)}
     />
   );
 };

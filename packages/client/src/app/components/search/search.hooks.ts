@@ -1,5 +1,5 @@
-import type { RefObject } from 'react';
-import { useEffect, useRef } from 'react';
+import type { RefObject } from "react";
+import { useEffect, useRef } from "react";
 
 export const useSearchFocus = (): RefObject<HTMLInputElement> => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -13,14 +13,14 @@ export const useSearchFocus = (): RefObject<HTMLInputElement> => {
       const target = event.target as HTMLElement | null;
       if (
         target &&
-        (target.tagName === 'INPUT' ||
-          target.tagName === 'TEXTAREA' ||
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
           target.isContentEditable)
       ) {
         return;
       }
 
-      if (event.key === '/') {
+      if (event.key === "/") {
         event.preventDefault();
 
         const input = inputRef.current;
@@ -30,10 +30,10 @@ export const useSearchFocus = (): RefObject<HTMLInputElement> => {
       }
     };
 
-    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, []);
 

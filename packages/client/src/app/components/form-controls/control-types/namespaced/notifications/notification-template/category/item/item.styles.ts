@@ -1,5 +1,5 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const Name = styled.div`
   padding: ${spacings.sm} ${spacings.md};

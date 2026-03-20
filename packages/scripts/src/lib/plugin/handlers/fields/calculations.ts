@@ -1,11 +1,11 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-// @ts-ignore
-import ExpressionLanguage from 'expression-language';
-import type { FreeformHandler } from 'types/form';
+import type Freeform from "@components/front-end/plugin/freeform";
+// @ts-expect-error
+import ExpressionLanguage from "expression-language";
+import type { FreeformHandler } from "types/form";
 
 class Calculation implements FreeformHandler {
   freeform: Freeform;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: ExpressionLanguage doesn't have types
   expressionLanguage: any;
 
   constructor(freeform: Freeform) {
@@ -18,61 +18,73 @@ class Calculation implements FreeformHandler {
   valueOrdination = (value: string): string | number | boolean => {
     const lowercasedValue = value.toLowerCase();
 
-    if (lowercasedValue === 'true') {
+    if (lowercasedValue === "true") {
       return true;
-    } else if (lowercasedValue === 'false') {
+    } else if (lowercasedValue === "false") {
       return false;
     }
 
-    return isNaN(Number(value)) ? value : Number(value);
+    return Number.isNaN(Number(value)) ? value : Number(value);
   };
 
   reload = () => {
-    const pickers = this.freeform.form.querySelectorAll('input[data-calculations]');
+    const pickers = this.freeform.form.querySelectorAll(
+      "input[data-calculations]",
+    );
 
     pickers.forEach((picker) => {
-      const calculations = picker.getAttribute('data-calculations');
-      const decimal = picker.getAttribute('data-decimal');
+      const calculations = picker.getAttribute("data-calculations");
+      const decimal = picker.getAttribute("data-decimal");
 
       const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
 
       // Get calculation logic & decimal count
-      const calculationsLogic = calculations.replace(getVariablesPattern, (_, variable) => variable);
+      const calculationsLogic = calculations.replace(
+        getVariablesPattern,
+        (_, variable) => variable,
+      );
       const decimalCount = decimal ?? Number(decimal);
 
       // Get variables
       const variables: Record<string, string | number | boolean> = {};
-      let match;
-      while ((match = getVariablesPattern.exec(calculations)) !== null) {
-        variables[match[1]] = '';
+      const match = getVariablesPattern.exec(calculations);
+      while (match !== null) {
+        variables[match[1]] = "";
       }
 
       const doCalculations = () => {
-        const allVariablesHaveValues = Object.values(variables).every((value) => value !== '');
+        const allVariablesHaveValues = Object.values(variables).every(
+          (value) => value !== "",
+        );
 
         if (!allVariablesHaveValues) {
           return;
         }
 
-        const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
+        const result = this.expressionLanguage.evaluate(
+          calculationsLogic,
+          variables,
+        );
         if (!(picker instanceof HTMLInputElement)) {
           return;
         }
 
-        const formattedResult = decimalCount ? result.toFixed(decimalCount) : result;
+        const formattedResult = decimalCount
+          ? result.toFixed(decimalCount)
+          : result;
 
         const updatePickerValue = (value: string | number) => {
           picker.value = value.toString();
-          picker.dispatchEvent(new Event('change'));
+          picker.dispatchEvent(new Event("change"));
         };
 
-        if (picker.type !== 'hidden') {
+        if (picker.type !== "hidden") {
           updatePickerValue(formattedResult);
           return;
         }
 
         const wrapper = picker.parentElement;
-        const pTag = wrapper.querySelector('.freeform-calculation-plain-field');
+        const pTag = wrapper.querySelector(".freeform-calculation-plain-field");
 
         if (pTag) {
           pTag.textContent = formattedResult;
@@ -83,19 +95,21 @@ class Calculation implements FreeformHandler {
 
       Object.keys(variables).forEach((variable) => {
         const inputElements = this.freeform.form.querySelectorAll(
-          `input[name="${variable}"], select[name="${variable}"]`
+          `input[name="${variable}"], select[name="${variable}"]`,
         );
 
         if (inputElements.length === 0) {
           return;
         }
 
-        const element = inputElements[0] as HTMLInputElement | HTMLSelectElement;
+        const element = inputElements[0] as
+          | HTMLInputElement
+          | HTMLSelectElement;
 
         const updateVariables = () => {
           variables[variable] =
             element instanceof HTMLInputElement
-              ? element.type === 'number'
+              ? element.type === "number"
                 ? Number(element.value)
                 : this.valueOrdination(element.value)
               : this.valueOrdination(element.value);
@@ -109,16 +123,19 @@ class Calculation implements FreeformHandler {
         updateVariables(); // Initial update
 
         if (element instanceof HTMLInputElement) {
-          element.addEventListener('input', updateVariablesAndCalculate);
+          element.addEventListener("input", updateVariablesAndCalculate);
         } else if (element instanceof HTMLSelectElement) {
-          element.addEventListener('change', updateVariablesAndCalculate);
+          element.addEventListener("change", updateVariablesAndCalculate);
         }
 
         // Handling other input elements (if any)
         if (inputElements.length > 1) {
           inputElements.forEach((inputElement) => {
-            if (inputElement !== element && inputElement instanceof HTMLInputElement) {
-              inputElement.addEventListener('click', () => {
+            if (
+              inputElement !== element &&
+              inputElement instanceof HTMLInputElement
+            ) {
+              inputElement.addEventListener("click", () => {
                 variables[variable] = this.valueOrdination(inputElement.value);
                 doCalculations();
               });

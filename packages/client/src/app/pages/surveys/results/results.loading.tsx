@@ -1,10 +1,10 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { ContentContainer } from '@components/layout/blocks/content-container';
+import { ContentContainer } from "@components/layout/blocks/content-container";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { ChartLoadingSkeleton } from './chart/chart.loading';
-import { Heading, Wrapper } from './result-list/result-list.styles';
-import { ResultsWrapper } from './results.styles';
+import { ChartLoadingSkeleton } from "./chart/chart.loading";
+import { Heading, Wrapper } from "./result-list/result-list.styles";
+import { ResultsWrapper } from "./results.styles";
 
 export const ResultsLoadingSkeleton: React.FC = () => {
   return (

@@ -1,9 +1,9 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { Property } from '@ff-client/types/properties';
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type { Property } from "@ff-client/types/properties";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
-import { ControlBlock } from './control.block';
+import { ControlBlock } from "./control.block";
 
 type Props = {
   property?: Property;
@@ -16,8 +16,8 @@ type Props = {
   errors?: string[];
   context?: unknown;
   preContent?: React.ReactNode;
-  align?: 'start' | 'center' | 'end';
-  justify?: 'start' | 'center' | 'end';
+  align?: "start" | "center" | "end";
+  justify?: "start" | "center" | "end";
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({
@@ -36,7 +36,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   justify,
 }) => {
   const { hasTranslation, removeTranslation, isTranslationsEnabled } =
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // biome-ignore lint/suspicious/noExplicitAny: Context is unknown, and useTranslations expects a specific type. This is a temporary solution until we can properly type the context.
     useTranslations(context as any);
 
   const { edition, translatable, messages } = property || {};
@@ -54,7 +54,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       messages={messages}
       translatable={isTranslationsEnabled && translatable}
       hasTranslation={hasTranslation(handle)}
-      isEncrypted={property?.flags?.includes('encrypted')}
+      isEncrypted={property?.flags?.includes("encrypted")}
       removeTranslation={() => removeTranslation(handle)}
       preContent={preContent}
       align={align}

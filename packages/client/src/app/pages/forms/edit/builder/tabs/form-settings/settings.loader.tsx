@@ -1,13 +1,13 @@
-import React from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { Sidebar } from '@components/layout/sidebar/sidebar';
-import { colors } from '@ff-client/styles/variables';
-import { range } from '@ff-client/utils/arrays';
-import { random } from '@ff-client/utils/math';
+import { Sidebar } from "@components/layout/sidebar/sidebar";
+import { colors } from "@ff-client/styles/variables";
+import { range } from "@ff-client/utils/arrays";
+import { random } from "@ff-client/utils/math";
+import type React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { FormSettingsContainer, SectionHeader } from './settings.editor.styles';
-import { SectionLink } from './settings.sidebar.styles';
-import { FormSettingsWrapper } from './settings.styles';
+import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
+import { SectionLink } from "./settings.sidebar.styles";
+import { FormSettingsWrapper } from "./settings.styles";
 
 export const LoaderFormSettings: React.FC = () => {
   return (
@@ -30,9 +30,9 @@ export const LoaderFormSettings: React.FC = () => {
         </SectionHeader>
 
         {range(7).map((i) => (
-          <div key={i} style={{ width: '100%' }}>
+          <div key={i} style={{ width: "100%" }}>
             <Skeleton width={random(120, 300)} />
-            <Skeleton width={random(70, 90) + '%'} height={8} />
+            <Skeleton width={`${random(70, 90)}%`} height={8} />
             <Skeleton height={30} />
           </div>
         ))}

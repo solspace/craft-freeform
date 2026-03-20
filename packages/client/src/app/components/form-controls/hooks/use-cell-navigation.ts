@@ -1,5 +1,5 @@
-import type { KeyboardEvent } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import type { KeyboardEvent } from "react";
+import { useCallback, useRef, useState } from "react";
 
 type SetCell = (row: number, cell: number) => void;
 
@@ -16,7 +16,7 @@ type KeyPressHandler = (options?: {
 
 type CellNavigation = (
   rowCount: number,
-  cellCount: number
+  cellCount: number,
 ) => {
   activeCell: `${number}:${number}`;
   setActiveCell: SetCell;
@@ -33,18 +33,20 @@ export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
   const keyPressHandler = useCallback<KeyPressHandler>(
     (options) =>
       (event): void => {
-        if (event.key === 'Enter' && options?.onEnter) {
+        if (event.key === "Enter" && options?.onEnter) {
           event.preventDefault();
 
-          return options.onEnter(event);
+          options.onEnter(event);
+          return;
         }
 
-        if (event.key === 'Backspace' && options?.onDelete) {
+        if (event.key === "Backspace" && options?.onDelete) {
           const value = (event.target as HTMLInputElement).value;
           if (value.length === 0) {
             event.preventDefault();
 
-            return options.onDelete(event);
+            options.onDelete(event);
+            return;
           }
         }
 
@@ -66,20 +68,20 @@ export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
         }
 
         let movingLeft: boolean;
-        if (event.key === 'ArrowUp' && row > 0) {
+        if (event.key === "ArrowUp" && row > 0) {
           deltaRow--;
         }
 
-        if (event.key === 'ArrowDown' && row < rowCount - 1) {
+        if (event.key === "ArrowDown" && row < rowCount - 1) {
           deltaRow++;
         }
 
-        if (event.key === 'ArrowLeft' && cell > 0 && caret.start) {
+        if (event.key === "ArrowLeft" && cell > 0 && caret.start) {
           movingLeft = true;
           deltaCell--;
         }
 
-        if (event.key === 'ArrowRight' && cell < cellCount - 1 && caret.end) {
+        if (event.key === "ArrowRight" && cell < cellCount - 1 && caret.end) {
           movingLeft = false;
           deltaCell++;
         }
@@ -107,14 +109,14 @@ export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
           if (movingLeft !== undefined) {
             nextElement.setSelectionRange(
               movingLeft ? nextElement.value.length : 0,
-              movingLeft ? nextElement.value.length : 0
+              movingLeft ? nextElement.value.length : 0,
             );
           } else {
             nextElement.setSelectionRange(caret.position, caret.position);
           }
         }
       },
-    [rowCount, cellCount, row, cell]
+    [rowCount, cellCount, row, cell],
   );
 
   const setActiveCell: SetCell = (row, cell) => {

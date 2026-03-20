@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import classes from '@ff-client/utils/classes';
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
 import {
   EmptyBlockWrapper,
@@ -8,7 +8,7 @@ import {
   LiteTitle,
   Subtitle,
   Title,
-} from './empty-block.styles';
+} from "./empty-block.styles";
 
 type Props = {
   title?: string;
@@ -36,7 +36,7 @@ export const EmptyBlock: React.FC<PropsWithChildren<Props>> = ({
 
   return (
     <EmptyBlockWrapper>
-      {icon && <Icon className={classes(iconFade && 'fade')}>{icon}</Icon>}
+      {icon && <Icon className={classes(iconFade && "fade")}>{icon}</Icon>}
 
       {title && <Title>{title}</Title>}
       {subtitle && <Subtitle>{subtitle}</Subtitle>}

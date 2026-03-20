@@ -1,16 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom/client';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import type { Suggestion } from '@ff-client/types/notifications';
-import translate from '@ff-client/utils/translations';
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import type { Suggestion } from "@ff-client/types/notifications";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import ReactDOM from "react-dom/client";
 
-import { Category } from './components/category';
-import { useArrowNavigation } from './listeners/use-arrows';
-import { useKeyboard } from './listeners/use-keyboard';
-import { useFilteredSuggestions } from './operations/filter';
-import { usePosition } from './operations/position';
-import { Body, Title, TokenDropdownWrapper } from './tokens.dropdown.styles';
-import type { TokenBackend } from './tokens.types';
+import { Category } from "./components/category";
+import { useArrowNavigation } from "./listeners/use-arrows";
+import { useKeyboard } from "./listeners/use-keyboard";
+import { useFilteredSuggestions } from "./operations/filter";
+import { usePosition } from "./operations/position";
+import { Body, Title, TokenDropdownWrapper } from "./tokens.dropdown.styles";
+import type { TokenBackend } from "./tokens.types";
 
 export type Position = {
   left: number;
@@ -34,7 +35,7 @@ const TokenDropdown: React.FC<Props> = ({ backend, close }) => {
   const [index, setIndex] = useState(0);
   const { suggestions, filter, setFilter } = useFilteredSuggestions(
     backend,
-    index
+    index,
   );
 
   usePosition(backend, ref);
@@ -42,7 +43,7 @@ const TokenDropdown: React.FC<Props> = ({ backend, close }) => {
   useEffect(() => {
     itemCountRef.current = suggestions.reduce(
       (acc, category) => acc + category.items.length,
-      0
+      0,
     );
   }, [suggestions]);
 
@@ -62,15 +63,15 @@ const TokenDropdown: React.FC<Props> = ({ backend, close }) => {
   const onInsert = useCallback(
     (item: Suggestion) => {
       backend.insert(item, filter);
-      setFilter('');
+      setFilter("");
       close();
     },
-    [filter, backend.insert, close]
+    [filter, backend.insert, close, setFilter],
   );
 
   return (
     <TokenDropdownWrapper ref={ref}>
-      <Title>{translate('Freeform Template Tokens')}</Title>
+      <Title>{translate("Freeform Template Tokens")}</Title>
       <Body>
         {suggestions.map((category) => (
           <Category
@@ -85,8 +86,8 @@ const TokenDropdown: React.FC<Props> = ({ backend, close }) => {
 };
 
 export const renderTokenDropdown = (backend: TokenBackend): TokenAPI => {
-  const container = document.createElement('div');
-  container.className = 'freeform-tokens-dropdown';
+  const container = document.createElement("div");
+  container.className = "freeform-tokens-dropdown";
   document.body.appendChild(container);
 
   const root = ReactDOM.createRoot(container);

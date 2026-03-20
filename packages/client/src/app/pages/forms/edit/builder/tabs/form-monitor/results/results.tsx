@@ -1,26 +1,28 @@
-import React, { useRef } from 'react';
-import { useOutletContext, useSearchParams } from 'react-router-dom';
-import type { TooltipProps } from 'react-tippy';
-import { Tooltip } from 'react-tippy';
-import { RemoveButton } from '@components/elements/remove-button/remove';
-import { useHover } from '@ff-client/hooks/use-hover';
+import { RemoveButton } from "@components/elements/remove-button/remove";
+import {
+  Tooltip,
+  type TooltipProps,
+} from "@components/elements/tooltip/tooltip";
+import { useHover } from "@ff-client/hooks/use-hover";
 import type {
   FormTest,
   FormTestsResponse,
   TestGroup,
-} from '@ff-client/types/form-monitor';
-import translate from '@ff-client/utils/translations';
-import CheckmarkIcon from '@ff-icons/actions/checkmark.svg';
-import DeleteIcon from '@ff-icons/actions/delete.svg';
-import HourglassIcon from '@ff-icons/actions/hourglass.svg';
-import CameraIcon from '@ff-icons/camera.svg';
-import type { UseQueryResult } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
+} from "@ff-client/types/form-monitor";
+import translate from "@ff-client/utils/translations";
+import CheckmarkIcon from "@ff-icons/actions/checkmark";
+import DeleteIcon from "@ff-icons/actions/delete";
+import HourglassIcon from "@ff-icons/actions/hourglass";
+import CameraIcon from "@ff-icons/camera";
+import type { UseQueryResult } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import React, { type ReactNode, useRef } from "react";
+import { useOutletContext, useSearchParams } from "react-router-dom";
 
-import { FormMonitorDetailsLoader } from '../form-monitor.loader';
-import { useScreenshotModal } from '../form-monitor.screenshot.modal.hooks';
-import { DeleteTestModal } from '../form-monitor.test.delete';
-import { ErrorMessage, StatusDot, StatusIndicator } from '../monitor.styles';
+import { FormMonitorDetailsLoader } from "../form-monitor.loader";
+import { useScreenshotModal } from "../form-monitor.screenshot.modal.hooks";
+import { DeleteTestModal } from "../form-monitor.test.delete";
+import { ErrorMessage, StatusDot, StatusIndicator } from "../monitor.styles";
 
 import {
   ChartContainer,
@@ -54,9 +56,9 @@ import {
   TestTooltip,
   TestTooltipContent,
   TestTooltipHeader,
-} from './results.styles';
-import { SubmissionDurationChart } from './results.submit.charts';
-import { ResultsTabs } from './results.tabs';
+} from "./results.styles";
+import { SubmissionDurationChart } from "./results.submit.charts";
+import { ResultsTabs } from "./results.tabs";
 
 type FormMonitorContext = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
@@ -74,19 +76,19 @@ type TestRowProps = {
   showNotifications: boolean;
 };
 
-const tooltipProps: Omit<TooltipProps, 'children'> = {
-  position: 'top',
-  animation: 'fade',
+const tooltipProps: Omit<TooltipProps, "children"> = {
+  position: "top",
+  animation: "fade",
   delay: [100, 0] as unknown as number,
 };
 
-const getStatusIcon = (status: string): JSX.Element => {
+const getStatusIcon = (status: string): ReactNode => {
   switch (status) {
-    case 'success':
+    case "success":
       return <CheckmarkIcon />;
-    case 'failed':
+    case "failed":
       return <DeleteIcon />;
-    case 'pending':
+    case "pending":
       return <HourglassIcon />;
     default:
       return <HourglassIcon />;
@@ -126,7 +128,7 @@ const TestRow: React.FC<TestRowProps> = ({
             <StatusIcon>{getStatusIcon(test.status)}</StatusIcon>
           </FormSubmitStatus>
           {test.screenshot && (
-            <Tooltip title={translate('View Screenshot')} {...tooltipProps}>
+            <Tooltip title={translate("View Screenshot")} {...tooltipProps}>
               <ScreenshotButton onClick={openScreenshotModal}>
                 <CameraIcon />
               </ScreenshotButton>
@@ -138,7 +140,7 @@ const TestRow: React.FC<TestRowProps> = ({
                 `Submit time is ${test.submissionDuration} seconds`,
                 {
                   duration: test.submissionDuration.toFixed(2),
-                }
+                },
               )}
               {...tooltipProps}
             >
@@ -159,11 +161,11 @@ const TestRow: React.FC<TestRowProps> = ({
                     <TestTooltipContent>
                       <NotificationStats>
                         <NotificationStat>
-                          <div className="label">{translate('Enabled')}</div>
+                          <div className="label">{translate("Enabled")}</div>
                           <div className="value">{test.totalNotifications}</div>
                         </NotificationStat>
                         <NotificationStat>
-                          <div className="label">{translate('Received')}</div>
+                          <div className="label">{translate("Received")}</div>
                           <div className="value">
                             {test.notifications?.length || 0}
                           </div>
@@ -192,11 +194,11 @@ const TestRow: React.FC<TestRowProps> = ({
                 <StatusIndicator
                   $status={
                     test.notifications?.length >= test.totalNotifications
-                      ? 'success'
-                      : 'failed'
+                      ? "success"
+                      : "failed"
                   }
                   $size="sm"
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                 >
                   {test.notifications?.length || 0}/{test.totalNotifications}
                 </StatusIndicator>
@@ -223,7 +225,7 @@ const TestRow: React.FC<TestRowProps> = ({
         )}
       </td>
       <td>
-        <Tooltip title={translate('Delete Test')} {...tooltipProps}>
+        <Tooltip title={translate("Delete Test")} {...tooltipProps}>
           <RemoveButton
             active={isHovering}
             onClick={() =>
@@ -246,7 +248,7 @@ const DailyTestsChart: React.FC<{ groups: TestGroup[] }> = ({ groups }) => {
   if (last30Days.length === 0) {
     return (
       <NoTestsMessage>
-        {translate('No test results available for the last 30 days.')}
+        {translate("No test results available for the last 30 days.")}
       </NoTestsMessage>
     );
   }
@@ -254,7 +256,7 @@ const DailyTestsChart: React.FC<{ groups: TestGroup[] }> = ({ groups }) => {
   // Find the maximum number of tests in any day
   const maxTestsPerDay = Math.max(
     ...last30Days.map((group) => group.tests.length),
-    1
+    1,
   );
 
   return (
@@ -308,7 +310,7 @@ const DailyTestColumn: React.FC<{
           html={
             <TestTooltip>
               <TestTooltipContent>
-                <div>{translate('No tests on this day')}</div>
+                <div>{translate("No tests on this day")}</div>
                 <div className="test-date">{group.date}</div>
               </TestTooltipContent>
             </TestTooltip>
@@ -387,10 +389,10 @@ const DailyTestColumn: React.FC<{
 export const FMResults: React.FC = () => {
   const { formTestsQuery } = useOutletContext<FormMonitorContext>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentPage = Number(searchParams.get('page')) || 1;
+  const currentPage = Number(searchParams.get("page")) || 1;
   const [testToDelete, setTestToDelete] =
     React.useState<DeleteModalState>(null);
-  const [activeTab, setActiveTab] = React.useState<string>('testResults');
+  const [activeTab, setActiveTab] = React.useState<string>("testResults");
 
   const { data: formTests, isLoading, isFetching, refetch } = formTestsQuery;
 
@@ -408,7 +410,7 @@ export const FMResults: React.FC = () => {
     return (
       <ResultsWrapper>
         <NoResults>
-          <p>{translate('Form Monitor is not enabled for this form.')}</p>
+          <p>{translate("Form Monitor is not enabled for this form.")}</p>
         </NoResults>
       </ResultsWrapper>
     );
@@ -420,7 +422,7 @@ export const FMResults: React.FC = () => {
         <NoResults>
           <p>
             {translate(
-              'This form is awaiting its first scan. This could take a few minutes.'
+              "This form is awaiting its first scan. This could take a few minutes.",
             )}
           </p>
         </NoResults>
@@ -430,7 +432,7 @@ export const FMResults: React.FC = () => {
 
   const handlePageChange = (page: number): void => {
     setSearchParams({ page: String(page) });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Calculate total tests across all groups
@@ -450,7 +452,7 @@ export const FMResults: React.FC = () => {
         <TestDescription>
           {translate(
             `Of the ${formTests.stats?.total || 0} tests that have occurred in the last 30 days, ` +
-              `${formTests.stats?.failed || 0} ${formTests.stats?.failed === 1 ? 'test has' : 'tests have'} failed for this form.`
+              `${formTests.stats?.failed || 0} ${formTests.stats?.failed === 1 ? "test has" : "tests have"} failed for this form.`,
           )}
         </TestDescription>
         <DailyTestsChart groups={formTests.tests} />
@@ -462,13 +464,13 @@ export const FMResults: React.FC = () => {
 
   const tabs = [
     {
-      id: 'testResults',
-      label: 'Test Results',
+      id: "testResults",
+      label: "Test Results",
       content: last30DaysContent,
     },
     {
-      id: 'submitTimes',
-      label: 'Form Submit Times',
+      id: "submitTimes",
+      label: "Form Submit Times",
       content: submitTimes,
     },
   ];
@@ -483,10 +485,10 @@ export const FMResults: React.FC = () => {
 
       <TableTestList>
         <TableHeader>
-          <h3>{translate('Detailed Results')}</h3>
+          <h3>{translate("Detailed Results")}</h3>
           <TestDescription>
             {translate(
-              `A total of ${formTests.stats?.total || 0} tests have been conducted for this form.`
+              `A total of ${formTests.stats?.total || 0} tests have been conducted for this form.`,
             )}
           </TestDescription>
         </TableHeader>
@@ -494,14 +496,14 @@ export const FMResults: React.FC = () => {
         <TestTableStyled>
           <thead>
             <tr>
-              <th>{translate('Test ID')}</th>
-              <th>{translate('Date')}</th>
-              <th>{translate('Status')}</th>
-              <th>{translate('Form Submit')}</th>
+              <th>{translate("Test ID")}</th>
+              <th>{translate("Date")}</th>
+              <th>{translate("Status")}</th>
+              <th>{translate("Form Submit")}</th>
               {formTests.notifications?.enabled && (
-                <th>{translate('Notifications')}</th>
+                <th>{translate("Notifications")}</th>
               )}
-              <th>{translate('Response')}</th>
+              <th>{translate("Response")}</th>
               <th></th>
             </tr>
           </thead>
@@ -526,19 +528,19 @@ export const FMResults: React.FC = () => {
               className="prev-page"
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              title={translate('Previous Page')}
+              title={translate("Previous Page")}
             />
             <PageButton
               className="next-page"
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              title={translate('Next Page')}
+              title={translate("Next Page")}
             />
           </PaginationNav>
           <PageInfo>
-            {translate('Showing')} {startIndex + 1}-
-            {Math.min(endIndex, totalTests)} {translate('of')} {totalTests}{' '}
-            {translate('tests')}
+            {translate("Showing")} {startIndex + 1}-
+            {Math.min(endIndex, totalTests)} {translate("of")} {totalTests}{" "}
+            {translate("tests")}
           </PageInfo>
         </PaginationContainer>
       )}

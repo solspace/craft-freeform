@@ -1,18 +1,17 @@
-import type { MutableRefObject } from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import type { RefObject } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export const useRowDimensions = (
-  ref: MutableRefObject<HTMLDivElement>
+  ref: RefObject<HTMLDivElement>,
 ): [number, number] => {
   const [width, setWidth] = useState<number>(0);
   const [offsetX, setOffsetX] = useState<number>(0);
 
-  const updateFieldWidth = (): void => {
+  const updateFieldWidth = useCallback((): void => {
     const boundingBox = ref.current.getBoundingClientRect();
     setWidth(boundingBox.width);
     setOffsetX(boundingBox.x);
-  };
+  }, [ref]);
 
   useEffect(() => {
     if (ref.current) {
@@ -21,12 +20,12 @@ export const useRowDimensions = (
       setOffsetX(boundingBox.x);
     }
 
-    window.addEventListener('resize', updateFieldWidth);
+    window.addEventListener("resize", updateFieldWidth);
 
     return () => {
-      window.removeEventListener('resize', updateFieldWidth);
+      window.removeEventListener("resize", updateFieldWidth);
     };
-  }, [ref]);
+  }, [ref, updateFieldWidth]);
 
   return [width, offsetX];
 };

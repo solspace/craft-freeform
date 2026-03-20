@@ -1,15 +1,15 @@
-import React from 'react';
-import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from 'recharts';
-import type { ContentType } from 'recharts/types/component/Tooltip';
+import type React from "react";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
+import type { ContentType } from "recharts/types/component/Tooltip";
 
-import { useQuerySurveyChart, useQuerySurveyResults } from '../results.queries';
+import { useQuerySurveyChart, useQuerySurveyResults } from "../results.queries";
 
 import {
   ChartWrapper,
   ExtraColor,
   Title,
   TooltipWrapper,
-} from './chart.styles';
+} from "./chart.styles";
 
 export const Chart: React.FC = () => {
   const { data: results, isFetching: isFetchingResults } =

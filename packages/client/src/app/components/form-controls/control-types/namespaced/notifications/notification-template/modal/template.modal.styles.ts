@@ -1,7 +1,7 @@
-import { ModalContainer } from '@components/modals/modal.styles';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { ModalContainer } from "@components/modals/modal.styles";
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const Container = styled(ModalContainer)`
   display: grid;

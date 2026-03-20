@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useRenderContext } from '@components/form-controls/context/render.context';
-import { Control } from '@components/form-controls/control';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import type { ControlType } from '@components/form-controls/types';
-import { useDebounce } from '@ff-client/hooks/use-debounce';
-import type { AttributeProperty } from '@ff-client/types/properties';
-import isEqual from 'lodash/isEqual';
+import { useRenderContext } from "@components/form-controls/context/render.context";
+import { Control } from "@components/form-controls/control";
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import type { ControlType } from "@components/form-controls/types";
+import { useDebounce } from "@ff-client/hooks/use-debounce";
+import type { AttributeProperty } from "@ff-client/types/properties";
+import isEqual from "lodash/isEqual";
+import type React from "react";
+import { useEffect, useState } from "react";
 
-import { AttributesEditor } from './attributes.editor';
-import { cleanAttributes } from './attributes.operations';
-import { AttributePreview } from './attributes.preview';
+import { AttributesEditor } from "./attributes.editor";
+import { cleanAttributes } from "./attributes.operations";
+import { AttributePreview } from "./attributes.preview";
 import type {
   AttributeCollection,
   EditableAttributeCollection,
-} from './attributes.types';
+} from "./attributes.types";
 
 const convertToEditable = (
-  value: AttributeCollection
+  value: AttributeCollection,
 ): EditableAttributeCollection => {
   const converted: EditableAttributeCollection = {};
   for (const key in value) {
@@ -27,7 +28,7 @@ const convertToEditable = (
 };
 
 const convertFromEditable = (
-  value: EditableAttributeCollection
+  value: EditableAttributeCollection,
 ): AttributeCollection => {
   const converted: AttributeCollection = {};
   for (const key in value) {
@@ -46,7 +47,7 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
 }) => {
   const { size } = useRenderContext();
   const [editableAttributes, setEditableAttributes] = useState(
-    convertToEditable(attributes)
+    convertToEditable(attributes),
   );
 
   const debouncedValue = useDebounce(editableAttributes, 1000);
@@ -57,14 +58,14 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
     if (!isEqual(next, attributes)) {
       updateValue(next);
     }
-  }, [debouncedValue]);
+  }, [debouncedValue, updateValue, attributes]);
 
   // Only update local editable state if incoming props actually changed
   useEffect(() => {
     const incoming = convertToEditable(attributes);
-    if (!isEqual(incoming, editableAttributes)) {
-      setEditableAttributes(incoming);
-    }
+    setEditableAttributes((current) =>
+      isEqual(incoming, current) ? current : incoming,
+    );
   }, [attributes]);
 
   const preview = (
@@ -74,7 +75,7 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
       }
       onAfterEdit={() => {
         const cleaned = convertFromEditable(
-          cleanAttributes(editableAttributes)
+          cleanAttributes(editableAttributes),
         );
 
         if (!isEqual(cleaned, attributes)) {
@@ -90,7 +91,7 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
     </PreviewableComponent>
   );
 
-  if (size === 'small') {
+  if (size === "small") {
     return preview;
   }
 

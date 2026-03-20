@@ -1,10 +1,10 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useSelector } from 'react-redux';
-import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
-import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
+import { ThemedSkeleton } from "@components/loaders/skeletons/themed-skeleton";
+import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { useSelector } from "react-redux";
 
-import { LoadingRow } from './mini-map.styles';
+import { LoadingRow } from "./mini-map.styles";
 
 export const LoaderMiniMap: React.FC = () => {
   const layout = useSelector(layoutSelectors.cartographed.fullLayoutList);
@@ -18,7 +18,7 @@ export const LoaderMiniMap: React.FC = () => {
           </div>
 
           {page.map((row, rowIdx) => (
-            <LoadingRow key={rowIdx} style={{ display: 'flex' }}>
+            <LoadingRow key={rowIdx} style={{ display: "flex" }}>
               {row.map((_, fieldIdx) => (
                 <Skeleton key={fieldIdx} width="100%" height={28} />
               ))}

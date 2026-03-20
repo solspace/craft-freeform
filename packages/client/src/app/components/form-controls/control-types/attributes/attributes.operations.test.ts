@@ -1,69 +1,70 @@
-import { attributesToString, cleanAttributes } from './attributes.operations';
+import { describe, expect, it } from "vitest";
+import { attributesToString, cleanAttributes } from "./attributes.operations";
 
-describe('attributes -> operations', () => {
-  describe('attributesToString()', () => {
-    it('converts filled string attributes', () => {
+describe("attributes -> operations", () => {
+  describe("attributesToString()", () => {
+    it("converts filled string attributes", () => {
       expect(
         attributesToString([
-          ['data-test', 'one'],
-          ['some-attr', 'value'],
-        ])
+          ["data-test", "one"],
+          ["some-attr", "value"],
+        ]),
       ).toBe('data-test="one" some-attr="value"');
     });
 
-    it('converts truthy boolean values or empty values to empty data attributes', () => {
+    it("converts truthy boolean values or empty values to empty data attributes", () => {
       expect(
         attributesToString([
-          ['some-attr', ''],
-          ['with-null', null],
-        ])
-      ).toBe('some-attr with-null');
+          ["some-attr", ""],
+          ["with-null", null],
+        ]),
+      ).toBe("some-attr with-null");
     });
 
-    it('skips empty key, value pairs', () => {
+    it("skips empty key, value pairs", () => {
       expect(
         attributesToString([
           [null, null],
-          ['', ''],
-          ['', null],
-          [null, ''],
-        ])
-      ).toBe('');
+          ["", ""],
+          ["", null],
+          [null, ""],
+        ]),
+      ).toBe("");
     });
   });
 
-  describe('cleanAttributes()', () => {
-    it('clears all values with null', () => {
+  describe("cleanAttributes()", () => {
+    it("clears all values with null", () => {
       expect(
         cleanAttributes({
           container: [
             [null, null],
-            ['one', 'two'],
+            ["one", "two"],
             [null, null],
             [null, null],
-            [null, 'two'],
-            ['one', null],
+            [null, "two"],
+            ["one", null],
           ],
-        })
+        }),
       ).toEqual({
         container: [
-          ['one', 'two'],
-          [null, 'two'],
-          ['one', null],
+          ["one", "two"],
+          [null, "two"],
+          ["one", null],
         ],
       });
     });
 
-    it('clears all values with empty string', () => {
+    it("clears all values with empty string", () => {
       expect(
         cleanAttributes({
           container: [
-            ['', ''],
-            ['one', 'two'],
+            ["", ""],
+            ["one", "two"],
           ],
-        })
+        }),
       ).toEqual({
-        container: [['one', 'two']],
+        container: [["one", "two"]],
       });
     });
   });

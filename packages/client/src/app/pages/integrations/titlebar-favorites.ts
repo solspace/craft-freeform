@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
-import { useLocalStorage } from '@ff-client/hooks/ts-hooks/use-local-storage';
+import { useLocalStorage } from "@ff-client/hooks/ts-hooks/use-local-storage";
+import { useCallback } from "react";
 
-import type { TypeDefinition } from './integration.types';
+import type { TypeDefinition } from "./integration.types";
 
-const INTEGRATIONS_FAVORITES_STORAGE_KEY = 'integrations-favorites';
+const INTEGRATIONS_FAVORITES_STORAGE_KEY = "integrations-favorites";
 
 type TitlebarFavorites = {
   toggleFavorite: (integrationType: TypeDefinition) => void;
@@ -13,7 +13,7 @@ type TitlebarFavorites = {
 export const useTitlebarFavorites = (): TitlebarFavorites => {
   const [handles, setHandles] = useLocalStorage<string[]>(
     INTEGRATIONS_FAVORITES_STORAGE_KEY,
-    []
+    [],
   );
 
   const toggleFavorite = useCallback(
@@ -31,7 +31,7 @@ export const useTitlebarFavorites = (): TitlebarFavorites => {
         return Array.from(favorites);
       });
     },
-    [setHandles]
+    [setHandles],
   );
 
   const hasFavorite = useCallback(
@@ -40,7 +40,7 @@ export const useTitlebarFavorites = (): TitlebarFavorites => {
 
       return sanitizeFavoriteHandles(handles).has(key);
     },
-    [handles]
+    [handles],
   );
 
   return {

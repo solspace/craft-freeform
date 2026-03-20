@@ -1,9 +1,9 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { range } from '@ff-client/utils/arrays';
+import { range } from "@ff-client/utils/arrays";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { LoaderFieldItem } from './field/field.loader';
-import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
+import { LoaderFieldItem } from "./field/field.loader";
+import { FieldGroupWrapper, GroupTitle, List } from "./field-group.styles";
 
 type Props = {
   words: number[];

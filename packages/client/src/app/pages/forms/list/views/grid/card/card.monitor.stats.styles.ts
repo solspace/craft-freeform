@@ -1,5 +1,5 @@
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const MonitorStatus = styled.span`
   display: inline-block;
@@ -23,17 +23,17 @@ export const LastTestStatus = styled.span`
   margin-bottom: 7px;
 `;
 
-export const StatsChartContainer = styled.div<{ $align?: 'left' | 'right' }>`
+export const StatsChartContainer = styled.div<{ $align?: "left" | "right" }>`
   display: flex;
   flex-direction: column;
   gap: 6px;
-  align-items: ${({ $align = 'left' }) =>
-    $align === 'right' ? 'flex-end' : 'flex-start'};
-  text-align: ${({ $align = 'left' }) => $align};
+  align-items: ${({ $align = "left" }) =>
+    $align === "right" ? "flex-end" : "flex-start"};
+  text-align: ${({ $align = "left" }) => $align};
 `;
 
 export const LineIndicator = styled.div<{ $width?: string }>`
-  width: ${({ $width = '100%' }) => $width};
+  width: ${({ $width = "100%" }) => $width};
   height: 6px;
   border-radius: 3px;
   background: linear-gradient(
@@ -50,24 +50,24 @@ export const LineIndicator = styled.div<{ $width?: string }>`
 `;
 
 export const TestStatusIcon = styled.div<{
-  $status: 'success' | 'failed' | 'pending';
-  $size: 'sm' | 'lg';
+  $status: "success" | "failed" | "pending";
+  $size: "sm" | "lg";
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $size = 'sm' }) => ($size === 'sm' ? '20px' : '24px')};
-  height: ${({ $size = 'sm' }) => ($size === 'sm' ? '20px' : '24px')};
+  width: ${({ $size = "sm" }) => ($size === "sm" ? "20px" : "24px")};
+  height: ${({ $size = "sm" }) => ($size === "sm" ? "20px" : "24px")};
   color: ${({ $status }) => {
     switch ($status) {
-      case 'success':
-        return '#78db89';
-      case 'failed':
-        return '#ec6d6b';
-      case 'pending':
-        return '#bcc8d9';
+      case "success":
+        return "#78db89";
+      case "failed":
+        return "#ec6d6b";
+      case "pending":
+        return "#bcc8d9";
       default:
-        return '#bcc8d9';
+        return "#bcc8d9";
     }
   }};
 
@@ -84,5 +84,5 @@ export const ErrorMessage = styled.div<{ $withMargin?: boolean }>`
   line-height: 1.2;
   font-weight: 500;
   font-family: monospace;
-  margin-top: ${({ $withMargin }) => ($withMargin ? '15px' : '0px')};
+  margin-top: ${({ $withMargin }) => ($withMargin ? "15px" : "0px")};
 `;

@@ -1,6 +1,6 @@
-import type React from 'react';
-import type { RefObject } from 'react';
-import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
+import type { AttributeCollection } from "@components/form-controls/control-types/attributes/attributes.types";
+import type React from "react";
+import type { RefObject } from "react";
 
 export type Layout = {
   uid: string;
@@ -14,7 +14,7 @@ export type PageButton = {
   iconPosition?: IconPosition;
 };
 
-export type IconPosition = 'left' | 'right';
+export type IconPosition = "left" | "right";
 
 export type PageButtons = {
   layout: string;

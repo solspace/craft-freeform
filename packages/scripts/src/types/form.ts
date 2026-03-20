@@ -1,4 +1,4 @@
-import type Freeform from '@components/front-end/plugin/freeform';
+import type Freeform from "@components/front-end/plugin/freeform";
 
 export type FreeformOptions = {
   ajax?: boolean;
@@ -29,7 +29,9 @@ export type FreeformOptions = {
   renderFieldErrors?: (errors: Record<string, string[]>) => void;
 };
 
-export type FreeformHandlerConstructor = new (freeform: Freeform) => FreeformHandler;
+export type FreeformHandlerConstructor = new (
+  freeform: Freeform,
+) => FreeformHandler;
 
 export interface FreeformHandler {
   reload: () => void;

@@ -1,7 +1,7 @@
-import events from '@lib/plugin/constants/event-types';
-import type { FreeformEvent } from 'types/events';
+import events from "@lib/plugin/constants/event-types";
+import type { FreeformEvent } from "types/events";
 
-import { getContainer, loadReCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadReCaptcha, readConfig } from "./utils/script-loader";
 
 const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
   const container = getContainer(event.form);
@@ -9,20 +9,21 @@ const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
     return null;
   }
 
-  let element = container.querySelector<HTMLTextAreaElement>('[data-recaptcha]');
+  let element =
+    container.querySelector<HTMLTextAreaElement>("[data-recaptcha]");
   if (!element) {
-    element = document.createElement('textarea');
-    element.dataset.recaptcha = '';
-    element.name = 'g-recaptcha-response';
+    element = document.createElement("textarea");
+    element.dataset.recaptcha = "";
+    element.name = "g-recaptcha-response";
 
-    element.style.visibility = 'hidden';
-    element.style.position = 'absolute';
-    element.style.top = '-9999px';
-    element.style.left = '-9999px';
-    element.style.width = '1px';
-    element.style.height = '1px';
-    element.style.overflow = 'hidden';
-    element.style.border = 'none';
+    element.style.visibility = "hidden";
+    element.style.position = "absolute";
+    element.style.top = "-9999px";
+    element.style.left = "-9999px";
+    element.style.width = "1px";
+    element.style.height = "1px";
+    element.style.overflow = "hidden";
+    element.style.border = "none";
 
     container.appendChild(element);
   }

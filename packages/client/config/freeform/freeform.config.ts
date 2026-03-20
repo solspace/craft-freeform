@@ -1,22 +1,22 @@
-import type { Site } from '@ff-client/types/sites';
+import type { Site } from "@ff-client/types/sites";
 import {
   createSemverCompare,
   type SemverCompare,
-} from '@ff-client/utils/comparison';
+} from "@ff-client/utils/comparison";
 
 export enum Edition {
-  Pro = 'pro',
-  Lite = 'lite',
-  Express = 'express',
+  Pro = "pro",
+  Lite = "lite",
+  Express = "express",
 }
 
 export enum TemplateMethod {
-  Global = 'global',
-  Form = 'form',
-  All = 'all',
+  Global = "global",
+  Form = "form",
+  All = "all",
 }
 
-export type Permission = 'access' | 'manage' | 'none';
+export type Permission = "access" | "manage" | "none";
 
 type Config = {
   templates: {
@@ -69,8 +69,8 @@ type Config = {
   };
 };
 
-const element = document.getElementById('freeform-config') as HTMLScriptElement;
-const baseConfig = JSON.parse(element?.innerHTML || '[]') as Config;
+const element = document.getElementById("freeform-config") as HTMLScriptElement;
+const baseConfig = JSON.parse(element?.innerHTML || "[]") as Config;
 
 const config: Config = {
   ...baseConfig,
@@ -78,7 +78,7 @@ const config: Config = {
     ...baseConfig.metadata,
     craft: {
       ...baseConfig.metadata?.craft,
-      is: createSemverCompare(baseConfig?.metadata?.craft?.version || '0.0.0'),
+      is: createSemverCompare(baseConfig?.metadata?.craft?.version || "0.0.0"),
     },
   },
   editions: {
@@ -115,10 +115,10 @@ const config: Config = {
         return true;
       }
 
-      const parts = key.split('.');
+      const parts = key.split(".");
 
       for (let i = 0; i < parts.length; i++) {
-        const currentChain = parts.slice(0, i + 1).join('.');
+        const currentChain = parts.slice(0, i + 1).join(".");
 
         if (limitations[currentChain] === false) {
           return false;

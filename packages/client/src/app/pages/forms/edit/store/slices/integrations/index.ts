@@ -1,9 +1,9 @@
-import type { Integration } from '@ff-client/types/integrations';
-import type { GenericValue } from '@ff-client/types/properties';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { Integration } from "@ff-client/types/integrations";
+import type { GenericValue } from "@ff-client/types/properties";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import './integrations.persistence';
+import "./integrations.persistence";
 
 export type IntegrationEntry = {
   values: { [key: string]: GenericValue };
@@ -21,13 +21,13 @@ const initialState: IntegrationEntry[] = [];
 
 const findIntegration = (
   state: IntegrationEntry[],
-  id: number
+  id: number,
 ): IntegrationEntry | undefined => {
   return state.find((item) => item.id === id);
 };
 
 export const integrationsSlice = createSlice({
-  name: 'integrations',
+  name: "integrations",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<Integration[]>) => {
@@ -88,7 +88,7 @@ export const integrationsSlice = createSlice({
     },
     setErrors: (
       state,
-      action: PayloadAction<{ [uid: string]: Record<string, string[]> }>
+      action: PayloadAction<{ [uid: string]: Record<string, string[]> }>,
     ) => {
       state.forEach((integration) => {
         const errors = action.payload?.[integration.id];

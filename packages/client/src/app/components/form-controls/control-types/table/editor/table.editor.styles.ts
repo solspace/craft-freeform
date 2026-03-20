@@ -1,12 +1,12 @@
-import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
-import { scrollBar } from '@ff-client/styles/mixins';
+import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
+import { scrollBar } from "@ff-client/styles/mixins";
 import {
   borderRadius,
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const OptionContainer = styled.div`
   display: flex;

@@ -1,12 +1,12 @@
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
+import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
-import type { DetailResponse, Item, ListResponse } from './limited-users.types';
+import type { DetailResponse, Item, ListResponse } from "./limited-users.types";
 
 const QKLimitedUsers = {
-  all: ['limited-users'],
+  all: ["limited-users"],
   one: (id: string | number) => [...QKLimitedUsers.all, id],
 } as const;
 
@@ -19,7 +19,7 @@ export const useLimitedUsersQuery = (): UseQueryResult<ListResponse> => {
 };
 
 export const useLimitedUsersSingleQuery = (
-  id: string | number
+  id: string | number,
 ): UseQueryResult<DetailResponse> => {
   return useQuery<DetailResponse>({
     queryKey: QKLimitedUsers.one(id),
@@ -36,7 +36,7 @@ type Payload = {
 };
 
 export const useLimitedUsersMutation = (
-  id: string | number
+  id: string | number,
 ): UseMutationResult<AxiosResponse<{ id: string }>, unknown, Payload> => {
   const queryClient = useQueryClient();
 

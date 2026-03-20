@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalType } from '@components/modals/modal.types';
+} from "@components/modals/modal.styles";
+import type { ModalType } from "@components/modals/modal.types";
 import {
   useFavoritesDeleteMutation,
   useFavoritesUpdateMutation,
-} from '@editor/builder/tabs/layout/property-editor/editors/fields/favorite/favorite.queries';
-import { useFetchFavorites } from '@ff-client/queries/field-favorites';
-import type { ErrorList } from '@ff-client/types/api';
+} from "@editor/builder/tabs/layout/property-editor/editors/fields/favorite/favorite.queries";
+import { useFetchFavorites } from "@ff-client/queries/field-favorites";
+import type { ErrorList } from "@ff-client/types/api";
 import type {
   FieldFavorite,
   PropertyValueCollection,
-} from '@ff-client/types/fields';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/types/fields";
+import translate from "@ff-client/utils/translations";
+import { useEffect, useState } from "react";
 
-import { FavoritesEditor } from './modal.editor';
-import { FavoriteListItem } from './modal.list-item';
+import { FavoritesEditor } from "./modal.editor";
+import { FavoriteListItem } from "./modal.list-item";
 import {
   FavoritesEditorWrapper,
   FavoritesWrapper,
   FieldList,
-} from './modal.styles';
+} from "./modal.styles";
 
 export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
   const { data } = useFetchFavorites();
@@ -68,14 +68,14 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
     });
 
     setState(collection);
-  }, [data]);
+  }, [data, loaded]);
 
   const isLoading = updateMutation.isPending || deleteMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: '70%' }}>
+    <ModalContainer style={{ maxWidth: "70%" }}>
       <ModalHeader>
-        <h1>{translate('Favorite Fields')}</h1>
+        <h1>{translate("Favorite Fields")}</h1>
       </ModalHeader>
       <FavoritesWrapper>
         <FieldList>
@@ -90,7 +90,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
               onDelete={() => {
                 if (
                   confirm(
-                    `Are you sure you wish to delete the "${favorite.label}" field?`
+                    `Are you sure you wish to delete the "${favorite.label}" field?`,
                   )
                 ) {
                   deleteMutation.mutate(favorite.id);
@@ -125,7 +125,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
           onClick={closeModal}
           disabled={isLoading}
         >
-          {translate('Cancel')}
+          {translate("Cancel")}
         </button>
         <button
           type="button"
@@ -134,11 +134,11 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
           onClick={() => updateMutation.mutate(state)}
         >
           <LoadingText
-            loadingText={translate('Saving...')}
+            loadingText={translate("Saving...")}
             loading={isLoading}
             spinner
           >
-            {translate('Save')}
+            {translate("Save")}
           </LoadingText>
         </button>
       </ModalFooter>

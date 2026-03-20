@@ -1,30 +1,30 @@
-import React from 'react';
-import {
-  MiniMap,
-  TransformComponent,
-  TransformWrapper,
-} from 'react-zoom-pan-pinch';
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import { spacings } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import { spacings } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import {
+  MiniMap,
+  TransformComponent,
+  TransformWrapper,
+} from "react-zoom-pan-pinch";
 
 import {
   Controls,
   ImageContainer,
   NoImageMessage,
   ScreenshotImage,
-  ScreenshotsContainer,
   ScreenshotSection,
+  ScreenshotsContainer,
   ScreenshotTitle,
   SingleScreenshotContainer,
   ZoomButton,
   ZoomButtons,
-} from './form-monitor.screenshot.modal.styles';
+} from "./form-monitor.screenshot.modal.styles";
 
 interface ScreenshotModalData {
   screenshot?: string;
@@ -47,7 +47,7 @@ export const ScreenshotModal: React.FC<
 
   const renderScreenshot = (
     imageUrl: string,
-    title: string
+    title: string,
   ): React.JSX.Element => {
     return (
       <ScreenshotSection>
@@ -65,18 +65,18 @@ export const ScreenshotModal: React.FC<
               <>
                 <TransformComponent
                   wrapperStyle={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                   contentStyle={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                   }}
                 >
                   <ScreenshotImage
@@ -91,20 +91,20 @@ export const ScreenshotModal: React.FC<
                     <ZoomButton
                       onClick={() => zoomOut()}
                       disabled={instance.transformState.scale <= 0.5}
-                      title={translate('Zoom Out')}
+                      title={translate("Zoom Out")}
                     >
                       −
                     </ZoomButton>
                     <ZoomButton
                       onClick={() => resetTransform()}
-                      title={translate('Reset Zoom')}
+                      title={translate("Reset Zoom")}
                     >
                       ↺
                     </ZoomButton>
                     <ZoomButton
                       onClick={() => zoomIn()}
                       disabled={instance.transformState.scale >= 3}
-                      title={translate('Zoom In')}
+                      title={translate("Zoom In")}
                     >
                       +
                     </ZoomButton>
@@ -130,15 +130,15 @@ export const ScreenshotModal: React.FC<
     <ScreenshotSection>
       <ScreenshotTitle>{title}</ScreenshotTitle>
       <ImageContainer>
-        <NoImageMessage>{translate('No screenshot available')}</NoImageMessage>
+        <NoImageMessage>{translate("No screenshot available")}</NoImageMessage>
       </ImageContainer>
     </ScreenshotSection>
   );
 
   return (
-    <ModalContainer style={{ maxWidth: '90vw', width: '1200px' }}>
+    <ModalContainer style={{ maxWidth: "90vw", width: "1200px" }}>
       <ModalHeader>
-        <h1>{translate('Screenshots for Test', { testId })}</h1>
+        <h1>{translate("Screenshots for Test", { testId })}</h1>
       </ModalHeader>
 
       <div style={{ padding: `${spacings.lg} ${spacings.xl}` }}>
@@ -146,28 +146,28 @@ export const ScreenshotModal: React.FC<
           <ScreenshotsContainer>
             {renderScreenshot(
               beforeSubmitScreenshot!,
-              translate('Before Submit')
+              translate("Before Submit"),
             )}
-            {renderScreenshot(screenshot!, translate('After Submit'))}
+            {renderScreenshot(screenshot!, translate("After Submit"))}
           </ScreenshotsContainer>
         ) : hasBeforeScreenshot ? (
           <SingleScreenshotContainer>
-            {renderScreenshot(beforeSubmitScreenshot!, '')}
+            {renderScreenshot(beforeSubmitScreenshot!, "")}
           </SingleScreenshotContainer>
         ) : hasAfterScreenshot ? (
           <SingleScreenshotContainer>
-            {renderScreenshot(screenshot!, '')}
+            {renderScreenshot(screenshot!, "")}
           </SingleScreenshotContainer>
         ) : (
           <SingleScreenshotContainer>
-            {renderNoScreenshot(translate('Screenshots'))}
+            {renderNoScreenshot(translate("Screenshots"))}
           </SingleScreenshotContainer>
         )}
       </div>
 
       <ModalFooter>
-        <button className="btn cancel" onClick={closeModal}>
-          {translate('Close')}
+        <button type="button" className="btn cancel" onClick={closeModal}>
+          {translate("Close")}
         </button>
       </ModalFooter>
     </ModalContainer>

@@ -1,6 +1,5 @@
-import type { FC } from 'react';
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
 import {
   CartesianGrid,
   Line,
@@ -9,16 +8,16 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
 import {
   formatRate,
   getVariantColor,
   mergeChartData,
   metricTabs,
-} from './ab-tests.operations';
-import { ChartArea, Tab, Tabs } from './ab-tests.styles';
-import type { ABTestDashboardItem, MetricTab } from './ab-tests.types';
+} from "./ab-tests.operations";
+import { ChartArea, Tab, Tabs } from "./ab-tests.styles";
+import type { ABTestDashboardItem, MetricTab } from "./ab-tests.types";
 
 type Props = {
   test: ABTestDashboardItem;
@@ -28,7 +27,7 @@ type Props = {
 
 export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
   const chartData = mergeChartData(test.variants, activeTab);
-  const isRate = activeTab === 'conversionRate';
+  const isRate = activeTab === "conversionRate";
 
   return (
     <ChartArea>
@@ -57,9 +56,9 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
             tickLine={false}
             interval={2}
             tickFormatter={(value) =>
-              new Date(value).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
+              new Date(value).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
               })
             }
           />
@@ -67,7 +66,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
           <YAxis
             axisLine={false}
             tickLine={false}
-            tickFormatter={(value) => `${value}${isRate ? '%' : ''}`}
+            tickFormatter={(value) => `${value}${isRate ? "%" : ""}`}
           />
 
           <Tooltip
@@ -75,9 +74,9 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
               isRate ? formatRate(Number(value)) : Number(value)
             }
             labelFormatter={(value) =>
-              new Date(value).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
+              new Date(value).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
               })
             }
           />

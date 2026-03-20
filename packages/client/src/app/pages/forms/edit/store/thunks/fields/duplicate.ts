@@ -1,10 +1,10 @@
-import type { Row } from '@editor/builder/types/layout';
-import type { AppDispatch, AppThunk, RootState } from '@editor/store';
-import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
-import { layoutActions } from '@editor/store/slices/layout/layouts';
-import { rowActions } from '@editor/store/slices/layout/rows';
-import { Fields } from '@ff-client/types/field.classes';
-import { v4 } from 'uuid';
+import type { Row } from "@editor/builder/types/layout";
+import type { AppDispatch, AppThunk, RootState } from "@editor/store";
+import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
+import { layoutActions } from "@editor/store/slices/layout/layouts";
+import { rowActions } from "@editor/store/slices/layout/rows";
+import { Fields } from "@ff-client/types/field.classes";
+import { v4 } from "uuid";
 
 export default (field: Field, row: Row): AppThunk =>
   (dispatch, getState) => {
@@ -15,7 +15,7 @@ export const duplicateField = (
   state: RootState,
   dispatch: AppDispatch,
   field: Field,
-  row: Row
+  row: Row,
 ): void => {
   const layoutUid = row.layoutUid;
   const rowUid = v4();
@@ -26,7 +26,7 @@ export const duplicateField = (
 
     // Create a new layout entry for the duplicate group
     const originalLayout = state.layout.layouts.find(
-      (layout) => layout.uid === groupLayoutUid
+      (layout) => layout.uid === groupLayoutUid,
     );
 
     if (originalLayout) {
@@ -34,7 +34,7 @@ export const duplicateField = (
         layoutActions.add({
           ...originalLayout,
           uid: newLayoutUid,
-        })
+        }),
       );
     }
 
@@ -49,7 +49,7 @@ export const duplicateField = (
         rowActions.add({
           layoutUid: newLayoutUid,
           uid: newGroupRowUid,
-        })
+        }),
       );
 
       state.layout.fields
@@ -60,7 +60,7 @@ export const duplicateField = (
               uid: v4(),
               rowUid: newGroupRowUid,
               field: groupField,
-            })
+            }),
           );
         });
     }
@@ -71,7 +71,7 @@ export const duplicateField = (
         layoutUid,
         uid: rowUid,
         order: row?.order + 1,
-      })
+      }),
     );
 
     dispatch(
@@ -85,7 +85,7 @@ export const duplicateField = (
             layout: newLayoutUid,
           },
         },
-      })
+      }),
     );
 
     return;
@@ -96,7 +96,7 @@ export const duplicateField = (
       layoutUid,
       uid: rowUid,
       order: row?.order + 1,
-    })
+    }),
   );
 
   dispatch(
@@ -104,6 +104,6 @@ export const duplicateField = (
       uid: v4(),
       rowUid,
       field: field,
-    })
+    }),
   );
 };

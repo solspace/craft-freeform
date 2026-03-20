@@ -1,10 +1,7 @@
-import type { PropsWithChildren } from 'react';
-import { useEffect, useState } from 'react';
-import { useContext } from 'react';
-import { createContext } from 'react';
-import { useRef } from 'react';
-import React from 'react';
-import styled from 'styled-components';
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
 type PortalContextType = {
   element?: HTMLDivElement;
@@ -29,6 +26,7 @@ export const PortalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [dimensions, setDimensions] = useState<DOMRect>();
   const portalRef = useRef<HTMLDivElement>(null);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run when the portalRef changes, which is unlikely.
   useEffect(() => {
     if (portalRef.current) {
       setDimensions(portalRef.current.getBoundingClientRect());

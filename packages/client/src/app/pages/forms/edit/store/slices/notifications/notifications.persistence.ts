@@ -1,14 +1,15 @@
+import PubSub from "@editor/store/middleware/pubsub";
 import type {
   ErrorsSubscriber,
   SaveSubscriber,
-} from '@editor/store/middleware/state-persist';
+} from "@editor/store/middleware/state-persist";
 import {
   TOPIC_ERRORS,
   TOPIC_SAVE,
   TOPIC_UPSERTED,
-} from '@editor/store/middleware/state-persist';
+} from "@editor/store/middleware/state-persist";
 
-import { notificationActions } from '.';
+import { notificationActions } from ".";
 
 const persistNotifications: SaveSubscriber = (_, data) => {
   const { getState, persist } = data;

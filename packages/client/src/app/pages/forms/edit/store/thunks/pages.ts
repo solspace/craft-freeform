@@ -1,16 +1,16 @@
-import { type Page } from '@editor/builder/types/layout';
-import type { AppDispatch, AppThunk } from '@editor/store';
-import translate from '@ff-client/utils/translations';
-import { v4 } from 'uuid';
+import type { Page } from "@editor/builder/types/layout";
+import type { AppDispatch, AppThunk } from "@editor/store";
+import translate from "@ff-client/utils/translations";
+import { v4 } from "uuid";
 
-import { contextActions } from '../slices/context';
-import type { Field } from '../slices/layout/fields';
-import { fieldActions } from '../slices/layout/fields';
-import { layoutActions } from '../slices/layout/layouts';
-import { pageActions } from '../slices/layout/pages';
-import { rowActions } from '../slices/layout/rows';
+import { contextActions } from "../slices/context";
+import type { Field } from "../slices/layout/fields";
+import { fieldActions } from "../slices/layout/fields";
+import { layoutActions } from "../slices/layout/layouts";
+import { pageActions } from "../slices/layout/pages";
+import { rowActions } from "../slices/layout/rows";
 
-import { removeEmptyRows } from './rows';
+import { removeEmptyRows } from "./rows";
 
 export const addNewPage = (): AppThunk => (dispatch, getState) => {
   const pageUid = v4();
@@ -27,10 +27,10 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
   dispatch(
     pageActions.add({
       uid: pageUid,
-      label: translate('Page {number}', { number: nextPageNumber }),
+      label: translate("Page {number}", { number: nextPageNumber }),
       layoutUid,
       buttons: lastPage?.buttons ?? {
-        layout: 'save back|submit',
+        layout: "save back|submit",
         attributes: {
           container: {},
           column: {},
@@ -38,19 +38,19 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
           back: {},
           save: {},
         },
-        submitLabel: translate('Submit'),
+        submitLabel: translate("Submit"),
         submitIcon: [],
-        submitIconPosition: 'left',
+        submitIconPosition: "left",
         back: true,
-        backLabel: translate('Back'),
+        backLabel: translate("Back"),
         backIcon: [],
-        backIconPosition: 'left',
+        backIconPosition: "left",
         save: false,
-        saveLabel: translate('Save'),
+        saveLabel: translate("Save"),
         saveIcon: [],
-        saveIconPosition: 'left',
+        saveIconPosition: "left",
       },
-    })
+    }),
   );
   dispatch(contextActions.setPage(pageUid));
 };
@@ -66,14 +66,14 @@ export const moveFieldToPage =
       rowActions.add({
         layoutUid,
         uid: rowUid,
-      })
+      }),
     );
     dispatch(
       fieldActions.moveTo({
         uid: field.uid,
         rowUid,
         position: 0,
-      })
+      }),
     );
 
     removeEmptyRows(getState(), dispatch as AppDispatch);
@@ -86,7 +86,7 @@ export const deletePage =
 
     const state = getState();
     const layout = state.layout.layouts.find(
-      (layout) => layout.uid === layoutUid
+      (layout) => layout.uid === layoutUid,
     );
 
     if (!layout) {

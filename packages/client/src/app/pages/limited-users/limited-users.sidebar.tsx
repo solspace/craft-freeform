@@ -1,9 +1,9 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { generateUrl } from '@ff-client/utils/urls';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import DOMPurify from 'dompurify';
+import { generateUrl } from "@ff-client/utils/urls";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { Link } from "react-router-dom";
 
 type Item = {
   title?: string;
@@ -12,9 +12,9 @@ type Item = {
 
 export const SettingsSidebar: React.FC = () => {
   const { data, isFetching } = useQuery({
-    queryKey: ['settings', 'navigation'],
+    queryKey: ["settings", "navigation"],
     queryFn: () => {
-      return axios.get('/api/settings/navigation').then((res) => res.data);
+      return axios.get("/api/settings/navigation").then((res) => res.data);
     },
   });
 
@@ -31,12 +31,12 @@ export const SettingsSidebar: React.FC = () => {
               if (item.title) {
                 return (
                   <li key={key}>
-                    {key === 'limited-users' && (
+                    {key === "limited-users" && (
                       <Link className="sel" to="/settings/limited-users">
                         {item.title}
                       </Link>
                     )}
-                    {key !== 'limited-users' && (
+                    {key !== "limited-users" && (
                       <a
                         href={generateUrl(`settings/${key}`)}
                         dangerouslySetInnerHTML={{
@@ -55,6 +55,8 @@ export const SettingsSidebar: React.FC = () => {
                   </li>
                 );
               }
+
+              return null;
             })}
           </ul>
         </nav>

@@ -1,17 +1,17 @@
-import type { Layout, Page, Row } from '@editor/builder/types/layout';
-import type { Field } from '@editor/store/slices/layout/fields';
+import type { Layout, Page, Row } from "@editor/builder/types/layout";
+import type { Field } from "@editor/store/slices/layout/fields";
 import type {
   TranslationItems,
   TranslationType,
-} from '@editor/store/slices/translations/translations.types';
+} from "@editor/store/slices/translations/translations.types";
 import type {
   GenericValue,
   Property,
   Section,
-} from '@ff-client/types/properties';
+} from "@ff-client/types/properties";
 
 export type SettingsNamespace = {
-  namespaceType: 'settings';
+  namespaceType: "settings";
   namespace: string;
   [key: string]: GenericValue;
 };

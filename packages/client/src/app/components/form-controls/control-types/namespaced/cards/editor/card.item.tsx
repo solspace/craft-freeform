@@ -137,10 +137,17 @@ enum Status {
 }
 
 const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
+  const metadataJson = JSON.stringify(card.metadata, null, 2);
   const [status, setStatus] = useState<Status>(Status.pending);
   const [message, setMessage] = useState<string>();
-  const [json, setJson] = useState(JSON.stringify(card.metadata, null, 2));
+  const [json, setJson] = useState(metadataJson);
   const debouncedJson = useDebounce(json, 1000);
+
+  useEffect(() => {
+    setJson((currentJson) =>
+      currentJson === metadataJson ? currentJson : metadataJson,
+    );
+  }, [metadataJson]);
 
   useEffect(() => {
     if (debouncedJson) {
@@ -149,7 +156,12 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
 
       try {
         const parsedJson = JSON.parse(debouncedJson);
+        const parsedMetadataJson = JSON.stringify(parsedJson, null, 2);
         setStatus(Status.success);
+
+        if (parsedMetadataJson === metadataJson) {
+          return;
+        }
 
         updateCard({
           ...card,
@@ -157,10 +169,10 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
         });
       } catch (error) {
         setStatus(Status.error);
-        setMessage(error.message);
+        setMessage(error instanceof Error ? error.message : "Invalid JSON");
       }
     }
-  }, [debouncedJson, updateCard, card]);
+  }, [debouncedJson, metadataJson, updateCard, card]);
 
   return (
     <>

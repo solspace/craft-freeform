@@ -157,6 +157,7 @@ export const Tabs: React.FC = () => {
 
       <SaveButtonWrapper>
         <SaveButton
+          type="button"
           onClick={triggerSave}
           disabled={state === State.Processing}
           className={classes("btn", "submit", "save-button")}

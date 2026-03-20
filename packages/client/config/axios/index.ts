@@ -2,14 +2,33 @@ import { APIError } from "@ff-client/types/api";
 import { generateUrl } from "@ff-client/utils/urls";
 import axios from "axios";
 
-interface CraftGlobal {
-  Craft: {
-    csrfTokenName: string;
-    csrfTokenValue: string;
-  };
+declare global {
+  interface Window {
+    Craft?: {
+      csrfTokenName: string;
+      csrfTokenValue: string;
+    };
+  }
+
+  interface GlobalThis {
+    Craft?: {
+      csrfTokenName: string;
+      csrfTokenValue: string;
+    };
+  }
 }
 
-declare let global: CraftGlobal;
+const getCraftGlobal = (): GlobalThis["Craft"] => {
+  if (typeof globalThis !== "undefined" && globalThis.Craft) {
+    return globalThis.Craft;
+  }
+
+  if (typeof window !== "undefined" && window.Craft) {
+    return window.Craft;
+  }
+
+  return undefined;
+};
 
 axios.defaults.baseURL = generateUrl("/");
 
@@ -23,13 +42,16 @@ if (axios.defaults.headers.post) {
 
 // Inject the Craft CSRF token in all POST requests
 axios.interceptors.request.use((config) => {
-  if (["post", "put", "patch", "delete"].includes(config.method)) {
+  const method = config.method?.toLowerCase();
+
+  if (method && ["post", "put", "patch", "delete"].includes(method)) {
     if (config.data === undefined) {
       config.data = {};
     }
 
-    if (global.Craft !== undefined) {
-      config.headers["X-CSRF-Token"] = global.Craft.csrfTokenValue;
+    const craft = getCraftGlobal();
+    if (craft) {
+      config.headers.set("X-CSRF-Token", craft.csrfTokenValue);
     }
   }
 

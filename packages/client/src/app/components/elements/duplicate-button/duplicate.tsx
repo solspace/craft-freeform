@@ -24,12 +24,10 @@ export const DuplicateButton: React.FC<
 
   return (
     <DuplicateButtonWrapper
+      type="button"
       ref={ref}
       style={style}
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick?.();
-      }}
+      onClick={onClick}
       {...rest}
     >
       <DuplicateIcon />

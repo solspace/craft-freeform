@@ -22,11 +22,11 @@ export const Remove: React.FC<Props> = ({ notification }) => {
 
   return (
     <RemoveButtonWrapper
+      type="button"
       style={animation}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={(event) => {
-        event.stopPropagation();
+      onClick={() => {
         dispatch(removeNotification(notification));
         navigate("..");
       }}

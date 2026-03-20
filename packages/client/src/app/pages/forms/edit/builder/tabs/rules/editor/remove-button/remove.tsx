@@ -15,6 +15,7 @@ export const Remove: React.FC<Props> = ({ onClick }) => {
 
   return (
     <RemoveButtonWrapper
+      type="button"
       style={animation}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}

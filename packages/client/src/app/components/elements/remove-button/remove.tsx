@@ -24,12 +24,10 @@ export const RemoveButton: React.FC<
 
   return (
     <RemoveButtonWrapper
+      type="button"
       ref={ref}
       style={style}
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick?.();
-      }}
+      onClick={onClick}
       {...rest}
     >
       <DeleteIcon />

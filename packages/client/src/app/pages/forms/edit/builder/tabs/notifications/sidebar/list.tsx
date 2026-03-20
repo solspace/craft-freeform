@@ -34,10 +34,10 @@ export const List: React.FC = () => {
   const notifications = useSelector(notificationSelectors.all);
 
   useEffect(() => {
-    if (lastTab) {
+    if (!uid && !pathname.endsWith("/manager") && lastTab) {
       navigate(lastTab);
     }
-  }, [lastTab, navigate]);
+  }, [uid, lastTab, navigate, pathname]);
 
   useEffect(() => {
     if (pathname.endsWith("/manager")) {

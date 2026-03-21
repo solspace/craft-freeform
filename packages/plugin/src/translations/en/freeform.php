@@ -1384,6 +1384,11 @@ return [
     'Table Attributes' => 'Table Attributes',
     'Field Properties' => 'Field Properties',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.',
+    'Upgrade to the Freeform Pro edition to get access to Solspace AI.' => 'Upgrade to the Freeform Pro edition to get access to Solspace AI.',
+    'Solspace AI requires Freeform Pro' => 'Solspace AI requires Freeform Pro',
+    'Solspace AI <span class="badge">Pro</span>' => 'Solspace AI <span class="badge">Pro</span>',
+    'Solspace AI <span class="light">(enable)</span>' => 'Solspace AI <span class="light">(enable)</span>',
+    'Unable to load payment history.' => 'Unable to load payment history.',
 
     // Settings // Template Manager
     'Template Manager' => 'Template Manager',

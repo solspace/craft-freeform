@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'freeform/ai' => 'freeform/app',
-    'freeform/ai/<path:.*>' => 'freeform/app',
+    'freeform/settings/ai' => 'freeform/app',
+    'freeform/settings/ai/<path:.*>' => 'freeform/app',
 ];

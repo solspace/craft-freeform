@@ -31,7 +31,7 @@ import {
   Section,
   SectionTitle,
   UsageChart,
-} from './dashboard.styles';
+} from './ai.dashboard.styles';
 
 type AccessStateProps = {
   isForbidden?: boolean;

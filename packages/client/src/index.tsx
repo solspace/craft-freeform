@@ -19,9 +19,7 @@ import '../config';
 import './scripts';
 
 import { AbTests } from './app/pages/ab-tests';
-import { AiDashboard } from './app/pages/ai/dashboard';
-import { AiLayout } from './app/pages/ai/layout';
-import { AiPlans } from './app/pages/ai/plans';
+import { AiDashboard } from './app/pages/ai/ai.dashboard';
 import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
@@ -95,10 +93,7 @@ root.render(
                               element={<IntegrationsEditor />}
                             />
                           </Route>
-                          <Route path="ai" element={<AiLayout />}>
-                            <Route index element={<AiDashboard />} />
-                            <Route path="plans" element={<AiPlans />} />
-                          </Route>
+                          <Route path="settings/ai" element={<AiDashboard />} />
                           <Route path="import" element={<ImportExport />}>
                             <Route
                               path="forms"

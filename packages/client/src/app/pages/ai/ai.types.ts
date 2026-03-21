@@ -30,6 +30,13 @@ export type AiUsageResponse = {
   plan_name?: string | null;
   plan_percent_remaining?: number | null;
   can_use_ai?: boolean;
+  credit_status?:
+    | 'Free trial'
+    | 'Active'
+    | 'Low credits'
+    | 'Out of credit'
+    | string;
+  credit_status_color?: string | null;
   credits_total?: number | null;
   credits_remaining?: number | null;
   lifetime_credits_purchased?: number | null;
@@ -46,6 +53,8 @@ export type CreditBundlePlan = {
   currency: string;
   credits: number;
   label: string;
+  name?: string;
+  description?: string;
   suggested?: boolean;
 };
 
@@ -54,4 +63,5 @@ export type AiPlansResponse = {
   trial_credits?: number | null;
   bundles: CreditBundlePlan[];
   currency?: string;
+  supported_currencies?: string[];
 };

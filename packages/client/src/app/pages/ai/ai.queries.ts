@@ -9,8 +9,6 @@ export const QKAi = {
   all: ['ai'] as const,
   usage: () => [...QKAi.all, 'usage'] as const,
   plans: (currency?: string) => [...QKAi.all, 'plans', currency ?? ''] as const,
-  spendReport: (start?: string, end?: string) =>
-    [...QKAi.all, 'spend-report', start, end] as const,
 };
 
 export function fetchAiUsage(): Promise<AiUsageResponse> {
@@ -49,10 +47,17 @@ export function createCheckoutSession(
     .then((res) => res.data);
 }
 
-export function useAiUsageQuery(): UseQueryResult<AiUsageResponse> {
+export type UseAiUsageQueryOptions = {
+  enabled?: boolean;
+};
+
+export function useAiUsageQuery(
+  options?: UseAiUsageQueryOptions
+): UseQueryResult<AiUsageResponse> {
   return useQuery({
     queryKey: QKAi.usage(),
     queryFn: fetchAiUsage,
+    enabled: options?.enabled ?? true,
     retry: (failureCount, error) => {
       if (
         axios.isAxiosError(error) &&

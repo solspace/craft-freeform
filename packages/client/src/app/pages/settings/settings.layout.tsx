@@ -1,8 +1,8 @@
-import React from 'react';
-import config from '@config/freeform/freeform.config';
-import classes from '@ff-client/utils/classes';
+import config from "@config/freeform/freeform.config";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
 
-import { SettingsSidebar } from './settings.sidebar';
+import { SettingsSidebar } from "./settings.sidebar";
 
 type Props = {
   activeKey: string;
@@ -15,7 +15,7 @@ export const SettingsLayout: React.FC<Props> = ({ activeKey, children }) => {
       <SettingsSidebar activeKey={activeKey} />
       <div
         id="content-container"
-        className={classes(!config.metadata.craft.is5 && 'craft-4')}
+        className={classes(!config.metadata.craft.is5 && "craft-4")}
       >
         <div id="content" className="content-pane">
           {children}

@@ -1,28 +1,28 @@
-import { generateUrl } from '@ff-client/utils/urls';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { generateUrl } from "@ff-client/utils/urls";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-import type { AiPlansResponse, AiUsageResponse } from './ai.types';
+import type { AiPlansResponse, AiUsageResponse } from "./ai.types";
 
 export const QKAi = {
-  all: ['ai'] as const,
-  usage: () => [...QKAi.all, 'usage'] as const,
-  plans: (currency?: string) => [...QKAi.all, 'plans', currency ?? ''] as const,
+  all: ["ai"] as const,
+  usage: () => [...QKAi.all, "usage"] as const,
+  plans: (currency?: string) => [...QKAi.all, "plans", currency ?? ""] as const,
 };
 
 export function fetchAiUsage(): Promise<AiUsageResponse> {
   return axios
-    .get<AiUsageResponse>(generateUrl('api/ai/usage'))
+    .get<AiUsageResponse>(generateUrl("api/ai/usage"))
     .then((res) => res.data);
 }
 
 export function fetchAiPlans(
-  currency?: string | null
+  currency?: string | null,
 ): Promise<AiPlansResponse> {
   const params = currency ? { currency: currency.toLowerCase() } : undefined;
   return axios
-    .get<AiPlansResponse>(generateUrl('api/ai/plans'), { params })
+    .get<AiPlansResponse>(generateUrl("api/ai/plans"), { params })
     .then((res) => res.data);
 }
 
@@ -32,17 +32,17 @@ export function createCheckoutSession(
   successUrl: string,
   cancelUrl: string,
   bundleKey?: string,
-  currency?: string
+  currency?: string,
 ): Promise<CreateCheckoutSessionResponse> {
   return axios
     .post<CreateCheckoutSessionResponse>(
-      generateUrl('api/ai/create-checkout-session'),
+      generateUrl("api/ai/create-checkout-session"),
       {
         success_url: successUrl,
         cancel_url: cancelUrl,
         ...(bundleKey && { bundle_key: bundleKey }),
         ...(currency && { currency }),
-      }
+      },
     )
     .then((res) => res.data);
 }
@@ -52,7 +52,7 @@ export type UseAiUsageQueryOptions = {
 };
 
 export function useAiUsageQuery(
-  options?: UseAiUsageQueryOptions
+  options?: UseAiUsageQueryOptions,
 ): UseQueryResult<AiUsageResponse> {
   return useQuery({
     queryKey: QKAi.usage(),
@@ -70,7 +70,7 @@ export function useAiUsageQuery(
 }
 
 export function useAiPlansQuery(
-  currency?: string | null
+  currency?: string | null,
 ): UseQueryResult<AiPlansResponse> {
   return useQuery({
     queryKey: QKAi.plans(currency),

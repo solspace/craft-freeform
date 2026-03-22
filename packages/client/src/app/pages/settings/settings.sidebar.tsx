@@ -1,10 +1,10 @@
-import React from "react";
-import Skeleton from "react-loading-skeleton";
-import { Link } from "react-router-dom";
 import { generateUrl } from "@ff-client/utils/urls";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import DOMPurify from "dompurify";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 
 type Item = {
   title?: string;

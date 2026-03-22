@@ -15,13 +15,13 @@ export type DailyMetric = {
 
 export type RequestLog = {
   date: string | null;
-  status: 'success' | 'failure' | string;
+  status: "success" | "failure" | string;
   credits: number | null;
   request_id: string;
 };
 
 export type AiUsageResponse = {
-  mode?: 'trial' | 'plan' | 'blocked' | 'unknown';
+  mode?: "trial" | "plan" | "blocked" | "unknown";
   mode_label?: string | null;
   is_trial?: boolean;
   trial_days_remaining?: number | null;
@@ -31,10 +31,10 @@ export type AiUsageResponse = {
   plan_percent_remaining?: number | null;
   can_use_ai?: boolean;
   credit_status?:
-    | 'Free trial'
-    | 'Active'
-    | 'Low credits'
-    | 'Out of credit'
+    | "Free trial"
+    | "Active"
+    | "Low credits"
+    | "Out of credit"
     | string;
   credit_status_color?: string | null;
   credits_total?: number | null;

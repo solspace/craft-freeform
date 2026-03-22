@@ -1,17 +1,17 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { EmptyBlock } from '@components/empty-block/empty-block';
-import { HeaderContainer } from '@components/layout/blocks/header-container';
-import { useModal } from '@components/modals/modal.context';
-import config, { Edition } from '@config/freeform/freeform.config';
-import EmptyIcon from '@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon.svg';
-import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
-import translate from '@ff-client/utils/translations';
-import axios from 'axios';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { EmptyBlock } from "@components/empty-block/empty-block";
+import { HeaderContainer } from "@components/layout/blocks/header-container";
+import { useModal } from "@components/modals/modal.context";
+import config, { Edition } from "@config/freeform/freeform.config";
+import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon";
+import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
+import translate from "@ff-client/utils/translations";
+import axios from "axios";
+import React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 
-import { SettingsLayout } from '../settings/settings.layout';
+import { SettingsLayout } from "../settings/settings.layout";
 
 import {
   AiEmptyStatePanel,
@@ -36,14 +36,14 @@ import {
   StatusMeta,
   StatusValue,
   UsageChart,
-} from './ai.dashboard.styles';
-import { AiPlansModal } from './ai.modal.plans';
-import { useAiUsageQuery } from './ai.queries';
-import { formatAiDate } from './ai.utils';
+} from "./ai.dashboard.styles";
+import { AiPlansModal } from "./ai.modal.plans";
+import { useAiUsageQuery } from "./ai.queries";
+import { formatAiDate } from "./ai.utils";
 
-const AiUsageChart = React.lazy(() => import('./ai.usage-chart'));
+const AiUsageChart = React.lazy(() => import("./ai.usage-chart"));
 
-const AI_INTEGRATION_PATH = '/integrations/ai/SolspaceAIV1';
+const AI_INTEGRATION_PATH = "/integrations/ai/SolspaceAIV1";
 
 type AiSettingsEmptyProps = {
   title: string;
@@ -74,7 +74,7 @@ const AiSettingsEmpty: React.FC<AiSettingsEmptyProps> = ({
 
 export const AiDashboard: React.FC = () => {
   const { openModal } = useModal();
-  useSidebarSelect('freeform/settings');
+  useSidebarSelect("freeform/settings");
 
   const isProEdition = config.editions.is(Edition.Pro);
   const { data, isFetching, error, isError } = useAiUsageQuery({
@@ -94,7 +94,7 @@ export const AiDashboard: React.FC = () => {
     const history = summary?.payment_history ?? [];
     const dates = history
       .map((entry) => entry?.paid_at)
-      .filter((value): value is string => typeof value === 'string' && !!value);
+      .filter((value): value is string => typeof value === "string" && !!value);
     if (!dates.length) {
       return null;
     }
@@ -105,13 +105,13 @@ export const AiDashboard: React.FC = () => {
   const creditStatusDisplayText = React.useMemo(() => {
     const raw = summary?.credit_status;
     if (!raw) {
-      return translate('Unknown');
+      return translate("Unknown");
     }
     switch (raw) {
-      case 'Free trial':
-      case 'Active':
-      case 'Low credits':
-      case 'Out of credit':
+      case "Free trial":
+      case "Active":
+      case "Low credits":
+      case "Out of credit":
         return translate(raw);
       default:
         return raw;
@@ -132,16 +132,16 @@ export const AiDashboard: React.FC = () => {
     <div>
       <Breadcrumb
         id="settings"
-        label={translate('Settings')}
+        label={translate("Settings")}
         url="."
         external
       />
       <Breadcrumb
         id="solspace-ai"
-        label={translate('Solspace AI')}
+        label={translate("Solspace AI")}
         url="settings/ai"
       />
-      <HeaderContainer>{translate('Solspace AI')}</HeaderContainer>
+      <HeaderContainer>{translate("Solspace AI")}</HeaderContainer>
 
       <SettingsLayout activeKey="ai">{body}</SettingsLayout>
     </div>
@@ -150,20 +150,20 @@ export const AiDashboard: React.FC = () => {
   if (!isProEdition) {
     return layoutShell(
       <AiSettingsEmpty
-        title={translate('Solspace AI requires Freeform Pro')}
+        title={translate("Solspace AI requires Freeform Pro")}
         subtitle={translate(
-          'Upgrade to the Freeform Pro edition to get access to Solspace AI.'
+          "Upgrade to the Freeform Pro edition to get access to Solspace AI.",
         )}
       >
         <a
-          href={Craft.getCpUrl('plugin-store/freeform')}
+          href={Craft.getCpUrl("plugin-store/freeform")}
           className="btn submit"
           target="_blank"
           rel="noreferrer"
         >
-          {translate('Plugin Store')}
+          {translate("Plugin Store")}
         </a>
-      </AiSettingsEmpty>
+      </AiSettingsEmpty>,
     );
   }
 
@@ -171,36 +171,36 @@ export const AiDashboard: React.FC = () => {
     <>
       {isError && !isHandledHttpError && (
         <AiSettingsEmpty
-          title={translate('Error loading usage')}
-          subtitle={errorMessage ?? translate('Failed to load usage data')}
+          title={translate("Error loading usage")}
+          subtitle={errorMessage ?? translate("Failed to load usage data")}
           iconFade
         />
       )}
 
       {isNotFound && (
         <AiSettingsEmpty
-          title={translate('Solspace AI is not enabled')}
+          title={translate("Solspace AI is not enabled")}
           subtitle={translate(
-            'Enable Solspace AI in the Integrations area to view usage.'
+            "Enable Solspace AI in the Integrations area to view usage.",
           )}
           iconFade
         >
           <Link to={AI_INTEGRATION_PATH} className="btn submit">
-            {translate('Enable Solspace AI')}
+            {translate("Enable Solspace AI")}
           </Link>
         </AiSettingsEmpty>
       )}
 
       {isForbidden && (
         <AiSettingsEmpty
-          title={translate('Authorize Solspace AI to view usage')}
+          title={translate("Authorize Solspace AI to view usage")}
           subtitle={translate(
-            'Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage.'
+            "Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage.",
           )}
           iconFade
         >
           <Link to={AI_INTEGRATION_PATH} className="btn submit">
-            {translate('Go to Integrations')}
+            {translate("Go to Integrations")}
           </Link>
         </AiSettingsEmpty>
       )}
@@ -256,9 +256,9 @@ export const AiDashboard: React.FC = () => {
                     <CreditSummaryValue>
                       {summary.credits_remaining != null
                         ? summary.credits_remaining.toLocaleString()
-                        : '—'}
+                        : "—"}
                     </CreditSummaryValue>
-                    <CardLabel>{translate('Credits remaining')}</CardLabel>
+                    <CardLabel>{translate("Credits remaining")}</CardLabel>
                   </CreditSummaryCard>
                 )}
 
@@ -269,7 +269,7 @@ export const AiDashboard: React.FC = () => {
                       {creditStatusDisplayText}
                     </StatusValue>
                   </StatusDisplay>
-                  {summary.credit_status === 'Active' && latestPurchaseDate && (
+                  {summary.credit_status === "Active" && latestPurchaseDate && (
                     <StatusMeta>
                       Since {formatAiDate(latestPurchaseDate)}
                     </StatusMeta>
@@ -280,7 +280,7 @@ export const AiDashboard: React.FC = () => {
                       className="btn submit"
                       onClick={() => openModal(AiPlansModal)}
                     >
-                      {translate('Add credits')}
+                      {translate("Add credits")}
                     </button>
                   </CardActions>
                 </Card>
@@ -296,21 +296,21 @@ export const AiDashboard: React.FC = () => {
 
           {summary?.request_logs && summary.request_logs.length > 0 && (
             <Section>
-              <SectionTitle>{translate('Request log')}</SectionTitle>
+              <SectionTitle>{translate("Request log")}</SectionTitle>
               <MetricsTable>
                 <MetricsTableHead>
                   <tr>
                     <MetricsTableHeaderCell>
-                      {translate('Date')}
+                      {translate("Date")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Status')}
+                      {translate("Status")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Credits')}
+                      {translate("Credits")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Request ID')}
+                      {translate("Request ID")}
                     </MetricsTableHeaderCell>
                   </tr>
                 </MetricsTableHead>
@@ -320,19 +320,19 @@ export const AiDashboard: React.FC = () => {
                       <MetricsTableCell>
                         {log.date
                           ? formatAiDate(log.date)
-                          : translate('Unknown')}
+                          : translate("Unknown")}
                       </MetricsTableCell>
                       <MetricsTableCell>
-                        {log.status === 'success'
-                          ? translate('Success')
-                          : log.status === 'failure'
-                            ? translate('Failed')
-                            : log.status || '—'}
+                        {log.status === "success"
+                          ? translate("Success")
+                          : log.status === "failure"
+                            ? translate("Failed")
+                            : log.status || "—"}
                       </MetricsTableCell>
                       <MetricsTableCell>
                         {log.credits != null
-                          ? `${log.credits.toLocaleString()} ${translate('credits')}`
-                          : '—'}
+                          ? `${log.credits.toLocaleString()} ${translate("credits")}`
+                          : "—"}
                       </MetricsTableCell>
                       <MetricsTableCell>
                         <code>{log.request_id}</code>
@@ -347,9 +347,9 @@ export const AiDashboard: React.FC = () => {
           {!hasAnyData && (
             <AiEmptyStateWrap>
               <EmptyBlock
-                title={translate('No usage data yet')}
+                title={translate("No usage data yet")}
                 subtitle={translate(
-                  'Usage will appear here once you start using Solspace AI.'
+                  "Usage will appear here once you start using Solspace AI.",
                 )}
                 icon={<EmptyIcon />}
                 iconFade
@@ -358,6 +358,6 @@ export const AiDashboard: React.FC = () => {
           )}
         </DashboardWrapper>
       )}
-    </>
+    </>,
   );
 };

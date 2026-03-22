@@ -1,7 +1,7 @@
-import { QKIntegrations } from '@ff-client/queries/integrations';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { QKIntegrations } from "@ff-client/queries/integrations";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export type AiIntegrationOption = {
   id: number;
@@ -32,12 +32,12 @@ type NavigationResponse = Category[];
 
 export const useAiIntegrations = (): UseQueryResult<AiIntegrationOption[]> => {
   return useQuery({
-    queryKey: [...QKIntegrations.navigation, 'ai-list'],
+    queryKey: [...QKIntegrations.navigation, "ai-list"],
     queryFn: async () => {
       const { data } = await axios.get<NavigationResponse>(
-        '/api/integrations/navigation'
+        "/api/integrations/navigation",
       );
-      const aiCategory = data?.find((c) => c.handle === 'ai');
+      const aiCategory = data?.find((c) => c.handle === "ai");
       if (!aiCategory) return [];
       const list = aiCategory.entries.flatMap((e) => e.instances);
       return list.map((i) => ({

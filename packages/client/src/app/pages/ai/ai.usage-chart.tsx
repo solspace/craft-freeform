@@ -1,18 +1,18 @@
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
+import { colors } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  ResponsiveContainer,
   Tooltip as RechartsTooltip,
+  ResponsiveContainer,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
-import { Section, SectionTitle, UsageChart } from './ai.dashboard.styles';
-import type { DailyMetric } from './ai.types';
+import { Section, SectionTitle, UsageChart } from "./ai.dashboard.styles";
+import type { DailyMetric } from "./ai.types";
 
 type Props = {
   metrics: DailyMetric[];
@@ -23,7 +23,7 @@ const AiUsageChart: React.FC<Props> = ({ metrics }) => {
 
   return (
     <Section>
-      <SectionTitle>{translate('Requests (last 30 days)')}</SectionTitle>
+      <SectionTitle>{translate("Requests (last 30 days)")}</SectionTitle>
       <UsageChart>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={metrics}>
@@ -32,19 +32,19 @@ const AiUsageChart: React.FC<Props> = ({ metrics }) => {
               dataKey="date"
               tickFormatter={(value) =>
                 new Date(value).toLocaleDateString(undefined, {
-                  month: 'short',
-                  day: 'numeric',
+                  month: "short",
+                  day: "numeric",
                 })
               }
             />
             <YAxis />
             <RechartsTooltip
               formatter={(value: number, name: string) => {
-                if (name === 'credits') {
-                  return [value.toLocaleString(), translate('Credits')];
+                if (name === "credits") {
+                  return [value.toLocaleString(), translate("Credits")];
                 }
-                if (name === 'api_requests') {
-                  return [value.toString(), translate('Requests')];
+                if (name === "api_requests") {
+                  return [value.toString(), translate("Requests")];
                 }
                 return [value.toString(), name];
               }}

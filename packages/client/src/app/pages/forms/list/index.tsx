@@ -10,12 +10,6 @@ import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
-
-import { useCreateFormModal } from "./modals/hooks/use-create-form-modal";
-import { useCreateWithAiFormModal } from "./modals/hooks/use-create-with-ai-form-modal";
-import { useAiIntegrations } from "./modals/modal.form.create-with-ai.queries";
-import { FormGrid } from "./views/grid/grid";
-import { FormList } from "./views/list/list";
 import {
   AiButton,
   Button,
@@ -25,6 +19,11 @@ import {
   Title,
   ViewButtons,
 } from "./list-view.styles";
+import { useCreateFormModal } from "./modals/hooks/use-create-form-modal";
+import { useCreateWithAiFormModal } from "./modals/hooks/use-create-with-ai-form-modal";
+import { useAiIntegrations } from "./modals/modal.form.create-with-ai.queries";
+import { FormGrid } from "./views/grid/grid";
+import { FormList } from "./views/list/list";
 
 enum View {
   List,

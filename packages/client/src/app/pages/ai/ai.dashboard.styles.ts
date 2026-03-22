@@ -1,12 +1,12 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const DashboardWrapper = styled.div`
   padding: ${spacings.xl} ${spacings.lg};
 `;
 
 export const AiEmptyStatePanel = styled.div.attrs(() => ({
-  className: 'tablepane',
+  className: "tablepane",
 }))``;
 
 export const AiEmptyStateWrap = styled.div`
@@ -49,7 +49,7 @@ const CardValueSmall = styled(CardValue)`
 `;
 
 export const StatusValue = styled(CardValueSmall)<{ $color?: string | null }>`
-  color: ${({ $color }) => $color || 'inherit'};
+  color: ${({ $color }) => $color || "inherit"};
   font-weight: 600;
 `;
 

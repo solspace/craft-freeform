@@ -1,7 +1,7 @@
-import { format, parseISO } from 'date-fns';
+import { format, parseISO } from "date-fns";
 
 export const formatAiDate = (iso: string | null | undefined): string => {
-  if (!iso) return '—';
+  if (!iso) return "—";
 
   try {
     const date = parseISO(iso);
@@ -9,7 +9,7 @@ export const formatAiDate = (iso: string | null | undefined): string => {
       return iso;
     }
 
-    return format(date, 'PP');
+    return format(date, "PP");
   } catch {
     return iso;
   }

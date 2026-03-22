@@ -1,10 +1,10 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { HeaderContainer } from '@components/layout/blocks/header-container';
-import { colors } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { HeaderContainer } from "@components/layout/blocks/header-container";
+import { colors } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 import {
   Bar,
   BarChart,
@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
   XAxis,
   YAxis,
-} from 'recharts';
+} from "recharts";
 
 import {
   Card,
@@ -31,7 +31,7 @@ import {
   Section,
   SectionTitle,
   UsageChart,
-} from './ai.dashboard.styles';
+} from "./ai.dashboard.styles";
 
 type AccessStateProps = {
   isForbidden?: boolean;
@@ -42,28 +42,28 @@ export const AiDashboardAccessState: React.FC<AccessStateProps> = ({
 }) => {
   const title = translate(
     isForbidden
-      ? 'Authorize Solspace AI to view usage'
-      : 'Solspace AI is not enabled'
+      ? "Authorize Solspace AI to view usage"
+      : "Solspace AI is not enabled",
   );
 
   const body = translate(
     isForbidden
-      ? 'Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage and spend.'
-      : 'Enable Solspace AI in the Integrations area to view usage and spend.'
+      ? "Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage and spend."
+      : "Enable Solspace AI in the Integrations area to view usage and spend.",
   );
 
   return (
     <div>
       <Breadcrumb id="ai" label="AI" url="ai" />
-      <Breadcrumb id="ai-dashboard" label={translate('Dashboard')} url="ai" />
-      <HeaderContainer>{translate('Dashboard')}</HeaderContainer>
+      <Breadcrumb id="ai-dashboard" label={translate("Dashboard")} url="ai" />
+      <HeaderContainer>{translate("Dashboard")}</HeaderContainer>
       <DashboardWrapper>
         <EmptyState>
           <EmptyStateTitle>{title}</EmptyStateTitle>
           <p>{body}</p>
           <EmptyStateActions>
             <Link to="/integrations" className="btn submit">
-              {translate('Go to Integrations')}
+              {translate("Go to Integrations")}
             </Link>
           </EmptyStateActions>
         </EmptyState>
@@ -75,7 +75,7 @@ export const AiDashboardLoadingState: React.FC = () => {
   return (
     <div>
       <Breadcrumb id="ai" label="AI" url="ai" />
-      <HeaderContainer>{translate('AI')}</HeaderContainer>
+      <HeaderContainer>{translate("AI")}</HeaderContainer>
       <DashboardWrapper>
         <CardsGrid>
           <Card>

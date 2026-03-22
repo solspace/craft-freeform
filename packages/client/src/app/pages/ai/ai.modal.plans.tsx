@@ -1,15 +1,15 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import config from '@config/freeform/freeform.config';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
-import styled from 'styled-components';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import config from "@config/freeform/freeform.config";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import React from "react";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
 
 import {
   MetricsTable,
@@ -18,14 +18,14 @@ import {
   MetricsTableHeaderCell,
   MetricsTableRow,
   SectionTitle,
-} from './ai.dashboard.styles';
+} from "./ai.dashboard.styles";
 import {
   createCheckoutSession,
   useAiPlansQuery,
   useAiUsageQuery,
-} from './ai.queries';
-import type { PaymentHistory } from './ai.types';
-import { formatAiDate } from './ai.utils';
+} from "./ai.queries";
+import type { PaymentHistory } from "./ai.types";
+import { formatAiDate } from "./ai.utils";
 
 const PlansCardsGrid = styled.div`
   display: grid;
@@ -160,24 +160,24 @@ const PaymentHistoryEmpty = styled.p`
 type CurrencyOption = { value: string; label: string };
 
 const FALLBACK_CURRENCY_OPTIONS: CurrencyOption[] = [
-  { value: 'usd', label: 'USD' },
+  { value: "usd", label: "USD" },
 ];
 
 function formatBundlePrice(
   price: number,
   bundleCurrency: string,
-  siteCurrency?: string
+  siteCurrency?: string,
 ): string {
   const locale = config.metadata?.craft?.locale;
-  const currency = (siteCurrency || bundleCurrency || 'usd').toLowerCase();
+  const currency = (siteCurrency || bundleCurrency || "usd").toLowerCase();
   const formatted = locale
     ? price.toLocaleString(locale, {
         maximumFractionDigits: 0,
         minimumFractionDigits: 0,
       })
     : price.toLocaleString();
-  if (currency === 'eur') return `€${formatted}`;
-  if (currency === 'usd') return `$${formatted}`;
+  if (currency === "eur") return `€${formatted}`;
+  if (currency === "usd") return `$${formatted}`;
   return `${formatted} ${currency.toUpperCase()}`;
 }
 
@@ -185,7 +185,7 @@ const RECENT_PAYMENTS_LIMIT = 5;
 const PAYMENT_HISTORY_SKELETON_ROWS = 2;
 
 function sortPaymentHistoryNewestFirst(
-  history: PaymentHistory[] | undefined
+  history: PaymentHistory[] | undefined,
 ): PaymentHistory[] {
   const list = [...(history ?? [])];
   return list.sort((a, b) => {
@@ -197,17 +197,17 @@ function sortPaymentHistoryNewestFirst(
 
 function formatPaymentAmount(
   entry: PaymentHistory,
-  displayCurrency: string
+  displayCurrency: string,
 ): string {
   const raw = entry.package_price;
   const n =
-    typeof raw === 'number'
+    typeof raw === "number"
       ? raw
-      : typeof raw === 'string'
+      : typeof raw === "string"
         ? parseFloat(raw)
         : NaN;
   if (raw === undefined || raw === null || Number.isNaN(n)) {
-    return '—';
+    return "—";
   }
 
   return formatBundlePrice(Math.round(n), displayCurrency, displayCurrency);
@@ -215,15 +215,15 @@ function formatPaymentAmount(
 
 function paymentCreditsLabel(entry: PaymentHistory): string {
   const c = entry.credits;
-  if (c === undefined || c === null) return '—';
-  const n = typeof c === 'number' ? c : Number(c);
-  if (Number.isNaN(n)) return '—';
+  if (c === undefined || c === null) return "—";
+  const n = typeof c === "number" ? c : Number(c);
+  if (Number.isNaN(n)) return "—";
   return Number.isInteger(n) ? String(n) : n.toLocaleString();
 }
 
 export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
   const [selectedCurrency, setSelectedCurrency] = React.useState<string | null>(
-    null
+    null,
   );
   const { data: plans, isFetching: isPlansFetching } =
     useAiPlansQuery(selectedCurrency);
@@ -243,7 +243,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
   const recentPayments = React.useMemo(() => {
     return sortPaymentHistoryNewestFirst(usage?.payment_history).slice(
       0,
-      RECENT_PAYMENTS_LIMIT
+      RECENT_PAYMENTS_LIMIT,
     );
   }, [usage?.payment_history]);
   const [checkoutBundleKey, setCheckoutBundleKey] = React.useState<
@@ -262,18 +262,18 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
   }, [plans?.supported_currencies]);
 
   const currencyToUse =
-    selectedCurrency ?? plans?.currency ?? currencyOptions[0]?.value ?? 'usd';
+    selectedCurrency ?? plans?.currency ?? currencyOptions[0]?.value ?? "usd";
 
   return (
     <PlansModalContainer>
       <ModalHeader>
         <HeaderActions>
-          <h1>{translate('Purchase Solspace AI Credits')}</h1>
+          <h1>{translate("Purchase Solspace AI Credits")}</h1>
           <div className="select">
             <select
               value={currencyToUse}
               onChange={(event) => setSelectedCurrency(event.target.value)}
-              aria-label={translate('Currency')}
+              aria-label={translate("Currency")}
             >
               {currencyOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -316,25 +316,25 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
               {(plans?.bundles ?? []).map((bundle) => (
                 <PlanCard key={bundle.key}>
                   <PlanName>
-                    {(bundle.name || '').trim() || translate('Credit plan')}
+                    {(bundle.name || "").trim() || translate("Credit plan")}
                   </PlanName>
                   <PlanDescription>
-                    {(bundle.description || '').trim() ||
-                      translate('Credit package for Solspace AI usage.')}
+                    {(bundle.description || "").trim() ||
+                      translate("Credit package for Solspace AI usage.")}
                   </PlanDescription>
                   <PlanMeta>
                     <PlanPrice>
                       {formatBundlePrice(
                         bundle.price,
                         bundle.currency,
-                        plans?.currency
+                        plans?.currency,
                       )}
                     </PlanPrice>
                     <PlanCredits>
                       <PlanCreditsValue>
                         {bundle.credits.toLocaleString()}
-                      </PlanCreditsValue>{' '}
-                      {translate('credits')}
+                      </PlanCreditsValue>{" "}
+                      {translate("credits")}
                     </PlanCredits>
                   </PlanMeta>
                   <PlanButtonRow>
@@ -349,7 +349,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
                             currentUrl,
                             currentUrl,
                             bundle.key,
-                            plans?.currency
+                            plans?.currency,
                           );
                           if (res?.url) {
                             window.location.href = res.url;
@@ -360,8 +360,8 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
                       }}
                     >
                       {checkoutBundleKey === bundle.key
-                        ? translate('Loading…')
-                        : translate('Buy now')}
+                        ? translate("Loading…")
+                        : translate("Buy now")}
                     </BuyNowButton>
                   </PlanButtonRow>
                 </PlanCard>
@@ -371,19 +371,19 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
         )}
         <SectionContent>
           <PaymentHistorySection>
-            <SectionTitle>{translate('Recent payments')}</SectionTitle>
+            <SectionTitle>{translate("Recent payments")}</SectionTitle>
             {showPaymentsSkeleton ? (
               <MetricsTable>
                 <MetricsTableHead>
                   <tr>
                     <MetricsTableHeaderCell>
-                      {translate('Date')}
+                      {translate("Date")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Amount')}
+                      {translate("Amount")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Credits')}
+                      {translate("Credits")}
                     </MetricsTableHeaderCell>
                   </tr>
                 </MetricsTableHead>
@@ -401,30 +401,30 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
                           <Skeleton width={56} height={12} />
                         </MetricsTableCell>
                       </MetricsTableRow>
-                    )
+                    ),
                   )}
                 </tbody>
               </MetricsTable>
             ) : isUsageError ? (
               <PaymentHistoryEmpty>
-                {translate('Unable to load payment history.')}
+                {translate("Unable to load payment history.")}
               </PaymentHistoryEmpty>
             ) : recentPayments.length === 0 ? (
               <PaymentHistoryEmpty>
-                {translate('No purchases yet.')}
+                {translate("No purchases yet.")}
               </PaymentHistoryEmpty>
             ) : (
               <MetricsTable>
                 <MetricsTableHead>
                   <tr>
                     <MetricsTableHeaderCell>
-                      {translate('Date')}
+                      {translate("Date")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Amount')}
+                      {translate("Amount")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
-                      {translate('Credits')}
+                      {translate("Credits")}
                     </MetricsTableHeaderCell>
                   </tr>
                 </MetricsTableHead>
@@ -457,7 +457,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
 
       <ModalFooter>
         <button type="button" className="btn cancel" onClick={closeModal}>
-          {translate('Close')}
+          {translate("Close")}
         </button>
       </ModalFooter>
     </PlansModalContainer>

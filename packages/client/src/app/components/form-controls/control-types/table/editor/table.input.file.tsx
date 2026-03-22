@@ -1,32 +1,32 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Control } from '@components/form-controls/control';
-import { FlexColumn, FlexRow } from '@components/layout/blocks/flex';
-import { spacings } from '@ff-client/styles/variables';
-import type { Option, OptionCollection } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Control } from "@components/form-controls/control";
+import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
+import { spacings } from "@ff-client/styles/variables";
+import type { Option, OptionCollection } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import type { TableColumnMetadata } from '../table.types';
+import type { TableColumnMetadata } from "../table.types";
 
-import { FileKindOptionsContainer } from './table.editor.styles';
-import type { TableEditorProps } from './table.editor.types';
+import { FileKindOptionsContainer } from "./table.editor.styles";
+import type { TableEditorProps } from "./table.editor.types";
 
 const DEFAULTS: Required<TableColumnMetadata> = {
   fileCount: 1,
   maxFileSizeKB: 2048,
-  fileKinds: ['image'],
+  fileKinds: ["image"],
   assetSourceId: null,
   uploadLocation: null,
 };
 
 const FALLBACK_FILE_KINDS: Option[] = [
-  { value: 'image', label: 'Image' },
-  { value: 'video', label: 'Video' },
-  { value: 'audio', label: 'Audio' },
-  { value: 'text', label: 'Text' },
-  { value: 'pdf', label: 'PDF' },
-  { value: 'json', label: 'JSON' },
+  { value: "image", label: "Image" },
+  { value: "video", label: "Video" },
+  { value: "audio", label: "Audio" },
+  { value: "text", label: "Text" },
+  { value: "pdf", label: "PDF" },
+  { value: "json", label: "JSON" },
 ];
 
 export const TableFileEditor: React.FC<TableEditorProps> = ({
@@ -41,7 +41,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
   const flattenOptions = (options: OptionCollection = []): Option[] => {
     return options.flatMap((option) => {
-      if ('children' in option) {
+      if ("children" in option) {
         return flattenOptions(option.children);
       }
 
@@ -79,7 +79,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
   return (
     <FlexColumn $gap={spacings.lg}>
       <FlexRow $gap={spacings.md}>
-        <Control width={40} label={translate('Max Files')} handle="fileCount">
+        <Control width={40} label={translate("Max Files")} handle="fileCount">
           <input
             type="number"
             min={1}
@@ -95,7 +95,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
         <Control
           width={60}
-          label={translate('Maximum File Size (KB)')}
+          label={translate("Maximum File Size (KB)")}
           handle="maxFileSizeKB"
         >
           <input
@@ -115,15 +115,15 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
       <FlexRow>
         <Control
           width={40}
-          label={translate('Asset Source')}
+          label={translate("Asset Source")}
           handle="assetSourceId"
           instructions={translate(
-            'Select an asset source to be able to store user uploaded files.'
+            "Select an asset source to be able to store user uploaded files.",
           )}
         >
           <Dropdown
-            emptyOption={translate('Select source')}
-            value={metadata.assetSourceId ? String(metadata.assetSourceId) : ''}
+            emptyOption={translate("Select source")}
+            value={metadata.assetSourceId ? String(metadata.assetSourceId) : ""}
             options={assetSourceOptions}
             onChange={(value) =>
               updateMetadata({
@@ -135,16 +135,16 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
         <Control
           width={60}
-          label={translate('Upload Location')}
+          label={translate("Upload Location")}
           handle="uploadLocation"
           instructions={translate(
-            'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.'
+            "The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.",
           )}
         >
           <input
             type="text"
             className="text fullwidth"
-            value={metadata.uploadLocation || ''}
+            value={metadata.uploadLocation || ""}
             onChange={(event) =>
               updateMetadata({ uploadLocation: event.target.value || null })
             }
@@ -152,7 +152,7 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
         </Control>
       </FlexRow>
 
-      <Control label={translate('File Kinds')} handle="fileKinds">
+      <Control label={translate("File Kinds")} handle="fileKinds">
         <FileKindOptionsContainer>
           {fileKindOptions.map((kindOption) => (
             <label key={kindOption.value}>

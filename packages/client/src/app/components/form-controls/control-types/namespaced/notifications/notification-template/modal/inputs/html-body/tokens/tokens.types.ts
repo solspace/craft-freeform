@@ -1,10 +1,10 @@
-import type { RootState } from '@editor/store';
-import type { Suggestion } from '@ff-client/types/notifications';
-import type { Store } from 'redux';
+import type { RootState } from "@editor/store";
+import type { Suggestion } from "@ff-client/types/notifications";
+import type { Store } from "redux";
 
 type CallbackRegister = (
   callback: (event: KeyboardEvent) => void,
-  prepend?: boolean
+  prepend?: boolean,
 ) => void;
 
 export type TokenBackend = {

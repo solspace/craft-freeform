@@ -1,10 +1,12 @@
-import React from 'react';
-import { Field } from '@components/layout/blocks/field';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-
-import type { FormImportData, ImportStrategy } from '../../import/import.types';
-import type { StrategyCollection } from '../../import/import.types';
+import { Field } from "@components/layout/blocks/field";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import type {
+  FormImportData,
+  ImportStrategy,
+  StrategyCollection,
+} from "../../import/import.types";
 
 type Props = {
   disabled: boolean;
@@ -22,13 +24,13 @@ export const Strategy: React.FC<Props> = ({
   return (
     <div>
       <Field
-        label={translate('Existing Form Behavior')}
+        label={translate("Existing Form Behavior")}
         instructions={translate(
-          'Choose the behavior Freeform should use if this site contains any forms that match the data in this import.'
+          "Choose the behavior Freeform should use if this site contains any forms that match the data in this import.",
         )}
         className={classes(
-          disabled && 'disabled',
-          !data.forms.length && 'hidden'
+          disabled && "disabled",
+          !data.forms.length && "hidden",
         )}
       >
         <div className="select">
@@ -41,20 +43,20 @@ export const Strategy: React.FC<Props> = ({
               })
             }
           >
-            <option value="skip">{translate('Skip')}</option>
-            <option value="replace">{translate('Replace')}</option>
+            <option value="skip">{translate("Skip")}</option>
+            <option value="replace">{translate("Replace")}</option>
           </select>
         </div>
       </Field>
 
       <Field
-        label={translate('Existing Template Behavior')}
+        label={translate("Existing Template Behavior")}
         instructions={translate(
-          'Choose the behavior Freeform should use if this site contains any email notification, formatting or success templates that match the data in this import.'
+          "Choose the behavior Freeform should use if this site contains any email notification, formatting or success templates that match the data in this import.",
         )}
         className={classes(
-          disabled && 'disabled',
-          !data.templates.notification.length && 'hidden'
+          disabled && "disabled",
+          !data.templates.notification.length && "hidden",
         )}
       >
         <div className="select">
@@ -67,8 +69,8 @@ export const Strategy: React.FC<Props> = ({
               })
             }
           >
-            <option value="skip">{translate('Skip')}</option>
-            <option value="replace">{translate('Replace')}</option>
+            <option value="skip">{translate("Skip")}</option>
+            <option value="replace">{translate("Replace")}</option>
           </select>
         </div>
       </Field>

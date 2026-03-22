@@ -1,26 +1,26 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import type { Condition } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import type { Condition } from "@ff-client/types/rules";
+import { Operator } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 type OperatorOptions = Partial<{ [key in Operator]: string }>;
 
 const operatorOptions: OperatorOptions = {
-  [Operator.Equals]: translate('is equal to'),
-  [Operator.NotEquals]: translate('does not equal'),
-  [Operator.GreaterThan]: translate('greater than'),
-  [Operator.GreaterThanOrEquals]: translate('greater than or equal to'),
-  [Operator.LessThan]: translate('less than'),
-  [Operator.LessThanOrEquals]: translate('less than or equal to'),
-  [Operator.Contains]: translate('contains'),
-  [Operator.NotContains]: translate('does not contain'),
-  [Operator.StartsWith]: translate('starts with'),
-  [Operator.EndsWith]: translate('ends with'),
-  [Operator.IsEmpty]: translate('is empty'),
-  [Operator.IsNotEmpty]: translate('is not empty'),
-  [Operator.IsOneOf]: translate('is one of'),
-  [Operator.IsNotOneOf]: translate('is not one of'),
+  [Operator.Equals]: translate("is equal to"),
+  [Operator.NotEquals]: translate("does not equal"),
+  [Operator.GreaterThan]: translate("greater than"),
+  [Operator.GreaterThanOrEquals]: translate("greater than or equal to"),
+  [Operator.LessThan]: translate("less than"),
+  [Operator.LessThanOrEquals]: translate("less than or equal to"),
+  [Operator.Contains]: translate("contains"),
+  [Operator.NotContains]: translate("does not contain"),
+  [Operator.StartsWith]: translate("starts with"),
+  [Operator.EndsWith]: translate("ends with"),
+  [Operator.IsEmpty]: translate("is empty"),
+  [Operator.IsNotEmpty]: translate("is not empty"),
+  [Operator.IsOneOf]: translate("is one of"),
+  [Operator.IsNotOneOf]: translate("is not one of"),
 };
 
 type Props = {
@@ -35,7 +35,7 @@ export const OperatorSelect: React.FC<Props> = ({ condition, onChange }) => {
     <div className="select fullwidth">
       <Dropdown
         value={operator}
-        onChange={(value) => onChange && onChange(value as Operator)}
+        onChange={(value) => onChange?.(value as Operator)}
         options={Object.entries(operatorOptions).map(([value, label]) => ({
           value,
           label,

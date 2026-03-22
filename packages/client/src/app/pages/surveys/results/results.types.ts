@@ -40,12 +40,12 @@ export type SurveyData = {
 };
 
 export enum Chart {
-  Horizontal = 'Horizontal',
-  Vertical = 'Vertical',
-  Pie = 'Pie',
-  Donut = 'Donut',
-  Hidden = 'Hidden',
-  Text = 'Text',
+  Horizontal = "Horizontal",
+  Vertical = "Vertical",
+  Pie = "Pie",
+  Donut = "Donut",
+  Hidden = "Hidden",
+  Text = "Text",
 }
 
 export type SurveyPreferences = {

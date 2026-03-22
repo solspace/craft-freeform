@@ -1,8 +1,8 @@
-import { animated } from 'react-spring';
-import { borderRadius, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, spacings } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
-const minHeight = '72px';
+const minHeight = "72px";
 
 export const RowWrapper = styled(animated.div)`
   position: relative;

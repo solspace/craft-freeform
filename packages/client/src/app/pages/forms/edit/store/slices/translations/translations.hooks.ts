@@ -1,33 +1,32 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
-import type { OptionTranslations } from '@components/form-controls/control-types/options/sources/translations/translations.types';
-import type { Page } from '@editor/builder/types/layout';
-import { useAppDispatch, useAppSelector } from '@editor/store';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import { useQueryFormSettings } from '@ff-client/queries/forms';
-import { useFetchPageButtonType } from '@ff-client/queries/page-types';
-import type { SettingsNamespace } from '@ff-client/types/forms';
+import type { OptionsConfiguration } from "@components/form-controls/control-types/options/options.types";
+import type { OptionTranslations } from "@components/form-controls/control-types/options/sources/translations/translations.types";
+import type { Page } from "@editor/builder/types/layout";
+import { useAppDispatch, useAppSelector } from "@editor/store";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useFieldTypeSearch } from "@ff-client/queries/field-types";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
+import { useFetchPageButtonType } from "@ff-client/queries/page-types";
+import type { SettingsNamespace } from "@ff-client/types/forms";
 import {
   type GenericValue,
   type Property,
   PropertyType,
-} from '@ff-client/types/properties';
-import cloneDeep from 'lodash/cloneDeep';
+} from "@ff-client/types/properties";
+import cloneDeep from "lodash/cloneDeep";
+import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
-import { formSelectors } from '../form/form.selectors';
-import type { Field } from '../layout/fields';
-
-import { translationSelectors } from './translations.selectors';
-import type { TranslationType } from './translations.types';
-import { translationActions } from '.';
+import { formSelectors } from "../form/form.selectors";
+import type { Field } from "../layout/fields";
+import { translationActions } from ".";
+import { translationSelectors } from "./translations.selectors";
+import type { TranslationType } from "./translations.types";
 
 type HasTranslation = (handle: string) => boolean;
 type GetTranslation = <T = string>(handle: string, value: GenericValue) => T;
 type GetOptionTranslations = (
   handle: string,
-  value: OptionsConfiguration
+  value: OptionsConfiguration,
 ) => OptionsConfiguration;
 type UpdateTranslation = (handle: string, value: GenericValue) => boolean;
 type RemoveTranslation = (handle: string) => void;
@@ -51,29 +50,30 @@ function useTranslations(field: Field): UseTranslations;
 function useTranslations(form: SettingsNamespace): UseTranslations;
 function useTranslations(page: Page): UseTranslations;
 function useTranslations(
-  target: Field | SettingsNamespace | Page
+  target: Field | SettingsNamespace | Page,
 ): UseTranslations {
   const dispatch = useAppDispatch();
   const { current, isPrimary } = useSiteContext();
   const searchType = useFieldTypeSearch();
-  const generalSettings = useSelector(formSelectors.settings.one('general'));
+  const generalSettings = useSelector(formSelectors.settings.one("general"));
   const isTranslationsEnabled = generalSettings?.translations;
 
   const { data: pageButtonType } = useFetchPageButtonType();
   const { data: formSettings } = useQueryFormSettings();
 
-  const isField = target && 'typeClass' in target;
+  const isField = target && "typeClass" in target;
   const isForm =
-    target && 'namespaceType' in target && target.namespaceType === 'settings';
+    target && "namespaceType" in target && target.namespaceType === "settings";
 
   const siteId = current.id;
   const namespace = isForm ? target.namespace : target?.uid;
-  const type: TranslationType = isField ? 'fields' : isForm ? 'form' : 'pages';
+  const type: TranslationType = isField ? "fields" : isForm ? "form" : "pages";
 
   const translationNamespace = useAppSelector(
-    translationSelectors.namespace(current.id, target)
+    translationSelectors.namespace(current.id, target),
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Dependencies are correct as is.
   const findProperty = useCallback(
     (handle: string): Property => {
       if (isField) {
@@ -87,7 +87,7 @@ function useTranslations(
 
       if (isForm) {
         const setting = formSettings?.find(
-          (setting) => setting.handle === namespace
+          (setting) => setting.handle === namespace,
         );
 
         if (!setting) {
@@ -99,7 +99,7 @@ function useTranslations(
 
       return pageButtonType?.properties?.find((prop) => prop.handle === handle);
     },
-    [isField, isForm, searchType, pageButtonType]
+    [isField, isForm, searchType, pageButtonType, namespace],
   );
 
   // ================
@@ -109,7 +109,7 @@ function useTranslations(
     (handle) => {
       return target && translationNamespace?.[handle] !== undefined;
     },
-    [target, translationNamespace]
+    [target, translationNamespace],
   );
 
   const willTranslate: WillTranslate = useCallback(
@@ -128,7 +128,7 @@ function useTranslations(
 
       const property = findProperty(handle);
       if (property === undefined) {
-        if (handle === 'label') {
+        if (handle === "label") {
           return true;
         }
 
@@ -137,7 +137,7 @@ function useTranslations(
 
       return property.translatable;
     },
-    [isPrimary, target, isTranslationsEnabled]
+    [isPrimary, target, isTranslationsEnabled, findProperty],
   );
 
   // ================
@@ -155,7 +155,7 @@ function useTranslations(
 
       return translationNamespace[handle];
     },
-    [target, translationNamespace]
+    [translationNamespace, willTranslate, hasTranslation],
   );
 
   const getOptionTranslations: GetTranslation = useCallback(
@@ -171,10 +171,10 @@ function useTranslations(
       const translatedValue: OptionsConfiguration = cloneDeep(value);
       const translation: OptionTranslations = translationNamespace[handle];
 
-      if (translatedValue.source === 'custom' && translation.options) {
+      if (translatedValue.source === "custom" && translation.options) {
         translatedValue.options = translatedValue.options.map((option) => {
           const translatedOption = translation.options.find(
-            (opt) => opt.value === option.value
+            (opt) => opt.value === option.value,
           );
 
           if (translatedOption) {
@@ -190,7 +190,7 @@ function useTranslations(
 
       return translatedValue;
     },
-    [target, translationNamespace]
+    [translationNamespace, willTranslate, hasTranslation],
   );
 
   // ================
@@ -208,7 +208,7 @@ function useTranslations(
         namespace,
         handle,
         value,
-      })
+      }),
     );
 
     return true;
@@ -228,7 +228,7 @@ function useTranslations(
         type,
         namespace,
         handle,
-      })
+      }),
     );
   };
 

@@ -1,29 +1,30 @@
-import type { ChangeEventHandler } from 'react';
-import React, { useRef, useState } from 'react';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { Instructions } from '@components/form-controls/control.styles';
-import { FormErrorList } from '@components/form-controls/error-list';
-import { Label } from '@components/form-controls/label.styles';
-import { ContentContainer } from '@components/layout/blocks/content-container';
-import { Field } from '@components/layout/blocks/field';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import axios from 'axios';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { Instructions } from "@components/form-controls/control.styles";
+import { FormErrorList } from "@components/form-controls/error-list";
+import { Label } from "@components/form-controls/label.styles";
+import { ContentContainer } from "@components/layout/blocks/content-container";
+import { Field } from "@components/layout/blocks/field";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import axios from "axios";
+import type React from "react";
+import type { ChangeEventHandler } from "react";
+import { useRef, useState } from "react";
 
-import { Preview } from '../../common/preview/preview';
-import { Progress } from '../../common/progress/progress';
-import { useProgressEvent } from '../../common/progress/progress.hooks';
-import { Strategy } from '../../common/strategy/strategy';
+import { Preview } from "../../common/preview/preview";
+import { Progress } from "../../common/progress/progress";
+import { useProgressEvent } from "../../common/progress/progress.hooks";
+import { Strategy } from "../../common/strategy/strategy";
 import {
   createImportOptions,
   type FormImportData,
   type ImportOptions,
   type StrategyCollection,
-} from '../import.types';
+} from "../import.types";
 
-import { FileInput, FileWrapper } from './freeform-data.styles';
-import type { AvailableOptionResponse } from './freeform-data.types';
+import { FileInput, FileWrapper } from "./freeform-data.styles";
+import type { AvailableOptionResponse } from "./freeform-data.types";
 
 export const ImportFreeformData: React.FC = () => {
   const [fileToken, setFileToken] = useState<string>();
@@ -45,19 +46,19 @@ export const ImportFreeformData: React.FC = () => {
     }
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append("file", file);
 
     if (password.current) {
-      formData.append('password', password.current);
+      formData.append("password", password.current);
     }
 
     try {
       const { data } = await axios.post<AvailableOptionResponse>(
-        '/api/import/file',
+        "/api/import/file",
         formData,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }
+          headers: { "Content-Type": "multipart/form-data" },
+        },
       );
 
       setAvailableOptions(data.options);
@@ -67,7 +68,7 @@ export const ImportFreeformData: React.FC = () => {
 
       if (error.status === 403) {
         password.current = undefined;
-        const userPassword = prompt(translate('Enter password'));
+        const userPassword = prompt(translate("Enter password"));
         if (!userPassword) {
           return;
         }
@@ -85,9 +86,9 @@ export const ImportFreeformData: React.FC = () => {
 
     progressEvent.clearProgress();
 
-    const { data } = await axios.post('/api/import/prepare', {
+    const { data } = await axios.post("/api/import/prepare", {
       exporter:
-        '\\Solspace\\Freeform\\Bundles\\Backup\\Export\\FileExportReader',
+        "\\Solspace\\Freeform\\Bundles\\Backup\\Export\\FileExportReader",
       options: {
         ...options,
         fileToken,
@@ -104,10 +105,10 @@ export const ImportFreeformData: React.FC = () => {
       <Breadcrumb id="import-forms" label="Freeform Data" url="import/forms" />
 
       <FileWrapper>
-        <Label>{translate('Upload a Freeform Export zip file')}</Label>
+        <Label>{translate("Upload a Freeform Export zip file")}</Label>
         <FileInput type="file" onChange={onChange} accept=".zip" />
         <Instructions>
-          {translate('Accepts `.zip` files. Only upload files that you trust.')}
+          {translate("Accepts `.zip` files. Only upload files that you trust.")}
         </Instructions>
         <FormErrorList errors={errors} />
       </FileWrapper>
@@ -115,9 +116,9 @@ export const ImportFreeformData: React.FC = () => {
       {availableOptions && (
         <>
           <Field
-            label={translate('Select Data')}
+            label={translate("Select Data")}
             instructions={translate(
-              'Please select the data you want to import.'
+              "Please select the data you want to import.",
             )}
           >
             <Preview
@@ -143,18 +144,18 @@ export const ImportFreeformData: React.FC = () => {
           <Field>
             <button className="btn submit" type="button" onClick={onImport}>
               <LoadingText
-                loadingText={translate('Processing...')}
+                loadingText={translate("Processing...")}
                 loading={false}
                 spinner
               >
-                {translate('Begin Import')}
+                {translate("Begin Import")}
               </LoadingText>
             </button>
           </Field>
 
           <Progress
-            label={translate('Import')}
-            finishLabel={translate('Import completed successfully!')}
+            label={translate("Import")}
+            finishLabel={translate("Import completed successfully!")}
             event={progressEvent}
           />
         </>

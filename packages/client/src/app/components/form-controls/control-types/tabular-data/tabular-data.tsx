@@ -1,12 +1,12 @@
-import React from 'react';
-import { Control } from '@components/form-controls/control';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import type { ControlType } from '@components/form-controls/types';
-import type { TabularDataProperty } from '@ff-client/types/properties';
+import { Control } from "@components/form-controls/control";
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import type { ControlType } from "@components/form-controls/types";
+import type { TabularDataProperty } from "@ff-client/types/properties";
+import type React from "react";
 
-import { TabularDataEditor } from './tabular-data.editor';
-import { addRow, cleanRows } from './tabular-data.operations';
-import { TabularDataPreview } from './tabular-data.preview';
+import { TabularDataEditor } from "./tabular-data.editor";
+import { addRow, cleanRows } from "./tabular-data.operations";
+import { TabularDataPreview } from "./tabular-data.preview";
 
 const Matrix: React.FC<ControlType<TabularDataProperty>> = ({
   value,

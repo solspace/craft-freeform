@@ -1,5 +1,5 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 type Props = {
   value: boolean;
@@ -21,7 +21,7 @@ export const DisplayTriggerDropdown: React.FC<Props> = ({
     <div className="select">
       <select
         value={value ? on : off}
-        onChange={(event) => onChange && onChange(event.target.value === on)}
+        onChange={(event) => onChange?.(event.target.value === on)}
       >
         <option value={on}>{translate(on)}</option>
         <option value={off}>{translate(off)}</option>

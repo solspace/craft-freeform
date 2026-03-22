@@ -1,4 +1,4 @@
-import { generateHandle } from '../../../utils/strings';
+import { generateHandle } from "../../../utils/strings";
 
 import type {
   ABTestDashboardItem,
@@ -6,36 +6,36 @@ import type {
   ABTestDashboardVariant,
   ABTestWithVariants,
   MetricTab,
-} from './ab-tests.types';
+} from "./ab-tests.types";
 
 export const lineColors = [
-  '#1660c7',
-  '#d92d20',
-  '#7a3ec8',
-  '#f58c00',
-  '#008f8f',
-  '#c200fb',
-  '#2d6a4f',
+  "#1660c7",
+  "#d92d20",
+  "#7a3ec8",
+  "#f58c00",
+  "#008f8f",
+  "#c200fb",
+  "#2d6a4f",
 ];
 
 export const getVariantColor = (
-  variant: Pick<ABTestDashboardVariant, 'formColor' | 'id'>,
-  index: number
+  variant: Pick<ABTestDashboardVariant, "formColor" | "id">,
+  index: number,
 ): string => {
   return variant.formColor || lineColors[index % lineColors.length];
 };
 
 export const metricTabs: Array<{ id: MetricTab; label: string }> = [
-  { id: 'conversionRate', label: 'Conversion Rate' },
-  { id: 'impressions', label: 'Impressions' },
-  { id: 'interactions', label: 'Interactions' },
-  { id: 'failures', label: 'Failures' },
+  { id: "conversionRate", label: "Conversion Rate" },
+  { id: "impressions", label: "Impressions" },
+  { id: "interactions", label: "Interactions" },
+  { id: "failures", label: "Failures" },
 ];
 
 export const formatRate = (value: number): string => `${value.toFixed(1)}%`;
 
 export const toEditorPayload = (
-  test: ABTestDashboardItem
+  test: ABTestDashboardItem,
 ): ABTestWithVariants => ({
   id: test.id,
   name: test.name,
@@ -52,7 +52,7 @@ export const toEditorPayload = (
 
 export const mergeChartData = (
   variants: ABTestDashboardVariant[],
-  metric: MetricTab
+  metric: MetricTab,
 ): Array<Record<string, string | number>> => {
   const firstVariant = variants[0];
   if (!firstVariant) {

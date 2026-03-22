@@ -1,6 +1,6 @@
-import type { ReactNode } from 'react';
-import React from 'react';
-import { SkeletonTheme } from 'react-loading-skeleton';
+import type React from "react";
+import type { ReactNode } from "react";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 type Props = {
   children?: ReactNode;

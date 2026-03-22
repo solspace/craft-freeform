@@ -1,9 +1,8 @@
-import type { Condition, SubmitFormRule } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import { Combinator } from '@ff-client/types/rules';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 } from 'uuid';
+import type { Condition, SubmitFormRule } from "@ff-client/types/rules";
+import { Combinator, Operator } from "@ff-client/types/rules";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
 type SubmitFormRuleState = {
   item?: SubmitFormRule;
@@ -12,7 +11,7 @@ type SubmitFormRuleState = {
 const initialState: SubmitFormRuleState = {};
 
 export const submitFormRulesSlice = createSlice({
-  name: 'rules/submit-form',
+  name: "rules/submit-form",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<SubmitFormRule>) => {
@@ -26,9 +25,9 @@ export const submitFormRulesSlice = createSlice({
         conditions: [
           {
             uid: v4(),
-            field: '',
+            field: "",
             operator: Operator.Equals,
-            value: '',
+            value: "",
           },
         ],
       };

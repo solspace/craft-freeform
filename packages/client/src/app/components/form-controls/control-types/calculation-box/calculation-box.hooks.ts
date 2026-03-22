@@ -1,10 +1,10 @@
-import { useSelector } from 'react-redux';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import type { CalculationProperty } from '@ff-client/types/properties';
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import type { CalculationProperty } from "@ff-client/types/properties";
+import { useSelector } from "react-redux";
 
 export const generateValue = (value: string, format?: string): string =>
   value.replace(/field:([a-zA-Z0-9_]+)/g, (_, variable) => {
-    if (format === '<mark>...</mark>') {
+    if (format === "<mark>...</mark>") {
       return `<mark>${variable}</mark>`;
     }
 
@@ -12,7 +12,7 @@ export const generateValue = (value: string, format?: string): string =>
   });
 
 export const useCalculationFieldHandles = (
-  property: CalculationProperty
+  property: CalculationProperty,
 ): string[] => {
   const allFields = useSelector(fieldSelectors.all);
   const handles = allFields

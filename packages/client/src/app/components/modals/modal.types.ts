@@ -1,5 +1,5 @@
-import type { PropsWithChildren } from 'react';
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
+import type { PropsWithChildren } from "react";
 
 export type ModalType = React.FC<ModalContainerProps>;
 

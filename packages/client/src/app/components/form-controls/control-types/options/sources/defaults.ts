@@ -1,23 +1,22 @@
-import type { OptionsConfiguration } from '../options.types';
-import { Source } from '../options.types';
+import type { OptionsConfiguration } from "../options.types";
+import { Source } from "../options.types";
 
 export const generateDefaultValue = (source: Source): OptionsConfiguration => {
   switch (source) {
     case Source.Elements:
       return {
         source: Source.Elements,
-        typeClass: '',
+        typeClass: "",
         properties: {},
       };
 
     case Source.Predefined:
       return {
         source: Source.Predefined,
-        typeClass: '',
+        typeClass: "",
         properties: {},
       };
 
-    case Source.Custom:
     default:
       return {
         source: Source.Custom,

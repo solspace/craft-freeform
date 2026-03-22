@@ -1,21 +1,22 @@
-import type { ChangeEvent } from 'react';
-import React, { useEffect, useState } from 'react';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import { Modal } from '@ff-client/app/components/modals/modal';
+} from "@components/modals/modal.styles";
+import { Modal } from "@ff-client/app/components/modals/modal";
 import {
   useClearAllTestHistoryMutation,
   useDeleteTestMutation,
-} from '@ff-client/queries/form-monitor.mutations';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@ff-client/queries/form-monitor.mutations";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import type { ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 
-import { FormWrapper } from './form-monitor.action.modal.styles';
+import { FormWrapper } from "./form-monitor.action.modal.styles";
 
 type Props = {
   formId: number;
@@ -31,7 +32,7 @@ export const DeleteTestModal: React.FC<Props> = ({
   onSuccess,
 }) => {
   const [enabled, setEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const isBulkDelete = testId === 0;
 
   const deleteTestMutation = useDeleteTestMutation(formId, testId, {
@@ -66,7 +67,7 @@ export const DeleteTestModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (isBulkDelete) {
-      setEnabled(inputValue.toUpperCase() === 'DELETE');
+      setEnabled(inputValue.toUpperCase() === "DELETE");
     } else {
       setEnabled(true);
     }
@@ -80,7 +81,7 @@ export const DeleteTestModal: React.FC<Props> = ({
       <ModalContainer>
         <ModalHeader>
           <h1>
-            {translate(isBulkDelete ? 'Clear All Test History' : 'Delete Test')}
+            {translate(isBulkDelete ? "Clear All Test History" : "Delete Test")}
           </h1>
         </ModalHeader>
 
@@ -88,8 +89,8 @@ export const DeleteTestModal: React.FC<Props> = ({
           <div>
             {translate(
               isBulkDelete
-                ? 'Are you sure you want to clear all test history? This action cannot be undone.'
-                : 'Are you sure you want to permanently delete this test? This action cannot be undone.'
+                ? "Are you sure you want to clear all test history? This action cannot be undone."
+                : "Are you sure you want to permanently delete this test? This action cannot be undone.",
             )}
           </div>
           {isBulkDelete && (
@@ -98,8 +99,8 @@ export const DeleteTestModal: React.FC<Props> = ({
                 dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(
                     translate(
-                      'To clear all test history, please type <strong>DELETE</strong> in the box below:'
-                    )
+                      "To clear all test history, please type <strong>DELETE</strong> in the box below:",
+                    ),
                   ),
                 }}
               />
@@ -116,22 +117,23 @@ export const DeleteTestModal: React.FC<Props> = ({
         </FormWrapper>
 
         <ModalFooter>
-          <button className="btn cancel" onClick={onClose}>
-            {translate('Cancel')}
+          <button type="button" className="btn cancel" onClick={onClose}>
+            {translate("Cancel")}
           </button>
           <button
-            className={classes('btn submit', !enabled && 'disabled')}
+            type="button"
+            className={classes("btn submit", !enabled && "disabled")}
             onClick={handleDelete}
             disabled={isLoading || !enabled}
           >
             <LoadingText
               loadingText={translate(
-                isBulkDelete ? 'Clearing...' : 'Deleting...'
+                isBulkDelete ? "Clearing..." : "Deleting...",
               )}
               loading={isLoading}
               spinner
             >
-              {translate(isBulkDelete ? 'Clear All' : 'Delete')}
+              {translate(isBulkDelete ? "Clear All" : "Delete")}
             </LoadingText>
           </button>
         </ModalFooter>

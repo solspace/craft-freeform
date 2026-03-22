@@ -1,12 +1,12 @@
-import React from 'react';
-import { FormComponent } from '@components/form-controls';
-import { useAppDispatch } from '@editor/store';
-import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
+import { FormComponent } from "@components/form-controls";
+import { useAppDispatch } from "@editor/store";
+import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-generator";
 import {
-  integrationActions,
   type IntegrationEntry,
-} from '@editor/store/slices/integrations';
-import { type Property, PropertyType } from '@ff-client/types/properties';
+  integrationActions,
+} from "@editor/store/slices/integrations";
+import { type Property, PropertyType } from "@ff-client/types/properties";
+import type React from "react";
 
 type Props = {
   integration: IntegrationEntry;
@@ -24,9 +24,9 @@ export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
           id: integration.id,
           key,
           value,
-        })
+        }),
       );
-    }
+    },
   );
   const value = integration.values[property.handle];
 

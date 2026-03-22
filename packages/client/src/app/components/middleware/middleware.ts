@@ -1,10 +1,10 @@
-import type { GenericValue, Middleware } from '@ff-client/types/properties';
+import type { GenericValue, Middleware } from "@ff-client/types/properties";
 
-import * as Middlewares from './implementations';
+import * as Middlewares from "./implementations";
 
 export type MiddlewareInjectCallback = (
   key: string,
-  value: GenericValue
+  value: GenericValue,
 ) => void;
 
 export type Context = Record<string, GenericValue>;
@@ -12,7 +12,7 @@ export type MiddlewareImplementation<T, A = undefined> = (
   value: T,
   args?: A,
   context?: GenericValue,
-  injectCallback?: MiddlewareInjectCallback
+  injectCallback?: MiddlewareInjectCallback,
 ) => T;
 
 const middlewareStack: Record<
@@ -24,7 +24,7 @@ export const applyMiddleware = <T>(
   value: T,
   middlewareList?: Middleware[],
   context?: GenericValue,
-  injectCallback?: MiddlewareInjectCallback
+  injectCallback?: MiddlewareInjectCallback,
 ): T => {
   let updatedValue: T = value;
   middlewareList?.forEach((middleware) => {
@@ -34,7 +34,7 @@ export const applyMiddleware = <T>(
         value,
         args,
         context,
-        injectCallback
+        injectCallback,
       ) as T;
     }
   });

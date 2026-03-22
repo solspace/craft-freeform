@@ -1,6 +1,6 @@
-import type { RenderSize } from '@components/form-controls/context/render.context';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import type { RenderSize } from "@components/form-controls/context/render.context";
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 type CheckboxWrapperProps = {
   $size?: RenderSize;

@@ -1,6 +1,5 @@
-import type { FC, PropsWithChildren } from 'react';
-import React from 'react';
-import styled from 'styled-components';
+import type { FC, PropsWithChildren } from "react";
+import styled from "styled-components";
 
 export const EnvLine: FC<PropsWithChildren> = ({ children }) => {
   return (

@@ -1,4 +1,4 @@
-import { ajax } from '@lib/plugin/helpers/ajax';
+import { ajax } from "@lib/plugin/helpers/ajax";
 
 type ClientSecretResponse = {
   id: string;
@@ -13,8 +13,8 @@ type UpdateAmountResponse = {
 
 const getFormData = (form: HTMLFormElement): FormData => {
   const formData = new FormData(form);
-  formData.set('method', 'post');
-  formData.delete('action');
+  formData.set("method", "post");
+  formData.delete("action");
 
   return formData;
 };
@@ -23,16 +23,20 @@ const paymentIntents = {
   create: async (integration: string, form: HTMLFormElement, site: string) => {
     const formData = getFormData(form);
 
-    return ajax.post<ClientSecretResponse>('/freeform/payments/stripe/payment-intents', formData, {
-      headers: { 'FF-STRIPE-INTEGRATION': integration },
-      queryParams: new URLSearchParams({ site }),
-    });
+    return ajax.post<ClientSecretResponse>(
+      "/freeform/payments/stripe/payment-intents",
+      formData,
+      {
+        headers: { "FF-STRIPE-INTEGRATION": integration },
+        queryParams: new URLSearchParams({ site }),
+      },
+    );
   },
   updateAmount: async (
     integration: string,
     form: HTMLFormElement,
     id: string,
-    site: string
+    site: string,
   ): Promise<UpdateAmountResponse> => {
     const formData = getFormData(form);
 
@@ -40,9 +44,9 @@ const paymentIntents = {
       `/freeform/payments/stripe/payment-intents/${id}/amount`,
       formData,
       {
-        headers: { 'FF-STRIPE-INTEGRATION': integration },
+        headers: { "FF-STRIPE-INTEGRATION": integration },
         queryParams: new URLSearchParams({ site }),
-      }
+      },
     );
 
     return data;
@@ -66,9 +70,9 @@ const customers = {
       `/freeform/payments/stripe/payment-intents/${paymentIntentId}/customers`,
       formData,
       {
-        headers: { 'FF-STRIPE-INTEGRATION': integration },
+        headers: { "FF-STRIPE-INTEGRATION": integration },
         queryParams: new URLSearchParams({ site }),
-      }
+      },
     );
 
     return status;

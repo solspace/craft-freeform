@@ -1,10 +1,10 @@
+import { Drag } from "@editor/builder/types/drag";
 import type {
   ConnectDragPreview,
   ConnectDragSource,
   DragSourceMonitor,
-} from 'react-dnd';
-import { useDrag } from 'react-dnd';
-import { Drag } from '@editor/builder/types/drag';
+} from "react-dnd";
+import { useDrag } from "react-dnd";
 
 type RowDragHook = {
   isDragging: boolean;
@@ -23,7 +23,7 @@ export const useRowDrag = (index: number): RowDragHook => {
         isDragging: monitor.isDragging(),
       }),
     }),
-    [index]
+    [index],
   );
 
   return {

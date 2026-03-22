@@ -1,5 +1,5 @@
-import { borderRadius, colors, shadows } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, shadows } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const ABWrapper = styled.div`
   display: flex;

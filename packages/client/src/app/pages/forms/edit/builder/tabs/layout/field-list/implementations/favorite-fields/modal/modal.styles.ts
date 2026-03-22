@@ -1,16 +1,16 @@
 import {
-  Icon as TitleIcon,
   Title,
-} from '@editor/builder/tabs/layout/property-editor/property-editor.styles';
-import { SectionBlockContainer } from '@editor/builder/tabs/layout/property-editor/section-block.styles';
-import { errorAlert, scrollBar } from '@ff-client/styles/mixins';
+  Icon as TitleIcon,
+} from "@editor/builder/tabs/layout/property-editor/property-editor.styles";
+import { SectionBlockContainer } from "@editor/builder/tabs/layout/property-editor/section-block.styles";
+import { errorAlert, scrollBar } from "@ff-client/styles/mixins";
 import {
   borderRadius,
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const FavoritesWrapper = styled.div`
   display: flex;

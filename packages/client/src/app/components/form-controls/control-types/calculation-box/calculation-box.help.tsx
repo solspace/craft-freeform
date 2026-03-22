@@ -1,13 +1,13 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import operatorReferenceData from './calculation-box.help.json';
+import operatorReferenceData from "./calculation-box.help.json";
 import {
   Operator,
   OperatorReference,
   OperatorReferenceItem,
   OperatorReferenceTitle,
-} from './calculation-box.help.styles';
+} from "./calculation-box.help.styles";
 
 type OperatorItem = {
   name?: string;
@@ -17,13 +17,14 @@ type OperatorGroup = {
   title: string;
   items: OperatorItem[];
 };
-type OperatorReference = {
+
+type OperatorReferenceType = {
   title: string;
   operators: OperatorGroup[];
 };
 
 export const CalculationBoxHelp: React.FC = () => {
-  const operatorReference: OperatorReference = operatorReferenceData;
+  const operatorReference: OperatorReferenceType = operatorReferenceData;
 
   return (
     <>

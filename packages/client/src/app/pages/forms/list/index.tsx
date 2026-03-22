@@ -1,21 +1,21 @@
-import React from 'react';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import config from '@config/freeform/freeform.config';
-import { useLocalStorage } from '@ff-client/hooks/ts-hooks/use-local-storage';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import config from "@config/freeform/freeform.config";
+import { useLocalStorage } from "@ff-client/hooks/ts-hooks/use-local-storage";
 import {
   fetchFieldPropertySections,
   fetchFieldTypes,
   QKFieldTypes,
-} from '@ff-client/queries/field-types';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { useQueryClient } from '@tanstack/react-query';
+} from "@ff-client/queries/field-types";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { useQueryClient } from "@tanstack/react-query";
+import type React from "react";
 
-import { useCreateFormModal } from './modals/hooks/use-create-form-modal';
-import { useCreateWithAiFormModal } from './modals/hooks/use-create-with-ai-form-modal';
-import { useAiIntegrations } from './modals/modal.form.create-with-ai.queries';
-import { FormGrid } from './views/grid/grid';
-import { FormList } from './views/list/list';
+import { useCreateFormModal } from "./modals/hooks/use-create-form-modal";
+import { useCreateWithAiFormModal } from "./modals/hooks/use-create-with-ai-form-modal";
+import { useAiIntegrations } from "./modals/modal.form.create-with-ai.queries";
+import { FormGrid } from "./views/grid/grid";
+import { FormList } from "./views/list/list";
 import {
   AiButton,
   Button,
@@ -24,7 +24,7 @@ import {
   Header,
   Title,
   ViewButtons,
-} from './list-view.styles';
+} from "./list-view.styles";
 
 enum View {
   List,
@@ -37,10 +37,10 @@ export const ListProvider: React.FC = () => {
   const openCreateWithAiFormModal = useCreateWithAiFormModal();
   const { data: aiIntegrations } = useAiIntegrations();
 
-  const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
+  const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
   const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
-  const canViewIntegrations = config.permissions.integrations !== 'none';
+  const canViewIntegrations = config.permissions.integrations !== "none";
   const showAiButtons = canViewIntegrations;
   const showEnableAi =
     showAiButtons && aiIntegrations && aiIntegrations.length === 0;
@@ -59,22 +59,22 @@ export const ListProvider: React.FC = () => {
       <Breadcrumb id="form-list" label="Forms" url="/forms" />
 
       <Header>
-        <Title>{translate('Forms')}</Title>
+        <Title>{translate("Forms")}</Title>
 
         <ViewButtons className="btngroup btngroup--exclusive">
           <button
             type="button"
-            className={classes('btn', View.List === view && 'active')}
+            className={classes("btn", View.List === view && "active")}
             data-icon="list"
             aria-label="Display in a table"
-            title={translate('Display as list')}
+            title={translate("Display as list")}
             onClick={() => setView(View.List)}
           />
           <button
             type="button"
-            className={classes('btn', View.Grid === view && 'active')}
-            data-icon={classes(isCraft5 ? 'element-cards' : 'grid')}
-            title={translate('Display as cards')}
+            className={classes("btn", View.Grid === view && "active")}
+            data-icon={classes(isCraft5 ? "element-cards" : "grid")}
+            title={translate("Display as cards")}
             onClick={() => setView(View.Grid)}
           />
         </ViewButtons>
@@ -88,7 +88,7 @@ export const ListProvider: React.FC = () => {
                   className="btn add icon"
                   data-icon="sparkles"
                 >
-                  {translate('Enable AI')}
+                  {translate("Enable AI")}
                 </EnableAiLink>
               ) : (
                 <AiButton
@@ -97,14 +97,14 @@ export const ListProvider: React.FC = () => {
                   data-icon="sparkles"
                   onClick={openCreateWithAiFormModal}
                 >
-                  {translate('Create with AI')}
+                  {translate("Create with AI")}
                 </AiButton>
               ))}
             <Button
               className="btn submit add icon"
               onClick={openCreateFormModal}
             >
-              {translate('Add new Form')}
+              {translate("Add new Form")}
             </Button>
           </ButtonGroup>
         )}

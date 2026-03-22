@@ -1,6 +1,6 @@
-import type { RootState } from '@editor/store';
+import type { RootState } from "@editor/store";
 
-import type { SearchType } from '.';
+import type { SearchType } from ".";
 
 export const searchSelectors = {
   query:

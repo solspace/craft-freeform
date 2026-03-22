@@ -1,5 +1,5 @@
-import { borderRadius, colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const ButtonWrapper = styled.div`
   position: relative;

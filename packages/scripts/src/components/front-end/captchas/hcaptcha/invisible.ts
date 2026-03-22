@@ -1,7 +1,7 @@
-import events from '@lib/plugin/constants/event-types';
-import type { FreeformEvent } from 'types/events';
+import events from "@lib/plugin/constants/event-types";
+import type { FreeformEvent } from "types/events";
 
-import { getContainer, loadHCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadHCaptcha, readConfig } from "./utils/script-loader";
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const container = getContainer(event.form);
@@ -9,10 +9,10 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
     return null;
   }
 
-  let element = container.querySelector<HTMLDivElement>('[data-hcaptcha]');
+  let element = container.querySelector<HTMLDivElement>("[data-hcaptcha]");
   if (!element) {
-    element = document.createElement('div');
-    element.dataset.hcaptcha = '';
+    element = document.createElement("div");
+    element.dataset.hcaptcha = "";
     container.appendChild(element);
   }
 
@@ -30,6 +30,7 @@ document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
 
     let id: number;
 
+    // biome-ignore lint/suspicious/noConfusingVoidType: Allow void type for promise as it can resolve to either void or boolean
     const promise = new Promise<void | boolean>((resolve) => {
       const container = getContainer(event.form);
       if (!container) {
@@ -40,14 +41,16 @@ document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
 
       id = hcaptcha.render(element, {
         sitekey,
-        size: 'invisible',
+        size: "invisible",
         callback: (token: string) => {
-          element.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
+          element.querySelector<HTMLInputElement>(
+            '*[name="h-captcha-response"]',
+          ).value = token;
 
           resolve();
         },
       });
-    });
+    }) as unknown as Promise<boolean>;
 
     hcaptcha.execute(id);
 

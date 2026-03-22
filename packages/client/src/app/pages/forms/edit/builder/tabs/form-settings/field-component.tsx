@@ -1,14 +1,14 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { FormComponent } from '@components/form-controls';
-import { useAppDispatch } from '@editor/store';
-import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
-import { formActions } from '@editor/store/slices/form';
-import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import { useQueryFormSettings } from '@ff-client/queries/forms';
-import type { SettingsNamespace } from '@ff-client/types/forms';
-import type { Property } from '@ff-client/types/properties';
+import { FormComponent } from "@components/form-controls";
+import { useAppDispatch } from "@editor/store";
+import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-generator";
+import { formActions } from "@editor/store/slices/form";
+import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
+import type { SettingsNamespace } from "@ff-client/types/forms";
+import type { Property } from "@ff-client/types/properties";
+import type React from "react";
+import { useSelector } from "react-redux";
 
 type Props = {
   namespace: string;
@@ -20,7 +20,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
   const { data } = useQueryFormSettings();
 
   const properties = data.find(
-    (setting) => setting.handle === namespace
+    (setting) => setting.handle === namespace,
   ).properties;
 
   const formErrors = useSelector(formSelectors.errors);
@@ -30,7 +30,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
   const context: SettingsNamespace = {
     ...settings,
     isNew: form.isNew,
-    namespaceType: 'settings',
+    namespaceType: "settings",
     namespace,
   };
 
@@ -48,24 +48,22 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
             namespace,
             key: handle,
             value,
-          })
+          }),
         );
       }
-    }
+    },
   );
 
   const errors: string[] | undefined =
     formErrors?.[namespace]?.[property.handle];
 
   return (
-    <>
-      <FormComponent
-        value={value}
-        property={property}
-        updateValue={generateUpdateHandler(property)}
-        errors={errors}
-        context={context}
-      />
-    </>
+    <FormComponent
+      value={value}
+      property={property}
+      updateValue={generateUpdateHandler(property)}
+      errors={errors}
+      context={context}
+    />
   );
 };

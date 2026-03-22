@@ -1,11 +1,11 @@
-import type { Page } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
-import type { SettingsNamespace } from '@ff-client/types/forms';
-import { createSelector } from '@reduxjs/toolkit';
+import type { Page } from "@editor/builder/types/layout";
+import type { RootState } from "@editor/store";
+import type { SettingsNamespace } from "@ff-client/types/forms";
+import { createSelector } from "@reduxjs/toolkit";
 
-import type { Field } from '../layout/fields';
+import type { Field } from "../layout/fields";
 
-import type { TranslationType } from './translations.types';
+import type { TranslationType } from "./translations.types";
 
 export const translationSelectors = {
   namespace: (siteId: number, target: Field | SettingsNamespace | Page) =>
@@ -18,19 +18,19 @@ export const translationSelectors = {
 
         let type: TranslationType;
         let namespace: string = target?.uid;
-        if ('properties' in target) {
-          type = 'fields';
+        if ("properties" in target) {
+          type = "fields";
         } else if (
-          'namespaceType' in target &&
-          target.namespaceType === 'settings'
+          "namespaceType" in target &&
+          target.namespaceType === "settings"
         ) {
-          type = 'form';
+          type = "form";
           namespace = target.namespace;
         } else {
-          type = 'pages';
+          type = "pages";
         }
 
         return translations?.[type]?.[namespace];
-      }
+      },
     ),
 } as const;

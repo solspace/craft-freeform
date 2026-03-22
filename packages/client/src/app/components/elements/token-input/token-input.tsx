@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
-import type Tagify from '@yaireo/tagify';
-import Tags from '@yaireo/tagify/dist/react.tagify.jsx';
+import type Tagify from "@yaireo/tagify";
+import Tags from "@yaireo/tagify/dist/react.tagify.jsx";
+import type React from "react";
+import { useRef } from "react";
 
-import { TokenInputWrapper } from './token-input.styles';
+import { TokenInputWrapper } from "./token-input.styles";
 
-import '@yaireo/tagify/dist/tagify.css';
+import "@yaireo/tagify/dist/tagify.css";
 
 type Option = {
   value: string;
@@ -35,11 +36,11 @@ export const TokenInput: React.FC<Props> = ({
         tagifyRef={tagifyRef}
         placeholder={placeholder}
         settings={{
-          tagTextProp: 'name',
-          enforceWhitelist: allowCustom ? false : true,
+          tagTextProp: "name",
+          enforceWhitelist: !allowCustom,
           whitelist: options,
           dropdown: {
-            mapValueTo: 'name',
+            mapValueTo: "name",
             enabled: 0,
           },
         }}

@@ -1,148 +1,164 @@
-import { loadFormattingTemplatesScript } from './templates.formatting';
-import { loadTemplatesModeScript } from './templates.mode';
+import { loadFormattingTemplatesScript } from "./templates.formatting";
+import { loadTemplatesModeScript } from "./templates.mode";
 
 // eslint-disable no-undef
 $(() => {
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
 
-  const sessionTime = $('#session-time');
-  const sessionCount = $('#session-count');
-  const sessionSecret = $('#session-secret');
+  const sessionTime = $("#session-time");
+  const sessionCount = $("#session-count");
+  const sessionSecret = $("#session-secret");
 
-  const sessionContext = $('select#session-context');
+  const sessionContext = $("select#session-context");
   sessionContext.on({
     change: function () {
       const self = $(this);
       const value = self.val();
 
       switch (value) {
-        case 'payload':
-          sessionSecret.removeClass('hidden');
-          sessionCount.addClass('hidden');
-          sessionTime.addClass('hidden');
+        case "payload":
+          sessionSecret.removeClass("hidden");
+          sessionCount.addClass("hidden");
+          sessionTime.addClass("hidden");
 
           break;
 
-        case 'session':
-        case 'database':
-          sessionSecret.addClass('hidden');
-          sessionCount.removeClass('hidden');
-          sessionTime.removeClass('hidden');
+        case "session":
+        case "database":
+          sessionSecret.addClass("hidden");
+          sessionCount.removeClass("hidden");
+          sessionTime.removeClass("hidden");
 
           break;
       }
     },
   });
 
-  const purgeToggle = $("input[name='purge-toggle']").parents('.lightswitch');
+  const purgeToggle = $("input[name='purge-toggle']").parents(".lightswitch");
   purgeToggle.on({
     change: function () {
-      const isOn = $('input', this).val();
+      const isOn = $("input", this).val();
       if (!isOn) {
-        $('select#purge-value').val(0);
+        $("select#purge-value").val(0);
       }
     },
   });
 
-  const spamProtectionBehavior = $('select#spam-protection-behavior');
+  const spamProtectionBehavior = $("select#spam-protection-behavior");
   spamProtectionBehavior.on({
     change: function () {
-      const customError = $('#custom-spam-error-message');
-      if ($(this).val() === 'display_errors') {
-        customError.show('fast');
+      const customError = $("#custom-spam-error-message");
+      if ($(this).val() === "display_errors") {
+        customError.show("fast");
       } else {
-        customError.hide('fast');
+        customError.hide("fast");
       }
     },
   });
 
-  const scriptInsertLocation = $('select[name="settings[scriptInsertLocation]"]');
-  const warningText = $('#script-insert-warning').text();
+  const scriptInsertLocation = $(
+    'select[name="settings[scriptInsertLocation]"]',
+  );
+  const warningText = $("#script-insert-warning").text();
   scriptInsertLocation.on({
     change: function () {
       const value = $(this).val();
-      const parent = $(this).parents('.field:first');
+      const parent = $(this).parents(".field:first");
 
-      if (value === 'manual') {
-        const warning = document.createElement('div');
-        warning.classList.add('warning', 'with-icon');
+      if (value === "manual") {
+        const warning = document.createElement("div");
+        warning.classList.add("warning", "with-icon");
         warning.innerText = warningText;
 
         parent.append(warning);
       } else {
-        parent.find('.warning.with-icon').remove();
+        parent.find(".warning.with-icon").remove();
       }
     },
   });
 
-  scriptInsertLocation.trigger('change');
+  scriptInsertLocation.trigger("change");
 
   const loggingLevel = $('select[name="settings[loggingLevel]"]');
-  const loggingLevelWarningText = $('#logging-level-warning').text();
+  const loggingLevelWarningText = $("#logging-level-warning").text();
   loggingLevel.on({
     change: function () {
       const value = $(this).val();
-      const parent = $(this).parents('.field:first');
+      const parent = $(this).parents(".field:first");
 
-      if (value === 'info' || value === 'debug') {
-        const warning = document.createElement('div');
-        warning.classList.add('warning', 'with-icon');
+      if (value === "info" || value === "debug") {
+        const warning = document.createElement("div");
+        warning.classList.add("warning", "with-icon");
         warning.innerText = loggingLevelWarningText;
 
         parent.append(warning);
       } else {
-        parent.find('.warning.with-icon').remove();
+        parent.find(".warning.with-icon").remove();
       }
     },
   });
 
-  loggingLevel.trigger('change');
+  loggingLevel.trigger("change");
 
-  const filesDirectory = $('#files-directory');
-  const templateDefault = $('#template-default');
-  $('#storage-type').on({
+  const filesDirectory = $("#files-directory");
+  const templateDefault = $("#template-default");
+  $("#storage-type").on({
     change: (event) => {
       const { value } = event.target;
 
-      const isFiles = ['files', 'files_database'].includes(value);
+      const isFiles = ["files", "files_database"].includes(value);
 
-      filesDirectory.toggleClass('hidden', !isFiles);
-      templateDefault.toggleClass('combined', value === 'files_database').trigger('change');
+      filesDirectory.toggleClass("hidden", !isFiles);
+      templateDefault
+        .toggleClass("combined", value === "files_database")
+        .trigger("change");
     },
   });
 
-  $('#allow-builder-templates').on({
+  $("#allow-builder-templates").on({
     change: (event) => {
-      const checked = $('input', event.target).val() == '1';
-      templateDefault.toggleClass('builder-templates', checked).trigger('change');
+      // biome-ignore lint/suspicious/noDoubleEquals: We want type coercion here
+      const checked = $("input", event.target).val() == "1";
+      templateDefault
+        .toggleClass("builder-templates", checked)
+        .trigger("change");
     },
   });
 
-  templateDefault.on('change', () => {
-    const isBoth = templateDefault.hasClass('combined') && templateDefault.hasClass('builder-templates');
-    templateDefault.toggleClass('hidden', !isBoth);
+  templateDefault.on("change", () => {
+    const isBoth =
+      templateDefault.hasClass("combined") &&
+      templateDefault.hasClass("builder-templates");
+    templateDefault.toggleClass("hidden", !isBoth);
   });
 
-  const notificationsMigrator = $('#notifications-migrator');
+  const notificationsMigrator = $("#notifications-migrator");
   if (notificationsMigrator) {
-    const button = $('#migrate', notificationsMigrator);
+    const button = $("#migrate", notificationsMigrator);
 
     button.on({
       click: (event) => {
-        if (!confirm('Are you sure you want to migrate database notifications to file based ones?')) {
+        if (
+          !confirm(
+            "Are you sure you want to migrate database notifications to file based ones?",
+          )
+        ) {
           event.preventDefault();
           event.stopPropagation();
           return false;
         }
 
-        const removeDbNotifications = $('#remove-files', notificationsMigrator).is(':checked');
+        const removeDbNotifications = $(
+          "#remove-files",
+          notificationsMigrator,
+        ).is(":checked");
 
         $.ajax({
-          url: Craft.getCpUrl('freeform/migrate/notifications/db-to-file'),
-          type: 'post',
-          dataType: 'json',
-          contentType: 'application/json',
+          url: Craft.getCpUrl("freeform/migrate/notifications/db-to-file"),
+          type: "post",
+          dataType: "json",
+          contentType: "application/json",
           data: JSON.stringify({
             removeDbNotifications,
             [Craft.csrfTokenName]: Craft.csrfTokenValue,
@@ -156,7 +172,7 @@ $(() => {
                     Migrated successfully
                   </p>
                 </div>
-                `)
+                `),
               );
             }
           },
@@ -169,9 +185,9 @@ $(() => {
     });
   }
 
-  $('.lock-button').on('click', function () {
-    const input = $('input', this);
-    input.val(input.val() === '1' ? '0' : '1');
-    input.toggleClass('locked', input.val() === '1');
+  $(".lock-button").on("click", function () {
+    const input = $("input", this);
+    input.val(input.val() === "1" ? "0" : "1");
+    input.toggleClass("locked", input.val() === "1");
   });
 });

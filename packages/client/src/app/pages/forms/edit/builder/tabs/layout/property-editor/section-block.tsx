@@ -1,12 +1,12 @@
-import type { PropsWithChildren, ReactNode } from 'react';
-import React from 'react';
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
+import type React from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 
 import {
   SectionBlockContainer,
   SectionBlockIcon,
   SectionBlockWrapper,
-} from './section-block.styles';
+} from "./section-block.styles";
 
 type Props = {
   label?: string;
@@ -18,7 +18,7 @@ const renderIcon = (icon?: string | ReactNode): ReactNode => {
     return null;
   }
 
-  if (typeof icon === 'string') {
+  if (typeof icon === "string") {
     return (
       <SectionBlockIcon
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(icon) }}

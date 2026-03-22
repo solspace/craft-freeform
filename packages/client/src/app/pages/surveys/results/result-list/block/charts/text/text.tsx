@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from "react";
 
-import type { ChartProps } from '../index.types';
+import type { ChartProps } from "../index.types";
 
-import { Item, Wrapper } from './text.styles';
+import { Item, Wrapper } from "./text.styles";
 
 export const Text: React.FC<ChartProps> = ({ breakdown }) => {
   return (

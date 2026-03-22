@@ -1,23 +1,24 @@
-import React, { useEffect, useRef } from 'react';
-import { HelpText } from '@components/elements/help-text';
-import type { UpdateValue } from '@components/form-controls';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { CardsProperty } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
-import Sortable from 'sortablejs';
+import { HelpText } from "@components/elements/help-text";
+import type { UpdateValue } from "@components/form-controls";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type { CardsProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import Sortable from "sortablejs";
 
-import { addCard } from '../cards.operations';
-import type { Card } from '../cards.types';
+import { addCard } from "../cards.operations";
+import type { Card } from "../cards.types";
 
-import { CardItem } from './card.item';
-import { CardPlaceholder } from './card.placeholder';
+import { CardItem } from "./card.item";
+import { CardPlaceholder } from "./card.placeholder";
 import {
   CardList,
   CardsContainer,
   CardsEditorWrapper,
-} from './cards.editor.styles';
+} from "./cards.editor.styles";
 
 type Props = {
   value: Card[];
@@ -46,8 +47,8 @@ export const CardsEditor: React.FC<Props> = ({
 
     const sortable = Sortable.create(gridRef.current, {
       animation: 150,
-      ghostClass: 'sortable-ghost',
-      handle: '.drag-handle',
+      ghostClass: "sortable-ghost",
+      handle: ".drag-handle",
       onEnd: (event) => {
         const newCards = [...value];
         const [movedCard] = newCards.splice(event.oldIndex, 1);
@@ -59,7 +60,7 @@ export const CardsEditor: React.FC<Props> = ({
     return () => {
       sortable.destroy();
     };
-  }, [value]);
+  }, [value, updateValue]);
 
   return (
     <CardsEditorWrapper>
@@ -100,8 +101,8 @@ export const CardsEditor: React.FC<Props> = ({
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                'Press <b>enter</b> while editing a cell to add a new row.'
-              )
+                "Press <b>enter</b> while editing a cell to add a new row.",
+              ),
             ),
           }}
         />

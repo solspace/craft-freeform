@@ -1,11 +1,18 @@
-import type { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Link } from 'react-router-dom';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+import { Link } from "react-router-dom";
 
-import { SiteCrumb } from './breadcrumbs.site';
-import type { Breadcrumb } from './breadcrumbs.types';
+import { SiteCrumb } from "./breadcrumbs.site";
+import type { Breadcrumb } from "./breadcrumbs.types";
 
 type ContextType = {
   stack: Breadcrumb[];
@@ -26,7 +33,7 @@ export const useBreadcrumbs = (crumb: Breadcrumb): void => {
 
   useEffect(() => {
     update(crumb);
-  }, [crumb]);
+  }, [crumb, update]);
 
   useEffect(() => {
     push(crumb);
@@ -34,7 +41,7 @@ export const useBreadcrumbs = (crumb: Breadcrumb): void => {
     return () => {
       pop();
     };
-  }, []);
+  }, [crumb, push, pop]);
 };
 
 export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
@@ -42,15 +49,15 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [stack, setStack] = useState<Breadcrumb[]>([]);
 
-  const push = (crumb: Breadcrumb): void => {
+  const push = useCallback((crumb: Breadcrumb): void => {
     setStack((stack) => [...stack, crumb]);
-  };
+  }, []);
 
-  const pop = (): void => {
+  const pop = useCallback((): void => {
     setStack((stack) => stack.slice(0, -1));
-  };
+  }, []);
 
-  const update = (crumb: Breadcrumb): void => {
+  const update = useCallback((crumb: Breadcrumb): void => {
     setStack((stack) => {
       const index = stack?.findIndex((c) => c.id === crumb.id);
       if (index === undefined || index === -1 || !crumb) {
@@ -70,13 +77,13 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
 
       return clone;
     });
-  };
+  }, []);
 
   useEffect(() => {
-    const crumbs = document.getElementById('crumbs');
-    crumbs.style.display = 'block';
-    crumbs.style.overflow = 'initial';
-    crumbs.classList.remove('empty');
+    const crumbs = document.getElementById("crumbs");
+    crumbs.style.display = "block";
+    crumbs.style.overflow = "initial";
+    crumbs.classList.remove("empty");
   }, []);
 
   return (
@@ -94,7 +101,7 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
             ))}
           </ul>
         </nav>,
-        document.getElementById('crumbs')
+        document.getElementById("crumbs"),
       )}
       {}
     </BreadcrumbContext.Provider>

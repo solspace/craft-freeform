@@ -1,11 +1,10 @@
-import type { Condition, FieldRule } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import { Combinator, Display } from '@ff-client/types/rules';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 } from 'uuid';
+import type { Condition, FieldRule } from "@ff-client/types/rules";
+import { Combinator, Display, Operator } from "@ff-client/types/rules";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
-import type { RuleState } from '..';
+import type { RuleState } from "..";
 
 type FieldRulesState = RuleState<FieldRule>;
 
@@ -30,7 +29,7 @@ type ChangeCombinator = {
 };
 
 export const fieldRulesSlice = createSlice({
-  name: 'rules/fields',
+  name: "rules/fields",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<FieldRule[]>) => {
@@ -48,9 +47,9 @@ export const fieldRulesSlice = createSlice({
         conditions: [
           {
             uid: v4(),
-            field: '',
+            field: "",
             operator: Operator.Equals,
-            value: '',
+            value: "",
           },
         ],
         field: fieldUid,
@@ -77,7 +76,7 @@ export const fieldRulesSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.items.splice(
         state.items.findIndex((rule) => rule.uid === action.payload),
-        1
+        1,
       );
     },
   },

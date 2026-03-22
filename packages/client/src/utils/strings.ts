@@ -1,5 +1,5 @@
-import transliterateFn from '@sindresorhus/transliterate';
-import camelCase from 'lodash/camelCase';
+import transliterateFn from "@sindresorhus/transliterate";
+import camelCase from "lodash/camelCase";
 
 type HandleOptions = {
   transliterate?: boolean;
@@ -8,7 +8,7 @@ type HandleOptions = {
 
 export const generateHandle = (
   value: string,
-  options: HandleOptions = {}
+  options: HandleOptions = {},
 ): string => {
   const { transliterate, camelize } = options;
 
@@ -22,7 +22,7 @@ export const generateHandle = (
     handle = camelCase(handle);
   }
 
-  handle = handle.replace(/^[^a-z]+/gi, '');
+  handle = handle.replace(/^[^a-z]+/gi, "");
 
   return handle;
 };

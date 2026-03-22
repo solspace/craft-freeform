@@ -1,11 +1,11 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import { type FieldProperty } from '@ff-client/types/properties';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useFieldTypeSearch } from "@ff-client/queries/field-types";
+import type { FieldProperty } from "@ff-client/types/properties";
+import type React from "react";
+import { useSelector } from "react-redux";
 
 const Field: React.FC<ControlType<FieldProperty>> = ({
   value,
@@ -28,7 +28,7 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
       }
 
       return property.implements.some((implementation) =>
-        type.implements?.includes(implementation)
+        type.implements?.includes(implementation),
       );
     })
     .map((field) => ({

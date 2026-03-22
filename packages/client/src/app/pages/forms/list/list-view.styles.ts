@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { Link } from "react-router-dom";
+import { spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const Header = styled.header`
   display: grid;

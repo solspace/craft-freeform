@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import type { RootState } from '@editor/store';
+import type { RootState } from "@editor/store";
 import type {
   Suggestion,
   SuggestionCategory,
-} from '@ff-client/types/notifications';
-import axios from 'axios';
-import type { Store } from 'redux';
+} from "@ff-client/types/notifications";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import type { Store } from "redux";
 
-import type { TokenBackend } from '../tokens.types';
+import type { TokenBackend } from "../tokens.types";
 
 let fetchedSuggestions: SuggestionCategory[];
 
@@ -34,17 +34,17 @@ export const useSuggestions = (backend: TokenBackend): SuggestionCategory[] => {
       setCompiled([
         ...fetchedSuggestions,
         {
-          name: 'Fields',
+          name: "Fields",
           items: compileStoreSuggestions(store),
         },
       ]);
     } else {
-      axios.get('/api/templates/notifications/suggestions').then((res) => {
+      axios.get("/api/templates/notifications/suggestions").then((res) => {
         fetchedSuggestions = res.data;
         setCompiled(fetchedSuggestions);
       });
     }
-  }, [fetchedSuggestions]);
+  }, [store]);
 
   return compiled;
 };

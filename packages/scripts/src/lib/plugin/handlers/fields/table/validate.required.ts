@@ -1,7 +1,7 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import events from '@lib/plugin/constants/event-types';
-import { addClass, removeClass } from '@lib/plugin/helpers/elements';
-import type { FreeformEvent } from 'types/events';
+import type Freeform from "@components/front-end/plugin/freeform";
+import events from "@lib/plugin/constants/event-types";
+import { addClass, removeClass } from "@lib/plugin/helpers/elements";
+import type { FreeformEvent } from "types/events";
 
 export const attachValidatorRequired = (instance: Freeform) => {
   instance.form.addEventListener(events.form.renderFieldErrors, addErrors);
@@ -9,35 +9,43 @@ export const attachValidatorRequired = (instance: Freeform) => {
 
 const addErrors = (event: FreeformEvent) => {
   const form = event.form;
-  const tables = form.querySelectorAll('[data-freeform-table]');
+  const tables = form.querySelectorAll("[data-freeform-table]");
 
   const errorClass = event.freeform.options.errorClassField;
 
   tables.forEach((table) => {
-    const headings = table.querySelectorAll<HTMLTableCellElement>('thead th[data-column-required]');
-    const requiredColumnIndexes = Array.from(headings).map((th) => th.cellIndex);
+    const headings = table.querySelectorAll<HTMLTableCellElement>(
+      "thead th[data-column-required]",
+    );
+    const requiredColumnIndexes = Array.from(headings).map(
+      (th) => th.cellIndex,
+    );
 
-    const rows = table.querySelectorAll<HTMLTableRowElement>('tbody tr');
+    const rows = table.querySelectorAll<HTMLTableRowElement>("tbody tr");
     rows.forEach((row) => {
-      const cells = row.querySelectorAll<HTMLTableCellElement>('td');
+      const cells = row.querySelectorAll<HTMLTableCellElement>("td");
       requiredColumnIndexes.forEach((index) => {
         const cell = cells[index];
-        const input = cell.querySelector<HTMLInputElement>('input, textarea, select');
+        const input = cell.querySelector<HTMLInputElement>(
+          "input, textarea, select",
+        );
 
         let isFilled = Boolean(input?.value);
-        if (['radio', 'checkbox'].includes(input?.type || '')) {
+        if (["radio", "checkbox"].includes(input?.type || "")) {
           isFilled = Boolean(input?.checked);
         }
 
-        if (input?.type === 'file') {
+        if (input?.type === "file") {
           isFilled = Boolean(input.files?.length);
         }
 
         if (!input || !isFilled) {
-          if (input?.type === 'radio') {
-            input.parentElement.parentElement.querySelectorAll('input').forEach((sibling) => {
-              addClass(sibling, errorClass);
-            });
+          if (input?.type === "radio") {
+            input.parentElement.parentElement
+              .querySelectorAll("input")
+              .forEach((sibling) => {
+                addClass(sibling, errorClass);
+              });
           } else {
             addClass(input, errorClass);
           }

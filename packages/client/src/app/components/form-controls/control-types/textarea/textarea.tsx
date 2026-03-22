@@ -1,10 +1,10 @@
-import React, { useEffect, useImperativeHandle, useRef } from 'react';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { TextareaProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { TextareaProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import React, { useEffect, useImperativeHandle, useRef } from "react";
 
-import { TextArea } from './textarea.styles';
+import { TextArea } from "./textarea.styles";
 
 const Textarea = React.forwardRef<
   HTMLTextAreaElement,
@@ -12,7 +12,7 @@ const Textarea = React.forwardRef<
 >(
   (
     { value, property, errors, updateValue, autoFocus, focus, context },
-    ref
+    ref,
   ) => {
     const { handle, rows } = property;
     const innerRef = useRef<HTMLTextAreaElement>(null);
@@ -31,23 +31,23 @@ const Textarea = React.forwardRef<
           id={handle}
           ref={innerRef}
           className={classes(
-            'text',
-            'fullwidth',
-            property.flags?.includes('as-readonly-in-instance') && 'read-only',
-            property.flags?.includes('code') && 'code'
+            "text",
+            "fullwidth",
+            property.flags?.includes("as-readonly-in-instance") && "read-only",
+            property.flags?.includes("code") && "code",
           )}
-          readOnly={property.flags?.includes('as-readonly-in-instance')}
+          readOnly={property.flags?.includes("as-readonly-in-instance")}
           rows={rows}
-          value={value ?? ''}
+          value={value ?? ""}
           placeholder={property.placeholder}
           autoFocus={autoFocus}
           onChange={(event) => updateValue(event.target.value)}
         />
       </Control>
     );
-  }
+  },
 );
 
-Textarea.displayName = 'Textarea';
+Textarea.displayName = "Textarea";
 
 export default Textarea;

@@ -1,9 +1,9 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { colors } from '@ff-client/styles/variables';
+import { colors } from "@ff-client/styles/variables";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { FieldCellWrapper, Instructions, Label } from './cell/cell.styles';
-import { FieldWrapper } from './field.styles';
+import { FieldCellWrapper, Instructions, Label } from "./cell/cell.styles";
+import { FieldWrapper } from "./field.styles";
 
 export const LoaderField: React.FC = () => {
   return (

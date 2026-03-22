@@ -1,12 +1,12 @@
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import type { MiddlewareInjectCallback } from '@components/middleware/middleware';
-import { applyMiddleware } from '@components/middleware/middleware';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import type { PropertyValueCollection } from '@ff-client/types/fields';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type { MiddlewareInjectCallback } from "@components/middleware/middleware";
+import { applyMiddleware } from "@components/middleware/middleware";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import type { PropertyValueCollection } from "@ff-client/types/fields";
+import type { GenericValue, Property } from "@ff-client/types/properties";
+import { useCallback } from "react";
+import { useSelector } from "react-redux";
 
-import { formSelectors } from '../slices/form/form.selectors';
+import { formSelectors } from "../slices/form/form.selectors";
 
 export type ValueUpdateHandler = <T>(value: T) => void;
 
@@ -15,10 +15,10 @@ type ValueUpdateHandlerGenerator = (property: Property) => ValueUpdateHandler;
 export const useValueUpdateGenerator = (
   siblingProperties: Property[],
   state: PropertyValueCollection,
-  updateValueCallback: (key: string, value: GenericValue) => void
+  updateValueCallback: (key: string, value: GenericValue) => void,
 ): ValueUpdateHandlerGenerator => {
   const { isPrimary } = useSiteContext();
-  const generalSettings = useSelector(formSelectors.settings.one('general'));
+  const generalSettings = useSelector(formSelectors.settings.one("general"));
   const isTranslationsEnabled = generalSettings?.translations;
 
   return useCallback(
@@ -42,13 +42,13 @@ export const useValueUpdateGenerator = (
 
           updateValueCallback(
             prop.handle,
-            applyMiddleware(value, prop.middleware, state)
+            applyMiddleware(value, prop.middleware, state),
           );
         };
 
         updateValueCallback(
           property.handle,
-          applyMiddleware(value, property.middleware, state, injectCallback)
+          applyMiddleware(value, property.middleware, state, injectCallback),
         );
       };
     },
@@ -58,6 +58,6 @@ export const useValueUpdateGenerator = (
       updateValueCallback,
       isPrimary,
       isTranslationsEnabled,
-    ]
+    ],
   );
 };

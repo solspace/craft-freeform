@@ -1,10 +1,11 @@
-import React, { useId } from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import { FlexColumn, FlexRow } from '@components/layout/blocks/flex';
-import { spacings } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
+import { spacings } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useId } from "react";
 
-import type { TableEditorProps } from './table.editor.types';
+import type { TableEditorProps } from "./table.editor.types";
 
 export const TableCheckboxEditor: React.FC<TableEditorProps> = ({
   column,
@@ -22,7 +23,7 @@ export const TableCheckboxEditor: React.FC<TableEditorProps> = ({
           onChange={() => onUpdate({ ...column, checked: !column.checked })}
         />
         <label htmlFor={id}>
-          {translate(isChecked ? 'checked by default' : 'unchecked by default')}
+          {translate(isChecked ? "checked by default" : "unchecked by default")}
         </label>
       </FlexRow>
     </FlexColumn>

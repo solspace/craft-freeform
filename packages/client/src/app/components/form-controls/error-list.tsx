@@ -1,9 +1,9 @@
-import type { ComponentPropsWithRef } from 'react';
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import type React from "react";
+import type { ComponentPropsWithRef } from "react";
+import styled from "styled-components";
 
-type Props = ComponentPropsWithRef<'ul'> & {
+type Props = ComponentPropsWithRef<"ul"> & {
   errors?: string[];
 };
 

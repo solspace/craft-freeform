@@ -1,7 +1,7 @@
-import type { UseMutationResult } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
+import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
 export type FormMonitorEnableCallback = {
   onLoading?: () => void;
@@ -11,7 +11,7 @@ export type FormMonitorEnableCallback = {
 
 export const useFormMonitorEnableMutation = (
   formId: number,
-  callbacks?: FormMonitorEnableCallback
+  callbacks?: FormMonitorEnableCallback,
 ): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
   return useMutation({
     mutationFn: () => {
@@ -37,7 +37,7 @@ export type DeleteTestCallback = {
 export const useDeleteTestMutation = (
   formId: number,
   testId: number,
-  callbacks?: DeleteTestCallback
+  callbacks?: DeleteTestCallback,
 ): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
   return useMutation({
     mutationFn: () => {
@@ -59,7 +59,7 @@ export type ClearAllTestsCallback = {
 
 export const useClearAllTestHistoryMutation = (
   formId: number,
-  callbacks?: ClearAllTestsCallback
+  callbacks?: ClearAllTestsCallback,
 ): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
   return useMutation({
     mutationFn: () => {
@@ -81,7 +81,7 @@ export type DisableMonitoringCallback = {
 
 export const useDisableMonitoringMutation = (
   formId: number,
-  callbacks?: DisableMonitoringCallback
+  callbacks?: DisableMonitoringCallback,
 ): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
   return useMutation({
     mutationFn: () => {
@@ -103,7 +103,7 @@ export type DisableAndClearMonitoringCallback = {
 
 export const useDisableAndClearMonitoringMutation = (
   formId: number,
-  callbacks?: DisableAndClearMonitoringCallback
+  callbacks?: DisableAndClearMonitoringCallback,
 ): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
   return useMutation({
     mutationFn: () => {

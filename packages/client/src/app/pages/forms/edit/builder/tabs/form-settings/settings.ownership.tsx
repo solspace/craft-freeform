@@ -1,14 +1,14 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import translate from '@ff-client/utils/translations';
+import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useSelector } from "react-redux";
 
 import {
   SectionWrapper,
   SidebarMeta,
   SidebarMetaUserLink,
   SidebarSeperator,
-} from './settings.sidebar.styles';
+} from "./settings.sidebar.styles";
 
 export const SettingsOwnership: React.FC = () => {
   const { ownership } = useSelector(formSelectors.current);
@@ -24,7 +24,7 @@ export const SettingsOwnership: React.FC = () => {
         <SidebarMeta>
           {ownership.created.user ? (
             <>
-              {translate('Created by')}{' '}
+              {translate("Created by")}{" "}
               <SidebarMetaUserLink
                 href={ownership.created.user.url}
                 target="_blank"
@@ -33,16 +33,16 @@ export const SettingsOwnership: React.FC = () => {
               </SidebarMetaUserLink>
             </>
           ) : (
-            translate('Created')
+            translate("Created")
           )}
           &nbsp;
-          {translate('at')}:<br /> {ownership.created.datetime}
+          {translate("at")}:<br /> {ownership.created.datetime}
         </SidebarMeta>
 
         <SidebarMeta>
           {ownership.updated.user ? (
             <>
-              {translate('Last Updated by')}{' '}
+              {translate("Last Updated by")}{" "}
               <SidebarMetaUserLink
                 href={ownership.updated.user.url}
                 target="_blank"
@@ -51,10 +51,10 @@ export const SettingsOwnership: React.FC = () => {
               </SidebarMetaUserLink>
             </>
           ) : (
-            translate('Last Updated')
+            translate("Last Updated")
           )}
           &nbsp;
-          {translate('at')}:<br /> {ownership.updated.datetime}
+          {translate("at")}:<br /> {ownership.updated.datetime}
         </SidebarMeta>
       </SectionWrapper>
     </>

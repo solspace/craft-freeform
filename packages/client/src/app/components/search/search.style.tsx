@@ -1,5 +1,5 @@
-import { colors } from '@ff-client/styles/variables';
-import styled, { css } from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -46,7 +46,7 @@ export const SearchKeyHelper = styled.div`
   line-height: 16px;
 `;
 
-const buttonSize = '14px';
+const buttonSize = "14px";
 
 export const IconStyle = css`
   position: absolute;

@@ -1,11 +1,11 @@
 export const isHidden = (element: HTMLElement): boolean => {
-  if (element.getAttribute('data-hidden') !== null) {
+  if (element.getAttribute("data-hidden") !== null) {
     return true;
   }
 
   let parent = element.parentElement;
   while (parent) {
-    if (parent.getAttribute('data-hidden') !== null) {
+    if (parent.getAttribute("data-hidden") !== null) {
       return true;
     }
     parent = parent.parentElement;
@@ -14,8 +14,13 @@ export const isHidden = (element: HTMLElement): boolean => {
   return false;
 };
 
-const fetchContainers = (form: HTMLFormElement, fetchHidden: boolean): HTMLDivElement[] => {
-  const allContainers = form.querySelectorAll<HTMLDivElement>('[data-field-type="stripe"]');
+const fetchContainers = (
+  form: HTMLFormElement,
+  fetchHidden: boolean,
+): HTMLDivElement[] => {
+  const allContainers = form.querySelectorAll<HTMLDivElement>(
+    '[data-field-type="stripe"]',
+  );
   return Array.from(allContainers).filter((container) => {
     const isContainerHidden = isHidden(container);
 
@@ -31,10 +36,14 @@ const fetchContainers = (form: HTMLFormElement, fetchHidden: boolean): HTMLDivEl
   });
 };
 
-export const selectVisibleContainers = (form: HTMLFormElement): HTMLDivElement[] => {
+export const selectVisibleContainers = (
+  form: HTMLFormElement,
+): HTMLDivElement[] => {
   return fetchContainers(form, false);
 };
 
-export const selectHiddenContainers = (form: HTMLFormElement): HTMLDivElement[] => {
+export const selectHiddenContainers = (
+  form: HTMLFormElement,
+): HTMLDivElement[] => {
   return fetchContainers(form, true);
 };

@@ -1,7 +1,7 @@
-import type React from 'react';
+import type React from "react";
 
-import { useBreadcrumbs } from './breadcrumbs.context';
-import type { Breadcrumb as BreadcrumbType } from './breadcrumbs.types';
+import { useBreadcrumbs } from "./breadcrumbs.context";
+import type { Breadcrumb as BreadcrumbType } from "./breadcrumbs.types";
 
 type Props = BreadcrumbType;
 

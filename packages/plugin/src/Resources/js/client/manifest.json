@@ -1,0 +1,40 @@
+{
+  "_date-fns-BTAAV4UA.js": {
+    "file": "assets/date-fns-BTAAV4UA.js",
+    "name": "date-fns",
+    "isDynamicEntry": true
+  },
+  "_vendor-BOeeMEG-.css": {
+    "file": "assets/vendor-BOeeMEG-.css",
+    "src": "_vendor-BOeeMEG-.css"
+  },
+  "_vendor-C21SoWVJ.js": {
+    "file": "assets/vendor-C21SoWVJ.js",
+    "name": "vendor",
+    "imports": [
+      "_date-fns-BTAAV4UA.js"
+    ],
+    "css": [
+      "assets/vendor-BOeeMEG-.css"
+    ]
+  },
+  "src/index.tsx": {
+    "file": "assets/index-Dt_g_MAc.js",
+    "name": "index",
+    "src": "src/index.tsx",
+    "isEntry": true,
+    "imports": [
+      "_vendor-C21SoWVJ.js",
+      "_date-fns-BTAAV4UA.js"
+    ],
+    "dynamicImports": [
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js",
+      "_date-fns-BTAAV4UA.js"
+    ],
+    "css": [
+      "assets/index-C970reu7.css"
+    ]
+  }
+}

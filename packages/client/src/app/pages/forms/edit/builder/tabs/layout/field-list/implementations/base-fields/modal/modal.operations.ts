@@ -1,17 +1,17 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useCallback } from 'react';
-import type { FieldListRefs, Group, GroupItem } from '@ff-client/types/groups';
-import Sortable from 'sortablejs';
-import { v4 } from 'uuid';
+import type { FieldListRefs, Group, GroupItem } from "@ff-client/types/groups";
+import type { Dispatch, RefObject, SetStateAction } from "react";
+import { useCallback } from "react";
+import Sortable from "sortablejs";
+import { v4 } from "uuid";
 
 type StateSetter<T> = Dispatch<SetStateAction<T>>;
 
 type GroupOperations = {
   addGroup: () => void;
   updateGroupInfo: (
-    property: 'label' | 'color',
+    property: "label" | "color",
     value: string,
-    groupUid: string
+    groupUid: string,
   ) => void;
   syncFromRefs: () => GroupItem;
 };
@@ -24,7 +24,7 @@ const generateRandomColor = (): string =>
 export const useGroupOperations = (
   initialState: Group,
   setState: StateSetter<Group>,
-  fieldListRefs: React.MutableRefObject<FieldListRefs>
+  fieldListRefs: RefObject<FieldListRefs>,
 ): GroupOperations => {
   const addGroup = useCallback(() => {
     setState((prevState) => ({
@@ -35,7 +35,7 @@ export const useGroupOperations = (
           ...prevState.groups.grouped,
           {
             uid: v4(),
-            label: '',
+            label: "",
             color: generateRandomColor(),
             types: [],
           },
@@ -45,18 +45,18 @@ export const useGroupOperations = (
   }, [setState]);
 
   const updateGroupInfo = useCallback(
-    (property: 'label' | 'color', value: string, groupUid: string) => {
+    (property: "label" | "color", value: string, groupUid: string) => {
       setState((prevState) => ({
         ...prevState,
         groups: {
           ...prevState.groups,
           grouped: prevState.groups.grouped.map((group) =>
-            group.uid === groupUid ? { ...group, [property]: value } : group
+            group.uid === groupUid ? { ...group, [property]: value } : group,
           ),
         },
       }));
     },
-    [setState]
+    [setState],
   );
 
   const syncFromRefs = useCallback(() => {
@@ -65,7 +65,7 @@ export const useGroupOperations = (
 
     const grouped = groups.map((group) => {
       const existingGroup = initialState.groups.grouped.find(
-        (g) => g.uid === group
+        (g) => g.uid === group,
       );
       return {
         ...existingGroup,

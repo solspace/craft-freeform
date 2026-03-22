@@ -1,6 +1,6 @@
-import React from 'react';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 import {
   TabButton,
@@ -8,7 +8,7 @@ import {
   TabContent,
   TabItem,
   TabWrapper,
-} from './results.tabs.styles';
+} from "./results.tabs.styles";
 
 type Tab = {
   id: string;
@@ -33,7 +33,7 @@ export const ResultsTabs: React.FC<ResultsTabsProps> = ({
         {tabs.map((tab) => (
           <TabItem key={tab.id}>
             <TabButton
-              className={classes(activeTab === tab.id && 'active')}
+              className={classes(activeTab === tab.id && "active")}
               onClick={() => onTabChange(tab.id)}
             >
               {translate(tab.label)}

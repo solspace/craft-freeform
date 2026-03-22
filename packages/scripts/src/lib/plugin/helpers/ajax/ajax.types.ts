@@ -1,4 +1,4 @@
-import type { CancelToken } from './ajax.classes';
+import type { CancelToken } from "./ajax.classes";
 
 export type Headers = Record<string, string | boolean | number>;
 
@@ -21,13 +21,20 @@ export type ResponseObject<D> = {
   request: XMLHttpRequest;
 };
 
-export type AjaxGET = <R>(url: URL | string, options?: Options) => Promise<ResponseObject<R>>;
-export type AjaxPOST = <R, D = unknown>(url: URL | string, data: D, options?: Options) => Promise<ResponseObject<R>>;
+export type AjaxGET = <R>(
+  url: URL | string,
+  options?: Options,
+) => Promise<ResponseObject<R>>;
+export type AjaxPOST = <R, D = unknown>(
+  url: URL | string,
+  data: D,
+  options?: Options,
+) => Promise<ResponseObject<R>>;
 
 export type CreateXhrRequest = <T>(
   method: string,
   url: string | URL,
   resolve: (value: ResponseObject<T>) => void,
   reject: (reason?: unknown) => void,
-  options?: Options
+  options?: Options,
 ) => Promise<XMLHttpRequest>;

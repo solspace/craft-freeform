@@ -1,15 +1,15 @@
-import React, { useEffect, useRef } from 'react';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { StringProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { StringProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { EnvLine } from "./env.line";
+import { Suggestions } from "./suggestions/suggestions";
 
-import { Suggestions } from './suggestions/suggestions';
-import { EnvLine } from './env.line';
-
-const String: React.FC<ControlType<StringProperty>> = ({
+const StringInput: React.FC<ControlType<StringProperty>> = ({
   value,
   property,
   errors,
@@ -26,13 +26,13 @@ const String: React.FC<ControlType<StringProperty>> = ({
     }
   }, [autoFocus]);
 
-  const isCode = property.flags?.includes('code');
-  const isReadonly = property.flags?.includes('readonly');
-  const isEnvSuggest = property.flags?.includes('env-suggest');
+  const isCode = property.flags?.includes("code");
+  const isReadonly = property.flags?.includes("readonly");
+  const isEnvSuggest = property.flags?.includes("env-suggest");
 
   const { data } = useQuery({
-    queryKey: ['autosuggest', 'env'],
-    queryFn: () => axios.get('/api/autosuggest/env').then((res) => res.data),
+    queryKey: ["autosuggest", "env"],
+    queryFn: () => axios.get("/api/autosuggest/env").then((res) => res.data),
     enabled: isEnvSuggest,
     staleTime: Infinity,
     gcTime: Infinity,
@@ -48,12 +48,12 @@ const String: React.FC<ControlType<StringProperty>> = ({
         data-1p-ignore
         readOnly={isReadonly}
         className={classes(
-          'text',
-          'fullwidth',
-          isCode && 'code',
-          isReadonly && 'readonly'
+          "text",
+          "fullwidth",
+          isCode && "code",
+          isReadonly && "readonly",
         )}
-        value={value ?? ''}
+        value={value ?? ""}
         placeholder={property.placeholder}
         onChange={(event) => updateValue(event.target.value)}
       />
@@ -72,4 +72,4 @@ const String: React.FC<ControlType<StringProperty>> = ({
   );
 };
 
-export default String;
+export default StringInput;

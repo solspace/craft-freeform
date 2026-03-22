@@ -1,8 +1,8 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { SelectProperty } from '@ff-client/types/properties';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { SelectProperty } from "@ff-client/types/properties";
+import type React from "react";
 
 const Select: React.FC<ControlType<SelectProperty>> = ({
   value,
@@ -16,7 +16,7 @@ const Select: React.FC<ControlType<SelectProperty>> = ({
   return (
     <Control property={property} errors={errors} context={context}>
       <Dropdown
-        value={value ?? ''}
+        value={value ?? ""}
         emptyOption={emptyOption}
         options={options}
         onChange={updateValue}

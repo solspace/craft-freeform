@@ -1,4 +1,4 @@
-import type { MiddlewareImplementation } from '../middleware';
+import type { MiddlewareImplementation } from "../middleware";
 
 const middleware: MiddlewareImplementation<
   string,
@@ -7,7 +7,7 @@ const middleware: MiddlewareImplementation<
     replacement?: string;
     modifier?: string;
   }
-> = (value, { pattern, replacement = '', modifier = 'g' }) => {
+> = (value, { pattern, replacement = "", modifier = "g" }) => {
   const regex = new RegExp(pattern, modifier);
 
   return value.replace(regex, replacement);

@@ -1,8 +1,8 @@
-import React from 'react';
-import { ButtonGroup } from '@components/elements/button-group/button-group';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { ButtonGroupProperty } from '@ff-client/types/properties';
+import { ButtonGroup } from "@components/elements/button-group/button-group";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { ButtonGroupProperty } from "@ff-client/types/properties";
+import type React from "react";
 
 const ButtonGroupField: React.FC<ControlType<ButtonGroupProperty>> = ({
   value,

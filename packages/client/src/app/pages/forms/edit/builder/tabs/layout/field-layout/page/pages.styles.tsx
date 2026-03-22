@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const PageWrapper = styled.div`
   display: flex;

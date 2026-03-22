@@ -1,28 +1,28 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export enum Search {
-  Fields = 'fields',
+  Fields = "fields",
 }
 
 export type SearchType = { [key in Search]: string };
 
 const initialState: SearchType = {
-  fields: '',
+  fields: "",
 };
 
 export const searchSlice = createSlice({
-  name: 'search',
+  name: "search",
   initialState,
   reducers: {
     update: (
       state,
-      action: PayloadAction<{ type: keyof SearchType; query: string }>
+      action: PayloadAction<{ type: keyof SearchType; query: string }>,
     ) => {
       state[action.payload.type] = action.payload.query;
     },
     clear: (state, action: PayloadAction<keyof SearchType>) => {
-      state[action.payload] = '';
+      state[action.payload] = "";
     },
   },
 });

@@ -1,16 +1,16 @@
-import React from 'react';
-import { useStore } from 'react-redux';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
 import type {
   AppStateSelectProperty,
   GenericValue,
   OptionCollection,
-} from '@ff-client/types/properties';
-import { filterTest } from '@ff-client/utils/filters';
+} from "@ff-client/types/properties";
+import { filterTest } from "@ff-client/utils/filters";
+import type React from "react";
+import { useStore } from "react-redux";
 
-import { extractParameter } from '../namespaced/field-mapping/mapping.utilities';
+import { extractParameter } from "../namespaced/field-mapping/mapping.utilities";
 
 const AppStateSelect: React.FC<ControlType<AppStateSelectProperty>> = ({
   value,

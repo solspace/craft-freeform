@@ -1,10 +1,10 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { Link } from 'react-router-dom';
-import { generateUrl } from '@ff-client/utils/urls';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import DOMPurify from 'dompurify';
+import React from "react";
+import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
+import { generateUrl } from "@ff-client/utils/urls";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import DOMPurify from "dompurify";
 
 type Item = {
   title?: string;
@@ -15,13 +15,13 @@ type Props = {
   activeKey: string;
 };
 
-const REACT_SETTINGS_KEYS = new Set(['limited-users', 'ai']);
+const REACT_SETTINGS_KEYS = new Set(["limited-users", "ai"]);
 
 export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
   const { data, isFetching } = useQuery({
-    queryKey: ['settings', 'navigation'],
+    queryKey: ["settings", "navigation"],
     queryFn: () => {
-      return axios.get('/api/settings/navigation').then((res) => res.data);
+      return axios.get("/api/settings/navigation").then((res) => res.data);
     },
   });
 
@@ -57,7 +57,7 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
                   <li key={key}>
                     {isReactRoute ? (
                       <Link
-                        className={isActive ? 'sel' : undefined}
+                        className={isActive ? "sel" : undefined}
                         to={`/settings/${key}`}
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(item.title),
@@ -65,7 +65,7 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
                       />
                     ) : (
                       <a
-                        className={isActive ? 'sel' : undefined}
+                        className={isActive ? "sel" : undefined}
                         href={generateUrl(`settings/${key}`)}
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(item.title),
@@ -83,6 +83,8 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
                   </li>
                 );
               }
+
+              return null;
             })}
           </ul>
         </nav>

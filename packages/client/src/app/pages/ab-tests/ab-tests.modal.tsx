@@ -1,26 +1,27 @@
-import React, { useMemo, useState } from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { Control } from '@components/form-controls/control';
-import DatePickerControl from '@components/form-controls/control-types/date-picker/date-picker';
-import String from '@components/form-controls/control-types/string/string';
-import Textarea from '@components/form-controls/control-types/textarea/textarea';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { Control } from "@components/form-controls/control";
+import DatePickerControl from "@components/form-controls/control-types/date-picker/date-picker";
+import StringInput from "@components/form-controls/control-types/string/string";
+import Textarea from "@components/form-controls/control-types/textarea/textarea";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import { useQueryFormsWithStats } from '@ff-client/queries/forms';
-import { PropertyType } from '@ff-client/types/properties';
-import { notifications } from '@ff-client/utils/notifications';
-import translate from '@ff-client/utils/translations';
-import { v4 } from 'uuid';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import { useQueryFormsWithStats } from "@ff-client/queries/forms";
+import { PropertyType } from "@ff-client/types/properties";
+import { notifications } from "@ff-client/utils/notifications";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useMemo, useState } from "react";
+import { v4 } from "uuid";
 
-import { generateABTestHandle } from './ab-tests.operations';
-import { useAbTestUpsertMutation } from './ab-tests.queries';
-import { DateRow, ModalBody } from './ab-tests.styles';
-import type { ABTestWithVariants } from './ab-tests.types';
+import { generateABTestHandle } from "./ab-tests.operations";
+import { useAbTestUpsertMutation } from "./ab-tests.queries";
+import { DateRow, ModalBody } from "./ab-tests.styles";
+import type { ABTestWithVariants } from "./ab-tests.types";
 
 type ModalData = {
   test?: ABTestWithVariants;
@@ -28,9 +29,9 @@ type ModalData = {
 
 const getInitialState = (test?: ABTestWithVariants): ABTestWithVariants => ({
   id: test?.id,
-  name: test?.name || '',
-  handle: test?.handle || '',
-  description: test?.description || '',
+  name: test?.name || "",
+  handle: test?.handle || "",
+  description: test?.description || "",
   startDate: test?.startDate || null,
   endDate: test?.endDate || null,
   variants: test?.variants || [],
@@ -42,17 +43,17 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
 }) => {
   const initial = data?.test;
   const [state, setState] = useState<ABTestWithVariants>(
-    getInitialState(initial)
+    getInitialState(initial),
   );
   const [handleManuallyEdited, setHandleManuallyEdited] = useState<boolean>(
-    !!initial?.handle && initial.handle !== generateABTestHandle(initial.name)
+    !!initial?.handle && initial.handle !== generateABTestHandle(initial.name),
   );
   const { data: forms } = useQueryFormsWithStats();
   const mutation = useAbTestUpsertMutation(initial?.id);
 
   const formOptions = useMemo(
     () => (forms || []).map((form) => ({ id: form.id, name: form.name })),
-    [forms]
+    [forms],
   );
 
   const canSave =
@@ -62,17 +63,17 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
     state.variants.every((variant) => !!variant.formId);
 
   return (
-    <ModalContainer style={{ maxWidth: '860px' }}>
+    <ModalContainer style={{ maxWidth: "860px" }}>
       <ModalHeader>
         <h1>
           {initial?.id
-            ? translate('Edit A/B Test')
-            : translate('Create A/B Test')}
+            ? translate("Edit A/B Test")
+            : translate("Create A/B Test")}
         </h1>
       </ModalHeader>
 
       <ModalBody>
-        <String
+        <StringInput
           value={state.name}
           updateValue={(value) => {
             setState((prev) => ({
@@ -85,13 +86,13 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
           }}
           property={{
             type: PropertyType.String,
-            handle: 'name',
-            label: translate('Name'),
+            handle: "name",
+            label: translate("Name"),
           }}
         />
 
-        <String
-          value={state.handle || ''}
+        <StringInput
+          value={state.handle || ""}
           updateValue={(value) => {
             setHandleManuallyEdited(true);
             setState((prev) => ({
@@ -101,20 +102,20 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
           }}
           property={{
             type: PropertyType.String,
-            handle: 'handle',
-            label: translate('Handle'),
+            handle: "handle",
+            label: translate("Handle"),
           }}
         />
 
         <Textarea
-          value={state.description || ''}
+          value={state.description || ""}
           updateValue={(value) =>
             setState((prev) => ({ ...prev, description: value }))
           }
           property={{
             type: PropertyType.Textarea,
-            handle: 'description',
-            label: translate('Description'),
+            handle: "description",
+            label: translate("Description"),
             rows: 3,
           }}
         />
@@ -130,9 +131,9 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
             }
             property={{
               type: PropertyType.DateTime,
-              handle: 'startDate',
-              label: translate('Start Date'),
-              dateFormat: 'yyyy-MM-dd',
+              handle: "startDate",
+              label: translate("Start Date"),
+              dateFormat: "yyyy-MM-dd",
             }}
           />
           <DatePickerControl
@@ -142,9 +143,9 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
             }
             property={{
               type: PropertyType.DateTime,
-              handle: 'endDate',
-              label: translate('End Date'),
-              dateFormat: 'yyyy-MM-dd',
+              handle: "endDate",
+              label: translate("End Date"),
+              dateFormat: "yyyy-MM-dd",
             }}
           />
         </DateRow>
@@ -154,8 +155,8 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
             <table className="table editable fullwidth">
               <thead>
                 <tr>
-                  <th>{translate('Form')}</th>
-                  <th>{translate('Weight')}</th>
+                  <th>{translate("Form")}</th>
+                  <th>{translate("Weight")}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -165,13 +166,13 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                     <td>
                       <Dropdown
                         emptyOption="Select form..."
-                        value={variant.formId?.toString() || ''}
+                        value={variant.formId?.toString() || ""}
                         onChange={(value) => {
                           const formId = Number(value);
                           setState((prev) => ({
                             ...prev,
                             variants: prev.variants.map((item, itemIndex) =>
-                              itemIndex === index ? { ...item, formId } : item
+                              itemIndex === index ? { ...item, formId } : item,
                             ),
                           }));
                         }}
@@ -192,7 +193,7 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                           setState((prev) => ({
                             ...prev,
                             variants: prev.variants.map((item, itemIndex) =>
-                              itemIndex === index ? { ...item, weight } : item
+                              itemIndex === index ? { ...item, weight } : item,
                             ),
                           }));
                         }}
@@ -201,13 +202,13 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                     <td className="thin action">
                       <button
                         type="button"
-                        title={translate('Delete')}
+                        title={translate("Delete")}
                         className="delete icon"
                         onClick={() =>
                           setState((prev) => ({
                             ...prev,
                             variants: prev.variants.filter(
-                              (_, idx) => idx !== index
+                              (_, idx) => idx !== index,
                             ),
                           }))
                         }
@@ -231,7 +232,7 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                 }))
               }
             >
-              {translate('Add Variant')}
+              {translate("Add Variant")}
             </button>
           </div>
         </Control>
@@ -239,25 +240,25 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
 
       <ModalFooter>
         <button type="button" className="btn cancel" onClick={closeModal}>
-          {translate('Cancel')}
+          {translate("Cancel")}
         </button>
         <button type="button" className="btn submit" disabled={!canSave}>
           <LoadingText
             loading={mutation.isPending}
-            loadingText={translate('Saving...')}
+            loadingText={translate("Saving...")}
             spinner
             onClick={() =>
               mutation.mutate(state, {
                 onSuccess: () => {
                   notifications.success(
-                    translate('A/B Test Group saved successfully.')
+                    translate("A/B Test Group saved successfully."),
                   );
                   closeModal();
                 },
               })
             }
           >
-            {translate('Save')}
+            {translate("Save")}
           </LoadingText>
         </button>
       </ModalFooter>

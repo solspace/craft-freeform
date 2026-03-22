@@ -1,7 +1,7 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import { Label } from './label.styles';
+import { Label } from "./label.styles";
 
 export const Instructions = styled.span`
   display: block;
@@ -80,7 +80,7 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   align-items: flex-start;
   justify-content: flex-start;
 
-  width: ${({ $width }) => ($width ? `${$width}%` : '100%')};
+  width: ${({ $width }) => ($width ? `${$width}%` : "100%")};
 
   &.disabled {
     opacity: 0.5;

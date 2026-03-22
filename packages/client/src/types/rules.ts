@@ -1,27 +1,27 @@
-export const enum Operator {
-  Equals = 'equals',
-  NotEquals = 'notEquals',
-  GreaterThan = 'greaterThan',
-  GreaterThanOrEquals = 'greaterThanOrEquals',
-  LessThan = 'lessThan',
-  LessThanOrEquals = 'lessThanOrEquals',
-  Contains = 'contains',
-  NotContains = 'notContains',
-  StartsWith = 'startsWith',
-  EndsWith = 'endsWith',
-  IsEmpty = 'isEmpty',
-  IsNotEmpty = 'isNotEmpty',
-  IsOneOf = 'isOneOf',
-  IsNotOneOf = 'isNotOneOf',
+export enum Operator {
+  Equals = "equals",
+  NotEquals = "notEquals",
+  GreaterThan = "greaterThan",
+  GreaterThanOrEquals = "greaterThanOrEquals",
+  LessThan = "lessThan",
+  LessThanOrEquals = "lessThanOrEquals",
+  Contains = "contains",
+  NotContains = "notContains",
+  StartsWith = "startsWith",
+  EndsWith = "endsWith",
+  IsEmpty = "isEmpty",
+  IsNotEmpty = "isNotEmpty",
+  IsOneOf = "isOneOf",
+  IsNotOneOf = "isNotOneOf",
 }
 
 type OperatorTypeKeys =
-  | 'boolean'
-  | 'numeric'
-  | 'string'
-  | 'negative'
-  | 'noValue'
-  | 'multiple';
+  | "boolean"
+  | "numeric"
+  | "string"
+  | "negative"
+  | "noValue"
+  | "multiple";
 type OperatorTypes = {
   [key in OperatorTypeKeys]: Operator[];
 };
@@ -58,13 +58,13 @@ export const operatorTypes: OperatorTypes = {
 };
 
 export enum Display {
-  Show = 'show',
-  Hide = 'hide',
+  Show = "show",
+  Hide = "hide",
 }
 
 export enum Combinator {
-  And = 'and',
-  Or = 'or',
+  And = "and",
+  Or = "or",
 }
 
 export type Condition = {
@@ -102,7 +102,7 @@ export type IntegrationRule = Rule & {
 
 export type SubmitFormRule = Rule;
 
-export type PageButtonType = 'submit' | 'save' | 'back' | 'group';
+export type PageButtonType = "submit" | "save" | "back" | "group";
 
 export type ButtonRule = Rule & {
   page: string;

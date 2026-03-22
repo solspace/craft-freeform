@@ -1,11 +1,11 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { SidebarContainer } from '@components/layout/blocks/sidebar-container';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { SidebarContainer } from "@components/layout/blocks/sidebar-container";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import type React from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
 type Link = {
   title: string;
@@ -18,15 +18,15 @@ type Heading = {
 
 type Response = Array<Link & Heading>;
 
-const localLinks = ['forms', 'express-forms', 'formie'];
+const localLinks = ["forms", "express-forms", "formie"];
 
 export const Sidebar: React.FC = () => {
   const { pathname: currentUrl } = useLocation();
   const { data, isFetching } = useQuery<Response>({
-    queryKey: ['import-export', 'navigation'],
+    queryKey: ["import-export", "navigation"],
     queryFn: () =>
       axios
-        .get<Response>('/api/import-export/navigation')
+        .get<Response>("/api/import-export/navigation")
         .then((res) => res.data),
   });
 
@@ -51,7 +51,7 @@ export const Sidebar: React.FC = () => {
               );
             }
 
-            const url = item.url.replace(/^freeform/, '');
+            const url = item.url.replace(/^freeform/, "");
             const isLocal = localLinks.some((keyword) => url.includes(keyword));
             const label = translate(item.title);
 
@@ -60,7 +60,7 @@ export const Sidebar: React.FC = () => {
                 {isLocal && (
                   <NavLink
                     to={url}
-                    className={classes(url === currentUrl && 'sel')}
+                    className={classes(url === currentUrl && "sel")}
                   >
                     {label}
                   </NavLink>

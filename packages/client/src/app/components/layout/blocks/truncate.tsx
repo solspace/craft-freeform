@@ -1,7 +1,7 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import styled from 'styled-components';
+import { useCheckOverflow } from "@ff-client/hooks/use-check-overflow";
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import styled from "styled-components";
 
 type Props = {
   size?: number;

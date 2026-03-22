@@ -1,6 +1,6 @@
-import { animated } from 'react-spring';
-import { borderRadius, colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
 export const GroupFieldLayoutWrapper = styled.div`
   position: relative;

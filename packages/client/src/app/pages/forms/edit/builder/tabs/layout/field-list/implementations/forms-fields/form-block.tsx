@@ -1,22 +1,23 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Search } from '@editor/store/slices/search';
-import { searchSelectors } from '@editor/store/slices/search/search.selectors';
-import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import type { FieldForm } from '@ff-client/types/fields';
-import classes from '@ff-client/utils/classes';
+import { Search } from "@editor/store/slices/search";
+import { searchSelectors } from "@editor/store/slices/search/search.selectors";
+import { useFieldTypeSearch } from "@ff-client/queries/field-types";
+import type { FieldForm } from "@ff-client/types/fields";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
-import { List } from '../../field-group/field-group.styles';
+import { List } from "../../field-group/field-group.styles";
 
-import ChevronIcon from './chevron.svg';
-import { FieldItem } from './field-item';
-import { useFormBlockAnimations } from './form-block.animations';
+import ChevronIcon from "./chevron";
+import { FieldItem } from "./field-item";
+import { useFormBlockAnimations } from "./form-block.animations";
 import {
   ExpandedState,
   FieldListContainer,
   FormBlockWrapper,
   FormTitle,
-} from './form-block.styles';
+} from "./form-block.styles";
 
 type Props = {
   form: FieldForm;
@@ -36,7 +37,7 @@ export const FormBlock: React.FC<Props> = ({ form }) => {
   }
 
   return (
-    <FormBlockWrapper className={classes(isOpen && 'open')}>
+    <FormBlockWrapper className={classes(isOpen && "open")}>
       <FormTitle onClick={() => setExpanded(!expanded)}>
         {form.name}
 

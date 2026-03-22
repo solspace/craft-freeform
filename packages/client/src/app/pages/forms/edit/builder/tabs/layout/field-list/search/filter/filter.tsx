@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { useSpring } from 'react-spring';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import translate from '@ff-client/utils/translations';
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import translate from "@ff-client/utils/translations";
+import { useSpring } from "@react-spring/web";
+import type React from "react";
+import { useState } from "react";
 
-import FilterIconSVG from '../sliders.svg';
+import FilterIconSVG from "../sliders";
 
 import {
   DropDownWrapper,
@@ -11,14 +12,14 @@ import {
   Heading,
   Item,
   ItemCheckbox,
-} from './filter.styles';
+} from "./filter.styles";
 
 const list = [
-  'Favorites',
-  'Standard Fields',
-  'Form 1 fields',
-  'Form 2 fields',
-  'Form 3 fields',
+  "Favorites",
+  "Standard Fields",
+  "Form 1 fields",
+  "Form 2 fields",
+  "Form 3 fields",
 ];
 
 export const Filter: React.FC = () => {
@@ -41,33 +42,31 @@ export const Filter: React.FC = () => {
   });
 
   return (
-    <>
-      <FilterIcon
-        ref={ref}
-        className={active && 'active'}
-        onClick={(event): void => {
-          if (active && event.target === ref.current) {
-            setActive(false);
-          }
+    <FilterIcon
+      ref={ref}
+      className={active && "active"}
+      onClick={(event): void => {
+        if (active && event.target === ref.current) {
+          setActive(false);
+        }
 
-          if (!active) {
-            setActive(true);
-          }
-        }}
-      >
-        <FilterIconSVG />
-        <DropDownWrapper style={style}>
-          <Heading>{translate('Search in')}</Heading>
-          <ul>
-            {list.map((item) => (
-              <Item key={item}>
-                <ItemCheckbox />
-                {item}
-              </Item>
-            ))}
-          </ul>
-        </DropDownWrapper>
-      </FilterIcon>
-    </>
+        if (!active) {
+          setActive(true);
+        }
+      }}
+    >
+      <FilterIconSVG />
+      <DropDownWrapper style={style}>
+        <Heading>{translate("Search in")}</Heading>
+        <ul>
+          {list.map((item) => (
+            <Item key={item}>
+              <ItemCheckbox />
+              {item}
+            </Item>
+          ))}
+        </ul>
+      </DropDownWrapper>
+    </FilterIcon>
   );
 };

@@ -1,6 +1,6 @@
-import { generateHandle } from '@ff-client/utils/strings';
+import { generateHandle } from "@ff-client/utils/strings";
 
-import type { MiddlewareImplementation } from '../middleware';
+import type { MiddlewareImplementation } from "../middleware";
 
 type Args = {
   target: string;
@@ -16,7 +16,7 @@ const injectInto: MiddlewareImplementation<string, Args> = (
   value,
   { target, camelize = false, transliterate = false, bypassConditions },
   context,
-  updateCallback
+  updateCallback,
 ) => {
   if (bypassConditions !== undefined) {
     for (const condition of bypassConditions) {

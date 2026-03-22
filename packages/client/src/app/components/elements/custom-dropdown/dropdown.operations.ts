@@ -1,27 +1,27 @@
-import { useEffect, useState } from 'react';
 import type {
   Option,
   OptionCollection,
   OptionGroup,
-} from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import { useEffect, useState } from "react";
 
 export const isInOptions = (
   options: OptionCollection,
-  value: string
+  value: string,
 ): boolean => {
   if (!options) {
     return false;
   }
 
   for (const option of options) {
-    if ('value' in option) {
+    if ("value" in option) {
       if (String(option.value) === String(value)) {
         return true;
       }
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       if (isInOptions(option.children, value)) {
         return true;
       }
@@ -32,18 +32,18 @@ export const isInOptions = (
 };
 
 export const findFirstValue = (
-  options: OptionCollection
+  options: OptionCollection,
 ): string | undefined => {
   if (!options) {
     return;
   }
 
   for (const option of options) {
-    if ('value' in option) {
+    if ("value" in option) {
       return option.value;
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       const value = findFirstValue(option.children);
       if (value !== undefined) {
         return value;
@@ -54,20 +54,20 @@ export const findFirstValue = (
 
 export const findOptionByValue = (
   options: OptionCollection,
-  value: string
+  value: string,
 ): Option | undefined => {
   if (!options) {
     return;
   }
 
   for (const option of options) {
-    if ('value' in option) {
+    if ("value" in option) {
       if (String(option.value) === String(value)) {
         return option;
       }
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       const foundOption = findOptionByValue(option.children, value);
       if (foundOption !== undefined) {
         return foundOption;
@@ -78,20 +78,20 @@ export const findOptionByValue = (
 
 export const findLabelByValue = (
   options: OptionCollection,
-  value: string
+  value: string,
 ): string | undefined => {
   if (!options) {
     return;
   }
 
   for (const option of options) {
-    if ('value' in option) {
+    if ("value" in option) {
       if (String(option.value) === String(value)) {
         return option.label;
       }
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       const label = findLabelByValue(option.children, value);
       if (label !== undefined) {
         return label;
@@ -102,20 +102,20 @@ export const findLabelByValue = (
 
 export const findShadowIndexByValue = (
   options: OptionCollection,
-  value: string
+  value: string,
 ): number | undefined => {
   if (!options) {
     return;
   }
 
   for (const option of options) {
-    if ('value' in option) {
+    if ("value" in option) {
       if (String(option.value) === String(value)) {
         return option.shadowIndex;
       }
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       return findShadowIndexByValue(option.children, value);
     }
   }
@@ -123,20 +123,20 @@ export const findShadowIndexByValue = (
 
 export const findValueByShadowIndex = (
   options: OptionCollection,
-  shadowIndex: number
+  shadowIndex: number,
 ): string | undefined => {
   if (!options) {
     return;
   }
 
   for (const option of options) {
-    if ('shadowIndex' in option) {
+    if ("shadowIndex" in option) {
       if (option.shadowIndex === shadowIndex) {
         return option.value;
       }
     }
 
-    if ('children' in option) {
+    if ("children" in option) {
       const value = findValueByShadowIndex(option.children, shadowIndex);
       if (value !== undefined) {
         return value;
@@ -149,7 +149,7 @@ const filterOptions = (
   options: OptionCollection,
   query: string,
   indexOffset = 0,
-  emptyOption?: string
+  emptyOption?: string,
 ): [OptionCollection, number] => {
   let index = indexOffset;
 
@@ -157,7 +157,7 @@ const filterOptions = (
   if (emptyOption !== undefined && emptyOption !== null && !query) {
     emptyOpt = {
       label: translate(emptyOption),
-      value: '',
+      value: "",
       shadowIndex: index++,
     };
   }
@@ -165,7 +165,7 @@ const filterOptions = (
   const filteredOpts =
     options
       ?.map((option): Option | OptionGroup => {
-        if ('value' in option) {
+        if ("value" in option) {
           const hasMatch =
             !query || option.label.toLowerCase().includes(query.toLowerCase());
           if (hasMatch) {
@@ -176,11 +176,11 @@ const filterOptions = (
           }
         }
 
-        if ('children' in option) {
+        if ("children" in option) {
           const [children, nestedIndex] = filterOptions(
             option.children,
             query,
-            index
+            index,
           );
 
           if (children.length) {
@@ -207,7 +207,7 @@ const filterOptions = (
 export const useFilteredOptions = (
   options: OptionCollection,
   query: string,
-  emptyOption?: string
+  emptyOption?: string,
 ): [OptionCollection, number] => {
   const [optionCount, setOptionCount] = useState<number>(0);
   const [filteredOptions, setFilteredOptions] =
@@ -218,12 +218,12 @@ export const useFilteredOptions = (
       options,
       query,
       undefined,
-      emptyOption
+      emptyOption,
     );
 
     setFilteredOptions(filteredOpts);
     setOptionCount(optCount);
-  }, [options, query]);
+  }, [options, query, emptyOption]);
 
   return [filteredOptions, optionCount];
 };

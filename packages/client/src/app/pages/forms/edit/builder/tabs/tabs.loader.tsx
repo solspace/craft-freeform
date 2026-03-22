@@ -1,7 +1,7 @@
-import React from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { colors } from '@ff-client/styles/variables';
+import config, { Edition } from "@config/freeform/freeform.config";
+import { colors } from "@ff-client/styles/variables";
+import type React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import {
   FormName,
@@ -9,7 +9,7 @@ import {
   SaveButtonWrapper,
   TabsWrapper,
   TabWrapper,
-} from './tabs.styles';
+} from "./tabs.styles";
 
 export const LoaderTabs: React.FC = () => {
   return (

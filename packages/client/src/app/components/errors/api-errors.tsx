@@ -1,5 +1,5 @@
-import React from 'react';
-import type { APIError } from '@ff-client/types/api';
+import type { APIError } from "@ff-client/types/api";
+import type React from "react";
 
 type Props = {
   category: string;

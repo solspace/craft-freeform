@@ -41,6 +41,8 @@ class ExportText extends AbstractSubmissionExport implements StringValueExportIn
                     if ($field instanceof FieldInterface) {
                         if ($field instanceof TableField) {
                             $value = StringHelper::implodeRecursively(', ', (array) $value);
+                        } else {
+                            $value = $field->getValueAsString();
                         }
                     }
 

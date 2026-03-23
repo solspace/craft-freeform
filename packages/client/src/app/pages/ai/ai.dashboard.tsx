@@ -30,6 +30,7 @@ import {
   MetricsTableHeaderCell,
   MetricsTableRow,
   Section,
+  SectionDescription,
   SectionTitle,
   StatusDisplay,
   StatusDot,
@@ -111,7 +112,7 @@ export const AiDashboard: React.FC = () => {
       case "Free trial":
       case "Active":
       case "Low credits":
-      case "Out of credit":
+      case "Out of credits":
         return translate(raw);
       default:
         return raw;
@@ -296,7 +297,12 @@ export const AiDashboard: React.FC = () => {
 
           {summary?.request_logs && summary.request_logs.length > 0 && (
             <Section>
-              <SectionTitle>{translate("Request log")}</SectionTitle>
+              <SectionTitle>{translate("Request Log")}</SectionTitle>
+              <SectionDescription>
+                {translate(
+                  "A list of recent AI requests and their credit usage.",
+                )}
+              </SectionDescription>
               <MetricsTable>
                 <MetricsTableHead>
                   <tr>

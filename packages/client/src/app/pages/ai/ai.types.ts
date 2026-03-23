@@ -34,7 +34,7 @@ export type AiUsageResponse = {
     | "Free trial"
     | "Active"
     | "Low credits"
-    | "Out of credit"
+    | "Out of credits"
     | string;
   credit_status_color?: string | null;
   credits_total?: number | null;

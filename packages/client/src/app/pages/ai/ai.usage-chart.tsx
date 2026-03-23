@@ -11,7 +11,12 @@ import {
   YAxis,
 } from "recharts";
 
-import { Section, SectionTitle, UsageChart } from "./ai.dashboard.styles";
+import {
+  Section,
+  SectionDescription,
+  SectionTitle,
+  UsageChart,
+} from "./ai.dashboard.styles";
 import type { DailyMetric } from "./ai.types";
 
 type Props = {
@@ -23,7 +28,12 @@ const AiUsageChart: React.FC<Props> = ({ metrics }) => {
 
   return (
     <Section>
-      <SectionTitle>{translate("Requests (last 30 days)")}</SectionTitle>
+      <SectionTitle>{translate("Recent Credit Usage")}</SectionTitle>
+      <SectionDescription>
+        {translate(
+          "The number of requests (credit usage) per day for the last 30 days.",
+        )}
+      </SectionDescription>
       <UsageChart>
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={metrics}>

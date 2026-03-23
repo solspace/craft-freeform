@@ -31,10 +31,7 @@ export const Card = styled.div`
 `;
 
 export const CardLabel = styled.div`
-  font-size: 12px;
-  color: rgba(0, 0, 0, 0.5);
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-size: 14px;
   margin-bottom: ${spacings.xs};
 `;
 
@@ -49,6 +46,7 @@ const CardValueSmall = styled(CardValue)`
 `;
 
 export const StatusValue = styled(CardValueSmall)<{ $color?: string | null }>`
+  font-size: 15px;
   color: ${({ $color }) => $color || "inherit"};
   font-weight: 600;
 `;
@@ -60,16 +58,16 @@ export const StatusDisplay = styled.div`
 `;
 
 export const StatusDot = styled.span<{ $color?: string | null }>`
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 999px;
   background: ${({ $color }) => $color || colors.gray400};
-  flex: 0 0 10px;
+  flex: 0 0 12px;
 `;
 
 export const StatusMeta = styled.div`
   margin-top: ${spacings.xs};
-  font-size: 12px;
+  font-size: 14px;
   color: ${colors.gray500};
   font-style: italic;
 `;
@@ -86,6 +84,7 @@ export const CreditSummaryCard = styled(Card)`
 export const CreditSummaryValue = styled(CardValue)`
   font-size: 40px;
   line-height: 1.05;
+  margin: 0 0 ${spacings.xs};
 `;
 
 export const CardActions = styled.div`
@@ -100,19 +99,27 @@ export const Section = styled.section`
   }
 `;
 
-export const SectionTitle = styled.h2`
+export const SectionDescription = styled.p`
   font-size: 14px;
+  font-weight: 400;
+  color: #5c6672;
+  margin: 0 0 ${spacings.md};
+  padding: 0;
+`;
+
+export const SectionTitle = styled.h2`
+  font-size: 15px;
   font-weight: 600;
-  margin: 0 0 ${spacings.sm};
+  margin: 0 0 ${spacings.xs};
   padding: 0;
 `;
 
 export const UsageChart = styled.div`
   background: ${colors.white};
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   border-radius: ${borderRadius.md};
   padding: ${spacings.md};
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  box-shadow: none;
   overflow-x: auto;
 `;
 
@@ -126,25 +133,25 @@ export const MetricsTable = styled.table`
 `;
 
 export const MetricsTableHead = styled.thead`
-  background: rgba(0, 0, 0, 0.02);
+  background: #cfd8e3;
 `;
 
 export const MetricsTableHeaderCell = styled.th`
   text-align: left;
   padding: ${spacings.sm};
   font-weight: 600;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 0;
 `;
 
 export const MetricsTableRow = styled.tr`
   &:nth-child(even) {
-    background: rgba(0, 0, 0, 0.01);
+    background: #f4f7fc;
   }
 `;
 
 export const MetricsTableCell = styled.td`
   padding: ${spacings.sm};
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+  border-bottom: 0;
   white-space: nowrap;
 `;
 
@@ -152,7 +159,7 @@ export const EmptyState = styled.div`
   text-align: center;
   padding: ${spacings.xl} ${spacings.lg};
   background: ${colors.white};
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 0;
   border-radius: ${borderRadius.md};
   color: rgba(0, 0, 0, 0.6);
 `;

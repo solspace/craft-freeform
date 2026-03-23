@@ -17,6 +17,7 @@ import {
   MetricsTableHead,
   MetricsTableHeaderCell,
   MetricsTableRow,
+  SectionDescription,
   SectionTitle,
 } from "./ai.dashboard.styles";
 import {
@@ -371,7 +372,10 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
         )}
         <SectionContent>
           <PaymentHistorySection>
-            <SectionTitle>{translate("Recent payments")}</SectionTitle>
+            <SectionTitle>{translate("Recent Payments")}</SectionTitle>
+            <SectionDescription>
+              {translate("Your recent Solspace AI credit purchase history.")}
+            </SectionDescription>
             {showPaymentsSkeleton ? (
               <MetricsTable>
                 <MetricsTableHead>

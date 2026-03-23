@@ -98,6 +98,11 @@ export const LightSwitchWrapper = styled.div`
     }
   }
 
+  &.readonly {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
   &.error {
     background-image: linear-gradient(
       to right,

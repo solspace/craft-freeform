@@ -53,12 +53,12 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
       ),
       required: true,
       options: integrationOptions,
-      emptyOption: translate("Select an AI integration…"),
+      emptyOption: translate("Select an AI integration..."),
     }),
     [integrationOptions],
   );
 
-  const nameLabel = `${translate("Form name")} (${translate("optional")})`;
+  const nameLabel = `${translate("Form name (optional)")}`;
 
   useOnKeypress(
     {
@@ -188,7 +188,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           }
         >
           <LoadingText
-            loadingText={translate("Generating")}
+            loadingText={translate("Generating...")}
             loading={isSubmitting}
             spinner
           >

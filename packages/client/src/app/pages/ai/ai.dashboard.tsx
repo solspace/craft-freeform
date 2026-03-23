@@ -272,7 +272,7 @@ export const AiDashboard: React.FC = () => {
                   </StatusDisplay>
                   {summary.credit_status === "Active" && latestPurchaseDate && (
                     <StatusMeta>
-                      Since {formatAiDate(latestPurchaseDate)}
+                      {translate("Since")} {formatAiDate(latestPurchaseDate)}
                     </StatusMeta>
                   )}
                   <CardActions>

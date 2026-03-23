@@ -361,7 +361,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
                       }}
                     >
                       {checkoutBundleKey === bundle.key
-                        ? translate("Loading…")
+                        ? translate("Loading...")
                         : translate("Buy now")}
                     </BuyNowButton>
                   </PlanButtonRow>

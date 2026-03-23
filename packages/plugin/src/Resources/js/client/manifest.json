@@ -8,8 +8,8 @@
     "file": "assets/vendor-BOeeMEG-.css",
     "src": "_vendor-BOeeMEG-.css"
   },
-  "_vendor-C21SoWVJ.js": {
-    "file": "assets/vendor-C21SoWVJ.js",
+  "_vendor-Jq9uS75P.js": {
+    "file": "assets/vendor-Jq9uS75P.js",
     "name": "vendor",
     "imports": [
       "_date-fns-BTAAV4UA.js"
@@ -19,12 +19,12 @@
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-DuFlQqWh.js",
+    "file": "assets/index-uf5qzxIe.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "imports": [
-      "_vendor-C21SoWVJ.js",
+      "_vendor-Jq9uS75P.js",
       "_date-fns-BTAAV4UA.js"
     ],
     "dynamicImports": [

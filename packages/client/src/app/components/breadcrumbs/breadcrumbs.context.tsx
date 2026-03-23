@@ -1,4 +1,3 @@
-import cloneDeep from "lodash/cloneDeep";
 import type React from "react";
 import type { PropsWithChildren } from "react";
 import {
@@ -6,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { createPortal } from "react-dom";
@@ -17,7 +17,7 @@ import type { Breadcrumb } from "./breadcrumbs.types";
 type ContextType = {
   stack: Breadcrumb[];
   push: (crumb: Breadcrumb) => void;
-  pop: () => void;
+  pop: (id: string) => void;
   update: (crumb: Breadcrumb) => void;
 };
 
@@ -30,18 +30,22 @@ const BreadcrumbContext = createContext<ContextType>({
 
 export const useBreadcrumbs = (crumb: Breadcrumb): void => {
   const { push, pop, update } = useContext(BreadcrumbContext);
+  const { id, label, url, external } = crumb;
+  const latestCrumb = useRef(crumb);
+
+  latestCrumb.current = { id, label, url, external };
 
   useEffect(() => {
-    update(crumb);
-  }, [crumb, update]);
+    update({ id, label, url, external });
+  }, [external, id, label, update, url]);
 
   useEffect(() => {
-    push(crumb);
+    push(latestCrumb.current);
 
     return () => {
-      pop();
+      pop(id);
     };
-  }, [crumb, push, pop]);
+  }, [id, pop, push]);
 };
 
 export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
@@ -50,30 +54,53 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   const [stack, setStack] = useState<Breadcrumb[]>([]);
 
   const push = useCallback((crumb: Breadcrumb): void => {
-    setStack((stack) => [...stack, crumb]);
-  }, []);
-
-  const pop = useCallback((): void => {
-    setStack((stack) => stack.slice(0, -1));
-  }, []);
-
-  const update = useCallback((crumb: Breadcrumb): void => {
     setStack((stack) => {
-      const index = stack?.findIndex((c) => c.id === crumb.id);
-      if (index === undefined || index === -1 || !crumb) {
-        return stack;
+      const index = stack.findIndex((item) => item.id === crumb.id);
+      if (index === -1) {
+        return [...stack, crumb];
       }
 
+      const current = stack[index];
       if (
-        stack[index].label === crumb.label ||
-        stack[index].url === crumb.url
+        current.label === crumb.label &&
+        current.url === crumb.url &&
+        current.external === crumb.external
       ) {
         return stack;
       }
 
-      const clone = cloneDeep(stack);
-      clone[index].url = crumb.url;
-      clone[index].label = crumb.label;
+      const clone = [...stack];
+      clone[index] = crumb;
+
+      return clone;
+    });
+  }, []);
+
+  const pop = useCallback((id: string): void => {
+    setStack((stack) => stack.filter((crumb) => crumb.id !== id));
+  }, []);
+
+  const update = useCallback((crumb: Breadcrumb): void => {
+    setStack((stack) => {
+      const index = stack.findIndex((item) => item.id === crumb.id);
+      if (index === -1) {
+        return stack;
+      }
+
+      const current = stack[index];
+      if (
+        current.label === crumb.label &&
+        current.url === crumb.url &&
+        current.external === crumb.external
+      ) {
+        return stack;
+      }
+
+      const clone = [...stack];
+      clone[index] = {
+        ...current,
+        ...crumb,
+      };
 
       return clone;
     });

@@ -54,12 +54,13 @@ const DynamicCheckboxes: React.FC<ControlType<DynamicCheckboxesProperty>> = ({
       return;
     }
 
-    if (value.length > 0) {
+    // Avoid dispatching the same empty selection on every render.
+    if (Array.isArray(value) && value.length >= 0) {
       return;
     }
 
     updateValue([]);
-  }, [data, isFetched, isFetching, updateValue, value.length]);
+  }, [data, isFetched, isFetching, updateValue, value]);
 
   return (
     <Control property={property} errors={errors}>

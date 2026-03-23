@@ -2,7 +2,7 @@ import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const DashboardWrapper = styled.div`
-  padding: ${spacings.xl} ${spacings.lg};
+  padding: 0;
 `;
 
 export const AiEmptyStatePanel = styled.div.attrs(() => ({

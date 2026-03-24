@@ -732,6 +732,12 @@ return [
     'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Geben Sie die Namen der zu speichernden URL-Parameter ein. Trennen Sie mehrere durch Zeilenumbrüche.',
     'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'Die hier eingegebenen Werte gelten für alle Formulare, die diese Integration verwenden. Formularspezifische Parameter können zusätzlich im Formulargenerator festgelegt werden.',
     'URL Tracking Parameters' => 'URL-Tracking-Parameter',
+    'Store in Cookies' => 'In Cookies speichern',
+    'Save tracked parameters in cookies so they can be reused by Freeform later.' => 'Gespeicherte Parameter in Cookies ablegen, damit sie später von Freeform wiederverwendet werden können.',
+    'When enabled, forms using this integration can persist tracked parameters in cookies. This can be overridden per form in the form builder.' => 'Wenn aktiviert, können Formulare, die diese Integration verwenden, verfolgte Parameter in Cookies speichern. Dies kann pro Formular im Form Builder überschrieben werden.',
+    'Cookie Lifetime' => 'Cookie-Lebensdauer',
+    'How long tracked parameters should be stored in cookies (in minutes).' => 'Wie lange verfolgte Parameter in Cookies gespeichert werden sollen (in Minuten).',
+    'When set at the form level, this overrides the default cookie lifetime defined in the integration.' => 'Wenn auf Formularebene festgelegt, überschreibt dies die in der Integration definierte Standard-Cookie-Lebensdauer.',
 
     // Form Builder // Integrations // Form Monitor
     'Form Monitor' => 'Formularüberwachung',

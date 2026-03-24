@@ -8,8 +8,8 @@
     "file": "assets/vendor-BOeeMEG-.css",
     "src": "_vendor-BOeeMEG-.css"
   },
-  "_vendor-BX5MopCP.js": {
-    "file": "assets/vendor-BX5MopCP.js",
+  "_vendor-D98N-du2.js": {
+    "file": "assets/vendor-D98N-du2.js",
     "name": "vendor",
     "imports": [
       "_date-fns-BTAAV4UA.js"
@@ -19,23 +19,23 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-D23ZZjg8.js",
+    "file": "assets/ai.usage-chart-BpGFh6jz.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-BX5MopCP.js",
+      "_vendor-D98N-du2.js",
       "src/index.tsx",
       "_date-fns-BTAAV4UA.js"
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-CJcnT3Si.js",
+    "file": "assets/index-DkJyayaE.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "imports": [
-      "_vendor-BX5MopCP.js",
+      "_vendor-D98N-du2.js",
       "_date-fns-BTAAV4UA.js"
     ],
     "dynamicImports": [

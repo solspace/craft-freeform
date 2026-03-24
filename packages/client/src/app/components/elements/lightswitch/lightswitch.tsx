@@ -6,11 +6,17 @@ import { LightSwitchHandle, LightSwitchWrapper } from "./lightswitch.styles";
 
 type Props = {
   enabled?: boolean;
+  readOnly?: boolean;
   errors?: string[];
   onClick?: (enabled: boolean) => void;
 };
 
-export const LightSwitch: FC<Props> = ({ enabled, errors, onClick }) => {
+export const LightSwitch: FC<Props> = ({
+  enabled,
+  readOnly,
+  errors,
+  onClick,
+}) => {
   const { is: craftVersion } = config.metadata.craft;
 
   return (
@@ -18,9 +24,16 @@ export const LightSwitch: FC<Props> = ({ enabled, errors, onClick }) => {
       className={classes(
         enabled && "on",
         errors && "error",
+        readOnly && "readonly",
         craftVersion.atLeast("5.8.0") && "craft-5_8",
       )}
-      onClick={() => onClick?.(!enabled)}
+      onClick={() => {
+        if (readOnly) {
+          return;
+        }
+
+        onClick?.(!enabled);
+      }}
     >
       <LightSwitchHandle />
     </LightSwitchWrapper>

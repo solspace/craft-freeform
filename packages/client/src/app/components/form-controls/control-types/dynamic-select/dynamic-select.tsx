@@ -59,9 +59,17 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
     }
 
     if (emptyOption) {
+      if (value === "") {
+        return;
+      }
+
       updateValue("");
     } else {
       const firstValue = findFirstValue(data);
+      if (firstValue === value || firstValue === undefined) {
+        return;
+      }
+
       updateValue(firstValue);
     }
   }, [data, isFetched, isFetching, updateValue, value, emptyOption]);

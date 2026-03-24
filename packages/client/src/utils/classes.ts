@@ -1,4 +1,4 @@
-type ClassItem = string | number | boolean | null;
+type ClassItem = string | string[] | number | boolean | null;
 
 export const elementTreeHasClass = (
   element: Element | null,
@@ -34,6 +34,10 @@ export const classes = (...args: ClassItem[]): string =>
     .map((item) => {
       if (typeof item === "string") {
         item = item.trim();
+      }
+
+      if (Array.isArray(item)) {
+        item = classes(...item);
       }
 
       return item;

@@ -137,7 +137,7 @@ const BuyNowButton = styled.button`
 const HeaderActions = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: ${spacings.md};
 
   h1 {
@@ -157,12 +157,6 @@ const PaymentHistoryEmpty = styled.p`
   color: ${colors.gray500};
   font-size: 14px;
 `;
-
-type CurrencyOption = { value: string; label: string };
-
-const FALLBACK_CURRENCY_OPTIONS: CurrencyOption[] = [
-  { value: "usd", label: "USD" },
-];
 
 function formatBundlePrice(
   price: number,
@@ -223,11 +217,7 @@ function paymentCreditsLabel(entry: PaymentHistory): string {
 }
 
 export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
-  const [selectedCurrency, setSelectedCurrency] = React.useState<string | null>(
-    null,
-  );
-  const { data: plans, isFetching: isPlansFetching } =
-    useAiPlansQuery(selectedCurrency);
+  const { data: plans, isFetching: isPlansFetching } = useAiPlansQuery();
   const {
     data: usage,
     isPending: isUsagePending,
@@ -250,39 +240,13 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
   const [checkoutBundleKey, setCheckoutBundleKey] = React.useState<
     string | null
   >(null);
-  const currencyOptions = React.useMemo<CurrencyOption[]>(() => {
-    const currencies = plans?.supported_currencies ?? [];
-    if (!currencies.length) {
-      return FALLBACK_CURRENCY_OPTIONS;
-    }
-
-    return currencies.map((currency) => ({
-      value: String(currency),
-      label: String(currency).toUpperCase(),
-    }));
-  }, [plans?.supported_currencies]);
-
-  const currencyToUse =
-    selectedCurrency ?? plans?.currency ?? currencyOptions[0]?.value ?? "usd";
+  const currencyToUse = plans?.currency ?? "usd";
 
   return (
     <PlansModalContainer>
       <ModalHeader>
         <HeaderActions>
           <h1>{translate("Purchase SolspaceAI Credits")}</h1>
-          <div className="select">
-            <select
-              value={currencyToUse}
-              onChange={(event) => setSelectedCurrency(event.target.value)}
-              aria-label={translate("Currency")}
-            >
-              {currencyOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-          </div>
         </HeaderActions>
       </ModalHeader>
 

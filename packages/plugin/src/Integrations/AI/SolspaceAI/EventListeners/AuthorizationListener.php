@@ -38,13 +38,13 @@ class AuthorizationListener extends FeatureBundle
         $siteUrl = $integration->getSiteUrl();
 
         if ('' === $contactEmail) {
-            $event->addError(Freeform::t('Contact Email is required to authorize Solspace AI.'));
+            $event->addError(Freeform::t('Contact Email is required to authorize SolspaceAI.'));
 
             return;
         }
 
         if ('' === $siteUrl) {
-            $event->addError(Freeform::t('Site URL is required to authorize Solspace AI.'));
+            $event->addError(Freeform::t('Site URL is required to authorize SolspaceAI.'));
 
             return;
         }
@@ -78,7 +78,7 @@ class AuthorizationListener extends FeatureBundle
                     $message = $body;
                 }
             }
-            $event->addError(Freeform::t('Solspace AI authorization failed: {message}', ['message' => $message]));
+            $event->addError(Freeform::t('SolspaceAI authorization failed: {message}', ['message' => $message]));
 
             return;
         }
@@ -89,13 +89,13 @@ class AuthorizationListener extends FeatureBundle
 
         if (201 !== $statusCode) {
             $detail = \is_array($data) && isset($data['detail']) ? $data['detail'] : $body;
-            $event->addError(Freeform::t('Solspace AI authorization failed: {detail}', ['detail' => $detail]));
+            $event->addError(Freeform::t('SolspaceAI authorization failed: {detail}', ['detail' => $detail]));
 
             return;
         }
 
         if (empty($data['api_key'])) {
-            $event->addError(Freeform::t('Solspace AI did not return an API key.'));
+            $event->addError(Freeform::t('SolspaceAI did not return an API key.'));
 
             return;
         }

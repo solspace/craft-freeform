@@ -36,7 +36,7 @@ class AiController extends BaseApiController
 
         $integration = $this->getSolspaceAIIntegration();
         if (!$integration) {
-            throw new NotFoundHttpException('Solspace AI is not enabled.');
+            throw new NotFoundHttpException('SolspaceAI is not enabled.');
         }
 
         $licenseKey = trim($this->getLicenseKey());
@@ -60,7 +60,7 @@ class AiController extends BaseApiController
 
         $integration = $this->getSolspaceAIIntegration();
         if (!$integration) {
-            throw new NotFoundHttpException('Solspace AI is not enabled.');
+            throw new NotFoundHttpException('SolspaceAI is not enabled.');
         }
 
         $request = \Craft::$app->getRequest();
@@ -89,7 +89,7 @@ class AiController extends BaseApiController
 
         $integration = $this->getSolspaceAIIntegration();
         if (!$integration) {
-            throw new NotFoundHttpException('Solspace AI is not enabled.');
+            throw new NotFoundHttpException('SolspaceAI is not enabled.');
         }
 
         $licenseKey = trim($this->getLicenseKey());
@@ -147,7 +147,7 @@ class AiController extends BaseApiController
             $this->response->statusCode = 502;
 
             return $this->asJson([
-                'error' => 'Failed to reach Solspace AI.',
+                'error' => 'Failed to reach SolspaceAI.',
                 'message' => $e->getMessage(),
             ]);
         }
@@ -201,7 +201,7 @@ class AiController extends BaseApiController
             $this->response->statusCode = 502;
 
             return $this->asJson([
-                'error' => 'Failed to reach Solspace AI usage service',
+                'error' => 'Failed to reach SolspaceAI usage service',
                 'message' => $e->getMessage(),
             ]);
         }

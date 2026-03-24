@@ -34,7 +34,7 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     #[Validators\Required]
     #[Input\Text(
         label: 'Contact Email',
-        instructions: 'Email address for your Solspace AI account. Used when enabling AI. Can be set via environment variable.',
+        instructions: 'Email address for your SolspaceAI account. Used when enabling AI. Can be set via environment variable.',
         placeholder: 'you@example.com',
     )]
     protected string $contactEmail = '';

@@ -139,10 +139,10 @@ export const AiDashboard: React.FC = () => {
       />
       <Breadcrumb
         id="solspace-ai"
-        label={translate("Solspace AI")}
+        label={translate("SolspaceAI")}
         url="settings/ai"
       />
-      <HeaderContainer>{translate("Solspace AI")}</HeaderContainer>
+      <HeaderContainer>{translate("SolspaceAI")}</HeaderContainer>
 
       <SettingsLayout activeKey="ai">{body}</SettingsLayout>
     </div>
@@ -151,9 +151,9 @@ export const AiDashboard: React.FC = () => {
   if (!isProEdition) {
     return layoutShell(
       <AiSettingsEmpty
-        title={translate("Solspace AI requires Freeform Pro")}
+        title={translate("SolspaceAI requires Freeform Pro")}
         subtitle={translate(
-          "Upgrade to the Freeform Pro edition to get access to Solspace AI.",
+          "Upgrade to the Freeform Pro edition to get access to SolspaceAI.",
         )}
       >
         <a
@@ -180,23 +180,23 @@ export const AiDashboard: React.FC = () => {
 
       {isNotFound && (
         <AiSettingsEmpty
-          title={translate("Solspace AI is not enabled")}
+          title={translate("SolspaceAI is not enabled")}
           subtitle={translate(
-            "Enable Solspace AI in the Integrations area to view usage.",
+            "Enable SolspaceAI in the Integrations area to view usage.",
           )}
           iconFade
         >
           <Link to={AI_INTEGRATION_PATH} className="btn submit">
-            {translate("Enable Solspace AI")}
+            {translate("Enable SolspaceAI")}
           </Link>
         </AiSettingsEmpty>
       )}
 
       {isForbidden && (
         <AiSettingsEmpty
-          title={translate("Authorize Solspace AI to view usage")}
+          title={translate("Authorize SolspaceAI to view usage")}
           subtitle={translate(
-            "Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage.",
+            "Authorize SolspaceAI in the Integrations area (click Authorize on the SolspaceAI integration) to view usage.",
           )}
           iconFade
         >
@@ -355,7 +355,7 @@ export const AiDashboard: React.FC = () => {
               <EmptyBlock
                 title={translate("No usage data yet")}
                 subtitle={translate(
-                  "Usage will appear here once you start using Solspace AI.",
+                  "Usage will appear here once you start using SolspaceAI.",
                 )}
                 icon={<EmptyIcon />}
                 iconFade

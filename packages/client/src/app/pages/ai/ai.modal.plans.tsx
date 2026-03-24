@@ -269,7 +269,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
     <PlansModalContainer>
       <ModalHeader>
         <HeaderActions>
-          <h1>{translate("Purchase Solspace AI Credits")}</h1>
+          <h1>{translate("Purchase SolspaceAI Credits")}</h1>
           <div className="select">
             <select
               value={currencyToUse}
@@ -321,7 +321,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
                   </PlanName>
                   <PlanDescription>
                     {(bundle.description || "").trim() ||
-                      translate("Credit package for Solspace AI usage.")}
+                      translate("Credit package for SolspaceAI usage.")}
                   </PlanDescription>
                   <PlanMeta>
                     <PlanPrice>
@@ -374,7 +374,7 @@ export const AiPlansModal: React.FC<ModalContainerProps> = ({ closeModal }) => {
           <PaymentHistorySection>
             <SectionTitle>{translate("Recent Payments")}</SectionTitle>
             <SectionDescription>
-              {translate("Your recent Solspace AI credit purchase history.")}
+              {translate("Your recent SolspaceAI credit purchase history.")}
             </SectionDescription>
             {showPaymentsSkeleton ? (
               <MetricsTable>

@@ -42,14 +42,14 @@ export const AiDashboardAccessState: React.FC<AccessStateProps> = ({
 }) => {
   const title = translate(
     isForbidden
-      ? "Authorize Solspace AI to view usage"
-      : "Solspace AI is not enabled",
+      ? "Authorize SolspaceAI to view usage"
+      : "SolspaceAI is not enabled",
   );
 
   const body = translate(
     isForbidden
-      ? "Authorize Solspace AI in the Integrations area (click Authorize on the Solspace AI integration) to view usage and spend."
-      : "Enable Solspace AI in the Integrations area to view usage and spend.",
+      ? "Authorize SolspaceAI in the Integrations area (click Authorize on the SolspaceAI integration) to view usage and spend."
+      : "Enable SolspaceAI in the Integrations area to view usage and spend.",
   );
 
   return (

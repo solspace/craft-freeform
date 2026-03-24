@@ -297,7 +297,7 @@ class IntegrationsService extends BaseService
                 if ($existingIntegration instanceof BaseSolspaceAIIntegration) {
                     $model->addError(
                         'integration',
-                        Freeform::t('Only one Solspace AI integration is allowed.')
+                        Freeform::t('Only one SolspaceAI integration is allowed.')
                     );
 
                     return false;

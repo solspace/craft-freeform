@@ -318,11 +318,11 @@ class SettingsService extends BaseService
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS)) {
             $plugin = Freeform::getInstance();
             if (!$plugin->isPro()) {
-                $solspaceAiNavItem = ['title' => Freeform::t('Solspace AI <span class="badge">Pro</span>')];
+                $solspaceAiNavItem = ['title' => Freeform::t('SolspaceAI <span class="badge">Pro</span>')];
             } elseif (null === $plugin->integrations->getFirstEnabledSolspaceAIIntegration()) {
-                $solspaceAiNavItem = ['title' => Freeform::t('Solspace AI <span class="light">(enable)</span>')];
+                $solspaceAiNavItem = ['title' => Freeform::t('SolspaceAI <span class="light">(enable)</span>')];
             } else {
-                $solspaceAiNavItem = ['title' => Freeform::t('Solspace AI')];
+                $solspaceAiNavItem = ['title' => Freeform::t('SolspaceAI')];
             }
         }
 

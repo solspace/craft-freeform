@@ -4,7 +4,7 @@ import type {
   OptionGroup,
 } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export const isInOptions = (
   options: OptionCollection,
@@ -209,21 +209,7 @@ export const useFilteredOptions = (
   query: string,
   emptyOption?: string,
 ): [OptionCollection, number] => {
-  const [optionCount, setOptionCount] = useState<number>(0);
-  const [filteredOptions, setFilteredOptions] =
-    useState<OptionCollection>(options);
-
-  useEffect(() => {
-    const [filteredOpts, optCount] = filterOptions(
-      options,
-      query,
-      undefined,
-      emptyOption,
-    );
-
-    setFilteredOptions(filteredOpts);
-    setOptionCount(optCount);
+  return useMemo(() => {
+    return filterOptions(options, query, undefined, emptyOption);
   }, [options, query, emptyOption]);
-
-  return [filteredOptions, optionCount];
 };

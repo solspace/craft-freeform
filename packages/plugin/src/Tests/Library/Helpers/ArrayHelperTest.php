@@ -11,11 +11,12 @@ class ArrayHelperTest extends TestCase
 {
     public function testSome(): void
     {
-        $array = [1, 'two', false];
+        $array = [1, 'two', false, 'foo' => 'bar'];
 
         $this->assertTrue(ArrayHelper::some($array, static fn ($item) => 1 === $item));
         $this->assertTrue(ArrayHelper::some($array, static fn ($item) => 'two' === $item));
         $this->assertTrue(ArrayHelper::some($array, static fn ($item) => false === $item));
+        $this->assertTrue(ArrayHelper::some($array, static fn ($item, $key) => 'foo' === $key && 'bar' === $item));
 
         $this->assertFalse(ArrayHelper::some($array, static fn ($item) => 'non-existent' === $item));
     }

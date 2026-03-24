@@ -245,11 +245,11 @@ class PropertyProvider
         $attribute->fileKindsOptions = $this->resolveOptions($attribute->fileKindsOptions, $attribute);
     }
 
-    private function resolveOptions(array|OptionCollection|string|null $options, Property $attribute): OptionCollection
+    private function resolveOptions(array|OptionCollection|string|null $options, Property $attribute): ?OptionCollection
     {
         $collection = new OptionCollection();
         if (null === $options) {
-            return $collection;
+            return null;
         }
 
         if ($options instanceof OptionCollection) {
@@ -264,7 +264,7 @@ class PropertyProvider
                 return $class->fetchOptions($attribute);
             }
 
-            return $collection;
+            return null;
         }
 
         foreach ($options as $key => $value) {

@@ -13,6 +13,10 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
   context,
   updateValue,
 }) => {
+  const isReadonly =
+    property.flags?.includes("readonly") ||
+    property.flags?.includes("as-readonly-in-instance");
+
   return (
     <Control
       property={property}
@@ -23,6 +27,7 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
           <CheckboxItem>
             <LightSwitch
               enabled={enabled}
+              readOnly={isReadonly}
               onClick={(enabled) => updateValue(enabled)}
               errors={errors}
             />

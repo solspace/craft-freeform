@@ -27,7 +27,9 @@ const StringInput: React.FC<ControlType<StringProperty>> = ({
   }, [autoFocus]);
 
   const isCode = property.flags?.includes("code");
-  const isReadonly = property.flags?.includes("readonly");
+  const isReadonly =
+    property.flags?.includes("readonly") ||
+    property.flags?.includes("as-readonly-in-instance");
   const isEnvSuggest = property.flags?.includes("env-suggest");
 
   const { data } = useQuery({

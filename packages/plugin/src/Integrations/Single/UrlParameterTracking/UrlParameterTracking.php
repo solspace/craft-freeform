@@ -54,20 +54,20 @@ class UrlParameterTracking extends BaseIntegration implements SingletonIntegrati
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[Input\Boolean(
-        label: 'Store in cookies',
-        instructions: 'Persist any of these parameters in cookies for later retrieval by Freeform.',
+        label: 'Store in Cookies',
+        instructions: 'Save tracked parameters in cookies so they can be reused by Freeform later.',
     )]
-    #[Message('When enabled, any form using this integration can persist tracked parameters in cookies. This can be overridden per form in the form builder.')]
+    #[Message('When enabled, forms using this integration can persist tracked parameters in cookies. This can be overridden per form in the form builder.')]
     protected bool $storeInCookies = false;
 
     #[VisibilityFilter('Boolean(enabled) && Boolean(values.storeInCookies)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[Input\Integer(
-        label: 'Cookie lifetime (minutes)',
-        instructions: 'Set how long Freeform should keep tracked parameters in cookies.',
+        label: 'Cookie Lifetime',
+        instructions: 'How long tracked parameters should be stored in cookies (in minutes).',
         min: 1,
     )]
-    #[Message('When set for this form, this value overrides the default cookie lifetime configured on the main integration.')]
+    #[Message('When set at the form level, this overrides the default cookie lifetime defined in the integration.')]
     protected ?int $cookieTtlMinutes = self::DEFAULT_COOKIE_TTL_MINUTES;
 
     public function getCombinedParameters(): array

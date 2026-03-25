@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Attributes\Property\Validators\ReservedWord;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
@@ -44,9 +45,10 @@ use yii\base\Event;
 
 class FormGenerationService
 {
-    private const PROMPT_MAX_LENGTH = 1000;
-    private const AI_MAX_TOKENS = 3000;
-    private const AI_TIMEOUT_SECONDS = 30;
+    private const PROMPT_MAX_LENGTH = 10000;
+    private const AI_MAX_TOKENS = 12000;
+    private const AI_TIMEOUT_SECONDS = 120;
+    private const MAX_UNIQUE_FORM_HANDLE_ATTEMPTS = 1000;
 
     /** Field types that take the full row (one per row). Others share 2 per row. */
     private const FULL_WIDTH_TYPES = [
@@ -89,6 +91,7 @@ class FormGenerationService
         private IntegrationClientProvider $clientProvider,
         private PropertyProvider $propertyProvider,
         private FormTransformer $formTransformer,
+        private FormsService $formsService,
     ) {}
 
     public function generate(
@@ -122,7 +125,7 @@ class FormGenerationService
         $response = $integration->processAiRequest($client, $systemPrompt, $userContent, $options);
         $parsed = $this->parseAiResponse($response);
         $formName = $parsed['name'] ?? $name ?? Freeform::t('AI Generated Form');
-        $formHandle = $this->generateHandle($formName);
+        [$formName, $formHandle] = $this->pickUniqueFormNameAndHandle($formName);
         $fieldsData = $parsed['fields'] ?? [];
 
         $payload = $this->buildPersistPayload($formName, $formHandle, $fieldsData, $parsed['pages'] ?? null);
@@ -193,8 +196,11 @@ class FormGenerationService
             {$manifest}
 
             Rules:
-            - "name": string, optional form title.
-            - "handle" must be camelCase or snake_case, unique in the form (e.g. fullName, emailAddress, messageBody).
+            - "name": string, optional form title (human-readable). The form handle is derived from this name in camelCase on the server (e.g. "Contact Form" -> contactForm).
+            - Each field "handle" must be camelCase, unique in the form (e.g. fullName, emailAddress, messageBody). Do not use snake_case for field handles.
+            - Do not use reserved field handles such as "value", "id", "title", "status", "url", "slug", "uri", "site", "siteId", "uid", "dateCreated", "dateUpdated".
+            - If using multi-page output, keep page labels concise (e.g. "English", "Dutch"), and do not prefix page labels with the form name.
+            - Keep JSON schema keys and type names in English exactly as specified ("name", "fields", "pages", "type", "label", "handle", etc.) even if form content/labels are in another language.
             - Use the correct "type" for each field. Include "options" for Dropdown, Radios, Checkboxes, MultipleSelect, Cards, OpinionScale.
             - Return only the JSON object, no code block or other text.
             PROMPT;
@@ -311,6 +317,8 @@ class FormGenerationService
             }
         }
 
+        $normalized = $this->sanitizeAndUniquifyFieldHandles($normalized);
+
         return ['name' => $name, 'fields' => $normalized, 'pages' => $pagesMeta];
     }
 
@@ -369,6 +377,42 @@ class FormGenerationService
         }
 
         return $item;
+    }
+
+    private function sanitizeAndUniquifyFieldHandles(array $fields): array
+    {
+        $reservedValidator = new ReservedWord();
+        $used = [];
+
+        foreach ($fields as $i => $field) {
+            $label = (string) ($field['label'] ?? ('Field '.($i + 1)));
+            $rawHandle = isset($field['handle']) && \is_string($field['handle']) ? trim($field['handle']) : '';
+
+            // Normalize to something handle-like and camelCase it.
+            $candidate = '' !== $rawHandle ? $rawHandle : $this->handleFromLabel($label, $i);
+            $candidate = preg_replace('/[^a-zA-Z0-9_\-]+/', '', $candidate);
+            $candidate = StringHelper::camelCase((string) $candidate);
+            $candidate = '' !== $candidate ? $candidate : $this->handleFromLabel($label, $i);
+
+            // Reserved words are not allowed for field handles.
+            if (\count($reservedValidator->validate($candidate)) > 0) {
+                $candidate .= 'Field';
+            }
+
+            // De-dupe by suffixing 1, 2, ...
+            $base = $candidate;
+            $suffix = 1;
+            while (isset($used[strtolower($candidate)])) {
+                $candidate = $base.$suffix;
+                ++$suffix;
+            }
+
+            $used[strtolower($candidate)] = true;
+            $field['handle'] = $candidate;
+            $fields[$i] = $field;
+        }
+
+        return $fields;
     }
 
     /**
@@ -439,10 +483,40 @@ class FormGenerationService
 
     private function generateHandle(string $name): string
     {
-        $handle = preg_replace('/[^a-zA-Z0-9]+/', '_', $name);
-        $handle = trim($handle, '_') ?: 'form';
+        $name = trim($name);
+        if ('' === $name) {
+            return 'form';
+        }
 
-        return strtolower($handle);
+        $handle = StringHelper::camelCase($name);
+
+        return '' !== $handle ? $handle : 'form';
+    }
+
+    private function pickUniqueFormNameAndHandle(string $formName): array
+    {
+        $baseName = trim($formName);
+        if ('' === $baseName) {
+            $baseName = Freeform::t('AI Generated Form');
+        }
+
+        $baseHandle = $this->generateHandle($baseName);
+
+        for ($n = 0; $n < self::MAX_UNIQUE_FORM_HANDLE_ATTEMPTS; ++$n) {
+            $suffix = 0 === $n ? '' : (string) $n;
+            $handle = $baseHandle.$suffix;
+            if ('' === $handle) {
+                $handle = 'form'.$suffix;
+            }
+
+            $name = 0 === $n ? $baseName : $baseName.' '.$n;
+
+            if (null === $this->formsService->getFormByHandle($handle)) {
+                return [$name, $handle];
+            }
+        }
+
+        throw new \RuntimeException(Freeform::t('Could not find an unused form handle. Please try a different form name.'));
     }
 
     /**

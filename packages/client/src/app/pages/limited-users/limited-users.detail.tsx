@@ -14,11 +14,12 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { SettingsSidebar } from "../settings/settings.sidebar";
+
 import {
   useLimitedUsersMutation,
   useLimitedUsersSingleQuery,
 } from "./limited-users.queries";
-import { SettingsSidebar } from "./limited-users.sidebar";
 import { ContentContainer, GroupWrapper, List } from "./limited-users.styles";
 import { ItemBlock } from "./limited-users.sub-components";
 import type { Item, RecursiveUpdate } from "./limited-users.types";
@@ -125,7 +126,7 @@ export const LimitedUsersDetail: React.FC = () => {
       </HeaderContainer>
 
       <div id="main-content" className="has-sidebar">
-        <SettingsSidebar />
+        <SettingsSidebar activeKey="limited-users" />
 
         <ContentContainer
           id="content-container"

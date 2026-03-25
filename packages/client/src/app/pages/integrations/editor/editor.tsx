@@ -143,6 +143,9 @@ export const IntegrationsEditor: FC = () => {
 
   const instanceCount = currentIntegrationInstances?.length || 0;
   const showTabs = instanceCount > 1 || isAddNew;
+  const isSingleton = Boolean(data?.type?.singleton);
+  const showAddButton =
+    instanceCount > 0 && type !== IntegrationType.Singles && !isSingleton;
 
   if (!type || !integration) {
     return null;
@@ -167,7 +170,7 @@ export const IntegrationsEditor: FC = () => {
         {canManage && (
           <ActionsWrapper>
             <div className="btngroup">
-              {instanceCount > 0 && type !== IntegrationType.Singles && (
+              {showAddButton && (
                 <button
                   type="button"
                   title={translate("Add new integration of the same type")}
@@ -224,7 +227,7 @@ export const IntegrationsEditor: FC = () => {
       {canManage && (
         <ActionsWrapper>
           <div className="btngroup">
-            {instanceCount > 0 && type !== IntegrationType.Singles && (
+            {showAddButton && (
               <button
                 type="button"
                 title={translate("Add new integration of the same type")}

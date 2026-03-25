@@ -22,7 +22,10 @@ class RegisterSettings extends FeatureBundle
                     return;
                 }
 
-                $event->addHeader('form-types', Freeform::t('Form Types'), 'spam');
+                $nav = $event->getNavigation();
+                $after = isset($nav['ai']) ? 'ai' : 'spam';
+
+                $event->addHeader('form-types', Freeform::t('Form Types'), $after);
                 $event->addNavigationItem('surveys', Freeform::t('Surveys & Polls'), 'form-types');
             }
         );

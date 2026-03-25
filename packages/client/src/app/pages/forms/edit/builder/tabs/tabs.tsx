@@ -126,7 +126,7 @@ export const Tabs: React.FC = () => {
           <NavLink to={`/forms/${form.id}/form-monitor`}>
             <span>
               {translate("Monitoring")}
-              <BetaLabel>BETA</BetaLabel>
+              <BetaLabel>{translate("BETA")}</BetaLabel>
             </span>
           </NavLink>
         )}

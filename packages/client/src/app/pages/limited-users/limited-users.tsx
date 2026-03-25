@@ -8,11 +8,12 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { Link } from "react-router-dom";
 
+import { SettingsSidebar } from "../settings/settings.sidebar";
+
 import {
   useLimitedUsersDeleteMutation,
   useLimitedUsersQuery,
 } from "./limited-users.queries";
-import { SettingsSidebar } from "./limited-users.sidebar";
 import { ContentContainer } from "./limited-users.styles";
 
 export const LimitedUsers: React.FC = () => {
@@ -54,7 +55,7 @@ export const LimitedUsers: React.FC = () => {
       </HeaderContainer>
 
       <div id="main-content" className="has-sidebar">
-        <SettingsSidebar />
+        <SettingsSidebar activeKey="limited-users" />
         <ContentContainer
           id="content-container"
           className={classes(!isCraft5 && "craft-4")}

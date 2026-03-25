@@ -27,6 +27,7 @@ return [
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',
@@ -43,6 +44,13 @@ return [
     'freeform/api/forms/<formId:\d+>/rules' => 'freeform/api/forms/rules/get',
     'freeform/api/forms/<formId:\d+>/rules/notifications' => 'freeform/api/forms/rules/get-notifications',
     'freeform/api/forms/<formId:\d+>/rules/integrations' => 'freeform/api/forms/rules/get-integrations',
+
+    // SolspaceAI
+    'freeform/api/ai/solspace-ai-status' => 'freeform/api/ai/solspace-ai-status',
+    'freeform/api/ai/usage' => 'freeform/api/ai/usage',
+    'freeform/api/ai/plans' => 'freeform/api/ai/plans',
+    'freeform/api/ai/spend-report' => 'freeform/api/ai/spend-report',
+    'freeform/api/ai/create-checkout-session' => 'freeform/api/ai/create-checkout-session',
 
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',

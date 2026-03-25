@@ -104,7 +104,7 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     >
       {showLastTest && formMonitor.lastTest && (
         <LastTestStatus>
-          Last Test {getLastTestStatus(formMonitor, size)}
+          {translate("Last Test")} {getLastTestStatus(formMonitor, size)}
         </LastTestStatus>
       )}
       <LineIndicator $width={width} style={progressStyle} />

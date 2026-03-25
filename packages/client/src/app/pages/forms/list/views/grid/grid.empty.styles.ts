@@ -4,6 +4,12 @@ import styled from "styled-components";
 import { CardWrapper, LinkList, Subtitle, Title } from "./card/card.styles";
 import { Cards } from "./grid.styles";
 
+export const ActionsRow = styled.div`
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+`;
+
 export const MutedWrapper = styled(Cards)`
   position: relative;
   margin-top: ${spacings.xl};

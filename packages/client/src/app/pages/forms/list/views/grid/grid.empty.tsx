@@ -3,11 +3,14 @@ import type { FormWithStats } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 
+import { AiButton, EnableAiLink } from "../../list-view.styles";
 import { useCreateFormModal } from "../../modals/hooks/use-create-form-modal";
+import { useCreateWithAiFormModal } from "../../modals/hooks/use-create-with-ai-form-modal";
+import { useAiIntegrations } from "../../modals/modal.form.create-with-ai.queries";
 
 import { Card } from "./card/card";
 import { chartDataset } from "./grid.empty.datasets";
-import { MutedWrapper } from "./grid.empty.styles";
+import { ActionsRow, MutedWrapper } from "./grid.empty.styles";
 
 const color = "#e0e0e0";
 const generateFormData = (
@@ -61,7 +64,10 @@ const generateFormData = (
 
 export const GridEmpty: React.FC = () => {
   const openCreateFormModal = useCreateFormModal();
+  const openCreateWithAiFormModal = useCreateWithAiFormModal();
+  const { data: aiIntegrations } = useAiIntegrations();
   const { canCreate } = config.metadata.freeform;
+  const showEnableAi = aiIntegrations && aiIntegrations.length === 0;
 
   return (
     <div>
@@ -73,13 +79,33 @@ export const GridEmpty: React.FC = () => {
             )}
           </p>
 
-          <button
-            type="button"
-            className="btn submit add icon"
-            onClick={openCreateFormModal}
-          >
-            {translate("Create a new Form")}
-          </button>
+          <ActionsRow>
+            <button
+              type="button"
+              className="btn submit add icon"
+              onClick={openCreateFormModal}
+            >
+              {translate("Create a new Form")}
+            </button>
+            {showEnableAi ? (
+              <EnableAiLink
+                to="/integrations/ai/SolspaceAIV1"
+                className="btn add icon"
+                data-icon="sparkles"
+              >
+                {translate("Enable AI")}
+              </EnableAiLink>
+            ) : (
+              <AiButton
+                type="button"
+                className="btn add icon"
+                data-icon="sparkles"
+                onClick={openCreateWithAiFormModal}
+              >
+                {translate("Create with AI")}
+              </AiButton>
+            )}
+          </ActionsRow>
         </>
       )}
 

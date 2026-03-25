@@ -8,8 +8,8 @@
     "file": "assets/vendor-BOeeMEG-.css",
     "src": "_vendor-BOeeMEG-.css"
   },
-  "_vendor-Jq9uS75P.js": {
-    "file": "assets/vendor-Jq9uS75P.js",
+  "_vendor-D98N-du2.js": {
+    "file": "assets/vendor-D98N-du2.js",
     "name": "vendor",
     "imports": [
       "_date-fns-BTAAV4UA.js"
@@ -18,20 +18,32 @@
       "assets/vendor-BOeeMEG-.css"
     ]
   },
+  "src/app/pages/ai/ai.usage-chart.tsx": {
+    "file": "assets/ai.usage-chart-CPNGoDSy.js",
+    "name": "ai.usage-chart",
+    "src": "src/app/pages/ai/ai.usage-chart.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_vendor-D98N-du2.js",
+      "src/index.tsx",
+      "_date-fns-BTAAV4UA.js"
+    ]
+  },
   "src/index.tsx": {
-    "file": "assets/index-uf5qzxIe.js",
+    "file": "assets/index-9i1Iq9XE.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "imports": [
-      "_vendor-Jq9uS75P.js",
+      "_vendor-D98N-du2.js",
       "_date-fns-BTAAV4UA.js"
     ],
     "dynamicImports": [
       "_date-fns-BTAAV4UA.js",
       "_date-fns-BTAAV4UA.js",
       "_date-fns-BTAAV4UA.js",
-      "_date-fns-BTAAV4UA.js"
+      "_date-fns-BTAAV4UA.js",
+      "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [
       "assets/index-C970reu7.css"

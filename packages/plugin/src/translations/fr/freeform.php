@@ -28,7 +28,6 @@ return [
     'Add new Form' => 'Ajouter un nouveau formulaire',
     'Create a new Form' => 'Créer un nouveau formulaire',
     'Form Name' => 'Nom du formulaire',
-    'Name cannot be empty' => 'Le nom ne peut être vide',
     'All submissions for this form will be stored in the database.' => 'Toutes les soumissions pour ce formulaire seront stockées dans la base de données.',
     'The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.' => 'La version Express ne permet qu’un seul formulaire. Si vous avez besoin de plus de formulaires, vous pouvez passer à l’édition Lite ou Pro pour un nombre illimité de formulaires.',
     'Archive this Form' => 'Archiver ce formulaire',
@@ -2037,6 +2036,13 @@ return [
     'The email address for your SolspaceAI account.' => 'L’adresse e-mail de votre compte SolspaceAI.',
     'Site URL' => 'URL du site',
     'The public URL of your site (e.g. `https://yoursite.com`).' => 'L’URL publique de votre site (ex. `https://yoursite.com`).',
+    'AI Generated Form' => 'Formulaire généré par IA',
+    'Could not find an unused form handle. Please try a different form name.' => 'Impossible de trouver un identifiant de formulaire inutilisé. Veuillez essayer un autre nom de formulaire.',
+    'AI did not return valid JSON. Please try again or rephrase your request.' => 'L’IA n’a pas retourné de JSON valide. Veuillez réessayer ou reformuler votre demande.',
+    'Prompt must be at most {n} characters.' => 'Le prompt doit contenir au maximum {n} caractères.',
+    'Selected AI integration is not available or not enabled.' => 'L’intégration IA sélectionnée n’est pas disponible ou n’est pas activée.',
+    'Form generation failed: {errors}' => 'La génération du formulaire a échoué : {errors}',
+    'Form could not be created.' => 'Le formulaire n’a pas pu être créé.',
 
     // A/B Testing
     'A/B Tests' => 'Tests A/B',

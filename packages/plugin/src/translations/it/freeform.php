@@ -28,7 +28,6 @@ return [
     'Add new Form' => 'Aggiungi nuovo modulo',
     'Create a new Form' => 'Crea un nuovo modulo',
     'Form Name' => 'Nome modulo',
-    'Name cannot be empty' => 'Il nome non può essere vuoto',
     'All submissions for this form will be stored in the database.' => 'Tutti gli invii per questo modulo saranno memorizzati nel database.',
     'The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.' => 'L’edizione Express consente solo un modulo. Valuta l’aggiornamento all’edizione Lite o Pro per moduli illimitati se ne hai bisogno.',
     'Archive this Form' => 'Archivia questo modulo',
@@ -2037,6 +2036,13 @@ return [
     'The email address for your SolspaceAI account.' => 'L’indirizzo email del tuo account SolspaceAI.',
     'Site URL' => 'URL del sito',
     'The public URL of your site (e.g. `https://yoursite.com`).' => 'L’URL pubblico del tuo sito (es. `https://yoursite.com`).',
+    'AI Generated Form' => 'Modulo generato da AI',
+    'Could not find an unused form handle. Please try a different form name.' => 'Impossibile trovare un handle del modulo non utilizzato. Prova un nome diverso per il modulo.',
+    'AI did not return valid JSON. Please try again or rephrase your request.' => 'L’AI non ha restituito JSON valido. Riprova o riformula la richiesta.',
+    'Prompt must be at most {n} characters.' => 'Il prompt deve contenere al massimo {n} caratteri.',
+    'Selected AI integration is not available or not enabled.' => 'L’integrazione AI selezionata non è disponibile o non è abilitata.',
+    'Form generation failed: {errors}' => 'La generazione del modulo non è riuscita: {errors}',
+    'Form could not be created.' => 'Il modulo non può essere creato.',
 
     // A/B Testing
     'A/B Tests' => 'Test A/B',

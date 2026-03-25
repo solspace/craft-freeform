@@ -28,7 +28,6 @@ return [
     'Add new Form' => 'Nieuw formulier toevoegen',
     'Create a new Form' => 'Maak een nieuw formulier aan',
     'Form Name' => 'Formuliernaam',
-    'Name cannot be empty' => 'Naam mag niet leeg zijn',
     'All submissions for this form will be stored in the database.' => 'Alle inzendingen voor dit formulier worden opgeslagen in de database.',
     'The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.' => 'De Express-editie staat slechts één formulier toe. Overweeg een upgrade naar de Lite- of Pro-editie voor een onbeperkt aantal formulieren als u meer nodig heeft.',
     'Archive this Form' => 'Archiveer dit formulier',
@@ -2037,6 +2036,13 @@ return [
     'The email address for your SolspaceAI account.' => 'Het e-mailadres voor je SolspaceAI-account.',
     'Site URL' => 'Site-URL',
     'The public URL of your site (e.g. `https://yoursite.com`).' => 'De publieke URL van je site (bijv. `https://yoursite.com`).',
+    'AI Generated Form' => 'AI-gegenereerd formulier',
+    'Could not find an unused form handle. Please try a different form name.' => 'Kon geen ongebruikte formulierhandle vinden. Probeer een andere formuliernaam.',
+    'AI did not return valid JSON. Please try again or rephrase your request.' => 'AI heeft geen geldige JSON geretourneerd. Probeer het opnieuw of formuleer je verzoek anders.',
+    'Prompt must be at most {n} characters.' => 'De prompt mag maximaal {n} tekens bevatten.',
+    'Selected AI integration is not available or not enabled.' => 'De geselecteerde AI-integratie is niet beschikbaar of niet ingeschakeld.',
+    'Form generation failed: {errors}' => 'Het genereren van het formulier is mislukt: {errors}',
+    'Form could not be created.' => 'Het formulier kon niet worden aangemaakt.',
 
     // A/B Testing
     'A/B Tests' => 'A/B-tests',

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.14.24 - 2026-03-25
+
+### Security
+- Fixed an issue where admins without delete permissions could potentially remove submissions via API.
+
 ## 5.14.23 - 2026-03-17
 
 ### Fixed

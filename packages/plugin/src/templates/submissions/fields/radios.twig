@@ -6,6 +6,6 @@
     id: field.handle,
     required: field.required,
     errors: submission.errors(field.handle),
-    value: submission[field.handle].value,
+    value: submission[field.handle] is not null ? submission[field.handle].value : '',
     options: field.options.toTwigArray,
 }) }}

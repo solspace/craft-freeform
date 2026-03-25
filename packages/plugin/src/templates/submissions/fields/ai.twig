@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-{% set aiValue = submission[field.handle].value %}
+{% set aiValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
 {% set displayValue = aiValue ?: 'Processing...' %}
 
 {{ forms.textareaField({

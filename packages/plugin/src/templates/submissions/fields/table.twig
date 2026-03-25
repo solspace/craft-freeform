@@ -1,5 +1,4 @@
-{% set value = submission[field.handle].value %}
-
+{% set value = submission[field.handle] is not null ? submission[field.handle].value : [] %}
 <div class="field" data-freeform-table>
     <div class="heading">
         <label>{{ field.label }}</label>

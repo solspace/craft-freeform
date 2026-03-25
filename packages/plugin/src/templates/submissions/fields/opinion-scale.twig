@@ -4,6 +4,7 @@
     </div>
     <div class="opinion-scale">
         <ul class="opinion-scale-scales">
+            {% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
             {% for index, scale in field.scales %}
                 <li>
                     <input type="radio"
@@ -11,7 +12,7 @@
                            name="{{ field.handle }}"
                            autocomplete="off"
                            value="{{ scale.value }}"
-                            {{ submission[field.handle].value == scale.value ? "checked" }}
+                            {{ selectedValue == scale.value ? "checked" }}
                     />
                     <label for="{{ field.handle ~ '-' ~ index }}">
                         {{ scale.label }}

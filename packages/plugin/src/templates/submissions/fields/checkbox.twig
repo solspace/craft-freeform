@@ -5,7 +5,7 @@
         label: field.label,
         name: field.handle,
         id: field.handle,
-        checked: submission[field.handle].value ? true : false,
+        checked: submission[field.handle] is not null ? submission[field.handle].value : false,
         value: field.defaultValue,
     }) }}
 {% endset %}

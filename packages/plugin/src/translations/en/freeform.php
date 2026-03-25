@@ -28,7 +28,6 @@ return [
     'Add new Form' => 'Add new Form',
     'Create a new Form' => 'Create a new Form',
     'Form Name' => 'Form Name',
-    'Name cannot be empty' => 'Name cannot be empty',
     'All submissions for this form will be stored in the database.' => 'All submissions for this form will be stored in the database.',
     'The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.' => 'The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.',
     'Archive this Form' => 'Archive this Form',
@@ -2037,6 +2036,13 @@ return [
     'The email address for your SolspaceAI account.' => 'The email address for your SolspaceAI account.',
     'Site URL' => 'Site URL',
     'The public URL of your site (e.g. `https://yoursite.com`).' => 'The public URL of your site (e.g. `https://yoursite.com`).',
+    'AI Generated Form' => 'AI Generated Form',
+    'Could not find an unused form handle. Please try a different form name.' => 'Could not find an unused form handle. Please try a different form name.',
+    'AI did not return valid JSON. Please try again or rephrase your request.' => 'AI did not return valid JSON. Please try again or rephrase your request.',
+    'Prompt must be at most {n} characters.' => 'Prompt must be at most {n} characters.',
+    'Selected AI integration is not available or not enabled.' => 'Selected AI integration is not available or not enabled.',
+    'Form generation failed: {errors}' => 'Form generation failed: {errors}',
+    'Form could not be created.' => 'Form could not be created.',
 
     // A/B Testing
     'A/B Tests' => 'A/B Tests',

@@ -5,6 +5,9 @@ namespace Solspace\Freeform\Integrations\AI\SolspaceAI;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\EmailValueGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SiteUrlValueGenerator;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\Traits\DefaultTemperatureTrait;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
@@ -29,22 +32,24 @@ abstract class BaseSolspaceAIIntegration extends APIIntegration implements AiInt
     #[Input\Hidden]
     protected string $apiBaseUrl = 'https://ai.solspace.net/v1';
 
+    #[ValueGenerator(EmailValueGenerator::class)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Contact Email',
-        instructions: 'Email address for your SolspaceAI account. Used when enabling AI. Can be set via environment variable.',
+        instructions: 'The email address for your SolspaceAI account.',
         placeholder: 'you@example.com',
     )]
     protected string $contactEmail = '';
 
+    #[ValueGenerator(SiteUrlValueGenerator::class)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Site URL',
-        instructions: 'The public URL of your site (e.g. https://yoursite.com). Used when enabling AI. Can be set via environment variable.',
+        instructions: 'The public URL of your site (e.g. `https://yoursite.com`).',
         placeholder: 'https://yoursite.com',
     )]
     protected string $siteUrl = '';

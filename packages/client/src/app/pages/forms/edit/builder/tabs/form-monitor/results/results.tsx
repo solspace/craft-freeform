@@ -445,14 +445,21 @@ export const FMResults: React.FC = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedTests = allTests.slice(startIndex, endIndex);
 
+  // Total tests and failures
+  const total30 = formTests.stats?.total || 0;
+  const failed = formTests.stats?.failed || 0;
+
   // Create tab content
   const last30DaysContent = (
     <StatsContainer>
       <ChartContainer>
         <TestDescription>
           {translate(
-            `Of the ${formTests.stats?.total || 0} tests that have occurred in the last 30 days, ` +
-              `${formTests.stats?.failed || 0} ${formTests.stats?.failed === 1 ? "test has" : "tests have"} failed for this form.`,
+            "Of the {total30} tests that have occurred in the last 30 days, {failed} tests have failed for this form.",
+            {
+              total30,
+              failed,
+            },
           )}
         </TestDescription>
         <DailyTestsChart groups={formTests.tests} />
@@ -475,6 +482,8 @@ export const FMResults: React.FC = () => {
     },
   ];
 
+  const total = formTests.stats?.total || 0;
+
   return (
     <ResultsWrapper>
       <ResultsTabs
@@ -488,7 +497,10 @@ export const FMResults: React.FC = () => {
           <h3>{translate("Detailed Results")}</h3>
           <TestDescription>
             {translate(
-              `A total of ${formTests.stats?.total || 0} tests have been conducted for this form.`,
+              "A total of {total} tests have been conducted for this form.",
+              {
+                total,
+              },
             )}
           </TestDescription>
         </TableHeader>

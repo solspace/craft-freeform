@@ -326,7 +326,8 @@ const NextScheduledTestPanel: React.FC<{
     <NextScheduledTestContainer>
       <h3>{translate("Next Scheduled Test")}</h3>
       <div className="next-test-time">
-        {nextMonitoringTime} <br /> (in {nextMonitoringTimeIn?.humanReadable})
+        {nextMonitoringTime} <br /> ({translate("in")}{" "}
+        {nextMonitoringTimeIn?.humanReadable})
       </div>
     </NextScheduledTestContainer>
   );

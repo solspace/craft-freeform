@@ -105,7 +105,7 @@ export const SubmissionDurationChart: React.FC<
           <ChartTestTooltip>
             <ChartTestTooltipContent>
               <div>{label}</div>
-              <div>No tests on this day</div>
+              <div>{translate("No tests on this day")}</div>
             </ChartTestTooltipContent>
           </ChartTestTooltip>
         );

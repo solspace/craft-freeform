@@ -200,8 +200,8 @@ export const Titlebar: FC<Props> = ({ integration }) => {
 };
 
 const messages: Record<AuthState, string> = {
-  authorized: "Authorized",
-  unauthorized: "Unauthorized",
-  pending: "Checking...",
-  error: "Error",
+  authorized: translate("Authorized"),
+  unauthorized: translate("Unauthorized"),
+  pending: translate("Checking..."),
+  error: translate("Error"),
 };

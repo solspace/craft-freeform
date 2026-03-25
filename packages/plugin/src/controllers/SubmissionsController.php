@@ -304,16 +304,31 @@ class SubmissionsController extends BaseController
 
         $id = \Craft::$app->request->post('id');
         if (!$id) {
-            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission ID was missing.')]);
+            $this->response->setStatusCode(400);
+
+            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission ID is missing.')]);
         }
 
         $submission = Submission::find()->id($id);
         if (!$submission->count()) {
+            $this->response->setStatusCode(404);
+
             return $this->asJson(['success' => false, 'message' => Freeform::t('Submission with ID {id} not found', ['id' => $id])]);
+        }
+
+        if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $submission->formId
+                )
+            );
         }
 
         $deleted = $this->getSubmissionsService()->delete($submission);
         if (!$deleted) {
+            $this->response->setStatusCode(500);
+
             $this->asJson(['success' => false, 'message' => Freeform::t('Submission could not be deleted.')]);
         }
 

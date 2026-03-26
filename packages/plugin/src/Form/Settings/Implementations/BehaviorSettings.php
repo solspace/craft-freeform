@@ -126,6 +126,7 @@ class BehaviorSettings extends SettingsNamespace
         instructions: 'Select an entry for the user to be redirected to.',
         order: 3,
         actionLabel: 'Select Entry',
+        multiSelect: false,
         limit: 1,
     )]
     public array $entryId = [];

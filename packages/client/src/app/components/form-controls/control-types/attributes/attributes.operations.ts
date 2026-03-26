@@ -23,7 +23,7 @@ export const attributesToArray = (
       return;
     }
 
-    if (value === "" || value === null) {
+    if (value === "") {
       parsed.push([String(key), undefined]);
 
       return;

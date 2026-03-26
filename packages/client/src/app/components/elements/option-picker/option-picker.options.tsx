@@ -90,7 +90,7 @@ export const Options: React.FC<Props> = ({
                 </CheckMark>
               )}
               <LabelContainer>
-                {option.icon && option.icon}
+                {option.icon}
                 {option.label}
               </LabelContainer>
             </Label>

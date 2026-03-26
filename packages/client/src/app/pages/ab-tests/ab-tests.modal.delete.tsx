@@ -47,7 +47,7 @@ export const ABTestDeleteModal: React.FC<ModalContainerProps<ModalData>> = ({
         <button type="button" className="btn submit">
           <LoadingText
             loading={mutation.isPending}
-            loadingText={translate("Deleting...")}
+            loadingText={translate("Deleting")}
             spinner
             onClick={() =>
               mutation.mutate(data?.id, {

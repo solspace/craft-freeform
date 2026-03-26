@@ -118,7 +118,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
           onClick={handleDelete}
         >
           <LoadingText
-            loadingText={translate("Deleting...")}
+            loadingText={translate("Deleting")}
             loading={isDeleting}
             spinner
           >

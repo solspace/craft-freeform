@@ -146,7 +146,7 @@ $(() => {
       return;
     }
 
-    $(this).attr("disabled", true).addClass("disabled").text("Deleting...");
+    $(this).attr("disabled", true).addClass("disabled").text("Deleting");
 
     const id = $(this).data("id");
     $.ajax({

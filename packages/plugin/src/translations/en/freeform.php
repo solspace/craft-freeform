@@ -47,8 +47,8 @@ return [
     // Form Builder // Universal
     'Forms' => 'Forms',
     'Cancel' => 'Cancel',
-    'Saving...' => 'Saving...',
-    'Deleting...' => 'Deleting...',
+    'Saving' => 'Saving',
+    'Deleting' => 'Deleting',
     'Save' => 'Save',
     'Close' => 'Close',
     'Enabled' => 'Enabled',

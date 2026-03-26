@@ -59,7 +59,7 @@ export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
           <LoadingText
             spinner
             loading={mutation.isPending}
-            loadingText="Saving..."
+            loadingText="Saving"
           >
             {translate(mutation.isSuccess ? "Saved!" : "Favorite")}
           </LoadingText>

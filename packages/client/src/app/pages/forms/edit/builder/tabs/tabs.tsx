@@ -163,7 +163,7 @@ export const Tabs: React.FC = () => {
           className={classes("btn", "submit", "save-button")}
         >
           <LoadingText
-            loadingText={translate("Saving...")}
+            loadingText={translate("Saving")}
             loading={state === State.Processing}
             spinner
           >

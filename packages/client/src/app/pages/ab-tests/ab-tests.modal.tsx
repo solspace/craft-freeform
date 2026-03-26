@@ -245,7 +245,7 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
         <button type="button" className="btn submit" disabled={!canSave}>
           <LoadingText
             loading={mutation.isPending}
-            loadingText={translate("Saving...")}
+            loadingText={translate("Saving")}
             spinner
             onClick={() =>
               mutation.mutate(state, {

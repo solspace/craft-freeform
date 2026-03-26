@@ -134,7 +134,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
           onClick={() => updateMutation.mutate(state)}
         >
           <LoadingText
-            loadingText={translate("Saving...")}
+            loadingText={translate("Saving")}
             loading={isLoading}
             spinner
           >

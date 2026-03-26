@@ -165,7 +165,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
         </button>
         <button type="button" className="btn submit">
           <LoadingText
-            loadingText={translate("Saving...")}
+            loadingText={translate("Saving")}
             loading={isLoading}
             onClick={() => updateMutation.mutate(syncFormGroupsRefs())}
             spinner

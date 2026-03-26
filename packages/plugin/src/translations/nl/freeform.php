@@ -47,8 +47,8 @@ return [
     // Form Builder // Universal
     'Forms' => 'Formulieren',
     'Cancel' => 'Annuleren',
-    'Saving...' => 'Opslaan...',
-    'Deleting...' => 'Verwijderen...',
+    'Saving' => 'Opslaan',
+    'Deleting' => 'Verwijderen',
     'Save' => 'Opslaan',
     'Close' => 'Sluiten',
     'Enabled' => 'Ingeschakeld',

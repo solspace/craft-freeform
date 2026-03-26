@@ -231,7 +231,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
         </button>
         <button type="button" className="btn submit">
           <LoadingText
-            loadingText={translate("Saving...")}
+            loadingText={translate("Saving")}
             loading={isLoading}
             onClick={() => updateMutation.mutate(syncFromRefs())}
             spinner

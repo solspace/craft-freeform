@@ -47,8 +47,8 @@ return [
     // Form Builder // Universal
     'Forms' => 'Formulare',
     'Cancel' => 'Abbrechen',
-    'Saving...' => 'Speichern...',
-    'Deleting...' => 'Löschen...',
+    'Saving' => 'Speichern',
+    'Deleting' => 'Löschen',
     'Save' => 'Speichern',
     'Close' => 'Schließen',
     'Enabled' => 'Aktiviert',

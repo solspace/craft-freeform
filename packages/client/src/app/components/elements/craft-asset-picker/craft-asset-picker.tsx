@@ -104,7 +104,7 @@ export const CraftAssetPicker: FC<Props> = ({
                 <div className="chip-actions">
                   <Button
                     type="button"
-                    title="Remove"
+                    title={translate("Remove")}
                     onClick={() => removeAsset(asset.id)}
                   />
                 </div>

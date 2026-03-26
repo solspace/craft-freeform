@@ -105,7 +105,7 @@ export const CraftEntryPicker: FC<Props> = ({
                 <div className="chip-actions">
                   <Button
                     type="button"
-                    title="Remove"
+                    title={translate("Remove")}
                     onClick={() => removeEntry(entry.id)}
                   />
                 </div>

@@ -2020,8 +2020,6 @@ return [
     'Recent Credit Usage' => 'Utilisation récente des crédits',
     'The number of requests (credit usage) per day for the last 30 days.' => 'Nombre de requêtes (utilisation des crédits) par jour sur les 30 derniers jours.',
     'Requests' => 'Requêtes',
-    'SolspaceAI <span class="badge">Pro</span>' => 'SolspaceAI <span class="badge">Pro</span>',
-    'SolspaceAI <span class="light">(enable)</span>' => 'SolspaceAI <span class="light">(activer)</span>',
     'Create with AI' => 'Créer avec l’IA',
     'Create a form using AI' => 'Créer un formulaire avec l’IA',
     'Choose which AI integration to use. Model and API key are already configured in the integration.' => 'Choisissez quelle intégration IA utiliser. Le modèle et la clé API sont déjà configurés dans l’intégration.',

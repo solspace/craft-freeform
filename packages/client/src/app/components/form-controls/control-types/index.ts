@@ -12,6 +12,7 @@ export { default as colorPicker } from "./color-picker/color-picker";
 export { default as datePicker } from "./date-picker/date-picker";
 export { default as dynamicCheckboxes } from "./dynamic-checkboxes/dynamic-checkboxes";
 export { default as dynamicSelect } from "./dynamic-select/dynamic-select";
+export { default as entryPicker } from "./entry-picker/entry-picker";
 export { default as field } from "./field/field";
 export { default as fieldType } from "./field-type/field-type";
 export { default as hidden } from "./hidden/hidden";

@@ -46,6 +46,10 @@ class ABTestVariantPersistence
             'uid' => $_COOKIE[$name],
         ]);
 
+        if (!$variation) {
+            return null;
+        }
+
         if ($user) {
             $this->persistUserAssignment($test, $variation);
         }

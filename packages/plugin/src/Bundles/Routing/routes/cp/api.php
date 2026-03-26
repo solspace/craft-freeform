@@ -110,6 +110,9 @@ return [
     'freeform/api/assets/urls' => 'freeform/api/assets/asset-urls',
     'freeform/api/assets/thumb/card/<assetId:\d+>' => 'freeform/api/assets/card-thumbnail',
 
+    // ENTRIES
+    'freeform/api/entries' => 'freeform/api/entries',
+
     // AUTOSUGGEST
     'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',
 ];

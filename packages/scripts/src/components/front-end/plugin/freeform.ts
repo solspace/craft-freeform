@@ -836,11 +836,12 @@ export default class Freeform {
 
           if (!actions.length) {
             if (success) {
-              if (
-                finished &&
-                response.onSuccess === SuccessBehavior.RedirectReturnUrl &&
-                returnUrl
-              ) {
+              const shouldRedirect = [
+                SuccessBehavior.RedirectReturnUrl,
+                SuccessBehavior.RedirectEntry,
+              ].includes(response.onSuccess as SuccessBehavior);
+
+              if (finished && shouldRedirect && returnUrl) {
                 const redirectEvent = this._dispatchEvent(
                   events.form.ajaxSuccess,
                   { request, response },

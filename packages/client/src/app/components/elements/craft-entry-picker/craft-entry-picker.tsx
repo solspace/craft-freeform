@@ -1,11 +1,11 @@
 import type { GenericValue } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import { useCallback } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
-
-import { useAssetPreviewQuery } from "./craft-asset-picker.queries";
+import { useEntryQuery } from "./craft-entry-picker.queries";
 
 type Props = {
   actionLabel?: string;
@@ -17,7 +17,7 @@ type Props = {
   onUpdate: (value: number[]) => void;
 };
 
-export const CraftAssetPicker: FC<Props> = ({
+export const CraftEntryPicker: FC<Props> = ({
   actionLabel,
   multiSelect,
   sources = "*",
@@ -26,16 +26,16 @@ export const CraftAssetPicker: FC<Props> = ({
   value,
   onUpdate,
 }) => {
-  const { data, isFetching } = useAssetPreviewQuery(value);
+  const { data, isFetching } = useEntryQuery(value);
 
   const openModal = useCallback((): void => {
-    Craft.createElementSelectorModal("craft\\elements\\Asset", {
+    Craft.createElementSelectorModal("craft\\elements\\Entry", {
       multiSelect: limit !== 1 || multiSelect,
       sources,
       criteria,
-      storageKey: "freeform-asset-selection",
+      storageKey: "freeform-entry-selection",
       onSelect: (elements) => {
-        // Format selected assets
+        // Format selected entries
         const selectedIds = elements
           .map((element) => element.id)
           .slice(0, limit);
@@ -48,9 +48,9 @@ export const CraftAssetPicker: FC<Props> = ({
     });
   }, [onUpdate, multiSelect, criteria, limit, sources, value]);
 
-  const removeAsset = useCallback(
-    (assetId: number): void => {
-      onUpdate(value.filter((id: number) => id !== assetId));
+  const removeEntry = useCallback(
+    (entryId: number): void => {
+      onUpdate(value.filter((id: number) => id !== entryId));
     },
     [onUpdate, value],
   );
@@ -77,27 +77,28 @@ export const CraftAssetPicker: FC<Props> = ({
             </li>
           ))}
 
-        {data?.map((asset) => (
-          <li key={asset.id} className="element small removable">
+        {data?.map((entry) => (
+          <li key={entry.id} className="element small removable">
             <div className="chip small element removable">
-              <div className="thumb">
-                <img
-                  src={asset.thumbUrl}
-                  alt={asset.title}
-                  width={30}
-                  height={20}
-                />
-              </div>
-
               <div className="chip-content">
+                <span
+                  className={classes(
+                    "status",
+                    entry.status === "live" ? "open teal" : "disabled",
+                  )}
+                  role="img"
+                  aria-label={translate("Status: {status}", {
+                    status: entry.status,
+                  })}
+                />
                 <div className="element-label">
                   <a
                     className="label-link"
-                    href={asset.editUrl}
+                    href={entry.editUrl}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {asset.title}
+                    {entry.title}
                   </a>
                 </div>
 
@@ -105,7 +106,7 @@ export const CraftAssetPicker: FC<Props> = ({
                   <Button
                     type="button"
                     title={translate("Remove")}
-                    onClick={() => removeAsset(asset.id)}
+                    onClick={() => removeEntry(entry.id)}
                   />
                 </div>
               </div>
@@ -117,7 +118,7 @@ export const CraftAssetPicker: FC<Props> = ({
       {showAddButton && (
         <div className="flex">
           <button type="button" className="btn add icon" onClick={openModal}>
-            {translate(actionLabel || "Add an asset")}
+            {translate(actionLabel || "Add an entry")}
           </button>
         </div>
       )}

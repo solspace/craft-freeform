@@ -281,6 +281,7 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[token]]',
             $table.'.[[isSpam]]',
             $table.'.[[ip]]',
+            $table.'.[[sourceUrl]]',
         ];
 
         $joinedForms = [];

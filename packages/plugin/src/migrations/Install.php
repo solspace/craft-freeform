@@ -214,6 +214,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('token', $this->string(100)->notNull())
                 ->addField('ip', $this->string(46)->null())
+                ->addField('sourceUrl', $this->text()->null())
                 ->addField('isSpam', $this->boolean()->defaultValue(false))
                 ->addField('isHidden', $this->boolean()->defaultValue(false))
                 ->addField('idempotencyKey', $this->string(255)->null())

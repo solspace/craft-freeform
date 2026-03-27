@@ -71,6 +71,7 @@ class Submission extends Element
     public bool $isHidden = false;
     public ?string $requestId = null;
     public ?string $ip = null;
+    public ?string $sourceUrl = null;
     public ?string $idempotencyKey = null;
 
     private ?FieldCollection $fieldCollection = null;
@@ -550,6 +551,7 @@ class Submission extends Element
         if ($isNew) {
             $contentData['id'] = $this->id;
             $insertData['id'] = $this->id;
+            $insertData['sourceUrl'] = $this->sourceUrl;
             $insertData['dateCreated'] = Db::prepareDateForDb($this->dateCreated);
             $insertData['dateUpdated'] = Db::prepareDateForDb($this->dateUpdated);
 

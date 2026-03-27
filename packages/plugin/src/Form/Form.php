@@ -114,6 +114,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const PROPERTY_SPAM_REASONS = 'spamReasons';
 
     public const RETURN_URI_KEY = 'formReturnUrl';
+    public const SOURCE_URL_KEY = 'formSourceUrl';
 
     public const DATA_DISABLE = 'disable';
     public const DATA_RELATIONS = 'relations';

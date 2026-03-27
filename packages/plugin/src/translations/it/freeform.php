@@ -964,6 +964,7 @@ return [
     'Submission' => 'Sottomissione',
     'IP Address' => 'Indirizzo IP',
     'Freeform ID' => 'ID Freeform',
+    'Source URL' => 'URL di origine',
     'Spam Reasons' => 'Motivi Spam',
     'Status' => 'Stato',
     'Quick Export' => 'Esportazione Veloce',

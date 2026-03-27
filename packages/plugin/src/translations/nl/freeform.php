@@ -964,6 +964,7 @@ return [
     'Submission' => 'Inzending',
     'IP Address' => 'IP-adres',
     'Freeform ID' => 'Freeform-ID',
+    'Source URL' => 'Bron-URL',
     'Spam Reasons' => 'Spam-redenen',
     'Status' => 'Status',
     'Quick Export' => 'Snel Exporteren',

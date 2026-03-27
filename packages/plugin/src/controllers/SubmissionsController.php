@@ -106,6 +106,7 @@ class SubmissionsController extends BaseController
             ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))
             ->add(new FieldDescriptor('status', \Craft::t('app', 'Status')))
             ->add(new FieldDescriptor('userId', \Craft::t('app', 'Author')))
+            ->add(new FieldDescriptor('sourceUrl', Freeform::t('Source URL')))
         ;
 
         foreach ($submission->getFieldCollection() as $field) {

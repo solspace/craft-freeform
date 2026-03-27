@@ -245,6 +245,14 @@
         <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
         <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
       </div>
+      {% if submission.sourceUrl %}
+        <div class="data">
+          <h5 class="heading">{{ "Source URL"|t('freeform') }}</h5>
+          <div class="value">
+            <a href="{{ submission.sourceUrl }}" target="_blank" rel="noopener noreferrer">{{ submission.sourceUrl }}</a>
+          </div>
+        </div>
+      {% endif %}
     </div>
 
     {% hook 'freeform.submissions.edit.meta' %}

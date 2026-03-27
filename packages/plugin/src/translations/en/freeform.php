@@ -964,6 +964,7 @@ return [
     'Submission' => 'Submission',
     'IP Address' => 'IP Address',
     'Freeform ID' => 'Freeform ID',
+    'Source URL' => 'Source URL',
     'Spam Reasons' => 'Spam Reasons',
     'Status' => 'Status',
     'Quick Export' => 'Quick Export',

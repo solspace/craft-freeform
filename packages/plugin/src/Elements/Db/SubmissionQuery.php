@@ -24,6 +24,7 @@ class SubmissionQuery extends ElementQuery
     public mixed $form = null;
     public mixed $statusId = null;
     public mixed $incrementalId = null;
+    public ?string $sourceUrl = null;
     public ?string $token = null;
     public ?bool $isSpam = null;
     public ?bool $isHidden = false;
@@ -72,6 +73,13 @@ class SubmissionQuery extends ElementQuery
     public function incrementalId(mixed $value): self
     {
         $this->incrementalId = $value;
+
+        return $this;
+    }
+
+    public function sourceUrl(?string $value): self
+    {
+        $this->sourceUrl = $value;
 
         return $this;
     }
@@ -403,6 +411,10 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->incrementalId) {
             $this->subQuery->andWhere(Db::parseParam($table.'.[[incrementalId]]', $this->incrementalId));
+        }
+
+        if (null !== $this->sourceUrl) {
+            $this->subQuery->andWhere(Db::parseParam($table.'.[[sourceUrl]]', $this->sourceUrl));
         }
 
         if (null !== $this->token) {

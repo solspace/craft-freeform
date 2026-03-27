@@ -520,6 +520,7 @@ class Submission extends Element
             'isHidden' => $this->isHidden,
             'requestId' => $this->requestId,
             'idempotencyKey' => $this->idempotencyKey,
+            'sourceUrl' => $this->sourceUrl,
         ];
 
         $contentData = [];
@@ -720,6 +721,7 @@ class Submission extends Element
                 'dateCreated' => ['label' => \Craft::t('app', 'Date Created')],
                 'id' => ['label' => Freeform::t('ID')],
                 'incrementalId' => ['label' => Freeform::t('Freeform ID')],
+                'sourceUrl' => ['label' => Freeform::t('Source URL')],
                 'ip' => ['label' => Freeform::t('IP Address')],
                 'spamReasons' => ['label' => Freeform::t('Spam Reasons')],
             ];
@@ -743,6 +745,7 @@ class Submission extends Element
             'status',
             'dateCreated',
             'form',
+            'sourceUrl',
         ];
     }
 

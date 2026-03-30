@@ -10,6 +10,7 @@ export type DailyMetric = {
   api_requests: number;
   successful_requests: number;
   failed_requests: number;
+  duration_seconds?: number;
 };
 
 export type RequestLog = {

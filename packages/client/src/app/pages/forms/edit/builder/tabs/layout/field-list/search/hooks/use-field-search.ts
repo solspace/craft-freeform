@@ -1,22 +1,22 @@
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { Search, searchActions } from '@editor/store/slices/search';
-import { useDebounce } from '@ff-client/hooks/use-debounce';
+import { Search, searchActions } from "@editor/store/slices/search";
+import { useDebounce } from "@ff-client/hooks/use-debounce";
+import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 type FieldSearch = () => [string, Dispatch<SetStateAction<string>>];
 
 export const useFieldSearch: FieldSearch = () => {
   const dispatch = useDispatch();
 
-  const [localQuery, setLocalQuery] = useState('');
+  const [localQuery, setLocalQuery] = useState("");
   const debouncedQuery = useDebounce(localQuery, 1000);
 
   useEffect(() => {
     dispatch(
-      searchActions.update({ type: Search.Fields, query: debouncedQuery })
+      searchActions.update({ type: Search.Fields, query: debouncedQuery }),
     );
-  }, [debouncedQuery]);
+  }, [debouncedQuery, dispatch]);
 
   return [localQuery, setLocalQuery];
 };

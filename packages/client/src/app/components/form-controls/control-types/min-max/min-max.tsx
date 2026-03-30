@@ -1,10 +1,10 @@
-import React from 'react';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { Field } from '@editor/store/slices/layout/fields';
-import type { MinMaxProperty } from '@ff-client/types/properties';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { Field } from "@editor/store/slices/layout/fields";
+import type { MinMaxProperty } from "@ff-client/types/properties";
+import type React from "react";
 
-import { MaxInput, MinInput, Wrapper } from './min-max.styles';
+import { MaxInput, MinInput, Wrapper } from "./min-max.styles";
 
 const MinMax: React.FC<ControlType<MinMaxProperty, Field>> = ({
   value,
@@ -22,13 +22,13 @@ const MinMax: React.FC<ControlType<MinMaxProperty, Field>> = ({
         <div>
           <MinInput
             id="min"
-            value={min === null ? '' : min}
+            value={min === null ? "" : min}
             type="number"
             min={minValue}
             className="text"
             placeholder="Min"
             onChange={({ target }) => {
-              const value = target.value !== '' ? Number(target.value) : null;
+              const value = target.value !== "" ? Number(target.value) : null;
 
               updateValue([value, max]);
             }}
@@ -37,13 +37,13 @@ const MinMax: React.FC<ControlType<MinMaxProperty, Field>> = ({
         <div>
           <MaxInput
             id="max"
-            value={max === null ? '' : max}
+            value={max === null ? "" : max}
             type="number"
             min={minValue}
             className="text"
             placeholder="Max"
             onChange={({ target }) => {
-              const value = target.value !== '' ? Number(target.value) : null;
+              const value = target.value !== "" ? Number(target.value) : null;
 
               updateValue([min, value]);
             }}

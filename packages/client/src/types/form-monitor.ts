@@ -3,8 +3,8 @@ export interface FormTest {
   formId?: number;
   dateAttempted?: string;
   dateCompleted?: string;
-  status?: 'success' | 'failed' | 'pending';
-  totalStatus?: 'success' | 'failed' | 'pending';
+  status?: "success" | "failed" | "pending";
+  totalStatus?: "success" | "failed" | "pending";
   response: string;
   responseCode: number;
   customerId?: number;

@@ -1,5 +1,5 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled, { css } from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -23,7 +23,7 @@ export const SearchBar = styled.input`
   }
 `;
 
-const buttonSize = '14px';
+const buttonSize = "14px";
 
 export const IconStyle = css`
   position: absolute;

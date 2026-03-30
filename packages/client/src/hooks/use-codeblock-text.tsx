@@ -1,8 +1,12 @@
-import type { ReactNode } from 'react';
-import React, { useMemo } from 'react';
+import type { ReactNode } from "react";
+import { useMemo } from "react";
 
-export const useCodeblockText = (text: string): ReactNode[] => {
+export const useCodeblockText = (text: string | null): ReactNode[] | null => {
   const compiledText = useMemo(() => {
+    if (!text) {
+      return null;
+    }
+
     const parts = text.split(/`([^`]+)`/g);
 
     return parts.map((part, index) => {

@@ -1,13 +1,13 @@
-import React from 'react';
-import type { Delimiter } from '@ff-client/types/properties';
+import type { Delimiter } from "@ff-client/types/properties";
+import type React from "react";
 
 type Props = {
   delimiter?: Delimiter;
 };
 
-import { labelText } from '@ff-client/styles/mixins';
-import { shadows } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { labelText } from "@ff-client/styles/mixins";
+import { shadows } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 const DelimiterWrapper = styled.div`
   position: relative;

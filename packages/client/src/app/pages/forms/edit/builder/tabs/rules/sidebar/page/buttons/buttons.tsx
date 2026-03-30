@@ -1,16 +1,16 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import config from '@config/freeform/freeform.config';
-import { getButtonGroups } from '@editor/builder/tabs/layout/field-layout/page/page-buttons/page-buttons.operations';
-import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
-import type { Page, PageButton } from '@editor/builder/types/layout';
-import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
-import type { PageButtonType } from '@ff-client/types/rules';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import config from "@config/freeform/freeform.config";
+import { getButtonGroups } from "@editor/builder/tabs/layout/field-layout/page/page-buttons/page-buttons.operations";
+import { useLastTab } from "@editor/builder/tabs/tabs.hooks";
+import type { Page, PageButton } from "@editor/builder/types/layout";
+import { buttonRuleSelectors } from "@editor/store/slices/rules/buttons/buttons.selectors";
+import type { PageButtonType } from "@ff-client/types/rules";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { Button, ButtonGroup, ButtonsWrapper } from './buttons.styles';
+import { Button, ButtonGroup, ButtonsWrapper } from "./buttons.styles";
 
 type Props = {
   page: Page;
@@ -25,14 +25,14 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
   page,
   button: { handle, label },
 }) => {
-  const canEdit = config.limitations.can('rules.tab.buttons');
+  const canEdit = config.limitations.can("rules.tab.buttons");
   const { uid, button: currentButton } = useParams();
   const navigate = useNavigate();
-  const { setLastTab } = useLastTab('rules');
+  const { setLastTab } = useLastTab("rules");
 
   const currentPage = uid === page.uid && handle === currentButton;
   const hasRule = useSelector(
-    buttonRuleSelectors.hasRule(page.uid, handle as PageButtonType)
+    buttonRuleSelectors.hasRule(page.uid, handle as PageButtonType),
   );
 
   if (!canEdit) {
@@ -44,11 +44,11 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
       type="button"
       className={classes(
         handle,
-        currentPage && 'active',
-        hasRule && 'has-rule'
+        currentPage && "active",
+        hasRule && "has-rule",
       )}
       onClick={() => {
-        const tab = currentPage ? '' : `page/${page.uid}/buttons/${handle}`;
+        const tab = currentPage ? "" : `page/${page.uid}/buttons/${handle}`;
         setLastTab(tab);
         navigate(tab);
       }}

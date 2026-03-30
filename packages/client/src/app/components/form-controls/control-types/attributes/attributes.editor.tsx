@@ -1,38 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
-import { HelpText } from '@components/elements/help-text';
-import type { UpdateValue } from '@components/form-controls';
-import CrossIcon from '@components/form-controls/icons/cross.svg';
+import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { HelpText } from "@components/elements/help-text";
+import type { UpdateValue } from "@components/form-controls";
+import CrossIcon from "@components/form-controls/icons/cross";
 import type {
   AttributeProperty,
   AttributeTab,
-} from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useState } from "react";
 
-import { useCellNavigation } from '../../hooks/use-cell-navigation';
+import { useCellNavigation } from "../../hooks/use-cell-navigation";
 import {
   Button,
   Cell,
   Input,
   Row,
   TabularOptions,
-} from '../table/table.editor.styles';
+} from "../table/table.editor.styles";
 
 import {
   AttributeContainer,
   AttributeEditorWrapper,
   AttributeTabContent,
   AttributeTypeTabs,
-} from './attributes.editor.styles';
-import { InputPreview } from './attributes.input-preview';
+} from "./attributes.editor.styles";
+import { InputPreview } from "./attributes.input-preview";
 import {
   addAttribute,
   deleteAttribute,
   updateAttribute,
-} from './attributes.operations';
-import type { EditableAttributeCollection } from './attributes.types';
+} from "./attributes.operations";
+import type { EditableAttributeCollection } from "./attributes.types";
 
 type Props = {
   property: AttributeProperty;
@@ -50,16 +51,17 @@ export const AttributesEditor: React.FC<Props> = ({
 
   const entries = Object.entries(attributes);
   const [currentTab, currentAttributes] = entries.find(
-    ([key]) => key === tab.handle
+    ([key]) => key === tab.handle,
   ) || [tab.handle, []];
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
     useCellNavigation(currentAttributes.length, 2);
 
   // Focus first cell when switching tabs
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to trigger this when the tab changes, not when the attributes change
   useEffect(() => {
     setActiveCell(0, 0);
-  }, [currentTab]);
+  }, [tab?.handle]);
 
   if (!currentTab || !currentAttributes) {
     return null;
@@ -68,31 +70,30 @@ export const AttributesEditor: React.FC<Props> = ({
   const appendAndFocus = (
     rowIndex: number,
     cellIndex: number,
-    atIndex?: number
+    atIndex?: number,
   ): void => {
     setActiveCell(atIndex !== undefined ? atIndex + 1 : rowIndex, cellIndex);
     updateValue(
       addAttribute(
         currentTab,
         attributes,
-        atIndex !== undefined ? atIndex : currentAttributes.length - 1
-      )
+        atIndex !== undefined ? atIndex : currentAttributes.length - 1,
+      ),
     );
   };
 
   return (
     <AttributeEditorWrapper>
       <AttributeTypeTabs>
-        {property.tabs &&
-          property.tabs.map((tabEntry) => (
-            <a
-              key={tabEntry.handle}
-              className={classes(tabEntry === tab && 'active')}
-              onClick={() => setTab(tabEntry)}
-            >
-              {translate(tabEntry.label)}
-            </a>
-          ))}
+        {property.tabs?.map((tabEntry) => (
+          <a
+            key={tabEntry.handle}
+            className={classes(tabEntry === tab && "active")}
+            onClick={() => setTab(tabEntry)}
+          >
+            {translate(tabEntry.label)}
+          </a>
+        ))}
       </AttributeTypeTabs>
       <AttributeTabContent>
         <InputPreview tab={tab} attributes={currentAttributes} />
@@ -104,7 +105,7 @@ export const AttributesEditor: React.FC<Props> = ({
                   <Cell>
                     <Input
                       type="text"
-                      placeholder={translate('Attribute')}
+                      placeholder={translate("Attribute")}
                       onFocus={() => {
                         appendAndFocus(0, 0);
                       }}
@@ -113,7 +114,7 @@ export const AttributesEditor: React.FC<Props> = ({
                   <Cell>
                     <Input
                       type="text"
-                      placeholder={translate('Value')}
+                      placeholder={translate("Value")}
                       onFocus={() => {
                         appendAndFocus(0, 1);
                       }}
@@ -128,7 +129,7 @@ export const AttributesEditor: React.FC<Props> = ({
                     <Input
                       type="text"
                       value={String(tag)}
-                      placeholder={translate('Attribute')}
+                      placeholder={translate("Attribute")}
                       autoFocus={activeCell === `${index}:0`}
                       ref={(element) => setCellRef(element, index, 0)}
                       onFocus={() => setActiveCell(index, 0)}
@@ -137,7 +138,7 @@ export const AttributesEditor: React.FC<Props> = ({
                           appendAndFocus(
                             event.shiftKey ? index : currentAttributes.length,
                             0,
-                            event.shiftKey ? index : undefined
+                            event.shiftKey ? index : undefined,
                           );
                         },
                       })}
@@ -147,8 +148,8 @@ export const AttributesEditor: React.FC<Props> = ({
                             index,
                             currentTab,
                             [event.target.value, value],
-                            attributes
-                          )
+                            attributes,
+                          ),
                         );
                       }}
                     />
@@ -157,7 +158,7 @@ export const AttributesEditor: React.FC<Props> = ({
                     <Input
                       type="text"
                       value={String(value)}
-                      placeholder={translate('Value')}
+                      placeholder={translate("Value")}
                       autoFocus={activeCell === `${index}:1`}
                       ref={(element) => setCellRef(element, index, 1)}
                       onFocus={() => setActiveCell(index, 1)}
@@ -166,7 +167,7 @@ export const AttributesEditor: React.FC<Props> = ({
                           appendAndFocus(
                             event.shiftKey ? index : currentAttributes.length,
                             1,
-                            event.shiftKey ? index : undefined
+                            event.shiftKey ? index : undefined,
                           );
                         },
                       })}
@@ -176,8 +177,8 @@ export const AttributesEditor: React.FC<Props> = ({
                             index,
                             currentTab,
                             [tag, event.target.value],
-                            attributes
-                          )
+                            attributes,
+                          ),
                         );
                       }}
                     />
@@ -188,7 +189,7 @@ export const AttributesEditor: React.FC<Props> = ({
                       tabIndex={-1}
                       onClick={() => {
                         updateValue(
-                          deleteAttribute(index, currentTab, attributes)
+                          deleteAttribute(index, currentTab, attributes),
                         );
                         setActiveCell(Math.max(index - 1, 0), 0);
                       }}
@@ -208,7 +209,7 @@ export const AttributesEditor: React.FC<Props> = ({
               appendAndFocus(
                 currentAttributes.length,
                 0,
-                currentAttributes.length - 1
+                currentAttributes.length - 1,
               )
             }
           />
@@ -219,8 +220,8 @@ export const AttributesEditor: React.FC<Props> = ({
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 translate(
-                  'Press <b>enter</b> while editing a cell to add a new row.'
-                )
+                  "Press <b>enter</b> while editing a cell to add a new row.",
+                ),
               ),
             }}
           />

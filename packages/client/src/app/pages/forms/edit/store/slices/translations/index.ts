@@ -1,18 +1,18 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import './translations.persistence';
+import "./translations.persistence";
 
 import type {
   RemoveProps,
   TranslationState,
   UpdateProps,
-} from './translations.types';
+} from "./translations.types";
 
 const initialState: TranslationState = {};
 
 export const translationSlice = createSlice({
-  name: 'translations',
+  name: "translations",
   initialState,
   reducers: {
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
@@ -37,7 +37,7 @@ export const translationSlice = createSlice({
         };
       }
 
-      if (!state[siteId][type] || typeof state[siteId][type] !== 'object') {
+      if (!state[siteId][type] || typeof state[siteId][type] !== "object") {
         state[siteId][type] = {};
       }
 

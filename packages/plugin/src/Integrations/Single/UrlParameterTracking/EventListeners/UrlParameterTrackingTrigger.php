@@ -2,10 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\Single\UrlParameterTracking\EventListeners;
 
-use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\Records\UrlTrackingParameterRecord;
-use Solspace\Freeform\Integrations\Single\UrlParameterTracking\UrlParameterTracking;
+use Solspace\Freeform\Integrations\Single\UrlParameterTracking\Services\UrlParameterTrackingResolver;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\base\Event;
@@ -13,7 +12,7 @@ use yii\base\Event;
 class UrlParameterTrackingTrigger extends FeatureBundle
 {
     public function __construct(
-        private FormIntegrationsProvider $integrationsProvider,
+        private UrlParameterTrackingResolver $resolver,
     ) {
         Event::on(
             SubmissionsService::class,
@@ -27,22 +26,7 @@ class UrlParameterTrackingTrigger extends FeatureBundle
         $form = $event->getForm();
         $submission = $event->getSubmission();
 
-        $integration = $this->integrationsProvider->getSingleton($form, UrlParameterTracking::class);
-        if (!$integration) {
-            return;
-        }
-
-        $parameters = $integration->getCombinedParameters();
-
-        // Get clean $_GET parameters from the parameters defined here
-        $trackedParameters = [];
-        foreach ($parameters as $parameter) {
-            $value = $_GET[$parameter] ?? $_POST[$parameter] ?? null;
-            if ($value !== null) {
-                $trackedParameters[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
-            }
-        }
-
+        $trackedParameters = $this->resolver->resolveForForm($form);
         if (empty($trackedParameters)) {
             return;
         }

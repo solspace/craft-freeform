@@ -1,11 +1,11 @@
-import type { Group } from '@ff-client/types/groups';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+import type { Group } from "@ff-client/types/groups";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
 
 export const QKGroups = {
-  all: ['groups'] as const,
+  all: ["groups"] as const,
 };
 
 type FetchGroupsQuery = (options?: {

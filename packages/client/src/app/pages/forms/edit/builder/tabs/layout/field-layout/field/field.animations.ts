@@ -1,7 +1,7 @@
-import type { SpringValue } from 'react-spring';
-import { useSpring } from 'react-spring';
+import type { SpringValue } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
-import { useDragContext } from '../../drag.context';
+import { useDragContext } from "../../drag.context";
 
 type FieldDragAnimation = (options: {
   width: number;
@@ -24,7 +24,7 @@ const calculateX = (
   isDraggingField: boolean,
   index: number,
   dragFieldIndex?: number,
-  hoverPosition?: number
+  hoverPosition?: number,
 ): number => {
   if (!isOver || hoverPosition === undefined) {
     return 0;
@@ -84,16 +84,16 @@ export const useFieldDragAnimation: FieldDragAnimation = ({
     isDraggingField,
     index,
     dragFieldIndex,
-    hoverPosition
+    hoverPosition,
   );
 
   return useSpring({
     immediate: (key) => {
       switch (key) {
-        case 'x':
+        case "x":
           return !ctxDragging;
 
-        case 'width':
+        case "width":
           return !ctxDragging;
       }
     },

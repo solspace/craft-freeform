@@ -1,9 +1,8 @@
-import type { FC } from 'react';
-import React from 'react';
-import FormLabel from '@components/form-controls/label';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import translate from '@ff-client/utils/translations';
+import FormLabel from "@components/form-controls/label";
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
 
 import {
   NoContent,
@@ -11,12 +10,12 @@ import {
   PreviewRow,
   PreviewTable,
   PreviewWrapper,
-} from '../../../table/table.preview.styles';
-import type { Option } from '../../options.types';
+} from "../../../table/table.preview.styles";
+import type { Option } from "../../options.types";
 
-import type { TranslateOptionsProps } from './translations';
-import { OptionsTranslationsEditor } from './translations.editor';
-import type { OptionTranslations } from './translations.types';
+import type { TranslateOptionsProps } from "./translations";
+import { OptionsTranslationsEditor } from "./translations.editor";
+import type { OptionTranslations } from "./translations.types";
 
 export const SourceCustom: FC<TranslateOptionsProps> = ({
   value,
@@ -28,7 +27,7 @@ export const SourceCustom: FC<TranslateOptionsProps> = ({
   const { hasTranslation, getTranslation, removeTranslation } =
     useTranslations(field);
 
-  if (value.source !== 'custom') {
+  if (value.source !== "custom") {
     return null;
   }
 
@@ -49,19 +48,19 @@ export const SourceCustom: FC<TranslateOptionsProps> = ({
       />
       <PreviewableComponent
         preview={
-          <PreviewWrapper data-edit={translate('Click to edit data')}>
+          <PreviewWrapper data-edit={translate("Click to edit data")}>
             <PreviewTable>
               {!options.length && (
-                <NoContent>{translate('Not configured yet')}</NoContent>
+                <NoContent>{translate("Not configured yet")}</NoContent>
               )}
               {options.map((option, index) => (
                 <PreviewRow key={index}>
-                  <PreviewData data-empty={translate('empty')}>
+                  <PreviewData data-empty={translate("empty")}>
                     {optionTranslations.find(
-                      (opt) => opt.value === option.value
+                      (opt) => opt.value === option.value,
                     )?.label || option.label}
                   </PreviewData>
-                  <PreviewData className="code" data-empty={translate('empty')}>
+                  <PreviewData className="code" data-empty={translate("empty")}>
                     {option.value}
                   </PreviewData>
                 </PreviewRow>
@@ -69,7 +68,7 @@ export const SourceCustom: FC<TranslateOptionsProps> = ({
             </PreviewTable>
           </PreviewWrapper>
         }
-        excludeClassNames={['bulk-editor']}
+        excludeClassNames={["bulk-editor"]}
       >
         <OptionsTranslationsEditor
           value={value}

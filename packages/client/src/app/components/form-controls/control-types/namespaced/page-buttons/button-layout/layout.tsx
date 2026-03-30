@@ -1,21 +1,21 @@
-import type { ReactNode } from 'react';
-import React from 'react';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { Page } from '@editor/builder/types/layout';
-import type { PageButtonsLayoutProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import isEqual from 'lodash/isEqual';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { Page } from "@editor/builder/types/layout";
+import type { PageButtonsLayoutProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import isEqual from "lodash/isEqual";
+import type React from "react";
+import type { ReactNode } from "react";
 
-import BackIcon from './icons/back.svg';
-import SaveIcon from './icons/save.svg';
-import SubmitIcon from './icons/submit.svg';
+import BackIcon from "./icons/back";
+import SaveIcon from "./icons/save";
+import SubmitIcon from "./icons/submit";
 import {
   Button,
   ButtonGroup,
   ButtonLayoutWrapper,
   LayoutBlock,
-} from './layout.styles';
+} from "./layout.styles";
 
 const icons: Record<string, ReactNode> = {
   save: <SaveIcon />,
@@ -44,13 +44,13 @@ const PageButtonLayout: React.FC<ComponentType> = ({
   const itemComparison: string[][][] = [];
   const items = layouts
     .map((layout) => {
-      const groups = layout.split(' ').map((group) =>
+      const groups = layout.split(" ").map((group) =>
         group
-          .split('|')
-          .filter((button) => buttonState.back || button !== 'back') // remove back button if not enabled
-          .filter((button) => buttonState.save || button !== 'save') // remove save button if not enabled
-          .filter((button) => index !== 0 || button !== 'back') // remove "back" from first page
-          .filter(Boolean)
+          .split("|")
+          .filter((button) => buttonState.back || button !== "back") // remove back button if not enabled
+          .filter((button) => buttonState.save || button !== "save") // remove save button if not enabled
+          .filter((button) => index !== 0 || button !== "back") // remove "back" from first page
+          .filter(Boolean),
       );
 
       if (itemComparison.some((item) => isEqual(item, groups))) {
@@ -73,7 +73,7 @@ const PageButtonLayout: React.FC<ComponentType> = ({
           <LayoutBlock
             key={idx}
             onClick={() => updateValue(item.layout)}
-            className={classes(value === item.layout && 'active')}
+            className={classes(value === item.layout && "active")}
           >
             {item.groups.map((buttons, groupIdx) => (
               <ButtonGroup key={groupIdx}>
@@ -81,7 +81,7 @@ const PageButtonLayout: React.FC<ComponentType> = ({
                   <Button
                     className={classes(
                       button,
-                      buttonState?.[button] && 'enabled'
+                      buttonState?.[button] && "enabled",
                     )}
                     key={buttonIdx}
                   >

@@ -2,12 +2,12 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../plugin/src/Resources/js/client/",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "lib": ["ESNext", "DOM"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "types": ["jest", "node"],
+    "types": ["node"],
     "typeRoots": [
       "config/@types",
       "./node_modules/@types",

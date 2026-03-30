@@ -22,23 +22,23 @@ export const askForConfirmation = (container: HTMLElement) => {
     dialog.showModal();
 
     const handleClose = () => {
-      resolve(dialog.returnValue === 'ok');
-      dialog.removeEventListener('close', handleClose);
+      resolve(dialog.returnValue === "ok");
+      dialog.removeEventListener("close", handleClose);
     };
 
-    dialog.addEventListener('close', handleClose);
+    dialog.addEventListener("close", handleClose);
   });
 
   return promise;
 };
 
-const DIALOG_ID = 'freeform-file-upload-confirm-dialog';
+const DIALOG_ID = "freeform-file-upload-confirm-dialog";
 const createDialog = (message: string) => {
   if (document.getElementById(DIALOG_ID)) {
     return document.getElementById(DIALOG_ID) as HTMLDialogElement;
   }
 
-  const dialog = document.createElement('dialog');
+  const dialog = document.createElement("dialog");
   dialog.id = DIALOG_ID;
   dialog.innerHTML = `
     <form method="dialog">

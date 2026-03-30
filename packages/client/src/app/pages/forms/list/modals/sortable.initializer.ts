@@ -1,17 +1,18 @@
-import type { FormGroupsListRefs } from '@ff-client/types/form-groups';
-import Sortable from 'sortablejs';
+import type { FormGroupsListRefs } from "@ff-client/types/form-groups";
+import type { RefObject } from "react";
+import Sortable from "sortablejs";
 
 type SortableOptions = { [key: string]: Sortable.Options };
 
-const putCondition = (to: Sortable, from: Sortable): boolean =>
-  from.options.handle === '.handle' ? false : true;
+const putCondition = (_to: Sortable, from: Sortable): boolean =>
+  from.options.handle !== ".handle";
 
 export const initializeSortable = (
-  formListRefs: React.MutableRefObject<FormGroupsListRefs>
+  formListRefs: RefObject<FormGroupsListRefs>,
 ): void => {
   const initialize = (
     selector: keyof FormGroupsListRefs,
-    options?: Sortable.Options
+    options?: Sortable.Options,
   ): void => {
     const createSortable = formListRefs.current[selector];
     if (createSortable) Sortable.create(createSortable as HTMLElement, options);
@@ -20,18 +21,18 @@ export const initializeSortable = (
   const handleSortableInit = (): void => {
     const options: SortableOptions = {
       unassigned: {
-        group: { name: 'shared', put: putCondition },
+        group: { name: "shared", put: putCondition },
         animation: 150,
         sort: true,
       },
       groupWrapper: {
-        handle: '.handle',
-        filter: '.group-remove',
+        handle: ".handle",
+        filter: ".group-remove",
         sort: true,
         animation: 150,
         onFilter: (evt) => {
           const groupItems = Array.from(
-            formListRefs.current[evt.item.dataset.id].children
+            formListRefs.current[evt.item.dataset.id].children,
           );
           formListRefs.current.unassigned.append(...groupItems);
           evt.item.remove();
@@ -39,9 +40,9 @@ export const initializeSortable = (
       },
     };
 
-    Object.entries(options).forEach(([selector, option]) =>
-      initialize(selector as keyof FormGroupsListRefs, option)
-    );
+    Object.entries(options).forEach(([selector, option]) => {
+      initialize(selector as keyof FormGroupsListRefs, option);
+    });
   };
 
   handleSortableInit();
@@ -50,17 +51,17 @@ export const initializeSortable = (
 export const initializeGroupedSortable = (
   el: HTMLDivElement | null,
   uid: string,
-  formGroupsListRefs: React.MutableRefObject<FormGroupsListRefs>
+  formGroupsListRefs: RefObject<FormGroupsListRefs>,
 ): void => {
   if (el) {
     Sortable.create(el, {
       animation: 150,
       group: {
         name: `group-${uid}`,
-        put: (to, from) => (from.options.handle === '.handle' ? false : true),
+        put: (_to, from) => from.options.handle !== ".handle",
       },
       sort: true,
-      filter: '.form-item-remove',
+      filter: ".form-item-remove",
       onFilter: (evt) =>
         formGroupsListRefs.current.unassigned.appendChild(evt.item),
     });

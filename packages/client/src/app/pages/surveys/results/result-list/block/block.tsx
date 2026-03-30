@@ -1,16 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useFieldType } from '@ff-client/queries/field-types';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { useFieldType } from "@ff-client/queries/field-types";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useQuerySurveyPreferences } from '../../results.queries';
-import type { Result } from '../../results.types';
-import { Chart } from '../../results.types';
-
-import type { ChartProps } from './charts/index.types';
-import { Average } from './components/average';
-import { SettingsBlock } from './block.settings';
-import { Settings } from './block.settings.styles';
+import { useQuerySurveyPreferences } from "../../results.queries";
+import type { Result } from "../../results.types";
+import { Chart } from "../../results.types";
+import { SettingsBlock } from "./block.settings";
+import { Settings } from "./block.settings.styles";
 import {
   Bulletin,
   Extras,
@@ -20,8 +18,10 @@ import {
   Numbers,
   SubHeading,
   Wrapper,
-} from './block.styles';
-import * as charts from './charts';
+} from "./block.styles";
+import * as charts from "./charts";
+import type { ChartProps } from "./charts/index.types";
+import { Average } from "./components/average";
 
 type Props = Result & {
   bulletin: number;
@@ -46,12 +46,12 @@ export const Block: React.FC<Props> = ({
 
   const { data: preferences } = useQuerySurveyPreferences();
 
-  const ref = useRef<HTMLLIElement>();
+  const ref = useRef<HTMLLIElement | null>(null);
 
   useEffect(() => {
     if (preferences) {
       let type = preferences.fieldSettings.find(
-        (pref) => pref.id === field.id
+        (pref) => pref.id === field.id,
       )?.chartType;
 
       if (type === undefined) {
@@ -62,13 +62,13 @@ export const Block: React.FC<Props> = ({
     } else {
       setChartType(Chart.Horizontal);
     }
-  }, [preferences]);
+  }, [preferences, field]);
 
   useEffect(() => {
     if (excludedExportTypes.includes(chartType)) {
       return;
     }
-  }, [ref, chartType]);
+  }, [chartType]);
 
   if (!preferences) {
     return null;
@@ -76,6 +76,7 @@ export const Block: React.FC<Props> = ({
 
   const { permissions } = preferences;
 
+  // biome-ignore lint/performance/noDynamicNamespaceImportAccess: This is as expected
   const ChartElement: React.FC<ChartProps> = charts[chartType];
 
   if (chartType === Chart.Hidden) {
@@ -90,16 +91,16 @@ export const Block: React.FC<Props> = ({
             changeType={(type) => setChartType(type)}
           />
         )}
-        --{' '}
+        --{" "}
         <span
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
-              translate('Question <b>{index}</b> Hidden', {
+              translate("Question <b>{index}</b> Hidden", {
                 index: bulletin,
-              })
+              }),
             ),
           }}
-        ></span>{' '}
+        ></span>{" "}
         --
       </HiddenBlock>
     );
@@ -122,12 +123,12 @@ export const Block: React.FC<Props> = ({
           {field.label}
         </Heading>
         <SubHeading>
-          {translate('{answered} answered, {skipped} skipped', {
+          {translate("{answered} answered, {skipped} skipped", {
             answered: responses - skipped,
             skipped,
           })}
 
-          {field.multiChoice && <Extras>{translate('multiple choice')}</Extras>}
+          {field.multiChoice && <Extras>{translate("multiple choice")}</Extras>}
         </SubHeading>
         <Average average={average} max={max} />
       </Label>

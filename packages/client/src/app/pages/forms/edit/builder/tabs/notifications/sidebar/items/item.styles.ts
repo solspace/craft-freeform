@@ -1,6 +1,6 @@
-import { NavLink } from 'react-router-dom';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { NavLink } from "react-router-dom";
+import styled from "styled-components";
 
 const iconSize = 20;
 export const Icon = styled.div`
@@ -80,11 +80,11 @@ export const Status = styled.div<StatusProps>`
   height: 10px;
 
   border: 1px solid
-    ${({ $enabled }): string => ($enabled ? 'transparent' : colors.gray550)};
+    ${({ $enabled }): string => ($enabled ? "transparent" : colors.gray550)};
   border-radius: 100%;
 
   background-color: ${({ $enabled }): string =>
-    $enabled ? colors.teal550 : 'transparent'};
+    $enabled ? colors.teal550 : "transparent"};
 
   transition: all 0.3s ease-out;
 `;

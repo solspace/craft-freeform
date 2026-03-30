@@ -1,24 +1,23 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useAppDispatch } from '@editor/store';
-import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
-import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
-import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
-import { useQueryFormRules } from '@ff-client/queries/rules';
-import type { PageButtonType } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useAppDispatch } from "@editor/store";
+import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
+import { buttonRuleActions } from "@editor/store/slices/rules/buttons";
+import { buttonRuleSelectors } from "@editor/store/slices/rules/buttons/buttons.selectors";
+import { useQueryFormRules } from "@ff-client/queries/rules";
+import type { PageButtonType } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { CombinatorSelect } from '../conditions/combinator/combinator';
-import { DisplaySelect } from '../conditions/display/display';
-import { ConditionTable } from '../conditions/table/condition-table';
-
-import { Remove } from './remove-button/remove';
-import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field.editor.styles';
-import { UpsellEditor } from './upsell.editor';
+import { CombinatorSelect } from "../conditions/combinator/combinator";
+import { DisplaySelect } from "../conditions/display/display";
+import { ConditionTable } from "../conditions/table/condition-table";
+import { ConfigurationDescription, Label } from "./editor.styles";
+import { RulesEditorWrapper } from "./field.editor.styles";
+import { Remove } from "./remove-button/remove";
+import { UpsellEditor } from "./upsell.editor";
 
 type Params = {
   formId: string;
@@ -43,20 +42,20 @@ export const ButtonRulesEditor: React.FC = () => {
   const { buttons } = page;
   let label: string;
   switch (button) {
-    case 'save':
+    case "save":
       label = buttons.saveLabel;
       break;
 
-    case 'submit':
+    case "submit":
       label = buttons.submitLabel;
       break;
 
-    case 'back':
+    case "back":
       label = buttons.backLabel;
       break;
 
     default:
-      label = translate('Button Group');
+      label = translate("Button Group");
       break;
   }
 
@@ -70,7 +69,7 @@ export const ButtonRulesEditor: React.FC = () => {
       <RulesEditorWrapper>
         <Label>
           <LoadingText
-            loadingText={translate('Loading data')}
+            loadingText={translate("Loading data")}
             loading={isFetching}
           >
             {label}
@@ -78,12 +77,13 @@ export const ButtonRulesEditor: React.FC = () => {
         </Label>
         {!isFetching && (
           <button
+            type="button"
             className="btn add icon dashed"
             onClick={() =>
               dispatch(buttonRuleActions.add({ pageUid: uid, button }))
             }
           >
-            {translate('Add rules')}
+            {translate("Add rules")}
           </button>
         )}
       </RulesEditorWrapper>
@@ -95,13 +95,13 @@ export const ButtonRulesEditor: React.FC = () => {
       <Remove
         onClick={() => {
           dispatch(buttonRuleActions.remove(rule.uid));
-          navigate('..');
+          navigate("..");
         }}
       />
 
       <Label>
         <LoadingText
-          loadingText={translate('Loading data')}
+          loadingText={translate("Loading data")}
           loading={isFetching}
         >
           {label}
@@ -117,12 +117,12 @@ export const ButtonRulesEditor: React.FC = () => {
                   buttonRuleActions.modifyDisplay({
                     ruleUid: rule.uid,
                     display: value,
-                  })
+                  }),
                 )
               }
             />
 
-            {translate('this button when')}
+            {translate("this button when")}
 
             <CombinatorSelect
               value={rule.combinator}
@@ -131,12 +131,12 @@ export const ButtonRulesEditor: React.FC = () => {
                   buttonRuleActions.modifyCombinator({
                     ruleUid: rule.uid,
                     combinator: value,
-                  })
+                  }),
                 )
               }
             />
 
-            {translate('of the following rules match:')}
+            {translate("of the following rules match:")}
           </ConfigurationDescription>
 
           <ConditionTable
@@ -146,7 +146,7 @@ export const ButtonRulesEditor: React.FC = () => {
                 buttonRuleActions.modifyConditions({
                   ruleUid: rule.uid,
                   conditions,
-                })
+                }),
               );
             }}
           />

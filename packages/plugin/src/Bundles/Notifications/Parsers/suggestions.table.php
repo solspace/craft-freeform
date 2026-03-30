@@ -13,6 +13,7 @@ return [
             ['token' => 'submission.cpEditUrl', 'name' => 'Submission CP URL', 'shortName' => 'CP URL'],
             ['token' => 'submission.userId', 'name' => 'Submission User ID', 'shortName' => 'User ID'],
             ['token' => 'submission.ip', 'name' => 'Submission IP Address', 'shortName' => 'IP Address'],
+            ['token' => 'submission.sourceUrl', 'name' => 'Submission Source URL', 'shortName' => 'Source URL'],
         ],
     ],
     [

@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/** biome-ignore-all lint/correctness/noUnusedVariables: there is no other way */
+/** biome-ignore-all lint/suspicious/noExplicitAny: we don't have a better type */
 
 interface Window {
   hcaptcha: any;

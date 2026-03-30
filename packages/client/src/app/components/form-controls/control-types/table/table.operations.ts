@@ -1,19 +1,19 @@
-import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
-import update from 'immutability-helper';
+import type { ColumnDescription } from "@components/form-controls/control-types/table/table.types";
+import update from "immutability-helper";
 
 export const addColumn = (
   columns: ColumnDescription[],
-  atIndex: number
+  atIndex: number,
 ): ColumnDescription[] => [
   ...columns.slice(0, atIndex + 1),
-  { label: '', type: 'text', value: '' },
+  { label: "", type: "text", value: "" },
   ...columns.slice(atIndex + 1),
 ];
 
 export const updateColumn = (
   index: number,
   column: ColumnDescription,
-  columns: ColumnDescription[]
+  columns: ColumnDescription[],
 ): ColumnDescription[] => {
   const updated = [...columns];
   updated[index] = column;
@@ -23,7 +23,7 @@ export const updateColumn = (
 
 export const deleteColumn = (
   index: number,
-  columns: ColumnDescription[]
+  columns: ColumnDescription[],
 ): ColumnDescription[] => {
   return columns.filter((_, columnIndex) => columnIndex !== index);
 };
@@ -31,7 +31,7 @@ export const deleteColumn = (
 export const moveColumn = (
   fromIndex: number,
   toIndex: number,
-  columns: ColumnDescription[]
+  columns: ColumnDescription[],
 ): ColumnDescription[] => {
   const prevColumns = [...columns];
 
@@ -44,7 +44,7 @@ export const moveColumn = (
 };
 
 export const cleanColumns = (
-  columns: ColumnDescription[]
+  columns: ColumnDescription[],
 ): ColumnDescription[] => {
   return columns.filter((column) => !!column.label || !!column.value);
 };

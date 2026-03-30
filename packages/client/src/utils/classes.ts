@@ -1,15 +1,15 @@
-type ClassItem = string | number | boolean | null;
+type ClassItem = string | string[] | number | boolean | null;
 
 export const elementTreeHasClass = (
   element: Element | null,
-  classNames: string[] | string | undefined
+  classNames: string[] | string | undefined,
 ): boolean => {
   if (classNames === undefined) {
     return false;
   }
 
-  if (typeof classNames === 'string') {
-    classNames = classNames.split(' ');
+  if (typeof classNames === "string") {
+    classNames = classNames.split(" ");
   }
 
   if (!element || !element.classList) {
@@ -32,13 +32,17 @@ export const elementTreeHasClass = (
 export const classes = (...args: ClassItem[]): string =>
   args
     .map((item) => {
-      if (typeof item === 'string') {
+      if (typeof item === "string") {
         item = item.trim();
+      }
+
+      if (Array.isArray(item)) {
+        item = classes(...item);
       }
 
       return item;
     })
     .filter((item) => !!item)
-    .join(' ');
+    .join(" ");
 
 export default classes;

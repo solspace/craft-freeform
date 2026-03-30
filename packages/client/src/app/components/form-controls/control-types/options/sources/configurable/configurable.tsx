@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { FormComponent } from '@components/form-controls';
-import { Control } from '@components/form-controls/control';
-import { ControlWrapper } from '@components/form-controls/control.styles';
-import { Button } from '@components/form-controls/control-types/options/options.styles';
-import { FlexColumn } from '@components/layout/blocks/flex';
-import config from '@config/freeform/freeform.config';
-import type { GenericValue } from '@ff-client/types/properties';
-import { PropertyType } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import type { UseQueryResult } from '@tanstack/react-query';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { FormComponent } from "@components/form-controls";
+import { Control } from "@components/form-controls/control";
+import { ControlWrapper } from "@components/form-controls/control.styles";
+import { Button } from "@components/form-controls/control-types/options/options.styles";
+import { FlexColumn } from "@components/layout/blocks/flex";
+import config from "@config/freeform/freeform.config";
+import type { GenericValue } from "@ff-client/types/properties";
+import { PropertyType } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type { UseQueryResult } from "@tanstack/react-query";
+import type React from "react";
+import { useState } from "react";
 
 import type {
   ConfigurableOptionsConfiguration,
   ConfigurationProps,
-} from '../../options.types';
-import type { OptionTypeProvider } from '../sources.types';
+} from "../../options.types";
+import type { OptionTypeProvider } from "../sources.types";
 
 type Props = ConfigurationProps<ConfigurableOptionsConfiguration> & {
   typeProviderQuery: () => UseQueryResult<OptionTypeProvider[]>;
@@ -32,7 +33,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
   const { data, isFetching } = typeProviderQuery();
 
   const selectedTypeProvider = data?.find(
-    (type) => type.typeClass === typeClass
+    (type) => type.typeClass === typeClass,
   );
 
   return (
@@ -41,8 +42,8 @@ export const ConfigurableOptions: React.FC<Props> = ({
         <FormComponent
           property={{
             type: PropertyType.String,
-            label: 'Empty Option Label (optional)',
-            handle: 'emptyOption',
+            label: "Empty Option Label (optional)",
+            handle: "emptyOption",
           }}
           context={value}
           value={value.emptyOption}
@@ -58,8 +59,8 @@ export const ConfigurableOptions: React.FC<Props> = ({
       <Control
         property={{
           type: PropertyType.Select,
-          label: 'Type',
-          handle: 'predefinedOptionTypeClass',
+          label: "Type",
+          handle: "predefinedOptionTypeClass",
           options: [],
         }}
       >
@@ -70,11 +71,11 @@ export const ConfigurableOptions: React.FC<Props> = ({
           onChange={(selectedValue) => {
             const properties: GenericValue = {};
             const provider = data?.find(
-              (type) => type.typeClass === selectedValue
+              (type) => type.typeClass === selectedValue,
             );
 
             if (provider) {
-              provider.properties.map((property) => {
+              provider.properties.forEach((property) => {
                 properties[property.handle] = property.value;
               });
             }
@@ -86,44 +87,40 @@ export const ConfigurableOptions: React.FC<Props> = ({
               properties,
             });
           }}
-          options={
-            data &&
-            data.map((typeProvider) => ({
-              label: typeProvider.name,
-              value: typeProvider.typeClass,
-            }))
-          }
+          options={data?.map((typeProvider) => ({
+            label: typeProvider.name,
+            value: typeProvider.typeClass,
+          }))}
         />
       </Control>
 
-      {selectedTypeProvider &&
-        selectedTypeProvider.properties.map((property) => {
-          let currentPropertyValue = '';
-          if (value?.properties?.[property.handle] !== undefined) {
-            currentPropertyValue = value.properties[property.handle];
-          } else if (property.value !== undefined) {
-            currentPropertyValue = property.value as string;
-          }
+      {selectedTypeProvider?.properties.map((property) => {
+        let currentPropertyValue = "";
+        if (value?.properties?.[property.handle] !== undefined) {
+          currentPropertyValue = value.properties[property.handle];
+        } else if (property.value !== undefined) {
+          currentPropertyValue = property.value as string;
+        }
 
-          return (
-            <FormComponent
-              key={property.handle}
-              property={property}
-              context={value}
-              value={currentPropertyValue}
-              updateValue={(selectedValue) => {
-                updateValue({
-                  ...value,
-                  properties: {
-                    ...value.properties,
-                    [property.handle]: selectedValue,
-                  },
-                });
-              }}
-            />
-          );
-        })}
-      {typeClass && config.limitations.can('layout.options.convert') && (
+        return (
+          <FormComponent
+            key={property.handle}
+            property={property}
+            context={value}
+            value={currentPropertyValue}
+            updateValue={(selectedValue) => {
+              updateValue({
+                ...value,
+                properties: {
+                  ...value.properties,
+                  [property.handle]: selectedValue,
+                },
+              });
+            }}
+          />
+        );
+      })}
+      {typeClass && config.limitations.can("layout.options.convert") && (
         <ControlWrapper className="spacing-small">
           <Button
             className="btn small"
@@ -131,8 +128,8 @@ export const ConfigurableOptions: React.FC<Props> = ({
               if (
                 !confirm(
                   translate(
-                    'Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.'
-                  )
+                    "Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.",
+                  ),
                 )
               ) {
                 return;
@@ -141,7 +138,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
               convertToCustomValues();
             }}
           >
-            {translate('Convert to Custom Values')}
+            {translate("Convert to Custom Values")}
           </Button>
         </ControlWrapper>
       )}

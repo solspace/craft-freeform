@@ -1,4 +1,4 @@
-type Type = 'boolean' | 'select' | 'toggles' | 'group';
+type Type = "boolean" | "select" | "toggles" | "group";
 
 type Option = {
   value: string;
@@ -13,24 +13,24 @@ type BaseItem = {
 };
 
 export type BooleanItem = BaseItem & {
-  type: 'boolean';
+  type: "boolean";
   enabled: boolean;
 };
 
 export type SelectItem = BaseItem & {
-  type: 'select';
+  type: "select";
   value: string;
   options: Option[];
 };
 
 export type TogglesItem = BaseItem & {
-  type: 'toggles';
+  type: "toggles";
   values: string[];
   options: Option[];
 };
 
 export type GroupItem = BaseItem & {
-  type: 'group';
+  type: "group";
 };
 
 export type Item = BooleanItem | TogglesItem | SelectItem | GroupItem;
@@ -50,4 +50,4 @@ export type DetailResponse = {
   items: Item[];
 };
 
-export type ListResponse = Array<Omit<DetailResponse, 'items'>>;
+export type ListResponse = Array<Omit<DetailResponse, "items">>;

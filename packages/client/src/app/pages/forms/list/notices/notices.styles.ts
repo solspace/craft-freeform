@@ -1,5 +1,5 @@
-import { borderRadius, spacings } from '@ff-client/styles/variables';
-import styled, { css } from 'styled-components';
+import { borderRadius, spacings } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const NoticesList = styled.ul`
   display: flex;
@@ -25,15 +25,15 @@ export const CloseButton = styled.button`
 `;
 
 const map = [
-  { type: 'new', accent: '#038052', bg: 'transparent' },
-  { type: 'info', accent: '#007bff', bg: 'transparent' },
-  { type: 'warning', accent: '#e87b00', bg: 'transparent' },
-  { type: 'critical', accent: '#cf1324', bg: '#fbe4e4' },
-  { type: 'error', accent: '#cf1324', bg: 'transparent' },
-  { type: 'log-list', accent: '#cf1324', bg: 'transparent' },
+  { type: "new", accent: "#038052", bg: "transparent" },
+  { type: "info", accent: "#007bff", bg: "transparent" },
+  { type: "warning", accent: "#e87b00", bg: "transparent" },
+  { type: "critical", accent: "#cf1324", bg: "#fbe4e4" },
+  { type: "error", accent: "#cf1324", bg: "transparent" },
+  { type: "log-list", accent: "#cf1324", bg: "transparent" },
 ];
 
-let accentStyle = '';
+let accentStyle = "";
 map.forEach(({ type, accent, bg }) => {
   accentStyle += `
     &[data-type='${type}'] {

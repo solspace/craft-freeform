@@ -1,27 +1,27 @@
 import type {
   FormTestsResponse,
   TestStats,
-} from '@ff-client/types/form-monitor';
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+} from "@ff-client/types/form-monitor";
+import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
 
 export const QKFormMonitor = {
-  base: ['form-monitor'] as const,
+  base: ["form-monitor"] as const,
   tests: (formId: number, params?: { limit?: number; offset?: number }) =>
-    [...QKFormMonitor.base, 'tests', formId, params] as const,
-  stats: (formId: number) => [...QKFormMonitor.base, 'stats', formId] as const,
+    [...QKFormMonitor.base, "tests", formId, params] as const,
+  stats: (formId: number) => [...QKFormMonitor.base, "stats", formId] as const,
   testEmailHistory: (params?: { limit?: number; offset?: number }) =>
-    [...QKFormMonitor.base, 'test-email-history', params] as const,
+    [...QKFormMonitor.base, "test-email-history", params] as const,
   testEmailStatus: (token: string) =>
-    [...QKFormMonitor.base, 'test-email-status', token] as const,
-  mailerInfo: () => [...QKFormMonitor.base, 'mailer-info'] as const,
+    [...QKFormMonitor.base, "test-email-status", token] as const,
+  mailerInfo: () => [...QKFormMonitor.base, "mailer-info"] as const,
 };
 
 export const useFMFormTestsQuery = (
   formId: number,
-  params: { limit?: number; offset?: number } = {}
+  params: { limit?: number; offset?: number } = {},
 ): UseQueryResult<FormTestsResponse, AxiosError> => {
   const { limit = 100, offset = 0 } = params;
 
@@ -41,7 +41,7 @@ export const useFMFormTestsQuery = (
 
 export const useFMFormStatsQuery = (
   formId: number,
-  options?: { enabled?: boolean }
+  options?: { enabled?: boolean },
 ): UseQueryResult<TestStats, AxiosError> => {
   return useQuery({
     queryKey: QKFormMonitor.stats(formId),
@@ -56,7 +56,7 @@ export const useFMFormStatsQuery = (
 export type TestEmailHistoryItem = {
   id: number;
   testToken: string;
-  status: 'pending' | 'success' | 'failed';
+  status: "pending" | "success" | "failed";
   errorMessage: string | null;
   createdAt: string;
   verifiedAt: string | null;
@@ -71,7 +71,7 @@ export type TestEmailHistoryResponse = {
 };
 
 export type TestEmailStatusResponse = {
-  status: 'pending' | 'success' | 'failed';
+  status: "pending" | "success" | "failed";
   errorMessage: string | null;
   createdAt: string;
   verifiedAt: string | null;
@@ -79,7 +79,7 @@ export type TestEmailStatusResponse = {
 
 export const useTestEmailHistoryQuery = (
   formId: number,
-  params: { limit?: number; offset?: number } = {}
+  params: { limit?: number; offset?: number } = {},
 ): UseQueryResult<TestEmailHistoryResponse, AxiosError> => {
   const { limit = 50, offset = 0 } = params;
 
@@ -99,10 +99,10 @@ export const useTestEmailHistoryQuery = (
 
 export const useTestEmailStatusQuery = (
   testToken: string | null,
-  options?: { enabled?: boolean; refetchInterval?: number }
+  options?: { enabled?: boolean; refetchInterval?: number },
 ): UseQueryResult<TestEmailStatusResponse, AxiosError> => {
   return useQuery({
-    queryKey: QKFormMonitor.testEmailStatus(testToken || ''),
+    queryKey: QKFormMonitor.testEmailStatus(testToken || ""),
     queryFn: () =>
       axios
         .get<TestEmailStatusResponse>(`/api/form-monitor/test-email/status`, {
@@ -125,7 +125,7 @@ export const useSendTestEmailMutation = (
   options?: {
     onSuccess?: (data: SendTestEmailResponse) => void;
     onError?: (error: AxiosError) => void;
-  }
+  },
 ): UseMutationResult<SendTestEmailResponse, AxiosError, void> => {
   return useMutation({
     mutationFn: () =>

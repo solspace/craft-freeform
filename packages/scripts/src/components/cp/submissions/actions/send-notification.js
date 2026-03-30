@@ -6,23 +6,23 @@ window.freeform_notify = (ids) => {
   let form;
 
   $.ajax({
-    url: Craft.getCpUrl('freeform/notifications/send-notification-dialogue'),
-    dataType: 'html',
+    url: Craft.getCpUrl("freeform/notifications/send-notification-dialogue"),
+    dataType: "html",
     success: (response) => {
       content.html(response);
 
       new Garnish.Modal(content);
 
-      form = content.find('form').get(0);
+      form = content.find("form").get(0);
 
-      $('.btn.cancel', content).on({
+      $(".btn.cancel", content).on({
         click: () => {
           content.remove();
-          $('.modal-shade').remove();
+          $(".modal-shade").remove();
         },
       });
 
-      form.addEventListener('submit', (event) => {
+      form.addEventListener("submit", (event) => {
         event.stopPropagation();
         event.preventDefault();
 
@@ -34,14 +34,19 @@ window.freeform_notify = (ids) => {
         };
 
         $.ajax({
-          url: Craft.getCpUrl('freeform/notifications/send-notification'),
-          type: 'post',
+          url: Craft.getCpUrl("freeform/notifications/send-notification"),
+          type: "post",
           data,
           success: () => {
             content.remove();
-            $('.modal-shade').remove();
+            $(".modal-shade").remove();
 
-            Craft.cp.displaySuccess(Craft.t('freeform', 'Additional notifications sent successfully.'));
+            Craft.cp.displaySuccess(
+              Craft.t(
+                "freeform",
+                "Additional notifications sent successfully.",
+              ),
+            );
           },
           error: (error) => {
             Craft.cp.displayError(error.responseText);

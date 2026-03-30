@@ -1,10 +1,10 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import type { GenericValue } from '@ff-client/types/properties';
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import type { GenericValue } from "@ff-client/types/properties";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
-import { ModalWrapper } from './modal.styles';
-import type { ModalConfig } from './modal.types';
+import { ModalWrapper } from "./modal.styles";
+import type { ModalConfig } from "./modal.types";
 
 type Props = {
   title?: string;

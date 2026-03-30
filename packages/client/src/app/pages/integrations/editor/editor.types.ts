@@ -1,4 +1,4 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
 export type IntegrationState = {
   name: string;

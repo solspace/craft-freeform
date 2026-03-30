@@ -1,12 +1,11 @@
-import type { FC } from 'react';
-import React from 'react';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
-import { marked } from 'marked';
+import classes from "@ff-client/utils/classes";
+import DOMPurify from "dompurify";
+import { marked } from "marked";
+import type { FC } from "react";
 
-import { Content, Instructions, MarkdownWrapper } from './readme.styles';
+import { Content, Instructions, MarkdownWrapper } from "./readme.styles";
 
-import './markdown.css';
+import "./markdown.css";
 
 type Props = {
   active?: boolean;
@@ -22,7 +21,7 @@ export const Readme: FC<Props> = ({ active, content }) => {
 
   return (
     <MarkdownWrapper>
-      <Instructions className={classes('markdown-body', active && 'active')}>
+      <Instructions className={classes("markdown-body", active && "active")}>
         <Content
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(parsedContent),

@@ -1,11 +1,11 @@
-import config, { Edition } from '@config/freeform/freeform.config';
-import type { Row } from '@editor/builder/types/layout';
-import type { AppThunk } from '@editor/store';
-import { fieldActions } from '@editor/store/slices/layout/fields';
-import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
-import { rowActions } from '@editor/store/slices/layout/rows';
-import { type FieldType } from '@ff-client/types/fields';
-import { v4 } from 'uuid';
+import config, { Edition } from "@config/freeform/freeform.config";
+import type { Row } from "@editor/builder/types/layout";
+import type { AppThunk } from "@editor/store";
+import { fieldActions } from "@editor/store/slices/layout/fields";
+import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
+import { rowActions } from "@editor/store/slices/layout/rows";
+import type { FieldType } from "@ff-client/types/fields";
+import { v4 } from "uuid";
 
 const newRow =
   (options: {
@@ -40,7 +40,7 @@ const newRow =
         layoutUid,
         uid: rowUid,
         order: row?.order,
-      })
+      }),
     );
     dispatch(fieldActions.add({ fieldType, uid: fieldUid, rowUid }));
   };
@@ -57,7 +57,7 @@ const existingRow =
         uid: fieldUid,
         rowUid: row.uid,
         order,
-      })
+      }),
     );
   };
 

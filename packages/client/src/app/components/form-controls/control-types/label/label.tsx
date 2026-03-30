@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react';
-import { FormErrorList } from '@components/form-controls/error-list';
-import type { ControlType } from '@components/form-controls/types';
-import type { LabelProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
+import { FormErrorList } from "@components/form-controls/error-list";
+import type { ControlType } from "@components/form-controls/types";
+import type { LabelProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useRef, useState } from "react";
 
-import EditIcon from './edit-icon.svg';
-import { useEditButtonAnimations, useLabelAnimation } from './label.animations';
-import { EditableLabelWrapper, EditButton, LabelElement } from './label.styles';
+import EditIcon from "./edit-icon";
+import { useEditButtonAnimations, useLabelAnimation } from "./label.animations";
+import { EditableLabelWrapper, EditButton, LabelElement } from "./label.styles";
 
 const Label: React.FC<ControlType<LabelProperty>> = ({
   value,
@@ -24,18 +25,18 @@ const Label: React.FC<ControlType<LabelProperty>> = ({
   const editButtonAnimation = useEditButtonAnimations(hover);
 
   return (
-    <EditableLabelWrapper className={classes(errors?.length > 0 && 'errors')}>
+    <EditableLabelWrapper className={classes(errors?.length > 0 && "errors")}>
       {edit && (
         <input
           id={handle}
           ref={inputRef}
           type="text"
           className="text fullwidth"
-          value={value || ''}
+          value={value || ""}
           onChange={(event) => updateValue(event.target.value)}
           onBlur={() => setEdit(false)}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === "Enter") {
               setEdit(false);
             }
           }}

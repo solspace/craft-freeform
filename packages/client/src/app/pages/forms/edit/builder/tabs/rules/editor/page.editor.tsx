@@ -1,23 +1,22 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useAppDispatch } from '@editor/store';
-import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
-import { pageRuleActions } from '@editor/store/slices/rules/pages';
-import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
-import { useQueryFormRules } from '@ff-client/queries/rules';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useAppDispatch } from "@editor/store";
+import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
+import { pageRuleActions } from "@editor/store/slices/rules/pages";
+import { pageRuleSelectors } from "@editor/store/slices/rules/pages/page-rules.selectors";
+import { useQueryFormRules } from "@ff-client/queries/rules";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { CombinatorSelect } from '../conditions/combinator/combinator';
-import { ConditionTable } from '../conditions/table/condition-table';
-
-import { Remove } from './remove-button/remove';
-import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field.editor.styles';
-import { UpsellEditor } from './upsell.editor';
+import { CombinatorSelect } from "../conditions/combinator/combinator";
+import { ConditionTable } from "../conditions/table/condition-table";
+import { ConfigurationDescription, Label } from "./editor.styles";
+import { RulesEditorWrapper } from "./field.editor.styles";
+import { Remove } from "./remove-button/remove";
+import { UpsellEditor } from "./upsell.editor";
 
 export const PageRulesEditor: React.FC = () => {
   const { formId, uid } = useParams();
@@ -45,7 +44,7 @@ export const PageRulesEditor: React.FC = () => {
       <RulesEditorWrapper>
         <Label>
           <LoadingText
-            loadingText={translate('Loading data')}
+            loadingText={translate("Loading data")}
             loading={isFetching}
           >
             <span
@@ -55,10 +54,11 @@ export const PageRulesEditor: React.FC = () => {
         </Label>
         {!isFetching && (
           <button
+            type="button"
             className="btn add icon dashed"
             onClick={() => dispatch(pageRuleActions.add(uid))}
           >
-            {translate('Add rules')}
+            {translate("Add rules")}
           </button>
         )}
       </RulesEditorWrapper>
@@ -70,13 +70,13 @@ export const PageRulesEditor: React.FC = () => {
       <Remove
         onClick={() => {
           dispatch(pageRuleActions.remove(uid));
-          navigate('..');
+          navigate("..");
         }}
       />
 
       <Label>
         <LoadingText
-          loadingText={translate('Loading data')}
+          loadingText={translate("Loading data")}
           loading={isFetching}
         >
           <span
@@ -87,7 +87,7 @@ export const PageRulesEditor: React.FC = () => {
       {!isFetching && (
         <>
           <ConfigurationDescription className="short">
-            {translate('Go to this page when')}
+            {translate("Go to this page when")}
 
             <CombinatorSelect
               value={rule.combinator}
@@ -96,12 +96,12 @@ export const PageRulesEditor: React.FC = () => {
                   pageRuleActions.modifyCombinator({
                     ruleUid: rule.uid,
                     combinator: value,
-                  })
+                  }),
                 )
               }
             />
 
-            {translate('of the following rules match:')}
+            {translate("of the following rules match:")}
           </ConfigurationDescription>
 
           <ConditionTable
@@ -111,7 +111,7 @@ export const PageRulesEditor: React.FC = () => {
                 pageRuleActions.modifyConditions({
                   ruleUid: rule.uid,
                   conditions,
-                })
+                }),
               );
             }}
           />

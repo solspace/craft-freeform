@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import type { NotificationTemplate } from '@ff-client/types/notifications';
-import classes from '@ff-client/utils/classes';
+import type { NotificationTemplate } from "@ff-client/types/notifications";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useEffect, useRef, useState } from "react";
 
-import type { NotificationSelectHandler } from '../notification-template';
-
-import { CreateButton } from './item/CreateButton';
-import { Item } from './item/Item';
+import type { NotificationSelectHandler } from "../notification-template";
 import {
   TemplateCategoryWrapper,
   TemplateList,
   Title,
-} from './category.styles';
+} from "./category.styles";
+import { CreateButton } from "./item/CreateButton";
+import { Item } from "./item/Item";
 
 type Props = {
   value: number | string;
@@ -39,7 +39,7 @@ export const Category: React.FC<Props> = ({
     if (element) {
       setHasScroll(element.scrollHeight > element.clientHeight);
     }
-  }, [templates]);
+  }, []);
 
   if (templates === undefined) {
     return null;
@@ -57,7 +57,7 @@ export const Category: React.FC<Props> = ({
 
       <TemplateList
         ref={listRef}
-        className={classes(hasScroll && 'has-scroll')}
+        className={classes(hasScroll && "has-scroll")}
       >
         {templates.map((template) => (
           <Item

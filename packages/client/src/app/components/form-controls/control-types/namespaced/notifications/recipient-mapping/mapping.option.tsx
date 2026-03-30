@@ -1,8 +1,8 @@
-import React from 'react';
-import type { Option } from '@components/form-controls/control-types/options/options.types';
-import type { RecipientMapping } from '@ff-client/types/notifications';
+import type { Option } from "@components/form-controls/control-types/options/options.types";
+import type { RecipientMapping } from "@ff-client/types/notifications";
+import type React from "react";
 
-import { RecipientMappingBlock } from './block/block';
+import { RecipientMappingBlock } from "./block/block";
 
 type Props = {
   option: Option;
@@ -21,14 +21,14 @@ export const MappingOption: React.FC<Props> = ({
   const currentMapping = mapping || {
     value: option.value,
     recipients: [],
-    template: '',
+    template: "",
   };
 
   const onChange = (newValue: RecipientMapping): void => {
     let index: number;
     if (isMapped) {
       index = allMappings.findIndex(
-        (mapping) => mapping.value === newValue.value
+        (mapping) => mapping.value === newValue.value,
       );
     }
 

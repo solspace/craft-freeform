@@ -72,6 +72,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     #[Limitation('props.file', 'count')]
     #[DefaultValue('props.file.count')]
     #[Input\Integer(
+        label: 'Max Files',
         instructions: 'Specify the maximum uploadable file count.',
     )]
     protected int $fileCount = self::DEFAULT_FILE_COUNT;

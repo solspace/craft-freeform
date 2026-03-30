@@ -1,16 +1,16 @@
-import React from 'react';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import translate from '@ff-client/utils/translations';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { Chart } from './chart/chart';
-import { ResultList } from './result-list/result-list';
-import { ResultsLoadingSkeleton } from './results.loading';
+import { Chart } from "./chart/chart";
+import { ResultList } from "./result-list/result-list";
+import { ResultsLoadingSkeleton } from "./results.loading";
 import {
   useQuerySurveyChart,
   useQuerySurveyPreferences,
   useQuerySurveyResults,
-} from './results.queries';
-import { ResultsWrapper } from './results.styles';
+} from "./results.queries";
+import { ResultsWrapper } from "./results.styles";
 
 export const SurveyResults: React.FC = () => {
   const { data: dataCharts, isFetching: isFetchingCharts } =
@@ -28,8 +28,8 @@ export const SurveyResults: React.FC = () => {
     <>
       <Breadcrumb
         id="survey-results"
-        label={translate('Surveys & Polls')}
-        url={'/forms'}
+        label={translate("Surveys & Polls")}
+        url={"/forms"}
       />
       {isLoading && <ResultsLoadingSkeleton />}
       {!isLoading && (

@@ -1,10 +1,10 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from "react";
 
-import type { TokenBackend } from '../tokens.types';
+import type { TokenBackend } from "../tokens.types";
 
 type PositionHook = (
   backend: TokenBackend,
-  ref: MutableRefObject<HTMLDivElement>
+  ref: RefObject<HTMLDivElement>,
 ) => {
   left: number;
   top: number;

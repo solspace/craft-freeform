@@ -1,6 +1,6 @@
-import type { FormImportData, ImportOptions } from '../import/import.types';
+import type { FormImportData, ImportOptions } from "../import/import.types";
 
-export type ExportOptions = Omit<ImportOptions, 'strategy'>;
+export type ExportOptions = Omit<ImportOptions, "strategy">;
 
 export const createExportOptions = (): ExportOptions => ({
   forms: [],
@@ -17,11 +17,11 @@ export const createExportOptions = (): ExportOptions => ({
   },
   integrations: [],
   settings: false,
-  password: '',
+  password: "",
 });
 
 export const createFilledExportOptions = (
-  data: FormImportData
+  data: FormImportData,
 ): ExportOptions => ({
   forms: data.forms.map((form) => form.uid),
   formGroups: data?.formGroups?.map((group) => group.uid) || [],
@@ -36,7 +36,7 @@ export const createFilledExportOptions = (
   },
   integrations: data.integrations.map((integration) => integration.uid),
   formSubmissions: data.formSubmissions.map(
-    (submission) => submission.form.uid
+    (submission) => submission.form.uid,
   ),
   settings: true,
 });

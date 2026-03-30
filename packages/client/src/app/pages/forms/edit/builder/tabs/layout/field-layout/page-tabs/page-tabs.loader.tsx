@@ -1,8 +1,7 @@
-import React from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-
-import { PageTab, TabWrapper } from './tab/tab.styles';
-import { PageTabsContainer, PageTabsWrapper } from './page-tabs.styles';
+import type React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { PageTabsContainer, PageTabsWrapper } from "./page-tabs.styles";
+import { PageTab, TabWrapper } from "./tab/tab.styles";
 
 export const LoaderPageTabs: React.FC = () => {
   return (

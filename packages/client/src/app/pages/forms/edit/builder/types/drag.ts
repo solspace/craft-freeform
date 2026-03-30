@@ -1,15 +1,15 @@
-import type { Field } from '@editor/store/slices/layout/fields';
-import type { FieldFavorite, FieldType } from '@ff-client/types/fields';
+import type { Field } from "@editor/store/slices/layout/fields";
+import type { FieldFavorite, FieldType } from "@ff-client/types/fields";
 
-import type { OptionRow, Page } from './layout';
+import type { OptionRow, Page } from "./layout";
 
 export enum Drag {
-  FieldType = 'field-type',
-  FavoriteField = 'favorite-field',
-  Field = 'field',
-  Row = 'row',
-  OptionRow = 'option-row',
-  Page = 'page',
+  FieldType = "field-type",
+  FavoriteField = "favorite-field",
+  Field = "field",
+  Row = "row",
+  OptionRow = "option-row",
+  Page = "page",
 }
 
 type BaseDragItem<T extends Drag, D> = {

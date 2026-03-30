@@ -214,6 +214,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('token', $this->string(100)->notNull())
                 ->addField('ip', $this->string(46)->null())
+                ->addField('sourceUrl', $this->text()->null())
                 ->addField('isSpam', $this->boolean()->defaultValue(false))
                 ->addField('isHidden', $this->boolean()->defaultValue(false))
                 ->addField('idempotencyKey', $this->string(255)->null())
@@ -463,6 +464,49 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fileName', $this->text()->notNull())
                 ->addField('body', $this->longText()->notNull())
                 ->addField('sortOrder', $this->integer()->notNull()->defaultValue(0)),
+
+            (new Table('freeform_ab_tests'))
+                ->addField('id', $this->primaryKey())
+                ->addField('name', $this->string(255)->notNull())
+                ->addField('handle', $this->string(255)->notNull())
+                ->addField('description', $this->text())
+                ->addField('startDate', $this->dateTime())
+                ->addField('endDate', $this->dateTime())
+                ->addIndex(['handle'], true, name: 'idx_ab_tests_handle'),
+
+            (new Table('freeform_ab_tests_assignments'))
+                ->addField('id', $this->primaryKey())
+                ->addField('userId', $this->integer()->notNull())
+                ->addField('abTestId', $this->integer()->notNull())
+                ->addField('abVariantId', $this->integer()->notNull())
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_userId')
+                ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abTestId')
+                ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abVariantId')
+                ->addIndex(['userId', 'abTestId'], true, name: 'idx_ab_tests_assignments_userId_abTestId'),
+
+            (new Table('freeform_ab_tests_variants'))
+                ->addField('id', $this->primaryKey())
+                ->addField('abTestId', $this->integer()->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('weight', $this->integer()->notNull())
+                ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_variants_abTestId')
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_variants_formId'),
+
+            (new Table('freeform_ab_tests_statistics'))
+                ->addField('id', $this->primaryKey())
+                ->addField('abTestId', $this->integer()->notNull())
+                ->addField('abVariantId', $this->integer()->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('sessionId', $this->string()->notNull())
+                ->addField('status', $this->string(20)->notNull())
+                ->addField('lastError', $this->text())
+                ->addField('lastField', $this->string(255))
+                ->addIndex(['abTestId', 'status'], name: 'idx_ab_tests_statistics_abTestId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'status'], name: 'idx_ab_tests_statistics_abTestId_abVariantId_formId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'sessionId'], name: 'idx_ab_tests_statistics_abTestId_abVariantId_formId_sessionId')
+                ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abTestId')
+                ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abVariantId')
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, 'fk_ab_tests_statistics_formId'),
         ];
     }
 

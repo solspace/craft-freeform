@@ -1,9 +1,9 @@
-import { QKIntegrations } from '@ff-client/queries/integrations';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import { QKIntegrations } from "@ff-client/queries/integrations";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
-import type { AuthState, Integration } from '../../integration.types';
+import type { AuthState, Integration } from "../../integration.types";
 
 type Response = {
   status: AuthState;
@@ -11,13 +11,13 @@ type Response = {
 };
 
 export const useAuthCheck = (
-  integration: Integration
+  integration: Integration,
 ): UseQueryResult<Response> => {
   const { id } = integration;
 
   return useQuery<Response>({
     queryKey: QKIntegrations.authCheck(id),
-    enabled: !!id && integration.implements.includes('apiIntegration'),
+    enabled: !!id && integration.implements.includes("apiIntegration"),
     queryFn: async () =>
       axios
         .get(`/api/integrations/${id}/status`)

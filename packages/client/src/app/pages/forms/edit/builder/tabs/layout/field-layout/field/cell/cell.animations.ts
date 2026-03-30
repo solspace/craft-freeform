@@ -1,8 +1,8 @@
-import type { SpringValues } from 'react-spring';
-import { useSpring } from 'react-spring';
+import type { SpringValues } from "@react-spring/web";
+import { useSpring } from "@react-spring/web";
 
 export const useLoaderAnimation = (
-  isLoading: boolean
+  isLoading: boolean,
 ): [SpringValues<{ scale: number }>, SpringValues<{ scale: number }>] => {
   const spinner = useSpring({
     scale: isLoading ? 1 : 0.3,

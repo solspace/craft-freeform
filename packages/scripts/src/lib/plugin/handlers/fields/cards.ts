@@ -1,5 +1,5 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import type { FreeformHandler } from 'types/form';
+import type Freeform from "@components/front-end/plugin/freeform";
+import type { FreeformHandler } from "types/form";
 
 class CardsHandler implements FreeformHandler {
   freeform: Freeform;
@@ -11,15 +11,19 @@ class CardsHandler implements FreeformHandler {
   }
 
   reload = () => {
-    const cardContainers = this.freeform.form.querySelectorAll<HTMLElement>('*[data-field-type="cards"]');
+    const cardContainers = this.freeform.form.querySelectorAll<HTMLElement>(
+      '*[data-field-type="cards"]',
+    );
     cardContainers.forEach((container) => {
       const maxValuesData = container.dataset.maxValues;
       if (maxValuesData === undefined) {
         return;
       }
 
-      const checkboxes = Array.from(container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'));
-      const maxValues = parseInt(maxValuesData);
+      const checkboxes = Array.from(
+        container.querySelectorAll<HTMLInputElement>('input[type="checkbox"]'),
+      );
+      const maxValues = parseInt(maxValuesData, 10);
 
       if (maxValues === 1) {
         this.handleSingleValue(checkboxes);
@@ -29,9 +33,12 @@ class CardsHandler implements FreeformHandler {
     });
   };
 
-  private handleMultipleValues = (checkboxes: HTMLInputElement[], maxValues: number) => {
+  private handleMultipleValues = (
+    checkboxes: HTMLInputElement[],
+    maxValues: number,
+  ) => {
     checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener('change', () => {
+      checkbox.addEventListener("change", () => {
         const checkedCount = checkboxes.filter((cb) => cb.checked).length;
         if (checkedCount > maxValues && checkbox.checked) {
           checkbox.checked = false;
@@ -42,7 +49,7 @@ class CardsHandler implements FreeformHandler {
 
   private handleSingleValue = (checkboxes: HTMLInputElement[]) => {
     checkboxes.forEach((checkbox) => {
-      checkbox.addEventListener('change', () => {
+      checkbox.addEventListener("change", () => {
         const isChecked = checkbox.checked;
         const siblings = checkboxes.filter((cb) => cb !== checkbox);
         const checkedSiblings = siblings.filter((cb) => cb.checked);

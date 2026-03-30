@@ -1,5 +1,5 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -103,10 +103,10 @@ export const ConfigWrapper = styled.div`
 
 export const ConfigItem = styled.div<{ $isColumn?: boolean }>`
   display: flex;
-  flex-direction: ${({ $isColumn }) => ($isColumn ? 'column' : 'row')};
+  flex-direction: ${({ $isColumn }) => ($isColumn ? "column" : "row")};
   justify-content: ${({ $isColumn }) =>
-    $isColumn ? 'flex-start' : 'space-between'};
-  gap: ${({ $isColumn }) => ($isColumn ? spacings.xs : '0')};
+    $isColumn ? "flex-start" : "space-between"};
+  gap: ${({ $isColumn }) => ($isColumn ? spacings.xs : "0")};
   margin-bottom: ${spacings.sm};
 
   &:last-child {
@@ -138,7 +138,7 @@ export const ReactivateButton = styled.button`
 `;
 
 export const StatusMessage = styled.div<{ $error?: boolean }>`
-  color: ${({ $error }) => ($error ? colors.red600 : 'inherit')};
+  color: ${({ $error }) => ($error ? colors.red600 : "inherit")};
   font-style: italic;
   font-size: 0.9em;
   text-align: right;

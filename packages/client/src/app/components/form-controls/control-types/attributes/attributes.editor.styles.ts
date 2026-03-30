@@ -1,12 +1,12 @@
-import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors, shadows, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 import {
   PreviewEditor,
   PreviewEditorContainer,
-} from '../../preview/previewable-component.styles';
+} from "../../preview/previewable-component.styles";
 
 export const AttributeEditorWrapper = styled(PreviewEditor)`
   gap: 0;

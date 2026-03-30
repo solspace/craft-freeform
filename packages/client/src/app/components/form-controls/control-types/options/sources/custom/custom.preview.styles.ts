@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { PreviewRow as TablePreviewRow } from '../../../table/table.preview.styles';
+import { PreviewRow as TablePreviewRow } from "../../../table/table.preview.styles";
 
 export const PreviewRow = styled(TablePreviewRow)`
   display: flex;

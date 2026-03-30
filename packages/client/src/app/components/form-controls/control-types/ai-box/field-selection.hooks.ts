@@ -1,6 +1,6 @@
-import { useSelector } from 'react-redux';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import type { FieldSelectionProperty } from '@ff-client/types/properties';
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import type { FieldSelectionProperty } from "@ff-client/types/properties";
+import { useSelector } from "react-redux";
 
 export const generateValue = (value: string, format?: string): string => {
   // Extract all field handles from the value
@@ -11,25 +11,25 @@ export const generateValue = (value: string, format?: string): string => {
   }
 
   // Extract just the handle names (remove 'field:' prefix)
-  const fieldHandles = fieldMatches.map((match) => match.replace('field:', ''));
+  const fieldHandles = fieldMatches.map((match) => match.replace("field:", ""));
 
-  if (format === '<mark>...</mark>') {
+  if (format === "<mark>...</mark>") {
     // Join with commas and wrap each in mark tags
-    return fieldHandles.map((handle) => `<mark>${handle}</mark>`).join(', ');
+    return fieldHandles.map((handle) => `<mark>${handle}</mark>`).join(", ");
   }
 
   // For other formats, join with commas and wrap in brackets
-  return fieldHandles.map((handle) => `[[${handle}]]`).join(', ');
+  return fieldHandles.map((handle) => `[[${handle}]]`).join(", ");
 };
 
 export const useFieldSelectionHandles = (
-  property: FieldSelectionProperty
+  property: FieldSelectionProperty,
 ): string[] => {
   const allFields = useSelector(fieldSelectors.all);
   const handles = allFields
     .filter((item) => {
       // Handle wildcard case
-      if (property.availableFieldTypes.includes('*')) {
+      if (property.availableFieldTypes.includes("*")) {
         return true; // Include all fields
       }
       return property.availableFieldTypes.includes(item.typeClass);

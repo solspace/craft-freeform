@@ -52,6 +52,7 @@ class PermissionsBundle extends FeatureBundle
         $permissions = array_merge(
             $this->getSubmissionPermissions($readPermissions, $managePermissions),
             $this->getFormPermissions($formPermissions),
+            $this->getAbPermissions(),
             $this->getIntegrationPermissions(),
             $this->getNotificationPermissions(),
             $this->getPdfTemplatePermissions(),
@@ -111,6 +112,22 @@ class PermissionsBundle extends FeatureBundle
                         'label' => Freeform::t('Manage Forms Individually'),
                         'info' => Freeform::t("If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox."),
                         'nested' => $formPermissions,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    private function getAbPermissions(): array
+    {
+        return [
+            Freeform::PERMISSION_AB_ACCESS => [
+                'label' => Freeform::t('Access A/B Testing'),
+                'nested' => [
+                    Freeform::PERMISSION_AB_MANAGE => [
+                        'label' => Freeform::t(
+                            'Manage A/B Tests'
+                        ),
                     ],
                 ],
             ],

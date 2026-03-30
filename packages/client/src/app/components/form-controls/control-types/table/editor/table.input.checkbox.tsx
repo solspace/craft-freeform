@@ -1,28 +1,31 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import { generateRandomHash } from '@ff-client/utils/hash';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
+import { spacings } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useId } from "react";
 
-import { CheckboxContainer } from './table.editor.styles';
-import type { TableEditorProps } from './table.editor.types';
+import type { TableEditorProps } from "./table.editor.types";
 
 export const TableCheckboxEditor: React.FC<TableEditorProps> = ({
   column,
   onUpdate,
 }) => {
-  const hash = `table-checkbox-${generateRandomHash(8)}`;
+  const id = useId();
   const isChecked = column.checked ?? false;
 
   return (
-    <CheckboxContainer>
-      <Checkbox
-        id={hash}
-        checked={isChecked}
-        onChange={() => onUpdate({ ...column, checked: !column.checked })}
-      />
-      <label htmlFor={hash}>
-        {translate(isChecked ? 'checked by default' : 'unchecked by default')}
-      </label>
-    </CheckboxContainer>
+    <FlexColumn $gap={spacings.lg}>
+      <FlexRow $alignItems="center">
+        <Checkbox
+          id={id}
+          checked={isChecked}
+          onChange={() => onUpdate({ ...column, checked: !column.checked })}
+        />
+        <label htmlFor={id}>
+          {translate(isChecked ? "checked by default" : "unchecked by default")}
+        </label>
+      </FlexRow>
+    </FlexColumn>
   );
 };

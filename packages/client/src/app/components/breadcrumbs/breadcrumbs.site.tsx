@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import config from '@config/freeform/freeform.config';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import classes from '@ff-client/utils/classes';
+import config from "@config/freeform/freeform.config";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import classes from "@ff-client/utils/classes";
+import { type FC, useState } from "react";
 
-import { Crumb, PopupMenu, TriggerButton } from './breadcrumbs.site.style';
+import { Crumb, PopupMenu, TriggerButton } from "./breadcrumbs.site.style";
 
-export const SiteCrumb: React.FC = () => {
+export const SiteCrumb: FC = () => {
   const [open, setOpen] = useState(false);
   const { current, list, change } = useSiteContext();
 
@@ -27,7 +27,7 @@ export const SiteCrumb: React.FC = () => {
 
   return (
     <Crumb
-      className={classes('crumb', craft4 && 'craft-4', craft5 && 'craft-5')}
+      className={classes("crumb", craft4 && "craft-4", craft5 && "craft-5")}
     >
       <a id="site-crumb" className="crumb-link">
         <span className="cp-icon puny">
@@ -52,7 +52,7 @@ export const SiteCrumb: React.FC = () => {
       >
         <PopupMenu
           className="menu"
-          style={{ display: open ? 'block' : 'none' }}
+          style={{ display: open ? "block" : "none" }}
         >
           <ul className="padded">
             {list.map((site) => (
@@ -65,8 +65,8 @@ export const SiteCrumb: React.FC = () => {
               >
                 <a
                   className={classes(
-                    'menu-item',
-                    current.handle === site.handle && 'sel'
+                    "menu-item",
+                    current.handle === site.handle && "sel",
                   )}
                 >
                   <span className="menu-item-label">{site.name}</span>

@@ -1,8 +1,7 @@
-import type { FC } from 'react';
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import styled from "styled-components";
 
 type Props = {
   onClick: () => void;
@@ -11,7 +10,7 @@ type Props = {
 export const CardPlaceholder: FC<Props> = ({ onClick }) => {
   return (
     <CardPlaceholderWrapper onClick={onClick}>
-      {translate('Add Card')}
+      {translate("Add Card")}
     </CardPlaceholderWrapper>
   );
 };

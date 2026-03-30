@@ -1,16 +1,17 @@
-import type { ComponentType } from 'react';
-import React, { Suspense } from 'react';
-import * as ControlTypes from '@components/form-controls/control-types';
-import type { ControlType } from '@components/form-controls/types';
+import * as ControlTypes from "@components/form-controls/control-types";
+import type { ControlType } from "@components/form-controls/types";
 import type {
   GenericValue,
   Property,
   PropertyType,
-} from '@ff-client/types/properties';
+} from "@ff-client/types/properties";
+import type React from "react";
+import type { ComponentType } from "react";
+import { Suspense } from "react";
 
-import { ErrorBoundary } from './boundaries/ErrorBoundary';
-import { useVisibility } from './hooks/use-visibility';
-import { DelimiterElement } from './delimiter';
+import { ErrorBoundary } from "./boundaries/ErrorBoundary";
+import { DelimiterElement } from "./delimiter";
+import { useVisibility } from "./hooks/use-visibility";
 
 export type UpdateValue<T> = (value: T) => void;
 
@@ -40,7 +41,7 @@ export const FormComponent: React.FC<Props> = ({
 
   const isVisible = useVisibility(
     visibilityFilters || [],
-    context as GenericValue as GenericValue
+    context as GenericValue as GenericValue,
   );
 
   if (FormControl === undefined) {

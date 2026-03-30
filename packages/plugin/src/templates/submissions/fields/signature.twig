@@ -1,10 +1,11 @@
+{% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
 <div class="field">
     <div class="heading">
         <label>{{ field.label }}</label>
     </div>
     <div class="signature-wrapper">
-        <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle].value }}" />
-        <canvas data-image="{{ submission[field.handle].value }}"
+        <input type="hidden" name="{{ field.handle }}" value="{{ selectedValue }}" />
+        <canvas data-image="{{ selectedValue }}"
                 width="{{ field.width }}"
                 height="{{ field.height }}"
                 style="border: 1px solid {{ field.borderColor }}; padding: 1px;"

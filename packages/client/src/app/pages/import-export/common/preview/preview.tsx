@@ -1,21 +1,17 @@
-import React from 'react';
-import { indexedColumn } from '@ff-client/utils/arrays';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { indexedColumn } from "@ff-client/utils/arrays";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
 
-import { isAllOptionsSelected } from '../../export/export.operations';
+import { isAllOptionsSelected } from "../../export/export.operations";
 import {
   createExportOptions,
   createFilledExportOptions,
   type ExportOptions,
-} from '../../export/export.types';
-import type { FormImportData } from '../../import/import.types';
-
-import { PreviewSettings } from './settings/settings';
-import { PreviewSubmissionsTemplates } from './submissions/submissions';
-import { PreviewTemplates } from './templates/templates';
-import { PreviewGenericList } from './preview.generic-list';
+} from "../../export/export.types";
+import type { FormImportData } from "../../import/import.types";
+import { PreviewGenericList } from "./preview.generic-list";
 import {
   FavoritesIcon,
   FileList,
@@ -24,7 +20,10 @@ import {
   Icon,
   PreviewWrapper,
   SelectAll,
-} from './preview.styles';
+} from "./preview.styles";
+import { PreviewSettings } from "./settings/settings";
+import { PreviewSubmissionsTemplates } from "./submissions/submissions";
+import { PreviewTemplates } from "./templates/templates";
 
 type Props = {
   data?: FormImportData;
@@ -44,19 +43,19 @@ export const Preview: React.FC<Props> = ({
   const filledOptions: ExportOptions = createFilledExportOptions(data);
 
   return (
-    <PreviewWrapper className={classes(disabled && 'disabled')}>
+    <PreviewWrapper className={classes(disabled && "disabled")}>
       <FileList>
         <SelectAll
           onClick={() => {
             onUpdate(isAllSelected ? emptyOptions : filledOptions);
           }}
         >
-          {translate(isAllSelected ? 'Deselect All' : 'Select All')}
+          {translate(isAllSelected ? "Deselect All" : "Select All")}
         </SelectAll>
 
         <ul>
           <PreviewGenericList
-            label={translate('Forms')}
+            label={translate("Forms")}
             icon={<FormIcon />}
             labelKey="name"
             selectionKey="uid"
@@ -66,14 +65,14 @@ export const Preview: React.FC<Props> = ({
             labelExtras={(form) =>
               form.pages.length > 1 && (
                 <small>
-                  ({translate('{count} pages', { count: form.pages.length })})
+                  ({translate("{count} pages", { count: form.pages.length })})
                 </small>
               )
             }
           />
 
           <PreviewGenericList
-            label={translate('Form Groups')}
+            label={translate("Form Groups")}
             icon={<FormGroupIcon />}
             labelKey="label"
             selectionKey="uid"
@@ -83,7 +82,7 @@ export const Preview: React.FC<Props> = ({
           />
 
           <PreviewGenericList
-            label={translate('Favorite Fields')}
+            label={translate("Favorite Fields")}
             icon={<FavoritesIcon />}
             labelKey="label"
             selectionKey="uid"
@@ -96,11 +95,11 @@ export const Preview: React.FC<Props> = ({
             templates={data.templates}
             options={options.templates}
             onUpdate={(templates) => onUpdate({ ...options, templates })}
-            formNames={indexedColumn(data.forms, 'uid', 'name')}
+            formNames={indexedColumn(data.forms, "uid", "name")}
           />
 
           <PreviewGenericList
-            label={translate('Integrations')}
+            label={translate("Integrations")}
             labelKey="name"
             selectionKey="uid"
             items={data.integrations}
@@ -130,7 +129,7 @@ export const Preview: React.FC<Props> = ({
           />
 
           <PreviewGenericList
-            label={translate('Limited Users')}
+            label={translate("Limited Users")}
             icon={<Icon className="fa-regular fa-user-shield" />}
             labelKey="name"
             selectionKey="uid"

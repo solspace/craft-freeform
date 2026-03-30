@@ -1,8 +1,8 @@
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
-import type { FreeformEvent } from 'types/events';
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
+import type { FreeformEvent } from "types/events";
 
-import { getContainer, loadHCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadHCaptcha, readConfig } from "./utils/script-loader";
 
 let captchaId: string;
 
@@ -12,13 +12,13 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
     return null;
   }
 
-  const existingElement = container.querySelector<HTMLDivElement>('.h-captcha');
+  const existingElement = container.querySelector<HTMLDivElement>(".h-captcha");
   if (existingElement) {
     return existingElement;
   }
 
-  const captchaElement = document.createElement('div');
-  captchaElement.classList.add('h-captcha');
+  const captchaElement = document.createElement("div");
+  captchaElement.classList.add("h-captcha");
 
   const { sitekey, theme, size } = readConfig(container);
 
@@ -38,11 +38,15 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
   });
 });
 
-addListeners(document, [events.form.ajaxAfterSubmit], async (event: FreeformEvent) => {
-  loadHCaptcha(event.form).then(() => {
-    const captchaElement = createCaptcha(event);
-    if (captchaElement) {
-      hcaptcha.reset(captchaId);
-    }
-  });
-});
+addListeners(
+  document,
+  [events.form.ajaxAfterSubmit],
+  async (event: FreeformEvent) => {
+    loadHCaptcha(event.form).then(() => {
+      const captchaElement = createCaptcha(event);
+      if (captchaElement) {
+        hcaptcha.reset(captchaId);
+      }
+    });
+  },
+);

@@ -1,17 +1,17 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { TokenInput } from '@components/elements/token-input/token-input';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { useFieldType } from '@ff-client/queries/field-types';
-import { Type } from '@ff-client/types/fields';
-import type { Condition } from '@ff-client/types/rules';
-import { operatorTypes } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
+import { TokenInput } from "@components/elements/token-input/token-input";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useFieldType } from "@ff-client/queries/field-types";
+import { Type } from "@ff-client/types/fields";
+import type { Condition } from "@ff-client/types/rules";
+import { operatorTypes } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useSelector } from "react-redux";
 
-import { BooleanValueRule } from './boolean/boolean';
-import { GeneratedOptionsRuleValue } from './generated-options/generated-options';
-import { OpinionScaleRuleValue } from './opinion-scale/opinion-scale';
-import { RatingRuleValue } from './rating/rating';
+import { BooleanValueRule } from "./boolean/boolean";
+import { GeneratedOptionsRuleValue } from "./generated-options/generated-options";
+import { OpinionScaleRuleValue } from "./opinion-scale/opinion-scale";
+import { RatingRuleValue } from "./rating/rating";
 
 type Props = {
   condition: Condition;
@@ -33,7 +33,7 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
   }
 
   const isBoolean =
-    fieldType.implements.includes('boolean') &&
+    fieldType.implements.includes("boolean") &&
     operatorTypes.boolean.includes(operator);
 
   if (isBoolean) {
@@ -42,14 +42,14 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
     );
   }
 
-  if (fieldType.implements.includes('generatedOptions')) {
+  if (fieldType.implements.includes("generatedOptions")) {
     return (
       <GeneratedOptionsRuleValue
         field={field}
         fieldType={fieldType}
         value={value}
         multiple={operatorTypes.multiple.includes(operator)}
-        onChange={(selectedValue) => onChange && onChange(selectedValue)}
+        onChange={(selectedValue) => onChange?.(selectedValue)}
       />
     );
   } else if (operatorTypes.multiple.includes(operator)) {
@@ -58,7 +58,7 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
         value={value}
         allowCustom={true}
         onChange={(value) => onChange(JSON.stringify(value))}
-        placeholder={translate('Add values')}
+        placeholder={translate("Add values")}
       />
     );
   }
@@ -80,7 +80,7 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
       className="text fullwidth"
       type="text"
       value={value}
-      onChange={(event) => onChange && onChange(event.target.value)}
+      onChange={(event) => onChange?.(event.target.value)}
     />
   );
 };

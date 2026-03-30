@@ -1,8 +1,14 @@
-import { fetchCsrf } from '../csrf';
-import { HttpError } from './ajax.classes';
-import type { CreateXhrRequest, Headers } from './ajax.types';
+import { fetchCsrf } from "../csrf";
+import { HttpError } from "./ajax.classes";
+import type { CreateXhrRequest, Headers } from "./ajax.types";
 
-export const createXhrRequest: CreateXhrRequest = async (method, url, resolve, reject, options) => {
+export const createXhrRequest: CreateXhrRequest = async (
+  method,
+  url,
+  resolve,
+  reject,
+  options,
+) => {
   const urlObject = new URL(url, window.location.origin);
   if (options?.queryParams) {
     options.queryParams.forEach((value, key) => {
@@ -13,13 +19,13 @@ export const createXhrRequest: CreateXhrRequest = async (method, url, resolve, r
   const xhr = options.request || new XMLHttpRequest();
   xhr.open(method, urlObject);
 
-  xhr.setRequestHeader('Cache-Control', 'no-cache');
-  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-  xhr.setRequestHeader('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
+  xhr.setRequestHeader("Cache-Control", "no-cache");
+  xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+  xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
 
   const csrf = await fetchCsrf();
   if (csrf) {
-    xhr.setRequestHeader('X-CSRF-Token', csrf.value);
+    xhr.setRequestHeader("X-CSRF-Token", csrf.value);
   }
 
   attachHeaders(xhr, options?.headers);
@@ -34,7 +40,13 @@ export const createXhrRequest: CreateXhrRequest = async (method, url, resolve, r
 
     const status = xhr.status;
     if (status < 200 || status >= 300) {
-      reject(new HttpError(`Request failed with status ${xhr.statusText}`, xhr, data));
+      reject(
+        new HttpError(
+          `Request failed with status ${xhr.statusText}`,
+          xhr,
+          data,
+        ),
+      );
       return;
     }
 
@@ -46,11 +58,11 @@ export const createXhrRequest: CreateXhrRequest = async (method, url, resolve, r
   };
 
   xhr.onerror = () => {
-    reject(new Error('Network error'));
+    reject(new Error("Network error"));
   };
 
   xhr.onabort = () => {
-    reject(new Error('Request aborted'));
+    reject(new Error("Request aborted"));
   };
 
   if (options.onUploadProgress) {

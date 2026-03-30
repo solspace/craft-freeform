@@ -1,12 +1,12 @@
-import React from 'react';
-import { HelpText } from '@components/elements/help-text';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { RecipientsProperty } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { HelpText } from "@components/elements/help-text";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { RecipientsProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
 
-import { RecipientsController } from './recipients.controller';
+import { RecipientsController } from "./recipients.controller";
 
 const Recipients: React.FC<ControlType<RecipientsProperty>> = ({
   value = [],
@@ -23,8 +23,8 @@ const Recipients: React.FC<ControlType<RecipientsProperty>> = ({
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                'Press <b>enter</b> while focusing an input to add a new set of inputs.'
-              )
+                "Press <b>enter</b> while focusing an input to add a new set of inputs.",
+              ),
             ),
           }}
         />

@@ -1,8 +1,8 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 const generatePadding = (level = 1): string => {
-  if (level > 10) return '';
+  if (level > 10) return "";
 
   return `& > li {
     > label {

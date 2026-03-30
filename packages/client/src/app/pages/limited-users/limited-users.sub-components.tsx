@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
-import React from 'react';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import type { ReactNode } from "react";
 
 import {
   Actions,
@@ -16,21 +16,21 @@ import {
   TitleBlock,
   ToggleList,
   ToggleListItem,
-} from './limited-users.styles';
+} from "./limited-users.styles";
 import type {
   BooleanItem,
   Item,
   RecursiveUpdate,
   SelectItem,
   TogglesItem,
-} from './limited-users.types';
+} from "./limited-users.types";
 
 type Props<I extends Item, T> = {
   item: I;
   updateValue: (value: T) => void;
 };
 
-const Boolean: React.FC<Props<BooleanItem, boolean>> = ({
+const BooleanInput: React.FC<Props<BooleanItem, boolean>> = ({
   item,
   updateValue,
 }) => {
@@ -85,7 +85,7 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
     updateValue(
       item.values.includes(value)
         ? item.values.filter((v) => v !== value)
-        : [...item.values, value]
+        : [...item.values, value],
     );
   };
 
@@ -97,19 +97,19 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
         <Actions>
           <a
             className={classes(
-              item.values.length === item.options.length && 'disabled'
+              item.values.length === item.options.length && "disabled",
             )}
             onClick={() =>
               updateValue(item.options.map((option) => option.value))
             }
           >
-            {translate('Enable All')}
+            {translate("Enable All")}
           </a>
           <a
-            className={classes(item.values.length === 0 && 'disabled')}
+            className={classes(item.values.length === 0 && "disabled")}
             onClick={() => updateValue([])}
           >
-            {translate('Disable All')}
+            {translate("Disable All")}
           </a>
         </Actions>
       </TitleBlock>
@@ -120,7 +120,7 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
               key={option.value}
               onClick={update(option.value)}
               className={classes(
-                item.values.includes(option.value) && 'selected'
+                item.values.includes(option.value) && "selected",
               )}
             >
               {item.values.includes(option.value) && (
@@ -145,7 +145,7 @@ export const Group: React.FC<{
       const id = path ? `${path}.${item.id}` : item.id;
       const list: Array<[string, boolean]> = [];
 
-      if (item.type === 'boolean') {
+      if (item.type === "boolean") {
         list.push([id, state]);
       }
 
@@ -167,8 +167,8 @@ export const Group: React.FC<{
         <Heading>{translate(item.name)}</Heading>
         {nesting === 0 && (
           <Actions>
-            <a onClick={update(true)}>{translate('Enable All')}</a>
-            <a onClick={update(false)}>{translate('Disable All')}</a>
+            <a onClick={update(true)}>{translate("Enable All")}</a>
+            <a onClick={update(false)}>{translate("Disable All")}</a>
           </Actions>
         )}
       </TitleBlock>
@@ -186,15 +186,15 @@ export const ItemBlock: React.FC<{
   let controls: ReactNode;
 
   switch (item.type) {
-    case 'boolean':
+    case "boolean":
       controls = (
-        <Boolean
+        <BooleanInput
           item={item}
           updateValue={(enabled) => updateValue(id, { enabled })}
         />
       );
       break;
-    case 'select':
+    case "select":
       controls = (
         <Select
           item={item}
@@ -202,7 +202,7 @@ export const ItemBlock: React.FC<{
         />
       );
       break;
-    case 'toggles':
+    case "toggles":
       controls = (
         <Toggles
           item={item}
@@ -210,7 +210,7 @@ export const ItemBlock: React.FC<{
         />
       );
       break;
-    case 'group':
+    case "group":
       controls = (
         <Group
           item={item}
@@ -232,7 +232,7 @@ export const ItemBlock: React.FC<{
       {item.children && (
         <List
           className={classes(
-            item.type === 'boolean' && !item.enabled && 'disabled'
+            item.type === "boolean" && !item.enabled && "disabled",
           )}
         >
           {item.children.map((item) => (

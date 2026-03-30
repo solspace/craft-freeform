@@ -1,25 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FormComponent } from '@components/form-controls';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { injectInto as handleMiddleware } from '@components/middleware/implementations';
-import { handle as handleParser } from '@components/middleware/implementations';
+import { FormComponent } from "@components/form-controls";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import {
+  injectInto as handleMiddleware,
+  handle as handleParser,
+} from "@components/middleware/implementations";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import type { Form } from '@ff-client/types/forms';
-import type { GenericValue } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import axios from 'axios';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
+import type { Form } from "@ff-client/types/forms";
+import type { GenericValue } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import axios from "axios";
+import type React from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-import { FormModalLoading } from './modal.form.loading';
-import { useFetchFormModalType } from './modal.form.queries';
-import { FormWrapper } from './modal.form.styles';
+import { FormModalLoading } from "./modal.form.loading";
+import { useFetchFormModalType } from "./modal.form.queries";
+import { FormWrapper } from "./modal.form.styles";
 
 export const CreateFormModal: React.FC<ModalContainerProps> = ({
   closeModal,
@@ -42,7 +45,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
           ...combined,
           [current.handle]: current.value,
         }),
-        {}
+        {},
       );
 
       if (currentSite) {
@@ -52,7 +55,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
       setState(values);
       setInitialValues(values);
     }
-  }, [data]);
+  }, [data, currentSite]);
 
   useEffect(() => {
     setState((prev: GenericValue) => ({
@@ -67,13 +70,13 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
     {
       callback: (event: KeyboardEvent): void => {
         switch (event.key) {
-          case 'Enter':
+          case "Enter":
             handleSave();
             return;
         }
       },
     },
-    [state]
+    [state],
   );
 
   const handleSave = async (): Promise<void> => {
@@ -82,15 +85,15 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
     try {
       handleMiddleware(
         state.name,
-        { camelize: true, transliterate: true, target: '' },
+        { camelize: true, transliterate: true, target: "" },
         undefined,
         (_, value) => {
           state.handle = value;
-        }
+        },
       );
       state.handle = handleParser(state.handle);
 
-      const { data: form } = await axios.post<Form>('/api/forms/modal', state);
+      const { data: form } = await axios.post<Form>("/api/forms/modal", state);
 
       setState({ ...initialValues });
       setErrors(undefined);
@@ -108,40 +111,39 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
   return (
     <ModalContainer>
       <ModalHeader>
-        <h1>{translate('Create a new Form')}</h1>
+        <h1>{translate("Create a new Form")}</h1>
       </ModalHeader>
 
       <FormWrapper>
         {!data && isFetching && <FormModalLoading />}
-        {data &&
-          data.map((property, idx) => (
-            <FormComponent
-              key={property.handle}
-              updateValue={(value) => {
-                setState({
-                  ...state,
-                  [property.handle]: value,
-                });
-              }}
-              autoFocus={idx === 0}
-              value={state?.[property.handle]}
-              property={property}
-              errors={errors?.[property.handle] as unknown as string[]}
-            />
-          ))}
+        {data?.map((property, idx) => (
+          <FormComponent
+            key={property.handle}
+            updateValue={(value) => {
+              setState({
+                ...state,
+                [property.handle]: value,
+              });
+            }}
+            autoFocus={idx === 0}
+            value={state?.[property.handle]}
+            property={property}
+            errors={errors?.[property.handle] as unknown as string[]}
+          />
+        ))}
       </FormWrapper>
 
       <ModalFooter>
-        <button className="btn cancel" onClick={closeModal}>
-          {translate('Close')}
+        <button type="button" className="btn cancel" onClick={closeModal}>
+          {translate("Close")}
         </button>
-        <button className="btn submit" onClick={handleSave}>
+        <button type="button" className="btn submit" onClick={handleSave}>
           <LoadingText
-            loadingText={translate('Saving')}
+            loadingText={translate("Saving")}
             loading={isSaving}
             spinner
           >
-            {translate('Save')}
+            {translate("Save")}
           </LoadingText>
         </button>
       </ModalFooter>

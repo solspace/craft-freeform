@@ -1,7 +1,7 @@
-import type { InputHTMLAttributes } from 'react';
-import React from 'react';
+import type React from "react";
+import type { InputHTMLAttributes } from "react";
 
-import { CheckboxElement } from './checkbox.styles';
+import { CheckboxElement } from "./checkbox.styles";
 
 type Props = InputHTMLAttributes<HTMLInputElement>;
 

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SuccessBehavior;
 
+use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
@@ -16,6 +17,12 @@ class SuccessBehaviorBundle extends FeatureBundle
             Form::class,
             Form::EVENT_ON_SUBMIT_RESPONSE,
             [$this, 'handleSuccessBehavior']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_GENERATE_RETURN_URL,
+            [$this, 'generateReturnUrl']
         );
     }
 
@@ -34,6 +41,22 @@ class SuccessBehaviorBundle extends FeatureBundle
 
                 break;
 
+            case BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_ENTRY:
+                $entryIds = $form->getSettings()->getBehavior()->entryId;
+                $entryId = reset($entryIds);
+                if (!$entryId) {
+                    return;
+                }
+
+                $entry = \Craft::$app->entries->getEntryById($entryId);
+                if (!$entry) {
+                    return;
+                }
+
+                $event->getResponse()->redirect($entry->getUrl());
+
+                break;
+
             case BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE:
             case BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD:
             default:
@@ -42,5 +65,28 @@ class SuccessBehaviorBundle extends FeatureBundle
 
                 break;
         }
+    }
+
+    public function generateReturnUrl(ReturnUrlEvent $event): void
+    {
+        $form = $event->getForm();
+
+        $behaviorSettings = $form->getSettings()->getBehavior();
+        if ($behaviorSettings->successBehavior !== BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_ENTRY) {
+            return;
+        }
+
+        $entryIds = $form->getSettings()->getBehavior()->entryId;
+        $entryId = reset($entryIds);
+        if (!$entryId) {
+            return;
+        }
+
+        $entry = \Craft::$app->entries->getEntryById($entryId);
+        if (!$entry) {
+            return;
+        }
+
+        $event->setReturnUrl($entry->getUrl());
     }
 }

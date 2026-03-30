@@ -1,7 +1,7 @@
-import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
+import { scrollBar } from "@ff-client/styles/mixins";
+import { borderRadius, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const EditorContainer = styled.div`
   position: relative;

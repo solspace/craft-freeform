@@ -1,11 +1,11 @@
-import React from 'react';
-import { useAppSelector } from '@editor/store';
-import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
-import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
+import { useAppSelector } from "@editor/store";
+import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
+import { rowSelectors } from "@editor/store/slices/layout/rows/rows.selectors";
+import type React from "react";
 
-import { Row } from '../row/row';
+import { Row } from "../row/row";
 
-import { FieldLayoutWrapper } from './layout.styles';
+import { FieldLayoutWrapper } from "./layout.styles";
 
 type Props = {
   layoutUid: string;
@@ -13,10 +13,10 @@ type Props = {
 
 export const Layout: React.FC<Props> = ({ layoutUid }) => {
   const layout = useAppSelector((state) =>
-    layoutSelectors.one(state, layoutUid)
+    layoutSelectors.one(state, layoutUid),
   );
   const rows = useAppSelector((state) =>
-    rowSelectors.inLayout(state, layout?.uid)
+    rowSelectors.inLayout(state, layout?.uid),
   );
 
   if (!layout || !rows.length) {

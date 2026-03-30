@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-type Rect = Pick<DOMRect, 'width' | 'height' | 'x' | 'y'>;
+type Rect = Pick<DOMRect, "width" | "height" | "x" | "y">;
 
 type DimensionsObserverReturn<T extends HTMLElement> = {
   ref: React.RefObject<T>;
@@ -24,7 +24,7 @@ export const useDimensionsObserver = <
       new ResizeObserver(([entry]) => {
         const { width, height, x, y } = entry.target.getBoundingClientRect();
         setDimensions({ width, height, x, y });
-      })
+      }),
   );
 
   useEffect(() => {

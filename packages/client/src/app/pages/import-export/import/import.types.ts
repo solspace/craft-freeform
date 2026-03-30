@@ -1,4 +1,4 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
 type Field = {
   uid: string;
@@ -124,7 +124,7 @@ export type FormImportData = {
   settings: boolean;
 };
 
-export type ImportStrategy = 'replace' | 'skip';
+export type ImportStrategy = "replace" | "skip";
 
 export type StrategyCollection = {
   forms: ImportStrategy;
@@ -167,8 +167,8 @@ export const createImportOptions = (): ImportOptions => ({
   },
   integrations: [],
   strategy: {
-    forms: 'skip',
-    templates: 'skip',
+    forms: "skip",
+    templates: "skip",
   },
   settings: false,
 });

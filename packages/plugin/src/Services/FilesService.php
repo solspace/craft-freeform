@@ -92,40 +92,12 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 continue;
             }
 
-            $asset = $response = null;
-
-            try {
-                $filename = Assets::prepareAssetName($uploadedFile->name);
-                $asset = new Asset();
-
-                // Move the uploaded file to the temp folder
-                try {
-                    $tempPath = $uploadedFile->saveAsTempFile();
-                } catch (ErrorException $e) {
-                    throw new UploadFailedException(0, null, $e);
-                }
-
-                $asset->kind = AssetsHelper::getFileKindByExtension($uploadedFile->name);
-                $asset->tempFilePath = $tempPath;
-                $asset->filename = $filename;
-                $asset->setScenario(Asset::SCENARIO_CREATE);
-                $asset->newFolderId = $folder->id;
-                $asset->setVolumeId($folder->volumeId);
-                $asset->avoidFilenameConflicts = true;
-                $asset->uploaderId = \Craft::$app->getUser()->getId();
-
-                $response = \Craft::$app->getElements()->saveElement($asset);
-            } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
-            }
-
-            if ($response) {
+            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors);
+            if ($asset) {
                 $assetId = $asset->id;
                 $this->markAssetUnfinalized($assetId);
 
                 $uploadedAssetIds[] = $assetId;
-            } elseif ($asset) {
-                $errors = array_merge($errors, $asset->getErrors());
             }
         }
 
@@ -138,6 +110,66 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return new FileUploadResponse(null, $errors);
+    }
+
+    public function getTableCellUploadedFiles(string $tableHandle, int $rowIndex, int $columnIndex): array
+    {
+        if (!isset($_FILES[$tableHandle])) {
+            return [];
+        }
+
+        $name = $_FILES[$tableHandle]['name'][$rowIndex][$columnIndex] ?? null;
+        if (null === $name || '' === $name || [] === $name) {
+            return [];
+        }
+
+        $uploadedFiles = [];
+        if (\is_array($name)) {
+            foreach (array_keys($name) as $fileIndex) {
+                $uploadedFile = UploadedFile::getInstanceByName(
+                    "{$tableHandle}[{$rowIndex}][{$columnIndex}][{$fileIndex}]"
+                );
+
+                if ($uploadedFile) {
+                    $uploadedFiles[] = $uploadedFile;
+                }
+            }
+        } else {
+            $uploadedFile = UploadedFile::getInstanceByName(
+                "{$tableHandle}[{$rowIndex}][{$columnIndex}]"
+            );
+            if ($uploadedFile) {
+                $uploadedFiles[] = $uploadedFile;
+            }
+        }
+
+        return $uploadedFiles;
+    }
+
+    public function uploadTableCellFile(
+        UploadedFile $uploadedFile,
+        Form $form,
+        int $assetSourceId,
+        ?string $uploadLocation
+    ): FileUploadResponse {
+        try {
+            $folder = $this->getFolderBySourceAndPath($assetSourceId, $uploadLocation, $form);
+            if (!$folder) {
+                return new FileUploadResponse(null, []);
+            }
+
+            $errors = [];
+            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors);
+            if (!$asset) {
+                return new FileUploadResponse(null, $errors);
+            }
+
+            $this->markAssetUnfinalized($asset->id);
+
+            return new FileUploadResponse([$asset->id]);
+        } catch (\Throwable $e) {
+            return new FileUploadResponse(null, [$e->getMessage()]);
+        }
     }
 
     /**
@@ -255,13 +287,25 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function getFileUploadFolder(Form $form, FileUploadInterface $field): ?VolumeFolder
     {
-        $assetService = \Craft::$app->assets;
+        return $this->getFolderBySourceAndPath(
+            $field->getAssetSourceId(),
+            $field->getDefaultUploadLocation(),
+            $form,
+        );
+    }
 
-        if (!$field->getDefaultUploadLocation()) {
-            return $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
+    public function getFolderBySourceAndPath(?int $assetSourceId, ?string $uploadLocation, Form $form): ?VolumeFolder
+    {
+        if (!$assetSourceId) {
+            return null;
         }
 
-        return $this->getFolder($field->getAssetSourceId(), $field->getDefaultUploadLocation(), $form);
+        $assetService = \Craft::$app->assets;
+        if (!$uploadLocation) {
+            return $assetService->getRootFolderByVolumeId($assetSourceId);
+        }
+
+        return $this->getFolder($assetSourceId, $uploadLocation, $form);
     }
 
     /**
@@ -317,27 +361,9 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $uploadedSuccessfully = false;
 
         try {
-            $filename = Assets::prepareAssetName($uploadedFile->name);
-            $asset = new Asset();
-
-            // Move the uploaded file to the temp folder
-            try {
-                $tempPath = $uploadedFile->saveAsTempFile();
-            } catch (ErrorException $e) {
-                throw new UploadFailedException(0, null, $e);
-            }
-
-            $asset->kind = AssetsHelper::getFileKindByExtension($uploadedFile->name);
-            $asset->tempFilePath = $tempPath;
-            $asset->filename = $filename;
-            $asset->setScenario(Asset::SCENARIO_CREATE);
-            $asset->setVolumeId($folder->volumeId);
-            $asset->newFolderId = $folder->id;
-            $asset->avoidFilenameConflicts = true;
-            $asset->uploaderId = \Craft::$app->getUser()->getId();
-
-            $uploadedSuccessfully = \Craft::$app->getElements()->saveElement($asset);
-        } catch (Exception $e) {
+            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors);
+            $uploadedSuccessfully = null !== $asset;
+        } catch (\Throwable $e) {
             $errors[] = $e->getMessage();
         }
 
@@ -559,6 +585,47 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return $allowedExtensions;
+    }
+
+    private function saveUploadedFileToFolder(
+        UploadedFile $uploadedFile,
+        VolumeFolder $folder,
+        array &$errors
+    ): ?Asset {
+        $asset = null;
+
+        try {
+            $filename = Assets::prepareAssetName($uploadedFile->name);
+            $asset = new Asset();
+
+            try {
+                $tempPath = $uploadedFile->saveAsTempFile();
+            } catch (ErrorException $e) {
+                throw new UploadFailedException(0, null, $e);
+            }
+
+            $asset->kind = AssetsHelper::getFileKindByExtension($uploadedFile->name);
+            $asset->tempFilePath = $tempPath;
+            $asset->filename = $filename;
+            $asset->setScenario(Asset::SCENARIO_CREATE);
+            $asset->setVolumeId($folder->volumeId);
+            $asset->newFolderId = $folder->id;
+            $asset->avoidFilenameConflicts = true;
+            $asset->uploaderId = \Craft::$app->getUser()->getId();
+
+            $saved = \Craft::$app->getElements()->saveElement($asset);
+            if ($saved) {
+                return $asset;
+            }
+        } catch (Exception|\Throwable $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if ($asset) {
+            $errors = array_merge($errors, $asset->getErrorSummary());
+        }
+
+        return null;
     }
 
     private function getFolder($volumeId, string $subpath, Form $form): ?VolumeFolder

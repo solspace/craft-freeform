@@ -23,6 +23,7 @@ use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Templates\TemplateLocator;
 use Solspace\Freeform\Models\Settings;
@@ -217,6 +218,11 @@ class SettingsService extends BaseService
         return BooleanHelper::normalize($this->getSettingsModel()->sitesEnabled);
     }
 
+    public function isAbTestsEnabled(): bool
+    {
+        return BooleanHelper::normalize($this->getSettingsModel()->abTests);
+    }
+
     public function isFillWithGet(): bool
     {
         return BooleanHelper::normalize($this->getSettingsModel()->fillWithGet);
@@ -308,6 +314,11 @@ class SettingsService extends BaseService
         $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
         $integrationsCount = Freeform::getInstance()->logger->getLogReader(IntegrationLoggerProvider::LOG_FILE)->count();
         $emailCount = Freeform::getInstance()->logger->getLogReader(NotificationLoggerProvider::LOG_FILE)->count();
+        $solspaceAiNavItem = null;
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS)) {
+            $plugin = Freeform::getInstance();
+            $solspaceAiNavItem = ['title' => Freeform::t('SolspaceAI')];
+        }
 
         $nav = [
             'general' => ['title' => Freeform::t('General Settings')],
@@ -320,6 +331,7 @@ class SettingsService extends BaseService
             'statuses' => ['title' => Freeform::t('Statuses')],
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
+            'ai' => $solspaceAiNavItem,
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'diagnostics' => ['title' => Freeform::t('Diagnostics')],

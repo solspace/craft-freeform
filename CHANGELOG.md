@@ -1,5 +1,30 @@
 # Solspace Freeform Changelog
 
+## 5.15.0 - 2026-03-30
+
+### Added
+- **A/B Testing**: Split traffic between multiple form variants, track performance, and identify a winner.
+- **SolspaceAI** integration, including a free trial.
+- Ability to generate forms using an AI prompt.
+- Support for **File Upload** fields within **Table** fields.
+- Ability to redirect successful form submissions to a Craft Entry URL.
+- Cookie storage support for the **URL Parameter Tracking** integration.
+- Built-in tracking of the **Source URL** for submissions.
+- Added translations for the **Form Monitor** service.
+
+### Changed
+- Improved the **Table** field UI in the form builder.
+- Modernized the frontend build pipeline using **Vite**, **esbuild**, and **pnpm**.
+- Updated TypeScript libraries and improved dependency management.
+- Updated demo templates to use `forms` terminology instead of `templates`.
+
+### Removed
+- Removed deprecated and unused dependencies to reduce bundle size and maintenance overhead, including: `eslint`, `prettier`, `dom-to-html`, `filesize`, `url-parse`, `semver-compare`, `pubsub`, `react-color`, `react-tippy`, `d3-chromatic-scale`.
+- Removed unused type definitions.
+
+### Fixed
+- Fixed an issue where `impossible to access an attribute ("value") on a null variable` could occur.
+
 ## 5.14.24 - 2026-03-25
 
 ### Security

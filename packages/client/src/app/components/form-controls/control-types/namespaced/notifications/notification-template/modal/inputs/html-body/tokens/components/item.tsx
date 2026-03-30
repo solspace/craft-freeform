@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
-import type { Suggestion } from '@ff-client/types/notifications';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
+import type { Suggestion } from "@ff-client/types/notifications";
+import classes from "@ff-client/utils/classes";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useRef } from "react";
 
-import { ItemWrapper } from './item.styles';
+import { ItemWrapper } from "./item.styles";
 
 type Props = {
   item: Suggestion;
@@ -16,8 +17,8 @@ export const Item: React.FC<Props> = ({ item, onClick }) => {
   useEffect(() => {
     if (item.active && ref.current) {
       ref.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
+        behavior: "smooth",
+        block: "nearest",
       });
     }
   }, [item]);
@@ -25,7 +26,7 @@ export const Item: React.FC<Props> = ({ item, onClick }) => {
   return (
     <ItemWrapper
       ref={ref}
-      className={classes(item?.active && 'active')}
+      className={classes(item?.active && "active")}
       onClick={() => onClick?.(item)}
       dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(item.shortName) }}
     />

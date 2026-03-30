@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import { Modal } from '@ff-client/app/components/modals/modal';
-import { FormWrapper } from '@ff-client/app/pages/forms/edit/builder/tabs/form-monitor/form-monitor.action.modal.styles';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@components/modals/modal.styles";
+import { Modal } from "@ff-client/app/components/modals/modal";
+import { FormWrapper } from "@ff-client/app/pages/forms/edit/builder/tabs/form-monitor/form-monitor.action.modal.styles";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   onClose: () => void;
@@ -21,7 +22,7 @@ export const DisableMonitoringModal: React.FC<Props> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [enabled, setEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleConfirm = async (): Promise<void> => {
     if (!enabled) return;
@@ -35,27 +36,27 @@ export const DisableMonitoringModal: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === 'CONFIRM');
+    setEnabled(inputValue.toUpperCase() === "CONFIRM");
   }, [inputValue]);
 
   return (
     <Modal closeModal={onClose}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Disable Monitoring')}</h1>
+          <h1>{translate("Disable Monitoring")}</h1>
         </ModalHeader>
         <FormWrapper>
           <div>
             {translate(
-              'Are you sure you want to disable monitoring for this site?'
+              "Are you sure you want to disable monitoring for this site?",
             )}
           </div>
           <div
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 translate(
-                  'To disable monitoring, please type <strong>CONFIRM</strong> in the box below:'
-                )
+                  "To disable monitoring, please type <strong>CONFIRM</strong> in the box below:",
+                ),
               ),
             }}
           />
@@ -69,15 +70,21 @@ export const DisableMonitoringModal: React.FC<Props> = ({
           />
         </FormWrapper>
         <ModalFooter>
-          <button className="btn cancel" onClick={onClose} disabled={isLoading}>
-            {translate('Cancel')}
+          <button
+            type="button"
+            disabled={isLoading}
+            className="btn cancel"
+            onClick={onClose}
+          >
+            {translate("Cancel")}
           </button>
           <button
-            className={classes('btn submit', !enabled && 'disabled')}
-            onClick={handleConfirm}
+            type="button"
             disabled={!enabled || isLoading}
+            className={classes("btn submit", !enabled && "disabled")}
+            onClick={handleConfirm}
           >
-            {translate('Disable')}
+            {translate("Disable")}
           </button>
         </ModalFooter>
       </ModalContainer>
@@ -90,7 +97,7 @@ export const DisableAndDeleteMonitoringModal: React.FC<Props> = ({
   onConfirm,
 }) => {
   const [enabled, setEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleConfirm = async (): Promise<void> => {
@@ -105,27 +112,27 @@ export const DisableAndDeleteMonitoringModal: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === 'CONFIRM');
+    setEnabled(inputValue.toUpperCase() === "CONFIRM");
   }, [inputValue]);
 
   return (
     <Modal closeModal={onClose}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Disable & Delete Monitoring Data')}</h1>
+          <h1>{translate("Disable & Delete Monitoring Data")}</h1>
         </ModalHeader>
         <FormWrapper>
           <div>
             {translate(
-              'Are you sure you want to disable monitoring and delete all monitoring data for this site?'
+              "Are you sure you want to disable monitoring and delete all monitoring data for this site?",
             )}
           </div>
           <div
             dangerouslySetInnerHTML={{
               __html: DOMPurify.sanitize(
                 translate(
-                  'To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:'
-                )
+                  "To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:",
+                ),
               ),
             }}
           />
@@ -139,15 +146,21 @@ export const DisableAndDeleteMonitoringModal: React.FC<Props> = ({
           />
         </FormWrapper>
         <ModalFooter>
-          <button className="btn cancel" onClick={onClose} disabled={isLoading}>
-            {translate('Cancel')}
+          <button
+            type="button"
+            disabled={isLoading}
+            className="btn cancel"
+            onClick={onClose}
+          >
+            {translate("Cancel")}
           </button>
           <button
-            className={classes('btn submit', !enabled && 'disabled')}
-            onClick={handleConfirm}
+            type="button"
             disabled={!enabled || isLoading}
+            className={classes("btn submit", !enabled && "disabled")}
+            onClick={handleConfirm}
           >
-            {translate('Disable & Delete')}
+            {translate("Disable & Delete")}
           </button>
         </ModalFooter>
       </ModalContainer>

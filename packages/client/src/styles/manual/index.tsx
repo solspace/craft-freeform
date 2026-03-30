@@ -1,7 +1,7 @@
-import React from 'react';
+import type React from "react";
 
-import CraftStyles from './craft';
-import OpinionScaleStyles from './opinion-scale';
+import CraftStyles from "./craft";
+import OpinionScaleStyles from "./opinion-scale";
 
 const ManualStyles: React.FC = () => {
   return (

@@ -1,12 +1,11 @@
-import type { FC } from 'react';
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import FormInstructions from '@components/form-controls/instructions';
-import type { Option, OptionCollection } from '@ff-client/types/properties';
-import { generateRandomHash } from '@ff-client/utils/hash';
-import translate from '@ff-client/utils/translations';
+import FormInstructions from "@components/form-controls/instructions";
+import type { Option, OptionCollection } from "@ff-client/types/properties";
+import { generateRandomHash } from "@ff-client/utils/hash";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { CheckboxesWrapper, SelectAllWrapper } from './checkboxes.styles';
+import { CheckboxesWrapper, SelectAllWrapper } from "./checkboxes.styles";
 
 const skeletonWidths = [100, 150, 170, 130];
 
@@ -54,13 +53,13 @@ export const Checkboxes: FC<Props> = ({
               } else {
                 onUpdate(
                   options
-                    .filter((option) => !('children' in option))
-                    .map((option) => (option as Option).value)
+                    .filter((option) => !("children" in option))
+                    .map((option) => (option as Option).value),
                 );
               }
             }}
           />
-          <label htmlFor={`${uniqueId}-all`}>{translate('Select All')}</label>
+          <label htmlFor={`${uniqueId}-all`}>{translate("Select All")}</label>
         </SelectAllWrapper>
       )}
 
@@ -69,21 +68,18 @@ export const Checkboxes: FC<Props> = ({
       )}
 
       <CheckboxesWrapper $columns={columns}>
-        {loading && (
-          <>
-            {Array.from({ length: options?.length || 4 }).map((_, index) => (
-              <Skeleton
-                key={index}
-                width={skeletonWidths[index % skeletonWidths.length]}
-                height={15}
-              />
-            ))}
-          </>
-        )}
+        {loading &&
+          Array.from({ length: options?.length || 4 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              width={skeletonWidths[index % skeletonWidths.length]}
+              height={15}
+            />
+          ))}
 
         {!loading &&
           options?.map((option) => {
-            if ('children' in option) {
+            if ("children" in option) {
               return null;
             }
 

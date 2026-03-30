@@ -12,6 +12,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArr
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
+use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -20,11 +21,13 @@ use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrai
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class UrlParameterTracking extends BaseIntegration
+class UrlParameterTracking extends BaseIntegration implements SingletonIntegrationInterface
 {
     use EnabledByDefaultTrait;
 
     public const TEMPLATE_KEY = 'url_parameters';
+    public const EVENT_PREPARE_PARAMETERS = 'prepare-parameters';
+    public const DEFAULT_COOKIE_TTL_MINUTES = 60 * 24 * 2; // 2 days
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -48,11 +51,33 @@ class UrlParameterTracking extends BaseIntegration
     )]
     protected array $defaultParameters = [];
 
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
+    #[Input\Boolean(
+        label: 'Store in Cookies',
+        instructions: 'Save tracked parameters in cookies so they can be reused by Freeform later.',
+    )]
+    #[Message('When enabled, forms using this integration can persist tracked parameters in cookies. This can be overridden per form in the form builder.')]
+    protected bool $storeInCookies = false;
+
+    #[VisibilityFilter('Boolean(enabled) && Boolean(values.storeInCookies)')]
+    #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
+    #[Input\Integer(
+        label: 'Cookie Lifetime',
+        instructions: 'How long tracked parameters should be stored in cookies (in minutes).',
+        min: 1,
+    )]
+    #[Message('When set at the form level, this overrides the default cookie lifetime defined in the integration.')]
+    protected ?int $cookieTtlMinutes = self::DEFAULT_COOKIE_TTL_MINUTES;
+
     public function getCombinedParameters(): array
     {
         $parameters = array_merge($this->defaultParameters, $this->parameters);
 
-        return array_unique($parameters);
+        $parameters = array_map('trim', $parameters);
+        $parameters = array_filter($parameters, static fn (string $parameter) => '' !== $parameter);
+
+        return array_values(array_unique($parameters));
     }
 
     public function getParameters(): string
@@ -63,5 +88,17 @@ class UrlParameterTracking extends BaseIntegration
     public function getDefaultParameters(): string
     {
         return $this->getProcessedValue($this->defaultParameters);
+    }
+
+    public function isStoreInCookies(): bool
+    {
+        return $this->storeInCookies;
+    }
+
+    public function getCookieTtlMinutes(): int
+    {
+        $ttl = $this->cookieTtlMinutes ?? self::DEFAULT_COOKIE_TTL_MINUTES;
+
+        return max(1, $ttl);
     }
 }

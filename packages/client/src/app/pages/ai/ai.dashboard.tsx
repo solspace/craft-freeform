@@ -342,7 +342,7 @@ export const AiDashboard: React.FC = () => {
                       </MetricsTableCell>
                       <MetricsTableCell>
                         {log.credits != null
-                          ? `${log.credits.toLocaleString()} ${translate("credits")}`
+                          ? `${log.credits} ${translate("credits")}`
                           : "—"}
                       </MetricsTableCell>
                       <MetricsTableCell>

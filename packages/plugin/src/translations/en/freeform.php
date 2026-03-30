@@ -1998,6 +1998,7 @@ return [
     'Credits remaining' => 'Credits remaining',
     'Add credits' => 'Add credits',
     'Request Log' => 'Request Log',
+    'Date & time' => 'Date & time',
     'A list of recent AI requests and their credit usage.' => 'A list of recent AI requests and their credit usage.',
     'Credits' => 'Credits',
     'Request ID' => 'Request ID',

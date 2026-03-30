@@ -40,7 +40,7 @@ import {
 } from "./ai.dashboard.styles";
 import { AiPlansModal } from "./ai.modal.plans";
 import { useAiUsageQuery } from "./ai.queries";
-import { formatAiDate } from "./ai.utils";
+import { formatAiDate, formatAiDateTime } from "./ai.utils";
 
 const AiUsageChart = React.lazy(() => import("./ai.usage-chart"));
 
@@ -307,7 +307,7 @@ export const AiDashboard: React.FC = () => {
                 <MetricsTableHead>
                   <tr>
                     <MetricsTableHeaderCell>
-                      {translate("Date")}
+                      {translate("Date & time")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
                       {translate("Status")}
@@ -324,9 +324,11 @@ export const AiDashboard: React.FC = () => {
                   {summary.request_logs.map((log, idx) => (
                     <MetricsTableRow key={log.request_id ?? idx}>
                       <MetricsTableCell>
-                        {log.date
-                          ? formatAiDate(log.date)
-                          : translate("Unknown")}
+                        {log.requested_at
+                          ? formatAiDateTime(log.requested_at)
+                          : log.date
+                            ? formatAiDate(log.date)
+                            : translate("Unknown")}
                       </MetricsTableCell>
                       <MetricsTableCell>
                         {log.status === "success"
@@ -341,7 +343,7 @@ export const AiDashboard: React.FC = () => {
                           : "—"}
                       </MetricsTableCell>
                       <MetricsTableCell>
-                        <code>{log.request_id}</code>
+                        <code>{log.request_id ?? "—"}</code>
                       </MetricsTableCell>
                     </MetricsTableRow>
                   ))}

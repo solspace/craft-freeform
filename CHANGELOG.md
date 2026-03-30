@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.15.1 - 2026-03-30
+
+### Added
+- Added URL Parameter Tracking support for GraphQL and headless setups.
+
+### Fixed
+- Fixed a bug where mapping a Freeform **Website** field to a Craft **Link** field could potentially show an invalid error when empty.
+
+### Security
+- Updated various dependencies to the latest compatible version.
+
 ## 5.15.0 - 2026-03-30
 
 ### Added

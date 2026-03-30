@@ -1,14 +1,14 @@
-import React from 'react';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import type { ControlType } from '@components/form-controls/types';
-import type { CalculationProperty } from '@ff-client/types/properties';
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import type { ControlType } from "@components/form-controls/types";
+import type { CalculationProperty } from "@ff-client/types/properties";
+import type React from "react";
 
-import { Control } from '../../control';
+import { Control } from "../../control";
 
-import { CalculationBoxEditor } from './calculation-box.editor';
-import { CalculationBoxPreview } from './calculation-box.preview';
+import { CalculationBoxEditor } from "./calculation-box.editor";
+import { CalculationBoxPreview } from "./calculation-box.preview";
 
-import '@yaireo/tagify/dist/tagify.css';
+import "@yaireo/tagify/dist/tagify.css";
 
 const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   value,

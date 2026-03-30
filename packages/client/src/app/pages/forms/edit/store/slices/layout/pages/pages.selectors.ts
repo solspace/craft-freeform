@@ -1,6 +1,6 @@
-import type { Page } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
-import { createSelector } from '@reduxjs/toolkit';
+import type { Page } from "@editor/builder/types/layout";
+import type { RootState } from "@editor/store";
+import { createSelector } from "@reduxjs/toolkit";
 
 const sortByOrder = (a: Page, b: Page): number => a.order - b.order;
 
@@ -10,7 +10,7 @@ export const pageSelecors = {
   count: (state: RootState): number => state.layout.pages.length,
   all: createSelector(
     (state: RootState) => state.layout.pages,
-    (pages) => [...pages].sort(sortByOrder)
+    (pages) => [...pages].sort(sortByOrder),
   ),
   one:
     (uid: string) =>

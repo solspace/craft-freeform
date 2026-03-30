@@ -1,7 +1,7 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import { Label } from './label.styles';
+import { Label } from "./label.styles";
 
 export const Instructions = styled.span`
   display: block;
@@ -29,15 +29,43 @@ export const Instructions = styled.span`
 `;
 
 export const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.sm};
+
+  width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
-  width: 100%;
-  display: block;
 
   &.disabled {
     user-select: none;
     pointer-events: none;
     opacity: 0.5;
+  }
+
+  &.align {
+    &-start {
+      align-items: flex-start;
+    }
+    &-center {
+      align-items: center;
+    }
+    &-end {
+      align-items: flex-end;
+    }
+  }
+
+  &.justify {
+    &-start {
+      justify-content: flex-start;
+    }
+    &-center {
+      justify-content: center;
+    }
+    &-end {
+      justify-content: flex-end;
+    }
   }
 `;
 
@@ -52,7 +80,7 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   align-items: flex-start;
   justify-content: flex-start;
 
-  width: ${({ $width }) => ($width ? `${$width}%` : '100%')};
+  width: ${({ $width }) => ($width ? `${$width}%` : "100%")};
 
   &.disabled {
     opacity: 0.5;

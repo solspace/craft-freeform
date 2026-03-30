@@ -1,4 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/** biome-ignore-all lint/suspicious/noExplicitAny: We don't support ES2022 */
+/** biome-ignore-all lint/suspicious/noPrototypeBuiltins: We don't support ES2022 */
 export const isEqual = (value: any, other: any): boolean => {
   // Check if both values are the same reference or strictly equal
   if (value === other) {
@@ -31,7 +32,7 @@ export const isEqual = (value: any, other: any): boolean => {
   }
 
   // Handle objects
-  if (typeof value === 'object' && typeof other === 'object') {
+  if (typeof value === "object" && typeof other === "object") {
     const valueKeys = Object.keys(value);
     const otherKeys = Object.keys(other);
 
@@ -42,7 +43,10 @@ export const isEqual = (value: any, other: any): boolean => {
 
     // Recursively compare object properties
     return valueKeys.every((key) => {
-      return other.hasOwnProperty(key) && isEqual(value[key], other[key]);
+      return (
+        Object.prototype.hasOwnProperty.call(other, key) &&
+        isEqual(value[key], other[key])
+      );
     });
   }
 

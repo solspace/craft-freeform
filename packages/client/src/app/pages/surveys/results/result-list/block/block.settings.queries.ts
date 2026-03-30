@@ -1,10 +1,10 @@
-import type { APIError } from '@ff-client/types/api';
-import type { UseMutationResult } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
+import type { APIError } from "@ff-client/types/api";
+import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
-import type { Chart } from '../../results.types';
+import type { Chart } from "../../results.types";
 
 type Variables = {
   fieldId: number;
@@ -19,7 +19,7 @@ const settingsMutation: SettingsMutation = ({ fieldId, chartType }) => {
     chartType,
   };
 
-  return axios.post('/api/surveys/preferences', payload);
+  return axios.post("/api/surveys/preferences", payload);
 };
 
 type SettingsMutationResult = UseMutationResult<

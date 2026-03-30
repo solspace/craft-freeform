@@ -1,6 +1,6 @@
-import type { Row } from '@editor/builder/types/layout';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { Row } from "@editor/builder/types/layout";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 type RowState = Row[];
 
@@ -12,7 +12,7 @@ type SwapPayload = {
 const initialState: RowState = [];
 
 export const rowsSlice = createSlice({
-  name: 'layout/rows',
+  name: "layout/rows",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<RowState>) => {
@@ -20,14 +20,14 @@ export const rowsSlice = createSlice({
     },
     add: (
       state,
-      action: PayloadAction<{ layoutUid: string; uid: string; order?: number }>
+      action: PayloadAction<{ layoutUid: string; uid: string; order?: number }>,
     ) => {
       const { layoutUid, uid, order } = action.payload;
 
       let insertIndex: number;
       if (order !== undefined) {
         insertIndex = state.findIndex(
-          (row) => row.layoutUid === layoutUid && row.order === order
+          (row) => row.layoutUid === layoutUid && row.order === order,
         );
       } else {
         insertIndex = state.reduce((maxIndex, row, currentIndex) => {
@@ -59,7 +59,7 @@ export const rowsSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       const index = state.findIndex((row) => row.uid === action.payload);
       const layoutUid = state.find(
-        (row) => row.uid === action.payload
+        (row) => row.uid === action.payload,
       ).layoutUid;
 
       state.splice(index, 1);
@@ -71,7 +71,7 @@ export const rowsSlice = createSlice({
     },
     swap: (state, action: PayloadAction<SwapPayload>) => {
       const current = state.find(
-        (row) => row.uid === action.payload.currentUid
+        (row) => row.uid === action.payload.currentUid,
       );
       const target = state.find((row) => row.uid === action.payload.targetUid);
 

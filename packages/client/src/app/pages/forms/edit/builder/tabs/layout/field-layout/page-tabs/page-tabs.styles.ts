@@ -1,5 +1,5 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import styled from "styled-components";
 
 export const PageTabsWrapper = styled.div`
   margin: 10px 15px;

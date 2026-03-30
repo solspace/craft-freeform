@@ -14,7 +14,7 @@ use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessAiFieldsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
-use Solspace\Freeform\Services\AiService;
+use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;

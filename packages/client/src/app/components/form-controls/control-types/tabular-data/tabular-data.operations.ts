@@ -1,23 +1,23 @@
 import type {
   ColumnConfiguration,
   ColumnValue,
-} from '@components/form-controls/control-types/tabular-data/tabular-data.types';
-import update from 'immutability-helper';
+} from "@components/form-controls/control-types/tabular-data/tabular-data.types";
+import update from "immutability-helper";
 
 export const addRow = (
   rows: ColumnValue[],
   configuration: ColumnConfiguration[],
-  atIndex: number
+  atIndex: number,
 ): ColumnValue[] => [
   ...rows.slice(0, atIndex + 1),
-  [...configuration.map(() => '')],
+  [...configuration.map(() => "")],
   ...rows.slice(atIndex + 1),
 ];
 
 export const updateRow = (
   index: number,
   value: ColumnValue,
-  rows: ColumnValue[]
+  rows: ColumnValue[],
 ): ColumnValue[] => {
   const updated = [...rows];
   updated[index] = value;
@@ -27,7 +27,7 @@ export const updateRow = (
 
 export const deleteRow = (
   index: number,
-  rows: ColumnValue[]
+  rows: ColumnValue[],
 ): ColumnValue[] => {
   return rows.filter((_, columnIndex) => columnIndex !== index);
 };
@@ -35,7 +35,7 @@ export const deleteRow = (
 export const moveRow = (
   fromIndex: number,
   toIndex: number,
-  rows: ColumnValue[]
+  rows: ColumnValue[],
 ): ColumnValue[] => {
   const prevRows = [...rows];
 

@@ -21,7 +21,7 @@
                     {% set colName = field.handle ~ "[0][" ~ index ~ "]" %}
                     {% set colType = column.type|default("text") %}
                     {% set colClass = "" %}
-                    {% if colType == "text" %}
+                    {% if colType == "text" or colType == "textarea" %}
                         {% set colClass = "textual" %}
                     {% elseif colType == "select" %}
                         {% set colClass = "thin" %}
@@ -56,13 +56,21 @@
                                    name="{{ colName }}"
                                    value="{{ column.value|default("Yes") }}"
                             />
+                        {% case "file" %}
+                            {% set metadata = column.metadata|default({}) %}
+                            {% set fileCount = metadata.fileCount|default(1) %}
+                            {% set fileInputName = colName %}
+                            {% if fileCount > 1 %}
+                                {% set fileInputName = colName ~ "[]" %}
+                            {% endif %}
+                            <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
                         {% default %}
                             <textarea name="{{ colName }}"
                                       data-default-value="{{ column.value|default("") }}"
-                                      rows="1"
+                                      rows="{{ colType == 'textarea' ? 4 : 1 }}"
                             >
-                                                                        {{- column.value|default("") -}}
-                                                                    </textarea>
+                                {{- column.value|default("") -}}
+                            </textarea>
                         {% endswitch %}
                     </td>
                 {% endfor %}
@@ -116,6 +124,61 @@
                                        value="{{ column.value|default("Yes") }}"
                                         {{ colValue ? "checked" }}
                                 />
+                            {% case "file" %}
+                                {% set metadata = column.metadata|default({}) %}
+                                {% set fileCount = metadata.fileCount|default(1) %}
+                                {% set fileInputName = colName %}
+                                {% if fileCount > 1 %}
+                                    {% set fileInputName = colName ~ "[]" %}
+                                {% endif %}
+
+                                {% set assetIds = [] %}
+                                {% if colValue is iterable %}
+                                    {% set assetIds = colValue %}
+                                {% elseif colValue %}
+                                    {% set assetIds = [colValue] %}
+                                {% endif %}
+
+                                {% if assetIds is not empty %}
+                                    <div class="file-preview elements chips chips-small">
+                                        {% for assetId in assetIds %}
+                                            {% set asset = craft.app.assets.getAssetById(assetId) %}
+                                            {% if asset %}
+                                                {% set thumbSizes = [30, 60, 100, 200] %}
+                                                {% set srcset = "" %}
+                                                {%- if asset.kind == 'image' -%}
+                                                    {%- for size in thumbSizes -%}
+                                                        {% set thumbTransform = { width: size, height: size } %}
+                                                        {% set srcset = srcset ~ ", " ~ asset.getUrl(thumbTransform) ~ " " ~ size ~ "w" %}
+                                                    {%- endfor -%}
+                                                    {% set srcset = srcset|trim(", ") %}
+                                                {%- else -%}
+                                                    {% set srcset = craft.app.assets.thumbUrl(asset, 200, 200) %}
+                                                {%- endif -%}
+
+                                                <div class="element small removable hasthumb chip" style="padding-right: 20px;">
+                                                    <input type="hidden" name="{{ fileInputName }}"
+                                                           value="{{ asset.id }}">
+                                                    <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
+                                                    <div class="elementthumb thumb">
+                                                        <img sizes="30px" srcset="{{ srcset }}" alt="">
+                                                    </div>
+                                                    <label class="chip-content">
+                                                        <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                                                            {{ asset.title }}
+                                                        </a>
+                                                    </label>
+                                                </div>
+                                            {% elseif assetId %}
+                                                <span class="chip">
+                                                    {{ "Missing asset #{id}"|t('freeform', { id: assetId }) }}
+                                                </span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
                             {% default %}
                                 <textarea name="{{ colName }}"
                                           data-default-value="{{ column.value|default("") }}"

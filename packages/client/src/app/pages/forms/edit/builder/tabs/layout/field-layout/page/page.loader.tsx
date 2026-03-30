@@ -1,9 +1,9 @@
-import React from 'react';
+import type React from "react";
 
-import { LoaderLayout } from '../layout/layout.loader';
+import { LoaderLayout } from "../layout/layout.loader";
 
-import { LoaderPageButtons } from './page-buttons/page-buttons.loader';
-import { PageWrapper } from './pages.styles';
+import { LoaderPageButtons } from "./page-buttons/page-buttons.loader";
+import { PageWrapper } from "./pages.styles";
 
 export const LoaderPage: React.FC = () => {
   return (

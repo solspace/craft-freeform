@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const PropertyEditorWrapper = styled.div`
   position: relative;

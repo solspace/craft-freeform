@@ -1,6 +1,6 @@
-import type { TokenAPI } from '../tokens.dropdown';
-import { renderTokenDropdown } from '../tokens.dropdown';
-import type { TokenBackend } from '../tokens.types';
+import type { TokenAPI } from "../tokens.dropdown";
+import { renderTokenDropdown } from "../tokens.dropdown";
+import type { TokenBackend } from "../tokens.types";
 
 let api: TokenAPI;
 

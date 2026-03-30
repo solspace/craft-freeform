@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { RefreshButton as BaseRefreshButton } from '../dynamic-select/dynamic-select.styles';
+import { RefreshButton as BaseRefreshButton } from "../dynamic-select/dynamic-select.styles";
 
 export const CheckboxesContainer = styled.div`
   position: relative;

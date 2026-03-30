@@ -1,7 +1,7 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import styled from "styled-components";
 
 const HelpWrapper = styled.div`
   font-style: italic;

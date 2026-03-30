@@ -1,17 +1,16 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { HelpText } from '@components/elements/help-text';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { HelpText } from "@components/elements/help-text";
 import {
   type FieldMapping,
   TargetFieldType,
-} from '@ff-client/types/integrations';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-
-import CustomIcon from './icons/custom.svg';
-import ListIcon from './icons/list.svg';
-import RelationIcon from './icons/relation.svg';
-import { FieldSelect } from './field-select';
+} from "@ff-client/types/integrations";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { FieldSelect } from "./field-select";
+import CustomIcon from "./icons/custom";
+import ListIcon from "./icons/list";
+import RelationIcon from "./icons/relation";
 import {
   MappingContainer,
   MappingWrapper,
@@ -19,8 +18,8 @@ import {
   TwigInput,
   TypeButton,
   TypeButtonGroup,
-} from './mapping.styles';
-import type { SourceField as SourceFieldType } from './mapping.types';
+} from "./mapping.styles";
+import type { SourceField as SourceFieldType } from "./mapping.types";
 
 type Props = {
   sources: SourceFieldType[];
@@ -40,7 +39,7 @@ export const FieldMappingController: React.FC<Props> = ({
   const update = (
     sourceId: string | number,
     type: TargetFieldType,
-    value?: string
+    value?: string,
   ): void => {
     updateValue({
       ...mapping,
@@ -54,26 +53,26 @@ export const FieldMappingController: React.FC<Props> = ({
   return (
     <MappingContainer>
       {sources.length === 0 && (
-        <HelpText>{translate('No data present')}</HelpText>
+        <HelpText>{translate("No data present")}</HelpText>
       )}
       {sources.map((source) => {
         const map = mapping[source.id] ?? {
           type: TargetFieldType.Relation,
-          value: '',
+          value: "",
         };
 
         return (
           <MappingWrapper key={source.id}>
-            <SourceField className={classes(source.required && 'required')}>
+            <SourceField className={classes(source.required && "required")}>
               <span>{source.label}</span>
             </SourceField>
 
             <TypeButtonGroup>
               {source.options?.length > 0 && (
                 <TypeButton
-                  title={translate('Pre-defined options')}
+                  title={translate("Pre-defined options")}
                   className={classes(
-                    map.type === TargetFieldType.Preset && 'active'
+                    map.type === TargetFieldType.Preset && "active",
                   )}
                   onClick={() => update(source.id, TargetFieldType.Preset)}
                 >
@@ -82,9 +81,9 @@ export const FieldMappingController: React.FC<Props> = ({
               )}
 
               <TypeButton
-                title={translate('Twig code')}
+                title={translate("Twig code")}
                 className={classes(
-                  map.type === TargetFieldType.Custom && 'active'
+                  map.type === TargetFieldType.Custom && "active",
                 )}
                 onClick={() => update(source.id, TargetFieldType.Custom)}
               >
@@ -92,9 +91,9 @@ export const FieldMappingController: React.FC<Props> = ({
               </TypeButton>
 
               <TypeButton
-                title={translate('Freeform field')}
+                title={translate("Freeform field")}
                 className={classes(
-                  map.type === TargetFieldType.Relation && 'active'
+                  map.type === TargetFieldType.Relation && "active",
                 )}
                 onClick={() => update(source.id, TargetFieldType.Relation)}
               >
@@ -107,7 +106,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 <Dropdown
                   value={map?.value}
                   showValues
-                  emptyOption={translate('Select an option')}
+                  emptyOption={translate("Select an option")}
                   onChange={(fieldUid) => {
                     update(source.id, TargetFieldType.Preset, fieldUid);
                   }}
@@ -132,12 +131,12 @@ export const FieldMappingController: React.FC<Props> = ({
                   type="text"
                   className="text fullwidth code"
                   placeholder="e.g. {{ yourField }} {{ otherField }}"
-                  value={map?.value || ''}
+                  value={map?.value || ""}
                   onChange={(event) => {
                     update(
                       source.id,
                       TargetFieldType.Custom,
-                      event.target.value
+                      event.target.value,
                     );
                   }}
                 />

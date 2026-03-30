@@ -1,7 +1,7 @@
-import React from 'react';
-import type { ConnectDragSource } from 'react-dnd';
+import type React from "react";
+import type { ConnectDragSource } from "react-dnd";
 
-import { Icon, Name, Wrapper } from './field.styles';
+import { Icon, Name, Wrapper } from "./field.styles";
 
 type Props = {
   icon: string;
@@ -12,7 +12,15 @@ type Props = {
 
 export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
   return (
-    <Wrapper ref={dragRef} onClick={onClick} title={label}>
+    <Wrapper
+      ref={(el) => {
+        if (dragRef) {
+          dragRef(el);
+        }
+      }}
+      onClick={onClick}
+      title={label}
+    >
       <Icon dangerouslySetInnerHTML={{ __html: icon }} />
       <Name dangerouslySetInnerHTML={{ __html: label }} />
     </Wrapper>

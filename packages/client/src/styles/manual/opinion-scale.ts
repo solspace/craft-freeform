@@ -1,7 +1,7 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
-const borderColor = '#cccccc';
-const radius = '3px';
+const borderColor = "#cccccc";
+const radius = "3px";
 
 const style = createGlobalStyle`
   .opinion-scale {

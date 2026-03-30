@@ -1,35 +1,36 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
-import { useForceUpdate } from '@ff-client/hooks/use-force-update';
-import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
-import type { IntegrationCategory } from '@ff-client/types/integrations';
-import translate from '@ff-client/utils/translations';
+import { Sidebar } from "@ff-client/app/components/layout/sidebar/sidebar";
+import { useForceUpdate } from "@ff-client/hooks/use-force-update";
+import { useQueryFormIntegrations } from "@ff-client/queries/integrations";
+import type { IntegrationCategory } from "@ff-client/types/integrations";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { useLastTab } from '../../tabs.hooks';
+import { useLastTab } from "../../tabs.hooks";
 
-import { Category } from './category/category';
-import { CategorySkeleton } from './category/category.skeleton';
-import { Wrapper } from './list.styles';
+import { Category } from "./category/category";
+import { CategorySkeleton } from "./category/category.skeleton";
+import { Wrapper } from "./list.styles";
 
 export const List: React.FC = () => {
   const { formId, id } = useParams();
   const navigate = useNavigate();
 
   const { data, isFetching } = useQueryFormIntegrations(
-    formId && Number(formId)
+    formId && Number(formId),
   );
 
   // Due to issues with react-query race conditions, we need to force a re-render
   useForceUpdate();
 
-  const { lastTab, setLastTab } = useLastTab('integrations');
+  const { lastTab, setLastTab } = useLastTab("integrations");
 
   useEffect(() => {
     if (lastTab) {
       navigate(lastTab);
     }
-  }, []);
+  }, [navigate, lastTab]);
 
   useEffect(() => {
     if (!id && !lastTab && data) {
@@ -39,7 +40,7 @@ export const List: React.FC = () => {
         navigate(`${first.id}/${first.handle}`);
       }
     }
-  }, [id, data]);
+  }, [id, data, lastTab, navigate, setLastTab]);
 
   if (!data && isFetching) {
     return (
@@ -65,7 +66,7 @@ export const List: React.FC = () => {
     if (!categories[type]) {
       categories[type] = {
         type,
-        label: translate(type.replace('-', ' ')),
+        label: translate(type.replace("-", " ")),
         children: [],
       };
     }

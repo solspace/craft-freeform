@@ -1,10 +1,10 @@
-import React from 'react';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import type { OptionCollection } from '@ff-client/types/properties';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import type { OptionCollection } from "@ff-client/types/properties";
+import type React from "react";
 
-import { useNotificationTemplates } from '../../../notification-template/notification-template.hooks';
+import { useNotificationTemplates } from "../../../notification-template/notification-template.hooks";
 
-import { TemplatesWrapper } from './template.styles';
+import { TemplatesWrapper } from "./template.styles";
 
 type Props = {
   id: string | number;
@@ -23,7 +23,7 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
 
   if (templates?.form) {
     options.push({
-      label: 'Form',
+      label: "Form",
       icon: <i className="fa-regular fa-clipboard-list-check"></i>,
       children: templates.form.map((template) => ({
         label: template.name,
@@ -34,7 +34,7 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
 
   if (templates?.global) {
     options.push({
-      label: 'Global',
+      label: "Global",
       icon: <i className="fa-solid fa-earth-americas" />,
       children: templates.global.map((template) => ({
         label: template.name,
@@ -48,7 +48,7 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
       <Dropdown
         value={selectedTemplate?.id as string}
         options={options}
-        emptyOption={'Use default template'}
+        emptyOption={"Use default template"}
         onChange={(selectedValue) => {
           if (/^[0-9]+$/.test(selectedValue)) {
             onChange(Number(selectedValue));

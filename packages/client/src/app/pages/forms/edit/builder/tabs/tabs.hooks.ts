@@ -1,17 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useSyncExternalStore } from "react";
+import { useParams } from "react-router-dom";
 
 type Tabs = Record<string, null | string>;
 type LastTab = {
   lastTab: string | null;
-  setLastTab: (tab: string) => void;
+  setLastTab: (tab?: string | null) => void;
 };
 
-const SESSION_NAMESPACE = 'freeform-builder-tabs';
+const SESSION_NAMESPACE = "freeform-builder-tabs";
+const listeners = new Set<() => void>();
 
-const getSessionTabs = (formId: string): Tabs => {
+const getSessionTabs = (formId?: string): Tabs => {
+  if (!formId) {
+    return {};
+  }
+
   const storedTabs = JSON.parse(
-    sessionStorage.getItem(SESSION_NAMESPACE) || '{}'
+    sessionStorage.getItem(SESSION_NAMESPACE) || "{}",
   );
 
   return storedTabs[formId] || {};
@@ -19,29 +24,58 @@ const getSessionTabs = (formId: string): Tabs => {
 
 const setSessionTabs = (formId: string, tabs: Tabs): void => {
   const previousState = JSON.parse(
-    sessionStorage.getItem(SESSION_NAMESPACE) || '{}'
+    sessionStorage.getItem(SESSION_NAMESPACE) || "{}",
   );
 
   sessionStorage.setItem(
     SESSION_NAMESPACE,
-    JSON.stringify({ ...previousState, [formId]: tabs })
+    JSON.stringify({ ...previousState, [formId]: tabs }),
   );
+};
+
+const getSessionTab = (
+  formId: string | undefined,
+  namespace: string,
+): string | null => getSessionTabs(formId)[namespace] ?? null;
+
+const emitChange = (): void => {
+  listeners.forEach((listener) => {
+    listener();
+  });
+};
+
+const subscribe = (listener: () => void): (() => void) => {
+  listeners.add(listener);
+
+  return () => {
+    listeners.delete(listener);
+  };
 };
 
 export const useLastTab = (namespace: string): LastTab => {
   const { formId } = useParams();
-  const [tabs, setTabs] = useState<Tabs>(getSessionTabs(formId));
+  const lastTab = useSyncExternalStore(subscribe, () =>
+    getSessionTab(formId, namespace),
+  );
 
-  useEffect(() => {
-    setSessionTabs(formId, tabs);
-  }, [formId, tabs]);
+  const setLastTab = useCallback(
+    (tab?: string | null): void => {
+      if (!formId) {
+        return;
+      }
 
-  const setLastTab = (tab: string): void => {
-    setTabs((prev) => ({ ...prev, [namespace]: tab }));
-  };
+      setSessionTabs(formId, {
+        ...getSessionTabs(formId),
+        [namespace]: tab ?? null,
+      });
+
+      emitChange();
+    },
+    [formId, namespace],
+  );
 
   return {
-    lastTab: tabs[namespace] || null,
+    lastTab,
     setLastTab,
   };
 };

@@ -1,10 +1,10 @@
-import type { PropsWithChildren, ReactElement } from 'react';
-import React from 'react';
-import { animated, useSprings } from 'react-spring';
-import { shadows } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { shadows } from "@ff-client/styles/variables";
+import { animated, useSprings } from "@react-spring/web";
+import type React from "react";
+import type { PropsWithChildren, ReactElement } from "react";
+import styled from "styled-components";
 
-import { Sidebar } from './sidebar';
+import { Sidebar } from "./sidebar";
 
 const SidebarSliderWrapper = styled.div`
   position: absolute !important;
@@ -42,7 +42,7 @@ export const SidebarSlider: React.FC<PropsWithChildren<SidebarSliderProps>> = ({
       config: {
         tension: 200,
       },
-    }))
+    })),
   );
 
   return (

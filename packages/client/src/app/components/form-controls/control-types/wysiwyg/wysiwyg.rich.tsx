@@ -1,9 +1,9 @@
-import React from 'react';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import type { WYSIWYGProperty } from '@ff-client/types/properties';
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import type { WYSIWYGProperty } from "@ff-client/types/properties";
+import type React from "react";
 
-import { WysiwygEditor } from './wysiwyg.editor';
-import { WysiwygPreview } from './wysiwyg.preview';
+import { WysiwygEditor } from "./wysiwyg.editor";
+import { WysiwygPreview } from "./wysiwyg.preview";
 
 type Props = {
   value: string;
@@ -19,7 +19,7 @@ export const WysiwygRich: React.FC<Props> = ({
   return (
     <PreviewableComponent
       preview={<WysiwygPreview value={value} />}
-      excludeClassNames={['tox']}
+      excludeClassNames={["tox"]}
     >
       <WysiwygEditor
         menu={property.menu}

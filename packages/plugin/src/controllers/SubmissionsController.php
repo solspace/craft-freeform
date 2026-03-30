@@ -24,6 +24,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Submissions\UpdateEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
@@ -105,6 +106,7 @@ class SubmissionsController extends BaseController
             ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))
             ->add(new FieldDescriptor('status', \Craft::t('app', 'Status')))
             ->add(new FieldDescriptor('userId', \Craft::t('app', 'Author')))
+            ->add(new FieldDescriptor('sourceUrl', Freeform::t('Source URL')))
         ;
 
         foreach ($submission->getFieldCollection() as $field) {
@@ -304,16 +306,31 @@ class SubmissionsController extends BaseController
 
         $id = \Craft::$app->request->post('id');
         if (!$id) {
-            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission ID was missing.')]);
+            $this->response->setStatusCode(400);
+
+            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission ID is missing.')]);
         }
 
         $submission = Submission::find()->id($id);
         if (!$submission->count()) {
+            $this->response->setStatusCode(404);
+
             return $this->asJson(['success' => false, 'message' => Freeform::t('Submission with ID {id} not found', ['id' => $id])]);
+        }
+
+        if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $submission->formId
+                )
+            );
         }
 
         $deleted = $this->getSubmissionsService()->delete($submission);
         if (!$deleted) {
+            $this->response->setStatusCode(500);
+
             $this->asJson(['success' => false, 'message' => Freeform::t('Submission could not be deleted.')]);
         }
 
@@ -376,6 +393,31 @@ class SubmissionsController extends BaseController
                 }
             }
         }
+
+        $tableFields = $submission->getForm()->getLayout()->getFields(TableField::class);
+        foreach ($tableFields as $field) {
+            if (!$field->hasFileUploadColumns()) {
+                continue;
+            }
+
+            $handle = $field->getHandle();
+            $oldValue = $submission->{$handle}->getValue() ?? [];
+            $postedValue = $post[$handle] ?? [];
+
+            $oldIds = $this->extractTableFileAssetIds($field, $oldValue);
+            $postedIds = $this->extractTableFileAssetIds($field, $postedValue);
+
+            $staleIds = array_diff($oldIds, $postedIds);
+            foreach ($staleIds as $id) {
+                try {
+                    $asset = Asset::find()->where(['id' => $id])->one();
+                    if ($asset) {
+                        $asset->delete();
+                    }
+                } catch (\Exception) {
+                }
+            }
+        }
     }
 
     private function uploadAndAddFiles(Form $form, array $post = []): array
@@ -406,6 +448,145 @@ class SubmissionsController extends BaseController
             }
         }
 
+        $tableFields = $form->getLayout()->getFields(TableField::class);
+        foreach ($tableFields as $tableField) {
+            if (!$tableField->hasFileUploadColumns()) {
+                continue;
+            }
+
+            $handle = $tableField->getHandle();
+            if (!isset($_FILES[$handle])) {
+                continue;
+            }
+
+            if (!isset($post[$handle]) || !\is_array($post[$handle])) {
+                $post[$handle] = [];
+            }
+
+            $fileColumns = $this->getTableFileColumns($tableField);
+            if (empty($fileColumns)) {
+                continue;
+            }
+
+            $rows = $_FILES[$handle]['name'] ?? [];
+            if (!\is_array($rows)) {
+                continue;
+            }
+
+            foreach ($rows as $rowIndex => $rowData) {
+                if (!\is_array($rowData)) {
+                    continue;
+                }
+
+                foreach ($fileColumns as $columnIndex => $metadata) {
+                    $uploadedFiles = Freeform::getInstance()->files->getTableCellUploadedFiles(
+                        $handle,
+                        (int) $rowIndex,
+                        (int) $columnIndex
+                    );
+                    if (empty($uploadedFiles)) {
+                        continue;
+                    }
+
+                    $assetIds = [];
+                    foreach ($uploadedFiles as $uploadedFile) {
+                        $response = Freeform::getInstance()->files->uploadTableCellFile(
+                            $uploadedFile,
+                            $form,
+                            (int) $metadata['assetSourceId'],
+                            $metadata['uploadLocation'] ?? null
+                        );
+
+                        if ($response->getAssetIds()) {
+                            $assetIds = array_merge($assetIds, $response->getAssetIds());
+                        }
+                    }
+
+                    if (empty($assetIds)) {
+                        continue;
+                    }
+
+                    $existingValue = $post[$handle][$rowIndex][$columnIndex] ?? [];
+                    if (!\is_array($existingValue)) {
+                        $existingValue = empty($existingValue) ? [] : [$existingValue];
+                    }
+
+                    $post[$handle][$rowIndex][$columnIndex] = array_values(array_unique(array_merge($existingValue, $assetIds)));
+
+                    $records = UnfinalizedFileRecord::findAll(['assetId' => $assetIds]);
+                    foreach ($records as $record) {
+                        $record->delete();
+                    }
+                }
+            }
+        }
+
         return $post;
+    }
+
+    private function getTableFileColumns(TableField $field): array
+    {
+        $columns = [];
+        foreach ($field->getTableLayout() as $index => $column) {
+            if (TableField::COLUMN_TYPE_FILE !== ($column->type ?? null)) {
+                continue;
+            }
+
+            $metadata = \is_array($column->metadata ?? null) ? $column->metadata : [];
+            $assetSourceId = (int) ($metadata['assetSourceId'] ?? 0);
+            if ($assetSourceId < 1) {
+                continue;
+            }
+
+            $columns[$index] = [
+                'assetSourceId' => $assetSourceId,
+                'uploadLocation' => $metadata['uploadLocation'] ?? null,
+            ];
+        }
+
+        return $columns;
+    }
+
+    private function extractTableFileAssetIds(TableField $field, mixed $value): array
+    {
+        if (!\is_array($value) || !$field->hasFileUploadColumns()) {
+            return [];
+        }
+
+        $fileColumnIndexes = [];
+        foreach ($field->getTableLayout() as $index => $column) {
+            if (TableField::COLUMN_TYPE_FILE === ($column->type ?? null)) {
+                $fileColumnIndexes[] = $index;
+            }
+        }
+
+        if (empty($fileColumnIndexes)) {
+            return [];
+        }
+
+        $ids = [];
+        foreach ($value as $row) {
+            if (!\is_array($row)) {
+                continue;
+            }
+
+            foreach ($fileColumnIndexes as $columnIndex) {
+                $cellValue = $row[$columnIndex] ?? [];
+                if (!\is_array($cellValue)) {
+                    $cellValue = empty($cellValue) ? [] : [$cellValue];
+                }
+
+                foreach ($cellValue as $item) {
+                    if (\is_scalar($item) && is_numeric((string) $item)) {
+                        $id = (int) $item;
+                        if ($id > 0) {
+                            $ids[] = $id;
+                        }
+                    }
+                }
+            }
+        }
+
+        return array_values(array_unique($ids));
     }
 }

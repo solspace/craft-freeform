@@ -1,13 +1,12 @@
-import type Freeform from '@components/front-end/plugin/freeform';
-import events from '@lib/plugin/constants/event-types';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { FreeformHandler } from 'types/form';
+import type Freeform from "@components/front-end/plugin/freeform";
+import events from "@lib/plugin/constants/event-types";
+import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
+import type { FreeformHandler } from "types/form";
 
-import { clearFormLock, handleFormLock } from './error-handling';
-import { handleFileUpload, loadExistingUploads } from './file-upload';
-import { showError } from './messaging';
-import type { ChangeEvent } from './types';
-import type { FreeformEventWithContainer } from './types';
+import { clearFormLock, handleFormLock } from "./error-handling";
+import { handleFileUpload, loadExistingUploads } from "./file-upload";
+import { showError } from "./messaging";
+import type { ChangeEvent, FreeformEventWithContainer } from "./types";
 
 class DragAndDropFile implements FreeformHandler {
   freeform;
@@ -22,43 +21,56 @@ class DragAndDropFile implements FreeformHandler {
 
   reload = (): void => {
     const form = this.freeform.form;
-    const fileUploads = this.freeform.form.querySelectorAll<HTMLElement>('[data-freeform-file-upload]');
+    const fileUploads = this.freeform.form.querySelectorAll<HTMLElement>(
+      "[data-freeform-file-upload]",
+    );
     fileUploads.forEach((fileUpload) => {
-      fileUpload.style.setProperty('--accent', fileUpload.dataset.accent);
+      fileUpload.style.setProperty("--accent", fileUpload.dataset.accent);
 
-      fileUpload.addEventListener('dragenter', this.handleDrag(fileUpload));
-      fileUpload.addEventListener('dragleave', this.handleDragLeave(fileUpload));
-      fileUpload.addEventListener('dragover', this.handleDrag(fileUpload));
-      fileUpload.addEventListener('drop', this.handleDrop(fileUpload));
-      fileUpload.addEventListener('click', this.handleClick(fileUpload));
-      fileUpload.addEventListener(events.dragAndDrop.onChange, this.handleChanges);
+      fileUpload.addEventListener("dragenter", this.handleDrag(fileUpload));
+      fileUpload.addEventListener(
+        "dragleave",
+        this.handleDragLeave(fileUpload),
+      );
+      fileUpload.addEventListener("dragover", this.handleDrag(fileUpload));
+      fileUpload.addEventListener("drop", this.handleDrop(fileUpload));
+      fileUpload.addEventListener("click", this.handleClick(fileUpload));
+      fileUpload.addEventListener(
+        events.dragAndDrop.onChange,
+        this.handleChanges,
+      );
       fileUpload.addEventListener(events.dragAndDrop.onChange, (event) => {
         clearFormLock(event as FreeformEventWithContainer, this.freeform);
       });
-      fileUpload.addEventListener(events.dragAndDrop.afterErrors, handleFormLock);
+      fileUpload.addEventListener(
+        events.dragAndDrop.afterErrors,
+        handleFormLock,
+      );
 
       loadExistingUploads(fileUpload, this.freeform);
       form.addEventListener(events.form.reset, this.handleReset(fileUpload));
 
       fileUpload
         .querySelector<HTMLInputElement>(`input[type=file]`)
-        .addEventListener('change', this.handleManualUpload(fileUpload));
+        .addEventListener("change", this.handleManualUpload(fileUpload));
     });
   };
 
   handleChanges = ({ container }: ChangeEvent): void => {
-    const previewZone = container.querySelector('[data-preview-zone]');
-    const uploadedFileCount = previewZone.querySelectorAll('[data-file-preview]').length;
+    const previewZone = container.querySelector("[data-preview-zone]");
+    const uploadedFileCount = previewZone.querySelectorAll(
+      "[data-file-preview]",
+    ).length;
     if (uploadedFileCount > 0) {
-      container.setAttribute('data-contains-files', '');
+      container.setAttribute("data-contains-files", "");
     } else {
-      container.removeAttribute('data-contains-files');
+      container.removeAttribute("data-contains-files");
     }
   };
 
   attachDragState = (target: EventTarget): void => {
     if (target instanceof HTMLElement) {
-      target.dataset.dragging = '';
+      target.dataset.dragging = "";
     }
   };
 
@@ -77,7 +89,9 @@ class DragAndDropFile implements FreeformHandler {
     };
   };
 
-  handleDragLeave = (container: HTMLElement): EventListenerOrEventListenerObject => {
+  handleDragLeave = (
+    container: HTMLElement,
+  ): EventListenerOrEventListenerObject => {
     return (event: DragEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -100,18 +114,23 @@ class DragAndDropFile implements FreeformHandler {
     };
   };
 
-  handleClick = (container: HTMLElement): EventListenerOrEventListenerObject => {
+  handleClick = (
+    container: HTMLElement,
+  ): EventListenerOrEventListenerObject => {
     return (): void => {
-      const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+      const input =
+        container.querySelector<HTMLInputElement>('input[type="file"]');
       if (!input) {
-        throw new Error('File upload corrupted');
+        throw new Error("File upload corrupted");
       }
 
       input.click();
     };
   };
 
-  handleManualUpload = (container: HTMLElement): EventListenerOrEventListenerObject => {
+  handleManualUpload = (
+    container: HTMLElement,
+  ): EventListenerOrEventListenerObject => {
     return (event: Event): void => {
       const input = event.target as HTMLInputElement;
       const { files } = input;
@@ -124,25 +143,33 @@ class DragAndDropFile implements FreeformHandler {
   initFileUpload = (files: FileList, container: HTMLElement): void => {
     const { freeformFileUpload: handle, maxFiles, maxSize } = container.dataset;
     const { messageSize, messageFiles } = container.dataset;
-    const previewZone = container.querySelector('[data-preview-zone]');
+    const previewZone = container.querySelector("[data-preview-zone]");
 
-    let fileCount = container.querySelectorAll('[data-file-preview]:not([data-has-errors])').length;
+    let fileCount = container.querySelectorAll(
+      "[data-file-preview]:not([data-has-errors])",
+    ).length;
 
     for (let i = 0; i < files.length; i++) {
-      if (fileCount >= parseInt(maxFiles)) {
+      if (fileCount >= parseInt(maxFiles, 10)) {
         showError(container, messageFiles, this.freeform);
         break;
       }
 
       const file = files.item(i);
-      if (file.size > parseInt(maxSize)) {
+      if (file.size > parseInt(maxSize, 10)) {
         showError(container, messageSize, this.freeform);
         continue;
       }
 
       this.currentFileUploads++;
 
-      handleFileUpload(file, handle, container, previewZone, this.freeform).finally(() => {
+      handleFileUpload(
+        file,
+        handle,
+        container,
+        previewZone,
+        this.freeform,
+      ).finally(() => {
         this.currentFileUploads--;
         this.handleUploadLockdown();
       });
@@ -152,11 +179,19 @@ class DragAndDropFile implements FreeformHandler {
     }
   };
 
-  handleReset = (container: HTMLElement): EventListenerOrEventListenerObject => {
+  handleReset = (
+    container: HTMLElement,
+  ): EventListenerOrEventListenerObject => {
     return (): void => {
-      const items = container.querySelectorAll('[data-file-preview]');
-      items.forEach((item) => item.parentNode.removeChild(item));
-      dispatchCustomEvent(events.dragAndDrop.onChange, { container }, container);
+      const items = container.querySelectorAll("[data-file-preview]");
+      items.forEach((item) => {
+        item.parentNode.removeChild(item);
+      });
+      dispatchCustomEvent(
+        events.dragAndDrop.onChange,
+        { container },
+        container,
+      );
     };
   };
 
@@ -164,10 +199,10 @@ class DragAndDropFile implements FreeformHandler {
     if (this.currentFileUploads > 0) {
       if (!this.isFormLocked) {
         this.isFormLocked = true;
-        this.freeform.lockSubmit('file-upload');
+        this.freeform.lockSubmit("file-upload");
       }
     } else {
-      this.freeform.unlockSubmit('file-upload');
+      this.freeform.unlockSubmit("file-upload");
       this.isFormLocked = false;
     }
   };

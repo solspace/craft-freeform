@@ -1,5 +1,5 @@
-import { beziers, colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { beziers, colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const LightSwitchHandle = styled.div`
   display: block;
@@ -96,6 +96,11 @@ export const LightSwitchWrapper = styled.div`
         }
       }
     }
+  }
+
+  &.readonly {
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   &.error {

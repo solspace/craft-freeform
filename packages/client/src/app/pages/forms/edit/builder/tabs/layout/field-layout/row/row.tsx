@@ -1,22 +1,23 @@
-import type { MutableRefObject } from 'react';
-import React, { memo } from 'react';
-import { useSelector } from 'react-redux';
-import type { Row as RowType } from '@editor/builder/types/layout';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { useDimensionsObserver } from '@ff-client/hooks/use-height-animation';
+import type { Row as RowType } from "@editor/builder/types/layout";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useDimensionsObserver } from "@ff-client/hooks/use-height-animation";
+import type React from "react";
+import type { RefObject } from "react";
+import { memo } from "react";
+import { useSelector } from "react-redux";
 
-import { Field } from '../field/field';
-import { FieldDragPlaceholder } from '../field/field.placeholder';
+import { Field } from "../field/field";
+import { FieldDragPlaceholder } from "../field/field.placeholder";
 
-import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
-import { useRowDrop } from './row.drop';
-import { useRowFieldDrop } from './row.field-drop';
+import { usePlaceholderAnimation, useRowAnimation } from "./row.animations";
+import { useRowDrop } from "./row.drop";
+import { useRowFieldDrop } from "./row.field-drop";
 import {
   DropZone,
   DropZoneAnimation,
   RowFieldsContainer,
   RowWrapper,
-} from './row.styles';
+} from "./row.styles";
 
 type Props = {
   row: RowType;
@@ -45,13 +46,15 @@ const Row: React.FC<Props> = memo(({ row }) => {
     fieldWidth,
   } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
 
-  const ref = fieldDropRef(
-    wrapperRef
-  ) as unknown as MutableRefObject<HTMLDivElement>;
+  const ref = fieldDropRef(wrapperRef) as unknown as RefObject<HTMLDivElement>;
 
   return (
     <RowWrapper ref={ref}>
-      <DropZone ref={rowDropRef}>
+      <DropZone
+        ref={(el) => {
+          rowDropRef(el);
+        }}
+      >
         <DropZoneAnimation style={placeholderAnimation} />
       </DropZone>
       <RowFieldsContainer style={rowAnimation}>
@@ -79,6 +82,6 @@ const Row: React.FC<Props> = memo(({ row }) => {
   );
 });
 
-Row.displayName = 'Row';
+Row.displayName = "Row";
 
 export { Row };

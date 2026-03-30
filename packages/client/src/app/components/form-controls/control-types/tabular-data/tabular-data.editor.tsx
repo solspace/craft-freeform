@@ -1,7 +1,6 @@
-import React, { useRef } from 'react';
-import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
-import { HelpText } from '@components/elements/help-text';
-import type { UpdateValue } from '@components/form-controls';
+import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { HelpText } from "@components/elements/help-text";
+import type { UpdateValue } from "@components/form-controls";
 import {
   Button,
   Cell,
@@ -9,26 +8,27 @@ import {
   TableContainer,
   TableEditorWrapper,
   TabularOptions,
-} from '@components/form-controls/control-types/table/table.editor.styles';
-import { DraggableRow } from '@components/form-controls/draggable-row';
-import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
-import CrossIcon from '@components/form-controls/icons/cross.svg';
-import MoveIcon from '@components/form-controls/icons/move.svg';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
+} from "@components/form-controls/control-types/table/table.editor.styles";
+import { DraggableRow } from "@components/form-controls/draggable-row";
+import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
+import CrossIcon from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type {
   GenericValue,
   TabularDataProperty,
-} from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import React, { useRef } from "react";
 
 import {
   addRow,
   deleteRow,
   moveRow,
   updateRow,
-} from './tabular-data.operations';
-import type { ColumnConfiguration, ColumnValue } from './tabular-data.types';
+} from "./tabular-data.operations";
+import type { ColumnConfiguration, ColumnValue } from "./tabular-data.types";
 
 type Props = {
   configuration: ColumnConfiguration[];
@@ -46,8 +46,8 @@ export const TabularDataEditor: React.FC<Props> = ({
   context,
 }) => {
   const { getTranslation, updateTranslation, willTranslate } = useTranslations(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    context as any
+    // biome-ignore lint/suspicious/noExplicitAny: This context is typed as unknown, but we know it will be the correct type for the translation functions.
+    context as any,
   );
 
   const { handle } = property;
@@ -57,7 +57,7 @@ export const TabularDataEditor: React.FC<Props> = ({
 
   const refs = useRef([]);
   refs.current = values.map(
-    (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>()
+    (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>(),
   );
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
@@ -70,15 +70,15 @@ export const TabularDataEditor: React.FC<Props> = ({
 
     setActiveCell(
       atIndex !== undefined ? atIndex + 1 : values.length,
-      cellIndex
+      cellIndex,
     );
 
     updateValue(
       addRow(
         values,
         configuration,
-        atIndex !== undefined ? atIndex : values.length
-      )
+        atIndex !== undefined ? atIndex : values.length,
+      ),
     );
   };
 
@@ -112,7 +112,7 @@ export const TabularDataEditor: React.FC<Props> = ({
                         onEnter: (event) => {
                           appendAndFocus(
                             0,
-                            event.shiftKey ? rowIndex : undefined
+                            event.shiftKey ? rowIndex : undefined,
                           );
                         },
                       })}
@@ -131,8 +131,8 @@ export const TabularDataEditor: React.FC<Props> = ({
                                 event.target.value,
                                 ...translation[rowIndex].slice(columnIndex + 1),
                               ],
-                              translation
-                            )
+                              translation,
+                            ),
                           );
 
                           return;
@@ -146,8 +146,8 @@ export const TabularDataEditor: React.FC<Props> = ({
                               event.target.value,
                               ...values[rowIndex].slice(columnIndex + 1),
                             ],
-                            values
-                          )
+                            values,
+                          ),
                         );
                       }}
                     />
@@ -190,8 +190,8 @@ export const TabularDataEditor: React.FC<Props> = ({
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                'Press <b>enter</b> while editing a cell to add a new row.'
-              )
+                "Press <b>enter</b> while editing a cell to add a new row.",
+              ),
             ),
           }}
         />

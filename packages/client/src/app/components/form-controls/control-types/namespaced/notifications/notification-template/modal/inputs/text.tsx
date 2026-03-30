@@ -1,7 +1,7 @@
-import React from 'react';
-import { ControlBlock } from '@components/form-controls/control.block';
+import { ControlBlock } from "@components/form-controls/control.block";
+import type React from "react";
 
-import type { InputControl } from '../template.modal.types';
+import type { InputControl } from "../template.modal.types";
 
 export const TextInput: React.FC<InputControl> = (props) => {
   const { value, multiline, onChange } = props;

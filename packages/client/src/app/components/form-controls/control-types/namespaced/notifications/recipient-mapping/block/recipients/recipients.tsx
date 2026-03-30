@@ -1,10 +1,10 @@
-import React from 'react';
-import type { Recipient } from '@ff-client/types/notifications';
-import classes from '@ff-client/utils/classes';
+import type { Recipient } from "@ff-client/types/notifications";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
 
-import { RecipientsController } from '../../../recipients/recipients.controller';
+import { RecipientsController } from "../../../recipients/recipients.controller";
 
-import { RecipientsWrapper } from './recipients.styles';
+import { RecipientsWrapper } from "./recipients.styles";
 
 type Props = {
   recipients: Recipient[];
@@ -18,7 +18,7 @@ export const Recipients: React.FC<Props> = ({
   onChange,
 }) => {
   return (
-    <RecipientsWrapper className={classes(spanMultiple && 'multiple')}>
+    <RecipientsWrapper className={classes(spanMultiple && "multiple")}>
       <RecipientsController value={recipients} onChange={onChange} />
     </RecipientsWrapper>
   );

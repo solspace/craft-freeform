@@ -1,5 +1,5 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 import {
   NoContent,
@@ -7,8 +7,8 @@ import {
   PreviewRow,
   PreviewTable,
   PreviewWrapper,
-} from './tabular-data.preview.styles';
-import type { ColumnConfiguration, ColumnValue } from './tabular-data.types';
+} from "./tabular-data.preview.styles";
+import type { ColumnConfiguration, ColumnValue } from "./tabular-data.types";
 
 type Props = {
   configuration: ColumnConfiguration[];
@@ -20,17 +20,17 @@ export const TabularDataPreview: React.FC<Props> = ({
   values,
 }) => {
   return (
-    <PreviewWrapper data-edit={translate('Click to edit data')}>
+    <PreviewWrapper data-edit={translate("Click to edit data")}>
       <PreviewTable>
         {!values.length && (
-          <NoContent>{translate('Not configured yet')}</NoContent>
+          <NoContent>{translate("Not configured yet")}</NoContent>
         )}
         {values.map((row, index) => (
           <PreviewRow key={index}>
             {configuration.map((column, columnIndex) => (
               <PreviewData
                 key={columnIndex}
-                data-empty={translate('empty')}
+                data-empty={translate("empty")}
                 data-title={column.label}
               >
                 {row[columnIndex]}

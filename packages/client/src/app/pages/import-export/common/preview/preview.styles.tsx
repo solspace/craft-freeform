@@ -1,6 +1,6 @@
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import type React from "react";
+import styled from "styled-components";
 
 const chunkWidth = 22;
 
@@ -46,7 +46,7 @@ export const Label = styled.label<LabelProps>`
   padding: 0 4px;
 
   text-align: left;
-  font-weight: ${({ $light }) => ($light ? 'normal' : 'bold')};
+  font-weight: ${({ $light }) => ($light ? "normal" : "bold")};
 
   small {
     padding-left: 20px;
@@ -78,7 +78,7 @@ export const Spacer = styled.div<SpacerProps>`
     right: 2px;
     top: -1px;
 
-    display: ${({ $dash }) => ($dash ? 'block' : 'none')};
+    display: ${({ $dash }) => ($dash ? "block" : "none")};
     height: 2px;
 
     background: #b9c6d7;

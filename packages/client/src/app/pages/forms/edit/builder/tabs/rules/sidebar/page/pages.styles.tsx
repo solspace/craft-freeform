@@ -1,7 +1,7 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
-import { Button } from './buttons/buttons.styles';
+import { Button } from "./buttons/buttons.styles";
 
 export const PageWrapper = styled.div`
   display: flex;

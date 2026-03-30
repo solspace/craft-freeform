@@ -1,24 +1,23 @@
-import type { PropsWithChildren } from 'react';
-import React from 'react';
 import {
   ControlWrapper,
   ExtraContent,
   FormField,
   LabelGroup,
   LabelInstructionsWrapper,
-} from '@components/form-controls/control.styles';
-import FormInstructions from '@components/form-controls/instructions';
-import FormLabel from '@components/form-controls/label';
-import { Edition } from '@config/freeform/freeform.config';
-import config from '@config/freeform/freeform.config';
-import type { Message } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import capitalize from 'lodash/capitalize';
+} from "@components/form-controls/control.styles";
+import FormInstructions from "@components/form-controls/instructions";
+import FormLabel from "@components/form-controls/label";
+import config, { Edition } from "@config/freeform/freeform.config";
+import type { Message } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import capitalize from "lodash/capitalize";
+import type React from "react";
+import type { PropsWithChildren } from "react";
 
-import { useRenderContext } from './context/render.context';
-import { FormErrorList } from './error-list';
-import { FormMessageList } from './message-list';
+import { useRenderContext } from "./context/render.context";
+import { FormErrorList } from "./error-list";
+import { FormMessageList } from "./message-list";
 
 export type ControlProps = {
   edition?: Edition;
@@ -36,6 +35,8 @@ export type ControlProps = {
   messages?: Message[];
   preContent?: React.ReactNode;
   extraContent?: React.ReactNode;
+  align?: "start" | "center" | "end";
+  justify?: "start" | "center" | "end";
 };
 
 export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
@@ -55,6 +56,8 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   isEncrypted,
   preContent,
   extraContent,
+  align,
+  justify,
 }) => {
   const { size } = useRenderContext();
   const {
@@ -66,12 +69,12 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   return (
     <ControlWrapper
       className={classes(
-        !!errors && 'errors',
-        disabled && 'disabled',
+        !!errors && "errors",
+        disabled && "disabled",
         size && `size-${size}`,
-        upsell && 'upsell'
+        upsell && "upsell",
       )}
-      data-upsell={translate('Upgrade to {edition} to unlock this setting.', {
+      data-upsell={translate("Upgrade to {edition} to unlock this setting.", {
         edition: capitalize(edition),
       })}
       $width={width}
@@ -97,7 +100,15 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
         )}
       </LabelGroup>
 
-      <FormField>{children}</FormField>
+      <FormField
+        className={classes(
+          align && `align-${align}`,
+          justify && `justify-${justify}`,
+        )}
+      >
+        {children}
+      </FormField>
+
       <FormErrorList errors={errors} />
       <FormMessageList messages={messages} />
     </ControlWrapper>

@@ -1,25 +1,24 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config, { Edition } from '@config/freeform/freeform.config';
-import { useAppDispatch } from '@editor/store';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { fieldRuleActions } from '@editor/store/slices/rules/fields';
-import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
-import { useQueryFormRules } from '@ff-client/queries/rules';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import config, { Edition } from "@config/freeform/freeform.config";
+import { useAppDispatch } from "@editor/store";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { fieldRuleActions } from "@editor/store/slices/rules/fields";
+import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
+import { useQueryFormRules } from "@ff-client/queries/rules";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { CombinatorSelect } from '../conditions/combinator/combinator';
-import { DisplaySelect } from '../conditions/display/display';
-import { ConditionTable } from '../conditions/table/condition-table';
-
-import { Remove } from './remove-button/remove';
-import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field.editor.styles';
-import { UpsellEditor } from './upsell.editor';
+import { CombinatorSelect } from "../conditions/combinator/combinator";
+import { DisplaySelect } from "../conditions/display/display";
+import { ConditionTable } from "../conditions/table/condition-table";
+import { ConfigurationDescription, Label } from "./editor.styles";
+import { RulesEditorWrapper } from "./field.editor.styles";
+import { Remove } from "./remove-button/remove";
+import { UpsellEditor } from "./upsell.editor";
 
 export const FieldRulesEditor: React.FC = () => {
   const { formId, uid } = useParams();
@@ -47,7 +46,7 @@ export const FieldRulesEditor: React.FC = () => {
       <RulesEditorWrapper>
         <Label>
           <LoadingText
-            loadingText={translate('Loading data')}
+            loadingText={translate("Loading data")}
             loading={isFetching}
           >
             <span
@@ -57,11 +56,12 @@ export const FieldRulesEditor: React.FC = () => {
         </Label>
         {!isFetching && (
           <button
-            className={classes('btn add icon dashed')}
+            type="button"
+            className={classes("btn add icon dashed")}
             disabled={!isPro}
             onClick={() => dispatch(fieldRuleActions.add(uid))}
           >
-            {translate('Add rules')}
+            {translate("Add rules")}
           </button>
         )}
       </RulesEditorWrapper>
@@ -77,13 +77,13 @@ export const FieldRulesEditor: React.FC = () => {
       <Remove
         onClick={() => {
           dispatch(fieldRuleActions.remove(rule.uid));
-          navigate('..');
+          navigate("..");
         }}
       />
 
       <Label>
         <LoadingText
-          loadingText={translate('Loading data')}
+          loadingText={translate("Loading data")}
           loading={isFetching}
         >
           <span
@@ -101,12 +101,12 @@ export const FieldRulesEditor: React.FC = () => {
                   fieldRuleActions.modifyDisplay({
                     ruleUid: rule.uid,
                     display: value,
-                  })
+                  }),
                 )
               }
             />
 
-            {translate('this field when')}
+            {translate("this field when")}
 
             <CombinatorSelect
               value={rule.combinator}
@@ -115,12 +115,12 @@ export const FieldRulesEditor: React.FC = () => {
                   fieldRuleActions.modifyCombinator({
                     ruleUid: rule.uid,
                     combinator: value,
-                  })
+                  }),
                 )
               }
             />
 
-            {translate('of the following rules match:')}
+            {translate("of the following rules match:")}
           </ConfigurationDescription>
 
           <ConditionTable
@@ -130,7 +130,7 @@ export const FieldRulesEditor: React.FC = () => {
                 fieldRuleActions.modifyConditions({
                   ruleUid: rule.uid,
                   conditions,
-                })
+                }),
               );
             }}
           />

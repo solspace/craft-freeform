@@ -1,8 +1,8 @@
-import type { AxiosError } from 'axios';
+import type { AxiosError } from "axios";
 
-import type { GenericValue } from './properties';
+import type { GenericValue } from "./properties";
 
-export const API_ERROR = 'api_error';
+export const API_ERROR = "api_error";
 
 export type ErrorList = {
   [key: string]: GenericValue;
@@ -27,6 +27,6 @@ export class APIError extends Error {
   public getFlatErrors(): string {
     return Object.values(this.errors)
       .flatMap((errorList) => Object.values(errorList))
-      .join(', ');
+      .join(", ");
   }
 }

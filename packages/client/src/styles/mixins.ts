@@ -1,6 +1,6 @@
-import { css } from 'styled-components';
+import { css } from "styled-components";
 
-import { colors } from './variables';
+import { colors } from "./variables";
 
 const scrollBG = colors.gray100;
 const scrollFG = colors.gray300;

@@ -6,16 +6,18 @@ type TokenResponse = {
 let globalCsrf: CSRFToken;
 
 enum RefreshType {
-  None = 'none',
-  Once = 'once',
-  Always = 'always',
+  None = "none",
+  Once = "once",
+  Always = "always",
 }
 
 export const fetchCsrf = async (): Promise<CSRFToken> => {
   try {
-    const form = document.querySelector<HTMLFormElement>('form[data-csrf-refresh]');
+    const form = document.querySelector<HTMLFormElement>(
+      "form[data-csrf-refresh]",
+    );
     if (!form) {
-      return null;
+      return findCsrfToken();
     }
 
     const tokenRefreshType = form.dataset.csrfRefresh;
@@ -30,7 +32,6 @@ export const fetchCsrf = async (): Promise<CSRFToken> => {
       case RefreshType.Always:
         return await fetchCsrfTokenPayload();
 
-      case RefreshType.None:
       default:
         return null;
     }
@@ -41,12 +42,29 @@ export const fetchCsrf = async (): Promise<CSRFToken> => {
   return null;
 };
 
+const findCsrfToken = (): CSRFToken | null => {
+  const form = document.querySelector<HTMLFormElement>("form[data-csrf-name]");
+  if (!form) {
+    return null;
+  }
+
+  const name = form.dataset.csrfName;
+  const value = form.querySelector<HTMLInputElement>(
+    `input[name="${name}"]`,
+  )?.value;
+  if (!name || !value) {
+    return null;
+  }
+
+  return { name, value };
+};
+
 const fetchCsrfTokenPayload = async (): Promise<CSRFToken | null> => {
-  const url: string = '/freeform/tokens';
+  const url: string = "/freeform/tokens";
 
   const data = (await fetch(url, {
     headers: {
-      Accept: 'application/json',
+      Accept: "application/json",
     },
   }).then((res) => res.json())) as TokenResponse;
 
@@ -61,7 +79,7 @@ const fetchCsrfTokenPayload = async (): Promise<CSRFToken | null> => {
 };
 
 export const updateCsrfInputs = async (): Promise<void> => {
-  const elements = document.querySelectorAll('craft-csrf-input');
+  const elements = document.querySelectorAll("craft-csrf-input");
   if (!elements) {
     return;
   }
@@ -73,8 +91,8 @@ export const updateCsrfInputs = async (): Promise<void> => {
 
   const { name, value } = csrf;
   elements.forEach((element) => {
-    const input = document.createElement('input');
-    input.type = 'hidden';
+    const input = document.createElement("input");
+    input.type = "hidden";
     input.name = name;
     input.value = value;
     element.replaceWith(input);

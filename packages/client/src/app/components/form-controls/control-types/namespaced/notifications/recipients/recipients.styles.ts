@@ -1,6 +1,6 @@
-import { labelText } from '@ff-client/styles/mixins';
-import { borderRadius, colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { labelText } from "@ff-client/styles/mixins";
+import { borderRadius, colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const RecipientWrapper = styled.ul``;
 

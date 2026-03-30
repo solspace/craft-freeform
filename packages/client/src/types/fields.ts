@@ -1,14 +1,14 @@
-import type { GenericValue, Property } from './properties';
+import type { GenericValue, Property } from "./properties";
 
 export enum Implementation {
-  Options = 'options',
-  GeneratedOptions = 'generatedOptions',
+  Options = "options",
+  GeneratedOptions = "generatedOptions",
 }
 
 export enum Type {
-  Group = 'group',
-  Rating = 'rating',
-  OpinionScale = 'opinion-scale',
+  Group = "group",
+  Rating = "rating",
+  OpinionScale = "opinion-scale",
 }
 
 export type FieldType = {

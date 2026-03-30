@@ -2,21 +2,13 @@
 
 namespace Solspace\Freeform\Resources\Bundles;
 
-use craft\helpers\App;
+use Solspace\Freeform\Freeform;
 
 class FreeformClientBundle extends AbstractFreeformAssetBundle
 {
     public function getScripts(): array
     {
-        $clientPath = App::env('FF_CLIENT_PATH') ?? null;
-        if ($clientPath) {
-            return [$clientPath];
-        }
-
-        return [
-            'js/client/vendor.js',
-            'js/client/client.js',
-        ];
+        return [];
     }
 
     public function getStylesheets(): array
@@ -25,5 +17,18 @@ class FreeformClientBundle extends AbstractFreeformAssetBundle
             'css/shared/fonts.css',
             'https://kit.fontawesome.com/0e31cd79e9.css',
         ];
+    }
+
+    public function registerAssetFiles($view): void
+    {
+        $this->publish($view->getAssetManager());
+
+        parent::registerAssetFiles($view);
+
+        Freeform::getInstance()->clientAssets->registerAssets(
+            $view,
+            $this->baseUrl,
+            $this->sourcePath
+        );
     }
 }

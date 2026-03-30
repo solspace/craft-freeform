@@ -1,5 +1,5 @@
-import type { Form } from '@ff-client/types/forms';
-import type { GenericValue } from '@ff-client/types/properties';
+import type { Form } from "@ff-client/types/forms";
+import type { GenericValue } from "@ff-client/types/properties";
 
 export type FormErrors = {
   [key: string]: {
@@ -11,7 +11,7 @@ export type FormState = Form & {
   errors: FormErrors;
 };
 
-export type UpdateProps = Partial<Omit<FormState, 'properties'>>;
+export type UpdateProps = Partial<Omit<FormState, "properties">>;
 
 export type ModifyProps = {
   key: string;

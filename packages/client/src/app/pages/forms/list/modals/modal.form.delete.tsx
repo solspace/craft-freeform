@@ -1,30 +1,31 @@
-import type { ChangeEvent } from 'react';
-import React, { useEffect, useState } from 'react';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
-} from '@components/modals/modal.styles';
-import type { ModalContainerProps } from '@components/modals/modal.types';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import { QKGroups } from '@ff-client/queries/form-groups';
-import { QKForms } from '@ff-client/queries/forms';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import DOMPurify from 'dompurify';
+} from "@components/modals/modal.styles";
+import type { ModalContainerProps } from "@components/modals/modal.types";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
+import { QKGroups } from "@ff-client/queries/form-groups";
+import { QKForms } from "@ff-client/queries/forms";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
+import DOMPurify from "dompurify";
+import type React from "react";
+import type { ChangeEvent } from "react";
+import { useEffect, useState } from "react";
 
-import { FormWrapper } from './modal.form.styles';
+import { FormWrapper } from "./modal.form.styles";
 
 export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   data,
   closeModal,
 }) => {
   const [enabled, setEnabled] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   const queryClient = useQueryClient();
@@ -34,13 +35,13 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
     {
       callback: (event: KeyboardEvent): void => {
         switch (event.key) {
-          case 'Enter':
+          case "Enter":
             handleDelete();
             return;
         }
       },
     },
-    [enabled]
+    [enabled],
   );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -63,7 +64,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         queryKey: QKForms.all(getCurrentHandleWithFallback()),
       });
 
-      setInputValue('');
+      setInputValue("");
       setEnabled(false);
 
       closeModal();
@@ -73,7 +74,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   };
 
   useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === 'DELETE');
+    setEnabled(inputValue.toUpperCase() === "DELETE");
   }, [inputValue]);
 
   return (
@@ -85,15 +86,15 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
       <FormWrapper>
         <div>
           {translate(
-            'Are you sure you want to permanently delete this form? This action cannot be undone.'
+            "Are you sure you want to permanently delete this form? This action cannot be undone.",
           )}
         </div>
         <div
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                'To delete this form, please type <strong>DELETE</strong> in the box below:'
-              )
+                "To delete this form, please type <strong>DELETE</strong> in the box below:",
+              ),
             ),
           }}
         />
@@ -108,19 +109,20 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
       </FormWrapper>
 
       <ModalFooter>
-        <button className="btn cancel" onClick={closeModal}>
-          {translate('Cancel')}
+        <button type="button" className="btn cancel" onClick={closeModal}>
+          {translate("Cancel")}
         </button>
         <button
-          className={classes('btn submit', !enabled && 'disabled')}
+          type="button"
+          className={classes("btn submit", !enabled && "disabled")}
           onClick={handleDelete}
         >
           <LoadingText
-            loadingText={translate('Deleting')}
+            loadingText={translate("Deleting")}
             loading={isDeleting}
             spinner
           >
-            {translate('Delete')}
+            {translate("Delete")}
           </LoadingText>
         </button>
       </ModalFooter>

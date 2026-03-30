@@ -1,7 +1,7 @@
-import React from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import type React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import styled from "styled-components";
 
 const LoaderContainer = styled.div`
   display: flex;

@@ -124,6 +124,7 @@ class ExportProfileModel extends Model
                 ->add(new FieldDescriptor('ip', Freeform::t('IP Address')))
                 ->add(new FieldDescriptor('dateCreated', \Craft::t('app', 'Date Created')))
                 ->add(new FieldDescriptor('status', \Craft::t('app', 'Status')))
+                ->add(new FieldDescriptor('sourceUrl', Freeform::t('Source URL')))
             ;
         }
 
@@ -204,6 +205,7 @@ class ExportProfileModel extends Model
                 $fieldId = match ($fieldId) {
                     'id' => $table.'.[[id]]',
                     'dateCreated' => $table.'.[[dateCreated]]',
+                    'sourceUrl' => $table.'.[[sourceUrl]]',
                     'status' => '[[sub_freeform_statuses]].[[name]]',
                     'cc_amount' => 'p.[[amount]]',
                     'cc_currency' => 'p.[[currency]]',

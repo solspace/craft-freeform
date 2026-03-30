@@ -1,12 +1,12 @@
-import React from 'react';
+import type React from "react";
 
 import type {
   ConfigurableOptionsConfiguration,
   ConfigurationProps,
-} from '../../../options.types';
-import { ConfigurableOptions } from '../configurable';
+} from "../../../options.types";
+import { ConfigurableOptions } from "../configurable";
 
-import { useOptionTypesElements } from './elements.queries';
+import { useOptionTypesElements } from "./elements.queries";
 
 const Elements: React.FC<
   ConfigurationProps<ConfigurableOptionsConfiguration>
@@ -16,7 +16,7 @@ const Elements: React.FC<
       value={value}
       updateValue={updateValue}
       property={property}
-      defaultValue={''}
+      defaultValue={""}
       updateDefaultValue={() => {}}
       typeProviderQuery={useOptionTypesElements}
       convertToCustomValues={convertToCustomValues}

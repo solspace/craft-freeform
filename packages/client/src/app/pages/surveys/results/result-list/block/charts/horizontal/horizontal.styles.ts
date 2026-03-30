@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Answer = styled.div`
   display: grid;
@@ -65,6 +65,6 @@ export const Bar = styled.div<BarProps>`
     height: 100%;
 
     background: ${({ ranking }) =>
-      ranking === 1 ? 'var(--highlight)' : '#33414d'};
+      ranking === 1 ? "var(--highlight)" : "#33414d"};
   }
 `;

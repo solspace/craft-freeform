@@ -1,12 +1,12 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import type {
   TemplateCollection,
   TemplateValues,
-} from '@ff-client/app/pages/import-export/import/import.types';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/app/pages/import-export/import/import.types";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { PreviewGenericList } from '../preview.generic-list';
+import { PreviewGenericList } from "../preview.generic-list";
 import {
   BlockItem,
   Blocks,
@@ -18,7 +18,7 @@ import {
   PdfTemplateIcon,
   SuccessIcon,
   WrapperTemplateIcon,
-} from '../preview.styles';
+} from "../preview.styles";
 
 type Props = {
   templates: TemplateCollection;
@@ -29,7 +29,7 @@ type Props = {
 
 const isAllChecked = (
   templates: TemplateCollection,
-  values: TemplateValues
+  values: TemplateValues,
 ): boolean =>
   values.pdf.length === templates.pdf.length &&
   values.wrapper.length === templates.wrapper.length &&
@@ -72,27 +72,27 @@ export const PreviewTemplates: React.FC<Props> = ({
                     pdf: templates.pdf.map((template) => template.uid),
                     wrapper: templates.wrapper.map((template) => template.uid),
                     notification: templates.notification.map(
-                      (template) => template.uid
+                      (template) => template.uid,
                     ),
                     formatting: templates.formatting.map(
-                      (template) => template.fileName
+                      (template) => template.fileName,
                     ),
                     success: templates.success.map(
-                      (template) => template.fileName
+                      (template) => template.fileName,
                     ),
                   })
             }
           />
         </BlockItem>
         <Directory />
-        <Label htmlFor="templates-all">{translate('Templates')}</Label>
+        <Label htmlFor="templates-all">{translate("Templates")}</Label>
       </Blocks>
 
       <ul>
         <PreviewGenericList
           nested
-          label={translate('PDF')}
-          labelKey={'name'}
+          label={translate("PDF")}
+          labelKey={"name"}
           icon={<PdfTemplateIcon />}
           items={templates.pdf}
           selection={options.pdf}
@@ -102,8 +102,8 @@ export const PreviewTemplates: React.FC<Props> = ({
 
         <PreviewGenericList
           nested
-          label={translate('Wrapper')}
-          labelKey={'name'}
+          label={translate("Wrapper")}
+          labelKey={"name"}
           icon={<WrapperTemplateIcon />}
           items={templates.wrapper}
           selection={options.wrapper}
@@ -113,8 +113,8 @@ export const PreviewTemplates: React.FC<Props> = ({
 
         <PreviewGenericList
           nested
-          label={translate('Notification')}
-          labelKey={'name'}
+          label={translate("Notification")}
+          labelKey={"name"}
           icon={<NotificationIcon />}
           items={templates.notification}
           selection={options.notification}
@@ -124,8 +124,8 @@ export const PreviewTemplates: React.FC<Props> = ({
 
         <PreviewGenericList
           nested
-          label={translate('Formatting')}
-          labelKey={'name'}
+          label={translate("Formatting")}
+          labelKey={"name"}
           icon={<FormattingIcon />}
           items={templates.formatting}
           selection={options.formatting}
@@ -135,8 +135,8 @@ export const PreviewTemplates: React.FC<Props> = ({
 
         <PreviewGenericList
           nested
-          label={translate('Success')}
-          labelKey={'name'}
+          label={translate("Success")}
+          labelKey={"name"}
           icon={<SuccessIcon />}
           items={templates.success}
           selection={options.success}

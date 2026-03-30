@@ -1,8 +1,8 @@
-import React from 'react';
+import type React from "react";
 
-import { LoaderRow } from '../row/row.loader';
+import { LoaderRow } from "../row/row.loader";
 
-import { PageFieldLayoutWrapper } from './layout.styles';
+import { PageFieldLayoutWrapper } from "./layout.styles";
 
 export const LoaderLayout: React.FC = () => {
   return (

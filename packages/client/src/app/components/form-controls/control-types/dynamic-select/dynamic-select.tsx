@@ -1,23 +1,24 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
 import {
   findFirstValue,
   isInOptions,
-} from '@components/elements/custom-dropdown/dropdown.operations';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
+} from "@components/elements/custom-dropdown/dropdown.operations";
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
 import type {
   DynamicSelectProperty,
   OptionCollection,
-} from '@ff-client/types/properties';
-import RefreshIcon from '@ff-icons/actions/refresh.svg';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+} from "@ff-client/types/properties";
+import RefreshIcon from "@ff-icons/actions/refresh";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import type React from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-import { extractParameter } from '../namespaced/field-mapping/mapping.utilities';
+import { extractParameter } from "../namespaced/field-mapping/mapping.utilities";
 
-import { DropdownContainer, RefreshButton } from './dynamic-select.styles';
+import { DropdownContainer, RefreshButton } from "./dynamic-select.styles";
 
 const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   value,
@@ -37,7 +38,7 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   }
 
   const { data, isFetching, isFetched, refetch } = useQuery({
-    queryKey: ['dynamic-select', source, params],
+    queryKey: ["dynamic-select", source, params],
     queryFn: () =>
       axios.get<OptionCollection>(source, { params }).then((res) => res.data),
     staleTime: Infinity,
@@ -58,12 +59,20 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
     }
 
     if (emptyOption) {
-      updateValue('');
+      if (value === "") {
+        return;
+      }
+
+      updateValue("");
     } else {
       const firstValue = findFirstValue(data);
+      if (firstValue === value || firstValue === undefined) {
+        return;
+      }
+
       updateValue(firstValue);
     }
-  }, [data, isFetched]);
+  }, [data, isFetched, isFetching, updateValue, value, emptyOption]);
 
   return (
     <Control property={property} errors={errors} context={context}>
@@ -80,9 +89,9 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
           className="btn"
           disabled={isFetching}
           onClick={() => {
-            params['refresh'] = 'true';
+            params.refresh = "true";
             refetch();
-            delete params['refresh'];
+            delete params.refresh;
           }}
         >
           <RefreshIcon />

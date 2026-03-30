@@ -1,21 +1,20 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useParams, useResolvedPath } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { notificationSelectors } from "@editor/store/slices/notifications/notifications.selectors";
 import {
   useQueryFormNotifications,
   useQueryNotificationTypes,
-} from '@ff-client/queries/notifications';
-
-import { Remove } from './remove-button/remove';
-import { FieldComponent } from './field-component';
-import { EmptyEditor } from './property-editor.empty';
-import { LoadingEditor } from './property-editor.loading';
+} from "@ff-client/queries/notifications";
+import type React from "react";
+import { useSelector } from "react-redux";
+import { useParams, useResolvedPath } from "react-router-dom";
+import { FieldComponent } from "./field-component";
+import { EmptyEditor } from "./property-editor.empty";
+import { LoadingEditor } from "./property-editor.loading";
 import {
   PropertyEditorWrapper,
   SettingsWrapper,
-} from './property-editor.styles';
+} from "./property-editor.styles";
+import { Remove } from "./remove-button/remove";
 
 type UrlParams = {
   uid: string;
@@ -24,11 +23,11 @@ type UrlParams = {
 
 export const PropertyEditor: React.FC = () => {
   const { formId, uid } = useParams<UrlParams>();
-  const currentPath = useResolvedPath('');
+  const currentPath = useResolvedPath("");
   const { data: notificationTypes } = useQueryNotificationTypes();
 
   const { data, isFetching } = useQueryFormNotifications(
-    formId ? Number(formId) : undefined
+    formId ? Number(formId) : undefined,
   );
 
   const notification = useSelector(notificationSelectors.one(uid));

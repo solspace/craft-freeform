@@ -1,10 +1,10 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import type React from "react";
 
-import type { Integration } from '../../../import/import.types';
+import type { Integration } from "../../../import/import.types";
 import {
   BlockItem,
   Blocks,
@@ -13,7 +13,7 @@ import {
   Label,
   ListItem,
   Spacer,
-} from '../preview.styles';
+} from "../preview.styles";
 
 type Props = {
   integrations: Integration[];
@@ -45,7 +45,7 @@ export const PreviewIntegrations: React.FC<Props> = ({
           />
         </BlockItem>
         <Directory />
-        <Label htmlFor="integrations-all">{translate('Integrations')}</Label>
+        <Label htmlFor="integrations-all">{translate("Integrations")}</Label>
       </Blocks>
 
       <ul>
@@ -53,8 +53,8 @@ export const PreviewIntegrations: React.FC<Props> = ({
           <ListItem
             key={integration.uid}
             className={classes(
-              'selectable',
-              options.includes(integration.uid) && 'selected'
+              "selectable",
+              options.includes(integration.uid) && "selected",
             )}
           >
             <Blocks>
@@ -66,7 +66,7 @@ export const PreviewIntegrations: React.FC<Props> = ({
                     onUpdate(
                       options.includes(integration.uid)
                         ? options.filter((uid) => uid !== integration.uid)
-                        : [...options, integration.uid]
+                        : [...options, integration.uid],
                     )
                   }
                 />

@@ -1,17 +1,17 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useTransition } from 'react-spring';
-import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
-import { RenderContextProvider } from '@components/form-controls/context/render.context';
-import { useAppDispatch } from '@editor/store';
-import { contextActions } from '@editor/store/slices/context';
-import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import { ErrorBoundary } from "@components/form-controls/boundaries/ErrorBoundary";
+import { RenderContextProvider } from "@components/form-controls/context/render.context";
+import { useAppDispatch } from "@editor/store";
+import { contextActions } from "@editor/store/slices/context";
+import { contextSelectors } from "@editor/store/slices/context/context.selectors";
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import { useTransition } from "@react-spring/web";
+import type React from "react";
+import { useSelector } from "react-redux";
 
-import { FieldProperties } from './editors/fields/field-properties';
-import { PageProperties } from './editors/pages/page-properties';
-import { AnimatedBlock, PropertyEditorWrapper } from './property-editor.styles';
+import { FieldProperties } from "./editors/fields/field-properties";
+import { PageProperties } from "./editors/pages/page-properties";
+import { AnimatedBlock, PropertyEditorWrapper } from "./property-editor.styles";
 
 export const PropertyEditor: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -27,24 +27,24 @@ export const PropertyEditor: React.FC = () => {
     },
     isEnabled: active,
     excludeClassNames: [
-      'field-layout',
-      'page-buttons',
-      'page-tab',
-      'save-button',
-      'main-tabs',
-      'editable-content',
-      'dropdown-rollout',
-      'breadcrumbs',
-      'tagify__dropdown',
-      'tox',
-      'elementselectormodal',
+      "field-layout",
+      "page-buttons",
+      "page-tab",
+      "save-button",
+      "main-tabs",
+      "editable-content",
+      "dropdown-rollout",
+      "breadcrumbs",
+      "tagify__dropdown",
+      "tox",
+      "elementselectormodal",
     ],
   });
 
   const transitions = useTransition(active ? [context] : null, {
-    from: { transform: 'translate3d(100%, 0, 0)', opacity: 1 },
-    enter: { transform: 'translate3d(0%, 0, 0)', opacity: 1, zIndex: 2 },
-    leave: { transform: 'translate3d(-100%, 0, 0)' },
+    from: { transform: "translate3d(100%, 0, 0)", opacity: 1 },
+    enter: { transform: "translate3d(0%, 0, 0)", opacity: 1, zIndex: 2 },
+    leave: { transform: "translate3d(-100%, 0, 0)" },
     config: {
       tension: 500,
       friction: 50,
@@ -59,10 +59,10 @@ export const PropertyEditor: React.FC = () => {
         >
           {transitions((style, item) => (
             <AnimatedBlock style={style}>
-              {!!item && item.type === 'field' && (
+              {!!item && item.type === "field" && (
                 <FieldProperties uid={item.uid} />
               )}
-              {!!item && item.type === 'page' && (
+              {!!item && item.type === "page" && (
                 <PageProperties uid={item.uid} />
               )}
             </AnimatedBlock>

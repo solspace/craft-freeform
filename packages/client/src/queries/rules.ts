@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
-import { fieldRuleActions } from '@editor/store/slices/rules/fields';
-import { integrationRuleActions } from '@editor/store/slices/rules/integrations';
-import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
-import { pageRuleActions } from '@editor/store/slices/rules/pages';
-import { submitFormRuleActions } from '@editor/store/slices/rules/submit-form';
+import { buttonRuleActions } from "@editor/store/slices/rules/buttons";
+import { fieldRuleActions } from "@editor/store/slices/rules/fields";
+import { integrationRuleActions } from "@editor/store/slices/rules/integrations";
+import { notificationRuleActions } from "@editor/store/slices/rules/notifications";
+import { pageRuleActions } from "@editor/store/slices/rules/pages";
+import { submitFormRuleActions } from "@editor/store/slices/rules/submit-form";
 import type {
   ButtonRule,
   FieldRule,
@@ -12,19 +11,21 @@ import type {
   NotificationRule,
   PageRule,
   SubmitFormRule,
-} from '@ff-client/types/rules';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+} from "@ff-client/types/rules";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
+import { useCallback } from "react";
+import { useDispatch } from "react-redux";
 
 export const QKRules = {
-  all: ['rules'] as const,
-  form: (formId: number) => [...QKRules.all, 'forms', formId] as const,
+  all: ["rules"] as const,
+  form: (formId: number) => [...QKRules.all, "forms", formId] as const,
   notifications: (formId: number) =>
-    [...QKRules.form(formId), 'notifications'] as const,
+    [...QKRules.form(formId), "notifications"] as const,
   integrations: (formId: number) =>
-    [...QKRules.form(formId), 'integrations'] as const,
+    [...QKRules.form(formId), "integrations"] as const,
 };
 
 type FormRules = {
@@ -34,16 +35,20 @@ type FormRules = {
   buttons: ButtonRule[];
 };
 
-export const useRulesQueryReset = (): (() => void) => {
+export const useRulesQueryReset = (formId?: number): (() => void) => {
   const queryClient = useQueryClient();
 
-  return () => {
-    queryClient.removeQueries({ queryKey: QKRules.all });
-  };
+  return useCallback(() => {
+    if (!formId) {
+      return;
+    }
+
+    queryClient.removeQueries({ queryKey: QKRules.form(formId) });
+  }, [formId, queryClient]);
 };
 
 export const useQueryFormRules = (
-  formId: number
+  formId: number,
 ): UseQueryResult<FormRules, AxiosError> => {
   const dispatch = useDispatch();
 
@@ -67,7 +72,7 @@ export const useQueryFormRules = (
 };
 
 export const useQueryNotificationRules = (
-  formId: number
+  formId: number,
 ): UseQueryResult<NotificationRule[]> => {
   const dispatch = useDispatch();
 
@@ -76,7 +81,7 @@ export const useQueryNotificationRules = (
     queryFn: () =>
       axios
         .get<NotificationRule[]>(
-          `/api/forms/${formId || 0}/rules/notifications`
+          `/api/forms/${formId || 0}/rules/notifications`,
         )
         .then((res) => res.data)
         .then((res) => {
@@ -90,7 +95,7 @@ export const useQueryNotificationRules = (
 };
 
 export const useQueryIntegrationRules = (
-  formId: number
+  formId: number,
 ): UseQueryResult<IntegrationRule[]> => {
   const dispatch = useDispatch();
 

@@ -1,5 +1,12 @@
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
+import { scrollBar } from "@ff-client/styles/mixins";
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const OptionContainer = styled.div`
   display: flex;
@@ -67,4 +74,126 @@ export const CheckboxContainer = styled.div`
   label {
     display: block;
   }
+`;
+
+export const TableColumnTabs = styled(TabsWrapper)`
+  flex: 1;
+  overflow-x: auto;
+  align-self: flex-start;
+
+  padding: ${spacings.md} 1px 0;
+  box-shadow: ${shadows.bottom};
+
+  ${scrollBar};
+
+  a {
+    cursor: pointer;
+
+    display: flex;
+    gap: 5px;
+
+    user-select: none;
+  }
+`;
+
+export const TableColumnTabLabel = styled.span`
+  display: block;
+
+  max-width: 100px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+export const TableColumnTabsWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: ${spacings.sm};
+  width: 100%;
+  padding-inline: ${spacings.md};
+`;
+
+export const AddColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: 0 0 auto;
+
+  width: 34px;
+  height: 34px;
+  margin-bottom: 8px;
+
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.md};
+
+  svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+`;
+
+export const RemoveColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: 2px;
+
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.sm};
+  background: rgba(51, 64, 77, 0.08);
+  color: ${colors.gray500};
+
+  &:hover {
+    color: ${colors.gray700};
+    background: rgba(51, 64, 77, 0.2);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+`;
+
+export const ReorderColumnButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  margin-left: auto;
+
+  border: 1px solid rgba(51, 64, 77, 0.1);
+  border-radius: ${borderRadius.sm};
+  background: rgba(51, 64, 77, 0.08);
+  color: ${colors.gray500};
+  cursor: move;
+
+  &:hover {
+    color: ${colors.gray700};
+    background: rgba(51, 64, 77, 0.2);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+`;
+
+export const FileKindOptionsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: ${spacings.sm};
+
+  padding-top: ${spacings.sm};
 `;

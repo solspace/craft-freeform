@@ -1,6 +1,6 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react';
-import React from 'react';
-import styled from 'styled-components';
+import type React from "react";
+import type { HTMLAttributes, PropsWithChildren } from "react";
+import styled from "styled-components";
 
 type Props = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & {

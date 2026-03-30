@@ -1,14 +1,14 @@
-import { QKGroups } from '@ff-client/queries/groups';
-import type { APIError } from '@ff-client/types/api';
-import type { GroupItem } from '@ff-client/types/groups';
+import { QKGroups } from "@ff-client/queries/groups";
+import type { APIError } from "@ff-client/types/api";
+import type { GroupItem } from "@ff-client/types/groups";
 import type {
   MutationFunctionContext,
   UseMutationOptions,
   UseMutationResult,
-} from '@tanstack/react-query';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
+} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
 type GroupMutationResult = UseMutationResult<
   AxiosResponse<GroupItem>,
@@ -21,7 +21,7 @@ export const useGroupMutation = (
     AxiosResponse<GroupItem>,
     APIError,
     GroupItem
-  > = {}
+  > = {},
 ): GroupMutationResult => {
   const queryClient = useQueryClient();
 
@@ -30,7 +30,7 @@ export const useGroupMutation = (
     data: AxiosResponse<GroupItem>,
     variables: GroupItem,
     onMutateResult: unknown,
-    context: MutationFunctionContext
+    context: MutationFunctionContext,
   ) => {
     originalOnSuccess?.(data, variables, onMutateResult, context);
     queryClient.invalidateQueries({ queryKey: QKGroups.all });
@@ -39,7 +39,7 @@ export const useGroupMutation = (
   return useMutation<AxiosResponse, APIError, GroupItem>({
     ...options,
     mutationFn: (data: GroupItem) => {
-      return axios.post<GroupItem>('/api/fields/types/groups', data);
+      return axios.post<GroupItem>("/api/fields/types/groups", data);
     },
   });
 };

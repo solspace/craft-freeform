@@ -1,11 +1,10 @@
-import type { Condition, NotificationRule } from '@ff-client/types/rules';
-import { Operator } from '@ff-client/types/rules';
-import { Combinator } from '@ff-client/types/rules';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import { v4 } from 'uuid';
+import type { Condition, NotificationRule } from "@ff-client/types/rules";
+import { Combinator, Operator } from "@ff-client/types/rules";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import { v4 } from "uuid";
 
-import type { RuleState } from '..';
+import type { RuleState } from "..";
 
 type NotificationRulesState = RuleState<NotificationRule>;
 
@@ -30,7 +29,7 @@ type ChangeCombinator = {
 };
 
 export const notificationRulesSlice = createSlice({
-  name: 'rules/notifications',
+  name: "rules/notifications",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<NotificationRule[]>) => {
@@ -39,7 +38,7 @@ export const notificationRulesSlice = createSlice({
     },
     add: (
       state,
-      action: PayloadAction<{ ruleUid: string; notificationUid: string }>
+      action: PayloadAction<{ ruleUid: string; notificationUid: string }>,
     ) => {
       const { ruleUid, notificationUid } = action.payload;
 
@@ -52,9 +51,9 @@ export const notificationRulesSlice = createSlice({
         conditions: [
           {
             uid: v4(),
-            field: '',
+            field: "",
             operator: Operator.Equals,
-            value: '',
+            value: "",
           },
         ],
       });
@@ -80,7 +79,7 @@ export const notificationRulesSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.items.splice(
         state.items.findIndex((rule) => rule.uid === action.payload),
-        1
+        1,
       );
     },
   },

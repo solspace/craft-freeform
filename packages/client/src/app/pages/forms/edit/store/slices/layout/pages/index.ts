@@ -1,8 +1,8 @@
-import type { Page } from '@editor/builder/types/layout';
-import type { GenericValue } from '@ff-client/types/properties';
-import { inRange } from '@ff-client/utils/numbers';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { Page } from "@editor/builder/types/layout";
+import type { GenericValue } from "@ff-client/types/properties";
+import { inRange } from "@ff-client/utils/numbers";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export type PagesStore = Page[];
 
@@ -25,13 +25,13 @@ type EditButtonsPayload = {
 const initialState: PagesStore = [];
 
 export const pagesSlice = createSlice({
-  name: 'layout/pages',
+  name: "layout/pages",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<PagesStore>) => {
       state.splice(0, state.length, ...action.payload);
     },
-    add: (state, action: PayloadAction<Omit<Page, 'order'>>) => {
+    add: (state, action: PayloadAction<Omit<Page, "order">>) => {
       const maxOrder = Math.max(...[-1, ...state.map((page) => page.order)]);
 
       state.push({
@@ -43,7 +43,7 @@ export const pagesSlice = createSlice({
       let order = 0;
       state.splice(
         state.findIndex((page) => page.uid === action.payload),
-        1
+        1,
       );
 
       state.forEach((page) => {

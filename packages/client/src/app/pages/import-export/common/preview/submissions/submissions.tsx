@@ -1,9 +1,9 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import type { Submissions } from '../../../import/import.types';
+import type { Submissions } from "../../../import/import.types";
 import {
   BlockItem,
   Blocks,
@@ -12,7 +12,7 @@ import {
   ListItem,
   Spacer,
   SubmissionIcon,
-} from '../preview.styles';
+} from "../preview.styles";
 
 type Props = {
   submissions: Submissions[];
@@ -44,7 +44,7 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
           />
         </BlockItem>
         <Directory />
-        <Label htmlFor="submissions-all">{translate('Submissions')}</Label>
+        <Label htmlFor="submissions-all">{translate("Submissions")}</Label>
       </Blocks>
 
       <ul>
@@ -52,8 +52,8 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
           <ListItem
             key={submission.form.uid}
             className={classes(
-              'selectable',
-              options.includes(submission.form.uid) && 'selected'
+              "selectable",
+              options.includes(submission.form.uid) && "selected",
             )}
           >
             <Blocks>
@@ -65,7 +65,7 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
                     onUpdate(
                       options.includes(submission.form.uid)
                         ? options.filter((id) => id !== submission.form.uid)
-                        : [...options, submission.form.uid]
+                        : [...options, submission.form.uid],
                     )
                   }
                 />

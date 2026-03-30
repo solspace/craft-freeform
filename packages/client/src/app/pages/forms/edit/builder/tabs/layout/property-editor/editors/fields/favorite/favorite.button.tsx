@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useSpring } from 'react-spring';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import { useFieldType } from '@ff-client/queries/field-types';
-import classes from '@ff-client/utils/classes';
-import HeartFullIcon from '@ff-icons/heart-check.svg';
-import HeartEmptyIcon from '@ff-icons/heart-empty.svg';
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import { useFieldType } from "@ff-client/queries/field-types";
+import classes from "@ff-client/utils/classes";
+import HeartFullIcon from "@ff-icons/heart-check";
+import HeartEmptyIcon from "@ff-icons/heart-empty";
+import { useSpring } from "@react-spring/web";
+import type React from "react";
+import { useEffect, useState } from "react";
 
-import { FavoriteForm } from './favorite.form';
-import { useFavoritesMutation } from './favorite.queries';
+import { FavoriteForm } from "./favorite.form";
+import { useFavoritesMutation } from "./favorite.queries";
 import {
   Button,
   FavoriteButtonWrapper,
   IconBox,
   InfoBlock,
   PopUpWrapper,
-} from './favorite.styles';
+} from "./favorite.styles";
 
 type Props = {
   field: Field;
@@ -30,11 +31,12 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
   const [active, setActive] = useState(false);
   const [hover, setHover] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to reset the state when the field changes, not when the mutation changes
   useEffect(() => {
     setActive(false);
     setHover(false);
     mutation.reset();
-  }, [field?.uid]);
+  }, [field?.uid, mutation.reset]);
 
   const style = useSpring({
     to: {
@@ -70,12 +72,12 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
     setHover(false);
   }, active);
 
-  if (!field?.uid || type.type === 'group') {
+  if (!field?.uid || type.type === "group") {
     return null;
   }
 
   return (
-    <FavoriteButtonWrapper className={classes(active && 'active')} ref={ref}>
+    <FavoriteButtonWrapper className={classes(active && "active")} ref={ref}>
       <Button
         style={iconStyle}
         onClick={() => setActive(!active)}

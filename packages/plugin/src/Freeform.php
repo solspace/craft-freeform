@@ -69,8 +69,9 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
-use Solspace\Freeform\Services\AiService;
+use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\ChartsService;
+use Solspace\Freeform\Services\ClientAssetsService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
@@ -80,6 +81,7 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\SubmitService;
 use Solspace\Freeform\Services\Form\TranslationsService;
 use Solspace\Freeform\Services\Form\TypesService;
+use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\FormGroupsService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
@@ -139,6 +141,7 @@ use yii\web\View;
  * @property IntegrationsService         $integrations
  * @property IntegrationsQueueService    $integrationsQueue
  * @property ChartsService               $charts
+ * @property ClientAssetsService         $clientAssets
  * @property WidgetsService              $widgets
  * @property ExportService               $export
  * @property ExportProfilesService       $exportProfiles
@@ -150,6 +153,7 @@ use yii\web\View;
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
  * @property AiService                   $ai
+ * @property FormGenerationService       $formGeneration
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
  * @property TypesService                $formTypes
@@ -197,6 +201,8 @@ class Freeform extends Plugin
     public const PERMISSION_EXPORT_NOTIFICATIONS_ACCESS = 'freeform-pro-exportNotificationsAccess';
     public const PERMISSION_EXPORT_NOTIFICATIONS_MANAGE = 'freeform-pro-exportNotificationsManage';
     public const PERMISSION_EXPORT_DATA_UTILITY_ACCESS = 'freeform-pro-exportDataUtilityAccess';
+    public const PERMISSION_AB_ACCESS = 'freeform-pro-abAccess';
+    public const PERMISSION_AB_MANAGE = 'freeform-pro-abManage';
 
     public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
@@ -451,10 +457,12 @@ class Freeform extends Plugin
         $this->setComponents(
             [
                 'charts' => ChartsService::class,
+                'clientAssets' => ClientAssetsService::class,
                 'crm' => CrmService::class,
                 'diagnostics' => DiagnosticsService::class,
                 'digest' => DigestService::class,
                 'ai' => AiService::class,
+                'formGeneration' => FormGenerationService::class,
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,

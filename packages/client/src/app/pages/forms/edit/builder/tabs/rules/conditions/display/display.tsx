@@ -1,6 +1,6 @@
-import React from 'react';
-import { Display } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
+import { Display } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 type Props = {
   value: Display;
@@ -12,12 +12,10 @@ export const DisplaySelect: React.FC<Props> = ({ value, onChange }) => {
     <div className="select">
       <select
         value={value}
-        onChange={(event) =>
-          onChange && onChange(event.target.value as Display)
-        }
+        onChange={(event) => onChange?.(event.target.value as Display)}
       >
-        <option value={Display.Show}>{translate('show')}</option>
-        <option value={Display.Hide}>{translate('hide')}</option>
+        <option value={Display.Show}>{translate("show")}</option>
+        <option value={Display.Hide}>{translate("hide")}</option>
       </select>
     </div>
   );

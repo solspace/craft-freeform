@@ -1,7 +1,7 @@
-import React from 'react';
-import { borderRadius, colors } from '@ff-client/styles/variables';
-import translate from '@ff-client/utils/translations';
-import styled from 'styled-components';
+import { borderRadius, colors } from "@ff-client/styles/variables";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import styled from "styled-components";
 
 type Props = {
   label: string;

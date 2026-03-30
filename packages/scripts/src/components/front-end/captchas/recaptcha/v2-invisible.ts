@@ -1,10 +1,10 @@
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
-import type { FreeformEvent } from 'types/events';
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
+import type { FreeformEvent } from "types/events";
 
-import { getContainer, loadReCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadReCaptcha, readConfig } from "./utils/script-loader";
 
-let executor: (value: void) => void;
+let executor: () => void;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const container = getContainer(event.form);
@@ -12,10 +12,10 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
     return null;
   }
 
-  let element = container.querySelector<HTMLDivElement>('[data-recaptcha]');
+  let element = container.querySelector<HTMLDivElement>("[data-recaptcha]");
   if (!element) {
-    element = document.createElement('div');
-    element.dataset.recaptcha = '';
+    element = document.createElement("div");
+    element.dataset.recaptcha = "";
     container.appendChild(element);
   }
 
@@ -40,9 +40,11 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
       grecaptcha.ready(() => {
         const id = grecaptcha.render(element, {
           sitekey,
-          size: 'invisible',
+          size: "invisible",
           callback: (token) => {
-            element.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
+            element.querySelector<HTMLInputElement>(
+              '*[name="g-recaptcha-response"]',
+            ).value = token;
 
             executor();
           },
@@ -60,7 +62,7 @@ document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   event.addCallback(async () => {
     const promise = new Promise<void>((resolve) => {
       executor = resolve;
-    });
+    }) as unknown as Promise<boolean>;
 
     const element = createCaptcha(event);
     if (!element || event.isBackButtonPressed) {
@@ -80,6 +82,10 @@ document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
 
 addListeners(
   document,
-  [events.form.ready, events.form.afterFailedSubmit, events.form.ajaxAfterSubmit],
-  initRecaptchaInvisible
+  [
+    events.form.ready,
+    events.form.afterFailedSubmit,
+    events.form.ajaxAfterSubmit,
+  ],
+  initRecaptchaInvisible,
 );

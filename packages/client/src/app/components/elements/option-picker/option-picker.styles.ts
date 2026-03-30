@@ -1,11 +1,11 @@
-import { animated } from 'react-spring';
 import {
   borderRadius,
   colors,
   shadows,
   spacings,
-} from '@ff-client/styles/variables';
-import styled from 'styled-components';
+} from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
 export const OptionPickerWrapper = styled.div`
   position: relative;

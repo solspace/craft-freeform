@@ -1,5 +1,5 @@
-import { animated } from 'react-spring';
-import styled, { keyframes } from 'styled-components';
+import { animated } from "@react-spring/web";
+import styled, { keyframes } from "styled-components";
 
 export const LoadingTextWrapper = styled.span`
   display: flex;

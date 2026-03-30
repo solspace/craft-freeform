@@ -1,5 +1,5 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react';
-import React from 'react';
+import type React from "react";
+import type { HTMLAttributes, PropsWithChildren } from "react";
 
 export const ContentContainer: React.FC<
   PropsWithChildren<HTMLAttributes<HTMLDivElement>>

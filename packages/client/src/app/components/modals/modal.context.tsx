@@ -1,20 +1,21 @@
-import type { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import type { GenericValue } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import cloneDeep from 'lodash/cloneDeep';
+import type { GenericValue } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import cloneDeep from "lodash/cloneDeep";
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
-import { Modal } from './modal';
-import { useAnimateModals, useAnimateOverlay } from './modal.animations';
-import { ModalHub, ModalOverlay } from './modal.styles';
-import type { ModalConfig, ModalType } from './modal.types';
+import { Modal } from "./modal";
+import { useAnimateModals, useAnimateOverlay } from "./modal.animations";
+import { ModalHub, ModalOverlay } from "./modal.styles";
+import type { ModalConfig, ModalType } from "./modal.types";
 
 type ContextType = {
   openModal: (
     modal: ModalType,
     modalData?: GenericValue,
-    modalConfig?: ModalConfig
+    modalConfig?: ModalConfig,
   ) => void;
   closeModal: () => void;
 };
@@ -34,7 +35,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const openModal = (
     modal: ModalType,
     modalData?: GenericValue,
-    config?: ModalConfig
+    config?: ModalConfig,
   ): void => {
     setData([...data, modalData]);
     setModals([...modals, modal]);
@@ -49,9 +50,9 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (modals.length > 0) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'auto';
+      document.body.style.overflow = "auto";
     }
   }, [modals]);
 
@@ -65,7 +66,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
         <ModalHub>
           <ModalOverlay
             style={overlayAnimation}
-            className={classes(!modals.length && 'inactive')}
+            className={classes(!modals.length && "inactive")}
           >
             {transitions((style, ModalContent, _, index) => (
               <Modal
@@ -82,7 +83,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
             ))}
           </ModalOverlay>
         </ModalHub>,
-        document.body
+        document.body,
       )}
       {}
     </ModalContext.Provider>

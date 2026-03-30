@@ -2,7 +2,7 @@ const padding = 20;
 
 export const calculateTopOffset = (
   wrapper: HTMLDivElement,
-  editor: HTMLDivElement
+  editor: HTMLDivElement,
 ): number => {
   const wTop = wrapper?.getBoundingClientRect().top;
 

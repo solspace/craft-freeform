@@ -1,22 +1,22 @@
-import { useEffect, useState } from 'react';
 import type {
   Option,
   OptionCollection,
   OptionGroup,
-} from '@ff-client/types/properties';
+} from "@ff-client/types/properties";
+import { useEffect, useState } from "react";
 
 const filterOptions = (
   value: string[],
   options: OptionCollection,
   query: string,
-  indexOffset = 0
+  indexOffset = 0,
 ): [OptionCollection, number] => {
   let index = indexOffset;
 
   const filteredOpts =
     options
       ?.map((option): Option | OptionGroup => {
-        if ('value' in option) {
+        if ("value" in option) {
           const hasMatch =
             !query || option.label.toLowerCase().includes(query.toLowerCase());
           if (hasMatch) {
@@ -27,12 +27,12 @@ const filterOptions = (
           }
         }
 
-        if ('children' in option) {
+        if ("children" in option) {
           const [children, nestedIndex] = filterOptions(
             value,
             option.children,
             query,
-            index
+            index,
           );
 
           if (children.length) {
@@ -55,7 +55,7 @@ const filterOptions = (
 export const useFilteredOptions = (
   value: string[],
   options: OptionCollection,
-  query: string
+  query: string,
 ): [OptionCollection, number] => {
   const [optionCount, setOptionCount] = useState<number>(0);
   const [filteredOptions, setFilteredOptions] =

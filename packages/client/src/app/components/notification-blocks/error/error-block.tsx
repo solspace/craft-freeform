@@ -1,6 +1,6 @@
-import React from 'react';
+import type React from "react";
 
-import { Wrapper } from './error-block.styles';
+import { Wrapper } from "./error-block.styles";
 
 type Props = {
   children: React.ReactNode;

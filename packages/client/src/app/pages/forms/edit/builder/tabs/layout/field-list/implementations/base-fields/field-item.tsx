@@ -1,12 +1,12 @@
-import React from 'react';
-import { useAppDispatch } from '@editor/store';
-import { fieldThunks } from '@editor/store/thunks/fields';
-import type { FieldType } from '@ff-client/types/fields';
-import translate from '@ff-client/utils/translations';
+import { useAppDispatch } from "@editor/store";
+import { fieldThunks } from "@editor/store/thunks/fields";
+import type { FieldType } from "@ff-client/types/fields";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { Field } from '../../field-group/field/field';
+import { Field } from "../../field-group/field/field";
 
-import { useBaseFieldDrag } from './field-item.drag';
+import { useBaseFieldDrag } from "./field-item.drag";
 
 type Props = {
   fieldType: FieldType;

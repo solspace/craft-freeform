@@ -1,14 +1,14 @@
-import type { Notification } from '@ff-client/types/notifications';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { Notification } from "@ff-client/types/notifications";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-import './notifications.persistence';
+import "./notifications.persistence";
 
 import type {
   ErrorPayload,
   NotificationInstance,
   NotificationModificationPayload,
-} from './notifications.types';
+} from "./notifications.types";
 
 type NotificationState = {
   initialized: boolean;
@@ -22,13 +22,13 @@ const initialState: NotificationState = {
 
 const findNotification = (
   state: NotificationState,
-  uid: string
+  uid: string,
 ): NotificationInstance | undefined => {
   return state.items.find((item) => item.uid === uid);
 };
 
 export const notificationsSlice = createSlice({
-  name: 'notifications',
+  name: "notifications",
   initialState,
   reducers: {
     clear: (state) => {
@@ -73,9 +73,9 @@ export const notificationsSlice = createSlice({
     remove: (state, action: PayloadAction<string>) => {
       state.items.splice(
         state.items.findIndex(
-          (notification) => notification.uid === action.payload
+          (notification) => notification.uid === action.payload,
         ),
-        1
+        1,
       );
     },
   },

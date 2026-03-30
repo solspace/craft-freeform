@@ -1,11 +1,11 @@
-import type { MutableRefObject } from 'react';
-import { useEffect, useRef } from 'react';
-import { elementTreeHasClass } from '@ff-client/utils/classes';
+import { elementTreeHasClass } from "@ff-client/utils/classes";
+import type { RefObject } from "react";
+import { useEffect, useRef } from "react";
 
 type ClickOutsideOptions<T extends HTMLElement> = {
   callback: () => void;
   isEnabled: boolean;
-  refObject?: MutableRefObject<T>;
+  refObject?: RefObject<T | null>;
   excludeClassNames?: string[];
 };
 
@@ -14,10 +14,11 @@ export const useClickOutside = <T extends HTMLElement>({
   isEnabled,
   refObject,
   excludeClassNames,
-}: ClickOutsideOptions<T>): MutableRefObject<T> => {
-  const ref = useRef<T>();
+}: ClickOutsideOptions<T>): RefObject<T | null> => {
+  const ref = useRef<T | null>(null);
   const usableRef = refObject || ref;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Works as expected
   useEffect(() => {
     const onClickHandler = (event: MouseEvent): void => {
       if (!isEnabled) {
@@ -37,16 +38,16 @@ export const useClickOutside = <T extends HTMLElement>({
         !usableRef.current.contains(event.target as Node) &&
         !elementTreeHasClass(event.target as Element, excludeClassNames)
       ) {
-        if (typeof callback === 'function') {
+        if (typeof callback === "function") {
           callback();
         }
       }
     };
 
-    document.addEventListener('click', onClickHandler, true);
+    document.addEventListener("click", onClickHandler, true);
 
     return (): void => {
-      document.removeEventListener('click', onClickHandler, true);
+      document.removeEventListener("click", onClickHandler, true);
     };
   }, [usableRef, isEnabled, excludeClassNames]);
 

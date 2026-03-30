@@ -1,37 +1,39 @@
 import type {
   AttributeEntry,
   EditableAttributeCollection,
-} from './attributes.types';
+} from "./attributes.types";
 
 type ParsedAttribute = [string, string | undefined];
 
 export const attributesToArray = (
-  attributes: AttributeEntry[]
+  attributes: AttributeEntry[],
 ): ParsedAttribute[] => {
   const parsed: ParsedAttribute[] = [];
 
   attributes.forEach(([key, value]) => {
-    key = null === key ? '' : key;
-    value = null === value ? '' : value;
+    key = null === key ? "" : key;
+    value = null === value ? "" : value;
 
     if (!key && value) {
       key = value;
-      value = '';
+      value = "";
     }
 
     if (!key && !value) {
       return;
     }
 
-    if (value === '' || value === null) {
-      return parsed.push([String(key), undefined]);
+    if (value === "") {
+      parsed.push([String(key), undefined]);
+
+      return;
     }
 
     if (Array.isArray(value)) {
-      value = value.join(' ');
+      value = value.join(" ");
     }
 
-    return parsed.push([String(key), String(value)]);
+    parsed.push([String(key), String(value)]);
   });
 
   return parsed;
@@ -39,14 +41,14 @@ export const attributesToArray = (
 
 export const attributesToString = (attributes: AttributeEntry[]): string => {
   return attributesToArray(attributes)
-    .map(([key, value]) => `${key}${value !== undefined ? `="${value}"` : ''}`)
-    .join(' ');
+    .map(([key, value]) => `${key}${value !== undefined ? `="${value}"` : ""}`)
+    .join(" ");
 };
 
 export const addAttribute = (
   category: string,
   attributes: EditableAttributeCollection,
-  atIndex: number
+  atIndex: number,
 ): EditableAttributeCollection => {
   const categoryAttributes = attributes?.[category] || [];
 
@@ -54,7 +56,7 @@ export const addAttribute = (
     ...attributes,
     [category]: [
       ...categoryAttributes.slice(0, atIndex + 1),
-      ['', ''],
+      ["", ""],
       ...categoryAttributes.slice(atIndex + 1),
     ],
   };
@@ -64,7 +66,7 @@ export const updateAttribute = (
   index: number,
   category: string,
   attribute: AttributeEntry,
-  attributes: EditableAttributeCollection
+  attributes: EditableAttributeCollection,
 ): EditableAttributeCollection => {
   const updated = {
     ...attributes,
@@ -79,7 +81,7 @@ export const updateAttribute = (
 export const deleteAttribute = (
   index: number,
   category: string,
-  attributes: EditableAttributeCollection
+  attributes: EditableAttributeCollection,
 ): EditableAttributeCollection => {
   return {
     ...attributes,
@@ -88,7 +90,7 @@ export const deleteAttribute = (
 };
 
 export const cleanAttributes = (
-  attributes: EditableAttributeCollection
+  attributes: EditableAttributeCollection,
 ): EditableAttributeCollection => {
   const updated: EditableAttributeCollection = {};
 

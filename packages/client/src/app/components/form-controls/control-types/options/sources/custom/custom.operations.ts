@@ -1,22 +1,22 @@
-import update from 'immutability-helper';
+import update from "immutability-helper";
 
-import type { CustomOptionsConfiguration, Option } from '../../options.types';
+import type { CustomOptionsConfiguration, Option } from "../../options.types";
 
 export const addOption = (
   value: CustomOptionsConfiguration,
-  atIndex: number
+  atIndex: number,
 ): CustomOptionsConfiguration => ({
   ...value,
   options: [
     ...value.options.slice(0, atIndex),
-    { label: '', value: '' },
+    { label: "", value: "" },
     ...value.options.slice(atIndex),
   ],
 });
 
 export const setOptions = (
   value: CustomOptionsConfiguration,
-  options: Option[]
+  options: Option[],
 ): CustomOptionsConfiguration => ({
   ...value,
   options,
@@ -25,7 +25,7 @@ export const setOptions = (
 export const updateOption = (
   index: number,
   option: Option,
-  value: CustomOptionsConfiguration
+  value: CustomOptionsConfiguration,
 ): CustomOptionsConfiguration => {
   const options = [...value.options];
   options[index] = option;
@@ -38,10 +38,10 @@ export const updateOption = (
 
 export const deleteOption = (
   index: number,
-  value: CustomOptionsConfiguration
+  value: CustomOptionsConfiguration,
 ): CustomOptionsConfiguration => {
   const options = value.options.filter(
-    (_, optionIndex) => optionIndex !== index
+    (_, optionIndex) => optionIndex !== index,
   );
 
   return {
@@ -53,7 +53,7 @@ export const deleteOption = (
 export const updateChecked = (
   index: number,
   option: Option,
-  value: CustomOptionsConfiguration
+  value: CustomOptionsConfiguration,
 ): CustomOptionsConfiguration => {
   const options = value.options.map((option) => ({ ...option }));
   options[index] = option;
@@ -65,7 +65,7 @@ export const updateChecked = (
 };
 
 export const cleanOptions = (
-  value: CustomOptionsConfiguration
+  value: CustomOptionsConfiguration,
 ): CustomOptionsConfiguration => {
   return {
     ...value,
@@ -75,7 +75,7 @@ export const cleanOptions = (
 
 export const toggleUseCustomValues = (
   value: CustomOptionsConfiguration,
-  useCustomValues: boolean
+  useCustomValues: boolean,
 ): CustomOptionsConfiguration => {
   if (useCustomValues) {
     return {
@@ -97,7 +97,7 @@ export const toggleUseCustomValues = (
 export const moveOption = (
   value: CustomOptionsConfiguration,
   fromIndex: number,
-  toIndex: number
+  toIndex: number,
 ): CustomOptionsConfiguration => {
   const prevOptions = [...value.options];
 

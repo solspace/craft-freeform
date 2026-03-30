@@ -1,27 +1,26 @@
-import type { APIError } from '@ff-client/types/api';
-import type { NotificationTemplate } from '@ff-client/types/notifications';
-import type { UseMutationResult } from '@tanstack/react-query';
-import { useQueryClient } from '@tanstack/react-query';
-import { useMutation } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
-import axios from 'axios';
+import type { APIError } from "@ff-client/types/api";
+import type { NotificationTemplate } from "@ff-client/types/notifications";
+import type { UseMutationResult } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosResponse } from "axios";
+import axios from "axios";
 
-import { QKNotifications } from './notifications';
+import { QKNotifications } from "./notifications";
 
 type Payload = {
   name: string;
 };
 
 type NewNotificationTemplateMutation = (
-  payload: Payload
+  payload: Payload,
 ) => Promise<AxiosResponse<NotificationTemplate>>;
 
 const newNotificationTemplateMutation: NewNotificationTemplateMutation = (
-  payload: Payload
+  payload: Payload,
 ) => {
   return axios.post<NotificationTemplate>(
-    '/api/notifications/templates',
-    payload
+    "/api/notifications/templates",
+    payload,
   );
 };
 

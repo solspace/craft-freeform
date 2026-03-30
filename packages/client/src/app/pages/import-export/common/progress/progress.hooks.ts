@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type Callback = (event: MessageEvent) => void;
 type Listener = [string, Callback];
@@ -20,7 +20,8 @@ export type ProgressEvent = {
 };
 
 export const useProgressEvent = (): ProgressEvent => {
-  const source = useRef<EventSource>();
+  const source = useRef<EventSource | null>(null);
+  const listeners = useRef<Array<Listener>>([]);
   const [url, setUrl] = useState<string>();
 
   const [active, setActive] = useState(false);
@@ -31,13 +32,12 @@ export const useProgressEvent = (): ProgressEvent => {
   const [total, setTotal] = useState<[number, number]>([0, 0]);
   const [info, setInfo] = useState<string>();
   const [errors, setErrors] = useState<string[]>();
-  const [listeners, setListeners] = useState<Array<Listener>>([]);
 
-  const triggerProgress = (url?: string): void => {
+  const triggerProgress = useCallback((url?: string): void => {
     setUrl(url);
-  };
+  }, []);
 
-  const clearProgress = (): void => {
+  const clearProgress = useCallback((): void => {
     setUrl(undefined);
     setErrors(undefined);
     setProgress([0, 0]);
@@ -45,51 +45,59 @@ export const useProgressEvent = (): ProgressEvent => {
 
     setActive(true);
     setInfo(undefined);
-  };
+  }, []);
 
-  const attachListener: ListenerAttacher = (eventName, callback): void => {
-    setListeners((prev) => [...(prev || []), [eventName, callback]]);
-  };
+  const attachListener = useCallback<ListenerAttacher>(
+    (eventName, callback): void => {
+      listeners.current = [
+        ...listeners.current.filter(
+          ([existingEventName]) => existingEventName !== eventName,
+        ),
+        [eventName, callback],
+      ];
+    },
+    [],
+  );
 
-  const attachListeners = (source: EventSource): void => {
+  const attachListeners = useCallback((source: EventSource): void => {
     source.onopen = () => {
       setDisplayProgress(true);
     };
 
     source.onerror = () => {
-      console.error('An error occurred during import');
+      console.error("An error occurred during import");
       source.close();
       setActive(false);
       setDisplayProgress(false);
     };
 
-    source.addEventListener('progress', (event) => {
-      const progress = parseInt(event.data);
+    source.addEventListener("progress", (event) => {
+      const progress = parseInt(event.data, 10);
       setProgress((prev) => [prev[0] + progress, prev[1] + progress]);
     });
 
-    source.addEventListener('total', (event) => {
-      setTotal([parseInt(event.data), 0]);
+    source.addEventListener("total", (event) => {
+      setTotal([parseInt(event.data, 10), 0]);
       setErrors([]);
     });
 
-    source.addEventListener('info', (event) => {
+    source.addEventListener("info", (event) => {
       setInfo(event.data);
     });
 
-    source.addEventListener('err', (event) => {
+    source.addEventListener("err", (event) => {
       const message = event.data;
       setErrors((prev) =>
-        prev === undefined ? [message] : [...prev, message]
+        prev === undefined ? [message] : [...prev, message],
       );
     });
 
-    source.addEventListener('reset', (event) => {
-      setTotal((prev) => [prev[0], parseInt(event.data)]);
+    source.addEventListener("reset", (event) => {
+      setTotal((prev) => [prev[0], parseInt(event.data, 10)]);
       setProgress((prev) => [prev[0], 0]);
     });
 
-    source.addEventListener('exit', () => {
+    source.addEventListener("exit", () => {
       source.close();
       setDisplayProgress(false);
       setActive(false);
@@ -99,10 +107,10 @@ export const useProgressEvent = (): ProgressEvent => {
       }, 5000);
     });
 
-    listeners.forEach(([eventName, callback]) => {
+    listeners.current.forEach(([eventName, callback]) => {
       source.addEventListener(eventName, callback);
     });
-  };
+  }, []);
 
   useEffect(() => {
     if (source.current) {
@@ -115,7 +123,7 @@ export const useProgressEvent = (): ProgressEvent => {
 
     source.current = new EventSource(url);
     attachListeners(source.current);
-  }, [url]);
+  }, [url, attachListeners]);
 
   return {
     progress: {

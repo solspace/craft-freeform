@@ -1,8 +1,8 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
+import { ThemedSkeleton } from "@components/loaders/skeletons/themed-skeleton";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { LabelWrapper, NotificationItemWrapper, Wrapper } from './type.styles';
+import { LabelWrapper, NotificationItemWrapper, Wrapper } from "./type.styles";
 
 export const CategorySkeleton: React.FC = () => {
   return (
@@ -16,9 +16,9 @@ export const CategorySkeleton: React.FC = () => {
             <div
               key={i}
               style={{
-                display: 'flex',
+                display: "flex",
                 gap: 10,
-                alignItems: 'center',
+                alignItems: "center",
               }}
             >
               <Skeleton width={20} height={20} circle />

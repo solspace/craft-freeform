@@ -1,9 +1,12 @@
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
 
-import ffStripeEvents from './elements.events';
-import { loadStripeContainers, submitStripe } from './elements.submit';
-import type { StripeElement, StripeFunctionConstructorProps } from './elements.types';
+import ffStripeEvents from "./elements.events";
+import { loadStripeContainers, submitStripe } from "./elements.submit";
+import type {
+  StripeElement,
+  StripeFunctionConstructorProps,
+} from "./elements.types";
 
 const initializedForms = new WeakMap<HTMLFormElement, boolean>();
 
@@ -22,24 +25,30 @@ const attachStripeToForm = async (form: HTMLFormElement) => {
 
   const loadContainers = loadStripeContainers(props);
 
-  addListeners(form, [events.form.ready, events.form.reset, events.form.ajaxAfterSubmit], loadContainers);
+  addListeners(
+    form,
+    [events.form.ready, events.form.reset, events.form.ajaxAfterSubmit],
+    loadContainers,
+  );
   addListeners(form, [events.form.submit], submitStripe(props));
 };
 
 document.addEventListener(ffStripeEvents.load, () => {
   // Attach to all forms
-  const forms = document.querySelectorAll<HTMLFormElement>('form[data-freeform]');
+  const forms = document.querySelectorAll<HTMLFormElement>(
+    "form[data-freeform]",
+  );
   forms.forEach((form) => {
     attachStripeToForm(form);
   });
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   document.dispatchEvent(new CustomEvent(ffStripeEvents.load));
 });
 
 const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-  if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
+  if (node.nodeName === "FORM" || node.dataset?.freeform !== undefined) {
     attachStripeToForm(node);
   }
 
@@ -49,7 +58,7 @@ const recursiveFreeformAttachment = (node: HTMLFormElement) => {
 // Add an observer which listens for new forms
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    if (mutation.type !== 'childList') {
+    if (mutation.type !== "childList") {
       return;
     }
 

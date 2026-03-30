@@ -29,6 +29,7 @@ class BehaviorSettings extends SettingsNamespace
     public const SUCCESS_BEHAVIOR_RELOAD = 'reload';
     public const SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL = 'redirect-return-url';
     public const SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
+    public const SUCCESS_BEHAVIOR_REDIRECT_ENTRY = 'redirect-entry';
 
     private const SECTION_SUCCESS_AND_ERRORS = 'success-and-errors';
     private const SECTION_PROCESSING = 'processing';
@@ -116,6 +117,19 @@ class BehaviorSettings extends SettingsNamespace
         order: 3,
     )]
     public string $returnUrl = '';
+
+    #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOR_REDIRECT_ENTRY.'"')]
+    #[DefaultValue('settings.successAndErrors.entry')]
+    #[Input\EntryPicker(
+        label: 'Redirect Entry',
+        instructions: 'Select an entry for the user to be redirected to.',
+        order: 3,
+        actionLabel: 'Select Entry',
+        multiSelect: false,
+        limit: 1,
+    )]
+    public array $entryId = [];
 
     #[Translatable]
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]

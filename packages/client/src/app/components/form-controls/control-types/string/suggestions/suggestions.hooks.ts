@@ -1,8 +1,8 @@
-import type { MutableRefObject } from 'react';
-import { useEffect, useState } from 'react';
+import type { RefObject } from "react";
+import { useEffect, useState } from "react";
 
 export const useFocusTracking = (
-  inputRef: MutableRefObject<HTMLInputElement | null>
+  inputRef: RefObject<HTMLInputElement | null>,
 ): boolean => {
   const [active, setActive] = useState(false);
 
@@ -19,14 +19,14 @@ export const useFocusTracking = (
       }, 200);
     };
 
-    input.addEventListener('focus', handleFocus);
-    input.addEventListener('blur', handleBlur);
+    input.addEventListener("focus", handleFocus);
+    input.addEventListener("blur", handleBlur);
 
     return () => {
-      input.removeEventListener('focus', handleFocus);
-      input.removeEventListener('blur', handleBlur);
+      input.removeEventListener("focus", handleFocus);
+      input.removeEventListener("blur", handleBlur);
     };
-  }, []);
+  }, [inputRef?.current]);
 
   return active;
 };

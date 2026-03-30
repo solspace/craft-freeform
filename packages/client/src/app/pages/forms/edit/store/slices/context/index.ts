@@ -1,10 +1,10 @@
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export enum FocusType {
-  Page = 'page',
-  Field = 'field',
-  Row = 'row',
+  Page = "page",
+  Field = "field",
+  Row = "row",
 }
 
 export enum State {
@@ -35,7 +35,7 @@ const initialState: ContextState = {
 };
 
 const contextSlice = createSlice({
-  name: 'context',
+  name: "context",
   initialState,
   reducers: {
     setPage: (state, { payload }: PayloadAction<string | null>) => {
@@ -43,7 +43,7 @@ const contextSlice = createSlice({
     },
     setFocusedItem: (
       state,
-      { payload }: PayloadAction<Omit<Focus, 'active'>>
+      { payload }: PayloadAction<Omit<Focus, "active">>,
     ) => {
       if (
         state.focus.active === true &&

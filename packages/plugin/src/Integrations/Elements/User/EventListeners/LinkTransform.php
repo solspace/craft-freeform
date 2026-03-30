@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Elements\User\EventListeners;
 
+use craft\fields\Link;
 use craft\fields\Url;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -22,16 +23,28 @@ class LinkTransform extends FeatureBundle
     public function processLink(ProcessValueEvent $event): void
     {
         $craftField = $event->getCraftField();
-        if (!$craftField instanceof Url) {
+
+        $isLinkField = class_exists(Link::class) && $craftField instanceof Link;
+        $isUrlField = class_exists(Url::class) && $craftField instanceof Url;
+
+        if (!$isLinkField && !$isUrlField) {
             return;
         }
 
         $value = $event->getValue();
+
+        if (($value === null || $value === '') && !$craftField->required) {
+            $event->isValid = false;
+
+            return;
+        }
+
         if (!\is_array($value)) {
             $value = [$value];
         }
 
-        $allowedTypes = $craftField->types;
+        // Link fields expose which types are allowed; the legacy Url field is URL-only.
+        $allowedTypes = $isLinkField ? $craftField->types : ['url'];
 
         $value = array_map(
             static function ($val) use ($allowedTypes) {
@@ -41,7 +54,10 @@ class LinkTransform extends FeatureBundle
                     }
                 }
 
-                if (\in_array('tel', $allowedTypes, true)) {
+                if (
+                    \in_array('tel', $allowedTypes, true)
+                    || \in_array('phone', $allowedTypes, true)
+                ) {
                     $val = preg_replace('/[^0-9]/', '', $val);
 
                     return 'tel:'.$val;

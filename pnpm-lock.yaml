@@ -6,6 +6,11 @@ settings:
 
 overrides:
   monaco-editor>dompurify: 3.3.2
+  locutus@>=2.0.39 <3.0.25: '>=3.0.25'
+  locutus@<3.0.25: '>=3.0.25'
+  brace-expansion@>=4.0.0 <5.0.5: '>=5.0.5'
+  picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
+  yaml@>=2.0.0 <2.8.3: '>=2.8.3'
 
 importers:
 
@@ -137,7 +142,7 @@ importers:
         version: 4.27.0
       '@vitejs/plugin-react':
         specifier: ^5.0.0
-        version: 5.2.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2))
+        version: 5.2.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1))
       immutability-helper:
         specifier: ^3.1.1
         version: 3.1.1
@@ -146,10 +151,10 @@ importers:
         version: 26.1.0
       vite:
         specifier: ^7.0.0
-        version: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2)
+        version: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)
       vitest:
         specifier: ^4.0.18
-        version: 4.1.0(@types/node@22.19.15)(jsdom@26.1.0)(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2))
+        version: 4.1.0(@types/node@22.19.15)(jsdom@26.1.0)(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1))
       vitest-tsconfig-paths:
         specifier: ^3.4.1
         version: 3.4.1
@@ -1048,8 +1053,8 @@ packages:
     engines: {node: '>=6.0.0'}
     hasBin: true
 
-  brace-expansion@5.0.4:
-    resolution: {integrity: sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==}
+  brace-expansion@5.0.5:
+    resolution: {integrity: sha512-VZznLgtwhn+Mact9tfiwx64fA9erHH/MCXEUfB/0bX/6Fz6ny5EGTXYltMocqg4xFAQZtnO3DHWWXi8RiuN7cQ==}
     engines: {node: 18 || 20 || >=22}
 
   browserslist@4.28.1:
@@ -1284,7 +1289,7 @@ packages:
     resolution: {integrity: sha512-tIbYtZbucOs0BRGqPJkshJUYdL+SDH7dVM8gjy+ERp3WAUjLEFJE+02kanyHtwjWOnwrKYBiwAmM0p4kLJAnXg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
-      picomatch: ^3 || ^4
+      picomatch: '>=4.0.4'
     peerDependenciesMeta:
       picomatch:
         optional: true
@@ -1510,8 +1515,8 @@ packages:
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
 
-  locutus@3.0.24:
-    resolution: {integrity: sha512-ErfAZ82Q2RNuk3NPDliKG7f5kc3E/hHh/vz17TAGCyctqao2xoFkNKrkyfHYMFXG1mNQt14kJJ1yPDKm6p3SkQ==}
+  locutus@3.0.34:
+    resolution: {integrity: sha512-q8sKVNKHc9g5nv3g1cHf5H1Nw2ciRYrv0Zl5SnCauX9mvkKG1RxWnB5JhYDlfxUJcRDcZ7IoeqjMLVSW+uwLAA==}
     engines: {node: '>= 22', yarn: '>= 1'}
 
   lodash@4.17.23:
@@ -1610,8 +1615,8 @@ packages:
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
+  picomatch@4.0.4:
+    resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
   pirates@4.0.7:
@@ -1992,7 +1997,7 @@ packages:
       sugarss: ^5.0.0
       terser: ^5.16.0
       tsx: ^4.8.1
-      yaml: ^2.4.2
+      yaml: '>=2.8.3'
     peerDependenciesMeta:
       '@types/node':
         optional: true
@@ -2110,11 +2115,6 @@ packages:
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
-
-  yaml@2.8.2:
-    resolution: {integrity: sha512-mplynKqc1C2hTVYxd0PU2xQAc22TI1vShAYGksCCfxbn/dFwnHTNi1bvYsBTkhdUNtGIf5xNOg938rrSSYvS9A==}
-    engines: {node: '>= 14.6'}
-    hasBin: true
 
   yargs-parser@21.1.1:
     resolution: {integrity: sha512-tVpsJW7DdjecAiFpbIB1e3qxIQsE6NoPc5/eTdrbbIC4h0LVsWhnoa3g+m2HclBIujHzsxZ4VJVA+GUuc2/LBw==}
@@ -2496,7 +2496,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.3
+      picomatch: 4.0.4
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -2762,7 +2762,7 @@ snapshots:
     dependencies:
       '@types/react': 19.2.14
 
-  '@vitejs/plugin-react@5.2.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2))':
+  '@vitejs/plugin-react@5.2.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1))':
     dependencies:
       '@babel/core': 7.29.0
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.29.0)
@@ -2770,7 +2770,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-rc.3
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -2783,13 +2783,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.1.0
 
-  '@vitest/mocker@4.1.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2))':
+  '@vitest/mocker@4.1.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1))':
     dependencies:
       '@vitest/spy': 4.1.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)
 
   '@vitest/pretty-format@4.1.0':
     dependencies:
@@ -2850,7 +2850,7 @@ snapshots:
 
   baseline-browser-mapping@2.10.8: {}
 
-  brace-expansion@5.0.4:
+  brace-expansion@5.0.5:
     dependencies:
       balanced-match: 4.0.4
 
@@ -3079,15 +3079,15 @@ snapshots:
 
   expression-language@2.5.4:
     dependencies:
-      locutus: 3.0.24
+      locutus: 3.0.34
 
   fast-deep-equal@3.1.3: {}
 
   fast-equals@5.4.0: {}
 
-  fdir@6.5.0(picomatch@4.0.3):
+  fdir@6.5.0(picomatch@4.0.4):
     optionalDependencies:
-      picomatch: 4.0.3
+      picomatch: 4.0.4
 
   follow-redirects@1.15.11: {}
 
@@ -3289,7 +3289,7 @@ snapshots:
 
   lines-and-columns@1.2.4: {}
 
-  locutus@3.0.24: {}
+  locutus@3.0.34: {}
 
   lodash@4.17.23: {}
 
@@ -3323,7 +3323,7 @@ snapshots:
 
   minimatch@10.2.4:
     dependencies:
-      brace-expansion: 5.0.4
+      brace-expansion: 5.0.5
 
   minimist@1.2.8: {}
 
@@ -3368,7 +3368,7 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@4.0.3: {}
+  picomatch@4.0.4: {}
 
   pirates@4.0.7: {}
 
@@ -3684,8 +3684,8 @@ snapshots:
 
   tinyglobby@0.2.15:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
 
   tinymce@7.9.2: {}
 
@@ -3753,11 +3753,11 @@ snapshots:
       d3-time: 3.1.0
       d3-timer: 3.0.1
 
-  vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2):
+  vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1):
     dependencies:
       esbuild: 0.27.4
-      fdir: 6.5.0(picomatch@4.0.3)
-      picomatch: 4.0.3
+      fdir: 6.5.0(picomatch@4.0.4)
+      picomatch: 4.0.4
       postcss: 8.5.8
       rollup: 4.59.0
       tinyglobby: 0.2.15
@@ -3767,7 +3767,6 @@ snapshots:
       lightningcss: 1.32.0
       sass: 1.98.0
       terser: 5.46.1
-      yaml: 2.8.2
 
   vitest-tsconfig-paths@3.4.1:
     dependencies:
@@ -3778,10 +3777,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vitest@4.1.0(@types/node@22.19.15)(jsdom@26.1.0)(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2)):
+  vitest@4.1.0(@types/node@22.19.15)(jsdom@26.1.0)(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)):
     dependencies:
       '@vitest/expect': 4.1.0
-      '@vitest/mocker': 4.1.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2))
+      '@vitest/mocker': 4.1.0(vite@7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1))
       '@vitest/pretty-format': 4.1.0
       '@vitest/runner': 4.1.0
       '@vitest/snapshot': 4.1.0
@@ -3792,13 +3791,13 @@ snapshots:
       magic-string: 0.30.21
       obug: 2.1.1
       pathe: 2.0.3
-      picomatch: 4.0.3
+      picomatch: 4.0.4
       std-env: 4.0.0
       tinybench: 2.9.0
       tinyexec: 1.0.4
       tinyglobby: 0.2.15
       tinyrainbow: 3.1.0
-      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)(yaml@2.8.2)
+      vite: 7.3.1(@types/node@22.19.15)(lightningcss@1.32.0)(sass@1.98.0)(terser@5.46.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.19.15
@@ -3843,9 +3842,6 @@ snapshots:
   y18n@5.0.8: {}
 
   yallist@3.1.1: {}
-
-  yaml@2.8.2:
-    optional: true
 
   yargs-parser@21.1.1: {}
 

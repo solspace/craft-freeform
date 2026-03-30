@@ -25,7 +25,7 @@
         {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
 
         <div class="freeform-page-heading">
-            <h2{{ spamMode ? ' class="spam-mode-badge"' }}>{{ spamMode ? spamCount ~ " Spams" : submissionCount ~ " Submissions" }} for <a href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}">{{ form.name }}</a></h2>
+            <h2{{ spamMode ? ' class="spam-mode-badge"' }}>{{ spamMode ? spamCount ~ " Spams" : submissionCount ~ " Submissions" }} for <a href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}">{{ form.name }}</a></h2>
             <p>
                 Viewing all {{ spamMode ? " spammy submissions" : " submissions" }} for this form.
                 {% if spamMode %}
@@ -95,7 +95,7 @@
                             {% if spamMode %}
                                 N/A
                             {% else %}
-                                <a class="freeform-button orange" href="{{ siteUrl }}demo/templates/basic-light/{{ pageTemplate }}/edit/{{ submission.token }}">
+                                <a class="freeform-button orange" href="{{ siteUrl }}demo/forms/basic-light/{{ pageTemplate }}/edit/{{ submission.token }}">
                                     {{- "Edit"|t("freeform") -}}
                                 </a>
                                 <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/delete/{{ form.handle }}/{{ submission.token }}">

@@ -1,18 +1,18 @@
 [
   {
-    "urlParts": ["templates\\/", ["*","[^\\\\\\/]+"]],
-    "urlPattern": "templates/{template}",
-    "template": "/templates"
+    "urlParts": ["forms\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "forms/{template}",
+    "template": "/forms"
   },
   {
-    "urlParts": ["templates\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
-    "urlPattern": "templates/{template}/{form}",
-    "template": "/templates/form"
+    "urlParts": ["forms\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "forms/{template}/{form}",
+    "template": "/forms/form"
   },
   {
-    "urlParts": ["templates\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"], "\\/edit\\/", ["*","[^\\\\\\/]+"]],
-    "urlPattern": "templates/{template}/{form}/edit/{id}",
-    "template": "/templates/form"
+    "urlParts": ["forms\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"], "\\/edit\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "forms/{template}/{form}/edit/{id}",
+    "template": "/forms/form"
   },
   {
     "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"]],

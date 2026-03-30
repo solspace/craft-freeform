@@ -16,7 +16,7 @@
             {% set submissionCount = freeform.submissions({formId: form.id}).count %}
             {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
             <style>.freeform-form-tile-item-{{ form.id }}{border-top:7px solid {{ form.color }}!important;}.freeform-form-tile-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
-            <a href="{{ siteUrl }}demo/templates/{{ pageTemplate }}/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
+            <a href="{{ siteUrl }}demo/forms/{{ pageTemplate }}/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
                 <h3 class="freeform-form-title">{{ form.name }}</h3>
                 <p>{{ form.description|truncate(50, '...') }}</p>
                 <p class="freeform-submission-count"><b>{{ submissionCount }} submission{% if submissionCount != "1" %}s{% endif %}</b>, {{ spamCount }} spam{% if spamCount != "1" %}s{% endif %}</p>

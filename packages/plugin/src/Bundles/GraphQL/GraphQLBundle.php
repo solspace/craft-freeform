@@ -32,6 +32,7 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\RowInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RuleConditionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RulesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\UrlParameterTrackingInterface;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
 use Solspace\Freeform\controllers\api\FormsController;
@@ -95,6 +96,7 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = PostForwardingInterface::class;
                 $event->types[] = GoogleTagManagerInterface::class;
                 $event->types[] = JavascriptTestInterface::class;
+                $event->types[] = UrlParameterTrackingInterface::class;
             }
         );
 

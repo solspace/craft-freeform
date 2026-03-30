@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\FormPropertiesInputsArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\HoneypotInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\JavascriptTestInputArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\UrlParameterTrackingInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\Mutations\SubmissionMutationResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
@@ -45,12 +46,14 @@ class SubmissionMutation extends Mutation
                 HoneypotInputArguments::setForm($form);
                 CaptchaInputArguments::setForm($form);
                 JavascriptTestInputArguments::setForm($form);
+                UrlParameterTrackingInputArguments::setForm($form);
 
                 $formPropertiesInputArguments = FormPropertiesInputsArguments::getArguments();
                 $csrfInputArguments = CsrfTokenInputArguments::getArguments();
                 $honeypotInputArguments = HoneypotInputArguments::getArguments();
                 $captchaInputArguments = CaptchaInputArguments::getArguments();
                 $javascriptTestInputArguments = JavascriptTestInputArguments::getArguments();
+                $urlParameterTrackingInputArguments = UrlParameterTrackingInputArguments::getArguments();
 
                 $mutationArguments = array_merge(
                     $formPropertiesInputArguments,
@@ -58,6 +61,7 @@ class SubmissionMutation extends Mutation
                     $honeypotInputArguments,
                     $captchaInputArguments,
                     $javascriptTestInputArguments,
+                    $urlParameterTrackingInputArguments,
                     $mutationResolver->getResolutionData(ElementMutationResolver::CONTENT_FIELD_KEY)
                 );
 

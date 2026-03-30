@@ -34,10 +34,22 @@ class UrlParameterTrackingTrigger extends FeatureBundle
 
         $parameters = $integration->getCombinedParameters();
 
-        // Get clean $_GET parameters from the parameters defined here
+        // Get paramters from GraphQL arguments
+        $graphQLUrlParameterTracking = [];
+
+        if ($form->isGraphQLPosted()) {
+            $arguments = $form->getGraphQLArguments();
+            foreach ($arguments['urlParameterTracking'] ?? [] as $param) {
+                if (isset($param['name'])) {
+                    $graphQLUrlParameterTracking[$param['name']] = $param['value'] ?? null;
+                }
+            }
+        }
+
+        // Get clean $_GET, $_POST or GraphQL parameters from the parameters defined here
         $trackedParameters = [];
         foreach ($parameters as $parameter) {
-            $value = $_GET[$parameter] ?? $_POST[$parameter] ?? null;
+            $value = $_GET[$parameter] ?? $_POST[$parameter] ?? $graphQLUrlParameterTracking[$parameter] ?? null;
             if ($value !== null) {
                 $trackedParameters[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
             }

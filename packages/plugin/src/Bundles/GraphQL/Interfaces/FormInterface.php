@@ -13,6 +13,7 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\JavascriptTestResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PostForwardingResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\RulesResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\UrlParameterTrackingResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
@@ -314,6 +315,12 @@ class FormInterface extends AbstractInterface
                 'type' => JavascriptTestInterface::getType(),
                 'resolve' => JavascriptTestResolver::class.'::resolve',
                 'description' => 'The Javascript Test for this form',
+            ],
+            'urlParameterTracking' => [
+                'name' => 'urlParameterTracking',
+                'type' => UrlParameterTrackingInterface::getType(),
+                'resolve' => UrlParameterTrackingResolver::class.'::resolve',
+                'description' => 'The URL Parameter Tracking for this form',
             ],
             'siteId' => [
                 'name' => 'siteId',

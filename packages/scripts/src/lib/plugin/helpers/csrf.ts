@@ -17,7 +17,7 @@ export const fetchCsrf = async (): Promise<CSRFToken> => {
       "form[data-csrf-refresh]",
     );
     if (!form) {
-      return null;
+      return findCsrfToken();
     }
 
     const tokenRefreshType = form.dataset.csrfRefresh;
@@ -40,6 +40,23 @@ export const fetchCsrf = async (): Promise<CSRFToken> => {
   }
 
   return null;
+};
+
+const findCsrfToken = (): CSRFToken | null => {
+  const form = document.querySelector<HTMLFormElement>("form[data-csrf-name]");
+  if (!form) {
+    return null;
+  }
+
+  const name = form.dataset.csrfName;
+  const value = form.querySelector<HTMLInputElement>(
+    `input[name="${name}"]`,
+  )?.value;
+  if (!name || !value) {
+    return null;
+  }
+
+  return { name, value };
 };
 
 const fetchCsrfTokenPayload = async (): Promise<CSRFToken | null> => {

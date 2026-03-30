@@ -1,9 +1,7 @@
 export type PaymentHistory = {
   package_price?: number;
   credits?: number;
-  amount_added?: number;
   paid_at?: string;
-  stripe_session_id?: string;
 };
 
 export type DailyMetric = {
@@ -19,6 +17,7 @@ export type RequestLog = {
   requested_at?: string | null;
   status: "success" | "failure" | string;
   credits: number | null;
+  duration_s?: string | null;
   request_id?: string;
 };
 

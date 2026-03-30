@@ -316,6 +316,9 @@ export const AiDashboard: React.FC = () => {
                       {translate("Credits")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
+                      {translate("Duration")}
+                    </MetricsTableHeaderCell>
+                    <MetricsTableHeaderCell>
                       {translate("Request ID")}
                     </MetricsTableHeaderCell>
                   </tr>
@@ -341,6 +344,9 @@ export const AiDashboard: React.FC = () => {
                         {log.credits != null
                           ? `${log.credits.toLocaleString()} ${translate("credits")}`
                           : "—"}
+                      </MetricsTableCell>
+                      <MetricsTableCell>
+                        {log.duration_s ?? "—"}
                       </MetricsTableCell>
                       <MetricsTableCell>
                         <code>{log.request_id ?? "—"}</code>

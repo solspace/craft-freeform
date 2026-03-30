@@ -2001,6 +2001,7 @@ return [
     'Date & time' => 'Date & time',
     'A list of recent AI requests and their credit usage.' => 'A list of recent AI requests and their credit usage.',
     'Credits' => 'Credits',
+    'Duration' => 'Duration',
     'Request ID' => 'Request ID',
     'credits' => 'credits',
     'No usage data yet' => 'No usage data yet',

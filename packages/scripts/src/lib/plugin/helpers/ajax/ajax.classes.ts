@@ -1,8 +1,6 @@
 export class CancelToken {
   private cancelFn: () => void;
 
-  constructor() {}
-
   cancel() {
     if (this.cancelFn) {
       this.cancelFn();

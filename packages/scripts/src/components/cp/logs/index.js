@@ -1,23 +1,21 @@
-(function () {
-  'use strict';
-
-  $('.clear-logs').on({
+(() => {
+  $(".clear-logs").on({
     click: function (event) {
       event.stopPropagation();
       event.preventDefault();
 
-      const msg = 'Are you sure you want to clear this log?';
+      const msg = "Are you sure you want to clear this log?";
       if (!confirm(msg)) {
         return false;
       }
 
       $.ajax({
-        url: $(this).attr('href'),
+        url: $(this).attr("href"),
         data: {
           [Craft.csrfTokenName]: Craft.csrfTokenValue,
         },
-        type: 'post',
-        dataType: 'json',
+        type: "post",
+        dataType: "json",
         success: (json) => {
           if (json.success) {
             window.location.reload(true);
@@ -29,28 +27,28 @@
     },
   });
 
-  $('.paginator').each(function () {
+  $(".paginator").each(function () {
     const paginator = $(this);
-    const baseUrl = paginator.data('baseUrl');
-    const currentPage = paginator.data('page');
-    const totalPages = paginator.data('total');
+    const baseUrl = paginator.data("baseUrl");
+    const currentPage = paginator.data("page");
+    const totalPages = paginator.data("total");
 
-    $('a', paginator).each(function () {
-      const isPrev = $(this).attr('data-prev') !== undefined;
-      const isMax = $(this).attr('data-max') !== undefined;
+    $("a", paginator).each(function () {
+      const isPrev = $(this).attr("data-prev") !== undefined;
+      const isMax = $(this).attr("data-max") !== undefined;
 
       if (isPrev && currentPage === 1) {
         $(this)
-          .attr('disabled', true)
-          .on('click', (event) => {
+          .attr("disabled", true)
+          .on("click", (event) => {
             event.preventDefault();
           });
       }
 
       if (!isPrev && currentPage === totalPages) {
         $(this)
-          .attr('disabled', true)
-          .on('click', (event) => {
+          .attr("disabled", true)
+          .on("click", (event) => {
             event.preventDefault();
           });
       }
@@ -63,7 +61,7 @@
       }
 
       const url = Craft.getCpUrl(baseUrl, { page });
-      $(this).attr('href', url);
+      $(this).attr("href", url);
     });
   });
 

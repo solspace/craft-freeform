@@ -1,7 +1,7 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import type { ChartProps } from '../index.types';
+import type { ChartProps } from "../index.types";
 
 import {
   Answer,
@@ -11,7 +11,7 @@ import {
   Percentage,
   Votes,
   Wrapper,
-} from './vertical.styles';
+} from "./vertical.styles";
 
 export const Vertical: React.FC<ChartProps> = ({ breakdown }) => {
   return (
@@ -21,7 +21,7 @@ export const Vertical: React.FC<ChartProps> = ({ breakdown }) => {
           <Answer key={value.toString()}>
             <Percentage>{Math.round(percentage)}%</Percentage>
             <Votes>
-              {votes} {translate('resp.')}
+              {votes} {translate("resp.")}
             </Votes>
             <Bar percentage={percentage} ranking={ranking} />
 

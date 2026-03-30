@@ -1,19 +1,16 @@
-import type { MutableRefObject } from 'react';
-import { useEffect, useState } from 'react';
-import type { ConnectDragSource } from 'react-dnd';
-import { useDrop } from 'react-dnd';
-import type { DragItem, PageDragItem } from '@editor/builder/types/drag';
-import { Drag } from '@editor/builder/types/drag';
-import type { Page } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { pageActions } from '@editor/store/slices/layout/pages';
-import { moveFieldToPage } from '@editor/store/thunks/pages';
+import type { DragItem } from "@editor/builder/types/drag";
+import { Drag } from "@editor/builder/types/drag";
+import type { Page } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { moveFieldToPage } from "@editor/store/thunks/pages";
+import type { ConnectDragSource } from "react-dnd";
+import { useDrop } from "react-dnd";
 
-import { useDragContext } from '../../../drag.context';
+import { useDragContext } from "../../../drag.context";
 
 type TabDrop = (
   currentPageUid: string,
-  page: Page
+  page: Page,
 ) => { ref: ConnectDragSource; canDrop: boolean };
 
 export const useTabDrop: TabDrop = (currentPageUid, page) => {
@@ -35,61 +32,4 @@ export const useTabDrop: TabDrop = (currentPageUid, page) => {
   });
 
   return { ref, canDrop };
-};
-
-type TabPageCollectedProps = {
-  canDrop: boolean;
-  isOver: boolean;
-  dragItemIndex?: number;
-};
-
-type TabPageDrop = <T extends HTMLElement>(
-  containerRef: MutableRefObject<T>,
-  page: Page,
-  index: number
-) => TabPageCollectedProps & {
-  ref: ConnectDragSource;
-};
-
-export const useTabPageDrop: TabPageDrop = (containerRef, page, index) => {
-  const dispatch = useAppDispatch();
-  const { position, dragOn, dragOff } = useDragContext();
-
-  const [dimensions, setDimensions] = useState<DOMRect>();
-
-  useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
-
-    setDimensions(containerRef.current.getBoundingClientRect());
-  }, [containerRef]);
-
-  const [{ dragItemIndex, canDrop, isOver }, ref] = useDrop<
-    PageDragItem,
-    unknown,
-    TabPageCollectedProps
-  >(
-    {
-      accept: [Drag.Page],
-      canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
-      collect: (monitor) => ({
-        canDrop: monitor.canDrop(),
-        isOver: monitor.isOver({ shallow: true }),
-        dragItemIndex: monitor.getItem()?.index,
-      }),
-      hover: () => {
-        if (position !== index) {
-          dragOn(Drag.Page, index);
-        }
-      },
-      drop: (item) => {
-        dispatch(pageActions.moveTo({ uid: item.data.uid, order: index }));
-        dragOff();
-      },
-    },
-    [dimensions, position]
-  );
-
-  return { ref, canDrop, isOver, dragItemIndex };
 };

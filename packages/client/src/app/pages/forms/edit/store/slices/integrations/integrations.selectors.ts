@@ -1,7 +1,7 @@
-import type { RootState } from '@editor/store';
-import { createSelector } from '@reduxjs/toolkit';
+import type { RootState } from "@editor/store";
+import { createSelector } from "@reduxjs/toolkit";
 
-import type { IntegrationEntry } from '.';
+import type { IntegrationEntry } from ".";
 
 interface NestedObject {
   type: string;
@@ -30,25 +30,25 @@ export const integrationSelectors = {
             .filter((integration) => integration.enabled)
             .find((obj) =>
               obj.properties.some((property) => {
-                if (property.type === 'field') {
+                if (property.type === "field") {
                   return obj.values[property.handle] === uid;
                 }
 
-                if (property.type === 'fieldMapping') {
+                if (property.type === "fieldMapping") {
                   const nestedObject = obj.values[
                     property.handle
                   ] as FieldMappingObject;
 
                   return Object.values(nestedObject).some(
-                    (nestedValue) => nestedValue.value === uid
+                    (nestedValue) => nestedValue.value === uid,
                   );
                 }
 
                 return false;
-              })
-            )
+              }),
+            ),
         );
-      }
+      },
     ),
   errors: {
     any: (state: RootState): boolean => {
@@ -57,7 +57,7 @@ export const integrationSelectors = {
           return false;
         }
         return Object.values(integration.errors).some(
-          (errors) => errors.length > 0
+          (errors) => errors.length > 0,
         );
       });
     },

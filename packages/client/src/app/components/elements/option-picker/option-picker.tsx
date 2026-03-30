@@ -1,25 +1,26 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useEditorAnimations } from '@components/form-controls/preview/previewable-component.animations';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import type { OptionCollection } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import RemoveIcon from '@ff-icons/actions/delete.svg';
+import { useEditorAnimations } from "@components/form-controls/preview/previewable-component.animations";
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
+import type { OptionCollection } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import RemoveIcon from "@ff-icons/actions/delete";
+import type React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   findLabelByValue,
   findValueByShadowIndex,
-} from '../custom-dropdown/dropdown.operations';
+} from "../custom-dropdown/dropdown.operations";
 import {
   CloseButton,
   ListWrapper,
   Search,
-} from '../custom-dropdown/dropdown.styles';
-import { PopUpPortal } from '../pop-up-portal';
+} from "../custom-dropdown/dropdown.styles";
+import { PopUpPortal } from "../pop-up-portal";
 
-import { useFilteredOptions } from './option-picker.operations';
-import { Options } from './option-picker.options';
+import { useFilteredOptions } from "./option-picker.operations";
+import { Options } from "./option-picker.options";
 import {
   OptionPickerWrapper,
   OptionsRollout,
@@ -27,7 +28,7 @@ import {
   PickerClose,
   PickerInput,
   PickerText,
-} from './option-picker.styles';
+} from "./option-picker.styles";
 
 export type OptionPickerProps = {
   loading?: boolean;
@@ -44,7 +45,7 @@ export const OptionPicker: React.FC<OptionPickerProps> = ({
   onChange,
 }) => {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [focusIndex, setFocusIndex] = useState(0);
 
   const searchRef = useRef<HTMLInputElement>(null);
@@ -52,7 +53,7 @@ export const OptionPicker: React.FC<OptionPickerProps> = ({
   const containerRef = useClickOutside<HTMLDivElement>({
     callback: () => setOpen(false),
     isEnabled: open,
-    excludeClassNames: ['option-picker-rollout'],
+    excludeClassNames: ["option-picker-rollout"],
   });
 
   const { editorAnimation } = useEditorAnimations({
@@ -70,7 +71,7 @@ export const OptionPicker: React.FC<OptionPickerProps> = ({
   const [filteredOptions, optionCount] = useFilteredOptions(
     value,
     options,
-    query
+    query,
   );
 
   useEscapeStack(() => setOpen(false), open);
@@ -78,68 +79,71 @@ export const OptionPicker: React.FC<OptionPickerProps> = ({
   useOnKeypress(
     {
       meetsCondition: open,
-      type: 'keydown',
+      type: "keydown",
       callback: (event) => {
-        if (event.key === 'ArrowDown' && focusIndex < optionCount - 1) {
+        if (event.key === "ArrowDown" && focusIndex < optionCount - 1) {
           setFocusIndex((prev) => prev + 1);
         }
 
-        if (event.key === 'ArrowUp' && focusIndex > 0) {
+        if (event.key === "ArrowUp" && focusIndex > 0) {
           setFocusIndex((prev) => prev - 1);
         }
       },
     },
-    [focusIndex, optionCount]
+    [focusIndex, optionCount],
   );
 
   useOnKeypress(
     {
       meetsCondition: open,
-      type: 'keyup',
+      type: "keyup",
       callback: (event) => {
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
           const value = findValueByShadowIndex(filteredOptions, focusIndex);
           onChange?.(updateCurrentValue(value));
         }
       },
     },
-    [filteredOptions, focusIndex]
+    [filteredOptions, focusIndex],
   );
 
   useEffect(() => {
     if (loading && open) {
       setOpen(false);
     }
-  }, [loading]);
+  }, [loading, open]);
 
   useEffect(() => {
     if (open) {
       searchRef.current?.focus();
       setFocusIndex(0);
     } else {
-      setQuery('');
+      setQuery("");
     }
-  }, [open, query]);
+  }, [open]);
 
-  const updateCurrentValue = (selectedValue: string): string[] => {
-    if (value.includes(selectedValue)) {
-      return value.filter((val) => val !== selectedValue);
-    }
+  const updateCurrentValue = useCallback(
+    (selectedValue: string): string[] => {
+      if (value.includes(selectedValue)) {
+        return value.filter((val) => val !== selectedValue);
+      }
 
-    return [...value, selectedValue];
-  };
+      return [...value, selectedValue];
+    },
+    [value],
+  );
 
   const onOptionClick = useCallback(
     (value: string) => {
       onChange?.(updateCurrentValue(value));
     },
-    [onChange]
+    [onChange, updateCurrentValue],
   );
 
   return (
     <OptionPickerWrapper
       ref={containerRef}
-      className={classes(open && 'open')}
+      className={classes(open && "open")}
       onClick={toggleOpen}
     >
       <PickerInput onClick={() => setOpen(!open)}>
@@ -179,7 +183,7 @@ export const OptionPicker: React.FC<OptionPickerProps> = ({
               value={query}
               onClick={(event) => event.stopPropagation()}
               onKeyDown={(event) => {
-                if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                if (["ArrowUp", "ArrowDown"].includes(event.key)) {
                   event.preventDefault();
                 }
               }}

@@ -1,16 +1,17 @@
-import type { UpdatedSubscriber } from '@editor/store/middleware/state-persist';
-import { TOPIC_UPSERTED } from '@editor/store/middleware/state-persist';
+import PubSub from "@editor/store/middleware/pubsub";
+import type { UpdatedSubscriber } from "@editor/store/middleware/state-persist";
+import { TOPIC_UPSERTED } from "@editor/store/middleware/state-persist";
 
-import { integrationSelectors } from '../integrations/integrations.selectors';
+import { integrationSelectors } from "../integrations/integrations.selectors";
 
-import { formActions } from '.';
+import { formActions } from ".";
 
 const handleFormMonitorState: UpdatedSubscriber = (
   _,
-  { getState, dispatch }
+  { getState, dispatch },
 ) => {
   const state = getState();
-  const formMonitor = integrationSelectors.oneByShortName('FormMonitor')(state);
+  const formMonitor = integrationSelectors.oneByShortName("FormMonitor")(state);
   if (!formMonitor) {
     return;
   }
@@ -20,7 +21,7 @@ const handleFormMonitorState: UpdatedSubscriber = (
       formMonitor: {
         enabled: formMonitor.enabled,
       },
-    })
+    }),
   );
 };
 

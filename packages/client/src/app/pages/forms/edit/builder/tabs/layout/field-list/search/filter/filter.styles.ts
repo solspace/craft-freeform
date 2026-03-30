@@ -1,8 +1,8 @@
-import { animated } from 'react-spring';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
-import { IconStyle } from '../search.style';
+import { IconStyle } from "../search.style";
 
 export const FilterIcon = styled.button`
   cursor: pointer;
@@ -111,5 +111,5 @@ export const Item = styled.li`
 `;
 
 export const ItemCheckbox = styled.input.attrs({
-  type: 'checkbox',
+  type: "checkbox",
 })``;

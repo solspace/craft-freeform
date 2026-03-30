@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
-import { HelpText } from '@components/elements/help-text';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
-import Bool from '@components/form-controls/control-types/bool/bool';
+import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { HelpText } from "@components/elements/help-text";
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
+import Bool from "@components/form-controls/control-types/bool/bool";
 import {
   Button,
   Cell,
@@ -10,32 +9,33 @@ import {
   Input,
   TableContainer,
   TabularOptions,
-} from '@components/form-controls/control-types/table/table.editor.styles';
-import { DraggableRow } from '@components/form-controls/draggable-row';
-import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
-import CrossIcon from '@components/form-controls/icons/cross.svg';
-import MoveIcon from '@components/form-controls/icons/move.svg';
-import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
-import { useDebounce } from '@ff-client/hooks/use-debounce';
-import { PropertyType } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import DOMPurify from 'dompurify';
+} from "@components/form-controls/control-types/table/table.editor.styles";
+import { DraggableRow } from "@components/form-controls/draggable-row";
+import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
+import CrossIcon from "@components/form-controls/icons/cross";
+import MoveIcon from "@components/form-controls/icons/move";
+import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
+import { useDebounce } from "@ff-client/hooks/use-debounce";
+import { PropertyType } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
+import React, { useEffect, useRef, useState } from "react";
 
 import type {
   ConfigurationProps,
   CustomOptionsConfiguration,
   Option,
-} from '../../options.types';
+} from "../../options.types";
 
-import { Bulk } from './custom.bulk';
-import { CopyToClipboardButton } from './custom.clipboard-button';
+import { Bulk } from "./custom.bulk";
+import { CopyToClipboardButton } from "./custom.clipboard-button";
 import {
   BulkButton,
   BulkWrapper,
   ChoiceWrapper,
   TableWithButtonWrapper,
-} from './custom.editor.styles';
+} from "./custom.editor.styles";
 import {
   addOption,
   deleteOption,
@@ -43,7 +43,7 @@ import {
   setOptions,
   toggleUseCustomValues,
   updateOption,
-} from './custom.operations';
+} from "./custom.operations";
 
 export const CustomEditor: React.FC<
   ConfigurationProps<CustomOptionsConfiguration>
@@ -61,7 +61,7 @@ export const CustomEditor: React.FC<
 
   useEffect(() => {
     updateValue(debouncedValue);
-  }, [debouncedValue]);
+  }, [debouncedValue, updateValue]);
 
   useEffect(() => {
     if (!localValue.options.length) {
@@ -73,8 +73,8 @@ export const CustomEditor: React.FC<
 
   const refs = useRef([]);
   refs.current = options.map(
-    (option, index) =>
-      refs.current[index] || React.createRef<HTMLButtonElement>()
+    (_option, index) =>
+      refs.current[index] || React.createRef<HTMLButtonElement>(),
   );
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
@@ -83,39 +83,39 @@ export const CustomEditor: React.FC<
   const addCell = (cellIndex: number, atIndex?: number): void => {
     setActiveCell(
       atIndex !== undefined ? atIndex + 1 : options.length,
-      cellIndex
+      cellIndex,
     );
     setLocalValue(
       addOption(
         localValue,
-        atIndex === undefined ? options.length : atIndex + 1
-      )
+        atIndex === undefined ? options.length : atIndex + 1,
+      ),
     );
   };
 
   const bulkImport = (
     values: string,
     separator: string,
-    append: boolean
+    append: boolean,
   ): void => {
     let currentOptions: Option[] = [];
     if (append) {
-      if (options[0] && options[0].label === '' && options[0].value === '') {
+      if (options[0] && options[0].label === "" && options[0].value === "") {
         currentOptions = [];
       } else {
         currentOptions = [...options];
       }
     }
 
-    values.split('\n').forEach((line) => {
+    values.split("\n").forEach((line) => {
       let [label, value] = line.split(separator);
       label = label.trim();
       value = value?.trim();
       let optgroup = false;
 
-      if (label.startsWith('@@')) {
+      if (label.startsWith("@@")) {
         optgroup = true;
-        label = label.replace(/^@@/, '').trim();
+        label = label.replace(/^@@/, "").trim();
       }
 
       if (!label && !value) {
@@ -137,8 +137,8 @@ export const CustomEditor: React.FC<
       <ChoiceWrapper>
         <Bool
           property={{
-            label: translate('Use custom values'),
-            handle: 'useCustomValues',
+            label: translate("Use custom values"),
+            handle: "useCustomValues",
             type: PropertyType.Boolean,
           }}
           value={useCustomValues}
@@ -152,7 +152,7 @@ export const CustomEditor: React.FC<
             preview={
               <BulkButton>
                 <i className="fa-duotone fa-list" />
-                <span>{translate('Add options in bulk')}</span>
+                <span>{translate("Add options in bulk")}</span>
               </BulkButton>
             }
           >
@@ -174,13 +174,13 @@ export const CustomEditor: React.FC<
             <TabularOptions>
               <thead>
                 <tr>
-                  {allowOptgroup && <th>{translate('Optgroup')}</th>}
-                  <th>{translate('Label')}</th>
-                  {useCustomValues && <th>{translate('Value')}</th>}
+                  {allowOptgroup && <th>{translate("Optgroup")}</th>}
+                  <th>{translate("Label")}</th>
+                  {useCustomValues && <th>{translate("Value")}</th>}
                   {options.length > 1 && (
                     <>
-                      <th>{translate('Selected')}</th>
-                      <th colSpan={2}>{translate('Actions')}</th>
+                      <th>{translate("Selected")}</th>
+                      <th colSpan={2}>{translate("Actions")}</th>
                     </>
                   )}
                 </tr>
@@ -208,8 +208,8 @@ export const CustomEditor: React.FC<
                                     ...option,
                                     optgroup: enabled,
                                   },
-                                  localValue
-                                )
+                                  localValue,
+                                ),
                               )
                             }
                           />
@@ -220,7 +220,7 @@ export const CustomEditor: React.FC<
                       <Input
                         type="text"
                         value={option.label}
-                        placeholder={translate('Label')}
+                        placeholder={translate("Label")}
                         autoFocus={activeCell === `${index}:0`}
                         ref={(element) => setCellRef(element, index, 0)}
                         onFocus={() => setActiveCell(index, 0)}
@@ -241,8 +241,8 @@ export const CustomEditor: React.FC<
                                     ? event.target.value
                                     : option.value,
                               },
-                              localValue
-                            )
+                              localValue,
+                            ),
                           )
                         }
                       />
@@ -254,7 +254,7 @@ export const CustomEditor: React.FC<
                           type="text"
                           className="code"
                           value={option.value}
-                          placeholder={translate('Value')}
+                          placeholder={translate("Value")}
                           autoFocus={activeCell === `${index}:1`}
                           ref={(element) => setCellRef(element, index, 1)}
                           onFocus={() => setActiveCell(index, 1)}
@@ -271,8 +271,8 @@ export const CustomEditor: React.FC<
                                   ...option,
                                   value: event.target.value,
                                 },
-                                localValue
-                              )
+                                localValue,
+                              ),
                             )
                           }
                         />
@@ -285,7 +285,7 @@ export const CustomEditor: React.FC<
                           <CenterPoint>
                             <Bool
                               property={{
-                                label: '',
+                                label: "",
                                 handle: `${index}-check`,
                                 type: PropertyType.Boolean,
                                 width: 50,
@@ -302,15 +302,15 @@ export const CustomEditor: React.FC<
                                   updateDefaultValue(
                                     val.includes(option.value)
                                       ? val.filter(
-                                          (value) => value !== option.value
+                                          (value) => value !== option.value,
                                         )
-                                      : [...val, option.value]
+                                      : [...val, option.value],
                                   );
                                 } else {
                                   updateDefaultValue(
                                     option.value === defaultValue
-                                      ? ''
-                                      : option.value
+                                      ? ""
+                                      : option.value,
                                   );
                                 }
                               }}
@@ -355,8 +355,8 @@ export const CustomEditor: React.FC<
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                'Press <b>enter</b> while editing a cell to add a new row.'
-              )
+                "Press <b>enter</b> while editing a cell to add a new row.",
+              ),
             ),
           }}
         />

@@ -1,29 +1,29 @@
-import React from 'react';
 import type {
   AttributeProperty,
   AttributeTab,
-} from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+} from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 import {
   Name,
   Operator,
   Quote,
   Value,
-} from './attributes.input-preview.styles';
-import { attributesToArray } from './attributes.operations';
+} from "./attributes.input-preview.styles";
+import { attributesToArray } from "./attributes.operations";
 import {
   AttributeItem,
   AttributeList,
   AttributeListWrapper,
   AttributeTitle,
   PreviewWrapper,
-} from './attributes.preview.styles';
+} from "./attributes.preview.styles";
 import type {
   AttributeEntry,
   EditableAttributeCollection,
-} from './attributes.types';
+} from "./attributes.types";
 
 type Props = {
   property: AttributeProperty;
@@ -38,7 +38,7 @@ const RenderAttributes: React.FC<{
 
   return (
     <AttributeListWrapper
-      className={classes(!attributeArray.length && 'empty')}
+      className={classes(!attributeArray.length && "empty")}
     >
       <AttributeTitle>{translate(tab.label)}</AttributeTitle>
       {!!attributeArray.length && (
@@ -65,14 +65,13 @@ const RenderAttributes: React.FC<{
 export const AttributePreview: React.FC<Props> = ({ property, attributes }) => {
   return (
     <PreviewWrapper>
-      {property.tabs &&
-        property.tabs.map((tab) => (
-          <RenderAttributes
-            key={tab.handle}
-            tab={tab}
-            attributes={attributes[tab.handle] || []}
-          />
-        ))}
+      {property.tabs?.map((tab) => (
+        <RenderAttributes
+          key={tab.handle}
+          tab={tab}
+          attributes={attributes[tab.handle] || []}
+        />
+      ))}
     </PreviewWrapper>
   );
 };

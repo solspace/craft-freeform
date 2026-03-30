@@ -10,12 +10,15 @@ export type FlatpickrInstance = {
   set: (option: string, value: unknown) => void;
 };
 
-export type Flatpickr = (element: Element, options?: unknown) => FlatpickrInstance;
+export type Flatpickr = (
+  element: Element,
+  options?: unknown,
+) => FlatpickrInstance;
 
 export const getFlatpickr = (): Flatpickr | null => {
   const flatpickr = (window as unknown as FlatpickrGlobal).flatpickr;
 
-  return typeof flatpickr === 'function' ? (flatpickr as Flatpickr) : null;
+  return typeof flatpickr === "function" ? (flatpickr as Flatpickr) : null;
 };
 
 export const hasFlatpickr = (): boolean => getFlatpickr() !== null;

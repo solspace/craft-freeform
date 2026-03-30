@@ -28,7 +28,7 @@
 
             {% if freeform.pro and not spamMode %}
                 <div class="freeform-submission-controls">
-                    <a class="freeform-button orange" href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
+                    <a class="freeform-button orange" href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
                         {{ "Edit"|t("freeform") }}
                     </a>
                     <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/delete/{{ form.handle }}/{{ submission.token }}">
@@ -70,7 +70,7 @@
                         </tr>
                         <tr>
                             <th style="width: 20%;">Form</th>
-                            <td><a href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}">{{ form.name }}</a></td>
+                            <td><a href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}">{{ form.name }}</a></td>
                         </tr>
                         {% for field in submission %}
                             <tr>
@@ -105,7 +105,14 @@
                                             {% for row in submission[field.handle].value %}
                                                 <tr>
                                                 {% for index, column in field.tableLayout %}
-                                                    <td>{{ row[index] }}</td>
+                                                    <td>
+                                                        {% set cell = row[index] ?? null %}
+                                                        {% if cell is iterable %}
+                                                            {{ cell|join(', ') }}
+                                                        {% else %}
+                                                            {{ cell }}
+                                                        {% endif %}
+                                                    </td>
                                                 {% endfor %}
                                                 </tr>
                                             {% endfor %}

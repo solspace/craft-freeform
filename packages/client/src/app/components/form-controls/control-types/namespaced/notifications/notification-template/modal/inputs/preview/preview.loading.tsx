@@ -1,7 +1,6 @@
-import type { FC } from 'react';
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import {
   Body,
@@ -10,26 +9,26 @@ import {
   PreviewContainer,
   Row,
   Value,
-} from './preview.styles';
+} from "./preview.styles";
 
 export const TemplatePreviewLoader: FC = () => {
   return (
     <PreviewContainer>
       <HeaderRow />
       <Row>
-        <Label>{translate('To')}:</Label>
+        <Label>{translate("To")}:</Label>
         <Value>
           <Skeleton width={200} />
         </Value>
       </Row>
       <Row>
-        <Label>{translate('Subject')}:</Label>
+        <Label>{translate("Subject")}:</Label>
         <Value>
           <Skeleton width={200} />
         </Value>
       </Row>
       <Row>
-        <Label>{translate('From')}:</Label>
+        <Label>{translate("From")}:</Label>
         <Value>
           <Skeleton width={200} />
         </Value>

@@ -1,6 +1,7 @@
-import type Freeform from '@components/front-end/plugin/freeform';
+import type Freeform from "@components/front-end/plugin/freeform";
 
-export type Callback = () => Promise<void | boolean>;
+// biome-ignore lint/suspicious/noConfusingVoidType: It is not confusing at all.
+export type Callback = () => Promise<undefined | void | boolean>;
 
 export type FreeformEvent = CustomEvent & {
   freeform: Freeform;
@@ -10,7 +11,10 @@ export type FreeformEvent = CustomEvent & {
 };
 
 type AllTypes = string | number | boolean | null | undefined;
-type GenericValue = AllTypes | AllTypes[] | Record<string, AllTypes | AllTypes[]>;
+type GenericValue =
+  | AllTypes
+  | AllTypes[]
+  | Record<string, AllTypes | AllTypes[]>;
 
 type Action = {
   name: string;
@@ -36,7 +40,9 @@ export type FreeformResponse = {
   freeform_payload: string;
 };
 
-export type FreeformResponseWithToken = FreeformResponse & { storageToken: string };
+export type FreeformResponseWithToken = FreeformResponse & {
+  storageToken: string;
+};
 
 export type FreeformResponseEvent = FreeformEvent & {
   response: FreeformResponse;

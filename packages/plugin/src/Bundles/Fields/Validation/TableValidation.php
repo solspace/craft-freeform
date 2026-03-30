@@ -2,8 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Validation;
 
+use Solspace\Freeform\Bundles\Fields\Validation\Helpers\FileUploadValidationHelper;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -12,8 +14,9 @@ use yii\base\Event;
 
 class TableValidation extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private FileUploadValidationHelper $fileValidationHelper,
+    ) {
         Event::on(
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
@@ -30,6 +33,12 @@ class TableValidation extends FeatureBundle
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
             [$this, 'validateRequiredColumns']
+        );
+
+        Event::on(
+            FieldInterface::class,
+            FieldInterface::EVENT_VALIDATE,
+            [$this, 'validateFileColumns']
         );
     }
 
@@ -117,14 +126,14 @@ class TableValidation extends FeatureBundle
         }
 
         $layout = $field->getTableLayout();
-        $requiredColumnIndexes = [];
+        $requiredColumns = [];
         foreach ($layout as $index => $column) {
             if ($column->required) {
-                $requiredColumnIndexes[] = $index;
+                $requiredColumns[$index] = $column->type ?? TableField::COLUMN_TYPE_STRING;
             }
         }
 
-        if (0 === \count($requiredColumnIndexes)) {
+        if (empty($requiredColumns)) {
             return;
         }
 
@@ -139,12 +148,91 @@ class TableValidation extends FeatureBundle
             return;
         }
 
-        foreach ($value as $row) {
-            foreach ($requiredColumnIndexes as $columnIndex) {
-                if (empty($row[$columnIndex])) {
+        foreach ($value as $rowIndex => $row) {
+            foreach ($requiredColumns as $columnIndex => $columnType) {
+                $columnValue = $row[$columnIndex] ?? null;
+                if (!$this->hasRequiredColumnValue($field, (int) $rowIndex, (int) $columnIndex, $columnType, $columnValue)) {
                     $field->addError($message);
 
                     return;
+                }
+            }
+        }
+    }
+
+    public function validateFileColumns(ValidateEvent $event): void
+    {
+        $field = $event->getField();
+        if (!$field instanceof TableField) {
+            return;
+        }
+
+        $layout = $field->getTableLayout();
+        $fileColumns = [];
+        foreach ($layout as $index => $column) {
+            if (TableField::COLUMN_TYPE_FILE === ($column->type ?? null)) {
+                $fileColumns[$index] = \is_array($column->metadata ?? null) ? $column->metadata : [];
+            }
+        }
+
+        if (empty($fileColumns)) {
+            return;
+        }
+
+        $handle = $field->getHandle();
+        if (!isset($_FILES[$handle])) {
+            return;
+        }
+
+        $files = $_FILES[$handle];
+        $rows = $files['name'] ?? null;
+        if (!\is_array($rows)) {
+            return;
+        }
+
+        foreach ($rows as $rowIndex => $rowData) {
+            if (!\is_array($rowData)) {
+                continue;
+            }
+
+            foreach ($fileColumns as $columnIndex => $metadata) {
+                $columnFiles = $this->fileValidationHelper->extractNestedFilesInput($files, (int) $rowIndex, (int) $columnIndex);
+                if (empty($columnFiles)) {
+                    continue;
+                }
+
+                $maxFileCount = (int) ($metadata['fileCount'] ?? FileUploadField::DEFAULT_FILE_COUNT);
+                if ($maxFileCount < FileUploadField::DEFAULT_FILE_COUNT) {
+                    $maxFileCount = FileUploadField::DEFAULT_FILE_COUNT;
+                }
+
+                if (\count($columnFiles) > $maxFileCount) {
+                    $field->addError(
+                        Freeform::t(
+                            'Tried uploading {count} files. Maximum {max} files allowed.',
+                            ['max' => $maxFileCount, 'count' => \count($columnFiles)]
+                        )
+                    );
+                }
+
+                $maxFileSizeKB = (int) ($metadata['maxFileSizeKB'] ?? FileUploadField::DEFAULT_MAX_FILESIZE_KB);
+                if ($maxFileSizeKB < 1) {
+                    $maxFileSizeKB = FileUploadField::DEFAULT_MAX_FILESIZE_KB;
+                }
+
+                $fileKinds = $metadata['fileKinds'] ?? ['image'];
+                if (!\is_array($fileKinds)) {
+                    $fileKinds = ['image'];
+                }
+
+                $validExtensions = $this->fileValidationHelper->getValidExtensionsForKinds($fileKinds);
+                foreach ($columnFiles as $columnFile) {
+                    $this->fileValidationHelper->validateFileEntry(
+                        $columnFile,
+                        $validExtensions,
+                        $maxFileSizeKB,
+                        static fn (string $message) => $field->addError($message),
+                    );
                 }
             }
         }
@@ -155,5 +243,39 @@ class TableValidation extends FeatureBundle
         return ArrayHelper::every($rows, static function (array $row) {
             return ArrayHelper::someRecursive($row, static fn ($item) => '' !== $item && null !== $item);
         });
+    }
+
+    private function hasRequiredColumnValue(
+        TableField $field,
+        int $rowIndex,
+        int $columnIndex,
+        string $columnType,
+        mixed $value,
+    ): bool {
+        if (TableField::COLUMN_TYPE_FILE === $columnType) {
+            if (\is_array($value)) {
+                $value = array_values(array_filter(
+                    $value,
+                    static fn (mixed $item) => null !== $item && '' !== $item
+                ));
+
+                if (!empty($value)) {
+                    return true;
+                }
+            } elseif (null !== $value && '' !== $value) {
+                return true;
+            }
+
+            $files = $_FILES[$field->getHandle()] ?? null;
+            if (\is_array($files)) {
+                $pendingUploads = $this->fileValidationHelper->extractNestedFilesInput($files, $rowIndex, $columnIndex);
+
+                return !empty($pendingUploads);
+            }
+
+            return false;
+        }
+
+        return !empty($value);
     }
 }

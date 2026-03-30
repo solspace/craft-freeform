@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 interface GroupItemWrapperProps {
   $empty: string;
@@ -53,6 +53,7 @@ export const GroupType = styled.div`
 
 export const GroupHeader = styled.div`
   display: flex;
+  align-items: flex-start;
   padding-bottom: ${spacings.lg};
   gap: ${spacings.lg};
 `;
@@ -80,7 +81,7 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
 `;
 
 GroupItemWrapper.defaultProps = {
-  $empty: 'Drag and drop any field here',
+  $empty: "Drag and drop any field here",
   color: colors.black,
 };
 
@@ -110,7 +111,7 @@ export const FieldTypes = styled.div<EmptyProps>`
 `;
 
 FieldTypes.defaultProps = {
-  $empty: 'Drag and drop any field here',
+  $empty: "Drag and drop any field here",
 };
 
 export const UHFieldWrapper = styled.div`
@@ -134,9 +135,11 @@ export const UHField = styled.div`
   padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
 `;
 
-export const ColorCircle = styled.div`
+export const ColorCircle = styled.button`
+  appearance: none;
   width: 20px;
   height: 20px;
+  padding: 0;
   border-radius: 50%;
   border: 1px solid ${colors.gray100};
   cursor: pointer;
@@ -144,11 +147,21 @@ export const ColorCircle = styled.div`
   position: relative;
 `;
 
-export const ColorPicker = styled.div`
-  > .sketch-picker {
-    padding: 5px 1px 0px !important;
-    box-shadow: inherit !important;
-  }
+export const ColorPickerWrapper = styled.div`
+  position: relative;
+  flex: 0 0 auto;
+`;
+
+export const ColorPopover = styled.div`
+  position: absolute;
+  top: -6px;
+  left: calc(100% + ${spacings.sm});
+  z-index: 10;
+  padding: ${spacings.sm};
+  border: 1px solid ${colors.gray100};
+  border-radius: ${borderRadius.md};
+  background: ${colors.white};
+  box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
 `;
 
 export const ErrorBlock = styled.div`

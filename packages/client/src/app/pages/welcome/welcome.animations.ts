@@ -1,5 +1,5 @@
-import type { SpringValues } from 'react-spring';
-import { useChain, useSpring, useSpringRef, useTrail } from 'react-spring';
+import type { SpringValues } from "@react-spring/web";
+import { useChain, useSpring, useSpringRef, useTrail } from "@react-spring/web";
 
 type SpringReturnType = {
   opacity?: number;

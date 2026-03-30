@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import String from '@components/form-controls/control-types/string/string';
-import { ContentContainer } from '@components/layout/blocks/content-container';
-import { Field } from '@components/layout/blocks/field';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { Preview } from '@ff-client/app/pages/import-export/common/preview/preview';
-import { Progress } from '@ff-client/app/pages/import-export/common/progress/progress';
-import { useProgressEvent } from '@ff-client/app/pages/import-export/common/progress/progress.hooks';
-import { PropertyType } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import { downloadFile } from '@ff-client/utils/files';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
-import axios from 'axios';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import StringInput from "@components/form-controls/control-types/string/string";
+import { ContentContainer } from "@components/layout/blocks/content-container";
+import { Field } from "@components/layout/blocks/field";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import { Preview } from "@ff-client/app/pages/import-export/common/preview/preview";
+import { Progress } from "@ff-client/app/pages/import-export/common/progress/progress";
+import { useProgressEvent } from "@ff-client/app/pages/import-export/common/progress/progress.hooks";
+import { PropertyType } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import { downloadFile } from "@ff-client/utils/files";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import axios from "axios";
+import type React from "react";
+import { useEffect, useState } from "react";
 
-import { isAllOptionsEmpty } from '../../export.operations';
-import { createExportOptions, type ExportOptions } from '../../export.types';
+import { isAllOptionsEmpty } from "../../export.operations";
+import { createExportOptions, type ExportOptions } from "../../export.types";
 
-import { useFormsDataQuery, useFormsExportMutation } from './freeform.queries';
+import { useFormsDataQuery, useFormsExportMutation } from "./freeform.queries";
 
 export const ExportFreeform: React.FC = () => {
   const progressEvent = useProgressEvent();
@@ -40,25 +41,25 @@ export const ExportFreeform: React.FC = () => {
   const [options, setOptions] = useState<ExportOptions>(createExportOptions());
 
   useEffect(() => {
-    attachListener('file-token', async (event) => {
+    attachListener("file-token", async (event) => {
       const serverToken = event.data;
       const url = generateUrl(
-        `/api/export/download?server-token=${serverToken}`
+        `/api/export/download?server-token=${serverToken}`,
       );
 
-      const res = await axios.get(url, { responseType: 'blob' });
+      const res = await axios.get(url, { responseType: "blob" });
 
       const time = new Date()
         .toISOString()
-        .replace(/[-:]/g, '')
-        .replace('T', '-')
+        .replace(/[-:]/g, "")
+        .replace("T", "-")
         .slice(0, -5);
 
       const name = `freeform-export-${time}.zip`;
 
       downloadFile(res.data, name);
     });
-  }, []);
+  }, [attachListener]);
 
   const onClick = (): void => {
     clearProgress();
@@ -68,7 +69,7 @@ export const ExportFreeform: React.FC = () => {
   const isCurrentlyActive = isFetching || active || progressActive || isPending;
 
   if (isFetching) {
-    return <ContentContainer>{translate('Loading...')}</ContentContainer>;
+    return <ContentContainer>{translate("Loading...")}</ContentContainer>;
   }
 
   return (
@@ -78,9 +79,9 @@ export const ExportFreeform: React.FC = () => {
 
       {data && (
         <Field
-          label={translate('Select Data to Export')}
+          label={translate("Select Data to Export")}
           instructions={translate(
-            'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.'
+            "Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.",
           )}
         >
           <Preview
@@ -92,43 +93,44 @@ export const ExportFreeform: React.FC = () => {
         </Field>
       )}
 
-      <String
-        value={options.password || ''}
+      <StringInput
+        value={options.password || ""}
         updateValue={(password) => setOptions({ ...options, password })}
         property={{
-          handle: 'password',
-          label: 'Password-protect the Export File (optional)',
+          handle: "password",
+          label: "Password-protect the Export File (optional)",
           instructions:
-            'Enter a password if you want to protect your zip file with a password.',
+            "Enter a password if you want to protect your zip file with a password.",
           type: PropertyType.String,
-          placeholder: 'Enter a password',
+          placeholder: "Enter a password",
         }}
       />
 
       <div className="field">
         <button
-          className={classes(
-            'btn',
-            'submit',
-            isCurrentlyActive && 'disabled',
-            isAllOptionsEmpty(options) && 'disabled'
-          )}
+          type="button"
           disabled={isCurrentlyActive}
           onClick={onClick}
+          className={classes(
+            "btn",
+            "submit",
+            isCurrentlyActive && "disabled",
+            isAllOptionsEmpty(options) && "disabled",
+          )}
         >
           <LoadingText
-            loadingText={translate('Exporting...')}
+            loadingText={translate("Exporting...")}
             loading={isCurrentlyActive}
             spinner
           >
-            {translate('Begin Export')}
+            {translate("Begin Export")}
           </LoadingText>
         </button>
       </div>
 
       <Progress
-        label={translate('Export Progress')}
-        finishLabel={translate('Export completed successfully!')}
+        label={translate("Export Progress")}
+        finishLabel={translate("Export completed successfully!")}
         event={progressEvent}
       />
     </ContentContainer>

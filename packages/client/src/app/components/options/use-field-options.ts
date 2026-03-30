@@ -1,23 +1,23 @@
-import type { CustomOptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
+import type { CustomOptionsConfiguration } from "@components/form-controls/control-types/options/options.types";
 import {
   type OptionsConfiguration,
   Source,
-} from '@components/form-controls/control-types/options/options.types';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { FieldType } from '@ff-client/types/fields';
-import { Implementation, Type } from '@ff-client/types/fields';
+} from "@components/form-controls/control-types/options/options.types";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type { FieldType } from "@ff-client/types/fields";
+import { Implementation, Type } from "@ff-client/types/fields";
 import {
   type OptionCollection,
   PropertyType,
-} from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+} from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type FieldOptions = (
   field?: Field,
-  type?: FieldType
+  type?: FieldType,
 ) => [OptionCollection, boolean];
 
 export const useFieldOptions: FieldOptions = (field, type) => {
@@ -43,7 +43,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
         (_: number, index: number) => ({
           label: String(index + 1),
           value: String(index + 1),
-        })
+        }),
       ),
       useCustomValues: true,
     };
@@ -51,14 +51,14 @@ export const useFieldOptions: FieldOptions = (field, type) => {
     // Fields that extend BaseGeneratedOptionsField such as CheckboxesField, RadiosField, DropdownField and MultipleSelectField
     if (type?.implements.includes(Implementation.GeneratedOptions)) {
       const optionsProperty = type?.properties.find(
-        (property) => property.type === PropertyType.Options
+        (property) => property.type === PropertyType.Options,
       );
 
       if (optionsProperty) {
         const fieldValue = field?.properties[optionsProperty.handle];
         optionsConfiguration = getOptionTranslations(
           optionsProperty.handle,
-          fieldValue
+          fieldValue,
         );
 
         emptyOption = fieldValue?.emptyOption;
@@ -69,7 +69,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
   const isCustomOptions = optionsConfiguration?.source === Source.Custom;
 
   const { data, isFetching } = useQuery({
-    queryKey: ['field-options', optionsConfiguration],
+    queryKey: ["field-options", optionsConfiguration],
     queryFn: async () => {
       if (!optionsConfiguration || isCustomOptions) {
         return [];
@@ -84,8 +84,8 @@ export const useFieldOptions: FieldOptions = (field, type) => {
 
       try {
         const response = await axios.post<OptionCollection>(
-          'api/options',
-          optionsConfiguration
+          "api/options",
+          optionsConfiguration,
         );
         const { data } = response;
 
@@ -108,7 +108,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
     : data || [];
 
   if (emptyOption) {
-    options = [{ label: translate(emptyOption), value: '' }, ...options];
+    options = [{ label: translate(emptyOption), value: "" }, ...options];
   }
 
   return [options, isFetchingAsync];

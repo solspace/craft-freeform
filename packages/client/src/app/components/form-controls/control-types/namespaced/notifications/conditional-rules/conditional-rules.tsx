@@ -1,21 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import { CombinatorSelect } from '@editor/builder/tabs/rules/conditions/combinator/combinator';
-import { ConditionTable } from '@editor/builder/tabs/rules/conditions/table/condition-table';
-import { DisplayTriggerDropdown } from '@editor/builder/tabs/rules/conditions/trigger-dropdown/trigger-dropdown';
-import { ConfigurationDescription } from '@editor/builder/tabs/rules/editor/editor.styles';
-import { useAppDispatch } from '@editor/store';
-import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
-import { notificationRuleSelectors } from '@editor/store/slices/rules/notifications/notification-rules.selectors';
-import { useQueryNotificationRules } from '@ff-client/queries/rules';
-import type { Notification } from '@ff-client/types/notifications';
-import type { ConditionalRulesProperty } from '@ff-client/types/properties';
-import { Combinator } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
-import { v4 } from 'uuid';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import { CombinatorSelect } from "@editor/builder/tabs/rules/conditions/combinator/combinator";
+import { ConditionTable } from "@editor/builder/tabs/rules/conditions/table/condition-table";
+import { DisplayTriggerDropdown } from "@editor/builder/tabs/rules/conditions/trigger-dropdown/trigger-dropdown";
+import { ConfigurationDescription } from "@editor/builder/tabs/rules/editor/editor.styles";
+import { useAppDispatch } from "@editor/store";
+import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import { notificationRuleActions } from "@editor/store/slices/rules/notifications";
+import { notificationRuleSelectors } from "@editor/store/slices/rules/notifications/notification-rules.selectors";
+import { useQueryNotificationRules } from "@ff-client/queries/rules";
+import type { Notification } from "@ff-client/types/notifications";
+import type { ConditionalRulesProperty } from "@ff-client/types/properties";
+import { Combinator } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { v4 } from "uuid";
 
 const ConditionalNotificationRules: React.FC<
   ControlType<ConditionalRulesProperty, Notification>
@@ -48,11 +49,19 @@ const ConditionalNotificationRules: React.FC<
         notificationRuleActions.add({
           ruleUid,
           notificationUid,
-        })
+        }),
       );
       updateValue(ruleUid);
     }
-  }, [isInitialized, rule, data, isFetched, value, generatedValues.current]);
+  }, [
+    isInitialized,
+    data,
+    isFetched,
+    value,
+    dispatch,
+    notificationUid,
+    updateValue,
+  ]);
 
   return (
     <Control property={property}>
@@ -60,7 +69,7 @@ const ConditionalNotificationRules: React.FC<
         <DisplayTriggerDropdown
           value={rule?.send ?? true}
           options={{
-            on: 'Send',
+            on: "Send",
             off: `Don't send`,
           }}
           onChange={(value) =>
@@ -68,12 +77,12 @@ const ConditionalNotificationRules: React.FC<
               notificationRuleActions.modifySend({
                 ruleUid: rule.uid,
                 send: value,
-              })
+              }),
             )
           }
         />
 
-        {translate('a notification when')}
+        {translate("a notification when")}
 
         <CombinatorSelect
           value={rule?.combinator ?? Combinator.Or}
@@ -82,12 +91,12 @@ const ConditionalNotificationRules: React.FC<
               notificationRuleActions.modifyCombinator({
                 ruleUid: rule.uid,
                 combinator: value,
-              })
+              }),
             )
           }
         />
 
-        {translate('of the following rules match:')}
+        {translate("of the following rules match:")}
       </ConfigurationDescription>
 
       <ConditionTable
@@ -98,7 +107,7 @@ const ConditionalNotificationRules: React.FC<
             notificationRuleActions.modifyConditions({
               ruleUid: rule.uid,
               conditions,
-            })
+            }),
           );
         }}
       />

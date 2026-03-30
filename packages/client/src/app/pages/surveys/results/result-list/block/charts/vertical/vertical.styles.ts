@@ -1,5 +1,5 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import styled from "styled-components";
 
 type WrapperProps = {
   count: number;
@@ -83,6 +83,6 @@ export const Bar = styled.div<BarProps>`
     height: ${({ percentage }) => percentage}%;
 
     background: ${({ ranking }) =>
-      ranking === 1 ? 'var(--highlight)' : '#33414d'};
+      ranking === 1 ? "var(--highlight)" : "#33414d"};
   }
 `;

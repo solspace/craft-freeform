@@ -1,17 +1,41 @@
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 import {
   PreviewEditor,
   PreviewEditorContainer,
-} from '../../preview/previewable-component.styles';
+} from "../../preview/previewable-component.styles";
+
+import { TableColumnTabsWrapper } from "./editor/table.editor.styles";
 
 export const TableEditorWrapper = styled(PreviewEditor)`
   gap: 0;
+  padding: 0;
 `;
 
 export const TableContainer = styled(PreviewEditorContainer)`
+  border-radius: ${borderRadius.lg};
   background-color: white;
+`;
+
+export const ColumnTabsWrapper = styled(TableColumnTabsWrapper)`
+  padding: 0 ${spacings.lg};
+
+  background: ${colors.gray050};
+  box-shadow: ${shadows.bottom};
+`;
+
+export const ColumnEditor = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.lg};
+
+  padding: ${spacings.lg};
 `;
 
 export const TabularOptions = styled.table`
@@ -41,9 +65,9 @@ type CellProps = {
 };
 export const Cell = styled.td<CellProps>`
   width: ${({ $tiny, $width }) =>
-    $tiny ? '32px' : $width ? `${$width}px` : 'auto'};
+    $tiny ? "32px" : $width ? `${$width}px` : "auto"};
 
-  padding: ${({ $tiny }) => ($tiny ? '6px 9px !important' : '0 !important')};
+  padding: ${({ $tiny }) => ($tiny ? "6px 9px !important" : "0 !important")};
 
   border: 1px solid rgba(0, 0, 0, 0.1);
 

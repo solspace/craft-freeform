@@ -1,9 +1,9 @@
-import React from 'react';
 import {
   PreviewContainer,
   PreviewEditor,
-} from '@components/form-controls/preview/previewable-component.styles';
-import { Editor } from '@monaco-editor/react';
+} from "@components/form-controls/preview/previewable-component.styles";
+import { Editor } from "@monaco-editor/react";
+import type React from "react";
 
 type Props = {
   value: string;
@@ -25,7 +25,7 @@ export const CodeEditor: React.FC<Props> = ({
           defaultLanguage={language}
           onChange={updateValue}
           onMount={() => {
-            document.body.classList.remove('underline-links');
+            document.body.classList.remove("underline-links");
           }}
           options={{
             scrollbar: {

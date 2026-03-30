@@ -1,10 +1,10 @@
-import type { AppThunk } from '@editor/store';
-import type { Field } from '@editor/store/slices/layout/fields';
-import { fieldActions } from '@editor/store/slices/layout/fields';
+import type { AppThunk } from "@editor/store";
+import type { Field } from "@editor/store/slices/layout/fields";
+import { fieldActions } from "@editor/store/slices/layout/fields";
 import type {
   FieldType,
   PropertyValueCollection,
-} from '@ff-client/types/fields';
+} from "@ff-client/types/fields";
 
 const changeFieldType =
   (field: Field, type: FieldType): AppThunk =>
@@ -28,7 +28,7 @@ const changeFieldType =
         uid,
         typeClass: type.typeClass,
         properties,
-      })
+      }),
     );
   };
 

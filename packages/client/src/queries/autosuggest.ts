@@ -1,6 +1,6 @@
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type EnvOption = {
   name: string;
@@ -15,13 +15,13 @@ type Category = {
 export type EnvironmentSuggestionCategories = Category[];
 
 export const useAutosuggestEnvVariables = (
-  enabled: boolean = true
+  enabled: boolean = true,
 ): UseQueryResult<EnvironmentSuggestionCategories> => {
   return useQuery<EnvironmentSuggestionCategories>({
-    queryKey: ['autosuggest', 'env'],
+    queryKey: ["autosuggest", "env"],
     queryFn: () =>
       axios
-        .get<EnvironmentSuggestionCategories>('/api/autosuggest/env')
+        .get<EnvironmentSuggestionCategories>("/api/autosuggest/env")
         .then((res) => res.data),
     enabled,
     staleTime: Infinity,

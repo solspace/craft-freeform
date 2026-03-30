@@ -12,9 +12,9 @@
  */
 
 return [
-    'demo/templates/<*:[^\/]+>' => ['template' => 'demo/templates'],
-    'demo/templates/<*:[^\/]+>/<*:[^\/]+>' => ['template' => 'demo/templates/form'],
-    'demo/templates/<*:[^\/]+>/<*:[^\/]+>/edit/<*:[^\/]+>' => ['template' => 'demo/templates/form'],
+    'demo/forms/<*:[^\/]+>' => ['template' => 'demo/forms'],
+    'demo/forms/<*:[^\/]+>/<*:[^\/]+>' => ['template' => 'demo/forms/form'],
+    'demo/forms/<*:[^\/]+>/<*:[^\/]+>/edit/<*:[^\/]+>' => ['template' => 'demo/forms/form'],
     'demo/submissions/<*:[^\/]+>' => ['template' => 'demo/submissions'],
     'demo/submissions/<*:[^\/]+>/spam' => ['template' => 'demo/submissions'],
     'demo/submissions/<*:[^\/]+>/<*:[^\/]+>' => ['template' => 'demo/submissions/view'],

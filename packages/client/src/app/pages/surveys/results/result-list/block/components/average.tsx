@@ -1,7 +1,7 @@
-import React from 'react';
-import translate from '@ff-client/utils/translations';
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { Avg, Max, Wrapper } from './average.styles';
+import { Avg, Max, Wrapper } from "./average.styles";
 
 type Props = {
   average?: number;
@@ -15,7 +15,7 @@ export const Average: React.FC<Props> = ({ average, max }) => {
 
   return (
     <Wrapper>
-      {translate('Average')}: <Avg>{average}</Avg> <Max>/ {max}</Max>
+      {translate("Average")}: <Avg>{average}</Avg> <Max>/ {max}</Max>
     </Wrapper>
   );
 };

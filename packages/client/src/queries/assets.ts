@@ -1,6 +1,6 @@
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export type AssetUrl = {
   title: string;
@@ -12,14 +12,14 @@ export type AssetUrlRecords = Record<number, AssetUrl>;
 
 export const useAssetQuery = (
   assetIds: number[] = [],
-  transform?: string
+  transform?: string,
 ): UseQueryResult<AssetUrlRecords> => {
   return useQuery({
-    queryKey: ['assets', 'urls', assetIds?.sort(), transform],
+    queryKey: ["assets", "urls", assetIds?.sort(), transform],
     queryFn: () =>
       axios
         .get<AssetUrlRecords>(
-          `/api/assets/urls?ids=${assetIds.join(',')}&transform=${transform || ''}`
+          `/api/assets/urls?ids=${assetIds.join(",")}&transform=${transform || ""}`,
         )
         .then((res) => res.data),
     staleTime: Infinity,

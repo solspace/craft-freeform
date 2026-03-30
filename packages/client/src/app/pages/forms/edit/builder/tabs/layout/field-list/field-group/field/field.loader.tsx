@@ -1,7 +1,7 @@
-import React from 'react';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import type React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { Wrapper } from './field.styles';
+import { Wrapper } from "./field.styles";
 
 export const LoaderFieldItem: React.FC = () => {
   return (
@@ -11,9 +11,9 @@ export const LoaderFieldItem: React.FC = () => {
           width={18}
           height={18}
           borderRadius="50%"
-          style={{ position: 'relative', top: -2 }}
+          style={{ position: "relative", top: -2 }}
         />
-        <Skeleton width={50} style={{ position: 'relative', top: -1 }} />
+        <Skeleton width={50} style={{ position: "relative", top: -1 }} />
       </SkeletonTheme>
     </Wrapper>
   );

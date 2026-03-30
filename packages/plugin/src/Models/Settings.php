@@ -191,6 +191,7 @@ class Settings extends Model
     public array $surveys = [];
     public string $allowDashesInFieldHandles = 'false';
     public string $sitesEnabled = 'false';
+    public string $abTests = 'true';
     public string $defaultFromEmail = '{{ general.systemEmail }}';
     public string $defaultFromName = '{{ general.systemName }}';
     public Defaults $defaults;

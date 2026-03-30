@@ -1,6 +1,6 @@
-import type { HTMLAttributes, PropsWithChildren } from 'react';
-import React from 'react';
-import classes from '@ff-client/utils/classes';
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import type { HTMLAttributes, PropsWithChildren } from "react";
 
 type Props = {
   label?: string;
@@ -14,7 +14,7 @@ export const Field: React.FC<PropsWithChildren<Props>> = ({
   ...props
 }) => {
   return (
-    <div {...props} className={classes('field', props.className)}>
+    <div {...props} className={classes("field", props.className)}>
       {label && (
         <div className="heading">
           <label htmlFor="">{label}</label>

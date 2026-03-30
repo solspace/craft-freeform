@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const TriggerButton = styled.button`
   z-index: 3 !important;

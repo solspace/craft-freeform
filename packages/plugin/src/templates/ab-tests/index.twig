@@ -1,0 +1,29 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+] %}
+
+{% set selectedSubnavItem = "ab-test" %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-abManage") %}
+        <div class="buttons">
+            <a class="btn submit add icon" href="{{ url('freeform/ab-tests/new') }}">
+                {{ "New Test Group"|t('freeform') }}
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% set title = "A/B Tests"|t('freeform') %}
+
+{% block content %}
+
+    content
+
+{% endblock %}

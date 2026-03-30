@@ -1,16 +1,16 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { Tooltip } from 'react-tippy';
-import { CraftAssetPicker } from '@components/elements/craft-asset-picker/craft-asset-picker';
-import { RemoveButton } from '@components/elements/remove-button/remove';
-import { ControlBlock } from '@components/form-controls/control.block';
-import { useDebounce } from '@ff-client/hooks/use-debounce';
-import type { GenericValue } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
-import { Editor } from '@monaco-editor/react';
+import { CraftAssetPicker } from "@components/elements/craft-asset-picker/craft-asset-picker";
+import { RemoveButton } from "@components/elements/remove-button/remove";
+import { Tooltip } from "@components/elements/tooltip/tooltip";
+import { ControlBlock } from "@components/form-controls/control.block";
+import { useDebounce } from "@ff-client/hooks/use-debounce";
+import type { GenericValue } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import { Editor } from "@monaco-editor/react";
+import type { FC } from "react";
+import { useEffect, useState } from "react";
 
-import type { Card } from '../cards.types';
+import type { Card } from "../cards.types";
 
 import {
   ActionButton,
@@ -20,11 +20,11 @@ import {
   PillWrapper,
   StatusStrip,
   TextArea,
-} from './card.item.styles';
-import CodeIcon from './code.icon.svg';
-import CrossIcon from './cross.icon.svg';
-import GripIcon from './grip.icon.svg';
-import SuccessIcon from './success.icon.svg';
+} from "./card.item.styles";
+import CodeIcon from "./code.icon";
+import CrossIcon from "./cross.icon";
+import GripIcon from "./grip.icon";
+import SuccessIcon from "./success.icon";
 
 type Props = {
   card: Card;
@@ -43,14 +43,14 @@ export const CardItem: FC<Props> = (props) => {
       <Actions>
         <ActionButton
           onClick={() => setEditingMeta(!editingMeta)}
-          className={classes(editingMeta && 'active')}
+          className={classes(editingMeta && "active")}
         >
           <Tooltip
-            title={translate('Custom Metadata')}
+            title={translate("Custom Metadata")}
             delay={[500, 0] as unknown as number}
           >
             <PillWrapper>
-              <span className={classes(entries > 0 && 'filled')}>
+              <span className={classes(entries > 0 && "filled")}>
                 {entries}
               </span>
               <CodeIcon />
@@ -58,14 +58,14 @@ export const CardItem: FC<Props> = (props) => {
           </Tooltip>
         </ActionButton>
 
-        <ActionButton className="drag-handle" title={translate('Reorder Card')}>
+        <ActionButton className="drag-handle" title={translate("Reorder Card")}>
           <GripIcon />
         </ActionButton>
 
         <RemoveButton
           active
           onClick={removeCard}
-          title={translate('Remove Card')}
+          title={translate("Remove Card")}
         />
       </Actions>
 
@@ -82,7 +82,7 @@ const CommonEditor: FC<Props> = ({ card, updateCard }) => {
     <>
       <ControlBlock label="Image">
         <CraftAssetPicker
-          criteria={{ kind: ['image'] }}
+          criteria={{ kind: ["image"] }}
           value={assetId ? [assetId] : []}
           limit={1}
           onUpdate={(assetIds) =>
@@ -131,16 +131,23 @@ const CommonEditor: FC<Props> = ({ card, updateCard }) => {
 };
 
 enum Status {
-  pending = 'pending',
-  success = 'success',
-  error = 'error',
+  pending = "pending",
+  success = "success",
+  error = "error",
 }
 
 const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
+  const metadataJson = JSON.stringify(card.metadata, null, 2);
   const [status, setStatus] = useState<Status>(Status.pending);
   const [message, setMessage] = useState<string>();
-  const [json, setJson] = useState(JSON.stringify(card.metadata, null, 2));
+  const [json, setJson] = useState(metadataJson);
   const debouncedJson = useDebounce(json, 1000);
+
+  useEffect(() => {
+    setJson((currentJson) =>
+      currentJson === metadataJson ? currentJson : metadataJson,
+    );
+  }, [metadataJson]);
 
   useEffect(() => {
     if (debouncedJson) {
@@ -149,7 +156,12 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
 
       try {
         const parsedJson = JSON.parse(debouncedJson);
+        const parsedMetadataJson = JSON.stringify(parsedJson, null, 2);
         setStatus(Status.success);
+
+        if (parsedMetadataJson === metadataJson) {
+          return;
+        }
 
         updateCard({
           ...card,
@@ -157,10 +169,10 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
         });
       } catch (error) {
         setStatus(Status.error);
-        setMessage(error.message);
+        setMessage(error instanceof Error ? error.message : "Invalid JSON");
       }
     }
-  }, [debouncedJson]);
+  }, [debouncedJson, metadataJson, updateCard, card]);
 
   return (
     <>
@@ -172,17 +184,17 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
           <Editor
             height={200}
             value={json}
-            defaultLanguage={'json'}
+            defaultLanguage={"json"}
             onChange={(value) => setJson(value)}
             onMount={() => {
-              document.body.classList.remove('underline-links');
+              document.body.classList.remove("underline-links");
             }}
             options={{
               folding: false,
               glyphMargin: false,
-              renderLineHighlight: 'none',
+              renderLineHighlight: "none",
               minimap: { enabled: false },
-              lineNumbers: 'on',
+              lineNumbers: "on",
               lineNumbersMinChars: 1,
               scrollbar: {
                 verticalScrollbarSize: 5,
@@ -197,10 +209,10 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
         <StatusStrip className={status}>
           <span>
             {status === Status.error && <CrossIcon />}
-            {status === Status.error && 'Invalid JSON'}
+            {status === Status.error && "Invalid JSON"}
 
             {status === Status.success && <SuccessIcon />}
-            {status === Status.success && 'JSON Valid'}
+            {status === Status.success && "JSON Valid"}
           </span>
 
           {!!message && <div className="code">{message}</div>}
@@ -215,11 +227,11 @@ const countEntries = (meta: GenericValue): number => {
     return meta.length;
   }
 
-  if (meta && typeof meta === 'object') {
+  if (meta && typeof meta === "object") {
     return Object.keys(meta).length;
   }
 
-  if (typeof meta === 'boolean' || typeof meta === 'string') {
+  if (typeof meta === "boolean" || typeof meta === "string") {
     return 1;
   }
 

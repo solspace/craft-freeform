@@ -1,7 +1,6 @@
-import type { FC } from 'react';
-import React from 'react';
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import type { FC } from "react";
+import styled from "styled-components";
 
 export type Attachment = {
   filename: string;
@@ -42,35 +41,35 @@ const Size = styled.span`
 `;
 
 const getIconType = (filename: string): string => {
-  const extension = filename.split('.').pop()?.toLowerCase();
+  const extension = filename.split(".").pop()?.toLowerCase();
   let iconType: string;
   switch (extension) {
-    case 'pdf':
-      iconType = 'pdf';
+    case "pdf":
+      iconType = "pdf";
       break;
 
-    case 'jpg':
-    case 'jpeg':
-    case 'png':
-    case 'gif':
-    case 'webp':
-      iconType = 'image';
+    case "jpg":
+    case "jpeg":
+    case "png":
+    case "gif":
+    case "webp":
+      iconType = "image";
       break;
 
-    case 'xlsx':
-      iconType = 'spreadsheet';
+    case "xlsx":
+      iconType = "spreadsheet";
       break;
 
-    case 'doc':
-      iconType = 'doc';
+    case "doc":
+      iconType = "doc";
       break;
 
-    case 'ppt':
-      iconType = 'ppt';
+    case "ppt":
+      iconType = "ppt";
       break;
 
     default:
-      iconType = 'file';
+      iconType = "file";
       break;
   }
 

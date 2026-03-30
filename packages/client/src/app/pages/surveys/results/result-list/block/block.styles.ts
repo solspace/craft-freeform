@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import { SettingsButton } from './block.settings.styles';
+import { SettingsButton } from "./block.settings.styles";
 
 export enum Icon {
   CheckboxGroup,

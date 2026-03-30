@@ -1,10 +1,10 @@
-import { useModal } from '@components/modals/modal.context';
+import { useModal } from "@components/modals/modal.context";
 
-import { CreateFormModal } from '../modal.form.create';
+import { CreateFormModal } from "../modal.form.create";
 
-type CreateFormModal = () => () => void;
+type CreateFormModalType = () => () => void;
 
-export const useCreateFormModal: CreateFormModal = () => {
+export const useCreateFormModal: CreateFormModalType = () => {
   const { openModal } = useModal();
 
   return (): void => {

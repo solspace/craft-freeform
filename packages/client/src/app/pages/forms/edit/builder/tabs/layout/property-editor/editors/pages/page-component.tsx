@@ -1,11 +1,11 @@
-import React from 'react';
-import type * as ControlTypes from '@components/form-controls';
-import { FormComponent } from '@components/form-controls';
-import type { Page } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { pageActions } from '@editor/store/slices/layout/pages';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type * as ControlTypes from "@components/form-controls";
+import { FormComponent } from "@components/form-controls";
+import type { Page } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { pageActions } from "@editor/store/slices/layout/pages";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import type { GenericValue, Property } from "@ff-client/types/properties";
+import type React from "react";
 
 type Props = {
   property: Property;
@@ -26,7 +26,7 @@ export const PageComponent: React.FC<Props> = ({ property, page }) => {
 
   const value = page.buttons?.[handle as keyof typeof page.buttons];
   const translatedValue =
-    typeof value === 'string' ? getTranslation(handle, value) : value;
+    typeof value === "string" ? getTranslation(handle, value) : value;
 
   return (
     <FormComponent

@@ -15,6 +15,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Toolbar\ToolbarConfigu
 use Solspace\Freeform\Attributes\Property\Input\DatePicker;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
+use Solspace\Freeform\Attributes\Property\Input\Table;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -133,6 +134,7 @@ class PropertyProvider
 
             $this->processToolbarConfigurations($attribute);
             $this->processOptions($attribute);
+            $this->processTableOptions($attribute);
             $this->processTabularDataConfiguration($attribute);
             $this->processImplementations($attribute);
             $this->processTransformer($property, $attribute);
@@ -230,23 +232,39 @@ class PropertyProvider
             return;
         }
 
-        $collection = new OptionCollection();
-        $options = $attribute->options;
+        $attribute->options = $this->resolveOptions($attribute->options, $attribute);
+    }
 
-        if (null === $options) {
+    private function processTableOptions(Property $attribute): void
+    {
+        if (!$attribute instanceof Table) {
             return;
+        }
+
+        $attribute->assetSourceOptions = $this->resolveOptions($attribute->assetSourceOptions, $attribute);
+        $attribute->fileKindsOptions = $this->resolveOptions($attribute->fileKindsOptions, $attribute);
+    }
+
+    private function resolveOptions(array|OptionCollection|string|null $options, Property $attribute): ?OptionCollection
+    {
+        $collection = new OptionCollection();
+        if (null === $options) {
+            return null;
+        }
+
+        if ($options instanceof OptionCollection) {
+            return $options;
         }
 
         if (\is_string($options)) {
             /** @var OptionsGeneratorInterface $class */
             $class = $this->getContainer()->get($options);
+
             if ($class instanceof OptionsGeneratorInterface) {
-                $attribute->options = $class->fetchOptions($attribute);
-            } else {
-                $attribute->options = $collection;
+                return $class->fetchOptions($attribute);
             }
 
-            return;
+            return null;
         }
 
         foreach ($options as $key => $value) {
@@ -256,7 +274,7 @@ class PropertyProvider
             $collection->add($val, $label);
         }
 
-        $attribute->options = $collection;
+        return $collection;
     }
 
     private function processTabularDataConfiguration(Property $attribute): void

@@ -1,12 +1,13 @@
-import React, { useRef } from 'react';
-import { RemoveButton } from '@components/elements/remove-button/remove';
-import { useHover } from '@ff-client/hooks/use-hover';
-import { useFieldType } from '@ff-client/queries/field-types';
-import type { FieldFavorite } from '@ff-client/types/fields';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
+import { RemoveButton } from "@components/elements/remove-button/remove";
+import { useHover } from "@ff-client/hooks/use-hover";
+import { useFieldType } from "@ff-client/queries/field-types";
+import type { FieldFavorite } from "@ff-client/types/fields";
+import classes from "@ff-client/utils/classes";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useRef } from "react";
 
-import { FieldListItem, Icon } from './modal.styles';
+import { FieldListItem, Icon } from "./modal.styles";
 
 type Props = {
   favorite: FieldFavorite;
@@ -32,14 +33,14 @@ export const FavoriteListItem: React.FC<Props> = ({
     return null;
   }
 
-  const hasErrors = errors !== undefined && errors.length;
+  const hasErrors = errors?.length;
 
   return (
     <FieldListItem
       key={favorite.id}
       ref={ref}
       onClick={onClick}
-      className={classes(isActive && 'active', hasErrors && 'errors')}
+      className={classes(isActive && "active", hasErrors && "errors")}
     >
       <Icon
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(fieldType.icon) }}

@@ -1,22 +1,22 @@
-import { useParams } from 'react-router-dom';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 import type {
   SurveyChart,
   SurveyData,
   SurveyPreferences,
-} from './results.types';
+} from "./results.types";
 
 export const QKSurveyResults = {
-  all: ['surveys', 'results'] as const,
+  all: ["surveys", "results"] as const,
   single: (handle: string) => [...QKSurveyResults.all, handle] as const,
   preferences: (handle: string) =>
-    [...QKSurveyResults.single(handle), 'preferences'] as const,
+    [...QKSurveyResults.single(handle), "preferences"] as const,
   chart: (handle: string) =>
-    [...QKSurveyResults.single(handle), 'chart'] as const,
+    [...QKSurveyResults.single(handle), "chart"] as const,
 };
 
 type RouteParams = {

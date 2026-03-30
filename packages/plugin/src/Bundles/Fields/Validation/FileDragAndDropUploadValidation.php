@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Validation;
 
+use Solspace\Freeform\Bundles\Fields\Validation\Helpers\FileUploadValidationHelper;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
@@ -24,7 +25,8 @@ class FileDragAndDropUploadValidation extends FeatureBundle
     private static array $filesUploadedErrors = [];
 
     public function __construct(
-        private FilesService $filesService
+        private FilesService $filesService,
+        private FileUploadValidationHelper $validationHelper,
     ) {
         Event::on(
             FieldInterface::class,
@@ -55,54 +57,29 @@ class FileDragAndDropUploadValidation extends FeatureBundle
         $name = $file['name'];
         $tmpName = $file['tmp_name'];
         $size = $file['size'];
-        $errorCode = $file['error'];
 
         if (\is_array($name)) {
             $field->addError(Freeform::t('Multiple field uploads not supported'));
+
+            return;
         }
 
         if ($field->isRequired() && !$isUploaded) {
             $field->addError(Freeform::t('This field is required'));
         }
 
-        $extension = pathinfo($name, \PATHINFO_EXTENSION);
         $validExtensions = $this->filesService->getValidExtensions($field);
-
-        if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
-            return;
-        }
-
-        if (empty($tmpName)) {
-            switch ($errorCode) {
-                case \UPLOAD_ERR_INI_SIZE:
-                case \UPLOAD_ERR_FORM_SIZE:
-                    $field->addError(Freeform::t('File size too large'));
-
-                    break;
-
-                case \UPLOAD_ERR_PARTIAL:
-                    $field->addError(Freeform::t('The file was only partially uploaded'));
-
-                    break;
-            }
-
-            $field->addError(Freeform::t('Could not upload file'));
-        }
-
-        // Check for the correct file extension
-        if (!\in_array(strtolower($extension), $validExtensions, true)) {
-            $field->addError(Freeform::t(
-                "'{extension}' is not an allowed file extension",
-                ['extension' => $extension]
-            ));
-        }
-
-        $fileSizeKB = ceil($size / 1024);
-        if ($fileSizeKB > $field->getMaxFileSizeKB()) {
-            $field->addError(Freeform::t(
-                'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
-                ['fileSize' => $fileSizeKB, 'maxFileSize' => $field->getMaxFileSizeKB()]
-            ));
-        }
+        $this->validationHelper->validateFileEntry(
+            [
+                'name' => $name,
+                'tmp_name' => $tmpName,
+                'size' => $size,
+                'error' => $file['error'] ?? \UPLOAD_ERR_NO_FILE,
+                'type' => $file['type'] ?? '',
+            ],
+            $validExtensions,
+            $field->getMaxFileSizeKB(),
+            static fn (string $message) => $field->addError($message),
+        );
     }
 }

@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
-import { useHover } from '@ff-client/hooks/use-hover';
-import { useFieldType } from '@ff-client/queries/field-types';
-import CrossIcon from '@ff-icons/actions/delete.svg';
-import DOMPurify from 'dompurify';
+import { useHover } from "@ff-client/hooks/use-hover";
+import { useFieldType } from "@ff-client/queries/field-types";
+import CrossIcon from "@ff-icons/actions/delete";
+import DOMPurify from "dompurify";
+import type React from "react";
+import { useRef } from "react";
 
-import { Icon, Name, Remove, Wrapper } from './modal.list-item.styles';
+import { Icon, Name, Remove, Wrapper } from "./modal.list-item.styles";
 
 type Props = {
   typeClass: string;

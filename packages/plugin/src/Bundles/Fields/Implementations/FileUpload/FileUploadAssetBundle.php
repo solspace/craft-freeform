@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields\Implementations\FileUpload;
 
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
@@ -44,13 +45,21 @@ class FileUploadAssetBundle extends FeatureBundle
             return;
         }
 
+        $bag = $form->getProperties();
+        $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
+
+        $this->uploadStandaloneFileFields($form, $storedValues);
+        $this->uploadTableFileColumns($form, $storedValues);
+
+        $bag->set(Form::PROPERTY_STORED_VALUES, $storedValues);
+    }
+
+    private function uploadStandaloneFileFields(Form $form, array &$storedValues): void
+    {
         $uploadFields = $form->getLayout()->getFields(FileUploadField::class);
         if (!$uploadFields->count()) {
             return;
         }
-
-        $bag = $form->getProperties();
-        $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
 
         foreach ($uploadFields as $field) {
             $handle = $field->getHandle();
@@ -82,7 +91,103 @@ class FileUploadAssetBundle extends FeatureBundle
                 $field->addErrors(self::$filesUploadedErrors[$handle]);
             }
         }
+    }
 
-        $bag->set(Form::PROPERTY_STORED_VALUES, $storedValues);
+    private function uploadTableFileColumns(Form $form, array &$storedValues): void
+    {
+        $tableFields = $form->getLayout()->getFields(TableField::class);
+        if (!$tableFields->count()) {
+            return;
+        }
+
+        foreach ($tableFields as $tableField) {
+            if (!$tableField->hasFileUploadColumns()) {
+                continue;
+            }
+
+            $handle = $tableField->getHandle();
+            if (!isset($_FILES[$handle])) {
+                continue;
+            }
+
+            $tableValue = $tableField->getValue();
+            if (!\is_array($tableValue)) {
+                $tableValue = [];
+            }
+
+            $columnFolders = [];
+            foreach ($tableField->getTableLayout() as $columnIndex => $column) {
+                if (TableField::COLUMN_TYPE_FILE !== ($column->type ?? null)) {
+                    continue;
+                }
+
+                $metadata = \is_array($column->metadata ?? null) ? $column->metadata : [];
+                $assetSourceId = (int) ($metadata['assetSourceId'] ?? 0);
+                if ($assetSourceId < 1) {
+                    continue;
+                }
+
+                $columnFolders[$columnIndex] = [
+                    'sourceId' => $assetSourceId,
+                    'uploadLocation' => $metadata['uploadLocation'] ?? null,
+                ];
+            }
+
+            if (empty($columnFolders)) {
+                continue;
+            }
+
+            $rows = $_FILES[$handle]['name'] ?? [];
+            if (!\is_array($rows)) {
+                continue;
+            }
+
+            $hasUploadedAssets = false;
+            foreach ($rows as $rowIndex => $rowData) {
+                if (!\is_array($rowData)) {
+                    continue;
+                }
+
+                foreach ($columnFolders as $columnIndex => $folderConfig) {
+                    $uploadedFiles = $this->filesService->getTableCellUploadedFiles($handle, (int) $rowIndex, (int) $columnIndex);
+                    if (empty($uploadedFiles)) {
+                        continue;
+                    }
+
+                    $cellAssetIds = [];
+                    $cellErrors = [];
+                    foreach ($uploadedFiles as $uploadedFile) {
+                        $response = $this->filesService->uploadTableCellFile(
+                            $uploadedFile,
+                            $form,
+                            $folderConfig['sourceId'],
+                            $folderConfig['uploadLocation'],
+                        );
+
+                        if ($response->getAssetIds()) {
+                            $cellAssetIds = array_merge($cellAssetIds, $response->getAssetIds());
+                        }
+
+                        if ($response->getErrors()) {
+                            $cellErrors = array_merge($cellErrors, $response->getErrors());
+                        }
+                    }
+
+                    if (!empty($cellAssetIds)) {
+                        $tableValue[$rowIndex][$columnIndex] = $cellAssetIds;
+                        $hasUploadedAssets = true;
+                    } elseif (!empty($cellErrors)) {
+                        $tableField->addErrors($cellErrors);
+
+                        throw new FileUploadException(implode('. ', $cellErrors));
+                    }
+                }
+            }
+
+            if ($hasUploadedAssets) {
+                $tableField->setValue($tableValue);
+                $storedValues[$handle] = $tableField->getValue();
+            }
+        }
     }
 }

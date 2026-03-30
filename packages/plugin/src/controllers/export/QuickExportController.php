@@ -105,6 +105,10 @@ class QuickExportController extends BaseController
                     'label' => \Craft::t('app', 'Date Created'),
                     'checked' => true,
                 ];
+                $fieldSetting['sourceUrl'] = [
+                    'label' => Freeform::t('Source URL'),
+                    'checked' => true,
+                ];
             }
 
             if (!isset($fieldSetting['userId'])) {

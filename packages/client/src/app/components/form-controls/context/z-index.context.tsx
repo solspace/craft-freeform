@@ -1,6 +1,6 @@
-import type { PropsWithChildren } from 'react';
-import { useContext, useEffect, useRef, useState } from 'react';
-import React, { createContext } from 'react';
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
 type ZIndexContext = {
   register: () => number;

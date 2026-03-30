@@ -1,13 +1,13 @@
-import type { FieldType } from '@ff-client/types/fields';
-import type { Section } from '@ff-client/types/properties';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+import type { FieldType } from "@ff-client/types/fields";
+import type { Section } from "@ff-client/types/properties";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
 
 export const QKFieldTypes = {
-  all: ['field-types'] as const,
-  propertySections: () => [...QKFieldTypes.all, 'property-sections'] as const,
+  all: ["field-types"] as const,
+  propertySections: () => [...QKFieldTypes.all, "property-sections"] as const,
 };
 
 type FetchFieldTypesQuery = (options?: {

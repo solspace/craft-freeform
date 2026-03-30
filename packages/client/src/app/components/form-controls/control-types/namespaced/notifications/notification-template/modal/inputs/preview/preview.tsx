@@ -1,18 +1,18 @@
-import type { FC } from 'react';
-import React, { useEffect, useState } from 'react';
-import { ControlBlock } from '@components/form-controls/control.block';
-import { spacings } from '@ff-client/styles/variables';
-import type { APIError } from '@ff-client/types/api';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { ControlBlock } from "@components/form-controls/control.block";
+import { spacings } from "@ff-client/styles/variables";
+import type { APIError } from "@ff-client/types/api";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import { useEffect, useState } from "react";
 
-import type { InputControl } from '../../template.modal.types';
+import type { InputControl } from "../../template.modal.types";
 
-import { Address } from './components/address';
-import { Attachments } from './components/attachments';
-import { IframeBlock } from './components/iframe';
-import { TemplatePreviewLoader } from './preview.loading';
-import { usePreviewQuery, useSendTestEmailMutation } from './preview.queries';
+import { Address } from "./components/address";
+import { Attachments } from "./components/attachments";
+import { IframeBlock } from "./components/iframe";
+import { TemplatePreviewLoader } from "./preview.loading";
+import { usePreviewQuery, useSendTestEmailMutation } from "./preview.queries";
 import {
   Body,
   HeaderRow,
@@ -21,7 +21,7 @@ import {
   PreviewContainer,
   Row,
   Value,
-} from './preview.styles';
+} from "./preview.styles";
 
 export const TemplatePreview: FC<InputControl> = (props) => {
   const { inView } = props;
@@ -34,39 +34,39 @@ export const TemplatePreview: FC<InputControl> = (props) => {
     if (inView) {
       refetch();
     }
-  }, [inView]);
+  }, [inView, refetch]);
 
   useEffect(() => {
     if (email === undefined && data?.from) {
       const from = Array.isArray(data.from) ? data.from[0] : data.from;
       setEmail(from.address);
     }
-  }, [data]);
+  }, [data, email]);
 
   return (
     <ControlBlock
       {...props}
       extraContent={
-        <div style={{ display: 'flex', gap: spacings.sm }}>
+        <div style={{ display: "flex", gap: spacings.sm }}>
           <button
             className={classes(
-              'btn',
-              'small',
-              'submit',
-              isFetching && 'disabled'
+              "btn",
+              "small",
+              "submit",
+              isFetching && "disabled",
             )}
             disabled={isFetching}
             type="button"
             onClick={() => refetch()}
           >
-            {translate('Refresh')}
+            {translate("Refresh")}
           </button>
 
           <Input
             className="small"
             type="text"
-            placeholder={translate('john@doe.com')}
-            value={email || ''}
+            placeholder={translate("john@doe.com")}
+            value={email || ""}
             onChange={(event) => setEmail(event.target.value)}
             autoComplete="off"
             autoCorrect="off"
@@ -78,21 +78,21 @@ export const TemplatePreview: FC<InputControl> = (props) => {
 
           <button
             className={classes(
-              'btn',
-              'small',
-              sendTest.isPending && 'disabled',
-              !email && 'disabled'
+              "btn",
+              "small",
+              sendTest.isPending && "disabled",
+              !email && "disabled",
             )}
             disabled={sendTest.isPending || !email}
             type="button"
             onClick={() =>
               sendTest.mutate({
                 ...props.context,
-                targetEmail: email || '',
+                targetEmail: email || "",
               })
             }
           >
-            {translate('Send Test Email')}
+            {translate("Send Test Email")}
           </button>
         </div>
       }
@@ -103,7 +103,7 @@ export const TemplatePreview: FC<InputControl> = (props) => {
         <PreviewContainer>
           <HeaderRow />
           <Row>
-            <Label>{translate('Error')}:</Label>
+            <Label>{translate("Error")}:</Label>
             <Value>
               <b>{error.message}</b>
             </Value>
@@ -118,22 +118,22 @@ export const TemplatePreview: FC<InputControl> = (props) => {
         <PreviewContainer>
           <HeaderRow />
           <Row>
-            <Label>{translate('From')}:</Label>
+            <Label>{translate("From")}:</Label>
             <Value>
               <Address address={data.from} />
             </Value>
           </Row>
           <Row>
-            <Label>{translate('Subject')}:</Label>
+            <Label>{translate("Subject")}:</Label>
             <Value>{data.subject}</Value>
           </Row>
           <Row>
-            <Label>{translate('To')}:</Label>
+            <Label>{translate("To")}:</Label>
             <Value>{data.to}</Value>
           </Row>
           {!!data.cc.length && (
             <Row>
-              <Label>{translate('CC')}:</Label>
+              <Label>{translate("CC")}:</Label>
               <Value>
                 <Address address={data.cc} />
               </Value>
@@ -141,7 +141,7 @@ export const TemplatePreview: FC<InputControl> = (props) => {
           )}
           {!!data.bcc.length && (
             <Row>
-              <Label>{translate('BCC')}:</Label>
+              <Label>{translate("BCC")}:</Label>
               <Value>
                 <Address address={data.bcc} />
               </Value>
@@ -149,7 +149,7 @@ export const TemplatePreview: FC<InputControl> = (props) => {
           )}
           {!!data.attachments.length && (
             <Row>
-              <Label>{translate('Attachments')}:</Label>
+              <Label>{translate("Attachments")}:</Label>
               <Value>
                 <Attachments attachments={data.attachments} />
               </Value>

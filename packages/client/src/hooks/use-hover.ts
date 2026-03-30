@@ -1,14 +1,15 @@
-import type { RefObject } from 'react';
-import { useEffect, useState } from 'react';
+import type { RefObject } from "react";
+import { useEffect, useState } from "react";
 
 export function useHover<T extends HTMLElement = HTMLElement>(
-  elementRef: RefObject<T>
+  elementRef: RefObject<T>,
 ): boolean {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const handleMouseEnter = (): void => setIsHovered(true);
   const handleMouseLeave = (): void => setIsHovered(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Works as expected
   useEffect(() => {
     const element = elementRef.current;
 
@@ -16,12 +17,12 @@ export function useHover<T extends HTMLElement = HTMLElement>(
       return;
     }
 
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
+    element.addEventListener("mouseenter", handleMouseEnter);
+    element.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
+      element.removeEventListener("mouseenter", handleMouseEnter);
+      element.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [elementRef]);
 

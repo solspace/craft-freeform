@@ -55,7 +55,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     #[Limitation('props.file', 'placeholder')]
     #[DefaultValue('props.file.placeholder')]
     #[Input\Text(
-        instructions: 'Field placeholder.',
+        instructions: 'The placeholder text with instructions for this field.',
         order: 8,
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;

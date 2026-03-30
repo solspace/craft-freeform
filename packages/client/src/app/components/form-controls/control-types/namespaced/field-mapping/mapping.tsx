@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useParams } from 'react-router-dom';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { FieldMappingProperty } from '@ff-client/types/properties';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
-import cloneDeep from 'lodash/cloneDeep';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { FieldMappingProperty } from "@ff-client/types/properties";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import cloneDeep from "lodash/cloneDeep";
+import type React from "react";
+import { useEffect } from "react";
+import Skeleton from "react-loading-skeleton";
+import { useParams } from "react-router-dom";
 
-import RefreshIcon from './icons/refresh.svg';
-import { FieldMappingController } from './mapping.controller';
-import { RefreshButton } from './mapping.styles';
-import type { SourceField } from './mapping.types';
-import { extractParameter } from './mapping.utilities';
+import RefreshIcon from "./icons/refresh";
+import { FieldMappingController } from "./mapping.controller";
+import { RefreshButton } from "./mapping.styles";
+import type { SourceField } from "./mapping.types";
+import { extractParameter } from "./mapping.utilities";
 
 const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
   value = {},
@@ -31,7 +32,7 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
   }
 
   const { data, isFetching, refetch } = useQuery<SourceField[]>({
-    queryKey: ['field-mapping', property.source, params],
+    queryKey: ["field-mapping", property.source, params],
     queryFn: async () => {
       const response = await axios
         .get<SourceField[]>(property.source, { params })
@@ -62,7 +63,7 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
     if (modified) {
       updateValue(valueClone);
     }
-  }, [isFetching, data, value]);
+  }, [isFetching, data, value, updateValue]);
 
   return (
     <Control property={property} errors={errors}>
@@ -70,9 +71,9 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
         className="btn"
         disabled={isFetching}
         onClick={() => {
-          params['refresh'] = 'true';
+          params.refresh = "true";
           refetch();
-          delete params['refresh'];
+          delete params.refresh;
         }}
       >
         <RefreshIcon />

@@ -1,21 +1,22 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import { CombinatorSelect } from '@editor/builder/tabs/rules/conditions/combinator/combinator';
-import { ConditionTable } from '@editor/builder/tabs/rules/conditions/table/condition-table';
-import { DisplayTriggerDropdown } from '@editor/builder/tabs/rules/conditions/trigger-dropdown/trigger-dropdown';
-import { ConfigurationDescription } from '@editor/builder/tabs/rules/editor/editor.styles';
-import { useAppDispatch } from '@editor/store';
-import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { integrationRuleActions } from '@editor/store/slices/rules/integrations';
-import { integrationRuleSelectors } from '@editor/store/slices/rules/integrations/integration-rules.selectors';
-import { useQueryIntegrationRules } from '@ff-client/queries/rules';
-import type { Integration } from '@ff-client/types/integrations';
-import type { ConditionalRulesProperty } from '@ff-client/types/properties';
-import { Combinator } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
-import { v4 } from 'uuid';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import { CombinatorSelect } from "@editor/builder/tabs/rules/conditions/combinator/combinator";
+import { ConditionTable } from "@editor/builder/tabs/rules/conditions/table/condition-table";
+import { DisplayTriggerDropdown } from "@editor/builder/tabs/rules/conditions/trigger-dropdown/trigger-dropdown";
+import { ConfigurationDescription } from "@editor/builder/tabs/rules/editor/editor.styles";
+import { useAppDispatch } from "@editor/store";
+import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import { integrationRuleActions } from "@editor/store/slices/rules/integrations";
+import { integrationRuleSelectors } from "@editor/store/slices/rules/integrations/integration-rules.selectors";
+import { useQueryIntegrationRules } from "@ff-client/queries/rules";
+import type { Integration } from "@ff-client/types/integrations";
+import type { ConditionalRulesProperty } from "@ff-client/types/properties";
+import { Combinator } from "@ff-client/types/rules";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
+import { v4 } from "uuid";
 
 const ConditionalIntegrationRules: React.FC<
   ControlType<ConditionalRulesProperty, Integration>
@@ -48,11 +49,19 @@ const ConditionalIntegrationRules: React.FC<
         integrationRuleActions.add({
           ruleUid,
           integrationUid: instanceUid,
-        })
+        }),
       );
       updateValue(ruleUid);
     }
-  }, [isInitialized, rule, data, isFetched, value, generatedValues.current]);
+  }, [
+    isInitialized,
+    data,
+    isFetched,
+    value,
+    dispatch,
+    instanceUid,
+    updateValue,
+  ]);
 
   return (
     <Control property={property}>
@@ -60,7 +69,7 @@ const ConditionalIntegrationRules: React.FC<
         <DisplayTriggerDropdown
           value={rule?.push ?? true}
           options={{
-            on: 'Push',
+            on: "Push",
             off: `Don't push`,
           }}
           onChange={(value) =>
@@ -68,12 +77,12 @@ const ConditionalIntegrationRules: React.FC<
               integrationRuleActions.modifyPush({
                 ruleUid: rule.uid,
                 push: value,
-              })
+              }),
             )
           }
         />
 
-        {translate('data to integration when')}
+        {translate("data to integration when")}
 
         <CombinatorSelect
           value={rule?.combinator ?? Combinator.Or}
@@ -82,12 +91,12 @@ const ConditionalIntegrationRules: React.FC<
               integrationRuleActions.modifyCombinator({
                 ruleUid: rule.uid,
                 combinator: value,
-              })
+              }),
             )
           }
         />
 
-        {translate('of the following rules match:')}
+        {translate("of the following rules match:")}
       </ConfigurationDescription>
 
       <ConditionTable
@@ -98,7 +107,7 @@ const ConditionalIntegrationRules: React.FC<
             integrationRuleActions.modifyConditions({
               ruleUid: rule.uid,
               conditions,
-            })
+            }),
           );
         }}
       />

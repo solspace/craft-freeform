@@ -1,11 +1,11 @@
-import type { FieldFavorite } from '@ff-client/types/fields';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+import type { FieldFavorite } from "@ff-client/types/fields";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
 
 export const QKFavorites = {
-  all: ['field-favorites'] as const,
+  all: ["field-favorites"] as const,
 };
 
 type FetchFavoritesQuery = (options?: {

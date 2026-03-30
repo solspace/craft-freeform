@@ -1,8 +1,8 @@
-import events from '@lib/plugin/constants/event-types';
-import { addListeners } from '@lib/plugin/helpers/event-handling';
-import type { FreeformEvent } from 'types/events';
+import events from "@lib/plugin/constants/event-types";
+import { addListeners } from "@lib/plugin/helpers/event-handling";
+import type { FreeformEvent } from "types/events";
 
-import { getContainer, loadCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadCaptcha, readConfig } from "./utils/script-loader";
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const container = getContainer(event.form);
@@ -10,18 +10,18 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
     return null;
   }
 
-  let element = event.form.querySelector<HTMLDivElement>('.cl-turnstile');
+  let element = event.form.querySelector<HTMLDivElement>(".cl-turnstile");
   if (element) {
     return element;
   }
 
-  element = document.createElement('div');
-  element.classList.add('cl-turnstile');
+  element = document.createElement("div");
+  element.classList.add("cl-turnstile");
 
   container.appendChild(element);
 
   const { sitekey, theme, size, action } = readConfig(container);
-  // @ts-ignore
+  // @ts-expect-error
   const captchaId = turnstile.render(element, {
     sitekey,
     theme,
@@ -40,15 +40,19 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
   });
 });
 
-addListeners(document, [events.form.ajaxAfterSubmit], async (event: FreeformEvent) => {
-  loadCaptcha(event.form, true).then(() => {
-    const element = createCaptcha(event);
-    if (element) {
-      const id = element.dataset.captchaId;
-      if (id) {
-        // @ts-ignore
-        turnstile.reset(id);
+addListeners(
+  document,
+  [events.form.ajaxAfterSubmit],
+  async (event: FreeformEvent) => {
+    loadCaptcha(event.form, true).then(() => {
+      const element = createCaptcha(event);
+      if (element) {
+        const id = element.dataset.captchaId;
+        if (id) {
+          // @ts-expect-error
+          turnstile.reset(id);
+        }
       }
-    }
-  });
-});
+    });
+  },
+);

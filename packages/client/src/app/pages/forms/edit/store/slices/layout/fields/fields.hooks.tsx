@@ -1,18 +1,17 @@
-import React from 'react';
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { useAppStore } from '@editor/store';
-import GroupIcon from '@ff-client/assets/icons/fields/group.svg';
-import PageIcon from '@ff-client/assets/icons/fields/page.svg';
-import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import type { OptionCollection } from '@ff-client/types/properties';
+import { useAppStore } from "@editor/store";
+import GroupIcon from "@ff-client/assets/icons/fields/group";
+import PageIcon from "@ff-client/assets/icons/fields/page";
+import { useFieldTypeSearch } from "@ff-client/queries/field-types";
+import type { OptionCollection } from "@ff-client/types/properties";
+import { useMemo } from "react";
+import { useSelector } from "react-redux";
 
-import { layoutSelectors } from '../layouts/layouts.selectors';
-import { pageSelecors } from '../pages/pages.selectors';
+import { layoutSelectors } from "../layouts/layouts.selectors";
+import { pageSelecors } from "../pages/pages.selectors";
 
 export const useFieldOptionCollection = (
   excludedUids?: string[],
-  excludedTypes?: string[]
+  excludedTypes?: string[],
 ): OptionCollection => {
   const { getState } = useAppStore();
   const findType = useFieldTypeSearch();
@@ -37,10 +36,10 @@ export const useFieldOptionCollection = (
               return null;
             }
 
-            if (type?.type === 'group') {
+            if (type?.type === "group") {
               const fields = layoutSelectors.cartographed.layoutFieldList(
                 getState(),
-                field.properties.layout
+                field.properties.layout,
               );
 
               return {
@@ -60,6 +59,6 @@ export const useFieldOptionCollection = (
           })
           .filter(Boolean),
       })),
-    [cartographed, pages, excludedUids]
+    [cartographed, pages, excludedUids, excludedTypes, findType, getState],
   );
 };

@@ -1,21 +1,19 @@
-import type { ReactElement } from 'react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
-import { useState } from 'react';
-import React from 'react';
-import { PopUpPortal } from '@components/elements/pop-up-portal';
-import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import classes from '@ff-client/utils/classes';
+import { PopUpPortal } from "@components/elements/pop-up-portal";
+import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import type { ReactElement } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useZIndex } from '../context/z-index.context';
+import { useZIndex } from "../context/z-index.context";
 
-import { useEditorAnimations } from './previewable-component.animations';
+import { useEditorAnimations } from "./previewable-component.animations";
 import {
   EditableContentWrapper,
   PreviewContainer,
   PreviewWrapper,
-} from './previewable-component.styles';
+} from "./previewable-component.styles";
 
 type Props = {
   preview: ReactElement;
@@ -38,6 +36,7 @@ export const PreviewableComponent: React.FC<Props> = ({
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
+  const previousEditingRef = useRef(isEditing);
 
   const { editorAnimation } = useEditorAnimations({
     wrapper: wrapperRef.current,
@@ -52,9 +51,9 @@ export const PreviewableComponent: React.FC<Props> = ({
     isEnabled: isEditing,
     refObject: editorRef,
     excludeClassNames: [
-      'tagify__dropdown',
-      'dropdown-rollout',
-      'elementselectormodal',
+      "tagify__dropdown",
+      "dropdown-rollout",
+      "elementselectormodal",
       ...excludeClassNames,
     ],
   });
@@ -68,10 +67,14 @@ export const PreviewableComponent: React.FC<Props> = ({
 
   // Call after-edit callbacks when the editor is being closed
   useEffect(() => {
-    if (isEditing === false) {
+    const wasEditing = previousEditingRef.current;
+
+    if (wasEditing && isEditing === false) {
       onAfterEdit?.();
     }
-  }, [isEditing]);
+
+    previousEditingRef.current = isEditing;
+  }, [isEditing, onAfterEdit]);
 
   return (
     <PreviewWrapper ref={wrapperRef}>
@@ -79,13 +82,13 @@ export const PreviewableComponent: React.FC<Props> = ({
         <EditableContentWrapper
           style={{
             zIndex,
-            pointerEvents: isEditing ? 'initial' : 'none',
+            pointerEvents: isEditing ? "initial" : "none",
             ...editorAnimation,
           }}
-          className={classes(isEditing && 'active', 'editable-content')}
+          className={classes(isEditing && "active", "editable-content")}
           ref={editorRef}
         >
-          {typeof children === 'function'
+          {typeof children === "function"
             ? children(isEditing, close)
             : children}
         </EditableContentWrapper>

@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import type { NotificationTemplateGroups } from '@ff-client/queries/notifications';
+import type { NotificationTemplateGroups } from "@ff-client/queries/notifications";
 import {
   useQueryFormNotificationTemplates,
   useQueryNotificationTemplates,
-} from '@ff-client/queries/notifications';
-import type { NotificationTemplate } from '@ff-client/types/notifications';
-import type { OptionCollection } from '@ff-client/types/properties';
+} from "@ff-client/queries/notifications";
+import type { NotificationTemplate } from "@ff-client/types/notifications";
+import type { OptionCollection } from "@ff-client/types/properties";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type UseNotificationTemplates = (selectedId: string | number) => {
   templates: NotificationTemplateGroups;
@@ -16,7 +16,7 @@ type UseNotificationTemplates = (selectedId: string | number) => {
 };
 
 export const useNotificationTemplates: UseNotificationTemplates = (
-  selectedId
+  selectedId,
 ) => {
   const { formId } = useParams();
 
@@ -63,7 +63,7 @@ export const useNotificationTemplates: UseNotificationTemplates = (
 
     if (templates.form) {
       collection.push({
-        label: 'Form',
+        label: "Form",
         icon: <i className="fa-solid fa-file" />,
         children: templates.form.map((template) => ({
           label: template.name,
@@ -74,7 +74,7 @@ export const useNotificationTemplates: UseNotificationTemplates = (
 
     if (templates.global) {
       collection.push({
-        label: 'Global',
+        label: "Global",
         icon: <i className="fa-solid fa-earth-americas" />,
         children: templates.global.map((template) => ({
           label: template.name,

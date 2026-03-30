@@ -1,5 +1,6 @@
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { spacings } from "@ff-client/styles/variables";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
 
 export const Header = styled.header`
   display: grid;
@@ -21,8 +22,45 @@ export const Title = styled.h1`
   line-height: 34px;
 `;
 
-export const Button = styled.button`
+export const ButtonGroup = styled.div`
   grid-area: button;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.sm};
+`;
+
+export const Button = styled.button`
+  flex-shrink: 0;
+`;
+
+export const AiButton = styled(Button)`
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  color: #fff;
+  border: none;
+
+  &:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    color: #fff;
+  }
+`;
+
+export const EnableAiLink = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+    color: #fff;
+  }
 `;
 
 export const ViewButtons = styled.section`

@@ -1,4 +1,4 @@
-import type { Stripe, StripeElements } from '@stripe/stripe-js';
+import type { Stripe, StripeElements } from "@stripe/stripe-js";
 
 export type Config = {
   apiKey: string;
@@ -28,8 +28,8 @@ export type StripeFunctionConstructorProps = {
   form: HTMLFormElement;
 };
 
-export type StripeTheme = 'stripe' | 'night' | 'flat';
-export type StripeLayout = 'tabs' | 'accordion' | 'accordion-radios';
+export type StripeTheme = "stripe" | "night" | "flat";
+export type StripeLayout = "tabs" | "accordion" | "accordion-radios";
 
 export type ElementConfig = {
   theme: StripeTheme;

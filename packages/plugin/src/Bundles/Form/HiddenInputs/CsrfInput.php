@@ -54,17 +54,17 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
+        $attributes = $event->getForm()->getAttributes();
+
         if (!$isAsyncEnabled) {
+            $attributes->set('data-csrf-name', \Craft::$app->getConfig()->getGeneral()->csrfTokenName);
+
             return;
         }
 
         $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
 
-        $event
-            ->getForm()
-            ->getAttributes()
-            ->set('data-csrf-refresh', $refresh)
-        ;
+        $attributes->set('data-csrf-refresh', $refresh);
     }
 
     public function attachToJson(OutputAsJsonEvent $event): void

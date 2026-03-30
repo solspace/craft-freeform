@@ -1,17 +1,17 @@
-import React from 'react';
-import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import {
   ControlWrapper,
   FormField,
-} from '@components/form-controls/control.styles';
-import { CheckboxWrapper } from '@components/form-controls/control-types/bool/bool.styles';
-import { Label } from '@components/form-controls/label.styles';
-import type { ControlType } from '@components/form-controls/types';
-import type { PageButtonProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+} from "@components/form-controls/control.styles";
+import { CheckboxWrapper } from "@components/form-controls/control-types/bool/bool.styles";
+import { Label } from "@components/form-controls/label.styles";
+import type { ControlType } from "@components/form-controls/types";
+import type { PageButtonProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
-import { PageButtonWrapper } from './page-button.styles';
+import { PageButtonWrapper } from "./page-button.styles";
 
 const PageButton: React.FC<ControlType<PageButtonProperty>> = ({
   value,
@@ -37,9 +37,9 @@ const PageButton: React.FC<ControlType<PageButtonProperty>> = ({
         <FormField>
           <input
             type="text"
-            className={classes('text', 'fullwidth')}
-            placeholder={translate('Label')}
-            value={value.label ?? ''}
+            className={classes("text", "fullwidth")}
+            placeholder={translate("Label")}
+            value={value.label ?? ""}
             onChange={(event) =>
               updateValue({ ...value, label: event.target.value })
             }

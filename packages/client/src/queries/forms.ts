@@ -1,24 +1,24 @@
-import { useParams } from 'react-router-dom';
-import { useAppDispatch } from '@editor/store';
-import { formActions } from '@editor/store/slices/form';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
+import { useAppDispatch } from "@editor/store";
+import { formActions } from "@editor/store/slices/form";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import type {
   ExtendedFormType,
   FormSettingNamespace,
   FormWithStats,
-} from '@ff-client/types/forms';
-import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
-import type { AxiosError } from 'axios';
-import axios from 'axios';
+} from "@ff-client/types/forms";
+import type { UseQueryResult } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
+import axios from "axios";
+import { useParams } from "react-router-dom";
 
 export const QKForms = {
-  base: ['forms'] as const,
+  base: ["forms"] as const,
   all: (site: string) => [...QKForms.base, site] as const,
   single: (id: number) => [...QKForms.base, id] as const,
-  settings: () => [...QKForms.base, 'settings'] as const,
+  settings: () => [...QKForms.base, "settings"] as const,
   usage: (id: number, siteId: number) =>
-    [...QKForms.base, id, 'usage', siteId] as const,
+    [...QKForms.base, id, "usage", siteId] as const,
 };
 
 export const useQueryFormsWithStats = (): UseQueryResult<
@@ -31,15 +31,17 @@ export const useQueryFormsWithStats = (): UseQueryResult<
     queryKey: QKForms.all(getCurrentHandleWithFallback()),
     queryFn: () =>
       axios
-        .get<FormWithStats[]>('/api/forms', {
+        .get<FormWithStats[]>("/api/forms", {
           params: { site: current?.handle },
         })
         .then((res) => res.data),
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 };
 
 export const useQuerySingleForm = (
-  id?: number
+  id?: number,
 ): UseQueryResult<ExtendedFormType, AxiosError> => {
   return useQuery<ExtendedFormType, AxiosError>({
     queryKey: QKForms.single(id),
@@ -92,4 +94,18 @@ export const useQueryFormUsage = (): UseQueryResult<FormUsage, AxiosError> => {
         .get(`/api/forms/${formId}/elements?site=${current.id}`)
         .then((res) => res.data),
   });
+};
+
+type FormColors = Record<number, string | null>;
+export const useQueryFormColors = (): FormColors => {
+  const { data: forms } = useQueryFormsWithStats();
+
+  const formColors =
+    forms?.reduce<FormColors>((carry, form) => {
+      carry[form.id] = form.settings?.general?.color || null;
+
+      return carry;
+    }, {}) || {};
+
+  return formColors;
 };

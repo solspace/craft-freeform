@@ -1,5 +1,5 @@
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const ContentContainer = styled.div`
   &.craft-4 {

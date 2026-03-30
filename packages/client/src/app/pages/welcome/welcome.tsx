@@ -1,12 +1,12 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import translate from "@ff-client/utils/translations";
+import { generateUrl } from "@ff-client/utils/urls";
+import type React from "react";
+import { NavLink } from "react-router-dom";
 
-import CheckIcon from './check.icon.svg';
-import { Logo } from './logo';
-import { useWelcomeAnimations } from './welcome.animations';
+import CheckIcon from "./check.icon";
+import { Logo } from "./logo";
+import { useWelcomeAnimations } from "./welcome.animations";
 import {
   Button,
   ButtonsWrapper,
@@ -16,7 +16,7 @@ import {
   InstallWrapper,
   LogoWrapper,
   WelcomeWrapper,
-} from './welcome.styles';
+} from "./welcome.styles";
 
 export const Welcome: React.FC = () => {
   const { installed, extra, buttons } = useWelcomeAnimations();
@@ -34,34 +34,34 @@ export const Welcome: React.FC = () => {
         </InstallIcon>
         <InstallText style={installed.text}>
           <span>
-            {translate('Awesome! Freeform is successfully installed!')}
+            {translate("Awesome! Freeform is successfully installed!")}
           </span>
         </InstallText>
       </InstallWrapper>
 
       <ExtraContentWrapper style={extra}>
         {translate(
-          "Thanks for choosing Freeform! Craft will automatically set you up with the free Express edition. If you're excited to explore even more features, consider switching to the Lite or Pro edition! We've included some helpful links below to get you started. Enjoy!"
+          "Thanks for choosing Freeform! Craft will automatically set you up with the free Express edition. If you're excited to explore even more features, consider switching to the Lite or Pro edition! We've included some helpful links below to get you started. Enjoy!",
         )}
       </ExtraContentWrapper>
 
       <ButtonsWrapper>
         <Button style={buttons[0]} className="btn">
-          <NavLink to="/forms">{translate('Create Forms')}</NavLink>
+          <NavLink to="/forms">{translate("Create Forms")}</NavLink>
         </Button>
         <Button style={buttons[2]} className="btn">
-          <a href={generateUrl('/settings/demo-templates')}>
-            {translate('Install Demo')}
+          <a href={generateUrl("/settings/demo-templates")}>
+            {translate("Install Demo")}
           </a>
         </Button>
         <Button style={buttons[1]} className="btn">
           <a href="https://docs.solspace.com/craft/freeform/v5/guides/getting-started/">
-            {translate('Getting Started')}
+            {translate("Getting Started")}
           </a>
         </Button>
         <Button style={buttons[1]} className="btn submit">
-          <a href={generateUrl('/settings')}>
-            {translate('Configure Freeform')}
+          <a href={generateUrl("/settings")}>
+            {translate("Configure Freeform")}
           </a>
         </Button>
       </ButtonsWrapper>

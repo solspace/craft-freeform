@@ -1,9 +1,7 @@
-import type { ComponentPropsWithRef } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
-import React from 'react';
+import type { ComponentPropsWithRef } from "react";
+import React, { useEffect, useState } from "react";
 
-import SpinnerIcon from '../spinner.svg';
+import SpinnerIcon from "../spinner";
 
 import {
   useDotAnimation,
@@ -11,7 +9,7 @@ import {
   useSpinnerAnimation,
   useTextAnimation,
   useTextContainerAnimation,
-} from './loading-text.animations';
+} from "./loading-text.animations";
 import {
   Dot,
   DotContainer,
@@ -20,9 +18,9 @@ import {
   OriginalTextContainer,
   SpinnerContainer,
   TextContainer,
-} from './loading-text.styles';
+} from "./loading-text.styles";
 
-type Props = ComponentPropsWithRef<'div'> & {
+type Props = ComponentPropsWithRef<"div"> & {
   loadingText?: string;
   loading?: boolean;
   spinner?: boolean;
@@ -62,6 +60,7 @@ export const LoadingText: React.FC<Props> = ({
     },
   });
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: We only want to run this when the refs are set, which happens after the first render. We don't want to re-run this when dimensions change, as that would cause an infinite loop.
   useEffect(() => {
     if (!textOriginalRef.current) return;
 
@@ -83,7 +82,7 @@ export const LoadingText: React.FC<Props> = ({
     loading,
     loadingText,
     dimensions,
-    instant
+    instant,
   );
 
   return (

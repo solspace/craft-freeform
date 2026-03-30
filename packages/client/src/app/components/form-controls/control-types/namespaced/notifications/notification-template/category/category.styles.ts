@@ -1,7 +1,7 @@
-import { breakpoints } from '@ff-client/styles/breakpoints';
-import { scrollBar } from '@ff-client/styles/mixins';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { breakpoints } from "@ff-client/styles/breakpoints";
+import { scrollBar } from "@ff-client/styles/mixins";
+import { colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const TemplateCategoryWrapper = styled.div``;
 

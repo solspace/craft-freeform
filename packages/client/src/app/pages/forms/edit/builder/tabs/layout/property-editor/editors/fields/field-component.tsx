@@ -1,13 +1,13 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { FormComponent } from '@components/form-controls';
-import { useAppDispatch } from '@editor/store';
-import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
-import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import { useFieldType } from '@ff-client/queries/field-types';
-import type { Property } from '@ff-client/types/properties';
+import { FormComponent } from "@components/form-controls";
+import { useAppDispatch } from "@editor/store";
+import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-generator";
+import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import { useFieldType } from "@ff-client/queries/field-types";
+import type { Property } from "@ff-client/types/properties";
+import type React from "react";
+import { useSelector } from "react-redux";
 
 type Props = {
   property: Property;
@@ -41,27 +41,23 @@ export const FieldComponent: React.FC<Props> = ({
             uid: field.uid,
             handle,
             value,
-          })
+          }),
         );
       }
-    }
+    },
   );
 
   const value = field.properties?.[property.handle];
   const translationEnabledValue = getTranslation(property.handle, value);
 
   return (
-    <>
-      <FormComponent
-        autoFocus={autoFocus}
-        value={
-          canUseTranslationValue(property) ? translationEnabledValue : value
-        }
-        property={property}
-        updateValue={generateUpdateHandler(property)}
-        errors={field.errors?.[property.handle]}
-        context={field}
-      />
-    </>
+    <FormComponent
+      autoFocus={autoFocus}
+      value={canUseTranslationValue(property) ? translationEnabledValue : value}
+      property={property}
+      updateValue={generateUpdateHandler(property)}
+      errors={field.errors?.[property.handle]}
+      context={field}
+    />
   );
 };

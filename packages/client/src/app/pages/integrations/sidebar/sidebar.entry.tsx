@@ -1,17 +1,18 @@
-import React, { type FC } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import config from '@config/freeform/freeform.config';
-import classes from '@ff-client/utils/classes';
-import DOMPurify from 'dompurify';
+import config from "@config/freeform/freeform.config";
+import classes from "@ff-client/utils/classes";
+import DOMPurify from "dompurify";
+import type React from "react";
+import type { FC } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 
-import type { Entry } from './sidebar.queries';
+import type { Entry } from "./sidebar.queries";
 import {
   Icon,
   Integration,
   IntegrationTitle,
   StatusIndicator,
   Version,
-} from './sidebar.styles';
+} from "./sidebar.styles";
 
 type Props = {
   entry: Entry;
@@ -29,7 +30,7 @@ export const EntryComponent: FC<Props> = ({ entry }): React.JSX.Element => {
     entry.type.editions.length > 0 && !entry.type.editions.includes(edition);
 
   const instances = entry.instances.length;
-  const indicatorText = instances > 1 ? instances : '';
+  const indicatorText = instances > 1 ? instances : "";
 
   let url = `${type.type}/${type.shortName}`;
   const isActive = currentUrl.includes(url);
@@ -42,14 +43,14 @@ export const EntryComponent: FC<Props> = ({ entry }): React.JSX.Element => {
       <NavLink
         to={url}
         className={classes(
-          isActive && 'active',
-          isUnsupportedEdition && 'unsupported'
+          isActive && "active",
+          isUnsupportedEdition && "unsupported",
         )}
       >
         <StatusIndicator
           className={classes(
-            isStatusActive && !isUnsupportedEdition && 'active',
-            isUnsupportedEdition && 'unsupported'
+            isStatusActive && !isUnsupportedEdition && "active",
+            isUnsupportedEdition && "unsupported",
           )}
         >
           {indicatorText}

@@ -17,6 +17,7 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\UrlParameterTrackingResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Freeform;
 
@@ -259,6 +260,16 @@ class FormInterface extends AbstractInterface
                 'description' => "The form's enctype",
                 'resolve' => static function ($source) {
                     $isMultipart = $source->getLayout()->hasFields(FileUploadInterface::class);
+                    if (!$isMultipart) {
+                        $tableFields = $source->getLayout()->getFields(TableField::class);
+                        foreach ($tableFields as $tableField) {
+                            if ($tableField->hasFileUploadColumns()) {
+                                $isMultipart = true;
+
+                                break;
+                            }
+                        }
+                    }
 
                     return $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
                 },

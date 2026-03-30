@@ -1,10 +1,10 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
-import { spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { ThemedSkeleton } from "@components/loaders/skeletons/themed-skeleton";
+import { spacings } from "@ff-client/styles/variables";
+import type React from "react";
+import Skeleton from "react-loading-skeleton";
+import styled from "styled-components";
 
-import { PropertyEditorWrapper } from './property-editor.styles';
+import { PropertyEditorWrapper } from "./property-editor.styles";
 
 export const Inline = styled.div`
   display: flex;

@@ -1,3 +1,3 @@
-import { createAction } from '@reduxjs/toolkit';
+import { createAction } from "@reduxjs/toolkit";
 
-export const save = createAction('form/save');
+export const save = createAction("form/save");

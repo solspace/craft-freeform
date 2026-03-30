@@ -1,12 +1,12 @@
-import type { RootState } from '@editor/store';
+import type { RootState } from "@editor/store";
 import type {
   Form,
   SettingCollection,
   SettingsNamespace,
-} from '@ff-client/types/forms';
-import type { GenericValue } from '@ff-client/types/properties';
+} from "@ff-client/types/forms";
+import type { GenericValue } from "@ff-client/types/properties";
 
-import type { FormErrors } from './form.types';
+import type { FormErrors } from "./form.types";
 
 export const formSelectors = {
   current: (state: RootState): Form | undefined => state.form,

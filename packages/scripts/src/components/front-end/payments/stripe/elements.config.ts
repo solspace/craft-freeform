@@ -1,12 +1,14 @@
-import type { Stripe } from '@stripe/stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import type { Stripe } from "@stripe/stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 
-import type { Config } from './elements.types';
+import type { Config } from "./elements.types";
 
 const stripeInstances = new Map<string, Stripe>();
 
 const config = (container: HTMLDivElement): Config | undefined => {
-  const configElement = container.querySelector<HTMLScriptElement>('[data-freeform-stripe-card][data-config]');
+  const configElement = container.querySelector<HTMLScriptElement>(
+    "[data-freeform-stripe-card][data-config]",
+  );
   if (!configElement) {
     return undefined;
   }

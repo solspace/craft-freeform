@@ -1,15 +1,15 @@
-import type { PropsWithChildren } from 'react';
-import { useContext } from 'react';
-import React, { createContext } from 'react';
+import type React from "react";
+import type { PropsWithChildren } from "react";
+import { createContext, useContext } from "react";
 
-export type RenderSize = 'small' | 'normal';
+export type RenderSize = "small" | "normal";
 
 type RenderContext = {
   size: RenderSize;
 };
 
 const RenderContext = createContext<RenderContext>({
-  size: 'normal',
+  size: "normal",
 });
 
 export const RenderContextProvider: React.FC<
@@ -18,7 +18,7 @@ export const RenderContextProvider: React.FC<
   return (
     <RenderContext.Provider
       value={{
-        size: size ?? 'normal',
+        size: size ?? "normal",
       }}
     >
       {children}

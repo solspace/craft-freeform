@@ -1,10 +1,10 @@
-import type { ConnectDropTarget } from 'react-dnd';
-import { useDrop } from 'react-dnd';
-import type { DragItem } from '@editor/builder/types/drag';
-import { Drag } from '@editor/builder/types/drag';
-import type { Row } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { fieldThunks } from '@editor/store/thunks/fields';
+import type { DragItem } from "@editor/builder/types/drag";
+import { Drag } from "@editor/builder/types/drag";
+import type { Row } from "@editor/builder/types/layout";
+import { useAppDispatch } from "@editor/store";
+import { fieldThunks } from "@editor/store/thunks/fields";
+import type { ConnectDropTarget } from "react-dnd";
+import { useDrop } from "react-dnd";
 
 type RowDropHook = {
   ref: ConnectDropTarget;
@@ -32,7 +32,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
               layoutUid: row.layoutUid,
               field: item.data,
               order: row.order,
-            })
+            }),
           );
         }
 
@@ -41,12 +41,12 @@ export const useRowDrop = (row: Row): RowDropHook => {
             fieldThunks.move.newField.newRow({
               fieldType: item.data,
               row,
-            })
+            }),
           );
         }
       },
     }),
-    [row]
+    [row],
   );
 
   return {

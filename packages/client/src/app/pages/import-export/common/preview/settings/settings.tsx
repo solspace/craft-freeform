@@ -1,7 +1,7 @@
-import React from 'react';
-import { Checkbox } from '@components/elements/checkbox/checkbox';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
+import { Checkbox } from "@components/elements/checkbox/checkbox";
+import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
 
 import {
   BlockItem,
@@ -9,7 +9,7 @@ import {
   Label,
   ListItem,
   SettingsIcon,
-} from '../preview.styles';
+} from "../preview.styles";
 
 type Props = {
   value: boolean;
@@ -20,7 +20,7 @@ export const PreviewSettings: React.FC<Props> = ({ value, onUpdate }) => {
   return (
     <ListItem>
       <ul>
-        <ListItem className={classes('selectable', value && 'selected')}>
+        <ListItem className={classes("selectable", value && "selected")}>
           <Blocks>
             <BlockItem>
               <Checkbox
@@ -30,7 +30,7 @@ export const PreviewSettings: React.FC<Props> = ({ value, onUpdate }) => {
               />
             </BlockItem>
             <SettingsIcon />
-            <Label htmlFor={`export-settings`}>{translate('Settings')}</Label>
+            <Label htmlFor={`export-settings`}>{translate("Settings")}</Label>
           </Blocks>
         </ListItem>
       </ul>

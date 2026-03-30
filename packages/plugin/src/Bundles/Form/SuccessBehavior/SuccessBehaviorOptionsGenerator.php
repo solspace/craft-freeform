@@ -26,6 +26,11 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
             \Craft::t('freeform', 'Redirect to another URL')
         );
 
+        $collection->add(
+            BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_ENTRY,
+            \Craft::t('freeform', 'Redirect to an entry')
+        );
+
         return $collection;
     }
 

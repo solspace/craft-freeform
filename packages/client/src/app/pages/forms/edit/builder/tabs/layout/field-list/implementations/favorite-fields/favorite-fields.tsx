@@ -1,20 +1,19 @@
-import React from 'react';
-import { ErrorBlock } from '@components/notification-blocks/error/error-block';
-import config from '@config/freeform/freeform.config';
-import { useFetchFavorites } from '@ff-client/queries/field-favorites';
-import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import translate from '@ff-client/utils/translations';
-import EditIcon from '@ff-icons/actions/edit.svg';
+import { ErrorBlock } from "@components/notification-blocks/error/error-block";
+import config from "@config/freeform/freeform.config";
+import { useFetchFavorites } from "@ff-client/queries/field-favorites";
+import { useFieldTypeSearch } from "@ff-client/queries/field-types";
+import translate from "@ff-client/utils/translations";
+import EditIcon from "@ff-icons/actions/edit";
+import type React from "react";
 
-import { FieldGroup } from '../../field-group/field-group';
-import { LoaderFieldGroup } from '../../field-group/field-group.loader';
-import { List } from '../../field-group/field-group.styles';
-import { useSelectSearchedFavorites } from '../../hooks/use-select-searched-fields';
+import { FieldGroup } from "../../field-group/field-group";
+import { LoaderFieldGroup } from "../../field-group/field-group.loader";
+import { List } from "../../field-group/field-group.styles";
+import { useSelectSearchedFavorites } from "../../hooks/use-select-searched-fields";
+import { FieldItem } from "./field-item";
+import { useFavoriteFieldsManagerModal } from "./modal/use-create-modal";
 
-import { useFavoriteFieldsManagerModal } from './modal/use-create-modal';
-import { FieldItem } from './field-item';
-
-const title = translate('Favorites');
+const title = translate("Favorites");
 
 export const FavoriteFields: React.FC = () => {
   const select = useSelectSearchedFavorites();
@@ -38,9 +37,9 @@ export const FavoriteFields: React.FC = () => {
     <FieldGroup
       title={translate(title)}
       button={
-        config.limitations.can('layout.favoritesManager') && {
+        config.limitations.can("layout.favoritesManager") && {
           icon: <EditIcon />,
-          title: translate('Edit Favorites'),
+          title: translate("Edit Favorites"),
           onClick: openModal,
         }
       }

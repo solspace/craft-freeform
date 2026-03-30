@@ -1,12 +1,12 @@
-import type { FC } from 'react';
-import React, { useState } from 'react';
-import { Search } from '@components/search/search';
-import translate from '@ff-client/utils/translations';
+import { Search } from "@components/search/search";
+import translate from "@ff-client/utils/translations";
+import type { FC } from "react";
+import { useState } from "react";
 
-import { useTitlebarFavorites } from '../titlebar-favorites';
+import { useTitlebarFavorites } from "../titlebar-favorites";
 
-import { EntryComponent } from './sidebar.entry';
-import { useIntegrationNavigation } from './sidebar.queries';
+import { EntryComponent } from "./sidebar.entry";
+import { useIntegrationNavigation } from "./sidebar.queries";
 import {
   Category,
   CategoryList,
@@ -14,14 +14,14 @@ import {
   IntegrationList,
   SearchWrapper,
   SidebarNavigation,
-} from './sidebar.styles';
+} from "./sidebar.styles";
 
 export const Sidebar: FC = () => {
   const { data, isFetching } = useIntegrationNavigation();
 
   const { hasFavorite } = useTitlebarFavorites();
 
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   if (isFetching && !data) {
     return <SidebarNavigation />;
@@ -34,14 +34,14 @@ export const Sidebar: FC = () => {
         (entry) =>
           entry.type.name.toLowerCase().includes(query.toLowerCase()) ||
           entry.instances.some((instance) =>
-            instance.name.toLowerCase().includes(query.toLowerCase())
-          )
+            instance.name.toLowerCase().includes(query.toLowerCase()),
+          ),
       ),
     }))
     .filter((category) => category.entries.length > 0);
 
   const favorites = filteredData.flatMap((category) =>
-    category.entries.filter((entry) => hasFavorite(entry.type))
+    category.entries.filter((entry) => hasFavorite(entry.type)),
   );
 
   const categorizedData = filteredData
@@ -60,7 +60,7 @@ export const Sidebar: FC = () => {
       <CategoryList>
         {favorites.length > 0 && (
           <Category key="favorites">
-            <CategoryTitle>{translate('Favorites')}</CategoryTitle>
+            <CategoryTitle>{translate("Favorites")}</CategoryTitle>
             <IntegrationList>
               {favorites.map((entry) => (
                 <EntryComponent key={entry.type.shortName} entry={entry} />

@@ -1,5 +1,5 @@
-import { colors } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 type LabelProps = {
   $regular?: boolean;
@@ -12,7 +12,7 @@ export const Label = styled.label<LabelProps>`
   gap: 6px;
 
   color: ${colors.gray550};
-  font-weight: ${({ $regular }) => ($regular ? 'normal' : 'bold')} !important;
+  font-weight: ${({ $regular }) => ($regular ? "normal" : "bold")} !important;
 `;
 
 export const LabelText = styled.span``;

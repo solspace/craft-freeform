@@ -1,6 +1,6 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
-import type { Option } from '../../options.types';
+import type { Option } from "../../options.types";
 
 export type OptionTranslations = {
   emptyOption?: string;

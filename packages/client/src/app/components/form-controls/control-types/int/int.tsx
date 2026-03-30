@@ -1,8 +1,9 @@
-import React from 'react';
-import { Control } from '@components/form-controls/control';
-import type { ControlType } from '@components/form-controls/types';
-import type { IntegerProperty } from '@ff-client/types/properties';
-import { parseNumericValue } from '@ff-client/utils/numbers';
+import { Control } from "@components/form-controls/control";
+import type { ControlType } from "@components/form-controls/types";
+import type { IntegerProperty } from "@ff-client/types/properties";
+import classes from "@ff-client/utils/classes";
+import { parseNumericValue } from "@ff-client/utils/numbers";
+import type React from "react";
 
 const Int: React.FC<ControlType<IntegerProperty>> = ({
   value,
@@ -13,6 +14,9 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   context,
 }) => {
   const { handle, min, max, unsigned, step = 1 } = property;
+  const isReadOnly =
+    property.flags?.includes("readonly") ||
+    property.flags?.includes("as-readonly-in-instance");
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
     updateValue(parseNumericValue(event.target.value, { min, max, unsigned }));
@@ -27,12 +31,17 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
       <input
         id={handle}
         type="number"
-        className="text fullwidth"
-        value={value === undefined || value === null ? '' : value}
+        className={classes(
+          "text",
+          "fullwidth",
+          isReadOnly && ["readonly", "disabled"],
+        )}
+        value={value === undefined || value === null ? "" : value}
         autoFocus={autoFocus}
         step={step}
         onChange={onChange}
         onBlur={onBlur}
+        readOnly={isReadOnly}
       />
     </Control>
   );

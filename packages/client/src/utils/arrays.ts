@@ -1,4 +1,4 @@
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue } from "@ff-client/types/properties";
 
 export const range = (min: number, max?: number): number[] => {
   if (max === undefined) {
@@ -22,17 +22,17 @@ export const range = (min: number, max?: number): number[] => {
 export const indexedColumn = <T>(
   items: Array<T>,
   index: keyof T | ((item: T) => GenericValue),
-  column?: keyof T | ((item: T) => GenericValue)
+  column?: keyof T | ((item: T) => GenericValue),
 ): Record<string | number, T | GenericValue> => {
   const indexed: Record<string | number, GenericValue> = {};
 
   items.forEach((item) => {
-    const key = typeof index === 'function' ? index(item) : item[index];
+    const key = typeof index === "function" ? index(item) : item[index];
 
     let columnValue: GenericValue | T;
     if (column === undefined) {
       columnValue = item;
-    } else if (typeof column === 'function') {
+    } else if (typeof column === "function") {
       columnValue = column(item);
     } else {
       columnValue = item[column];

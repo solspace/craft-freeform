@@ -1,11 +1,11 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import type { Row as RowType } from '@editor/builder/types/layout';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import type { Row as RowType } from "@editor/builder/types/layout";
+import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import type React from "react";
+import { useSelector } from "react-redux";
 
-import { Field } from '../field/field';
+import { Field } from "../field/field";
 
-import { RowWrapper } from './row.styles';
+import { RowWrapper } from "./row.styles";
 
 type Props = {
   row: RowType;

@@ -1,11 +1,12 @@
-import type { ComponentType } from 'react';
-import React, { Suspense } from 'react';
-import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
+import { ErrorBoundary } from "@components/form-controls/boundaries/ErrorBoundary";
+import type React from "react";
+import type { ComponentType } from "react";
+import { Suspense } from "react";
 
-import type { ConfigurationProps } from '../options.types';
-import { Source } from '../options.types';
+import type { ConfigurationProps } from "../options.types";
+import { Source } from "../options.types";
 
-import * as SourceComponents from './index';
+import * as SourceComponents from "./index";
 
 const components: {
   [key in Source]?: ComponentType<ConfigurationProps>;

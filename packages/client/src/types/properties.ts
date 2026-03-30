@@ -1,58 +1,58 @@
-import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
-import type { Card } from '@components/form-controls/control-types/namespaced/cards/cards.types';
-import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
-import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
+import type { AttributeCollection } from "@components/form-controls/control-types/attributes/attributes.types";
+import type { Card } from "@components/form-controls/control-types/namespaced/cards/cards.types";
+import type { OptionsConfiguration } from "@components/form-controls/control-types/options/options.types";
+import type { ColumnDescription } from "@components/form-controls/control-types/table/table.types";
 import type {
   ColumnValue,
   TabularData,
-} from '@components/form-controls/control-types/tabular-data/tabular-data.types';
-import type { Edition } from '@config/freeform/freeform.config';
+} from "@components/form-controls/control-types/tabular-data/tabular-data.types";
+import type { Edition } from "@config/freeform/freeform.config";
+import type { ReactNode } from "react";
+import type { FieldMapping } from "./integrations";
+import type { Recipient, RecipientMapping } from "./notifications";
 
-import type { FieldMapping } from './integrations';
-import type { Recipient, RecipientMapping } from './notifications';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: Allow any for GenericValue as it can be of any type depending on the property
 export type GenericValue = any;
 
 export enum PropertyType {
-  Ai = 'ai',
-  AppStateSelect = 'appStateSelect',
-  AssetPicker = 'assetPicker',
-  Attributes = 'attributes',
-  Boolean = 'bool',
-  BooleanEnv = 'boolEnv',
-  FormMonitorTools = 'formMonitorTools',
-  Calculation = 'calculation',
-  Cards = 'cards',
-  Checkboxes = 'checkboxes',
-  CodeEditor = 'codeEditor',
-  Color = 'color',
-  ConditionalRules = 'conditionalRules',
-  DateTime = 'dateTime',
-  DynamicCheckboxes = 'dynamicCheckboxes',
-  DynamicSelect = 'dynamicSelect',
-  Field = 'field',
-  FieldMapping = 'fieldMapping',
-  FieldSelection = 'fieldSelection',
-  FieldType = 'fieldType',
-  Hidden = 'hidden',
-  Integer = 'int',
-  Label = 'label',
-  MinMax = 'minMax',
-  NotificationTemplate = 'notificationTemplate',
-  OptionPicker = 'optionPicker',
-  Options = 'options',
-  PageButton = 'pageButton',
-  PageButtonsLayout = 'pageButtonsLayout',
-  RecipientMapping = 'recipientMapping',
-  Recipients = 'recipients',
-  SaveButton = 'saveButton',
-  Select = 'select',
-  String = 'string',
-  Table = 'table',
-  TabularData = 'tabularData',
-  Textarea = 'textarea',
-  WYSIWYG = 'wysiwyg',
+  Ai = "ai",
+  AppStateSelect = "appStateSelect",
+  AssetPicker = "assetPicker",
+  Attributes = "attributes",
+  Boolean = "bool",
+  BooleanEnv = "boolEnv",
+  FormMonitorTools = "formMonitorTools",
+  Calculation = "calculation",
+  Cards = "cards",
+  Checkboxes = "checkboxes",
+  CodeEditor = "codeEditor",
+  Color = "color",
+  ConditionalRules = "conditionalRules",
+  DateTime = "dateTime",
+  DynamicCheckboxes = "dynamicCheckboxes",
+  DynamicSelect = "dynamicSelect",
+  Field = "field",
+  FieldMapping = "fieldMapping",
+  FieldSelection = "fieldSelection",
+  FieldType = "fieldType",
+  Hidden = "hidden",
+  Integer = "int",
+  Label = "label",
+  MinMax = "minMax",
+  NotificationTemplate = "notificationTemplate",
+  OptionPicker = "optionPicker",
+  Options = "options",
+  PageButton = "pageButton",
+  PageButtonsLayout = "pageButtonsLayout",
+  RecipientMapping = "recipientMapping",
+  Recipients = "recipients",
+  SaveButton = "saveButton",
+  Select = "select",
+  String = "string",
+  Table = "table",
+  TabularData = "tabularData",
+  Textarea = "textarea",
+  WYSIWYG = "wysiwyg",
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -60,13 +60,13 @@ export type VisibilityFilter = string;
 export type Option = {
   value: string;
   label: string;
-  icon?: string | JSX.Element;
+  icon?: string | ReactNode;
   hint?: string;
   shadowIndex?: number;
 };
 export type OptionGroup = {
   label: string;
-  icon?: string | JSX.Element;
+  icon?: string | ReactNode;
   children: OptionCollection;
 };
 
@@ -103,7 +103,7 @@ type BaseProperty<T, PT extends PropertyType> = {
 };
 
 export type Message = {
-  type: 'error' | 'warning' | 'info';
+  type: "error" | "warning" | "info";
   message: string;
 };
 
@@ -198,6 +198,8 @@ export type TableProperty = BaseProperty<
   PropertyType.Table
 > & {
   options: Option[];
+  assetSourceOptions?: OptionCollection;
+  fileKindsOptions?: OptionCollection;
 };
 
 export type CardsProperty = BaseProperty<Card[], PropertyType.Cards>;

@@ -1,18 +1,20 @@
-import type { FieldType } from '@ff-client/types/fields';
-import { type PropertyValueCollection } from '@ff-client/types/fields';
-import type { GenericValue } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import camelCase from 'lodash/camelCase';
+import type {
+  FieldType,
+  PropertyValueCollection,
+} from "@ff-client/types/fields";
+import type { GenericValue } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+import camelCase from "lodash/camelCase";
 
-import './fields.persistence';
+import "./fields.persistence";
 
 type FieldErrors = {
   [key: string]: string[];
 };
 
-export type Field = Pick<FieldType, 'typeClass'> & {
+export type Field = Pick<FieldType, "typeClass"> & {
   id?: number;
   uid: string;
   properties: PropertyValueCollection;
@@ -48,7 +50,7 @@ type ErrorPayload = {
 const initialState: FieldStore = [];
 
 export const fieldsSlice = createSlice({
-  name: 'layout/fields',
+  name: "layout/fields",
   initialState,
   reducers: {
     set: (state, action: PayloadAction<FieldStore>) => {
@@ -61,24 +63,24 @@ export const fieldsSlice = createSlice({
         rowUid: string;
         fieldType: FieldType;
         order?: number;
-      }>
+      }>,
     ) => {
       const { uid, rowUid, fieldType, order } = action.payload;
       const highestOrder = Math.max(
         -1,
         ...state
           .filter((field) => field.rowUid === action.payload.rowUid)
-          .map((field) => field.order)
+          .map((field) => field.order),
       );
 
       const properties: PropertyValueCollection = {};
-      fieldType.properties.forEach(
-        (prop) => (properties[prop.handle] = prop.value)
-      );
+      fieldType.properties.forEach((prop) => {
+        properties[prop.handle] = prop.value;
+      });
 
       if (!properties.label) {
         const count = state.filter(
-          (field) => field.typeClass === fieldType.typeClass
+          (field) => field.typeClass === fieldType.typeClass,
         ).length;
 
         let label = translate(fieldType.name);
@@ -116,26 +118,26 @@ export const fieldsSlice = createSlice({
         uid: string;
         rowUid: string;
         field: Field;
-      }>
+      }>,
     ) => {
       const { uid, rowUid, field } = action.payload;
       const highestOrder = Math.max(
         -1,
         ...state
           .filter((fieldItem) => fieldItem.rowUid === rowUid)
-          .map((fieldItem) => fieldItem.order ?? -1)
+          .map((fieldItem) => fieldItem.order ?? -1),
       );
 
       const properties = { ...field.properties };
 
-      const originalHandle = properties.handle.replace(/_\d+$/, '');
+      const originalHandle = properties.handle.replace(/_\d+$/, "");
       let newHandle = properties.handle;
       let matchingHandle = true;
       let handleIteration = 1;
       do {
         newHandle = `${originalHandle}_${handleIteration}`;
         matchingHandle = state.some(
-          (fieldItem) => fieldItem.properties.handle === newHandle
+          (fieldItem) => fieldItem.properties.handle === newHandle,
         );
       } while (matchingHandle && handleIteration++ < 500);
 
@@ -152,14 +154,14 @@ export const fieldsSlice = createSlice({
     remove: (state, { payload: uid }: PayloadAction<string>) => {
       state.splice(
         state.findIndex((item) => item.uid === uid),
-        1
+        1,
       );
     },
     removeBatch: (state, { payload: uids }: PayloadAction<string[]>) => {
       uids.forEach((uid) => {
         state.splice(
           state.findIndex((item) => item.uid === uid),
-          1
+          1,
         );
       });
     },

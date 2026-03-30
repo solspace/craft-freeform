@@ -1,4 +1,4 @@
-import events from '../constants/event-types';
+import events from "../constants/event-types";
 
 const scriptCache = new Map<string, HTMLScriptElement>();
 const linkCache = new Map<string, HTMLLinkElement>();
@@ -11,7 +11,7 @@ type ScriptCreator = (
     defer?: boolean;
     onLoad?: (script: HTMLScriptElement) => void;
     parent?: HTMLElement;
-  }
+  },
 ) => void;
 
 export const createScript: ScriptCreator = (src, options = {}) => {
@@ -19,7 +19,7 @@ export const createScript: ScriptCreator = (src, options = {}) => {
   const key = cacheKey || src;
 
   if (!scriptCache.has(key)) {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     const safeSrc = normalizeUrl(src);
     if (!safeSrc) {
       throw new Error(`Unsafe script URL: ${src}`);
@@ -29,7 +29,7 @@ export const createScript: ScriptCreator = (src, options = {}) => {
     script.async = async ?? false;
     script.defer = defer ?? false;
 
-    script.addEventListener('load', () => {
+    script.addEventListener("load", () => {
       if (onLoad) {
         onLoad(script);
       }
@@ -37,14 +37,14 @@ export const createScript: ScriptCreator = (src, options = {}) => {
       document.dispatchEvent(
         new CustomEvent(events.scripts.afterLoad, {
           detail: { src, script },
-        })
+        }),
       );
     });
 
     document.dispatchEvent(
       new CustomEvent(events.scripts.beforeLoad, {
         detail: { src, script },
-      })
+      }),
     );
 
     const parentElement = parent || document.body;
@@ -62,7 +62,7 @@ type LinkCreator = (
     cacheKey?: string;
     parent?: HTMLElement;
     onLoad?: (stylesheet: HTMLLinkElement) => void;
-  }
+  },
 ) => HTMLLinkElement;
 
 export const createLink: LinkCreator = (href, options = {}) => {
@@ -70,17 +70,17 @@ export const createLink: LinkCreator = (href, options = {}) => {
   const key = cacheKey || href;
 
   if (!linkCache.has(key)) {
-    const link = document.createElement('link');
+    const link = document.createElement("link");
 
     const safeHref = normalizeUrl(href);
     if (!safeHref) {
       throw new Error(`Unsafe stylesheet URL: ${href}`);
     }
 
-    link.rel = 'stylesheet';
+    link.rel = "stylesheet";
     link.href = safeHref;
 
-    link.addEventListener('load', () => {
+    link.addEventListener("load", () => {
       if (onLoad) {
         onLoad(link);
       }
@@ -88,14 +88,14 @@ export const createLink: LinkCreator = (href, options = {}) => {
       document.dispatchEvent(
         new CustomEvent(events.stylesheets.afterLoad, {
           detail: { href, link },
-        })
+        }),
       );
     });
 
     document.dispatchEvent(
       new CustomEvent(events.stylesheets.beforeLoad, {
         detail: { href, link },
-      })
+      }),
     );
 
     const parentElement = parent || document.body;
@@ -110,8 +110,8 @@ export const createLink: LinkCreator = (href, options = {}) => {
 const normalizeUrl = (raw: string): string => {
   try {
     const url = new URL(raw, window.location.href);
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
-      return '';
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return "";
     }
 
     return url.toString();
@@ -119,5 +119,5 @@ const normalizeUrl = (raw: string): string => {
     // Invalid URL
   }
 
-  return '';
+  return "";
 };

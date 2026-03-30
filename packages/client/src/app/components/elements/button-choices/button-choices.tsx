@@ -1,13 +1,14 @@
-import React, { useRef, useState } from 'react';
-import { usePosition } from '@components/form-controls/preview/previewable-component.hooks';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import classes from '@ff-client/utils/classes';
+import { usePosition } from "@components/form-controls/preview/previewable-component.hooks";
+import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import { useClickOutside } from "@ff-client/hooks/use-click-outside";
+import classes from "@ff-client/utils/classes";
+import type React from "react";
+import { useRef, useState } from "react";
 
-import { ButtonGroupWrapper } from '../button-group/button-group.styles';
-import { PopUpPortal } from '../pop-up-portal';
+import { ButtonGroupWrapper } from "../button-group/button-group.styles";
+import { PopUpPortal } from "../pop-up-portal";
 
-import { ChoiceWrapper } from './button-choices.styles';
+import { ChoiceWrapper } from "./button-choices.styles";
 
 type Choice = {
   label: string;
@@ -44,13 +45,14 @@ export const ButtonChoices: React.FC<Props> = ({
   const { left, top } = usePosition(
     wrapperRef.current,
     dropdownRef.current,
-    open
+    open,
   );
 
   return (
     <ButtonGroupWrapper ref={wrapperRef} className="btngroup submit">
       <button
-        className={classes('btn', 'submit', 'add', 'icon')}
+        type="button"
+        className={classes("btn", "submit", "add", "icon")}
         onClick={onClick}
       >
         <LoadingText spinner loading={loading} loadingText={loadingText}>
@@ -60,6 +62,7 @@ export const ButtonChoices: React.FC<Props> = ({
 
       {!!choices?.length && (
         <button
+          type="button"
           className="btn submit menubtn btngroup-btn-last"
           onClick={() => {
             setOpen((prev) => !prev);
@@ -74,20 +77,19 @@ export const ButtonChoices: React.FC<Props> = ({
             style={{ left: left - 146, top: top + 34 }}
           >
             <ul>
-              {choices &&
-                choices.map((choice, index) => (
-                  <li key={index}>
-                    <a
-                      href={choice.url}
-                      onClick={() => {
-                        choice.onClick();
-                        setOpen(false);
-                      }}
-                    >
-                      {choice.label}
-                    </a>
-                  </li>
-                ))}
+              {choices?.map((choice, index) => (
+                <li key={index}>
+                  <a
+                    href={choice.url}
+                    onClick={() => {
+                      choice.onClick();
+                      setOpen(false);
+                    }}
+                  >
+                    {choice.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </ChoiceWrapper>
         )}

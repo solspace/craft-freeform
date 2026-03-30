@@ -1,4 +1,5 @@
-{% do field.setValue(submission[field.handle].value) %}
+{% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
+{% do field.setValue(selectedValue) %}
 
 <div class="field">
     <div class="heading">

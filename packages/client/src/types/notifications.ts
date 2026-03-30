@@ -1,6 +1,6 @@
-import type { Edition } from '@config/freeform/freeform.config';
+import type { Edition } from "@config/freeform/freeform.config";
 
-import type { GenericValue, Property } from './properties';
+import type { GenericValue, Property } from "./properties";
 
 type TemplateID = string | number;
 
@@ -37,10 +37,10 @@ export type RecipientMapping = {
 };
 
 export enum TemplateType {
-  Global = 'global',
-  Database = 'database',
-  File = 'file',
-  Form = 'form',
+  Global = "global",
+  Database = "database",
+  File = "file",
+  Form = "form",
 }
 
 export type NotificationTemplate = {

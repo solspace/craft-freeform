@@ -1,23 +1,23 @@
-import React from 'react';
-import { useParams, useResolvedPath } from 'react-router-dom';
-import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { useQueryFormSettings } from '@ff-client/queries/forms';
-import type { FormSettingNamespace } from '@ff-client/types/forms';
-import type { Section } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
+import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
+import type { FormSettingNamespace } from "@ff-client/types/forms";
+import type { Section } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import type React from "react";
+import { useParams, useResolvedPath } from "react-router-dom";
 
-import { FieldComponent } from './field-component';
-import { TAB_USAGE } from './settings';
+import { FieldComponent } from "./field-component";
+import { TAB_USAGE } from "./settings";
 import {
   FormSettingsContainer,
   SectionContainer,
   SectionHeader,
-} from './settings.editor.styles';
-import { FormUsage } from './settings.usage';
+} from "./settings.editor.styles";
+import { FormUsage } from "./settings.usage";
 
 export const SettingsEditor: React.FC = () => {
   const { sectionHandle } = useParams();
-  const currentPath = useResolvedPath('');
+  const currentPath = useResolvedPath("");
 
   const { data } = useQueryFormSettings();
   if (!data) {

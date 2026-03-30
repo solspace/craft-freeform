@@ -9,8 +9,8 @@ class ArrayHelper
      */
     public static function some(array $array, callable $fn): bool
     {
-        foreach ($array as $value) {
-            if ($fn($value)) {
+        foreach ($array as $key => $value) {
+            if ($fn($value, $key)) {
                 return true;
             }
         }
@@ -20,13 +20,13 @@ class ArrayHelper
 
     public static function someRecursive(array $array, callable $fn): bool
     {
-        foreach ($array as $value) {
+        foreach ($array as $key => $value) {
             if (\is_array($value)) {
                 if (self::someRecursive($value, $fn)) {
                     return true;
                 }
             } else {
-                if ($fn($value)) {
+                if ($fn($value, $key)) {
                     return true;
                 }
             }
@@ -40,8 +40,8 @@ class ArrayHelper
      */
     public static function every(array $array, callable $fn): bool
     {
-        foreach ($array as $value) {
-            if (!$fn($value)) {
+        foreach ($array as $key => $value) {
+            if (!$fn($value, $key)) {
                 return false;
             }
         }
@@ -51,13 +51,13 @@ class ArrayHelper
 
     public static function everyRecursive(array $array, callable $fn): bool
     {
-        foreach ($array as $value) {
+        foreach ($array as $key => $value) {
             if (\is_array($value)) {
                 if (!self::everyRecursive($value, $fn)) {
                     return false;
                 }
             } else {
-                if (!$fn($value)) {
+                if (!$fn($value, $key)) {
                     return false;
                 }
             }

@@ -1,29 +1,29 @@
-import type { Layout } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
-import { createSelector } from '@reduxjs/toolkit';
+import type { Layout } from "@editor/builder/types/layout";
+import type { RootState } from "@editor/store";
+import { createSelector } from "@reduxjs/toolkit";
 
-import type { Field } from '../fields';
-import { pageSelecors } from '../pages/pages.selectors';
-import { rowSelectors } from '../rows/rows.selectors';
+import type { Field } from "../fields";
+import { pageSelecors } from "../pages/pages.selectors";
+import { rowSelectors } from "../rows/rows.selectors";
 
 export const layoutSelectors = {
   one: createSelector(
     (state: RootState) => state.layout.layouts,
     (_: RootState, uid?: string) => uid,
     (layouts: Layout[], uid: string) =>
-      layouts.find((layout) => layout.uid === uid)
+      layouts.find((layout) => layout.uid === uid),
   ),
   currentPageLayout: createSelector(
     (state: RootState) => pageSelecors.current(state),
     (state: RootState) => state.layout.layouts,
     (currentPage, layouts) =>
-      layouts.find((layout) => layout.uid === currentPage?.layoutUid)
+      layouts.find((layout) => layout.uid === currentPage?.layoutUid),
   ),
   pageLayout: createSelector(
     (state: RootState) => state.layout.layouts,
     (_: RootState, pageLayoutUid: string) => pageLayoutUid,
     (layouts: Layout[], pageLayoutUid: string) =>
-      layouts.find((layout) => layout.uid === pageLayoutUid)
+      layouts.find((layout) => layout.uid === pageLayoutUid),
   ),
   cartographed: {
     layoutFieldList: createSelector(
@@ -37,12 +37,12 @@ export const layoutSelectors = {
         const layoutFields: Field[] = [];
         rows.forEach((row) => {
           layoutFields.push(
-            ...fields.filter((field) => field.rowUid === row.uid)
+            ...fields.filter((field) => field.rowUid === row.uid),
           );
         });
 
         return layoutFields;
-      }
+      },
     ),
     pageFieldList: createSelector(
       (state: RootState) => state.layout.pages,
@@ -54,7 +54,7 @@ export const layoutSelectors = {
 
         pages.forEach((page) => {
           const layout = layouts.find(
-            (layout) => layout.uid === page.layoutUid
+            (layout) => layout.uid === page.layoutUid,
           );
 
           const layoutRows = rows
@@ -64,7 +64,7 @@ export const layoutSelectors = {
           const layoutFields: Field[] = [];
           layoutRows.forEach((row) => {
             layoutFields.push(
-              ...fields.filter((field) => field.rowUid === row.uid)
+              ...fields.filter((field) => field.rowUid === row.uid),
             );
           });
 
@@ -72,7 +72,7 @@ export const layoutSelectors = {
         });
 
         return cartograph;
-      }
+      },
     ),
 
     fullLayoutList: createSelector(
@@ -85,7 +85,7 @@ export const layoutSelectors = {
 
         pages.forEach((page) => {
           const layout = layouts.find(
-            (layout) => layout.uid === page.layoutUid
+            (layout) => layout.uid === page.layoutUid,
           );
 
           const layoutRows = rows
@@ -96,7 +96,7 @@ export const layoutSelectors = {
           layoutRows.forEach((row) => {
             const layoutFields: Field[] = [];
             layoutFields.push(
-              ...fields.filter((field) => field.rowUid === row.uid)
+              ...fields.filter((field) => field.rowUid === row.uid),
             );
             rowList.push(layoutFields);
           });
@@ -105,7 +105,7 @@ export const layoutSelectors = {
         });
 
         return cartograph;
-      }
+      },
     ),
 
     fullLayoutList_: (state: RootState) => {
@@ -115,7 +115,7 @@ export const layoutSelectors = {
 
       pages.forEach((page) => {
         const layout = state.layout.layouts.find(
-          (layout) => layout.uid === page.layoutUid
+          (layout) => layout.uid === page.layoutUid,
         );
         const rows = rowSelectors.inLayout(state, layout?.uid);
 

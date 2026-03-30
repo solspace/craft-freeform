@@ -1,6 +1,6 @@
-import { animated } from 'react-spring';
-import { colors, shadows, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled from "styled-components";
 
 type PropertyEditorProps = {
   $active?: boolean;
@@ -19,8 +19,8 @@ export const PropertyEditorWrapper = styled.div<PropertyEditorProps>`
   overflow: hidden;
   border-right: 1px solid rgb(154 165 177 / 25%);
 
-  pointer-events: ${({ $active }) => ($active ? 'auto' : 'none')};
-  background: ${({ $active }) => ($active ? colors.gray050 : 'transparent')};
+  pointer-events: ${({ $active }) => ($active ? "auto" : "none")};
+  background: ${({ $active }) => ($active ? colors.gray050 : "transparent")};
 
   transition: background-color 0.2s ease-in-out;
 `;

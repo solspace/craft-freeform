@@ -1,6 +1,6 @@
-import { animated } from 'react-spring';
-import { spacings } from '@ff-client/styles/variables';
-import styled, { keyframes } from 'styled-components';
+import { spacings } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
+import styled, { keyframes } from "styled-components";
 
 export const ProgressWrapper = styled(animated.div)`
   transform-origin: center top;
@@ -51,7 +51,7 @@ type ProgressBarProps = {
   $showPercent?: boolean;
 };
 
-const color = 'rgba(255,255,255,.15)';
+const color = "rgba(255,255,255,.15)";
 
 const animation = keyframes`
   from { background-position: 30px 0; }

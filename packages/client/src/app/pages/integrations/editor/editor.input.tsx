@@ -1,12 +1,12 @@
-import React from 'react';
-import { FormComponent } from '@components/form-controls';
-import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
-import type { ErrorCollection } from '@ff-client/types/api';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import { FormComponent } from "@components/form-controls";
+import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-generator";
+import type { ErrorCollection } from "@ff-client/types/api";
+import type { GenericValue, Property } from "@ff-client/types/properties";
+import type React from "react";
 
-import type { Integration } from '../integration.types';
+import type { Integration } from "../integration.types";
 
-import type { IntegrationState } from './editor.types';
+import type { IntegrationState } from "./editor.types";
 
 type Props = {
   property: Property;
@@ -30,7 +30,7 @@ export const EditorInput: React.FC<Props> = ({
     {},
     (key, value) => {
       onUpdate?.(key, value);
-    }
+    },
   );
 
   const handle = property.handle;
@@ -38,7 +38,7 @@ export const EditorInput: React.FC<Props> = ({
   const updatedProperty: Property = {
     ...property,
     flags: (property.flags || [])?.filter(
-      (flag) => flag !== 'as-readonly-in-instance'
+      (flag) => flag !== "as-readonly-in-instance",
     ),
   };
 

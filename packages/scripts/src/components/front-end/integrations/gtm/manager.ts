@@ -1,7 +1,7 @@
 export class GTMManager {
   private static instance: GTMManager;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: Allow any for dataLayer as it can contain any type of data
   private dataLayer: any[];
   private containerIds: Set<string> = new Set();
 
@@ -28,20 +28,20 @@ export class GTMManager {
     }
 
     this.dataLayer.push({
-      'gtm.start': new Date().getTime(),
-      event: 'gtm.js',
-      'gtm.container': id,
+      "gtm.start": Date.now(),
+      event: "gtm.js",
+      "gtm.container": id,
     });
 
     this.containerIds.add(id);
   }
 
   private loadScript(id: string): void {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
 
-    const firstScript = document.getElementsByTagName('script')[0];
+    const firstScript = document.getElementsByTagName("script")[0];
     firstScript.parentNode.insertBefore(script, firstScript);
   }
 

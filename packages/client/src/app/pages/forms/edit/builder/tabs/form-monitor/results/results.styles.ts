@@ -1,6 +1,6 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
-import styled from 'styled-components';
+import { scrollBar } from "@ff-client/styles/mixins";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import styled from "styled-components";
 
 export const ResultsWrapper = styled.div`
   flex: 1;
@@ -276,7 +276,7 @@ export const DayColumn = styled.div`
 `;
 
 export const TestSegment = styled.div<{
-  $status: 'success' | 'failed' | 'pending' | 'inactive';
+  $status: "success" | "failed" | "pending" | "inactive";
   $height: number;
   $offset: number;
   $isLast: boolean;
@@ -289,16 +289,16 @@ export const TestSegment = styled.div<{
   width: 100%;
   height: ${({ $height }) => $height}%;
   background-color: ${({ $status }) =>
-    $status === 'success'
+    $status === "success"
       ? colors.green600
-      : $status === 'failed'
+      : $status === "failed"
         ? colors.red600
-        : $status === 'pending'
+        : $status === "pending"
           ? colors.gray700
           : colors.gray100};
   box-sizing: border-box;
   border-top: ${({ $isLast }) =>
-    $isLast ? 'none' : '1px solid ' + colors.white};
+    $isLast ? "none" : `1px solid ${colors.white}`};
   transition: opacity 0.2s ease-in-out;
   cursor: pointer;
 
@@ -364,7 +364,7 @@ export const FormSubmitWrapper = styled.div`
 `;
 
 export const FormSubmitStatus = styled.div<{
-  $status: 'success' | 'failed' | 'pending';
+  $status: "success" | "failed" | "pending";
 }>`
   display: inline-flex;
   align-items: center;
@@ -373,15 +373,15 @@ export const FormSubmitStatus = styled.div<{
   height: 24px;
   border-radius: 50%;
   background-color: ${({ $status }) =>
-    $status === 'success'
-      ? 'rgba(34, 197, 94, 0.2)'
-      : $status === 'failed'
-        ? 'rgba(239, 68, 68, 0.2)'
-        : 'rgba(55, 65, 81, 0.2)'};
+    $status === "success"
+      ? "rgba(34, 197, 94, 0.2)"
+      : $status === "failed"
+        ? "rgba(239, 68, 68, 0.2)"
+        : "rgba(55, 65, 81, 0.2)"};
   color: ${({ $status }) =>
-    $status === 'success'
+    $status === "success"
       ? colors.green600
-      : $status === 'failed'
+      : $status === "failed"
         ? colors.red600
         : colors.gray700};
   margin-right: ${spacings.sm};

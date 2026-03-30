@@ -1,5 +1,6 @@
 {% import "_includes/forms" as forms %}
 
+{% set selectedValues = submission[field.handle] is not null ? submission[field.handle].value : [] %}
 {% set inputs = '' %}
 {% for opt in field.options %}
     {% set inputs = inputs ~ '<div>' %}
@@ -7,7 +8,7 @@
         name: field.handle~'[]',
         value: opt.value,
         label: opt.label,
-        checked: opt.value in submission[field.handle].value,
+        checked: opt.value in selectedValues,
     }) %}
     {% set inputs = inputs ~ '</div>' %}
 {% endfor %}

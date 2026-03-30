@@ -19,7 +19,7 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-D9Y8f6Xf.js",
+    "file": "assets/ai.usage-chart-C3r6F2i4.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -30,7 +30,7 @@
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-DtWId85b.js",
+    "file": "assets/index-CDzmE-m5.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

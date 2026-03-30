@@ -307,7 +307,7 @@ export const AiDashboard: React.FC = () => {
                 <MetricsTableHead>
                   <tr>
                     <MetricsTableHeaderCell>
-                      {translate("Date & time")}
+                      {translate("Date & Time")}
                     </MetricsTableHeaderCell>
                     <MetricsTableHeaderCell>
                       {translate("Status")}

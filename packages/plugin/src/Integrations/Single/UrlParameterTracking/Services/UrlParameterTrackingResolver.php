@@ -84,11 +84,23 @@ class UrlParameterTrackingResolver
         $trackedParameters = $integration->getCombinedParameters();
         $values = $this->prepareRequestCookieValues($trackedParameters);
 
-        // Get clean $_GET parameters from the parameters defined here
-        foreach ($trackedParameters as $parameter) {
-            $value = $_GET[$parameter] ?? $_POST[$parameter] ?? null;
-            if ($value !== null) {
-                $values[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
+        if ($form->isGraphQLPosted()) {
+            $arguments = $form->getGraphQLArguments();
+            foreach ($arguments['urlParameterTracking'] ?? [] as $parameter) {
+                if (isset($parameter['name'])) {
+                    $parameterValue = $parameter['value'] ?? null;
+                    if ($parameterValue !== null) {
+                        $values[$parameter['name']] = htmlspecialchars($parameterValue, \ENT_QUOTES, 'UTF-8');
+                    }
+                }
+            }
+        } else {
+            // Get clean $_GET/$_POST parameters from the parameters defined here
+            foreach ($trackedParameters as $parameter) {
+                $value = $_GET[$parameter] ?? $_POST[$parameter] ?? null;
+                if ($value !== null) {
+                    $values[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
+                }
             }
         }
 

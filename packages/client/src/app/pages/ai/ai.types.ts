@@ -1,7 +1,6 @@
 export type PaymentHistory = {
   package_price?: number;
   credits?: number;
-  amount_added?: number;
   paid_at?: string;
 };
 
@@ -11,13 +10,16 @@ export type DailyMetric = {
   api_requests: number;
   successful_requests: number;
   failed_requests: number;
+  duration_seconds?: number;
 };
 
 export type RequestLog = {
   date: string | null;
+  requested_at?: string | null;
   status: "success" | "failure" | string;
   credits: number | null;
-  request_id: string;
+  duration_s?: string | null;
+  request_id?: string;
 };
 
 export type AiUsageResponse = {

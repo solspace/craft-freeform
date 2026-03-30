@@ -169,6 +169,11 @@ class SubmissionInterface extends Element
                 'type' => JavascriptTestInterface::getType(),
                 'description' => 'The Javascript Test of the submission',
             ],
+            'urlParameterTracking' => [
+                'name' => 'urlParameterTracking',
+                'type' => UrlParameterTrackingInterface::getType(),
+                'description' => 'The Url Parameter Tracking integration for this form',
+            ],
         ], parent::getFieldDefinitions());
 
         return \Craft::$app->getGql()->prepareFieldDefinitions(

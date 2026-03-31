@@ -97,7 +97,7 @@ class m251209_111938_AddABTestingTables extends Migration
             );
 
             $this->createIndex(
-                'idx_ab_tests_assignments_userId_abTestId',
+                'idx_ab_tests_assmnts_userId_abTestId',
                 '{{%freeform_ab_tests_assignments}}',
                 ['userId', 'abTestId'],
                 true,
@@ -139,7 +139,7 @@ class m251209_111938_AddABTestingTables extends Migration
                 'CASCADE'
             );
             $this->addForeignKey(
-                'fk_ab_tests_statistics_formId',
+                'fk_ab_tests_stats_formId',
                 '{{%freeform_ab_tests_statistics}}',
                 'formId',
                 '{{%freeform_forms}}',
@@ -148,17 +148,17 @@ class m251209_111938_AddABTestingTables extends Migration
             );
 
             $this->createIndex(
-                'idx_ab_tests_statistics_abTestId_status',
+                'idx_ab_tests_stats_abTestId_status',
                 '{{%freeform_ab_tests_statistics}}',
                 ['abTestId', 'status'],
             );
             $this->createIndex(
-                'idx_ab_tests_statistics_abTestId_abVariantId_formId_status',
+                'idx_ab_tests_stats_abTestId_abVariantId_formId_status',
                 '{{%freeform_ab_tests_statistics}}',
                 ['abTestId', 'abVariantId', 'formId', 'status'],
             );
             $this->createIndex(
-                'idx_ab_tests_statistics_abTestId_abVariantId_formId_sessionId',
+                'idx_ab_tests_stats_abTestId_abVariantId_formId_sessionId',
                 '{{%freeform_ab_tests_statistics}}',
                 ['abTestId', 'abVariantId', 'formId', 'sessionId'],
             );

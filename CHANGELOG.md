@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.15.2 - 2026-03-31
+
+### Fixed
+- Fixed some install migration issues.
+
 ## 5.15.1 - 2026-03-30
 
 ### Added

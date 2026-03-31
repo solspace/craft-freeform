@@ -506,7 +506,7 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['abTestId', 'abVariantId', 'formId', 'sessionId'], name: 'idx_ab_tests_statistics_abTestId_abVariantId_formId_sessionId')
                 ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abTestId')
                 ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abVariantId')
-                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, 'fk_ab_tests_statistics_formId'),
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_formId'),
         ];
     }
 

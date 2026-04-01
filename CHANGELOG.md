@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.15.3 - 2026-04-01
+
+### Fixed
+- Fixed an issue where install and migration index names could exceed length limits.
+
 ## 5.15.2 - 2026-03-31
 
 ### Fixed

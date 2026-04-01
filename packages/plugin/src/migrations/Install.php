@@ -482,7 +482,7 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_userId')
                 ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abTestId')
                 ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abVariantId')
-                ->addIndex(['userId', 'abTestId'], true, name: 'idx_ab_tests_assmnts_userId_abTestId'),
+                ->addIndex(['userId', 'abTestId'], true, name: 'idx_userId_abTestId'),
 
             (new Table('freeform_ab_tests_variants'))
                 ->addField('id', $this->primaryKey())
@@ -501,9 +501,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('status', $this->string(20)->notNull())
                 ->addField('lastError', $this->text())
                 ->addField('lastField', $this->string(255))
-                ->addIndex(['abTestId', 'status'], name: 'idx_ab_tests_stats_abTestId_status')
-                ->addIndex(['abTestId', 'abVariantId', 'formId', 'status'], name: 'idx_ab_tests_stats_abTestId_abVariantId_formId_status')
-                ->addIndex(['abTestId', 'abVariantId', 'formId', 'sessionId'], name: 'idx_ab_tests_stats_abTestId_abVariantId_formId_sessionId')
+                ->addIndex(['abTestId', 'status'], name: 'abTestId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'status'], name: 'testId_variantId_formId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'sessionId'], name: 'testId_variantId_formId_sessionId')
                 ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_stats_abTestId')
                 ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_stats_abVariantId')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_stats_formId'),

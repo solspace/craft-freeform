@@ -54,6 +54,10 @@ const attachCalculations = (input: HTMLInputElement) => {
   const calculations = input.getAttribute("data-calculations");
   const decimal = input.getAttribute("data-decimal");
 
+  if (!calculations) {
+    return;
+  }
+
   // Get calculation logic & decimal count
   const calculationsLogic = calculations.replace(
     getVariablesPattern,
@@ -63,8 +67,10 @@ const attachCalculations = (input: HTMLInputElement) => {
 
   // Get variables
   const variables: Record<string, string | number | boolean> = {};
-  const match = getVariablesPattern.exec(calculations);
-  while (match !== null) {
+  getVariablesPattern.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  // biome-ignore lint/suspicious/noAssignInExpressions: Standard exec-loop pattern
+  while ((match = getVariablesPattern.exec(calculations)) !== null) {
     variables[match[1]] = "";
   }
 

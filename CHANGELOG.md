@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.15.4 - 2026-04-07
+
+### Fixed
+- Fixed an issue with the **Calculation** field type handling to improve reliability and performance.
+
 ## 5.15.3 - 2026-04-01
 
 ### Fixed

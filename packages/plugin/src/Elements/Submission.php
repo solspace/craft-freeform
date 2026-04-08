@@ -78,6 +78,7 @@ class Submission extends Element
     private static array $permissionCache = [];
     private static array $deletableTokens = [];
     private array $indexedAttributeCache = [];
+    private array $loadedFieldValueMap = [];
 
     /** @var SpamReason[] */
     private ?array $spamReasons = null;
@@ -137,6 +138,7 @@ class Submission extends Element
                 $this->trigger(self::EVENT_SET_FIELD_VALUE, $event);
 
                 $field->setValue($event->getValue());
+                $this->markFieldValueAsLoaded($field);
 
                 return;
             } catch (FreeformException) {
@@ -524,28 +526,30 @@ class Submission extends Element
         ];
 
         $contentData = [];
-        foreach ($this as $field) {
-            if ($field instanceof NoStorageInterface) {
-                continue;
+        if ($isNew || $this->hasLoadedAllStorableFieldValues()) {
+            foreach ($this as $field) {
+                if ($field instanceof NoStorageInterface) {
+                    continue;
+                }
+
+                $event = new TransformValueEvent($field, $field->getValue());
+                Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FOR_STORAGE, $event);
+
+                $value = $event->getValue();
+
+                if (\is_array($value)) {
+                    $value = json_encode($value);
+                }
+
+                if (\PHP_VERSION_ID >= 50400 && null !== $value) {
+                    $value = CraftStringHelper::emojiToShortcodes($value);
+                }
+
+                $event = new ProcessFieldValueEvent($field, $value);
+                Event::trigger(self::class, self::EVENT_PROCESS_FIELD_VALUE, $event);
+
+                $contentData[self::getFieldColumnName($field)] = $event->getValue();
             }
-
-            $event = new TransformValueEvent($field, $field->getValue());
-            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FOR_STORAGE, $event);
-
-            $value = $event->getValue();
-
-            if (\is_array($value)) {
-                $value = json_encode($value);
-            }
-
-            if (\PHP_VERSION_ID >= 50400 && null !== $value) {
-                $value = CraftStringHelper::emojiToShortcodes($value);
-            }
-
-            $event = new ProcessFieldValueEvent($field, $value);
-            Event::trigger(self::class, self::EVENT_PROCESS_FIELD_VALUE, $event);
-
-            $contentData[self::getFieldColumnName($field)] = $event->getValue();
         }
 
         $contentTable = self::getContentTableName($this->getForm());
@@ -954,6 +958,42 @@ class Submission extends Element
     private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
+    }
+
+    private function hasLoadedAllStorableFieldValues(): bool
+    {
+        foreach ($this->getFieldCollection() as $field) {
+            if ($field instanceof NoStorageInterface) {
+                continue;
+            }
+
+            $key = $this->getLoadedFieldValueKey($field);
+            if (null === $key || !isset($this->loadedFieldValueMap[$key])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function markFieldValueAsLoaded(FieldInterface $field): void
+    {
+        $key = $this->getLoadedFieldValueKey($field);
+        if (null !== $key) {
+            $this->loadedFieldValueMap[$key] = true;
+        }
+    }
+
+    private function getLoadedFieldValueKey(FieldInterface $field): ?string
+    {
+        $id = $field->getId();
+        if (null !== $id) {
+            return (string) $id;
+        }
+
+        $handle = $field->getHandle();
+
+        return $handle ?: null;
     }
 
     private function getNewIncrementalId(): int

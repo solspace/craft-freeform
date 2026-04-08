@@ -1064,8 +1064,12 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         }
     }
 
-    public function valuesFromSubmission(Submission $submission): void
+    public function valuesFromSubmission(?Submission $submission): void
     {
+        if (!$submission) {
+            return;
+        }
+
         $fields = $submission->getFieldCollection();
 
         foreach ($this->getLayout()->getFields() as $field) {

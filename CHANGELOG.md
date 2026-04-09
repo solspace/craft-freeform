@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.15.5 - 2026-04-08
+
+### Added
+- Verified support for the **Salesforce** integration using the now-required _External Client App_ approach.
+
+### Fixed
+- Fixed an issue where submission values could be cleared when no form context was provided on save.
+- Fixed the email sending job to include a failsafe when setting values from the submission.
+
 ## 5.15.4 - 2026-04-07
 
 ### Fixed

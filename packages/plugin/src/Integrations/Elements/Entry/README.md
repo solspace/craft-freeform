@@ -6,8 +6,6 @@ This integration allows you to map Freeform submission data to [Craft Entries](h
 
 ### 1. Create the Integration
 
-- Select *Entry* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My Entry Integration`.
 - Choose a section and entry type from the **Entry Type** select dropdown.
     - This will only be the default value when configuring the integration in the form builder later.
 - Click the **Save** button.

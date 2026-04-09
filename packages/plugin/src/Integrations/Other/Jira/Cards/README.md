@@ -18,8 +18,6 @@ Maps Freeform submission data to standard Jira Card field types.
 
 ### 1. Prepare your site's end for Integration
 
-- Select *Jira (v3)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - In the **Instance URL** setting, enter your Jira account's URL, e.g. `https://mycompany.atlassian.net`.
 - In the **Project Key** setting, enter the project key of the Jira project you want to interact with, e.g. `TST`.
 - Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
@@ -52,13 +50,13 @@ Maps Freeform submission data to standard Jira Card field types.
 
 ### 3. Prepare the Connection
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Paste the Jira app's **Client ID** value into the **Client ID** field in Freeform.
 - Paste the Jira app's **Secret** value into the **Client Secret** field in Freeform.
+- Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
 
-- Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - A popup will load a Jira OAuth page to allow permissions.

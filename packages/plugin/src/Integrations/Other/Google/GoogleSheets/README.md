@@ -18,8 +18,6 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
 
 ### 1. Prepare your site's end for Integration
 
-- Select *Google Sheets (v4)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
 - Leave this page open.
 
@@ -53,7 +51,7 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
 
 ### 3. Prepare the Connection
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Paste the Google Sheets **Client ID** value into the **Client ID** field in Freeform.
 - Paste the Google Sheets **Client Secret** value into the **Client Secret** field in Freeform.
 - Additional settings to set the defaults for forms:
@@ -61,10 +59,10 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
         - Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.
     - **Row Insert Behavior**
         - Choose how new data rows should be inserted into the Google Sheet. **Insert New Row** will add a new row to the spreadsheet directly before the first empty row. **Replace Next Empty Row** will find the first empty row and write the new content into it. Neither option will overwrite existing data.
+- Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
 
-- Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - A popup will load a Google OAuth page to allow permissions.

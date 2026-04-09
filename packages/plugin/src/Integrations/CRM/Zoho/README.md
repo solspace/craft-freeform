@@ -24,8 +24,6 @@ Maps data to the following field types:
 
 ### 1. Prepare Freeform's end for Integration
 
-- Select *Zoho (v2)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My Zoho Integration`
 - Leave this page open and open a new tab to go to the Zoho site...
 
 ### 2. Prepare Zoho's end for Integration
@@ -37,20 +35,22 @@ Maps data to the following field types:
     - For **Homepage URL**, enter the URL of the website you're using this one, e.g. `https://my-precio.us`.
     - For **Authorized Redirect URIs**, enter the automatically generated **OAuth 2.0 Return URI** from the **Freeform CRM Integration** page. e.g. `https://my-precio.us/admin/freeform/settings/crm/myZohoIntegration`
     - Then click **Create** to save the new Client ID.
-- On the next page, take note and copy the *Client ID* and *Client Secret* tokens and paste into your Freeform CP integration page (flip back to your other browser tab) in the *Client ID* and *Client Secret* fields respectively.
+- On the next page, take note and copy the *Client ID* and *Client Secret* tokens.
 
-### 3. Finish the Integration
+### 3. Continue the Integration on your site
 
-- Flip back to the Freeform CP browser tab, and click **Save** at the top right corner of Freeform page.
-- You will be redirected to a Zoho OAuth page to allow permissions.
-    - If not currently logged in, fill in your credentials.
-    - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
+- Switch back to this integration tab.
+- Paste the Zoho **Client ID** value into the **Client ID** field in Freeform.
+- Paste the Salesforce **Client Secret** value into the **Client Secret** field in Freeform.
+- Click the **Save** button.
 
-### 4. Verify Authorization
+### 4. Finish & Verify the Integration
 
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
+- A popup will load a Zoho OAuth page to allow permissions.
+    - If not currently logged in, fill in your credentials.
+    - Click **Allow** when asked for permissions.
 - If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
 ### 5. Configure the Form

@@ -32,9 +32,7 @@ Maps data to the following field types:
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *Freshdesk (v2)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
+- Switch back to this integration tab.
 - Paste the API Key from Freshdesk into the **API Key** field in Freeform.
 - In the **Domain** field, enter your Freshdesk helpdesk domain, e.g. `https://yourcompany.freshdesk.com`.
 

@@ -12,7 +12,7 @@ Spam Blocking is handled as an integration to give you more control. Spam Blocki
 
 - In the **Default IP Addresses** textarea below, enter IP addresses you would like blocked for any form that enables this integration.
 - If you ever need to add, remove or change blocked IP addresses, you can come back to this integration settings page and do so.
-- Save the integration.
+- Click the **Save** button.
 
 ### 3. Configure the Form
 

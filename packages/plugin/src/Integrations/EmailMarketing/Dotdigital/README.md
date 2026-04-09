@@ -30,9 +30,7 @@ Maps data to the following field types:
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *Dotdigital (v2)* or *Dotdigital (v3)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
+- Switch back to this integration tab.
 - Paste the Dotdigital API connector email address into the **API User Email** field in Freeform.
 - Enter the chosen password for that API user in the **API User Password** field in Freeform.
 - Configure additional settings:

@@ -33,11 +33,10 @@ Maps data to the following field types:
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *ActiveCampaign (v3)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
+- Switch back to this integration tab.
 - Paste the **API URL** value from ActiveCampaign into the **API URL** field in Freeform.
 - Paste the **API Key** value from ActiveCampaign into the **API Key** field in Freeform.
+- Click the **Save** button.
 
 ### 3. Verify Authorization
 

@@ -30,9 +30,7 @@ Invisible challenge that does not require interaction.
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *Turnstile* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My Turnstile Integration`.
+- Switch back to this integration tab.
 - In the **Site Key** and **Secret Key** settings, paste in the **Site Key** and **Secret Key** values from the Cloudflare site.
 
 ### 3. Additional Configuration

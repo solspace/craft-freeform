@@ -21,8 +21,6 @@ Freeform will detect if the _Campaign_ plugin is installed and then show it as a
 
 ### 1. Setup Integration on your site
 
-- Select *Campaign plugin (v2)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - Click the **Save** button.
 
 ### 2. Configure the Form

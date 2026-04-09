@@ -16,7 +16,7 @@ Spam Blocking is handled as an integration to give you more control. Spam Blocki
 - In the **Default Blocked Email Addresses** textarea below, enter email addresses you would like blocked from being used in all Email fields for any form that enables this integration.
 - Use asterisks for wildcards (e.g. ``*@hotmail.ru``), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, make good use of the wildcard character by placing one before and after.
 - If you ever need to add, remove or change blocked email addresses, you can come back to this integration settings page and do so.
-- Save the integration.
+- Click the **Save** button.
 
 ### 3. Configure the Form
 

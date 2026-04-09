@@ -7,8 +7,6 @@ This guide assumes you are familiar with what is necessary to connect Freeform d
 
 ### 1. Set up the Webhook on your site
 
-- For *Service Provider*, select **Generic**.
-- Enter a name for the **Name** field.
 - Add the webhook URL from your external source into the **Webhook URL** field in Freeform.
 - Click the **Save** button.
 

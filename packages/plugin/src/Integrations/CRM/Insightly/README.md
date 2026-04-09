@@ -27,9 +27,7 @@ Maps data to the following field types:
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *Insightly (v3.1)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
+- Switch back to this integration tab.
 - Paste the Insightly API token into the **API Key** field in Freeform.
 - Click the **Save** button.
 

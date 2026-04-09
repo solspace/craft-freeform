@@ -49,7 +49,7 @@ Open another browser tab and [log into your Mollie account](https://mollie.com):
 - If you plan on testing the integration in test mode (recommended), enable the **Use Test Mode** setting.
 - Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
-- Click **Authorize**.
+- Click the **Authorize** button.
 - If successful, the flag at the top will turn green and display _Authorized_.
 
 ### 4. Configure the Form

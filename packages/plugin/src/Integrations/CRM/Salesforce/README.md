@@ -6,7 +6,7 @@ This guide assumes you have a [Salesforce](http://salesforce.com) account alread
 
 ## Compatibility
 
-Uses OAuth flow on `v58` of the REST API.
+Uses OAuth flow with Salesforce's **External Client App** (required in 2026) on `v58` of the REST API.
 
 ### Endpoints
 Maps data to the following endpoints:
@@ -67,44 +67,45 @@ An alternate duplicate check on records is also available. When the **Check Cont
 
 ### 1. Prepare Freeform's end for Integration
 
-- Select *Salesforce (v58)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My Salesforce Integration`
 - Copy the URL value generated in the **OAuth 2.0 Return URI** field, e.g. `https://mysite.net/admin/freeform/oauth/authorize`.
 - Leave this page open and open a new tab to go to the Salesforce site...
 
 ### 2. Prepare Salesforce's end for Integration
 
 - Open another browser tab and go to [Salesforce website](https://login.salesforce.com) and log into your account.
-- On the left navigation menu, click on **Apps**, then click **App Manager**.
-- At the top right corner of the page, click the **New Connected App** button.
+- On the left navigation menu, click on **Apps**, then click **External Client Apps** → **External Client App Manager**.
+- At the top right corner of the page, click the **New External Client App** button.
 - Fill out the fields in the **Basic Information** section.
 - In the **API (Enable OAuth Settings)** section, click the **Enable OAuth Settings** checkbox. More fields will appear...
-- In the **Callback URL** field, paste the value from the **OAuth 2.0 Return URI** field in Freeform's settings for the integration.
-- In the **Selected OAuth Scopes** field, select the following permissions from the list and click **Add** arrow button:
-    - **Manage user data via APIs (api)**
-    - **Perform requests on your behalf at any time (refresh_token, offline_access)**
-- You shouldn't need to fill out any further fields, and then click **Save** button.
-- You will be taken to a new page that lists info about your newly created app, including **Consumer Key** and **Consumer Secret** values. You will need to copy each of these values.
-    - Salesforce gets tricky to navigate, so do yourself a favor and copy and paste these 2 values into a text editor for now, being sure to label each too. You'll save yourself some extra steps later on.
-- At the top middle of the page, click on the **Manage** button.
-- At the top middle of the next page, click the **Edit Policies** button.
-- Under the **OAuth policies** section, adjust the following settings:
-    - In the **Permitted Users** field, be sure that it is set to **All users may self-authorize**.
-    - In the **IP Relaxation** field, change the setting to **Relaxed IP restrictions**.
-    - Click **Save** button at bottom of page.
-- If you copy and pasted the **Consumer Key** and **Consumer Secret** values in a text editor, you can skip these next couple steps:
-    - To go back to your app to see these values, click on the **App Manager** navigation item (under **Apps**)
-    - Find your app in the list. Then in the right column, click the down arrow, and then click **View**.
+  - In the **App Settings** area:
+    - In the **Callback URL** field, paste the value from the **OAuth 2.0 Return URI** field in Freeform's settings for the integration.
+    - In the **Selected OAuth Scopes** field, select the following permissions from the list and click **Add** arrow button:
+        - _Manage user data via APIs (api)_
+        - _Perform requests on your behalf at any time (refresh_token, offline_access)_
+  - In the **Flow Enablement** area:
+    - Check _Enable Client Credentials Flow_
+  - In the **Security** area:
+    - Check _Require secret for Web Server Flow_
+    - Check _Require secret for Refresh Token Flow_
+    - Check _Require Proof Key for Code Exchange (PKCE) extension for Supported Authorization Flows_
+    - Check _Enable Refresh Token Rotation_
+  - You shouldn't need to fill out any further fields, and then click the **Create** button.
+- You will be taken to a new page that lists info about your newly created app.
+- To get your **Consumer Key** and **Consumer Secret** values, follow the steps below:
+  - Click on the **Settings** tab.
+  - Click on **OAuth Settings**.
+  - Click the **Consumer Key and Secret** button.
+    - On the page that loads, copy the **Consumer Key** and **Consumer Secret** values.
 
 ### 3. Continue the Integration on your site
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Paste the Salesforce **Consumer Key** value into the **Client ID** field in Freeform.
 - Paste the Salesforce **Consumer Secret** value into the **Client Secret** field in Freeform.
+- Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
 
-- Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - A popup will load a Salesforce OAuth page to allow permissions.

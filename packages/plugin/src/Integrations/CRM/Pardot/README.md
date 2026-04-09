@@ -22,8 +22,6 @@ Maps data to the following field types:
 
 ### 1. Prepare Freeform's end for Integration
 
-- Select *Pardot (v5)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My Pardot Integration`
 - Copy the URL value generated in the **OAuth 2.0 Return URI** field, e.g. `https://mysite.net/admin/freeform/oauth/authorize`.
 - Leave this page open and open a new tab to go to the Salesforce site...
 
@@ -53,16 +51,16 @@ Maps data to the following field types:
 
 ### 3. Prepare the Connection
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Enter Salesforce credentials in the next 2 fields:
     - Paste the Salesforce **Consumer Key** value into the **Client ID** field in Freeform.
     - Paste the Salesforce **Consumer Secret** value into the **Client Secret** field in Freeform.
 - Enter your Pardot Business ID into the **Pardot Business Unit ID** field.
     - To find the Pardot Business Unit ID, go to *Marketing Setup*, in the *Quick Find* box, enter `Pardot`, and then select *Pardot Account Setup*. Copy the business unit ID for the Pardot instance you want to use.
+- Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
 
-- Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - A popup will load a Salesforce OAuth page to allow permissions.

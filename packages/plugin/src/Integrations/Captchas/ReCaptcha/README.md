@@ -35,9 +35,7 @@ Users are never presented any puzzle to solve, etc. Instead, users are automatic
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *reCAPTCHA* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My reCAPTCHA Integration`.
+- Switch back to this integration tab.
 - Choose a reCAPTCHA version and type from the **Captcha Type** select dropdown.
 - In the **Site Key** and **Secret Key** settings, paste in the **Site Key** and **Secret Key** values from the reCAPTCHA site.
 

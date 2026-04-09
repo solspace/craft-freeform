@@ -7,8 +7,6 @@ This integration allows you to map Freeform submission data to [Craft User](http
 
 ### 1. Create the Integration
 
-- Select *User* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My User Integration`.
 - Set the defaults for the next 3 settings (these can be changed when configuring in the form builder later):
     - Choose a user group from the **User Group** select dropdown.
     - Toggle whether the user account should be **Active** or not.

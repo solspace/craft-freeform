@@ -38,9 +38,7 @@ Most users will not even know it's automatically validating them, but like the h
 
 ### 3. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- Select *hCaptcha* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My hCaptcha Integration`.
+- Switch back to this integration tab.
 - Choose an hCaptcha version and type from the **Captcha Type** select dropdown.
 - In the **Site Key** and **Secret Key** settings, paste in the **Site Key** and **Secret Key** values from the hCaptcha site.
 

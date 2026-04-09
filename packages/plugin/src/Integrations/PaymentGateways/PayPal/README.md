@@ -26,10 +26,10 @@ Open another browser tab and log into your PayPal account:
 - On the top menu, click **Developers**.
 - On the next page, click **Apps & Credentials**.
 - Click the **Create App** button on the right.
-    - Provide a name for the app.
-    - Choose _Merchant_ for the type.
-    - Select a _Sandbox Account_.
-    - Click the **Create App** button.
+  - Provide a name for the app.
+  - Choose _Merchant_ for the type.
+  - Select a _Sandbox Account_.
+  - Click the **Create App** button.
 - Once you're taken to the app's page, copy the **Client ID** and **Secret Key 1** tokens.
 
 ### 3. Complete the Connection
@@ -38,7 +38,7 @@ Open another browser tab and log into your PayPal account:
 - If you plan on testing the integration in sandbox mode (recommended), enable the **Use Sandbox** setting.
 - Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
-- Click **Authorize**.
+- Click the **Authorize** button.
 - If successful, the flag at the top will turn green and display _Authorized_.
 
 ### 4. Configure the Form
@@ -61,21 +61,21 @@ To use this integration on your form(s), configure each form individually:
 - At the top of the PayPal page, click **Testing Tools** and then **Sandbox Accounts**.
 - This will provide a list of test accounts to use for testing.
 - Click on one of the **Personal** test account types to reveal/copy the email and password login.
-    - Copy the email address and password.
-    - This will be used for PayPal testing on your site.
+  - Copy the email address and password.
+  - This will be used for PayPal testing on your site.
 
 ### 6. Sandbox Testing
 
 - Switch back to your Craft site.
 - Open your form on the front end.
 - Regular **PayPal** testing:
-    - Click the **PayPal** button. A popup will load.
-    - Log into PayPal with the **Personal** test account credentials you copied earlier.
-    - Complete the transaction.
+  - Click the **PayPal** button. A popup will load.
+  - Log into PayPal with the **Personal** test account credentials you copied earlier.
+  - Complete the transaction.
 - **Credit Card** testing:
-    - Click the **Debit or Credit Card** button. A series of form fields will load directly on the page.
-    - Use PayPal's [credit card generator](https://developer.paypal.com/tools/sandbox/card-testing/#link-testcardnumbers) to create test credit card details.
-    - Complete the transaction.
+  - Click the **Debit or Credit Card** button. A series of form fields will load directly on the page.
+  - Use PayPal's [credit card generator](https://developer.paypal.com/tools/sandbox/card-testing/#link-testcardnumbers) to create test credit card details.
+  - Complete the transaction.
 
 ---
 

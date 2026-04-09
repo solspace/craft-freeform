@@ -29,8 +29,6 @@ Maps data to the following field types:
 
 ### 1. Prepare your site's end for Integration
 
-- Select *Pipedrive (v1)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
 - Leave this page open.
 
@@ -63,7 +61,7 @@ Maps data to the following field types:
 
 ### 4. Prepare the Connection
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Enter Pipedrive credentials in the next 2 fields:
     - Paste the Pipedrive **Client ID** value into the **Client ID** field in Freeform.
     - Paste the Pipedrive **Client Secret** value into the **Client Secret** field in Freeform.

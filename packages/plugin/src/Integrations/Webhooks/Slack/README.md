@@ -16,9 +16,7 @@ The Slack integration allows you to map Freeform submission data off to Slack an
 
 ### 2. Set up Integration on your site
 
-- Switch back to your Freeform/Craft tab.
-- For *Service Provider*, select **Slack**.
-- Enter a name for the **Name** field.
+- Switch back to this integration tab.
 - Paste the Slack Webhook URL you copied earlier into the **Webhook URL** field.
 - For the **Message** field, enter what you want your content to look like for Slack. This will be the default for new forms, but can be overrided per form inside the form builder. You can use Slack markdown here. See example code below...
 - Click the **Save** button.

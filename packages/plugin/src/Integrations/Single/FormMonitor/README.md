@@ -19,9 +19,9 @@ The following limitations have been set for sites during the beta testing period
 - Form Monitor can be enabled for up to 3 forms per Craft site.
 - Form Monitor will test each form 3 times per day (every 8 hours).
 - **Timeout Constraints**:
-    - Form processing: 3 minute maximum
-    - Page loading: 90 second limit
-    - Submission response: 5 second timeout
+  - Form processing: 3 minute maximum
+  - Page loading: 90 second limit
+  - Submission response: 5 second timeout
 
 ### Technical Limitations
 
@@ -56,7 +56,7 @@ Form Monitor cannot work on your site or collect any of your data until you expr
 - Your current Craft and Freeform versions to ensure compatibility with Form Monitor and alert you if you need to upgrade Freeform or Craft in the future.
 - Your site's Timezone to provide weekly and monthly digest email notifications at the proper day and time.
 - Screenshots of the page that contains each form. This is to show that the test was successful or where it may have failed.
-    - Screenshots are stored on the server for up to 30 days.
+  - Screenshots are stored on the server for up to 30 days.
 - If testing email notifications, Form Monitor will receive an email notification of the form test (with its fake test data) from any notification(s) you have configured from your form. Form Monitor will see the types of notifications (e.g. Admin, Conditional, etc.) and any hard-coded elements in the email notification template(s) (e.g. "Thank you for your submission!", a PDF attachment, etc.).
 
 ### You Are In Control Of Your Data
@@ -71,14 +71,13 @@ You also have complete control over your data. From within the Freeform control 
 
 ### 1. Enable The Form Monitor Integration
 
-- Go to the **Single** integration page in the Freeform Settings area.
-- Click on **Form Monitor**.
-- Enable **Form Monitor** by toggling on the **Enabled** setting.
 - Confirm or enter a different:
-    - Default email address in the **Notification Email** setting.
-    - Site/System Name in the **Site Name** setting.
-- Save the page.
-- **Form Monitor** will validate its connection.
+  - Default email address in the **Notification Email** setting.
+  - Site/System Name in the **Site Name** setting.
+- Click the **Save** button.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- If successful, the flag at the top will turn green and display _Authorized_.
 
 ### 2. Configure Your Forms
 To use this integration on your form(s), you must configure each form individually.
@@ -87,6 +86,6 @@ To use this integration on your form(s), you must configure each form individual
 - Click on the **Integrations** tab.
 - Click on **Form Monitor** in the list of available integrations.
 - On the right side of the page:
-    - Enable the integration.
-    - Adjust any settings as needed.
+  - Enable the integration.
+  - Adjust any settings as needed.
 - Save the form.

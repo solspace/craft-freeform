@@ -44,8 +44,6 @@ A duplicate check on records is done in the following way:
 
 ### 1. Prepare Freeform's end for Integration
 
-- Select *HubSpot (v3)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration. e.g. `My HubSpot Integration`
 - Leave this page open and open a new tab to go to the HubSpot site...
 
 ### 2. Prepare HubSpot's end for Integration
@@ -69,7 +67,7 @@ A duplicate check on records is done in the following way:
 
 ### 3. Finish the Integration on your site
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Paste the HubSpot **Token** value into the **Access Token** field in Freeform.
 
 #### Additional Configuration

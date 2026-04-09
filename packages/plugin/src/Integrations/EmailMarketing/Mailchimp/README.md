@@ -35,8 +35,6 @@ If a duplicate email address is found in _Mailchimp_, the profile data will be u
 
 ### 1. Prepare your site's end for Integration
 
-- Select *Mailchimp (v3)* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
 - Leave this page open.
 
@@ -55,13 +53,13 @@ If a duplicate email address is found in _Mailchimp_, the profile data will be u
 
 ### 3. Prepare the Connection
 
-- Flip back to the Freeform CP browser tab.
+- Switch back to this integration tab.
 - Paste the Mailchimp **Client ID** value into the **Client ID** field in Freeform.
 - Paste the Mailchimp **Client Secret** value into the **Client Secret** field in Freeform.
+- Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
 
-- Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
 - Click the **Authorize** button.
 - A popup will load a Mailchimp OAuth page to allow permissions.

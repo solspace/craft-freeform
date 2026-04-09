@@ -83,6 +83,7 @@ export const fieldRulesSlice = createSlice({
 });
 
 const { actions } = fieldRulesSlice;
+
 export { actions as fieldRuleActions };
 
 export default fieldRulesSlice.reducer;

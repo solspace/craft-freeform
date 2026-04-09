@@ -1,5 +1,6 @@
 import { scrollBar } from "@ff-client/styles/mixins";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import type { FMTestStatus } from "@ff-client/types/form-monitor";
 import styled from "styled-components";
 
 export const ResultsWrapper = styled.div`
@@ -276,7 +277,7 @@ export const DayColumn = styled.div`
 `;
 
 export const TestSegment = styled.div<{
-  $status: "success" | "failed" | "pending" | "inactive";
+  $status: FMTestStatus;
   $height: number;
   $offset: number;
   $isLast: boolean;
@@ -364,7 +365,7 @@ export const FormSubmitWrapper = styled.div`
 `;
 
 export const FormSubmitStatus = styled.div<{
-  $status: "success" | "failed" | "pending";
+  $status: FMTestStatus;
 }>`
   display: inline-flex;
   align-items: center;

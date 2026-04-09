@@ -45,6 +45,7 @@ export const submitFormRulesSlice = createSlice({
 });
 
 const { actions } = submitFormRulesSlice;
+
 export { actions as submitFormRuleActions };
 
 export default submitFormRulesSlice.reducer;

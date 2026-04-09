@@ -4,7 +4,15 @@ import type { TinyMCE } from "tinymce";
 import { hide, show } from "./operations/dropdown";
 import type { TokenBackend } from "./tokens.types";
 
+let isRegistered = false;
+
 export const registerFormTokens = (tinymce: TinyMCE): void => {
+  if (isRegistered) {
+    return;
+  }
+
+  isRegistered = true;
+
   // Register the plugin
   tinymce.PluginManager.add("freeform-tokens", (editor) => {
     const backend: TokenBackend = {

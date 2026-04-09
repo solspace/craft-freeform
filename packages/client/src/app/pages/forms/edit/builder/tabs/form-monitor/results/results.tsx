@@ -406,7 +406,7 @@ export const FMResults: React.FC = () => {
     return <ErrorMessage>{formTests.error?.message}</ErrorMessage>;
   }
 
-  if (!formTests || !formTests.tests) {
+  if (!formTests?.tests) {
     return (
       <ResultsWrapper>
         <NoResults>
@@ -526,7 +526,7 @@ export const FMResults: React.FC = () => {
                 test={test}
                 formId={formTests.formId}
                 onDelete={setTestToDelete}
-                showNotifications={formTests.notifications?.enabled}
+                showNotifications={formTests.notifications?.enabled || false}
               />
             ))}
           </tbody>

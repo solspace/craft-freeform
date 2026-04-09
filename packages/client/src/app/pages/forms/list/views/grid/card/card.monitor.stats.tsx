@@ -77,8 +77,7 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     return null;
   }
 
-  const isPending =
-    !formMonitor || !formMonitor.percentage || formMonitor.total === 0;
+  const isPending = !formMonitor?.percentage || formMonitor.total === 0;
   const isError = formMonitor?.error;
 
   if (isError) {

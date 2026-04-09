@@ -78,6 +78,11 @@ const buildOptions = {
   sourcemap: isProduction ? false : "linked",
   minify: isProduction,
   target: ["chrome79", "edge79", "firefox78", "safari13"],
+  // esbuild 0.28.0 incorrectly tries to lower destructuring for these
+  // browser targets and then errors because that transform path is missing.
+  supported: {
+    destructuring: true,
+  },
   legalComments: "external",
   logLevel: "info",
   alias: {

@@ -1,4 +1,5 @@
 import { colors, spacings } from "@ff-client/styles/variables";
+import type { FMTestStatus } from "@ff-client/types/form-monitor";
 import styled, { css } from "styled-components";
 
 export const FormMonitorWrapper = styled.div`
@@ -60,15 +61,11 @@ const dotSizeStyles = {
   `,
 };
 
+type Size = "sm" | "md" | "lg" | "xl";
+
 export const StatusIndicator = styled.div<{
-  $status:
-    | "success"
-    | "failed"
-    | "pending"
-    | "disabled"
-    | "active"
-    | "inactive";
-  $size?: "sm" | "md" | "lg" | "xl";
+  $status: FMTestStatus;
+  $size?: Size;
 }>`
   display: inline-flex;
   align-items: center;

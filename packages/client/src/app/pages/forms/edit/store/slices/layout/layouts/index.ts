@@ -28,6 +28,7 @@ export const layoutsSlice = createSlice({
 });
 
 const { actions } = layoutsSlice;
+
 export { actions as layoutActions };
 
 export default layoutsSlice.reducer;

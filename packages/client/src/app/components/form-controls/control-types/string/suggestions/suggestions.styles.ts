@@ -2,6 +2,10 @@ import { scrollBar } from "@ff-client/styles/mixins";
 import { borderRadius, colors, shadows } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
+export const InputWithSuggestionsFieldWrapper = styled.div`
+  position: relative;
+`;
+
 export const SuggestionsWrapper = styled.ul`
   position: absolute;
   z-index: 2;

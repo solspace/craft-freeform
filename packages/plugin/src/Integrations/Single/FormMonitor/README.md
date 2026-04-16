@@ -14,7 +14,7 @@ For Form Monitor to work, your site must:
 
 ### Imposed Limitations
 
-The following limitations have been set for sites during the beta testing period. These limitations may change in the future.
+The following limitations have currently been set for sites. These limitations may change in the future.
 
 - Form Monitor can be enabled for up to 3 forms per Craft site.
 - Form Monitor will test each form 3 times per day (every 8 hours).

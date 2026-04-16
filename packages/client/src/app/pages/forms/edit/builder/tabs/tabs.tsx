@@ -23,7 +23,6 @@ import { NavLink } from "react-router-dom";
 
 import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
 import {
-  BetaLabel,
   FormName,
   Heading,
   SaveButton,
@@ -124,10 +123,7 @@ export const Tabs: React.FC = () => {
         )}
         {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
           <NavLink to={`/forms/${form.id}/form-monitor`}>
-            <span>
-              {translate("Monitoring")}
-              <BetaLabel>{translate("BETA")}</BetaLabel>
-            </span>
+            <span>{translate("Monitoring")}</span>
           </NavLink>
         )}
         {formSettingsData && config.limitations.can("settings.tab") && (

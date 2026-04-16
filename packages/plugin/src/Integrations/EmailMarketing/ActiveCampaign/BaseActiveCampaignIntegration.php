@@ -56,11 +56,9 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     public function checkConnection(Client $client): bool
     {
-        $response = $client->get($this->getEndpoint('/lists?limit=100'));
+        $response = $client->get($this->getEndpoint('/users/me'));
 
-        $json = json_decode((string) $response->getBody(), true);
-
-        return !empty($json['lists']);
+        return 200 === $response->getStatusCode();
     }
 
     public function getApiToken(): string

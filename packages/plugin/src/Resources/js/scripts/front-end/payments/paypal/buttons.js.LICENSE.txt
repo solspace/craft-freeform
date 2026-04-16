@@ -2,7 +2,7 @@ Bundled license information:
 
 @paypal/paypal-js/dist/esm/paypal-js.js:
   /*!
-   * paypal-js v9.6.0 (2026-04-08T20:10:41.573Z)
+   * paypal-js v9.4.0 (2026-03-02T19:41:14.770Z)
    * Copyright 2020-present, PayPal, Inc. All rights reserved.
    *
    * Licensed under the Apache License, Version 2.0 (the "License");

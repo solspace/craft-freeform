@@ -16,7 +16,7 @@ class ReturnUrlInput extends FeatureBundle
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $form = $event->getForm();
         $bag = $form->getProperties();
@@ -30,7 +30,7 @@ class ReturnUrlInput extends FeatureBundle
         }
     }
 
-    public function attachToJson(OutputAsJsonEvent $event)
+    public function attachToJson(OutputAsJsonEvent $event): void
     {
         $bag = $event->getForm()->getProperties();
         if ($bag->get('returnUrl')) {

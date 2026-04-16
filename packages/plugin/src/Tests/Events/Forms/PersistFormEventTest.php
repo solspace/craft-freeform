@@ -9,7 +9,7 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 #[CoversClass(PersistFormEvent::class)]
 class PersistFormEventTest extends TestCase
 {
-    public function testAddErrorsToResponse()
+    public function testAddErrorsToResponse(): void
     {
         $event = new PersistFormEvent((object) [], null);
         $event->addErrorsToResponse('form', ['handle' => ['test'], 'name' => ['test 2', 'test 3']]);
@@ -27,7 +27,7 @@ class PersistFormEventTest extends TestCase
         );
     }
 
-    public function testStatus400OnErrors()
+    public function testStatus400OnErrors(): void
     {
         $event = new PersistFormEvent((object) [], null);
 

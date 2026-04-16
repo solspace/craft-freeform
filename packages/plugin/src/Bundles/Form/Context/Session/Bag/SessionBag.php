@@ -36,7 +36,7 @@ class SessionBag implements \JsonSerializable
         return $this->properties;
     }
 
-    public function setProperties(array $properties)
+    public function setProperties(array $properties): void
     {
         $this->properties = $properties;
     }
@@ -46,7 +46,7 @@ class SessionBag implements \JsonSerializable
         return $this->attributes;
     }
 
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
     }
@@ -56,7 +56,7 @@ class SessionBag implements \JsonSerializable
         return $this->lastUpdate;
     }
 
-    public function setLastUpdate(Carbon $lastUpdate)
+    public function setLastUpdate(Carbon $lastUpdate): void
     {
         $this->lastUpdate = $lastUpdate;
     }

@@ -56,5 +56,5 @@ class NotificationsMigrator
     }
 
     // TODO: update this to use the new tables instead of old layout JSON
-    private function changeFormOccurrences(array $idToFilenameMap) {}
+    private function changeFormOccurrences(array $idToFilenameMap): void {}
 }

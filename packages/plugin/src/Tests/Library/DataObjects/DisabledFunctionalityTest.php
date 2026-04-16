@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\DataObjects\DisabledFunctionality;
 #[CoversClass(DisabledFunctionality::class)]
 class DisabledFunctionalityTest extends TestCase
 {
-    public function testConstructingFromFalseBool()
+    public function testConstructingFromFalseBool(): void
     {
         $disabledFunctionality = new DisabledFunctionality(false);
 
@@ -34,7 +34,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->submitButtons);
     }
 
-    public function testConstructingFromTrueBool()
+    public function testConstructingFromTrueBool(): void
     {
         $disabledFunctionality = new DisabledFunctionality(true);
 
@@ -59,7 +59,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->submitButtons);
     }
 
-    public function testConstructingTrueForApi()
+    public function testConstructingTrueForApi(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['api' => true]);
 
@@ -74,7 +74,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForConnections()
+    public function testConstructingTrueForConnections(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['elements' => true]);
 
@@ -89,7 +89,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForAdminNotifications()
+    public function testConstructingTrueForAdminNotifications(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['adminNotifications' => true]);
 
@@ -104,7 +104,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForDynamicRecipients()
+    public function testConstructingTrueForDynamicRecipients(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['userSelectNotifications' => true]);
 
@@ -119,7 +119,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForSubmitterNotifications()
+    public function testConstructingTrueForSubmitterNotifications(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['emailFieldNotifications' => true]);
 
@@ -134,7 +134,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForConditionalNotifications()
+    public function testConstructingTrueForConditionalNotifications(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['conditionalNotifications' => true]);
 
@@ -149,7 +149,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForPayments()
+    public function testConstructingTrueForPayments(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['payments' => true]);
 
@@ -163,7 +163,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingTrueForWebhooks()
+    public function testConstructingTrueForWebhooks(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['webhooks' => true]);
 
@@ -177,7 +177,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingAllTrue()
+    public function testConstructingAllTrue(): void
     {
         $disabledFunctionality = new DisabledFunctionality([
             'api' => true,
@@ -202,7 +202,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testConstructingRandomValues()
+    public function testConstructingRandomValues(): void
     {
         $disabledFunctionality = new DisabledFunctionality([
             'random1' => true,
@@ -221,7 +221,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testNotificationsKeyword()
+    public function testNotificationsKeyword(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['notifications']);
 
@@ -236,7 +236,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
-    public function testCaptchasKeyword()
+    public function testCaptchasKeyword(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['captchas']);
 
@@ -252,7 +252,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isCaptchas());
     }
 
-    public function testShorthandKeyword()
+    public function testShorthandKeyword(): void
     {
         $disabledFunctionality = new DisabledFunctionality(['api']);
 

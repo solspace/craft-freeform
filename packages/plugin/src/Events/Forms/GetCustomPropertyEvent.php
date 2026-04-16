@@ -44,7 +44,7 @@ class GetCustomPropertyEvent extends Event
         return $this->value;
     }
 
-    public function setValue($value)
+    public function setValue($value): void
     {
         $this->isSet = true;
 

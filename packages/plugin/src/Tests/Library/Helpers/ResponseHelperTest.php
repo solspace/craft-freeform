@@ -27,7 +27,7 @@ class ResponseHelperTest extends TestCase
         $this->responseHelper->expects($this->any())->method('getResponse')->willReturn($response);
     }
 
-    public function testSetContentSecurityPolicy()
+    public function testSetContentSecurityPolicy(): void
     {
         $matcher = $this->exactly(3);
         $this->headerCollection

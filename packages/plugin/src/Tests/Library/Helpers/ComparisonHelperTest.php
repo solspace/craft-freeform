@@ -41,7 +41,7 @@ class ComparisonHelperTest extends TestCase
     #[TestWith(['+974', '+974', true])]
     #[TestWith(['b*brides', 'bestbrides', true])]
     #[TestWith(['*charming*', 'charmingdate', true])]
-    public function testTextMatchesWildcardPattern(string $pattern, string $string, bool $expectedResult)
+    public function testTextMatchesWildcardPattern(string $pattern, string $string, bool $expectedResult): void
     {
         $result = ComparisonHelper::stringContainsWildcardKeyword($pattern, $string);
 
@@ -72,7 +72,7 @@ class ComparisonHelperTest extends TestCase
     #[TestWith(['some@*.com', 'some@gmail.ru', false])]
     #[TestWith(['[some@*.com', '[some@gmail.com', true])]
     #[TestWith(['[some@*.com', 'some@gmail.com', false])]
-    public function testWordMatchesWildcardPattern(string $pattern, string $string, bool $expectedResult)
+    public function testWordMatchesWildcardPattern(string $pattern, string $string, bool $expectedResult): void
     {
         $result = ComparisonHelper::stringMatchesWildcard($pattern, $string);
 

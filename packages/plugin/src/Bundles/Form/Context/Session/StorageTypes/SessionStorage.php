@@ -39,19 +39,19 @@ class SessionStorage implements FormContextStorageInterface
         return $this;
     }
 
-    public function persist()
+    public function persist(): void
     {
         \Craft::$app->getSession()->set(self::KEY, json_encode($this->context));
     }
 
-    public function removeBag(string $key)
+    public function removeBag(string $key): void
     {
         if (isset($this->context[$key])) {
             unset($this->context[$key]);
         }
     }
 
-    public function cleanup()
+    public function cleanup(): void
     {
         uasort($this->context, static function (SessionBag $a, SessionBag $b) {
             return $b->getLastUpdate()->timestamp <=> $a->getLastUpdate()->timestamp;
@@ -75,7 +75,7 @@ class SessionStorage implements FormContextStorageInterface
         $this->persist();
     }
 
-    private function loadContext()
+    private function loadContext(): void
     {
         $storedContext = \Craft::$app->getSession()->get(self::KEY, '{}');
         $storedContext = json_decode($storedContext, true);

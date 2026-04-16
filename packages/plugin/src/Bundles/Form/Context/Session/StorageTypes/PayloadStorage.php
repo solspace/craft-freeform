@@ -101,22 +101,22 @@ class PayloadStorage implements FormContextStorageInterface
         return $this->getDecryptedBag($form, $payload);
     }
 
-    public function registerBag(string $key, SessionBag $bag, Form $form)
+    public function registerBag(string $key, SessionBag $bag, Form $form): void
     {
         // isn't required
     }
 
-    public function persist()
+    public function persist(): void
     {
         // isn't required
     }
 
-    public function removeBag(string $key)
+    public function removeBag(string $key): void
     {
         // isn't required
     }
 
-    public function cleanup()
+    public function cleanup(): void
     {
         // isn't required
     }

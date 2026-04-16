@@ -15,14 +15,14 @@ use Solspace\Freeform\Library\DataObjects\ExportSettings;
 #[CoversClass(ExportCsv::class)]
 class ExportCsvTest extends BaseExportTestingCase
 {
-    public function testEmptyExport()
+    public function testEmptyExport(): void
     {
         $exporter = new ExportCsv($this->formMock, $this->queryMock, new FieldDescriptorCollection());
         $exporter->export($this->resourceMock);
         $this->assertEmpty($this->getOutput());
     }
 
-    public function testExportBasicRows()
+    public function testExportBasicRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -46,7 +46,7 @@ class ExportCsvTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testUnusedDescriptors()
+    public function testUnusedDescriptors(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -72,7 +72,7 @@ class ExportCsvTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportTableRows()
+    public function testExportTableRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -198,7 +198,7 @@ class ExportCsvTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportRemoveNewlinesOn()
+    public function testExportRemoveNewlinesOn(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -250,7 +250,7 @@ class ExportCsvTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportRemoveNewlinesOff()
+    public function testExportRemoveNewlinesOff(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -307,7 +307,7 @@ class ExportCsvTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportHandlesAsNames()
+    public function testExportHandlesAsNames(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))

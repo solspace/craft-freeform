@@ -11,7 +11,7 @@ use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 #[CoversClass(TableTransformer::class)]
 class TableTransformerTest extends TestCase
 {
-    public function testTransform()
+    public function testTransform(): void
     {
         $value = [
             ['label' => 'Col 1', 'value' => 'one', 'type' => 'text', 'required' => true],
@@ -33,7 +33,7 @@ class TableTransformerTest extends TestCase
         $this->assertEquals($expected, $output);
     }
 
-    public function testReverseTransform()
+    public function testReverseTransform(): void
     {
         $value = new TableLayout();
         $value

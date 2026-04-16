@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Length;
 #[CoversClass(Length::class)]
 class LengthValidatorTest extends TestCase
 {
-    public function testValidOnSameLength()
+    public function testValidOnSameLength(): void
     {
         $validator = new Length(100);
 
@@ -20,7 +20,7 @@ class LengthValidatorTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    public function testValidOnSmallerLength()
+    public function testValidOnSmallerLength(): void
     {
         $validator = new Length(100);
 
@@ -31,7 +31,7 @@ class LengthValidatorTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    public function testInvalidOnLargerLength()
+    public function testInvalidOnLargerLength(): void
     {
         $validator = new Length(100);
 
@@ -42,7 +42,7 @@ class LengthValidatorTest extends TestCase
         $this->assertSame(['Value contains 101 characters, 100 allowed.'], $result);
     }
 
-    public function testCustomErrorMessage()
+    public function testCustomErrorMessage(): void
     {
         $validator = new Length(
             100,
@@ -59,7 +59,7 @@ class LengthValidatorTest extends TestCase
         );
     }
 
-    public function testDefaultsTo255()
+    public function testDefaultsTo255(): void
     {
         $validator = new Length();
 

@@ -28,7 +28,7 @@ class IntegrationsQueueService extends BaseService
      *
      * @param AbstractField[] $fields
      */
-    public function enqueueIntegrations(Submission $submission, array $fields)
+    public function enqueueIntegrations(Submission $submission, array $fields): void
     {
         $this->enqueueMailingListIntegrations($submission, $fields);
     }
@@ -38,7 +38,7 @@ class IntegrationsQueueService extends BaseService
      *
      * @param AbstractField[] $fields
      */
-    public function enqueueMailingListIntegrations(Submission $submission, array $fields)
+    public function enqueueMailingListIntegrations(Submission $submission, array $fields): void
     {
         // TODO: Refactor this
         return;
@@ -64,7 +64,7 @@ class IntegrationsQueueService extends BaseService
      *
      * @param int $submissionId
      */
-    public function processIntegrations($submissionId)
+    public function processIntegrations($submissionId): void
     {
         $tasks = $this->getTasksBySubmissionId($submissionId);
         foreach ($tasks as $task) {
@@ -75,7 +75,7 @@ class IntegrationsQueueService extends BaseService
     /**
      * Process submission mailing lists integrations that were queued for asynchronously processing.
      */
-    public function processMailingListIntegration(IntegrationsQueueModel $task)
+    public function processMailingListIntegration(IntegrationsQueueModel $task): void
     {
         Freeform::getInstance()->emailMarketing->addToMailingList($task);
     }

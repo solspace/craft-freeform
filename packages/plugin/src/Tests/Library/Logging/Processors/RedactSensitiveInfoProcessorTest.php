@@ -57,7 +57,7 @@ class RedactSensitiveInfoProcessorTest extends TestCase
         );
     }
 
-    public function testRedactMixed()
+    public function testRedactMixed(): void
     {
         $logRecord = new LogRecord(
             new \DateTimeImmutable(),

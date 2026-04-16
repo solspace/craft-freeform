@@ -17,7 +17,7 @@ class SubmissionLimiter extends FeatureBundle
         Event::on(Form::class, Form::EVENT_SUBMIT, [$this, 'handleLimit']);
     }
 
-    public function handleLimit(SubmitEvent $event)
+    public function handleLimit(SubmitEvent $event): void
     {
         $form = $event->getForm();
         $limit = $form->getProperties()->get(self::BAG_KEY);

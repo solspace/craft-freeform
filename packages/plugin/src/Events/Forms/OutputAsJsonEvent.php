@@ -43,7 +43,7 @@ class OutputAsJsonEvent extends ArrayableEvent implements FormEventInterface
         return $this;
     }
 
-    public function setJsonObject(array $jsonObject)
+    public function setJsonObject(array $jsonObject): void
     {
         $this->jsonObject = $jsonObject;
     }

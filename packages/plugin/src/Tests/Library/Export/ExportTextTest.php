@@ -14,7 +14,7 @@ use Solspace\Freeform\Library\DataObjects\ExportSettings;
 #[CoversClass(ExportText::class)]
 class ExportTextTest extends BaseExportTestingCase
 {
-    public function testEmptyExport()
+    public function testEmptyExport(): void
     {
         $this->queryMock->method('batch')->willReturn([]);
 
@@ -23,7 +23,7 @@ class ExportTextTest extends BaseExportTestingCase
         $this->assertEmpty($this->getOutput());
     }
 
-    public function testExportBasicRows()
+    public function testExportBasicRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -50,7 +50,7 @@ class ExportTextTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testUnusedDescriptors()
+    public function testUnusedDescriptors(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -79,7 +79,7 @@ class ExportTextTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportTableRows()
+    public function testExportTableRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))

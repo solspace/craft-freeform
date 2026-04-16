@@ -10,7 +10,7 @@ use Solspace\Freeform\Library\Logging\Readers\FileLogReader;
 #[CoversClass(FileLogReader::class)]
 class FileLogReaderTest extends TestCase
 {
-    public function testReadLog()
+    public function testReadLog(): void
     {
         $reader = new FileLogReader(__DIR__.'/test.log');
         $this->assertCount(2, $reader);
@@ -30,7 +30,7 @@ class FileLogReaderTest extends TestCase
         $this->assertEquals(['password' => 'reda**********', 'username' => 'testuser'], $lastLine->getContext());
     }
 
-    public function testReadFirst5()
+    public function testReadFirst5(): void
     {
         $reader = new FileLogReader(__DIR__.'/test-large.log');
         $lines = $reader->getLines(5, readFromEnd: false);
@@ -40,21 +40,21 @@ class FileLogReaderTest extends TestCase
         $this->assertSame('test message 4', $lines[4]->getMessage());
     }
 
-    public function testFetchesMaximumAvailable()
+    public function testFetchesMaximumAvailable(): void
     {
         $reader = new FileLogReader(__DIR__.'/test.log');
         $this->assertCount(2, $reader->getLines(100));
         $this->assertCount(2, $reader->getLines(100, readFromEnd: false));
     }
 
-    public function testFetchWithinBounds()
+    public function testFetchWithinBounds(): void
     {
         $reader = new FileLogReader(__DIR__.'/test-large.log');
         $this->assertCount(10, $reader->getLines(10));
         $this->assertCount(10, $reader->getLines(10, readFromEnd: false));
     }
 
-    public function testReadLastOffset()
+    public function testReadLastOffset(): void
     {
         $reader = new FileLogReader(__DIR__.'/test-large.log');
 
@@ -64,7 +64,7 @@ class FileLogReaderTest extends TestCase
         $this->assertSame('test message 980', $lines[9]->getMessage());
     }
 
-    public function testReadFirstOffset()
+    public function testReadFirstOffset(): void
     {
         $reader = new FileLogReader(__DIR__.'/test-large.log');
 

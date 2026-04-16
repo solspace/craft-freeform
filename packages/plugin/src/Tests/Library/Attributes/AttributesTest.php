@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 #[CoversClass(Attributes::class)]
 class AttributesTest extends TestCase
 {
-    public function testGathersAttributes()
+    public function testGathersAttributes(): void
     {
         $attributes = new Attributes();
         $attributes
@@ -24,7 +24,7 @@ class AttributesTest extends TestCase
         $this->assertEquals('text value', $attributes->get('text'));
     }
 
-    public function testDoesNotShowFalseAttributes()
+    public function testDoesNotShowFalseAttributes(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-test-false', false);
@@ -32,7 +32,7 @@ class AttributesTest extends TestCase
         $this->assertEquals('', (string) $attributes);
     }
 
-    public function testRendersEmptyStringAttributes()
+    public function testRendersEmptyStringAttributes(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-empty-test', '');
@@ -40,7 +40,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-empty-test=""', (string) $attributes);
     }
 
-    public function testBooleanValuesAddOnlyKey()
+    public function testBooleanValuesAddOnlyKey(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-boolean-true', true);
@@ -48,7 +48,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-boolean-true', (string) $attributes);
     }
 
-    public function testZeroNumericGeneratesAttribute()
+    public function testZeroNumericGeneratesAttribute(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-numeric-zero', 0);
@@ -56,7 +56,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-numeric-zero="0"', (string) $attributes);
     }
 
-    public function testEscapesHtml()
+    public function testEscapesHtml(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-inject', '"><script>alert(\'hack!\');</script>');
@@ -67,7 +67,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testRendersKeysWithNoValue()
+    public function testRendersKeysWithNoValue(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-void');
@@ -75,7 +75,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-void', (string) $attributes);
     }
 
-    public function testRendersWithNullKey()
+    public function testRendersWithNullKey(): void
     {
         $attributes = new Attributes();
         $attributes
@@ -86,7 +86,7 @@ class AttributesTest extends TestCase
         $this->assertEquals('', (string) $attributes);
     }
 
-    public function testRendersObjects()
+    public function testRendersObjects(): void
     {
         $attributes = new Attributes();
         $attributes->set('data-object', (object) ['one' => 1, 'two' => 2, 'three' => 3]);
@@ -94,7 +94,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-object="one:1 two:2 three:3"', (string) $attributes);
     }
 
-    public function testMergeAdding()
+    public function testMergeAdding(): void
     {
         $attributes = new Attributes();
         $attributes
@@ -116,7 +116,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testMergeWithAttributeObject()
+    public function testMergeWithAttributeObject(): void
     {
         $mergeAttributes = new Attributes(['class' => 'test']);
 
@@ -126,7 +126,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="test"', (string) $attributes);
     }
 
-    public function testConstructorAdding()
+    public function testConstructorAdding(): void
     {
         $attributes = new Attributes([
             'data-boolean' => true,
@@ -145,7 +145,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testSeveralAttributes()
+    public function testSeveralAttributes(): void
     {
         $attributes = new Attributes();
         $attributes
@@ -165,7 +165,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testSetIfEmpty()
+    public function testSetIfEmpty(): void
     {
         $attributes = new Attributes();
         $attributes
@@ -182,7 +182,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testReplaceWithEqualSign()
+    public function testReplaceWithEqualSign(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -195,7 +195,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="replacer"', (string) $attributes);
     }
 
-    public function testAppendWithPlus()
+    public function testAppendWithPlus(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -208,7 +208,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1 class-2 extra-class append-class"', (string) $attributes);
     }
 
-    public function testRemoveNonExisting()
+    public function testRemoveNonExisting(): void
     {
         $attributes = new Attributes();
 
@@ -216,7 +216,7 @@ class AttributesTest extends TestCase
         $this->assertEquals('', (string) $attributes);
     }
 
-    public function testRemoveOneWithMinus()
+    public function testRemoveOneWithMinus(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -232,7 +232,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
     }
 
-    public function testRemoveSpacesAround()
+    public function testRemoveSpacesAround(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -245,7 +245,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
     }
 
-    public function testRemoveSeveralWithString()
+    public function testRemoveSeveralWithString(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -258,7 +258,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-2"', (string) $attributes);
     }
 
-    public function testRemoveSeveralWithArray()
+    public function testRemoveSeveralWithArray(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -271,7 +271,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-2"', (string) $attributes);
     }
 
-    public function testAppendingArrayValues()
+    public function testAppendingArrayValues(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1 ', ' class-2']);
@@ -280,7 +280,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1 class-2 class-3 class-4"', (string) $attributes);
     }
 
-    public function testSettingSingleValueAsAppendToEmptyAttribute()
+    public function testSettingSingleValueAsAppendToEmptyAttribute(): void
     {
         $attributes = new Attributes();
         $attributes->set('class', '');
@@ -289,7 +289,7 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1"', (string) $attributes);
     }
 
-    public function testAttributesToHtmlArrayConversion()
+    public function testAttributesToHtmlArrayConversion(): void
     {
         $attributes = new Attributes([
             'null-attribute' => null,

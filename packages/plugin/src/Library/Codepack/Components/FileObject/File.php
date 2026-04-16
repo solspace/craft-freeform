@@ -32,7 +32,7 @@ class File extends FileObject
      *
      * @param null|array|callable $callable
      */
-    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null)
+    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null): void
     {
         $target = rtrim($target, '/');
         $newFilePath = $target.'/'.$filePrefix.$this->name;

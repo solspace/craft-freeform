@@ -13,7 +13,7 @@ use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 #[CoversClass(ExportJson::class)]
 class ExportJsonTest extends BaseExportTestingCase
 {
-    public function testEmptyExport()
+    public function testEmptyExport(): void
     {
         $this->queryMock->method('batch')->willReturn([]);
 
@@ -22,7 +22,7 @@ class ExportJsonTest extends BaseExportTestingCase
         $this->assertSame("[\n]\n", $this->getOutput());
     }
 
-    public function testExportBasicRows()
+    public function testExportBasicRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -53,7 +53,7 @@ class ExportJsonTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testUnusedDescriptors()
+    public function testUnusedDescriptors(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -86,7 +86,7 @@ class ExportJsonTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportTableRows()
+    public function testExportTableRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))

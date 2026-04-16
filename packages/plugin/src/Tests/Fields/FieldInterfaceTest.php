@@ -10,7 +10,7 @@ use Solspace\Freeform\Form\Form;
 #[CoversClass(DropdownField::class)]
 class FieldInterfaceTest extends TestCase
 {
-    public function testImplementations()
+    public function testImplementations(): void
     {
         $formMock = $this->createMock(Form::class);
         $field = new DropdownField($formMock);

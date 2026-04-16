@@ -9,7 +9,7 @@ use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 #[CoversClass(ImplementationProvider::class)]
 class ImplementationProviderTest extends TestCase
 {
-    public function testExtractsImplementations()
+    public function testExtractsImplementations(): void
     {
         $provider = new ImplementationProvider();
         $result = $provider->getImplementations(TestThis::class);
@@ -20,7 +20,7 @@ class ImplementationProviderTest extends TestCase
         );
     }
 
-    public function testGetsFromArray()
+    public function testGetsFromArray(): void
     {
         $provider = new ImplementationProvider();
         $result = $provider->getFromArray([

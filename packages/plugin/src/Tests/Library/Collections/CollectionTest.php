@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Collections\Collection;
 #[CoversClass(Collection::class)]
 class CollectionTest extends TestCase
 {
-    public function testChecksForImplementation()
+    public function testChecksForImplementation(): void
     {
         $collection = new class extends Collection {
             protected static function supports(): array
@@ -50,7 +50,7 @@ class CollectionTest extends TestCase
         $this->assertCount(2, $collection);
     }
 
-    public function testThrowsOnInvalidType()
+    public function testThrowsOnInvalidType(): void
     {
         $object = new class {
             public string $test = 'test';
@@ -69,7 +69,7 @@ class CollectionTest extends TestCase
         $collection->add($object);
     }
 
-    public function testFiltersOutItemsReturnsNewCollection()
+    public function testFiltersOutItemsReturnsNewCollection(): void
     {
         $collection = new class extends Collection {};
 
@@ -87,7 +87,7 @@ class CollectionTest extends TestCase
         $this->assertNotSame($collection, $filtered);
     }
 
-    public function testKeySelector()
+    public function testKeySelector(): void
     {
         $collection = new class extends Collection {
             public function __construct(array $items = [])

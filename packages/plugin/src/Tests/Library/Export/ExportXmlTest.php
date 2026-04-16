@@ -13,7 +13,7 @@ use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 #[CoversClass(ExportXml::class)]
 class ExportXmlTest extends BaseExportTestingCase
 {
-    public function testEmptyExport()
+    public function testEmptyExport(): void
     {
         $this->queryMock->method('batch')->willReturn([]);
 
@@ -22,7 +22,7 @@ class ExportXmlTest extends BaseExportTestingCase
         $this->assertSame('<?xml version="1.0" encoding="UTF-8"?>'."\n<root/>\n", $this->getOutput());
     }
 
-    public function testExportBasicRows()
+    public function testExportBasicRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -54,7 +54,7 @@ class ExportXmlTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testUnusedDescriptors()
+    public function testUnusedDescriptors(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))
@@ -88,7 +88,7 @@ class ExportXmlTest extends BaseExportTestingCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    public function testExportTableRows()
+    public function testExportTableRows(): void
     {
         $descriptors = (new FieldDescriptorCollection())
             ->add(new FieldDescriptor('id', 'ID'))

@@ -15,7 +15,7 @@ class HiddenFormFields extends FeatureBundle
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $hiddenFields = $event->getForm()->getFields()->getList(HiddenField::class);
 

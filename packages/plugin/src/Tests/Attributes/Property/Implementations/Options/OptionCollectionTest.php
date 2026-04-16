@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 #[CoversClass(OptionCollection::class)]
 class OptionCollectionTest extends TestCase
 {
-    public function testNestedChildren()
+    public function testNestedChildren(): void
     {
         $collection = new OptionCollection();
         $collection->add('one', 'One');

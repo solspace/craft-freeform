@@ -10,7 +10,7 @@ use Solspace\Freeform\Library\Helpers\StringHelper;
 #[CoversClass(StringHelper::class)]
 class StringHelperTest extends TestCase
 {
-    public function testIncrementStringWithNoNumber()
+    public function testIncrementStringWithNoNumber(): void
     {
         $this->assertSame(
             'test string1',
@@ -18,7 +18,7 @@ class StringHelperTest extends TestCase
         );
     }
 
-    public function testIncrementStringWithNumber()
+    public function testIncrementStringWithNumber(): void
     {
         $this->assertSame(
             'test string154',
@@ -26,7 +26,7 @@ class StringHelperTest extends TestCase
         );
     }
 
-    public function testIncrementStringWithNoNumberSpaced()
+    public function testIncrementStringWithNoNumberSpaced(): void
     {
         $this->assertSame(
             'test string 1',
@@ -34,7 +34,7 @@ class StringHelperTest extends TestCase
         );
     }
 
-    public function testIncrementStringSpaced()
+    public function testIncrementStringSpaced(): void
     {
         $this->assertSame(
             'test string 154',
@@ -53,7 +53,7 @@ class StringHelperTest extends TestCase
     #[TestWith(['one,two,three', ['one', 'two', 'three']])]
     #[TestWith(['one|two|three', ['one', 'two', 'three']])]
     #[TestWith(['one,| two|;three', ['one', 'two', 'three']])]
-    public function testExtractSeparatedValues($input, $expected)
+    public function testExtractSeparatedValues($input, $expected): void
     {
         $result = StringHelper::extractSeparatedValues($input);
         $this->assertSame(
@@ -63,7 +63,7 @@ class StringHelperTest extends TestCase
         );
     }
 
-    public function testIsEnvVariable()
+    public function testIsEnvVariable(): void
     {
         $this->assertTrue(StringHelper::isEnvVariable('$TEST'));
         $this->assertTrue(StringHelper::isEnvVariable('$test_VARIABLE'));

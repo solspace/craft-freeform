@@ -259,7 +259,7 @@ class Settings extends Model
         ];
     }
 
-    public function folderExists(string $attribute)
+    public function folderExists(string $attribute): void
     {
         $path = $this->{$attribute};
         $absolutePath = $this->getAbsolutePath($path);

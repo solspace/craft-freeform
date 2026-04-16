@@ -51,7 +51,7 @@ class FormFieldRecord extends ActiveRecord
         ];
     }
 
-    public function validateFormHandleUniqueness($attribute)
+    public function validateFormHandleUniqueness($attribute): void
     {
         $metadata = $this->metadata;
         if (\is_string($metadata)) {

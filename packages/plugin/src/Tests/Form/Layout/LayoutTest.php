@@ -31,7 +31,7 @@ class LayoutTest extends TestCase
         ;
     }
 
-    public function testIteratePages()
+    public function testIteratePages(): void
     {
         $layout = new FormLayout();
         $layout->getPages()
@@ -47,7 +47,7 @@ class LayoutTest extends TestCase
         $this->assertSame(['Page One', 'Page Two'], $labels);
     }
 
-    public function testCountPages()
+    public function testCountPages(): void
     {
         $layout = new FormLayout();
         $layout->getPages()
@@ -58,7 +58,7 @@ class LayoutTest extends TestCase
         $this->assertCount(2, $layout);
     }
 
-    public function testGetByIndex()
+    public function testGetByIndex(): void
     {
         $layout = new FormLayout();
         $layout->getPages()
@@ -70,7 +70,7 @@ class LayoutTest extends TestCase
         $this->assertSame('Page Two', $layout->getPages()->getByIndex(1)->getLabel());
     }
 
-    public function testButtonDefaults()
+    public function testButtonDefaults(): void
     {
         $layout = new FormLayout();
         $layout->getPages()

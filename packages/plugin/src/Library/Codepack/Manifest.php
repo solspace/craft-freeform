@@ -86,7 +86,7 @@ class Manifest
     /**
      * @throws ManifestException
      */
-    private function parseManifestFile(string $manifestPath)
+    private function parseManifestFile(string $manifestPath): void
     {
         $fs = new Filesystem();
 

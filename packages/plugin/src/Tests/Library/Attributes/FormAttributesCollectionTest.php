@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 #[CoversClass(FormAttributesCollection::class)]
 class FormAttributesCollectionTest extends TestCase
 {
-    public function testFormAttributes()
+    public function testFormAttributes(): void
     {
         $attributes = new FormAttributesCollection([
             'novalidate' => true,

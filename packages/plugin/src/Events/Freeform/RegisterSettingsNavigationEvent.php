@@ -47,7 +47,7 @@ class RegisterSettingsNavigationEvent extends ArrayableEvent
         return $this;
     }
 
-    private function insertItem(string $handle, array $item, ?string $afterHandle = null)
+    private function insertItem(string $handle, array $item, ?string $afterHandle = null): void
     {
         if (null !== $afterHandle && isset($this->navigation[$afterHandle])) {
             $modifiedArray = [];

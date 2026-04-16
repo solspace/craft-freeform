@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 #[CoversClass(Relations::class)]
 class RelationsTest extends TestCase
 {
-    public function testGetRelationshipWithArrayOfIds()
+    public function testGetRelationshipWithArrayOfIds(): void
     {
         $relations = new Relations(['handle' => [1, 2, 3]]);
 
@@ -19,7 +19,7 @@ class RelationsTest extends TestCase
         $this->assertSame(3, $relations->getRelationships()[2]->getElementId());
     }
 
-    public function testGetRelationshipWithStringId()
+    public function testGetRelationshipWithStringId(): void
     {
         $relations = new Relations(['handle' => '55']);
 
@@ -27,7 +27,7 @@ class RelationsTest extends TestCase
         $this->assertSame(55, $relations->getRelationships()[0]->getElementId());
     }
 
-    public function testGetRelationshipWithIntId()
+    public function testGetRelationshipWithIntId(): void
     {
         $relations = new Relations(['handle' => 55]);
 
@@ -35,7 +35,7 @@ class RelationsTest extends TestCase
         $this->assertSame(55, $relations->getRelationships()[0]->getElementId());
     }
 
-    public function testGetMultipleRelationHandles()
+    public function testGetMultipleRelationHandles(): void
     {
         $relations = new Relations(['handleOne' => 1, 'handleTwo' => 2]);
 

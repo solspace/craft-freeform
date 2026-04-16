@@ -21,7 +21,7 @@ class RenderHoneypotEvent extends Event
         return $this->output;
     }
 
-    public function setOutput(string $output)
+    public function setOutput(string $output): void
     {
         $this->output = $output;
     }

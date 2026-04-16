@@ -102,7 +102,7 @@ class Entries extends BaseOptionProvider
         }
 
         // Auto-set to single site if only one exists
-        $sites = \Craft::$app->sites->getAllSites();
+        $sites = \Craft::$app->sites->getAllSites(false); // Passing false tells Craft to skip session checks
         if (1 === \count($sites)) {
             return (string) $sites[0]->id;
         }

@@ -12,7 +12,7 @@ class SiteIdOptionsGenerator implements OptionsGeneratorInterface
     {
         $collection = new OptionCollection();
 
-        $sites = \Craft::$app->sites->getAllSites();
+        $sites = \Craft::$app->sites->getAllSites(false); // Passing false tells Craft to skip session checks
         foreach ($sites as $site) {
             $collection->add($site->id, $site->name);
         }

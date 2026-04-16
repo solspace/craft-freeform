@@ -34,7 +34,7 @@ class SitesHelper
 
         $site = null;
 
-        if (!\Craft::$app->request->isConsoleRequest) {
+        if (!\Craft::$app->request->isConsoleRequest && \Craft::$app->getSession()->getIsActive()) {
             $query = \Craft::$app->request->getQueryParam('site');
             if ($query) {
                 $site = \Craft::$app->sites->getSiteByHandle($query);

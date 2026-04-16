@@ -146,7 +146,7 @@ class TranslationsService extends BaseService
 
             if ($siteId) {
                 $siteId = (int) $siteId;
-            } elseif ($siteHandle) {
+            } elseif ($siteHandle && \Craft::$app->getSession()->getIsActive()) {
                 $site = \Craft::$app->getSites()->getSiteByHandle($siteHandle);
                 if ($site) {
                     $siteId = $site->id;

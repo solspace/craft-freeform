@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.15.6 - 2026-04-16
+
+### Changed
+- **Form Monitor** is no longer in beta.
+- Updated default model versions and improved AI integration setup instructions.
+- Minor internal improvements for type safety and modern PHP compatibility.
+
+### Fixed
+- Fixed an issue where **Drag & Drop File Upload** fields could fail when the base URL included Craft live preview tokens.
+- Fixed an issue where session-dependent site lookups could fail in queue jobs.
+- Fixed UI positioning issues with environment variable autocomplete in Craft 5 settings.
+- Fixed an issue with **ActiveCampaign** integration authorization.
+- Fixed various dependency, linting, and build order issues.
+
 ## 5.15.5 - 2026-04-08
 
 ### Added

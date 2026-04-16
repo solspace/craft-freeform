@@ -32,9 +32,9 @@ abstract class BaseAnthropicIntegration extends APIIntegration implements AiInte
     #[Input\Text(
         label: 'Model',
         instructions: 'The Anthropic model to use for AI processing.',
-        placeholder: 'claude-3-5-haiku-latest',
+        placeholder: 'claude-haiku-4.5',
     )]
-    protected string $model = 'claude-3-5-haiku-latest';
+    protected string $model = 'claude-haiku-4.5';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(

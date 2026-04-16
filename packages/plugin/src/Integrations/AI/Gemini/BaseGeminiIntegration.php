@@ -29,9 +29,9 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
     #[Input\Text(
         label: 'Model',
         instructions: 'The Google Gemini model to use for AI processing.',
-        placeholder: 'gemini-2.5-flash',
+        placeholder: 'gemini-3-flash',
     )]
-    protected string $model = 'gemini-2.5-flash';
+    protected string $model = 'gemini-3-flash';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(

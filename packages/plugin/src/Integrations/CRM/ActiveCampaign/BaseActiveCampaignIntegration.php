@@ -81,7 +81,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     public function checkConnection(Client $client): bool
     {
-        $response = $client->get($this->getEndpoint('/webhooks'));
+        $response = $client->get($this->getEndpoint('/users/me'));
 
         return 200 === $response->getStatusCode();
     }

@@ -3,7 +3,7 @@ import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
 import type { ContentType } from "recharts/types/component/Tooltip";
 
 import { useQuerySurveyChart, useQuerySurveyResults } from "../results.queries";
-
+import type { SurveyData } from "../results.types";
 import {
   ChartWrapper,
   ExtraColor,
@@ -22,10 +22,10 @@ export const Chart: React.FC = () => {
 
   const {
     form: { id, name, color },
-  } = results;
+  } = results as SurveyData;
 
   const TooltipContent: ContentType<string, number> = ({ active, payload }) => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       const {
         payload: { name, y },
       } = payload[0];
@@ -38,7 +38,7 @@ export const Chart: React.FC = () => {
     }
   };
 
-  const maxY = Math.max(...data.map((item) => item.y)) * 2;
+  const maxY = Math.max(...(data ? data.map((item) => item.y) : [0])) * 2;
 
   return (
     <ChartWrapper $color={color}>
@@ -67,7 +67,17 @@ export const Chart: React.FC = () => {
           />
 
           {maxY > 0 && <YAxis domain={[0, maxY]} hide />}
-          <Tooltip content={<TooltipContent />} />
+          <Tooltip
+            content={
+              <TooltipContent
+                active={false}
+                payload={[]}
+                coordinate={undefined}
+                accessibilityLayer={false}
+                activeIndex={undefined}
+              />
+            }
+          />
         </AreaChart>
       </ResponsiveContainer>
       <ExtraColor $color={color} />

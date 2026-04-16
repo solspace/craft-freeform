@@ -17,7 +17,7 @@ const ErrorListComponent = styled.ul`
 `;
 
 export const FormErrorList: React.FC<Props> = ({ errors, ...props }) => {
-  if (!errors || !errors.length) {
+  if (!errors?.length) {
     return null;
   }
 

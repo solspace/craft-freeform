@@ -1,52 +1,63 @@
 {
-  "_date-fns-BTAAV4UA.js": {
-    "file": "assets/date-fns-BTAAV4UA.js",
-    "name": "date-fns",
-    "isDynamicEntry": true
-  },
-  "_vendor-BOeeMEG-.css": {
-    "file": "assets/vendor-BOeeMEG-.css",
-    "src": "_vendor-BOeeMEG-.css"
-  },
-  "_vendor-D8V7Vhm6.js": {
-    "file": "assets/vendor-D8V7Vhm6.js",
-    "name": "vendor",
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js": {
+    "file": "assets/de-CuSBaFTU.js",
+    "name": "de",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
+    "isDynamicEntry": true,
     "imports": [
-      "_date-fns-BTAAV4UA.js"
-    ],
-    "css": [
-      "assets/vendor-BOeeMEG-.css"
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js": {
+    "file": "assets/fr-CJ0OpKaw.js",
+    "name": "fr",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js": {
+    "file": "assets/it-BBxrt0on.js",
+    "name": "it",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
+    ]
+  },
+  "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js": {
+    "file": "assets/nl-p5jPi0ZZ.js",
+    "name": "nl",
+    "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "src/index.tsx"
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart--yy-hssG.js",
+    "file": "assets/ai.usage-chart-RS5K_ynG.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
     "imports": [
-      "_vendor-D8V7Vhm6.js",
-      "src/index.tsx",
-      "_date-fns-BTAAV4UA.js"
+      "src/index.tsx"
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-Ca_mwDCt.js",
+    "file": "assets/index-CoEErtdD.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
-    "imports": [
-      "_vendor-D8V7Vhm6.js",
-      "_date-fns-BTAAV4UA.js"
-    ],
     "dynamicImports": [
-      "_date-fns-BTAAV4UA.js",
-      "_date-fns-BTAAV4UA.js",
-      "_date-fns-BTAAV4UA.js",
-      "_date-fns-BTAAV4UA.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
+      "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js",
       "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [
-      "assets/index-C970reu7.css"
+      "assets/index-nQtHp0q_.css"
     ]
   }
 }

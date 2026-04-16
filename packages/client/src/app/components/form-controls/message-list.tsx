@@ -31,7 +31,7 @@ const MessageListComponent = styled.ul`
 `;
 
 export const FormMessageList: React.FC<Props> = ({ messages, ...props }) => {
-  if (!messages || !messages.length) {
+  if (!messages?.length) {
     return null;
   }
 

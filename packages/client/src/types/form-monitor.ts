@@ -1,17 +1,25 @@
+export type FMTestStatus =
+  | "success"
+  | "failed"
+  | "pending"
+  | "disabled"
+  | "active"
+  | "inactive";
+
 export interface FormTest {
-  id?: number;
+  id: number;
   formId?: number;
   dateAttempted?: string;
   dateCompleted?: string;
-  status?: "success" | "failed" | "pending";
-  totalStatus?: "success" | "failed" | "pending";
+  status: FMTestStatus;
+  totalStatus: FMTestStatus;
   response: string;
   responseCode: number;
   customerId?: number;
   screenshot?: string;
   beforeSubmitScreenshot?: string;
-  submissionDuration?: number;
-  notifications?: {
+  submissionDuration: number;
+  notifications: {
     type?: string;
   }[];
   totalNotifications?: number;

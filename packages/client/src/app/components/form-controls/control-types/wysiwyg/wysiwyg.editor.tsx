@@ -4,7 +4,7 @@ import {
 } from "@components/form-controls/preview/previewable-component.styles";
 import config from "@config/freeform/freeform.config";
 import { Editor } from "@tinymce/tinymce-react";
-import type React from "react";
+import type { FC } from "react";
 
 import "tinymce/tinymce";
 import "tinymce/models/dom/model";
@@ -12,7 +12,6 @@ import "tinymce/themes/silver";
 import "tinymce/icons/default";
 import "tinymce/skins/ui/oxide/skin";
 import "tinymce/skins/ui/oxide/content";
-// Plugins
 import "tinymce/plugins/advlist";
 import "tinymce/plugins/autolink";
 import "tinymce/plugins/code";
@@ -34,7 +33,7 @@ type Props = {
   toolbar: string[] | boolean;
 };
 
-export const WysiwygEditor: React.FC<Props> = ({
+export const WysiwygEditor: FC<Props> = ({
   value,
   menu,
   statusbar,

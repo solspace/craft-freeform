@@ -8,6 +8,7 @@ import type React from "react";
 import { useEffect, useRef } from "react";
 import { EnvLine } from "./env.line";
 import { Suggestions } from "./suggestions/suggestions";
+import { InputWithSuggestionsFieldWrapper } from "./suggestions/suggestions.styles";
 
 const StringInput: React.FC<ControlType<StringProperty>> = ({
   value,
@@ -42,34 +43,36 @@ const StringInput: React.FC<ControlType<StringProperty>> = ({
 
   return (
     <Control property={property} errors={errors} context={context}>
-      <input
-        id={handle}
-        ref={ref}
-        type="text"
-        autoComplete="off"
-        data-1p-ignore
-        readOnly={isReadonly}
-        className={classes(
-          "text",
-          "fullwidth",
-          isCode && "code",
-          isReadonly && "readonly",
+      <InputWithSuggestionsFieldWrapper>
+        <input
+          id={handle}
+          ref={ref}
+          type="text"
+          autoComplete="off"
+          data-1p-ignore
+          readOnly={isReadonly}
+          className={classes(
+            "text",
+            "fullwidth",
+            isCode && "code",
+            isReadonly && "readonly",
+          )}
+          value={value ?? ""}
+          placeholder={property.placeholder}
+          onChange={(event) => updateValue(event.target.value)}
+        />
+        {isEnvSuggest && !!data && (
+          <>
+            <Suggestions
+              inputRef={ref}
+              filter={value}
+              suggestions={data}
+              update={(value) => updateValue(value)}
+            />
+            <EnvLine />
+          </>
         )}
-        value={value ?? ""}
-        placeholder={property.placeholder}
-        onChange={(event) => updateValue(event.target.value)}
-      />
-      {isEnvSuggest && !!data && (
-        <>
-          <Suggestions
-            inputRef={ref}
-            filter={value}
-            suggestions={data}
-            update={(value) => updateValue(value)}
-          />
-          <EnvLine />
-        </>
-      )}
+      </InputWithSuggestionsFieldWrapper>
     </Control>
   );
 };

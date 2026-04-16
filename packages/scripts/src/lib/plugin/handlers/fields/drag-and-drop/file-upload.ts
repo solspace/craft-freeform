@@ -23,6 +23,13 @@ type OnChangeEvent = Event & {
   container: HTMLElement;
 };
 
+const buildFileUrl = (baseUrl: string, path: string): string => {
+  const url = new URL(baseUrl, window.location.origin);
+  url.pathname = `${url.pathname.replace(/\/$/, "")}${path}`;
+
+  return url.toString();
+};
+
 export const loadExistingUploads = (
   container: HTMLElement,
   freeform: Freeform,
@@ -36,10 +43,10 @@ export const loadExistingUploads = (
     formData.delete("action");
     formData.append("handle", handle);
 
-    const baseUrl = container.getAttribute("data-base-url");
+    const baseUrl = container.getAttribute("data-base-url") || "";
 
     ajax
-      .post<FileMetadata[]>(`${baseUrl}/files`, formData, {
+      .post<FileMetadata[]>(buildFileUrl(baseUrl, "/files"), formData, {
         headers: {
           "Freeform-Preflight": true,
         },
@@ -65,7 +72,7 @@ export const loadExistingUploads = (
           removeButton.addEventListener("click", () => {
             if (confirm("Are you sure?")) {
               ajax
-                .post(`${baseUrl}/files/delete`, deleteFormData)
+                .post(buildFileUrl(baseUrl, "/files/delete"), deleteFormData)
                 .then(() => {
                   previewZone.removeChild(previewContainer);
                   dispatchChange(container, freeform);
@@ -132,10 +139,10 @@ export const handleFileUpload = (
   formData.append("handle", handle);
   formData.append(handle, file);
 
-  const baseUrl = container.getAttribute("data-base-url");
+  const baseUrl = container.getAttribute("data-base-url") || "";
 
   return ajax
-    .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
+    .post<FileMetadata>(buildFileUrl(baseUrl, "/files/upload"), formData, {
       cancelToken: token,
       onUploadProgress: (progress: ProgressEvent) => {
         const { total, loaded } = progress;
@@ -166,7 +173,7 @@ export const handleFileUpload = (
         const isConfirmed = await askForConfirmation(container);
         if (isConfirmed) {
           ajax
-            .post(`${baseUrl}/files/delete`, deleteFormData)
+            .post(buildFileUrl(baseUrl, "/files/delete"), deleteFormData)
             .then(() => {
               previewZone.removeChild(previewContainer);
               dispatchChange(container, freeform);

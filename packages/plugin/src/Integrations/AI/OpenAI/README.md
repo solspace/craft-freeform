@@ -1,15 +1,24 @@
-# OpenAI Integration
+# OpenAI
 
-This integration allows you to use OpenAI's AI models for processing form submissions.
+This integration allows you to use [OpenAI](https://openai.com)'s AI models for processing in form submissions.
 
-## Setup
+Once you enable and configure an AI integration, various AI functionality becomes available in Freeform, including the AI field type. Use it to provide a system prompt with instructions for how the model should process submission data (e.g., categorization, summarization, sentiment analysis, content generation). Specify the exact output format you need.
 
-1. Get your API key from [OpenAI](https://platform.openai.com/api-keys)
-2. Configure the integration with your API key
-3. Select the model you want to use (default is `gpt-5.4-nano`)
-4. Configure max tokens, and cache settings
+## Setup Instructions
 
-### Recommended Models
+### 1. Create & get API Key from OpenAI
+
+Visit your [account settings area](https://platform.openai.com/api-keys) on the OpenAI site to get your API key.
+
+### 2. Configure the Integration
+
+- Copy and paste your API key into the integration in Freeform.
+- Select the AI model you want to use. The default is `gpt-5.4-nano`.
+  - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
+- Configure the Max Tokens setting. This can be overrided per form.
+- Click the **Save** button.
+
+#### Recommended Models
 
 - ⚡ `gpt-5.4-nano` — fast + cheap
   - High-volume, simple tasks
@@ -18,6 +27,18 @@ This integration allows you to use OpenAI's AI models for processing form submis
 - 🧠 `gpt-5.4` — smartest
   - Complex reasoning, coding, agents
 
-## Usage
+### 3. Authorize the Integration
 
-Once configured, you can add AI Summary fields to your forms and select this integration to process the form data. 
+- After the integration is saved, you will see an **Authorize** button appear.
+- Click the **Authorize** button.
+- If authorized successfully, you'll see a green _Authorized_ status at the top beside the integration name.
+
+### 4. Configure the Form
+
+To use this integration on your form(s), you'll need to configure each form individually.
+
+- Visit the form inside the form builder.
+- Click on the **Integrations** tab.
+- Click on **OpenAI** in the list of available integrations.
+- On the right side of the page:
+  - Enable the integration.

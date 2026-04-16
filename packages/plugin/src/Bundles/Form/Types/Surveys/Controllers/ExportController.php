@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\NoReturn;
 class ExportController extends Controller
 {
     #[NoReturn]
-    public function actionPdf()
+    public function actionPdf(): void
     {
         $image = \Craft::$app->request->post('image');
 

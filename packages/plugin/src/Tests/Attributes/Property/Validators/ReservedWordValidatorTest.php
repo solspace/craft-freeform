@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Property\Validators\ReservedWord;
 #[CoversClass(ReservedWord::class)]
 class ReservedWordValidatorTest extends TestCase
 {
-    public function testValidOnNonReservedWord()
+    public function testValidOnNonReservedWord(): void
     {
         $validator = new ReservedWord();
 
@@ -18,7 +18,7 @@ class ReservedWordValidatorTest extends TestCase
         $this->assertEmpty($result);
     }
 
-    public function testInvalidOnReservedWord()
+    public function testInvalidOnReservedWord(): void
     {
         $validator = new ReservedWord();
 
@@ -27,7 +27,7 @@ class ReservedWordValidatorTest extends TestCase
         $this->assertSame(['Value is a reserved word.'], $result);
     }
 
-    public function testCustomErrorMessage()
+    public function testCustomErrorMessage(): void
     {
         $validator = new ReservedWord('You cannot use Craft reserved words as handles.');
 

@@ -32,9 +32,9 @@ export const FormGrid: React.FC = () => {
   const { data, isFetching } = useFetchFormGroups();
   const openEditGroupModal = useEditGroupModal();
 
-  const isForms = data?.forms.length > 0;
+  const isForms = (data?.forms?.length ?? 0) > 0;
   const isGroups = data?.formGroups?.groups.some(
-    (group) => group.forms.length > 0,
+    (group) => (group?.forms?.length ?? 0) > 0,
   );
   const isEmpty = !isFetching && !isForms && !isGroups;
 
@@ -42,12 +42,12 @@ export const FormGrid: React.FC = () => {
   const isProEdition = config.editions.isAtLeast(Edition.Pro);
 
   const gridRef = useRef<HTMLUListElement>(null);
-  const sortableRef = useRef(null);
+  const sortableRef = useRef<Sortable | null>(null);
 
   const [isDragging, setIsDragging] = useState(false);
 
   const onSortEnd = useCallback((): void => {
-    const orderedFormIds = sortableRef.current.toArray();
+    const orderedFormIds = sortableRef.current?.toArray() ?? [];
     axios.post("/api/forms/sort", { orderedFormIds });
 
     setIsDragging(false);
@@ -80,14 +80,13 @@ export const FormGrid: React.FC = () => {
           {!isEmpty && (
             <CardWrapper>
               {isProEdition &&
-                data?.formGroups &&
-                data.formGroups.groups.map((group, index) =>
-                  group.forms.length ? (
+                data?.formGroups?.groups.map((group, index) =>
+                  (group?.forms?.length ?? 0) ? (
                     <GroupWrap key={group.uid}>
                       {index !== 0 && <hr />}
                       <GroupTitle>{group.label}</GroupTitle>
                       <Cards>
-                        {group.forms.map((form) => (
+                        {group?.forms?.map((form) => (
                           <Card
                             isExpressEdition={isExpressEdition}
                             key={form.id}

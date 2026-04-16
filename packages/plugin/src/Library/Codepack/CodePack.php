@@ -78,7 +78,7 @@ class CodePack
     /**
      * @throws FileObjectException
      */
-    public function install(string $prefix)
+    public function install(string $prefix): void
     {
         $prefix = self::getCleanPrefix($prefix);
 

@@ -59,7 +59,7 @@ class Folder extends FileObject implements \Iterator
      *
      * @throws FileObjectException
      */
-    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null)
+    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null): void
     {
         $target = rtrim($target, '/');
         $targetFolderPath = $target.'/'.$filePrefix.$this->name;
@@ -131,7 +131,7 @@ class Folder extends FileObject implements \Iterator
      * @see  http://php.net/manual/en/iterator.next.php
      * @since 5.0.0
      */
-    public function next()
+    public function next(): void
     {
         next($this->files);
     }
@@ -171,7 +171,7 @@ class Folder extends FileObject implements \Iterator
      * @see  http://php.net/manual/en/iterator.rewind.php
      * @since 5.0.0
      */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->files);
     }

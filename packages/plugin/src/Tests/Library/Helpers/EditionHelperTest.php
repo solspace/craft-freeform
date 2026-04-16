@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 #[CoversClass(EditionHelper::class)]
 class EditionHelperTest extends TestCase
 {
-    public function testIsAtLeast()
+    public function testIsAtLeast(): void
     {
         $helper = new EditionHelper('pro', ['lite', 'plus', 'pro', 'ultra']);
 
@@ -19,7 +19,7 @@ class EditionHelperTest extends TestCase
         $this->assertFalse($helper->isAtLeast('ultra'));
     }
 
-    public function testIsAtMost()
+    public function testIsAtMost(): void
     {
         $helper = new EditionHelper('pro', ['lite', 'plus', 'pro', 'ultra']);
 
@@ -29,7 +29,7 @@ class EditionHelperTest extends TestCase
         $this->assertTrue($helper->isAtMost('ultra'));
     }
 
-    public function testIs()
+    public function testIs(): void
     {
         $helper = new EditionHelper('pro', ['lite', 'plus', 'pro', 'ultra']);
 
@@ -39,7 +39,7 @@ class EditionHelperTest extends TestCase
         $this->assertFalse($helper->is('ultra'));
     }
 
-    public function testNonExistingEdition()
+    public function testNonExistingEdition(): void
     {
         $helper = new EditionHelper('non-existant', ['lite', 'plus', 'pro', 'ultra']);
 
@@ -48,7 +48,7 @@ class EditionHelperTest extends TestCase
         $this->assertFalse($helper->isAtMost('ultra'));
     }
 
-    public function testIsBelow()
+    public function testIsBelow(): void
     {
         $helper = new EditionHelper('pro', ['lite', 'plus', 'pro', 'ultra']);
 

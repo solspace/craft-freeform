@@ -13,7 +13,7 @@ use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 #[CoversClass(FreeformSerializer::class)]
 class FreeformSerializerTest extends TestCase
 {
-    public function testCollectionToArray()
+    public function testCollectionToArray(): void
     {
         $serializer = new FreeformSerializer();
         $collection = new TestCollection();
@@ -27,7 +27,7 @@ class FreeformSerializerTest extends TestCase
         );
     }
 
-    public function testEmptyCollectionToArray()
+    public function testEmptyCollectionToArray(): void
     {
         $serializer = new FreeformSerializer();
         $collection = new TestCollection();
@@ -40,7 +40,7 @@ class FreeformSerializerTest extends TestCase
         );
     }
 
-    public function testToArrayCustomNormalizer()
+    public function testToArrayCustomNormalizer(): void
     {
         $serializer = new FreeformSerializer();
         $output = $serializer->serialize(new TestCustomArray(), 'json');
@@ -51,7 +51,7 @@ class FreeformSerializerTest extends TestCase
         );
     }
 
-    public function testToStringCustomNormalizer()
+    public function testToStringCustomNormalizer(): void
     {
         $serializer = new FreeformSerializer();
         $output = $serializer->serialize(new TestCustomString(), 'json');
@@ -62,7 +62,7 @@ class FreeformSerializerTest extends TestCase
         );
     }
 
-    public function testToIdentificatorOnContext()
+    public function testToIdentificatorOnContext(): void
     {
         $serializer = new FreeformSerializer();
         $output = $serializer->serialize(new TestToIdentifier(), 'json', [
@@ -75,7 +75,7 @@ class FreeformSerializerTest extends TestCase
         );
     }
 
-    public function testToDefaultWithNoIdentificatorContext()
+    public function testToDefaultWithNoIdentificatorContext(): void
     {
         $serializer = new FreeformSerializer();
         $output = $serializer->serialize(new TestToIdentifier(), 'json');

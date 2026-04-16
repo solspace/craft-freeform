@@ -71,6 +71,7 @@ export const pageRulesSlice = createSlice({
 });
 
 const { actions } = pageRulesSlice;
+
 export { actions as pageRuleActions };
 
 export default pageRulesSlice.reducer;

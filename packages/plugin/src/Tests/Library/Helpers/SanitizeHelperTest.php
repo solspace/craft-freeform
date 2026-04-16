@@ -10,20 +10,20 @@ use Solspace\Freeform\Library\Helpers\SanitizeHelper;
 #[CoversClass(SanitizeHelper::class)]
 class SanitizeHelperTest extends TestCase
 {
-    public function testSanitizesString()
+    public function testSanitizesString(): void
     {
         $result = SanitizeHelper::recursiveHtmlSpecialChars('<script />');
         $this->assertSame('&lt;script /&gt;', $result);
     }
 
-    public function testSanitizesSingleDimensionArray()
+    public function testSanitizesSingleDimensionArray(): void
     {
         $result = SanitizeHelper::recursiveHtmlSpecialChars(['<script />']);
 
         $this->assertEquals(['&lt;script /&gt;'], $result);
     }
 
-    public function testSanitizesThreeDimensionArray()
+    public function testSanitizesThreeDimensionArray(): void
     {
         $result = SanitizeHelper::recursiveHtmlSpecialChars(
             [
@@ -45,17 +45,17 @@ class SanitizeHelperTest extends TestCase
         );
     }
 
-    public function testDoesNotSanitizeIntegers()
+    public function testDoesNotSanitizeIntegers(): void
     {
         $this->assertSame(1, SanitizeHelper::recursiveHtmlSpecialChars(1));
     }
 
-    public function testDoesNotSanitizeBooleans()
+    public function testDoesNotSanitizeBooleans(): void
     {
         $this->assertFalse(SanitizeHelper::recursiveHtmlSpecialChars(false));
     }
 
-    public function testSanitizesObjectValues()
+    public function testSanitizesObjectValues(): void
     {
         $obj = new \stdClass();
         $obj->sanitizeMe = '<script />';
@@ -73,7 +73,7 @@ class SanitizeHelperTest extends TestCase
     #[TestWith(['some.craft = "test" and craft.submit', 'some.craft = "test"craft.submit'])]
     #[TestWith(['some.craft = "test"|test(craft.submit)', 'some.craft = "test"|testsubmit)'])]
     #[TestWith(['some.craft = "test"|craft', 'some.craft = "test"'])]
-    public function testSanitize($condition, $expected)
+    public function testSanitize($condition, $expected): void
     {
         $this->assertSame($expected, SanitizeHelper::cleanUpTwigCondition($condition));
     }

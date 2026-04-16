@@ -16,7 +16,7 @@ class FreeformActionInput extends FeatureBundle
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $event->addChunk('<input type="hidden" name="'.self::NAME.'" value="submit" />');
     }

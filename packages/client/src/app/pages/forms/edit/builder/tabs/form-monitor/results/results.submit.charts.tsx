@@ -94,10 +94,12 @@ export const SubmissionDurationChart: React.FC<
 
   const CustomTooltip = ({
     active,
+    // @ts-expect-error Not maintained by us, so we can't fix the type
     payload,
+    // @ts-expect-error Not maintained by us, so we can't fix the type
     label,
   }: TooltipProps<number, string>): React.JSX.Element | null => {
-    if (active && payload && payload.length) {
+    if (active && payload?.length) {
       const dataPoint = payload[0].payload;
 
       if (dataPoint.status === "no-tests") {

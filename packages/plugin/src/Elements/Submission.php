@@ -117,7 +117,7 @@ class Submission extends Element
         return parent::__get($name);
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         if (preg_match('/^form_(\d+)__([a-z\d\-_]+)_(\d+)$/i', $name, $matches)) {
             $formId = (int) $matches[1];
@@ -591,7 +591,7 @@ class Submission extends Element
         parent::afterSave($isNew);
     }
 
-    public function enableDeletingByToken()
+    public function enableDeletingByToken(): void
     {
         self::$deletableTokens[] = $this->token;
     }

@@ -9,7 +9,7 @@ use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Utilities\SheetsHel
 #[CoversClass(SheetsHelper::class)]
 class SheetsHelperTest extends TestCase
 {
-    public function testGetColumnLetter()
+    public function testGetColumnLetter(): void
     {
         $this->assertSame('A', SheetsHelper::getColumnLetter(0));
         $this->assertSame('Z', SheetsHelper::getColumnLetter(25));

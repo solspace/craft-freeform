@@ -12,7 +12,7 @@ export const elementTreeHasClass = (
     classNames = classNames.split(" ");
   }
 
-  if (!element || !element.classList) {
+  if (!element?.classList) {
     return false;
   }
 

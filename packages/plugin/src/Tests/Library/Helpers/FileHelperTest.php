@@ -16,7 +16,7 @@ class FileHelperTest extends TestCase
     #[TestWith(['D:/path/to/file', true])]
     #[TestWith(['ZD:\path\to\file', true])]
     #[TestWith(['//path/to/file', true])]
-    public function testIsAbsolute(string $path, bool $expected)
+    public function testIsAbsolute(string $path, bool $expected): void
     {
         $this->assertSame($expected, FileHelper::isAbsolute($path), $path);
     }

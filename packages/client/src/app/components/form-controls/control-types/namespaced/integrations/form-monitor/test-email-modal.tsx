@@ -228,8 +228,7 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
                   </tbody>
                 </TestEmailTable>
               </ThemedSkeleton>
-            ) : !historyData ||
-              !historyData.testEmails ||
+            ) : !historyData?.testEmails ||
               historyData.testEmails.length === 0 ? (
               <EmptyState>{translate("No test emails sent yet.")}</EmptyState>
             ) : (

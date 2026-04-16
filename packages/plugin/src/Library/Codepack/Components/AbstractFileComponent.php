@@ -45,7 +45,7 @@ abstract class AbstractFileComponent implements ComponentInterface
     /**
      * Installs the component files into the $installDirectory.
      */
-    public function install(?string $prefix = null)
+    public function install(?string $prefix = null): void
     {
         $installDirectory = $this->getInstallDirectory();
         $installDirectory = rtrim($installDirectory, '/');
@@ -61,7 +61,7 @@ abstract class AbstractFileComponent implements ComponentInterface
      * If anything has to be done with a file once it's copied over
      * This method does it.
      */
-    public function postFileCopyAction(string $newFilePath, ?string $prefix = null) {}
+    public function postFileCopyAction(string $newFilePath, ?string $prefix = null): void {}
 
     public function getContents(): FileObject
     {

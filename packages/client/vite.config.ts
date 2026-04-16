@@ -56,19 +56,6 @@ export default defineConfig(({ mode, command }) => {
       outDir: path.resolve(__dirname, "../plugin/src/Resources/js/client"),
       rollupOptions: {
         input: path.resolve(__dirname, "./src/index.tsx"),
-        output: {
-          manualChunks: (id) => {
-            if (!id.includes("node_modules")) {
-              return;
-            }
-
-            if (id.includes("node_modules/date-fns/")) {
-              return "date-fns";
-            }
-
-            return "vendor";
-          },
-        },
       },
     },
   };

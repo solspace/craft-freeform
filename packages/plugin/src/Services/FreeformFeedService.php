@@ -26,7 +26,7 @@ class FreeformFeedService extends Component
         parent::__construct();
     }
 
-    public function markFeedCategoryAsRead(string $type)
+    public function markFeedCategoryAsRead(string $type): void
     {
         if ('new' === $type) {
             $type = [$type];

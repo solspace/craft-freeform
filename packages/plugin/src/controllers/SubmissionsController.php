@@ -369,7 +369,7 @@ class SubmissionsController extends BaseController
         }
     }
 
-    private function removeStaleAssets(Submission $submission, array $post = [])
+    private function removeStaleAssets(Submission $submission, array $post = []): void
     {
         $fields = $submission->getForm()->getLayout()->getFields(FileUploadField::class);
         foreach ($fields as $field) {

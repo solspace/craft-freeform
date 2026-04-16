@@ -101,6 +101,7 @@ export const integrationsSlice = createSlice({
 });
 
 const { actions } = integrationsSlice;
+
 export { actions as integrationActions };
 
 export default integrationsSlice.reducer;

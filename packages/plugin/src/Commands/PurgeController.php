@@ -116,13 +116,13 @@ class PurgeController extends Controller
         return ExitCode::OK;
     }
 
-    private function echoSubmissionCount(int $count)
+    private function echoSubmissionCount(int $count): void
     {
         $count = $this->ansiFormat($count, Console::FG_YELLOW);
         $this->stdout("Purged {$count} submissions\n", Console::FG_GREEN);
     }
 
-    private function echoAssetCount(int $count)
+    private function echoAssetCount(int $count): void
     {
         $count = $this->ansiFormat($count, Console::FG_YELLOW);
         $this->stdout("Purged {$count} assets\n", Console::FG_GREEN);

@@ -11,7 +11,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 #[CoversClass(RecipientTransformer::class)]
 class RecipientTransformerTest extends TestCase
 {
-    public function testTransformsArrayOfRecipientsIntoCollection()
+    public function testTransformsArrayOfRecipientsIntoCollection(): void
     {
         $input = [
             ['email' => 'test1@solspace.com', 'name' => 'Some Guy'],
@@ -34,7 +34,7 @@ class RecipientTransformerTest extends TestCase
         $this->assertEquals('Some Girl', $second->getName());
     }
 
-    public function testReverseTransform()
+    public function testReverseTransform(): void
     {
         $input = new RecipientCollection();
         $input

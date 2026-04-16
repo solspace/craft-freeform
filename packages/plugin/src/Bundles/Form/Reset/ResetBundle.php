@@ -18,7 +18,7 @@ class ResetBundle extends FeatureBundle
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'resetFieldValues']);
     }
 
-    public function resetFieldValues(ResetEvent $event)
+    public function resetFieldValues(ResetEvent $event): void
     {
         if (!$event->isValid) {
             return;

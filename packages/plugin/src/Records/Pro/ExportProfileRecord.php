@@ -46,7 +46,7 @@ class ExportProfileRecord extends ActiveRecord
         ];
     }
 
-    public function validateDate($attribute)
+    public function validateDate($attribute): void
     {
         $value = $this->getAttribute($attribute);
 

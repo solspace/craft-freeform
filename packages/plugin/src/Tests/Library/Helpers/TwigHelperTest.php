@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 #[CoversClass(TwigHelper::class)]
 class TwigHelperTest extends TestCase
 {
-    public function testIsTwigValue()
+    public function testIsTwigValue(): void
     {
         $this->assertFalse(TwigHelper::isTwigValue(''));
         $this->assertFalse(TwigHelper::isTwigValue('12345'));

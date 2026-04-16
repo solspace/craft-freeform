@@ -11,7 +11,7 @@ use Solspace\Freeform\Models\Settings;
 
 class ThrottleSubmissions extends AbstractCheck
 {
-    public function handleCheck(ValidationEvent $event)
+    public function handleCheck(ValidationEvent $event): void
     {
         $throttleCount = (int) $this->getSettings()->submissionThrottlingCount;
 

@@ -52,14 +52,21 @@
         "noAccumulatingSpread": "off"
       },
       "complexity": {
-        "noImportantStyles": "off"
+        "noImportantStyles": "off",
+        "useOptionalChain": {
+          "level": "on",
+          "fix": "safe"
+        }
       },
       "suspicious": {
         "noArrayIndexKey": "off",
         "noConsole": {
           "level": "error",
           "options": {
-            "allow": ["warn", "error"]
+            "allow": [
+              "warn",
+              "error"
+            ]
           }
         }
       }

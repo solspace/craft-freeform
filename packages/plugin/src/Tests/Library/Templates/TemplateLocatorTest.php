@@ -18,7 +18,7 @@ class TemplateLocatorTest extends TestCase
         $this->locator = new TemplateLocator(new Finder());
     }
 
-    public function testLocate()
+    public function testLocate(): void
     {
         $folder = __DIR__.'/mock-template-folder';
         $templates = $this->locator->locate($folder);

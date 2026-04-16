@@ -2,7 +2,7 @@ import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 
 export function useHover<T extends HTMLElement = HTMLElement>(
-  elementRef: RefObject<T>,
+  elementRef: RefObject<T | null>,
 ): boolean {
   const [isHovered, setIsHovered] = useState<boolean>(false);
 

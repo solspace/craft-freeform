@@ -13,7 +13,7 @@ use Solspace\Freeform\Library\Collections\FieldCollection;
 #[CoversClass(FieldCollection::class)]
 class FieldCollectionTest extends TestCase
 {
-    public function testCanIterateOverFields()
+    public function testCanIterateOverFields(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -35,7 +35,7 @@ class FieldCollectionTest extends TestCase
         }
     }
 
-    public function testCanAccessAsAnArrayByHandle()
+    public function testCanAccessAsAnArrayByHandle(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -50,7 +50,7 @@ class FieldCollectionTest extends TestCase
         $this->assertSame('two', $collection['two']->getHandle());
     }
 
-    public function testGetById()
+    public function testGetById(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -68,7 +68,7 @@ class FieldCollectionTest extends TestCase
         $this->assertSame('three', $collection->get(3)->getHandle());
     }
 
-    public function testGetByHandle()
+    public function testGetByHandle(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -86,7 +86,7 @@ class FieldCollectionTest extends TestCase
         $this->assertSame(1, $collection->get('one')->getId());
     }
 
-    public function testSeeIfTypeExistsInCollection()
+    public function testSeeIfTypeExistsInCollection(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -103,7 +103,7 @@ class FieldCollectionTest extends TestCase
         $this->assertFalse($collection->hasFieldType('checkbox'));
     }
 
-    public function testGetListReturnsSelf()
+    public function testGetListReturnsSelf(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -118,7 +118,7 @@ class FieldCollectionTest extends TestCase
         $this->assertSame($collection, $collection->getList());
     }
 
-    public function testGetListWithImplementsClass()
+    public function testGetListWithImplementsClass(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -133,7 +133,7 @@ class FieldCollectionTest extends TestCase
         $this->assertCount(2, $collection->getList(TextField::class));
     }
 
-    public function testGetListWithImplementsType()
+    public function testGetListWithImplementsType(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -148,7 +148,7 @@ class FieldCollectionTest extends TestCase
         $this->assertCount(1, $collection->getList('checkbox'));
     }
 
-    public function testGetListWithImplementsClassExcludesStrategy()
+    public function testGetListWithImplementsClassExcludesStrategy(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -166,7 +166,7 @@ class FieldCollectionTest extends TestCase
         );
     }
 
-    public function testGetListWithImplementsTypeExcludesStrategy()
+    public function testGetListWithImplementsTypeExcludesStrategy(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(TextField::class);
@@ -184,7 +184,7 @@ class FieldCollectionTest extends TestCase
         );
     }
 
-    public function testGetListWithImplementsClassArray()
+    public function testGetListWithImplementsClassArray(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(HiddenField::class);
@@ -199,7 +199,7 @@ class FieldCollectionTest extends TestCase
         $this->assertCount(2, $collection->getList([HiddenField::class, CheckboxField::class]));
     }
 
-    public function testGetListWithImplementsTypeArray()
+    public function testGetListWithImplementsTypeArray(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(HiddenField::class);
@@ -214,7 +214,7 @@ class FieldCollectionTest extends TestCase
         $this->assertCount(2, $collection->getList(['hidden', 'checkbox']));
     }
 
-    public function testGetListWithImplementsClassArrayExcludesStrategy()
+    public function testGetListWithImplementsClassArrayExcludesStrategy(): void
     {
         $a = $this->createStub(TextField::class);
         $b = $this->createStub(HiddenField::class);

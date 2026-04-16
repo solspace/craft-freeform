@@ -11,7 +11,7 @@ use Solspace\Freeform\Attributes\Property\PropertyCollection;
 #[CoversClass(PropertyCollection::class)]
 class PropertyCollectionTest extends TestCase
 {
-    public function testRemovesOneFlagged()
+    public function testRemovesOneFlagged(): void
     {
         $prop1 = new Input\Text();
         $prop1->flags = [new Flag('test'), new Flag('flag')];
@@ -32,7 +32,7 @@ class PropertyCollectionTest extends TestCase
         $this->assertCount(1, $collection);
     }
 
-    public function testRemovesMultipleFlagged()
+    public function testRemovesMultipleFlagged(): void
     {
         $prop1 = new Input\Text();
         $prop1->flags = [new Flag('test'), new Flag('flag')];
@@ -53,7 +53,7 @@ class PropertyCollectionTest extends TestCase
         $this->assertCount(0, $collection);
     }
 
-    public function testRemovesVariousFlags()
+    public function testRemovesVariousFlags(): void
     {
         $prop1 = new Input\Text();
         $prop1->flags = [new Flag('test'), new Flag('flag')];

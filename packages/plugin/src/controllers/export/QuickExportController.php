@@ -165,7 +165,7 @@ class QuickExportController extends BaseController
      * @throws ForbiddenHttpException
      * @throws BadRequestHttpException
      */
-    public function actionIndex()
+    public function actionIndex(): void
     {
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);

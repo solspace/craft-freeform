@@ -18,7 +18,7 @@ class CustomOptionsTest extends TestCase
         $this->propertyProvider = $this->createMock(PropertyProvider::class);
     }
 
-    public function testTransform()
+    public function testTransform(): void
     {
         $value = [
             'source' => 'customOptions',
@@ -42,7 +42,7 @@ class CustomOptionsTest extends TestCase
         $this->assertEquals($expected, $output);
     }
 
-    public function testReverseTransform()
+    public function testReverseTransform(): void
     {
         $value = new Custom([
             'useCustomValues' => true,

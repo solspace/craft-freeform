@@ -25,7 +25,7 @@ export const FormsFields: React.FC = () => {
     return <ErrorBlock>{error.message}</ErrorBlock>;
   }
 
-  if (!data || !data.length) {
+  if (!data?.length) {
     return null;
   }
 

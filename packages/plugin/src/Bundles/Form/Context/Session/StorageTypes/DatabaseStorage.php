@@ -58,7 +58,7 @@ class DatabaseStorage implements FormContextStorageInterface
         return $this;
     }
 
-    public function persist()
+    public function persist(): void
     {
         $existingKeys = (new Query())
             ->select('contextKey')

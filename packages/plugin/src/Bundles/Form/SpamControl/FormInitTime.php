@@ -21,7 +21,7 @@ class FormInitTime extends FeatureBundle
         Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'cleanupOnSave']);
     }
 
-    public function handleFormLoaded(FormLoadedEvent $event)
+    public function handleFormLoaded(FormLoadedEvent $event): void
     {
         $bag = $event->getForm()->getProperties();
         if (!$bag->get(self::KEY)) {
@@ -29,12 +29,12 @@ class FormInitTime extends FeatureBundle
         }
     }
 
-    public function handleFormReset(ResetEvent $event)
+    public function handleFormReset(ResetEvent $event): void
     {
         $event->getForm()->getProperties()->set(self::KEY, time());
     }
 
-    public function cleanupOnSave(SaveFormEvent $event)
+    public function cleanupOnSave(SaveFormEvent $event): void
     {
         $event->getForm()->getProperties()->remove(self::KEY);
     }

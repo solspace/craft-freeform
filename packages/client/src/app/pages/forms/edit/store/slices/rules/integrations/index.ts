@@ -86,6 +86,7 @@ export const integrationRulesSlice = createSlice({
 });
 
 const { actions } = integrationRulesSlice;
+
 export { actions as integrationRuleActions };
 
 export default integrationRulesSlice.reducer;

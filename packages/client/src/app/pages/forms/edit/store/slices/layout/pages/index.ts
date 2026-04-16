@@ -88,6 +88,7 @@ export const pagesSlice = createSlice({
 });
 
 const { actions } = pagesSlice;
+
 export { actions as pageActions };
 
 export default pagesSlice.reducer;

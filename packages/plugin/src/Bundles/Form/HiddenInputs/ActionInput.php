@@ -16,12 +16,12 @@ class ActionInput extends FeatureBundle
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $event->addChunk('<input type="hidden" name="action" value="freeform/submit" />');
     }
 
-    public function attachToJson(OutputAsJsonEvent $event)
+    public function attachToJson(OutputAsJsonEvent $event): void
     {
         $bag = $event->getForm()->getProperties();
         $event->add('action', $bag->get('action', 'freeform/submit'));

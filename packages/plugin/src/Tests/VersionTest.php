@@ -13,17 +13,17 @@ class VersionTest extends TestCase
     #[TestWith(['2.0.0-dev', '='])]
     #[TestWith(['2.0.0-alpha.1', '>'])]
     #[TestWith(['2.0.0-beta.1', '>'])]
-    public function testVersions(string $version, string $operator)
+    public function testVersions(string $version, string $operator): void
     {
         $this->assertTrue(version_compare($version, '2.0.0-dev', $operator));
     }
 
-    public function testCraft31BetaCheck()
+    public function testCraft31BetaCheck(): void
     {
         $this->assertTrue(version_compare('3.1.0-beta.4', '3.1', '>='));
     }
 
-    public function testCraft31PreBetaCheck()
+    public function testCraft31PreBetaCheck(): void
     {
         $this->assertTrue(version_compare('3.0.40', '3.1', '<'));
     }

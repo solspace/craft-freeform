@@ -17,7 +17,7 @@ class AnchorTag extends FeatureBundle
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $form = $event->getForm();
 
@@ -26,7 +26,7 @@ class AnchorTag extends FeatureBundle
         }
     }
 
-    public function attachToJson(OutputAsJsonEvent $event)
+    public function attachToJson(OutputAsJsonEvent $event): void
     {
         $event->add('anchor', $event->getForm()->getAnchor());
     }

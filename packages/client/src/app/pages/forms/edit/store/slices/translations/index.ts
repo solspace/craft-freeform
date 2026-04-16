@@ -74,6 +74,7 @@ export const translationSlice = createSlice({
 });
 
 const { actions } = translationSlice;
+
 export { actions as translationActions };
 
 export default translationSlice.reducer;

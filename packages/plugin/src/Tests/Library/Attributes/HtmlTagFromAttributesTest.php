@@ -11,7 +11,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 #[CoversClass(Attributes::class)]
 class HtmlTagFromAttributesTest extends TestCase
 {
-    public function testConvertsAttributesWhenUsingToHtmlTag()
+    public function testConvertsAttributesWhenUsingToHtmlTag(): void
     {
         $attributes = new Attributes();
         $attributes

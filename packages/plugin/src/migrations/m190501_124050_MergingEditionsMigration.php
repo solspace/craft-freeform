@@ -215,7 +215,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
         }
     }
 
-    private function installPaymentsField()
+    private function installPaymentsField(): void
     {
         // outdated
     }

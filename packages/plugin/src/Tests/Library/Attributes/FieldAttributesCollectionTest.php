@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 #[CoversClass(FieldAttributesCollection::class)]
 class FieldAttributesCollectionTest extends TestCase
 {
-    public function testBuildFromArray()
+    public function testBuildFromArray(): void
     {
         $collection = new FieldAttributesCollection();
         $collection->getLabel()->set('class', 'class-1 and class-2');

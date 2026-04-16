@@ -65,7 +65,7 @@ class PropertyProviderTest extends TestCase
         ;
     }
 
-    public function testSetObjectProperties()
+    public function testSetObjectProperties(): void
     {
         $object = new TestAttributesClass();
 
@@ -81,7 +81,7 @@ class PropertyProviderTest extends TestCase
     }
 
     #[DataProvider('propertyDataProvider')]
-    public function testGetEditableProperties(array $checklist)
+    public function testGetEditableProperties(array $checklist): void
     {
         $handle = $checklist['handle'];
 

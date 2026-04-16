@@ -15,7 +15,9 @@ class SiteOptions implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        $sites = $this->sites->getEditableSites();
+        $sites = \Craft::$app->getSession()->getIsActive()
+            ? $this->sites->getEditableSites()
+            : $this->sites->getAllSites(false); // Passing false tells Craft to skip session checks
         foreach ($sites as $site) {
             $options->add($site->id, $site->name);
         }

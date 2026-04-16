@@ -11,7 +11,9 @@ class SiteValueGenerator implements ValueGeneratorInterface
 
     public function generateValue(?object $referenceObject, ?object $context): ?array
     {
-        $sites = $this->sites->getEditableSites();
+        $sites = \Craft::$app->getSession()->getIsActive()
+            ? $this->sites->getEditableSites()
+            : $this->sites->getAllSites(false); // Passing false tells Craft to skip session checks
 
         return array_map(
             static fn ($site) => $site->id,

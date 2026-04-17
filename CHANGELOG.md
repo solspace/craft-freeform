@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.15.6.1 - 2026-04-17
+
+### Fixed
+- Fixed console request failures caused by recent changes in Freeform 5.15.6 related to session-dependent site lookups.
+
 ## 5.15.6 - 2026-04-16
 
 ### Changed

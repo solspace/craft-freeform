@@ -212,9 +212,14 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
 
     private function getValidationErrors(Form $form): array
     {
+        $captchaResponse = $this->getCaptchaResponse($form);
+
+        if (empty($captchaResponse)) {
+            return ['The Turnstile challenge did not load or was not completed. This may be caused by a browser extension or network policy blocking the Turnstile script (challenges.cloudflare.com).'];
+        }
+
         $client = new Client();
         $secret = $this->getSecretKey();
-        $captchaResponse = $this->getCaptchaResponse($form);
 
         $response = $client->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'form_params' => [
@@ -242,7 +247,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
         }
 
         if (\in_array('missing-input-response', $errorCodes, true)) {
-            $errors[] = 'The response parameter is missing.';
+            $errors[] = 'The response token was not submitted.';
         }
 
         if (\in_array('invalid-input-response', $errorCodes, true)) {

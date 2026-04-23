@@ -39,6 +39,6 @@ class UnfinalizedFileRecord extends ActiveRecord
      */
     public function getAsset(): ActiveQuery
     {
-        return $this->hasOne(Asset::class, ['assetId' => 'id']);
+        return $this->hasOne(Asset::class, ['id' => 'assetId']);
     }
 }

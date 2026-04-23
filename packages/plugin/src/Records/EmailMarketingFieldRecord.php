@@ -39,6 +39,6 @@ class EmailMarketingFieldRecord extends ActiveRecord
      */
     public function getMailingList(): ActiveQuery
     {
-        return $this->hasOne(EmailMarketingListRecord::class, ['mailingListId' => 'id']);
+        return $this->hasOne(EmailMarketingListRecord::class, ['id' => 'mailingListId']);
     }
 }

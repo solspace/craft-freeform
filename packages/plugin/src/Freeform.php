@@ -14,17 +14,20 @@
 namespace Solspace\Freeform;
 
 use craft\base\Plugin;
+use craft\db\Table;
 use craft\events\IndexKeywordsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
 use craft\services\Fields;
+use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
@@ -113,6 +116,7 @@ use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
 use Solspace\Freeform\Variables\FreeformSubmissionsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
@@ -290,15 +294,12 @@ class Freeform extends Plugin
 
     public function beforeUninstall(): void
     {
-        $forms = $this->forms->getResolvedForms();
-        foreach ($forms as $form) {
-            \Craft::$app
-                ->db
-                ->createCommand()
-                ->dropTableIfExists(Submission::getContentTableName($form))
-                ->execute()
-            ;
-        }
+        $this->deleteAllSubmissionElements();
+        $this->dropSubmissionContentTables();
+        $this->cleanupDemoTemplates();
+        $this->cleanupProjectConfig();
+        $this->cleanupUserPermissions();
+        $this->cleanupWidgets();
     }
 
     public function edition(): EditionHelper
@@ -441,6 +442,195 @@ class Freeform extends Plugin
             'freeform/settings',
             ['settings' => $this->getSettings()]
         );
+    }
+
+    private function deleteAllSubmissionElements(): void
+    {
+        $db = \Craft::$app->getDb();
+
+        $elementIds = (new Query())
+            ->select(['id'])
+            ->from(Table::ELEMENTS)
+            ->where(['type' => [Submission::class, SpamSubmission::class]])
+            ->column()
+        ;
+
+        if (empty($elementIds)) {
+            return;
+        }
+
+        foreach (array_chunk($elementIds, 500) as $chunk) {
+            $db->createCommand()
+                ->delete('{{%freeform_submissions}}', ['id' => $chunk])
+                ->execute()
+            ;
+
+            $db->createCommand()
+                ->delete(Table::SEARCHINDEX, ['elementId' => $chunk])
+                ->execute()
+            ;
+
+            $db->createCommand()
+                ->delete(Table::ELEMENTS, ['id' => $chunk])
+                ->execute()
+            ;
+        }
+    }
+
+    private function dropSubmissionContentTables(): void
+    {
+        foreach ($this->forms->getResolvedForms() as $form) {
+            \Craft::$app
+                ->getDb()
+                ->createCommand()
+                ->dropTableIfExists(Submission::getContentTableName($form))
+                ->execute()
+            ;
+        }
+    }
+
+    private function cleanupDemoTemplates(): void
+    {
+        $prefixes = ['freeform-demo'];
+
+        $projectConfig = \Craft::$app->getProjectConfig();
+
+        foreach ($projectConfig->get('routes') ?? [] as $route) {
+            $template = $route['template'] ?? '';
+
+            if (str_contains($template, 'freeform')) {
+                $segment = explode('/', ltrim($template, '/'))[0];
+                if ($segment) {
+                    $prefixes[] = $segment;
+                }
+            }
+        }
+
+        $filesystem = new Filesystem();
+        $templatesPath = rtrim(\Craft::$app->path->getSiteTemplatesPath(), '/');
+        $webRoot = rtrim($_SERVER['DOCUMENT_ROOT'] ?? '', '/');
+
+        foreach (array_unique($prefixes) as $prefix) {
+            $templateDirectory = $templatesPath.'/'.$prefix;
+            if ($filesystem->exists($templateDirectory)) {
+                $filesystem->remove($templateDirectory);
+            }
+
+            if ($webRoot) {
+                $assetsDirectory = $webRoot.'/assets/'.$prefix;
+                if ($filesystem->exists($assetsDirectory)) {
+                    $filesystem->remove($assetsDirectory);
+                }
+            }
+        }
+    }
+
+    private function cleanupProjectConfig(): void
+    {
+        $projectConfig = \Craft::$app->getProjectConfig();
+
+        $projectConfig->remove('plugins.freeform');
+
+        $projectConfig->remove('elementSources.'.Submission::class);
+
+        $routes = $projectConfig->get('routes') ?? [];
+        foreach ($routes as $uid => $route) {
+            $template = $route['template'] ?? '';
+
+            if (str_contains($template, 'freeform')) {
+                $projectConfig->remove('routes.'.$uid);
+            }
+        }
+
+        $this->cleanupGraphQlSchemaScopes($projectConfig);
+        $this->cleanupUserGroupPermissions($projectConfig);
+    }
+
+    private function cleanupGraphQlSchemaScopes(ProjectConfig $projectConfig): void
+    {
+        $schemas = $projectConfig->get('graphql.schemas') ?? [];
+
+        foreach ($schemas as $uid => $schema) {
+            $scope = $schema['scope'] ?? [];
+
+            $filteredScope = array_values(array_filter(
+                $scope,
+                static fn (string $item) => !str_starts_with($item, 'freeformForms.') && !str_starts_with($item, 'freeformSubmissions.')
+            ));
+
+            if (\count($filteredScope) !== \count($scope)) {
+                $projectConfig->set("graphql.schemas.{$uid}.scope", $filteredScope);
+            }
+        }
+    }
+
+    private function cleanupUserGroupPermissions(ProjectConfig $projectConfig): void
+    {
+        $groups = $projectConfig->get('users.groups') ?? [];
+
+        foreach ($groups as $uid => $group) {
+            $permissions = $group['permissions'] ?? [];
+
+            $filteredPermissions = array_values(array_filter(
+                $permissions,
+                static fn (string $permission) => !str_contains($permission, 'freeform'),
+            ));
+
+            if (\count($filteredPermissions) !== \count($permissions)) {
+                $projectConfig->set("users.groups.{$uid}.permissions", $filteredPermissions);
+            }
+        }
+    }
+
+    private function cleanupUserPermissions(): void
+    {
+        $db = \Craft::$app->getDb();
+
+        $permissionIds = (new Query())
+            ->select(['id'])
+            ->from(Table::USERPERMISSIONS)
+            ->where(['like', 'name', 'freeform'])
+            ->column()
+        ;
+
+        if (empty($permissionIds)) {
+            return;
+        }
+
+        $db->createCommand()
+            ->delete(Table::USERPERMISSIONS_USERGROUPS, ['permissionId' => $permissionIds])
+            ->execute()
+        ;
+
+        $db->createCommand()
+            ->delete(Table::USERPERMISSIONS_USERS, ['permissionId' => $permissionIds])
+            ->execute()
+        ;
+
+        $db->createCommand()
+            ->delete(Table::USERPERMISSIONS, ['id' => $permissionIds])
+            ->execute()
+        ;
+    }
+
+    private function cleanupWidgets(): void
+    {
+        $widgetIds = (new Query())
+            ->select(['id'])
+            ->from(Table::WIDGETS)
+            ->where(['like', 'type', 'Solspace\Freeform\\'])
+            ->column()
+        ;
+
+        if (empty($widgetIds)) {
+            return;
+        }
+
+        \Craft::$app->getDb()
+            ->createCommand()
+            ->delete(Table::WIDGETS, ['id' => $widgetIds])
+            ->execute()
+        ;
     }
 
     private function initControllerMap(): void

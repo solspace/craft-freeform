@@ -24,12 +24,14 @@ import type { SourceField as SourceFieldType } from "./mapping.types";
 type Props = {
   sources: SourceFieldType[];
   mapping?: FieldMapping;
+  query?: string;
   updateValue: (value: FieldMapping) => void;
 };
 
 export const FieldMappingController: React.FC<Props> = ({
   sources,
   mapping,
+  query = "",
   updateValue,
 }) => {
   if (!mapping) {
@@ -50,12 +52,19 @@ export const FieldMappingController: React.FC<Props> = ({
     });
   };
 
+  const normalizedQuery = query.trim().toLowerCase();
+  const visibleSources = normalizedQuery
+    ? sources.filter((source) =>
+        source.label.toLowerCase().includes(normalizedQuery),
+      )
+    : sources;
+
   return (
     <MappingContainer>
-      {sources.length === 0 && (
+      {visibleSources.length === 0 && (
         <HelpText>{translate("No data present")}</HelpText>
       )}
-      {sources.map((source) => {
+      {visibleSources.map((source) => {
         const map = mapping[source.id] ?? {
           type: TargetFieldType.Relation,
           value: "",

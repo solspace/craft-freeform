@@ -1,10 +1,14 @@
 import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 
-export const useSearchFocus = (): RefObject<HTMLInputElement> => {
+export const useSearchFocus = (enabled = true): RefObject<HTMLInputElement> => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    if (!enabled) {
+      return;
+    }
+
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.isComposing || event.altKey || event.ctrlKey || event.metaKey) {
         return;
@@ -35,7 +39,7 @@ export const useSearchFocus = (): RefObject<HTMLInputElement> => {
     return () => {
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, []);
+  }, [enabled]);
 
   return inputRef;
 };

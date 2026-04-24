@@ -51,6 +51,11 @@ export const MappingContainer = styled.div`
   ${scrollBar};
 `;
 
+export const MappingSearchWrapper = styled.div`
+  max-width: 1000px;
+  margin-bottom: 0px;
+`;
+
 export const SourceField = styled.div`
   position: relative;
 

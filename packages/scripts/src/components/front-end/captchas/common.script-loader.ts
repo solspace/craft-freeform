@@ -38,7 +38,7 @@ const loadScript: ScriptLoader = (url) => {
   return new Promise<void>((resolve, reject) => {
     const id = String(url);
     if (document.getElementById(id)) {
-      return;
+      return resolve();
     }
 
     const script = document.createElement("script");
@@ -92,7 +92,7 @@ export const loadCaptchaScript = (
   const versionedLazyLoader = loaders.get(loaderHash);
   if (isLazy) {
     if (!listeners.has(form)) {
-      addListeners(form, ["input", "submit"], versionedLazyLoader, {
+      addListeners(form, ["input"], versionedLazyLoader, {
         once: true,
       });
 

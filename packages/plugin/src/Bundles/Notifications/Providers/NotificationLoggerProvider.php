@@ -18,8 +18,9 @@ class NotificationLoggerProvider
 
     private int $level;
 
-    public function __construct(SettingsService $settingsService)
-    {
+    public function __construct(
+        SettingsService $settingsService
+    ) {
         $this->level = match ($settingsService->getSettingsModel()->loggingLevel) {
             Settings::LOGGING_LEVEL_INFO => Logger::INFO,
             Settings::LOGGING_LEVEL_DEBUG => Logger::DEBUG,
@@ -29,12 +30,13 @@ class NotificationLoggerProvider
 
     public function getLogger(
         NotificationInterface|NotificationTemplate|null $notification,
-        Form $form
+        ?Form $form
     ): LoggerInterface {
+        $logCategory = 'notification';
         if ($notification) {
-            $logCategory = StringHelper::toKebabCase($notification->getName());
-        } else {
-            $logCategory = 'form-'.$form->getId();
+            $logCategory = 'notification-'.StringHelper::toKebabCase($notification->getName());
+        } elseif ($form) {
+            $logCategory = 'notification-form-'.$form->getId();
         }
 
         return Freeform::getInstance()

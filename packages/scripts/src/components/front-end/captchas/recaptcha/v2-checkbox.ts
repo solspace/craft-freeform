@@ -42,7 +42,7 @@ const waitForToken = (form: HTMLFormElement): Promise<void> => {
 
     const poll = setInterval(() => {
       const tokenInput = form.querySelector<HTMLInputElement>(
-        `[name="g-recaptcha-response}"]`,
+        `[name="g-recaptcha-response"]`,
       );
       if (tokenInput?.value) {
         clearInterval(poll);
@@ -89,21 +89,25 @@ document.addEventListener(events.form.submit, (event: FreeformEvent) => {
 });
 
 document.addEventListener(events.form.ready, (event: FreeformEvent) => {
-  loadReCaptcha(event.form).then(() => {
-    createCaptcha(event);
-  });
+  loadReCaptcha(event.form)
+    .then(() => {
+      createCaptcha(event);
+    })
+    .catch(() => {});
 });
 
 addListeners(
   document,
   [events.form.ajaxAfterSubmit],
   async (event: FreeformEvent) => {
-    loadReCaptcha(event.form, true).then(() => {
-      const element = createCaptcha(event);
-      if (element) {
-        const id = element.dataset.captchaId;
-        grecaptcha.ready(() => grecaptcha.reset(id ? Number(id) : undefined));
-      }
-    });
+    loadReCaptcha(event.form, true)
+      .then(() => {
+        const element = createCaptcha(event);
+        if (element) {
+          const id = element.dataset.captchaId;
+          grecaptcha.ready(() => grecaptcha.reset(id ? Number(id) : undefined));
+        }
+      })
+      .catch(() => {});
   },
 );

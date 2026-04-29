@@ -88,24 +88,28 @@ document.addEventListener(events.form.submit, (event: FreeformEvent) => {
 });
 
 document.addEventListener(events.form.ready, (event: FreeformEvent) => {
-  loadCaptcha(event.form).then(() => {
-    createCaptcha(event);
-  });
+  loadCaptcha(event.form)
+    .then(() => {
+      createCaptcha(event);
+    })
+    .catch(() => {});
 });
 
 addListeners(
   document,
   [events.form.ajaxAfterSubmit],
   async (event: FreeformEvent) => {
-    loadCaptcha(event.form, true).then(() => {
-      const element = createCaptcha(event);
-      if (element) {
-        const id = element.dataset.captchaId;
-        if (id) {
-          // @ts-expect-error
-          turnstile.reset(id);
+    loadCaptcha(event.form, true)
+      .then(() => {
+        const element = createCaptcha(event);
+        if (element) {
+          const id = element.dataset.captchaId;
+          if (id) {
+            // @ts-expect-error
+            turnstile.reset(id);
+          }
         }
-      }
-    });
+      })
+      .catch(() => {});
   },
 );

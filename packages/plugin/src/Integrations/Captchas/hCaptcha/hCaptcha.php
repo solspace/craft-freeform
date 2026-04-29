@@ -279,7 +279,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         }
 
         if (\in_array('invalid-input-response', $errorCodes, true)) {
-            $errors[] = 'The hCaptcharesponse parameter is invalid or malformed.';
+            $errors[] = 'The hCaptcha response parameter is invalid or malformed.';
         }
 
         if (\in_array('bad-request', $errorCodes, true)) {

@@ -172,3 +172,35 @@ export const readCaptchaConfig = <V = string>(
   action: element.dataset.action || "submit",
   locale: element.dataset.locale,
 });
+
+// Poll captcha until it has a token value or the timeout is reached. Resolves either way - if the token never appears, the server handles the missing token gracefully via the server validation checks.
+export const waitForToken = (
+  form: HTMLFormElement,
+  fieldName: string,
+): Promise<void> => {
+  return new Promise<void>((resolve) => {
+    let elapsed = 0;
+
+    const poll = setInterval(() => {
+      const tokenInput = form.querySelector<HTMLInputElement>(
+        `[name="${fieldName}"]`,
+      );
+
+      if (tokenInput?.value) {
+        clearInterval(poll);
+
+        resolve();
+
+        return;
+      }
+
+      elapsed += 100;
+
+      if (elapsed >= 8000) {
+        clearInterval(poll);
+
+        resolve();
+      }
+    }, 100);
+  });
+};

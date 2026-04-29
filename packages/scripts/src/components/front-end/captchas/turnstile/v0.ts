@@ -1,7 +1,7 @@
 import events from "@lib/plugin/constants/event-types";
 import { addListeners } from "@lib/plugin/helpers/event-handling";
 import type { FreeformEvent } from "types/events";
-
+import { waitForToken } from "../common.script-loader";
 import { getContainer, loadCaptcha, readConfig } from "./utils/script-loader";
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
@@ -34,35 +34,6 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   return element;
 };
 
-// Poll until Turnstile has a token value or the timeout is reached. Resolves either way - if the token never appears, the server handles the missing token gracefully via the server validation checks.
-const waitForToken = (form: HTMLFormElement): Promise<void> => {
-  return new Promise<void>((resolve) => {
-    let elapsed = 0;
-
-    const poll = setInterval(() => {
-      const tokenInput = form.querySelector<HTMLInputElement>(
-        `[name="cf-turnstile-response"]`,
-      );
-      if (tokenInput?.value) {
-        clearInterval(poll);
-
-        resolve();
-
-        return;
-      }
-
-      elapsed += 100;
-
-      // Wait for 8 seconds
-      if (elapsed >= 8000) {
-        clearInterval(poll);
-
-        resolve();
-      }
-    }, 100);
-  });
-};
-
 // Before the form submits, make sure the Turnstile script has loaded, the widget has rendered and a token has been generated.
 document.addEventListener(events.form.submit, (event: FreeformEvent) => {
   const container = getContainer(event.form);
@@ -83,7 +54,7 @@ document.addEventListener(events.form.submit, (event: FreeformEvent) => {
     createCaptcha(event);
 
     // Wait for token
-    await waitForToken(event.form);
+    await waitForToken(event.form, "cf-turnstile-response");
   });
 });
 

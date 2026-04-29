@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.15.8 - 2026-04-29
+
+### Added
+- Added search filtering to integration field mappings in the form builder to better support large mappings.
+
+### Fixed
+- Fixed script loading issues and expanded spam reason details for CAPTCHA validations.
+- Fixed issues with the **Turnstile** integration in Safari.
+- Fixed an issue where elements were not properly removed and project config was not updated on uninstall of Freeform.
+- Fixed an issue where the _Restore_ button did not work in the **Trashed Submissions** view.
+- Fixed an issue where **Export Notifications** could send multiple emails in the same day.
+- Fixed an issue where **HubSpot** `409` errors could occur when creating contacts and companies in rare cases due to rate limiting.
+- Fixed an issue where **Website** field validation did not allow single-letter domains.
+
 ## 5.15.7 - 2026-04-23
 
 ### Fixed

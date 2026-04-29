@@ -15,10 +15,16 @@ type Props = {
   placeholder?: string;
   query: string;
   setQuery?: (value: string) => void;
+  showShortcut?: boolean;
 };
 
-export const Search: React.FC<Props> = ({ placeholder, query, setQuery }) => {
-  const ref = useSearchFocus();
+export const Search: React.FC<Props> = ({
+  placeholder,
+  query,
+  setQuery,
+  showShortcut = true,
+}) => {
+  const ref = useSearchFocus(showShortcut);
 
   return (
     <Wrapper>
@@ -27,7 +33,7 @@ export const Search: React.FC<Props> = ({ placeholder, query, setQuery }) => {
           <SearchIconSVG />
         </SearchIcon>
 
-        <SearchKeyHelper>{"/"}</SearchKeyHelper>
+        {showShortcut && <SearchKeyHelper>{"/"}</SearchKeyHelper>}
 
         <SearchBar
           ref={ref}

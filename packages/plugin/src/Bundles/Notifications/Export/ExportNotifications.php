@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Bundles\Notifications\Export;
 
 use Carbon\Carbon;
-use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use craft\web\Application;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -23,8 +22,9 @@ use yii\base\InvalidConfigException;
 
 class ExportNotifications extends FeatureBundle
 {
-    public const CACHE_KEY = 'export-notifications';
-    public const CACHE_TTL = 60 * 60 * 3; // every 3h
+    public const LOCK_KEY_EXPORT = 'export-notifications-lock-key';
+    public const CACHE_KEY_EXPORT = 'export-notifications';
+    public const CACHE_TTL_EXPORT = 60 * 60 * 3; // every 3h
 
     public const NOTIFICATION_TYPE = 'export-notification';
 
@@ -43,13 +43,17 @@ class ExportNotifications extends FeatureBundle
      */
     public function handleNotifications(): void
     {
-        if (Freeform::isLocked(self::CACHE_KEY, self::CACHE_TTL)) {
-            return;
-        }
-
         if (!\Craft::$app->db->tableExists(ExportNotificationRecord::TABLE)) {
             return;
         }
+
+        if (Freeform::isLockedWithGuard(self::CACHE_KEY_EXPORT, self::LOCK_KEY_EXPORT, self::CACHE_TTL_EXPORT)) {
+            return;
+        }
+
+        $logger = $this->notificationLoggerProvider->getLogger(null, null);
+
+        $logger->info('ExportNotifications handleNotifications - Started processing');
 
         $freeform = Freeform::getInstance();
         $mailer = $freeform->mailer;
@@ -61,8 +65,20 @@ class ExportNotifications extends FeatureBundle
             ->all()
         ;
 
+        $logger->debug('ExportNotifications handleNotifications - Found notifications', [
+            'count' => \count($notifications),
+        ]);
+
         foreach ($notifications as $notification) {
+            $logger->info("ExportNotifications handleNotifications - {$notification->name} - Started processing", [
+                'notification' => $notification,
+            ]);
+
             if (!$this->checkLock($notification)) {
+                $logger->info("ExportNotifications handleNotifications - {$notification->name} - Finished processing", [
+                    'notification' => $notification,
+                ]);
+
                 continue;
             }
 
@@ -93,7 +109,14 @@ class ExportNotifications extends FeatureBundle
             $recipients = RecipientCollection::fromArray(json_decode($notification->recipients));
             $processedRecipients = $mailer->processRecipients($recipients, $form);
 
-            $logger = $this->notificationLoggerProvider->getLogger($template, $form);
+            $logger->debug("ExportNotifications handleNotifications - {$notification->name} - Found recipients", [
+                'notification' => $notification,
+                'form' => $form,
+                'profile' => $profile,
+                'template' => $template,
+                'recipients' => $recipients->emailsToArray(),
+                'processedRecipients' => $processedRecipients,
+            ]);
 
             $message = $mailer->compileMessage($template, $variables, $logger);
             $message->setTo($processedRecipients);
@@ -121,57 +144,104 @@ class ExportNotifications extends FeatureBundle
                 ]
             );
 
-            $logger->info('Sending export notification', [
-                'form' => $form->getHandle(),
-                'profile' => $profile->name,
-                'recipients' => $processedRecipients,
+            $logger->info("ExportNotifications handleNotifications - {$notification->name} - Sending email", [
+                'recipients' => $recipients->emailsToArray(),
+                'processedRecipients' => $processedRecipients,
+                'message' => $message,
             ]);
 
             \Craft::$app->mailer->send($message);
+
+            $logger->info("ExportNotifications handleNotifications - {$notification->name} - Email sent");
+            $logger->info("ExportNotifications handleNotifications - {$notification->name} - Finished processing");
         }
+
+        $logger->info('ExportNotifications handleNotifications - Finished processing');
     }
 
     private function checkLock(ExportNotificationRecord $record): bool
     {
+        $logger = $this->notificationLoggerProvider->getLogger(null, null);
+
+        $logger->info("ExportNotifications checkLock - {$record->name} - Started processing");
+
         if (empty($record->getRecipientArray())) {
+            $logger->info("ExportNotifications checkLock - {$record->name} - Skipped - Recipients not found");
+            $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
             return false;
         }
 
         $frequency = (int) $record->frequency;
         $type = self::NOTIFICATION_TYPE;
 
-        $now = new Carbon('now');
+        // Use the Craft site timezone
+        $siteTimezone = new \DateTimeZone(\Craft::$app->getTimeZone());
 
-        $lookupStart = $now;
-        $lookupStart->setTime(0, 0, 0);
-        $lookupEnd = $lookupStart->copy()->setTime(23, 59, 59);
+        // "Today" at start of day in site timezone
+        $lookupStart = (new Carbon('now'))->setTimezone($siteTimezone)->startOfDay();
 
+        $logger->info("ExportNotifications checkLock - {$record->name} - lookupStart (Site Timezone) - {$lookupStart}");
+
+        // Frequency check:
+        // - Daily (-1) -> always run
+        // - Weekly (0–6) -> only run on that weekday in site timezone
         if (-1 !== $frequency && $lookupStart->dayOfWeek !== $frequency) {
+            $logger->info("ExportNotifications checkLock - {$record->name} - Skipped - Frequency mismatch (dayOfWeek={$lookupStart->dayOfWeek}, expected={$frequency})");
+            $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
             return false;
         }
 
-        $lock = NotificationLogRecord::find()
-            ->where(Db::parseDateParam('dateCreated', $lookupStart, '>='))
-            ->andWhere(Db::parseDateParam('dateCreated', $lookupEnd, '<='))
-            ->andWhere([
+        $exists = NotificationLogRecord::find()
+            ->where([
                 'type' => $type,
-                'identifier' => $record->id,
-                'name' => $record->name,
+                'identifier' => (string) $record->id,
+                'digestDate' => $lookupStart->toDateString(), // e.g. '2025-11-19'
             ])
-            ->one()
+            ->exists()
         ;
 
-        if ($lock) {
+        if ($exists) {
+            $logger->info("ExportNotifications checkLock - {$record->name} - Skipped - Already sent for {$lookupStart->toDateString()}");
+            $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
             return false;
         }
 
-        $lock = new NotificationLogRecord();
-        $lock->type = $type;
-        $lock->identifier = $record->id;
-        $lock->name = $record->name;
-        $lock->digestDate = $now->toDateString();
-        $lock->save();
+        $db = \Craft::$app->getDb();
+        $transaction = $db->beginTransaction();
 
-        return true;
+        try {
+            // Try to write log record to block duplicates
+            $notificationLogRecord = new NotificationLogRecord();
+            $notificationLogRecord->type = $type;
+            $notificationLogRecord->identifier = (string) $record->id;
+            $notificationLogRecord->name = $record->name;
+            $notificationLogRecord->digestDate = $lookupStart->toDateString();
+            $notificationLogRecord->save(false); // skip validation
+
+            $transaction->commit();
+
+            $logger->info("ExportNotifications checkLock - {$record->name} - Notification log record created");
+            $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
+            return true;
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+
+            if (str_contains($exception->getMessage(), 'UNIQUE') || str_contains($exception->getMessage(), 'Duplicate')) {
+                $logger->warning("ExportNotifications checkLock - {$record->name} - Skipped - Already sent (duplicate record)");
+                $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
+                return false;
+            }
+
+            $logger->error("ExportNotifications checkLock - {$record->name} - Failed: {$exception->getMessage()}");
+            $logger->info("ExportNotifications checkLock - {$record->name} - Finished processing");
+
+            // Re-throw so the queue knows it failed
+            throw $exception;
+        }
     }
 }

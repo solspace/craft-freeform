@@ -472,6 +472,11 @@ class Submission extends Element
         return self::$permissionCache[$this->formId];
     }
 
+    public function canSave(User $user): bool
+    {
+        return $this->getIsEditable();
+    }
+
     public function canView(User $user): bool
     {
         return true;

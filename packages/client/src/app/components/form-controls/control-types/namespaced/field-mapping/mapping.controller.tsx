@@ -7,6 +7,7 @@ import {
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
+import { useCallback, useMemo } from "react";
 import { FieldSelect } from "./field-select";
 import CustomIcon from "./icons/custom";
 import ListIcon from "./icons/list";
@@ -24,38 +25,54 @@ import type { SourceField as SourceFieldType } from "./mapping.types";
 type Props = {
   sources: SourceFieldType[];
   mapping?: FieldMapping;
+  query?: string;
   updateValue: (value: FieldMapping) => void;
 };
 
 export const FieldMappingController: React.FC<Props> = ({
   sources,
   mapping,
+  query = "",
   updateValue,
 }) => {
+  const update = useCallback(
+    (
+      sourceId: string | number,
+      type: TargetFieldType,
+      value?: string,
+    ): void => {
+      updateValue({
+        ...mapping,
+        [sourceId]: {
+          type,
+          value: value || "",
+        },
+      });
+    },
+    [mapping, updateValue],
+  );
+
+  const visibleSources = useMemo(() => {
+    const searchQuery = query.trim().toLowerCase();
+    if (!searchQuery) {
+      return sources;
+    }
+
+    return sources.filter((source) =>
+      source.label.toLowerCase().includes(searchQuery),
+    );
+  }, [sources, query]);
+
   if (!mapping) {
     return null;
   }
 
-  const update = (
-    sourceId: string | number,
-    type: TargetFieldType,
-    value?: string,
-  ): void => {
-    updateValue({
-      ...mapping,
-      [sourceId]: {
-        type,
-        value,
-      },
-    });
-  };
-
   return (
     <MappingContainer>
-      {sources.length === 0 && (
+      {visibleSources.length === 0 && (
         <HelpText>{translate("No data present")}</HelpText>
       )}
-      {sources.map((source) => {
+      {visibleSources.map((source) => {
         const map = mapping[source.id] ?? {
           type: TargetFieldType.Relation,
           value: "",
@@ -68,7 +85,7 @@ export const FieldMappingController: React.FC<Props> = ({
             </SourceField>
 
             <TypeButtonGroup>
-              {source.options?.length > 0 && (
+              {source.options!.length > 0 && (
                 <TypeButton
                   title={translate("Pre-defined options")}
                   className={classes(
@@ -110,7 +127,7 @@ export const FieldMappingController: React.FC<Props> = ({
                   onChange={(fieldUid) => {
                     update(source.id, TargetFieldType.Preset, fieldUid);
                   }}
-                  options={source.options.map((opt) => ({
+                  options={source.options!.map((opt) => ({
                     value: opt.key,
                     label: opt.label,
                   }))}

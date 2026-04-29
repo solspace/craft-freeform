@@ -39,6 +39,6 @@ class CrmFieldRecord extends ActiveRecord
      */
     public function getIntegration(): ActiveQuery
     {
-        return $this->hasOne(IntegrationRecord::class, ['integrationId' => 'id']);
+        return $this->hasOne(IntegrationRecord::class, ['id' => 'integrationId']);
     }
 }

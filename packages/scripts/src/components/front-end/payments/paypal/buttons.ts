@@ -246,7 +246,7 @@ async function initializePayPalButtons(root: HTMLElement) {
               config.integration,
               values,
             );
-            if (!order || !order.id) {
+            if (!order?.id) {
               logError("Failed to create order or no order ID returned", order);
               throw new Error("Failed to create PayPal order");
             }

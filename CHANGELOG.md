@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.15.7 - 2026-04-23
+
+### Fixed
+- Fixed incorrect ActiveRecord relation mappings that could prevent integrations from resolving correctly.
+- Improved spam reason messages for **Turnstile** CAPTCHAs.
+
 ## 5.15.6.1 - 2026-04-17
 
 ### Fixed

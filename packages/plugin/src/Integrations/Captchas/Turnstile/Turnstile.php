@@ -161,20 +161,31 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function validate(Form $form): void
     {
-        $errors = $this->getValidationErrors($form);
-        if (empty($errors)) {
-            $this->logger->debug('Turnstile Captcha validation passed');
+        // If no token was submitted, Turnstile Captcha never loaded on the client side. Always show an error so the user knows their submission did not go through, regardless of the configured failure behavior.
+        $formHandle = $form->getHandle();
+
+        if (empty($this->getCaptchaResponse($form))) {
+            $form->addError($this->getErrorMessage());
+
+            $this->logger->debug('Turnstile Captcha validation failed: token missing, Turnstile may not have loaded', ['form' => $formHandle]);
 
             return;
         }
 
-        $this->logger->debug('Turnstile Captcha validation failed', $errors);
+        $errors = $this->getValidationErrors($form);
+        if (empty($errors)) {
+            $this->logger->debug('Turnstile Captcha validation passed', ['form' => $formHandle]);
+
+            return;
+        }
+
+        $this->logger->debug('Turnstile Captcha validation failed', ['form' => $formHandle, 'errors' => $errors]);
 
         $behavior = $this->getFailureBehavior();
         if (self::BEHAVIOR_DISPLAY_ERROR === $behavior) {
             $form->addError($this->getErrorMessage());
         } elseif (self::BEHAVIOR_SEND_TO_SPAM === $behavior) {
-            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'Turnstile - '.implode(', ', $errors));
+            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'Turnstile ['.$formHandle.'] - '.implode(', ', $errors));
         }
     }
 
@@ -234,31 +245,31 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
 
         $errorCodes = $result['error-codes'];
         if (\in_array('missing-input-secret', $errorCodes, true)) {
-            $errors[] = 'The secret parameter is missing.';
+            $errors[] = 'The Turnstile Captcha secret parameter is missing.';
         }
 
         if (\in_array('invalid-input-secret', $errorCodes, true)) {
-            $errors[] = 'The secret parameter is invalid or malformed.';
+            $errors[] = 'The Turnstile Captcha secret parameter is invalid or malformed.';
         }
 
         if (\in_array('missing-input-response', $errorCodes, true)) {
-            $errors[] = 'The response parameter is missing.';
+            $errors[] = 'The Turnstile Captcha response token was not submitted.';
         }
 
         if (\in_array('invalid-input-response', $errorCodes, true)) {
-            $errors[] = 'The response parameter is invalid or malformed.';
+            $errors[] = 'The Turnstile Captcha response parameter is invalid or malformed.';
         }
 
         if (\in_array('bad-request', $errorCodes, true)) {
-            $errors[] = 'The request is invalid or malformed.';
+            $errors[] = 'The Turnstile Captcha request is invalid or malformed.';
         }
 
         if (\in_array('timeout-or-duplicate', $errorCodes, true)) {
-            $errors[] = 'The response is no longer valid: either is too old or has been used previously.';
+            $errors[] = 'The Turnstile Captcha response is no longer valid: either is too old or has been used previously.';
         }
 
         if (\in_array('internal-error', $errorCodes, true)) {
-            $errors[] = 'An internal error occurred.';
+            $errors[] = 'A Turnstile Captcha internal error occurred.';
         }
 
         if (empty($errors)) {

@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\HubSpot\Versions;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Delimiter;
 use Solspace\Freeform\Attributes\Property\Edition;
@@ -296,22 +297,11 @@ class HubSpotV3 extends BaseHubSpotIntegration
                 );
             }
 
-            $response = $client->patch(
-                $this->getEndpoint('/objects/contacts/'.$contactId),
-                ['json' => ['properties' => $mapping]],
-            );
+            $response = $this->updateContact($client, $contactId, $mapping);
 
             $this->logger->info('Updated contact', ['contactId' => $contactId]);
         } else {
-            [$response, $data] = $this->getJsonResponse(
-                $client->post(
-                    $this->getEndpoint('/objects/contacts'),
-                    ['json' => ['properties' => $mapping]],
-                )
-            );
-
-            $contactId = (int) $data->id;
-            $this->logger->info('New Contact created', ['contactId' => $contactId]);
+            [$response, $contactId] = $this->createContact($client, $mapping);
         }
 
         $this->logger->debug('With Mapping', $mapping);
@@ -377,26 +367,14 @@ class HubSpotV3 extends BaseHubSpotIntegration
                 );
             }
 
-            $response = $client->patch(
-                $this->getEndpoint('/objects/companies/'.$companyId),
-                ['json' => ['properties' => $mapping]],
-            );
+            $response = $this->updateCompany($client, (int) $companyId, $mapping);
 
             $this->logger->info('Updated company', ['companyId' => $companyId]);
-            $this->logger->debug('With Mapping', $mapping);
         } else {
-            [$response, $data] = $this->getJsonResponse(
-                $client->post(
-                    $this->getEndpoint('/objects/companies'),
-                    ['json' => ['properties' => $mapping]],
-                )
-            );
-
-            $companyId = $data->id;
-
-            $this->logger->info('New Company created', ['companyId' => $companyId]);
-            $this->logger->debug('With Mapping', $mapping);
+            [$response, $companyId] = $this->createCompany($client, $mapping);
         }
+
+        $this->logger->debug('With Mapping', $mapping);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_COMPANY, $response);
         $this->companyId = $companyId;
@@ -427,6 +405,76 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
         $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
         $this->dealId = $data->id;
+    }
+
+    private function createContact(Client $client, array $mapping): array
+    {
+        try {
+            [$response, $data] = $this->getJsonResponse(
+                $client->post(
+                    $this->getEndpoint('/objects/contacts'),
+                    ['json' => ['properties' => $mapping]],
+                )
+            );
+
+            $contactId = (int) $data->id;
+            $this->logger->info('New Contact created', ['contactId' => $contactId]);
+
+            return [$response, $contactId];
+        } catch (ClientException $exception) {
+            $contactId = $this->getConflictObjectId($exception);
+            if (!$contactId) {
+                throw $exception;
+            }
+
+            $response = $this->updateContact($client, $contactId, $mapping);
+            $this->logger->info('Contact conflict resolved via update', ['contactId' => $contactId]);
+
+            return [$response, $contactId];
+        }
+    }
+
+    private function updateContact(Client $client, int $contactId, array $mapping): ResponseInterface
+    {
+        return $client->patch(
+            $this->getEndpoint('/objects/contacts/'.$contactId),
+            ['json' => ['properties' => $mapping]],
+        );
+    }
+
+    private function createCompany(Client $client, array $mapping): array
+    {
+        try {
+            [$response, $data] = $this->getJsonResponse(
+                $client->post(
+                    $this->getEndpoint('/objects/companies'),
+                    ['json' => ['properties' => $mapping]],
+                )
+            );
+
+            $companyId = (int) $data->id;
+            $this->logger->info('New Company created', ['companyId' => $companyId]);
+
+            return [$response, $companyId];
+        } catch (ClientException $exception) {
+            $companyId = $this->getConflictObjectId($exception);
+            if (!$companyId) {
+                throw $exception;
+            }
+
+            $response = $this->updateCompany($client, $companyId, $mapping);
+            $this->logger->info('Company conflict resolved via update', ['companyId' => $companyId]);
+
+            return [$response, $companyId];
+        }
+    }
+
+    private function updateCompany(Client $client, int $companyId, array $mapping): ResponseInterface
+    {
+        return $client->patch(
+            $this->getEndpoint('/objects/companies/'.$companyId),
+            ['json' => ['properties' => $mapping]],
+        );
     }
 
     private function createAssociations(Form $form, Client $client): void
@@ -485,6 +533,21 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private function getDomainFieldValue(array $companyProps): ?string
     {
         return $companyProps['domain'] ?? null;
+    }
+
+    private function getConflictObjectId(ClientException $exception): ?int
+    {
+        $response = $exception->getResponse();
+        if (409 !== $response->getStatusCode()) {
+            return null;
+        }
+
+        $data = json_decode((string) $response->getBody());
+        if (!$data || !preg_match('/Existing ID:\s*(\d+)/', $data->message ?? '', $matches)) {
+            return null;
+        }
+
+        return (int) $matches[1];
     }
 
     private function extractDomainFromEmail(string $email): ?string

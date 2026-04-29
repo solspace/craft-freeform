@@ -22,6 +22,30 @@ export type CaptchaConfig<V = string> = {
 
 type ScriptLoader = (url: URL) => Promise<void>;
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL
+ *
+ * Trusted Types policy for loading external captcha scripts in Safari.
+ * Created lazily the first time it is needed and reused on subsequent calls.
+ * When the browser does not support Trusted Types the policy stays null and the plain string assignment path is used instead.
+ */
+type TrustedTypes = Window & {
+  trustedTypes?: {
+    createPolicy(
+      name: string,
+      rules: {
+        createScriptURL(input: string): string;
+      },
+    ): {
+      createScriptURL(input: string): unknown;
+    };
+  };
+};
+
+let scriptPolicy: {
+  createScriptURL(input: string): unknown;
+} | null = null;
+
 if (!window.freeform) {
   window.freeform = {};
 }
@@ -38,11 +62,36 @@ const loadScript: ScriptLoader = (url) => {
   return new Promise<void>((resolve, reject) => {
     const id = String(url);
     if (document.getElementById(id)) {
-      return;
+      return resolve();
     }
 
     const script = document.createElement("script");
-    script.src = String(url);
+
+    /**
+     * Browsers enforcing `require-trusted-types-for 'script'` throws a TypeError when a plain string is assigned to script.src in Safari.
+     * So we create a named Trusted Types policy. Falls back to a direct string assignment when the Trusted Types API is unavailable or not Safari.
+     */
+    const { trustedTypes } = window as TrustedTypes;
+
+    if (trustedTypes?.createPolicy) {
+      if (!scriptPolicy) {
+        try {
+          scriptPolicy = trustedTypes.createPolicy("freeform#captcha-loader", {
+            createScriptURL: (input: string) => input,
+          });
+        } catch {
+          // A policy with this name already exists (created by another Freeform script on the same page).
+        }
+      }
+
+      // @ts-expect-error - TrustedScriptURL is valid for script.src
+      script.src = scriptPolicy
+        ? scriptPolicy.createScriptURL(String(url))
+        : String(url);
+    } else {
+      script.src = String(url);
+    }
+
     script.async = true;
     script.defer = true;
     script.id = id;
@@ -92,7 +141,7 @@ export const loadCaptchaScript = (
   const versionedLazyLoader = loaders.get(loaderHash);
   if (isLazy) {
     if (!listeners.has(form)) {
-      addListeners(form, ["input", "submit"], versionedLazyLoader, {
+      addListeners(form, ["input"], versionedLazyLoader, {
         once: true,
       });
 
@@ -123,3 +172,35 @@ export const readCaptchaConfig = <V = string>(
   action: element.dataset.action || "submit",
   locale: element.dataset.locale,
 });
+
+// Poll captcha until it has a token value or the timeout is reached. Resolves either way - if the token never appears, the server handles the missing token gracefully via the server validation checks.
+export const waitForToken = (
+  form: HTMLFormElement,
+  fieldName: string,
+): Promise<void> => {
+  return new Promise<void>((resolve) => {
+    let elapsed = 0;
+
+    const poll = setInterval(() => {
+      const tokenInput = form.querySelector<HTMLInputElement>(
+        `[name="${fieldName}"]`,
+      );
+
+      if (tokenInput?.value) {
+        clearInterval(poll);
+
+        resolve();
+
+        return;
+      }
+
+      elapsed += 100;
+
+      if (elapsed >= 8000) {
+        clearInterval(poll);
+
+        resolve();
+      }
+    }, 100);
+  });
+};

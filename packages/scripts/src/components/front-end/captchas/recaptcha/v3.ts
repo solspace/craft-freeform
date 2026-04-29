@@ -32,7 +32,7 @@ const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
 };
 
 document.addEventListener(events.form.ready, (event: FreeformEvent) => {
-  loadReCaptcha(event.form);
+  loadReCaptcha(event.form).catch(() => {});
 });
 
 document.addEventListener(events.form.submit, (event: FreeformEvent) => {
@@ -47,7 +47,12 @@ document.addEventListener(events.form.submit, (event: FreeformEvent) => {
       return;
     }
 
-    await loadReCaptcha(event.form, true);
+    try {
+      await loadReCaptcha(event.form, true);
+    } catch {
+      // Script failed to load - blocked by a browser extension, firewall, etc. Allow the submission to continue and the server validation checks will show an error to the user rather than sending the submission to spam.
+      return;
+    }
 
     const { sitekey, action } = readConfig(container);
 

@@ -23,39 +23,41 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
 };
 
 const initRecaptchaInvisible = (event: FreeformEvent): void => {
-  loadReCaptcha(event.form).then(() => {
-    const container = getContainer(event.form);
-    if (!container) {
-      return;
-    }
+  loadReCaptcha(event.form)
+    .then(() => {
+      const container = getContainer(event.form);
+      if (!container) {
+        return;
+      }
 
-    const { sitekey } = readConfig(container);
+      const { sitekey } = readConfig(container);
 
-    const element = createCaptcha(event);
-    if (!element) {
-      return;
-    }
+      const element = createCaptcha(event);
+      if (!element) {
+        return;
+      }
 
-    if (!element.innerHTML) {
-      grecaptcha.ready(() => {
-        const id = grecaptcha.render(element, {
-          sitekey,
-          size: "invisible",
-          callback: (token) => {
-            element.querySelector<HTMLInputElement>(
-              '*[name="g-recaptcha-response"]',
-            ).value = token;
+      if (!element.innerHTML) {
+        grecaptcha.ready(() => {
+          const id = grecaptcha.render(element, {
+            sitekey,
+            size: "invisible",
+            callback: (token) => {
+              element.querySelector<HTMLInputElement>(
+                '*[name="g-recaptcha-response"]',
+              ).value = token;
 
-            executor();
-          },
+              executor();
+            },
+          });
+
+          element.dataset.captchaId = String(id);
         });
-
-        element.dataset.captchaId = String(id);
-      });
-    } else {
-      grecaptcha.ready(grecaptcha.reset);
-    }
-  });
+      } else {
+        grecaptcha.ready(grecaptcha.reset);
+      }
+    })
+    .catch(() => {});
 };
 
 document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
@@ -69,7 +71,12 @@ document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
       return;
     }
 
-    await loadReCaptcha(event.form, true);
+    try {
+      await loadReCaptcha(event.form, true);
+    } catch {
+      // Script failed to load - blocked by a browser extension, firewall, etc. Allow the submission to continue and the server validation checks will show an error to the user rather than sending the submission to spam.
+      return;
+    }
 
     grecaptcha.ready(() => {
       const id = element.dataset.captchaId;

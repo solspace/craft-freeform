@@ -23,7 +23,7 @@ class FieldVariables extends FeatureBundle
         $form = $event->getForm();
 
         $variables = [];
-        foreach ($form->getFields() as $field) {
+        foreach ($form->getLayout()->getFields() as $field) {
             $variables[$field->getUid()] = $field->getReadableOutputValue();
         }
 

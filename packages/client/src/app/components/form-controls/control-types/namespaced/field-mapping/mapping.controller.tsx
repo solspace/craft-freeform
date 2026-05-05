@@ -85,7 +85,7 @@ export const FieldMappingController: React.FC<Props> = ({
             </SourceField>
 
             <TypeButtonGroup>
-              {source.options!.length > 0 && (
+              {source.options && source.options.length > 0 && (
                 <TypeButton
                   title={translate("Pre-defined options")}
                   className={classes(

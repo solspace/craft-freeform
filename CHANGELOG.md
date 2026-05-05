@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.15.9 - 2026-05-05
+
+### Fixed
+- Fixed an issue where multi-page forms could error when using notification templates in rare cases.
+- Fixed an issue with field mapping in **Stripe** and element integrations in the form builder.
+
 ## 5.15.8 - 2026-04-29
 
 ### Added

@@ -634,7 +634,7 @@ class IntegrationsService extends BaseService
 
         $submission = $freeform->submissions->getSubmissionById($submissionId);
         if ($submission) {
-            if (!$submission || $submission->isSpam) {
+            if ($submission->isSpam) {
                 return;
             }
 

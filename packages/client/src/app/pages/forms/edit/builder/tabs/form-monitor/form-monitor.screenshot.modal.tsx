@@ -61,7 +61,7 @@ export const ScreenshotModal: React.FC<
             pinch={{ step: 5 }}
             doubleClick={{ step: 0.5 }}
           >
-            {({ zoomIn, zoomOut, resetTransform, instance }) => (
+            {({ zoomIn, zoomOut, resetTransform, state }) => (
               <>
                 <TransformComponent
                   wrapperStyle={{
@@ -90,7 +90,7 @@ export const ScreenshotModal: React.FC<
                   <ZoomButtons>
                     <ZoomButton
                       onClick={() => zoomOut()}
-                      disabled={instance.transformState.scale <= 0.5}
+                      disabled={state.scale <= 0.5}
                       title={translate("Zoom Out")}
                     >
                       −
@@ -103,7 +103,7 @@ export const ScreenshotModal: React.FC<
                     </ZoomButton>
                     <ZoomButton
                       onClick={() => zoomIn()}
-                      disabled={instance.transformState.scale >= 3}
+                      disabled={state.scale >= 3}
                       title={translate("Zoom In")}
                     >
                       +

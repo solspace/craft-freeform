@@ -13,7 +13,6 @@
 
 namespace Solspace\Freeform;
 
-use craft\base\Plugin;
 use craft\db\Table;
 use craft\events\IndexKeywordsEvent;
 use craft\events\RegisterComponentTypesEvent;
@@ -25,6 +24,8 @@ use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
+use CraftCms\Cms\Plugin\Plugin;
+use CraftCms\Cms\Validation\Contracts\Validatable;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
@@ -431,7 +432,7 @@ class Freeform extends Plugin
         $group->save();
     }
 
-    protected function createSettingsModel(): Settings
+    protected function createSettingsModel(): ?Validatable
     {
         return new Settings();
     }

@@ -13,9 +13,9 @@
 
 namespace Solspace\Freeform\Models;
 
-use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
+use CraftCms\Cms\Shared\BaseModel;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -24,7 +24,7 @@ use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class Settings extends Model
+class Settings extends BaseModel
 {
     public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';

@@ -63,4 +63,4 @@ To use this integration on your form(s), configure each form individually:
 
 ---
 
-<small>Need more from this integration? Looking for an integration that's not available? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
+<small>Need more from this integration? Looking for an integration that's not available? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>

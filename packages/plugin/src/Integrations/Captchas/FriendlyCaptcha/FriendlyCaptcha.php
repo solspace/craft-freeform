@@ -87,11 +87,11 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         label: 'Start Mode',
-        instructions: 'When the widget begins solving: Auto (immediately), Focus (when the form is focused), or None (manual only).',
+        instructions: 'When the widget begins solving.',
         options: [
-            self::START_AUTO => 'Auto — activate immediately',
-            self::START_FOCUS => 'Focus — activate on form focus',
-            self::START_NONE => 'None — manual activation only',
+            self::START_AUTO => 'Auto - activate immediately',
+            self::START_FOCUS => 'Focus - activate on form focus',
+            self::START_NONE => 'None - manual activation only',
         ],
     )]
     private string $startMode = self::START_FOCUS;
@@ -100,7 +100,7 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     #[Input\Select(
         label: 'Theme',
         options: [
-            'auto' => 'Auto — match system preference',
+            'auto' => 'Auto',
             'light' => 'Light',
             'dark' => 'Dark',
         ],
@@ -111,7 +111,7 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Language',
-        instructions: 'Language code for the widget, e.g. `en`, `de`, `fr`. Leave blank for automatic detection.',
+        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
         placeholder: '',
     )]
     private string $locale = '';

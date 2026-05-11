@@ -1838,6 +1838,14 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.' => 'De landinstelling die voor de Captcha als taal-ID moet worden gebruikt, b.v. `en`, `de`, enz. Als u dit veld leeg laat, wordt de landinstelling automatisch gedetecteerd.',
     'Site Key' => 'Sitesleutel',
     'Secret Key' => 'Geheime sleutel',
+    'Start Mode' => 'Startmodus',
+    'When the widget begins solving.' => 'Wanneer de widget begint met oplossen.',
+    'Auto - activate immediately' => 'Auto - direct activeren',
+    'Focus - activate on form focus' => 'Focus - activeren bij focus op formulier',
+    'None - manual activation only' => 'Geen - alleen handmatige activering',
+    'Please verify that you are not a robot.' => 'Verifieer dat je geen robot bent.',
+    'Create an API key in the Friendly Captcha dashboard. Used as the X-API-Key header for server-side verification (not the site key).' => 'Maak een API-sleutel aan in het Friendly Captcha-dashboard. Wordt gebruikt als X-API-Key-header voor server-side verificatie (niet de sitesleutel).',
+    'Auto' => 'Auto',
 
     // Integrations // Spam Blocking
     'Spam Blocking' => 'Spamblokkering',

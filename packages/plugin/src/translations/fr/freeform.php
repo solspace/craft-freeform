@@ -1838,6 +1838,14 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.' => 'La locale à utiliser pour le Captcha comme identifiant de langue, par exemple `fr`, `en`, etc. Si laissé vide, la locale sera détectée automatiquement.',
     'Site Key' => 'Clé du site',
     'Secret Key' => 'Clé secrète',
+    'Start Mode' => 'Mode de démarrage',
+    'When the widget begins solving.' => 'Quand le widget commence la vérification.',
+    'Auto - activate immediately' => 'Auto - activer immédiatement',
+    'Focus - activate on form focus' => 'Focus - activer lors du focus sur le formulaire',
+    'None - manual activation only' => 'Aucun - activation manuelle uniquement',
+    'Please verify that you are not a robot.' => 'Veuillez vérifier que vous n’êtes pas un robot.',
+    'Create an API key in the Friendly Captcha dashboard. Used as the X-API-Key header for server-side verification (not the site key).' => 'Créez une clé API dans le tableau de bord Friendly Captcha. Utilisée comme en-tête X-API-Key pour la vérification côté serveur (et non la clé du site).',
+    'Auto' => 'Auto',
 
     // Integrations // Spam Blocking
     'Spam Blocking' => 'Blocage du spam',

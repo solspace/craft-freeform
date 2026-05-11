@@ -14,6 +14,7 @@ use Solspace\Freeform\Events\PostForwarding\PostForwardingEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Captchas\FriendlyCaptcha\FriendlyCaptcha;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
 use Solspace\Freeform\Integrations\Captchas\Turnstile\Turnstile;
@@ -117,6 +118,7 @@ class PostForwardingTrigger extends FeatureBundle
             ReCaptcha::class => 'g-recaptcha-response',
             hCaptcha::class => 'h-captcha-response',
             Turnstile::class => 'cf-turnstile-response',
+            FriendlyCaptcha::class => 'frc-captcha-response',
         ];
 
         if (!$form->isDisabled()->captchas) {

@@ -58,7 +58,17 @@ class CaptchaArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The Captcha field input name (E.g "g-recaptcha-response", "h-captcha-response" or "cf-turnstile-response")',
+                'description' => 'The Captcha field input name (e.g. "g-recaptcha-response", "h-captcha-response", "cf-turnstile-response", or "frc-captcha-response")',
+            ],
+            'startMode' => [
+                'name' => 'startMode',
+                'type' => Type::string(),
+                'description' => 'Friendly Captcha start mode: auto, focus, or none',
+            ],
+            'apiEndpoint' => [
+                'name' => 'apiEndpoint',
+                'type' => Type::string(),
+                'description' => 'Friendly Captcha API endpoint region (e.g. global)',
             ],
 
             /*
@@ -69,7 +79,7 @@ class CaptchaArguments extends Arguments
             'handle' => [
                 'name' => 'handle',
                 'type' => Type::string(),
-                'description' => 'The Captcha field input name (E.g "g-recaptcha-response", "h-captcha-response" or "cf-turnstile-response"). Deprecated. Will be removed in Freeform 6.0.',
+                'description' => 'The Captcha field input name (e.g. "g-recaptcha-response", "h-captcha-response", "cf-turnstile-response", or "frc-captcha-response"). Deprecated. Will be removed in Freeform 6.0.',
             ],
 
             /*

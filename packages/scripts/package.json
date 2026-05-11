@@ -14,6 +14,7 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "dependencies": {
+    "@friendlycaptcha/sdk": "^1.0.0",
     "@paypal/paypal-js": "^9.6.0",
     "@stripe/stripe-js": "^9.1.0",
     "expression-language": "^2.5.4"

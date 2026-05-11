@@ -6,6 +6,7 @@ use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Captchas\FriendlyCaptcha\FriendlyCaptcha;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
 use Solspace\Freeform\Integrations\Captchas\Turnstile\Turnstile;
@@ -110,6 +111,15 @@ class CaptchaResolver extends Resolver
             $arguments['version'] = null;
             $arguments['scoreThreshold'] = null;
             $arguments['name'] = 'cf-turnstile-response';
+        }
+
+        if ($integration instanceof FriendlyCaptcha) {
+            $arguments['action'] = null;
+            $arguments['version'] = null;
+            $arguments['scoreThreshold'] = null;
+            $arguments['name'] = 'frc-captcha-response';
+            $arguments['startMode'] = $integration->getStartMode();
+            $arguments['apiEndpoint'] = 'global';
         }
 
         return $arguments;

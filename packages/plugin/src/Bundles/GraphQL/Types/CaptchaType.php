@@ -65,6 +65,14 @@ class CaptchaType extends AbstractObjectType
             return $source['name'] ?? null;
         }
 
+        if ('startMode' === $resolveInfo->fieldName) {
+            return $source['startMode'] ?? null;
+        }
+
+        if ('apiEndpoint' === $resolveInfo->fieldName) {
+            return $source['apiEndpoint'] ?? null;
+        }
+
         /*
          * @deprecated - this argument is no longer used
          *

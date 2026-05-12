@@ -19,35 +19,35 @@ export const getButtonGroups = (page: Page): ButtonGroups => {
         case "submit":
           buttonGroup.push({
             handle: "submit",
-            label: page.buttons.submitLabel,
+            label: page.buttons?.submitLabel || "Submit",
             enabled: true,
-            assetId: page.buttons.submitIcon?.[0] || undefined,
-            iconPosition: page.buttons.submitIconPosition || "left",
+            assetId: page.buttons?.submitIcon?.[0] || undefined,
+            iconPosition: page.buttons?.submitIconPosition || "left",
           });
 
           break;
 
         case "back":
-          if (page.buttons.back) {
+          if (page.buttons?.back) {
             buttonGroup.push({
               handle: "back",
-              label: page.buttons.backLabel,
-              enabled: page.buttons.back,
-              assetId: page.buttons.backIcon?.[0] || undefined,
-              iconPosition: page.buttons.backIconPosition || "left",
+              label: page.buttons?.backLabel || "Back",
+              enabled: page.buttons?.back || false,
+              assetId: page.buttons?.backIcon?.[0] || undefined,
+              iconPosition: page.buttons?.backIconPosition || "left",
             });
           }
 
           break;
 
         case "save":
-          if (page.buttons.save) {
+          if (page.buttons?.save) {
             buttonGroup.push({
               handle: "save",
-              label: page.buttons.saveLabel,
-              enabled: page.buttons.save,
-              assetId: page.buttons.saveIcon?.[0] || undefined,
-              iconPosition: page.buttons.saveIconPosition || "left",
+              label: page.buttons?.saveLabel || "Save",
+              enabled: page.buttons?.save || false,
+              assetId: page.buttons?.saveIcon?.[0] || undefined,
+              iconPosition: page.buttons?.saveIconPosition || "left",
             });
           }
 

@@ -67,7 +67,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             return;
         }
 
-        $notification = $notificationProvider->getById($this->notificationId);
+        $notification = $this->notificationId
+            ? $notificationProvider->getByFormAndId($form, $this->notificationId)
+            : null;
         $logger = $this->getLogger($notification, $form);
 
         if (!$this->recipients) {

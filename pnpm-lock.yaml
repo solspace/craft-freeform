@@ -168,8 +168,8 @@ importers:
         specifier: ^9.6.0
         version: 9.6.0
       '@stripe/stripe-js':
-        specifier: ^9.1.0
-        version: 9.1.0
+        specifier: ^8.11.0
+        version: 8.11.0
       expression-language:
         specifier: ^2.5.4
         version: 2.5.4
@@ -788,8 +788,8 @@ packages:
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
 
-  '@stripe/stripe-js@9.1.0':
-    resolution: {integrity: sha512-v51LoEfZNiNS/5DcarWPCYgn24w4dqwwALR4GTbMW/N0DDzzj4DgYNoixX6PYvpt6uIJMucGUabn/BHhylggIQ==}
+  '@stripe/stripe-js@8.11.0':
+    resolution: {integrity: sha512-3fVF4z3efsgwgyj64nFK+6F4/vMw0mUXD2TBbOfftJtKVNx4JNv3CSfe1fY4DCtCk0JFp8/YPNcRkzgV0HJ8cg==}
     engines: {node: '>=12.16'}
 
   '@tanstack/query-core@5.96.2':
@@ -2400,7 +2400,7 @@ snapshots:
 
   '@standard-schema/utils@0.3.0': {}
 
-  '@stripe/stripe-js@9.1.0': {}
+  '@stripe/stripe-js@8.11.0': {}
 
   '@tanstack/query-core@5.96.2': {}
 

@@ -47,12 +47,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.dispatchEvent(new CustomEvent(ffStripeEvents.load));
 });
 
-const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-  if (node.nodeName === "FORM" || node.dataset?.freeform !== undefined) {
-    attachStripeToForm(node);
+const recursiveFreeformAttachment = (node: HTMLFormElement | ChildNode) => {
+  const element = node as HTMLElement;
+  if (element.nodeName === "FORM" || element.dataset?.freeform !== undefined) {
+    attachStripeToForm(node as HTMLFormElement);
   }
 
-  node?.childNodes.forEach(recursiveFreeformAttachment);
+  element?.childNodes.forEach(recursiveFreeformAttachment);
 };
 
 // Add an observer which listens for new forms

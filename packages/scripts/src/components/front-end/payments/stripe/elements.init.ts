@@ -9,6 +9,8 @@ import queries from "./elements.queries";
 import { isHidden } from "./elements.selectors";
 import type { StripeFunctionConstructorProps } from "./elements.types";
 
+const intentSelector = "[data-freeform-stripe-intent]";
+
 const workers: string[] = [];
 const initializedContainers = new WeakSet<HTMLDivElement>();
 
@@ -45,8 +47,8 @@ export const initStripe =
     }
 
     let stripe: Stripe;
-    if (elementMap.has(field) && elementMap.get(field).stripe) {
-      stripe = elementMap.get(field).stripe;
+    if (elementMap.has(field) && elementMap.get(field)?.stripe) {
+      stripe = elementMap.get(field)!.stripe;
     } else {
       stripe = await getStripe();
     }
@@ -67,9 +69,9 @@ export const initStripe =
       .create(integration, form, site)
       .then(({ data: { id, secret } }) => {
         // Set the PaymentIntent ID as the field value
-        field.parentElement.querySelector<HTMLInputElement>(
-          "[data-freeform-stripe-intent]",
-        ).value = id;
+        field.parentElement!.querySelector<HTMLInputElement>(
+          intentSelector,
+        )!.value = id;
 
         const { elementOptions, paymentOptions } = generateElementOptions({
           theme,

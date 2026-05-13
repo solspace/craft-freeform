@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.15.11 - 2026-05-13
+
+### Fixed
+- Fixed a compatibility issue with the **Stripe** integration.
+
 ## 5.15.10 - 2026-05-11
 
 ### Added

@@ -9,6 +9,8 @@ import {
 } from "./elements.selectors";
 import type { StripeFunctionConstructorProps } from "./elements.types";
 
+const cardSelector = "[data-freeform-stripe-card]";
+
 export const loadStripeContainers =
   (props: StripeFunctionConstructorProps) => async () => {
     const { form } = props;
@@ -33,15 +35,19 @@ export const submitStripe =
       const containers = selectVisibleContainers(form);
       for (const container of containers) {
         const { required, integration, site } = config(container);
-        const field = container.querySelector<HTMLDivElement>(
-          "[data-freeform-stripe-card]",
-        );
+        const field = container.querySelector<HTMLDivElement>(cardSelector)!;
+
+        const element = elementMap.get(field);
+        if (!element) {
+          throw new Error("Stripe element not found for container");
+        }
+
         const {
           empty,
           stripe,
           elements,
           paymentIntent: { id, secret },
-        } = elementMap.get(field);
+        } = element;
 
         if (empty && !required) {
           continue;
@@ -68,7 +74,10 @@ export const submitStripe =
 
         const { error: submitError } = await elements.submit();
         if (submitError) {
-          event.freeform._renderFormErrors([submitError.message]);
+          event.freeform._renderFormErrors([
+            submitError.message ||
+              "An error occurred while submitting the payment.",
+          ]);
           event.freeform._scrollToForm();
           return false;
         }
@@ -81,7 +90,9 @@ export const submitStripe =
         });
 
         if (error) {
-          event.freeform._renderFormErrors([error.message]);
+          event.freeform._renderFormErrors([
+            error.message || "An error occurred while confirming the payment.",
+          ]);
           event.freeform._scrollToForm();
         }
 

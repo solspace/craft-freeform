@@ -124,7 +124,7 @@ export const CustomEditor: React.FC<
 
       currentOptions.push({
         label: label,
-        value: useCustomValues && !!value ? value : label,
+        value: useCustomValues && value ? value : label,
         optgroup,
       });
     });

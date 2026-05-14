@@ -1,4 +1,5 @@
 // PayPal SDK integration for Freeform
+import Freeform from "@components/front-end/plugin/freeform";
 import {
   loadScript,
   type PayPalNamespace as PayPalSDK,
@@ -41,7 +42,11 @@ function logError(...args: unknown[]) {
   }
 }
 
-function showNotice(root: Element, text: string) {
+function showNotice(
+  root: Element,
+  text: string,
+  tone: "muted" | "success" | "error" = "success",
+) {
   const container =
     root.closest('[data-field-type="paypal"]') || root.parentElement;
   if (!container) return;
@@ -52,10 +57,11 @@ function showNotice(root: Element, text: string) {
     notice = document.createElement("div");
     notice.setAttribute("data-ff-paypal-notice", "true");
     notice.style.marginTop = "8px";
-    notice.style.color = "#0a7";
     notice.style.fontSize = "0.95em";
     container.appendChild(notice);
   }
+  const colors = { muted: "#555", success: "#0a7", error: "#b00020" };
+  notice.style.color = colors[tone];
   notice.textContent = text;
 }
 
@@ -259,8 +265,9 @@ async function initializePayPalButtons(root: HTMLElement) {
           }
         },
         onApprove: async (data: { orderID: string }) => {
-          // Order approved: immediately capture, but do NOT auto-submit
+          // Order approved: capture, then submit the form via Freeform (no extra click).
           hiddenInput.value = String(data.orderID || "");
+          showNotice(root, "Processing your payment…", "muted");
           try {
             const formData = new FormData(form);
             const values: Values = {};
@@ -276,17 +283,36 @@ async function initializePayPalButtons(root: HTMLElement) {
               },
             );
             if (captureResult && captureResult.status === "COMPLETED") {
-              showNotice(
-                root,
-                "Payment completed with PayPal. Click Submit to finish.",
-              );
+              const runtime = Freeform.getInstance(form);
+              if (runtime) {
+                showNotice(
+                  root,
+                  "Payment complete. Your form is being submitted automatically.",
+                  "success",
+                );
+                runtime.triggerSubmit();
+              } else {
+                showNotice(
+                  root,
+                  "Payment completed with PayPal. Click Submit to finish.",
+                  "success",
+                );
+              }
             } else {
               logError("Payment capture failed", captureResult);
-              showNotice(root, "PayPal capture failed. Please try again.");
+              showNotice(
+                root,
+                "PayPal capture failed. Please try again.",
+                "error",
+              );
             }
           } catch (error) {
             logError("Error during payment capture:", error);
-            showNotice(root, "PayPal capture error. Please try again.");
+            showNotice(
+              root,
+              "PayPal capture error. Please try again.",
+              "error",
+            );
           }
         },
         onError: (err: unknown) => {

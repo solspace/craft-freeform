@@ -1,72 +1,54 @@
 {
   "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-Bfssb_sQ.js",
+    "file": "assets/de-BoKK_I7D.js",
     "name": "de",
     "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
     "imports": [
-      "_buildMatchPatternFn-CA1-K-2Q.js"
+      "src/index.tsx"
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-DR7o_gl_.js",
+    "file": "assets/fr-CRaeHsvl.js",
     "name": "fr",
     "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
     "imports": [
-      "_buildMatchPatternFn-CA1-K-2Q.js"
+      "src/index.tsx"
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-Br0QU-GU.js",
+    "file": "assets/it-TynsdvqM.js",
     "name": "it",
     "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
     "imports": [
-      "_normalizeDates-CGlgSdPy.js",
-      "_buildMatchPatternFn-CA1-K-2Q.js"
+      "src/index.tsx"
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-D46bxpRO.js",
+    "file": "assets/nl-DijLSKqW.js",
     "name": "nl",
     "src": "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
     "imports": [
-      "_buildMatchPatternFn-CA1-K-2Q.js"
+      "src/index.tsx"
     ]
   },
-  "_ai.dashboard.styles-CyUKz2xB.js": {
-    "file": "assets/ai.dashboard.styles-CyUKz2xB.js",
-    "name": "ai.dashboard.styles"
-  },
-  "_buildMatchPatternFn-CA1-K-2Q.js": {
-    "file": "assets/buildMatchPatternFn-CA1-K-2Q.js",
-    "name": "buildMatchPatternFn"
-  },
-  "_normalizeDates-CGlgSdPy.js": {
-    "file": "assets/normalizeDates-CGlgSdPy.js",
-    "name": "normalizeDates"
-  },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-6uT6SHuq.js",
+    "file": "assets/ai.usage-chart-VR-5pxlP.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
     "imports": [
-      "_ai.dashboard.styles-CyUKz2xB.js"
+      "src/index.tsx"
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-DCFIpQiB.js",
+    "file": "assets/index-DRTQnGUR.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
-    "imports": [
-      "_ai.dashboard.styles-CyUKz2xB.js",
-      "_normalizeDates-CGlgSdPy.js",
-      "_buildMatchPatternFn-CA1-K-2Q.js"
-    ],
     "dynamicImports": [
       "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/nl.js",
       "../../node_modules/.pnpm/date-fns@4.1.0/node_modules/date-fns/locale/de.js",
@@ -75,7 +57,7 @@
       "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [
-      "assets/index-C4rHuvk6.css"
+      "assets/index-LYeogghk.css"
     ]
   }
 }

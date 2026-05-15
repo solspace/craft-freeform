@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Notifications\Providers;
 
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
@@ -9,10 +10,14 @@ use Solspace\Freeform\Services\NotificationsService;
 
 class NotificationTemplateProvider
 {
+    private Memo $templateCache;
+
     public function __construct(
         private NotificationsService $service,
         private NotificationDatabaseService $databaseService,
-    ) {}
+    ) {
+        $this->templateCache = new Memo();
+    }
 
     public function getFormTemplates(?int $formId = null): array
     {
@@ -64,7 +69,11 @@ class NotificationTemplateProvider
     public function getNotificationTemplate(int|string $id): ?NotificationTemplate
     {
         if (is_numeric($id)) {
-            return $this->getDatabaseNotificationTemplate((int) $id);
+            return $this->templateCache->get(
+                $id,
+                static fn () => $this->getDatabaseNotificationTemplate((int) $id),
+                'db',
+            );
         }
 
         if (\is_string($id)) {
@@ -76,21 +85,45 @@ class NotificationTemplateProvider
 
     public function getDatabaseNotificationTemplate(int $id): ?NotificationTemplate
     {
-        $record = $this->databaseService->getById($id);
-        if (!$record) {
-            return null;
-        }
+        $service = $this->databaseService;
 
-        return NotificationTemplate::fromRecord($record);
+        return $this->templateCache->get(
+            $id,
+            static function () use ($id, $service) {
+                if (!$id) {
+                    return null;
+                }
+
+                $record = $service->getById($id);
+                if (!$record) {
+                    return null;
+                }
+
+                return NotificationTemplate::fromRecord($record);
+            },
+            'db',
+        );
     }
 
     public function getFileNotificationTemplate(string $filePath): ?NotificationTemplate
     {
-        $record = $this->service->getTemplateRecordByFilepath($filePath);
-        if (!$record) {
-            return null;
-        }
+        $service = $this->service;
 
-        return NotificationTemplate::fromRecord($record);
+        return $this->templateCache->get(
+            $filePath,
+            static function () use ($filePath, $service) {
+                if (!$filePath) {
+                    return null;
+                }
+
+                $record = $service->getTemplateRecordByFilepath($filePath);
+                if (!$record) {
+                    return null;
+                }
+
+                return NotificationTemplate::fromRecord($record);
+            },
+            'files',
+        );
     }
 }

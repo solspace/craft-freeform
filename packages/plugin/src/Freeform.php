@@ -25,6 +25,9 @@ use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
+use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
+use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
@@ -68,6 +71,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Notifications\Types\Conditional\NotificationRuleTransformer;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
@@ -856,6 +860,21 @@ class Freeform extends Plugin
                 Serializer::class => static function () {
                     return new FreeformSerializer();
                 },
+            ],
+            'singletons' => [
+                Serializer::class => static fn () => new FreeformSerializer(),
+
+                // Providers with caches
+                NotificationTemplateProvider::class => NotificationTemplateProvider::class,
+                NotificationRuleProvider::class => NotificationRuleProvider::class,
+
+                // Transformers
+                NotificationTemplateTransformer::class => NotificationTemplateTransformer::class,
+                NotificationRuleTransformer::class => NotificationRuleTransformer::class,
+
+                // Existing singleton services
+                FieldsService::class => FieldsService::class,
+                IntegrationsService::class => IntegrationsService::class,
             ],
         ]);
     }

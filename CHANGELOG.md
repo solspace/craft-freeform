@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.15.12 - 2026-05-15
+
+### Added
+- Verified support for **Craft 5.10.x** and **4.18.x**.
+
+### Fixed
+- Fixed a hover flickering issue in the **Form Monitoring** tab of the form builder.
+- Fixed visual issues on the **Diagnostics** page.
+
+### Security
+- Updated various dependencies to their latest compatible versions.
+
 ## 5.15.11 - 2026-05-13
 
 ### Fixed

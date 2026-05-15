@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "The most flexible and user-friendly form building plugin!",
-  "version": "5.15.11",
+  "version": "5.15.12",
   "type": "craft-plugin",
   "authors": [
     {

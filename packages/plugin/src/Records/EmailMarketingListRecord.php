@@ -17,11 +17,12 @@ use craft\db\ActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int    $id
- * @property int    $integrationId
- * @property string $resourceId
- * @property string $name
- * @property int    $memberCount
+ * @property int               $id
+ * @property int               $integrationId
+ * @property string            $resourceId
+ * @property string            $name
+ * @property int               $memberCount
+ * @property IntegrationRecord $integration
  */
 class EmailMarketingListRecord extends ActiveRecord
 {

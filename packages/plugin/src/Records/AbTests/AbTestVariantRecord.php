@@ -8,10 +8,11 @@ use Solspace\Freeform\Freeform;
 use yii\db\ActiveQuery;
 
 /**
- * @property int $id
- * @property int $abTestId
- * @property int $formId
- * @property int $weight
+ * @property int          $id
+ * @property int          $abTestId
+ * @property int          $formId
+ * @property int          $weight
+ * @property AbTestRecord $abTest
  */
 class AbTestVariantRecord extends ActiveRecord
 {

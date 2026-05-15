@@ -6,11 +6,13 @@ use Solspace\Freeform\Records\Form\FormPageRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $pageId
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int            $id
+ * @property int            $pageId
+ * @property \DateTime      $dateCreated
+ * @property \DateTime      $dateUpdated
+ * @property string         $uid
+ * @property RuleRecord     $rule
+ * @property FormPageRecord $page
  */
 class PageRuleRecord extends RuleRecord
 {
@@ -33,14 +35,14 @@ class PageRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormPageRecord::TABLE.' fp', '[[fr.pageId]] = [[fp.id]]')
             ->where(['fp.formId' => $formId])
-            ->with('rule', 'conditions', 'page')
+            ->with('rule.conditions.page', 'page')
             ->indexBy('id')
             ->all()
         ;
 
         $indexed = [];
         foreach ($records as $record) {
-            $indexed[$record->getRule()->one()->uid] = $record;
+            $indexed[$record->rule->uid] = $record;
         }
 
         return $indexed;

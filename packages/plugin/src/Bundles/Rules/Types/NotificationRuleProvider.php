@@ -59,7 +59,7 @@ class NotificationRuleProvider
 
             $this->cache = [];
             foreach ($items as $item) {
-                $this->cache[$item->getRule()->one()->uid] = $item;
+                $this->cache[$item->rule->uid] = $item;
             }
         }
 
@@ -70,19 +70,20 @@ class NotificationRuleProvider
     {
         $formId = $form->getId();
         if (!isset($this->formCache[$formId])) {
+            /** @var NotificationRuleRecord[] $items */
             $items = NotificationRuleRecord::find()
                 ->select(['nr.*'])
                 ->from(NotificationRuleRecord::TABLE.' nr')
                 ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
                 ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
                 ->where(['fn.formId' => $formId])
-                ->with('rule', 'conditions.field', 'notification')
+                ->with('rule.conditions.field', 'notification')
                 ->all()
             ;
 
             $this->formCache[$formId] = [];
             foreach ($items as $item) {
-                $this->formCache[$formId][$item->getRule()->one()->uid] = $item;
+                $this->formCache[$formId][$item->rule->uid] = $item;
             }
         }
 
@@ -92,8 +93,8 @@ class NotificationRuleProvider
     private function createRuleFromRecord(NotificationRuleRecord $record, ?Form $form = null): NotificationRule
     {
         $conditions = new ConditionCollection();
-        foreach ($record->getConditions()->all() as $conditionRecord) {
-            $field = $this->fieldTransformer->transform($conditionRecord->getField()->one()->uid, $form);
+        foreach ($record->conditions as $conditionRecord) {
+            $field = $this->fieldTransformer->transform($conditionRecord->field->uid, $form);
             $condition = new Condition(
                 $conditionRecord->uid,
                 $field,
@@ -104,7 +105,7 @@ class NotificationRuleProvider
             $conditions->add($condition);
         }
 
-        $ruleRecord = $record->getRule()->one();
+        $ruleRecord = $record->rule;
 
         $rule = new NotificationRule(
             $ruleRecord->id,

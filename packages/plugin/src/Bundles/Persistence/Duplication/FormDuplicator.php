@@ -286,7 +286,8 @@ class FormDuplicator
                             RuleRecord::TABLE.' r',
                             'r.[[id]] = '.NotificationRuleRecord::TABLE.'.[[id]]'
                         )
-                        ->where(['r.[[uid]]' => $metadata->rule])->one()
+                        ->where(['r.[[uid]]' => $metadata->rule])
+                        ->one()
                     ;
 
                     if ($rule) {
@@ -492,13 +493,13 @@ class FormDuplicator
 
     private function buildRuleClone(RuleRecord $original, RuleRecord $clone): void
     {
-        $originalBaseRuleRule = $original->getRule()->one();
+        $originalBaseRuleRule = $original->rule;
         if (!$originalBaseRuleRule) {
             return;
         }
 
         $baseRuleClone = new RuleRecord();
-        $baseRuleClone->setAttributes($original->getRule()->one()->getAttributes());
+        $baseRuleClone->setAttributes($original->rule->getAttributes());
         $baseRuleClone->uid = StringHelper::UUID();
         $baseRuleClone->save();
 

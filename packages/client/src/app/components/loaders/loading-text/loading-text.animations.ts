@@ -38,7 +38,7 @@ export const useTextContainerAnimation = (
 ): SpringValues<{ width: number; height: number }> =>
   useSpring({
     width:
-      loading && !!loadingText
+      loading && loadingText
         ? dimensions.loading.width
         : dimensions.original.width,
     height: dimensions.original.height,
@@ -52,9 +52,8 @@ export const useTextAnimation = (
   instant: boolean,
 ): SpringValues<{ opacity: number; transform: string }> =>
   useSpring({
-    opacity: loading && !!loadingText ? 0 : 1,
-    transform:
-      loading && !!loadingText ? "translateY(-30px)" : "translateY(0px)",
+    opacity: loading && loadingText ? 0 : 1,
+    transform: loading && loadingText ? "translateY(-30px)" : "translateY(0px)",
     immediate: instant,
     cancel: !loadingText,
     config,

@@ -252,8 +252,10 @@
 
   > .item {
     display: flex;
+    align-items: flex-start;
     gap: 5px;
     line-height: 1.5;
+    min-width: 0;
 
     svg {
       position: relative;
@@ -267,6 +269,8 @@
 
     > .item-inline {
       display: inline;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     &-warnings {

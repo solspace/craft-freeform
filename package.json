@@ -9,19 +9,14 @@
   "private": true,
   "description": "Freeform plugin for Craft CMS",
   "devDependencies": {
-    "@biomejs/biome": "2.4.10",
-    "concurrently": "^9.2.1",
-    "husky": "^9.1.7",
-    "typescript": "^6.0.2"
+    "@biomejs/biome": "2.4.15",
+    "concurrently": "9.2.1",
+    "husky": "9.1.7",
+    "typescript": "6.0.3"
   },
   "pnpm": {
     "overrides": {
-      "monaco-editor>dompurify": "3.3.2",
-      "locutus@>=2.0.39 <3.0.25": ">=3.0.25",
-      "locutus@<3.0.25": ">=3.0.25",
-      "brace-expansion@>=4.0.0 <5.0.5": ">=5.0.5",
-      "picomatch@>=4.0.0 <4.0.4": ">=4.0.4",
-      "yaml@>=2.0.0 <2.8.3": ">=2.8.3"
+      "monaco-editor>dompurify": "3.4.3"
     },
     "onlyBuiltDependencies": [
       "@parcel/watcher",

@@ -41,11 +41,22 @@ class DiagnosticsService extends BaseService
         $trueOrFalse = static function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.10.0';
+        $maxCraftVersion = '5.11.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.5.99';
         $latestVersion = $this->getLatestFreeformVersion();
         $hasUpdate = version_compare($this->getLatestFreeformVersion(), Freeform::getInstance()->version, '>');
+
+        $driver = $system->databaseDriver;
+        $version = \Craft::$app->db->getServerVersion();
+
+        $isCompatible = match ($driver) {
+            'mysql' => version_compare($version, '5.5', '>='),
+            'pgsql' => version_compare($version, '9.5', '>='),
+            default => true,
+        };
+
+        $isMariaDb = 'mysql' === $driver && stripos($version, 'mariadb') !== false;
 
         return [
             new DiagnosticItem(
@@ -105,11 +116,14 @@ class DiagnosticsService extends BaseService
                     ),
                 ]
             ),
+
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value.version > "5.5" ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('Database Driver').': <b>{{ value.driver == "pgsql" ? "PostgreSQL" : value.driver == "mysql" ? "MySQL" : "MariaDB" }} {{ value.version }}</b></span>',
+                '<span class="diag-check diag-{{ value.compatible ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('Database Driver').': <b>{{ value.label }} {{ value.version }}</b></span>',
                 [
-                    'driver' => $system->databaseDriver,
-                    'version' => \Craft::$app->db->getServerVersion(),
+                    'driver' => $driver,
+                    'version' => $version,
+                    'compatible' => $isCompatible,
+                    'label' => $isMariaDb ? 'MariaDB' : ($driver === 'pgsql' ? 'PostgreSQL' : 'MySQL'),
                 ],
                 [
                     new WarningValidator(
@@ -118,7 +132,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             }
 
-                            return version_compare($value['version'], '5.5', '>');
+                            return version_compare($value['version'], '5.5', '>=');
                         },
                         'MySQL Compatibility issue',
                         'The current minimum MySQL version Freeform supports is 5.5.x or greater.'
@@ -129,7 +143,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             }
 
-                            return version_compare($value['version'], '9.5', '>');
+                            return version_compare($value['version'], '9.5', '>=');
                         },
                         'PostgreSQL Compatibility issue',
                         'The current minimum PostgreSQL version Freeform supports is 9.5.x or greater.'

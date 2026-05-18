@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
@@ -27,12 +28,23 @@ use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 
 class RuleProvider
 {
-    private static array $fieldRuleCache = [];
+    private const PREFIX_FIELDS = 'fields';
+    private const PREFIX_BUTTONS = 'buttons';
+    private const PREFIX_PAGES = 'pages';
+    private const PREFIX_SUBMIT = 'submit';
+    private const PREFIX_NOTIFICATIONS = 'notifications';
+    private const PREFIX_NOTIFICATIONS_ARRAY = 'notifications:array';
+    private const PREFIX_INTEGRATIONS = 'integrations';
+    private const PREFIX_INTEGRATIONS_ARRAY = 'integrations:array';
+
+    private Memo $cache;
 
     public function __construct(
         private NotificationsProvider $notificationsProvider,
         private FormIntegrationsProvider $integrationsProvider,
-    ) {}
+    ) {
+        $this->cache = new Memo();
+    }
 
     public function getFormRules(?Form $form): array
     {
@@ -58,18 +70,20 @@ class RuleProvider
      */
     public function getFieldRules(Form $form): array
     {
-        if (!isset(self::$fieldRuleCache[$form->getId()])) {
-            $records = FieldRuleRecord::getExistingRules($form->getId());
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                $records = FieldRuleRecord::getExistingRules($form->getId());
 
-            $rules = [];
-            foreach ($records as $fieldRule) {
-                $rules[] = $this->createFieldRuleFromRecord($form, $fieldRule);
-            }
+                $rules = [];
+                foreach ($records as $fieldRule) {
+                    $rules[] = $this->createFieldRuleFromRecord($form, $fieldRule);
+                }
 
-            self::$fieldRuleCache[$form->getId()] = $rules;
-        }
-
-        return self::$fieldRuleCache[$form->getId()];
+                return $rules;
+            },
+            self::PREFIX_FIELDS,
+        );
     }
 
     public function getFieldRule(Form $form, FieldInterface $field): ?FieldRule
@@ -89,32 +103,41 @@ class RuleProvider
      */
     public function getButtonRules(Form $form, bool $currentPageOnly = false): array
     {
-        $rules = ButtonRuleRecord::getExistingRules($form->getId());
-        $currentPage = $form->getCurrentPage();
+        $key = $form->getId().':';
+        $key .= $currentPageOnly ? 'current' : 'all';
 
-        $array = [];
-        foreach ($rules as $uid => $buttonRule) {
-            if ($currentPageOnly && $currentPage->getId() !== $buttonRule->pageId) {
-                continue;
-            }
+        return $this->cache->getOrSet(
+            $key,
+            function () use ($form, $currentPageOnly) {
+                $rules = ButtonRuleRecord::getExistingRules($form->getId());
+                $currentPage = $form->getCurrentPage();
 
-            /** @var RuleRecord $rule */
-            $ruleRecord = $buttonRule->rule;
-            $rule = new ButtonRule(
-                $buttonRule->id,
-                $uid,
-                $ruleRecord->combinator,
-                $this->compileConditions($form, $ruleRecord),
-            );
+                $array = [];
+                foreach ($rules as $uid => $buttonRule) {
+                    if ($currentPageOnly && $currentPage->getId() !== $buttonRule->pageId) {
+                        continue;
+                    }
 
-            $rule->setPage($form->getLayout()->getPages()->get($buttonRule->pageId));
-            $rule->setButton($buttonRule->button);
-            $rule->setDisplay($buttonRule->display);
+                    /** @var RuleRecord $rule */
+                    $ruleRecord = $buttonRule->rule;
+                    $rule = new ButtonRule(
+                        $buttonRule->id,
+                        $uid,
+                        $ruleRecord->combinator,
+                        $this->compileConditions($form, $ruleRecord),
+                    );
 
-            $array[] = $rule;
-        }
+                    $rule->setPage($form->getLayout()->getPages()->get($buttonRule->pageId));
+                    $rule->setButton($buttonRule->button);
+                    $rule->setDisplay($buttonRule->display);
 
-        return $array;
+                    $array[] = $rule;
+                }
+
+                return $array;
+            },
+            self::PREFIX_BUTTONS,
+        );
     }
 
     public function getButtonRule(Form $form, string $button): ?ButtonRule
@@ -134,41 +157,53 @@ class RuleProvider
      */
     public function getPageRules(Form $form): array
     {
-        $rules = PageRuleRecord::getExistingRules($form->getId());
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                $rules = PageRuleRecord::getExistingRules($form->getId());
 
-        $array = [];
-        foreach ($rules as $uid => $pageRule) {
-            $ruleRecord = $pageRule->rule;
-            $rule = new PageRule(
-                $pageRule->id,
-                $uid,
-                $ruleRecord->combinator,
-                $this->compileConditions($form, $ruleRecord),
-            );
+                $array = [];
+                foreach ($rules as $uid => $pageRule) {
+                    $ruleRecord = $pageRule->rule;
+                    $rule = new PageRule(
+                        $pageRule->id,
+                        $uid,
+                        $ruleRecord->combinator,
+                        $this->compileConditions($form, $ruleRecord),
+                    );
 
-            $rule->setPage($form->getLayout()->getPages()->get($pageRule->pageId));
+                    $rule->setPage($form->getLayout()->getPages()->get($pageRule->pageId));
 
-            $array[] = $rule;
-        }
+                    $array[] = $rule;
+                }
 
-        return $array;
+                return $array;
+            },
+            self::PREFIX_PAGES,
+        );
     }
 
     public function getSubmitFormRule(Form $form): ?SubmitFormRule
     {
-        $submitRule = SubmitFormRuleRecord::getExistingRule($form->getId());
-        if ($submitRule) {
-            $ruleRecord = $submitRule->rule;
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                $submitRule = SubmitFormRuleRecord::getExistingRule($form->getId());
+                if ($submitRule) {
+                    $ruleRecord = $submitRule->rule;
 
-            return new SubmitFormRule(
-                $submitRule->id,
-                $ruleRecord->uid,
-                $ruleRecord->combinator,
-                $this->compileConditions($form, $ruleRecord),
-            );
-        }
+                    return new SubmitFormRule(
+                        $submitRule->id,
+                        $ruleRecord->uid,
+                        $ruleRecord->combinator,
+                        $this->compileConditions($form, $ruleRecord),
+                    );
+                }
 
-        return null;
+                return null;
+            },
+            self::PREFIX_SUBMIT,
+        );
     }
 
     /**
@@ -176,43 +211,49 @@ class RuleProvider
      */
     public function getNotificationRules(Form $form): array
     {
-        $rules = NotificationRuleRecord::getExistingRules($form->getId());
-        $notifications = $this->notificationsProvider->getByFormAndClass(
-            $form,
-            Conditional::class,
-        );
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                $rules = NotificationRuleRecord::getExistingRules($form->getId());
+                $notifications = $this->notificationsProvider->getByFormAndClass(
+                    $form,
+                    Conditional::class,
+                );
 
-        $array = [];
-        foreach ($rules as $uid => $notificationRule) {
-            $ruleRecord = $notificationRule->rule;
-            $rule = new NotificationRule(
-                $notificationRule->id,
-                $uid,
-                $ruleRecord->combinator,
-                $this->compileConditions($form, $ruleRecord),
-            );
+                $array = [];
+                foreach ($rules as $uid => $notificationRule) {
+                    $ruleRecord = $notificationRule->rule;
+                    $rule = new NotificationRule(
+                        $notificationRule->id,
+                        $uid,
+                        $ruleRecord->combinator,
+                        $this->compileConditions($form, $ruleRecord),
+                    );
 
-            $rule->setSend($notificationRule->send);
+                    $rule->setSend($notificationRule->send);
 
-            $notificationInstance = null;
-            foreach ($notifications as $notification) {
-                if ($notification->getId() === $notificationRule->notificationId) {
-                    $notificationInstance = $notification;
+                    $notificationInstance = null;
+                    foreach ($notifications as $notification) {
+                        if ($notification->getId() === $notificationRule->notificationId) {
+                            $notificationInstance = $notification;
 
-                    break;
+                            break;
+                        }
+                    }
+
+                    if (!$notificationInstance) {
+                        continue;
+                    }
+
+                    $rule->setNotification($notificationInstance);
+
+                    $array[] = $rule;
                 }
-            }
 
-            if (!$notificationInstance) {
-                continue;
-            }
-
-            $rule->setNotification($notificationInstance);
-
-            $array[] = $rule;
-        }
-
-        return $array;
+                return $array;
+            },
+            self::PREFIX_NOTIFICATIONS,
+        );
     }
 
     /**
@@ -220,58 +261,76 @@ class RuleProvider
      */
     public function getIntegrationRules(Form $form): array
     {
-        $rules = IntegrationRuleRecord::getExistingRules($form->getId());
-        $integrations = $this->integrationsProvider->getForForm($form);
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                $rules = IntegrationRuleRecord::getExistingRules($form->getId());
+                $integrations = $this->integrationsProvider->getForForm($form);
 
-        $array = [];
-        foreach ($rules as $uid => $integrationRule) {
-            $ruleRecord = $integrationRule->rule;
-            $rule = new IntegrationRule(
-                $integrationRule->id,
-                $uid,
-                $ruleRecord->combinator,
-                $this->compileConditions($form, $ruleRecord),
-            );
+                $array = [];
+                foreach ($rules as $uid => $integrationRule) {
+                    $ruleRecord = $integrationRule->rule;
+                    $rule = new IntegrationRule(
+                        $integrationRule->id,
+                        $uid,
+                        $ruleRecord->combinator,
+                        $this->compileConditions($form, $ruleRecord),
+                    );
 
-            $rule->setPush($integrationRule->push);
+                    $rule->setPush($integrationRule->push);
 
-            $integrationInstance = null;
-            foreach ($integrations as $integration) {
-                if ($integration->getInstanceId() === $integrationRule->integrationId) {
-                    $integrationInstance = $integration;
+                    $integrationInstance = null;
+                    foreach ($integrations as $integration) {
+                        if ($integration->getInstanceId() === $integrationRule->integrationId) {
+                            $integrationInstance = $integration;
 
-                    break;
+                            break;
+                        }
+                    }
+
+                    if (!$integrationInstance) {
+                        continue;
+                    }
+
+                    $rule->setIntegration($integrationInstance);
+
+                    $array[] = $rule;
                 }
-            }
 
-            if (!$integrationInstance) {
-                continue;
-            }
-
-            $rule->setIntegration($integrationInstance);
-
-            $array[] = $rule;
-        }
-
-        return $array;
+                return $array;
+            },
+            self::PREFIX_INTEGRATIONS,
+        );
     }
 
     public function getFormNotificationRules(?Form $form): array
     {
-        if (!$form) {
-            return [];
-        }
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                if (!$form) {
+                    return [];
+                }
 
-        return $this->getNotificationRuleArray($form);
+                return $this->getNotificationRuleArray($form);
+            },
+            self::PREFIX_NOTIFICATIONS_ARRAY,
+        );
     }
 
     public function getFormIntegrationRules(?Form $form): array
     {
-        if (!$form) {
-            return [];
-        }
+        return $this->cache->getOrSet(
+            $form->getId(),
+            function () use ($form) {
+                if (!$form) {
+                    return [];
+                }
 
-        return $this->getIntegrationRuleArray($form);
+                return $this->getIntegrationRuleArray($form);
+            },
+            self::PREFIX_INTEGRATIONS_ARRAY,
+        );
     }
 
     private function createFieldRuleFromRecord(Form $form, FieldRuleRecord $record): FieldRule

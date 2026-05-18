@@ -29,6 +29,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Notifica
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
+use Solspace\Freeform\Bundles\Rules\RuleProvider;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
@@ -865,6 +866,7 @@ class Freeform extends Plugin
                 // Providers with caches
                 FieldProvider::class => FieldProvider::class,
                 PropertyProvider::class => PropertyProvider::class,
+                RuleProvider::class => RuleProvider::class,
                 NotificationTemplateProvider::class => NotificationTemplateProvider::class,
                 NotificationRuleProvider::class => NotificationRuleProvider::class,
 

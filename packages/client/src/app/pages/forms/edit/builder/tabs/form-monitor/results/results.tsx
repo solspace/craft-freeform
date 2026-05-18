@@ -190,6 +190,8 @@ const TestRow: React.FC<TestRowProps> = ({
                 size="small"
                 hideOnClick={false}
                 followCursor
+                interactive
+                interactiveBorder={12}
               >
                 <StatusIndicator
                   $status={
@@ -324,6 +326,8 @@ const DailyTestColumn: React.FC<{
           size="small"
           hideOnClick={false}
           followCursor
+          interactive
+          interactiveBorder={12}
         >
           <TestSegment
             $status="inactive"
@@ -347,14 +351,17 @@ const DailyTestColumn: React.FC<{
         <Tooltip
           key={test.id}
           html={renderTooltipContent(test)}
-          position="bottom"
+          position="top"
           theme="light"
           animation="fade"
+          arrow
           duration={100}
-          distance={-15}
+          distance={10}
           size="small"
           hideOnClick={false}
           followCursor
+          interactive
+          interactiveBorder={12}
         >
           <TestSegment
             key={test.id}

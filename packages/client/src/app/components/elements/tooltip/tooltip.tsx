@@ -115,6 +115,7 @@ const BaseFloating = ({
   hideOnClick = true,
   html,
   interactive = false,
+  interactiveBorder,
   position = "top",
   style,
   theme = "dark",
@@ -124,6 +125,16 @@ const BaseFloating = ({
   const [open, setOpen] = useState(false);
   const arrowRef = useRef<SVGSVGElement | null>(null);
   const content = html ?? title;
+
+  const hoverHandleClose = useMemo(
+    () =>
+      interactive || followCursor
+        ? safePolygon({
+            buffer: interactiveBorder ?? 4,
+          })
+        : undefined,
+    [interactive, followCursor, interactiveBorder],
+  );
 
   const middleware = useMemo(() => {
     const middlewareList = [offset(distance), flip(), shift({ padding: 8 })];
@@ -148,7 +159,7 @@ const BaseFloating = ({
   const hover = useHover(context, {
     delay: delayToObject(delay),
     enabled: trigger === "mouseenter",
-    handleClose: interactive ? safePolygon() : undefined,
+    handleClose: hoverHandleClose,
     move: !followCursor,
   });
 
@@ -184,6 +195,11 @@ const BaseFloating = ({
     clientPoint,
   ]);
 
+  const floatingSurfaceStyles: CSSProperties = {
+    ...floatingStyles,
+    ...(followCursor && !interactive ? { pointerEvents: "none" } : {}),
+  };
+
   if (!content) {
     return <>{children}</>;
   }
@@ -204,7 +220,7 @@ const BaseFloating = ({
           arrowRef={arrowRef}
           context={context}
           content={content}
-          floatingStyles={floatingStyles}
+          floatingStyles={floatingSurfaceStyles}
           getFloatingProps={getFloatingProps}
           refs={refs}
           theme={theme}

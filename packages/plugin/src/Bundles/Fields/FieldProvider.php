@@ -16,7 +16,7 @@ class FieldProvider
             return null;
         }
 
-        return $this->service->getFieldByFormAndUid($form, $uid);
+        return $this->service->getFieldByUid($uid);
     }
 
     public function getFieldByUid(?string $uid = null, ?Form $form = null): ?FieldInterface
@@ -25,6 +25,6 @@ class FieldProvider
             return null;
         }
 
-        return $this->service->getFieldByUid($uid, $form);
+        return $this->service->getFieldByUid($uid);
     }
 }

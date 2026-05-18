@@ -6,94 +6,41 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
-use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
 
 class FieldsService extends BaseService
 {
-    private array $fieldCache = [];
-    private array $fieldRowUidCache = [];
+    private const KEY_ALL = 'all';
+    private const PREFIX_BY_UID = 'by-uid';
+    private const PREFIX_BY_FORM = 'by-form';
+    private const PREFIX_FORMS = 'forms';
 
-    /** @var array<string, FieldInterface[]> */
-    private array $fieldsByFormCache = [];
-
-    /** @var FieldInterface[] */
-    private array $allFieldCache = [];
+    private Memo $cache;
 
     public function __construct(
         $config,
         private PropertyProvider $propertyProvider,
-        private FormsService $formsService,
     ) {
         parent::__construct($config);
+
+        $this->cache = new Memo();
+        $this->getAllFields();
     }
 
-    public function getFieldByUid(string $fieldUid, ?Form $form = null): ?FieldInterface
+    public function getFieldByUid(string $fieldUid): ?FieldInterface
     {
-        $record = FormFieldRecord::findOne(['uid' => $fieldUid]);
-        if ($record) {
-            $form ??= $this->formsService->getFormById($record->formId);
-
-            return $this->createField($record, $form);
-        }
-
-        return null;
-    }
-
-    public function getFieldByFormAndUid(Form $form, string $fieldUid): ?FieldInterface
-    {
-        $fields = $this->getFields($form);
-
-        foreach ($fields as $field) {
-            if ($field->getUid() === $fieldUid) {
-                return $field;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @return FieldInterface[]
-     */
-    public function getAllFields(): array
-    {
-        if (empty($this->allFieldCache)) {
-            $forms = $this->formsService->getAllForms();
-
-            /** @var FormFieldRecord[] $records */
-            $records = FormFieldRecord::find()
-                ->with('row')
-                ->orderBy(['order' => \SORT_ASC])
-                ->all()
-            ;
-
-            foreach ($records as $record) {
-                $form = $forms[$record->formId] ?? null;
-                if (!$form) {
-                    continue;
-                }
-
-                $field = $this->createField($record, $form);
-
-                if ($field) {
-                    $this->allFieldCache[] = $field;
-
-                    if (!\array_key_exists($record->formId, $this->fieldsByFormCache)) {
-                        $this->fieldsByFormCache[$record->formId] = [];
-                    }
-
-                    $this->fieldsByFormCache[$record->formId][] = $field;
-                }
-            }
-        }
-
-        return $this->allFieldCache;
+        return $this->cache->get(
+            $fieldUid,
+            static fn () => null, // This should be pre-warmed beforehand
+            self::PREFIX_BY_UID,
+        );
     }
 
     public function getFieldCollection(Form $form): FieldCollection
@@ -106,75 +53,11 @@ class FieldsService extends BaseService
      */
     public function getFields(Form $form): array
     {
-        $records = FormFieldRecord::find()
-            ->where(['formId' => $form->getId()])
-            ->with('row')
-            ->orderBy(['order' => \SORT_ASC])
-            ->all()
-        ;
-
-        $fields = [];
-
-        foreach ($records as $record) {
-            $fields[] = $this->createField($record, $form);
-        }
-
-        return $fields;
-    }
-
-    public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
-    {
-        /**
-         * Make cache key unique per *Form instance* so fields are not shared across base *Form instance*.
-         * Now every *Form instance* gets its own set of Field objects, each with the correct $this->form and correct siteId.
-         */
-        $fieldCacheKey = $record->id.':'.spl_object_id($form);
-        if (isset($this->fieldCache[$fieldCacheKey])) {
-            return $this->fieldCache[$fieldCacheKey];
-        }
-
-        // Row UID cache can stay global per row id (it doesn't contain the form)
-        $rowCacheKey = $record->rowId;
-        if (empty($this->fieldRowUidCache[$rowCacheKey])) { // Don't cache null values
-            $this->fieldRowUidCache[$rowCacheKey] = $record->getRow()->one()?->uid;
-        }
-        $fieldRowUid = $this->fieldRowUidCache[$rowCacheKey];
-
-        $type = $record->type;
-
-        $metadata = JsonHelper::decode($record->metadata, true);
-        $properties = array_merge(
-            [
-                'id' => $record->id,
-                'uid' => $record->uid,
-                'rowId' => $record->rowId,
-                'rowUid' => $fieldRowUid,
-                'order' => $record->order,
-            ],
-            $metadata,
+        return $this->cache->get(
+            $form->getId(),
+            static fn () => null, // This should be pre-warmed beforehand
+            self::PREFIX_BY_FORM
         );
-
-        try {
-            if (!class_exists($type)) {
-                return null;
-            }
-        } catch (\Exception $exception) {
-            return null;
-        }
-
-        /** @var FieldInterface $field */
-        $field = new $type($form);
-        $this->propertyProvider->setObjectProperties($field, $properties, null, $form);
-
-        $this->fieldCache[$fieldCacheKey] = $field;
-
-        Event::trigger(
-            FieldInterface::class,
-            FieldInterface::EVENT_AFTER_SET_PROPERTIES,
-            new FieldPropertiesEvent($field)
-        );
-
-        return $field;
     }
 
     public function getAllFieldCount(): int
@@ -185,5 +68,109 @@ class FieldsService extends BaseService
     public function getFavoriteFieldCount(): int
     {
         return FavoriteFieldRecord::find()->count();
+    }
+
+    /**
+     * @return FieldInterface[]
+     */
+    private function getAllFields(): ?FieldInterface
+    {
+        return $this->cache->get(
+            self::KEY_ALL,
+            function () {
+                /** @var FormFieldRecord $records */
+                $rows = FormFieldRecord::find()
+                    ->select(['field.*', 'row.uid as rowUid'])
+                    ->alias('field')
+                    ->innerJoin('freeform_forms_rows row', '[[row.id]] = [[field.rowId]]')
+                    ->orderBy(['[[field.order]]' => \SORT_ASC])
+                    ->asArray()
+                    ->all()
+                ;
+
+                $fields = [];
+                foreach ($rows as $row) {
+                    $field = $this->createField($row);
+                    if (!$field) {
+                        continue;
+                    }
+
+                    $fields[] = $field;
+                }
+
+                return $fields;
+            }
+        );
+    }
+
+    private function createField(array $row): ?FieldInterface
+    {
+        $form = $this->getForm($row['formId']);
+        if (!$form) {
+            return null;
+        }
+
+        $rowUid = $row['rowUid'];
+        $type = $row['type'];
+
+        $metadata = JsonHelper::decode($row['metadata'], true);
+        $properties = array_merge(
+            [
+                'id' => $row['id'],
+                'uid' => $row['uid'],
+                'rowId' => $row['rowId'],
+                'rowUid' => $rowUid,
+                'order' => $row['order'],
+            ],
+            $metadata,
+        );
+
+        try {
+            if (!class_exists($type)) {
+                return null;
+            }
+        } catch (\Exception) {
+            return null;
+        }
+
+        /** @var FieldInterface $field */
+        $field = new $type($form);
+
+        $this->cacheFieldInForm($field, $form);
+
+        $this->cache->set($row['uid'], $field, self::PREFIX_BY_UID);
+        $this->propertyProvider->setObjectProperties($field, $properties, null, $form);
+
+        Event::trigger(
+            FieldInterface::class,
+            FieldInterface::EVENT_AFTER_SET_PROPERTIES,
+            new FieldPropertiesEvent($field)
+        );
+
+        return $field;
+    }
+
+    private function getForm(int $id): ?Form
+    {
+        return $this->cache->get(
+            $id,
+            function () use ($id) {
+                $allForms = $this->cache->get(
+                    'all',
+                    static fn () => Freeform::getInstance()->forms->getAllForms(),
+                    self::PREFIX_FORMS,
+                );
+
+                return $allForms[$id] ?? null;
+            },
+            self::PREFIX_FORMS
+        );
+    }
+
+    private function cacheFieldInForm(FieldInterface $field, Form $form): void
+    {
+        $cache = $this->cache->get($form->getId(), static fn () => [], self::PREFIX_BY_FORM);
+        $cache[$field->getUid()] = $field;
+        $this->cache->set($form->getId(), $cache, self::PREFIX_BY_FORM);
     }
 }

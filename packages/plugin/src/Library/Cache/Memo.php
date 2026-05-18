@@ -18,9 +18,7 @@ class Memo
      */
     public function get(string $key, callable $callable, ?string $prefix = null): mixed
     {
-        if ($prefix) {
-            $key = trim($prefix, '.').'.'.$key;
-        }
+        $key = $this->getCacheKey($key, $prefix);
 
         if (!\array_key_exists($key, $this->cache)) {
             $this->cache[$key] = $callable();
@@ -29,8 +27,23 @@ class Memo
         return $this->cache[$key];
     }
 
+    public function set(string $key, mixed $value, ?string $prefix = null): void
+    {
+        $key = $this->getCacheKey($key, $prefix);
+        $this->cache[$key] = $value;
+    }
+
     public function clear(): void
     {
         $this->cache = [];
+    }
+
+    private function getCacheKey(string $key, ?string $prefix = null): string
+    {
+        if ($prefix) {
+            return trim($prefix, '.').'.'.$key;
+        }
+
+        return $key;
     }
 }

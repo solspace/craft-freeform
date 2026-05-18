@@ -13,6 +13,7 @@ use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Layout\Row;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
@@ -29,7 +30,6 @@ class LayoutsService extends BaseService
 
     public function __construct(
         $config = [],
-        private ?FieldsService $fieldsService = null,
         private ?PropertyProvider $propertyProvider = null,
         private ?TranslationProvider $translationProvider = null,
     ) {
@@ -157,7 +157,7 @@ class LayoutsService extends BaseService
 
     public function getFields(Form $form): array
     {
-        return $this->fieldsService->getFields($form);
+        return Freeform::getInstance()->fields->getFields($form);
     }
 
     private function attachRows(

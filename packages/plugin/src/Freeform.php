@@ -663,7 +663,6 @@ class Freeform extends Plugin
                 'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'feed' => FreeformFeedService::class,
-                'field' => FieldsService::class,
                 'fields' => FieldsService::class,
                 'files' => FilesService::class,
                 'formLayouts' => LayoutsService::class,

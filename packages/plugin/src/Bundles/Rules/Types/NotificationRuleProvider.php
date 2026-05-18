@@ -53,7 +53,7 @@ class NotificationRuleProvider
                 ->from(NotificationRuleRecord::TABLE.' nr')
                 ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
                 ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
-                ->with('rule', 'conditions.field', 'notification')
+                ->with('rule.conditions.field', 'conditions.field', 'notification')
                 ->all()
             ;
 
@@ -77,7 +77,7 @@ class NotificationRuleProvider
                 ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
                 ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
                 ->where(['fn.formId' => $formId])
-                ->with('rule.conditions.field', 'notification')
+                ->with('rule.conditions.field', 'conditions.field', 'notification')
                 ->all()
             ;
 

@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.15.13 - 2026-05-18
+
+### Changed
+- Updated the **PayPal** integration to automatically submit the form after successful payment processing.
+
+### Fixed
+- Fixed an issue where the **Stripe** integration could fail in some cases.
+
 ## 5.15.12 - 2026-05-15
 
 ### Added

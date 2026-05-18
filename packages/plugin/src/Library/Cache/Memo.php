@@ -16,7 +16,17 @@ class Memo
     /**
      * @return T
      */
-    public function get(string $key, callable $callable, ?string $prefix = null): mixed
+    public function get(string $key, ?string $prefix = null, mixed $defaultValue = null): mixed
+    {
+        $key = $this->getCacheKey($key, $prefix);
+
+        return $this->cache[$key] ?? $defaultValue;
+    }
+
+    /**
+     * @return T
+     */
+    public function getOrSet(string $key, callable $callable, ?string $prefix = null): mixed
     {
         $key = $this->getCacheKey($key, $prefix);
 

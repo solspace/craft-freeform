@@ -69,7 +69,7 @@ class NotificationTemplateProvider
     public function getNotificationTemplate(int|string $id): ?NotificationTemplate
     {
         if (is_numeric($id)) {
-            return $this->templateCache->get(
+            return $this->templateCache->getOrSet(
                 $id,
                 static fn () => $this->getDatabaseNotificationTemplate((int) $id),
                 'db',
@@ -87,7 +87,7 @@ class NotificationTemplateProvider
     {
         $service = $this->databaseService;
 
-        return $this->templateCache->get(
+        return $this->templateCache->getOrSet(
             $id,
             static function () use ($id, $service) {
                 if (!$id) {
@@ -109,7 +109,7 @@ class NotificationTemplateProvider
     {
         $service = $this->service;
 
-        return $this->templateCache->get(
+        return $this->templateCache->getOrSet(
             $filePath,
             static function () use ($filePath, $service) {
                 if (!$filePath) {

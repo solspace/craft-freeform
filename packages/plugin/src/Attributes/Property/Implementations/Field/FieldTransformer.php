@@ -13,7 +13,11 @@ class FieldTransformer implements TransformerInterface
 
     public function transform($value, ?Form $form = null): ?FieldInterface
     {
-        return $this->fieldProvider->getFieldByUid($value, $form);
+        if (null === $value) {
+            return null;
+        }
+
+        return $this->fieldProvider->getFieldByUid($value);
     }
 
     public function reverseTransform($value): ?string

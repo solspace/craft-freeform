@@ -26,6 +26,8 @@ use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
 use Solspace\Freeform\controllers\SubmissionsController;
@@ -83,7 +85,6 @@ use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
-use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\SubmitService;
 use Solspace\Freeform\Services\Form\TranslationsService;
@@ -133,7 +134,6 @@ use yii\web\View;
  * @property FilesService                $files
  * @property FormsService                $forms
  * @property FormGroupsService           $formGroups
- * @property FieldsService               $fields
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
  * @property EmailMarketingService       $emailMarketing
@@ -663,7 +663,6 @@ class Freeform extends Plugin
                 'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'feed' => FreeformFeedService::class,
-                'fields' => FieldsService::class,
                 'files' => FilesService::class,
                 'formLayouts' => LayoutsService::class,
                 'forms' => FormsService::class,
@@ -864,6 +863,8 @@ class Freeform extends Plugin
                 Serializer::class => static fn () => new FreeformSerializer(),
 
                 // Providers with caches
+                FieldProvider::class => FieldProvider::class,
+                PropertyProvider::class => PropertyProvider::class,
                 NotificationTemplateProvider::class => NotificationTemplateProvider::class,
                 NotificationRuleProvider::class => NotificationRuleProvider::class,
 
@@ -872,7 +873,6 @@ class Freeform extends Plugin
                 NotificationRuleTransformer::class => NotificationRuleTransformer::class,
 
                 // Existing singleton services
-                FieldsService::class => FieldsService::class,
                 IntegrationsService::class => IntegrationsService::class,
             ],
         ]);
@@ -882,7 +882,6 @@ class Freeform extends Plugin
     {
         BundleLoader::loadBundles(__DIR__.'/Bundles');
         \Craft::$container->setSingleton('craft\services\Sites');
-        \Craft::$container->setSingleton('Solspace\Freeform\Services\Form\FieldsService');
         \Craft::$container->setSingleton('Solspace\Freeform\Services\Integrations\IntegrationsService');
     }
 }

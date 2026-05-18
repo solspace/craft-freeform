@@ -20,8 +20,8 @@ class MemoTest extends TestCase
             return 'value';
         };
 
-        $this->assertSame('value', $memo->get('key', $callback));
-        $this->assertSame('value', $memo->get('key', $callback));
+        $this->assertSame('value', $memo->getOrSet('key', $callback));
+        $this->assertSame('value', $memo->getOrSet('key', $callback));
         $this->assertSame(1, $calls);
     }
 
@@ -34,9 +34,9 @@ class MemoTest extends TestCase
             return 'value-'.++$calls;
         };
 
-        $this->assertSame('value-1', $memo->get('key', $callback, 'first'));
-        $this->assertSame('value-1', $memo->get('key', $callback, '.first.'));
-        $this->assertSame('value-2', $memo->get('key', $callback, 'second'));
+        $this->assertSame('value-1', $memo->getOrSet('key', $callback, 'first'));
+        $this->assertSame('value-1', $memo->getOrSet('key', $callback, '.first.'));
+        $this->assertSame('value-2', $memo->getOrSet('key', $callback, 'second'));
         $this->assertSame(2, $calls);
     }
 
@@ -49,10 +49,10 @@ class MemoTest extends TestCase
             return 'value-'.++$calls;
         };
 
-        $this->assertSame('value-1', $memo->get('key', $callback));
+        $this->assertSame('value-1', $memo->getOrSet('key', $callback));
 
         $memo->clear();
 
-        $this->assertSame('value-2', $memo->get('key', $callback));
+        $this->assertSame('value-2', $memo->getOrSet('key', $callback));
     }
 }

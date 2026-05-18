@@ -1,5 +1,4 @@
 // PayPal SDK integration for Freeform
-import Freeform from "@components/front-end/plugin/freeform";
 import {
   loadScript,
   type PayPalNamespace as PayPalSDK,
@@ -23,6 +22,10 @@ type Config = {
   sandbox: boolean;
   currency?: string;
   finalizeOnSubmit?: boolean;
+};
+
+type FreeformRuntimeApi = {
+  triggerSubmit: () => void;
 };
 
 const SELECTORS = {
@@ -63,6 +66,12 @@ function showNotice(
   const colors = { muted: "#555", success: "#0a7", error: "#b00020" };
   notice.style.color = colors[tone];
   notice.textContent = text;
+}
+
+function getFreeformRuntime(form: HTMLFormElement): FreeformRuntimeApi | null {
+  return (
+    (form as unknown as { freeform?: FreeformRuntimeApi }).freeform ?? null
+  );
 }
 
 function parseConfig(el: Element): Config | null {
@@ -283,7 +292,7 @@ async function initializePayPalButtons(root: HTMLElement) {
               },
             );
             if (captureResult && captureResult.status === "COMPLETED") {
-              const runtime = Freeform.getInstance(form);
+              const runtime = getFreeformRuntime(form);
               if (runtime) {
                 showNotice(
                   root,

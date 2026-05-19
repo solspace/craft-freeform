@@ -5,7 +5,9 @@
     "packages/scripts",
     "packages/styles"
   ],
-  "packageManager": "pnpm@11.1.3",
+  "engines": {
+    "pnpm": ">=11"
+  },
   "private": true,
   "description": "Freeform plugin for Craft CMS",
   "devDependencies": {

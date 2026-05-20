@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Webhooks\Slack;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
@@ -52,7 +51,7 @@ class Slack extends WebhookIntegration
             return;
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $client->post($this->getUrl(), ['json' => ['text' => $message]]);
 
         $this->logger->info('Slack webhook triggered', ['form' => $form->getHandle(), 'submission' => $submission->id]);

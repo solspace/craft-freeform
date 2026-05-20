@@ -84,7 +84,7 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegra
     public function listModels(bool $refresh = false): array
     {
         try {
-            $client = new Client([
+            $client = \Craft::createGuzzleClient([
                 'headers' => [
                     'Authorization' => 'Bearer '.$this->getApiKey(),
                 ],

@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\Dotdigital\EventListeners;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Integrations\EmailMarketing\Dotdigital\DotdigitalIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -27,7 +26,7 @@ class DotdigitalAccountInfoListener extends FeatureBundle
             return;
         }
 
-        $client = new Client([
+        $client = \Craft::createGuzzleClient([
             'headers' => [
                 'Content-Type' => 'application/json',
             ],

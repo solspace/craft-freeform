@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Integrations\Single\PostForwarding\EventListeners;
 
 use craft\elements\Asset;
-use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
@@ -143,8 +142,9 @@ class PostForwardingTrigger extends FeatureBundle
             }
         }
 
+        $client = \Craft::createGuzzleClient();
         $payloadEvent = new PostForwardingEvent(
-            new Client(),
+            $client,
             new Request('POST', $url),
             $url,
             [],

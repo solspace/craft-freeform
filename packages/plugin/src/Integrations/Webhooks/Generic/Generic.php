@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Webhooks\Generic;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -49,7 +48,7 @@ class Generic extends WebhookIntegration
             $json[$field->getHandle()] = $value;
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $client->post($this->getUrl(), ['json' => $json]);
 
         $this->logger->info('Webhook triggered', ['form' => $form->getHandle(), 'submission' => $submission->id]);

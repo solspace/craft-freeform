@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -286,7 +285,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     private function getValidationErrors(Form $form): array
     {
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $secret = $this->getSecretKey();
         $captchaResponse = $this->getCaptchaResponse($form);
 

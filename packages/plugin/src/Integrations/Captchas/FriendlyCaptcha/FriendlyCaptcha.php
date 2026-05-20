@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\FriendlyCaptcha;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -261,7 +260,7 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
             return ['The Friendly Captcha API key is not configured.'];
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
 
         try {
             $response = $client->post(self::VERIFY_URL, [

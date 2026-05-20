@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
@@ -82,7 +81,7 @@ class AuthorizationListener extends FeatureBundle
             $payload['oldKey'] = $storedLicenseKey;
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $response = $client->post(
             $integration->getApiRootUrl().'/handshake',
             ['json' => $payload]

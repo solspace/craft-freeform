@@ -44,6 +44,34 @@ export const Item: React.FC<Props> = ({
     >
       <Name title={name}>{name}</Name>
 
+      {!template.formId && (
+        <ButtonGroup>
+          <Button
+            title={translate("Edit")}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              const isDbTemplate = /^\d+$/.test(template.id.toString());
+              const target = isDbTemplate ? "database" : "files";
+
+              const url = Craft.getCpUrl(
+                `freeform/notifications/${target}/${template.id}`,
+              );
+
+              // if control or command pressed, open in new tab
+              if (e.metaKey) {
+                window.open(url, "_blank")?.focus();
+              } else {
+                window.location.href = url;
+              }
+            }}
+          >
+            <i className="fa-solid fa-pencil"></i>
+          </Button>
+        </ButtonGroup>
+      )}
+
       {!!template.formId && (
         <ButtonGroup>
           <Button

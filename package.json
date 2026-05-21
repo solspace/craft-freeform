@@ -5,7 +5,9 @@
     "packages/scripts",
     "packages/styles"
   ],
-  "packageManager": "pnpm@10.17.1",
+  "engines": {
+    "pnpm": ">=11"
+  },
   "private": true,
   "description": "Freeform plugin for Craft CMS",
   "devDependencies": {
@@ -13,15 +15,6 @@
     "concurrently": "9.2.1",
     "husky": "9.1.7",
     "typescript": "6.0.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "monaco-editor>dompurify": "3.4.3"
-    },
-    "onlyBuiltDependencies": [
-      "@parcel/watcher",
-      "core-js-pure"
-    ]
   },
   "scripts": {
     "dev": "concurrently -n client,scripts,styles \"pnpm --filter @ff/client dev\" \"pnpm --filter @ff/scripts dev\" \"pnpm --filter @ff/styles dev\"",

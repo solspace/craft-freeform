@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\CRM\SugarCRM\EventListeners;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
@@ -67,7 +66,7 @@ class AuthorizationListener extends FeatureBundle
             'platform' => 'freeform',
         ];
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $response = $client->post(
             $integration->getAccessTokenUrl(),
             [
@@ -157,7 +156,7 @@ class AuthorizationListener extends FeatureBundle
             throw new IntegrationException('Refresh token is missing');
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
 
         $payload = [
             'refresh_token' => $refreshToken,

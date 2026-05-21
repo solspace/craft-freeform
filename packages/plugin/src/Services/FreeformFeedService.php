@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\helpers\App;
-use GuzzleHttp\Client;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\FeedItem;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
@@ -197,7 +196,7 @@ class FreeformFeedService extends Component
      */
     private function getFeed(): array
     {
-        $client = new Client(['verify' => false]);
+        $client = \Craft::createGuzzleClient(['verify' => false]);
 
         $feed = [];
 

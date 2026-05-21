@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
@@ -137,7 +136,7 @@ class AiController extends BaseApiController
         ], static fn ($v) => $v !== null && $v !== '');
 
         try {
-            $client = new Client(['timeout' => 15]);
+            $client = \Craft::createGuzzleClient(['timeout' => 15]);
             $response = $client->post($url, [
                 'json' => $payload,
                 'headers' => $headers,
@@ -192,7 +191,7 @@ class AiController extends BaseApiController
     private function fetchSolspaceAiUsage(string $url): Response
     {
         try {
-            $client = new Client(['timeout' => 15]);
+            $client = \Craft::createGuzzleClient(['timeout' => 15]);
             $response = $client->get($url, [
                 'headers' => ['Accept' => 'application/json'],
                 'http_errors' => false,

@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\OAuth;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
@@ -160,7 +159,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
             throw new IntegrationException('Some or all of the configuration values are missing');
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
 
         $payload = [
             'refresh_token' => $refreshToken,

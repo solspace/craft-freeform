@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\EventListeners;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Integrations\EmailMarketing\MailChimp\MailchimpIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -29,7 +28,7 @@ class MailchimpTokenListener extends FeatureBundle
 
         $payload = $event->getResponsePayload();
 
-        $client = new Client([
+        $client = \Craft::createGuzzleClient([
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'OAuth '.$payload->access_token,

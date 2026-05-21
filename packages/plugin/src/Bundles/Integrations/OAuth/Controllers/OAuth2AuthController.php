@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\OAuth\Controllers;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\OAuth\Providers\OAuth2StateProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
@@ -59,7 +58,7 @@ class OAuth2AuthController extends BaseController
             return $this->renderPopUpError('Integration does not implement OAuth2ConnectorInterface');
         }
 
-        $client = new Client();
+        $client = \Craft::createGuzzleClient();
         $payload = [
             'grant_type' => 'authorization_code',
             'client_id' => $integration->getClientId(),

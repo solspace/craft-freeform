@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Other\Jira\EventListeners;
 
-use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Integrations\Other\Jira\JiraIntegrationInterface;
@@ -72,7 +71,7 @@ class JiraTokenListener extends FeatureBundle
         $accessToken = $payload->access_token;
         $instanceUrl = $integration->getInstanceUrl();
 
-        $client = new Client([
+        $client = \Craft::createGuzzleClient([
             'headers' => [
                 'Authorization' => 'Bearer '.$accessToken,
                 'Accept' => 'application/json',

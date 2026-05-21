@@ -19,10 +19,12 @@ class FieldProvider
     private const KEY_ALL = 'all';
     private const PREFIX_BY_UID = 'by-uid';
     private const PREFIX_BY_FORM = 'by-form';
+    private const PREFIX_BY_FORM_UID = 'by-form-uid';
     private const PREFIX_FORMS = 'forms';
 
     private Memo $cache;
     private bool $warming;
+    private array $warmingForms = [];
 
     public function __construct(private PropertyProvider $propertyProvider)
     {
@@ -30,8 +32,21 @@ class FieldProvider
         $this->warming = false;
     }
 
-    public function getFieldByUid(string $fieldUid): ?FieldInterface
+    public function getFieldByUid(string $fieldUid, ?Form $form = null): ?FieldInterface
     {
+        if ($form) {
+            $formFieldKey = $this->getFormFieldKey($form, $fieldUid);
+
+            $field = $this->cache->get($formFieldKey, self::PREFIX_BY_FORM_UID);
+            if ($field instanceof FieldInterface) {
+                return $field;
+            }
+
+            $this->getFields($form);
+
+            return $this->cache->get($formFieldKey, self::PREFIX_BY_FORM_UID);
+        }
+
         if (!$this->warming) {
             $this->warmCache();
         }
@@ -44,11 +59,36 @@ class FieldProvider
      */
     public function getFields(Form $form): array
     {
-        if (!$this->warming) {
-            $this->warmCache();
+        $key = $this->getFormKey($form);
+
+        if ($this->warmingForms[$key] ?? false) {
+            return $this->cache->get($key, self::PREFIX_BY_FORM, []);
         }
 
-        return $this->cache->get($form->getId(), self::PREFIX_BY_FORM, []);
+        return $this->cache->getOrSet(
+            $key,
+            function () use ($form, $key): array {
+                $this->warmingForms[$key] = true;
+                $this->cache->set($key, [], self::PREFIX_BY_FORM);
+
+                $fields = [];
+
+                try {
+                    foreach ($this->getRows($form->getId()) as $row) {
+                        $field = $this->createField($row, $form, false);
+                        if ($field) {
+                            $fields[] = $field;
+                            $this->cache->set($key, $fields, self::PREFIX_BY_FORM);
+                        }
+                    }
+                } finally {
+                    unset($this->warmingForms[$key]);
+                }
+
+                return $fields;
+            },
+            self::PREFIX_BY_FORM,
+        );
     }
 
     public function getAllFieldCount(): int
@@ -74,20 +114,8 @@ class FieldProvider
         $this->warming = true;
 
         try {
-            $rowsTable = FormRowRecord::TABLE;
-
-            /** @var FormFieldRecord $records */
-            $rows = FormFieldRecord::find()
-                ->select(['field.*', 'row.uid as rowUid'])
-                ->alias('field')
-                ->innerJoin("{$rowsTable} row", '[[row.id]] = [[field.rowId]]')
-                ->orderBy(['[[field.order]]' => \SORT_ASC])
-                ->asArray()
-                ->all()
-            ;
-
             $fields = [];
-            foreach ($rows as $row) {
+            foreach ($this->getRows() as $row) {
                 $fields[] = $this->createField($row);
             }
 
@@ -98,9 +126,34 @@ class FieldProvider
         }
     }
 
-    private function createField(array $row): ?FieldInterface
+    private function getRows(?int $formId = null): array
     {
-        $form = $this->getForm($row['formId']);
+        return $this->cache->getOrSet(
+            null === $formId ? self::KEY_ALL : (string) $formId,
+            static function () use ($formId): array {
+                $rowsTable = FormRowRecord::TABLE;
+
+                /** @var FormFieldRecord $records */
+                $query = FormFieldRecord::find()
+                    ->select(['field.*', 'row.uid as rowUid'])
+                    ->alias('field')
+                    ->innerJoin("{$rowsTable} row", '[[row.id]] = [[field.rowId]]')
+                    ->orderBy(['[[field.order]]' => \SORT_ASC])
+                ;
+
+                if (null !== $formId) {
+                    $query->andWhere(['field.formId' => $formId]);
+                }
+
+                return $query->asArray()->all();
+            },
+            'rows',
+        );
+    }
+
+    private function createField(array $row, ?Form $form = null, bool $cacheGlobally = true): ?FieldInterface
+    {
+        $form ??= $this->getForm($row['formId']);
         if (!$form) {
             return null;
         }
@@ -131,10 +184,16 @@ class FieldProvider
         /** @var FieldInterface $field */
         $field = new $type($form);
 
-        $this->cache->set($row['uid'], $field, self::PREFIX_BY_UID);
+        if ($cacheGlobally) {
+            $this->cache->set($row['uid'], $field, self::PREFIX_BY_UID);
+        }
+
+        $this->cache->set($this->getFormFieldKey($form, $row['uid']), $field, self::PREFIX_BY_FORM_UID);
         $this->propertyProvider->setObjectProperties($field, $properties, null, $form);
 
-        $this->cacheFieldInForm($field, $form);
+        if ($cacheGlobally) {
+            $this->cacheFieldInForm($field, $form);
+        }
 
         Event::trigger(
             FieldInterface::class,
@@ -164,8 +223,18 @@ class FieldProvider
 
     private function cacheFieldInForm(FieldInterface $field, Form $form): void
     {
-        $cache = $this->cache->get($form->getId(), self::PREFIX_BY_FORM, []);
+        $cache = $this->cache->get($this->getFormKey($form), self::PREFIX_BY_FORM, []);
         $cache[] = $field;
-        $this->cache->set($form->getId(), $cache, self::PREFIX_BY_FORM);
+        $this->cache->set($this->getFormKey($form), $cache, self::PREFIX_BY_FORM);
+    }
+
+    private function getFormKey(Form $form): string
+    {
+        return (string) spl_object_id($form);
+    }
+
+    private function getFormFieldKey(Form $form, string $fieldUid): string
+    {
+        return $this->getFormKey($form).'.'.$fieldUid;
     }
 }

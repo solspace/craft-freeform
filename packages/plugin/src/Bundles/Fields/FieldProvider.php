@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormRowRecord;
 use yii\base\Event;
 
 class FieldProvider
@@ -73,11 +74,13 @@ class FieldProvider
         $this->warming = true;
 
         try {
+            $rowsTable = FormRowRecord::TABLE;
+
             /** @var FormFieldRecord $records */
             $rows = FormFieldRecord::find()
                 ->select(['field.*', 'row.uid as rowUid'])
                 ->alias('field')
-                ->innerJoin('freeform_forms_rows row', '[[row.id]] = [[field.rowId]]')
+                ->innerJoin("{$rowsTable} row", '[[row.id]] = [[field.rowId]]')
                 ->orderBy(['[[field.order]]' => \SORT_ASC])
                 ->asArray()
                 ->all()

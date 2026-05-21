@@ -29,6 +29,7 @@ use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -47,15 +48,13 @@ class FormsService extends BaseService implements FormHandlerInterface
 {
     private const FALLBACK_TEMPLATE = 'flexbox/index.twig';
 
-    /** @var Form[] */
-    private static array $formsById = [];
+    private const CACHE_PREFIX_BY_ID = 'by-id';
+    private const CACHE_PREFIX_BY_HANDLE = 'by-handle';
+    private const CACHE_PREFIX_ALL_FORMS = 'all-forms';
+    private const CACHE_PREFIX_ALL_NON_ARCHIVED = 'all-non-archived-forms';
+    private const CACHE_PREFIX_SPAM_COUNTS = 'spam-counts';
 
-    /** @var Form[] */
-    private static array $formsByHandle = [];
-
-    private static array $allFormsCache = [];
-
-    private static array $spamCountIncrementedForms = [];
+    private Memo $cache;
 
     public function __construct(
         ?array $config,
@@ -63,6 +62,8 @@ class FormsService extends BaseService implements FormHandlerInterface
         private TranslationProvider $translationProvider,
     ) {
         parent::__construct($config);
+
+        $this->cache = new Memo();
     }
 
     /**
@@ -70,74 +71,21 @@ class FormsService extends BaseService implements FormHandlerInterface
      */
     public function getAllForms(bool $orderByName = false, array|string|null $sites = null): array
     {
-        if ($sites && \is_array($sites)) {
-            sort($sites);
-        }
-
-        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
-        if (!\array_key_exists($key, self::$allFormsCache)) {
-            $query = $this->getFormQuery();
-            $this->attachSitesToQuery($query, $sites);
-
-            if ($orderByName) {
-                $query->orderBy(['forms.name' => \SORT_ASC]);
-            } else {
-                $query->orderBy(['forms.order' => \SORT_ASC]);
-            }
-
-            $results = $query->all();
-
-            self::$allFormsCache[$key] = [];
-            foreach ($results as $result) {
-                try {
-                    $form = $this->createForm($result);
-
-                    self::$allFormsCache[$key][$form->getId()] = $form;
-                    self::$formsById[$form->getId()] = $form;
-                    self::$formsByHandle[$form->getHandle()] = $form;
-                } catch (InvalidFormTypeException) {
-                }
-            }
-        }
-
-        return self::$allFormsCache[$key];
+        return $this->loadAllForms(
+            self::CACHE_PREFIX_ALL_FORMS,
+            $orderByName,
+            $sites,
+        );
     }
 
     public function getAllNonArchivedForms(bool $orderByName = false, array|string|null $sites = null): array
     {
-        if ($sites && \is_array($sites)) {
-            sort($sites);
-        }
-
-        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
-        if (!\array_key_exists($key, self::$allFormsCache)) {
-            $query = $this->getFormQuery();
-            $this->attachSitesToQuery($query, $sites);
-
-            $query->where(['forms.dateArchived' => null]);
-
-            if ($orderByName) {
-                $query->orderBy(['forms.name' => \SORT_ASC]);
-            } else {
-                $query->orderBy(['forms.order' => \SORT_ASC]);
-            }
-
-            $results = $query->all();
-
-            self::$allFormsCache[$key] = [];
-            foreach ($results as $result) {
-                try {
-                    $form = $this->createForm($result);
-
-                    self::$allFormsCache[$key][$form->getId()] = $form;
-                    self::$formsById[$form->getId()] = $form;
-                    self::$formsByHandle[$form->getHandle()] = $form;
-                } catch (InvalidFormTypeException) {
-                }
-            }
-        }
-
-        return self::$allFormsCache[$key];
+        return $this->loadAllForms(
+            self::CACHE_PREFIX_ALL_NON_ARCHIVED,
+            $orderByName,
+            $sites,
+            static fn (Query $query) => $query->where(['forms.dateArchived' => null]),
+        );
     }
 
     public function getResolvedForms(array $arguments = []): array
@@ -281,68 +229,50 @@ class FormsService extends BaseService implements FormHandlerInterface
         return array_unique($ids);
     }
 
-    public function getFormById(int $id, bool $refresh = false, ?string $site = null, ?string $uniqueId = null): ?Form
+    public function getFormById(int $id, ?string $site = null, ?string $uniqueId = null): ?Form
     {
         $key = $id.$uniqueId;
-        if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$key]))) {
-            $query = $this->getFormQuery();
-            $this->attachSitesToQuery($query, $site);
-            $query->where(['forms.id' => $id]);
 
-            $result = $query->one();
-            if (!$result) {
-                self::$formsById[$key] = null;
+        return $this->cache->getOrSet(
+            $key,
+            function () use ($id, $site, $uniqueId): ?Form {
+                $form = $this->loadForm(
+                    static fn (Query $query) => $query->where(['forms.id' => $id]),
+                    $site,
+                    $uniqueId,
+                );
 
-                return null;
-            }
+                if ($form) {
+                    $this->cache->set($form->getHandle().$uniqueId, $form, self::CACHE_PREFIX_BY_HANDLE);
+                }
 
-            if ($uniqueId) {
-                $result['uniqueId'] = $uniqueId;
-            }
-
-            try {
-                $form = $this->createForm($result);
-            } catch (InvalidFormTypeException) {
-                $form = null;
-            }
-
-            self::$formsByHandle[$form->getHandle().$uniqueId] = $form;
-            self::$formsById[$key] = $form;
-        }
-
-        return self::$formsById[$key];
+                return $form;
+            },
+            self::CACHE_PREFIX_BY_ID,
+        );
     }
 
     public function getFormByHandle(string $handle, ?string $site = null, ?string $uniqueId = null): ?Form
     {
         $key = $handle.$uniqueId;
-        if (null === self::$formsByHandle || !isset(self::$formsByHandle[$key])) {
-            $query = $this->getFormQuery();
-            $this->attachSitesToQuery($query, $site);
-            $query->andWhere(['forms.handle' => $handle]);
 
-            $result = $query->one();
-            if (!$result) {
-                self::$formsByHandle[$key] = null;
+        return $this->cache->getOrSet(
+            $key,
+            function () use ($handle, $site, $uniqueId): ?Form {
+                $form = $this->loadForm(
+                    static fn (Query $query) => $query->andWhere(['forms.handle' => $handle]),
+                    $site,
+                    $uniqueId,
+                );
 
-                return null;
-            }
+                if ($form) {
+                    $this->cache->set($form->getId().$uniqueId, $form, self::CACHE_PREFIX_BY_ID);
+                }
 
-            if ($uniqueId) {
-                $result['uniqueId'] = $uniqueId;
-            }
-
-            try {
-                $form = $this->createForm($result);
-            } catch (InvalidFormTypeException) {
-                $form = null;
-            }
-
-            self::$formsById[$form->getId().$uniqueId] = $form;
-            self::$formsByHandle[$key] = $form;
-        }
-
-        return self::$formsByHandle[$key];
+                return $form;
+            },
+            self::CACHE_PREFIX_BY_HANDLE,
+        );
     }
 
     public function getFormByHandleOrId(int|string $handleOrId, ?string $site = null, ?string $uniqueId = null): ?Form
@@ -362,31 +292,32 @@ class FormsService extends BaseService implements FormHandlerInterface
     public function incrementSpamBlockCount(Form $form): int
     {
         $handle = $form->getHandle();
-        if (isset(self::$spamCountIncrementedForms[$handle])) {
-            return self::$spamCountIncrementedForms[$handle];
-        }
 
-        $spamBlockCount = (int) (new Query())
-            ->select(['spamBlockCount'])
-            ->from(FormRecord::TABLE)
-            ->where(['id' => $form->getId()])
-            ->scalar()
-        ;
+        return $this->cache->getOrSet(
+            $handle,
+            static function () use ($form): int {
+                $spamBlockCount = (int) (new Query())
+                    ->select(['spamBlockCount'])
+                    ->from(FormRecord::TABLE)
+                    ->where(['id' => $form->getId()])
+                    ->scalar()
+                ;
 
-        \Craft::$app
-            ->getDb()
-            ->createCommand()
-            ->update(
-                FormRecord::TABLE,
-                ['spamBlockCount' => ++$spamBlockCount],
-                ['id' => $form->getId()]
-            )
-            ->execute()
-        ;
+                \Craft::$app
+                    ->getDb()
+                    ->createCommand()
+                    ->update(
+                        FormRecord::TABLE,
+                        ['spamBlockCount' => ++$spamBlockCount],
+                        ['id' => $form->getId()]
+                    )
+                    ->execute()
+                ;
 
-        self::$spamCountIncrementedForms[$handle] = $spamBlockCount;
-
-        return $spamBlockCount;
+                return $spamBlockCount;
+            },
+            self::CACHE_PREFIX_SPAM_COUNTS,
+        );
     }
 
     public function deleteById(int $formId): bool
@@ -687,11 +618,11 @@ class FormsService extends BaseService implements FormHandlerInterface
         $forms = [];
         foreach ($results as $result) {
             try {
-                $form = $this->createForm($result);
+                $form = $this->reuseOrCreateForm($result);
 
                 $forms[] = $form;
-                self::$formsById[$form->getId()] = $form;
-                self::$formsByHandle[$form->getHandle()] = $form;
+                $this->cache->set((string) $form->getId(), $form, self::CACHE_PREFIX_BY_ID);
+                $this->cache->set($form->getHandle(), $form, self::CACHE_PREFIX_BY_HANDLE);
             } catch (InvalidFormTypeException) {
             }
         }
@@ -740,6 +671,126 @@ class FormsService extends BaseService implements FormHandlerInterface
             ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
             ->andWhere(['in', 'sites.[[handle]]', $sites])
         ;
+    }
+
+    /**
+     * Shared backend for {@see getAllForms()} and {@see getAllNonArchivedForms()}.
+     * The `$cachePrefix` argument scopes the cache so the two methods do not
+     * pollute each other (an archived-vs-not-archived result set must not be
+     * served from the opposite cache slot).
+     *
+     * The cached payload is always in DB-`order` order — sorting by name is
+     * applied to the returned (copied) array on read so that we don't need to
+     * cache a second variant or include `$orderByName` in the cache key.
+     */
+    private function loadAllForms(
+        string $cachePrefix,
+        bool $orderByName,
+        array|string|null $sites,
+        ?callable $queryModifier = null,
+    ): array {
+        if ($sites && \is_array($sites)) {
+            sort($sites);
+        }
+
+        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
+
+        $forms = $this->cache->getOrSet(
+            $key,
+            function () use ($sites, $queryModifier): array {
+                $query = $this->getFormQuery();
+                $this->attachSitesToQuery($query, $sites);
+
+                if ($queryModifier) {
+                    $queryModifier($query);
+                }
+
+                $query->orderBy(['forms.order' => \SORT_ASC]);
+
+                $forms = [];
+                foreach ($query->all() as $result) {
+                    try {
+                        $form = $this->reuseOrCreateForm($result);
+
+                        $forms[$form->getId()] = $form;
+                        $this->cache->set((string) $form->getId(), $form, self::CACHE_PREFIX_BY_ID);
+                        $this->cache->set($form->getHandle(), $form, self::CACHE_PREFIX_BY_HANDLE);
+                    } catch (InvalidFormTypeException) {
+                    }
+                }
+
+                return $forms;
+            },
+            $cachePrefix,
+        );
+
+        if ($orderByName) {
+            uasort(
+                $forms,
+                static fn (Form $a, Form $b) => strcmp((string) $a->getName(), (string) $b->getName()),
+            );
+        }
+
+        return $forms;
+    }
+
+    /**
+     * Executes a single-form lookup query (used by both {@see getFormById()}
+     * and {@see getFormByHandle()}) and returns a constructed Form, or null
+     * when no row matches.
+     *
+     * When `$uniqueId` is empty the result goes through {@see reuseOrCreateForm()}
+     * so the canonical Form instance is preserved across cache populations.
+     * `$uniqueId`-tagged variants (AB tests, multi-instance rendering) must
+     * always be standalone instances and bypass the reuse step.
+     */
+    private function loadForm(callable $whereModifier, ?string $site, ?string $uniqueId): ?Form
+    {
+        $query = $this->getFormQuery();
+        $this->attachSitesToQuery($query, $site);
+        $whereModifier($query);
+
+        $result = $query->one();
+        if (!$result) {
+            return null;
+        }
+
+        if ($uniqueId) {
+            $result['uniqueId'] = $uniqueId;
+        }
+
+        try {
+            return $uniqueId
+                ? $this->createForm($result)
+                : $this->reuseOrCreateForm($result);
+        } catch (InvalidFormTypeException) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the already-cached Form instance for the given row when one
+     * exists, otherwise creates a new instance via {@see createForm()}.
+     *
+     * This prevents `getAllForms()` / `getAllNonArchivedForms()` from silently
+     * replacing the canonical Form instance that callers obtained earlier via
+     * `getFormById()` / `getFormByHandle()`. Without this, lazy services that
+     * load all forms during cache warming (e.g. `FieldProvider`) would bind
+     * runtime state — fields, layouts, render properties — to a brand new
+     * Form object that no caller actually holds a reference to, while the
+     * Form being rendered loses access to that state.
+     */
+    private function reuseOrCreateForm(array $data): Form
+    {
+        $id = $data['id'] ?? null;
+        if (null !== $id) {
+            $existing = $this->cache->get((string) $id, self::CACHE_PREFIX_BY_ID);
+            if ($existing instanceof Form) {
+                return $existing;
+            }
+        }
+
+        return $this->createForm($data);
     }
 
     private function createForm(array $data): Form

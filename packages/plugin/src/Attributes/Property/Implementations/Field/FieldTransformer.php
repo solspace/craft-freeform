@@ -17,7 +17,7 @@ class FieldTransformer implements TransformerInterface
             return null;
         }
 
-        return $this->fieldProvider->getFieldByUid($value);
+        return $this->fieldProvider->getFieldByUid($value, $form);
     }
 
     public function reverseTransform($value): ?string

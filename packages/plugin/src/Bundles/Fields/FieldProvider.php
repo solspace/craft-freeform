@@ -162,7 +162,7 @@ class FieldProvider
     private function cacheFieldInForm(FieldInterface $field, Form $form): void
     {
         $cache = $this->cache->get($form->getId(), self::PREFIX_BY_FORM, []);
-        $cache[$field->getUid()] = $field;
+        $cache[] = $field;
         $this->cache->set($form->getId(), $cache, self::PREFIX_BY_FORM);
     }
 }

@@ -875,6 +875,7 @@ class Freeform extends Plugin
                 NotificationRuleTransformer::class => NotificationRuleTransformer::class,
 
                 // Existing singleton services
+                FormsService::class => FormsService::class,
                 IntegrationsService::class => IntegrationsService::class,
             ],
         ]);
@@ -884,6 +885,7 @@ class Freeform extends Plugin
     {
         BundleLoader::loadBundles(__DIR__.'/Bundles');
         \Craft::$container->setSingleton('craft\services\Sites');
+        \Craft::$container->setSingleton('Solspace\Freeform\Services\FormsService');
         \Craft::$container->setSingleton('Solspace\Freeform\Services\Integrations\IntegrationsService');
     }
 }

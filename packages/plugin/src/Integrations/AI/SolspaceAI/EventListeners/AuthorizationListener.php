@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\AI\SolspaceAI\EventListeners;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
@@ -65,7 +64,7 @@ class AuthorizationListener extends FeatureBundle
         ];
 
         try {
-            $client = new Client(['timeout' => 15]);
+            $client = \Craft::createGuzzleClient(['timeout' => 15]);
             $response = $client->post($url, [
                 'json' => $payload,
                 'http_errors' => false,

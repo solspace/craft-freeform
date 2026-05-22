@@ -95,6 +95,53 @@
 
     <hr />
 
+    <h2>{{ "Success Templates"|t('freeform') }}</h2>
+
+    {% set suggestionsData = [] %}
+    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+        {% set suggestionsData = suggestionsData|merge([{
+            "name": directory
+        }]) %}
+    {% endfor %}
+
+    {{ forms.autosuggestField({
+        label: "Directory Path"|t('freeform'),
+        id: "successTemplateDirectory",
+        class: "code",
+        suggestEnvVars: false,
+        suggestAliases: false,
+        suggestions:[{
+            "label":"Existing Directories",
+            "data": suggestionsData
+        }],
+        tip: null,
+        limit: 10,
+        name: "settings[successTemplateDirectory]",
+        value: settings.successTemplateDirectory,
+        errors: settings.getErrors("successTemplateDirectory"),
+        disabled: readOnly,
+        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        placeholder: "e.g. _freeform/success",
+    }) }}
+
+    {% if settings.absoluteSuccessTemplateDirectory %}
+
+        <div id="components-wrapper">
+            <div>
+                <button type="button" class="btn submit small icon add add-sample-template" id="add-success-template">
+                    {{ "Add Sample"|t('freeform') }}
+                </button>
+
+                {{ _self.listFiles(
+                    settings.successTemplateDirectory,
+                    freeform.plugin.settings.successTemplates
+                ) }}
+            </div>
+        </div>
+    {% endif %}
+
+    <hr />
+
     <h2>{{ "Email Notification Templates"|t('freeform') }}</h2>
 
     {{ forms.selectField({
@@ -162,12 +209,13 @@
         <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
             {{ forms.lightswitchField({
-                label: "Allow File-based Email Templates to be managed inside the Notifications area"|t('freeform'),
-                instructions: "Allowing users to modify or generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
+                label: "Control Panel Management for File-based Email Templates"|t('freeform'),
+                instructions: "Allows users to create and edit file-based email templates from the Notifications area and form builder."|t('freeform'),
                 name: "settings[allowFileTemplateEdit]",
                 on: settings.allowFileTemplateEdit,
                 errors: settings.errors("allowFileTemplateEdit"),
                 disabled: readOnly,
+                tip: "Managing template files from inside the Control Panel may not be suitable for workflows that rely on external file management or version control."|t('freeform'),
             }) }}
 
             {% set suggestionsData = [] %}
@@ -223,45 +271,7 @@
                         </ul>
                     </div>
                 </div>
-            {% endif %}
 
-            {% if not readOnly and craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
-
-                <hr>
-
-                <h3>{{ "Migration Utility"|t('freeform') }}</h3>
-
-                <div class="field" id="notifications-migrator">
-                    <div class="heading">
-                        <label>
-                            {{ 'Convert Database email templates to File email templates'|t('freeform') }}
-                        </label>
-                    </div>
-                    <div class="instructions">
-                        <p>
-                            {{ 'This is a utility that allows you to migrate your existing database email templates over to file-based email templates (you can continue to edit these from the CP). The utility will also update all existing forms to use the new file version of the email template. If you wish to have Freeform clean up and remove the old database email templates after, check the checkbox as well.'|t('freeform') }}
-                        </p>
-                    </div>
-                    <div class="input">
-                        <div style="margin-bottom: 10px;">
-                            <input
-                                    type="checkbox"
-                                    class="checkbox"
-                                    name="removeFiles"
-                                    value="1"
-                                    id="remove-files"
-                                    checked
-                            />
-                            <label for="remove-files">
-                                {{ "Remove database files after migration"|t('freeform') }}
-                            </label>
-                        </div>
-
-                        <button class="btn" id="migrate">
-                            {{ "Migrate"|t('freeform') }}
-                        </button>
-                    </div>
-                </div>
             {% endif %}
 
         </div>
@@ -295,51 +305,51 @@
         instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
     }) }}
 
-    <hr />
+    {% if
+        not readOnly
+        and craft.freeform.notifications.databaseNotificationCount > 0
+        and settings.emailTemplateStorageType in ['files', 'files_database']
+        and settings.emailTemplateMethod != 'form'
+    %}
 
-    <h2>{{ "Success Templates"|t('freeform') }}</h2>
+        <div class="pane">
 
-    {% set suggestionsData = [] %}
-    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
-        {% set suggestionsData = suggestionsData|merge([{
-            "name": directory
-        }]) %}
-    {% endfor %}
+            <h2>{{ "Template Conversion Utility"|t('freeform') }}</h2>
 
-    {{ forms.autosuggestField({
-        label: "Directory Path"|t('freeform'),
-        id: "successTemplateDirectory",
-        class: "code",
-        suggestEnvVars: false,
-        suggestAliases: false,
-        suggestions:[{
-            "label":"Existing Directories",
-            "data": suggestionsData
-        }],
-        tip: null,
-        limit: 10,
-        name: "settings[successTemplateDirectory]",
-        value: settings.successTemplateDirectory,
-        errors: settings.getErrors("successTemplateDirectory"),
-        disabled: readOnly,
-        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
-        placeholder: "e.g. _freeform/success",
-    }) }}
+            <div class="field" id="notifications-migrator">
+                <div class="heading">
+                    <label>
+                        {{ 'Convert Database Email Templates to File-based Templates'|t('freeform') }}
+                    </label>
+                </div>
+                <div class="instructions">
+                    <p>
+                        {{ 'This utility allows you to create file-based copies of your existing database email templates. Existing forms that use the selected database templates will automatically be updated to use the new file-based versions instead. File-based templates can still be managed from inside the Control Panel if enabled.'|t('freeform') }}
+                    </p>
+                </div>
+                <div class="input">
+                    <div style="margin-bottom: 10px;">
+                        <input
+                                type="checkbox"
+                                class="checkbox"
+                                name="removeFiles"
+                                value="1"
+                                id="remove-files"
+                                checked
+                        />
+                        <label for="remove-files">
+                            {{ "Remove original database email templates after conversion"|t('freeform') }}
+                        </label>
+                    </div>
 
-    {% if settings.absoluteSuccessTemplateDirectory %}
-
-        <div id="components-wrapper">
-            <div>
-                <button type="button" class="btn submit small icon add add-sample-template" id="add-success-template">
-                    {{ "Add Sample"|t('freeform') }}
-                </button>
-
-                {{ _self.listFiles(
-                    settings.successTemplateDirectory,
-                    freeform.plugin.settings.successTemplates
-                ) }}
+                    <button class="btn" id="migrate">
+                        {{ "Convert Templates"|t('freeform') }}
+                    </button>
+                </div>
             </div>
+
         </div>
+
     {% endif %}
 
 {% endblock %}

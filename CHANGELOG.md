@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 5.15.14 - Unreleased
+
+- TBD
+
 ## 5.15.13 - 2026-05-18
 
 ### Changed

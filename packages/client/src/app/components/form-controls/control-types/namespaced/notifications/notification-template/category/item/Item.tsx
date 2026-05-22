@@ -15,6 +15,7 @@ import { Button, ButtonGroup, Name, TemplateCard } from "./item.styles";
 
 type Props = {
   active: boolean;
+  canEditGlobalTemplates?: boolean;
   openEditOnClick?: boolean;
   template: NotificationTemplate;
   onClick: NotificationSelectHandler;
@@ -22,6 +23,7 @@ type Props = {
 
 export const Item: React.FC<Props> = ({
   active,
+  canEditGlobalTemplates,
   openEditOnClick,
   template,
   onClick,
@@ -45,7 +47,7 @@ export const Item: React.FC<Props> = ({
     >
       <Name title={name}>{name}</Name>
 
-      {!template.formId && (
+      {!template.formId && canEditGlobalTemplates && (
         <ButtonGroup>
           <Button
             title={translate("Edit")}

@@ -61,6 +61,7 @@ type Config = {
   };
   permissions: {
     integrations: Permission;
+    notifications: Permission;
   };
   limitations: {
     items: null | Record<string, boolean | string | string[]>;

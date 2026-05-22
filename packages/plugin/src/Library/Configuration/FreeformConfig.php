@@ -79,6 +79,10 @@ class FreeformConfig implements \JsonSerializable
                     Freeform::PERMISSION_INTEGRATIONS_ACCESS,
                     Freeform::PERMISSION_INTEGRATIONS_MANAGE,
                 ),
+                'notifications' => $this->getPermission(
+                    Freeform::PERMISSION_NOTIFICATIONS_ACCESS,
+                    Freeform::PERMISSION_NOTIFICATIONS_MANAGE,
+                ),
             ],
             'limitations' => [
                 'items' => $limitedUserChecker->getAll(),

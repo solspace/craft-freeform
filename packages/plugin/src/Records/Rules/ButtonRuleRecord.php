@@ -41,7 +41,7 @@ class ButtonRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[br.id]] = [[r.id]]')
             ->innerJoin(FormPageRecord::TABLE.' fp', '[[br.pageId]] = [[fp.id]]')
             ->where(['fp.formId' => $formId])
-            ->with('rule.conditions.page', 'page')
+            ->with('rule.conditions.field', 'page')
             ->indexBy('id')
             ->all()
         ;

@@ -36,7 +36,7 @@ class NotificationRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[fr.notificationId]] = [[fn.id]]')
             ->where(['fn.formId' => $formId])
-            ->with('rule.conditions.field', 'rule.conditions.notification', 'notification')
+            ->with('rule.conditions.field', 'notification')
             ->indexBy('id')
             ->all()
         ;

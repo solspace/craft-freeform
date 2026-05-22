@@ -54,7 +54,7 @@ class IntegrationRuleProvider
                 ->from(IntegrationRuleRecord::TABLE.' ir')
                 ->innerJoin(RuleRecord::TABLE.' r', '[[ir.id]] = [[r.id]]')
                 ->innerJoin(FormIntegrationRecord::TABLE.' fi', '[[ir.integrationId]] = [[fi.id]]')
-                ->with('rule.conditions.integration', 'integration')
+                ->with('rule.conditions.field', 'integration')
                 ->all()
             ;
 

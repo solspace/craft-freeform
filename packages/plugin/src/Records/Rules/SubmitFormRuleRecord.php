@@ -31,7 +31,7 @@ class SubmitFormRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormRecord::TABLE.' ff', '[[fr.formId]] = [[ff.id]]')
             ->where(['ff.id' => $formId])
-            ->with('rule.conditions.form', 'form')
+            ->with('rule.conditions.field', 'form')
             ->indexBy('id')
             ->one()
         ;

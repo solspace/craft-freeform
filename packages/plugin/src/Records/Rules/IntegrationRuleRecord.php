@@ -36,7 +36,7 @@ class IntegrationRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[ir.id]] = [[r.id]]')
             ->innerJoin(FormIntegrationRecord::TABLE.' fi', '[[ir.integrationId]] = [[fi.id]]')
             ->where(['fi.formId' => $formId])
-            ->with('rule.conditions.integration', 'integration')
+            ->with('rule.conditions.field', 'integration')
             ->indexBy('id')
             ->all()
         ;

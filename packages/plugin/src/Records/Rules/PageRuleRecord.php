@@ -35,7 +35,7 @@ class PageRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormPageRecord::TABLE.' fp', '[[fr.pageId]] = [[fp.id]]')
             ->where(['fp.formId' => $formId])
-            ->with('rule.conditions.page', 'page')
+            ->with('rule.conditions.field', 'page')
             ->indexBy('id')
             ->all()
         ;

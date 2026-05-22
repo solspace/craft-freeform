@@ -10,7 +10,7 @@ class FormAttributesTransformer implements TransformerInterface
 {
     public function transform($value, ?Form $form = null): FormAttributesCollection
     {
-        return new FormAttributesCollection($value);
+        return new FormAttributesCollection($value ?? []);
     }
 
     public function reverseTransform($value): object

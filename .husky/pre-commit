@@ -1,9 +1,14 @@
+export PATH="$HOME/.nvm/versions/node/v24.15.0/bin:$PATH"
+
 set -e
+
+node -v
 npm -v
+pnpm -v
 php -v
 
-printf "\\n\\e[32m######### Linting Scripts #########\\e[0m\\n\\n"
-npm run lint
+printf "\n\e[32m######### Linting Scripts #########\e[0m\n\n"
+pnpm lint
 
-printf "\\n\\e[32m######### Running CS Fixer dry run #########\\e[0m\\n\\n"
-composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)
+printf "\n\e[32m######### Running CS Fixer dry run #########\e[0m\n\n"
+composer run fix:dry-run || (printf "\e[41mCS Fixer found issues\e[0m\n" && exit 1)

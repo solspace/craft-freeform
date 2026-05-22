@@ -17,6 +17,7 @@ type Props = {
   title: string;
   templates: NotificationTemplate[];
   canCreate?: boolean;
+  canEditGlobalTemplates?: boolean;
   openEditOnClick?: boolean;
   onClick: NotificationSelectHandler;
   onCreate?: () => void;
@@ -27,6 +28,7 @@ export const Category: React.FC<Props> = ({
   title,
   templates,
   canCreate,
+  canEditGlobalTemplates,
   openEditOnClick,
   onClick,
   onCreate,
@@ -63,6 +65,7 @@ export const Category: React.FC<Props> = ({
           <Item
             key={template.id}
             openEditOnClick={openEditOnClick}
+            canEditGlobalTemplates={canEditGlobalTemplates}
             active={value === template.id}
             template={template}
             onClick={onClick}

@@ -16,7 +16,7 @@ class NotificationRuleTransformer implements TransformerInterface
     public function transform($value, ?Form $form = null): ?NotificationRule
     {
         if (\is_string($value)) {
-            return $this->ruleProvider->getByUid($value);
+            return $this->ruleProvider->getByUid($value, $form);
         }
 
         return null;

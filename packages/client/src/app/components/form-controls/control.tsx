@@ -40,12 +40,13 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
     useTranslations(context as any);
 
   const { edition, translatable, messages } = property || {};
+  const resolvedHandle = property?.handle || handle;
 
   return (
     <ControlBlock
       edition={edition}
       label={property?.label || label}
-      handle={property?.handle || handle}
+      handle={resolvedHandle}
       required={property?.required || required}
       instructions={property?.instructions || instructions}
       width={property?.width || width}
@@ -53,9 +54,11 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       errors={errors}
       messages={messages}
       translatable={isTranslationsEnabled && translatable}
-      hasTranslation={hasTranslation(handle)}
+      hasTranslation={resolvedHandle ? hasTranslation(resolvedHandle) : false}
       isEncrypted={property?.flags?.includes("encrypted")}
-      removeTranslation={() => removeTranslation(handle)}
+      removeTranslation={() =>
+        resolvedHandle && removeTranslation(resolvedHandle)
+      }
       preContent={preContent}
       align={align}
       justify={justify}

@@ -16,6 +16,7 @@ export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, __dirname, "");
   const host = "127.0.0.1";
   const port = env.PORT ? parseInt(env.PORT, 10) : 5173;
+  const shouldGenerateSourceMaps = command === "build" && mode !== "production";
 
   return {
     appType: "custom",
@@ -51,11 +52,14 @@ export default defineConfig(({ mode, command }) => {
     build: {
       target: "es2020",
       emptyOutDir: true,
-      sourcemap: false,
+      sourcemap: shouldGenerateSourceMaps,
       manifest: "manifest.json",
       outDir: path.resolve(__dirname, "../plugin/src/Resources/js/client"),
       rollupOptions: {
         input: path.resolve(__dirname, "./src/index.tsx"),
+        output: {
+          sourcemapExcludeSources: false,
+        },
       },
     },
   };

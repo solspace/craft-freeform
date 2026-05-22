@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Rules\Types;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
@@ -13,64 +14,97 @@ use Solspace\Freeform\Records\Rules\RuleRecord;
 
 class NotificationRuleProvider
 {
-    private ?array $cache = null;
+    private Memo $cache;
+    private array $formCache = [];
 
     public function __construct(
         private FieldTransformer $fieldTransformer
-    ) {}
+    ) {
+        $this->cache = new Memo();
+    }
 
     public function getByForm(Form $form): array
     {
-        $rules = $this->getAllNotifications();
-        $rules = array_filter(
-            $rules,
-            static fn (NotificationRuleRecord $record) => $record->getNotification()->one()->formId === $form->getId()
-        );
+        $rules = $this->getNotificationsByForm($form);
 
         $notificationRules = [];
         foreach ($rules as $rule) {
-            $notificationRules[] = $this->createRuleFromRecord($rule);
+            $notificationRules[] = $this->createRuleFromRecord($rule, $form);
         }
 
         return $notificationRules;
     }
 
-    public function getByUid(string $uid): ?NotificationRule
+    public function getByUid(string $uid, ?Form $form = null): ?NotificationRule
     {
-        $record = $this->getAllNotifications()[$uid] ?? null;
+        $record = $form
+            ? ($this->getNotificationsByForm($form)[$uid] ?? null)
+            : ($this->getAllNotifications()[$uid] ?? null);
+
         if (!$record) {
             return null;
         }
 
-        return $this->createRuleFromRecord($record);
+        return $this->createRuleFromRecord($record, $form);
     }
 
     private function getAllNotifications(): array
     {
-        if (null === $this->cache) {
-            $items = NotificationRuleRecord::find()
-                ->select(['nr.*'])
-                ->from(NotificationRuleRecord::TABLE.' nr')
-                ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
-                ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
-                ->with('rule', 'conditions', 'notification')
-                ->all()
-            ;
+        return $this->cache->getOrSet(
+            'all',
+            static function () {
+                $items = NotificationRuleRecord::find()
+                    ->select(['nr.*'])
+                    ->from(NotificationRuleRecord::TABLE.' nr')
+                    ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
+                    ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
+                    ->with('conditions.field', 'notification')
+                    ->all()
+                ;
 
-            $this->cache = [];
-            foreach ($items as $item) {
-                $this->cache[$item->getRule()->one()->uid] = $item;
-            }
-        }
+                $data = [];
+                foreach ($items as $item) {
+                    $data[$item->rule->uid] = $item;
+                }
 
-        return $this->cache;
+                return $data;
+            },
+        );
     }
 
-    private function createRuleFromRecord(NotificationRuleRecord $record): NotificationRule
+    private function getNotificationsByForm(Form $form): array
+    {
+        return $this->cache->getOrSet(
+            $form->getId(),
+            static function () use ($form) {
+                $formId = $form->getId();
+
+                /** @var NotificationRuleRecord[] $items */
+                $items = NotificationRuleRecord::find()
+                    ->select(['nr.*'])
+                    ->from(NotificationRuleRecord::TABLE.' nr')
+                    ->innerJoin(RuleRecord::TABLE.' r', '[[nr.id]] = [[r.id]]')
+                    ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[nr.notificationId]] = [[fn.id]]')
+                    ->where(['fn.formId' => $formId])
+                    ->with('conditions.field', 'notification')
+                    ->all()
+                ;
+
+                $data = [];
+                foreach ($items as $item) {
+                    $data[$item->rule->uid] = $item;
+                }
+
+                return $data;
+            },
+        );
+    }
+
+    private function createRuleFromRecord(NotificationRuleRecord $record, ?Form $form = null): NotificationRule
     {
         $conditions = new ConditionCollection();
-        foreach ($record->getConditions()->all() as $conditionRecord) {
-            $field = $this->fieldTransformer->transform($conditionRecord->getField()->one()->uid);
+        foreach ($record->conditions as $conditionRecord) {
+            $field = $this->fieldTransformer->transform($conditionRecord->field->uid, $form);
             $condition = new Condition(
                 $conditionRecord->uid,
                 $field,
@@ -81,7 +115,7 @@ class NotificationRuleProvider
             $conditions->add($condition);
         }
 
-        $ruleRecord = $record->getRule()->one();
+        $ruleRecord = $record->rule;
 
         $rule = new NotificationRule(
             $ruleRecord->id,

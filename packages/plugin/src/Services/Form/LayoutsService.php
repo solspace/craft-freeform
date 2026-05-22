@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
@@ -29,9 +30,9 @@ class LayoutsService extends BaseService
 
     public function __construct(
         $config = [],
-        private ?FieldsService $fieldsService = null,
         private ?PropertyProvider $propertyProvider = null,
         private ?TranslationProvider $translationProvider = null,
+        private ?FieldProvider $fieldProvider = null,
     ) {
         parent::__construct($config);
     }
@@ -157,7 +158,7 @@ class LayoutsService extends BaseService
 
     public function getFields(Form $form): array
     {
-        return $this->fieldsService->getFields($form);
+        return $this->fieldProvider->getFields($form);
     }
 
     private function attachRows(

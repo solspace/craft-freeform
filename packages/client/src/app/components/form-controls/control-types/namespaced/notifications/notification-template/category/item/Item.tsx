@@ -1,3 +1,5 @@
+import { useModal } from "@components/modals/modal.context";
+import { ConfirmSubmissionsModal } from "@editor/builder/tabs/modals/confirm-submissions.modal";
 import { QKNotifications } from "@ff-client/queries/notifications";
 import type { APIError } from "@ff-client/types/api";
 import type { NotificationTemplate } from "@ff-client/types/notifications";
@@ -7,14 +9,13 @@ import translate from "@ff-client/utils/translations";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import type React from "react";
-
 import { useNotificationEditModal } from "../../modal/template.modal.hooks";
 import type { NotificationSelectHandler } from "../../notification-template";
-
 import { Button, ButtonGroup, Name, TemplateCard } from "./item.styles";
 
 type Props = {
   active: boolean;
+  canEditGlobalTemplates?: boolean;
   openEditOnClick?: boolean;
   template: NotificationTemplate;
   onClick: NotificationSelectHandler;
@@ -22,12 +23,14 @@ type Props = {
 
 export const Item: React.FC<Props> = ({
   active,
+  canEditGlobalTemplates,
   openEditOnClick,
   template,
   onClick,
 }) => {
   const { id, name } = template;
 
+  const { openModal: openModalFn } = useModal();
   const queryClient = useQueryClient();
   const openModal = useNotificationEditModal();
 
@@ -43,6 +46,34 @@ export const Item: React.FC<Props> = ({
       }}
     >
       <Name title={name}>{name}</Name>
+
+      {!template.formId && canEditGlobalTemplates && (
+        <ButtonGroup>
+          <Button
+            title={translate("Edit")}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              const isDbTemplate = /^\d+$/.test(template.id.toString());
+              const target = isDbTemplate ? "database" : "files";
+
+              const url = Craft.getCpUrl(
+                `freeform/notifications/${target}/${template.id}`,
+              );
+
+              // if control or command pressed, open in new tab
+              if (e.metaKey) {
+                window.open(url, "_blank")?.focus();
+              } else {
+                openModalFn(ConfirmSubmissionsModal, { url });
+              }
+            }}
+          >
+            <i className="fa-solid fa-pencil"></i>
+          </Button>
+        </ButtonGroup>
+      )}
 
       {!!template.formId && (
         <ButtonGroup>

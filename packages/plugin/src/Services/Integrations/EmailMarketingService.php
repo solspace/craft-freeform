@@ -22,19 +22,30 @@ use Solspace\Freeform\Records\EmailMarketingListRecord;
 
 class EmailMarketingService extends IntegrationsService
 {
+    private array $cache = [];
+
     public function getListObjectById(?int $id): ?ListObject
     {
-        $record = EmailMarketingListRecord::findOne(['id' => $id]);
-        if (!$record) {
+        if (!$id) {
             return null;
         }
 
-        return new ListObject(
-            $record->resourceId,
-            $record->name,
-            $record->memberCount,
-            $record->id,
-        );
+        if (!\array_key_exists($id, $this->cache)) {
+            $record = EmailMarketingListRecord::findOne(['id' => $id]);
+            $object = null;
+            if ($record) {
+                $object = new ListObject(
+                    $record->resourceId,
+                    $record->name,
+                    $record->memberCount,
+                    $record->id,
+                );
+            }
+
+            $this->cache[$id] = $object;
+        }
+
+        return $this->cache[$id];
     }
 
     /**

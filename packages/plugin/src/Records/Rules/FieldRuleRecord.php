@@ -6,12 +6,14 @@ use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $fieldId
- * @property string    $display
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int             $id
+ * @property int             $fieldId
+ * @property string          $display
+ * @property \DateTime       $dateCreated
+ * @property \DateTime       $dateUpdated
+ * @property string          $uid
+ * @property RuleRecord      $rule
+ * @property FormFieldRecord $field
  */
 class FieldRuleRecord extends RuleRecord
 {
@@ -38,14 +40,14 @@ class FieldRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
             ->where(['ff.formId' => $formId])
-            ->with('rule', 'conditions', 'field')
+            ->with('rule.conditions.field', 'field')
             ->indexBy('id')
             ->all()
         ;
 
         $indexed = [];
         foreach ($records as $record) {
-            $indexed[$record->getRule()->one()->uid] = $record;
+            $indexed[$record->rule->uid] = $record;
         }
 
         return $indexed;
@@ -59,7 +61,7 @@ class FieldRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
             ->where(['fr.fieldId' => $fieldId])
-            ->with('rule', 'conditions', 'field')
+            ->with('rule.conditions.field', 'field')
             ->indexBy('id')
             ->one()
         ;

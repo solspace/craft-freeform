@@ -14,18 +14,21 @@
 namespace Solspace\Freeform\Records\Form;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Records\FormRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $formId
- * @property int       $rowId
- * @property int       $order
- * @property string    $type
- * @property string    $metadata
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int           $id
+ * @property int           $formId
+ * @property int           $rowId
+ * @property int           $order
+ * @property string        $type
+ * @property string        $metadata
+ * @property \DateTime     $dateCreated
+ * @property \DateTime     $dateUpdated
+ * @property string        $uid
+ * @property FormRecord    $form
+ * @property FormRowRecord $row
  */
 class FormFieldRecord extends ActiveRecord
 {
@@ -36,6 +39,11 @@ class FormFieldRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function getForm(): ActiveQuery
+    {
+        return $this->hasOne(FormRecord::class, ['id' => 'formId']);
     }
 
     public function getRow(): ActiveQuery

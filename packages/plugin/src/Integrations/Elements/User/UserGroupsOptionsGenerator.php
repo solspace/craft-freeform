@@ -8,15 +8,21 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 class UserGroupsOptionsGenerator implements OptionsGeneratorInterface
 {
+    private static ?OptionCollection $cache = null;
+
     public function fetchOptions(?Property $property): OptionCollection
     {
-        $options = new OptionCollection();
+        if (self::$cache === null) {
+            $options = new OptionCollection();
 
-        $groups = \Craft::$app->getUserGroups()->getAllGroups();
-        foreach ($groups as $group) {
-            $options->add($group->id, $group->name);
+            $groups = \Craft::$app->getUserGroups()->getAllGroups();
+            foreach ($groups as $group) {
+                $options->add($group->id, $group->name);
+            }
+
+            self::$cache = $options;
         }
 
-        return $options;
+        return self::$cache;
     }
 }

@@ -3,12 +3,12 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Carbon\Carbon;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TranslationsService;
 use Solspace\Freeform\Services\FormMonitorService;
@@ -20,7 +20,7 @@ class FormTransformer
     public const EVENT_ATTACH_LINKS = 'attach-links';
 
     public function __construct(
-        private FieldsService $fieldsService,
+        private FieldProvider $fieldProvider,
         private LayoutsService $layoutsService,
         private TranslationsService $translationsService,
         private FieldTransformer $fieldTransformer,
@@ -90,7 +90,7 @@ class FormTransformer
 
     public function transform(Form $form): object
     {
-        $fields = $this->fieldsService->getFields($form);
+        $fields = $this->fieldProvider->getFields($form);
 
         $transformed = $this->transformBasic($form);
         $transformed->translations = $this->translationsService->getFormTranslations($form);

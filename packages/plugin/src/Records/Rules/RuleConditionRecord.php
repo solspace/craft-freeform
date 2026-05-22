@@ -9,14 +9,15 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
- * @property int       $id
- * @property int       $ruleId
- * @property int       $fieldId
- * @property string    $operator
- * @property string    $value
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int             $id
+ * @property int             $ruleId
+ * @property int             $fieldId
+ * @property string          $operator
+ * @property string          $value
+ * @property \DateTime       $dateCreated
+ * @property \DateTime       $dateUpdated
+ * @property string          $uid
+ * @property FormFieldRecord $field
  */
 class RuleConditionRecord extends ActiveRecord
 {

@@ -22,6 +22,7 @@ type Config = {
   templates: {
     native: boolean;
     canCreate: boolean;
+    allowFileTemplateEdit: boolean;
     toolbar: string;
     method: TemplateMethod;
   };

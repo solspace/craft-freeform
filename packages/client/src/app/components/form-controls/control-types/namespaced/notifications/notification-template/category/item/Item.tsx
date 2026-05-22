@@ -16,6 +16,7 @@ import { Button, ButtonGroup, Name, TemplateCard } from "./item.styles";
 type Props = {
   active: boolean;
   canEditGlobalTemplates?: boolean;
+  canEditGlobalFileTemplates?: boolean;
   openEditOnClick?: boolean;
   template: NotificationTemplate;
   onClick: NotificationSelectHandler;
@@ -24,11 +25,16 @@ type Props = {
 export const Item: React.FC<Props> = ({
   active,
   canEditGlobalTemplates,
+  canEditGlobalFileTemplates,
   openEditOnClick,
   template,
   onClick,
 }) => {
   const { id, name } = template;
+  const isDbTemplate = /^\d+$/.test(template.id.toString());
+  const canEditGlobalTemplate = isDbTemplate
+    ? canEditGlobalTemplates
+    : canEditGlobalFileTemplates;
 
   const { openModal: openModalFn } = useModal();
   const queryClient = useQueryClient();
@@ -47,7 +53,7 @@ export const Item: React.FC<Props> = ({
     >
       <Name title={name}>{name}</Name>
 
-      {!template.formId && canEditGlobalTemplates && (
+      {!template.formId && canEditGlobalTemplate && (
         <ButtonGroup>
           <Button
             title={translate("Edit")}
@@ -55,7 +61,6 @@ export const Item: React.FC<Props> = ({
               e.preventDefault();
               e.stopPropagation();
 
-              const isDbTemplate = /^\d+$/.test(template.id.toString());
               const target = isDbTemplate ? "database" : "files";
 
               const url = Craft.getCpUrl(

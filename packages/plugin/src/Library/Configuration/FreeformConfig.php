@@ -36,6 +36,7 @@ class FreeformConfig implements \JsonSerializable
                 'canCreate' => $settingsModel->allowBuilderTemplateCreation,
                 'toolbar' => $settingsModel->emailNotificationToolbarConfiguration,
                 'method' => $settingsModel->emailTemplateMethod,
+                'allowFileTemplateEdit' => $settingsModel->allowFileTemplateEdit,
             ],
             'feed' => $settings->isDisplayFeed(),
             'limits' => [

@@ -29,6 +29,8 @@ const NotificationTemplate: React.FC<
   } = config;
   const canManageGlobalTemplates =
     config.permissions.notifications === "manage";
+  const canEditGlobalFileTemplates =
+    canManageGlobalTemplates && config.templates.allowFileTemplateEdit;
 
   if (isFetching && !templates) {
     return (
@@ -78,6 +80,7 @@ const NotificationTemplate: React.FC<
             title={translate("Global Templates")}
             templates={templates.global}
             canEditGlobalTemplates={canManageGlobalTemplates}
+            canEditGlobalFileTemplates={canEditGlobalFileTemplates}
             onClick={handleSelect}
           />
         </NotificationTemplateSelector>

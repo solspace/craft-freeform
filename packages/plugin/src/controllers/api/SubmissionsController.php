@@ -54,13 +54,11 @@ class SubmissionsController extends BaseController
             ->where(["{$submissions}.[[isHidden]]" => false])
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
+        $elements = Table::ELEMENTS;
+        $query->innerJoin(
+            $elements,
+            "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+        );
 
         if ($formId) {
             $query->andWhere(["{$submissions}.[[formId]]" => $formId]);

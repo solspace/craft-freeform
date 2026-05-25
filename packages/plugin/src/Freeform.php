@@ -765,7 +765,7 @@ class Freeform extends Plugin
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
 
-                    if (version_compare(\Craft::$app->version, '5.0.0-alpha', '<')) {
+                    if (version_compare(\Craft::$app->version, '5.0.0', '<')) {
                         \Craft::$app->db->createCommand()->update(
                             '{{%content}}',
                             ['siteId' => $newId],

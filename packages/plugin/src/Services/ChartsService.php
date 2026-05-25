@@ -76,9 +76,7 @@ class ChartsService extends BaseService
     ): LinearChartData {
         $submissions = Submission::TABLE;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-        }
+        $elements = Table::ELEMENTS;
 
         $diff = $rangeStart->diffInDays($rangeEnd);
 
@@ -120,12 +118,10 @@ class ChartsService extends BaseService
                 $query->andWhere(["{$submissions}.[[formId]]" => $formId, "{$submissions}.[[isHidden]]" => false]);
             }
 
-            if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-                $query->innerJoin(
-                    $elements,
-                    "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-                );
-            }
+            $query->innerJoin(
+                $elements,
+                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+            );
 
             $result = $query->all();
 
@@ -174,13 +170,11 @@ class ChartsService extends BaseService
             ->groupBy(["{$submissions}.[[formId]]"])
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
+        $elements = Table::ELEMENTS;
+        $query->innerJoin(
+            $elements,
+            "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+        );
 
         $result = $query->all();
 
@@ -243,9 +237,7 @@ class ChartsService extends BaseService
     ): array {
         $submissions = Submission::TABLE;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-        }
+        $elements = Table::ELEMENTS;
 
         $forms = Freeform::getInstance()->forms->getAllForms();
 
@@ -270,12 +262,10 @@ class ChartsService extends BaseService
                 ->andWhere(["{$submissions}.[[isSpam]]" => false])
             ;
 
-            if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-                $query->innerJoin(
-                    $elements,
-                    "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-                );
-            }
+            $query->innerJoin(
+                $elements,
+                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+            );
 
             $result = $query->all();
 

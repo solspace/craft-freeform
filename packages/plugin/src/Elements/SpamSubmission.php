@@ -77,14 +77,12 @@ class SpamSubmission extends Submission
             ),
         ];
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $actions[] = \Craft::$app->elements->createAction([
-                'type' => Restore::class,
-                'successMessage' => \Craft::t('app', 'Submissions restored.'),
-                'partialSuccessMessage' => \Craft::t('app', 'Some submissions restored.'),
-                'failMessage' => \Craft::t('app', 'Submissions not restored.'),
-            ]);
-        }
+        $actions[] = \Craft::$app->elements->createAction([
+            'type' => Restore::class,
+            'successMessage' => \Craft::t('app', 'Submissions restored.'),
+            'partialSuccessMessage' => \Craft::t('app', 'Some submissions restored.'),
+            'failMessage' => \Craft::t('app', 'Submissions not restored.'),
+        ]);
 
         return $actions;
     }

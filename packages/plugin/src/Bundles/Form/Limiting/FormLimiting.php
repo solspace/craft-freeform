@@ -242,13 +242,11 @@ class FormLimiting extends FeatureBundle
             ->limit(1)
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Element::tableName();
-            $query->innerJoin(
-                "{$elements} e",
-                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
-            );
-        }
+        $elements = Element::tableName();
+        $query->innerJoin(
+            "{$elements} e",
+            'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
+        );
 
         $isPosted = (bool) $query->scalar();
 
@@ -316,13 +314,11 @@ class FormLimiting extends FeatureBundle
             ->limit(1)
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Element::tableName();
-            $query->innerJoin(
-                "{$elements} e",
-                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
-            );
-        }
+        $elements = Element::tableName();
+        $query->innerJoin(
+            "{$elements} e",
+            'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
+        );
 
         $isPosted = (bool) $query->scalar();
         if ($isPosted) {

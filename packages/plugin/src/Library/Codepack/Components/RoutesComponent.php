@@ -13,7 +13,6 @@
 
 namespace Solspace\Freeform\Library\Codepack\Components;
 
-use craft\db\Query;
 use craft\helpers\Json;
 use craft\services\ProjectConfig;
 
@@ -27,11 +26,10 @@ class RoutesComponent extends AbstractJsonComponent
         $routeService = \Craft::$app->routes;
 
         $existingRoutes = [];
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            /** @var ProjectConfig $config */
-            $config = \Craft::$app->getProjectConfig();
-            $existingRoutes = $config->get('routes');
-        }
+
+        /** @var ProjectConfig $config */
+        $config = \Craft::$app->getProjectConfig();
+        $existingRoutes = $config->get('routes');
 
         $data = $this->getData();
         $demoFolder = $prefix.'/';
@@ -80,19 +78,8 @@ class RoutesComponent extends AbstractJsonComponent
                     }
                 }
 
-                if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-                    $uuid = $this->findExistingRoute($uriParts, $existingRoutes);
-                    $routeService->saveRoute($urlParts, $template, null, $uuid);
-                } else {
-                    $id = (new Query())
-                        ->select('id')
-                        ->from('{{%routes}}')
-                        ->where(['uriParts' => Json::encode($uriParts)])
-                        ->scalar()
-                    ;
-
-                    $routeService->saveRoute($urlParts, $template, null, $id ?: null);
-                }
+                $uuid = $this->findExistingRoute($uriParts, $existingRoutes);
+                $routeService->saveRoute($urlParts, $template, null, $uuid);
             }
         }
     }

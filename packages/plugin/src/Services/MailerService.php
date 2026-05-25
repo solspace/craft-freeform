@@ -361,11 +361,9 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     public function processRecipients(RecipientCollection $recipients, ?Form $form = null): array
     {
-        if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
-            $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
-            if (!empty($testToEmailAddress)) {
-                return $testToEmailAddress;
-            }
+        $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
+        if (!empty($testToEmailAddress)) {
+            return $testToEmailAddress;
         }
 
         $recipientList = $recipients->emailsToArray();

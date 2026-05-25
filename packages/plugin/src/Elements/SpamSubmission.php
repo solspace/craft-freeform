@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Elements;
 
+use craft\elements\actions\Restore;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Elements\Actions\AllowSpamAction;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
@@ -52,7 +53,7 @@ class SpamSubmission extends Submission
             $message = Freeform::t('Are you sure you want to delete all submissions for this form?');
         }
 
-        return [
+        $actions = [
             \Craft::$app->elements->createAction(
                 [
                     'type' => AllowSpamAction::class,
@@ -75,5 +76,16 @@ class SpamSubmission extends Submission
                 ]
             ),
         ];
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $actions[] = \Craft::$app->elements->createAction([
+                'type' => Restore::class,
+                'successMessage' => \Craft::t('app', 'Submissions restored.'),
+                'partialSuccessMessage' => \Craft::t('app', 'Some submissions restored.'),
+                'failMessage' => \Craft::t('app', 'Submissions not restored.'),
+            ]);
+        }
+
+        return $actions;
     }
 }

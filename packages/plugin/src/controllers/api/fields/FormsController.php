@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers\api\fields;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FieldTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Services\Form\TranslationsService;
 
 class FormsController extends BaseApiController
 {
@@ -15,6 +16,7 @@ class FormsController extends BaseApiController
         $module,
         $config,
         private FieldTransformer $fieldTransformer,
+        private TranslationsService $translationsService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -35,7 +37,15 @@ class FormsController extends BaseApiController
 
             $transformedFields = [];
             foreach ($fields as $field) {
-                $transformedFields[] = $this->fieldTransformer->transform($field);
+                $transformed = $this->fieldTransformer->transform($field);
+                $transformed->label = $this->translationsService->getTranslation(
+                    $form,
+                    TranslationsService::TYPE_FIELDS,
+                    $field->getUid(),
+                    'label',
+                    $field->getLabel(),
+                );
+                $transformedFields[] = $transformed;
             }
 
             $results[] = (object) [

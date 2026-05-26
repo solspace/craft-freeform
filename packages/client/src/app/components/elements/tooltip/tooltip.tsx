@@ -197,6 +197,7 @@ const BaseFloating = ({
 
   const floatingSurfaceStyles: CSSProperties = {
     ...floatingStyles,
+    zIndex: 9000,
     ...(followCursor && !interactive ? { pointerEvents: "none" } : {}),
   };
 

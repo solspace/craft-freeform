@@ -1,7 +1,9 @@
 import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
+import type { RootState } from "@editor/store";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { useFieldTypeSearch } from "@ff-client/queries/field-types";
 import type { FieldProperty } from "@ff-client/types/properties";
 import type React from "react";
@@ -15,6 +17,10 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
 }) => {
   const fields = useSelector(fieldSelectors.all);
   const findType = useFieldTypeSearch();
+  const { current: currentSite } = useSiteContext();
+  const fieldTranslations = useSelector(
+    (state: RootState) => state.translations?.[currentSite?.id]?.fields,
+  );
 
   const options = fields
     .filter((field) => {
@@ -33,7 +39,9 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
     })
     .map((field) => ({
       value: field.uid,
-      label: field.properties.label,
+      label:
+        (fieldTranslations?.[field.uid]?.label as string | undefined) ??
+        field.properties.label,
     }));
 
   return (

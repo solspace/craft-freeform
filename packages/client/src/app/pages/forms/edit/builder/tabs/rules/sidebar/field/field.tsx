@@ -1,10 +1,12 @@
 import config from "@config/freeform/freeform.config";
 import { useLastTab } from "@editor/builder/tabs/tabs.hooks";
+import type { RootState } from "@editor/store";
 import type { Field as FieldTypeProp } from "@editor/store/slices/layout/fields";
 import { buttonRuleSelectors } from "@editor/store/slices/rules/buttons/buttons.selectors";
 import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
 import { pageRuleSelectors } from "@editor/store/slices/rules/pages/page-rules.selectors";
 import { submitFormRuleSelectors } from "@editor/store/slices/rules/submit-form/submit-form.selectors";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { useFieldType } from "@ff-client/queries/field-types";
 import type { PageButtonType } from "@ff-client/types/rules";
 import { operatorTypes } from "@ff-client/types/rules";
@@ -34,6 +36,11 @@ export const Field: React.FC<Props> = ({ field }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setLastTab } = useLastTab("rules");
+
+  const { current: currentSite } = useSiteContext();
+  const fieldTranslations = useSelector(
+    (state: RootState) => state.translations?.[currentSite?.id]?.fields,
+  );
 
   const type = useFieldType(field?.typeClass);
   const currentField = activeFieldUid === field.uid;
@@ -97,7 +104,11 @@ export const Field: React.FC<Props> = ({ field }) => {
         />
         <Label
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(field.properties.label || type?.name),
+            __html: DOMPurify.sanitize(
+              (fieldTranslations?.[field.uid]?.label as string | undefined) ??
+                field.properties.label ??
+                type?.name,
+            ),
           }}
         />
       </FieldInfo>

@@ -1,4 +1,5 @@
 import type { RootState } from "@editor/store";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import type {
   Suggestion,
   SuggestionCategory,
@@ -11,12 +12,21 @@ import type { TokenBackend } from "../tokens.types";
 
 let fetchedSuggestions: SuggestionCategory[];
 
-const compileStoreSuggestions = (store: Store<RootState>): Suggestion[] => {
+const compileStoreSuggestions = (
+  store: Store<RootState>,
+  siteId?: number,
+): Suggestion[] => {
   const fields: Suggestion[] = [];
+  const fieldTranslations = store.getState().translations?.[siteId]?.fields;
+
   store.getState().layout.fields.forEach((field) => {
+    const label =
+      (fieldTranslations?.[field.uid]?.label as string | undefined) ??
+      field.properties.label;
+
     fields.push({
-      shortName: field.properties.label,
-      name: field.properties.label,
+      shortName: label,
+      name: label,
       token: `fieldUids['${field.uid}']`,
     });
   });
@@ -26,6 +36,7 @@ const compileStoreSuggestions = (store: Store<RootState>): Suggestion[] => {
 
 export const useSuggestions = (backend: TokenBackend): SuggestionCategory[] => {
   const { store } = backend;
+  const { current: currentSite } = useSiteContext();
 
   const [compiled, setCompiled] = useState<SuggestionCategory[]>([]);
 
@@ -35,7 +46,7 @@ export const useSuggestions = (backend: TokenBackend): SuggestionCategory[] => {
         ...fetchedSuggestions,
         {
           name: "Fields",
-          items: compileStoreSuggestions(store),
+          items: compileStoreSuggestions(store, currentSite?.id),
         },
       ]);
     } else {
@@ -44,7 +55,7 @@ export const useSuggestions = (backend: TokenBackend): SuggestionCategory[] => {
         setCompiled(fetchedSuggestions);
       });
     }
-  }, [store]);
+  }, [store, currentSite]);
 
   return compiled;
 };

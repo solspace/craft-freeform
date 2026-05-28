@@ -1,6 +1,8 @@
+import type { RootState } from "@editor/store";
 import { useAppStore } from "@editor/store";
 import GroupIcon from "@ff-client/assets/icons/fields/group";
 import PageIcon from "@ff-client/assets/icons/fields/page";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { useFieldTypeSearch } from "@ff-client/queries/field-types";
 import type { OptionCollection } from "@ff-client/types/properties";
 import { useMemo } from "react";
@@ -15,9 +17,13 @@ export const useFieldOptionCollection = (
 ): OptionCollection => {
   const { getState } = useAppStore();
   const findType = useFieldTypeSearch();
+  const { current: currentSite } = useSiteContext();
 
   const cartographed = useSelector(layoutSelectors.cartographed.pageFieldList);
   const pages = useSelector(pageSelecors.all);
+  const fieldTranslations = useSelector(
+    (state: RootState) => state.translations?.[currentSite?.id]?.fields,
+  );
 
   return useMemo(
     (): OptionCollection =>
@@ -36,6 +42,10 @@ export const useFieldOptionCollection = (
               return null;
             }
 
+            const fieldLabel =
+              (fieldTranslations?.[field.uid]?.label as string | undefined) ??
+              field.properties.label;
+
             if (type?.type === "group") {
               const fields = layoutSelectors.cartographed.layoutFieldList(
                 getState(),
@@ -43,10 +53,13 @@ export const useFieldOptionCollection = (
               );
 
               return {
-                label: field.properties.label,
+                label: fieldLabel,
                 icon: <GroupIcon />,
                 children: fields.map((subField) => ({
-                  label: subField.properties.label,
+                  label:
+                    (fieldTranslations?.[subField.uid]?.label as
+                      | string
+                      | undefined) ?? subField.properties.label,
                   value: subField.uid,
                 })),
               };
@@ -54,11 +67,19 @@ export const useFieldOptionCollection = (
 
             return {
               value: field.uid,
-              label: field.properties.label,
+              label: fieldLabel,
             };
           })
           .filter(Boolean),
       })),
-    [cartographed, pages, excludedUids, excludedTypes, findType, getState],
+    [
+      cartographed,
+      pages,
+      excludedUids,
+      excludedTypes,
+      findType,
+      getState,
+      fieldTranslations,
+    ],
   );
 };

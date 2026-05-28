@@ -16,6 +16,6 @@ trait DefaultTextValueTrait
 
     public function getDefaultValue(): string
     {
-        return $this->defaultValue ?? '';
+        return $this->translate('defaultValue', $this->defaultValue ?? '');
     }
 }

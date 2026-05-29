@@ -1,8 +1,25 @@
 # Solspace Freeform Changelog
 
-## 5.15.14 - Unreleased
+## 5.15.14 - 2026-05-29
 
-- TBD
+### Added
+- Added support for mapping **User** element email field values to field options.
+- Added support for auto-populating **Recipient Email** fields in **User Select** email notifications when option values are mapped to email addresses from an element.
+- Added a link to edit global email notification templates from the form builder when user permissions and the `allowFileTemplateEdit` setting allow it.
+- Added the ability to restore soft-deleted spam submissions.
+
+### Changed
+- Made various visual improvements to **Template Manager** settings.
+- Made various performance improvements throughout the Control Panel and email notifications.
+- Aligned workspace dependency configuration.
+
+### Fixed
+- Fixed an issue where the notification migration utility could return a 404 error due to an incorrect Control Panel route mapping.
+- Fixed an issue where field values were not site-aware in GraphQL.
+- Fixed an issue where field labels in the **Notifications** and **Rules** tabs of the form builder were not site-aware.
+- Fixed a visual issue with tooltips in the form builder.
+- Replaced the default Guzzle client with Craft's proxy-aware Guzzle client.
+- Removed obsolete Craft 3 compatibility checks.
 
 ## 5.15.13 - 2026-05-18
 

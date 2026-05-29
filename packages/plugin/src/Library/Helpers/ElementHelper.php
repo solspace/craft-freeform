@@ -45,7 +45,30 @@ class ElementHelper
         }
 
         if (\is_object($value)) {
-            return (string) $value;
+            return self::normalizeExtractedValue((string) $value);
+        }
+
+        if (\is_string($value)) {
+            return self::normalizeExtractedValue($value);
+        }
+
+        return $value;
+    }
+
+    private static function normalizeExtractedValue(string $value): string
+    {
+        $value = trim($value);
+
+        if (str_starts_with(strtolower($value), 'mailto:')) {
+            $email = substr($value, 7);
+
+            if (str_contains($email, '?')) {
+                $email = strtok($email, '?');
+            }
+
+            if (filter_var($email, \FILTER_VALIDATE_EMAIL)) {
+                return $email;
+            }
         }
 
         return $value;

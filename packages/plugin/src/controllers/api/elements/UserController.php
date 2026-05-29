@@ -46,6 +46,7 @@ class UserController extends BaseApiController
             ->add('firstName', 'First name')
             ->add('lastName', 'Last name')
             ->add('username', 'Username')
+            ->add('email', 'Email')
         ;
 
         if (isset($_GET['order'])) {

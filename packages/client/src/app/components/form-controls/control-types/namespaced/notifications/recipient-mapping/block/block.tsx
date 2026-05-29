@@ -17,6 +17,9 @@ type Props = {
   onRemove?: () => void;
 };
 
+const isEmail = (value: string): boolean =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
 export const RecipientMappingBlock: React.FC<Props> = ({
   predefined,
   mapping,
@@ -25,6 +28,7 @@ export const RecipientMappingBlock: React.FC<Props> = ({
   onRemove,
 }) => {
   const { value, template, recipients } = mapping;
+  const defaultValue = isEmail(value) ? value : undefined;
 
   return (
     <BlockWrapper>
@@ -50,6 +54,7 @@ export const RecipientMappingBlock: React.FC<Props> = ({
       <Recipients
         recipients={recipients}
         spanMultiple={!removable}
+        defaultValue={defaultValue}
         onChange={(newValue) => {
           onChange({
             ...mapping,

@@ -6,11 +6,13 @@ use Solspace\Freeform\Records\FormRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $formId
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int        $id
+ * @property int        $formId
+ * @property \DateTime  $dateCreated
+ * @property \DateTime  $dateUpdated
+ * @property string     $uid
+ * @property RuleRecord $rule
+ * @property FormRecord $form
  */
 class SubmitFormRuleRecord extends RuleRecord
 {
@@ -29,7 +31,7 @@ class SubmitFormRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormRecord::TABLE.' ff', '[[fr.formId]] = [[ff.id]]')
             ->where(['ff.id' => $formId])
-            ->with('rule', 'conditions', 'form')
+            ->with('rule.conditions.field', 'form')
             ->indexBy('id')
             ->one()
         ;

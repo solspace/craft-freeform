@@ -39,13 +39,11 @@ class ThrottleSubmissions extends AbstractCheck
             ->andWhere("{$submissions}.[[dateCreated]] > :date", ['date' => $date])
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
+        $elements = Table::ELEMENTS;
+        $query->innerJoin(
+            $elements,
+            "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+        );
 
         $submissionCount = (int) $query->scalar();
 

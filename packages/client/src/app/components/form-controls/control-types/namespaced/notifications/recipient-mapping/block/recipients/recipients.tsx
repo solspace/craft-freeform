@@ -9,17 +9,24 @@ import { RecipientsWrapper } from "./recipients.styles";
 type Props = {
   recipients: Recipient[];
   spanMultiple?: boolean;
+  defaultValue?: string;
   onChange: (value: Recipient[]) => void;
 };
 
 export const Recipients: React.FC<Props> = ({
   recipients,
   spanMultiple,
+  defaultValue,
   onChange,
 }) => {
+  const value =
+    recipients.length === 0 && defaultValue
+      ? [{ email: defaultValue }]
+      : recipients;
+
   return (
     <RecipientsWrapper className={classes(spanMultiple && "multiple")}>
-      <RecipientsController value={recipients} onChange={onChange} />
+      <RecipientsController value={value} onChange={onChange} />
     </RecipientsWrapper>
   );
 };

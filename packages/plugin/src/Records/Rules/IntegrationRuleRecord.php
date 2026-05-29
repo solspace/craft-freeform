@@ -6,12 +6,14 @@ use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $integrationId
- * @property bool      $push
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int                   $id
+ * @property int                   $integrationId
+ * @property bool                  $push
+ * @property \DateTime             $dateCreated
+ * @property \DateTime             $dateUpdated
+ * @property string                $uid
+ * @property RuleRecord            $rule
+ * @property FormIntegrationRecord $integration
  */
 class IntegrationRuleRecord extends RuleRecord
 {
@@ -34,14 +36,14 @@ class IntegrationRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[ir.id]] = [[r.id]]')
             ->innerJoin(FormIntegrationRecord::TABLE.' fi', '[[ir.integrationId]] = [[fi.id]]')
             ->where(['fi.formId' => $formId])
-            ->with('rule', 'conditions', 'integration')
+            ->with('rule.conditions.field', 'integration')
             ->indexBy('id')
             ->all()
         ;
 
         $indexed = [];
         foreach ($records as $record) {
-            $indexed[$record->getRule()->one()->uid] = $record;
+            $indexed[$record->rule->uid] = $record;
         }
 
         return $indexed;

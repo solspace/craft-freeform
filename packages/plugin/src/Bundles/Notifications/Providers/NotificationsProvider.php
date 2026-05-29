@@ -55,7 +55,7 @@ class NotificationsProvider
             'id' => $id,
         ]);
 
-        return $record ? $this->createNotificationObjects($record) : null;
+        return $record ? $this->createNotificationObjects($record, $form) : null;
     }
 
     public function getByForm(?Form $form = null): array
@@ -64,7 +64,7 @@ class NotificationsProvider
 
         $notifications = [];
         foreach ($records as $record) {
-            $notifications[] = $this->createNotificationObjects($record);
+            $notifications[] = $this->createNotificationObjects($record, $form);
         }
 
         return array_filter($notifications);
@@ -88,13 +88,13 @@ class NotificationsProvider
 
         $notifications = [];
         foreach ($records as $record) {
-            $notifications[] = $this->createNotificationObjects($record);
+            $notifications[] = $this->createNotificationObjects($record, $form);
         }
 
         return array_filter($notifications);
     }
 
-    private function createNotificationObjects(FormNotificationRecord $record): ?NotificationInterface
+    private function createNotificationObjects(FormNotificationRecord $record, ?Form $form = null): ?NotificationInterface
     {
         /** @var NotificationInterface $class */
         $class = $record->class;
@@ -121,7 +121,7 @@ class NotificationsProvider
         $metadata['enabled'] = $record->enabled;
 
         $notification = new $class();
-        $this->propertyProvider->setObjectProperties($notification, $metadata);
+        $this->propertyProvider->setObjectProperties($notification, $metadata, form: $form);
 
         return $notification;
     }

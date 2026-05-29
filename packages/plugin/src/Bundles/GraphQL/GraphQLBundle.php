@@ -54,10 +54,6 @@ class GraphQLBundle extends FeatureBundle
             }
         }
 
-        if (version_compare(\Craft::$app->version, '3.5.0', '<')) {
-            return;
-        }
-
         if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }

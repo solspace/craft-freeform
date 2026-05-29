@@ -126,13 +126,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             )
         ;
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Table::ELEMENTS;
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
+        $elements = Table::ELEMENTS;
+        $query->innerJoin(
+            $elements,
+            "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+        );
 
         return (int) $query->scalar();
     }
@@ -170,13 +168,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $query->andWhere(['<=', "{$submissions}.[[dateCreated]]", Db::prepareDateForDb($rangeEnd)]);
         }
 
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Element::tableName();
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
+        $elements = Element::tableName();
+        $query->innerJoin(
+            $elements,
+            "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+        );
 
         return $query->column();
     }

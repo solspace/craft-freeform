@@ -26,6 +26,12 @@ use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Validation\Contracts\Validatable;
+use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
+use Solspace\Freeform\Bundles\Rules\RuleProvider;
+use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
@@ -69,6 +75,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Notifications\Types\Conditional\NotificationRuleTransformer;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
@@ -80,7 +87,6 @@ use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
-use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\SubmitService;
 use Solspace\Freeform\Services\Form\TranslationsService;
@@ -130,7 +136,6 @@ use yii\web\View;
  * @property FilesService                $files
  * @property FormsService                $forms
  * @property FormGroupsService           $formGroups
- * @property FieldsService               $fields
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
  * @property EmailMarketingService       $emailMarketing
@@ -660,8 +665,6 @@ class Freeform extends Plugin
                 'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'feed' => FreeformFeedService::class,
-                'field' => FieldsService::class,
-                'fields' => FieldsService::class,
                 'files' => FilesService::class,
                 'formLayouts' => LayoutsService::class,
                 'forms' => FormsService::class,
@@ -763,7 +766,7 @@ class Freeform extends Plugin
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
 
-                    if (version_compare(\Craft::$app->version, '5.0.0-alpha', '<')) {
+                    if (version_compare(\Craft::$app->version, '5.0.0', '<')) {
                         \Craft::$app->db->createCommand()->update(
                             '{{%content}}',
                             ['siteId' => $newId],
@@ -858,6 +861,24 @@ class Freeform extends Plugin
                     return new FreeformSerializer();
                 },
             ],
+            'singletons' => [
+                Serializer::class => static fn () => new FreeformSerializer(),
+
+                // Providers with caches
+                FieldProvider::class => FieldProvider::class,
+                PropertyProvider::class => PropertyProvider::class,
+                RuleProvider::class => RuleProvider::class,
+                NotificationTemplateProvider::class => NotificationTemplateProvider::class,
+                NotificationRuleProvider::class => NotificationRuleProvider::class,
+
+                // Transformers
+                NotificationTemplateTransformer::class => NotificationTemplateTransformer::class,
+                NotificationRuleTransformer::class => NotificationRuleTransformer::class,
+
+                // Existing singleton services
+                FormsService::class => FormsService::class,
+                IntegrationsService::class => IntegrationsService::class,
+            ],
         ]);
     }
 
@@ -865,7 +886,7 @@ class Freeform extends Plugin
     {
         BundleLoader::loadBundles(__DIR__.'/Bundles');
         \Craft::$container->setSingleton('craft\services\Sites');
-        \Craft::$container->setSingleton('Solspace\Freeform\Services\Form\FieldsService');
+        \Craft::$container->setSingleton('Solspace\Freeform\Services\FormsService');
         \Craft::$container->setSingleton('Solspace\Freeform\Services\Integrations\IntegrationsService');
     }
 }

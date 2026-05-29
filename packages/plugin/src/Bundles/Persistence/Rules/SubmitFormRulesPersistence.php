@@ -55,7 +55,7 @@ class SubmitFormRulesPersistence extends FeatureBundle
             $rule = new RuleRecord();
             $rule->uid = $payload->uid;
         } else {
-            $rule = $record->getRule()->one();
+            $rule = $record->rule;
         }
 
         $rule->combinator = $payload->combinator;

@@ -22,6 +22,7 @@ type Config = {
   templates: {
     native: boolean;
     canCreate: boolean;
+    allowFileTemplateEdit: boolean;
     toolbar: string;
     method: TemplateMethod;
   };
@@ -61,6 +62,7 @@ type Config = {
   };
   permissions: {
     integrations: Permission;
+    notifications: Permission;
   };
   limitations: {
     items: null | Record<string, boolean | string | string[]>;

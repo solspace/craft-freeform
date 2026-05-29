@@ -68,6 +68,10 @@ class ConditionalNotifications extends NotificationListener
         $postedData = $event->getSubmission()->getFormFieldValues();
 
         foreach ($notifications as $notification) {
+            if (!$this->ruleValidator->isPassing($notification, $form)) {
+                continue;
+            }
+
             $recipients = $notification->getRecipients();
             $template = $notification->getTemplate();
 

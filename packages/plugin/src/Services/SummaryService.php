@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
 use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
@@ -47,6 +48,7 @@ class SummaryService extends Component
         $craft = \Craft::$app;
         $settingsService = Freeform::getInstance()->settings;
         $settingsModel = $settingsService->getSettingsModel();
+        $fieldProvider = \Craft::$container->get(FieldProvider::class);
 
         $craftFields = \Craft::$app->fields->getAllFields();
 
@@ -69,8 +71,8 @@ class SummaryService extends Component
         $totals = new Totals();
         $totals->forms = \count($freeform->forms->getAllFormIds());
         $totals->regularForm = \count($freeform->forms->getAllFormIds(Regular::class));
-        $totals->fields = $freeform->fields->getAllFieldCount();
-        $totals->favoriteFields = $freeform->fields->getFavoriteFieldCount();
+        $totals->fields = $fieldProvider->getAllFieldCount();
+        $totals->favoriteFields = $fieldProvider->getFavoriteFieldCount();
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);
         $totals->errors = $freeform->logger->getLogReader()->count();

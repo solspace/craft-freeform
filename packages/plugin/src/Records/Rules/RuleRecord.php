@@ -6,11 +6,12 @@ use craft\db\ActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property string    $combinator
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int                   $id
+ * @property string                $combinator
+ * @property \DateTime             $dateCreated
+ * @property \DateTime             $dateUpdated
+ * @property string                $uid
+ * @property RuleConditionRecord[] $conditions
  */
 class RuleRecord extends ActiveRecord
 {

@@ -6,12 +6,14 @@ use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int       $id
- * @property int       $notificationId
- * @property bool      $send
- * @property \DateTime $dateCreated
- * @property \DateTime $dateUpdated
- * @property string    $uid
+ * @property int                    $id
+ * @property int                    $notificationId
+ * @property bool                   $send
+ * @property \DateTime              $dateCreated
+ * @property \DateTime              $dateUpdated
+ * @property string                 $uid
+ * @property RuleRecord             $rule
+ * @property FormNotificationRecord $notification
  */
 class NotificationRuleRecord extends RuleRecord
 {
@@ -34,14 +36,14 @@ class NotificationRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[fr.notificationId]] = [[fn.id]]')
             ->where(['fn.formId' => $formId])
-            ->with('rule', 'conditions', 'notification')
+            ->with('rule.conditions.field', 'notification')
             ->indexBy('id')
             ->all()
         ;
 
         $indexed = [];
         foreach ($records as $record) {
-            $indexed[$record->getRule()->one()->uid] = $record;
+            $indexed[$record->rule->uid] = $record;
         }
 
         return $indexed;

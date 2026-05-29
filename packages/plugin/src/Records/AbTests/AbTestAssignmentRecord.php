@@ -6,10 +6,11 @@ use craft\db\ActiveRecord;
 use yii\db\ActiveQuery;
 
 /**
- * @property int $id
- * @property int $userId
- * @property int $abTestId
- * @property int $abVariantId
+ * @property int                 $id
+ * @property int                 $userId
+ * @property int                 $abTestId
+ * @property int                 $abVariantId
+ * @property AbTestVariantRecord $abTestVariant
  */
 class AbTestAssignmentRecord extends ActiveRecord
 {

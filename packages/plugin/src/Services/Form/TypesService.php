@@ -11,18 +11,27 @@ class TypesService extends BaseService
 {
     public const EVENT_REGISTER_FORM_TYPES = 'register-form-types';
 
+    private array $typeCache = [];
+
     /**
      * @return Type[]
      */
     public function getTypes(bool $includeDefault = true): array
     {
-        $event = new RegisterFormTypeEvent();
-        if ($includeDefault) {
-            $event->addType(Regular::class);
+        $key = $includeDefault ? 'default' : 'no-default';
+
+        $isCached = isset($this->typeCache[$key]);
+        if ($isCached === false) {
+            $event = new RegisterFormTypeEvent();
+            if ($includeDefault) {
+                $event->addType(Regular::class);
+            }
+
+            $this->trigger(self::EVENT_REGISTER_FORM_TYPES, $event);
+
+            $this->typeCache[$key] = $event->getTypes();
         }
 
-        $this->trigger(self::EVENT_REGISTER_FORM_TYPES, $event);
-
-        return $event->getTypes();
+        return $this->typeCache[$key];
     }
 }

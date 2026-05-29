@@ -31,6 +31,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
 use Solspace\Freeform\Jobs\FormJobInterface;
+use Solspace\Freeform\Library\Cache\Memo;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -53,9 +54,11 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
-    private array $cacheByUid = [];
-    private array $cacheById = [];
-    private array $cacheByHandle = [];
+    private const PREFIX_ID = 'id';
+    private const PREFIX_UID = 'uid';
+    private const PREFIX_HANDLE = 'handle';
+
+    private Memo $cache;
 
     private ?array $installedIntegrationClassMap = null;
     private ?array $enabledIntegrationTypeMap = null;
@@ -69,6 +72,8 @@ class IntegrationsService extends BaseService
         private IntegrationRuleValidator $integrationRuleValidator,
     ) {
         parent::__construct($config);
+
+        $this->cache = new Memo();
     }
 
     public function isIntegrationInstalled(string $integrationClass): bool
@@ -106,17 +111,18 @@ class IntegrationsService extends BaseService
      */
     public function getAllIntegrationTypes(): array
     {
-        static $types;
+        return $this->cache->getOrSet(
+            'types',
+            static function () {
+                $event = new RegisterIntegrationTypesEvent();
+                Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
 
-        if (null === $types) {
-            $event = new RegisterIntegrationTypesEvent();
-            Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
+                $types = $event->getTypes();
+                usort($types, static fn (Type $a, Type $b) => strcmp($a->name, $b->name));
 
-            $types = $event->getTypes();
-            usort($types, static fn (Type $a, Type $b) => strcmp($a->name, $b->name));
-        }
-
-        return $types;
+                return $types;
+            }
+        );
     }
 
     /**
@@ -124,20 +130,24 @@ class IntegrationsService extends BaseService
      */
     public function getAllServiceProviders(?string $isOfType = null): array
     {
-        static $providers;
-        if (null === $providers) {
-            $types = $this->getIntegrationsService()->getAllIntegrationTypes();
+        $providers = $this->cache->getOrSet(
+            'providers',
+            function () {
+                $types = $this->getIntegrationsService()->getAllIntegrationTypes();
 
-            $providers = [];
-            foreach ($types as $type) {
-                if ($isOfType && $type->type !== $isOfType) {
-                    continue;
+                $providers = [];
+                foreach ($types as $type) {
+                    $type->properties = $this->propertyProvider->getEditableProperties($type->class);
+
+                    $providers[$type->class] = $type;
                 }
 
-                $type->properties = $this->propertyProvider->getEditableProperties($type->class);
-
-                $providers[$type->class] = $type;
+                return $providers;
             }
+        );
+
+        if ($isOfType) {
+            return array_filter($providers, static fn (Type $type) => $type->type === $isOfType);
         }
 
         return $providers;
@@ -149,71 +159,95 @@ class IntegrationsService extends BaseService
     public function getAllIntegrations(?string $type = null): array
     {
         $this->getAllIntegrationTypes();
-        $results = $this->getQuery($type)->all();
 
-        $models = [];
-        foreach ($results as $result) {
-            $model = $this->createIntegrationModel($result);
+        $integrations = $this->cache->getOrSet(
+            'all',
+            function () {
+                $results = $this->getQuery()->all();
 
-            try {
-                $model->getIntegrationObject();
-                $models[] = $model;
-            } catch (IntegrationNotFoundException $e) {
+                $models = [];
+                foreach ($results as $result) {
+                    $model = $this->createIntegrationModel($result);
+
+                    try {
+                        $model->getIntegrationObject();
+                        $models[] = $model;
+                    } catch (IntegrationNotFoundException $e) {
+                    }
+                }
+
+                return $models;
             }
+        );
+
+        if ($type) {
+            return array_filter($integrations, static fn (IntegrationModel $model) => $model->type === $type);
         }
 
-        return $models;
+        return $integrations;
     }
 
     public function getById(int $id): ?IntegrationModel
     {
-        if (!empty($this->cacheById[$id])) {
-            return $this->cacheById[$id];
-        }
+        return $this->cache->getOrSet(
+            $id,
+            function () use ($id) {
+                $integrations = $this->getAllIntegrations();
 
-        $result = $this->getQuery()->where(['id' => $id])->one();
-        if (!$result) {
-            return null;
-        }
+                foreach ($integrations as $integration) {
+                    if ($integration->id === $id) {
+                        $this->cacheIntegrationModel($integration);
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
+                        return $integration;
+                    }
+                }
 
-        return $model;
+                return null;
+            },
+            self::PREFIX_ID,
+        );
     }
 
     public function getByUid(string $uid): ?IntegrationModel
     {
-        if (!empty($this->cacheByUid[$uid])) {
-            return $this->cacheByUid[$uid];
-        }
+        return $this->cache->getOrSet(
+            $uid,
+            function () use ($uid) {
+                $integrations = $this->getAllIntegrations();
 
-        $result = $this->getQuery()->where(['uid' => $uid])->one();
-        if (!$result) {
-            return null;
-        }
+                foreach ($integrations as $integration) {
+                    if ($integration->uid === $uid) {
+                        $this->cacheIntegrationModel($integration);
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
+                        return $integration;
+                    }
+                }
 
-        return $model;
+                return null;
+            },
+            self::PREFIX_UID,
+        );
     }
 
     public function getByHandle(string $handle): ?IntegrationModel
     {
-        if (!empty($this->cacheByHandle[$handle])) {
-            return $this->cacheByHandle[$handle];
-        }
+        return $this->cache->getOrSet(
+            $handle,
+            function () use ($handle) {
+                $integrations = $this->getAllIntegrations();
 
-        $result = $this->getQuery()->where(['handle' => $handle])->one();
-        if (!$result) {
-            return null;
-        }
+                foreach ($integrations as $integration) {
+                    if ($integration->handle === $handle) {
+                        $this->cacheIntegrationModel($integration);
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
+                        return $integration;
+                    }
+                }
 
-        return $model;
+                return null;
+            },
+            self::PREFIX_HANDLE,
+        );
     }
 
     public function getIntegrationObjectById(int $id): IntegrationInterface
@@ -727,16 +761,14 @@ class IntegrationsService extends BaseService
 
     private function cacheIntegrationModel(IntegrationModel $model): void
     {
-        $this->cacheById[$model->id] = $model;
-        $this->cacheByUid[$model->uid] = $model;
-        $this->cacheByHandle[$model->handle] = $model;
+        $this->cache->set($model->id, $model, self::PREFIX_ID);
+        $this->cache->set($model->uid, $model, self::PREFIX_UID);
+        $this->cache->set($model->handle, $model, self::PREFIX_HANDLE);
     }
 
     private function clearIntegrationModelCache(): void
     {
-        $this->cacheById = [];
-        $this->cacheByUid = [];
-        $this->cacheByHandle = [];
+        $this->cache->clear();
     }
 
     private function getCacheKey(?Form $form, ?string $type, ?bool $enabled, ?callable $filter = null): string

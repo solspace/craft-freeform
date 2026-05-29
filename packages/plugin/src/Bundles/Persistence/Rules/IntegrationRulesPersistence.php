@@ -50,7 +50,7 @@ class IntegrationRulesPersistence extends FeatureBundle
 
             if (isset($existingRules[$data->uid])) {
                 $record = $existingRules[$data->uid];
-                $rule = $record->getRule()->one();
+                $rule = $record->rule;
             } else {
                 $rule = new RuleRecord();
                 $rule->uid = $data->uid;

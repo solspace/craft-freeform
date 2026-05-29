@@ -114,9 +114,7 @@ class FormFieldType extends Field
             'resolve' => FormResolver::class.'::resolveOne',
         ];
 
-        if (version_compare(\Craft::$app->getVersion(), '3.6', '>=')) {
-            $gqlType['complexity'] = GqlHelper::relatedArgumentComplexity(GqlService::GRAPHQL_COMPLEXITY_EAGER_LOAD);
-        }
+        $gqlType['complexity'] = GqlHelper::relatedArgumentComplexity(GqlService::GRAPHQL_COMPLEXITY_EAGER_LOAD);
 
         return $gqlType;
     }

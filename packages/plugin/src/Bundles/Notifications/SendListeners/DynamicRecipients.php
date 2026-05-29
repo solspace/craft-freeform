@@ -18,6 +18,8 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use yii\base\Event;
 
@@ -71,6 +73,12 @@ class DynamicRecipients extends NotificationListener
                 if ($mapping) {
                     $template = $mapping->getTemplate() ?? $template;
                     $recipients = $mapping->getRecipients()->count() ? $mapping->getRecipients() : $recipients;
+                }
+
+                if (!$recipients->count() && filter_var($selectedValue, \FILTER_VALIDATE_EMAIL)) {
+                    $valueRecipients = new RecipientCollection();
+                    $valueRecipients->add(new Recipient($selectedValue));
+                    $recipients = $valueRecipients;
                 }
 
                 [$recipients, $template] = $this->getProcessedRecipientsAndTemplate(

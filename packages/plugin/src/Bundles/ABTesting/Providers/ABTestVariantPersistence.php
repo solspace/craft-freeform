@@ -10,8 +10,7 @@ class ABTestVariantPersistence
 {
     public function persistVariation(AbTestVariantRecord $record): bool
     {
-        /** @var AbTestRecord $test */
-        $test = $record->getAbTest()->one();
+        $test = $record->abTest;
 
         $this->persistCookie($test, $record);
         $this->persistUserAssignment($test, $record);
@@ -29,10 +28,7 @@ class ABTestVariantPersistence
             ]);
 
             if ($assignment) {
-                /** @var AbTestVariantRecord $variation */
-                $variation = $assignment->getAbTestVariant()->one();
-
-                return $variation;
+                return $assignment->abTestVariant;
             }
         }
 
@@ -62,16 +58,18 @@ class ABTestVariantPersistence
         $name = $this->getCookieName($test);
         $value = $variant->uid;
 
+        $generalConfig = \Craft::$app->getConfig()->getGeneral();
+
         setcookie(
             $name,
             $value,
             [
                 'expires' => (int) strtotime('+1 year'),
                 'path' => '/',
-                'domain' => \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
+                'domain' => $generalConfig->defaultCookieDomain,
                 'secure' => true,
                 'httponly' => true,
-                'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
+                'samesite' => $generalConfig->sameSiteCookieValue ?? 'Lax',
             ]
         );
     }

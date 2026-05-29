@@ -24,7 +24,7 @@ class IntegrationRuleProvider
         $rules = $this->getAllIntegrations();
         $rules = array_filter(
             $rules,
-            static fn (IntegrationRuleRecord $record) => $record->getIntegration()->one()->formId === $form->getId()
+            static fn (IntegrationRuleRecord $record) => $record->integration->formId === $form->getId()
         );
 
         $integrationRules = [];
@@ -48,18 +48,19 @@ class IntegrationRuleProvider
     private function getAllIntegrations(): array
     {
         if (null === $this->cache) {
+            /** @var IntegrationRuleRecord[] $items */
             $items = IntegrationRuleRecord::find()
                 ->select(['ir.*'])
                 ->from(IntegrationRuleRecord::TABLE.' ir')
                 ->innerJoin(RuleRecord::TABLE.' r', '[[ir.id]] = [[r.id]]')
                 ->innerJoin(FormIntegrationRecord::TABLE.' fi', '[[ir.integrationId]] = [[fi.id]]')
-                ->with('rule', 'conditions', 'integration')
+                ->with('rule.conditions.field', 'integration')
                 ->all()
             ;
 
             $this->cache = [];
             foreach ($items as $item) {
-                $this->cache[$item->getRule()->one()->uid] = $item;
+                $this->cache[$item->rule->uid] = $item;
             }
         }
 
@@ -69,8 +70,8 @@ class IntegrationRuleProvider
     private function createRuleFromRecord(IntegrationRuleRecord $record): IntegrationRule
     {
         $conditions = new ConditionCollection();
-        foreach ($record->getConditions()->all() as $conditionRecord) {
-            $field = $this->fieldTransformer->transform($conditionRecord->getField()->one()?->uid);
+        foreach ($record->conditions as $conditionRecord) {
+            $field = $this->fieldTransformer->transform($conditionRecord->field?->uid);
             if (!$field) {
                 continue;
             }
@@ -85,7 +86,7 @@ class IntegrationRuleProvider
             $conditions->add($condition);
         }
 
-        $ruleRecord = $record->getRule()->one();
+        $ruleRecord = $record->rule;
 
         $rule = new IntegrationRule(
             $ruleRecord->id,

@@ -390,9 +390,7 @@ class SettingsService extends BaseService
 
     public function isAllowAdminEdit(): bool
     {
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            return \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-        }
+        return \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
 
         return true;
     }

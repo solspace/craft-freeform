@@ -71,7 +71,7 @@ class NotificationTemplateProvider
         if (is_numeric($id)) {
             return $this->templateCache->getOrSet(
                 $id,
-                static fn () => $this->getDatabaseNotificationTemplate((int) $id),
+                fn () => $this->getDatabaseNotificationTemplate((int) $id),
                 'db',
             );
         }

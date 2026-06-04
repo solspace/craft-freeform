@@ -15,7 +15,12 @@ Maps data to the following endpoints:
 Maps data to the following field types:
 
 - **Standard**
-- Most **Custom** fields
+- **Custom** fields:
+  - Text, Dropdown, Paragraph
+  - Decimal, Number
+  - Date
+  - Checkbox
+  - Dependent fields
 
 ## Duplicate Check & Update
 

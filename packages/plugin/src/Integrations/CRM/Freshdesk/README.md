@@ -20,7 +20,7 @@ Maps data to the following field types:
   - Decimal, Number
   - Date
   - Checkbox
-  - Nested/Dependent fields
+  - Dependent fields
 
 ## Duplicate Check & Update
 

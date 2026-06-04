@@ -34,7 +34,7 @@ class CsrfInput extends FeatureBundle
         }
 
         if ($isAsyncCSRFEnabled) {
-            $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
+            $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_ONCE;
             if (Settings::CSRF_REFRESH_NONE !== $refresh) {
                 return;
             }
@@ -62,7 +62,7 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
-        $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
+        $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_ONCE;
 
         $attributes->set('data-csrf-refresh', $refresh);
     }

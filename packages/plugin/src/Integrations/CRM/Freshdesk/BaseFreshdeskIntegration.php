@@ -147,6 +147,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
         $fieldList[] = new FieldObject('group_id', 'Group ID', FieldObject::TYPE_NUMERIC, $category, false);
         $fieldList[] = new FieldObject('product_id', 'Product ID', FieldObject::TYPE_NUMERIC, $category, false);
         $fieldList[] = new FieldObject('source', 'Source', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('source_info', 'Source Info', FieldObject::TYPE_STRING, $category, false);
         $fieldList[] = new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, $category, false);
         $fieldList[] = new FieldObject('company_id', 'Company ID', FieldObject::TYPE_NUMERIC, $category, false);
 
@@ -156,7 +157,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
             }
 
             $type = match ($field->type) {
-                'custom_text', 'custom_dropdown', 'custom_paragraph' => FieldObject::TYPE_STRING,
+                'custom_text', 'custom_dropdown', 'custom_paragraph', 'nested_field' => FieldObject::TYPE_STRING,
                 'custom_decimal', 'custom_number' => FieldObject::TYPE_NUMERIC,
                 'custom_date' => FieldObject::TYPE_DATETIME,
                 'custom_checkbox' => FieldObject::TYPE_BOOLEAN,
@@ -174,6 +175,18 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
                 $category,
                 $field->required_for_customers,
             );
+
+            if ('nested_field' === $field->type && isset($field->dependent_fields)) {
+                foreach ($field->dependent_fields as $dependentField) {
+                    $fieldList[] = new FieldObject(
+                        $dependentField->name,
+                        $dependentField->label,
+                        FieldObject::TYPE_STRING,
+                        $category,
+                        false,
+                    );
+                }
+            }
         }
 
         return $fieldList;

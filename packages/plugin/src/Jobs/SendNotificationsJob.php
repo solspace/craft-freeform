@@ -41,6 +41,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
     public array $headers = [];
     public ?string $notificationType;
     public ?int $notificationId = null;
+    public ?string $submissionIp = null;
 
     public function __construct($config = [])
     {
@@ -143,7 +144,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         $submission->incrementalId = 0;
         $submission->uid = StringHelper::UUID();
         $submission->siteId = $this->siteId;
-        $submission->ip = \Craft::$app->getRequest()->getUserIP();
+        $submission->ip = $this->submissionIp;
         $submission->statusId = $form->getSettings()->getGeneral()->defaultStatus;
         $submission->dateCreated = new \DateTime();
         $submission->title = Submission::generateTitle($submission, $form);

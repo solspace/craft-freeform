@@ -259,6 +259,7 @@ return [
     'Enter the amount you want to charge for this payment.' => 'Geben Sie den Betrag ein, den Sie für diese Zahlung berechnen möchten.',
     'Payment Amount Field' => 'Zahlungsbetragsfeld',
     'Select a Number field which will determine the payment amount.' => 'Wählen Sie ein Zahlenfeld aus, das den Zahlungsbetrag bestimmt.',
+    'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.' => 'Wählen Sie ein Zahlenfeld aus, das den Zahlungsbetrag bestimmt. Der Mindestbetrag beträgt 0,50 US-Dollar oder den entsprechenden Gegenwert in Ihrer Währung.',
     'Payment Currency' => 'Zahlungswährung',
     'Subscription Product Name' => 'Name des Abonnementprodukts',
     'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.' => 'Geben Sie den Namen des Produkts ein, für das Sie sich anmelden möchten. Sie können die Objekte `form` und `integration` in Twig verwenden.',

@@ -259,6 +259,7 @@ return [
     'Enter the amount you want to charge for this payment.' => 'Inserisci l’importo da addebitare per questo pagamento.',
     'Payment Amount Field' => 'Campo importo del pagamento',
     'Select a Number field which will determine the payment amount.' => 'Seleziona un campo numerico che determinerà l’importo del pagamento.',
+    'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.' => 'Seleziona un campo numerico che determinerà l’importo del pagamento. L’importo minimo è di 0,50 dollari USA o l’equivalente nella valuta di pagamento.',
     'Payment Currency' => 'Valuta del pagamento',
     'Subscription Product Name' => 'Nome del prodotto in abbonamento',
     'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.' => 'Inserisci il nome del prodotto a cui abbonarsi. Puoi usare gli oggetti `form` e `integration` in Twig.',

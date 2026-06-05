@@ -61,8 +61,20 @@ if (!window.freeform?.captchas) {
 const loadScript: ScriptLoader = (url) => {
   return new Promise<void>((resolve, reject) => {
     const id = String(url);
-    if (document.getElementById(id)) {
-      return resolve();
+
+    const existing = document.getElementById(id) as HTMLScriptElement | null;
+    if (existing) {
+      // Another form render already created this script tag. We need to resolve asap but only if it has actually finished loading otherwise we need to wait for its load event.
+      if (existing.dataset.loaded === "true") {
+        return resolve();
+      }
+
+      existing.addEventListener("load", () => resolve());
+      existing.addEventListener("error", () =>
+        reject(new Error(`Error loading script ${url}`)),
+      );
+
+      return;
     }
 
     const script = document.createElement("script");
@@ -95,7 +107,11 @@ const loadScript: ScriptLoader = (url) => {
     script.async = true;
     script.defer = true;
     script.id = id;
-    script.addEventListener("load", () => resolve());
+    script.addEventListener("load", () => {
+      script.dataset.loaded = "true";
+
+      resolve();
+    });
     script.addEventListener("error", () =>
       reject(new Error(`Error loading script ${url}`)),
     );
@@ -122,37 +138,50 @@ export const loadCaptchaScript = (
   const isLazy = lazyLoad && !forceLoad;
   const loaderHash = `${type}-${version}`;
 
-  let promise: Promise<void>;
+  // The shared promise will call loadScript on page load. Every form of this type reuses the same promise and trigger.
+  let sharedPromise: Promise<void>;
   if (!loaderPromises.has(loaderHash)) {
-    promise = new Promise<void>((resolve, reject) => {
-      const handleChange = () => {
+    sharedPromise = new Promise<void>((resolve, reject) => {
+      const triggerLoadScript = () => {
         loadScript(url).then(resolve).catch(reject);
       };
 
-      // Store versioned lazy loader
-      loaders.set(loaderHash, handleChange);
+      loaders.set(loaderHash, triggerLoadScript);
     });
 
-    loaderPromises.set(loaderHash, promise);
+    loaderPromises.set(loaderHash, sharedPromise);
   } else {
-    promise = loaderPromises.get(loaderHash);
+    sharedPromise = loaderPromises.get(loaderHash);
   }
 
-  const versionedLazyLoader = loaders.get(loaderHash);
+  const triggerLoadScript = loaders.get(loaderHash);
+
   if (isLazy) {
-    if (!listeners.has(form)) {
-      addListeners(form, ["input"], versionedLazyLoader, {
-        once: true,
-      });
+    // The lazy promise will not call loadScript on page load. It only renders when the user interacts with the form.
+    return new Promise<void>((resolve, reject) => {
+      if (listeners.has(form)) {
+        return;
+      }
+
+      addListeners(
+        form,
+        ["input"],
+        () => {
+          triggerLoadScript();
+
+          sharedPromise.then(resolve).catch(reject);
+        },
+        { once: true },
+      );
 
       // Prevent adding listeners multiple times to this form
       listeners.add(form);
-    }
-  } else {
-    versionedLazyLoader();
+    });
   }
 
-  return promise;
+  triggerLoadScript();
+
+  return sharedPromise;
 };
 
 export const getCaptchaContainer = (

@@ -177,7 +177,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface, SkipGi
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Payment Amount Field',
-        instructions: 'Select a Number field which will determine the payment amount.',
+        instructions: 'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.',
         emptyOption: 'No field selected',
         implements: [
             NumericInterface::class,

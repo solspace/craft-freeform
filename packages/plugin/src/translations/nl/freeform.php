@@ -259,6 +259,7 @@ return [
     'Enter the amount you want to charge for this payment.' => 'Vul het bedrag in dat u voor deze betaling in rekening wilt brengen.',
     'Payment Amount Field' => 'Betalingsbedragveld',
     'Select a Number field which will determine the payment amount.' => 'Selecteer een nummerveld dat het betalingsbedrag bepaalt.',
+    'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.' => 'Selecteer een nummerveld dat het betalingsbedrag bepaalt. Het minimumbedrag is $0,50 USD of het equivalent in de betaalvaluta.',
     'Payment Currency' => 'Betalingsvaluta',
     'Subscription Product Name' => 'Productnaam abonnement',
     'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.' => 'Vul de naam in van het product waarop u zich wilt abonneren. U kunt de `form`- en `integration`-objecten in twig gebruiken.',

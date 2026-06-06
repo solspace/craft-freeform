@@ -259,6 +259,7 @@ return [
     'Enter the amount you want to charge for this payment.' => 'Enter the amount you want to charge for this payment.',
     'Payment Amount Field' => 'Payment Amount Field',
     'Select a Number field which will determine the payment amount.' => 'Select a Number field which will determine the payment amount.',
+    'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.' => 'Select a Number field which will determine the payment amount. The minimum amount is $0.50 US or equivalent in Payment Currency.',
     'Payment Currency' => 'Payment Currency',
     'Subscription Product Name' => 'Subscription Product Name',
     'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.' => 'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.',

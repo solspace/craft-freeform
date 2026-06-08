@@ -26,7 +26,6 @@ export const SettingsSidebar: React.FC = () => {
   const navigate = useNavigate();
   const { setLastTab } = useLastTab("settings");
   const { sectionHandle } = useParams();
-  const isCraft5 = config.metadata.craft.is5;
 
   const formErrors = useSelector(formSelectors.errors);
 
@@ -76,21 +75,18 @@ export const SettingsSidebar: React.FC = () => {
               </SectionLink>
             )),
         )}
-
-        {isCraft5 && (
-          <SectionLink
-            onClick={() => {
-              setLastTab(TAB_USAGE);
-              navigate(TAB_USAGE);
-            }}
-            className={classes(sectionHandle === TAB_USAGE && "active")}
-          >
-            <SectionIcon>
-              <NewsIcon />
-            </SectionIcon>
-            {translate("Usage in Elements")}
-          </SectionLink>
-        )}
+        <SectionLink
+          onClick={() => {
+            setLastTab(TAB_USAGE);
+            navigate(TAB_USAGE);
+          }}
+          className={classes(sectionHandle === TAB_USAGE && "active")}
+        >
+          <SectionIcon>
+            <NewsIcon />
+          </SectionIcon>
+          {translate("Usage in Elements")}
+        </SectionLink>
       </SectionWrapper>
       <SettingsOwnership />
     </Sidebar>

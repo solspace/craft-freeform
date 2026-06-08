@@ -10,7 +10,7 @@ use yii\base\Event;
 
 class RoutingBundle extends FeatureBundle
 {
-    public function __construct(private Finder $finder)
+    public function __construct()
     {
         Event::on(
             UrlManager::class,
@@ -27,15 +27,16 @@ class RoutingBundle extends FeatureBundle
 
     private function registerRoutesIn(string $directory, RegisterUrlRulesEvent $event): void
     {
-        $routeFiles = $this->finder
+        $routeFiles = (new Finder())
             ->files()
             ->ignoreDotFiles(true)
             ->name('*.php')
             ->in($directory)
+            ->sortByName()
         ;
 
         foreach ($routeFiles as $file) {
-            $routes = include $file;
+            $routes = include $file->getRealPath();
             $event->rules = array_merge($event->rules, $routes);
         }
     }

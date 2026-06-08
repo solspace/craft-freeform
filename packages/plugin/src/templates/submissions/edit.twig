@@ -8,7 +8,7 @@
 {% set fullPageForm = fullPageForm|default(true) %}
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
-{% if isCraft5 and selectableSites|default([])|length %}
+{% if selectableSites|default([])|length %}
   {% set rootCrumb = {
     label: selectedSite.name,
     url: url('freeform'),
@@ -29,12 +29,6 @@
   { label: form.name, url: url('freeform/forms/' ~ form.id) },
   { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ]) %}
-
-{% if not isCraft5 and showSiteLabel|default(false) %}
-  {% set contextMenu %}
-    {% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
-  {% endset %}
-{% endif %}
 
 {% block actionButton %}
   <div class="btngroup submit">
@@ -76,10 +70,6 @@
 {% endblock %}
 
 {% block content %}
-
-  {% js %}
-    window.isCraft5 = {{ isCraft5 is defined and isCraft5 ? 'true' : 'false' }};
-  {% endjs %}
 
   <input type="hidden" name="action" value="{{ actionUrl }}">
   <input type="hidden" name="submissionId" value="{{ submission.id }}">

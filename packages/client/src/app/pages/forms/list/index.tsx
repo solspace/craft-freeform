@@ -37,7 +37,6 @@ export const ListProvider: React.FC = () => {
   const { data: aiIntegrations } = useAiIntegrations();
 
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
-  const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
   const canViewIntegrations = config.permissions.integrations !== "none";
   const showAiButtons = canViewIntegrations;
@@ -72,7 +71,7 @@ export const ListProvider: React.FC = () => {
           <button
             type="button"
             className={classes("btn", View.Grid === view && "active")}
-            data-icon={classes(isCraft5 ? "element-cards" : "grid")}
+            data-icon={classes("element-cards")}
             title={translate("Display as cards")}
             onClick={() => setView(View.Grid)}
           />

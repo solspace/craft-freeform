@@ -3,7 +3,6 @@ import { EmptyBlock } from "@components/empty-block/empty-block";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { Link } from "react-router-dom";
@@ -20,7 +19,6 @@ export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
   const mutation = useLimitedUsersDeleteMutation();
   const isPro = config.editions.isAtLeast(Edition.Pro);
-  const isCraft5 = config.metadata.craft.is5;
 
   useSidebarSelect("freeform/settings");
 
@@ -56,10 +54,7 @@ export const LimitedUsers: React.FC = () => {
 
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar activeKey="limited-users" />
-        <ContentContainer
-          id="content-container"
-          className={classes(!isCraft5 && "craft-4")}
-        >
+        <ContentContainer id="content-container">
           <div id="content" className="content-pane">
             {isPro && (
               <div className="tablepane">

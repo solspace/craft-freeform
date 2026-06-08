@@ -1,6 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { EmptyBlock } from "@components/empty-block/empty-block";
-import config from "@config/freeform/freeform.config";
 import { useQueryFormUsage } from "@ff-client/queries/forms";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
@@ -13,11 +12,6 @@ import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 export const FormUsage: React.FC = () => {
   const { data, isFetching } = useQueryFormUsage();
   const currentPath = useResolvedPath("");
-  const isCraft5 = config.metadata.craft.is5;
-
-  if (!isCraft5) {
-    return null;
-  }
 
   return (
     <FormSettingsContainer>

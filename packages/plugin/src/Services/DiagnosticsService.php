@@ -40,9 +40,9 @@ class DiagnosticsService extends BaseService
     {
         $trueOrFalse = static function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
-        $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.11.0';
-        $minPhpVersion = '8.0.2';
+        $minCraftVersion = '6.0.0-alpha.1';
+        $maxCraftVersion = '6.1.0';
+        $minPhpVersion = '8.5.0';
         $maxPhpVersion = '8.5.99';
         $latestVersion = $this->getLatestFreeformVersion();
         $hasUpdate = version_compare($this->getLatestFreeformVersion(), Freeform::getInstance()->version, '>');
@@ -235,17 +235,6 @@ class DiagnosticsService extends BaseService
                 '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Output Buffering').': <b>{{ value }}</b></span>',
                 \ini_get('output_buffering'),
                 []
-            ),
-            new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('PHP Sessions').'</span>',
-                \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
-                [
-                    new WarningValidator(
-                        $trueOrFalse,
-                        'Potential issue with PHP Sessions',
-                        'Tested server environment for a valid PHP session and it failed.'
-                    ),
-                ]
             ),
             new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('BC Math extension').'</span>',
@@ -880,22 +869,30 @@ class DiagnosticsService extends BaseService
 
     private function getLatestFreeformVersion(): ?string
     {
-        $updates = \Craft::$app->updates->getUpdates();
-        $freeform = $updates->plugins['freeform'];
-        $latestVersion = null;
-
         try {
-            $releases = $freeform->releases;
-            foreach ($releases as $release) {
+            if (!method_exists(\Craft::$app, 'getUpdates')) {
+                return null;
+            }
+
+            $updates = \Craft::$app->getUpdates()->getUpdates();
+            $freeform = $updates->plugins['freeform'] ?? null;
+
+            if (!$freeform) {
+                return null;
+            }
+
+            $latestVersion = null;
+
+            foreach ($freeform->releases ?? [] as $release) {
                 if (!$latestVersion || version_compare($latestVersion, $release->version, '<')) {
                     $latestVersion = $release->version;
                 }
             }
-        } catch (\Exception) {
+
+            return $latestVersion;
+        } catch (\Throwable) {
             return null;
         }
-
-        return $latestVersion;
     }
 
     private static function convertBytesToMB(int|string $size): float

@@ -167,7 +167,5 @@ $(() => {
     });
   });
 
-  if (window.isCraft5) {
-    updateActionButtons();
-  }
+  updateActionButtons();
 });

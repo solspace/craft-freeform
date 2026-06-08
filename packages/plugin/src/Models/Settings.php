@@ -199,7 +199,7 @@ class Settings extends Model
     public string $useQueueForIntegrations = 'false';
     public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
-    public string $csrfRefresh = self::CSRF_REFRESH_NONE;
+    public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
     public string $useIdempotencyKey = 'false';
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;

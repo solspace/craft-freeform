@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.15.15 - 2026-06-05
+
+### Changed
+- Added a default minimum value for dynamic amount fields in **Stripe** forms to prevent the Stripe field from failing to load.
+- Updated the **CSRF Token Refresh Method** setting to default to _Once Per Page View_ when Craft's **Async CSRF Inputs** setting is enabled.
+
+### Fixed
+- Fixed an issue where field references could fail to resolve during form field hydration if the referenced field appeared later in the form layout. This could affect Stripe forms using dynamic amount fields.
+- Fixed an issue where the CAPTCHA script loader could fail to render when multiple forms appeared on the same page.
+- Fixed an issue where queued notifications did not work when submission data was not being stored for a form and notifications were triggered via CLI.
+- Fixed an issue where dependent/nested field types were not recognized by the **Freshdesk** integration.
+
 ## 5.15.14 - 2026-05-29
 
 ### Added

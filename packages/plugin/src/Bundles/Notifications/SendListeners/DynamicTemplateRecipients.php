@@ -65,12 +65,14 @@ class DynamicTemplateRecipients extends FeatureBundle
 
         $notificationTemplate = NotificationTemplate::fromRecord($notification);
 
-        $postedData = $event->getSubmission()->getFormFieldValues();
+        $submission = $event->getSubmission();
+        $postedData = $submission->getFormFieldValues();
 
         $this->queueHandler->executeNotificationJob(
             new SendNotificationsJob([
                 'formId' => $form->getId(),
-                'submissionId' => $event->getSubmission()->id,
+                'submissionId' => $submission->id,
+                'submissionIp' => $submission->ip,
                 'siteId' => $event->getSiteId(),
                 'postedData' => $postedData,
                 'recipients' => $recipientCollection,

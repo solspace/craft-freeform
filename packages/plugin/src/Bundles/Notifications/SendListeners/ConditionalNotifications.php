@@ -65,7 +65,8 @@ class ConditionalNotifications extends NotificationListener
             return;
         }
 
-        $postedData = $event->getSubmission()->getFormFieldValues();
+        $submission = $event->getSubmission();
+        $postedData = $submission->getFormFieldValues();
 
         foreach ($notifications as $notification) {
             if (!$this->ruleValidator->isPassing($notification, $form)) {
@@ -89,7 +90,8 @@ class ConditionalNotifications extends NotificationListener
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
-                    'submissionId' => $event->getSubmission()->id,
+                    'submissionId' => $submission->id,
+                    'submissionIp' => $submission->ip,
                     'siteId' => $event->getSiteId(),
                     'postedData' => $postedData,
                     'recipients' => $recipients,

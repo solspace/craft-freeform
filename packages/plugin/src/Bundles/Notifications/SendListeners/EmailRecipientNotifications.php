@@ -50,7 +50,8 @@ class EmailRecipientNotifications extends NotificationListener
             return;
         }
 
-        $postedData = $event->getSubmission()->getFormFieldValues();
+        $submission = $event->getSubmission();
+        $postedData = $submission->getFormFieldValues();
 
         foreach ($notifications as $notification) {
             $field = $form->get($notification->getField());
@@ -83,7 +84,8 @@ class EmailRecipientNotifications extends NotificationListener
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
-                    'submissionId' => $event->getSubmission()->id,
+                    'submissionId' => $submission->id,
+                    'submissionIp' => $submission->ip,
                     'siteId' => $event->getSiteId(),
                     'postedData' => $postedData,
                     'recipients' => $recipientCollection,

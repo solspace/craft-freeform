@@ -24,11 +24,6 @@ class SectionHelper
 
     private static function getService(): mixed
     {
-        $isCraft5 = version_compare(\Craft::$app->version, '5.0', '>=');
-        if ($isCraft5) {
-            return \Craft::$app->getEntries();
-        }
-
-        return \Craft::$app->getSections();
+        return \Craft::$app->getEntries();
     }
 }

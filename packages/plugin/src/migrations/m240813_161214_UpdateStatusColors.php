@@ -12,11 +12,6 @@ class m240813_161214_UpdateStatusColors extends Migration
 {
     public function safeUp(): bool
     {
-        $isCraft4 = version_compare(\Craft::$app->getVersion(), '5', '<');
-        if ($isCraft4) {
-            return true;
-        }
-
         $results = (new Query())
             ->select(['color'])
             ->from('{{%freeform_statuses}}')
@@ -28,7 +23,7 @@ class m240813_161214_UpdateStatusColors extends Migration
             if ('light' === $color || 'grey' === $color || 'turquoise' === $color) {
                 $this->update(
                     '{{%freeform_statuses}}',
-                    ['color' => 'grey'],
+                    ['color' => 'gray'],
                     ['id' => $id],
                     [],
                     false

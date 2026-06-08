@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 6.0.0-beta.1 - 2026-06-08
+
+### Added
+- Added compatibility for Craft 6.x.
+
 ## 5.15.15 - 2026-06-05
 
 ### Changed

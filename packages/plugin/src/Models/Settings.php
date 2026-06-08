@@ -13,9 +13,9 @@
 
 namespace Solspace\Freeform\Models;
 
+use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
-use CraftCms\Cms\Shared\BaseModel;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -24,7 +24,7 @@ use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class Settings extends BaseModel
+class Settings extends Model
 {
     public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
@@ -199,7 +199,7 @@ class Settings extends BaseModel
     public string $useQueueForIntegrations = 'false';
     public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
-    public string $csrfRefresh = self::CSRF_REFRESH_NONE;
+    public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
     public string $useIdempotencyKey = 'false';
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;

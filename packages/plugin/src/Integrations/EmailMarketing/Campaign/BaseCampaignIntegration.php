@@ -94,15 +94,9 @@ abstract class BaseCampaignIntegration extends EmailMarketingIntegration impleme
 
     public function fetchLists(Client $client): array
     {
-        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
-
         $orderBy = ['elements_sites.slug' => 'ASC'];
 
-        if ($isCraft5) {
-            $orderBy['elements_sites.title'] = 'ASC';
-        } else {
-            $orderBy['content.title'] = 'ASC';
-        }
+        $orderBy['elements_sites.title'] = 'ASC';
 
         $mailingLists = MailingListElement::find()
             ->site('*')

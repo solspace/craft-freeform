@@ -14,7 +14,6 @@
 namespace Solspace\Freeform\controllers;
 
 use craft\helpers\Cp;
-use craft\helpers\ElementHelper;
 use craft\records\Asset;
 use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
 use Solspace\Freeform\Bundles\Export\Implementations\Csv\ExportCsv;
@@ -177,24 +176,11 @@ class SubmissionsController extends BaseController
         $selectedSite = \Craft::$app->sites->getSiteByHandle(
             $this->request->getQueryParam('site') ?? ''
         ) ?? \Craft::$app->sites->getPrimarySite();
-        $isCraft5 = version_compare(\Craft::$app->version, '5.0', '>=');
 
-        if ($isCraft5) {
-            $craftVersionSpecificVariables = [
-                'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(selectedSite: $selectedSite) : [],
-                'earthIcon' => Cp::earthIcon(),
-            ];
-        } else {
-            $supportedSites = ElementHelper::supportedSitesForElement($submission, true);
-            $propSites = array_values(array_filter($supportedSites, static fn ($site) => $site['propagate']));
-            $propSiteIds = array_column($propSites, 'siteId');
-            $isMultiSiteElement = \count($supportedSites) > 1;
-
-            $craftVersionSpecificVariables = [
-                'showSiteLabel' => $isMultiSiteElement,
-                'supportedSiteIds' => $propSiteIds,
-            ];
-        }
+        $craftVersionSpecificVariables = [
+            'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(selectedSite: $selectedSite) : [],
+            'earthIcon' => Cp::earthIcon(),
+        ];
 
         $variables = [
             'form' => $submission->getForm(),
@@ -207,7 +193,6 @@ class SubmissionsController extends BaseController
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
             'selectedSite' => $selectedSite,
-            'isCraft5' => $isCraft5,
         ];
 
         $variables = array_merge($variables, $craftVersionSpecificVariables);

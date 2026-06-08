@@ -3,11 +3,7 @@
 
 {% set title = "Export Profiles"|t('freeform') %}
 
-{% block contextMenu %}
-    {% if not isCraft5 and selectedSite %}
-        {% include "_elements/sitemenu" with { urlFormat: 'freeform/export/profiles?site={handle}' } %}
-    {% endif %}
-{% endblock %}
+{% block contextMenu %}{% endblock %}
 
 {% block actionButton %}
 

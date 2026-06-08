@@ -53,13 +53,8 @@ class RelationsService extends BaseService
 
                 $existingRelations[] = $submission->id;
 
-                $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
-                if ($isCraft5) {
-                    $element->setFieldValue($fieldHandle, $existingRelations);
-                    \Craft::$app->elements->saveElement($element);
-                } else {
-                    \Craft::$app->relations->saveRelations($field, $element, $existingRelations);
-                }
+                $element->setFieldValue($fieldHandle, $existingRelations);
+                \Craft::$app->elements->saveElement($element);
             }
         }
     }

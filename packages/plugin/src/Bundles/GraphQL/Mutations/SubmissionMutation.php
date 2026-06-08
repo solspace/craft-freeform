@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Mutations;
 use craft\errors\GqlException;
 use craft\gql\base\ElementMutationResolver;
 use craft\gql\base\Mutation;
-use craft\gql\base\MutationResolver;
+use CraftCms\Cms\Gql\Resolvers\MutationResolver;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CaptchaInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;

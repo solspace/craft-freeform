@@ -154,6 +154,12 @@ class StripePriceService
             $amount = (float) $formField->getValue();
         }
 
+        // Stripe expects the minimum amount of $0.50 US or equivalent in Payment Currency.
+        // https://docs.stripe.com/api/payment_intents/create?lang=php&api-version=2026-02-25.clover#create_payment_intent-amount
+        if (empty($amount)) {
+            return 0.5;
+        }
+
         return $amount;
     }
 

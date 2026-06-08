@@ -2,10 +2,12 @@
 
 namespace Solspace\Freeform\Elements\Db;
 
+use craft\base\ElementInterface;
 use craft\console\Application;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\db\ElementQuery;
+use craft\events\PopulateElementEvent;
 use craft\helpers\Db;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -111,6 +113,21 @@ class SubmissionQuery extends ElementQuery
         $this->skipContentExplicit = true;
 
         return $this;
+    }
+
+    /**
+     * Craft 6 types {@see PopulateElementEvent::$content} as array.
+     * Freeform stores field values in per-form tables, so the element row has no `content` key
+     * and Yii would otherwise pass null into the populate event.
+     */
+    #[\Override]
+    public function createElement(array $row): ElementInterface
+    {
+        if (!\array_key_exists('content', $row) || null === $row['content']) {
+            $row['content'] = [];
+        }
+
+        return parent::createElement($row);
     }
 
     public function fieldSearch(array $fieldSearch = []): self

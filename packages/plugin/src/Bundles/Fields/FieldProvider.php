@@ -42,6 +42,16 @@ class FieldProvider
                 return $field;
             }
 
+            $row = $this->getRowByUid($fieldUid, $form->getId());
+
+            if ($row) {
+                $field = $this->createField($row, $form, false);
+
+                if ($field instanceof FieldInterface) {
+                    return $field;
+                }
+            }
+
             $this->getFields($form);
 
             return $this->cache->get($formFieldKey, self::PREFIX_BY_FORM_UID);
@@ -149,6 +159,23 @@ class FieldProvider
             },
             'rows',
         );
+    }
+
+    private function getRowByUid(string $fieldUid, int $formId): ?array
+    {
+        $rowsTable = FormRowRecord::TABLE;
+
+        return FormFieldRecord::find()
+            ->select(['field.*', 'row.uid as rowUid'])
+            ->alias('field')
+            ->innerJoin("{$rowsTable} row", '[[row.id]] = [[field.rowId]]')
+            ->where([
+                'field.formId' => $formId,
+                'field.uid' => $fieldUid,
+            ])
+            ->asArray()
+            ->one()
+        ;
     }
 
     private function createField(array $row, ?Form $form = null, bool $cacheGlobally = true): ?FieldInterface

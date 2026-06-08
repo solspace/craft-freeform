@@ -24,8 +24,11 @@ use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
+use CraftCms\Cms\Database\MigrationRepository;
+use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Validation\Contracts\Validatable;
+use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
@@ -71,6 +74,9 @@ use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
+use Solspace\Freeform\Library\Compatibility\Craft6PluginTrait;
+use Solspace\Freeform\Library\Compatibility\FreeformMigrator;
+use Solspace\Freeform\Library\Compatibility\YiiComponentPluginTrait;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
@@ -171,6 +177,9 @@ use yii\web\View;
  */
 class Freeform extends Plugin
 {
+    use Craft6PluginTrait;
+    use YiiComponentPluginTrait;
+
     public const TRANSLATION_CATEGORY = 'freeform';
 
     public const VIEW_FORMS = 'forms';
@@ -221,12 +230,48 @@ class Freeform extends Plugin
     public bool $hasCpSettings = true;
     public bool $hasReadOnlyCpSettings = true;
 
+    /** @var array<string, class-string> */
+    public array $controllerMap = [];
+
+    public ?string $controllerNamespace = null;
+
+    private bool $freeformApplicationBooted = false;
+
     /**
      * @return Freeform|Plugin
      */
     public static function getInstance(): self
     {
+        if (app()->bound(static::class)) {
+            return app(static::class);
+        }
+
         return parent::getInstance();
+    }
+
+    #[\Override]
+    public static function create(array $config): PluginInterface
+    {
+        if (app()->bound(static::class)) {
+            /** @var self $plugin */
+            $plugin = app(static::class);
+
+            foreach ($config as $key => $value) {
+                if ($key === 'settings') {
+                    $plugin->setSettings($value);
+
+                    continue;
+                }
+
+                if (property_exists($plugin, $key)) {
+                    $plugin->{$key} = $value;
+                }
+            }
+
+            return $plugin;
+        }
+
+        return parent::create($config);
     }
 
     public static function isLocked(string $key, int $seconds): bool
@@ -258,31 +303,41 @@ class Freeform extends Plugin
         return self::EDITION_PRO === $this->edition;
     }
 
-    public function init(): void
+    public function getVersion(): string
     {
-        parent::init();
-        \Yii::setAlias('@freeform', __DIR__);
-        \Yii::setAlias('@freeform-resources', '@freeform/Resources');
-        \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
-        \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
-        \Yii::setAlias('@freeform-formatting-templates', '@freeform/templates/_templates/formatting');
+        return $this->version;
+    }
 
-        // TODO: refactor these into separate bundles
-        $this->initControllerMap();
-        $this->initServices();
-        $this->initTwigVariables();
-        $this->initFieldTypes();
-        $this->initEventListeners();
-        $this->initBetaAssets();
-        $this->initPaymentAssets();
-        $this->initContainerItems();
-        $this->initBundles();
+    #[\Override]
+    public function createInstallMigration(): ?object
+    {
+        $migration = parent::createInstallMigration();
 
-        if ($this->isPro() && $this->settings->getPluginName()) {
-            $this->name = $this->settings->getPluginName();
-        } else {
-            $this->name = 'Freeform';
+        return $migration !== null ? $this->wrapCraftMigrationObject($migration) : null;
+    }
+
+    #[\Override]
+    public function registerPlugin(): void
+    {
+        $this->app->instance(static::class, $this);
+
+        if (!$this->app->bound(FreeformMigrator::class)) {
+            $this->app
+                ->when(FreeformMigrator::class)
+                ->needs(MigrationRepositoryInterface::class)
+                ->give(fn () => $this->app->make(MigrationRepository::class, [
+                    'table' => \CraftCms\Cms\Database\Table::MIGRATIONS,
+                ]))
+            ;
+
+            $this->app->singleton(FreeformMigrator::class, FreeformMigrator::class);
         }
+    }
+
+    #[\Override]
+    public function bootPlugin(): void
+    {
+        static::getInstance()->bootFreeformApplication();
     }
 
     public function getCpNavItem(): ?array
@@ -290,7 +345,7 @@ class Freeform extends Plugin
         $navItem = parent::getCpNavItem();
 
         $event = new RegisterCpSubnavItemsEvent($navItem, []);
-        $this->trigger(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
+        $this->triggerPluginEvent(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
         $navItem = $event->getNav();
         $navItem['subnav'] = $event->getSubnavItems();
@@ -448,6 +503,46 @@ class Freeform extends Plugin
             'freeform/settings',
             ['settings' => $this->getSettings()]
         );
+    }
+
+    private function bootFreeformApplication(): void
+    {
+        if ($this->freeformApplicationBooted) {
+            return;
+        }
+
+        $this->freeformApplicationBooted = true;
+
+        if (!class_exists(\Craft::class, false)) {
+            app('Craft');
+        }
+
+        \Yii::setAlias('@freeform', __DIR__);
+        \Yii::setAlias('@freeform-resources', '@freeform/Resources');
+        \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
+        \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
+        \Yii::setAlias('@freeform-formatting-templates', '@freeform/templates/_templates/formatting');
+
+        // TODO: refactor these into separate bundles
+        $this->initControllerMap();
+        $this->initServices();
+        $this->initTwigVariables();
+        $this->initFieldTypes();
+        $this->initEventListeners();
+        $this->initBetaAssets();
+        $this->initPaymentAssets();
+        $this->initContainerItems();
+        $this->initBundles();
+
+        $settings = $this->getSettings();
+        if ($this->isPro() && $settings?->getPluginName()) {
+            $this->name = $settings->getPluginName();
+        } else {
+            $this->name = 'Freeform';
+        }
+
+        $this->registerFreeformCpTemplateRoots();
+        $this->registerFreeformYiiApplicationModule();
     }
 
     private function deleteAllSubmissionElements(): void
@@ -703,10 +798,8 @@ class Freeform extends Plugin
                 $event->sender->set('freeformServices', FreeformServicesVariable::class);
                 $event->sender->set('freeformBanners', FreeformBannersVariable::class);
 
-                if ($event->sender instanceof CraftVariable) {
-                    if ($event->sender->app->request->isCpRequest) {
-                        $event->sender->set('freeformSubmissions', FreeformSubmissionsVariable::class);
-                    }
+                if (\Craft::$app->request->isCpRequest) {
+                    $event->sender->set('freeformSubmissions', FreeformSubmissionsVariable::class);
                 }
             }
         );
@@ -812,7 +905,7 @@ class Freeform extends Plugin
             return;
         }
 
-        $version = $this->getVersion();
+        $version = $this->version;
         if (!preg_match('/alpha|beta/', $version)) {
             return;
         }

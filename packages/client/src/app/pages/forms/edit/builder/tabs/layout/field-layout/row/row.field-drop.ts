@@ -32,7 +32,6 @@ export const useRowFieldDrop = (
   row: Row,
   fieldCount: number,
   width: number,
-  offsetX: number,
 ): FieldDropHook => {
   const dispatch = useAppDispatch();
   const [fieldWidth, setFieldWidth] = useState<number>();
@@ -61,7 +60,7 @@ export const useRowFieldDrop = (
       },
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       hover: (item, monitor) => {
-        if (width === undefined || offsetX === undefined) {
+        if (width === undefined || !wrapperRef.current) {
           return;
         }
 
@@ -73,6 +72,10 @@ export const useRowFieldDrop = (
           return;
         }
 
+        // Read the row's viewport x-position on demand (during an active drag)
+        // rather than storing it in state, which would cause re-renders on every
+        // scroll or resize and feed back into the ResizeObserver loop.
+        const offsetX = wrapperRef.current.getBoundingClientRect().x;
         const offset = monitor.getClientOffset();
         const x = offset.x - offsetX;
 

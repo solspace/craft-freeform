@@ -30,7 +30,6 @@ const Row: React.FC<Props> = memo(({ row }) => {
     useDimensionsObserver<HTMLDivElement>();
 
   const width = dimensions.width;
-  const offsetX = dimensions.x;
 
   const { ref: rowDropRef, isOver: isOverRow } = useRowDrop(row);
   const placeholderAnimation = usePlaceholderAnimation(isOverRow);
@@ -44,7 +43,7 @@ const Row: React.FC<Props> = memo(({ row }) => {
     dragFieldIndex,
     hoverPosition,
     fieldWidth,
-  } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
+  } = useRowFieldDrop(wrapperRef, row, fields.length, width);
 
   const ref = fieldDropRef(wrapperRef) as unknown as RefObject<HTMLDivElement>;
 
@@ -74,7 +73,7 @@ const Row: React.FC<Props> = memo(({ row }) => {
             dragFieldIndex={dragFieldIndex}
             index={idx}
             key={field.uid}
-            width={fieldWidth || width}
+            width={fieldWidth || Math.floor(width / Math.max(1, fields.length))}
           />
         ))}
       </RowFieldsContainer>

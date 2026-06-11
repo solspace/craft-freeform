@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-type Rect = Pick<DOMRect, "width" | "height" | "x" | "y">;
+type Rect = Pick<DOMRect, "width" | "height">;
 
 type DimensionsObserverReturn<T extends HTMLElement> = {
   ref: React.RefObject<T>;
@@ -15,15 +15,18 @@ export const useDimensionsObserver = <
   const [dimensions, setDimensions] = useState<Rect>({
     height: 0,
     width: 0,
-    x: 0,
-    y: 0,
   });
 
   const [resizeObserver] = useState(
     () =>
       new ResizeObserver(([entry]) => {
-        const { width, height, x, y } = entry.target.getBoundingClientRect();
-        setDimensions({ width, height, x, y });
+        // Use contentRect (the observer's own snapshot) rather than calling
+        // getBoundingClientRect() here - calling getBoundingClientRect() inside
+        // a ResizeObserver forces a synchronous layout and can read a size that
+        // has already been inflated by the inline widths we set on child
+        // elements, creating a runaway positive-feedback loop.
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
       }),
   );
 

@@ -139,14 +139,14 @@ class EmailMarketingService extends IntegrationsService
             $fields = $integration->fetchFields($list, $category, $client);
             $logger->debug(\sprintf('Fetched %d Fields', \count($fields)), ['category' => $category]);
 
-            $usedHandles = [];
+            $usedFields = [];
             $newFields = [];
             foreach ($fields as $field) {
                 if (!\array_key_exists($field->getHandle(), $existingRecords)) {
                     $newFields[] = $field;
                 }
 
-                $usedHandles[] = $field->getHandle();
+                $usedFields[$field->getHandle()] = $field;
             }
 
             foreach ($newFields as $field) {
@@ -156,17 +156,25 @@ class EmailMarketingService extends IntegrationsService
                 $record->label = $field->getLabel();
                 $record->type = $field->getType();
                 $record->required = $field->isRequired();
-                $record->options = json_encode($field->getOptions()->getIterator()->getArrayCopy());
                 $record->category = $category;
+                $record->options = json_encode($field->getOptions()->getIterator()->getArrayCopy());
                 $record->save();
 
                 $existingRecords[$field->getHandle()] = $record;
             }
 
             foreach ($existingRecords as $handle => $record) {
-                if (!\in_array($handle, $usedHandles)) {
+                if (!\array_key_exists($handle, $usedFields)) {
                     $record->delete();
                     unset($existingRecords[$handle]);
+                } else {
+                    $field = $usedFields[$handle];
+                    $record->label = $field->getLabel();
+                    $record->type = $field->getType();
+                    $record->required = $field->isRequired();
+                    $record->category = $category;
+                    $record->options = json_encode($field->getOptions()->getIterator()->getArrayCopy());
+                    $record->save();
                 }
             }
         }

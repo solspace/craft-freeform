@@ -378,6 +378,7 @@ class IntegrationsService extends BaseService
 
                 if ($isNew) {
                     $model->id = $record->id;
+                    $model->uid = $record->uid;
                     $integration->setId($record->id);
                 }
 

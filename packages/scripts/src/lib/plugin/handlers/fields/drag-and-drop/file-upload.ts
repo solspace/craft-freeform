@@ -23,6 +23,13 @@ type OnChangeEvent = Event & {
   container: HTMLElement;
 };
 
+type AfterUploadEvent = Event & {
+  name: string;
+  freeform: Freeform;
+  container: HTMLElement;
+  file: FileMetadata;
+};
+
 const buildFileUrl = (baseUrl: string, path: string): string => {
   const url = new URL(baseUrl, window.location.origin);
   url.pathname = `${url.pathname.replace(/\/$/, "")}${path}`;
@@ -186,6 +193,12 @@ export const handleFileUpload = (
 
       previewContainer.appendChild(createInput(handle, response.data));
       previewContainer.setAttribute("data-completed", "");
+
+      freeform._dispatchEvent(
+        events.dragAndDrop.afterUpload,
+        { freeform, container, file: response.data },
+        container,
+      ) as AfterUploadEvent;
     })
     .catch((error) => {
       if (error.message === "Request aborted") {

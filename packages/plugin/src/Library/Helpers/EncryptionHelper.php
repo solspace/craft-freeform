@@ -12,7 +12,7 @@ class EncryptionHelper
     {
         $secret = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextSecret();
 
-        $key = $secret ?: \Craft::$app->getConfig()->getGeneral()->securityKey;
+        $key = $secret ?: (SecurityHelper::getSecurityKey() ?? '');
         $key .= $suffix;
 
         return $key;
@@ -57,11 +57,13 @@ class EncryptionHelper
 
     public static function encryptByKey(string $key, string $value): string
     {
-        return base64_encode(\Craft::$app->getSecurity()->encryptByKey($value, $key));
+        return SecurityHelper::encrypt($value, '' !== $key ? $key : null);
     }
 
     public static function decryptByKey(string $key, string $value): string
     {
-        return \Craft::$app->getSecurity()->decryptByKey(base64_decode($value), $key);
+        $decrypted = SecurityHelper::decrypt($value, '' !== $key ? $key : null);
+
+        return false === $decrypted ? '' : $decrypted;
     }
 }

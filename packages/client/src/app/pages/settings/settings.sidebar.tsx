@@ -21,7 +21,9 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
   const { data, isFetching } = useQuery({
     queryKey: ["settings", "navigation"],
     queryFn: () => {
-      return axios.get("/api/settings/navigation").then((res) => res.data);
+      return axios
+        .get("api/settings/navigation")
+        .then((res) => res.data as Record<string, Item>);
     },
   });
 
@@ -43,12 +45,20 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
     );
   }
 
+  if (!data) {
+    return (
+      <div id="sidebar-container">
+        <div id="sidebar" className="sidebar" />
+      </div>
+    );
+  }
+
   return (
     <div id="sidebar-container">
       <div id="sidebar" className="sidebar">
         <nav>
           <ul>
-            {Object.entries<Item>(data).map(([key, item]) => {
+            {Object.entries(data).map(([key, item]) => {
               if (item.title) {
                 const isActive = key === activeKey;
                 const isReactRoute = REACT_SETTINGS_KEYS.has(key);

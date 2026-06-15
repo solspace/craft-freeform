@@ -185,7 +185,7 @@ class AiController extends BaseApiController
             return '';
         }
 
-        return (string) \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+        return (string) \Craft::$app->plugins->getPluginLicenseKey($plugin->handle);
     }
 
     private function fetchSolspaceAiUsage(string $url): Response

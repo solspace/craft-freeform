@@ -110,7 +110,7 @@ class AuthorizationListener extends FeatureBundle
         if (!$plugin) {
             return '';
         }
-        $key = \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+        $key = \Craft::$app->plugins->getPluginLicenseKey($plugin->handle);
 
         return (string) $key;
     }

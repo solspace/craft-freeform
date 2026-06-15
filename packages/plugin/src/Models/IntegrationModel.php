@@ -21,6 +21,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Helpers\SecurityHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
@@ -125,14 +126,8 @@ class IntegrationModel extends Model
 
     public function propertyUpdateCallback(mixed $value, ?Property $property): mixed
     {
-        static $securityKey;
-
         if (null === $property) {
             return $value;
-        }
-
-        if (null === $securityKey) {
-            $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
         }
 
         if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
@@ -141,7 +136,7 @@ class IntegrationModel extends Model
                 return $value;
             }
 
-            return \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+            return SecurityHelper::decrypt($value);
         }
 
         if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {

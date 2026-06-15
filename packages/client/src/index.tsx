@@ -12,7 +12,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
@@ -39,14 +38,12 @@ import { EscapeStackProvider } from "./contexts/escape/escape.context";
 import { SiteProvider } from "./contexts/site/site.context";
 import ManualStyles from "./styles/manual";
 import { debug } from "./utils/debug";
+import { mountFreeformApp } from "./utils/mount-freeform-app";
 import { generateUrl } from "./utils/urls";
 
 import "./styles.css";
 
 const showDevtools = import.meta.env.DEV;
-
-const container = document.getElementById("freeform-client");
-const root = ReactDOM.createRoot(container);
 
 debug.log(
   "%c\n" +
@@ -59,7 +56,7 @@ debug.log(
   debug.colors.blue,
 );
 
-root.render(
+mountFreeformApp(() => (
   <DndProvider backend={HTML5Backend}>
     <BrowserRouter basename={generateUrl("/", false)}>
       <QueryClientProvider client={queryClient}>
@@ -131,5 +128,5 @@ root.render(
         </SiteProvider>
       </QueryClientProvider>
     </BrowserRouter>
-  </DndProvider>,
-);
+  </DndProvider>
+));

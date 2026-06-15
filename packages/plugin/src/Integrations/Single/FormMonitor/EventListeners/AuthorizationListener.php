@@ -118,7 +118,7 @@ class AuthorizationListener extends FeatureBundle
     private function getLicenseKey(): string
     {
         $plugin = \Craft::$app->plugins->getPlugin('freeform');
-        $key = \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+        $key = \Craft::$app->plugins->getPluginLicenseKey($plugin->handle);
 
         return (string) $key;
     }

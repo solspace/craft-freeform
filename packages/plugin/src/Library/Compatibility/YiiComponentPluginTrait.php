@@ -21,14 +21,14 @@ trait YiiComponentPluginTrait
 
     public function __get($name)
     {
-        if (property_exists($this, $name)) {
-            return $this->{$name};
-        }
-
         $module = $this->getFreeformYiiModule();
 
         if ($module->has($name)) {
             return $module->get($name);
+        }
+
+        if (property_exists($this, $name)) {
+            return $this->{$name};
         }
 
         throw new UnknownPropertyException('Getting unknown property: '.static::class."::\${$name}");
@@ -36,7 +36,7 @@ trait YiiComponentPluginTrait
 
     public function __isset($name): bool
     {
-        return $this->getFreeformYiiModule()->has($name);
+        return $this->getFreeformYiiModule()->has($name) || property_exists($this, $name);
     }
 
     public function setComponents(array $components): void

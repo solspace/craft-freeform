@@ -36,6 +36,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\SecurityHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\PushableInterface;
@@ -376,6 +377,8 @@ class IntegrationsService extends BaseService
             try {
                 $record->save(false);
 
+                $model->uid = $record->uid;
+
                 if ($isNew) {
                     $model->id = $record->id;
                     $integration->setId($record->id);
@@ -439,8 +442,6 @@ class IntegrationsService extends BaseService
 
     public function decryptModelValues(IntegrationModel $model): void
     {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
         if (!$model->class) {
             return;
         }
@@ -454,7 +455,7 @@ class IntegrationsService extends BaseService
             $value = $model->metadata[$property->handle] ?? null;
             $isEnvVariable = StringHelper::isEnvVariable($value);
             if (!$isEnvVariable && $value) {
-                $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+                $value = SecurityHelper::decrypt($value);
             }
 
             $model->metadata[$property->handle] = $value;
@@ -463,8 +464,6 @@ class IntegrationsService extends BaseService
 
     public function parsePostedModelData(IntegrationModel $model, ?array $modifiedValues = null): void
     {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
         $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
         foreach ($editableProperties as $property) {
             $handle = $property->handle;
@@ -478,9 +477,7 @@ class IntegrationsService extends BaseService
             $isEnvVariable = StringHelper::isEnvVariable($value);
 
             if ($value && $isEncrypted && !$isEnvVariable) {
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
-
-                $model->metadata[$property->handle] = $value;
+                $model->metadata[$property->handle] = SecurityHelper::encrypt($value);
             }
 
             if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
@@ -525,16 +522,10 @@ class IntegrationsService extends BaseService
 
     public function processValueForSaving(Property $property, mixed $value): mixed
     {
-        static $securityKey;
-
-        if (null === $securityKey) {
-            $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-        }
-
         if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
             $isEnvVariable = StringHelper::isEnvVariable($value);
             if (!$isEnvVariable) {
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+                $value = SecurityHelper::encrypt($value);
             }
         }
 
@@ -761,9 +752,17 @@ class IntegrationsService extends BaseService
 
     private function cacheIntegrationModel(IntegrationModel $model): void
     {
-        $this->cache->set($model->id, $model, self::PREFIX_ID);
-        $this->cache->set($model->uid, $model, self::PREFIX_UID);
-        $this->cache->set($model->handle, $model, self::PREFIX_HANDLE);
+        if (null !== $model->id) {
+            $this->cache->set((string) $model->id, $model, self::PREFIX_ID);
+        }
+
+        if (null !== $model->uid && '' !== $model->uid) {
+            $this->cache->set($model->uid, $model, self::PREFIX_UID);
+        }
+
+        if (null !== $model->handle && '' !== $model->handle) {
+            $this->cache->set($model->handle, $model, self::PREFIX_HANDLE);
+        }
     }
 
     private function clearIntegrationModelCache(): void

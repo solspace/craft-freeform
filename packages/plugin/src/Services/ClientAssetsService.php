@@ -61,7 +61,7 @@ class ClientAssetsService extends BaseService
             $this->buildAssetUrl($resourceBaseUrl, $entry['file']),
             [
                 'type' => 'module',
-                'position' => View::POS_HEAD,
+                'position' => View::POS_END,
             ],
             'ff-client-entry'
         );
@@ -103,7 +103,7 @@ class ClientAssetsService extends BaseService
             $origin.'/'.self::ENTRY_FILE,
             [
                 'type' => 'module',
-                'position' => View::POS_HEAD,
+                'position' => View::POS_END,
             ],
             'ff-client-entry'
         );

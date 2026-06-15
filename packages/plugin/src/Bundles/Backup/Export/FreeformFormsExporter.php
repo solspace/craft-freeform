@@ -55,6 +55,7 @@ use Solspace\Freeform\Form\Form as FreeformForm;
 use Solspace\Freeform\Form\Layout\Layout as FreeformLayout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Library\Helpers\SecurityHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -367,7 +368,6 @@ class FreeformFormsExporter extends BaseExporter
 
     protected function collectIntegrations(?array $ids = null): IntegrationCollection
     {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
         $collection = new IntegrationCollection();
 
         $integrations = Freeform::getInstance()->integrations->getAllIntegrations();
@@ -395,7 +395,7 @@ class FreeformFormsExporter extends BaseExporter
                 $value = $metadata[$property->handle] ?? null;
                 $isEnvVariable = StringHelper::isEnvVariable($value);
                 if (!$isEnvVariable && $value) {
-                    $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+                    $value = SecurityHelper::decrypt($value);
                 }
 
                 $metadata[$property->handle] = $value;

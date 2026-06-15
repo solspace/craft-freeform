@@ -11,10 +11,18 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 
     public function generateValue(?object $referenceObject, ?object $context): int
     {
-        // Skip DB work on CP GraphQL explorer
         $request = \Craft::$app->getRequest();
+
+        // Avoid DB work before the CP user is authenticated, e.g. /admin/login.
+        // This generator can be evaluated while Freeform/settings metadata is being bootstrapped.
+        if ($request->getIsCpRequest() && \Craft::$app->getUser()->getIsGuest()) {
+            return 0;
+        }
+
+        // Skip DB work on CP GraphQL explorer.
         if ($request->getIsCpRequest()) {
             $path = '/'.ltrim($request->getPathInfo(), '/');
+
             if (preg_match('#(^|/)graphiql(/|$)#', $path)) {
                 return 0;
             }
@@ -22,16 +30,17 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 
         try {
             $status = $this->statusesService->getStatusByHandle('open');
+
             if ($status) {
                 return $status->id;
             }
 
-            // fallback: get first status id if needed
+            // Fallback: get first status ID if needed.
             $statuses = $this->statusesService->getAllStatuses();
             $first = reset($statuses);
 
             return $first?->id ?? 1;
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return 0;
         }
     }

@@ -11,8 +11,8 @@
   "private": true,
   "description": "Freeform plugin for Craft CMS",
   "devDependencies": {
-    "@biomejs/biome": "2.4.15",
-    "concurrently": "9.2.1",
+    "@biomejs/biome": "2.4.16",
+    "concurrently": "10.0.3",
     "husky": "9.1.7",
     "typescript": "6.0.3"
   },

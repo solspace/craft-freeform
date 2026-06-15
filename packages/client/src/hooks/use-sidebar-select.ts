@@ -1,7 +1,18 @@
 import { useEffect } from "react";
 
-const setSelected = (element: HTMLLIElement, selected: boolean): void => {
-  const child = <HTMLDivElement>element.children[0];
+const setSelected = (
+  element: HTMLLIElement | undefined,
+  selected: boolean,
+): void => {
+  if (!element) {
+    return;
+  }
+
+  const child = element.children[0] as HTMLElement | undefined;
+  if (!child) {
+    return;
+  }
+
   const sidebar = element.querySelector(".sidebar-action--sub");
 
   if (selected) {
@@ -16,14 +27,14 @@ const setSelected = (element: HTMLLIElement, selected: boolean): void => {
 };
 
 export const useSidebarSelect = (urlPart: string): void => {
-  const navItems = document.querySelectorAll<HTMLLIElement>(
-    "#nav-freeform > ul > li",
-  );
-
   useEffect(() => {
+    const navItems = document.querySelectorAll<HTMLLIElement>(
+      "#nav-freeform > ul > li",
+    );
+
     navItems.forEach((item) => {
       const url = item.querySelector("a.sidebar-action")?.getAttribute("href");
-      setSelected(item, url?.includes(urlPart));
+      setSelected(item, url?.includes(urlPart) ?? false);
     });
 
     return () => {
@@ -31,7 +42,9 @@ export const useSidebarSelect = (urlPart: string): void => {
         setSelected(item, false);
       });
 
-      setSelected(navItems[0], true);
+      if (navItems.length > 0) {
+        setSelected(navItems[0], true);
+      }
     };
-  }, [urlPart, navItems]);
+  }, [urlPart]);
 };

@@ -2,7 +2,7 @@
 {% hook "freeform.prepareCpTemplate" %}
 
 {% set title = "Forms"|t('freeform') %}
-{% set selectedSubnavItem = "forms" %}
+{% set selectedSubnavItem = selectedSubnavItem ?? "forms" %}
 
 {% set showHeader = false %}
 

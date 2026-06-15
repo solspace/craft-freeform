@@ -24,6 +24,7 @@ class AppController extends BaseController
 
         $response = $this->renderTemplate('freeform/app', [
             'config' => $config,
+            'selectedSubnavItem' => $this->resolveSelectedSubnavItem(),
         ]);
 
         // Craft 6 CP uses Inertia for navigation. When visiting legacy React app pages
@@ -33,5 +34,18 @@ class AppController extends BaseController
         }
 
         return $response;
+    }
+
+    private function resolveSelectedSubnavItem(): string
+    {
+        $segment = $this->request->getSegment(2) ?? '';
+
+        return match ($segment) {
+            'settings' => 'settings',
+            'integrations' => 'integrations',
+            'ab-tests' => 'ab-tests',
+            'import', 'export' => 'export',
+            default => 'forms',
+        };
     }
 }

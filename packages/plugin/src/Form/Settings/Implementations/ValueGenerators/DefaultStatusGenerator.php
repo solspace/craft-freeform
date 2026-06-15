@@ -13,18 +13,17 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
     {
         $request = \Craft::$app->getRequest();
 
-        // Avoid DB work before the CP user is authenticated, e.g. /admin/login.
-        // This generator can be evaluated while Freeform/settings metadata is being bootstrapped.
-        if ($request->getIsCpRequest() && \Craft::$app->getUser()->getIsGuest()) {
-            return 0;
-        }
-
-        // Skip DB work on CP GraphQL explorer.
         if ($request->getIsCpRequest()) {
             $path = '/'.ltrim($request->getPathInfo(), '/');
 
+            // Avoid DB work only on the CP login page, where this value is not needed.
+            if (preg_match('#^/login/?$#', $path)) {
+                return 1;
+            }
+
+            // Skip DB work on CP GraphQL explorer.
             if (preg_match('#(^|/)graphiql(/|$)#', $path)) {
-                return 0;
+                return 1;
             }
         }
 
@@ -41,7 +40,7 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 
             return $first?->id ?? 1;
         } catch (\Throwable) {
-            return 0;
+            return 1;
         }
     }
 }

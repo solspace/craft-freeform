@@ -35,6 +35,7 @@ const events = {
     clearErrors: "freeform-field-dnd-clear-errors",
     afterErrors: "freeform-field-dnd-after-errors",
     onChange: "freeform-field-dnd-on-change",
+    afterUpload: "freeform-field-dnd-after-upload",
     onUploadProgress: "freeform-field-dnd-on-upload-progress",
   } as const,
   saveAndContinue: {

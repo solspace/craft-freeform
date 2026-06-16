@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.15.16 - 2026-06-16
+
+### Fixed
+- Fixed an issue where **Email Marketing** integration field properties, such as required status, labels, and field types, were not updating correctly after refreshing the integration.
+- Fixed a form builder layout issue where field widths could enter a runaway resize loop in some cases.
+- Fixed an issue where **Turnstile** tokens were not refreshed correctly after files were uploaded to a **File Upload Drag & Drop** field.
+- Fixed an error that could occur when viewing spam submissions in Craft 4 due to breadcrumb fallback handling.
+- Fixed UI issues that could occur when creating or deleting integrations.
+- Updated dependencies to their latest compatible versions.
+
 ## 5.15.15 - 2026-06-05
 
 ### Changed

@@ -8,7 +8,7 @@
 {% set fullPageForm = fullPageForm|default(true) %}
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
-{% if selectableSites|default([])|length %}
+{% if selectableSites is defined and selectableSites|length %}
   {% set rootCrumb = {
     label: selectedSite.name,
     url: url('freeform'),
@@ -22,13 +22,14 @@
   {% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
 {% endif %}
 
-{% set crumbs = crumbs|default([
-  rootCrumb,
-  { label: craft.freeform.name, url: url('freeform') },
-  { label: "Forms"|t("freeform"), url: url('freeform/forms') },
-  { label: form.name, url: url('freeform/forms/' ~ form.id) },
-  { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
-]) %}
+{% if crumbs is not defined %}
+  {% set crumbs = [
+    rootCrumb,
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
+    { label: form.name, url: url('freeform/submissions', { source: 'form:' ~ form.id }) }
+  ] %}
+{% endif %}
 
 {% block actionButton %}
   <div class="btngroup submit">

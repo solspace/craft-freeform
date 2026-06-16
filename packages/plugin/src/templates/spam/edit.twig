@@ -8,7 +8,7 @@
 {% set actionUrl = 'freeform/spam-submissions/allow' %}
 {% set redirectUrl = 'freeform/spam' %}
 
-{% if selectableSites|default([])|length %}
+{% if selectableSites is defined and selectableSites|length %}
   {% set rootCrumb = {
     label: selectedSite.name,
     url: url('freeform'),
@@ -22,13 +22,15 @@
   {% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
 {% endif %}
 
-{% set crumbs = [
+{% if crumbs is not defined %}
+  {% set crumbs = [
     rootCrumb,
     { label: craft.freeform.name, url: url('freeform') },
-    { label: "Forms"|t("freeform"), url: url('freeform/forms') },
-    { label: submission.form.name, url: url('freeform/forms/' ~ submission.form.id) },
+    { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
     { label: "Spam"|t('freeform'), url: url('freeform/spam') },
-] %}
+    { label: form.name, url: url('freeform/spam', { source: 'form:' ~ form.id }) }
+  ] %}
+{% endif %}
 
 {% block actionButton %}
     <div class="btngroup submit">

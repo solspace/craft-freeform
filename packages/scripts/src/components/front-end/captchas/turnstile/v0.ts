@@ -68,7 +68,7 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 
 addListeners(
   document,
-  [events.form.ajaxAfterSubmit],
+  [events.form.ajaxAfterSubmit, events.dragAndDrop.afterUpload],
   async (event: FreeformEvent) => {
     loadCaptcha(event.form, true)
       .then(() => {

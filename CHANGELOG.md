@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 6.0.0-beta.2 - 2026-06-16
+
+### Fixed
+- Improved React client app stability and settings handling.
+- Avoided unnecessary default status lookups during Control Panel login.
+- Updated asset references and removed deprecated files.
+
 ## 6.0.0-beta.1 - 2026-06-08
 
 ### Added

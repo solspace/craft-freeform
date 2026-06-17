@@ -348,6 +348,7 @@ class Freeform extends Plugin
         $this->triggerPluginEvent(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
         $navItem = $event->getNav();
+        $navItem['icon'] = __DIR__.'/icon-mask.svg';
         $navItem['subnav'] = $event->getSubnavItems();
 
         return $navItem;

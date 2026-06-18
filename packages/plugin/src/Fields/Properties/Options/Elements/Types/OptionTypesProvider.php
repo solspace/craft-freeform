@@ -17,6 +17,7 @@ use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months\Months;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Provinces\Provinces;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Timezones\Timezones;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years;
 use yii\base\Event;
 
@@ -54,6 +55,7 @@ class OptionTypesProvider
             new Months(),
             new Days(),
             new DaysOfWeek(),
+            new Timezones(),
         ];
 
         $event = new RegisterOptionTypesEvent($types);

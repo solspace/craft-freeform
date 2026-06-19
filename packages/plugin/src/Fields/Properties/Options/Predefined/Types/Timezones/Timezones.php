@@ -12,8 +12,8 @@ class Timezones implements PredefinedSourceTypeInterface
     #[Select(
         label: 'Option Label',
         options: [
+            self::DISPLAY_FULL => 'UTC Label',
             self::DISPLAY_ABBREVIATED => 'Identifier',
-            self::DISPLAY_FULL => 'Display Name',
         ],
     )]
     private string $label = self::DISPLAY_FULL;
@@ -21,8 +21,8 @@ class Timezones implements PredefinedSourceTypeInterface
     #[Select(
         label: 'Option Value',
         options: [
+            self::DISPLAY_FULL => 'UTC Label',
             self::DISPLAY_ABBREVIATED => 'Identifier',
-            self::DISPLAY_FULL => 'Display Name',
         ],
     )]
     private string $value = self::DISPLAY_ABBREVIATED;
@@ -63,13 +63,31 @@ class Timezones implements PredefinedSourceTypeInterface
             return $timezones;
         }
 
-        $timezones = [];
+        $now = new \DateTimeImmutable('now');
+        $items = [];
 
         foreach (\DateTimeZone::listIdentifiers() as $timezoneValue) {
-            $timezones[$timezoneValue] = $this->getReadableTimezoneName($timezoneValue);
+            $timezone = new \DateTimeZone($timezoneValue);
+            $timezoneLabel = $this->getReadableTimezoneName($timezoneValue);
+
+            $items[] = [
+                'value' => $timezoneValue,
+                'label' => $timezoneLabel,
+                'offset' => $timezone->getOffset($now),
+            ];
         }
 
-        ksort($timezones);
+        usort($items, static function (array $a, array $b): int {
+            return $a['offset'] <=> $b['offset']
+                ?: strcasecmp($a['label'], $b['label'])
+                ?: strcasecmp($a['value'], $b['value']);
+        });
+
+        $timezones = [];
+
+        foreach ($items as $item) {
+            $timezones[$item['value']] = $item['label'];
+        }
 
         return $timezones;
     }

@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.15.17 - 2026-06-19
+
+### Added
+- Added **Brevo** email marketing integration.
+- Added **Timezones** predefined options.
+
+### Security
+- Addressed dependency vulnerabilities.
+
 ## 5.15.16 - 2026-06-16
 
 ### Fixed

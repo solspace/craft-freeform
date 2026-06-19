@@ -1,15 +1,15 @@
 # Setup Guide
 
-This guide assumes you have an [Brevo](https://www.brevo.com) account already.
+This guide assumes you have an [Brevo](https://brevo.com) account already.
 
 ## Compatibility
 
-Uses `v3` of the REST API.
+Uses API Key on `v3` of the REST API.
 
 ### Endpoints
 Maps data to the following endpoints:
 
-- **Contact**
+- **Contacts**
 
 ### Fields
 Maps data to the following field types:
@@ -27,14 +27,14 @@ Maps data to the following field types:
 - Go to the [Brevo website](https://www.brevo.com) and log into your account.
 - At the top right corner, click on the gear icon.
 - On the next page, click the **SMTP & API** subnav option near the middle of the page.
-- Click the **API keys & MCP** tab and then **Generate API key** button.
+- Click the **API Keys & MCP** tab and then **Generate API key** button.
 - Fil in the **Key name** field, select an **Expiry** option and click **Generate**.
-- Copy the values in the **API key** field.
+- Copy the value in the **API key** field.
 
 ### 2. Set up Integration on your site
 
 - Switch back to this integration tab.
-- Paste the **API URL** value from Brevo into the **API URL** field in Freeform.
+- Paste the **API Key** value from Brevo into the **API Key** field in Freeform.
 - Click the **Save** button.
 
 ### 3. Verify Authorization
@@ -56,10 +56,6 @@ To use this integration on your form(s), you'll need to configure each form indi
     - Select a mailing list that new users should be subscribed to.
     - Select the API endpoints you wish to map to.
     - Map Freeform fields to the Brevo fields as needed.
-
-## Notes
-
-When specifying multiples, separate each with a semi-colon (`;`), e.g. `basic;premium;premium plus;preferred`.
 
 ---
 

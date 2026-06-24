@@ -73,6 +73,18 @@ class FreeformQueueHandler
 
     private function isJobInQueue(JobInterface $job): bool
     {
+        $table = \Craft::$app->getDb()->schema->getTableSchema(Table::QUEUE);
+
+        if (!$table) {
+            return false;
+        }
+
+        foreach (['description', 'fail', 'dateReserved'] as $column) {
+            if (!isset($table->columns[$column])) {
+                return false;
+            }
+        }
+
         $description = $job->getDescription();
 
         return (new Query())

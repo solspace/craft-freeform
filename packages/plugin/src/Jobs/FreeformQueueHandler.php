@@ -35,6 +35,10 @@ class FreeformQueueHandler
 
     public function queueSingleJobInstance(JobInterface $job): void
     {
+        if (!$this->supportsLegacyQueueTable()) {
+            return;
+        }
+
         if ($this->isJobInQueue($job)) {
             return;
         }
@@ -73,6 +77,10 @@ class FreeformQueueHandler
 
     private function isJobInQueue(JobInterface $job): bool
     {
+        if (!$this->supportsLegacyQueueTable()) {
+            return false;
+        }
+
         $table = \Craft::$app->getDb()->schema->getTableSchema(Table::QUEUE);
 
         if (!$table) {
@@ -85,16 +93,22 @@ class FreeformQueueHandler
             }
         }
 
-        $description = $job->getDescription();
-
         return (new Query())
             ->from(Table::QUEUE)
             ->where([
-                'description' => $description,
+                'description' => $job->getDescription(),
                 'fail' => false,
             ])
             ->andWhere(['dateReserved' => null])
             ->exists()
         ;
+    }
+
+    private function supportsLegacyQueueTable(): bool
+    {
+        $schema = \Craft::$app->getDb()->schema;
+        $queueTableName = $schema->getRawTableName(Table::QUEUE);
+
+        return \in_array($queueTableName, $schema->getTableNames(), true);
     }
 }

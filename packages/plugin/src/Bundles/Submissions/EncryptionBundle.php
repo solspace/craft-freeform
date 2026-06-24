@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Submissions;
 
+use craft\elements\db\ElementQuery;
 use craft\events\PopulateElementEvent;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
@@ -22,11 +23,13 @@ class EncryptionBundle extends FeatureBundle
             [$this, 'encrypt']
         );
 
-        Event::on(
-            SubmissionQuery::class,
-            SubmissionQuery::EVENT_BEFORE_POPULATE_ELEMENT,
-            [$this, 'decrypt']
-        );
+        if (\defined(ElementQuery::class.'::EVENT_BEFORE_POPULATE_ELEMENT')) {
+            Event::on(
+                SubmissionQuery::class,
+                ElementQuery::EVENT_BEFORE_POPULATE_ELEMENT,
+                [$this, 'decrypt']
+            );
+        }
     }
 
     public function encrypt(ProcessFieldValueEvent $event): void

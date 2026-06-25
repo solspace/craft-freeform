@@ -18,37 +18,50 @@ class ChartsService extends BaseService
 {
     public function getMinimalSubmissionChartData(array $formIds): array
     {
+        $datasets = [];
+        if (empty($formIds)) {
+            return $datasets;
+        }
+
         $submissions = Submission::TABLE;
         $elements = Table::ELEMENTS;
 
         $rangeStart = new Carbon('30 days ago', 'UTC');
         $rangeEnd = new Carbon('now', 'UTC');
 
-        $datasets = [];
-        foreach ($formIds as $formId) {
-            $query = (new Query())
-                ->select(["COUNT({$submissions}.[[id]]) as count", "DATE({$submissions}.[[dateCreated]]) as dt"])
-                ->from(Submission::TABLE)
-                ->where([
-                    'between',
-                    "{$submissions}.[[dateCreated]]",
-                    $rangeStart->toDateTimeString(),
-                    $rangeEnd->toDateTimeString(),
-                ])
-                ->andWhere([
-                    "{$submissions}.[[formId]]" => $formId,
-                    "{$submissions}.[[isHidden]]" => false,
-                ])
-                ->innerJoin(
-                    $elements,
-                    "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-                )
-                ->orderBy(['dt' => \SORT_ASC])
-                ->groupBy(['dt'])
-                ->indexBy('dt')
-            ;
+        // Get every form in a single query rather than one query per form.
+        $rows = (new Query())
+            ->select([
+                "{$submissions}.[[formId]] as formId",
+                "COUNT({$submissions}.[[id]]) as count",
+                "DATE({$submissions}.[[dateCreated]]) as dt",
+            ])
+            ->from(Submission::TABLE)
+            ->where([
+                'between',
+                "{$submissions}.[[dateCreated]]",
+                $rangeStart->toDateTimeString(),
+                $rangeEnd->toDateTimeString(),
+            ])
+            ->andWhere([
+                "{$submissions}.[[formId]]" => $formIds,
+                "{$submissions}.[[isHidden]]" => false,
+            ])
+            ->innerJoin(
+                $elements,
+                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+            )
+            ->groupBy(["{$submissions}.[[formId]]", 'dt'])
+            ->all()
+        ;
 
-            $result = $query->column();
+        $countsByForm = [];
+        foreach ($rows as $row) {
+            $countsByForm[$row['formId']][$row['dt']] = $row['count'];
+        }
+
+        foreach ($formIds as $formId) {
+            $result = $countsByForm[$formId] ?? [];
             $refDate = $rangeStart->copy();
 
             $data = [];

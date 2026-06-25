@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.15.18 - 2026-06-25
+
+### Fixed
+- Fixed an issue where per-form integration state could leak into other forms when querying integrations.
+- Improved form listing performance by removing N+1 queries for submission and spam counts.
+- Fixed an issue where field rules did not work correctly with **Calculation** fields.
+
 ## 5.15.17 - 2026-06-19
 
 ### Added

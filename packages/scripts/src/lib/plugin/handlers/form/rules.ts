@@ -112,6 +112,12 @@ class RuleHandler implements FreeformHandler {
         case "TEXTAREA":
         case "INPUT": {
           const input = element as HTMLInputElement;
+
+          if (input.hasAttribute("data-calculations")) {
+            listener = "change";
+            break;
+          }
+
           if (input.type === "hidden") {
             return;
           }

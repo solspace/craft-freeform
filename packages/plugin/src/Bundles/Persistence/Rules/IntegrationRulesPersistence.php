@@ -100,7 +100,7 @@ class IntegrationRulesPersistence extends FeatureBundle
 
             $removableConditionUids = array_diff(array_keys($existingConditions), $usedConditionUids);
             if ($removableConditionUids) {
-                RuleConditionRecord::deleteAll(['uid' => $removableConditionUids]);
+                RuleConditionRecord::deleteAll(['uid' => $removableConditionUids, 'ruleId' => $rule->id]);
             }
         }
 

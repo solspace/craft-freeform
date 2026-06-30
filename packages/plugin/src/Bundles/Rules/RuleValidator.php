@@ -85,7 +85,10 @@ class RuleValidator
         foreach ($rules as $rule) {
             foreach ($rule->getConditions() as $condition) {
                 if (!$currentPage->getFields()->get($condition->getField())) {
-                    return null;
+                    // This rule's condition references a field that isn't on the
+                    // current page, so it can't be evaluated from here. Skip just
+                    // this rule rather than abandoning all remaining page jumps.
+                    continue 2;
                 }
             }
 

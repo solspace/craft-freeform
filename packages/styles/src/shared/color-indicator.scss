@@ -1,5 +1,7 @@
 @use "sass:math";
 
+$size: 10px;
+
 .color-indicator {
   display: inline-block;
   width: $size;

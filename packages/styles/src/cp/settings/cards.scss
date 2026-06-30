@@ -1,3 +1,6 @@
+$speed: 0.5s;
+$color: #67ac5b;
+
 ul.cards {
   display: grid !important;
   grid-template-columns: auto auto auto;
@@ -77,7 +80,6 @@ ul.cards {
           display: block;
         }
       }
-      $color: #67ac5b;
     }
 
     &.checking {
@@ -102,6 +104,7 @@ ul.cards {
           }
         }
       }
+
       $color: #9e9e9e;
     }
 
@@ -116,8 +119,8 @@ ul.cards {
           display: block;
         }
       }
+
       $color: #e15241;
     }
-    $speed: 0.5s;
   }
 }

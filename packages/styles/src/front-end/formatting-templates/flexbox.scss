@@ -2,6 +2,7 @@
 @use "spinner";
 
 $errorColor: #721c24;
+$alignments: left, center, right, spread;
 
 .freeform-pages {
   display: flex;
@@ -17,6 +18,7 @@ $errorColor: #721c24;
 }
 
 $gutter: 15px;
+
 .freeform-row {
   display: flex;
   justify-content: space-between;
@@ -105,6 +107,7 @@ $gutter: 15px;
       font-size: 13px;
       color: #aba7a7;
     }
+
     @each $alignment in $alignments {
       &.freeform-column-content-align-#{$alignment} {
         display: flex;
@@ -124,8 +127,6 @@ $gutter: 15px;
         }
       }
     }
-
-    $alignments: left, center, right, spread;
   }
 }
 

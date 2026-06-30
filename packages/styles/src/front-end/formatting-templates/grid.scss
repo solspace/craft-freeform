@@ -3,6 +3,7 @@
 @use "spinner";
 
 $errorColor: #721c24;
+$alignments: left, center, right;
 
 @mixin clearfix {
   &:after {
@@ -26,6 +27,7 @@ $errorColor: #721c24;
 }
 
 $gutter: 15px;
+
 .freeform-row {
   display: block;
   margin: 0 (-$gutter);
@@ -114,6 +116,7 @@ $gutter: 15px;
       font-size: 13px;
       color: #aba7a7;
     }
+
     @each $alignment in $alignments {
       &.freeform-column-content-align-#{$alignment} {
         text-align: $alignment;
@@ -133,8 +136,6 @@ $gutter: 15px;
         float: right;
       }
     }
-
-    $alignments: left, center, right;
   }
 
   @for $i from 1 through 12 {

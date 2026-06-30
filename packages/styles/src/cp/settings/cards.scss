@@ -1,8 +1,8 @@
 ul.cards {
   display: grid !important;
   grid-template-columns: auto auto auto;
-  column-gap: 20px;
   row-gap: 20px;
+  column-gap: 20px;
 
   margin-top: 40px;
 
@@ -15,16 +15,14 @@ ul.cards {
   }
 
   > li {
-    $speed: .5s;
-
     display: grid;
     grid-template-rows: auto 60px;
 
-    background: white;
-    border: 1px solid #E2E2E5;
-    border-radius: 5px;
-
     text-align: center;
+
+    background: white;
+    border: 1px solid #e2e2e5;
+    border-radius: 5px;
     transition: all $speed ease-out;
 
     &:focus {
@@ -33,20 +31,20 @@ ul.cards {
 
     .centered {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
     }
 
     .card-footer {
-      color: #9E9E9E;
-      background: #F3F5F8;
+      color: #9e9e9e;
+      background: #f3f5f8;
       border-top: 1px solid #e2e2e5;
       transition: all $speed ease-out;
 
       > div {
-        font-weight: normal;
-        font-size: 16px;
         display: none;
+        font-size: 16px;
+        font-weight: normal;
       }
     }
 
@@ -54,10 +52,9 @@ ul.cards {
       border: 1px dashed #e2e2e5;
 
       .card-footer {
-        color: #9E9E9E;
-        background: #F3F5F8;
+        color: #9e9e9e;
+        background: #f3f5f8;
         border-top: 1px dashed #e2e2e5;
-
 
         .inactive {
           display: block;
@@ -66,7 +63,6 @@ ul.cards {
     }
 
     &.active {
-      $color: #67AC5B;
       border-color: $color;
 
       h3 {
@@ -81,10 +77,10 @@ ul.cards {
           display: block;
         }
       }
+      $color: #67ac5b;
     }
 
     &.checking {
-      $color: #9E9E9E;
       border-color: $color;
 
       .card-footer {
@@ -100,16 +96,16 @@ ul.cards {
 
             .loader {
               position: absolute;
-              left: 0;
               top: 0;
+              left: 0;
             }
           }
         }
       }
+      $color: #9e9e9e;
     }
 
     &.errors {
-      $color: #E15241;
       border-color: $color;
 
       .card-footer {
@@ -120,6 +116,8 @@ ul.cards {
           display: block;
         }
       }
+      $color: #e15241;
     }
+    $speed: 0.5s;
   }
 }

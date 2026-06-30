@@ -1,15 +1,14 @@
 @use "sass:math";
 
 .color-indicator {
-  $size: 10px;
-
   display: inline-block;
   width: $size;
   height: $size;
 
   margin-right: 5px;
 
-  box-shadow: inset 0 0 1px rgba(#000000, 0.6);
-
   border-radius: math.div($size, 2);
+
+  box-shadow: inset 0 0 1px rgba(#000000, 0.6);
+  $size: 10px;
 }

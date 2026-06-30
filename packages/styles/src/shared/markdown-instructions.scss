@@ -2,11 +2,11 @@
 
 .markdown-show {
   display: flex;
-  align-items: center;
   gap: 5px;
+  align-items: center;
+  font-weight: 600;
 
   color: var(--blue-500);
-  font-weight: 600;
 
   svg {
     width: 14px;
@@ -35,11 +35,11 @@
 
     &:checked {
       & + .markdown-container {
-        margin-top: 20px;
         max-height: 500px;
+        margin-top: 20px;
+        overflow: auto;
 
         opacity: 1;
-        overflow: auto;
 
         .markdown-collapse {
           opacity: 1;
@@ -47,33 +47,33 @@
       }
 
       & + .markdown-container + .markdown-blur {
-        opacity: 0;
         pointer-events: none;
+        opacity: 0;
       }
     }
   }
 
   .markdown-collapse {
     position: absolute;
-    right: 15px;
     top: 15px;
-
-    opacity: 0;
+    right: 15px;
     padding: 5px 10px;
-
-    border: 1px solid var(--gray-300);
-    border-radius: 30px;
-    background: transparent;
 
     font-size: 12px;
     line-height: 12px;
     color: var(--gray-300);
+    background: transparent;
+
+    border: 1px solid var(--gray-300);
+    border-radius: 30px;
+
+    opacity: 0;
 
     transition: all 0.3s ease;
 
     &:hover {
-      background: var(--gray-300);
       color: white;
+      background: var(--gray-300);
     }
   }
 
@@ -113,39 +113,42 @@
   }
 
   .markdown-blur {
-    cursor: pointer;
-
     position: absolute;
     bottom: 0;
 
     display: flex;
     flex-direction: column;
-    justify-content: end;
     align-items: center;
+    justify-content: end;
 
     width: 100%;
     height: 100%;
-
-    background: linear-gradient(transparent 0%, transparent 20%, white 80%, white 100%);
+    line-height: 30px;
 
     text-align: center;
-    line-height: 30px;
+    cursor: pointer;
+
+    background: linear-gradient(
+      transparent 0%,
+      transparent 20%,
+      white 80%,
+      white 100%
+    );
 
     transition: opacity 0.3s ease;
 
     span {
-      cursor: pointer;
-
       display: block;
       padding: 5px 10px;
+      font-size: 12px;
+      line-height: 12px;
+
+      color: white;
+      cursor: pointer;
+      background: var(--gray-300);
 
       border: 1px solid transparent;
       border-radius: 30px;
-      background: var(--gray-300);
-
-      color: white;
-      font-size: 12px;
-      line-height: 12px;
     }
   }
 

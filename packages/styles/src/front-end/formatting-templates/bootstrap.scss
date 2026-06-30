@@ -1,32 +1,34 @@
 /* Freeform default Bootstrap 3 CSS */
-@use 'spinner';
+@use "spinner";
 
 label.required:after {
-  content: "*";
+  margin-left: 5px;
   color: #d00;
-  margin-left: 5px
+  content: "*";
 }
 
 .submit-align-left {
-  text-align: left
+  text-align: left;
 }
 
 .submit-align-right {
-  text-align: right
+  text-align: right;
 }
 
 .submit-align-center {
-  text-align: center
+  text-align: center;
 }
 
-.submit-align-center button:not(:first-of-type), .submit-align-left button:not(:first-of-type), .submit-align-right button:not(:first-of-type) {
-  margin-left: 5px
+.submit-align-center button:not(:first-of-type),
+.submit-align-left button:not(:first-of-type),
+.submit-align-right button:not(:first-of-type) {
+  margin-left: 5px;
 }
 
 .submit-align-spread button:first-child {
-  float: left
+  float: left;
 }
 
 .submit-align-spread button:last-child {
-  float: right
+  float: right;
 }

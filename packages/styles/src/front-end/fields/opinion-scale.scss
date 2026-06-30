@@ -1,10 +1,10 @@
-$borderColor: #CCCCCC;
+$borderColor: #cccccc;
 
 .opinion-scale {
   ul {
-    list-style: none;
-    margin: 0;
     padding: 0;
+    margin: 0;
+    list-style: none;
   }
 
   .opinion-scale-scales {
@@ -17,31 +17,29 @@ $borderColor: #CCCCCC;
         display: block;
         padding: 6px 12px;
         margin: 0 0 5px;
+        color: black !important;
+        text-align: center;
+
+        white-space: nowrap;
+        cursor: pointer;
 
         border: 1px solid $borderColor;
         border-left: none;
-
-        white-space: nowrap;
-        text-align: center;
-        color: black !important;
-        cursor: pointer;
       }
 
       input {
         position: absolute;
-        left: -9999px;
         top: -9999px;
+        left: -9999px;
+        visibility: hidden;
         width: 1px;
         height: 1px;
         overflow: hidden;
-        visibility: hidden;
 
         &:checked ~ label {
-          background: #E6E6E6;
+          background: #e6e6e6;
         }
       }
-
-      $rad: 3px;
       &:first-child {
         > label {
           border-left: 1px solid $borderColor;
@@ -57,6 +55,8 @@ $borderColor: #CCCCCC;
           border-bottom-right-radius: $rad;
         }
       }
+
+      $rad: 3px;
     }
   }
 

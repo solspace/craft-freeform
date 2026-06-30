@@ -8,8 +8,8 @@
   .icon.clone {
     &:before {
       font-family: "solspace-freeform-craft", sans-serif;
-      content: "\e819";
       color: rgba(0, 0, 0, 0.2);
+      content: "\e819";
     }
 
     &:hover {
@@ -25,7 +25,7 @@
 
   &:before {
     font-family: "Craft", sans-serif;
-    content: 'refresh';
+    content: "refresh";
   }
 }
 

@@ -29,6 +29,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
     newInstanceName: 'Admin',
     order: 1,
     icon: __DIR__.'/../Icons/admin.svg',
+    description: 'Sends notifications to fixed recipients, such as admins or internal team members.',
 )]
 class Admin extends BaseNotification
 {

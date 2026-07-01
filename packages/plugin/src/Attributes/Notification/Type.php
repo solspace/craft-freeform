@@ -17,6 +17,7 @@ class Type
         public string $newInstanceName,
         public ?int $order = null,
         public ?string $icon = null,
+        public ?string $description = null,
     ) {
         $this->properties = new PropertyCollection();
     }

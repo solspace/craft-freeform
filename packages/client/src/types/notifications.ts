@@ -23,6 +23,7 @@ export type NotificationType = {
   icon: string;
   className: string;
   properties: Property[];
+  description: string;
 };
 
 export type Recipient = {

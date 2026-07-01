@@ -24,22 +24,22 @@
 }
 
 .banner {
-  margin-bottom: 10px;
   position: relative;
-  border-radius: 6px;
+  margin-bottom: 10px;
   border-style: solid;
   border-width: 1px;
+  border-radius: 6px;
 
   h2 {
     position: relative;
-    margin: 0;
     padding: 10px 10px 10px 35px;
+    margin: 0;
     color: #ffffff;
   }
 
   ul {
-    margin: 0;
     padding: 15px 20px;
+    margin: 0;
 
     > li {
       &:not(:last-child) {
@@ -47,13 +47,13 @@
       }
 
       h4 {
-        margin: 0;
         padding: 0;
+        margin: 0;
       }
 
       p {
-        margin: 0;
         padding: 0;
+        margin: 0;
 
         line-height: 16px;
       }
@@ -70,10 +70,10 @@
   }
 
   &-close {
-    cursor: pointer;
-    height: 16px;
     width: 16px;
+    height: 16px;
     margin: 10px 10px 10px 35px;
+    cursor: pointer;
   }
 
   &-warnings,
@@ -112,8 +112,8 @@
 
 .gridy {
   display: grid;
-  gap: 40px;
   grid-template-columns: 23% 45% 22%;
+  gap: 40px;
   margin-top: 20px;
 
   @media (min-width: 800px) and (max-width: 1399px) {
@@ -132,7 +132,6 @@
 }
 
 .diag-list {
-
   > h2 {
     margin: 6px 0;
   }
@@ -160,12 +159,18 @@
       }
 
       code {
-        font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,Courier,monospace;
-        font-size: .8em !important;
+        padding: 1px 5px;
+        font-family:
+          SFMono-Regular,
+          Consolas,
+          Liberation Mono,
+          Menlo,
+          Courier,
+          monospace;
+        font-size: 0.8em !important;
         background-color: var(--gray-100);
         border: 1px solid var(--hairline-color);
         border-radius: var(--small-border-radius);
-        padding: 1px 5px;
       }
 
       > ul:not(.validators) {
@@ -180,9 +185,9 @@
 
       ul.validators {
         > li {
-          font-style: italic;
-          font-size: 12px;
           margin-left: -2px;
+          font-size: 12px;
+          font-style: italic;
 
           &.suggestionvalidator {
             color: var(--notice-color);
@@ -207,7 +212,6 @@
   }
 
   &.diag-no-margin {
-  
     > ul {
       margin-left: 0;
     }
@@ -220,9 +224,9 @@
   min-width: 10px;
   height: 10px;
   min-height: 10px;
-  border-radius: 50%;
   margin: 5.5px 3px 0 -20px;
   text-align: center;
+  border-radius: 50%;
 
   &.diag-enabled {
     background: var(--enabled-color);
@@ -252,10 +256,10 @@
 
   > .item {
     display: flex;
-    align-items: flex-start;
     gap: 5px;
-    line-height: 1.5;
+    align-items: flex-start;
     min-width: 0;
+    line-height: 1.5;
 
     svg {
       position: relative;

@@ -16,28 +16,28 @@ $backgroundSecondary: var(--white);
 }
 
 .freeform-widget-quick-form {
-  button[type=submit] {
-    background-color: $backgroundPrimary !important;
+  button[type="submit"] {
     --ui-control-active-color: var(--white);
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    color: $white !important;
-    font-weight: 500;
-    cursor: pointer;
-    height: var(--ui-control-height);
-    appearance: none;
-    align-items: center;
-    border: none;
-    border-radius: var(--ui-control-border-radius);
+    position: relative;
     box-sizing: border-box;
     display: inline-flex;
-    font-size: inherit;
+    align-items: center;
     justify-content: center;
+    height: var(--ui-control-height);
     padding: 7px 14px;
-    position: relative;
+    font-size: inherit;
+    font-weight: 500;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: $white !important;
     text-align: center;
-    user-select: none;
     white-space: nowrap;
+    appearance: none;
+    cursor: pointer;
+    user-select: none;
+    background-color: $backgroundPrimary !important;
+    border: none;
+    border-radius: var(--ui-control-border-radius);
   }
 
   .freeform-pages {
@@ -46,9 +46,9 @@ $backgroundSecondary: var(--white);
     list-style: none;
 
     &:after {
-      content: "";
-      display: table;
       clear: both;
+      display: table;
+      content: "";
     }
 
     li {
@@ -62,21 +62,21 @@ $backgroundSecondary: var(--white);
     margin: 0 -15px;
 
     &:after {
-      content: "";
-      display: table;
       clear: both;
+      display: table;
+      content: "";
     }
 
     .freeform-column {
-      display: block;
-      padding: 10px 15px;
       float: left;
       box-sizing: border-box;
+      display: block;
+      padding: 10px 15px;
 
       &:after {
-        content: "";
-        display: table;
         clear: both;
+        display: table;
+        content: "";
       }
 
       > .freeform-row {
@@ -104,47 +104,47 @@ $backgroundSecondary: var(--white);
 
       .freeform-label.freeform-required {
         &:after {
-          content: "*";
           margin-left: 5px;
           color: $red;
+          content: "*";
         }
       }
 
       .freeform-input {
-        width: 100%;
-        display: block;
         box-sizing: border-box;
-        background-clip: padding-box;
-        border: 1px solid rgba(96, 125, 159, .25);
-        border-radius: 3px;
+        display: block;
+        width: 100%;
         min-height: 2.125rem;
-        background-color: $backgroundSecondary;
-        color: $textColor;
+        padding: 6px 9px;
         font-size: 14px;
         line-height: 20px;
-        padding: 6px 9px;
+        color: $textColor;
+        background-color: $backgroundSecondary;
+        background-clip: padding-box;
+        border: 1px solid rgba(96, 125, 159, 0.25);
+        border-radius: 3px;
       }
 
-      .freeform-input[type=checkbox] {
-        width: auto;
+      .freeform-input[type="checkbox"] {
         display: inline;
-        margin: 0;
+        width: auto;
         min-height: auto;
+        margin: 0;
         margin-right: 5px;
       }
 
-      .freeform-input[type=radio] {
-        width: auto;
+      .freeform-input[type="radio"] {
         display: inline;
-        margin: 0;
+        width: auto;
         min-height: auto;
+        margin: 0;
         margin-right: 5px;
       }
 
       .freeform-input.StripeElement {
+        height: 36px;
         padding: 4px 2px;
         border: 1px solid #ccc;
-        height: 36px;
       }
 
       .freeform-input-only-label {
@@ -158,9 +158,9 @@ $backgroundSecondary: var(--white);
       }
 
       .freeform-errors {
-        list-style: none;
         padding: 0;
         margin: 5px 0 0;
+        list-style: none;
 
         > li {
           color: $red;
@@ -224,20 +224,19 @@ $backgroundSecondary: var(--white);
   }
 
   .freeform-group {
+    width: 100%;
+    padding: 0 15px;
     .freeform-label {
       font-weight: bold;
     }
-
-    width: 100%;
-    padding: 0 15px;
   }
 
   .freeform-form-errors {
     padding: 15px;
-    border: 1px solid #f5c6cb;
-    background: #f8d7da;
-    border-radius: 5px;
     color: $darkRed;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
 
     > p {
       margin: 0;

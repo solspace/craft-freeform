@@ -1,34 +1,34 @@
 .status {
   &.green {
-    background-color: #27AB83 !important;
+    background-color: #27ab83 !important;
   }
 
   &.orange {
-    background-color: #CB6E17 !important;
+    background-color: #cb6e17 !important;
   }
 
   &.red {
-    background-color: #CF1124 !important;
+    background-color: #cf1124 !important;
   }
 
   &.yellow {
-    background-color: #FADB5F !important;
+    background-color: #fadb5f !important;
   }
 
   &.pink {
-    background-color: #E8368F !important;
+    background-color: #e8368f !important;
   }
 
   &.purple {
-    background-color: #9B59B6 !important;
+    background-color: #9b59b6 !important;
   }
 
   &.blue {
-    background-color: #1992D4 !important;
+    background-color: #1992d4 !important;
   }
 
   &.turquoise {
-    background-color: #65D6AD !important;
+    background-color: #65d6ad !important;
   }
 
   &.light {
@@ -45,40 +45,40 @@
 }
 
 .ff-status-label {
-  align-items: center;
+  position: relative;
   display: inline-flex;
   gap: var(--xs);
-  height: 1.375rem;
+  align-items: center;
   justify-content: center;
+  height: 1.375rem;
   padding: 0 var(--s);
-  position: relative;
 
   &::before {
-    border-radius: .6875rem;
-    bottom: 0;
-    content: '';
-    display: block;
-    left: 0;
-    opacity: .15;
-    pointer-events: none;
     position: absolute;
-    right: 0;
     top: 0;
-    -webkit-user-select: none;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    pointer-events: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    -webkit-user-select: none;
     user-select: none;
+    content: "";
+    border-radius: 0.6875rem;
+    opacity: 0.15;
   }
 
   .ff-status {
-    background-clip: border-box;
-    border-radius: 100%;
+    position: relative;
     box-sizing: border-box;
     display: inline-block;
     flex: 0 0 auto;
-    height: .75rem;
-    position: relative;
-    width: .75rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-clip: border-box;
+    border-radius: 100%;
 
     &.disabled {
       box-shadow: none !important;
@@ -86,9 +86,9 @@
   }
 
   .ff-status-label-text {
+    position: relative;
     font-size: 11px;
     font-weight: 500;
-    position: relative;
     text-transform: uppercase;
   }
 
@@ -292,9 +292,9 @@
 
   &.white {
     &::before {
-      opacity: 1;
-      border: 1px solid var(--black);
       background-color: var(--white);
+      border: 1px solid var(--black);
+      opacity: 1;
     }
 
     .ff-status {
@@ -308,8 +308,8 @@
 
   &.black {
     &::before {
-      opacity: 1;
       background-color: var(--black);
+      opacity: 1;
     }
 
     .ff-status {

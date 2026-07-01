@@ -1,14 +1,15 @@
 /* Freeform default Grid CSS */
 @use "sass:math";
-@use 'spinner';
+@use "spinner";
 
 $errorColor: #721c24;
+$alignments: left, center, right;
 
 @mixin clearfix {
   &:after {
-    content: "";
-    display: table;
     clear: both;
+    display: table;
+    content: "";
   }
 }
 
@@ -26,20 +27,20 @@ $errorColor: #721c24;
 }
 
 $gutter: 15px;
+
 .freeform-row {
-  @include clearfix;
   display: block;
   margin: 0 (-$gutter);
+  @include clearfix;
 
   .freeform-column {
-    @include clearfix;
-
-    display: block;
-    padding: 10px $gutter;
-
     float: left;
 
     box-sizing: border-box;
+
+    display: block;
+    padding: 10px $gutter;
+    @include clearfix;
 
     > .freeform-row:first-child {
       margin-top: -10px;
@@ -61,31 +62,31 @@ $gutter: 15px;
 
       &.freeform-required {
         &:after {
-          content: "*";
           margin-left: 5px;
 
           color: red;
+          content: "*";
         }
       }
     }
 
     .freeform-input {
-      width: 100%;
-      display: block;
-
       box-sizing: border-box;
+      display: block;
+      width: 100%;
 
-      &[type=checkbox], &[type=radio] {
-        width: auto;
+      &[type="checkbox"],
+      &[type="radio"] {
         display: inline;
+        width: auto;
 
         margin-right: 5px;
       }
 
       &.StripeElement {
-        padding: 4px 2px;
-        border: 1px solid #CCCCCC;
         height: 30px;
+        padding: 4px 2px;
+        border: 1px solid #cccccc;
       }
     }
 
@@ -99,10 +100,11 @@ $gutter: 15px;
       }
     }
 
-    .freeform-errors, .freeform-errors {
-      list-style: none;
+    .freeform-errors,
+    .freeform-errors {
       padding: 0;
       margin: 5px 0 0;
+      list-style: none;
 
       > li {
         color: red;
@@ -110,12 +112,11 @@ $gutter: 15px;
     }
 
     .freeform-instructions {
-      margin:  0 0 5px;
+      margin: 0 0 5px;
       font-size: 13px;
-      color: #ABA7A7;
+      color: #aba7a7;
     }
 
-    $alignments: left, center, right;
     @each $alignment in $alignments {
       &.freeform-column-content-align-#{$alignment} {
         text-align: $alignment;
@@ -147,11 +148,11 @@ $gutter: 15px;
 .freeform-form-errors {
   padding: 15px;
 
-  border: 1px solid #f5c6cb;
-  background: #f8d7da;
-  border-radius: 5px;
-
   color: $errorColor;
+  background: #f8d7da;
+
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
 
   > p {
     margin: 0;

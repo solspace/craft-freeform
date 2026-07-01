@@ -47,12 +47,11 @@ $alert-danger-border: $state-danger-border !default;
 // Alerts
 
 @mixin alert-variant($background, $border, $body-color) {
-  $lighterColour: color.scale($background, $lightness: 5%);
-
-  border-color: $border;
   color: $body-color;
 
   background: linear-gradient(to bottom, $lighterColour 0%, $background 100%);
+
+  border-color: $border;
 
   hr {
     border-top-color: color.scale($border, $lightness: -5%);
@@ -60,6 +59,7 @@ $alert-danger-border: $state-danger-border !default;
   .alert-link {
     color: color.scale($body-color, $lightness: -10%);
   }
+  $lighterColour: color.scale($background, $lightness: 5%);
 }
 
 //
@@ -69,10 +69,10 @@ $alert-danger-border: $state-danger-border !default;
 .alert {
   padding: $alert-padding;
   margin-bottom: $spacer-y;
-  border: $alert-border-width solid transparent;
-  border-radius: $alert-border-radius;
 
   font-size: 14px;
+  border: $alert-border-width solid transparent;
+  border-radius: $alert-border-radius;
 
   // Improve alignment and spacing of inner content
   > p,
@@ -108,14 +108,14 @@ $alert-danger-border: $state-danger-border !default;
     position: absolute;
     top: 7px;
     right: 10px;
-    color: inherit;
 
     font-size: 18px;
+    color: inherit;
 
     &:before {
-      font-family: Craft, sans-serif;
-      content: '\e610';
       margin-left: 2px;
+      font-family: Craft, sans-serif;
+      content: "\e610";
     }
 
     &:hover {
@@ -129,7 +129,11 @@ $alert-danger-border: $state-danger-border !default;
 // Generate contextual modifier classes for colorizing the alert.
 
 .alert-success {
-  @include alert-variant($alert-success-bg, $alert-success-border, $alert-success-text);
+  @include alert-variant(
+    $alert-success-bg,
+    $alert-success-border,
+    $alert-success-text
+  );
 }
 
 .alert-info {
@@ -137,9 +141,17 @@ $alert-danger-border: $state-danger-border !default;
 }
 
 .alert-warning {
-  @include alert-variant($alert-warning-bg, $alert-warning-border, $alert-warning-text);
+  @include alert-variant(
+    $alert-warning-bg,
+    $alert-warning-border,
+    $alert-warning-text
+  );
 }
 
 .alert-danger {
-  @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+  @include alert-variant(
+    $alert-danger-bg,
+    $alert-danger-border,
+    $alert-danger-text
+  );
 }

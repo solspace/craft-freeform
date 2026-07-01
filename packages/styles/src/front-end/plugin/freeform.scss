@@ -1,8 +1,8 @@
-@use '../fields/cards';
-@use '../fields/opinion-scale';
-@use '../fields/drag-and-drop-file';
-@use '../fields/rating';
-@use '../components/visual';
+@use "../fields/cards";
+@use "../fields/opinion-scale";
+@use "../fields/drag-and-drop-file";
+@use "../fields/rating";
+@use "../components/visual";
 
 [data-freeform-controls] {
   display: flex;
@@ -10,14 +10,14 @@
 
   > div {
     display: flex;
-    justify-content: space-between;
-    align-content: center;
     gap: 5px;
+    align-content: center;
+    justify-content: space-between;
 
     button {
       display: flex;
-      align-items: center;
       gap: 5px;
+      align-items: center;
 
       img,
       svg {
@@ -29,8 +29,8 @@
 }
 
 form[data-freeform-disabled] {
-  opacity: 0.5;
   pointer-events: none;
+  opacity: 0.5;
 
   transition: opacity 0.3s ease-in-out;
 }

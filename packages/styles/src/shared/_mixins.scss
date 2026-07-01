@@ -1,15 +1,15 @@
 @mixin clearfix() {
   &:after {
-    content: '';
-    display: table;
     clear: both;
+    display: table;
+    content: "";
   }
 }
 
 %clearfix {
   &:after {
-    content: "";
-    display: table;
     clear: both;
+    display: table;
+    content: "";
   }
 }

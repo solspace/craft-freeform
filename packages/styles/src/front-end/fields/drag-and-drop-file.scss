@@ -1,4 +1,4 @@
-@use '../../shared/media-queries';
+@use "../../shared/media-queries";
 
 $gap: 20px;
 $border-radius: 7px;
@@ -6,19 +6,22 @@ $border-radius: 7px;
 $color-grey: #e5e5e5;
 $color-fill: #077bff;
 
-@mixin progress-bg($base: $color-grey, $fill: $color-fill, $progress: var(--progress)) {
+@mixin progress-bg(
+  $base: $color-grey,
+  $fill: $color-fill,
+  $progress: var(--progress)
+) {
   background: $base;
 
   &:after {
-    content: '';
-
     position: absolute;
-    left: 0;
     bottom: 0;
+    left: 0;
 
     display: block;
     width: $progress;
     height: inherit;
+    content: "";
 
     background-color: $fill;
     transition: background-color 0.5s ease-out;
@@ -28,20 +31,20 @@ $color-fill: #077bff;
 .freeform-file-dnd__input {
   --accent: #3a85ee;
   display: block;
-
-  padding: 67px $gap;
   width: 100%;
   height: auto;
 
-  border-radius: 7px;
-  border: 2px dashed var(--accent);
-  background: #ffffff;
+  padding: 67px $gap;
   color: #282828;
   text-align: center;
 
   cursor: pointer;
+  background: #ffffff;
+  border: 2px dashed var(--accent);
 
-  input[type='file'] {
+  border-radius: 7px;
+
+  input[type="file"] {
     display: none !important;
   }
 
@@ -50,9 +53,9 @@ $color-fill: #077bff;
   }
 
   &[data-dragging] {
-    border-style: solid;
-    background-color: #e7e7e7;
     color: #c6c6c6;
+    background-color: #e7e7e7;
+    border-style: solid;
   }
 
   &[data-contains-files] {
@@ -65,12 +68,12 @@ $color-fill: #077bff;
 
   [data-messages],
   [data-field-errors] {
-    margin: 0;
     padding: 0 20px;
+    margin: 0;
 
     > li {
-      margin: 0;
       padding: 0;
+      margin: 0;
       text-align: left;
 
       opacity: 1;
@@ -110,14 +113,14 @@ $color-fill: #077bff;
     [data-file-preview] {
       cursor: initial;
 
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s ease-out;
+
       &.animation-enter {
         opacity: 0;
         transform: scale(0.1);
       }
-
-      opacity: 1;
-      transform: scale(1);
-      transition: all 0.3s ease-out;
 
       &:hover {
         z-index: 2;
@@ -129,23 +132,23 @@ $color-fill: #077bff;
         width: 100%;
         height: 0;
         padding-bottom: 100%;
-
-        background-size: cover;
         background-color: #969797;
         background-position: center center;
 
+        background-size: cover;
+
         [data-extension-label] {
           position: absolute;
-          left: 0;
-          right: 0;
           top: calc(50% - (36px / 2));
+          right: 0;
+          left: 0;
 
           display: block;
-          user-select: none;
+          font-size: 24px;
 
           color: #ffffff;
-          font-size: 24px;
           text-align: center;
+          user-select: none;
         }
 
         &[data-has-preview] [data-extension-label] {
@@ -154,33 +157,33 @@ $color-fill: #077bff;
 
         [data-progress] {
           position: absolute;
+          right: 0;
           bottom: 0;
           left: 0;
-          right: 0;
 
           width: 100%;
           height: 4px;
           overflow: hidden;
+          transition: opacity 0.5s ease-out 3s;
 
           @include progress-bg();
-          transition: opacity 0.5s ease-out 3s;
         }
 
         [data-remove-button] {
-          cursor: pointer;
           position: absolute;
-          right: -9px;
           top: -9px;
+          right: -9px;
 
           display: flex;
-          justify-content: center;
           align-items: center;
+          justify-content: center;
 
           width: 20px;
           height: 20px;
+          color: #878787;
+          cursor: pointer;
 
           background: #e6e5e5;
-          color: #878787;
 
           border: 1px solid #e6e5e5;
           border-radius: 50%;
@@ -188,30 +191,30 @@ $color-fill: #077bff;
           transition: all 0.2s ease-out;
 
           &:hover {
-            background: var(--accent);
             color: #ffffff;
+            background: var(--accent);
             border: 1px solid var(--accent);
           }
         }
 
         [data-errors] {
-          cursor: pointer;
           position: absolute;
           right: -12px;
           bottom: -10px;
           z-index: 2;
-          line-height: 26px;
 
           width: 26px;
           height: 26px;
+          line-height: 26px;
+          color: #ffffff;
+          cursor: pointer;
 
           background: #ff0300;
-          color: #ffffff;
 
           border: 1px solid #ff0300;
           border-radius: 50%;
 
-          &[aria-label=''],
+          &[aria-label=""],
           &:not([aria-label]) {
             display: none;
           }
@@ -225,8 +228,8 @@ $color-fill: #077bff;
       [data-filename],
       [data-filesize] {
         display: block;
-        margin: 0;
         padding: 0;
+        margin: 0;
 
         text-align: left;
       }
@@ -254,9 +257,9 @@ $color-fill: #077bff;
     }
   }
 
-  &[data-theme='dark'] {
-    background: #222222;
+  &[data-theme="dark"] {
     color: #656666;
+    background: #222222;
 
     &[data-dragging] {
       background-color: #171717;
@@ -271,8 +274,8 @@ $color-fill: #077bff;
 
         [data-remove-button] {
           color: #bababa;
-          border-color: #666666;
           background-color: #666666;
+          border-color: #666666;
         }
 
         [data-filesize] {
@@ -280,8 +283,8 @@ $color-fill: #077bff;
         }
 
         [data-errors]:after {
-          background: #dadada;
           color: #000000;
+          background: #dadada;
         }
       }
     }

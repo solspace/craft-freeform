@@ -83,6 +83,20 @@ const attachCalculations = (input: HTMLInputElement) => {
       (value) => value !== null && value !== "",
     );
     if (!isAllValuesFilled) {
+      // Clear the calculation value
+      input.value = "";
+      input.dispatchEvent(new Event("change"));
+
+      if (input.type === "hidden") {
+        const pTag = input.parentElement?.querySelector(
+          ".freeform-calculation-plain-field",
+        );
+
+        if (pTag) {
+          pTag.textContent = "";
+        }
+      }
+
       return;
     }
 

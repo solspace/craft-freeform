@@ -1,40 +1,40 @@
 // COLORS
 
-$color-cp-bg-gray: rgba(243, 247, 253, 1.00);
+$color-cp-bg-gray: rgba(243, 247, 253, 1);
 $color-cp-bg-blue: #edf0f3;
-$color-cp-bg-white: #FFFFFF;
+$color-cp-bg-white: #ffffff;
 $color-bg-tabs: $color-cp-bg-gray;
 
-$color-white: #FFFFFF;
+$color-white: #ffffff;
 
 $color-field-text: #000000;
-$color-field-border: #DDDDDD;
+$color-field-border: #dddddd;
 $color-column-label: #55606e;
 $color-column-instructions: #8f98a3;
-$color-row-border: #EDEDED;
+$color-row-border: #ededed;
 $color-tab-border: #e3e5e8;
 $color-tab-text: #555555;
 $color-input-text: #29323d;
 $color-select-text: $color-input-text;
 $color-input-border: #b8c2cc;
 $color-input-readonly-text: #555555;
-$color-input-readonly: #ECECEC;
+$color-input-readonly: #ececec;
 $color-input-readonly-border: #c2d1de;
-$color-input-disabled-text: #ABA7A7;
+$color-input-disabled-text: #aba7a7;
 
 $color-placeholder: #fffc00;
 $color-placeholder-hover: #f4f7fc;
 $color-placeholder-border: #dddddd;
 
 $color-row-bg: $color-placeholder;
-$color-row-border: #DBDCDF;
-$color-row-actions-bg: #EBECEF;
-$color-row-actions-text: #BBBDBE;
+$color-row-border: #dbdcdf;
+$color-row-actions-bg: #ebecef;
+$color-row-actions-text: #bbbdbe;
 
 $color-headings: #2b323c;
 
-$color-droppable: #EBF4F9;
-$color-action-button: #BCBEBF;
+$color-droppable: #ebf4f9;
+$color-action-button: #bcbebf;
 $color-action-background: #ebedef;
 
 $color-hr: #e0e5eb;
@@ -44,11 +44,13 @@ $color-preview: rgba(#f8ff0e, 0.5);
 
 // Shadows
 $shadow-readonly-input: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-$shadow-select: 0 0 2px rgba(51, 170, 255, 0), inset 0 0 0 1px rgba(51, 170, 255, 0);
+$shadow-select:
+  0 0 2px rgba(51, 170, 255, 0),
+  inset 0 0 0 1px rgba(51, 170, 255, 0);
 
 // ANIMATION
 
-$anim-speed: .2s;
+$anim-speed: 0.2s;
 $anim-ease: ease-out;
 
 // Sizes

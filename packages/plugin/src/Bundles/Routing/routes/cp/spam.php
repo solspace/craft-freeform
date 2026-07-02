@@ -6,4 +6,5 @@ return [
     'freeform/spam/delete' => 'freeform/spam-submissions/delete',
     'freeform/spam/<id:\d+>' => 'freeform/spam-submissions/edit',
     'freeform/spam/<formHandle:[a-zA-Z0-9\-_]+>' => 'freeform/spam-submissions/index',
+    'freeform/spam/block-ip-address' => 'freeform/spam-submissions/block-ip-address',
 ];

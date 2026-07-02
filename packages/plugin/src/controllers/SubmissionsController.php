@@ -210,7 +210,7 @@ class SubmissionsController extends BaseController
             'isCraft5' => $isCraft5,
         ];
 
-        $variables = array_merge($variables, $craftVersionSpecificVariables);
+        $variables = array_merge($variables, $craftVersionSpecificVariables, $this->getEditTemplateVariables($submission));
 
         return $this->renderTemplate(
             $this->getTemplateBasePath().'/edit',
@@ -344,6 +344,11 @@ class SubmissionsController extends BaseController
     protected function getTemplateBasePath(): string
     {
         return self::TEMPLATE_BASE_PATH;
+    }
+
+    protected function getEditTemplateVariables(Submission $submission): array
+    {
+        return [];
     }
 
     private function checkPermissions(Form $form): void

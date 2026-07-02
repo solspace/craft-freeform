@@ -353,7 +353,7 @@ class IntegrationsService extends BaseService
 
             if (!$record) {
                 throw new IntegrationException(
-                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
+                    Freeform::t('Integration with ID {id} not found', ['id' => $model->id])
                 );
             }
         }

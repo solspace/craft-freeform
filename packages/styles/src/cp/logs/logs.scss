@@ -1,12 +1,12 @@
 $logColors: (
-        debug: #6c757d,
-        info: #0284c7,
-        notice: #28a745,
-        warning: #ffc107,
-        error: #dc3545,
-        critical: #dc3545,
-        alert: #dc3545,
-        emergency: #dc3545,
+  debug: #6c757d,
+  info: #0284c7,
+  notice: #28a745,
+  warning: #ffc107,
+  error: #dc3545,
+  critical: #dc3545,
+  alert: #dc3545,
+  emergency: #dc3545,
 );
 
 .log-table {
@@ -38,12 +38,12 @@ $logColors: (
 
         [data-level] {
           padding: 7px !important;
-
-          color: #ffffff;
-          text-align: center;
           font-size: 10px;
           font-weight: bold;
           line-height: 3px;
+
+          color: #ffffff;
+          text-align: center;
           text-transform: uppercase;
 
           user-select: none;
@@ -65,13 +65,13 @@ $logColors: (
         }
 
         [data-date] {
-          color: #b1b1b1;
           font-size: 12px !important;
+          color: #b1b1b1;
         }
 
         [data-request-id] {
-          color: #b1b1b1;
           font-size: 12px !important;
+          color: #b1b1b1;
         }
       }
 
@@ -86,10 +86,9 @@ $logColors: (
       }
 
       &.log-message {
+        padding: 10px 24px 10px 0 !important;
         word-break: break-word;
         overflow-wrap: break-word;
-
-        padding: 10px 24px 10px 0 !important;
 
         .message {
           padding: 0 0 10px;
@@ -109,9 +108,9 @@ $logColors: (
 
 .paginator-wrapper {
   position: absolute;
-  z-index: 100;
-  left: 30%;
   right: 30%;
+  left: 30%;
+  z-index: 100;
 
   &.upper {
     top: -47px;
@@ -123,8 +122,8 @@ $logColors: (
 
   .paginator {
     display: flex;
-    justify-content: center;
     gap: 30px;
+    justify-content: center;
 
     .group {
       a {

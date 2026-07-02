@@ -1,19 +1,16 @@
-@use '../main';
+@use "../main";
 
 #throttling-count {
   width: 100px;
   text-align: right;
 }
 
-#throttling-time-frame {
-}
-
 ul.freeform-settings-list {
-  list-style-type: disc;
   padding-left: 20px !important;
+  list-style-type: disc;
 
   > li {
-    font-weight: 600
+    font-weight: 600;
   }
 }
 
@@ -23,7 +20,8 @@ ul.freeform-settings-list {
   gap: 16px;
 }
 
-.categories, .category-item-list {
+.categories,
+.category-item-list {
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -36,10 +34,10 @@ ul.freeform-settings-list {
 .categories.delimited {
   > li {
     &:not(:last-child):after {
-      content: '';
       display: block;
-      border-bottom: 1px solid #e1e1e16d;
       margin: 8px -24px;
+      content: "";
+      border-bottom: 1px solid #e1e1e16d;
     }
   }
 }
@@ -52,8 +50,8 @@ ul.freeform-settings-list {
 
     label {
       display: flex;
-      align-items: center;
       gap: 5px;
+      align-items: center;
 
       svg {
         width: 11px;
@@ -77,14 +75,14 @@ ul.freeform-settings-list {
 
       span {
         position: absolute;
-        left: 0;
-        right: 0;
         top: 0;
+        right: 0;
         bottom: 0;
+        left: 0;
 
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
       }
 
       & span.locked {
@@ -103,9 +101,9 @@ ul.freeform-settings-list {
       }
 
       input.locked {
-        border: 1px solid red;
         pointer-events: none;
         user-select: none;
+        border: 1px solid red;
 
         & + span.locked {
           opacity: 1;
@@ -123,8 +121,9 @@ ul.freeform-settings-list {
   max-height: 200px;
   overflow-y: auto;
 
-  input[disabled], input[disabled] + label {
-    opacity: 0.5;
+  input[disabled],
+  input[disabled] + label {
     pointer-events: none;
+    opacity: 0.5;
   }
 }

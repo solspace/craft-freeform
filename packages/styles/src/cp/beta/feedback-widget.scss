@@ -1,8 +1,8 @@
 #freeform-beta-feedback-widget {
   position: fixed;
-  z-index: 100;
-  bottom: 10px;
   right: 10px;
+  bottom: 10px;
+  z-index: 100;
 
   display: flex;
   flex-direction: column;
@@ -28,8 +28,8 @@
 
     > span.icon {
       position: absolute;
-      right: 8px;
       top: 8px;
+      right: 8px;
 
       display: none;
     }
@@ -40,8 +40,8 @@
     height: 350px;
 
     > a {
-      background: #394b60;
       color: white;
+      background: #394b60;
 
       > span {
         display: inline;
@@ -75,9 +75,9 @@
     flex: 0;
 
     padding: 6px 20px;
+    font-weight: bold;
 
     color: #394b60;
-    font-weight: bold;
 
     &:hover {
       text-decoration: none;
@@ -105,8 +105,8 @@
           .star {
             width: 30px;
             height: 30px;
-            cursor: pointer;
             color: #6c7a8c;
+            cursor: pointer;
 
             .star-filled {
               display: none;

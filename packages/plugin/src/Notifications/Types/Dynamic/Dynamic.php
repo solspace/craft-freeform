@@ -25,6 +25,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollec
     newInstanceName: 'User Select',
     order: 3,
     icon: __DIR__.'/../Icons/user-select.svg',
+    description: 'Routes notifications based on the user’s selected option. To email the submitter, use Email Field instead.',
 )]
 class Dynamic extends BaseNotification
 {

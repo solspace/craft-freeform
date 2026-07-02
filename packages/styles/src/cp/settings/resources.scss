@@ -16,15 +16,15 @@
   }
 
   h3 {
-    color: #616161;
     padding: 0;
     margin: 0;
     font-size: 25px;
     font-weight: normal;
-    transition: all .5s ease-out;
+    color: #616161;
+    transition: all 0.5s ease-out;
 
     a {
-      color: #1D97F3;
+      color: #1d97f3;
     }
   }
 
@@ -35,7 +35,6 @@
     font-style: italic;
   }
 }
-
 
 .explore-card {
   .icon {
@@ -49,22 +48,22 @@
   }
 
   h1 {
-    color: #616161;
+    margin: 0;
     font-size: 25px;
     font-weight: normal;
-    margin: 0;
+    color: #616161;
   }
 
   h4 {
-    color: #616161;
     padding: 0 0 6px;
     margin: 0;
     font-size: 18px;
     font-weight: normal;
-    transition: all .5s ease-out;
+    color: #616161;
+    transition: all 0.5s ease-out;
 
     a {
-      color: #1D97F3;
+      color: #1d97f3;
     }
   }
 
@@ -79,14 +78,14 @@
     margin-top: 20px;
 
     li {
-      color: gray;
       padding: 0 5% 5px;
+      color: gray;
     }
   }
 }
 
 li.active h1 {
-  color: #67AC5B;
+  color: #67ac5b;
 }
 
 .card-footer {

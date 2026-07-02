@@ -1,4 +1,4 @@
-@use '../../shared/mixins';
+@use "../../shared/mixins";
 
 #components-wrapper {
   display: grid;
@@ -20,8 +20,8 @@
 
   .btn-group {
     position: absolute;
-    right: 15px;
     top: 5px;
+    right: 15px;
   }
 }
 
@@ -33,9 +33,9 @@ ul.directory-structure {
   }
 
   li:before {
-    font-family: 'Craft';
-    font-size: 16px;
     padding-right: 5px;
+    font-family: "Craft";
+    font-size: 16px;
   }
 
   li.dir {
@@ -43,21 +43,21 @@ ul.directory-structure {
 
     &:before {
       font-weight: normal;
-      content: 'folder';
+      content: "folder";
     }
   }
 
   li.file {
     display: flex;
-    justify-content: start;
-    align-items: center;
     gap: 3px;
+    align-items: center;
+    justify-content: start;
 
     padding: 2px 0;
     font-weight: normal;
 
     &:before {
-      content: 'templates';
+      content: "templates";
     }
 
     > small {
@@ -79,19 +79,19 @@ ul.directory-structure {
           position: relative;
           top: 1px;
           padding: 0 5px 0 0;
+          font-family: "Craft";
+          font-size: 10px;
 
           font-weight: normal;
-          font-family: 'Craft';
-          font-size: 10px;
-          content: 'routes';
+          content: "routes";
         }
       }
 
       .template {
         float: right;
+        font-size: 12px;
 
         color: #ccc;
-        font-size: 12px;
       }
     }
   }
@@ -105,9 +105,9 @@ ul.section-structure {
 
     > div {
       float: left;
-      @extend %gradient-bg;
 
       margin: 0 10px 0 0;
+      @extend %gradient-bg;
 
       &:last-child {
         margin-right: 0;
@@ -129,12 +129,12 @@ ul.section-structure {
 }
 
 %gradient-bg {
-  @extend %bordered-padding;
   background: #f4f7fc;
+  @extend %bordered-padding;
 }
 
 .add-sample-template {
   position: absolute;
-  right: 20px;
   top: 10px;
+  right: 20px;
 }

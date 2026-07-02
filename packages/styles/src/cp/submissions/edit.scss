@@ -1,14 +1,14 @@
-@use '../../shared/variables';
-@use '../../shared/classes';
-@use '../../front-end/fields/opinion-scale';
+@use "../../shared/variables";
+@use "../../shared/classes";
+@use "../../front-end/fields/opinion-scale";
 
 $spacing: 10px;
 $gutter: 10px;
 .fields-row {
   display: flex;
   justify-content: space-between;
-  margin: 0 (-($gutter)) 0;
   padding: 0;
+  margin: 0 (-($gutter)) 0;
 
   &:last-child {
     border-bottom: none;
@@ -26,8 +26,8 @@ $gutter: 10px;
     overflow: hidden;
 
     .field {
-      overflow-y: inherit;
       overflow-x: auto;
+      overflow-y: inherit;
     }
   }
 
@@ -37,14 +37,14 @@ $gutter: 10px;
         &:after {
           position: relative;
           top: 2px;
-
-          content: '*';
           margin: 0 0 0 7px;
 
           font-family: Craft, sans-serif;
           font-size: 19px;
           line-height: 12px;
           color: #da5a47;
+
+          content: "*";
         }
       }
     }
@@ -59,19 +59,18 @@ $gutter: 10px;
 
     legend {
       padding: 0 10px;
-      background: white;
 
       font-weight: bold;
+      background: white;
     }
   }
 }
 
 #status-menu-btn {
+  padding-left: 0;
   background: none;
   border: none;
   box-shadow: none;
-
-  padding-left: 0;
 
   &:focus {
     outline: none;
@@ -99,8 +98,8 @@ $gutter: 10px;
 
 .file-preview {
   display: flex;
-  justify-content: flex-start;
   flex-wrap: wrap;
+  justify-content: flex-start;
 }
 
 label.required:after {
@@ -113,8 +112,8 @@ label.required:after {
 
 [data-field-type="table"] {
   textarea {
-    resize: vertical !important;
-    overflow-y: auto !important;
     min-height: 34px !important;
+    overflow-y: auto !important;
+    resize: vertical !important;
   }
 }

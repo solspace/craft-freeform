@@ -32,6 +32,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
     newInstanceName: 'Conditional',
     order: 2,
     icon: __DIR__.'/../Icons/conditional.svg',
+    description: 'Sends notifications only when configured rules or field values match.',
 )]
 class Conditional extends BaseNotification
 {

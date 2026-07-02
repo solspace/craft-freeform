@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.15.19 - 2026-07-02
+
+### Added
+- Added a **Block IP Address** button to spam submissions.
+- Added description tooltips for each notification type in the form builder.
+
+### Fixed
+- Changed missing-hash **Stripe** webhook log entries from `error` to `debug` and clarified the log messages.
+- Fixed an issue where field default values could use UI translations unexpectedly.
+- Fixed an issue where page jump rules could be skipped when another rule referenced an off-page field.
+- Fixed an issue where conditional rules for **Calculation** fields could use stale data instead of the current field state.
+
+### Security
+- Updated dependencies to address security vulnerabilities.
+
 ## 5.15.18 - 2026-06-25
 
 ### Fixed

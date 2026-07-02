@@ -53,6 +53,16 @@ type RuleCondition = {
   value: string;
 };
 
+const toComparableNumber = (value: unknown): number | null => {
+  if (value === null || value === undefined || value === "") {
+    return null;
+  }
+
+  const parsed = parseFloat(`${value}`);
+
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
 const filterMatchingRules = (element: Element) => (rule: Rule) =>
   rule.conditions.some((condition) => {
     const elementName = (element as HTMLInputElement).name;
@@ -112,6 +122,12 @@ class RuleHandler implements FreeformHandler {
         case "TEXTAREA":
         case "INPUT": {
           const input = element as HTMLInputElement;
+
+          if (input.hasAttribute("data-calculations")) {
+            listener = "change";
+            break;
+          }
+
           if (input.type === "hidden") {
             return;
           }
@@ -342,17 +358,33 @@ class RuleHandler implements FreeformHandler {
           `${currentValue}`.toLowerCase() !== `${condition.value}`.toLowerCase()
         );
 
-      case Operator.GreaterThan:
-        return parseFloat(currentValue) > parseFloat(condition.value);
+      case Operator.GreaterThan: {
+        const left = toComparableNumber(currentValue);
+        const right = toComparableNumber(condition.value);
 
-      case Operator.GreaterThanOrEquals:
-        return parseFloat(currentValue) >= parseFloat(condition.value);
+        return left !== null && right !== null && left > right;
+      }
 
-      case Operator.LessThan:
-        return parseFloat(currentValue) < parseFloat(condition.value);
+      case Operator.GreaterThanOrEquals: {
+        const left = toComparableNumber(currentValue);
+        const right = toComparableNumber(condition.value);
 
-      case Operator.LessThanOrEquals:
-        return parseFloat(currentValue) <= parseFloat(condition.value);
+        return left !== null && right !== null && left >= right;
+      }
+
+      case Operator.LessThan: {
+        const left = toComparableNumber(currentValue);
+        const right = toComparableNumber(condition.value);
+
+        return left !== null && right !== null && left < right;
+      }
+
+      case Operator.LessThanOrEquals: {
+        const left = toComparableNumber(currentValue);
+        const right = toComparableNumber(condition.value);
+
+        return left !== null && right !== null && left <= right;
+      }
 
       case Operator.Contains:
         return `${currentValue}`

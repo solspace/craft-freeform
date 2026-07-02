@@ -66,7 +66,7 @@ class StripeWebhookController extends BaseStripeController
             ?? null;
 
         if (!$hash) {
-            $this->logger->error('Received a Stripe Webhook that does not contain a valid Freeform hash', [
+            $this->logger->debug('Ignoring Stripe Webhook that does not contain a Freeform hash', [
                 'type' => $json->type,
                 'json' => $json,
             ]);
@@ -110,7 +110,7 @@ class StripeWebhookController extends BaseStripeController
         $hash = $paymentIntent->metadata->hash ?? null;
 
         if (!$hash) {
-            $this->logger->error('Received a Stripe Webhook that does not contain a valid Freeform hash', [
+            $this->logger->debug('Ignoring Stripe Webhook that does not contain a Freeform hash', [
                 'event' => $event,
             ]);
 

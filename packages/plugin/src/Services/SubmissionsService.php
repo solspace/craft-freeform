@@ -55,6 +55,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     private static array $submissionCache = [];
     private static array $submissionTokenCache = [];
 
+    /** @var array<string, array> */
+    private static array $submissionCountByFormCache = [];
+    private static ?array $savedSubmissionCountByFormCache = null;
+
     public function getSubmissionById(?int $id): ?Submission
     {
         if (null === $id) {
@@ -140,14 +144,30 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function getSubmissionCountByForm(bool $isSpam = false, ?Carbon $rangeStart = null, ?Carbon $rangeEnd = null): array
     {
+        // Memoize the range values - these are called once per form while building the form list
+        // Each call queries the entire submissions table
+        $isCacheable = null === $rangeStart && null === $rangeEnd;
+
+        $cacheKey = $isSpam ? 'spam' : 'regular';
+
+        if ($isCacheable && isset(self::$submissionCountByFormCache[$cacheKey])) {
+            return self::$submissionCountByFormCache[$cacheKey];
+        }
+
         $isSpamFolderEnabled = $this->getSettingsService()->isSpamFolderEnabled();
         if ($isSpam && !$isSpamFolderEnabled) {
-            return (new Query())
+            $counts = (new Query())
                 ->select('spamBlockCount')
                 ->from(FormRecord::TABLE)
                 ->indexBy('id')
                 ->column()
             ;
+
+            if ($isCacheable) {
+                self::$submissionCountByFormCache[$cacheKey] = $counts;
+            }
+
+            return $counts;
         }
 
         $submissions = Submission::TABLE;
@@ -174,12 +194,22 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
         );
 
-        return $query->column();
+        $counts = $query->column();
+
+        if ($isCacheable) {
+            self::$submissionCountByFormCache[$cacheKey] = $counts;
+        }
+
+        return $counts;
     }
 
     public function getSavedSubmissionCountByForm(): array
     {
-        return (new Query())
+        if (null !== self::$savedSubmissionCountByFormCache) {
+            return self::$savedSubmissionCountByFormCache;
+        }
+
+        return self::$savedSubmissionCountByFormCache = (new Query())
             ->select('COUNT(*)')
             ->from(SavedFormRecord::TABLE)
             ->groupBy('formId')
@@ -232,6 +262,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $updateSearchIndex = $this->getSettingsService()->isUpdateSearchIndexes();
         if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
+            $this->clearSubmissionCountCache();
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
             return true;
@@ -285,6 +316,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $transaction?->rollBack();
 
             throw $e;
+        }
+
+        if ($deleted > 0) {
+            $this->clearSubmissionCountCache();
         }
 
         return $deleted > 0;
@@ -474,6 +509,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    private function clearSubmissionCountCache(): void
+    {
+        self::$submissionCountByFormCache = [];
+        self::$savedSubmissionCountByFormCache = null;
     }
 
     // Add a session flash variable that the form has been submitted.

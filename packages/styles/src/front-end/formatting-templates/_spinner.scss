@@ -1,23 +1,23 @@
-button[type=submit] {
+button[type="submit"] {
   &.freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 
     &:before {
-      content: '';
       display: block;
       flex: 1 0 11px;
 
       width: 11px;
       height: 11px;
       margin-right: 10px;
+      content: "";
+      border-color: transparent transparent white white;
 
       border-style: solid;
       border-width: 2px;
-      border-color: transparent transparent white white;
       border-radius: 50%;
-      animation: freeform-processing .5s linear infinite;
+      animation: freeform-processing 0.5s linear infinite;
     }
   }
 }

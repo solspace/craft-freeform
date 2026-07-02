@@ -244,6 +244,15 @@
           </div>
         </div>
       {% endif %}
+      {% if submission.isSpam %}
+        <div class="data">
+          <h5 class="heading">{{ "IP Address"|t('freeform') }}</h5>
+          <div class="value">
+            <a href="https://ipinfo.io/{{ submission.ip }}" target="_blank" rel="noopener noreferrer">{{ submission.ip }}</a>
+            {% if isSubmissionIpAddressBlocked %}&nbsp;({{ "Blocked"|t('freeform') }}){% endif %}
+          </div>
+        </div>
+      {% endif %}
     </div>
 
     {% hook 'freeform.submissions.edit.meta' %}

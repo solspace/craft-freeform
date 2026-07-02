@@ -1,17 +1,17 @@
 /* Freeform default Foundation CSS */
-@use 'spinner';
+@use "spinner";
 
 label.required:after {
-  content: "*";
-  color: #d00;
   margin-left: 5px;
-  font-size: 12px;
   font-family: serif;
-  font-weight: 700
+  font-size: 12px;
+  font-weight: 700;
+  color: #d00;
+  content: "*";
 }
 
 .submit {
-  margin-top: 15px
+  margin-top: 15px;
 }
 
 $alignments: left, center, right;
@@ -20,7 +20,7 @@ $alignments: left, center, right;
     text-align: $alignment;
 
     button:not(:first-of-type) {
-      margin-left: 5px
+      margin-left: 5px;
     }
   }
 }
@@ -28,7 +28,7 @@ $alignments: left, center, right;
 .submit-align-spread {
   button {
     &:first-child {
-      float: left
+      float: left;
     }
 
     &:last-child {
@@ -39,7 +39,7 @@ $alignments: left, center, right;
 
 .form-rating-field-wrapper {
   label {
-    margin-left: 0;
     margin-right: 0;
+    margin-left: 0;
   }
 }

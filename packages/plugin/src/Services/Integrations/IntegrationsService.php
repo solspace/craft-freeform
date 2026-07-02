@@ -354,7 +354,7 @@ class IntegrationsService extends BaseService
 
             if (!$record) {
                 throw new IntegrationException(
-                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
+                    Freeform::t('Integration with ID {id} not found', ['id' => $model->id])
                 );
             }
         }
@@ -596,30 +596,7 @@ class IntegrationsService extends BaseService
             /** @var FormIntegrationRecord[] $formIntegrationRecords */
             $formIntegrationRecords = $query->all();
 
-            foreach ($integrations as $integration) {
-                $metadata = [];
-                $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
-                if ($formIntegration) {
-                    $metadata = JsonHelper::decode($formIntegration->metadata ?? '{}', true);
-                    $enabledOverride = $formIntegration->enabled;
-                }
-
-                if (!$formIntegration) {
-                    if (isset($integration->metadata['enabledByDefault'])) {
-                        $enabledOverride = (bool) $integration->metadata['enabledByDefault'];
-                    } else {
-                        $enabledOverride = false;
-                    }
-                }
-
-                $integration->instanceId = $formIntegration?->id;
-                $integration->instanceUid = $formIntegration?->uid ?? StringHelper::UUID();
-                $integration->enabled = $enabledOverride;
-                $integration->metadata = array_merge(
-                    $integration->metadata,
-                    $metadata
-                );
-            }
+            $integrations = $this->applyFormOverrides($integrations, $formIntegrationRecords);
 
             $integrationObjects = array_map(
                 static fn (IntegrationModel $record) => $record->getIntegrationObject(),
@@ -646,6 +623,55 @@ class IntegrationsService extends BaseService
         }
 
         return $cache[$key];
+    }
+
+    /**
+     * Applies per-form overrides.
+     *
+     * Models returned by getAllIntegrations() are cached and shared across every getForForm() call within a request.
+     * Cloned each modal before per-form override is applied, so that one form's override (e.g. a disabled captcha)
+     * cannot leak into the shared model and affect the resolution of other forms.
+     *
+     * @param IntegrationModel[]      $integrations
+     * @param FormIntegrationRecord[] $formIntegrationRecords indexed by integration id
+     *
+     * @return IntegrationModel[]
+     *
+     * @throws \Exception
+     */
+    public function applyFormOverrides(array $integrations, array $formIntegrationRecords): array
+    {
+        foreach ($integrations as $key => $integration) {
+            $integration = clone $integration;
+            $integrations[$key] = $integration;
+
+            $metadata = [];
+
+            $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
+            if ($formIntegration) {
+                $metadata = JsonHelper::decode($formIntegration->metadata ?? '{}', true);
+
+                $enabledOverride = $formIntegration->enabled;
+            }
+
+            if (!$formIntegration) {
+                if (isset($integration->metadata['enabledByDefault'])) {
+                    $enabledOverride = (bool) $integration->metadata['enabledByDefault'];
+                } else {
+                    $enabledOverride = false;
+                }
+            }
+
+            $integration->instanceId = $formIntegration?->id;
+            $integration->instanceUid = $formIntegration?->uid ?? StringHelper::UUID();
+            $integration->enabled = $enabledOverride;
+            $integration->metadata = array_merge(
+                $integration->metadata,
+                $metadata,
+            );
+        }
+
+        return $integrations;
     }
 
     public function processIntegrationJob(int $formId, ?int $submissionId, array $postedData, string $type): void

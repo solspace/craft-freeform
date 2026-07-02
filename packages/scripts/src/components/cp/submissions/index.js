@@ -167,5 +167,60 @@ $(() => {
     });
   });
 
-  updateActionButtons();
+  $("#block-ip-address-button").on("click", function () {
+    const $button = $(this);
+
+    const id = $button.data("id");
+    if (!id) {
+      Craft.cp.displayError(Craft.t("freeform", "Submission ID was missing."));
+      return;
+    }
+
+    const ip = $button.data("ip");
+    if (!ip) {
+      Craft.cp.displayError(Craft.t("freeform", "IP Address was missing."));
+      return;
+    }
+
+    if (!confirm(Craft.t("freeform", `Block IP Address ${ip}?`))) {
+      return;
+    }
+
+    $button.attr("disabled", true).addClass("disabled");
+
+    Craft.sendActionRequest(
+      "POST",
+      "freeform/spam-submissions/block-ip-address",
+      {
+        data: {
+          id,
+          ip,
+        },
+      },
+    )
+      .then((response) => {
+        if (response.data.success) {
+          Craft.cp.displaySuccess(response.data.message);
+
+          $button.closest(".btngroup").fadeOut(200, function () {
+            $(this).remove();
+          });
+        } else {
+          Craft.cp.displayError(response.data.message);
+
+          $button.removeAttr("disabled").removeClass("disabled");
+        }
+      })
+      .catch(() => {
+        Craft.cp.displayError(
+          Craft.t("freeform", "Could not block IP Address."),
+        );
+
+        $button.removeAttr("disabled").removeClass("disabled");
+      });
+  });
+
+  if (window.isCraft5) {
+    updateActionButtons();
+  }
 });

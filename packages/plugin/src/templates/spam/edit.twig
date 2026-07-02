@@ -33,6 +33,13 @@
 {% endif %}
 
 {% block actionButton %}
+    {% if submission.ip and not isSubmissionIpAddressBlocked %}
+        <div class="btngroup submit">
+            <button type="button" class="btn" id="block-ip-address-button" data-id="{{ submission.id }}" data-ip="{{ submission.ip }}">
+                {{ 'Block IP Address'|t('freeform') }}
+            </button>
+        </div>
+    {% endif %}
     <div class="btngroup submit">
         <button type="button" class="btn" id="delete-button" data-id="{{ submission.id }}">
             {{ 'Delete'|t('freeform') }}

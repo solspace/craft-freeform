@@ -6,19 +6,25 @@ import axios from "axios";
 
 export const QKNotificationTemplates = {
   all: ["notification-templates"] as const,
-  one: (templateId: string | number) =>
-    [...QKNotificationTemplates.all, templateId] as const,
+  one: (templateId?: string | number, site?: string) =>
+    [...QKNotificationTemplates.all, templateId, site] as const,
 };
 
 export const useQueryNotificationTemplate = (
   templateId?: string | number,
+  site?: string,
 ): UseQueryResult<NotificationTemplate, AxiosError> => {
   return useQuery({
-    queryKey: QKNotificationTemplates.one(templateId),
+    queryKey: QKNotificationTemplates.one(templateId, site),
     queryFn: () =>
       axios
         .get(
           `/api/notifications/templates/${templateId || "get-default-metadata"}`,
+          {
+            params: {
+              site,
+            },
+          },
         )
         .then((res) => res.data),
     staleTime: Infinity,
@@ -28,12 +34,14 @@ export const useQueryNotificationTemplate = (
 
 export const useNotificationTemplateMutation = (
   formId?: number,
+  site?: string,
 ): UseMutationResult => {
   return useMutation({
     mutationFn: (payload: NotificationTemplate) => {
       return axios
         .post("/api/notifications/templates", {
           formId,
+          site,
           ...payload,
         })
         .then((res) => res.data);

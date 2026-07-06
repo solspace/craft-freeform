@@ -23,6 +23,8 @@ const themeStyles = {
 };
 
 export const ReferenceWrapper = styled.span`
+  min-width: 0;
+  max-width: 100%;
   display: inline-flex;
 `;
 

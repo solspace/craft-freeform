@@ -56,7 +56,7 @@ class NotificationsBundle extends FeatureBundle
             return;
         }
 
-        $siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+        $siteId = $this->getNotificationSiteId($form, $submission);
 
         $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer, $siteId);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
@@ -68,5 +68,18 @@ class NotificationsBundle extends FeatureBundle
         $event->addType(EmailField::class);
         $event->addType(Dynamic::class);
         $event->addType(Conditional::class);
+    }
+
+    private function getNotificationSiteId(Form $form, Submission $submission): int
+    {
+        if ($submission->siteId) {
+            return $submission->siteId;
+        }
+
+        if ($form->getSiteId()) {
+            return $form->getSiteId();
+        }
+
+        return \Craft::$app->getSites()->getCurrentSite()->id;
     }
 }

@@ -1,15 +1,29 @@
-{%- set demoArea = craft.app.request.segment(2) -%}
-{%- set pageTemplate = craft.app.request.segment(3)|default('basic-light') -%}
+{%- set demoPrefix = "%prefix%" -%}
+{%- set demoRouteSegment = demoPrefix|split('/')|last -%}
+{%- set baseUrlSegments = 1 -%}
+{%- if craft.app.request.segment(baseUrlSegments) != demoRouteSegment -%}
+    {%- if craft.app.request.segment(baseUrlSegments + 1) == demoRouteSegment -%}
+        {%- set baseUrlSegments = baseUrlSegments + 1 -%}
+    {%- elseif craft.app.request.segment(baseUrlSegments + 2) == demoRouteSegment -%}
+        {%- set baseUrlSegments = baseUrlSegments + 2 -%}
+    {%- elseif craft.app.request.segment(baseUrlSegments + 3) == demoRouteSegment -%}
+        {%- set baseUrlSegments = baseUrlSegments + 3 -%}
+    {%- endif -%}
+{%- endif -%}
+{%- set demoBaseUrl = siteUrl ~ demoPrefix -%}
+{%- set assetBaseUrl = craft.app.request.hostInfo ~ craft.app.request.baseUrl ~ '/assets/' ~ demoPrefix -%}
+{%- set demoArea = craft.app.request.segment(baseUrlSegments + 1) -%}
+{%- set pageTemplate = craft.app.request.segment(baseUrlSegments + 2)|default('basic-light') -%}
 {%- set pageTemplateFile = pageTemplate ~ '/index.twig' -%}
 {%- if demoArea == "forms" -%}
-    {%- set formHandle = craft.app.request.segment(4) -%}
+    {%- set formHandle = craft.app.request.segment(baseUrlSegments + 3) -%}
 {%- elseif demoArea in ["submissions", "custom"] -%}
-    {%- set formHandle = craft.app.request.segment(3) -%}
+    {%- set formHandle = craft.app.request.segment(baseUrlSegments + 2) -%}
     {%- set pageTemplateFile = null -%}
 {%- elseif demoArea == "extras" -%}
     {%- set formHandle = "" -%}
     {%- set pageTemplateFile = "basic-light/index.twig" -%}
-{%- elseif craft.app.request.segment(2) is empty -%}
+{%- elseif demoArea is empty -%}
     {%- set formHandle = "" -%}
     {%- set pageTemplate = "basic-dark" %}
 {%- endif -%}
@@ -34,7 +48,7 @@
     {% else %}
         {% set colorMode = "light" %}
     {% endif %}
-    {% if demoArea == "forms" and craft.app.request.segment(4) %}
+    {% if demoArea == "forms" and craft.app.request.segment(baseUrlSegments + 3) %}
         {% if pageTemplate in ["bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels"] %}
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
@@ -78,10 +92,10 @@
             --table-head-bg-alt2: #{% if colorMode == "dark" %}404b53{% else %}e3e3e3{% endif %};
         }
     </style>
-    <link href="{{ siteUrl }}assets/demo/css/demo.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/demo/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/demo/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/demo/favicon/favicon-16x16.png">
+    <link href="{{ assetBaseUrl }}/css/demo.css" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ assetBaseUrl }}/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ assetBaseUrl }}/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ assetBaseUrl }}/favicon/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
@@ -90,19 +104,19 @@
 </head>
 <body{% if spamMode is defined and spamMode == true %} class="freeform-spam-mode"{% endif %}>
 
-    {% macro pageTemplateItem(template, form) %}
+    {% macro pageTemplateItem(template, form, demoBaseUrl, pageTemplateSegment, editSegment, editTokenSegment) %}
         {% if template == "divider" %}
             <hr />
         {% else %}
-            <a{% if craft.app.request.segment(3) == template %} class="active"{% endif %} href="{{ siteUrl }}demo/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(5) == "edit" %}/edit/{{ craft.app.request.segment(6) }}{% endif %}">{{ template|title|replace({'-':' '}) }}</a>
+            <a{% if craft.app.request.segment(pageTemplateSegment) == template %} class="active"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ template|title|replace({'-':' '}) }}</a>
         {% endif %}
     {% endmacro %}
 
-    {% macro extrasItem(template, name) %}
+    {% macro extrasItem(template, name, demoBaseUrl, extrasSegment) %}
         {% if template == "divider" %}
             <hr />
         {% else %}
-            <a{% if craft.app.request.segment(3) == template %} class="active"{% endif %} href="{{ siteUrl }}demo/extras/{{ template }}">{{ name }}</a>
+            <a{% if craft.app.request.segment(extrasSegment) == template %} class="active"{% endif %} href="{{ demoBaseUrl }}/extras/{{ template }}">{{ name }}</a>
         {% endif %}
     {% endmacro %}
 
@@ -205,18 +219,18 @@
     } %}
 
     <div class="freeform-nav">
-        <a href="{{ siteUrl }}demo/" class="freeform-logo">
-            <img src="{{ siteUrl }}assets/demo/images/freeform.svg" alt="Freeform Demo"><h1>Freeform Demo</h1>
+        <a href="{{ demoBaseUrl }}/" class="freeform-logo">
+            <img src="{{ assetBaseUrl }}/images/freeform.svg" alt="Freeform Demo"><h1>Freeform Demo</h1>
         </a>
-        {% if demoArea == "forms" or craft.app.request.segment(2) is empty %}
-            This section {{ craft.app.request.segment(4) ? "has" : "will" }} automatically {{ craft.app.request.segment(4) ? "loaded" : "load" }} the
+        {% if demoArea == "forms" or demoArea is empty %}
+            This section {{ craft.app.request.segment(baseUrlSegments + 3) ? "has" : "will" }} automatically {{ craft.app.request.segment(baseUrlSegments + 3) ? "loaded" : "load" }} the
             <div class="freeform-nav-dropdown">
                 <span class="freeform-nav-button">
                     {{ pageTemplate ? pageTemplate|title|replace({'-':' '}) : 'Select a template...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
                 {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
-                    {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
+                    {{ _self.pageTemplateItem(pageTemplate, formHandle, demoBaseUrl, baseUrlSegments + 2, baseUrlSegments + 4, baseUrlSegments + 5) }}
                 {%- endfor %}
                 </div>
             </div>
@@ -230,13 +244,13 @@
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
                     {% set formColor = 'style="background:' ~ form.color ~ '"' %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/forms/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name }}</a>
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/forms/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name }}</a>
                 {% endfor %}
                 </div>
             </div>
             form.
         {% elseif demoArea == "submissions" %}
-            {{ craft.app.request.segment(3) ? "Viewing" : "View" }} submissions for the
+            {{ craft.app.request.segment(baseUrlSegments + 2) ? "Viewing" : "View" }} submissions for the
             <div class="freeform-nav-dropdown">
                 <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
                     <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
@@ -244,13 +258,13 @@
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/submissions/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/submissions/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
                 {% endfor %}
                 </div>
             </div>
             form.
         {% elseif demoArea == "custom" %}
-            This section {{ craft.app.request.segment(3) ? "has" : "will" }} automatically {% if craft.app.request.segment(3) %}loaded the <code>{{ form.settings.formattingTemplate }}</code>{% else %}load the{% endif %} formatting template for the 
+            This section {{ craft.app.request.segment(baseUrlSegments + 2) ? "has" : "will" }} automatically {% if craft.app.request.segment(baseUrlSegments + 2) %}loaded the <code>{{ form.settings.formattingTemplate }}</code>{% else %}load the{% endif %} formatting template for the
             <div class="freeform-nav-dropdown">
                 <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
                     <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
@@ -258,7 +272,7 @@
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/custom/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/custom/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
                 {% endfor %}
                 </div>
             </div>
@@ -269,7 +283,7 @@
                 </span>
                 <div class="freeform-nav-dropdown-content">
                 {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
-                    {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
+                    {{ _self.pageTemplateItem(pageTemplate, formHandle, demoBaseUrl, baseUrlSegments + 2, baseUrlSegments + 4, baseUrlSegments + 5) }}
                 {%- endfor %}
                 </div>
             </div>
@@ -282,7 +296,7 @@
                 </span>
                 <div class="freeform-nav-dropdown-content extras-dropdown">
                 {% for extras in extrasTemplates -%}
-                    {{ _self.extrasItem(extras['t'], extras['n']) }}
+                    {{ _self.extrasItem(extras['t'], extras['n'], demoBaseUrl, baseUrlSegments + 2) }}
                 {%- endfor %}
                 </div>
             </div>
@@ -298,10 +312,10 @@
                 <div class="bottom"></div>
             </label>
             <div class="freeform-menu-list">
-                <a href="{{ siteUrl }}demo/forms" class="{{ demoArea == 'forms' ? ' active' }}">Forms</a>
-                <a href="{{ siteUrl }}demo/submissions" class="{{ demoArea == 'submissions' ? ' active' }}">Submissions</a>
-                <a href="{{ siteUrl }}demo/custom" class="{{ demoArea == 'custom' ? ' active' }}">Custom</a>
-                <a href="{{ siteUrl }}demo/extras" class="{{ siteUrl == 'extras' ? ' active' }}">Extras</a>
+                <a href="{{ demoBaseUrl }}/forms" class="{{ demoArea == 'forms' ? ' active' }}">Forms</a>
+                <a href="{{ demoBaseUrl }}/submissions" class="{{ demoArea == 'submissions' ? ' active' }}">Submissions</a>
+                <a href="{{ demoBaseUrl }}/custom" class="{{ demoArea == 'custom' ? ' active' }}">Custom</a>
+                <a href="{{ demoBaseUrl }}/extras" class="{{ demoArea == 'extras' ? ' active' }}">Extras</a>
             </div>
         </div>
     </div>

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Elements\Entry;
 
 use craft\base\Element;
 use craft\elements\Entry as CraftEntry;
+use craft\models\Section;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -88,9 +89,11 @@ class Entry extends ElementIntegration
         if ($element instanceof CraftEntry) {
             $entry = $element;
         } else {
+            // By default Craft Entry will always default to primary site if we dont pass siteId
             $entry = new CraftEntry([
                 'sectionId' => $sectionId,
                 'typeId' => $entryTypeId,
+                'siteId' => $this->getSectionSiteId(\Craft::$app->getEntries()->getSectionById($sectionId)),
             ]);
         }
 
@@ -102,15 +105,7 @@ class Entry extends ElementIntegration
         }
 
         if (!$entry->siteId) {
-            $currentSiteId = \Craft::$app->sites->currentSite->id;
-            $siteIds = $entry->getSection()->getSiteIds();
-            if (\in_array($currentSiteId, $siteIds)) {
-                $siteId = $currentSiteId;
-            } else {
-                $siteId = reset($siteIds);
-            }
-
-            $entry->siteId = $siteId;
+            $entry->siteId = $this->getSectionSiteId($entry->getSection());
         }
 
         $supportedSiteIds = array_map(static fn ($site) => $site['siteId'], $entry->supportedSites);
@@ -130,5 +125,18 @@ class Entry extends ElementIntegration
             $element->title = sha1(uniqid('', true).time());
             $element->slug = $element->title;
         }
+    }
+
+    private function getSectionSiteId(Section $section): int
+    {
+        $sectionSiteIds = $section->getSiteIds();
+
+        $currentSiteId = \Craft::$app->getSites()->getCurrentSite()->getId();
+
+        if (\in_array($currentSiteId, $sectionSiteIds)) {
+            return $currentSiteId;
+        }
+
+        return reset($sectionSiteIds);
     }
 }

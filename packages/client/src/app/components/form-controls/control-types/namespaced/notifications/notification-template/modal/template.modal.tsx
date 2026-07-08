@@ -2,6 +2,7 @@ import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import { ModalFooter, ModalHeader } from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
 import config from "@config/freeform/freeform.config";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { QKNotifications } from "@ff-client/queries/notifications";
 import type { APIError } from "@ff-client/types/api";
 import type { GenericValue } from "@ff-client/types/properties";
@@ -39,19 +40,27 @@ const firstTab = configuration[0].name;
 
 export type PushState = NotificationConfiguration & {
   formId?: number;
+  site?: string;
 };
 
 export const EditNotificationModal: React.FC<
   ModalContainerProps<NotificationEditModalOptions>
 > = ({ data, closeModal }) => {
   const { formId } = useParams();
+  const { current: currentSite } = useSiteContext();
 
   const id = data?.id;
   // const type = data?.type;
 
   const queryClient = useQueryClient();
-  const { data: template, isLoading } = useQueryNotificationTemplate(id);
-  const mutation = useNotificationTemplateMutation(formId && Number(formId));
+  const { data: template, isLoading } = useQueryNotificationTemplate(
+    id,
+    currentSite?.handle,
+  );
+  const mutation = useNotificationTemplateMutation(
+    formId && Number(formId),
+    currentSite?.handle,
+  );
 
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
   const [state, setState] = useState<PushState>();
@@ -74,7 +83,7 @@ export const EditNotificationModal: React.FC<
         }));
 
         queryClient.invalidateQueries({
-          queryKey: QKNotificationTemplates.one(id),
+          queryKey: QKNotificationTemplates.one(id, currentSite?.handle),
         });
         queryClient.invalidateQueries({
           queryKey: QKNotifications.templates(),
@@ -155,6 +164,7 @@ export const EditNotificationModal: React.FC<
                       context = {
                         ...state,
                         formId: formId ? Number(formId) : undefined,
+                        site: currentSite?.handle,
                       };
                     }
 

@@ -40,10 +40,14 @@ class NotificationsController extends BaseApiController
     public function actionPreviewTemplate(): Response
     {
         try {
-            [$form, $template, $logger] = $this->extractVariables();
+            [$message] = $this->withPostedSiteContext(function (): array {
+                [$form, $template, $logger] = $this->extractVariables();
 
-            $variables = $this->mailer->compileTwigVariables($form, $template, $form->getSubmission());
-            $message = $this->mailer->compileMessage($template, $variables, $logger, $form);
+                $variables = $this->mailer->compileTwigVariables($form, $template, $form->getSubmission());
+                $message = $this->mailer->compileMessage($template, $variables, $logger, $form);
+
+                return [$message];
+            });
         } catch (\Exception $exception) {
             $errors = new ErrorCollection();
             $errors->add('template', 'preview', ['Failed to compile template: '.$exception->getMessage()]);
@@ -78,20 +82,22 @@ class NotificationsController extends BaseApiController
 
     public function actionSendTest(): Response
     {
-        [$form, $template, $logger] = $this->extractVariables();
+        $isSent = $this->withPostedSiteContext(function (): int {
+            [$form, $template, $logger] = $this->extractVariables();
 
-        $recipient = $this->request->post('targetEmail');
+            $recipient = $this->request->post('targetEmail');
 
-        $headers = [];
+            $headers = [];
 
-        $isSent = $this->mailer->sendEmail(
-            $form,
-            RecipientCollection::fromArray([$recipient]),
-            $template,
-            $form->getSubmission(),
-            $headers,
-            logger: $logger,
-        );
+            return $this->mailer->sendEmail(
+                $form,
+                RecipientCollection::fromArray([$recipient]),
+                $template,
+                $form->getSubmission(),
+                $headers,
+                logger: $logger,
+            );
+        });
 
         if (!$isSent) {
             return $this->asSerializedJson(
@@ -143,9 +149,13 @@ class NotificationsController extends BaseApiController
     private function extractVariables(): array
     {
         $post = $this->request->post();
-        $form = $this->formsService->getFormById($post['formId']);
+        $site = $post['site'] ?? null;
+        $form = $this->formsService->getFormById($post['formId'], $site);
+        if (!$form) {
+            throw new \RuntimeException('Form not found');
+        }
 
-        unset($post['formId']);
+        unset($post['formId'], $post['site']);
 
         $fakeData = $this->fakeDataProvider->generate($form, $this->request->getPreferredLanguage());
         $form->setFieldValues($fakeData);
@@ -159,6 +169,7 @@ class NotificationsController extends BaseApiController
             'userId' => \Craft::$app->getUser()->getId(),
             'ip' => '127.0.0.1',
             'dateCreated' => new \DateTime(),
+            'siteId' => $form->getSiteId() ?? \Craft::$app->getSites()->getCurrentSite()->id,
             'statusId' => $form->getSettings()->getGeneral()->defaultStatus,
         ]);
         $submission->title = Submission::generateTitle($submission, $form);
@@ -178,5 +189,27 @@ class NotificationsController extends BaseApiController
         $logger = $this->notificationLoggerProvider->getLogger($template, $form);
 
         return [$form, $template, $logger];
+    }
+
+    private function withPostedSiteContext(callable $callback): mixed
+    {
+        $sites = \Craft::$app->getSites();
+        $originalSite = $sites->getCurrentSite();
+        $originalLanguage = \Craft::$app->language;
+
+        $siteHandle = $this->request->post('site');
+        $site = $siteHandle ? $sites->getSiteByHandle($siteHandle) : null;
+
+        try {
+            if ($site) {
+                $sites->setCurrentSite($site);
+                \Craft::$app->language = $site->language;
+            }
+
+            return $callback();
+        } finally {
+            $sites->setCurrentSite($originalSite);
+            \Craft::$app->language = $originalLanguage;
+        }
     }
 }

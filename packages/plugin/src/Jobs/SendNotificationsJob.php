@@ -63,64 +63,83 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         $freeform = Freeform::getInstance();
         $notificationProvider = \Craft::$container->get(NotificationsProvider::class);
 
-        $form = $freeform->forms->getFormById($this->formId);
-        if (!$form) {
-            return;
-        }
-
-        $notification = $this->notificationId
-            ? $notificationProvider->getByFormAndId($form, $this->notificationId)
-            : null;
-        $logger = $this->getLogger($notification, $form);
-
-        if (!$this->recipients) {
-            $logger->warning('No recipients found for the notification', ['form' => $form->getHandle()]);
-
-            return;
-        }
-
-        if (!$this->template) {
-            $logger->warning('No template found for the notification', ['form' => $form->getHandle()]);
-
-            return;
-        }
-
-        $originalSiteId = \Craft::$app->getSites()->getCurrentSite()->id;
-
         $sites = \Craft::$app->getSites();
-        $sites->setCurrentSite($this->siteId);
+        $originalSiteId = $sites->getCurrentSite()->id;
 
-        // Set the application language to the site's primary language
-        \Craft::$app->language = $sites->getCurrentSite()->language;
+        try {
+            $sites->setCurrentSite($this->siteId);
 
-        if ($this->submissionId) {
-            $submission = $freeform->submissions->getSubmissionById($this->submissionId);
-        } else {
-            // fabricate one in-memory
-            $submission = $this->createTmpSubmission($form);
+            // Set the application language to the site's primary language
+            \Craft::$app->language = $sites->getCurrentSite()->language;
+
+            // We need to pass in the site so when the form loads, we set the translated field labels for that forms site context.
+            $form = $freeform->forms->getFormById($this->formId, $sites->getCurrentSite()->handle);
+            if (!$form) {
+                return;
+            }
+
+            $notification = $this->notificationId
+                ? $notificationProvider->getByFormAndId($form, $this->notificationId)
+                : null;
+            $logger = $this->getLogger($notification, $form);
+
+            if (!$this->recipients) {
+                $logger->warning('No recipients found for the notification', ['form' => $form->getHandle()]);
+
+                return;
+            }
+
+            if (!$this->template) {
+                $logger->warning('No template found for the notification', ['form' => $form->getHandle()]);
+
+                return;
+            }
+
+            if ($this->submissionId) {
+                $submission = Submission::find()
+                    ->id($this->submissionId)
+                    ->siteId($this->siteId)
+                    ->isHidden(null)
+                    ->one()
+                ;
+            } else {
+                $submission = $this->createTmpSubmission($form);
+            }
+
+            if (!$submission) {
+                $logger->warning('Stored submission could not be loaded for the notification job; using posted data instead.', [
+                    'form' => $form->getHandle(),
+                    'submissionId' => $this->submissionId,
+                    'siteId' => $this->siteId,
+                ]);
+
+                $submission = $this->createTmpSubmission($form);
+            }
+
+            if ($submission && $submission->isSpam) {
+                return;
+            }
+
+            $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
+            Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
+
+            $form->valuesFromSubmission($event->getSubmission());
+
+            $freeform->mailer->sendEmail(
+                $form,
+                $this->recipients,
+                $this->template,
+                $submission,
+                $this->headers,
+                $logger,
+                $notification,
+            );
+        } finally {
+            // Stop leaking the notification site into the next job
+            $sites->setCurrentSite($originalSiteId);
+
+            \Craft::$app->language = $sites->getCurrentSite()->language;
         }
-
-        if ($submission && $submission->isSpam) {
-            return;
-        }
-
-        $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
-        Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
-
-        $form->valuesFromSubmission($event->getSubmission());
-
-        $freeform->mailer->sendEmail(
-            $form,
-            $this->recipients,
-            $this->template,
-            $submission,
-            $this->headers,
-            $logger,
-            $notification,
-        );
-
-        $sites->setCurrentSite($originalSiteId);
-        \Craft::$app->language = $sites->getCurrentSite()->language;
     }
 
     protected function defaultDescription(): ?string

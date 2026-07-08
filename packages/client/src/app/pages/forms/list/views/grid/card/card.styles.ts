@@ -18,7 +18,6 @@ export const FormBody = styled.div`
 export const FormBodyContent = styled.div`
   flex: 1;
   min-width: 0;
-  max-width: 70%;
 `;
 
 export const FMContainer = styled.div`
@@ -40,6 +39,8 @@ export const Title = styled.h2`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  width: calc(100% - 1px);
+  max-width: calc(100% - 1px);
   transition: all 0.2s ease-out;
 `;
 

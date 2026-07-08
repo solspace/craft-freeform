@@ -231,10 +231,10 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function getFormById(int $id, ?string $site = null, ?string $uniqueId = null): ?Form
     {
-        $key = $id.$uniqueId;
+        $idKey = $this->getFormCacheKey((string) $id, $site, $uniqueId);
 
         return $this->cache->getOrSet(
-            $key,
+            $idKey,
             function () use ($id, $site, $uniqueId): ?Form {
                 $form = $this->loadForm(
                     static fn (Query $query) => $query->where(['forms.id' => $id]),
@@ -243,7 +243,9 @@ class FormsService extends BaseService implements FormHandlerInterface
                 );
 
                 if ($form) {
-                    $this->cache->set($form->getHandle().$uniqueId, $form, self::CACHE_PREFIX_BY_HANDLE);
+                    $handleKey = $this->getFormCacheKey($form->getHandle(), $site, $uniqueId);
+
+                    $this->cache->set($handleKey, $form, self::CACHE_PREFIX_BY_HANDLE);
                 }
 
                 return $form;
@@ -254,10 +256,10 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function getFormByHandle(string $handle, ?string $site = null, ?string $uniqueId = null): ?Form
     {
-        $key = $handle.$uniqueId;
+        $handleKey = $this->getFormCacheKey($handle, $site, $uniqueId);
 
         return $this->cache->getOrSet(
-            $key,
+            $handleKey,
             function () use ($handle, $site, $uniqueId): ?Form {
                 $form = $this->loadForm(
                     static fn (Query $query) => $query->andWhere(['forms.handle' => $handle]),
@@ -266,7 +268,9 @@ class FormsService extends BaseService implements FormHandlerInterface
                 );
 
                 if ($form) {
-                    $this->cache->set($form->getId().$uniqueId, $form, self::CACHE_PREFIX_BY_ID);
+                    $idKey = $this->getFormCacheKey((string) $form->getId(), $site, $uniqueId);
+
+                    $this->cache->set($idKey, $form, self::CACHE_PREFIX_BY_ID);
                 }
 
                 return $form;
@@ -667,6 +671,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         $sites = array_filter($sites);
 
         $query
+            // We need these values so translation lookups can resolve labels for the selected site.
+            ->addSelect([
+                'sites.id AS siteId',
+                'sites.uid AS siteUid',
+                'sites.handle AS siteHandle',
+                'sites.name AS siteName',
+            ])
             ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
             ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
             ->andWhere(['in', 'sites.[[handle]]', $sites])
@@ -699,22 +710,38 @@ class FormsService extends BaseService implements FormHandlerInterface
             $key,
             function () use ($sites, $queryModifier): array {
                 $query = $this->getFormQuery();
-                $this->attachSitesToQuery($query, $sites);
 
                 if ($queryModifier) {
                     $queryModifier($query);
                 }
+
+                $this->attachSitesToQuery($query, $sites);
 
                 $query->orderBy(['forms.order' => \SORT_ASC]);
 
                 $forms = [];
                 foreach ($query->all() as $result) {
                     try {
-                        $form = $this->reuseOrCreateForm($result);
+                        // Site specific query contains the translation context, so we cannot reuse the generic cached Form instance.
+                        if (null !== $sites) {
+                            $form = $this->createForm($result);
+                        } else {
+                            $form = $this->reuseOrCreateForm($result);
+                        }
 
                         $forms[$form->getId()] = $form;
-                        $this->cache->set((string) $form->getId(), $form, self::CACHE_PREFIX_BY_ID);
-                        $this->cache->set($form->getHandle(), $form, self::CACHE_PREFIX_BY_HANDLE);
+
+                        if (null !== $sites) {
+                            $site = $form->getSiteHandle();
+                        } else {
+                            $site = null;
+                        }
+
+                        $idKey = $this->getFormCacheKey((string) $form->getId(), $site);
+                        $handleKey = $this->getFormCacheKey((string) $form->getHandle(), $site);
+
+                        $this->cache->set($idKey, $form, self::CACHE_PREFIX_BY_ID);
+                        $this->cache->set($handleKey, $form, self::CACHE_PREFIX_BY_HANDLE);
                     } catch (InvalidFormTypeException) {
                     }
                 }
@@ -747,8 +774,8 @@ class FormsService extends BaseService implements FormHandlerInterface
     private function loadForm(callable $whereModifier, ?string $site, ?string $uniqueId): ?Form
     {
         $query = $this->getFormQuery();
-        $this->attachSitesToQuery($query, $site);
         $whereModifier($query);
+        $this->attachSitesToQuery($query, $site);
 
         $result = $query->one();
         if (!$result) {
@@ -760,9 +787,11 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         try {
-            return $uniqueId
-                ? $this->createForm($result)
-                : $this->reuseOrCreateForm($result);
+            if ($uniqueId || $site) {
+                return $this->createForm($result);
+            }
+
+            return $this->reuseOrCreateForm($result);
         } catch (InvalidFormTypeException) {
             return null;
         }
@@ -834,5 +863,10 @@ class FormsService extends BaseService implements FormHandlerInterface
         $permissions[] = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $formId);
 
         \Craft::$app->getUserPermissions()->saveUserPermissions($userId, $permissions);
+    }
+
+    private function getFormCacheKey(string $key, ?string $site = null, ?string $uniqueId = null): string
+    {
+        return implode(':', array_filter([$key, $site, $uniqueId], static fn ($part) => null !== $part && '' !== $part));
     }
 }

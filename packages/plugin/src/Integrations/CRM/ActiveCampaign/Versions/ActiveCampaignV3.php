@@ -288,15 +288,51 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         if ($this->accountId) {
-            $this->contact['contact'] = $this->contactId;
-            $this->contact['account'] = $this->accountId;
+            // ActiveCampaign only allows a Contact to be linked to one Account.
+            // Check the existing contact <> account so linking does not fail.
+            $existingAccountId = $this->fetchContactAccountId($client);
+            if ($existingAccountId) {
+                if ($this->accountId === $existingAccountId) {
+                    $this->logger->debug('Contact already linked to Account', [
+                        'contact' => $this->contactId,
+                        'account' => $this->accountId,
+                    ]);
+                } else {
+                    $this->logger->warning('Contact already linked to another Account. ActiveCampaign does not support contacts on multiple accounts.', [
+                        'contact' => $this->contactId,
+                        'account' => $this->accountId,
+                        'existingAccount' => $existingAccountId,
+                    ]);
+                }
+            } else {
+                try {
+                    $client->post(
+                        $this->getEndpoint('/accountContacts'),
+                        [
+                            'json' => [
+                                'accountContact' => [
+                                    'contact' => (string) $this->contactId,
+                                    'account' => (string) $this->accountId,
+                                ],
+                            ],
+                        ],
+                    );
 
-            $client->post(
-                $this->getEndpoint('/accountContacts'),
-                ['json' => ['accountContact' => $this->contact]],
-            );
+                    $this->logger->info('Contact linked to Account', [
+                        'contact' => $this->contactId,
+                        'account' => $this->accountId,
+                    ]);
+                } catch (\Exception $exception) {
+                    if (!$this->isAlreadyAssociatedAccountException($exception)) {
+                        throw $exception;
+                    }
 
-            $this->logger->info('Contact linked to Account', ['contact' => $this->contactId, 'account' => $this->accountId]);
+                    $this->logger->warning('Contact already linked to an Account. ActiveCampaign does not support contacts on multiple accounts.', [
+                        'contact' => $this->contactId,
+                        'account' => $this->accountId,
+                    ]);
+                }
+            }
         }
 
         foreach ($this->contactProps as $prop) {
@@ -384,5 +420,39 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                 $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
             }
         }
+    }
+
+    private function fetchContactAccountId(Client $client): ?int
+    {
+        try {
+            $response = $client->get($this->getEndpoint("/contacts/{$this->contactId}/accountContacts"));
+
+            $json = json_decode($response->getBody(), false);
+        } catch (\Exception $exception) {
+            $this->logger->debug('Could not fetch Contact Account associations', ['exception' => $exception->getMessage()]);
+
+            return null;
+        }
+
+        foreach ($json->accountContacts ?? [] as $accountContact) {
+            // ActiveCampaign has exposed the Account ID with both keys in different responses.
+            $accountId = $accountContact->account ?? $accountContact->accountId ?? null;
+            if ($accountId) {
+                return (int) $accountId;
+            }
+        }
+
+        return null;
+    }
+
+    private function isAlreadyAssociatedAccountException(\Exception $exception): bool
+    {
+        $message = $exception->getMessage();
+
+        if (method_exists($exception, 'getResponse') && $exception->getResponse()) {
+            $message .= ' '.$exception->getResponse()->getBody();
+        }
+
+        return str_contains($message, 'already associated with an account') || str_contains($message, 'do not support contacts on multiple accounts');
     }
 }

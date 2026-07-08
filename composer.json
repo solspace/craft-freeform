@@ -40,7 +40,10 @@
   "autoload": {
     "psr-4": {
       "Solspace\\Freeform\\": "packages/plugin/src/"
-    }
+    },
+    "exclude-from-classmap": [
+      "packages/plugin/src/migrations/"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
@@ -62,10 +65,15 @@
     "name": "Freeform",
     "developer": "Solspace",
     "developerUrl": "https://docs.solspace.com/",
-    "documentationUrl": "https://docs.solspace.com/craft/freeform/v5/",
-    "changelogUrl": "https://raw.githubusercontent.com/solspace/craft-freeform/v5/CHANGELOG.md",
+    "documentationUrl": "https://docs.solspace.com/craft/freeform/v6/",
+    "changelogUrl": "https://raw.githubusercontent.com/solspace/craft-freeform/v6/CHANGELOG.md",
     "hasSettings": true,
-    "hasCpSection": true
+    "hasCpSection": true,
+    "laravel": {
+      "dont-discover": [
+        "solspace/craft-freeform"
+      ]
+    }
   },
   "config": {
     "allow-plugins": {

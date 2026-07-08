@@ -24,6 +24,7 @@ use craft\services\ProjectConfig;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
+use CraftCms\Cms\Cp\Data\NavItem;
 use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
@@ -237,6 +238,11 @@ class Freeform extends Plugin
 
     private bool $freeformApplicationBooted = false;
 
+    public function getMigrationPath(): string
+    {
+        return \dirname(__DIR__).'/migrations';
+    }
+
     /**
      * @return Freeform|Plugin
      */
@@ -340,16 +346,20 @@ class Freeform extends Plugin
         static::getInstance()->bootFreeformApplication();
     }
 
-    public function getCpNavItem(): ?array
+    public function getCpNavItem(): ?NavItem
     {
         $navItem = parent::getCpNavItem();
+
+        if (!$navItem) {
+            return null;
+        }
 
         $event = new RegisterCpSubnavItemsEvent($navItem, []);
         $this->triggerPluginEvent(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
         $navItem = $event->getNav();
-        $navItem['icon'] = __DIR__.'/icon-mask.svg';
-        $navItem['subnav'] = $event->getSubnavItems();
+        $navItem->icon = __DIR__.'/icon-mask.svg';
+        $navItem->subnav = $event->getSubnavItems();
 
         return $navItem;
     }

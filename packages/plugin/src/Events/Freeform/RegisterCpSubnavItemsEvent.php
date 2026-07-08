@@ -2,26 +2,25 @@
 
 namespace Solspace\Freeform\Events\Freeform;
 
+use CraftCms\Cms\Cp\Data\NavItem;
 use yii\base\Event;
 
 class RegisterCpSubnavItemsEvent extends Event
 {
     public function __construct(
-        private array $nav,
+        private NavItem $nav,
         private array $subNavItems,
     ) {
         parent::__construct();
     }
 
-    public function addToNav(string $handle, $value): self
-    {
-        $this->nav[$handle] = $value;
-
-        return $this;
-    }
-
-    public function addSubnavItem(string $handle, string $label, string $url, ?string $afterHandle = null, ?array $extraOptions = null): self
-    {
+    public function addSubnavItem(
+        string $handle,
+        string $label,
+        string $url,
+        ?string $afterHandle = null,
+        ?array $extraOptions = null,
+    ): self {
         $item = [
             'label' => $label,
             'url' => $url,
@@ -31,10 +30,12 @@ class RegisterCpSubnavItemsEvent extends Event
             $item = array_merge($item, $extraOptions);
         }
 
-        if (null !== $afterHandle && isset($this->subnavItems[$afterHandle])) {
+        if (null !== $afterHandle && isset($this->subNavItems[$afterHandle])) {
             $modifiedArray = [];
-            foreach ($this->subnavItems as $key => $value) {
+
+            foreach ($this->subNavItems as $key => $value) {
                 $modifiedArray[$key] = $value;
+
                 if ($key === $afterHandle) {
                     $modifiedArray[$handle] = $item;
                 }
@@ -48,7 +49,7 @@ class RegisterCpSubnavItemsEvent extends Event
         return $this;
     }
 
-    public function getNav(): array
+    public function getNav(): NavItem
     {
         return $this->nav;
     }

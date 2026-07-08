@@ -13,6 +13,7 @@ use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ContextRetrievalEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -26,6 +27,7 @@ class SessionContext
 {
     public const KEY_HASH = 'formHash';
     public const KEY_UNIQUE_ID = 'freeform-unique-id';
+    public const KEY_SITE_HANDLE = 'freeform-site-handle';
 
     /** @var FormContextStorageInterface */
     private $storage;
@@ -75,6 +77,12 @@ class SessionContext
             Form::EVENT_RENDER_AFTER_OPEN_TAG,
             [$this, 'addHiddenInputs']
         );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_OUTPUT_AS_JSON,
+            [$this, 'addJsonValues']
+        );
     }
 
     public function addHiddenInputs(RenderTagEvent $event): void
@@ -90,6 +98,27 @@ class SessionContext
                 $value
             )
         );
+
+        $siteHandle = $form->getSiteHandle();
+        if ($siteHandle) {
+            $event->addChunk(
+                \sprintf(
+                    '<input type="hidden" name="%s" value="%s" />',
+                    self::KEY_SITE_HANDLE,
+                    htmlentities($siteHandle, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
+                )
+            );
+        }
+    }
+
+    public function addJsonValues(OutputAsJsonEvent $event): void
+    {
+        $siteHandle = $event->getForm()->getSiteHandle();
+        if (!$siteHandle) {
+            return;
+        }
+
+        $event->add(self::KEY_SITE_HANDLE, $siteHandle);
     }
 
     public function cleanupAfterSubmit(FormEventInterface $event): void
@@ -231,6 +260,23 @@ class SessionContext
         }
 
         return $request->post(self::KEY_UNIQUE_ID);
+    }
+
+    public static function getPostedSiteHandle(): ?string
+    {
+        $request = \Craft::$app->getRequest();
+        if ($request->isConsoleRequest) {
+            return null;
+        }
+
+        $siteHandle = $request->post(self::KEY_SITE_HANDLE);
+        if (!\is_string($siteHandle)) {
+            return null;
+        }
+
+        $siteHandle = trim($siteHandle);
+
+        return '' !== $siteHandle ? $siteHandle : null;
     }
 
     public static function isPagePosted(Form $form, int $pageIndex): bool

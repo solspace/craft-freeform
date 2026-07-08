@@ -12,6 +12,17 @@
 ### Added
 - Added compatibility for Craft 6.x.
 
+## 5.15.20 - 2026-07-08
+
+### Fixed
+- Fixed multi-site translated field labels in email notifications.
+- Fixed an issue where the submission edit page could show translated labels from the primary site instead of the selected site.
+- Fixed the form builder notification preview modal so it is site-aware.
+- Fixed overflowing form card labels on the Forms Dashboard page in the control panel.
+- Fixed element integrations to respect site-aware sections.
+- Fixed duplicate handling for **ActiveCampaign** contact-account relationships.
+- Fixed an error that could occur when validating **Form Monitor** settings before an integration ID was available.
+
 ## 5.15.19 - 2026-07-02
 
 ### Added

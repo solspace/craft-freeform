@@ -21,6 +21,7 @@ use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 use yii\filters\Cors;
@@ -200,7 +201,13 @@ class SubmitController extends BaseController
 
         $formId = SessionContext::getPostedFormId();
         $uniqueId = SessionContext::getPostedFormUniqueId();
-        $form = $this->getFormsService()->getFormById($formId, uniqueId: $uniqueId);
+        $site = SessionContext::getPostedSiteHandle();
+
+        if (!$site) {
+            $site = SitesHelper::getFrontendSiteHandle();
+        }
+
+        $form = $this->getFormsService()->getFormById($formId, $site, $uniqueId);
         if (!$form) {
             $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
 

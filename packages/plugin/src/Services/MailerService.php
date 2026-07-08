@@ -82,6 +82,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             return 0;
         }
 
+        $form = $this->resolveNotificationForm($form, $submission);
         $recipients = $this->processRecipients($recipients, $form);
         $twigVariables = $this->compileTwigVariables($form, $notificationTemplate, $submission);
 
@@ -431,6 +432,35 @@ class MailerService extends BaseService implements MailHandlerInterface
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
 
         return $renderEvent->getTwigVariables();
+    }
+
+    private function resolveNotificationForm(Form $form, ?Submission $submission = null): Form
+    {
+        if (!$submission?->siteId) {
+            return $form;
+        }
+
+        if ((int) $form->getSiteId() === (int) $submission->siteId) {
+            return $form;
+        }
+
+        $site = \Craft::$app->getSites()->getSiteById($submission->siteId);
+        if (!$site) {
+            return $form;
+        }
+
+        $siteForm = Freeform::getInstance()
+            ->forms
+            ->getFormById($form->getId(), $site->handle, $form->getUniqueId())
+        ;
+
+        if (!$siteForm) {
+            return $form;
+        }
+
+        $siteForm->valuesFromSubmission($submission);
+
+        return $siteForm;
     }
 
     private function parseEnvInArray(array $array): array

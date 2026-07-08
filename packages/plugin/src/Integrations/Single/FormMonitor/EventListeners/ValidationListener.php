@@ -35,12 +35,16 @@ class ValidationListener extends FeatureBundle
         /** @var FormIntegrationRecord $record */
         $record = $event->sender;
 
-        $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($record->integrationId);
-        if (!$integration instanceof FormMonitor) {
+        if (!$record->enabled || !$record->integrationId) {
             return;
         }
 
-        if (!$record->enabled) {
+        $integration = Freeform::getInstance()
+            ->integrations
+            ->getIntegrationObjectById($record->integrationId)
+        ;
+
+        if (!$integration instanceof FormMonitor) {
             return;
         }
 

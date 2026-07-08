@@ -119,6 +119,11 @@ class SubmissionsController extends BaseController
 
     public function actionEdit(int $id): Response
     {
+        $selectedSite = \Craft::$app->sites->getSiteByHandle(
+            $this->request->getQueryParam('site') ?? ''
+        ) ?? \Craft::$app->sites->getPrimarySite();
+        \Craft::$app->sites->setCurrentSite($selectedSite);
+
         $submissionsService = $this->getSubmissionsService();
         $submission = $submissionsService->getSubmissionById($id);
 
@@ -172,10 +177,6 @@ class SubmissionsController extends BaseController
             },
             []
         );
-
-        $selectedSite = \Craft::$app->sites->getSiteByHandle(
-            $this->request->getQueryParam('site') ?? ''
-        ) ?? \Craft::$app->sites->getPrimarySite();
 
         $craftVersionSpecificVariables = [
             'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(selectedSite: $selectedSite) : [],

@@ -23,9 +23,15 @@ interface MolliePaymentResponse {
 interface FreeformRuntimeApi {
   _removeMessages: () => void;
   _renderFormErrors: (errors: string[]) => void;
+  _renderSuccessBanner?: () => void;
   _scrollToForm: () => void;
   options?: { autoScroll?: boolean };
 }
+
+// Query-string flag set by the server-side return handler after Mollie checkout.
+// Must match MolliePaymentController::PAYMENT_STATUS_PARAM.
+const PAYMENT_STATUS_PARAM = "freeformPaymentStatus";
+const PAID_STATUSES = ["paid", "authorized"];
 
 function getFreeformRuntime(form: HTMLFormElement): FreeformRuntimeApi | null {
   return (
@@ -146,6 +152,25 @@ export async function initMollie(): Promise<void> {
 
     processedForms.add(form);
 
+    // After a successful submit, redirect the browser to the Mollie hosted checkout.
+    // The checkout URL is captured client-side during payment creation (below), so this
+    // does not depend on the server threading it back through the AJAX response payload.
+    addListeners(form, [events.form.ajaxBeforeSuccess], (event: Event) => {
+      const checkoutUrl = form.dataset.mollieCheckoutUrl;
+      if (!checkoutUrl) {
+        return;
+      }
+
+      const response = (event as { response?: { success?: boolean } }).response;
+      if (response && response.success === false) {
+        return;
+      }
+
+      // Prevent the default success handling (banner/reset) - we are navigating away.
+      event.preventDefault();
+      window.location.href = checkoutUrl;
+    });
+
     addListeners(
       form,
       [events.form.submit],
@@ -189,6 +214,67 @@ export async function initMollie(): Promise<void> {
   });
 }
 
+// Handle the redirect back from Mollie checkout. The server-side return handler has
+// already verified the real payment status and set the success flash; here we surface
+// the outcome on AJAX forms (non-AJAX forms render the banner server-side) and on any
+// failed/canceled payment, then strip the flag so a refresh does not repeat the message.
+function handlePaymentReturn(): void {
+  const params = new URLSearchParams(window.location.search);
+  const status = params.get(PAYMENT_STATUS_PARAM);
+  if (!status) {
+    return;
+  }
+
+  params.delete(PAYMENT_STATUS_PARAM);
+  const query = params.toString();
+  const cleanUrl = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+  window.history.replaceState({}, document.title, cleanUrl);
+
+  const form = document.querySelector<HTMLFormElement>("form[data-freeform]");
+  if (!form) {
+    return;
+  }
+
+  const render = (): void => {
+    const runtime = getFreeformRuntime(form);
+    if (!runtime) {
+      return;
+    }
+
+    if (PAID_STATUSES.includes(status)) {
+      // Non-AJAX forms already render the banner server-side from the submission flash;
+      // only AJAX forms need it rendered here. Leave the server-rendered banner untouched
+      // otherwise (do not call _removeMessages, which would erase it).
+      if (
+        form.hasAttribute("data-ajax") &&
+        typeof runtime._renderSuccessBanner === "function"
+      ) {
+        runtime._removeMessages();
+        runtime._renderSuccessBanner();
+        if (runtime.options?.autoScroll) {
+          runtime._scrollToForm();
+        }
+      }
+      return;
+    }
+
+    runtime._removeMessages();
+    runtime._renderFormErrors([
+      "Your payment was not completed. Please try again.",
+    ]);
+    if (runtime.options?.autoScroll) {
+      runtime._scrollToForm();
+    }
+  };
+
+  if (getFreeformRuntime(form)) {
+    render();
+  } else {
+    form.addEventListener("freeform-ready", render, { once: true });
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   void initMollie();
+  handlePaymentReturn();
 });

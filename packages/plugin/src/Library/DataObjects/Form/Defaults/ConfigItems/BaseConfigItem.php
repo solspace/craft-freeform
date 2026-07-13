@@ -2,14 +2,30 @@
 
 namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems;
 
-use yii\base\Component;
-
-abstract class BaseConfigItem extends Component implements DefaultConfigInterface
+abstract class BaseConfigItem implements DefaultConfigInterface
 {
     public bool $locked = false;
     public mixed $value = '';
     public string $placeholder = '';
+
     private string $label = '';
+
+    public function __construct(array $config = [])
+    {
+        foreach ($config as $property => $value) {
+            $setter = 'set'.ucfirst($property);
+
+            if (method_exists($this, $setter)) {
+                $this->{$setter}($value);
+
+                continue;
+            }
+
+            if (property_exists($this, $property)) {
+                $this->{$property} = $value;
+            }
+        }
+    }
 
     public function setLabel(string $label): void
     {

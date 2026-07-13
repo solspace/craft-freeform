@@ -7,24 +7,25 @@ use Solspace\Freeform\Services\StatusesService;
 
 class DefaultStatusGenerator implements ValueGeneratorInterface
 {
-    public function __construct(private StatusesService $statusesService) {}
+    public function __construct(
+        private StatusesService $statusesService,
+    ) {}
 
     public function generateValue(?object $referenceObject, ?object $context): int
     {
-        $request = \Craft::$app->getRequest();
+        $path = trim(request()->path(), '/');
 
-        if ($request->getIsCpRequest()) {
-            $path = '/'.ltrim($request->getPathInfo(), '/');
+        // Match the CP login page regardless of the configured CP trigger.
+        if (
+            $path === 'login'
+            || str_ends_with($path, '/login')
+        ) {
+            return 1;
+        }
 
-            // Avoid DB work only on the CP login page, where this value is not needed.
-            if (preg_match('#^/login/?$#', $path)) {
-                return 1;
-            }
-
-            // Skip DB work on CP GraphQL explorer.
-            if (preg_match('#(^|/)graphiql(/|$)#', $path)) {
-                return 1;
-            }
+        // Match the GraphQL explorer regardless of the configured CP trigger.
+        if (preg_match('#(^|/)graphiql(?:/|$)#', $path)) {
+            return 1;
         }
 
         try {
@@ -34,7 +35,6 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
                 return $status->id;
             }
 
-            // Fallback: get first status ID if needed.
             $statuses = $this->statusesService->getAllStatuses();
             $first = reset($statuses);
 

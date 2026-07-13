@@ -37,6 +37,7 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
 
             if (is_a($class, DefaultConfigInterface::class, true)) {
                 $labelAttribute = AttributeHelper::findAttribute($property, Label::class);
+
                 if ($labelAttribute) {
                     $label = $labelAttribute->label;
                 } else {
@@ -49,20 +50,30 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                 }
 
                 $defaultValue = '';
-                $valueGeneratorAttribute = AttributeHelper::findAttribute($property, ValueGenerator::class);
+                $valueGeneratorAttribute = AttributeHelper::findAttribute(
+                    $property,
+                    ValueGenerator::class
+                );
+
                 if ($valueGeneratorAttribute) {
-                    $generator = \Craft::$container->get($valueGeneratorAttribute->className);
+                    $generator = app($valueGeneratorAttribute->className);
+
                     if ($generator instanceof ValueGeneratorInterface) {
                         $defaultValue = $generator->generateValue($this, $this);
                     }
                 } else {
-                    $defaultValueAttribute = AttributeHelper::findAttribute($property, SetDefaultValue::class);
+                    $defaultValueAttribute = AttributeHelper::findAttribute(
+                        $property,
+                        SetDefaultValue::class
+                    );
+
                     if ($defaultValueAttribute) {
                         $defaultValue = $defaultValueAttribute->value;
                     }
                 }
 
                 $value = $config[$name]['value'] ?? $defaultValue;
+
                 if (is_a($class, BoolItem::class, true)) {
                     $value = (bool) $value;
                 }
@@ -72,23 +83,36 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                     'locked' => $config[$name]['locked'] ?? false,
                 ];
 
-                $placeholderAttribute = AttributeHelper::findAttribute($property, SetPlaceholder::class);
+                $placeholderAttribute = AttributeHelper::findAttribute(
+                    $property,
+                    SetPlaceholder::class
+                );
+
                 if ($placeholderAttribute) {
                     $configuration['placeholder'] = $placeholderAttribute->value;
                 }
 
                 if (is_a($class, SelectItem::class, true)) {
-                    $emptyValue = AttributeHelper::findAttribute($property, EmptyValue::class);
+                    $emptyValue = AttributeHelper::findAttribute(
+                        $property,
+                        EmptyValue::class
+                    );
+
                     if ($emptyValue) {
                         $configuration['emptyValue'] = $emptyValue->label;
                     }
 
-                    $optionsGenerator = AttributeHelper::findAttribute($property, OptionsGenerator::class);
+                    $optionsGenerator = AttributeHelper::findAttribute(
+                        $property,
+                        OptionsGenerator::class
+                    );
+
                     if ($optionsGenerator) {
                         if (\is_array($optionsGenerator->generator)) {
                             $configuration['optionsArray'] = $optionsGenerator->generator;
                         } else {
-                            $generator = \Craft::$container->get($optionsGenerator->generator);
+                            $generator = app($optionsGenerator->generator);
+
                             if ($generator instanceof OptionsGeneratorInterface) {
                                 $configuration['optionsGenerator'] = $generator;
                             }
@@ -118,6 +142,7 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
         $properties = $reflection->getProperties();
 
         $array = [];
+
         foreach ($properties as $property) {
             $array[$property->getName()] = $property->getValue($this);
         }
@@ -150,6 +175,7 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
 
             if (is_a($class, DefaultConfigInterface::class, true)) {
                 $value = $property->getValue($this);
+
                 $returnArray[$name] = [
                     'locked' => $value->locked,
                     'value' => $value->value,

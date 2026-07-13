@@ -28,6 +28,12 @@ class RegisterControllers extends FeatureBundle
                 ]);
 
                 $event->rules[] = new UrlRule([
+                    'pattern' => 'freeform/payments/mollie/callback',
+                    'route' => 'freeform/mollie/callback',
+                    'verb' => ['GET'],
+                ]);
+
+                $event->rules[] = new UrlRule([
                     'pattern' => 'freeform/payments/mollie/webhook',
                     'route' => 'freeform/mollie-webhook/index',
                     'verb' => ['POST'],

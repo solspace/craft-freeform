@@ -9,8 +9,9 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
@@ -27,7 +28,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/mollie-field-preview.ejs',
 )]
-class MollieField extends HiddenField implements PaymentFieldInterface, SkipGibberishCheckInterface
+class MollieField extends AbstractField implements PaymentFieldInterface, SkipGibberishCheckInterface, InputOnlyInterface
 {
     public const AMOUNT_TYPE_FIXED = 'fixed';
     public const AMOUNT_TYPE_DYNAMIC = 'dynamic';
@@ -94,7 +95,7 @@ class MollieField extends HiddenField implements PaymentFieldInterface, SkipGibb
 
     #[Input\Text(
         label: 'Successful Redirect URL',
-        instructions: 'Optional. URL to redirect to after successful Mollie checkout. Falls back to form Return URL.',
+        instructions: 'Optional. URL to redirect to after successful Mollie checkout. Falls back to the form Return URL, and then to the page the form was submitted from.',
         placeholder: 'https://example.com/thank-you',
     )]
     protected string $redirectUrl = '';
@@ -139,7 +140,7 @@ class MollieField extends HiddenField implements PaymentFieldInterface, SkipGibb
         return 'mollie';
     }
 
-    public function getInputHtml(): string
+    protected function getInputHtml(): string
     {
         $id = HashHelper::hash([
             $this->getForm()->getId(),

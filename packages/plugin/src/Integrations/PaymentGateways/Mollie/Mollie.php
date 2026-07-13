@@ -26,6 +26,9 @@ class Mollie extends PaymentGatewayIntegration
 {
     public const LOG_CATEGORY = 'Mollie';
 
+    /** Session key prefix (suffixed with the form id) used to hand the payment reference to the return handler. */
+    public const SESSION_RETURN_KEY = 'freeform-mollie-return.';
+
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]

@@ -9,18 +9,31 @@ use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Mollie;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Services\MolliePaymentService;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Cache\Memo;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class RedirectToCheckout extends FeatureBundle
 {
+    /**
+     * Per-request cache of resolved checkout URLs, keyed by form instance id.
+     * The Mollie field value is only available early in the submit request
+     * (during return URL generation); registerContext() and render() both clear it before
+     * the AJAX payload is prepared, so the URL must be resolved once and reused.
+     */
+    private Memo $cache;
+
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
         private IntegrationClientProvider $clientProvider,
     ) {
+        $this->cache = new Memo();
+
         Event::on(Form::class, Form::EVENT_GENERATE_RETURN_URL, [$this, 'overrideReturnUrl']);
         Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'overrideAjaxPayload']);
         Event::on(Form::class, Form::EVENT_ON_SUBMIT_RESPONSE, [$this, 'overrideSubmitResponse']);
@@ -41,19 +54,11 @@ class RedirectToCheckout extends FeatureBundle
             return;
         }
 
-        $payload = $event->getPayload();
-
-        // If returnUrl is already present (set via ReturnUrl pipeline), force redirect behavior
-        if (!empty($payload['returnUrl'])) {
-            $payload['onSuccess'] = BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL;
-            $event->setPayload($payload);
-
-            return;
-        }
-
-        // Fallback: compute checkout URL and set redirect
+        // The Mollie checkout URL must always take priority over the form's own configured return URL
+        // as the user still needs to complete payment before any "success" behavior applies.
         $checkoutUrl = $this->getCheckoutUrl($form);
         if ($checkoutUrl) {
+            $payload = $event->getPayload();
             $payload['returnUrl'] = $checkoutUrl;
             $payload['onSuccess'] = BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL;
             $event->setPayload($payload);
@@ -73,7 +78,50 @@ class RedirectToCheckout extends FeatureBundle
         }
     }
 
+    private function hasMolliePayment(Form $form): bool
+    {
+        // Cache-aware on purpose: the field value is cleared once the form context is
+        // rebuilt (registerContext() and render()), so once we've resolved a checkout URL
+        // earlier in the request we must still treat this form as having a payment.
+        if ($this->cache->get($this->getFormKey($form))) {
+            return true;
+        }
+
+        $mollieFields = $form->getLayout()->getFields(MollieField::class);
+        if (!$mollieFields->count()) {
+            return false;
+        }
+
+        foreach ($mollieFields as $field) {
+            if ((string) $field->getValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function getCheckoutUrl(Form $form): ?string
+    {
+        $key = $this->getFormKey($form);
+
+        $cached = $this->cache->get($key);
+        if ($cached) {
+            return $cached;
+        }
+
+        $checkoutUrl = $this->fetchCheckoutUrl($form);
+
+        // Only cache a successful lookup - the field value may be absent on this call
+        // (e.g. after the form context is rebuilt) but present on an earlier one.
+        if ($checkoutUrl) {
+            $this->cache->set($key, $checkoutUrl);
+        }
+
+        return $checkoutUrl;
+    }
+
+    private function fetchCheckoutUrl(Form $form): ?string
     {
         $mollieFields = $form->getLayout()->getFields(MollieField::class);
         if (!$mollieFields->count()) {
@@ -100,27 +148,23 @@ class RedirectToCheckout extends FeatureBundle
                 if ($checkoutUrl) {
                     return $checkoutUrl;
                 }
-            } catch (\Throwable) {
-                // ignore; fall back to default behavior
+            } catch (\Throwable $exception) {
+                Freeform::getInstance()
+                    ->logger
+                    ->getLogger(FreeformLogger::PAYMENT_GATEWAY)
+                    ->error(
+                        'Mollie: failed to fetch checkout URL for payment '.$paymentId.': '.$exception->getMessage(),
+                        ['exception' => $exception],
+                    )
+                ;
             }
         }
 
         return null;
     }
 
-    private function hasMolliePayment(Form $form): bool
+    private function getFormKey(Form $form): string
     {
-        $mollieFields = $form->getLayout()->getFields(MollieField::class);
-        if (!$mollieFields->count()) {
-            return false;
-        }
-
-        foreach ($mollieFields as $field) {
-            if ((string) $field->getValue()) {
-                return true;
-            }
-        }
-
-        return false;
+        return (string) spl_object_id($form);
     }
 }

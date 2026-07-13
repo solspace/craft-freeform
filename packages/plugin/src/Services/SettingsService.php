@@ -473,7 +473,13 @@ class SettingsService extends BaseService
 
         $allSettings = $plugin->getSettings()->toArray();
 
-        return \Craft::$app->plugins->savePluginSettings($plugin, $allSettings);
+        $saved = \Craft::$app->plugins->savePluginSettings($plugin, $allSettings);
+
+        if ($saved) {
+            self::$settingsModel = null;
+        }
+
+        return $saved;
     }
 
     public function getPluginJsPath(): string

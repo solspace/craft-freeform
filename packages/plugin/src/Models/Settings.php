@@ -243,7 +243,7 @@ class Settings extends Model
         }
     }
 
-    public function setAttributes($values, $safeOnly = true): void
+    public function setAttributes($values, $safeOnly = false): void
     {
         if (\array_key_exists('defaults', $values)) {
             $values['defaults'] = new Defaults($values['defaults']);

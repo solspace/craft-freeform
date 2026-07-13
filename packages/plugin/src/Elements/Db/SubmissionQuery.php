@@ -9,6 +9,7 @@ use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\events\PopulateElementEvent;
 use craft\helpers\Db;
+use CraftCms\Cms\Element\Queries\Exceptions\QueryAbortedException;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
@@ -34,8 +35,37 @@ class SubmissionQuery extends ElementQuery
     public ?string $spamReason = null;
     public bool $skipContent = false;
     public mixed $formSiteId = null;
+    protected string $table = Submission::TABLE_STD;
     private mixed $freeformStatus = null;
     private bool $skipContentExplicit = false;
+
+    public function __construct(mixed $elementType, array $config = [])
+    {
+        parent::__construct($elementType, $config);
+
+        if ($this->usesCraft6ElementQuery()) {
+            $table = Submission::TABLE_STD;
+            $this->query->addSelect([
+                "{$table}.formId as formId",
+                "{$table}.userId as userId",
+                "{$table}.statusId as statusId",
+                "{$table}.incrementalId as incrementalId",
+                "{$table}.token as token",
+                "{$table}.isSpam as isSpam",
+                "{$table}.isHidden as isHidden",
+                "{$table}.ip as ip",
+                "{$table}.sourceUrl as sourceUrl",
+            ]);
+        }
+
+        if (method_exists($this, 'beforeQuery')) {
+            $this->beforeQuery(static function (self $query): void {
+                if (!$query->prepareSubmissionQuery()) {
+                    throw new QueryAbortedException();
+                }
+            });
+        }
+    }
 
     public function formSiteId(mixed $value): self
     {
@@ -148,6 +178,11 @@ class SubmissionQuery extends ElementQuery
     }
 
     protected function beforePrepare(): bool
+    {
+        return $this->prepareSubmissionQuery() && parent::beforePrepare();
+    }
+
+    protected function prepareSubmissionQuery(): bool
     {
         static $forms;
         static $formHandleToIdMap;
@@ -269,11 +304,18 @@ class SubmissionQuery extends ElementQuery
         $statusTable = StatusRecord::TABLE_STD;
         $spamReasonTable = SpamReasonRecord::TABLE_STD;
 
-        $this->joinElementTable($table);
+        if (!$this->usesCraft6ElementQuery()) {
+            $this->joinElementTable($table);
+        }
 
-        $this->query->innerJoin(FormRecord::TABLE.' '.$formTable, "{$formTable}.[[id]] = {$table}.[[formId]]");
-        $this->query->innerJoin(StatusRecord::TABLE.' '.$statusTable, "{$statusTable}.[[id]] = {$table}.[[statusId]]");
-        $this->subQuery->innerJoin(StatusRecord::TABLE.' sub_'.$statusTable, "sub_{$statusTable}.[[id]] = {$table}.[[statusId]]");
+        if ($this->usesCraft6ElementQuery()) {
+            $this->query->join(FormRecord::TABLE_STD.' as '.$formTable, $formTable.'.id', '=', $table.'.formId');
+            $this->query->join(StatusRecord::TABLE_STD.' as '.$statusTable, $statusTable.'.id', '=', $table.'.statusId');
+        } else {
+            $this->query->innerJoin(FormRecord::TABLE.' '.$formTable, "{$formTable}.[[id]] = {$table}.[[formId]]");
+            $this->query->innerJoin(StatusRecord::TABLE.' '.$statusTable, "{$statusTable}.[[id]] = {$table}.[[statusId]]");
+            $this->subQuery->innerJoin(StatusRecord::TABLE.' sub_'.$statusTable, "sub_{$statusTable}.[[id]] = {$table}.[[statusId]]");
+        }
 
         if ($this->form instanceof Form) {
             $this->form = $this->form->getHandle();
@@ -298,7 +340,7 @@ class SubmissionQuery extends ElementQuery
             ;
         }
 
-        $select = [
+        $select = $this->usesCraft6ElementQuery() ? [] : [
             $table.'.[[formId]]',
             $table.'.[[userId]]',
             $table.'.[[statusId]]',
@@ -328,9 +370,19 @@ class SubmissionQuery extends ElementQuery
                 $form = $forms[$formId];
                 $joinedForms[] = $form;
                 $contentTable = Submission::getContentTableName($form);
+                $contentAlias = 'fc'.$formId;
 
-                $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
-                $this->subQuery->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
+                if ($this->usesCraft6ElementQuery()) {
+                    $this->query->leftJoin(
+                        \Craft::$app->db->getSchema()->getRawTableName($contentTable).' as '.$contentAlias,
+                        $contentAlias.'.id',
+                        '=',
+                        $table.'.id'
+                    );
+                } else {
+                    $this->query->leftJoin("{$contentTable} {$contentAlias}", "[[{$contentAlias}]].[[id]] = [[{$table}]].[[id]]");
+                    $this->subQuery->leftJoin("{$contentTable} {$contentAlias}", "[[{$contentAlias}]].[[id]] = [[{$table}]].[[id]]");
+                }
 
                 // If the CP request includes numeric field IDs, we can safely treat it as a "requested fields" filter.
                 // Otherwise, only treat it as such if we see a match by handle/column name.
@@ -369,13 +421,17 @@ class SubmissionQuery extends ElementQuery
                         }
                     }
 
-                    $select[] = "[[fc{$formId}]].[[{$column}]] as [[form_{$formId}__{$column}]]";
+                    if ($this->usesCraft6ElementQuery()) {
+                        $select[] = "{$contentAlias}.{$column} as form_{$formId}__{$column}";
+                    } else {
+                        $select[] = "[[{$contentAlias}]].[[{$column}]] as [[form_{$formId}__{$column}]]";
+                    }
                 }
             }
         }
 
         if (null !== $this->formId) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
         }
 
         if (SitesHelper::isEnabled()) {
@@ -400,50 +456,65 @@ class SubmissionQuery extends ElementQuery
                     $formSiteIds = array_map('intval', $formSiteIds);
                 }
 
-                $this->subQuery->innerJoin(
-                    FormSiteRecord::TABLE.' form_sites',
-                    'form_sites.[[formId]] = '.$table.'.[[formId]]'
-                );
+                if ($this->usesCraft6ElementQuery()) {
+                    $this->query->join(FormSiteRecord::TABLE.' as form_sites', 'form_sites.formId', '=', $table.'.formId');
+                    $this->applySubmissionWhere(['form_sites.siteId' => $formSiteIds]);
+                } else {
+                    $this->subQuery->innerJoin(
+                        FormSiteRecord::TABLE.' form_sites',
+                        'form_sites.[[formId]] = '.$table.'.[[formId]]'
+                    );
 
-                $this->subQuery->andWhere(['form_sites.[[siteId]]' => $formSiteIds]);
+                    $this->subQuery->andWhere(['form_sites.[[siteId]]' => $formSiteIds]);
+                }
             }
         }
 
-        $this->query->select($select);
+        if ($this->usesCraft6ElementQuery()) {
+            foreach ($select as $column) {
+                if (!\is_string($column) || !str_contains($column, 'form_')) {
+                    continue;
+                }
+
+                $this->query->addSelect($column);
+            }
+        } else {
+            $this->query->select($select);
+        }
 
         $isEmptyFormId = empty($this->formId);
         $isIndex = !$request->getIsConsoleRequest() && 'index' === $request->post('context');
         if ($isEmptyFormId && $isCpRequest && $isIndex) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();
-            $this->subQuery->andWhere([$table.'.[[formId]]' => $allowedFormIds]);
+            $this->applySubmissionWhere([$table.'.[[formId]]' => $allowedFormIds]);
         }
 
         if ($this->statusId) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[statusId]]', $this->statusId));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[statusId]]', $this->statusId));
         }
 
         if ($this->userId) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[userId]]', $this->userId));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[userId]]', $this->userId));
         }
 
         if ($this->incrementalId) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[incrementalId]]', $this->incrementalId));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[incrementalId]]', $this->incrementalId));
         }
 
         if (null !== $this->sourceUrl) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[sourceUrl]]', $this->sourceUrl));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[sourceUrl]]', $this->sourceUrl));
         }
 
         if (null !== $this->token) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[token]]', $this->token));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[token]]', $this->token));
         }
 
         if (null !== $this->isSpam) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[isSpam]]', $this->isSpam));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[isSpam]]', $this->isSpam));
         }
 
         if (null !== $this->isHidden) {
-            $this->subQuery->andWhere(Db::parseParam($table.'.[[isHidden]]', $this->isHidden));
+            $this->applySubmissionWhere(Db::parseParam($table.'.[[isHidden]]', $this->isHidden));
         }
 
         if (!empty($this->spamReason)) {
@@ -454,7 +525,7 @@ class SubmissionQuery extends ElementQuery
             );
         }
 
-        if ($this->status) {
+        if (!$this->usesCraft6ElementQuery() && $this->status) {
             $this->freeformStatus = $this->status;
             $this->status = null;
 
@@ -466,7 +537,18 @@ class SubmissionQuery extends ElementQuery
         }
 
         if ($this->freeformStatus) {
-            $this->subQuery->andWhere(Db::parseParam("sub_{$statusTable}.[[handle]]", $this->freeformStatus));
+            $statusHandleColumn = $this->usesCraft6ElementQuery()
+                ? "{$statusTable}.handle"
+                : "sub_{$statusTable}.[[handle]]";
+
+            $this->applySubmissionWhere(Db::parseParam($statusHandleColumn, $this->freeformStatus));
+        }
+
+        if ($this->usesCraft6ElementQuery()) {
+            $this->prepareOrderBy($joinedForms);
+            $this->prepareFieldSearch($joinedForms);
+
+            return true;
         }
 
         $customSortTables = [
@@ -491,7 +573,67 @@ class SubmissionQuery extends ElementQuery
         $this->prepareOrderBy($joinedForms);
         $this->prepareFieldSearch($joinedForms);
 
-        return parent::beforePrepare();
+        return true;
+    }
+
+    private function usesCraft6ElementQuery(): bool
+    {
+        return is_a($this, \CraftCms\Cms\Element\Queries\ElementQuery::class);
+    }
+
+    private function applySubmissionWhere(mixed $condition): void
+    {
+        if ($this->usesCraft6ElementQuery()) {
+            $this->applyCraft6Where($condition);
+
+            return;
+        }
+
+        $this->subQuery->andWhere($condition);
+    }
+
+    private function applyCraft6Where(mixed $condition): void
+    {
+        if (\is_array($condition) && !\array_is_list($condition)) {
+            foreach ($condition as $column => $value) {
+                $this->where($this->normalizeSqlColumn((string) $column), $value);
+            }
+
+            return;
+        }
+
+        if (\is_array($condition) && isset($condition[0], $condition[1], $condition[2]) && \is_string($condition[0])) {
+            $this->where(
+                $this->normalizeSqlColumn($condition[0]),
+                $condition[1],
+                $condition[2],
+            );
+
+            return;
+        }
+
+        if (\is_array($condition) && isset($condition[0]) && 'or' === $condition[0]) {
+            $this->where(function ($query) use ($condition) {
+                foreach (\array_slice($condition, 1) as $subCondition) {
+                    if (\is_array($subCondition) && isset($subCondition[0], $subCondition[1], $subCondition[2])) {
+                        $query->orWhere(
+                            $this->normalizeSqlColumn($subCondition[0]),
+                            $subCondition[1],
+                            $subCondition[2],
+                        );
+                    }
+                }
+            });
+
+            return;
+        }
+
+        $this->andWhere($condition);
+    }
+
+    private function normalizeSqlColumn(string $column): string
+    {
+        return str_replace(['[[', ']]'], '', $column);
     }
 
     private function extractFormIdsWithContent(array $formIds): array
@@ -515,6 +657,10 @@ class SubmissionQuery extends ElementQuery
 
     private function prepareOrderBy(array $joinedForms): void
     {
+        if ($this->usesCraft6ElementQuery()) {
+            return;
+        }
+
         if (empty($this->orderBy) || !\is_array($this->orderBy)) {
             return;
         }
@@ -568,7 +714,7 @@ class SubmissionQuery extends ElementQuery
             if (\count($condition)) {
                 $condition = array_merge(['or'], $condition);
 
-                $this->subQuery->andWhere($condition);
+                $this->applySubmissionWhere($condition);
             }
         }
     }

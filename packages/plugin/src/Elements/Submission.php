@@ -382,7 +382,15 @@ class Submission extends Element
 
     public function getStatusModel(): StatusModel
     {
-        return Freeform::getInstance()->statuses->getStatusById($this->statusId);
+        $status = Freeform::getInstance()->statuses->getStatusById($this->statusId);
+
+        if ($status) {
+            return $status;
+        }
+
+        return Freeform::getInstance()->statuses->getStatusById(
+            Freeform::getInstance()->statuses->getDefaultStatusId()
+        );
     }
 
     public function getSubmissionDate(): \DateTime

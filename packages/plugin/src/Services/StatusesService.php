@@ -99,8 +99,12 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         ;
     }
 
-    public function getStatusById(int $id): ?StatusModel
+    public function getStatusById(?int $id): ?StatusModel
     {
+        if (null === $id) {
+            return null;
+        }
+
         if (!isset(self::$statusCache[$id])) {
             $result = $this->getStatusQuery()
                 ->where(['id' => $id])

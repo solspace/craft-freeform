@@ -1,10 +1,20 @@
 # Solspace Freeform Changelog
 
+## 6.0.0-beta.3 - 2026-07-13
+
+### Fixed
+- Fixed control panel navigation and route issues in Craft 6 that could cause Freeform pages to return 404 errors.
+- Fixed an error when loading the Submissions area in Craft 6 caused by legacy Yii table-prefix placeholders being passed to Laravel's query builder.
+- Fixed errors when loading default form settings in Craft 6 due to legacy Craft/Yii dependencies.
+- Fixed Craft 6 compatibility issues around legacy queue table checks, preventing errors when the legacy queue table is unavailable.
+- Fixed a fatal error in the encrypted submissions bundle caused by referencing a legacy inherited event constant during Craft 6 dependency updates.
+- Fixed an issue where the control panel navigation icon was not displaying correctly.
+
 ## 6.0.0-beta.2 - 2026-06-16
 
 ### Fixed
 - Improved React client app stability and settings handling.
-- Avoided unnecessary default status lookups during Control Panel login.
+- Avoided unnecessary default status lookups during control panel login.
 - Updated asset references and removed deprecated files.
 
 ## 6.0.0-beta.1 - 2026-06-08
@@ -86,11 +96,11 @@
 
 ### Changed
 - Made various visual improvements to **Template Manager** settings.
-- Made various performance improvements throughout the Control Panel and email notifications.
+- Made various performance improvements throughout the control panel and email notifications.
 - Aligned workspace dependency configuration.
 
 ### Fixed
-- Fixed an issue where the notification migration utility could return a 404 error due to an incorrect Control Panel route mapping.
+- Fixed an issue where the notification migration utility could return a 404 error due to an incorrect control panel route mapping.
 - Fixed an issue where field values were not site-aware in GraphQL.
 - Fixed an issue where field labels in the **Notifications** and **Rules** tabs of the form builder were not site-aware.
 - Fixed a visual issue with tooltips in the form builder.
@@ -318,14 +328,14 @@
 ## 5.14.13 - 2026-02-10
 
 ### Changed
-- Default built-in columns such as _Title_, _IP Address_, _Status_, etc. are now translated throughout the Control Panel and in exported files.
+- Default built-in columns such as _Title_, _IP Address_, _Status_, etc. are now translated throughout the control panel and in exported files.
 - Auto-generated form and field handles now always start with a letter to ensure GraphQL compatibility. To preserve legacy, existing handles remain unchanged, and handles can still be manually overridden to start with a number if needed.
 - Improved support and behavior for handling **Date & Time** fields as native date inputs.
 - Forms now correctly re-enable the submit button after an internal form error occurs.
 - Optimized and reduced the overall size of the form builder application.
 
 ### Fixed
-- Fixed a potential performance issue in the Control Panel Submissions area.
+- Fixed a potential performance issue in the control panel Submissions area.
 - Fixed an issue where the **Stripe** custom metadata description override was not working.
 - Fixed a bug where the **Template Manager** button appeared in the **Notifications** tab of the form builder when form-specific notifications are not used.
 - Fixed an issue where files from **File Upload Drag & Drop** fields were not attached to email notifications when **Include Attachments** was enabled.

@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.15.21 - 2026-07-13
+
+### Fixed
+- Fixed several issues with the **Mollie** integration, including missing SDK dependencies, payment creation errors, and redirect handling.
+- Fixed an issue where **Mollie** payment descriptions could render raw Twig, such as `{{ form.name }}`, instead of the parsed value.
+- Fixed an issue where successful **Mollie** payment returns did not always re-enter Freeform's success handling pipeline, affecting success banners and configured success behavior for AJAX and non-AJAX forms.
+- Fixed an issue where **Mollie** payment fields could inherit an invalid default value, causing duplicate-key errors.
+
 ## 5.15.20 - 2026-07-08
 
 ### Fixed

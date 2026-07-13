@@ -1,0 +1,1 @@
+{"version":3,"file":"useFieldExtension.d.ts","sourceRoot":"","sources":["../../src/hooks/useFieldExtension.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,uBAAuB,EAAE,MAAM,yBAAyB,CAAC;AACvE,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,aAAa,CAAC;AAEnD,wBAAgB,iBAAiB,CAC/B,KAAK,EAAE,uBAAuB,EAC9B,IAAI,EAAE,eAAe,GACpB,KAAK,CAAC,SAAS,CAAC,cAAc,GAAG,IAAI,CAAC,CAuBxC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"securityMeta.d.ts","sourceRoot":"","sources":["../../src/utils/securityMeta.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,gBAAgB,EAAE,MAAM,yBAAyB,CAAC;AAChE,OAAO,KAAK,EAAE,UAAU,EAAE,MAAM,yBAAyB,CAAC;AAE1D,wBAAgB,iBAAiB,CAAC,QAAQ,EAAE,gBAAgB,GAAG,UAAU,CAkBxE"}

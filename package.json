@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/client",
     "packages/scripts",
-    "packages/styles"
+    "packages/styles",
+    "packages/frontend/*"
   ],
   "engines": {
     "pnpm": ">=11"

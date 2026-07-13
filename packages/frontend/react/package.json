@@ -1,0 +1,46 @@
+{
+  "name": "@solspace/freeform-react",
+  "version": "5.15.19",
+  "description": "React components and hooks for Solspace Freeform headless forms",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run --config vitest.config.ts",
+    "lint": "biome check src"
+  },
+  "devDependencies": {
+    "@solspace/freeform-core": "workspace:*",
+    "@testing-library/react": "16.3.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "29.1.1",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "typescript": "^5.8.3",
+    "vitest": "4.1.9"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-core": "workspace:*",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "react"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT"
+}

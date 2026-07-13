@@ -1,0 +1,1 @@
+{"version":3,"file":"FormLoader.d.ts","sourceRoot":"","sources":["../../src/components/FormLoader.tsx"],"names":[],"mappings":"AAIA,MAAM,MAAM,eAAe,GAAG;IAC5B,OAAO,CAAC,EAAE,MAAM,CAAC;IACjB,SAAS,CAAC,EAAE,MAAM,CAAC;IACnB,OAAO,CAAC,EAAE,SAAS,GAAG,UAAU,CAAC;CAClC,CAAC;AAmBF,wBAAgB,UAAU,CAAC,EACzB,OAAyB,EACzB,SAAuB,EACvB,OAAoB,GACrB,EAAE,eAAe,+BA4DjB"}

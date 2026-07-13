@@ -1,0 +1,65 @@
+import { type FetchManifestOptions } from "./client/manifest-client.js";
+import { type SubmitOptions } from "./client/submit-client.js";
+import { FormState } from "./state/form-state.js";
+import type { FreeformManifest } from "./types/manifest.js";
+import type { SubmitResponse } from "./types/submit.js";
+export declare const PACKAGE_VERSION = "5.15.19";
+export declare const CLIENT_NAME = "@solspace/freeform-core";
+export type FreeformClientOptions = {
+  baseUrl: string;
+  clientVersion?: string;
+  fetch?: typeof globalThis.fetch;
+  credentials?: RequestCredentials;
+};
+export declare class FreeformClient {
+  readonly baseUrl: string;
+  readonly clientVersion: string;
+  readonly fetch: typeof globalThis.fetch;
+  readonly credentials: RequestCredentials;
+  readonly extensions: import("./index.js").ExtensionRegistry;
+  constructor(options: FreeformClientOptions);
+  loadManifest(params: FetchManifestOptions): Promise<FreeformManifest>;
+  createState(manifest: FreeformManifest): FormState;
+  submit(params: SubmitOptions): Promise<SubmitResponse>;
+  fetchCsrf(
+    manifest: FreeformManifest,
+  ): Promise<import("./index.js").CsrfToken | null>;
+  private asClientOptions;
+}
+export declare function createFreeformClient(
+  options: FreeformClientOptions,
+): FreeformClient;
+export * from "./client/csrf.js";
+export * from "./client/manifest-client.js";
+export * from "./client/submit-client.js";
+export * from "./conditionals/evaluator.js";
+export * from "./conditionals/operators.js";
+export * from "./extensions/registry.js";
+export * from "./state/form-state.js";
+export * from "./types/manifest.js";
+export * from "./types/submit.js";
+export * from "./utils/cookie-fetch.js";
+export * from "./utils/url.js";
+export declare const FIELD_RENDERERS: {
+  readonly TEXT: "text";
+  readonly TEXTAREA: "textarea";
+  readonly EMAIL: "email";
+  readonly NUMBER: "number";
+  readonly PHONE: "phone";
+  readonly HIDDEN: "hidden";
+  readonly SELECT: "select";
+  readonly CHECKBOX: "checkbox";
+  readonly CHECKBOXES: "checkboxes";
+  readonly RADIO: "radio";
+  readonly FILE: "file";
+  readonly DATETIME: "datetime";
+  readonly CONFIRMATION: "confirmation";
+  readonly RATING: "rating";
+  readonly OPINION_SCALE: "opinion-scale";
+  readonly SIGNATURE: "signature";
+  readonly TABLE: "table";
+  readonly HTML: "html";
+  readonly BUTTON: "button";
+  readonly SUBMIT: "submit";
+};
+//# sourceMappingURL=index.d.ts.map

@@ -160,7 +160,7 @@ class SessionContext
     {
         $form = $event->getForm();
 
-        if ($form->isGraphQLPosted()) {
+        if ($form->isGraphQLPosted() || $form->isHeadlessPosted()) {
             return;
         }
 

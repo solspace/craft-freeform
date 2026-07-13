@@ -68,6 +68,10 @@ class PageContext
             return;
         }
 
+        if ('validate' === $form->getProperties()->get('headlessIntent')) {
+            return;
+        }
+
         $event = new PageJumpEvent($form);
         Event::trigger($this, self::EVENT_PAGE_JUMP, $event);
         $pageJumpIndex = $event->getJumpToIndex();

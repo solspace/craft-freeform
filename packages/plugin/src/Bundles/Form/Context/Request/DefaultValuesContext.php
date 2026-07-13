@@ -27,7 +27,7 @@ class DefaultValuesContext
     public function handleDefaultValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        if ($form->isGraphQLPosted()) {
+        if ($form->isGraphQLPosted() || $form->isHeadlessPosted()) {
             return;
         }
 

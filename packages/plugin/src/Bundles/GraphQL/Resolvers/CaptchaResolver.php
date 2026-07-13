@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\FriendlyCaptcha\FriendlyCaptcha;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
@@ -16,9 +17,19 @@ class CaptchaResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
-        $arguments = [];
+        if (!$source instanceof Form) {
+            return null;
+        }
 
-        $integrations = Freeform::getInstance()->integrations->getForForm($source, Type::TYPE_CAPTCHAS);
+        return static::resolveForForm($source);
+    }
+
+    /**
+     * @return null|array<int, array<string, mixed>>
+     */
+    public static function resolveForForm(Form $form): ?array
+    {
+        $integrations = Freeform::getInstance()->integrations->getForForm($form, Type::TYPE_CAPTCHAS);
         if (!$integrations) {
             return null;
         }
@@ -28,6 +39,7 @@ class CaptchaResolver extends Resolver
             return null;
         }
 
+        $arguments = [];
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {
                 continue;
@@ -36,7 +48,7 @@ class CaptchaResolver extends Resolver
             $arguments[] = static::getArguments($integration);
         }
 
-        return $arguments;
+        return $arguments ?: null;
     }
 
     public static function resolveOne($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array

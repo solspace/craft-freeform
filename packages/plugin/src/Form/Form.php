@@ -76,6 +76,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
     public const EVENT_GRAPHQL_REQUEST = 'graphql-request';
+    public const EVENT_HEADLESS_REQUEST = 'headless-request';
     public const EVENT_FORM_LOADED = 'form-loaded';
     public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     public const EVENT_REGISTER_CONTEXT = 'register-context';
@@ -143,6 +144,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     private bool $formPosted = false;
     private bool $duplicate = false;
     private bool $graphqlPosted = false;
+    private bool $headlessPosted = false;
     private array $graphqlArguments = [];
 
     private Carbon $dateCreated;
@@ -580,6 +582,23 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function isGraphQLPosted(): bool
     {
         return $this->graphqlPosted;
+    }
+
+    public function isHeadlessPosted(): bool
+    {
+        return $this->headlessPosted;
+    }
+
+    public function setHeadlessPosted(bool $headlessPosted): self
+    {
+        $this->headlessPosted = $headlessPosted;
+
+        if ($headlessPosted) {
+            $this->pagePosted = true;
+            $this->formPosted = true;
+        }
+
+        return $this;
     }
 
     public function getDateCreated(): Carbon
@@ -1137,14 +1156,18 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
             return;
         }
 
-        if ($this->isGraphQLPosted()) {
-            $currentPageFields = [];
-            foreach ($this->getLayout()->getFields() as $field) {
-                if (!$field->includeInGqlSchema()) {
-                    continue;
-                }
+        if ($this->isGraphQLPosted() || $this->isHeadlessPosted()) {
+            if ($this->isHeadlessPosted()) {
+                $currentPageFields = iterator_to_array($this->getCurrentPage()->getFields());
+            } else {
+                $currentPageFields = [];
+                foreach ($this->getLayout()->getFields() as $field) {
+                    if (!$field->includeInGqlSchema()) {
+                        continue;
+                    }
 
-                $currentPageFields[] = $field;
+                    $currentPageFields[] = $field;
+                }
             }
         } else {
             $currentPageFields = $this->getCurrentPage()->getFields();

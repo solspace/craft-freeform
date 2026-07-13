@@ -28,6 +28,8 @@ use CraftCms\Cms\Cp\Data\NavItem;
 use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
+use CraftCms\Cms\Plugin\Plugins;
+use CraftCms\Cms\Twig\Twig;
 use CraftCms\Cms\Validation\Contracts\Validatable;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
@@ -236,6 +238,12 @@ class Freeform extends Plugin
 
     public ?string $controllerNamespace = null;
 
+    /** @var class-string[] */
+    protected array $elementTypes = [
+        Submission::class,
+        SpamSubmission::class,
+    ];
+
     private bool $freeformApplicationBooted = false;
 
     public function getMigrationPath(): string
@@ -277,7 +285,11 @@ class Freeform extends Plugin
             return $plugin;
         }
 
-        return parent::create($config);
+        /** @var self $plugin */
+        $plugin = parent::create($config);
+        self::ensurePluginLifecycle($plugin);
+
+        return $plugin;
     }
 
     public static function isLocked(string $key, int $seconds): bool
@@ -346,7 +358,7 @@ class Freeform extends Plugin
         static::getInstance()->bootFreeformApplication();
     }
 
-    public function getCpNavItem(): ?NavItem
+    public function getCpNavItem(): array|NavItem|null
     {
         $navItem = parent::getCpNavItem();
 
@@ -354,12 +366,16 @@ class Freeform extends Plugin
             return null;
         }
 
+        if (!$navItem instanceof NavItem) {
+            $navItem = new NavItem($navItem);
+        }
+
         $event = new RegisterCpSubnavItemsEvent($navItem, []);
         $this->triggerPluginEvent(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
         $navItem = $event->getNav();
         $navItem->icon = __DIR__.'/icon-mask.svg';
-        $navItem->subnav = $event->getSubnavItems();
+        $navItem->subnav = $this->convertSubnavToNavItems($event->getSubnavItems());
 
         return $navItem;
     }
@@ -512,6 +528,56 @@ class Freeform extends Plugin
             'freeform/settings',
             ['settings' => $this->getSettings()]
         );
+    }
+
+    /**
+     * Craft loads craft-plugin packages via Plugins::createPlugin(), not Laravel
+     * auto-discovery (see composer extra.laravel.dont-discover). Ensure the
+     * provider register/boot cycle still runs in that case.
+     */
+    private static function ensurePluginLifecycle(self $plugin): void
+    {
+        static $booted = [];
+
+        if (isset($booted[static::class])) {
+            return;
+        }
+
+        $booted[static::class] = true;
+
+        $plugin->register();
+        $plugin->boot(app(Plugins::class));
+    }
+
+    /**
+     * @param array<string, array<string, mixed>|NavItem> $items
+     *
+     * @return array<string, NavItem>
+     */
+    private function convertSubnavToNavItems(array $items): array
+    {
+        $result = [];
+
+        foreach ($items as $handle => $item) {
+            if ($item instanceof NavItem) {
+                $result[$handle] = $item;
+
+                continue;
+            }
+
+            if (isset($item['sel'])) {
+                $item['selected'] = (bool) $item['sel'];
+                unset($item['sel']);
+            }
+
+            if (isset($item['subnav']) && \is_array($item['subnav'])) {
+                $item['subnav'] = array_values($this->convertSubnavToNavItems($item['subnav']));
+            }
+
+            $result[$handle] = new NavItem($item);
+        }
+
+        return $result;
     }
 
     private function bootFreeformApplication(): void
@@ -813,9 +879,10 @@ class Freeform extends Plugin
             }
         );
 
-        \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
-        \Craft::$app->view->registerTwigExtension(new ImplementsClassFilter());
-        \Craft::$app->view->registerTwigExtension(new FreeformGlobalsExtension());
+        $twig = app(Twig::class);
+        $twig->registerExtension(new FreeformTwigFilters());
+        $twig->registerExtension(new ImplementsClassFilter());
+        $twig->registerExtension(new FreeformGlobalsExtension());
     }
 
     // TODO: move into a feature bundle

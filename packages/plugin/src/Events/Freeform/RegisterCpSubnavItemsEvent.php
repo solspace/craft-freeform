@@ -58,4 +58,13 @@ class RegisterCpSubnavItemsEvent extends Event
     {
         return $this->subNavItems;
     }
+
+    public function addToNav(string $property, mixed $value): self
+    {
+        if (property_exists($this->nav, $property)) {
+            $this->nav->{$property} = $value;
+        }
+
+        return $this;
+    }
 }

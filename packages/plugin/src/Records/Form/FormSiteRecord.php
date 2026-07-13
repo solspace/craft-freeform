@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Records\Form;
 
 use craft\db\ActiveRecord;
 use craft\models\Site;
+use craft\services\Sites;
 use Solspace\Freeform\Records\FormRecord;
 
 /**
@@ -27,7 +28,7 @@ use Solspace\Freeform\Records\FormRecord;
  */
 class FormSiteRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_forms_sites}}';
+    public const TABLE = 'freeform_forms_sites';
 
     public static function tableName(): string
     {
@@ -62,16 +63,27 @@ class FormSiteRecord extends ActiveRecord
         }
 
         $form = FormRecord::findOne(['id' => $formId]);
-        $metadata = json_decode($form->metadata);
-        $metadata->general->sites = array_map('strval', $siteIds);
 
-        $form->metadata = json_encode($metadata);
-        $form->save();
+        if (!$form) {
+            return;
+        }
+
+        $metadata = json_decode($form->metadata);
+
+        if (
+            $metadata
+            && isset($metadata->general)
+        ) {
+            $metadata->general->sites = array_map('strval', $siteIds);
+
+            $form->metadata = json_encode($metadata);
+            $form->save();
+        }
     }
 
     public function getSite(): ?Site
     {
-        return \Craft::$app->sites->getSiteById($this->siteId);
+        return app(Sites::class)->getSiteById($this->siteId);
     }
 
     public function rules(): array

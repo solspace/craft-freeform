@@ -1,0 +1,468 @@
+/**
+ * Default Freeform React theme styles.
+ *
+ * Layout: equal-split row columns (matches Freeform Twig flexbox / form builder).
+ * Color: light by default, follows `prefers-color-scheme: dark`, or force with
+ * `.ff-form--light` / `.ff-form--dark` (also via theme.defaults.colorScheme).
+ */
+
+.ff-form {
+  /* Light palette (default) */
+  --ff-color-text: #464747;
+  --ff-color-text-muted: #969696;
+  --ff-color-placeholder: #959ea5;
+  --ff-color-border: #cbced0;
+  --ff-color-border-focus: #0b5ed7;
+  --ff-color-surface: #ffffff;
+  --ff-color-surface-muted: #f8f9fa;
+  --ff-color-danger: #dc3545;
+  --ff-color-danger-contrast: #ffffff;
+  --ff-color-success: #198754;
+  --ff-color-success-contrast: #ffffff;
+  --ff-color-primary: #0d6efd;
+  --ff-color-primary-hover: #0b5ed7;
+  --ff-color-primary-border: #0a58ca;
+  --ff-color-primary-disabled: #5082cc;
+  --ff-color-primary-disabled-border: #497bc5;
+  --ff-color-primary-contrast: #ffffff;
+  --ff-color-secondary: #6c757d;
+  --ff-color-secondary-hover-bg: #6c757d;
+  --ff-color-secondary-hover-text: #ffffff;
+  --ff-color-select-chevron: #6c757d;
+  --ff-radius: 5px;
+  --ff-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  box-sizing: border-box;
+  font-family: var(--ff-font);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ff-color-text);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ff-form:not(.ff-form--light) {
+    --ff-color-text: #e8eaed;
+    --ff-color-text-muted: #9aa0a6;
+    --ff-color-placeholder: #80868b;
+    --ff-color-border: #5f6368;
+    --ff-color-border-focus: #8ab4f8;
+    --ff-color-surface: #292a2d;
+    --ff-color-surface-muted: #202124;
+    --ff-color-danger: #f28b82;
+    --ff-color-danger-contrast: #202124;
+    --ff-color-success: #81c995;
+    --ff-color-success-contrast: #202124;
+    --ff-color-primary: #8ab4f8;
+    --ff-color-primary-hover: #aecbfa;
+    --ff-color-primary-border: #8ab4f8;
+    --ff-color-primary-disabled: #5f6368;
+    --ff-color-primary-disabled-border: #5f6368;
+    --ff-color-primary-contrast: #202124;
+    --ff-color-secondary: #9aa0a6;
+    --ff-color-secondary-hover-bg: #9aa0a6;
+    --ff-color-secondary-hover-text: #202124;
+    --ff-color-select-chevron: #9aa0a6;
+    color-scheme: dark;
+  }
+}
+
+.ff-form--dark {
+  --ff-color-text: #e8eaed;
+  --ff-color-text-muted: #9aa0a6;
+  --ff-color-placeholder: #80868b;
+  --ff-color-border: #5f6368;
+  --ff-color-border-focus: #8ab4f8;
+  --ff-color-surface: #292a2d;
+  --ff-color-surface-muted: #202124;
+  --ff-color-danger: #f28b82;
+  --ff-color-danger-contrast: #202124;
+  --ff-color-success: #81c995;
+  --ff-color-success-contrast: #202124;
+  --ff-color-primary: #8ab4f8;
+  --ff-color-primary-hover: #aecbfa;
+  --ff-color-primary-border: #8ab4f8;
+  --ff-color-primary-disabled: #5f6368;
+  --ff-color-primary-disabled-border: #5f6368;
+  --ff-color-primary-contrast: #202124;
+  --ff-color-secondary: #9aa0a6;
+  --ff-color-secondary-hover-bg: #9aa0a6;
+  --ff-color-secondary-hover-text: #202124;
+  --ff-color-select-chevron: #9aa0a6;
+  color-scheme: dark;
+}
+
+.ff-form--light {
+  --ff-color-text: #464747;
+  --ff-color-text-muted: #969696;
+  --ff-color-placeholder: #959ea5;
+  --ff-color-border: #cbced0;
+  --ff-color-border-focus: #0b5ed7;
+  --ff-color-surface: #ffffff;
+  --ff-color-surface-muted: #f8f9fa;
+  --ff-color-danger: #dc3545;
+  --ff-color-danger-contrast: #ffffff;
+  --ff-color-success: #198754;
+  --ff-color-success-contrast: #ffffff;
+  --ff-color-primary: #0d6efd;
+  --ff-color-primary-hover: #0b5ed7;
+  --ff-color-primary-border: #0a58ca;
+  --ff-color-primary-disabled: #5082cc;
+  --ff-color-primary-disabled-border: #497bc5;
+  --ff-color-primary-contrast: #ffffff;
+  --ff-color-secondary: #6c757d;
+  --ff-color-secondary-hover-bg: #6c757d;
+  --ff-color-secondary-hover-text: #ffffff;
+  --ff-color-select-chevron: #6c757d;
+  color-scheme: light;
+}
+
+.ff-form *,
+.ff-form *::before,
+.ff-form *::after {
+  box-sizing: border-box;
+}
+
+.ff-page {
+  display: block;
+}
+
+/* Equal-split columns — same approach as Freeform flexbox formatting template */
+.ff-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.25rem;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0;
+}
+
+.ff-row > .ff-field {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.625rem 0;
+}
+
+.ff-field--hidden {
+  display: none !important;
+}
+
+.ff-field__label {
+  display: block;
+  margin: 0 0 0.35rem;
+  font-weight: 600;
+  color: var(--ff-color-text);
+}
+
+.ff-field--required .ff-field__label > span[aria-hidden="true"] {
+  color: var(--ff-color-danger);
+}
+
+.ff-field__instructions {
+  margin: 0 0 0.5rem;
+  font-size: 13px;
+  color: var(--ff-color-text-muted);
+}
+
+.ff-field__input,
+.ff-field
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(
+    [type="hidden"]
+  ),
+.ff-field textarea,
+.ff-field select {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  font: inherit;
+  color: var(--ff-color-text);
+  resize: vertical;
+  background-color: var(--ff-color-surface);
+  border: 1px solid var(--ff-color-border);
+  border-radius: var(--ff-radius);
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+}
+
+.ff-field input:focus,
+.ff-field textarea:focus,
+.ff-field select:focus {
+  outline: 0;
+  border-color: var(--ff-color-border-focus);
+}
+
+.ff-field input::placeholder,
+.ff-field textarea::placeholder {
+  color: var(--ff-color-placeholder);
+}
+
+.ff-field select:not([multiple]) {
+  padding-right: 2.75rem;
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ff-color-select-chevron) 50%),
+    linear-gradient(135deg, var(--ff-color-select-chevron) 50%, transparent 50%),
+    linear-gradient(
+      to right,
+      var(--ff-color-select-chevron),
+      var(--ff-color-select-chevron)
+    );
+  background-repeat: no-repeat;
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+}
+
+.ff-field input[type="checkbox"],
+.ff-field input[type="radio"] {
+  display: inline-block;
+  width: auto;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  transform: scale(1.15);
+}
+
+.ff-field--checkbox .ff-field__input,
+.ff-field--checkboxes .ff-field__input,
+.ff-field--radios .ff-field__input,
+.ff-field--opinion-scale .ff-field__input,
+.ff-field--rating .ff-field__input,
+.ff-field--cards .ff-field__input {
+  padding: 0;
+  color: var(--ff-color-text);
+  background: transparent;
+  border: 0;
+}
+
+.ff-field--checkboxes .ff-field__input label,
+.ff-field--radios .ff-field__input label,
+.ff-field--checkbox .ff-field__input {
+  display: flex;
+  gap: 0.35rem;
+  align-items: flex-start;
+  margin: 0 0 0.5rem;
+  font-weight: 400;
+  color: var(--ff-color-text);
+}
+
+.ff-field--checkbox .ff-field__input {
+  align-items: center;
+}
+
+.ff-field__errors {
+  padding: 0;
+  margin: 0.35rem 0 0;
+  list-style: none;
+}
+
+.ff-field__error {
+  margin-top: 0.25rem;
+  font: italic 400 15px sans-serif;
+  color: var(--ff-color-danger);
+}
+
+.ff-field--has-errors input:not([type="checkbox"]):not([type="radio"]),
+.ff-field--has-errors textarea,
+.ff-field--has-errors select {
+  border-color: var(--ff-color-danger);
+}
+
+.ff-form > .ff-field__errors,
+.ff-form > [role="alert"].ff-field__errors {
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1rem;
+  color: var(--ff-color-danger-contrast);
+  background: var(--ff-color-danger);
+  border: 1px solid var(--ff-color-danger);
+  border-radius: var(--ff-radius);
+}
+
+.ff-form > .ff-field__errors .ff-field__error {
+  font-style: italic;
+  color: var(--ff-color-danger-contrast);
+}
+
+.ff-form__success {
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
+  color: var(--ff-color-success-contrast);
+  background: var(--ff-color-success);
+  border: 1px solid var(--ff-color-success);
+  border-radius: var(--ff-radius);
+}
+
+.ff-form__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.ff-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 1rem;
+  font: 400 1rem / 1.5 inherit;
+  color: var(--ff-color-primary-contrast);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  background-color: var(--ff-color-primary);
+  border: 1px solid var(--ff-color-primary-border);
+  border-radius: var(--ff-radius);
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
+}
+
+.ff-button:hover:not(:disabled) {
+  background-color: var(--ff-color-primary-hover);
+  border-color: var(--ff-color-primary-border);
+}
+
+.ff-button:disabled {
+  cursor: not-allowed;
+  background-color: var(--ff-color-primary-disabled);
+  border-color: var(--ff-color-primary-disabled-border);
+}
+
+.ff-button--back {
+  color: var(--ff-color-secondary);
+  background-color: transparent;
+  border-color: var(--ff-color-secondary);
+}
+
+.ff-button--back:hover:not(:disabled) {
+  color: var(--ff-color-secondary-hover-text);
+  background-color: var(--ff-color-secondary-hover-bg);
+  border-color: var(--ff-color-secondary);
+}
+
+.ff-field--group > .ff-field__label {
+  font-size: 1.125rem;
+}
+
+.ff-field--group .ff-row {
+  margin-right: -0.25rem;
+  margin-left: -0.25rem;
+}
+
+.ff-field--table table {
+  width: 100%;
+  font-size: 0.875rem;
+  color: var(--ff-color-text);
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.ff-field--table th {
+  padding: 0 0.5rem 0.5rem 0;
+}
+
+.ff-field--table td {
+  padding: 0 0.5rem 0.5rem 0;
+  vertical-align: top;
+}
+
+.ff-field--table button {
+  padding: 0.3rem 0.75rem;
+  font: 400 0.875rem / 1.5 inherit;
+  cursor: pointer;
+  border-radius: var(--ff-radius);
+}
+
+.ff-field--signature canvas {
+  max-width: 100%;
+  background: var(--ff-color-surface);
+  border: 1px solid var(--ff-color-border);
+  border-radius: var(--ff-radius);
+}
+
+.ff-field--signature button,
+.ff-field--table button {
+  color: var(--ff-color-secondary);
+  background: transparent;
+  border: 1px solid var(--ff-color-secondary);
+}
+
+.ff-field--signature button:hover,
+.ff-field--table button:hover {
+  color: var(--ff-color-secondary-hover-text);
+  background: var(--ff-color-secondary-hover-bg);
+}
+
+.ff-field--rating .ff-field__input label {
+  display: inline-block;
+}
+
+.ff-field--cards .ff-field__input {
+  display: grid !important;
+}
+
+.ff-field--cards .ff-field__input label {
+  color: var(--ff-color-text);
+  background: var(--ff-color-surface);
+  border-color: var(--ff-color-border) !important;
+}
+
+.ff-field--html,
+.ff-field--rich-text,
+.ff-field--image {
+  max-width: 100%;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  color: var(--ff-color-text);
+}
+
+.ff-field__content {
+  display: block;
+  max-width: 100%;
+  color: var(--ff-color-text);
+}
+
+.ff-field__content :first-child {
+  margin-top: 0;
+}
+
+.ff-field__content :last-child {
+  margin-bottom: 0;
+}
+
+.ff-field--image img,
+.ff-field__content img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ff-captcha {
+  margin: 0.75rem 0;
+}
+
+.ff-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  white-space: nowrap;
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+}
+
+@media (max-width: 800px) {
+  .ff-row > .ff-field {
+    flex: 1 1 100%;
+  }
+}

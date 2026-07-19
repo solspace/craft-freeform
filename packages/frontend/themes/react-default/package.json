@@ -1,0 +1,48 @@
+{
+  "name": "@solspace/freeform-react-theme-default",
+  "version": "0.1.0-beta.1",
+  "description": "Default Freeform React theme — semantic ff-* BEM styles with equal-split row columns",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "dist",
+    "src/styles.css",
+    "styles.css",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "biome check src"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-react": "^0.1.0-beta.1"
+  },
+  "devDependencies": {
+    "@solspace/freeform-react": "workspace:*",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "react",
+    "theme"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "tag": "beta"
+  }
+}

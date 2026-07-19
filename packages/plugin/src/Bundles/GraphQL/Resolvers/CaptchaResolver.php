@@ -105,6 +105,8 @@ class CaptchaResolver extends Resolver
         ];
 
         if ($integration instanceof ReCaptcha) {
+            $arguments['provider'] = 'recaptcha';
+            $arguments['siteKey'] = $integration->getSiteKey();
             $arguments['action'] = $integration->getAction();
             $arguments['version'] = $integration->getVersion();
             $arguments['scoreThreshold'] = $integration->getScoreThreshold();
@@ -112,6 +114,8 @@ class CaptchaResolver extends Resolver
         }
 
         if ($integration instanceof hCaptcha) {
+            $arguments['provider'] = 'hcaptcha';
+            $arguments['siteKey'] = $integration->getSiteKey();
             $arguments['action'] = null;
             $arguments['version'] = $integration->getVersion();
             $arguments['scoreThreshold'] = null;
@@ -119,6 +123,8 @@ class CaptchaResolver extends Resolver
         }
 
         if ($integration instanceof Turnstile) {
+            $arguments['provider'] = 'turnstile';
+            $arguments['siteKey'] = $integration->getSiteKey();
             $arguments['action'] = $integration->getAction();
             $arguments['version'] = null;
             $arguments['scoreThreshold'] = null;
@@ -126,6 +132,8 @@ class CaptchaResolver extends Resolver
         }
 
         if ($integration instanceof FriendlyCaptcha) {
+            $arguments['provider'] = 'friendly-captcha';
+            $arguments['siteKey'] = $integration->getSiteKey();
             $arguments['action'] = null;
             $arguments['version'] = null;
             $arguments['scoreThreshold'] = null;

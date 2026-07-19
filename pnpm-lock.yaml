@@ -165,6 +165,22 @@ importers:
         specifier: 4.1.9
         version: 4.1.9(@types/node@26.0.1)(jsdom@29.1.1)(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass@1.98.0))
 
+  packages/frontend/extensions:
+    dependencies:
+      '@friendlycaptcha/sdk':
+        specifier: ^0.1.37
+        version: 0.1.37
+    devDependencies:
+      '@solspace/freeform-core':
+        specifier: workspace:*
+        version: link:../core
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: 4.1.9
+        version: 4.1.9(@types/node@26.0.1)(jsdom@29.1.1)(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass@1.98.0))
+
   packages/frontend/react:
     devDependencies:
       '@solspace/freeform-core':
@@ -194,6 +210,15 @@ importers:
       vitest:
         specifier: 4.1.9
         version: 4.1.9(@types/node@26.0.1)(jsdom@29.1.1)(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(sass@1.98.0))
+
+  packages/frontend/themes/react-default:
+    devDependencies:
+      '@solspace/freeform-react':
+        specifier: workspace:*
+        version: link:../../react
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
 
   packages/scripts:
     dependencies:
@@ -561,6 +586,9 @@ packages:
 
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
+
+  '@friendlycaptcha/sdk@0.1.37':
+    resolution: {integrity: sha512-A3XPZgNTWC2WioxbhAGeXKtwZZorwQutMeuNVxgdxT7eMWqxOZiu8xDUoOqRBoR8O2bXuIJR+MBffhVpp4zTjQ==}
 
   '@friendlycaptcha/sdk@1.0.0':
     resolution: {integrity: sha512-sYea43a9Y1gQna62/V57QNdSgiTHNimOCCdlwkYzvd6JU4LaBJYnn9hKojGg1BNauP+50H2jodmsTqD6UdpRbw==}
@@ -2290,6 +2318,8 @@ snapshots:
       tabbable: 6.4.0
 
   '@floating-ui/utils@0.2.11': {}
+
+  '@friendlycaptcha/sdk@0.1.37': {}
 
   '@friendlycaptcha/sdk@1.0.0': {}
 

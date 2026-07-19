@@ -9,7 +9,7 @@ import { createFormState, type FormState } from "./state/form-state.js";
 import type { FreeformManifest } from "./types/manifest.js";
 import type { SubmitResponse } from "./types/submit.js";
 
-export const PACKAGE_VERSION = "5.15.19";
+export const PACKAGE_VERSION = "0.1.0-beta.1";
 export const CLIENT_NAME = "@solspace/freeform-core";
 
 export type FreeformClientOptions = {

@@ -2,6 +2,7 @@
 
 import type { ManifestFieldDefinition } from "@solspace/freeform-core";
 import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { toBemModifier } from "../theme/toBemModifier.js";
 import type {
   FreeformReactTheme,
   FreeformRuntime,
@@ -32,10 +33,37 @@ export function FieldRenderer({
   const errors = form.fieldErrors[field.handle] ?? [];
   const value = form.values[field.handle];
   const isCheckbox = field.type === "checkbox";
+  const isPresentational =
+    field.type === "html" ||
+    field.type === "rich-text" ||
+    field.type === "image";
+
+  // Skip empty presentational fields so they don't leave blank bordered rows.
+  if (isPresentational) {
+    if (field.type === "image") {
+      const config = (field.frontend?.config ?? {}) as {
+        src?: string | null;
+      };
+      const image = (
+        field.content as { image?: { src?: string | null } } | undefined
+      )?.image;
+      if (!(image?.src || config.src)) {
+        return null;
+      }
+    } else {
+      const html = field.content?.rendered?.html?.trim();
+      if (!(allowRawHtml && html) && !field.instructions) {
+        return null;
+      }
+    }
+  }
+
   const fieldClassName = mergeClassNames(
     strategy,
     classNames.field,
     [
+      `ff-field--${toBemModifier(field.type)}`,
+      `ff-field--${toBemModifier(field.handle)}`,
       field.required ? classNames.fieldRequired : "",
       errors.length ? classNames.fieldHasErrors : "",
       !form.isFieldVisible(field.handle) ? classNames.fieldHidden : "",
@@ -45,7 +73,9 @@ export function FieldRenderer({
   );
 
   const renderLabel = () =>
-    !isCheckbox && theme.defaults?.renderLabels !== false ? (
+    !isCheckbox &&
+    !isPresentational &&
+    theme.defaults?.renderLabels !== false ? (
       <components.Label
         field={field}
         className={classNames.label}
@@ -54,7 +84,7 @@ export function FieldRenderer({
     ) : null;
 
   const renderInstructions = () =>
-    theme.defaults?.renderInstructions !== false ? (
+    !isPresentational && theme.defaults?.renderInstructions !== false ? (
       <components.Instructions
         field={field}
         className={classNames.instructions}
@@ -89,6 +119,50 @@ export function FieldRenderer({
           renderInstructions={renderInstructions}
           renderErrors={renderErrors}
         />
+      </components.FieldWrapper>
+    );
+  }
+
+  if (field.type === "group") {
+    return (
+      <components.FieldWrapper
+        field={field}
+        form={form}
+        className={fieldClassName}
+      >
+        {renderLabel()}
+        {renderInstructions()}
+        <div className={classNames.input} data-freeform-group={field.handle}>
+          {(field.layout?.rows ?? []).map((row) => (
+            <components.Row
+              key={row.uid}
+              className={mergeClassNames(
+                strategy,
+                classNames.row,
+                `ff-row--${row.fields.length}-fields`,
+              )}
+            >
+              {row.fields.map((handle) => {
+                const child = form.manifest.fields[handle];
+                if (!child) {
+                  return null;
+                }
+
+                return (
+                  <FieldRenderer
+                    key={child.uid}
+                    field={child}
+                    form={form}
+                    theme={theme}
+                    renderers={renderers}
+                    allowRawHtml={allowRawHtml}
+                  />
+                );
+              })}
+            </components.Row>
+          ))}
+        </div>
+        {renderErrors()}
       </components.FieldWrapper>
     );
   }

@@ -20,6 +20,7 @@ export function resolveFieldRenderer(
     frontendKey ? theme?.renderers?.frontend?.[frontendKey] : undefined,
     theme?.renderers?.types?.[field.type],
     frontendKey ? builtinRenderers.frontend[frontendKey] : undefined,
+    frontendKey ? builtinRenderers.types[frontendKey] : undefined,
     builtinRenderers.types[field.type],
   ];
 

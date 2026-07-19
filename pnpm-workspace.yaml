@@ -1,6 +1,7 @@
 packages:
   - "packages/*"
   - "packages/frontend/*"
+  - "packages/frontend/themes/*"
 
 overrides:
   "monaco-editor>dompurify": "3.4.11"

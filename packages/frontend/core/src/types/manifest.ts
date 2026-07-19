@@ -13,13 +13,24 @@ export type ManifestSecurityIntegration = {
   value?: string;
 };
 
+export type ManifestCaptchaProvider =
+  | "turnstile"
+  | "recaptcha"
+  | "hcaptcha"
+  | "friendly-captcha"
+  | string;
+
 export type ManifestCaptchaSecurity = ManifestSecurityIntegration & {
+  provider?: ManifestCaptchaProvider;
+  siteKey?: string | null;
   size?: string;
   theme?: string;
   locale?: string;
   failureBehavior?: string;
   triggerOnInteract?: boolean;
   version?: string | null;
+  action?: string | null;
+  scoreThreshold?: string | number | null;
   startMode?: string;
   apiEndpoint?: string;
 };
@@ -58,6 +69,11 @@ export type ManifestFieldDefinition = {
   content?: {
     rendered?: { html?: string };
     structured?: unknown;
+    image?: {
+      src?: string | null;
+      srcset?: string | null;
+      alt?: string | null;
+    };
   };
   layout?: { rows?: Array<{ uid: string; fields: string[] }> };
 };

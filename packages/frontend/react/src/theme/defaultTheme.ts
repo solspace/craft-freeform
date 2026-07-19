@@ -15,6 +15,7 @@ export const defaultTheme: FreeformReactTheme = {
     label: "ff-field__label",
     instructions: "ff-field__instructions",
     input: "ff-field__input",
+    content: "ff-field__content",
     errors: "ff-field__errors",
     error: "ff-field__error",
     buttons: "ff-form__buttons",
@@ -29,6 +30,7 @@ export const defaultTheme: FreeformReactTheme = {
     renderInstructions: true,
     renderErrors: true,
     requiredIndicator: "*",
+    colorScheme: "system",
   },
 };
 

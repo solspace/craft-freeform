@@ -1,10 +1,15 @@
 import type { ConditionalOperator } from "../types/manifest.js";
 
+export type TableFieldValue = Array<
+  Array<string | number | boolean | null | File | File[] | string>
+>;
+
 export type FieldValue =
   | string
   | number
   | boolean
   | string[]
+  | TableFieldValue
   | File
   | File[]
   | Blob

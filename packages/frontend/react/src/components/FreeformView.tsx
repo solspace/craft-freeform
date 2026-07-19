@@ -3,7 +3,9 @@
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { FieldRenderer } from "../renderers/FieldRenderer.js";
 import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { toBemModifier } from "../theme/toBemModifier.js";
 import type { FreeformRuntime, UseFreeformResult } from "../types.js";
+import { CaptchaHost } from "./CaptchaHost.js";
 
 type LoadedFreeformResult = UseFreeformResult & {
   manifest: NonNullable<UseFreeformResult["manifest"]>;
@@ -18,14 +20,44 @@ function asRuntime(form: LoadedFreeformResult): FreeformRuntime {
   return form;
 }
 
+function hasPresentationalContent(
+  field: NonNullable<LoadedFreeformResult["manifest"]>["fields"][string],
+  allowRawHtml: boolean,
+): boolean {
+  if (field.type === "image") {
+    const config = (field.frontend?.config ?? {}) as { src?: string | null };
+    const image = (
+      field.content as { image?: { src?: string | null } } | undefined
+    )?.image;
+    return Boolean(image?.src || config.src);
+  }
+
+  if (field.type === "html" || field.type === "rich-text") {
+    const html = field.content?.rendered?.html?.trim();
+    return Boolean((allowRawHtml && html) || field.instructions);
+  }
+
+  return true;
+}
+
 export function FreeformView({ form, className }: FreeformViewProps) {
   const runtime = asRuntime(form);
   const { manifest, theme, renderers, allowRawHtml } = form;
   const components = { ...builtinComponents, ...theme.renderers?.components };
   const strategy = theme.classNameStrategy ?? "merge";
+  const colorScheme = theme.defaults?.colorScheme ?? "system";
+  const colorSchemeClass =
+    colorScheme === "light" || colorScheme === "dark"
+      ? `ff-form--${colorScheme}`
+      : undefined;
+  const formHandleClass = `ff-form--${toBemModifier(manifest.form.handle)}`;
   const formClassName = mergeClassNames(
     strategy,
-    theme.classNames?.form,
+    mergeClassNames(
+      strategy,
+      mergeClassNames(strategy, theme.classNames?.form, formHandleClass),
+      colorSchemeClass,
+    ),
     className,
   );
   const pages = manifest.layout.pages;
@@ -61,30 +93,58 @@ export function FreeformView({ form, className }: FreeformViewProps) {
       <components.Page
         form={runtime}
         pageIndex={form.currentPageIndex}
-        className={theme.classNames?.page}
+        className={mergeClassNames(
+          strategy,
+          theme.classNames?.page,
+          `ff-page--${form.currentPageIndex}`,
+        )}
       >
-        {currentPage.rows.map((row) => (
-          <components.Row key={row.uid} className={theme.classNames?.row}>
-            {row.fields.map((handle) => {
-              const field = manifest.fields[handle];
-              if (!field) {
-                return null;
-              }
+        {currentPage.rows.map((row) => {
+          const visibleHandles = row.fields.filter((handle) => {
+            const field = manifest.fields[handle];
+            return field
+              ? hasPresentationalContent(field, allowRawHtml)
+              : false;
+          });
 
-              return (
-                <FieldRenderer
-                  key={field.uid}
-                  field={field}
-                  form={runtime}
-                  theme={theme}
-                  renderers={renderers}
-                  allowRawHtml={allowRawHtml}
-                />
-              );
-            })}
-          </components.Row>
-        ))}
+          if (visibleHandles.length === 0) {
+            return null;
+          }
+
+          return (
+            <components.Row
+              key={row.uid}
+              className={mergeClassNames(
+                strategy,
+                theme.classNames?.row,
+                `ff-row--${visibleHandles.length}-fields`,
+              )}
+            >
+              {visibleHandles.map((handle) => {
+                const field = manifest.fields[handle];
+                if (!field) {
+                  return null;
+                }
+
+                return (
+                  <FieldRenderer
+                    key={field.uid}
+                    field={field}
+                    form={runtime}
+                    theme={theme}
+                    renderers={renderers}
+                    allowRawHtml={allowRawHtml}
+                  />
+                );
+              })}
+            </components.Row>
+          );
+        })}
       </components.Page>
+
+      {(manifest.security.captchas ?? []).map((captcha) => (
+        <CaptchaHost key={captcha.name} form={runtime} captcha={captcha} />
+      ))}
 
       <components.ButtonRow className={theme.classNames?.buttons}>
         {!isFirstPage && currentPage.buttons?.back ? (

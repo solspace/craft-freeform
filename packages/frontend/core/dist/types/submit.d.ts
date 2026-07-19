@@ -1,78 +1,63 @@
 import type { SubmitIntent } from "./manifest.js";
 export type SubmitContext = {
-  token?: string | null;
-  draftToken?: string | null;
-  stateToken?: string | null;
+    token?: string | null;
+    draftToken?: string | null;
+    stateToken?: string | null;
 };
 export type SubmitMeta = {
-  idempotencyKey?: string;
-  client?: string;
-  clientVersion?: string;
-  honeypot?: {
-    name: string;
-    value: string;
-  };
-  javascriptTest?: {
-    name: string;
-    value: string;
-  };
-  captcha?: {
-    name: string;
-    value: string;
-  };
-  captchas?: Array<{
-    name: string;
-    value: string;
-  }>;
+    idempotencyKey?: string;
+    client?: string;
+    clientVersion?: string;
+    honeypot?: {
+        name: string;
+        value: string;
+    };
+    javascriptTest?: {
+        name: string;
+        value: string;
+    };
+    captcha?: {
+        name: string;
+        value: string;
+    };
+    captchas?: Array<{
+        name: string;
+        value: string;
+    }>;
 };
 export type SubmitRequest = {
-  values: Record<string, unknown>;
-  intent: SubmitIntent;
-  context?: SubmitContext;
-  meta?: SubmitMeta;
+    values: Record<string, unknown>;
+    intent: SubmitIntent;
+    context?: SubmitContext;
+    meta?: SubmitMeta;
 };
-export type SubmitStatus =
-  | "submitted"
-  | "validated"
-  | "validation_failed"
-  | "validation_error"
-  | "page_valid"
-  | "draft_saved"
-  | "not_implemented"
-  | "spam_rejected"
-  | "captcha_failed"
-  | "payment_action_required"
-  | "idempotency_conflict"
-  | "context_required"
-  | "context_invalid"
-  | "csrf_failed"
-  | "error";
+export type SubmitStatus = "submitted" | "validated" | "validation_failed" | "validation_error" | "page_valid" | "draft_saved" | "not_implemented" | "spam_rejected" | "captcha_failed" | "payment_action_required" | "idempotency_conflict" | "context_required" | "context_invalid" | "csrf_failed" | "error";
 export type SubmitErrors = {
-  fields: Record<string, string[]>;
-  form: string[];
-  page: string[];
+    fields: Record<string, string[]>;
+    form: string[];
+    page: string[];
 };
 export type SubmitResponse = {
-  success: boolean;
-  status: SubmitStatus | string;
-  complete: boolean;
-  submission?: {
-    id: number;
-    uid: string;
-    token?: string | null;
-  } | null;
-  message?: string | null;
-  redirect?: {
-    url: string;
-    delay?: number;
-  } | null;
-  actions?: unknown[];
-  page?: {
-    currentIndex?: number;
-  } | null;
-  state?: unknown;
-  draft?: unknown;
-  errors: SubmitErrors;
+    success: boolean;
+    status: SubmitStatus | string;
+    complete: boolean;
+    submission?: {
+        id: number;
+        uid: string;
+        token?: string | null;
+    } | null;
+    message?: string | null;
+    redirect?: {
+        url: string;
+        delay?: number;
+    } | null;
+    actions?: unknown[];
+    page?: {
+        currentIndex?: number;
+    } | null;
+    state?: unknown;
+    draft?: unknown;
+    errors: SubmitErrors;
 };
 export type SubmitFileMap = Record<string, File | File[] | Blob | Blob[]>;
 //# sourceMappingURL=submit.d.ts.map

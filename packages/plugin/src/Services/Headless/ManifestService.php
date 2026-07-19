@@ -82,7 +82,8 @@ class ManifestService
         return [
             'schemaVersion' => '1.0',
             'pluginVersion' => Freeform::getInstance()->version,
-            'minimumClientVersion' => Freeform::getInstance()->version,
+            // npm packages use an independent semver line (e.g. 0.1.0-beta.x), not the plugin version.
+            'minimumClientVersion' => '0.1.0',
             'generatedAt' => (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))->format(\DateTimeInterface::ATOM),
             'site' => [
                 'id' => \Craft::$app->getSites()->getCurrentSite()->id,

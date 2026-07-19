@@ -5,7 +5,7 @@ import { submitForm } from "./submit-client.js";
 const manifest: FreeformManifest = {
   schemaVersion: "1.0",
   pluginVersion: "5.15.19",
-  minimumClientVersion: "5.15.0",
+  minimumClientVersion: "0.1.0",
   generatedAt: "2026-01-01T00:00:00Z",
   site: {
     id: 1,
@@ -79,7 +79,7 @@ describe("submitForm", () => {
     const response = await submitForm(
       {
         baseUrl: "https://example.com",
-        clientVersion: "5.15.19",
+        clientVersion: "0.1.0-beta.1",
         fetch: fetchMock as typeof fetch,
       },
       {

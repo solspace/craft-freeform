@@ -44,6 +44,7 @@ export { FieldRenderer } from "./renderers/FieldRenderer.js";
 export { resolveFieldRenderer } from "./renderers/resolve.js";
 export { createTheme, defaultTheme } from "./theme/defaultTheme.js";
 export { mergeClassNames } from "./theme/mergeClassNames.js";
+export { toBemModifier } from "./theme/toBemModifier.js";
 export type {
   FreeformProps,
   FreeformReactTheme,

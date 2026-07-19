@@ -2,12 +2,17 @@
 
 import {
   CLIENT_NAME as CORE_CLIENT_NAME,
+  collectExtensionSubmitMeta,
   createFormState,
   createFreeformClient,
   type FieldValue,
   type FormState,
   type FreeformClient,
+  type FreeformExtension,
   type FreeformManifest,
+  type ManifestCaptchaSecurity,
+  runExtensionAfterSubmit,
+  runExtensionSetups,
   type SubmitFileMap,
   type SubmitIntent,
 } from "@solspace/freeform-core";
@@ -61,7 +66,11 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
   const clientRef = useRef<FreeformClient | null>(null);
   const formStateRef = useRef<FormState | null>(null);
   const extensionMountsRef = useRef(new Map<string, HTMLElement>());
+  const captchaCleanupsRef = useRef(new Map<string, () => void>());
+  const extensionsRef = useRef<FreeformExtension[]>(options.extensions ?? []);
   const visibilityVersionRef = useRef(0);
+
+  extensionsRef.current = options.extensions ?? [];
 
   const [manifest, setManifest] = useState<FreeformManifest | null>(
     options.manifest ?? null,
@@ -101,6 +110,10 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       });
     }
 
+    for (const extension of extensionsRef.current) {
+      clientRef.current.extensions.register(extension);
+    }
+
     return clientRef.current;
   }, [
     options.baseUrl,
@@ -108,6 +121,22 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     options.credentials,
     options.fetch,
   ]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Re-register when the extensions list changes; body reads the latest list via extensionsRef.
+  useEffect(() => {
+    const client = getClient();
+    for (const extension of extensionsRef.current) {
+      client.extensions.register(extension);
+    }
+  }, [getClient, options.extensions]);
+
+  useEffect(() => {
+    if (!manifest) {
+      return;
+    }
+
+    void runExtensionSetups(extensionsRef.current, { manifest });
+  }, [manifest]);
 
   useEffect(() => {
     if (options.manifest) {
@@ -268,6 +297,17 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           values[handle] = value;
         }
 
+        const securityMeta = buildSecurityMeta(manifest);
+        const extensionMeta = await collectExtensionSubmitMeta(
+          extensionsRef.current,
+          {
+            manifest,
+            intent,
+            values,
+            meta: securityMeta,
+          },
+        );
+
         const result = await getClient().submit({
           manifest,
           request: {
@@ -276,7 +316,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
             meta: {
               client: CLIENT_NAME,
               clientVersion: options.clientVersion ?? PACKAGE_VERSION,
-              ...buildSecurityMeta(manifest),
+              ...extensionMeta,
             },
           },
           files: Object.keys(files).length > 0 ? files : undefined,
@@ -284,6 +324,12 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
 
         formState.applySubmitResponse(result);
         syncFromFormState();
+
+        await runExtensionAfterSubmit(extensionsRef.current, {
+          manifest,
+          intent,
+          response: result,
+        });
 
         if (result.complete) {
           setIsComplete(true);
@@ -357,13 +403,108 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
 
   const mountFieldExtension = useCallback(
     (handle: string, element: HTMLElement) => {
+      if (!manifest) {
+        return () => {};
+      }
+
       extensionMountsRef.current.set(handle, element);
+      const field = manifest.fields[handle];
+      if (!field) {
+        return () => {
+          extensionMountsRef.current.delete(handle);
+        };
+      }
+
+      let cancelled = false;
+      const cleanups: Array<() => void> = [];
+      const currentManifest = manifest;
+
+      void (async () => {
+        for (const extension of extensionsRef.current) {
+          if (extension.supports && !extension.supports(field)) {
+            continue;
+          }
+          if (!extension.mount) {
+            continue;
+          }
+
+          const cleanup = await extension.mount({
+            manifest: currentManifest,
+            field,
+            element,
+            value: formStateRef.current?.getValue(handle),
+            setValue: (value) => {
+              formStateRef.current?.setValue(handle, value as FieldValue);
+              syncFromFormState();
+            },
+            baseUrl: options.baseUrl,
+          });
+
+          if (cancelled) {
+            if (typeof cleanup === "function") {
+              cleanup();
+            }
+            return;
+          }
+
+          if (typeof cleanup === "function") {
+            cleanups.push(cleanup);
+          }
+        }
+      })();
 
       return () => {
+        cancelled = true;
+        for (const cleanup of cleanups) {
+          cleanup();
+        }
         extensionMountsRef.current.delete(handle);
       };
     },
-    [],
+    [manifest, options.baseUrl, syncFromFormState],
+  );
+
+  const mountCaptcha = useCallback(
+    (captcha: ManifestCaptchaSecurity, element: HTMLElement) => {
+      if (!manifest) {
+        return () => {};
+      }
+
+      let cancelled = false;
+      const cleanups: Array<() => void> = [];
+      const currentManifest = manifest;
+
+      void (async () => {
+        for (const extension of extensionsRef.current) {
+          const cleanup = await extension.mountCaptcha?.({
+            manifest: currentManifest,
+            captcha,
+            element,
+          });
+          if (cancelled) {
+            if (typeof cleanup === "function") {
+              cleanup();
+            }
+            return;
+          }
+          if (typeof cleanup === "function") {
+            cleanups.push(cleanup);
+          }
+        }
+      })();
+
+      const dispose = () => {
+        cancelled = true;
+        for (const cleanup of cleanups) {
+          cleanup();
+        }
+        captchaCleanupsRef.current.delete(captcha.name);
+      };
+
+      captchaCleanupsRef.current.set(captcha.name, dispose);
+      return dispose;
+    },
+    [manifest],
   );
 
   const runtime = useMemo(() => {
@@ -394,6 +535,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       reset,
       handleSubmit,
       mountFieldExtension,
+      mountCaptcha,
     };
   }, [
     getFieldProps,
@@ -406,6 +548,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     isFieldVisible,
     isSubmitting,
     manifest,
+    mountCaptcha,
     mountFieldExtension,
     reset,
     setValue,
@@ -437,6 +580,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     reset,
     handleSubmit,
     mountFieldExtension,
+    mountCaptcha,
   };
 
   if (!runtime) {

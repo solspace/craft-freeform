@@ -1,41 +1,28 @@
 import type { ReactFieldRendererProps } from "../../types.js";
-export declare function TextFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function EmailFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function NumberFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function PhoneFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function HiddenFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function TextareaFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function SelectFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function CheckboxFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function CheckboxesFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function RadioFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function FileFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function HtmlFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
-export declare function UnsupportedFieldRenderer(
-  props: ReactFieldRendererProps,
-): import("react").JSX.Element;
+export declare function TextFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function WebsiteFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function RegexFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function PasswordFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function ConfirmFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function EmailFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function NumberFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function PhoneFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function HiddenFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function TextareaFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function SelectFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function MultipleSelectFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function CheckboxFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function CheckboxesFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function RadioFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function OpinionScaleFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function RatingFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function CardsFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function FileFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function FileDndFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function HtmlFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
+export declare function ImageFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
+export declare function DatetimeFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function TableFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function SignatureFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function UnsupportedFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 //# sourceMappingURL=fields.d.ts.map

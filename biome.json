@@ -13,7 +13,8 @@
       "!pnpm-lock.yaml",
       "!node_modules",
       "!vendor",
-      "!packages/plugin"
+      "!packages/plugin",
+      "!**/dist"
     ]
   },
   "formatter": {

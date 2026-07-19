@@ -622,7 +622,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         if ($asset) {
-            $errors = array_merge($errors, $asset->getErrorSummary());
+            $errors = array_merge($errors, $asset->getErrorSummary(true));
         }
 
         return null;

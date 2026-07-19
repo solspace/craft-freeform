@@ -35,6 +35,7 @@ abstract class BaseHeadlessController extends BaseController
                 'Content-Type',
                 'X-CSRF-Token',
                 'X-Freeform-Context',
+                'X-Freeform-Upload-Token',
                 'Idempotency-Key',
             ],
             'Access-Control-Allow-Credentials' => !\in_array('*', $origins, true),

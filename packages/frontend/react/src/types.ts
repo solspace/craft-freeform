@@ -1,13 +1,15 @@
 import type {
   FieldValue,
+  FreeformExtension,
   FreeformManifest,
+  ManifestCaptchaSecurity,
   ManifestFieldDefinition,
   SubmitIntent,
   SubmitResponse,
 } from "@solspace/freeform-core";
 import type { ComponentType, FormEvent, ReactNode } from "react";
 
-export const PACKAGE_VERSION = "5.15.19";
+export const PACKAGE_VERSION = "0.1.0-beta.1";
 export const CLIENT_NAME = "@solspace/freeform-react";
 
 export type FreeformThemeClassNames = {
@@ -21,6 +23,8 @@ export type FreeformThemeClassNames = {
   label?: string;
   instructions?: string;
   input?: string;
+  /** Static content (html / rich-text / image) — not input chrome */
+  content?: string;
   errors?: string;
   error?: string;
   buttons?: string;
@@ -67,6 +71,8 @@ export type FreeformReactTheme = {
     renderInstructions?: boolean;
     renderErrors?: boolean;
     requiredIndicator?: string;
+    /** Light / dark palette. `system` follows prefers-color-scheme (default). */
+    colorScheme?: "light" | "dark" | "system";
   };
 };
 
@@ -165,6 +171,10 @@ export type FreeformRuntime = {
   reset: () => void;
   handleSubmit: (event?: FormEvent) => Promise<void>;
   mountFieldExtension: (handle: string, element: HTMLElement) => () => void;
+  mountCaptcha: (
+    captcha: ManifestCaptchaSecurity,
+    element: HTMLElement,
+  ) => () => void;
 };
 
 export type UseFreeformOptions = {
@@ -179,6 +189,7 @@ export type UseFreeformOptions = {
   credentials?: RequestCredentials;
   theme?: FreeformReactTheme;
   renderers?: RendererOverrides;
+  extensions?: FreeformExtension[];
   allowRawHtml?: boolean;
   onSuccess?: (response: SubmitResponse) => void;
   onError?: (response: SubmitResponse) => void;

@@ -9,19 +9,25 @@ export function useFieldExtension(
   form: FreeformRuntime,
 ): React.RefObject<HTMLDivElement | null> {
   const ref = useRef<HTMLDivElement | null>(null);
+  const mountRef = useRef(form.mountFieldExtension);
+  const isVisibleRef = useRef(form.isFieldVisible);
+  mountRef.current = form.mountFieldExtension;
+  isVisibleRef.current = form.isFieldVisible;
+
+  const extension = field.frontend?.extension;
 
   useEffect(() => {
     const element = ref.current;
-    if (!element || !field.frontend?.extension) {
+    if (!element || !extension) {
       return;
     }
 
-    if (!form.isFieldVisible(field.handle)) {
+    if (!isVisibleRef.current(field.handle)) {
       return;
     }
 
-    return form.mountFieldExtension(field.handle, element);
-  }, [field.frontend?.extension, field.handle, form]);
+    return mountRef.current(field.handle, element);
+  }, [extension, field.handle]);
 
   return ref;
 }

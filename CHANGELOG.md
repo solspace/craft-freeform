@@ -1,5 +1,30 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added a headless REST API for form manifests and submissions (`/freeform/api/forms/{handle}/manifest` and `/submit`), including CSRF, CORS, captcha meta, multipart uploads, file drag-and-drop upload endpoints, and optional named profiles.
+- Added official frontend npm packages (published on a **separate** beta version line — currently **`0.1.0-beta.1`** / npm tag `beta`):
+  - `@solspace/freeform-core`
+  - `@solspace/freeform-react`
+  - `@solspace/freeform-extensions`
+  - `@solspace/freeform-react-theme-default`
+
+```bash
+npm install @solspace/freeform-core@beta \
+  @solspace/freeform-react@beta \
+  @solspace/freeform-extensions@beta \
+  @solspace/freeform-react-theme-default@beta
+```
+
+### Changed
+- Headless remains **opt-in** (global + per-form). Enable in Freeform settings / config before exposing forms.
+
+### Notes
+- npm packages use independent semver (`0.1.0-beta.x`), not the Freeform plugin version.
+- Manifest `minimumClientVersion` targets the npm client line (`0.1.0+`).
+- Deferred for later: drafts, payments, calculation fields, Vue adapter, Bootstrap/Tailwind themes.
+
 ## 5.15.19 - 2026-07-02
 
 ### Added

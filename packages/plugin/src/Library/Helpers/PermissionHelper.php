@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
+use Solspace\Freeform\Freeform;
 use yii\web\ForbiddenHttpException;
 
 class PermissionHelper
@@ -60,10 +61,12 @@ class PermissionHelper
     /**
      * Fetches all nested allowed permission IDs from a nested permission set.
      */
-    public static function getNestedPermissionIds(string $permissionName): array|bool
+    public static function getNestedPermissionIds(string $permissionName): array
     {
-        if (self::isAdmin()) {
-            return true;
+        $isAdmin = self::isAdmin();
+        $allFormIds = Freeform::getInstance()->forms->getAllFormIds();
+        if ($isAdmin) {
+            return $allFormIds;
         }
 
         $user = \Craft::$app->getUser();
@@ -91,7 +94,7 @@ class PermissionHelper
             return $idList;
         }
 
-        return self::isAdmin();
+        return [];
     }
 
     /**

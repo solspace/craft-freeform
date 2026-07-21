@@ -1,19 +1,19 @@
 # @solspace/freeform-react
 
-> **Public beta (`0.1.0-beta.1`)** — APIs may change before stable. See [`../BETA.md`](../BETA.md).
+> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
 
 React components and hooks for Solspace Freeform forms over the headless REST API.
 
 ## Requirements
 
 - React 18 or 19
-- `@solspace/freeform-core` at the matching Freeform version
+- `@solspace/freeform-core` (matching major/minor)
 - Freeform headless API enabled in your Craft project (`config/freeform.php`)
 
 ## Install
 
 ```bash
-npm install @solspace/freeform-react@beta @solspace/freeform-core@beta
+npm install @solspace/freeform-react @solspace/freeform-core
 ```
 
 ## Quick start
@@ -182,13 +182,13 @@ Configure captcha integrations in Freeform before going live. The form manifest 
 
 ## Themes
 
-Pass a theme object to customize class names and default wrappers. Official theme package for beta:
+Pass a theme object to customize class names and default wrappers. Official theme package:
 
 ```bash
-npm install @solspace/freeform-react-theme-default@beta
+npm install @solspace/freeform-react-theme-default
 ```
 
-Bootstrap and Tailwind themes are planned after beta.
+Bootstrap and Tailwind themes are planned for a later release.
 
 ```tsx
 import { Freeform, createTheme } from "@solspace/freeform-react";

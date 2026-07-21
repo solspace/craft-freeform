@@ -1,13 +1,13 @@
 # @solspace/freeform-extensions
 
-> **Public beta (`0.1.0-beta.1`)** — APIs may change before stable. See [`../BETA.md`](../BETA.md).
+> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
 
 Official Freeform extensions for captchas and advanced form behavior used with `@solspace/freeform-core` and `@solspace/freeform-react`.
 
 ## Install
 
 ```bash
-npm install @solspace/freeform-extensions@beta @solspace/freeform-core@beta @solspace/freeform-react@beta
+npm install @solspace/freeform-extensions @solspace/freeform-core @solspace/freeform-react
 ```
 
 ## Datetime

@@ -9,7 +9,7 @@ import type {
 } from "@solspace/freeform-core";
 import type { ComponentType, FormEvent, ReactNode } from "react";
 
-export const PACKAGE_VERSION = "0.1.0-beta.1";
+export { PACKAGE_VERSION } from "./version.js";
 export const CLIENT_NAME = "@solspace/freeform-react";
 
 export type FreeformThemeClassNames = {

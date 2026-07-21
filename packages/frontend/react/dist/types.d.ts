@@ -1,6 +1,6 @@
 import type { FieldValue, FreeformExtension, FreeformManifest, ManifestCaptchaSecurity, ManifestFieldDefinition, SubmitIntent, SubmitResponse } from "@solspace/freeform-core";
 import type { ComponentType, FormEvent, ReactNode } from "react";
-export declare const PACKAGE_VERSION = "0.1.0-beta.1";
+export { PACKAGE_VERSION } from "./version.js";
 export declare const CLIENT_NAME = "@solspace/freeform-react";
 export type FreeformThemeClassNames = {
     form?: string;

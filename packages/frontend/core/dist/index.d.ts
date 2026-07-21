@@ -3,7 +3,7 @@ import { type SubmitOptions } from "./client/submit-client.js";
 import { type FormState } from "./state/form-state.js";
 import type { FreeformManifest } from "./types/manifest.js";
 import type { SubmitResponse } from "./types/submit.js";
-export declare const PACKAGE_VERSION = "0.1.0-beta.1";
+export { PACKAGE_VERSION } from "./version.js";
 export declare const CLIENT_NAME = "@solspace/freeform-core";
 export type FreeformClientOptions = {
     baseUrl: string;

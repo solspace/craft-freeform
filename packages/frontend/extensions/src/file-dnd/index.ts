@@ -4,6 +4,7 @@ import type {
   ManifestFieldDefinition,
 } from "@solspace/freeform-core";
 import { resolveUrl } from "@solspace/freeform-core";
+import { PACKAGE_VERSION } from "../version.js";
 
 type FileDndConfig = {
   accept?: string;
@@ -118,7 +119,7 @@ function resolveBaseUrl(context: FieldMountContext): string {
 export function createFileDndExtension(): FreeformExtension {
   return {
     name: "file-dnd",
-    version: "0.1.0-beta.1",
+    version: PACKAGE_VERSION,
 
     supports: supportsFileDnd,
 

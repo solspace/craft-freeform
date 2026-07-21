@@ -1,6 +1,6 @@
 # @solspace/freeform-react-theme-default
 
-> **Public beta (`0.1.0-beta.1`)** — See [`../../BETA.md`](../../BETA.md).
+> See [`PACKAGES.md`](../../PACKAGES.md) for install notes and known limitations.
 
 Default Freeform React theme. Provides CSS for the semantic `ff-*` classes used by `@solspace/freeform-react`, including:
 
@@ -10,7 +10,7 @@ Default Freeform React theme. Provides CSS for the semantic `ff-*` classes used 
 ## Install
 
 ```bash
-npm install @solspace/freeform-react-theme-default@beta @solspace/freeform-react@beta
+npm install @solspace/freeform-react-theme-default @solspace/freeform-react
 ```
 
 ## Usage

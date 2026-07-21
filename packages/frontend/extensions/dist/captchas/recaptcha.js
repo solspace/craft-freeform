@@ -1,4 +1,5 @@
 import { inferCaptchaProvider, loadScriptOnce, waitForValue, } from "./shared.js";
+import { PACKAGE_VERSION } from "../version.js";
 function getCaptchas(manifestCaptchas) {
     return (manifestCaptchas ?? []).filter((captcha) => inferCaptchaProvider(captcha) === "recaptcha");
 }
@@ -45,7 +46,7 @@ export function createRecaptchaExtension() {
     const tokens = new Map();
     return {
         name: "captcha.recaptcha",
-        version: "0.1.0-beta.1",
+        version: PACKAGE_VERSION,
         async mountCaptcha({ captcha, element }) {
             if (inferCaptchaProvider(captcha) !== "recaptcha") {
                 return;

@@ -1,6 +1,6 @@
 # @solspace/freeform-core
 
-> **Public beta (`0.1.0-beta.1`)** — APIs may change before stable. See [`../BETA.md`](../BETA.md).
+> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
 
 Framework-neutral runtime for Solspace Freeform headless forms.
 
@@ -14,7 +14,7 @@ React adapters build on this package. Use it directly when you need form loading
 ## Install
 
 ```bash
-npm install @solspace/freeform-core@beta
+npm install @solspace/freeform-core
 ```
 
 ## Quick start

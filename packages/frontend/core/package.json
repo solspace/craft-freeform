@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-core",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0",
   "description": "Framework-neutral headless runtime for Solspace Freeform",
   "private": false,
   "type": "module",
@@ -13,6 +13,11 @@
       "import": "./dist/index.js"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -32,7 +37,6 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "publishConfig": {
-    "access": "public",
-    "tag": "beta"
+    "access": "public"
   }
 }

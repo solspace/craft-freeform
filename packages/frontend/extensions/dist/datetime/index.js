@@ -1,4 +1,5 @@
 import { loadScriptOnce } from "../captchas/shared.js";
+import { PACKAGE_VERSION } from "../version.js";
 function getConfig(field) {
     return (field.frontend?.config ?? {});
 }
@@ -28,7 +29,7 @@ async function ensureFlatpickr(locale) {
 export function createDatetimeExtension() {
     return {
         name: "datetime",
-        version: "0.1.0-beta.1",
+        version: PACKAGE_VERSION,
         supports: supportsDatetime,
         async mount(context) {
             const { field, element, setValue, value } = context;

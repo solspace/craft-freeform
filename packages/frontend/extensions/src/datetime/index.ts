@@ -4,6 +4,7 @@ import type {
   ManifestFieldDefinition,
 } from "@solspace/freeform-core";
 import { loadScriptOnce } from "../captchas/shared.js";
+import { PACKAGE_VERSION } from "../version.js";
 
 type DatetimeConfig = {
   dateTimeType?: string;
@@ -80,7 +81,7 @@ async function ensureFlatpickr(locale?: string | null): Promise<FlatpickrFn> {
 export function createDatetimeExtension(): FreeformExtension {
   return {
     name: "datetime",
-    version: "0.1.0-beta.1",
+    version: PACKAGE_VERSION,
 
     supports: supportsDatetime,
 

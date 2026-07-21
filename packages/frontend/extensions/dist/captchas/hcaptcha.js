@@ -1,4 +1,5 @@
 import { inferCaptchaProvider, loadScriptOnce, waitForValue, } from "./shared.js";
+import { PACKAGE_VERSION } from "../version.js";
 function getCaptchas(manifestCaptchas) {
     return (manifestCaptchas ?? []).filter((captcha) => inferCaptchaProvider(captcha) === "hcaptcha");
 }
@@ -14,7 +15,7 @@ export function createHcaptchaExtension() {
     const tokens = new Map();
     return {
         name: "captcha.hcaptcha",
-        version: "0.1.0-beta.1",
+        version: PACKAGE_VERSION,
         async mountCaptcha({ captcha, element }) {
             if (inferCaptchaProvider(captcha) !== "hcaptcha") {
                 return;

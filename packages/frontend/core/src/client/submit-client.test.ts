@@ -79,7 +79,7 @@ describe("submitForm", () => {
     const response = await submitForm(
       {
         baseUrl: "https://example.com",
-        clientVersion: "0.1.0-beta.1",
+        clientVersion: "0.1.0",
         fetch: fetchMock as typeof fetch,
       },
       {

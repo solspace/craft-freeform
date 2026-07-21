@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-extensions",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0",
   "description": "Official Freeform headless extensions for captchas and advanced field behavior",
   "private": false,
   "type": "module",
@@ -17,6 +17,11 @@
       "import": "./dist/captchas/index.js"
     }
   },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
@@ -24,7 +29,7 @@
     "lint": "biome check src"
   },
   "peerDependencies": {
-    "@solspace/freeform-core": "^0.1.0-beta.1"
+    "@solspace/freeform-core": "^0.1.0"
   },
   "devDependencies": {
     "@solspace/freeform-core": "workspace:*",
@@ -44,7 +49,6 @@
     "@friendlycaptcha/sdk": "^0.1.37"
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "beta"
+    "access": "public"
   }
 }

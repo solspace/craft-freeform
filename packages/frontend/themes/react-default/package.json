@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-react-theme-default",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0",
   "description": "Default Freeform React theme — semantic ff-* BEM styles with equal-split row columns",
   "private": false,
   "type": "module",
@@ -18,7 +18,8 @@
     "dist",
     "src/styles.css",
     "styles.css",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -26,7 +27,7 @@
     "lint": "biome check src"
   },
   "peerDependencies": {
-    "@solspace/freeform-react": "^0.1.0-beta.1"
+    "@solspace/freeform-react": "^0.1.0"
   },
   "devDependencies": {
     "@solspace/freeform-react": "workspace:*",
@@ -42,7 +43,6 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "publishConfig": {
-    "access": "public",
-    "tag": "beta"
+    "access": "public"
   }
 }

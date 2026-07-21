@@ -3,7 +3,8 @@ import { fetchManifest, } from "./client/manifest-client.js";
 import { submitForm } from "./client/submit-client.js";
 import { createExtensionRegistry } from "./extensions/registry.js";
 import { createFormState } from "./state/form-state.js";
-export const PACKAGE_VERSION = "0.1.0-beta.1";
+import { PACKAGE_VERSION } from "./version.js";
+export { PACKAGE_VERSION } from "./version.js";
 export const CLIENT_NAME = "@solspace/freeform-core";
 export class FreeformClient {
     baseUrl;

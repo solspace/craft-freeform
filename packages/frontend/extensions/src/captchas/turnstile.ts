@@ -2,6 +2,7 @@ import type {
   FreeformExtension,
   ManifestCaptchaSecurity,
 } from "@solspace/freeform-core";
+import { PACKAGE_VERSION } from "../version.js";
 import {
   inferCaptchaProvider,
   loadScriptOnce,
@@ -54,7 +55,7 @@ export function createTurnstileExtension(): FreeformExtension {
 
   return {
     name: "captcha.turnstile",
-    version: "0.1.0-beta.1",
+    version: PACKAGE_VERSION,
 
     async mountCaptcha({ captcha, element }) {
       if (inferCaptchaProvider(captcha) !== "turnstile") {

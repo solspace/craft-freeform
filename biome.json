@@ -14,7 +14,8 @@
       "!node_modules",
       "!vendor",
       "!packages/plugin",
-      "!**/dist"
+      "!**/dist",
+      "!packages/frontend/scripts"
     ]
   },
   "formatter": {

@@ -8,8 +8,9 @@ import { createExtensionRegistry } from "./extensions/registry.js";
 import { createFormState, type FormState } from "./state/form-state.js";
 import type { FreeformManifest } from "./types/manifest.js";
 import type { SubmitResponse } from "./types/submit.js";
+import { PACKAGE_VERSION } from "./version.js";
 
-export const PACKAGE_VERSION = "0.1.0-beta.1";
+export { PACKAGE_VERSION } from "./version.js";
 export const CLIENT_NAME = "@solspace/freeform-core";
 
 export type FreeformClientOptions = {

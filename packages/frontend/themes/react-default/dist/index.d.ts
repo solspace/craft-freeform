@@ -9,10 +9,8 @@
  * - system (default) — follows prefers-color-scheme
  * - light / dark — force a palette via theme.defaults.colorScheme
  */
-
 import type { FreeformReactTheme } from "@solspace/freeform-react";
 import { createTheme } from "@solspace/freeform-react";
-
 export type { FreeformReactTheme };
 export { createTheme };
 /** Default theme — follows the visitor’s OS light/dark preference. */

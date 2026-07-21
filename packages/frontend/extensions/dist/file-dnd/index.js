@@ -1,4 +1,5 @@
 import { resolveUrl } from "@solspace/freeform-core";
+import { PACKAGE_VERSION } from "../version.js";
 function getConfig(field) {
     return (field.frontend?.config ?? {});
 }
@@ -71,7 +72,7 @@ function resolveBaseUrl(context) {
 export function createFileDndExtension() {
     return {
         name: "file-dnd",
-        version: "0.1.0-beta.1",
+        version: PACKAGE_VERSION,
         supports: supportsFileDnd,
         async mount(context) {
             const { field, element, setValue, value, manifest } = context;

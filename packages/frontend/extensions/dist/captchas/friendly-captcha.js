@@ -1,5 +1,6 @@
 import { FRCWidgetCompleteEventName, FRCWidgetExpireEventName, FriendlyCaptchaSDK, } from "@friendlycaptcha/sdk";
 import { inferCaptchaProvider, waitForValue } from "./shared.js";
+import { PACKAGE_VERSION } from "../version.js";
 const FIELD_NAME = "frc-captcha-response";
 function getCaptchas(manifestCaptchas) {
     return (manifestCaptchas ?? []).filter((captcha) => inferCaptchaProvider(captcha) === "friendly-captcha");
@@ -39,7 +40,7 @@ export function createFriendlyCaptchaExtension() {
     const tokens = new Map();
     return {
         name: "captcha.friendly-captcha",
-        version: "0.1.0-beta.1",
+        version: PACKAGE_VERSION,
         async mountCaptcha({ captcha, element }) {
             if (inferCaptchaProvider(captcha) !== "friendly-captcha") {
                 return;

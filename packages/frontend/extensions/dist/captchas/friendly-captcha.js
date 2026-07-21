@@ -1,6 +1,6 @@
 import { FRCWidgetCompleteEventName, FRCWidgetExpireEventName, FriendlyCaptchaSDK, } from "@friendlycaptcha/sdk";
-import { inferCaptchaProvider, waitForValue } from "./shared.js";
 import { PACKAGE_VERSION } from "../version.js";
+import { inferCaptchaProvider, waitForValue } from "./shared.js";
 const FIELD_NAME = "frc-captcha-response";
 function getCaptchas(manifestCaptchas) {
     return (manifestCaptchas ?? []).filter((captcha) => inferCaptchaProvider(captcha) === "friendly-captcha");

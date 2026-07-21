@@ -1,5 +1,5 @@
-import { inferCaptchaProvider, loadScriptOnce, waitForValue, } from "./shared.js";
 import { PACKAGE_VERSION } from "../version.js";
+import { inferCaptchaProvider, loadScriptOnce, waitForValue, } from "./shared.js";
 function getCaptchas(manifestCaptchas) {
     return (manifestCaptchas ?? []).filter((captcha) => inferCaptchaProvider(captcha) === "turnstile");
 }

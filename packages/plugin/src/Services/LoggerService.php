@@ -3,9 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\FileHelper;
-use craft\web\View;
 use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Logging\Readers\FileLogReader;
 
@@ -33,13 +31,6 @@ class LoggerService extends BaseService
         }
 
         return $count;
-    }
-
-    public function registerJsTranslations(View $view): void
-    {
-        $view->registerTranslations(Freeform::TRANSLATION_CATEGORY, [
-            'Are you sure you want to clear this log?',
-        ]);
     }
 
     public function clearLogs(?string $filePath = null): void

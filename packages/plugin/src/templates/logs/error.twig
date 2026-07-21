@@ -20,9 +20,17 @@
 {% block actionButton %}
 
     <div class="buttons">
-        <a href="{{ url(('freeform/logs/clear/'~category)|trim('/')) }}" class="btn submit icon clear-logs">
+        <button type="button"
+            class="btn submit formsubmit"
+            data-form="false"
+            data-action="freeform/logs/clear"
+            data-param="category"
+            data-value="{{ category }}"
+            data-confirm="{{ 'Are you sure you want to clear this log?'|t('freeform') }}"
+            data-redirect="{{ craft.app.request.getUrl()|hash }}"
+        >
             {{ "Clear"|t('freeform') }}
-        </a>
+        </button>
     </div>
 
 {% endblock %}

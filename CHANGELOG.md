@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.15.22 - 2026-07-27
+
+### Fixed
+- Fixed an issue where deleting submissions on the frontend could fail in some cases.
+- Fixed an issue where the **Clear** button on Freeform log pages could fail in some cases.
+
 ## 5.15.21 - 2026-07-13
 
 ### Fixed

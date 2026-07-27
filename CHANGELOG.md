@@ -25,6 +25,12 @@ npm install @solspace/freeform-core \
 - Manifest `minimumClientVersion` targets the npm client line (`0.1.0+`).
 - Deferred for later: drafts, payments, calculation fields, Vue adapter, Bootstrap/Tailwind themes.
 
+## 5.15.22 - 2026-07-27
+
+### Fixed
+- Fixed an issue where deleting submissions on the frontend could fail in some cases.
+- Fixed an issue where the **Clear** button on Freeform log pages could fail in some cases.
+
 ## 5.15.21 - 2026-07-13
 
 ### Fixed

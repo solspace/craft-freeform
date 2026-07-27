@@ -268,15 +268,21 @@ class Submission extends Element
 
     public static function create(Form|FormRecord|int $form): self
     {
+        $siteId = null;
+
         if ($form instanceof Form) {
             $formId = $form->getId();
+            $siteId = $form->getSiteId();
         } elseif ($form instanceof FormRecord) {
             $formId = $form->id;
         } else {
             $formId = (int) $form;
         }
 
-        $submission = new static(['formId' => $formId]);
+        $submission = new static([
+            'formId' => $formId,
+            'siteId' => $siteId,
+        ]);
         $submission->generateToken();
         $submission->userId = \Craft::$app->user->getId() ?: null;
 
@@ -450,6 +456,12 @@ class Submission extends Element
         }
 
         $formService = Freeform::getInstance()->forms;
+        $site = $this->siteId ? \Craft::$app->getSites()->getSiteById($this->siteId) : null;
+
+        $form = $formService->getFormById((int) $this->formId, $site?->handle);
+        if ($form) {
+            return $form;
+        }
 
         return $formService->getFormById((int) $this->formId);
     }

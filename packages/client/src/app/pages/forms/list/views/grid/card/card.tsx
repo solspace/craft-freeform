@@ -236,8 +236,8 @@ export const Card: React.FC<Props> = ({
             )}
           </FormBodyContent>
 
-          <FMContainer>
-            {formMonitor?.enabled && formMonitorLink && (
+          {formMonitor?.enabled && formMonitorLink && (
+            <FMContainer>
               <NavLink to={formMonitorLink.url}>
                 {isStatsLoading ? (
                   <FMLoading />
@@ -254,8 +254,8 @@ export const Card: React.FC<Props> = ({
                   />
                 )}
               </NavLink>
-            )}
-          </FMContainer>
+            </FMContainer>
+          )}
         </FormBody>
       </CardBody>
 

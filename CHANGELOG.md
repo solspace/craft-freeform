@@ -25,6 +25,25 @@ npm install @solspace/freeform-core \
 - Manifest `minimumClientVersion` targets the npm client line (`0.1.0+`).
 - Deferred for later: drafts, payments, calculation fields, Vue adapter, Bootstrap/Tailwind themes.
 
+## 5.15.21 - 2026-07-13
+
+### Fixed
+- Fixed several issues with the **Mollie** integration, including missing SDK dependencies, payment creation errors, and redirect handling.
+- Fixed an issue where **Mollie** payment descriptions could render raw Twig, such as `{{ form.name }}`, instead of the parsed value.
+- Fixed an issue where successful **Mollie** payment returns did not always re-enter Freeform's success handling pipeline, affecting success banners and configured success behavior for AJAX and non-AJAX forms.
+- Fixed an issue where **Mollie** payment fields could inherit an invalid default value, causing duplicate-key errors.
+
+## 5.15.20 - 2026-07-08
+
+### Fixed
+- Fixed multi-site translated field labels in email notifications.
+- Fixed an issue where the submission edit page could show translated labels from the primary site instead of the selected site.
+- Fixed the form builder notification preview modal so it is site-aware.
+- Fixed overflowing form card labels on the Forms Dashboard page in the control panel.
+- Fixed element integrations to respect site-aware sections.
+- Fixed duplicate handling for **ActiveCampaign** contact-account relationships.
+- Fixed an error that could occur when validating **Form Monitor** settings before an integration ID was available.
+
 ## 5.15.19 - 2026-07-02
 
 ### Added

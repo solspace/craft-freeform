@@ -69,11 +69,38 @@ class FinalizePayment extends FeatureBundle
                 $payment->status = (string) $status;
 
                 $payment->metadata = json_encode($this->buildMetadata($molliePayment, $payment, $paymentId));
-                $payment->save();
             } catch (\Throwable $e) {
                 // swallow; keep pending record
             }
+
+            try {
+                $payment->save();
+            } catch (\Throwable) {
+                // swallow; a duplicate or otherwise invalid resourceId shouldn't fail the whole submission
+            }
+
+            // Stash the payment reference for the post-checkout return handler. The
+            // redirect URL sent to Mollie is fixed at payment-creation time (before the
+            // submission exists), so the return controller resolves the payment via the
+            // session rather than a query parameter Mollie cannot append.
+            $this->storeReturnContext($form, $paymentId);
         }
+    }
+
+    private function storeReturnContext(Form $form, string $paymentId): void
+    {
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsConsoleRequest()) {
+            return;
+        }
+
+        \Craft::$app->getSession()->set(
+            Mollie::SESSION_RETURN_KEY.$form->getId(),
+            [
+                'paymentId' => $paymentId,
+                'sourceUrl' => (string) $request->post(Form::SOURCE_URL_KEY),
+            ]
+        );
     }
 
     private function findOrCreatePaymentRecord(Submission $submission, MollieField $field, string $paymentId, Mollie $integration, Form $form): PaymentRecord
@@ -102,7 +129,8 @@ class FinalizePayment extends FeatureBundle
             $payment->metadata = json_encode(['gateway' => 'mollie']);
         }
 
-        $payment->save();
+        // We intentionally do not save here. The save lives in onAfterSubmit() so a duplicate/invalid resourceId
+        // can't throw an uncaught IntegrityException and 500 the whole submission.
 
         return $payment;
     }

@@ -62,7 +62,7 @@ class NotificationsController extends BaseApiController
         }
 
         $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
-        $form = $this->formsService->getFormById($template->getFormId());
+        $form = $this->formsService->getFormById($template->getFormId(), $this->request->get('site'));
 
         $convertableValues = [
             'body' => $template->getBody(),

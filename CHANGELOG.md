@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 6.0.0-beta.4 - 2026-07-27
+
+### Fixed
+- Updated plugin registration and bootstrapping for compatibility with Craft 6.0.0-alpha.14.
+
 ## 6.0.0-beta.3 - 2026-07-13
 
 ### Fixed

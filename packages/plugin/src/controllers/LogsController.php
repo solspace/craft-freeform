@@ -37,6 +37,8 @@ class LogsController extends BaseController
 
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
+        $category ??= \Craft::$app->request->getBodyParam('category');
+
         $fileName = match ($category) {
             'emails' => NotificationLoggerProvider::LOG_FILE,
             'integrations' => IntegrationLoggerProvider::LOG_FILE,
@@ -49,7 +51,7 @@ class LogsController extends BaseController
             return $this->asJson(['success' => true]);
         }
 
-        return $this->redirect('/');
+        return $this->redirectToPostedUrl();
     }
 
     private function renderLogs(?string $file = null, ?string $category = null): Response
@@ -57,7 +59,6 @@ class LogsController extends BaseController
         \Craft::$app->view->registerAssetBundle(LogBundle::class);
 
         $logReader = $this->getLoggerService()->getLogReader($file);
-        $this->getLoggerService()->registerJsTranslations($this->view);
 
         return $this->renderTemplate(
             'freeform/logs/error',

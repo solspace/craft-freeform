@@ -11,8 +11,8 @@
   ],
   "require": {
     "php": "^8.5.0",
-    "craftcms/cms": "^6.0.0-alpha.1",
-    "craftcms/yii2-adapter": "^6.0.0-alpha.1",
+    "craftcms/cms": "^6.0.0-alpha.14",
+    "craftcms/yii2-adapter": "^6.0.0-alpha.14",
     "dompdf/dompdf": "^3.1",
     "symfony/property-access": "^7.4|^8.0",
     "symfony/finder": "^7.4|^8.0",
@@ -69,12 +69,7 @@
     "documentationUrl": "https://docs.solspace.com/craft/freeform/v6/",
     "changelogUrl": "https://raw.githubusercontent.com/solspace/craft-freeform/v6/CHANGELOG.md",
     "hasSettings": true,
-    "hasCpSection": true,
-    "laravel": {
-      "dont-discover": [
-        "solspace/craft-freeform"
-      ]
-    }
+    "hasCpSection": true
   },
   "config": {
     "allow-plugins": {

@@ -28,7 +28,6 @@ use CraftCms\Cms\Cp\Data\NavItem;
 use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
-use CraftCms\Cms\Plugin\Plugins;
 use CraftCms\Cms\Twig\Twig;
 use CraftCms\Cms\Validation\Contracts\Validatable;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
@@ -271,7 +270,7 @@ class Freeform extends Plugin
             $plugin = app(static::class);
 
             foreach ($config as $key => $value) {
-                if ($key === 'settings') {
+                if ('settings' === $key) {
                     $plugin->setSettings($value);
 
                     continue;
@@ -285,11 +284,7 @@ class Freeform extends Plugin
             return $plugin;
         }
 
-        /** @var self $plugin */
-        $plugin = parent::create($config);
-        self::ensurePluginLifecycle($plugin);
-
-        return $plugin;
+        return parent::create($config);
     }
 
     public static function isLocked(string $key, int $seconds): bool
@@ -335,7 +330,7 @@ class Freeform extends Plugin
     }
 
     #[\Override]
-    public function registerPlugin(): void
+    public function register(): void
     {
         $this->app->instance(static::class, $this);
 
@@ -352,10 +347,9 @@ class Freeform extends Plugin
         }
     }
 
-    #[\Override]
-    public function bootPlugin(): void
+    public function boot(): void
     {
-        static::getInstance()->bootFreeformApplication();
+        $this->bootFreeformApplication();
     }
 
     public function getCpNavItem(): array|NavItem|null
@@ -528,25 +522,6 @@ class Freeform extends Plugin
             'freeform/settings',
             ['settings' => $this->getSettings()]
         );
-    }
-
-    /**
-     * Craft loads craft-plugin packages via Plugins::createPlugin(), not Laravel
-     * auto-discovery (see composer extra.laravel.dont-discover). Ensure the
-     * provider register/boot cycle still runs in that case.
-     */
-    private static function ensurePluginLifecycle(self $plugin): void
-    {
-        static $booted = [];
-
-        if (isset($booted[static::class])) {
-            return;
-        }
-
-        $booted[static::class] = true;
-
-        $plugin->register();
-        $plugin->boot(app(Plugins::class));
     }
 
     /**

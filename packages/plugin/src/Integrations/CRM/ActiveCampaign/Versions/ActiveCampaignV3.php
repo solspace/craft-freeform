@@ -237,21 +237,11 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         } catch (\Exception $exception) {
             if (422 === $exception->getCode()) {
-                // The Account already exists. Search for it by name so the match is found regardless of how many Accounts exist
-                $response = $client->get(
-                    $this->getEndpoint('/accounts'),
-                    ['query' => ['search' => $this->account['name'] ?? '']],
-                );
-
-                $json = json_decode($response->getBody(), false);
-
-                foreach ($json->accounts ?? [] as $account) {
-                    if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
-                        $this->accountId = $account->id;
-                        $this->logger->debug('Account already exists', ['id' => $account->id]);
-
-                        break;
-                    }
+                // The Account already exists. Look it up by name so the match is found
+                // regardless of how many Accounts exist on the store.
+                $this->accountId = $this->fetchAccountIdByName($client, $this->account['name'] ?? '');
+                if ($this->accountId) {
+                    $this->logger->debug('Account already exists', ['id' => $this->accountId]);
                 }
             } else {
                 $this->logger->debug('Account creation failed', ['exception' => $exception->getMessage()]);
@@ -463,6 +453,43 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         return null;
+    }
+
+    private function fetchAccountIdByName(Client $client, string $name): int
+    {
+        if ('' === $name) {
+            return 0;
+        }
+
+        $limit = 100;
+        $offset = 0;
+
+        do {
+            $response = $client->get(
+                $this->getEndpoint('/accounts'),
+                [
+                    'query' => [
+                        'search' => $name,
+                        'limit' => $limit,
+                        'offset' => $offset,
+                    ],
+                ],
+            );
+
+            $json = json_decode($response->getBody(), false);
+            $accounts = $json->accounts ?? [];
+
+            foreach ($accounts as $account) {
+                if (strtolower($account->name) === strtolower($name)) {
+                    return (int) $account->id;
+                }
+            }
+
+            $offset += $limit;
+            $total = (int) ($json->meta->total ?? 0);
+        } while (\count($accounts) === $limit && $offset < $total);
+
+        return 0;
     }
 
     private function isAlreadyAssociatedAccountException(\Exception $exception): bool

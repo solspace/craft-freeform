@@ -120,6 +120,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     private array $dealProps = [];
 
+    private array $accountProps = [];
+
     private array $contact = [];
 
     private array $deal = [];
@@ -193,7 +195,15 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
 
             foreach ($mapping as $key => $value) {
-                $this->account[$key] = $value;
+                if (is_numeric($key)) {
+                    $this->accountProps[] = [
+                        'accountId' => null,
+                        'customFieldId' => (int) $key,
+                        'fieldValue' => $value,
+                    ];
+                } else {
+                    $this->account[$key] = $value;
+                }
             }
         }
     }
@@ -244,6 +254,21 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
                 throw $exception;
             }
+        }
+
+        if (!$this->accountId) {
+            return;
+        }
+
+        foreach ($this->accountProps as $prop) {
+            $prop['accountId'] = $this->accountId;
+
+            $response = $client->post(
+                $this->getEndpoint('/accountCustomFieldData'),
+                ['json' => ['accountCustomFieldDatum' => $prop]],
+            );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
         }
     }
 

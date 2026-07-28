@@ -237,11 +237,15 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         } catch (\Exception $exception) {
             if (422 === $exception->getCode()) {
-                $response = $client->get($this->getEndpoint('/accounts'));
+                // The Account already exists. Search for it by name so the match is found regardless of how many Accounts exist
+                $response = $client->get(
+                    $this->getEndpoint('/accounts'),
+                    ['query' => ['search' => $this->account['name'] ?? '']],
+                );
 
                 $json = json_decode($response->getBody(), false);
 
-                foreach ($json->accounts as $account) {
+                foreach ($json->accounts ?? [] as $account) {
                     if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
                         $this->accountId = $account->id;
                         $this->logger->debug('Account already exists', ['id' => $account->id]);

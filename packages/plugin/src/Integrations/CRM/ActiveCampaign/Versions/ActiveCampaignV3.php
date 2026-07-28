@@ -151,9 +151,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     {
         if ($this->mapContact) {
             $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
@@ -174,9 +171,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         if ($this->mapDeal) {
             $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
@@ -197,9 +191,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         if ($this->mapAccount) {
             $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
                 $this->account[$key] = $value;

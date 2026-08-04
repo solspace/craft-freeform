@@ -35,14 +35,19 @@ class MolliePaymentController extends BaseMollieController
 
     public function actionIndex($id = null): Response
     {
+        $body = json_decode($this->request->getRawBody() ?: '[]', true) ?: [];
+        $values = $body['values'] ?? [];
+
+        if (\is_array($values) && $values) {
+            $this->request->setBodyParams(array_merge($this->request->getBodyParams(), $values));
+        }
+
         try {
             [$form, $integration, $field] = $this->getRequestItems();
         } catch (NotFoundHttpException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
         }
 
-        $body = json_decode($this->request->getRawBody() ?: '[]', true) ?: [];
-        $values = $body['values'] ?? null;
         if (\is_array($values)) {
             foreach ($form->getLayout()->getFields() as $formField) {
                 $handle = $formField->getHandle();

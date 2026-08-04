@@ -120,6 +120,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     private array $dealProps = [];
 
+    private array $accountProps = [];
+
     private array $contact = [];
 
     private array $deal = [];
@@ -151,9 +153,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     {
         if ($this->mapContact) {
             $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
@@ -174,9 +173,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         if ($this->mapDeal) {
             $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
@@ -197,12 +193,17 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         if ($this->mapAccount) {
             $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
-            if (!$mapping) {
-                return;
-            }
 
             foreach ($mapping as $key => $value) {
-                $this->account[$key] = $value;
+                if (is_numeric($key)) {
+                    $this->accountProps[] = [
+                        'accountId' => null,
+                        'customFieldId' => (int) $key,
+                        'fieldValue' => $value,
+                    ];
+                } else {
+                    $this->account[$key] = $value;
+                }
             }
         }
     }
@@ -236,23 +237,32 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         } catch (\Exception $exception) {
             if (422 === $exception->getCode()) {
-                $response = $client->get($this->getEndpoint('/accounts'));
-
-                $json = json_decode($response->getBody(), false);
-
-                foreach ($json->accounts as $account) {
-                    if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
-                        $this->accountId = $account->id;
-                        $this->logger->debug('Account already exists', ['id' => $account->id]);
-
-                        break;
-                    }
+                // The Account already exists. Look it up by name so the match is found
+                // regardless of how many Accounts exist on the store.
+                $this->accountId = $this->fetchAccountIdByName($client, $this->account['name'] ?? '');
+                if ($this->accountId) {
+                    $this->logger->debug('Account already exists', ['id' => $this->accountId]);
                 }
             } else {
                 $this->logger->debug('Account creation failed', ['exception' => $exception->getMessage()]);
 
                 throw $exception;
             }
+        }
+
+        if (!$this->accountId) {
+            return;
+        }
+
+        foreach ($this->accountProps as $prop) {
+            $prop['accountId'] = $this->accountId;
+
+            $response = $client->post(
+                $this->getEndpoint('/accountCustomFieldData'),
+                ['json' => ['accountCustomFieldDatum' => $prop]],
+            );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
         }
     }
 
@@ -443,6 +453,43 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         return null;
+    }
+
+    private function fetchAccountIdByName(Client $client, string $name): int
+    {
+        if ('' === $name) {
+            return 0;
+        }
+
+        $limit = 100;
+        $offset = 0;
+
+        do {
+            $response = $client->get(
+                $this->getEndpoint('/accounts'),
+                [
+                    'query' => [
+                        'search' => $name,
+                        'limit' => $limit,
+                        'offset' => $offset,
+                    ],
+                ],
+            );
+
+            $json = json_decode($response->getBody(), false);
+            $accounts = $json->accounts ?? [];
+
+            foreach ($accounts as $account) {
+                if (strtolower($account->name) === strtolower($name)) {
+                    return (int) $account->id;
+                }
+            }
+
+            $offset += $limit;
+            $total = (int) ($json->meta->total ?? 0);
+        } while (\count($accounts) === $limit && $offset < $total);
+
+        return 0;
     }
 
     private function isAlreadyAssociatedAccountException(\Exception $exception): bool

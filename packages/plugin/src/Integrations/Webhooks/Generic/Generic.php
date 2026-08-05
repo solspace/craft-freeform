@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
 
 #[Edition(Edition::PRO)]
@@ -39,7 +40,7 @@ class Generic extends WebhookIntegration
             $json['token'] = $submission->token;
         }
 
-        foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
+        foreach ($this->getFields($form) as $field) {
             $value = $field->getValue();
             if ($field instanceof FileUploadField) {
                 $value = Freeform::getInstance()->files->getAssetMetadataFromIds($value);
@@ -53,5 +54,12 @@ class Generic extends WebhookIntegration
 
         $this->logger->info('Webhook triggered', ['form' => $form->getHandle(), 'submission' => $submission->id]);
         $this->logger->debug('With Payload', $json);
+    }
+
+    private function getFields(Form $form): FieldCollection
+    {
+        $fields = $form->getSubmission()?->getFieldCollection() ?? $form->getLayout()->getFields();
+
+        return $fields->getStorableFields();
     }
 }

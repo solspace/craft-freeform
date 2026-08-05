@@ -59,6 +59,7 @@ class PermissionsBundle extends FeatureBundle
             $this->getExportPermissions(),
             $this->getSettingsPermissions(),
             $this->getLimitedUsersPermissions(),
+            $this->getDelegationPermissions(),
         );
 
         $event->permissions[] = [
@@ -238,6 +239,21 @@ class PermissionsBundle extends FeatureBundle
                 'label' => Freeform::t('Limited Users'),
                 'info' => Freeform::t('Enable limited users functionality.'),
                 'nested' => $permissions,
+            ],
+        ];
+    }
+
+    /**
+     * When a non-admin is granted the dedicated "Manage User Permissions" capability, expand it into the concrete
+     * per-form permission strings so Craft will both render and accept per-form delegation for that user/group.
+     */
+    private function getDelegationPermissions(): array
+    {
+        return [
+            Freeform::PERMISSION_MANAGE_PERMISSIONS => [
+                'label' => Freeform::t('Allow Assigning Permissions to Other Users'),
+                'info' => Freeform::t("Lets a non-admin user hand out form and submission permissions to other users (the 'by Form' checkboxes on another user's Permissions screen). Craft only lets someone assign a permission they hold themselves, so enabling this automatically grants this user access to every form and its submissions, both existing forms and any added later. Because of that, a user with this enabled effectively has access to all forms and cannot be limited to a subset."),
+                'warning' => Freeform::t('This capability only takes effect on individual users. Assigning it to a user group has no effect - enable it on each user who should be able to hand out form access.'),
             ],
         ];
     }

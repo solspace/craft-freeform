@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.15.23 - 2026-08-06
+
+### Added
+- Added a **Form Access Delegation** permission that allows non-admin users to assign per-form access to other users.
+
+### Fixed
+- Fixed an issue where `renderTag` attributes were not preserved when a non-AJAX form re-rendered after a validation failure.
+- Fixed the **Generic Webhook** integration to correctly use submission field values.
+- Fixed an issue with **Mollie** payments on multi-page forms using dynamic amounts, ensuring the submit handler is attached correctly and previous page field values are included when creating the payment.
+- Fixed issues with the **ActiveCampaign CRM** integration.
+
 ## 5.15.22 - 2026-07-27
 
 ### Fixed

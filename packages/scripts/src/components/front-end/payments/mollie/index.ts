@@ -122,30 +122,10 @@ async function createPayment(
 const processedForms = new WeakSet<HTMLFormElement>();
 
 export async function initMollie(): Promise<void> {
-  const elements = document.querySelectorAll<HTMLElement>(SELECTOR);
-  if (elements.length === 0) {
-    return;
-  }
-
-  const formsWithMollie = new Map<HTMLFormElement, HTMLElement[]>();
-  elements.forEach((element) => {
-    const config = parseConfig(element);
-    if (!config) {
-      return;
-    }
-
-    const form = element.closest<HTMLFormElement>("form");
-    if (!form) {
-      return;
-    }
-
-    if (!formsWithMollie.has(form)) {
-      formsWithMollie.set(form, []);
-    }
-    formsWithMollie.get(form)!.push(element);
-  });
-
-  formsWithMollie.forEach((mollieElements, form) => {
+  const forms = document.querySelectorAll<HTMLFormElement>(
+    "form[data-freeform]",
+  );
+  forms.forEach((form) => {
     if (processedForms.has(form)) {
       return;
     }
@@ -189,8 +169,7 @@ export async function initMollie(): Promise<void> {
             return true;
           }
 
-          const firstElement = mollieElements[0];
-          const config = parseConfig(firstElement);
+          const config = parseConfig(mollieInput);
           if (!config) {
             return true;
           }

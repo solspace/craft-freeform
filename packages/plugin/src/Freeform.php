@@ -201,6 +201,7 @@ class Freeform extends Plugin
     public const PERMISSION_FORMS_DELETE = 'freeform-formsDelete';
     public const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
     public const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
+    public const PERMISSION_MANAGE_PERMISSIONS = 'freeform-managePermissions';
     public const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
     public const PERMISSION_LIMITED_USERS = 'freeform-limitedUsers';
     public const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';

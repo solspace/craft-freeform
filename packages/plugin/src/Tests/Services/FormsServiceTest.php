@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Tests\Services;
 
+use craft\db\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
@@ -54,13 +55,15 @@ class FormsServiceTest extends TestCase
         $method = new \ReflectionMethod(FormsService::class, 'attachSitesToQuery');
         $method->invoke($service, $query, 'dutch-site');
 
-        $this->assertSame(
-            [
-                'and',
-                ['forms.id' => 42],
-                ['in', 'sites.[[handle]]', ['dutch-site']],
-            ],
-            $query->where,
-        );
+        $this->assertSame('and', $query->where[0]);
+        $this->assertSame(['forms.id' => 42], $query->where[1]);
+
+        $siteFilter = $query->where[2];
+        $this->assertSame('or', $siteFilter[0]);
+        $this->assertSame(['in', 'sites.[[handle]]', ['dutch-site']], $siteFilter[1]);
+
+        $this->assertSame('not', $siteFilter[2][0]);
+        $this->assertSame('exists', $siteFilter[2][1][0]);
+        $this->assertInstanceOf(Query::class, $siteFilter[2][1][1]);
     }
 }

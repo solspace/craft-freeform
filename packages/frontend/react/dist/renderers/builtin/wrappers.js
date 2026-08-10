@@ -1,6 +1,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { CalculationFieldRenderer } from "./CalculationField.js";
-import { CardsFieldRenderer, CheckboxesFieldRenderer, CheckboxFieldRenderer, ConfirmFieldRenderer, DatetimeFieldRenderer, EmailFieldRenderer, FileDndFieldRenderer, FileFieldRenderer, HiddenFieldRenderer, HtmlFieldRenderer, ImageFieldRenderer, MultipleSelectFieldRenderer, NumberFieldRenderer, OpinionScaleFieldRenderer, PasswordFieldRenderer, PhoneFieldRenderer, RadioFieldRenderer, RatingFieldRenderer, RegexFieldRenderer, SelectFieldRenderer, SignatureFieldRenderer, TextareaFieldRenderer, TextFieldRenderer, UnsupportedFieldRenderer, WebsiteFieldRenderer, } from "./fields.js";
+import { CardsFieldRenderer, CheckboxesFieldRenderer, CheckboxFieldRenderer, ConfirmFieldRenderer, DatetimeFieldRenderer, EmailFieldRenderer, FileDndFieldRenderer, FileFieldRenderer, HiddenFieldRenderer, HtmlFieldRenderer, ImageFieldRenderer, MultipleSelectFieldRenderer, NumberFieldRenderer, OpinionScaleFieldRenderer, PasswordFieldRenderer, PhoneFieldRenderer, RadioFieldRenderer, RatingFieldRenderer, RegexFieldRenderer, SelectFieldRenderer, TextareaFieldRenderer, TextFieldRenderer, UnsupportedFieldRenderer, WebsiteFieldRenderer, } from "./fields.js";
+import { SignatureFieldRenderer } from "./SignatureField.js";
 import { TableFieldRenderer } from "./TableField.js";
 export function DefaultForm({ className, children, onSubmit, }) {
     return (_jsx("form", { className: className, onSubmit: onSubmit, noValidate: true, children: children }));

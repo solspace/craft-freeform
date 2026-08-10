@@ -60,6 +60,7 @@ export * from "./client/submit-client.js";
 export * from "./conditionals/evaluator.js";
 export * from "./conditionals/operators.js";
 export * from "./extensions/registry.js";
+export * from "./signature/signature.js";
 export * from "./state/form-state.js";
 export * from "./table/table.js";
 export * from "./types/manifest.js";

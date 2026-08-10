@@ -1,3 +1,3 @@
 /** Kept in sync with package.json by `pnpm frontend:bump`. */
-export declare const PACKAGE_VERSION = "0.1.3";
+export declare const PACKAGE_VERSION = "0.1.4";
 //# sourceMappingURL=version.d.ts.map

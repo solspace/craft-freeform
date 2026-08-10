@@ -33,12 +33,12 @@ import {
   RatingFieldRenderer,
   RegexFieldRenderer,
   SelectFieldRenderer,
-  SignatureFieldRenderer,
   TextareaFieldRenderer,
   TextFieldRenderer,
   UnsupportedFieldRenderer,
   WebsiteFieldRenderer,
 } from "./fields.js";
+import { SignatureFieldRenderer } from "./SignatureField.js";
 import { TableFieldRenderer } from "./TableField.js";
 
 export function DefaultForm({

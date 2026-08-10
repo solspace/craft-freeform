@@ -2,6 +2,7 @@ export { calculationExtension, createCalculationExtension, } from "./calculation
 export * from "./captchas/index.js";
 export { createDatetimeExtension, datetimeExtension, } from "./datetime/index.js";
 export { createFileDndExtension, fileDndExtension, } from "./file-dnd/index.js";
+export { createSignatureExtension, signatureExtension, supportsSignature, } from "./signature/index.js";
 export { createTableExtension, supportsTable, tableExtension, } from "./table/index.js";
 import type { FreeformExtension } from "@solspace/freeform-core";
 import { captchaExtensions } from "./captchas/index.js";

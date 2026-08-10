@@ -81,6 +81,7 @@ export function useFreeform(options) {
         }
         void runExtensionSetups(extensionsRef.current, { manifest });
     }, [manifest]);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: draftToken/draftKey synced separately so Save does not reset form values.
     useEffect(() => {
         if (options.manifest) {
             formStateRef.current = createFormState({
@@ -146,11 +147,21 @@ export function useFreeform(options) {
         options.properties,
         options.manifest,
         options.initialValues,
-        options.draftToken,
-        options.draftKey,
         options.onManifestLoaded,
         syncFromFormState,
     ]);
+    useEffect(() => {
+        const formState = formStateRef.current;
+        if (!formState) {
+            return;
+        }
+        if (options.draftToken !== undefined) {
+            formState.draftToken = options.draftToken ?? null;
+        }
+        if (options.draftKey !== undefined) {
+            formState.draftKey = options.draftKey ?? null;
+        }
+    }, [options.draftKey, options.draftToken]);
     const setValue = useCallback((handle, value) => {
         formStateRef.current?.setValue(handle, value);
         syncFromFormState();

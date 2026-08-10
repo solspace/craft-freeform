@@ -108,7 +108,7 @@ export function createFriendlyCaptchaExtension() {
             };
         },
         async beforeSubmit({ manifest, intent }) {
-            if (intent === "back") {
+            if (intent === "back" || intent === "validate") {
                 return;
             }
             for (const captcha of getCaptchas(manifest.security.captchas)) {

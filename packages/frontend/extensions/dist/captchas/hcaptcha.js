@@ -47,7 +47,7 @@ export function createHcaptchaExtension() {
             };
         },
         async beforeSubmit({ manifest, intent }) {
-            if (intent === "back") {
+            if (intent === "back" || intent === "validate") {
                 return;
             }
             const captchas = getCaptchas(manifest.security.captchas);

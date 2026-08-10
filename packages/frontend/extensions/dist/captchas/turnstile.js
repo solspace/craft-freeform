@@ -51,7 +51,8 @@ export function createTurnstileExtension() {
             };
         },
         async beforeSubmit({ manifest, intent }) {
-            if (intent === "back") {
+            // Hydrate / soft validate must not wait on captcha widgets.
+            if (intent === "back" || intent === "validate") {
                 return;
             }
             const captchas = getCaptchas(manifest.security.captchas);

@@ -96,7 +96,7 @@ export function createHcaptchaExtension(): FreeformExtension {
     },
 
     async beforeSubmit({ manifest, intent }) {
-      if (intent === "back") {
+      if (intent === "back" || intent === "validate") {
         return;
       }
 

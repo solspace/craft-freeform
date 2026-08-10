@@ -158,6 +158,16 @@ class HeadlessResponseHelper
     private function collectFieldValues(Form $form): array
     {
         $values = [];
+
+        $stored = $form->getProperties()->get(Form::PROPERTY_STORED_VALUES, []);
+        if (\is_array($stored)) {
+            foreach ($stored as $handle => $value) {
+                if (\is_string($handle) && '' !== $handle) {
+                    $values[$handle] = $value;
+                }
+            }
+        }
+
         foreach ($form->getLayout()->getFields() as $field) {
             $handle = $field->getHandle();
             if (!$handle || $field instanceof NoStorageInterface) {

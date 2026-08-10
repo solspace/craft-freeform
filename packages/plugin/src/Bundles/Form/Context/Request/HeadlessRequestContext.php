@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
+use Solspace\Freeform\Bundles\Form\SaveForm\SaveFormsHelper;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\HeadlessRequestEvent;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -20,6 +21,7 @@ class HeadlessRequestContext
     {
         $form = $event->getForm();
         $values = $event->getValues();
+        $draftLoaded = SaveFormsHelper::isLoaded($form);
         $transformed = [];
 
         foreach ($form->getLayout()->getFields() as $field) {
@@ -32,7 +34,14 @@ class HeadlessRequestContext
                 continue;
             }
 
-            $transformEvent = new TransformValueEvent($field, $values[$handle]);
+            $posted = $values[$handle];
+
+            // Resume hydrate often posts empty defaults — don't wipe loaded draft values.
+            if ($draftLoaded && self::isEmptyPostedValue($posted) && !$this->isFieldValueEmpty($field->getValue())) {
+                continue;
+            }
+
+            $transformEvent = new TransformValueEvent($field, $posted);
             Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $transformEvent);
 
             if (!$transformEvent->isValid) {
@@ -45,5 +54,27 @@ class HeadlessRequestContext
         if ([] !== $transformed) {
             $form->setFieldValues($transformed);
         }
+    }
+
+    private static function isEmptyPostedValue(mixed $value): bool
+    {
+        if (null === $value) {
+            return true;
+        }
+
+        if (\is_string($value)) {
+            return '' === trim($value);
+        }
+
+        if (\is_array($value)) {
+            return [] === $value;
+        }
+
+        return false;
+    }
+
+    private function isFieldValueEmpty(mixed $value): bool
+    {
+        return self::isEmptyPostedValue($value);
     }
 }

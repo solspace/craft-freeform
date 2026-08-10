@@ -83,6 +83,7 @@ export function createFreeformClient(
   return new FreeformClient(options);
 }
 
+export * from "./calculation/evaluate.js";
 export * from "./client/csrf.js";
 export * from "./client/manifest-client.js";
 export * from "./client/submit-client.js";
@@ -116,4 +117,5 @@ export const FIELD_RENDERERS = {
   HTML: "html",
   BUTTON: "button",
   SUBMIT: "submit",
+  CALCULATION: "calculation",
 } as const;

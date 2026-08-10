@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-neutral headless runtime for Solspace Freeform",
   "private": false,
   "type": "module",
@@ -38,5 +38,8 @@
   "license": "MIT",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "expression-language": "^2.5.4"
   }
 }

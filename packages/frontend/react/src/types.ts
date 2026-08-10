@@ -32,6 +32,7 @@ export type FreeformThemeClassNames = {
   submitButton?: string;
   nextButton?: string;
   backButton?: string;
+  saveButton?: string;
   success?: string;
 };
 
@@ -88,6 +89,7 @@ export type FreeformThemeComponents = {
   SubmitButton: ComponentType<FreeformButtonProps>;
   NextButton: ComponentType<FreeformButtonProps>;
   BackButton: ComponentType<FreeformButtonProps>;
+  SaveButton: ComponentType<FreeformButtonProps>;
   SuccessMessage: ComponentType<{ message: string; className?: string }>;
   UnsupportedField: ComponentType<ReactFieldRendererProps>;
 };
@@ -168,6 +170,7 @@ export type FreeformRuntime = {
   validate: () => Promise<SubmitResponse | undefined>;
   goNext: () => Promise<SubmitResponse | undefined>;
   goBack: () => Promise<SubmitResponse | undefined>;
+  saveDraft: () => Promise<SubmitResponse | undefined>;
   reset: () => void;
   handleSubmit: (event?: FormEvent) => Promise<void>;
   mountFieldExtension: (handle: string, element: HTMLElement) => () => void;
@@ -184,6 +187,8 @@ export type UseFreeformOptions = {
   baseUrl: string;
   manifest?: FreeformManifest;
   initialValues?: Record<string, FieldValue>;
+  draftToken?: string | null;
+  draftKey?: string | null;
   clientVersion?: string;
   fetch?: typeof globalThis.fetch;
   credentials?: RequestCredentials;

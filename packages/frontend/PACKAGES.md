@@ -1,5 +1,8 @@
 # Freeform Headless — npm packages
 
+> **Maintainers / repo only.** This file is **not** published to npm. Customer-facing install docs live at:
+> [Headless Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/).
+
 Official Freeform frontend packages for **React / Next.js**. These npm packages use an **independent semver line** from the Freeform Craft plugin.
 
 | Layer | Versioning |
@@ -13,7 +16,7 @@ Official Freeform frontend packages for **React / Next.js**. These npm packages 
 | --- | --- |
 | `@solspace/freeform-core` | Manifest client, state, conditionals, submit |
 | `@solspace/freeform-react` | `<Freeform />` + `useFreeform()` |
-| `@solspace/freeform-extensions` | Captchas, datetime, file DnD |
+| `@solspace/freeform-extensions` | Captchas, calculation, datetime, file DnD |
 | `@solspace/freeform-react-theme-default` | Default light/dark theme CSS |
 
 Requires a Freeform plugin build that includes the headless REST API, with headless enabled in config.
@@ -59,9 +62,7 @@ Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
 
 ## Known limitations
 
-- Drafts / save & continue — not yet
 - Payments (Stripe, etc.) — not yet
-- Calculation fields — unsupported renderer
 - Vue adapter — not yet
 - Bootstrap & Tailwind theme packages — not yet
 - Full GraphQL parity with the REST contract — not yet

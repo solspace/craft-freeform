@@ -349,6 +349,26 @@
   border-color: var(--ff-color-secondary);
 }
 
+.ff-button--save {
+  color: var(--ff-color-primary-contrast);
+  background-color: var(--ff-color-secondary);
+  border-color: var(--ff-color-secondary);
+}
+
+.ff-button--save:hover:not(:disabled) {
+  color: var(--ff-color-secondary-hover-text);
+  background-color: var(--ff-color-secondary-hover-bg);
+  border-color: var(--ff-color-secondary);
+}
+
+.ff-button--save:disabled {
+  color: var(--ff-color-primary-contrast);
+  cursor: not-allowed;
+  background-color: var(--ff-color-primary-disabled);
+  border-color: var(--ff-color-primary-disabled-border);
+  opacity: 0.65;
+}
+
 .ff-field--group > .ff-field__label {
   font-size: 1.125rem;
 }

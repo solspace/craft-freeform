@@ -91,6 +91,6 @@ class HeadlessResponseHelperTest extends TestCase
         self::assertFalse($result['success']);
         self::assertSame('not_implemented', $result['status']);
         self::assertFalse($result['complete']);
-        self::assertContains('saveDraft is not implemented yet.', $result['errors']['form']);
+        self::assertContains('This intent is not implemented yet.', $result['errors']['form']);
     }
 }

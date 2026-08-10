@@ -89,6 +89,11 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         return $this->decimalCount ?? null;
     }
 
+    public function getInputType(): string
+    {
+        return $this->inputType;
+    }
+
     public function getValue(): mixed
     {
         $value = parent::getValue();

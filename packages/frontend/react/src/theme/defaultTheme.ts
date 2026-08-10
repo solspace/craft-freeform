@@ -23,6 +23,7 @@ export const defaultTheme: FreeformReactTheme = {
     submitButton: "ff-button ff-button--submit",
     nextButton: "ff-button ff-button--next",
     backButton: "ff-button ff-button--back",
+    saveButton: "ff-button ff-button--save",
     success: "ff-form__success",
   },
   defaults: {

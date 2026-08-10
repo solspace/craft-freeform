@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\Services\Headless;
 
 use craft\web\Response;
+use Solspace\Freeform\Bundles\Form\SaveForm\SaveFormsHelper;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\Headless\Profile\HeadlessProfile;
@@ -36,17 +38,23 @@ class HeadlessResponseHelper
     }
 
     /**
+     * @param null|array{token: string, key: string, resumeUrl: null|string} $draft
+     *
      * @return array<string, mixed>
      */
-    public function buildSubmitResponse(Form $form, string $intent, bool $notImplemented = false): array
-    {
+    public function buildSubmitResponse(
+        Form $form,
+        string $intent,
+        bool $notImplemented = false,
+        ?array $draft = null,
+    ): array {
         if ($notImplemented) {
             return [
                 'success' => false,
                 'status' => 'not_implemented',
                 'complete' => false,
                 'message' => 'This intent is not implemented yet.',
-                'errors' => ['form' => ['saveDraft is not implemented yet.']],
+                'errors' => ['form' => ['This intent is not implemented yet.']],
             ];
         }
 
@@ -55,8 +63,11 @@ class HeadlessResponseHelper
         $formErrors = array_values($form->getErrors());
         $hasErrors = [] !== $fieldErrors || [] !== $formErrors || [] !== $form->getActions();
         $isComplete = $form->isFinished() && $form->isValid() && !$hasErrors && 'submit' === $intent;
+        $draftSaved = 'saveDraft' === $intent && null !== $draft;
 
         $status = match (true) {
+            $draftSaved => 'draft_saved',
+            'saveDraft' === $intent => 'validation_failed',
             'validate' === $intent && $form->isValid() => 'validated',
             'validate' === $intent => 'validation_failed',
             $isComplete => 'submitted',
@@ -67,8 +78,10 @@ class HeadlessResponseHelper
         $formsService = Freeform::getInstance()->forms;
         $returnUrl = $formsService->getReturnUrl($form);
 
+        $includeState = $draftSaved || SaveFormsHelper::isLoaded($form);
+
         return [
-            'success' => $form->isValid() && [] === $form->getActions(),
+            'success' => $draftSaved || ($form->isValid() && [] === $form->getActions()),
             'status' => $status,
             'complete' => $isComplete,
             'submission' => $isComplete && $submission?->id ? [
@@ -82,8 +95,11 @@ class HeadlessResponseHelper
             'page' => $form->isMultiPage() ? [
                 'currentIndex' => $form->getCurrentPageIndex(),
             ] : null,
-            'state' => null,
-            'draft' => null,
+            'state' => $includeState ? [
+                'values' => $this->collectFieldValues($form),
+                'pageIndex' => $form->getCurrentPageIndex(),
+            ] : null,
+            'draft' => $draft,
             'errors' => [
                 'fields' => $fieldErrors,
                 'form' => $formErrors,
@@ -134,5 +150,23 @@ class HeadlessResponseHelper
         }
 
         return $errors;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function collectFieldValues(Form $form): array
+    {
+        $values = [];
+        foreach ($form->getLayout()->getFields() as $field) {
+            $handle = $field->getHandle();
+            if (!$handle || $field instanceof NoStorageInterface) {
+                continue;
+            }
+
+            $values[$handle] = $field->getValue();
+        }
+
+        return $values;
     }
 }

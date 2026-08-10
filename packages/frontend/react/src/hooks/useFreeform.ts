@@ -143,6 +143,8 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       formStateRef.current = createFormState({
         manifest: options.manifest,
         initialValues: options.initialValues,
+        draftToken: options.draftToken,
+        draftKey: options.draftKey,
       });
       setManifest(options.manifest);
       syncFromFormState();
@@ -176,6 +178,8 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
         formStateRef.current = createFormState({
           manifest: loaded,
           initialValues: options.initialValues,
+          draftToken: options.draftToken,
+          draftKey: options.draftKey,
         });
         setManifest(loaded);
         syncFromFormState();
@@ -207,6 +211,8 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     options.properties,
     options.manifest,
     options.initialValues,
+    options.draftToken,
+    options.draftKey,
     options.onManifestLoaded,
     syncFromFormState,
   ]);
@@ -313,6 +319,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           request: {
             values,
             intent,
+            context: formState.getSubmitContext(),
             meta: {
               client: CLIENT_NAME,
               clientVersion: options.clientVersion ?? PACKAGE_VERSION,
@@ -364,6 +371,28 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
   const validate = useCallback(() => submit("validate"), [submit]);
   const goNext = useCallback(() => submit("next"), [submit]);
   const goBack = useCallback(() => submit("back"), [submit]);
+  const saveDraft = useCallback(() => submit("saveDraft"), [submit]);
+
+  const draftHydrateKeyRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!manifest) {
+      return;
+    }
+
+    const token = options.draftToken;
+    const key = options.draftKey;
+    if (!token || !key) {
+      return;
+    }
+
+    const hydrateKey = `${token}:${key}`;
+    if (draftHydrateKeyRef.current === hydrateKey) {
+      return;
+    }
+
+    draftHydrateKeyRef.current = hydrateKey;
+    void submit("validate");
+  }, [manifest, options.draftKey, options.draftToken, submit]);
 
   const reset = useCallback(() => {
     if (!manifest) {
@@ -373,11 +402,19 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     formStateRef.current = createFormState({
       manifest,
       initialValues: options.initialValues,
+      draftToken: options.draftToken,
+      draftKey: options.draftKey,
     });
     setIsComplete(false);
     setSuccessMessage(null);
     syncFromFormState();
-  }, [manifest, options.initialValues, syncFromFormState]);
+  }, [
+    manifest,
+    options.initialValues,
+    options.draftToken,
+    options.draftKey,
+    syncFromFormState,
+  ]);
 
   const handleSubmit = useCallback(
     async (event?: FormEvent) => {
@@ -532,6 +569,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       validate,
       goNext,
       goBack,
+      saveDraft,
       reset,
       handleSubmit,
       mountFieldExtension,
@@ -551,6 +589,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     mountCaptcha,
     mountFieldExtension,
     reset,
+    saveDraft,
     setValue,
     snapshot,
     submit,
@@ -577,6 +616,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     validate,
     goNext,
     goBack,
+    saveDraft,
     reset,
     handleSubmit,
     mountFieldExtension,

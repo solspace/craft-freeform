@@ -157,6 +157,10 @@ importers:
         version: 3.4.1
 
   packages/frontend/core:
+    dependencies:
+      expression-language:
+        specifier: ^2.5.4
+        version: 2.5.4
     devDependencies:
       typescript:
         specifier: ^5.8.3
@@ -170,6 +174,9 @@ importers:
       '@friendlycaptcha/sdk':
         specifier: ^0.1.37
         version: 0.1.37
+      expression-language:
+        specifier: ^2.5.4
+        version: 2.5.4
     devDependencies:
       '@solspace/freeform-core':
         specifier: workspace:*

@@ -1,10 +1,10 @@
 # @solspace/freeform-core
 
-> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
-
 Framework-neutral runtime for Solspace Freeform headless forms.
 
 React adapters build on this package. Use it directly when you need form loading, state, conditionals, and submission without a UI framework adapter.
+
+**Docs:** [Headless Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [REST API](https://docs.solspace.com/craft/freeform/v5/headless/rest-api/)
 
 ## Requirements
 
@@ -60,3 +60,10 @@ In Node.js or other environments without automatic cookie handling, pass a cooki
 ## Support
 
 Documentation and support for Freeform are available through [Solspace](https://docs.solspace.com/craft/freeform/).
+
+## Known limitations
+
+- Payments (Stripe, etc.) — not yet
+- Vue adapter — not yet
+- Bootstrap & Tailwind theme packages — not yet
+- Conditional show/hide is client UX only (not a security boundary)

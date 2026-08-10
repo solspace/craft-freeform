@@ -14,6 +14,7 @@ class HeadlessSubmitService
     public function __construct(
         private MultipartRequestParser $multipartParser,
         private HeadlessResponseHelper $responseHelper,
+        private HeadlessDraftService $draftService,
     ) {}
 
     /**
@@ -26,12 +27,10 @@ class HeadlessSubmitService
 
         $intent = (string) ($payload['intent'] ?? 'submit');
         $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];
+        $context = \is_array($payload['context'] ?? null) ? $payload['context'] : [];
+        $context = $this->draftService->normalizeContext($context);
 
-        if ('saveDraft' === $intent) {
-            return $this->responseHelper->buildSubmitResponse($form, $intent, notImplemented: true);
-        }
-
-        $form->registerContext(\is_array($payload['context'] ?? null) ? $payload['context'] : []);
+        $form->registerContext($context);
         $form->getProperties()->set('headlessPayload', $payload);
         $form->getProperties()->set('headlessIntent', $intent);
         $form->setHeadlessPosted(true);
@@ -56,9 +55,14 @@ class HeadlessSubmitService
             $form->reset();
         }
 
+        $draft = null;
+        if ('saveDraft' === $intent) {
+            $draft = $this->draftService->save($form, $context);
+        }
+
         $form->persistState();
 
-        return $this->responseHelper->buildSubmitResponse($form, $intent);
+        return $this->responseHelper->buildSubmitResponse($form, $intent, draft: $draft);
     }
 
     /**

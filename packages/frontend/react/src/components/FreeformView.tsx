@@ -175,6 +175,15 @@ export function FreeformView({ form, className }: FreeformViewProps) {
             disabled={form.isSubmitting}
           />
         ) : null}
+
+        {currentPage.buttons?.save ? (
+          <components.SaveButton
+            label={currentPage.buttons.save.label}
+            className={theme.classNames?.saveButton}
+            disabled={form.isSubmitting}
+            onClick={() => void form.saveDraft()}
+          />
+        ) : null}
       </components.ButtonRow>
     </components.Form>
   );

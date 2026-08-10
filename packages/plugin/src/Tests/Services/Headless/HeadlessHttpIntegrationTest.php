@@ -123,7 +123,7 @@ class HeadlessHttpIntegrationTest extends TestCase
         self::assertStringContainsStringIgnoringCase('csrf', (string) ($body['message'] ?? json_encode($body)));
     }
 
-    public function testSaveDraftIntentReturnsNotImplemented(): void
+    public function testSaveDraftIntentReturnsDraftSavedOrValidationFailed(): void
     {
         [, $manifest] = $this->request('GET', '/freeform/api/forms/simpleForm/manifest');
         $security = $manifest['data']['security'] ?? [];
@@ -149,8 +149,14 @@ class HeadlessHttpIntegrationTest extends TestCase
             ], \JSON_THROW_ON_ERROR)
         );
 
-        self::assertContains($status, [200, 501]);
-        self::assertSame('not_implemented', $body['status'] ?? null);
+        self::assertContains($status, [200, 422]);
+        self::assertContains($body['status'] ?? null, ['draft_saved', 'validation_failed']);
+        if ('draft_saved' === ($body['status'] ?? null)) {
+            self::assertTrue($body['success'] ?? false);
+            self::assertIsArray($body['draft'] ?? null);
+            self::assertNotEmpty($body['draft']['token'] ?? null);
+            self::assertNotEmpty($body['draft']['key'] ?? null);
+        }
     }
 
     /**

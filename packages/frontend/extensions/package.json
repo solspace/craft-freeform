@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-extensions",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official Freeform headless extensions for captchas and advanced field behavior",
   "private": false,
   "type": "module",
@@ -46,7 +46,8 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "dependencies": {
-    "@friendlycaptcha/sdk": "^0.1.37"
+    "@friendlycaptcha/sdk": "^0.1.37",
+    "expression-language": "^2.5.4"
   },
   "publishConfig": {
     "access": "public"

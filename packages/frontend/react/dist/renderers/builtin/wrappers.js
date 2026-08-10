@@ -1,4 +1,5 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { CalculationFieldRenderer } from "./CalculationField.js";
 import { CardsFieldRenderer, CheckboxesFieldRenderer, CheckboxFieldRenderer, ConfirmFieldRenderer, DatetimeFieldRenderer, EmailFieldRenderer, FileDndFieldRenderer, FileFieldRenderer, HiddenFieldRenderer, HtmlFieldRenderer, ImageFieldRenderer, MultipleSelectFieldRenderer, NumberFieldRenderer, OpinionScaleFieldRenderer, PasswordFieldRenderer, PhoneFieldRenderer, RadioFieldRenderer, RatingFieldRenderer, RegexFieldRenderer, SelectFieldRenderer, SignatureFieldRenderer, TableFieldRenderer, TextareaFieldRenderer, TextFieldRenderer, UnsupportedFieldRenderer, WebsiteFieldRenderer, } from "./fields.js";
 export function DefaultForm({ className, children, onSubmit, }) {
     return (_jsx("form", { className: className, onSubmit: onSubmit, noValidate: true, children: children }));
@@ -36,13 +37,16 @@ export function DefaultErrors({ errors, className, errorClassName, }) {
 export function DefaultButtonRow({ className, children, }) {
     return _jsx("div", { className: className, children: children });
 }
-export function DefaultSubmitButton({ label, className, disabled, type = "submit", }) {
-    return (_jsx("button", { type: type, className: className, disabled: disabled, children: label }));
+export function DefaultSubmitButton({ label, className, disabled, type = "submit", onClick, }) {
+    return (_jsx("button", { type: type, className: className, disabled: disabled, onClick: onClick, children: label }));
 }
 export function DefaultNextButton(props) {
     return _jsx(DefaultSubmitButton, { ...props, type: "button" });
 }
 export function DefaultBackButton(props) {
+    return _jsx(DefaultSubmitButton, { ...props, type: "button" });
+}
+export function DefaultSaveButton(props) {
     return _jsx(DefaultSubmitButton, { ...props, type: "button" });
 }
 export function DefaultSuccessMessage({ message, className, }) {
@@ -79,6 +83,7 @@ export const builtinRenderers = {
         image: ImageFieldRenderer,
         table: TableFieldRenderer,
         signature: SignatureFieldRenderer,
+        calculation: CalculationFieldRenderer,
     },
     types: {
         text: TextFieldRenderer,
@@ -111,8 +116,7 @@ export const builtinRenderers = {
         image: ImageFieldRenderer,
         table: TableFieldRenderer,
         signature: SignatureFieldRenderer,
-        // Calculation stays unsupported until Phase 5 runtime lands.
-        calculation: UnsupportedFieldRenderer,
+        calculation: CalculationFieldRenderer,
         _unsupported: UnsupportedFieldRenderer,
     },
 };
@@ -128,6 +132,7 @@ export const builtinComponents = {
     SubmitButton: DefaultSubmitButton,
     NextButton: DefaultNextButton,
     BackButton: DefaultBackButton,
+    SaveButton: DefaultSaveButton,
     SuccessMessage: DefaultSuccessMessage,
     UnsupportedField: UnsupportedFieldRenderer,
 };

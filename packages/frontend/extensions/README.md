@@ -1,8 +1,8 @@
 # @solspace/freeform-extensions
 
-> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
+Official Freeform extensions for captchas, calculation, datetime, and file drag-and-drop used with `@solspace/freeform-core` and `@solspace/freeform-react`.
 
-Official Freeform extensions for captchas and advanced form behavior used with `@solspace/freeform-core` and `@solspace/freeform-react`.
+**Docs:** [Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/)
 
 ## Install
 

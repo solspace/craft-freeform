@@ -25,6 +25,7 @@ export declare class FreeformClient {
     private asClientOptions;
 }
 export declare function createFreeformClient(options: FreeformClientOptions): FreeformClient;
+export * from "./calculation/evaluate.js";
 export * from "./client/csrf.js";
 export * from "./client/manifest-client.js";
 export * from "./client/submit-client.js";
@@ -57,5 +58,6 @@ export declare const FIELD_RENDERERS: {
     readonly HTML: "html";
     readonly BUTTON: "button";
     readonly SUBMIT: "submit";
+    readonly CALCULATION: "calculation";
 };
 //# sourceMappingURL=index.d.ts.map

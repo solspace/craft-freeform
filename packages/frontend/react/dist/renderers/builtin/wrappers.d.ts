@@ -9,9 +9,10 @@ export declare function DefaultLabel({ field, className, requiredIndicator, }: F
 export declare function DefaultInstructions({ field, className, }: FreeformInstructionsProps): import("react").JSX.Element | null;
 export declare function DefaultErrors({ errors, className, errorClassName, }: FreeformErrorsProps): import("react").JSX.Element | null;
 export declare function DefaultButtonRow({ className, children, }: FreeformButtonRowProps): import("react").JSX.Element;
-export declare function DefaultSubmitButton({ label, className, disabled, type, }: FreeformButtonProps): import("react").JSX.Element;
+export declare function DefaultSubmitButton({ label, className, disabled, type, onClick, }: FreeformButtonProps): import("react").JSX.Element;
 export declare function DefaultNextButton(props: FreeformButtonProps): import("react").JSX.Element;
 export declare function DefaultBackButton(props: FreeformButtonProps): import("react").JSX.Element;
+export declare function DefaultSaveButton(props: FreeformButtonProps): import("react").JSX.Element;
 export declare function DefaultSuccessMessage({ message, className, }: {
     message: string;
     className?: string;
@@ -32,6 +33,7 @@ export declare const builtinComponents: {
     SubmitButton: typeof DefaultSubmitButton;
     NextButton: typeof DefaultNextButton;
     BackButton: typeof DefaultBackButton;
+    SaveButton: typeof DefaultSaveButton;
     SuccessMessage: typeof DefaultSuccessMessage;
     UnsupportedField: typeof UnsupportedFieldRenderer;
 };

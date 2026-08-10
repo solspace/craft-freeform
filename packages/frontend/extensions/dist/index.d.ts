@@ -1,3 +1,4 @@
+export { calculationExtension, createCalculationExtension, } from "./calculation/index.js";
 export * from "./captchas/index.js";
 export { createDatetimeExtension, datetimeExtension, } from "./datetime/index.js";
 export { createFileDndExtension, fileDndExtension, } from "./file-dnd/index.js";

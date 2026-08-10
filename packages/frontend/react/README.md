@@ -1,8 +1,8 @@
 # @solspace/freeform-react
 
-> See [`PACKAGES.md`](../PACKAGES.md) for install notes and known limitations.
-
 React components and hooks for Solspace Freeform forms over the headless REST API.
+
+**Docs:** [Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/) · [Next.js](https://docs.solspace.com/craft/freeform/v5/headless/nextjs/)
 
 ## Requirements
 
@@ -216,3 +216,10 @@ const theme = createTheme({
 ## Support
 
 Documentation and support for Freeform are available through [Solspace](https://docs.solspace.com/craft/freeform/).
+
+## Known limitations
+
+- Payments (Stripe, etc.) — not yet
+- Vue adapter — not yet
+- Bootstrap & Tailwind theme packages — not yet
+- Conditional show/hide is client UX only (not a security boundary)

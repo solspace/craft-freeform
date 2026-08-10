@@ -3,6 +3,7 @@ import type { SubmitIntent } from "./manifest.js";
 export type SubmitContext = {
   token?: string | null;
   draftToken?: string | null;
+  draftKey?: string | null;
   stateToken?: string | null;
 };
 
@@ -59,8 +60,16 @@ export type SubmitResponse = {
   redirect?: { url: string; delay?: number } | null;
   actions?: unknown[];
   page?: { currentIndex?: number } | null;
-  state?: unknown;
-  draft?: unknown;
+  state?: {
+    values?: Record<string, unknown>;
+    pageIndex?: number;
+  } | null;
+  draft?: {
+    token: string;
+    key: string;
+    resumeUrl?: string | null;
+    expiresAt?: string | null;
+  } | null;
   errors: SubmitErrors;
 };
 

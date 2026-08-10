@@ -11,6 +11,7 @@ import type {
   FreeformRowProps,
   ReactFieldRendererProps,
 } from "../../types.js";
+import { CalculationFieldRenderer } from "./CalculationField.js";
 import {
   CardsFieldRenderer,
   CheckboxesFieldRenderer,
@@ -145,9 +146,15 @@ export function DefaultSubmitButton({
   className,
   disabled,
   type = "submit",
+  onClick,
 }: FreeformButtonProps) {
   return (
-    <button type={type} className={className} disabled={disabled}>
+    <button
+      type={type}
+      className={className}
+      disabled={disabled}
+      onClick={onClick}
+    >
       {label}
     </button>
   );
@@ -158,6 +165,10 @@ export function DefaultNextButton(props: FreeformButtonProps) {
 }
 
 export function DefaultBackButton(props: FreeformButtonProps) {
+  return <DefaultSubmitButton {...props} type="button" />;
+}
+
+export function DefaultSaveButton(props: FreeformButtonProps) {
   return <DefaultSubmitButton {...props} type="button" />;
 }
 
@@ -206,6 +217,7 @@ export const builtinRenderers = {
     image: ImageFieldRenderer,
     table: TableFieldRenderer,
     signature: SignatureFieldRenderer,
+    calculation: CalculationFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
   types: {
     text: TextFieldRenderer,
@@ -238,8 +250,7 @@ export const builtinRenderers = {
     image: ImageFieldRenderer,
     table: TableFieldRenderer,
     signature: SignatureFieldRenderer,
-    // Calculation stays unsupported until Phase 5 runtime lands.
-    calculation: UnsupportedFieldRenderer,
+    calculation: CalculationFieldRenderer,
     _unsupported: UnsupportedFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
 };
@@ -256,6 +267,7 @@ export const builtinComponents = {
   SubmitButton: DefaultSubmitButton,
   NextButton: DefaultNextButton,
   BackButton: DefaultBackButton,
+  SaveButton: DefaultSaveButton,
   SuccessMessage: DefaultSuccessMessage,
   UnsupportedField: UnsupportedFieldRenderer,
 };

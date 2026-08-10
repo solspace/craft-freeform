@@ -6,11 +6,17 @@ import {
 } from "../conditionals/evaluator.js";
 import type { FieldValue } from "../conditionals/operators.js";
 import type { FreeformManifest } from "../types/manifest.js";
-import type { SubmitErrors, SubmitResponse } from "../types/submit.js";
+import type {
+  SubmitContext,
+  SubmitErrors,
+  SubmitResponse,
+} from "../types/submit.js";
 
 export type FormStateOptions = {
   manifest: FreeformManifest;
   initialValues?: Record<string, FieldValue>;
+  draftToken?: string | null;
+  draftKey?: string | null;
 };
 
 export class FormState {
@@ -30,11 +36,17 @@ export class FormState {
 
   pageErrors: string[] = [];
 
+  draftToken: string | null = null;
+
+  draftKey: string | null = null;
+
   private visibility: VisibilityState;
 
   constructor(options: FormStateOptions) {
     this.manifest = options.manifest;
     this.values = buildInitialValues(options.manifest, options.initialValues);
+    this.draftToken = options.draftToken ?? null;
+    this.draftKey = options.draftKey ?? null;
     this.visibility = evaluateConditionals(this.manifest, this.values);
   }
 
@@ -54,6 +66,17 @@ export class FormState {
     this.currentPageIndex = Math.min(Math.max(0, index), max);
   }
 
+  getSubmitContext(): SubmitContext {
+    const context: SubmitContext = {};
+    if (this.draftToken) {
+      context.draftToken = this.draftToken;
+    }
+    if (this.draftKey) {
+      context.draftKey = this.draftKey;
+    }
+    return context;
+  }
+
   applySubmitResponse(response: SubmitResponse): void {
     const errors = response.errors ?? emptyErrors();
     this.fieldErrors = errors.fields ?? {};
@@ -62,6 +85,25 @@ export class FormState {
 
     if (response.page?.currentIndex !== undefined) {
       this.currentPageIndex = response.page.currentIndex;
+    }
+
+    if (response.draft?.token) {
+      this.draftToken = response.draft.token;
+    }
+    if (response.draft?.key) {
+      this.draftKey = response.draft.key;
+    }
+
+    const stateValues = response.state?.values;
+    if (stateValues && typeof stateValues === "object") {
+      for (const [handle, value] of Object.entries(stateValues)) {
+        this.values[handle] = value as FieldValue;
+      }
+      this.recomputeVisibility();
+    }
+
+    if (response.state?.pageIndex !== undefined) {
+      this.setPageIndex(response.state.pageIndex);
     }
   }
 

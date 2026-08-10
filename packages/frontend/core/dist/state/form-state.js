@@ -8,10 +8,14 @@ export class FormState {
     fieldErrors = {};
     formErrors = [];
     pageErrors = [];
+    draftToken = null;
+    draftKey = null;
     visibility;
     constructor(options) {
         this.manifest = options.manifest;
         this.values = buildInitialValues(options.manifest, options.initialValues);
+        this.draftToken = options.draftToken ?? null;
+        this.draftKey = options.draftKey ?? null;
         this.visibility = evaluateConditionals(this.manifest, this.values);
     }
     setValue(handle, value) {
@@ -27,6 +31,16 @@ export class FormState {
         const max = Math.max(0, this.manifest.layout.pages.length - 1);
         this.currentPageIndex = Math.min(Math.max(0, index), max);
     }
+    getSubmitContext() {
+        const context = {};
+        if (this.draftToken) {
+            context.draftToken = this.draftToken;
+        }
+        if (this.draftKey) {
+            context.draftKey = this.draftKey;
+        }
+        return context;
+    }
     applySubmitResponse(response) {
         const errors = response.errors ?? emptyErrors();
         this.fieldErrors = errors.fields ?? {};
@@ -34,6 +48,22 @@ export class FormState {
         this.pageErrors = errors.page ?? [];
         if (response.page?.currentIndex !== undefined) {
             this.currentPageIndex = response.page.currentIndex;
+        }
+        if (response.draft?.token) {
+            this.draftToken = response.draft.token;
+        }
+        if (response.draft?.key) {
+            this.draftKey = response.draft.key;
+        }
+        const stateValues = response.state?.values;
+        if (stateValues && typeof stateValues === "object") {
+            for (const [handle, value] of Object.entries(stateValues)) {
+                this.values[handle] = value;
+            }
+            this.recomputeVisibility();
+        }
+        if (response.state?.pageIndex !== undefined) {
+            this.setPageIndex(response.state.pageIndex);
         }
     }
     isFieldVisible(handle) {

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Services\Headless\Manifest;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
@@ -130,6 +131,14 @@ class ManifestFieldSerializer
                 'maxDate' => $field->getGeneratedMaxDate(),
                 'enableTime' => $field->isShowTime(),
                 'enableDate' => $field->isShowDate(),
+            ];
+        }
+
+        if ($field instanceof CalculationField) {
+            return [
+                'calculations' => $field->getCalculations(),
+                'decimalCount' => $field->getDecimalCount(),
+                'inputType' => $field->getInputType(),
             ];
         }
 

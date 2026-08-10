@@ -1,11 +1,11 @@
 # @solspace/freeform-react-theme-default
 
-> See [`PACKAGES.md`](../../PACKAGES.md) for install notes and known limitations.
-
 Default Freeform React theme. Provides CSS for the semantic `ff-*` classes used by `@solspace/freeform-react`, including:
 
 - **Equal-split row columns** (same layout model as Freeform Twig flexbox formatting templates)
 - **Light + dark color schemes** via CSS variables
+
+**Docs:** [Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/)
 
 ## Install
 

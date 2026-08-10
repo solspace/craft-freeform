@@ -2138,6 +2138,8 @@ return [
     'Last 60 days' => '60 derniers jours',
     'Last 90 days' => '90 derniers jours',
     'Display all Form Data as a Single Combined Line' => 'Afficher toutes les données de formulaire comme une seule ligne combinée',
+    'Include Spam Submissions' => 'Inclure les soumissions spam',
+    'Include submissions marked as spam in the chart data.' => 'Inclure les soumissions marquées comme spam dans les données du graphique.',
     'Select the forms for which submission data should be included.' => 'Sélectionnez les formulaires pour lesquels les données de contribution doivent être incluses.',
     'Limit' => 'Limite',
     'The maximum number of submissions to show.' => 'Le nombre maximum de soumissions à afficher.',

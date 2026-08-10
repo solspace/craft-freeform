@@ -34,6 +34,8 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public ?string $chartType = null;
 
+    public ?bool $includeSpam = null;
+
     public static function displayName(): string
     {
         return Freeform::getInstance()->name.' '.Freeform::t('Linear Chart');
@@ -70,6 +72,10 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
         if (null === $this->chartType) {
             $this->chartType = WidgetsService::CHART_LINE;
+        }
+
+        if (null === $this->includeSpam) {
+            $this->includeSpam = false;
         }
     }
 
@@ -137,7 +143,8 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             $rangeStart,
             $rangeEnd,
             $formIds,
-            (bool) $this->aggregate
+            (bool) $this->aggregate,
+            (bool) $this->includeSpam
         );
 
         $chartData->setChartType($this->chartType);

@@ -46,6 +46,7 @@ class ChartsService extends BaseService
             ->andWhere([
                 "{$submissions}.[[formId]]" => $formIds,
                 "{$submissions}.[[isHidden]]" => false,
+                "{$submissions}.[[isSpam]]" => false,
             ])
             ->innerJoin(
                 $elements,
@@ -85,7 +86,8 @@ class ChartsService extends BaseService
         Carbon $rangeStart,
         Carbon $rangeEnd,
         array $formIds,
-        bool $aggregate = false
+        bool $aggregate = false,
+        bool $includeSpam = false
     ): LinearChartData {
         $submissions = Submission::TABLE;
 
@@ -126,9 +128,14 @@ class ChartsService extends BaseService
             $form = null;
             if ($aggregate) {
                 $query->andWhere(['in', "{$submissions}.[[formId]]", $formIds]);
+                $query->andWhere(["{$submissions}.[[isHidden]]" => false]);
             } else {
                 $form = $forms[$formId];
                 $query->andWhere(["{$submissions}.[[formId]]" => $formId, "{$submissions}.[[isHidden]]" => false]);
+            }
+
+            if (!$includeSpam) {
+                $query->andWhere(["{$submissions}.[[isSpam]]" => false]);
             }
 
             $query->innerJoin(
@@ -169,7 +176,8 @@ class ChartsService extends BaseService
     public function getRadialFormSubmissionData(
         Carbon $rangeStart,
         Carbon $rangeEnd,
-        array $forms
+        array $forms,
+        bool $includeSpam = false
     ): RadialChartData {
         $formIds = array_keys($forms);
 
@@ -182,6 +190,10 @@ class ChartsService extends BaseService
             ->andWhere(["{$submissions}.[[isHidden]]" => false])
             ->groupBy(["{$submissions}.[[formId]]"])
         ;
+
+        if (!$includeSpam) {
+            $query->andWhere(["{$submissions}.[[isSpam]]" => false]);
+        }
 
         $elements = Table::ELEMENTS;
         $query->innerJoin(

@@ -2138,6 +2138,8 @@ return [
     'Last 60 days' => 'Afgelopen 60 dagen',
     'Last 90 days' => 'Afgelopen 90 dagen',
     'Display all Form Data as a Single Combined Line' => 'Toon alle formuliergegevens als een enkele gecombineerde regel',
+    'Include Spam Submissions' => 'Spaminzendingen opnemen',
+    'Include submissions marked as spam in the chart data.' => 'Inzendingen die als spam zijn gemarkeerd opnemen in de grafiekgegevens.',
     'Select the forms for which submission data should be included.' => 'Selecteer de formulieren waarvoor indieningsgegevens moeten worden opgenomen.',
     'Limit' => 'Limiet',
     'The maximum number of submissions to show.' => 'Het maximale aantal inzendingen dat kan worden weergegeven.',

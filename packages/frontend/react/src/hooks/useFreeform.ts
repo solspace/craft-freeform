@@ -11,9 +11,9 @@ import {
   type FreeformExtension,
   type FreeformManifest,
   type ManifestCaptchaSecurity,
+  prepareSubmitValues,
   runExtensionAfterSubmit,
   runExtensionSetups,
-  type SubmitFileMap,
   type SubmitIntent,
 } from "@solspace/freeform-core";
 import {
@@ -295,26 +295,10 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
 
       try {
         const rawValues = formState.getValuesForSubmit();
-        const values: Record<string, unknown> = {};
-        const files: SubmitFileMap = {};
-
-        for (const [handle, value] of Object.entries(rawValues)) {
-          if (value instanceof File || value instanceof Blob) {
-            files[handle] = value;
-            continue;
-          }
-
-          if (
-            Array.isArray(value) &&
-            value.length > 0 &&
-            (value[0] instanceof File || value[0] instanceof Blob)
-          ) {
-            files[handle] = value as File[];
-            continue;
-          }
-
-          values[handle] = value;
-        }
+        const { values, files } = prepareSubmitValues(
+          rawValues,
+          manifest.fields,
+        );
 
         const securityMeta = buildSecurityMeta(manifest);
         const extensionMeta = await collectExtensionSubmitMeta(

@@ -226,65 +226,6 @@ export function DatetimeFieldRenderer(props) {
     const hostRef = useFieldExtension(props.field, props.form);
     return (_jsx("div", { ref: hostRef, "data-freeform-datetime": props.field.handle, children: _jsx("input", { type: inputType, className: props.classNames.input, "data-datepicker": "", "data-datepicker-enabled": config.useDatepicker ? "1" : "0", ...input }) }));
 }
-function emptyTableRow(columns) {
-    return columns.map((column) => {
-        if (column.type === "checkbox") {
-            return column.checked ? "1" : "";
-        }
-        if (column.type === "file") {
-            return [];
-        }
-        return column.value ?? "";
-    });
-}
-export function TableFieldRenderer(props) {
-    const config = (props.field.frontend?.config ?? {});
-    const columns = config.columns ?? [];
-    const rows = Array.isArray(props.value)
-        ? props.value
-        : [emptyTableRow(columns)];
-    const setRows = (next) => {
-        props.form.setValue(props.field.handle, next);
-    };
-    const canAdd = !config.maxRows || rows.length < config.maxRows;
-    return (_jsxs("div", { className: props.classNames.input, children: [_jsxs("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [_jsx("thead", { children: _jsxs("tr", { children: [columns.map((column) => (_jsx("th", { style: { textAlign: "left" }, children: column.label }, column.label))), _jsx("th", {})] }) }), _jsx("tbody", { children: rows.map((row, rowIndex) => (_jsxs("tr", { children: [columns.map((column, colIndex) => {
-                                    const cellValue = row[colIndex];
-                                    const optionList = (column.options ?? []).map((option) => typeof option === "string"
-                                        ? { label: option, value: option }
-                                        : option);
-                                    if (column.type === "checkbox") {
-                                        return (_jsx("td", { children: _jsx("input", { type: "checkbox", checked: Boolean(cellValue), disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
-                                                    const next = rows.map((item) => [...item]);
-                                                    next[rowIndex][colIndex] = event.target.checked
-                                                        ? "1"
-                                                        : "";
-                                                    setRows(next);
-                                                } }) }, column.label));
-                                    }
-                                    if (column.type === "select") {
-                                        return (_jsx("td", { children: _jsxs("select", { value: String(cellValue ?? ""), disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
-                                                    const next = rows.map((item) => [...item]);
-                                                    next[rowIndex][colIndex] = event.target.value;
-                                                    setRows(next);
-                                                }, children: [_jsx("option", { value: "", children: column.placeholder || "Select…" }), optionList.map((option) => (_jsx("option", { value: option.value, children: option.label }, option.value)))] }) }, column.label));
-                                    }
-                                    if (column.type === "textarea") {
-                                        return (_jsx("td", { children: _jsx("textarea", { value: String(cellValue ?? ""), placeholder: column.placeholder, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
-                                                    const next = rows.map((item) => [...item]);
-                                                    next[rowIndex][colIndex] = event.target.value;
-                                                    setRows(next);
-                                                } }) }, column.label));
-                                    }
-                                    return (_jsx("td", { children: _jsx("input", { type: column.type === "radio" ? "text" : "text", value: String(cellValue ?? ""), placeholder: column.placeholder, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
-                                                const next = rows.map((item) => [...item]);
-                                                next[rowIndex][colIndex] = event.target.value;
-                                                setRows(next);
-                                            } }) }, column.label));
-                                }), _jsx("td", { children: _jsx("button", { type: "button", disabled: !props.form.isFieldEnabled(props.field.handle) ||
-                                            rows.length <= (config.minRows ?? 1), onClick: () => {
-                                            setRows(rows.filter((_, index) => index !== rowIndex));
-                                        }, children: config.removeButtonLabel || "Remove" }) })] }, `row-${rowIndex}`))) })] }), _jsx("button", { type: "button", disabled: !props.form.isFieldEnabled(props.field.handle) || !canAdd, onClick: () => setRows([...rows, emptyTableRow(columns)]), children: config.addButtonLabel || "Add row" })] }));
-}
 export function SignatureFieldRenderer(props) {
     const canvasRef = useRef(null);
     const drawing = useRef(false);

@@ -34,12 +34,12 @@ import {
   RegexFieldRenderer,
   SelectFieldRenderer,
   SignatureFieldRenderer,
-  TableFieldRenderer,
   TextareaFieldRenderer,
   TextFieldRenderer,
   UnsupportedFieldRenderer,
   WebsiteFieldRenderer,
 } from "./fields.js";
+import { TableFieldRenderer } from "./TableField.js";
 
 export function DefaultForm({
   className,

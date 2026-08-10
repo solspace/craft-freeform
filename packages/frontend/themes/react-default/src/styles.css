@@ -390,9 +390,21 @@
   padding: 0 0.5rem 0.5rem 0;
 }
 
+.ff-field--table th.is-required::after {
+  margin-left: 0.25rem;
+  color: var(--ff-color-danger, #b42318);
+  content: "*";
+}
+
 .ff-field--table td {
   padding: 0 0.5rem 0.5rem 0;
   vertical-align: top;
+}
+
+.ff-field--table .ff-table__radios {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .ff-field--table button {

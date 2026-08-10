@@ -22,7 +22,6 @@ export declare function FileDndFieldRenderer(props: ReactFieldRendererProps): im
 export declare function HtmlFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
 export declare function ImageFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
 export declare function DatetimeFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
-export declare function TableFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 export declare function SignatureFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 export declare function UnsupportedFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 //# sourceMappingURL=fields.d.ts.map

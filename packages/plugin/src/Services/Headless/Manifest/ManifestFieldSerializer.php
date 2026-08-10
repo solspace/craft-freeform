@@ -254,14 +254,17 @@ class ManifestFieldSerializer
                     'placeholder' => $column->placeholder,
                     'checked' => $column->checked,
                     'required' => $column->required,
+                    'metadata' => $column->metadata ?? null,
                 ];
             }
 
             return [
                 'columns' => $columns,
                 'useScript' => $field->isUseScript(),
+                'limitRows' => $field->getLimitRows(),
                 'maxRows' => $field->getMaxRows(),
                 'minRows' => $field->getMinRows(),
+                'exactRows' => $field->getExactRows(),
                 'addButtonLabel' => $field->getAddButtonLabel(),
                 'removeButtonLabel' => $field->getRemoveButtonLabel(),
             ];

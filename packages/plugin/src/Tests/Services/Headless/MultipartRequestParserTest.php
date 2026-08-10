@@ -127,4 +127,47 @@ class MultipartRequestParserTest extends TestCase
         self::assertArrayHasKey('bookCoverImage', $_FILES);
         self::assertSame(['cover.png'], $_FILES['bookCoverImage']['name']);
     }
+
+    public function testRemapNestedTableCellFilesPreservesRowColumnShape(): void
+    {
+        $_FILES['files'] = [
+            'name' => [
+                'guests' => [
+                    0 => [2 => ['a.pdf']],
+                    1 => [2 => ['b.pdf']],
+                ],
+            ],
+            'type' => [
+                'guests' => [
+                    0 => [2 => ['application/pdf']],
+                    1 => [2 => ['application/pdf']],
+                ],
+            ],
+            'tmp_name' => [
+                'guests' => [
+                    0 => [2 => ['/tmp/a']],
+                    1 => [2 => ['/tmp/b']],
+                ],
+            ],
+            'error' => [
+                'guests' => [
+                    0 => [2 => [0]],
+                    1 => [2 => [0]],
+                ],
+            ],
+            'size' => [
+                'guests' => [
+                    0 => [2 => [10]],
+                    1 => [2 => [20]],
+                ],
+            ],
+        ];
+
+        $request = $this->createMock(Request::class);
+        $byHandle = $this->parser->remapFilesToFieldHandles($request);
+
+        self::assertArrayHasKey('guests', $byHandle);
+        self::assertSame(['a.pdf'], $_FILES['guests']['name'][0][2]);
+        self::assertSame(['b.pdf'], $_FILES['guests']['name'][1][2]);
+    }
 }

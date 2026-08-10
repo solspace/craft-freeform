@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-react",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "React components and hooks for Solspace Freeform headless forms",
   "private": false,
   "type": "module",

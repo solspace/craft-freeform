@@ -1,5 +1,5 @@
 "use client";
-import { CLIENT_NAME as CORE_CLIENT_NAME, collectExtensionSubmitMeta, createFormState, createFreeformClient, runExtensionAfterSubmit, runExtensionSetups, } from "@solspace/freeform-core";
+import { CLIENT_NAME as CORE_CLIENT_NAME, collectExtensionSubmitMeta, createFormState, createFreeformClient, prepareSubmitValues, runExtensionAfterSubmit, runExtensionSetups, } from "@solspace/freeform-core";
 import { useCallback, useEffect, useMemo, useRef, useState, } from "react";
 import { defaultTheme } from "../theme/defaultTheme.js";
 import { CLIENT_NAME, PACKAGE_VERSION, } from "../types.js";
@@ -208,21 +208,7 @@ export function useFreeform(options) {
         setIsSubmitting(true);
         try {
             const rawValues = formState.getValuesForSubmit();
-            const values = {};
-            const files = {};
-            for (const [handle, value] of Object.entries(rawValues)) {
-                if (value instanceof File || value instanceof Blob) {
-                    files[handle] = value;
-                    continue;
-                }
-                if (Array.isArray(value) &&
-                    value.length > 0 &&
-                    (value[0] instanceof File || value[0] instanceof Blob)) {
-                    files[handle] = value;
-                    continue;
-                }
-                values[handle] = value;
-            }
+            const { values, files } = prepareSubmitValues(rawValues, manifest.fields);
             const securityMeta = buildSecurityMeta(manifest);
             const extensionMeta = await collectExtensionSubmitMeta(extensionsRef.current, {
                 manifest,

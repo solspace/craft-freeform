@@ -6,6 +6,7 @@ import type {
 } from "../types/submit.js";
 import { resolveUrl } from "../utils/url.js";
 import { type CsrfToken, fetchCsrfToken } from "./csrf.js";
+import { parseTableCellFileKey } from "./prepare-submit-values.js";
 
 export type SubmitClientOptions = {
   baseUrl: string;
@@ -108,10 +109,18 @@ async function submitMultipart(
     formData.append(csrf.name, csrf.value);
   }
 
-  for (const [handle, fileValue] of Object.entries(files)) {
+  for (const [key, fileValue] of Object.entries(files)) {
     const list = Array.isArray(fileValue) ? fileValue : [fileValue];
+    const tableCell = parseTableCellFileKey(key);
     for (const file of list) {
-      formData.append(`files[${handle}][]`, file);
+      if (tableCell) {
+        formData.append(
+          `files[${tableCell.handle}][${tableCell.rowIndex}][${tableCell.columnIndex}][]`,
+          file,
+        );
+      } else {
+        formData.append(`files[${key}][]`, file);
+      }
     }
   }
 

@@ -1,5 +1,6 @@
 import { resolveUrl } from "../utils/url.js";
 import { fetchCsrfToken } from "./csrf.js";
+import { parseTableCellFileKey } from "./prepare-submit-values.js";
 export async function submitForm(options, params) {
     const fetchFn = options.fetch ?? fetch;
     const { manifest, request, files } = params;
@@ -52,10 +53,16 @@ async function submitMultipart(fetchFn, url, options, request, files, csrf) {
     if (csrf) {
         formData.append(csrf.name, csrf.value);
     }
-    for (const [handle, fileValue] of Object.entries(files)) {
+    for (const [key, fileValue] of Object.entries(files)) {
         const list = Array.isArray(fileValue) ? fileValue : [fileValue];
+        const tableCell = parseTableCellFileKey(key);
         for (const file of list) {
-            formData.append(`files[${handle}][]`, file);
+            if (tableCell) {
+                formData.append(`files[${tableCell.handle}][${tableCell.rowIndex}][${tableCell.columnIndex}][]`, file);
+            }
+            else {
+                formData.append(`files[${key}][]`, file);
+            }
         }
     }
     const response = await fetchFn(url, {

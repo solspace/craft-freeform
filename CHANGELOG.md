@@ -4,6 +4,7 @@
 
 ### Added
 - Added a headless REST API for form manifests and submissions (`/freeform/api/forms/{handle}/manifest` and `/submit`), including CSRF, CORS, captcha meta, multipart uploads, file drag-and-drop upload endpoints, and optional named profiles.
+- Added GraphQL headless adapters over the same services: `freeformHeadlessManifest` query and `freeformHeadlessSubmit` mutation (structured REST-compatible payloads; multipart uploads remain REST-only).
 - Added official frontend npm packages (independent semver — **`0.1.0`**):
   - `@solspace/freeform-core`
   - `@solspace/freeform-react`
@@ -23,7 +24,8 @@ npm install @solspace/freeform-core \
 ### Notes
 - npm packages use independent semver (`0.1.x`), not the Freeform plugin version.
 - Manifest `minimumClientVersion` targets the npm client line (`0.1.0+`).
-- Deferred for later: drafts, payments, calculation fields, Vue adapter, Bootstrap/Tailwind themes.
+- Deferred for later: payments, Vue adapter, Bootstrap/Tailwind themes.
+- Legacy GraphQL form/submit APIs (`freeform` query, `save_{handle}_Submission`) remain; prefer REST or the new headless GraphQL adapters for new work.
 
 ## 5.15.23 - 2026-08-06
 

@@ -23,7 +23,26 @@ class HeadlessSubmitService
     public function submit(Form $form, Request $request): array
     {
         $payload = $this->parseRequestPayload($request);
-        $this->validateCsrf($request, $payload);
+
+        return $this->submitWithPayload($form, $request, $payload);
+    }
+
+    /**
+     * Shared submit path for REST and the GraphQL headless adapter.
+     *
+     * @param array<string, mixed> $payload
+     *
+     * @return array<string, mixed>
+     */
+    public function submitWithPayload(
+        Form $form,
+        Request $request,
+        array $payload,
+        bool $validateCsrf = true,
+    ): array {
+        if ($validateCsrf) {
+            $this->validateCsrf($request, $payload);
+        }
 
         $intent = (string) ($payload['intent'] ?? 'submit');
         $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];

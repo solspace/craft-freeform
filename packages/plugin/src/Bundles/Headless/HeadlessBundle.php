@@ -8,6 +8,7 @@ use Solspace\Freeform\Services\Headless\HeadlessAccessService;
 use Solspace\Freeform\Services\Headless\HeadlessDraftService;
 use Solspace\Freeform\Services\Headless\HeadlessResponseHelper;
 use Solspace\Freeform\Services\Headless\HeadlessSubmitService;
+use Solspace\Freeform\Services\Headless\Manifest\FormSecuritySerializer;
 use Solspace\Freeform\Services\Headless\Manifest\ManifestConditionalSerializer;
 use Solspace\Freeform\Services\Headless\Manifest\ManifestExtensionResolver;
 use Solspace\Freeform\Services\Headless\Manifest\ManifestFieldSerializer;

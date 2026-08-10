@@ -48,6 +48,15 @@
     errors: settings.getErrors('dateRange')
 }) }}
 
+{{ forms.lightswitchField({
+    label: "Include Spam Submissions"|t('freeform'),
+    instructions: "Include submissions marked as spam in the chart data."|t('freeform'),
+    id: 'includeSpam',
+    name: 'includeSpam',
+    on: settings.includeSpam,
+    errors: settings.getErrors('includeSpam')
+}) }}
+
 {% if fieldValueSettings is defined and fieldValueSettings %}
 
     {{ forms.selectField({

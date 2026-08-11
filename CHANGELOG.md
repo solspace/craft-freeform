@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.15.24 - 2026-08-11
+
+### Changed
+- **Dashboard chart widgets** now exclude spam submissions by default, with an opt-in toggle to include them.
+
+### Fixed
+- Fixed an issue where forms could fail to load after upgrading to Craft 5 if the `freeform_forms_sites` mapping was empty.
+- Updated **Salesforce OAuth** documentation to reference the **Authorization Code** flow instead of only the **Client Credentials** flow.
+
 ## 5.15.23 - 2026-08-06
 
 ### Added

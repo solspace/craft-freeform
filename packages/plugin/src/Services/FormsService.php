@@ -678,9 +678,13 @@ class FormsService extends BaseService implements FormHandlerInterface
                 'sites.handle AS siteHandle',
                 'sites.name AS siteName',
             ])
-            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
-            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
-            ->andWhere(['in', 'sites.[[handle]]', $sites])
+            ->leftJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
+            ->leftJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
+            ->andWhere([
+                'or',
+                ['in', 'sites.[[handle]]', $sites],
+                ['not', ['exists', (new Query())->from(FormSiteRecord::TABLE.' fs_check')->where('[[fs_check.formId]] = [[forms.id]]')]],
+            ])
         ;
     }
 

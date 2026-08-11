@@ -83,7 +83,7 @@ An alternate duplicate check on records is also available. When the **Check Cont
         - _Manage user data via APIs (api)_
         - _Perform requests on your behalf at any time (refresh_token, offline_access)_
   - In the **Flow Enablement** area:
-    - Check _Enable Client Credentials Flow_
+    - Check _Enable Authorization Code and Client Credentials Flow_
   - In the **Security** area:
     - Check _Require secret for Web Server Flow_
     - Check _Require secret for Refresh Token Flow_

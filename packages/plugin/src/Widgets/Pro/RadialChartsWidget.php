@@ -32,6 +32,8 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public ?string $chartType = null;
 
+    public ?bool $includeSpam = null;
+
     public static function displayName(): string
     {
         return Freeform::getInstance()->name.' '.Freeform::t('Radial Chart');
@@ -64,6 +66,10 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
         if (null === $this->chartType) {
             $this->chartType = WidgetsService::CHART_DONUT;
+        }
+
+        if (null === $this->includeSpam) {
+            $this->includeSpam = false;
         }
     }
 
@@ -121,7 +127,13 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             }
         }
 
-        $chartData = $this->getChartsService()->getRadialFormSubmissionData($rangeStart, $rangeEnd, $formList);
+        $chartData = $this->getChartsService()->getRadialFormSubmissionData(
+            $rangeStart,
+            $rangeEnd,
+            $formList,
+            (bool) $this->includeSpam
+        );
+
         $chartData->setChartType($this->chartType);
 
         return $chartData;

@@ -123,17 +123,17 @@ export const handleFileUpload = (
     freeform,
   );
   const thumbnail =
-    previewContainer.querySelector<HTMLElement>("[data-thumbnail]");
+    previewContainer.querySelector<HTMLElement>("[data-thumbnail]")!;
   const removeButton = previewContainer.querySelector<HTMLElement>(
     "[data-remove-button]",
-  );
+  )!;
 
   if (isImage(extension)) {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       thumbnail.setAttribute("data-has-preview", "");
-      thumbnail.style.backgroundImage = `url(${reader.result.toString()})`;
+      thumbnail.style.backgroundImage = `url(${reader.result!.toString()})`;
     };
   }
 
@@ -173,7 +173,7 @@ export const handleFileUpload = (
       const deleteFormData = new FormData(freeform.form as HTMLFormElement);
       deleteFormData.delete("action");
       deleteFormData.append("handle", handle);
-      deleteFormData.append("id", response.data.id);
+      deleteFormData.append("id", response.data.id!);
 
       removeButton.removeEventListener("click", handleCancelRequest);
       removeButton.addEventListener("click", async () => {
@@ -213,9 +213,10 @@ export const handleFileUpload = (
         dispatchChange(container, freeform);
       });
 
-      let messages: string[];
+      let messages: string[] = [];
       if (error?.response?.data?.type === ErrorTypes.FieldError) {
-        const { messages: errorMessages } = error?.response?.data as FieldError;
+        const { messages: errorMessages } = (error?.response
+          ?.data as FieldError) || { messages: [] };
         messages = errorMessages;
 
         addFieldErrors(container, previewContainer, errorMessages, freeform);

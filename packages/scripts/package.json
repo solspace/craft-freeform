@@ -14,16 +14,16 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "dependencies": {
-    "@friendlycaptcha/sdk": "^1.0.0",
+    "@friendlycaptcha/sdk": "^1.0.2",
     "@paypal/paypal-js": "^9.6.0",
     "@stripe/stripe-js": "^8.11.0",
-    "expression-language": "^2.5.4"
+    "expression-language": "^2.7.0"
   },
   "devDependencies": {
     "@types/grecaptcha": "^3.0.9",
     "@types/jquery": "^4.0.1",
-    "esbuild": "^0.28.1",
+    "esbuild": "^0.28.2",
     "glob": "^13.0.6",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }

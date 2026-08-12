@@ -1,45 +1,40 @@
 {
   "name": "root",
+  "packageManager": "pnpm@11.10.0",
+  "workspaces": [
+    "packages/app",
+    "packages/builder",
+    "packages/scripts",
+    "packages/styles"
+  ],
   "private": true,
   "description": "Freeform plugin for Craft CMS",
   "dependencies": {
-    "transliteration": "^2.3.5"
+    "transliteration": "2.6.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.28.0",
-    "@typescript-eslint/parser": "^4.28.0",
-    "babel-eslint": "^10.1.0",
-    "browserslist": ">=4.16.5",
-    "eslint": "^7.20.0",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "8.10.2",
     "eslint-config-react": "^1.1.7",
-    "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
-    "hosted-git-info": ">=2.8.9",
-    "ini": ">=2.0.0",
-    "lerna": "^3.22.1",
-    "postcss": ">=8.2.10",
-    "prettier": "^2.2.1",
-    "prettier-eslint": "^12.0.0",
-    "typescript": "^4.1.5"
+    "eslint-plugin-import": "2.32.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-simple-import-sort": "10.0.0",
+    "prettier": "2.8.8",
+    "typescript": "4.9.5"
   },
   "scripts": {
-    "dev": "lerna run --parallel dev",
-    "front-end": "lerna run --parallel dev --scope=@ff/{scripts,styles}",
-    "build": "lerna run --parallel build",
+    "dev": "pnpm --parallel --filter @ff/app --filter @ff/builder --filter @ff/scripts --filter @ff/styles dev",
+    "front-end": "pnpm --parallel --filter @ff/scripts --filter @ff/styles dev",
+    "build": "pnpm -r --if-present build",
     "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",
     "format:verify": "prettier --list-different '**/*.{ts,tsx,md,json,js,jsx,css}'",
-    "lint": "lerna run --parallel lint",
-    "postinstall": "npm run bootstrap",
-    "bootstrap": "lerna bootstrap --loglevel warn --concurrency 4",
-    "test": "lerna run test"
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test"
   },
   "author": "Solspace, Inc.",
   "license": "ISC",
   "volta": {
-    "node": "15.7.0"
+    "node": "26.5.0"
   }
 }

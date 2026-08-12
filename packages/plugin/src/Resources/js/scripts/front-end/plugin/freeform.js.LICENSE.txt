@@ -1,4 +1,7 @@
-/*!
- 2022 Jason Mulligan <jason.mulligan@avoidwork.com>
- @version 8.0.7
-*/
+Bundled license information:
+
+filesize/lib/filesize.min.js:
+  /*!
+   2022 Jason Mulligan <jason.mulligan@avoidwork.com>
+   @version 8.0.7
+  */

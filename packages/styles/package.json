@@ -2,16 +2,15 @@
   "name": "@ff/styles",
   "version": "1.0.0",
   "scripts": {
-    "dev": "npm run clean && npm run build && sass --no-source-map --watch src/:../plugin/src/Resources/css",
-    "build": "npm run clean && sass --no-source-map --style=compressed src/:../plugin/src/Resources/css",
+    "dev": "pnpm run clean && pnpm run build && sass --no-source-map --watch src/:../plugin/src/Resources/css",
+    "build": "pnpm run clean && sass --no-source-map --style=compressed src/:../plugin/src/Resources/css",
     "clean": "rm -rf ../plugin/src/Resources/css",
     "test": ""
   },
   "author": "Solspace Inc.",
   "license": "MIT",
   "devDependencies": {
-    "sass": "^1.49.0",
-    "y18n": ">=4.0.1"
+    "sass": "1.102.0"
   },
   "dependencies": {
     "craftcms-sass": "^3.5.1",

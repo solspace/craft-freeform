@@ -1,1 +1,1 @@
-document.getElementById("main-form").dataset.ffRulesEnabled=!0;
+(()=>{var e=document.getElementById("main-form");e.dataset.ffRulesEnabled=!0;})();

@@ -123,7 +123,7 @@ $(() => {
                   <p>
                     <span class="checkmark-icon"></span>
                     Migrated successfully
-                  </p> 
+                  </p>
                 </div>
                 `)
               );

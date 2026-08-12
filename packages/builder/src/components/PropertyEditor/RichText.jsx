@@ -1,5 +1,4 @@
-import CompressIcon from '@ff/builder/assets/icons/compress-solid.svg';
-import ExpandIcon from '@ff/builder/assets/icons/expand-solid.svg';
+import { CompressIcon, ExpandIcon } from '@ff/builder/assets/icons/FullscreenIcons';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactQuill from 'react-quill-new';

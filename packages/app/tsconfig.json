@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "../plugin/src/Resources/js/app/",
     "jsx": "react",
-    "lib": ["ES6", "DOM"],
+    "lib": ["ES2017", "DOM"],
+    "types": ["react", "react-dom"],
     "resolveJsonModule": true,
     "paths": {
       "@ff-app/*": ["app/src/*"],

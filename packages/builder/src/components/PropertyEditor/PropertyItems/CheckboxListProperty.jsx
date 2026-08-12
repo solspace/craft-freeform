@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import BasePropertyItem from './BasePropertyItem';
-import Crypto from 'crypto';
 import { translate } from '../../../app';
 
 export default class CheckboxListProperty extends BasePropertyItem {
@@ -32,7 +31,9 @@ export default class CheckboxListProperty extends BasePropertyItem {
       classNames.push(className);
     }
 
-    const hash = Crypto.randomBytes(20).toString('hex');
+    const bytes = new Uint8Array(20);
+    window.crypto.getRandomValues(bytes);
+    const hash = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
 
     return (
       <div className={classNames.join(' ')} ref="container">

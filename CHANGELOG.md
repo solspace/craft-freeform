@@ -27,6 +27,12 @@ npm install @solspace/freeform-core \
 - Deferred for later: payments, Vue adapter, Bootstrap/Tailwind themes.
 - Legacy GraphQL form/submit APIs (`freeform` query, `save_{handle}_Submission`) remain; prefer REST or the new headless GraphQL adapters for new work.
 
+## 5.15.25 - 2026-08-12
+
+### Security
+- Updated `dompdf/dompdf` to the latest compatible version and removed support for `2.x`.
+- Updated dependencies to address security vulnerabilities.
+
 ## 5.15.24 - 2026-08-11
 
 ### Changed

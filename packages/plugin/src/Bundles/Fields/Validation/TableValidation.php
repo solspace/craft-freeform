@@ -14,6 +14,8 @@ use yii\base\Event;
 
 class TableValidation extends FeatureBundle
 {
+    private const NUMBER_PATTERN = '/^-?(?:\d+(?:\.|,)\d+|\d+|(?:\.|,)\d+)$/';
+
     public function __construct(
         private FileUploadValidationHelper $fileValidationHelper,
     ) {
@@ -39,6 +41,12 @@ class TableValidation extends FeatureBundle
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
             [$this, 'validateFileColumns']
+        );
+
+        Event::on(
+            FieldInterface::class,
+            FieldInterface::EVENT_VALIDATE,
+            [$this, 'validateNumberColumns']
         );
     }
 
@@ -110,7 +118,7 @@ class TableValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => !empty($item));
+        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => '' !== $item && null !== $item);
         if (!$isSomeFilled) {
             $message = $field->getRequiredErrorMessage() ?: Freeform::t('This field is required');
 
@@ -140,7 +148,7 @@ class TableValidation extends FeatureBundle
         $message = Freeform::t($field->getRequiredErrorMessage() ?: 'This field is required');
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => !empty($item));
+        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => '' !== $item && null !== $item);
 
         if (!$isSomeFilled) {
             $field->addError($message);
@@ -238,6 +246,42 @@ class TableValidation extends FeatureBundle
         }
     }
 
+    public function validateNumberColumns(ValidateEvent $event): void
+    {
+        $field = $event->getField();
+        if (!$field instanceof TableField) {
+            return;
+        }
+
+        $numberColumns = [];
+        foreach ($field->getTableLayout() as $index => $column) {
+            if (TableField::COLUMN_TYPE_NUMBER === ($column->type ?? null)) {
+                $numberColumns[$index] = \is_array($column->metadata ?? null) ? $column->metadata : [];
+            }
+        }
+
+        if (empty($numberColumns)) {
+            return;
+        }
+
+        foreach ($field->getValue() as $row) {
+            foreach ($numberColumns as $columnIndex => $metadata) {
+                $value = $row[$columnIndex] ?? '';
+                if ('' === $value || null === $value) {
+                    continue;
+                }
+
+                if (!\is_scalar($value)) {
+                    $field->addError(Freeform::t('Value must be numeric'));
+
+                    continue;
+                }
+
+                $this->validateNumberColumnValue($field, (string) $value, $metadata);
+            }
+        }
+    }
+
     private function allRowsFilled(TableField $field, array $rows): bool
     {
         return ArrayHelper::every($rows, static function (array $row) {
@@ -276,6 +320,84 @@ class TableValidation extends FeatureBundle
             return false;
         }
 
-        return !empty($value);
+        return '' !== $value && null !== $value;
+    }
+
+    private function validateNumberColumnValue(TableField $field, string $value, array $metadata): void
+    {
+        $minLength = (int) ($metadata['minLength'] ?? 0);
+        if ($minLength > 0 && \strlen($value) < $minLength) {
+            $field->addError(
+                Freeform::t(
+                    'Value must be at least {minLength} characters',
+                    ['minLength' => $minLength],
+                )
+            );
+        }
+
+        $maxLength = (int) ($metadata['maxLength'] ?? 0);
+        if ($maxLength > 0 && \strlen($value) > $maxLength) {
+            $field->addError(
+                Freeform::t(
+                    'Value must be no more than {maxLength} characters',
+                    ['maxLength' => $maxLength],
+                )
+            );
+        }
+
+        if (!preg_match(self::NUMBER_PATTERN, $value)) {
+            $field->addError(Freeform::t('Value must be numeric'));
+
+            return;
+        }
+
+        $decimalCount = max(0, (int) ($metadata['decimalCount'] ?? 0));
+        if (preg_match('/[.,](\d+)$/', $value, $decimalMatches)) {
+            $decimals = $decimalMatches[1];
+            if (\strlen($decimals) > $decimalCount) {
+                $field->addError(
+                    str_replace(
+                        '{{dec}}',
+                        $decimalCount,
+                        Freeform::t('{{dec}} decimal places allowed')
+                    )
+                );
+            }
+        }
+
+        $numericValue = (float) str_replace(',', '.', $value);
+        $minMaxValues = \is_array($metadata['minMaxValues'] ?? null)
+            ? $metadata['minMaxValues']
+            : [null, null];
+        $min = $minMaxValues[0] ?? null;
+        $max = $minMaxValues[1] ?? null;
+        $minEnabled = null !== $min && '' !== $min;
+        $maxEnabled = null !== $max && '' !== $max;
+
+        if ($minEnabled && !$maxEnabled && $numericValue < (float) $min) {
+            $field->addError(
+                str_replace(
+                    '{{min}}',
+                    (string) $min,
+                    Freeform::t('The value must be no less than {{min}}')
+                )
+            );
+        } elseif ($maxEnabled && !$minEnabled && $numericValue > (float) $max) {
+            $field->addError(
+                str_replace(
+                    '{{max}}',
+                    (string) $max,
+                    Freeform::t('The value must be no more than {{max}}')
+                )
+            );
+        } elseif ($minEnabled && $maxEnabled && ($numericValue < (float) $min || $numericValue > (float) $max)) {
+            $field->addError(
+                str_replace(
+                    ['{{min}}', '{{max}}'],
+                    [(string) $min, (string) $max],
+                    Freeform::t('The value must be between {{min}} and {{max}}')
+                )
+            );
+        }
     }
 }

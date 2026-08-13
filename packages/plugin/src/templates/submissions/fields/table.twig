@@ -1,5 +1,5 @@
 {% set value = submission[field.handle] is not null ? submission[field.handle].value : [] %}
-<div class="field" data-freeform-table>
+<div class="field freeform-submission-table" data-freeform-table>
     <div class="heading">
         <label>{{ field.label }}</label>
     </div>
@@ -21,8 +21,8 @@
                     {% set colName = field.handle ~ "[0][" ~ index ~ "]" %}
                     {% set colType = column.type|default("text") %}
                     {% set colClass = "" %}
-                    {% if colType == "text" or colType == "textarea" %}
-                        {% set colClass = "textual" %}
+                    {% if colType == "text" or colType == "textarea" or colType == "number" %}
+                        {% set colClass = "textual table-cell-" ~ colType %}
                     {% elseif colType == "select" %}
                         {% set colClass = "thin" %}
                     {% endif %}
@@ -64,13 +64,35 @@
                                 {% set fileInputName = colName ~ "[]" %}
                             {% endif %}
                             <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
-                        {% default %}
-                            <textarea name="{{ colName }}"
+                        {% case "number" %}
+                            {% set metadata = column.metadata|default({}) %}
+                            {% set minMaxValues = metadata.minMaxValues|default([null, null]) %}
+                            <input type="number"
+                                   class="text fullwidth"
+                                   name="{{ colName }}"
+                                   value="{{ column.value|default("") }}"
+                                   data-default-value="{{ column.value|default("") }}"
+                                   placeholder="{{ column.placeholder|default("") }}"
+                                   {% if minMaxValues[0] is not null %}min="{{ minMaxValues[0] }}"{% endif %}
+                                   {% if minMaxValues[1] is not null %}max="{{ minMaxValues[1] }}"{% endif %}
+                                   step="{{ metadata.step is defined and metadata.step is not null ? metadata.step : 1 }}"
+                            />
+                        {% case "textarea" %}
+                            <textarea class="text fullwidth"
+                                      name="{{ colName }}"
                                       data-default-value="{{ column.value|default("") }}"
-                                      rows="{{ colType == 'textarea' ? 4 : 1 }}"
+                                      rows="4"
                             >
                                 {{- column.value|default("") -}}
                             </textarea>
+                        {% default %}
+                            <input type="text"
+                                   class="text fullwidth"
+                                   name="{{ colName }}"
+                                   value="{{ column.value|default("") }}"
+                                   data-default-value="{{ column.value|default("") }}"
+                                   placeholder="{{ column.placeholder|default("") }}"
+                            />
                         {% endswitch %}
                     </td>
                 {% endfor %}
@@ -88,8 +110,8 @@
                         {% set colValue = row[index]|default("") %}
                         {% set colType = column.type|default("text") %}
                         {% set colClass = "" %}
-                        {% if colType == "text" or colType == "textarea" %}
-                            {% set colClass = "textual" %}
+                        {% if colType == "text" or colType == "textarea" or colType == "number" %}
+                            {% set colClass = "textual table-cell-" ~ colType %}
                         {% elseif colType == "select" %}
                             {% set colClass = "thin" %}
                         {% endif %}
@@ -179,13 +201,35 @@
                                 {% endif %}
 
                                 <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
-                            {% default %}
-                                <textarea name="{{ colName }}"
+                            {% case "number" %}
+                                {% set metadata = column.metadata|default({}) %}
+                                {% set minMaxValues = metadata.minMaxValues|default([null, null]) %}
+                                <input type="number"
+                                       class="text fullwidth"
+                                       name="{{ colName }}"
+                                       value="{{ colValue }}"
+                                       data-default-value="{{ column.value|default("") }}"
+                                       placeholder="{{ column.placeholder|default("") }}"
+                                       {% if minMaxValues[0] is not null %}min="{{ minMaxValues[0] }}"{% endif %}
+                                       {% if minMaxValues[1] is not null %}max="{{ minMaxValues[1] }}"{% endif %}
+                                       step="{{ metadata.step is defined and metadata.step is not null ? metadata.step : 1 }}"
+                                />
+                            {% case "textarea" %}
+                                <textarea class="text fullwidth"
+                                          name="{{ colName }}"
                                           data-default-value="{{ column.value|default("") }}"
-                                          rows="{{ colType == 'textarea' ? 4 : 1 }}"
+                                          rows="4"
                                 >
                                     {{- colValue -}}
                                 </textarea>
+                            {% default %}
+                                <input type="text"
+                                       class="text fullwidth"
+                                       name="{{ colName }}"
+                                       value="{{ colValue }}"
+                                       data-default-value="{{ column.value|default("") }}"
+                                       placeholder="{{ column.placeholder|default("") }}"
+                                />
                             {% endswitch %}
                         </td>
                     {% endfor %}

@@ -31,6 +31,7 @@ import Sortable from "sortablejs";
 import IconCheckbox from "./editor/icon.checkbox";
 import IconDropdown from "./editor/icon.dropdown";
 import IconFile from "./editor/icon.file";
+import IconNumber from "./editor/icon.number";
 import IconPlus from "./editor/icon.plus";
 import IconRadio from "./editor/icon.radios";
 import IconText from "./editor/icon.text";
@@ -45,6 +46,7 @@ import {
 import { TableCheckboxEditor } from "./editor/table.input.checkbox";
 import { TableDropdownEditor } from "./editor/table.input.dropdown";
 import { TableFileEditor } from "./editor/table.input.file";
+import { TableNumberEditor } from "./editor/table.input.number";
 import { TableTextEditor } from "./editor/table.input.text";
 import { deleteColumn, moveColumn, updateColumn } from "./table.operations";
 
@@ -62,6 +64,7 @@ type ColumnType =
   | "select"
   | "radio"
   | "checkbox"
+  | "number"
   | "file";
 
 const FILE_COLUMN_DEFAULT_METADATA: TableColumnMetadata = {
@@ -70,6 +73,14 @@ const FILE_COLUMN_DEFAULT_METADATA: TableColumnMetadata = {
   fileKinds: ["image"],
   assetSourceId: null,
   uploadLocation: null,
+};
+
+const NUMBER_COLUMN_DEFAULT_METADATA: TableColumnMetadata = {
+  minLength: null,
+  maxLength: null,
+  decimalCount: 0,
+  step: 1,
+  minMaxValues: [null, null],
 };
 
 const getColumnForType = (
@@ -82,6 +93,17 @@ const getColumnForType = (
       type,
       metadata: {
         ...FILE_COLUMN_DEFAULT_METADATA,
+        ...(column.metadata || {}),
+      },
+    };
+  }
+
+  if (type === "number") {
+    return {
+      ...column,
+      type,
+      metadata: {
+        ...NUMBER_COLUMN_DEFAULT_METADATA,
         ...(column.metadata || {}),
       },
     };
@@ -100,6 +122,7 @@ const typeIcons: Record<ColumnType, ReactNode> = {
   select: <IconDropdown />,
   radio: <IconRadio />,
   checkbox: <IconCheckbox />,
+  number: <IconNumber />,
   file: <IconFile />,
 };
 
@@ -412,6 +435,10 @@ const renderCellEditor = (
     return (
       <TableFileEditor column={column} onUpdate={update} property={property} />
     );
+  }
+
+  if (column.type === "number") {
+    return <TableNumberEditor column={column} onUpdate={update} />;
   }
 
   return null;

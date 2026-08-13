@@ -60,6 +60,12 @@
                             <textarea placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %></textarea>
                         <% } else if (column.type === 'file') { %>
                             <input type="file" />
+                        <% } else if (column.type === 'number') { %>
+                            <input
+                                    type="number"
+                                    value="<%= column.value %>"
+                                    placeholder="<%= column.placeholder %>"
+                            />
                         <% } else { %>
                             <input
                                     type="text"

@@ -18,6 +18,18 @@ class TableTransformerTest extends TestCase
             ['label' => 'Col 2', 'value' => 'two', 'type' => 'checkbox', 'checked' => true],
             ['label' => 'Col 3', 'value' => 'three', 'type' => 'select', 'options' => ['one', 'two', 'three']],
             ['label' => 'Col 4', 'value' => '', 'type' => 'file', 'metadata' => ['fileCount' => 3, 'maxFileSizeKB' => 4096]],
+            [
+                'label' => 'Col 5',
+                'value' => '10.50',
+                'type' => 'number',
+                'metadata' => [
+                    'minLength' => 1,
+                    'maxLength' => 8,
+                    'decimalCount' => 2,
+                    'step' => 0.5,
+                    'minMaxValues' => [0, 100],
+                ],
+            ],
         ];
 
         $output = (new TableTransformer())->transform($value);
@@ -28,6 +40,18 @@ class TableTransformerTest extends TestCase
             ->add('Col 2', 'two', TableField::COLUMN_TYPE_CHECKBOX, checked: true)
             ->add('Col 3', 'three', TableField::COLUMN_TYPE_DROPDOWN, options: ['one', 'two', 'three'])
             ->add('Col 4', '', TableField::COLUMN_TYPE_FILE, metadata: ['fileCount' => 3, 'maxFileSizeKB' => 4096])
+            ->add(
+                'Col 5',
+                '10.50',
+                TableField::COLUMN_TYPE_NUMBER,
+                metadata: [
+                    'minLength' => 1,
+                    'maxLength' => 8,
+                    'decimalCount' => 2,
+                    'step' => 0.5,
+                    'minMaxValues' => [0, 100],
+                ],
+            )
         ;
 
         $this->assertEquals($expected, $output);
@@ -66,6 +90,19 @@ class TableTransformerTest extends TestCase
                     'fileKinds' => ['image'],
                     'assetSourceId' => 5,
                     'uploadLocation' => 'uploads/freeform',
+                ],
+            )
+            ->add(
+                'Col 5',
+                '10.50',
+                TableField::COLUMN_TYPE_NUMBER,
+                placeholder: 'Amount',
+                metadata: [
+                    'minLength' => 1,
+                    'maxLength' => 8,
+                    'decimalCount' => 2,
+                    'step' => 0.5,
+                    'minMaxValues' => [0, 100],
                 ],
             )
         ;
@@ -117,6 +154,22 @@ class TableTransformerTest extends TestCase
                     'fileKinds' => ['image'],
                     'assetSourceId' => 5,
                     'uploadLocation' => 'uploads/freeform',
+                ],
+            ],
+            [
+                'label' => 'Col 5',
+                'value' => '10.50',
+                'type' => 'number',
+                'placeholder' => 'Amount',
+                'options' => [],
+                'checked' => false,
+                'required' => false,
+                'metadata' => [
+                    'minLength' => 1,
+                    'maxLength' => 8,
+                    'decimalCount' => 2,
+                    'step' => 0.5,
+                    'minMaxValues' => [0, 100],
                 ],
             ],
         ];

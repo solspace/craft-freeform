@@ -27,6 +27,14 @@
 ### Added
 - Added compatibility for Craft 6.x.
 
+## 5.15.26 - 2026-08-13
+
+### Added
+- Added support for the **Number** field column type for **Table** fields.
+
+### Fixed
+- Fixed an issue where the **Formie** submission migration could skip additional sites in multi-site installs, with improved logging.
+
 ## 5.15.25 - 2026-08-12
 
 ### Security

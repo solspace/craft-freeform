@@ -110,8 +110,44 @@ label.required:after {
   border-radius: 0 5px 5px 5px;
 }
 
+.freeform-submission-table {
+  > table {
+    > tbody > tr > td {
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    > tbody > tr > td.textual {
+      min-width: 160px;
+    }
+  }
+
+  input.text,
+  textarea.text {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  td.table-cell-textarea {
+    height: 1px;
+
+    textarea {
+      height: 100%;
+      min-height: 104px !important;
+      overflow-y: auto !important;
+      resize: vertical !important;
+    }
+  }
+
+  td.action {
+    vertical-align: middle;
+  }
+}
+
 [data-field-type="table"] {
-  textarea {
+  textarea:not(.text) {
     min-height: 34px !important;
     overflow-y: auto !important;
     resize: vertical !important;

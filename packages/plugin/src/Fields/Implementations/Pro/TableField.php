@@ -51,6 +51,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public const COLUMN_TYPE_RADIO = 'radio';
     public const COLUMN_TYPE_TEXTAREA = 'textarea';
     public const COLUMN_TYPE_FILE = 'file';
+    public const COLUMN_TYPE_NUMBER = 'number';
 
     public const LIMIT_ROWS_NO_LIMIT = '';
     public const LIMIT_ROWS_MINIMUM = 'min';
@@ -75,6 +76,10 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             [
                 'value' => self::COLUMN_TYPE_TEXTAREA,
                 'label' => 'Textarea',
+            ],
+            [
+                'value' => self::COLUMN_TYPE_NUMBER,
+                'label' => 'Number',
             ],
             [
                 'value' => self::COLUMN_TYPE_CHECKBOX,
@@ -680,6 +685,32 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                         if ($fileCount > 1) {
                             $inputAttributes->replace('multiple', true);
                         }
+
+                        $output .= Html::tag('input', '', $inputAttributes->toHtmlTagArray());
+
+                        break;
+
+                    case self::COLUMN_TYPE_NUMBER:
+                        $metadata = \is_array($column->metadata ?? null) ? $column->metadata : [];
+                        $minMaxValues = \is_array($metadata['minMaxValues'] ?? null)
+                            ? $metadata['minMaxValues']
+                            : [null, null];
+                        $min = $minMaxValues[0] ?? null;
+                        $max = $minMaxValues[1] ?? null;
+                        $step = $metadata['step'] ?? 1;
+
+                        $inputAttributes = $attributes
+                            ->getInput()
+                            ->clone()
+                            ->replace('type', 'number')
+                            ->replace('name', $name)
+                            ->replace('value', $value)
+                            ->replace('placeholder', $column->placeholder)
+                            ->replace('min', $min)
+                            ->replace('max', $max)
+                            ->replace('step', $step)
+                            ->replace('data-default-value', $defaultValue)
+                        ;
 
                         $output .= Html::tag('input', '', $inputAttributes->toHtmlTagArray());
 

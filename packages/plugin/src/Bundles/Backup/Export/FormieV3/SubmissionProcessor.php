@@ -9,6 +9,8 @@ use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\FileUploadProcessor;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\TableProcessor;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use verbb\formie\elements\Form as FormieForm;
 use verbb\formie\elements\Submission as FormieSubmission;
 use verbb\formie\fields\FileUpload;
@@ -61,30 +63,34 @@ class SubmissionProcessor
             foreach ($formsToProcess as $dbForm) {
                 $formUid = $dbForm['uid'];
 
-                $hasElementQueryForm = false;
-                $elementQueryForm = null;
-                foreach ($elementUidToFormIdMap as $elementUid => $formId) {
-                    if ($formId == $dbForm['id']) {
-                        $hasElementQueryForm = true;
-                        $elementQueryForm = $formMap[$elementUid] ?? null;
+                try {
+                    $hasElementQueryForm = false;
+                    $elementQueryForm = null;
+                    foreach ($elementUidToFormIdMap as $elementUid => $formId) {
+                        if ($formId == $dbForm['id']) {
+                            $hasElementQueryForm = true;
+                            $elementQueryForm = $formMap[$elementUid] ?? null;
 
-                        break;
+                            break;
+                        }
                     }
-                }
 
-                $form = $elementQueryForm ?? null;
-                if (!$form) {
-                    $form = (object) [
-                        'id' => $dbForm['id'],
-                        'uid' => $formUid,
-                        'title' => 'Form '.$dbForm['id'],
-                    ];
-                }
+                    $form = $elementQueryForm ?? null;
+                    if (!$form) {
+                        $form = (object) [
+                            'id' => $dbForm['id'],
+                            'uid' => $formUid,
+                            'title' => 'Form '.$dbForm['id'],
+                        ];
+                    }
 
-                $submissions = FormieSubmission::find()->formId($form->id);
-                $submissionCount = $submissions->count();
+                    $submissions = FormieSubmission::find()->formId($form->id)->siteId('*');
+                    $submissionCount = $submissions->count();
 
-                if ($submissionCount > 0) {
+                    if (0 === $submissionCount) {
+                        continue;
+                    }
+
                     $formSubmissions = new FormSubmissions();
                     $formSubmissions->formUid = $elementQueryForm ? $elementQueryForm->uid : $form->uid;
 
@@ -117,6 +123,15 @@ class SubmissionProcessor
                                     $exported->{$handle} = $value;
                                 }
                             } catch (\Throwable $e) {
+                                Freeform::getInstance()->logger->getLogger(FreeformLogger::MIGRATION)->warning(
+                                    'Falling back to raw field values while migrating a Formie submission.',
+                                    [
+                                        'formId' => $form->id ?? null,
+                                        'submissionId' => $row->id ?? null,
+                                        'exception' => $e->getMessage(),
+                                    ]
+                                );
+
                                 $fieldValues = $row->getFieldValues();
                                 foreach ($fieldValues as $handle => $value) {
                                     $exported->{$handle} = $value;
@@ -128,10 +143,23 @@ class SubmissionProcessor
                     );
 
                     $collection->add($formSubmissions, $form->uid);
+                } catch (\Throwable $e) {
+                    Freeform::getInstance()->logger->getLogger(FreeformLogger::MIGRATION)->error(
+                        'Skipping a Formie form while migrating submissions.',
+                        [
+                            'formId' => $dbForm['id'] ?? null,
+                            'formUid' => $formUid,
+                            'exception' => $e->getMessage(),
+                        ]
+                    );
+
+                    continue;
                 }
             }
         } catch (\Throwable $e) {
-            return new FormSubmissionCollection();
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::MIGRATION)->error('Failed to collect Formie submissions for migration.', ['exception' => $e->getMessage()]);
+
+            throw $e;
         }
 
         return $collection;

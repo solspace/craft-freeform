@@ -12,7 +12,18 @@ import type { TableColumnMetadata } from "../table.types";
 import { FileKindOptionsContainer } from "./table.editor.styles";
 import type { TableEditorProps } from "./table.editor.types";
 
-const DEFAULTS: Required<TableColumnMetadata> = {
+type FileMetadata = Required<
+  Pick<
+    TableColumnMetadata,
+    | "fileCount"
+    | "maxFileSizeKB"
+    | "fileKinds"
+    | "assetSourceId"
+    | "uploadLocation"
+  >
+>;
+
+const DEFAULTS: FileMetadata = {
   fileCount: 1,
   maxFileSizeKB: 2048,
   fileKinds: ["image"],

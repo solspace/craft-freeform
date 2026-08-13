@@ -5,8 +5,7 @@ import BasePropertyEditor from './BasePropertyEditor';
 import { CheckboxProperty } from './PropertyItems';
 import TextProperty from './PropertyItems/TextProperty';
 
-import CompressIcon from '@ff/builder/assets/icons/compress-solid.svg';
-import ExpandIcon from '@ff/builder/assets/icons/expand-solid.svg';
+import { CompressIcon, ExpandIcon } from '@ff/builder/assets/icons/FullscreenIcons';
 
 import 'ace-builds';
 import AceEditor from 'react-ace';

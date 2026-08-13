@@ -1,11 +1,7 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
-
-const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
-  mode: isProd ? 'production' : 'development',
   target: ['web', 'es5'],
 
   entry: {
@@ -31,35 +27,10 @@ module.exports = {
         test: /\.css$/,
         use: ['style-loader', { loader: 'css-loader' }],
       },
-      {
-        test: /\.svg$/,
-        use: [
-          { loader: 'babel-loader' },
-          {
-            loader: 'react-svg-loader',
-            options: {
-              jsx: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/i,
-        use: [{ loader: 'url-loader' }],
-      },
-      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {
-        enforce: 'pre',
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'source-map-loader',
-      },
     ],
   },
 
-  plugins: [new NodePolyfillPlugin()],
-
-  devtool: isProd ? false : 'eval-source-map',
+  devtool: process.env.NODE_ENV === 'production' ? false : 'eval-source-map',
 
   resolve: {
     extensions: ['.js', '.jsx', '.styl'],
@@ -75,20 +46,21 @@ module.exports = {
         parallel: true,
         terserOptions: {
           compress: true,
-          ecma: 6,
+          ecma: 5,
           mangle: true,
         },
       }),
     ],
     splitChunks: {
+      chunks: 'initial',
       cacheGroups: {
         vendor: {
           test: /node_modules/,
-          chunks: 'initial',
           name: 'vendor',
           enforce: true,
         },
       },
     },
+    runtimeChunk: false,
   },
 };

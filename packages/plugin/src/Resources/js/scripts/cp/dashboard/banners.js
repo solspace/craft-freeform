@@ -1,1 +1,1 @@
-$((function(){$(".alert-dismissible a.close").on({click:function(t){var e=t.target.href,r=$(t.target).parents(".alert:first");return Craft.postActionRequest(e,{},(function(){return r.remove()})),t.stopPropagation(),t.preventDefault(),!1}})}));
+(()=>{$(()=>{$(".alert-dismissible a.close").on({click:t=>{let r=t.target.href,a=$(t.target).parents(".alert:first");return Craft.postActionRequest(r,{},()=>a.remove()),t.stopPropagation(),t.preventDefault(),!1}})});})();

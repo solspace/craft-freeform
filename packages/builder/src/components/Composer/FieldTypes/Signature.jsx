@@ -1,6 +1,6 @@
 import React from 'react';
 import HtmlInput from './HtmlInput';
-import SignatureImage from './assets/signature.svg';
+import SignatureImage from './assets/SignatureImage';
 
 export default class Signature extends HtmlInput {
   getClassName() {

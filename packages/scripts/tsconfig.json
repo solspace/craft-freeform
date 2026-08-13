@@ -5,12 +5,16 @@
     "module": "es6",
     "moduleResolution": "node",
     "target": "es5",
+    "lib": ["ES2018", "DOM"],
     "jsx": "react",
     "allowJs": true,
+    "esModuleInterop": true,
+    "types": [],
     "baseUrl": "./src",
     "paths": {
       "@lib/*": ["lib/*"],
-      "@components/*": ["components/*"],
+      "@components/*": ["components/*"]
     }
-  }
+  },
+  "include": ["src/**/*.js", "src/**/*.ts"]
 }

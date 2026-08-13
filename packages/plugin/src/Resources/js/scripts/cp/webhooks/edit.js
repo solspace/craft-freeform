@@ -1,1 +1,1 @@
-$((function(){$("#webhook-type").on({change:function(){var a=$(this).val().replace(/\\/g,"\\\\");$("div[data-class-settings]").addClass("hidden"),$('div[data-class-settings="'.concat(a,'"]')).removeClass("hidden")}})}));
+(()=>{$(()=>{$("#webhook-type").on({change:function(){let s=$(this).val().replace(/\\/g,"\\\\");$("div[data-class-settings]").addClass("hidden"),$(`div[data-class-settings="${s}"]`).removeClass("hidden")}})});})();

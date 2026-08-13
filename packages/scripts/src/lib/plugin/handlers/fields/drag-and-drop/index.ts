@@ -1,5 +1,3 @@
-import 'microtip/microtip.css';
-
 import type Freeform from '@components/front-end/plugin/freeform';
 import { EVENT_DND_ON_CHANGE, EVENT_ON_RESET } from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';

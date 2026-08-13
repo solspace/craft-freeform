@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.1.32 - 2026-08-13
+
+### Changed
+- Updated vulnerable front-end dependencies and modernized the asset-building process.
+
+### Security
+- Resolved a potential security vulnerability in frontend dependencies.
+
 ## 4.1.31 - 2026-02-05
 
 ### Added

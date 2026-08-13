@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.15.25 - 2026-08-12
+
+### Security
+- Updated `dompdf/dompdf` to the latest compatible version and removed support for `2.x`.
+- Updated dependencies to address security vulnerabilities.
+
 ## 5.15.24 - 2026-08-11
 
 ### Changed

@@ -50,6 +50,7 @@ class FreeformLogger
     public const ELEMENT_CONNECTION = 'Element Connection';
     public const PAYLOAD_FORWARDING = 'POST Forwarding';
     public const FEATURE_BUNDLES = 'bundles';
+    public const MIGRATION = 'Migration';
 
     private static array $colorMap = [
         self::FREEFORM => '#333333',
@@ -73,6 +74,7 @@ class FreeformLogger
         self::ELEMENT_CONNECTION => '#333333',
         self::PAYLOAD_FORWARDING => '#333333',
         self::FEATURE_BUNDLES => '#333333',
+        self::MIGRATION => '#333333',
     ];
 
     private static array $levelColorMap = [

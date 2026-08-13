@@ -19,6 +19,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\FormProcessor;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\SubmissionProcessor;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\Settings;
 use verbb\formie\elements\Form as FormieForm;
 
@@ -102,18 +103,9 @@ class FormieV3Exporter extends BaseExporter
 
             $preview->formSubmissions = $formSubmissions;
         } catch (\Throwable $e) {
-            // If there's an error, return empty collections
-            $preview->forms = new FormCollection();
-            $preview->integrations = new IntegrationCollection();
-            $preview->settings = false;
-            $preview->templates = (new TemplateCollection())
-                ->setPdf(new PdfTemplateCollection())
-                ->setWrapper(new WrapperTemplateCollection())
-                ->setNotification(new NotificationTemplateCollection())
-                ->setFormatting(new FileTemplateCollection())
-                ->setSuccess(new FileTemplateCollection())
-            ;
-            $preview->formSubmissions = [];
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::MIGRATION)->error('Failed to build the Formie migration preview.', ['exception' => $e->getMessage()]);
+
+            throw $e;
         }
 
         return $preview;

@@ -1,4 +1,9 @@
 export type TableColumnMetadata = {
+  minLength?: number | null;
+  maxLength?: number | null;
+  decimalCount?: number | null;
+  step?: number | null;
+  minMaxValues?: [number | null, number | null];
   fileCount?: number;
   maxFileSizeKB?: number;
   fileKinds?: string[];

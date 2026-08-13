@@ -189,6 +189,7 @@ class TableProcessor extends AbstractFieldProcessor
             'dropdown', 'select' => TableField::COLUMN_TYPE_DROPDOWN,
             'checkbox' => TableField::COLUMN_TYPE_CHECKBOX,
             'radio', 'radios' => TableField::COLUMN_TYPE_RADIO,
+            'number', 'numeric' => TableField::COLUMN_TYPE_NUMBER,
             'textarea', 'multiline', 'multi-line', 'multi_line' => TableField::COLUMN_TYPE_TEXTAREA,
             default => TableField::COLUMN_TYPE_STRING,
         };

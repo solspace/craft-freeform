@@ -11,6 +11,10 @@ use Solspace\Freeform\Services\Headless\Profile\HeadlessProfile;
 
 class HeadlessResponseHelper
 {
+    public function __construct(
+        private HeadlessStateService $stateService,
+    ) {}
+
     public function applyNoStore(Response $response): void
     {
         $response->headers->set('Cache-Control', 'no-store');
@@ -78,7 +82,7 @@ class HeadlessResponseHelper
         $formsService = Freeform::getInstance()->forms;
         $returnUrl = $formsService->getReturnUrl($form);
 
-        $includeState = $draftSaved || SaveFormsHelper::isLoaded($form);
+        $includeState = $form->isMultiPage() || $draftSaved || SaveFormsHelper::isLoaded($form);
 
         return [
             'success' => $draftSaved || ($form->isValid() && [] === $form->getActions()),
@@ -98,11 +102,29 @@ class HeadlessResponseHelper
             'state' => $includeState ? [
                 'values' => $this->collectFieldValues($form),
                 'pageIndex' => $form->getCurrentPageIndex(),
+                'token' => $this->stateService->issue($form),
             ] : null,
             'draft' => $draft,
             'errors' => [
                 'fields' => $fieldErrors,
                 'form' => $formErrors,
+                'page' => [],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function contextError(string $status, string $message): array
+    {
+        return [
+            'success' => false,
+            'status' => $status,
+            'complete' => false,
+            'errors' => [
+                'fields' => [],
+                'form' => [$message],
                 'page' => [],
             ],
         ];

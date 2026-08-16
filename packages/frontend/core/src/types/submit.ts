@@ -63,6 +63,7 @@ export type SubmitResponse = {
   state?: {
     values?: Record<string, unknown>;
     pageIndex?: number;
+    token?: string | null;
   } | null;
   draft?: {
     token: string;

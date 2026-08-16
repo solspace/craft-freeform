@@ -18,6 +18,7 @@ export declare class FormState {
     pageErrors: string[];
     draftToken: string | null;
     draftKey: string | null;
+    stateToken: string | null;
     private visibility;
     constructor(options: FormStateOptions);
     setValue(handle: string, value: FieldValue): void;

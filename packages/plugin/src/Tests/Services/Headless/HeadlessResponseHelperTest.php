@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\Headless\HeadlessResponseHelper;
+use Solspace\Freeform\Services\Headless\HeadlessStateService;
 use Solspace\Freeform\Services\Headless\Profile\HeadlessProfile;
 
 #[CoversClass(HeadlessResponseHelper::class)]
@@ -19,7 +20,9 @@ class HeadlessResponseHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->helper = new HeadlessResponseHelper();
+        $this->helper = new HeadlessResponseHelper(
+            $this->createMock(HeadlessStateService::class),
+        );
         $this->previousYiiApp = \Yii::$app;
         \Yii::$app = new class {
             public string $charset = 'UTF-8';

@@ -74,7 +74,7 @@ class ManifestService
      */
     private function buildBaseManifest(Form $form, array $endpointMeta): array
     {
-        $csrfRequired = \Craft::$app->getRequest()->enableCsrfValidation;
+        $csrfRequired = \Craft::$app->getConfig()->getGeneral()->enableCsrfProtection;
         $fieldsByHandle = $this->layoutSerializer->collectFieldHandles($form);
         $serializedFields = $this->fieldSerializer->serialize($form, $fieldsByHandle);
         $behavior = $form->getSettings()->getBehavior();

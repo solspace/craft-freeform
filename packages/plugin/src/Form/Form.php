@@ -1158,7 +1158,9 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
         if ($this->isGraphQLPosted() || $this->isHeadlessPosted()) {
             if ($this->isHeadlessPosted()) {
-                $currentPageFields = iterator_to_array($this->getCurrentPage()->getFields());
+                $currentPageFields = 'submit' === $this->getProperties()->get('headlessIntent')
+                    ? iterator_to_array($this->getLayout()->getFields())
+                    : iterator_to_array($this->getCurrentPage()->getFields());
             } else {
                 $currentPageFields = [];
                 foreach ($this->getLayout()->getFields() as $field) {

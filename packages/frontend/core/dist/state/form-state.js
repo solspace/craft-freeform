@@ -10,6 +10,7 @@ export class FormState {
     pageErrors = [];
     draftToken = null;
     draftKey = null;
+    stateToken = null;
     visibility;
     constructor(options) {
         this.manifest = options.manifest;
@@ -39,6 +40,9 @@ export class FormState {
         if (this.draftKey) {
             context.draftKey = this.draftKey;
         }
+        if (this.stateToken) {
+            context.stateToken = this.stateToken;
+        }
         return context;
     }
     applySubmitResponse(response) {
@@ -64,6 +68,9 @@ export class FormState {
         }
         if (response.state?.pageIndex !== undefined) {
             this.setPageIndex(response.state.pageIndex);
+        }
+        if (response.state?.token !== undefined) {
+            this.stateToken = response.state.token;
         }
     }
     isFieldVisible(handle) {

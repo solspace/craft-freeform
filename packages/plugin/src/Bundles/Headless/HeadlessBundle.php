@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\Headless\HeadlessAccessService;
 use Solspace\Freeform\Services\Headless\HeadlessDraftService;
 use Solspace\Freeform\Services\Headless\HeadlessResponseHelper;
+use Solspace\Freeform\Services\Headless\HeadlessStateService;
 use Solspace\Freeform\Services\Headless\HeadlessSubmitService;
 use Solspace\Freeform\Services\Headless\Manifest\FormSecuritySerializer;
 use Solspace\Freeform\Services\Headless\Manifest\ManifestConditionalSerializer;
@@ -44,6 +45,7 @@ class HeadlessBundle extends FeatureBundle
         $container->setSingleton(ManifestConditionalSerializer::class);
         $container->setSingleton(ManifestService::class);
         $container->setSingleton(HeadlessDraftService::class);
+        $container->setSingleton(HeadlessStateService::class);
         $container->setSingleton(HeadlessSubmitService::class);
         $container->setSingleton(HeadlessRequestContext::class);
     }

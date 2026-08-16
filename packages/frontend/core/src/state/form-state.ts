@@ -40,6 +40,8 @@ export class FormState {
 
   draftKey: string | null = null;
 
+  stateToken: string | null = null;
+
   private visibility: VisibilityState;
 
   constructor(options: FormStateOptions) {
@@ -74,6 +76,9 @@ export class FormState {
     if (this.draftKey) {
       context.draftKey = this.draftKey;
     }
+    if (this.stateToken) {
+      context.stateToken = this.stateToken;
+    }
     return context;
   }
 
@@ -104,6 +109,9 @@ export class FormState {
 
     if (response.state?.pageIndex !== undefined) {
       this.setPageIndex(response.state.pageIndex);
+    }
+    if (response.state?.token !== undefined) {
+      this.stateToken = response.state.token;
     }
   }
 

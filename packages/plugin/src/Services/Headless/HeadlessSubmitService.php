@@ -15,6 +15,7 @@ class HeadlessSubmitService
         private MultipartRequestParser $multipartParser,
         private HeadlessResponseHelper $responseHelper,
         private HeadlessDraftService $draftService,
+        private HeadlessStateService $stateService,
     ) {}
 
     /**
@@ -48,6 +49,25 @@ class HeadlessSubmitService
         $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];
         $context = \is_array($payload['context'] ?? null) ? $payload['context'] : [];
         $context = $this->draftService->normalizeContext($context);
+
+        $stateToken = $context['stateToken'] ?? null;
+        $hasStateToken = \is_string($stateToken) && '' !== $stateToken;
+        $stateIsValid = $this->stateService->restore(
+            $form,
+            $hasStateToken ? $stateToken : null,
+        );
+        if ($form->isMultiPage() && $hasStateToken && !$stateIsValid) {
+            return $this->responseHelper->contextError(
+                'context_invalid',
+                'Your form session has expired. Please start again.',
+            );
+        }
+        if ($form->isMultiPage() && !$hasStateToken && \in_array($intent, ['back', 'submit'], true)) {
+            return $this->responseHelper->contextError(
+                'context_required',
+                'Your form session is missing. Please start again.',
+            );
+        }
 
         $form->registerContext($context);
         $form->getProperties()->set('headlessPayload', $payload);
@@ -116,7 +136,7 @@ class HeadlessSubmitService
      */
     private function validateCsrf(Request $request, array $payload): void
     {
-        if (!$request->enableCsrfValidation) {
+        if (!\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
             return;
         }
 

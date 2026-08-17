@@ -20,6 +20,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Services\FilesService;
@@ -175,6 +176,29 @@ class ManifestFieldSerializer
                     '/freeform/api/forms/%s/payments/stripe/checkpoint',
                     $form->getHandle(),
                 ),
+            ];
+        }
+
+        if ($field instanceof SquareField) {
+            $integration = $field->getIntegration();
+
+            return [
+                // Public Web Payments SDK identifiers plus an opaque Freeform
+                // integration hash. Square access tokens remain server-only.
+                'applicationId' => $integration?->getApplicationId(),
+                'locationId' => $integration?->getLocationId(),
+                'sandbox' => $integration?->isUseSandbox(),
+                'integration' => HashHelper::hash([
+                    $form->getId(),
+                    $integration?->getId() ?? 0,
+                    $field->getId(),
+                ]),
+                'amountType' => $field->getAmountType(),
+                'amountField' => $field->getAmountField()?->getHandle(),
+                'currency' => $field->getCurrency(),
+                'paymentUrl' => '/freeform/payments/square/payments',
+                'redirectSuccess' => $field->getRedirectSuccess(),
+                'redirectFailed' => $field->getRedirectFailed(),
             ];
         }
 

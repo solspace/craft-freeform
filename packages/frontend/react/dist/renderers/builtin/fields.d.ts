@@ -20,6 +20,7 @@ export declare function CardsFieldRenderer(props: ReactFieldRendererProps): impo
 export declare function FileFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 export declare function FileDndFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 export declare function StripePaymentFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
+export declare function SquarePaymentFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;
 export declare function HtmlFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
 export declare function ImageFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element | null;
 export declare function DatetimeFieldRenderer(props: ReactFieldRendererProps): import("react").JSX.Element;

@@ -33,6 +33,7 @@ import {
   RatingFieldRenderer,
   RegexFieldRenderer,
   SelectFieldRenderer,
+  SquarePaymentFieldRenderer,
   StripePaymentFieldRenderer,
   TextareaFieldRenderer,
   TextFieldRenderer,
@@ -220,6 +221,7 @@ export const builtinRenderers = {
     signature: SignatureFieldRenderer,
     calculation: CalculationFieldRenderer,
     "payment.stripe": StripePaymentFieldRenderer,
+    "payment.square": SquarePaymentFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
   types: {
     text: TextFieldRenderer,
@@ -254,6 +256,7 @@ export const builtinRenderers = {
     signature: SignatureFieldRenderer,
     calculation: CalculationFieldRenderer,
     stripe: StripePaymentFieldRenderer,
+    square: SquarePaymentFieldRenderer,
     _unsupported: UnsupportedFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
 };

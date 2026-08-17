@@ -40,4 +40,29 @@ class ManifestExtensionResolverTest extends TestCase
             ])
         );
     }
+
+    public function testSquareUsesThePaymentSquareRendererAndExtension(): void
+    {
+        self::assertSame('payment.square', $this->resolver->resolveRenderer('square'));
+        self::assertSame('payment.square', $this->resolver->resolveExtension('square'));
+    }
+
+    public function testSquareExtensionIsRequired(): void
+    {
+        self::assertSame(
+            [[
+                'name' => 'payment.square',
+                'package' => '@solspace/freeform-extensions',
+                'version' => '^0.1.0',
+                'severity' => 'error',
+                'fallback' => null,
+            ]],
+            $this->resolver->resolveRequiredExtensions([
+                'payment' => [
+                    'type' => 'square',
+                    'frontend' => ['extension' => 'payment.square'],
+                ],
+            ])
+        );
+    }
 }

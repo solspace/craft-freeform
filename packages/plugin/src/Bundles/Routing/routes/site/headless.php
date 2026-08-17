@@ -3,6 +3,7 @@
 return [
     'freeform/api/forms/<handle:[\w\-]+>/manifest' => 'freeform/api/headless/manifest/get',
     'freeform/api/forms/<handle:[\w\-]+>/submit' => 'freeform/api/headless/submit/post',
+    'freeform/api/forms/<handle:[\w\-]+>/payments/stripe/checkpoint' => 'freeform/api/headless/stripe-payment/checkpoint',
     'freeform/api/forms/<handle:[\w\-]+>/files/<fieldHandle:[\w\-]+>' => 'freeform/api/headless/file-upload/upload',
     'freeform/api/forms/<handle:[\w\-]+>/files/<fieldHandle:[\w\-]+>/delete' => 'freeform/api/headless/file-upload/delete',
     'freeform/api/manifests/<profile:[\w\-]+>/manifest' => 'freeform/api/headless/profile-manifest/get',

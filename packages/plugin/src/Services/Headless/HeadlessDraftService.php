@@ -95,6 +95,34 @@ class HeadlessDraftService
     }
 
     /**
+     * Store a form checkpoint encrypted with the Stripe PaymentIntent client
+     * secret. StripeCallbackService already knows how to resume this format.
+     */
+    public function savePaymentCheckpoint(Form $form, string $paymentIntentId, string $clientSecret): bool
+    {
+        if ($form->isMarkedAsSpam() || '' === $paymentIntentId || '' === $clientSecret) {
+            return false;
+        }
+
+        $bag = new SessionBag($form->getId(), $form->getProperties()->toArray(), $form->getAttributes()->toArray());
+        $serialized = json_encode($bag);
+        $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $clientSecret));
+
+        $record = SavedFormRecord::findOne([
+            'token' => $paymentIntentId,
+            'formId' => $form->getId(),
+        ]) ?? new SavedFormRecord();
+
+        $record->formId = $form->getId();
+        $record->token = $paymentIntentId;
+        \Craft::$app->session->open();
+        $record->sessionId = \Craft::$app->getSession()->getId();
+        $record->payload = $payload;
+
+        return $record->save();
+    }
+
+    /**
      * Map headless draftToken/draftKey onto classic savedSession for LoadSavedForm.
      *
      * @param array<string, mixed> $context

@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-extensions",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Official Freeform headless extensions for captchas and advanced field behavior",
   "private": false,
   "type": "module",
@@ -47,6 +47,7 @@
   "license": "MIT",
   "dependencies": {
     "@friendlycaptcha/sdk": "^0.1.37",
+    "@stripe/stripe-js": "^8.11.0",
     "expression-language": "^2.5.4"
   },
   "publishConfig": {

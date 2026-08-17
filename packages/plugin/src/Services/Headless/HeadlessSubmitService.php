@@ -40,6 +40,7 @@ class HeadlessSubmitService
         Request $request,
         array $payload,
         bool $validateCsrf = true,
+        bool $persistSubmission = true,
     ): array {
         if ($validateCsrf) {
             $this->validateCsrf($request, $payload);
@@ -89,7 +90,7 @@ class HeadlessSubmitService
             && $form->isFinished()
             && 'submit' === $intent;
 
-        if ($shouldSubmit) {
+        if ($shouldSubmit && $persistSubmission) {
             Freeform::getInstance()->submissions->handleSubmission($form);
             $form->reset();
         }
@@ -102,6 +103,26 @@ class HeadlessSubmitService
         $form->persistState();
 
         return $this->responseHelper->buildSubmitResponse($form, $intent, draft: $draft);
+    }
+
+    /**
+     * Validate a final submission without persisting it. Payment checkpoints use
+     * this to save the exact validated form state before Stripe confirmation.
+     *
+     * @return array<string, mixed>
+     */
+    public function validateForPayment(Form $form, Request $request): array
+    {
+        $payload = $this->parseRequestPayload($request);
+        $payload['intent'] = 'submit';
+
+        return $this->submitWithPayload(
+            $form,
+            $request,
+            $payload,
+            validateCsrf: true,
+            persistSubmission: false,
+        );
     }
 
     /**

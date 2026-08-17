@@ -15,6 +15,7 @@ class ManifestExtensionResolver
         FieldInterface::TYPE_RATING => 'rating',
         FieldInterface::TYPE_CARDS => 'cards',
         FieldInterface::TYPE_CALCULATION => 'calculation',
+        'stripe' => 'payment.stripe',
     ];
 
     public function resolveRenderer(string $type): string
@@ -27,6 +28,7 @@ class ManifestExtensionResolver
             FieldInterface::TYPE_FILE_DRAG_AND_DROP => 'file-dnd',
             FieldInterface::TYPE_RICH_TEXT => 'rich-text',
             FieldInterface::TYPE_HTML => 'html',
+            'stripe' => 'payment.stripe',
             default => $type,
         };
     }
@@ -53,8 +55,8 @@ class ManifestExtensionResolver
             $extensions[$extension] = [
                 'name' => $extension,
                 'package' => '@solspace/freeform-extensions',
-                'version' => '^5.0.0',
-                'severity' => FieldInterface::TYPE_CALCULATION === ($field['type'] ?? '') ? 'error' : 'warning',
+                'version' => 'payment.stripe' === $extension ? '^0.1.0' : '^5.0.0',
+                'severity' => \in_array($field['type'] ?? '', [FieldInterface::TYPE_CALCULATION, 'stripe'], true) ? 'error' : 'warning',
                 'fallback' => FieldInterface::TYPE_FILE === ($field['type'] ?? '') ? 'native' : null,
             ];
         }

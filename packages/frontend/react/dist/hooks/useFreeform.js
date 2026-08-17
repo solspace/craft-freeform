@@ -215,6 +215,7 @@ export function useFreeform(options) {
                 intent,
                 values,
                 meta: securityMeta,
+                context: formState.getSubmitContext(),
             });
             const result = await getClient().submit({
                 manifest,
@@ -250,6 +251,30 @@ export function useFreeform(options) {
                 options.onError?.(result);
             }
             return result;
+        }
+        catch (error) {
+            // Stripe (and other payment extensions) may redirect away after a
+            // successful local confirmation. That is not a form failure.
+            if (error instanceof Error &&
+                error.name === "StripePaymentRedirectError") {
+                return undefined;
+            }
+            const message = error instanceof Error
+                ? error.message
+                : "Something went wrong while submitting the form.";
+            if (formState) {
+                formState.formErrors = [message];
+                formState.fieldErrors = {};
+                formState.pageErrors = [];
+                syncFromFormState();
+            }
+            options.onError?.({
+                success: false,
+                status: "error",
+                complete: false,
+                errors: { fields: {}, form: [message], page: [] },
+            });
+            return undefined;
         }
         finally {
             setIsSubmitting(false);
@@ -347,6 +372,7 @@ export function useFreeform(options) {
                         formStateRef.current?.setValue(handle, value);
                         syncFromFormState();
                     },
+                    getValues: () => (formStateRef.current?.getValuesForSubmit() ?? {}),
                     baseUrl: options.baseUrl,
                 });
                 if (cancelled) {

@@ -12,6 +12,10 @@ export {
   fileDndExtension,
 } from "./file-dnd/index.js";
 export {
+  createStripePaymentExtension,
+  stripePaymentExtension,
+} from "./payments/stripe/index.js";
+export {
   createSignatureExtension,
   signatureExtension,
   supportsSignature,
@@ -27,6 +31,7 @@ import { calculationExtension } from "./calculation/index.js";
 import { captchaExtensions } from "./captchas/index.js";
 import { datetimeExtension } from "./datetime/index.js";
 import { fileDndExtension } from "./file-dnd/index.js";
+import { stripePaymentExtension } from "./payments/stripe/index.js";
 import { signatureExtension } from "./signature/index.js";
 import { tableExtension } from "./table/index.js";
 
@@ -39,6 +44,7 @@ export const recommendedExtensions: FreeformExtension[] = [
   fileDndExtension,
   tableExtension,
   signatureExtension,
+  stripePaymentExtension,
 ];
 
 export default captchaExtensions;

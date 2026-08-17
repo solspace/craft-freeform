@@ -3,7 +3,11 @@ import type {
   ManifestCaptchaSecurity,
   SubmitIntent,
 } from "../types/manifest.js";
-import type { SubmitMeta, SubmitResponse } from "../types/submit.js";
+import type {
+  SubmitContext,
+  SubmitMeta,
+  SubmitResponse,
+} from "../types/submit.js";
 
 export type ExtensionSeverity = "error" | "warning";
 
@@ -35,6 +39,7 @@ export type ExtensionSubmitContext = {
   intent: SubmitIntent;
   values: Record<string, unknown>;
   meta: SubmitMeta;
+  context?: SubmitContext;
 };
 
 export type ExtensionPayloadContext = ExtensionSubmitContext & {
@@ -60,6 +65,8 @@ export type FieldMountContext = {
   element: HTMLElement;
   value: unknown;
   setValue: (value: unknown) => void;
+  /** Current form values — used by payment extensions for dynamic amounts */
+  getValues?: () => Record<string, unknown>;
   /** Craft / Freeform origin used to resolve relative API URLs */
   baseUrl?: string;
 };

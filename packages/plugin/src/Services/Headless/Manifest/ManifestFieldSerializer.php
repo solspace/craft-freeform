@@ -20,6 +20,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Services\FilesService;
 
 class ManifestFieldSerializer
@@ -139,6 +141,40 @@ class ManifestFieldSerializer
                 'calculations' => $field->getCalculations(),
                 'decimalCount' => $field->getDecimalCount(),
                 'inputType' => $field->getInputType(),
+            ];
+        }
+
+        if ($field instanceof StripeField) {
+            $integration = $field->getIntegration();
+            $amountFields = array_filter([
+                $field->getAmountField()?->getHandle(),
+                $field->getIntervalField()?->getHandle(),
+                $field->getIntervalCountField()?->getHandle(),
+            ]);
+
+            return [
+                // This opaque hash identifies the form, integration, and field to
+                // the existing Stripe intent endpoints. It contains no secret key.
+                'integration' => HashHelper::hash([
+                    $form->getId(),
+                    $integration?->getId() ?? 0,
+                    $field->getId(),
+                ]),
+                'publishableKey' => $integration?->getPublicKey(),
+                'site' => \Craft::$app->getSites()->getCurrentSite()->handle,
+                'paymentType' => $field->getPaymentType(),
+                'amountType' => $field->getAmountType(),
+                'amountFields' => array_values($amountFields),
+                'currency' => $field->getCurrency(),
+                'layout' => $field->getLayout(),
+                'theme' => $field->getTheme(),
+                'floatingLabels' => $field->isFloatingLabels(),
+                'intentUrl' => '/freeform/payments/stripe/payment-intents',
+                'amountUrlTemplate' => '/freeform/payments/stripe/payment-intents/{paymentIntentId}/amount',
+                'checkpointUrl' => \sprintf(
+                    '/freeform/api/forms/%s/payments/stripe/checkpoint',
+                    $form->getHandle(),
+                ),
             ];
         }
 

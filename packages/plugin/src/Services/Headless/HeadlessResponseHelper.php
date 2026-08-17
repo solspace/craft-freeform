@@ -66,7 +66,10 @@ class HeadlessResponseHelper
         $fieldErrors = $this->collectFieldErrors($form);
         $formErrors = array_values($form->getErrors());
         $hasErrors = [] !== $fieldErrors || [] !== $formErrors || [] !== $form->getActions();
-        $isComplete = $form->isFinished() && $form->isValid() && !$hasErrors && 'submit' === $intent;
+        // Allow `next` when the form is already finished (Submit Form Early /
+        // last-page finish via next). Unfinished next stays page_valid below.
+        $isFinalizingIntent = \in_array($intent, ['submit', 'next'], true);
+        $isComplete = $form->isFinished() && $form->isValid() && !$hasErrors && $isFinalizingIntent;
         $draftSaved = 'saveDraft' === $intent && null !== $draft;
 
         $status = match (true) {

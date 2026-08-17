@@ -83,12 +83,15 @@ class HeadlessSubmitService
         );
 
         $requestHandled = $form->handleRequest($request);
+        // Multipage "Submit Form Early" rules finish the form during a `next`
+        // intent (page jump -999). Persist only when finished — normal `next`
+        // advances never set finished, so existing multipage flows are unchanged.
         $shouldSubmit = $requestHandled
             && $form->isFormPosted()
             && $form->isValid()
             && !$form->getActions()
             && $form->isFinished()
-            && 'submit' === $intent;
+            && $this->isFinalizingIntent($intent);
 
         if ($shouldSubmit && $persistSubmission) {
             Freeform::getInstance()->submissions->handleSubmission($form);
@@ -197,5 +200,15 @@ class HeadlessSubmitService
             default:
                 throw new BadRequestHttpException(\sprintf('Unsupported submit intent "%s".', $intent));
         }
+    }
+
+    /**
+     * Intents that may create a submission once the form is marked finished.
+     * `next` is included so multipage "Submit Form Early" rules can finalize
+     * after a page-jump finish; unfinished `next` requests never reach this path.
+     */
+    private function isFinalizingIntent(string $intent): bool
+    {
+        return \in_array($intent, ['submit', 'next'], true);
     }
 }

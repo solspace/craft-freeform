@@ -86,10 +86,11 @@
 
         {{ forms.selectField({
             label: "Frequency"|t('freeform'),
-            instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning."|t('freeform'),
+            instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. Custom schedules are evaluated in the site timezone."|t('freeform'),
+            id: 'frequency',
             name: "frequency",
             value: notification.frequency,
-            errors: notification.getErrors("freequency"),
+            errors: notification.getErrors("frequency"),
             required: true,
             options: {
                 "-1": 'Daily'|t('freeform'),
@@ -100,8 +101,21 @@
                 "4": 'Weekly on Thursdays'|t('freeform'),
                 "5": 'Weekly on Fridays'|t('freeform'),
                 "6": 'Weekly on Saturdays'|t('freeform'),
+                "custom": 'Custom Cron Schedule'|t('freeform'),
             },
         })}}
+
+        <div id="cron-expression-field"{% if notification.frequency != 'custom' %} class="hidden"{% endif %}>
+            {{ forms.textField({
+                label: "Cron Expression"|t('freeform'),
+                instructions: "Enter a standard five-part cron expression (minute, hour, day of month, month, day of week). Examples: `0 0 1 * *` runs monthly on the 1st, `0 0 15 * *` runs monthly on the 15th, and `0 0 1,15 * *` runs on both. For reliable delivery, configure your server to run `php craft freeform/export-notifications/run` every minute. Use <a href='https://crontab.guru/' target='_blank' rel='noopener'>Crontab.guru</a> to build and check an expression."|t('freeform')|raw,
+                id: 'cronExpression',
+                name: 'cronExpression',
+                value: notification.cronExpression,
+                errors: notification.getErrors('cronExpression'),
+                required: notification.frequency == 'custom',
+            }) }}
+        </div>
 
         {{ forms.textareaField({
             label: "Emails to Notify"|t('freeform'),
@@ -148,3 +162,16 @@
     {% endif %}
 
 {% endblock %}
+
+{% js %}
+    const frequency = document.getElementById('frequency');
+    const cronExpression = document.getElementById('cronExpression');
+    const cronExpressionField = document.getElementById('cron-expression-field');
+
+    if (frequency && cronExpression && cronExpressionField) {
+        frequency.addEventListener('change', () => {
+            cronExpression.required = frequency.value === 'custom';
+            cronExpressionField.classList.toggle('hidden', frequency.value !== 'custom');
+        });
+    }
+{% endjs %}

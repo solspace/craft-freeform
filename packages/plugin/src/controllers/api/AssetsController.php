@@ -59,6 +59,8 @@ class AssetsController extends BaseApiController
 
     protected function get(): array
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
         $ids = $this->request->get('ids');
         if ($ids) {
             $ids = explode(',', $ids);

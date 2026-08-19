@@ -768,7 +768,7 @@
 ## 5.11.6 - 2025-07-18
 
 ### Changed
-- Refined the integration settings page and OAuth flow for a smoother setup experience and comaptibility with `sameSite` strict session cookies.
+- Refined the integration settings page and OAuth flow for a smoother setup experience and compatibility with `sameSite` strict session cookies.
 - Improved performance of submission queries across the control panel and front end.
 - Updated the Archived Forms list to support permanent deletion of forms.
 
@@ -2071,7 +2071,7 @@
 - Fixed a bug where reCAPTCHA would conflict with forms using Stripe Payments.
 - Fixed a bug where mapping a field with a handle of `name` would break the Stripe integration.
 - Fixed a bug where running the migration from Freeform 3.x could trigger a `Base table or view already exists` error.
-- Fixed some Safari browser stying issues with the horizontal scrollbar for page tabs.
+- Fixed some Safari browser styling issues with the horizontal scrollbar for page tabs.
 
 ## 5.1.6 - 2024-03-20
 
@@ -2548,7 +2548,7 @@
 ### Added
 - Verified support for Craft 4.14.x.
 
-### Changes
+### Changed
 - Updated the plugin icon.
 - Updated some internal dependencies to prevent security warnings.
 
@@ -4374,7 +4374,7 @@
 
 ### Fixed
 - Fixed a bug where submissions that are flagged as spam would not keep the attached file(s) submitted with it.
-- Fixed an incompatiblity issue with the Scout plugin and potentially other plugins.
+- Fixed an incompatibility issue with the Scout plugin and potentially other plugins.
 - Fixed several IE 11 compatibility bugs with special field types.
 
 ## 3.4.1 - 2019-09-16
@@ -4470,7 +4470,7 @@
 - Fixed a bug where some settings-related migrations might error for some users.
 - Fixed a bug where exporting with Firefox would not include file extensions for all data types.
 - Fixed a bug where Credit Card fields were not working correctly in IE 11.
-- Fixed a bug where the email notification template subject was encoding quotes, apostropies, etc.
+- Fixed a bug where the email notification template subject was encoding quotes, apostrophes, etc.
 - Fixed a bug where Mailing List fields were missing their icon in Composer.
 
 ## 3.2.2 - 2019-07-17

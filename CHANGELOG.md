@@ -728,7 +728,7 @@
 
 ### Fixed
 - Fixed an issue where _Element_ integration field mapping didn't account for multiple instances of the same field.
-
+- Refined the integration settings page and OAuth flow for a smoother setup experience and compatibility with `sameSite` strict session cookies.
 ## 5.11.10 - 2025-08-14
 
 ### Fixed

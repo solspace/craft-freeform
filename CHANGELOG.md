@@ -4430,7 +4430,7 @@
 
 ### Changed
 - Updated the Stripe Payments integration to support [Strong Customer Authentication (SCA)](https://stripe.com/docs/strong-customer-authentication) changes to the Stripe API. The new EU rule comes into effect on September 14, 2019, so any site based in the EU or accepting payments from EU customers will be affected and need to update to Freeform 3.3+ in order to prevent payments from being declined. Due to some limitations with the API and making things work with Freeform, there are some new limitations that may be breaking changes to your form and/or form flow. Please refer to the [Freeform Payments documentation](https://docs.solspace.com/craft/freeform/v3/integrations/stripe-payments/#strong-customer-authentication-sca) for more information.
-
+- Fixed a bug where the email notification template subject was encoding quotes, apostrophes, etc.
 ### Fixed
 - Fixed a bug where the Honeypot input field contained the "aria-hidden" attribute twice.
 

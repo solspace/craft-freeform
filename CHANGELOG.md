@@ -2031,7 +2031,7 @@
 ## 5.1.9 - 2024-04-03
 
 ### Added
-- Added an updated **Dotdigital** email marketing integration.
+- Fixed some Safari browser styling issues with the horizontal scrollbar for page tabs.
 - Added an `EVENT_UPDATE_PAYMENT_METADATA` developer event for modifying Stripe metadata.
 
 ### Changed

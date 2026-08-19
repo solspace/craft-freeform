@@ -4334,7 +4334,7 @@
 - Fixed a bug where allowing spam submissions would error if the email notification template uses a layout.
 - Fixed a bug where the multi-page form `currentPage` property was resetting to `0` if page reloaded due to error, etc.
 - Fixed a bug where the CP individual submission page was not showing/hiding fields based on Conditional Rules.
-- Fixed a bug where the CP individual submission page was showing and validating reCAPTCHA.
+- Fixed an incompatibility issue with the Scout plugin and potentially other plugins.
 - Fixed a bug where field options populated by Entries that are of a Structure type could not be sorted by their correct hierarchy.
 - Fixed a bug where setting an incorrect IP address field value for the HubSpot integration would not log an error to the log.
 

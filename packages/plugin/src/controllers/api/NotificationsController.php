@@ -19,9 +19,11 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvid
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -48,6 +50,8 @@ class NotificationsController extends BaseApiController
 
     public function actionGetOneTemplate(mixed $id = null): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+
         $record = NotificationTemplateRecord::createFormSpecific();
         if (null === $id) {
             $record->name = 'Notification';

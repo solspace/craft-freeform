@@ -1910,7 +1910,7 @@ return [
     'Webhook Secret' => 'Webhook-Geheimnis',
     'Enter your Stripe webhook secret here.' => 'Geben Sie hier Ihr Stripe-Webhook-Geheimnis ein.',
     'Payment Configuration ID' => 'Zahlungskonfigurations-ID',
-    'To use a Stripe payment configuration other than the Default, enter its ID here.' => 'Geben Sie hier die ID einer Stripe-Zahlungskonfiguration ein, wenn Sie nicht die Standardkonfiguration verwenden möchten.',
+    'To use a Stripe payment configuration other than the Default, enter its ID here. This applies to one-time payments only. Stripe subscriptions do not support payment method configurations and will always use your Stripe account default.' => 'Geben Sie hier die ID einer Stripe-Zahlungskonfiguration ein, wenn Sie nicht die Standardkonfiguration verwenden möchten. Dies gilt nur für Einmalzahlungen. Stripe-Abonnements unterstützen keine Zahlungsmethoden-Konfigurationen und verwenden immer die Standardeinstellung Ihres Stripe-Kontos.',
     'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"' => 'z.B. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
     'Suppress Email Notifications & Integrations when Payments Fail' => 'E-Mail-Benachrichtigungen & Integrationen unterdrücken, wenn Zahlungen fehlschlagen',
     'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.' => 'Fehlgeschlagene Zahlungen werden weiterhin als Übermittlungen gespeichert, aber wenn diese Option aktiviert ist, werden E-Mail-Benachrichtigungen und API-Integrationen unterdrückt.',

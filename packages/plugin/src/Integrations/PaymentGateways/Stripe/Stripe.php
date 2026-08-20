@@ -64,7 +64,7 @@ class Stripe extends PaymentGatewayIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Payment Configuration ID',
-        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
+        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here. This applies to one-time payments only. Stripe subscriptions do not support payment method configurations and will always use your Stripe account default.',
         placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
     )]
     protected string $paymentConfigurationId = '';

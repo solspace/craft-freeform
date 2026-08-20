@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapI
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
@@ -64,9 +65,10 @@ class Stripe extends PaymentGatewayIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Payment Configuration ID',
-        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here. This applies to one-time payments only. Stripe subscriptions do not support payment method configurations and will always use your Stripe account default.',
+        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
         placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
     )]
+    #[Message('This applies to one-time payments only. Stripe subscriptions do not support payment method configurations and will always use your Stripe account default.')]
     protected string $paymentConfigurationId = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]

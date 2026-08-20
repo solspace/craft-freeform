@@ -54,15 +54,6 @@ class PaymentIntentsController extends BaseStripeController
             $subscription = $paymentIntent->invoice->subscription;
             $subscription->cancel();
 
-            $paymentSettings = [
-                'save_default_payment_method' => 'on_subscription',
-            ];
-
-            $paymentConfigurationId = $integration->getPaymentConfigurationId();
-            if ($paymentConfigurationId) {
-                $paymentSettings['payment_method_configuration'] = $paymentConfigurationId;
-            }
-
             $newSubscription = $stripe
                 ->subscriptions
                 ->create(
@@ -72,7 +63,9 @@ class PaymentIntentsController extends BaseStripeController
                         'metadata' => $subscription->metadata->toArray(),
                         'payment_behavior' => 'default_incomplete',
                         'items' => [['price' => $price->id]],
-                        'payment_settings' => $paymentSettings,
+                        'payment_settings' => [
+                            'save_default_payment_method' => 'on_subscription',
+                        ],
                         'expand' => ['latest_invoice.payment_intent'],
                     ]
                 )
@@ -147,15 +140,6 @@ class PaymentIntentsController extends BaseStripeController
         if (StripeField::PAYMENT_TYPE_SUBSCRIPTION === $field->getPaymentType()) {
             $price = $this->amountService->getPrice($field, $form, $integration);
 
-            $paymentSettings = [
-                'save_default_payment_method' => 'on_subscription',
-            ];
-
-            $paymentConfigurationId = $integration->getPaymentConfigurationId();
-            if ($paymentConfigurationId) {
-                $paymentSettings['payment_method_configuration'] = $paymentConfigurationId;
-            }
-
             $subscription = $stripe
                 ->subscriptions
                 ->create(
@@ -165,7 +149,9 @@ class PaymentIntentsController extends BaseStripeController
                         'description' => $description,
                         'metadata' => $metadata,
                         'payment_behavior' => 'default_incomplete',
-                        'payment_settings' => $paymentSettings,
+                        'payment_settings' => [
+                            'save_default_payment_method' => 'on_subscription',
+                        ],
                         'expand' => ['latest_invoice.payment_intent'],
                     ],
                     $opts,

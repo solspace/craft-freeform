@@ -606,6 +606,14 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             $value = $this->getValue();
         }
 
+        $minDate = $this->getMinDate() === 'today'
+            ? 'today'
+            : $this->getGeneratedMinDate($this->getFormat());
+
+        $maxDate = $this->getMaxDate() === 'today'
+            ? 'today'
+            : $this->getGeneratedMaxDate($this->getFormat());
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
@@ -623,8 +631,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->set('data-datepicker-enabledate', $hasDate)
             ->set('data-datepicker-clock_24h', $this->isClock24h())
             ->set('data-datepicker-locale', $this->getSupportedLocale($locale))
-            ->set('data-datepicker-min-date', $this->getGeneratedMinDate($this->getFormat()))
-            ->set('data-datepicker-max-date', $this->getGeneratedMaxDate($this->getFormat()))
+            ->set('data-datepicker-min-date', $minDate)
+            ->set('data-datepicker-max-date', $maxDate)
         ;
 
         if ($this->isUseDatepicker()) {

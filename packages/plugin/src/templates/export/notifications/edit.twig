@@ -108,12 +108,13 @@
         <div id="cron-expression-field"{% if notification.frequency != 'custom' %} class="hidden"{% endif %}>
             {{ forms.textField({
                 label: "Cron Expression"|t('freeform'),
-                instructions: "Enter a standard five-part cron expression (minute, hour, day of month, month, day of week). Examples: `0 0 1 * *` runs monthly on the 1st, `0 0 15 * *` runs monthly on the 15th, and `0 0 1,15 * *` runs on both. For reliable delivery, configure your server to run `php craft freeform/export-notifications/run` every minute. Use <a href='https://crontab.guru/' target='_blank' rel='noopener'>Crontab.guru</a> to build and check an expression."|t('freeform')|raw,
+                instructions: "Enter a standard five-part cron expression (minute, hour, day of month, month, day of week). For example, `0 0 1 * *` runs monthly on the 1st, `0 0 15 * *` runs monthly on the 15th, and `0 0 1,15 * *` runs on both."|t('freeform')|raw,
                 id: 'cronExpression',
                 name: 'cronExpression',
                 value: notification.cronExpression,
                 errors: notification.getErrors('cronExpression'),
                 required: notification.frequency == 'custom',
+                tip: "For reliable delivery, configure your server to run `php craft freeform/export-notifications/run` every minute. Use <a href='https://crontab.guru/' target='_blank' rel='noopener'>Crontab.guru</a> to build and check an expression."|t('freeform')|raw,
             }) }}
         </div>
 

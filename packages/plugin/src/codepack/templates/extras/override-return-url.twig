@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Overiding Success Return URL | Extras" %}
+{% set pageTitle = "Overriding Success Return URL | Extras" %}
 
 {# Replace 'freeformOverrideReturnUrl' with your form handle #}
 {% set demoFormHandle = "freeformOverrideReturnUrl" %}
@@ -10,7 +10,7 @@
     {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <div class="freeform-page-heading">
-        <h2>Overiding Success Return URL</h2>
+        <h2>Overriding Success Return URL</h2>
         <p>This example shows how to manipulate a form to allow a user to override the Return URL for successful submits. This could be done via a checkbox, select field, radio group, or hidden field. This specific example just uses a checkbox that is paired with the Submit button for a simpler setup.</p>
     </div>
 

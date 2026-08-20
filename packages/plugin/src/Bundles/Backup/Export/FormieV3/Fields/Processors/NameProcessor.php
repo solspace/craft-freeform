@@ -78,6 +78,57 @@ class NameProcessor extends AbstractFieldProcessor
         return $metadata;
     }
 
+    /**
+     * Maps a Formie Name submission value onto the individual Freeform field handles
+     * created by getSubFields(), so migrated submissions populate the split fields.
+     *
+     * @param mixed $formField
+     * @param mixed $value
+     *
+     * @return array<string, string> Freeform field handle => value
+     */
+    public function convertSubmissionValue($formField, $value): array
+    {
+        $parentHandle = $formField->handle ?? 'name';
+
+        // Single field
+        if (!($formField->useMultipleFields ?? false)) {
+            return [$parentHandle => $this->stringifySubValue($value)];
+        }
+
+        $values = [];
+
+        // Sub fields
+        $nameSubfields = $this->getNameSubfields($formField);
+        if (!empty($nameSubfields)) {
+            foreach ($nameSubfields as $subfield) {
+                $subfieldHandle = $subfield->handle ?? null;
+                if (!$subfieldHandle) {
+                    continue;
+                }
+
+                $values[$parentHandle.'_'.$subfieldHandle] = $this->extractSubValue($value, $subfieldHandle);
+            }
+
+            return $values;
+        }
+
+        // Fallback
+        if ($formField->showPrefix ?? false) {
+            $values[$parentHandle.'_prefix'] = $this->extractSubValue($value, 'prefix');
+        }
+
+        $values[$parentHandle.'_first'] = $this->extractSubValue($value, 'firstName');
+
+        if ($formField->showMiddle ?? false) {
+            $values[$parentHandle.'_middle'] = $this->extractSubValue($value, 'middleName');
+        }
+
+        $values[$parentHandle.'_last'] = $this->extractSubValue($value, 'lastName');
+
+        return $values;
+    }
+
     private function getNameSubfields($formField): array
     {
         $subfields = [];
@@ -292,5 +343,37 @@ class NameProcessor extends AbstractFieldProcessor
         $fields[] = $lastNameField;
 
         return $fields;
+    }
+
+    /**
+     * Reads a single sub-value (firstName, lastName, etc.) from a Formie Name submission value,
+     * which is a NameModel object (multiple fields) or an array.
+     *
+     * @param mixed $value
+     */
+    private function extractSubValue($value, string $property): string
+    {
+        if (\is_object($value) && isset($value->{$property})) {
+            return $this->stringifySubValue($value->{$property});
+        }
+
+        if (\is_array($value) && isset($value[$property])) {
+            return $this->stringifySubValue($value[$property]);
+        }
+
+        return '';
+    }
+
+    private function stringifySubValue($value): string
+    {
+        if (null === $value) {
+            return '';
+        }
+
+        if (\is_scalar($value) || (\is_object($value) && method_exists($value, '__toString'))) {
+            return (string) $value;
+        }
+
+        return '';
     }
 }

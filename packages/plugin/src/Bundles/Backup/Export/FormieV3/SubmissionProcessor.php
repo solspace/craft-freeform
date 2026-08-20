@@ -8,12 +8,14 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\FileUploadProcessor;
+use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\NameProcessor;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\TableProcessor;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use verbb\formie\elements\Form as FormieForm;
 use verbb\formie\elements\Submission as FormieSubmission;
 use verbb\formie\fields\FileUpload;
+use verbb\formie\fields\Name as FormieName;
 use verbb\formie\fields\Table as FormieTable;
 
 class SubmissionProcessor
@@ -111,6 +113,16 @@ class SubmissionProcessor
                                     if ($field instanceof FileUpload) {
                                         $fileUploadProcessor = new FileUploadProcessor();
                                         $value = $fileUploadProcessor->convertSubmissionValue($value);
+                                    }
+
+                                    // Normalize Formie Name field values and align handles with Freeform NameProcessor
+                                    if ($field instanceof FormieName) {
+                                        $nameProcessor = new NameProcessor();
+                                        foreach ($nameProcessor->convertSubmissionValue($field, $value) as $nameHandle => $nameValue) {
+                                            $exported->{$nameHandle} = $nameValue;
+                                        }
+
+                                        continue;
                                     }
 
                                     // Normalize Formie Table field values and align handles with Freeform TableProcessor

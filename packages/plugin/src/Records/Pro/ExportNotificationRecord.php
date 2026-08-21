@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Records\Pro;
 
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\CronExpressionHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 
@@ -15,6 +16,7 @@ use Solspace\Freeform\Models\Pro\ExportProfileModel;
  * @property string $fileType
  * @property string $fileName
  * @property string $frequency
+ * @property string $cronExpression
  * @property string $recipients
  * @property string $subject
  * @property string $message
@@ -47,6 +49,7 @@ class ExportNotificationRecord extends ActiveRecord
             'fileType',
             'fileName',
             'frequency',
+            'cronExpression',
             'recipients',
             'subject',
             'message',
@@ -58,6 +61,25 @@ class ExportNotificationRecord extends ActiveRecord
         return [
             [['name'], 'unique'],
             [['name', 'fileType', 'frequency', 'profileId'], 'required'],
+            [['cronExpression'], 'validateCronExpression', 'skipOnEmpty' => false],
         ];
+    }
+
+    public function validateCronExpression(string $attribute): void
+    {
+        if ('custom' !== $this->frequency) {
+            return;
+        }
+
+        $expression = trim((string) $this->getAttribute($attribute));
+        if ('' === $expression) {
+            $this->addError($attribute, Freeform::t('A cron expression is required for a custom schedule.'));
+
+            return;
+        }
+
+        if (!CronExpressionHelper::isValid($expression)) {
+            $this->addError($attribute, Freeform::t('Enter a valid five-part cron expression.'));
+        }
     }
 }

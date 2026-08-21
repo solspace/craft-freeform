@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.15.27 - 2026-08-20
+
+### Added
+- Added a **Custom Cron Schedule** option to the frequency list for **Export Notifications**.
+
+### Changed
+- Updated date picker range limits to preserve the `today` value in **Date & Time** fields on cached forms.
+
+### Fixed
+- Updated the **Payment Configuration ID** setting to note that Stripe does not support it for subscription payments.
+- Fixed migrating submissions from **Formie** when using the **Name** field type with subfields configured.
+- Fixed a bug where there were some missing permission checks in the Control Panel.
+
 ## 5.15.26 - 2026-08-13
 
 ### Added

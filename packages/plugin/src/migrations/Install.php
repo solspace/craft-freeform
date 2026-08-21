@@ -272,6 +272,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fileType', $this->string(30)->notNull())
                 ->addField('fileName', $this->string(255))
                 ->addField('frequency', $this->string(20)->notNull())
+                ->addField('cronExpression', $this->string(255))
                 ->addField('recipients', $this->longText()->notNull())
                 ->addField('subject', $this->string(255))
                 ->addField('message', $this->text())

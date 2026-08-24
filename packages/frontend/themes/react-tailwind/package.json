@@ -1,7 +1,7 @@
 {
-  "name": "@solspace/freeform-core",
+  "name": "@solspace/freeform-react-theme-tailwind",
   "version": "0.1.13",
-  "description": "Framework-neutral headless runtime for Solspace Freeform",
+  "description": "Official Tailwind starter theme for Freeform React",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -21,25 +21,26 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
-    "test": "vitest run --config vitest.config.ts",
-    "lint": "biome check"
+    "lint": "biome check src"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-react": "^0.1.0"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "vitest": "4.1.9"
+    "@solspace/freeform-react": "workspace:*",
+    "typescript": "^5.8.3"
   },
   "keywords": [
     "freeform",
     "craft-cms",
     "headless",
-    "forms"
+    "react",
+    "theme",
+    "tailwind"
   ],
   "author": "Solspace Inc.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "expression-language": "^2.5.4"
   }
 }

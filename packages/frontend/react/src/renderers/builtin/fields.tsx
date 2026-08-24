@@ -152,9 +152,10 @@ export function CheckboxFieldRenderer(props: ReactFieldRendererProps) {
     input.value === "1" || props.value === true || input.value === "true";
 
   return (
-    <label className={props.classNames.input}>
+    <label className={props.classNames.optionLabel ?? props.classNames.input}>
       <input
         type="checkbox"
+        className={props.classNames.optionInput}
         id={input.id}
         name={input.name}
         checked={checked}
@@ -183,9 +184,10 @@ export function CheckboxesFieldRenderer(props: ReactFieldRendererProps) {
   return (
     <div className={props.classNames.input}>
       {(props.field.options ?? []).map((option) => (
-        <label key={option.value}>
+        <label key={option.value} className={props.classNames.optionLabel}>
           <input
             type="checkbox"
+            className={props.classNames.optionInput}
             name={`${props.field.handle}[]`}
             value={option.value}
             checked={selected.includes(option.value)}
@@ -213,9 +215,10 @@ export function RadioFieldRenderer(props: ReactFieldRendererProps) {
   return (
     <div className={props.classNames.input} role="radiogroup">
       {(props.field.options ?? []).map((option) => (
-        <label key={option.value}>
+        <label key={option.value} className={props.classNames.optionLabel}>
           <input
             type="radio"
+            className={props.classNames.optionInput}
             name={props.field.handle}
             value={option.value}
             checked={value === option.value}
@@ -241,14 +244,20 @@ export function OpinionScaleFieldRenderer(props: ReactFieldRendererProps) {
         {(props.field.options ?? []).map((option) => (
           <label
             key={option.value}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+            className={props.classNames.optionLabel}
+            style={
+              props.classNames.optionLabel
+                ? undefined
+                : {
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }
+            }
           >
             <input
               type="radio"
+              className={props.classNames.optionInput}
               name={props.field.handle}
               value={option.value}
               checked={value === option.value}
@@ -295,6 +304,7 @@ export function RatingFieldRenderer(props: ReactFieldRendererProps) {
         return (
           <label
             key={option.value}
+            className={props.classNames.optionLabel}
             style={{
               cursor: "pointer",
               color: active ? selected : idle,
@@ -304,6 +314,7 @@ export function RatingFieldRenderer(props: ReactFieldRendererProps) {
           >
             <input
               type="radio"
+              className={props.classNames.optionInput}
               name={props.field.handle}
               value={option.value}
               checked={value === option.value}
@@ -363,15 +374,23 @@ export function CardsFieldRenderer(props: ReactFieldRendererProps) {
         return (
           <label
             key={card.value}
-            style={{
-              border: checked ? "2px solid currentColor" : "1px solid #ccc",
-              borderRadius: "0.5rem",
-              padding: "0.75rem",
-              cursor: "pointer",
-            }}
+            className={props.classNames.optionLabel}
+            style={
+              props.classNames.optionLabel
+                ? undefined
+                : {
+                    border: checked
+                      ? "2px solid currentColor"
+                      : "1px solid #ccc",
+                    borderRadius: "0.5rem",
+                    padding: "0.75rem",
+                    cursor: "pointer",
+                  }
+            }
           >
             <input
               type={singleSelect ? "radio" : "checkbox"}
+              className={props.classNames.optionInput}
               name={`${props.field.handle}${singleSelect ? "" : "[]"}`}
               value={card.value}
               checked={checked}

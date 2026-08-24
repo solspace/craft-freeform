@@ -233,6 +233,15 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/frontend/themes/react-tailwind:
+    devDependencies:
+      '@solspace/freeform-react':
+        specifier: workspace:*
+        version: link:../../react
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   packages/scripts:
     dependencies:
       '@friendlycaptcha/sdk':

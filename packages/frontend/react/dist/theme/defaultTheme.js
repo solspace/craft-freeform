@@ -32,14 +32,34 @@ export const defaultTheme = {
         colorScheme: "system",
     },
 };
-export function createTheme(overrides) {
+function mergeClassNamesByType(base, overlay) {
+    if (!base && !overlay) {
+        return undefined;
+    }
+    const keys = new Set([
+        ...Object.keys(base ?? {}),
+        ...Object.keys(overlay ?? {}),
+    ]);
+    const merged = {};
+    for (const key of keys) {
+        merged[key] = { ...base?.[key], ...overlay?.[key] };
+    }
+    return merged;
+}
+export function createTheme(overrides = {}) {
+    const strategy = overrides.classNameStrategy ?? defaultTheme.classNameStrategy;
+    const mergeDefaultClassNames = strategy !== "replace";
     return {
         ...defaultTheme,
         ...overrides,
-        classNames: {
-            ...defaultTheme.classNames,
-            ...overrides.classNames,
-        },
+        classNameStrategy: strategy,
+        classNames: mergeDefaultClassNames
+            ? {
+                ...defaultTheme.classNames,
+                ...overrides.classNames,
+            }
+            : { ...overrides.classNames },
+        classNamesByType: mergeClassNamesByType(mergeDefaultClassNames ? defaultTheme.classNamesByType : undefined, overrides.classNamesByType),
         defaults: {
             ...defaultTheme.defaults,
             ...overrides.defaults,

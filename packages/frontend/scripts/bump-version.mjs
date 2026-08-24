@@ -36,6 +36,11 @@ const packages = [
     versionFile: null,
     peerOf: "@solspace/freeform-react",
   },
+  {
+    dir: join(frontendRoot, "themes/react-tailwind"),
+    versionFile: null,
+    peerOf: "@solspace/freeform-react",
+  },
 ];
 
 function parseVersion(version) {

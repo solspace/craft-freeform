@@ -4,7 +4,8 @@
     "packages/client",
     "packages/scripts",
     "packages/styles",
-    "packages/frontend/*"
+    "packages/frontend/*",
+    "packages/frontend/themes/*"
   ],
   "engines": {
     "pnpm": ">=11"

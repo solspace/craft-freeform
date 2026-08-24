@@ -72,7 +72,7 @@ export function MultipleSelectFieldRenderer(props) {
 export function CheckboxFieldRenderer(props) {
     const input = inputProps(props);
     const checked = input.value === "1" || props.value === true || input.value === "true";
-    return (_jsxs("label", { className: props.classNames.input, children: [_jsx("input", { type: "checkbox", id: input.id, name: input.name, checked: checked, disabled: input.disabled, "aria-invalid": input["aria-invalid"], onChange: (event) => {
+    return (_jsxs("label", { className: props.classNames.optionLabel ?? props.classNames.input, children: [_jsx("input", { type: "checkbox", className: props.classNames.optionInput, id: input.id, name: input.name, checked: checked, disabled: input.disabled, "aria-invalid": input["aria-invalid"], onChange: (event) => {
                     props.form.setValue(props.field.handle, event.target.checked ? "1" : "");
                 }, onBlur: input.onBlur }), _jsx("span", { children: props.field.label })] }));
 }
@@ -82,7 +82,7 @@ export function CheckboxesFieldRenderer(props) {
         : props.value
             ? [String(props.value)]
             : [];
-    return (_jsx("div", { className: props.classNames.input, children: (props.field.options ?? []).map((option) => (_jsxs("label", { children: [_jsx("input", { type: "checkbox", name: `${props.field.handle}[]`, value: option.value, checked: selected.includes(option.value), disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
+    return (_jsx("div", { className: props.classNames.input, children: (props.field.options ?? []).map((option) => (_jsxs("label", { className: props.classNames.optionLabel, children: [_jsx("input", { type: "checkbox", className: props.classNames.optionInput, name: `${props.field.handle}[]`, value: option.value, checked: selected.includes(option.value), disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
                         const next = new Set(selected);
                         if (event.target.checked) {
                             next.add(option.value);
@@ -95,16 +95,18 @@ export function CheckboxesFieldRenderer(props) {
 }
 export function RadioFieldRenderer(props) {
     const value = String(props.value ?? "");
-    return (_jsx("div", { className: props.classNames.input, role: "radiogroup", children: (props.field.options ?? []).map((option) => (_jsxs("label", { children: [_jsx("input", { type: "radio", name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value) }), _jsx("span", { children: option.label })] }, option.value))) }));
+    return (_jsx("div", { className: props.classNames.input, role: "radiogroup", children: (props.field.options ?? []).map((option) => (_jsxs("label", { className: props.classNames.optionLabel, children: [_jsx("input", { type: "radio", className: props.classNames.optionInput, name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value) }), _jsx("span", { children: option.label })] }, option.value))) }));
 }
 export function OpinionScaleFieldRenderer(props) {
     const value = String(props.value ?? "");
     const legends = props.field.frontend?.config?.legends ?? [];
-    return (_jsxs("div", { className: props.classNames.input, children: [_jsx("div", { role: "radiogroup", style: { display: "flex", gap: "0.75rem" }, children: (props.field.options ?? []).map((option) => (_jsxs("label", { style: {
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                    }, children: [_jsx("input", { type: "radio", name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value) }), _jsx("span", { children: option.label || option.value })] }, option.value))) }), legends.length > 0 ? (_jsx("div", { style: {
+    return (_jsxs("div", { className: props.classNames.input, children: [_jsx("div", { role: "radiogroup", style: { display: "flex", gap: "0.75rem" }, children: (props.field.options ?? []).map((option) => (_jsxs("label", { className: props.classNames.optionLabel, style: props.classNames.optionLabel
+                        ? undefined
+                        : {
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                        }, children: [_jsx("input", { type: "radio", className: props.classNames.optionInput, name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value) }), _jsx("span", { children: option.label || option.value })] }, option.value))) }), legends.length > 0 ? (_jsx("div", { style: {
                     display: "flex",
                     justifyContent: "space-between",
                     marginTop: "0.5rem",
@@ -118,12 +120,12 @@ export function RatingFieldRenderer(props) {
     const selected = config.colorSelected || "#ff7700";
     return (_jsx("div", { className: props.classNames.input, role: "radiogroup", children: (props.field.options ?? []).map((option) => {
             const active = Number(value) >= Number(option.value);
-            return (_jsxs("label", { style: {
+            return (_jsxs("label", { className: props.classNames.optionLabel, style: {
                     cursor: "pointer",
                     color: active ? selected : idle,
                     fontSize: "1.5rem",
                     marginRight: "0.25rem",
-                }, children: [_jsx("input", { type: "radio", name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value), style: {
+                }, children: [_jsx("input", { type: "radio", className: props.classNames.optionInput, name: props.field.handle, value: option.value, checked: value === option.value, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: () => props.form.setValue(props.field.handle, option.value), style: {
                             position: "absolute",
                             opacity: 0,
                             pointerEvents: "none",
@@ -147,12 +149,16 @@ export function CardsFieldRenderer(props) {
             gridTemplateColumns: `repeat(${Math.min(Number(props.field.frontend?.config?.cardsPerRow ?? 3) || 3, 4)}, minmax(0, 1fr))`,
         }, children: cards.map((card) => {
             const checked = selected.includes(card.value);
-            return (_jsxs("label", { style: {
-                    border: checked ? "2px solid currentColor" : "1px solid #ccc",
-                    borderRadius: "0.5rem",
-                    padding: "0.75rem",
-                    cursor: "pointer",
-                }, children: [_jsx("input", { type: singleSelect ? "radio" : "checkbox", name: `${props.field.handle}${singleSelect ? "" : "[]"}`, value: card.value, checked: checked, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
+            return (_jsxs("label", { className: props.classNames.optionLabel, style: props.classNames.optionLabel
+                    ? undefined
+                    : {
+                        border: checked
+                            ? "2px solid currentColor"
+                            : "1px solid #ccc",
+                        borderRadius: "0.5rem",
+                        padding: "0.75rem",
+                        cursor: "pointer",
+                    }, children: [_jsx("input", { type: singleSelect ? "radio" : "checkbox", className: props.classNames.optionInput, name: `${props.field.handle}${singleSelect ? "" : "[]"}`, value: card.value, checked: checked, disabled: !props.form.isFieldEnabled(props.field.handle), onChange: (event) => {
                             if (singleSelect) {
                                 props.form.setValue(props.field.handle, [card.value]);
                                 return;

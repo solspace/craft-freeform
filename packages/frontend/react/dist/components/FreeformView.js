@@ -2,7 +2,7 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { FieldRenderer } from "../renderers/FieldRenderer.js";
-import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { joinClassNames } from "../theme/mergeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import { CaptchaHost } from "./CaptchaHost.js";
 function asRuntime(form) {
@@ -26,11 +26,13 @@ export function FreeformView({ form, className }) {
     const components = { ...builtinComponents, ...theme.renderers?.components };
     const strategy = theme.classNameStrategy ?? "merge";
     const colorScheme = theme.defaults?.colorScheme ?? "system";
-    const colorSchemeClass = colorScheme === "light" || colorScheme === "dark"
+    const colorSchemeClass = strategy === "merge" && (colorScheme === "light" || colorScheme === "dark")
         ? `ff-form--${colorScheme}`
         : undefined;
-    const formHandleClass = `ff-form--${toBemModifier(manifest.form.handle)}`;
-    const formClassName = mergeClassNames(strategy, mergeClassNames(strategy, mergeClassNames(strategy, theme.classNames?.form, formHandleClass), colorSchemeClass), className);
+    const formHandleClass = strategy === "merge"
+        ? `ff-form--${toBemModifier(manifest.form.handle)}`
+        : undefined;
+    const formClassName = joinClassNames(theme.classNames?.form, formHandleClass, colorSchemeClass, className);
     const pages = manifest.layout.pages;
     const currentPage = pages[form.currentPageIndex] ??
         pages[0] ?? { rows: [], buttons: {} };
@@ -39,7 +41,9 @@ export function FreeformView({ form, className }) {
     if (form.isComplete && form.successMessage) {
         return (_jsx(components.SuccessMessage, { message: form.successMessage, className: theme.classNames?.success }));
     }
-    return (_jsxs(components.Form, { form: runtime, className: formClassName, onSubmit: form.handleSubmit, children: [form.formErrors.length > 0 ? (_jsx(components.Errors, { errors: form.formErrors, className: theme.classNames?.errors, errorClassName: theme.classNames?.error })) : null, _jsx(components.Page, { form: runtime, pageIndex: form.currentPageIndex, className: mergeClassNames(strategy, theme.classNames?.page, `ff-page--${form.currentPageIndex}`), children: currentPage.rows.map((row) => {
+    return (_jsxs(components.Form, { form: runtime, className: formClassName, onSubmit: form.handleSubmit, children: [form.formErrors.length > 0 ? (_jsx(components.Errors, { errors: form.formErrors, className: theme.classNames?.errors, errorClassName: theme.classNames?.error })) : null, _jsx(components.Page, { form: runtime, pageIndex: form.currentPageIndex, className: joinClassNames(theme.classNames?.page, strategy === "merge"
+                    ? `ff-page--${form.currentPageIndex}`
+                    : undefined), children: currentPage.rows.map((row) => {
                     const visibleHandles = row.fields.filter((handle) => {
                         const field = manifest.fields[handle];
                         return field
@@ -49,7 +53,9 @@ export function FreeformView({ form, className }) {
                     if (visibleHandles.length === 0) {
                         return null;
                     }
-                    return (_jsx(components.Row, { className: mergeClassNames(strategy, theme.classNames?.row, `ff-row--${visibleHandles.length}-fields`), children: visibleHandles.map((handle) => {
+                    return (_jsx(components.Row, { className: joinClassNames(theme.classNames?.row, strategy === "merge"
+                            ? `ff-row--${visibleHandles.length}-fields`
+                            : undefined), children: visibleHandles.map((handle) => {
                             const field = manifest.fields[handle];
                             if (!field) {
                                 return null;

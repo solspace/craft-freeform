@@ -1,15 +1,16 @@
 "use client";
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { joinClassNames } from "../theme/mergeClassNames.js";
+import { resolveThemeClassNames } from "../theme/resolveThemeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import { builtinComponents } from "./builtin/index.js";
 import { resolveFieldRenderer } from "./resolve.js";
 export function FieldRenderer({ field, form, theme, renderers, allowRawHtml, }) {
-    const classNames = theme.classNames ?? {};
     const strategy = theme.classNameStrategy ?? "merge";
+    const errors = form.fieldErrors[field.handle] ?? [];
+    const classNames = resolveThemeClassNames(theme, field, errors.length > 0);
     const components = { ...builtinComponents, ...theme.renderers?.components };
     const Renderer = resolveFieldRenderer(field, renderers, theme);
-    const errors = form.fieldErrors[field.handle] ?? [];
     const value = form.values[field.handle];
     const isCheckbox = field.type === "checkbox";
     const isPresentational = field.type === "html" ||
@@ -35,17 +36,11 @@ export function FieldRenderer({ field, form, theme, renderers, allowRawHtml, }) 
             }
         }
     }
-    const fieldClassName = mergeClassNames(strategy, classNames.field, [
-        `ff-field--${toBemModifier(field.type)}`,
-        `ff-field--${toBemModifier(field.handle)}`,
-        field.required ? classNames.fieldRequired : "",
-        errors.length ? classNames.fieldHasErrors : "",
-        !form.isFieldVisible(field.handle) || isVisuallyHidden
-            ? classNames.fieldHidden
-            : "",
-    ]
-        .filter(Boolean)
-        .join(" "));
+    const fieldClassName = joinClassNames(classNames.field, field.required ? classNames.fieldRequired : undefined, errors.length ? classNames.fieldHasErrors : undefined, !form.isFieldVisible(field.handle) || isVisuallyHidden
+        ? classNames.fieldHidden
+        : undefined, strategy === "merge" ? `ff-field--${toBemModifier(field.type)}` : undefined, strategy === "merge"
+        ? `ff-field--${toBemModifier(field.handle)}`
+        : undefined);
     const renderLabel = () => !isCheckbox &&
         !isPresentational &&
         !isVisuallyHidden &&
@@ -58,7 +53,9 @@ export function FieldRenderer({ field, form, theme, renderers, allowRawHtml, }) 
         return (_jsx(components.FieldWrapper, { field: field, form: form, className: fieldClassName, children: _jsx(Renderer, { field: field, form: form, value: value, errors: errors, input: form.getFieldProps(field.handle), classNames: classNames, allowRawHtml: allowRawHtml, renderLabel: renderLabel, renderInstructions: renderInstructions, renderErrors: renderErrors }) }));
     }
     if (field.type === "group") {
-        return (_jsxs(components.FieldWrapper, { field: field, form: form, className: fieldClassName, children: [renderLabel(), renderInstructions(), _jsx("div", { className: classNames.input, "data-freeform-group": field.handle, children: (field.layout?.rows ?? []).map((row) => (_jsx(components.Row, { className: mergeClassNames(strategy, classNames.row, `ff-row--${row.fields.length}-fields`), children: row.fields.map((handle) => {
+        return (_jsxs(components.FieldWrapper, { field: field, form: form, className: fieldClassName, children: [renderLabel(), renderInstructions(), _jsx("div", { className: classNames.input, "data-freeform-group": field.handle, children: (field.layout?.rows ?? []).map((row) => (_jsx(components.Row, { className: joinClassNames(classNames.row, strategy === "merge"
+                            ? `ff-row--${row.fields.length}-fields`
+                            : undefined), children: row.fields.map((handle) => {
                             const child = form.manifest.fields[handle];
                             if (!child) {
                                 return null;

@@ -17,7 +17,8 @@ Official Freeform frontend packages for **React / Next.js**. These npm packages 
 | `@solspace/freeform-core` | Manifest client, state, conditionals, submit |
 | `@solspace/freeform-react` | `<Freeform />` + `useFreeform()` |
 | `@solspace/freeform-extensions` | Captchas, calculation, datetime, file DnD |
-| `@solspace/freeform-react-theme-default` | Default light/dark theme CSS |
+| `@solspace/freeform-react-theme-default` | Default light/dark BEM CSS |
+| `@solspace/freeform-react-theme-tailwind` | Official Tailwind starter theme for React forms |
 
 Requires a Freeform plugin build that includes the headless REST API, with headless enabled in config.
 
@@ -27,7 +28,8 @@ Requires a Freeform plugin build that includes the headless REST API, with headl
 npm install @solspace/freeform-core \
   @solspace/freeform-react \
   @solspace/freeform-extensions \
-  @solspace/freeform-react-theme-default
+  @solspace/freeform-react-theme-default \
+  @solspace/freeform-react-theme-tailwind
 ```
 
 ```tsx
@@ -56,15 +58,14 @@ Do **not** hand-edit version strings in source. From the Freeform repo root:
 pnpm frontend:bump patch   # or minor / major / 0.2.0
 ```
 
-That updates all four `package.json` files, peer ranges, and the `src/version.ts` files used at runtime.
+That updates all five `package.json` files, peer ranges, and the `src/version.ts` files used at runtime.
 
 Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
 
 ## Known limitations
 
-- Payments (Stripe, etc.) — not yet
 - Vue adapter — not yet
-- Bootstrap & Tailwind theme packages — not yet
+- Bootstrap theme package — not yet
 - Full GraphQL parity with the REST contract — not yet
 - Conditional show/hide is **client UX only** (not a security boundary)
 

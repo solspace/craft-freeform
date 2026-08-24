@@ -23,6 +23,12 @@ export type FreeformThemeClassNames = {
   label?: string;
   instructions?: string;
   input?: string;
+  /** Merged onto `input` (or `optionInput` for choice fields) when the field has errors */
+  inputError?: string;
+  /** Wrapper `<label>` around a checkbox / radio option */
+  optionLabel?: string;
+  /** The checkbox / radio control itself */
+  optionInput?: string;
   /** Static content (html / rich-text / image) — not input chrome */
   content?: string;
   errors?: string;
@@ -64,6 +70,8 @@ export type FreeformReactTheme = {
   framework: "react";
   classNameStrategy?: ClassNameStrategy;
   classNames?: FreeformThemeClassNames;
+  /** Overlay `classNames` by field `type`, frontend renderer, or extension name */
+  classNamesByType?: Record<string, Partial<FreeformThemeClassNames>>;
   renderers?: RendererOverrides & {
     components?: Partial<FreeformThemeComponents>;
   };

@@ -1,7 +1,8 @@
 "use client";
 
 import type { ManifestFieldDefinition } from "@solspace/freeform-core";
-import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { joinClassNames } from "../theme/mergeClassNames.js";
+import { resolveThemeClassNames } from "../theme/resolveThemeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import type {
   FreeformReactTheme,
@@ -26,11 +27,11 @@ export function FieldRenderer({
   renderers,
   allowRawHtml,
 }: FieldRendererProps) {
-  const classNames = theme.classNames ?? {};
   const strategy = theme.classNameStrategy ?? "merge";
+  const errors = form.fieldErrors[field.handle] ?? [];
+  const classNames = resolveThemeClassNames(theme, field, errors.length > 0);
   const components = { ...builtinComponents, ...theme.renderers?.components };
   const Renderer = resolveFieldRenderer(field, renderers, theme);
-  const errors = form.fieldErrors[field.handle] ?? [];
   const value = form.values[field.handle];
   const isCheckbox = field.type === "checkbox";
   const isPresentational =
@@ -63,20 +64,17 @@ export function FieldRenderer({
     }
   }
 
-  const fieldClassName = mergeClassNames(
-    strategy,
+  const fieldClassName = joinClassNames(
     classNames.field,
-    [
-      `ff-field--${toBemModifier(field.type)}`,
-      `ff-field--${toBemModifier(field.handle)}`,
-      field.required ? classNames.fieldRequired : "",
-      errors.length ? classNames.fieldHasErrors : "",
-      !form.isFieldVisible(field.handle) || isVisuallyHidden
-        ? classNames.fieldHidden
-        : "",
-    ]
-      .filter(Boolean)
-      .join(" "),
+    field.required ? classNames.fieldRequired : undefined,
+    errors.length ? classNames.fieldHasErrors : undefined,
+    !form.isFieldVisible(field.handle) || isVisuallyHidden
+      ? classNames.fieldHidden
+      : undefined,
+    strategy === "merge" ? `ff-field--${toBemModifier(field.type)}` : undefined,
+    strategy === "merge"
+      ? `ff-field--${toBemModifier(field.handle)}`
+      : undefined,
   );
 
   const renderLabel = () =>
@@ -146,10 +144,11 @@ export function FieldRenderer({
           {(field.layout?.rows ?? []).map((row) => (
             <components.Row
               key={row.uid}
-              className={mergeClassNames(
-                strategy,
+              className={joinClassNames(
                 classNames.row,
-                `ff-row--${row.fields.length}-fields`,
+                strategy === "merge"
+                  ? `ff-row--${row.fields.length}-fields`
+                  : undefined,
               )}
             >
               {row.fields.map((handle) => {

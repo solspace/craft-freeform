@@ -182,16 +182,18 @@ Configure captcha integrations in Freeform before going live. The form manifest 
 
 ## Themes
 
-Pass a theme object to customize class names and default wrappers. Official theme package:
+Pass a theme object to customize class names and default wrappers.
 
 ```bash
 npm install @solspace/freeform-react-theme-default
+# or, if the app already uses Tailwind:
+npm install @solspace/freeform-react-theme-tailwind
 ```
-
-Bootstrap and Tailwind themes are planned for a later release.
 
 ```tsx
 import { Freeform, createTheme } from "@solspace/freeform-react";
+import { darkTheme } from "@solspace/freeform-react-theme-default";
+// or: import { tailwindTheme } from "@solspace/freeform-react-theme-tailwind";
 
 const theme = createTheme({
   classNames: {
@@ -201,7 +203,10 @@ const theme = createTheme({
 });
 
 <Freeform handle="contact" baseUrl="https://cms.example.com" theme={theme} />;
+// theme={darkTheme} or theme={tailwindTheme}
 ```
+
+See the [React headless docs](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/) for Tailwind `@source` setup and `classNameStrategy: "replace"`.
 
 ## API overview
 
@@ -219,7 +224,6 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 ## Known limitations
 
-- Payments (Stripe, etc.) — not yet
 - Vue adapter — not yet
-- Bootstrap & Tailwind theme packages — not yet
+- Bootstrap theme package — not yet
 - Conditional show/hide is client UX only (not a security boundary)

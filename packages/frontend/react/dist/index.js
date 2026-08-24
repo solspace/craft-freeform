@@ -31,6 +31,7 @@ export { builtinComponents, builtinRenderers, } from "./renderers/builtin/index.
 export { FieldRenderer } from "./renderers/FieldRenderer.js";
 export { resolveFieldRenderer } from "./renderers/resolve.js";
 export { createTheme, defaultTheme } from "./theme/defaultTheme.js";
-export { mergeClassNames } from "./theme/mergeClassNames.js";
+export { joinClassNames, mergeClassNames } from "./theme/mergeClassNames.js";
+export { resolveThemeClassNames } from "./theme/resolveThemeClassNames.js";
 export { toBemModifier } from "./theme/toBemModifier.js";
 export { CLIENT_NAME, PACKAGE_VERSION, } from "./types.js";

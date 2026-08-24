@@ -2,7 +2,7 @@
 
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { FieldRenderer } from "../renderers/FieldRenderer.js";
-import { mergeClassNames } from "../theme/mergeClassNames.js";
+import { joinClassNames } from "../theme/mergeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import type { FreeformRuntime, UseFreeformResult } from "../types.js";
 import { CaptchaHost } from "./CaptchaHost.js";
@@ -47,17 +47,17 @@ export function FreeformView({ form, className }: FreeformViewProps) {
   const strategy = theme.classNameStrategy ?? "merge";
   const colorScheme = theme.defaults?.colorScheme ?? "system";
   const colorSchemeClass =
-    colorScheme === "light" || colorScheme === "dark"
+    strategy === "merge" && (colorScheme === "light" || colorScheme === "dark")
       ? `ff-form--${colorScheme}`
       : undefined;
-  const formHandleClass = `ff-form--${toBemModifier(manifest.form.handle)}`;
-  const formClassName = mergeClassNames(
-    strategy,
-    mergeClassNames(
-      strategy,
-      mergeClassNames(strategy, theme.classNames?.form, formHandleClass),
-      colorSchemeClass,
-    ),
+  const formHandleClass =
+    strategy === "merge"
+      ? `ff-form--${toBemModifier(manifest.form.handle)}`
+      : undefined;
+  const formClassName = joinClassNames(
+    theme.classNames?.form,
+    formHandleClass,
+    colorSchemeClass,
     className,
   );
   const pages = manifest.layout.pages;
@@ -93,10 +93,11 @@ export function FreeformView({ form, className }: FreeformViewProps) {
       <components.Page
         form={runtime}
         pageIndex={form.currentPageIndex}
-        className={mergeClassNames(
-          strategy,
+        className={joinClassNames(
           theme.classNames?.page,
-          `ff-page--${form.currentPageIndex}`,
+          strategy === "merge"
+            ? `ff-page--${form.currentPageIndex}`
+            : undefined,
         )}
       >
         {currentPage.rows.map((row) => {
@@ -114,10 +115,11 @@ export function FreeformView({ form, className }: FreeformViewProps) {
           return (
             <components.Row
               key={row.uid}
-              className={mergeClassNames(
-                strategy,
+              className={joinClassNames(
                 theme.classNames?.row,
-                `ff-row--${visibleHandles.length}-fields`,
+                strategy === "merge"
+                  ? `ff-row--${visibleHandles.length}-fields`
+                  : undefined,
               )}
             >
               {visibleHandles.map((handle) => {

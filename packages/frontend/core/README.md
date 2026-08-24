@@ -63,7 +63,6 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 ## Known limitations
 
-- Payments (Stripe, etc.) — not yet
 - Vue adapter — not yet
-- Bootstrap & Tailwind theme packages — not yet
+- Bootstrap theme package — not yet
 - Conditional show/hide is client UX only (not a security boundary)

@@ -24,10 +24,12 @@ import {
   HiddenFieldRenderer,
   HtmlFieldRenderer,
   ImageFieldRenderer,
+  MolliePaymentFieldRenderer,
   MultipleSelectFieldRenderer,
   NumberFieldRenderer,
   OpinionScaleFieldRenderer,
   PasswordFieldRenderer,
+  PayPalPaymentFieldRenderer,
   PhoneFieldRenderer,
   RadioFieldRenderer,
   RatingFieldRenderer,
@@ -69,7 +71,13 @@ export function DefaultFieldWrapper({
   className,
   children,
 }: FreeformFieldWrapperProps) {
-  if (!form.isFieldVisible(field.handle) && field.type !== "hidden") {
+  const isVisuallyHidden =
+    field.type === "hidden" ||
+    field.type === "mollie" ||
+    field.frontend?.renderer === "payment.mollie" ||
+    field.frontend?.extension === "payment.mollie";
+
+  if (!form.isFieldVisible(field.handle) && !isVisuallyHidden) {
     return null;
   }
 
@@ -79,7 +87,7 @@ export function DefaultFieldWrapper({
       data-freeform-field={field.handle}
       data-field-container={field.handle}
       data-field-type={field.type}
-      hidden={!form.isFieldVisible(field.handle)}
+      hidden={!form.isFieldVisible(field.handle) || isVisuallyHidden}
     >
       {children}
     </div>
@@ -222,6 +230,8 @@ export const builtinRenderers = {
     calculation: CalculationFieldRenderer,
     "payment.stripe": StripePaymentFieldRenderer,
     "payment.square": SquarePaymentFieldRenderer,
+    "payment.paypal": PayPalPaymentFieldRenderer,
+    "payment.mollie": MolliePaymentFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
   types: {
     text: TextFieldRenderer,
@@ -257,6 +267,8 @@ export const builtinRenderers = {
     calculation: CalculationFieldRenderer,
     stripe: StripePaymentFieldRenderer,
     square: SquarePaymentFieldRenderer,
+    paypal: PayPalPaymentFieldRenderer,
+    mollie: MolliePaymentFieldRenderer,
     _unsupported: UnsupportedFieldRenderer,
   } as Record<string, ComponentType<ReactFieldRendererProps>>,
 };

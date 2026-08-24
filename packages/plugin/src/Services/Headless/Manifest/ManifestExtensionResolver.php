@@ -17,6 +17,8 @@ class ManifestExtensionResolver
         FieldInterface::TYPE_CALCULATION => 'calculation',
         'stripe' => 'payment.stripe',
         'square' => 'payment.square',
+        'paypal' => 'payment.paypal',
+        'mollie' => 'payment.mollie',
     ];
 
     public function resolveRenderer(string $type): string
@@ -31,6 +33,8 @@ class ManifestExtensionResolver
             FieldInterface::TYPE_HTML => 'html',
             'stripe' => 'payment.stripe',
             'square' => 'payment.square',
+            'paypal' => 'payment.paypal',
+            'mollie' => 'payment.mollie',
             default => $type,
         };
     }
@@ -58,7 +62,7 @@ class ManifestExtensionResolver
                 'name' => $extension,
                 'package' => '@solspace/freeform-extensions',
                 'version' => str_starts_with($extension, 'payment.') ? '^0.1.0' : '^5.0.0',
-                'severity' => \in_array($field['type'] ?? '', [FieldInterface::TYPE_CALCULATION, 'stripe', 'square'], true) ? 'error' : 'warning',
+                'severity' => \in_array($field['type'] ?? '', [FieldInterface::TYPE_CALCULATION, 'stripe', 'square', 'paypal', 'mollie'], true) ? 'error' : 'warning',
                 'fallback' => FieldInterface::TYPE_FILE === ($field['type'] ?? '') ? 'native' : null,
             ];
         }

@@ -200,6 +200,14 @@ export function SquarePaymentFieldRenderer(props) {
     const hostRef = useFieldExtension(props.field, props.form);
     return (_jsx("div", { ref: hostRef, className: props.classNames.input, "data-freeform-square": props.field.handle }));
 }
+export function PayPalPaymentFieldRenderer(props) {
+    const hostRef = useFieldExtension(props.field, props.form);
+    return (_jsx("div", { ref: hostRef, className: props.classNames.input, "data-freeform-paypal": props.field.handle }));
+}
+export function MolliePaymentFieldRenderer(props) {
+    const hostRef = useFieldExtension(props.field, props.form);
+    return (_jsx("div", { ref: hostRef, className: props.classNames.input, "data-freeform-mollie": props.field.handle, hidden: true }));
+}
 export function HtmlFieldRenderer(props) {
     const contentClass = props.classNames.content ?? props.classNames.input ?? "ff-field__content";
     const html = props.field.content?.rendered?.html?.trim();

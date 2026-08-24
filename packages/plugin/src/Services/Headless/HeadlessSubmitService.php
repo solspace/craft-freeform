@@ -74,6 +74,7 @@ class HeadlessSubmitService
         $form->getProperties()->set('headlessPayload', $payload);
         $form->getProperties()->set('headlessIntent', $intent);
         $form->setHeadlessPosted(true);
+        $this->applySourceUrlToRequest($request, $payload, $context);
         $this->applyIntent($form, $intent);
 
         Event::trigger(
@@ -173,6 +174,36 @@ class HeadlessSubmitService
         if (!$submitted || !$request->validateCsrfToken($submitted)) {
             throw new BadRequestHttpException('Invalid or missing CSRF token.');
         }
+    }
+
+    /**
+     * Map headless context.sourceUrl onto the classic formSourceUrl body param
+     * so Mollie FinalizePayment and submission source tracking keep working.
+     *
+     * @param array<string, mixed> $payload
+     * @param array<string, mixed> $context
+     */
+    private function applySourceUrlToRequest(
+        Request $request,
+        array $payload,
+        array $context,
+    ): void {
+        $sourceUrl = $context['sourceUrl']
+            ?? $payload[Form::SOURCE_URL_KEY]
+            ?? null;
+
+        if (!\is_string($sourceUrl) || '' === trim($sourceUrl)) {
+            return;
+        }
+
+        if (false === filter_var($sourceUrl, \FILTER_VALIDATE_URL)) {
+            return;
+        }
+
+        $request->setBodyParams(array_merge(
+            $request->getBodyParams(),
+            [Form::SOURCE_URL_KEY => $sourceUrl],
+        ));
     }
 
     private function applyIntent(Form $form, string $intent): void

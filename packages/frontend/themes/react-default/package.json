@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-react-theme-default",
-  "version": "0.1.7",
+  "version": "0.1.12",
   "description": "Default Freeform React theme — semantic ff-* BEM styles with equal-split row columns",
   "private": false,
   "type": "module",

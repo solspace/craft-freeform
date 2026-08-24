@@ -300,6 +300,12 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           manifest.fields,
         );
 
+        const submitContext = {
+          ...formState.getSubmitContext(),
+          sourceUrl:
+            typeof window !== "undefined" ? window.location.href : undefined,
+        };
+
         const securityMeta = buildSecurityMeta(manifest);
         const extensionMeta = await collectExtensionSubmitMeta(
           extensionsRef.current,
@@ -308,7 +314,8 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
             intent,
             values,
             meta: securityMeta,
-            context: formState.getSubmitContext(),
+            context: submitContext,
+            baseUrl: options.baseUrl,
           },
         );
 
@@ -317,7 +324,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           request: {
             values,
             intent,
-            context: formState.getSubmitContext(),
+            context: submitContext,
             meta: {
               client: CLIENT_NAME,
               clientVersion: options.clientVersion ?? PACKAGE_VERSION,
@@ -334,6 +341,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           manifest,
           intent,
           response: result,
+          baseUrl: options.baseUrl,
         });
 
         if (result.complete) {
@@ -353,11 +361,12 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
 
         return result;
       } catch (error) {
-        // Stripe (and other payment extensions) may redirect away after a
-        // successful local confirmation. That is not a form failure.
+        // Stripe / Mollie (and similar) may redirect away after a successful
+        // local confirmation or checkout handoff. That is not a form failure.
         if (
           error instanceof Error &&
-          error.name === "StripePaymentRedirectError"
+          (error.name === "StripePaymentRedirectError" ||
+            error.name === "MolliePaymentRedirectError")
         ) {
           return undefined;
         }
@@ -386,6 +395,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
     [
       getClient,
       manifest,
+      options.baseUrl,
       options.clientVersion,
       options.onError,
       options.onSuccess,
@@ -505,6 +515,9 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
                 unknown
               >,
             baseUrl: options.baseUrl,
+            requestSubmit: () => {
+              void submit("submit");
+            },
           });
 
           if (cancelled) {
@@ -528,7 +541,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
         extensionMountsRef.current.delete(handle);
       };
     },
-    [manifest, options.baseUrl, syncFromFormState],
+    [manifest, options.baseUrl, submit, syncFromFormState],
   );
 
   const mountCaptcha = useCallback(

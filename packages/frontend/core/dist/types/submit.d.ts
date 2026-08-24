@@ -4,6 +4,8 @@ export type SubmitContext = {
     draftToken?: string | null;
     draftKey?: string | null;
     stateToken?: string | null;
+    /** Browser page URL — used by Mollie (and similar) return handling */
+    sourceUrl?: string | null;
 };
 export type SubmitMeta = {
     idempotencyKey?: string;

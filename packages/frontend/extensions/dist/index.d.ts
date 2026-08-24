@@ -2,6 +2,8 @@ export { calculationExtension, createCalculationExtension, } from "./calculation
 export * from "./captchas/index.js";
 export { createDatetimeExtension, datetimeExtension, } from "./datetime/index.js";
 export { createFileDndExtension, fileDndExtension, } from "./file-dnd/index.js";
+export { createMolliePaymentExtension, MolliePaymentRedirectError, molliePaymentExtension, } from "./payments/mollie/index.js";
+export { createPayPalPaymentExtension, paypalPaymentExtension, } from "./payments/paypal/index.js";
 export { createSquarePaymentExtension, squarePaymentExtension, } from "./payments/square/index.js";
 export { createStripePaymentExtension, stripePaymentExtension, } from "./payments/stripe/index.js";
 export { createSignatureExtension, signatureExtension, supportsSignature, } from "./signature/index.js";

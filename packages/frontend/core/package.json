@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-core",
-  "version": "0.1.7",
+  "version": "0.1.12",
   "description": "Framework-neutral headless runtime for Solspace Freeform",
   "private": false,
   "type": "module",

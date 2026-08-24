@@ -1,6 +1,6 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { CalculationFieldRenderer } from "./CalculationField.js";
-import { CardsFieldRenderer, CheckboxesFieldRenderer, CheckboxFieldRenderer, ConfirmFieldRenderer, DatetimeFieldRenderer, EmailFieldRenderer, FileDndFieldRenderer, FileFieldRenderer, HiddenFieldRenderer, HtmlFieldRenderer, ImageFieldRenderer, MultipleSelectFieldRenderer, NumberFieldRenderer, OpinionScaleFieldRenderer, PasswordFieldRenderer, PhoneFieldRenderer, RadioFieldRenderer, RatingFieldRenderer, RegexFieldRenderer, SelectFieldRenderer, SquarePaymentFieldRenderer, StripePaymentFieldRenderer, TextareaFieldRenderer, TextFieldRenderer, UnsupportedFieldRenderer, WebsiteFieldRenderer, } from "./fields.js";
+import { CardsFieldRenderer, CheckboxesFieldRenderer, CheckboxFieldRenderer, ConfirmFieldRenderer, DatetimeFieldRenderer, EmailFieldRenderer, FileDndFieldRenderer, FileFieldRenderer, HiddenFieldRenderer, HtmlFieldRenderer, ImageFieldRenderer, MolliePaymentFieldRenderer, MultipleSelectFieldRenderer, NumberFieldRenderer, OpinionScaleFieldRenderer, PasswordFieldRenderer, PayPalPaymentFieldRenderer, PhoneFieldRenderer, RadioFieldRenderer, RatingFieldRenderer, RegexFieldRenderer, SelectFieldRenderer, SquarePaymentFieldRenderer, StripePaymentFieldRenderer, TextareaFieldRenderer, TextFieldRenderer, UnsupportedFieldRenderer, WebsiteFieldRenderer, } from "./fields.js";
 import { SignatureFieldRenderer } from "./SignatureField.js";
 import { TableFieldRenderer } from "./TableField.js";
 export function DefaultForm({ className, children, onSubmit, }) {
@@ -13,10 +13,14 @@ export function DefaultRow({ className, children }) {
     return _jsx("div", { className: className, children: children });
 }
 export function DefaultFieldWrapper({ field, form, className, children, }) {
-    if (!form.isFieldVisible(field.handle) && field.type !== "hidden") {
+    const isVisuallyHidden = field.type === "hidden" ||
+        field.type === "mollie" ||
+        field.frontend?.renderer === "payment.mollie" ||
+        field.frontend?.extension === "payment.mollie";
+    if (!form.isFieldVisible(field.handle) && !isVisuallyHidden) {
         return null;
     }
-    return (_jsx("div", { className: className, "data-freeform-field": field.handle, "data-field-container": field.handle, "data-field-type": field.type, hidden: !form.isFieldVisible(field.handle), children: children }));
+    return (_jsx("div", { className: className, "data-freeform-field": field.handle, "data-field-container": field.handle, "data-field-type": field.type, hidden: !form.isFieldVisible(field.handle) || isVisuallyHidden, children: children }));
 }
 export function DefaultLabel({ field, className, requiredIndicator = "*", }) {
     if (!field.label) {
@@ -88,6 +92,8 @@ export const builtinRenderers = {
         calculation: CalculationFieldRenderer,
         "payment.stripe": StripePaymentFieldRenderer,
         "payment.square": SquarePaymentFieldRenderer,
+        "payment.paypal": PayPalPaymentFieldRenderer,
+        "payment.mollie": MolliePaymentFieldRenderer,
     },
     types: {
         text: TextFieldRenderer,
@@ -123,6 +129,8 @@ export const builtinRenderers = {
         calculation: CalculationFieldRenderer,
         stripe: StripePaymentFieldRenderer,
         square: SquarePaymentFieldRenderer,
+        paypal: PayPalPaymentFieldRenderer,
+        mollie: MolliePaymentFieldRenderer,
         _unsupported: UnsupportedFieldRenderer,
     },
 };

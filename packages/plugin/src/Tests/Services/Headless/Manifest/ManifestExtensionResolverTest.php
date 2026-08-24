@@ -65,4 +65,54 @@ class ManifestExtensionResolverTest extends TestCase
             ])
         );
     }
+
+    public function testPayPalUsesThePaymentPayPalRendererAndExtension(): void
+    {
+        self::assertSame('payment.paypal', $this->resolver->resolveRenderer('paypal'));
+        self::assertSame('payment.paypal', $this->resolver->resolveExtension('paypal'));
+    }
+
+    public function testPayPalExtensionIsRequired(): void
+    {
+        self::assertSame(
+            [[
+                'name' => 'payment.paypal',
+                'package' => '@solspace/freeform-extensions',
+                'version' => '^0.1.0',
+                'severity' => 'error',
+                'fallback' => null,
+            ]],
+            $this->resolver->resolveRequiredExtensions([
+                'payment' => [
+                    'type' => 'paypal',
+                    'frontend' => ['extension' => 'payment.paypal'],
+                ],
+            ])
+        );
+    }
+
+    public function testMollieUsesThePaymentMollieRendererAndExtension(): void
+    {
+        self::assertSame('payment.mollie', $this->resolver->resolveRenderer('mollie'));
+        self::assertSame('payment.mollie', $this->resolver->resolveExtension('mollie'));
+    }
+
+    public function testMollieExtensionIsRequired(): void
+    {
+        self::assertSame(
+            [[
+                'name' => 'payment.mollie',
+                'package' => '@solspace/freeform-extensions',
+                'version' => '^0.1.0',
+                'severity' => 'error',
+                'fallback' => null,
+            ]],
+            $this->resolver->resolveRequiredExtensions([
+                'payment' => [
+                    'type' => 'mollie',
+                    'frontend' => ['extension' => 'payment.mollie'],
+                ],
+            ])
+        );
+    }
 }

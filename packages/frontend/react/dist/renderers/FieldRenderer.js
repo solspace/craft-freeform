@@ -15,6 +15,10 @@ export function FieldRenderer({ field, form, theme, renderers, allowRawHtml, }) 
     const isPresentational = field.type === "html" ||
         field.type === "rich-text" ||
         field.type === "image";
+    const isVisuallyHidden = field.type === "hidden" ||
+        field.type === "mollie" ||
+        field.frontend?.renderer === "payment.mollie" ||
+        field.frontend?.extension === "payment.mollie";
     // Skip empty presentational fields so they don't leave blank bordered rows.
     if (isPresentational) {
         if (field.type === "image") {
@@ -36,16 +40,21 @@ export function FieldRenderer({ field, form, theme, renderers, allowRawHtml, }) 
         `ff-field--${toBemModifier(field.handle)}`,
         field.required ? classNames.fieldRequired : "",
         errors.length ? classNames.fieldHasErrors : "",
-        !form.isFieldVisible(field.handle) ? classNames.fieldHidden : "",
+        !form.isFieldVisible(field.handle) || isVisuallyHidden
+            ? classNames.fieldHidden
+            : "",
     ]
         .filter(Boolean)
         .join(" "));
     const renderLabel = () => !isCheckbox &&
         !isPresentational &&
+        !isVisuallyHidden &&
         theme.defaults?.renderLabels !== false ? (_jsx(components.Label, { field: field, className: classNames.label, requiredIndicator: theme.defaults?.requiredIndicator })) : null;
-    const renderInstructions = () => !isPresentational && theme.defaults?.renderInstructions !== false ? (_jsx(components.Instructions, { field: field, className: classNames.instructions })) : null;
+    const renderInstructions = () => !isPresentational &&
+        !isVisuallyHidden &&
+        theme.defaults?.renderInstructions !== false ? (_jsx(components.Instructions, { field: field, className: classNames.instructions })) : null;
     const renderErrors = () => theme.defaults?.renderErrors !== false ? (_jsx(components.Errors, { errors: errors, className: classNames.errors, errorClassName: classNames.error })) : null;
-    if (field.type === "hidden") {
+    if (isVisuallyHidden) {
         return (_jsx(components.FieldWrapper, { field: field, form: form, className: fieldClassName, children: _jsx(Renderer, { field: field, form: form, value: value, errors: errors, input: form.getFieldProps(field.handle), classNames: classNames, allowRawHtml: allowRawHtml, renderLabel: renderLabel, renderInstructions: renderInstructions, renderErrors: renderErrors }) }));
     }
     if (field.type === "group") {

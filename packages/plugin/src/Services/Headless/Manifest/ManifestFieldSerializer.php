@@ -20,6 +20,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
+use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Fields\PayPalField;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -199,6 +201,46 @@ class ManifestFieldSerializer
                 'paymentUrl' => '/freeform/payments/square/payments',
                 'redirectSuccess' => $field->getRedirectSuccess(),
                 'redirectFailed' => $field->getRedirectFailed(),
+            ];
+        }
+
+        if ($field instanceof PayPalField) {
+            $integration = $field->getIntegration();
+
+            return [
+                // Public PayPal Buttons SDK client id plus an opaque Freeform
+                // integration hash. Client secrets remain server-only.
+                'clientId' => $integration?->getClientId(),
+                'sandbox' => $integration?->isSandbox(),
+                'integration' => HashHelper::hash([
+                    $form->getId(),
+                    $integration?->getId() ?? 0,
+                    $field->getId(),
+                ]),
+                'amountType' => $field->getAmountType(),
+                'amountField' => $field->getAmountField()?->getHandle(),
+                'currency' => $field->getCurrency(),
+                'required' => $field->isRequired(),
+                'orderUrl' => '/freeform/payments/paypal/orders',
+            ];
+        }
+
+        if ($field instanceof MollieField) {
+            $integration = $field->getIntegration();
+
+            return [
+                // Mollie has no browser SDK credential. Only an opaque Freeform
+                // integration hash is exposed; the API key stays server-only.
+                'integration' => HashHelper::hash([
+                    $form->getId(),
+                    $integration?->getId() ?? 0,
+                    $field->getId(),
+                ]),
+                'amountType' => $field->getAmountType(),
+                'amountField' => $field->getAmountField()?->getHandle(),
+                'currency' => $field->getCurrency(),
+                'required' => $field->isRequired(),
+                'paymentUrl' => '/freeform/payments/mollie/create',
             ];
         }
 

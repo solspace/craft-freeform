@@ -23,6 +23,8 @@ export type ExtensionSubmitContext = {
     values: Record<string, unknown>;
     meta: SubmitMeta;
     context?: SubmitContext;
+    /** Craft / Freeform origin used by the Freeform client (prefer over manifest.site.baseUrl) */
+    baseUrl?: string;
 };
 export type ExtensionPayloadContext = ExtensionSubmitContext & {
     setMeta: (meta: Partial<SubmitMeta>) => void;
@@ -32,6 +34,7 @@ export type ExtensionSubmitResultContext = {
     manifest: FreeformManifest;
     intent: SubmitIntent;
     response: SubmitResponse;
+    baseUrl?: string;
 };
 export type CaptchaMountContext = {
     manifest: FreeformManifest;
@@ -48,6 +51,11 @@ export type FieldMountContext = {
     getValues?: () => Record<string, unknown>;
     /** Craft / Freeform origin used to resolve relative API URLs */
     baseUrl?: string;
+    /**
+     * Request a final form submit (e.g. after PayPal capture). Optional so
+     * non-React adapters can omit it; extensions should fall back to a notice.
+     */
+    requestSubmit?: () => void | Promise<void>;
 };
 export type FreeformExtension = {
     name: string;

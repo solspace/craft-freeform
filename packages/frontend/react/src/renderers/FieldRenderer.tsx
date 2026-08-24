@@ -37,6 +37,11 @@ export function FieldRenderer({
     field.type === "html" ||
     field.type === "rich-text" ||
     field.type === "image";
+  const isVisuallyHidden =
+    field.type === "hidden" ||
+    field.type === "mollie" ||
+    field.frontend?.renderer === "payment.mollie" ||
+    field.frontend?.extension === "payment.mollie";
 
   // Skip empty presentational fields so they don't leave blank bordered rows.
   if (isPresentational) {
@@ -66,7 +71,9 @@ export function FieldRenderer({
       `ff-field--${toBemModifier(field.handle)}`,
       field.required ? classNames.fieldRequired : "",
       errors.length ? classNames.fieldHasErrors : "",
-      !form.isFieldVisible(field.handle) ? classNames.fieldHidden : "",
+      !form.isFieldVisible(field.handle) || isVisuallyHidden
+        ? classNames.fieldHidden
+        : "",
     ]
       .filter(Boolean)
       .join(" "),
@@ -75,6 +82,7 @@ export function FieldRenderer({
   const renderLabel = () =>
     !isCheckbox &&
     !isPresentational &&
+    !isVisuallyHidden &&
     theme.defaults?.renderLabels !== false ? (
       <components.Label
         field={field}
@@ -84,7 +92,9 @@ export function FieldRenderer({
     ) : null;
 
   const renderInstructions = () =>
-    !isPresentational && theme.defaults?.renderInstructions !== false ? (
+    !isPresentational &&
+    !isVisuallyHidden &&
+    theme.defaults?.renderInstructions !== false ? (
       <components.Instructions
         field={field}
         className={classNames.instructions}
@@ -100,7 +110,7 @@ export function FieldRenderer({
       />
     ) : null;
 
-  if (field.type === "hidden") {
+  if (isVisuallyHidden) {
     return (
       <components.FieldWrapper
         field={field}

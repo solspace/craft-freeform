@@ -13,19 +13,17 @@ Visit your the [console area](https://console.x.ai/) on the xAI site to get your
 ### 2. Configure the Integration
 
 - Copy and paste your API key into the integration in Freeform.
-- Select the AI model you want to use. The default is `grok-4.1-fast`.
+- Select the AI model you want to use. The default is `grok-4.20`.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
 - Configure the Max Tokens setting. This can be overrided per form.
 - Click the **Save** button.
 
 #### Recommended Models
 
-- ⚡ `grok-4.1-fast` — fast + cheap
-  - High-volume / low latency apps
-- ⚖️ `grok-4.1` — balanced
-  - General use, improved accuracy/personality
-- 🧠 `grok-4.20` — smartest
-  - Advanced reasoning / agent workflows
+- ⚡ `grok-4.20` — fast + cheap
+  - General-purpose content generation and reasoning
+- 🧠 `grok-4.6` — smartest
+  - Advanced reasoning, coding, and agent workflows
 
 ### 3. Authorize the Integration
 

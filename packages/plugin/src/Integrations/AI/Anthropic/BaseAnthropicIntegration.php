@@ -62,7 +62,8 @@ abstract class BaseAnthropicIntegration extends APIIntegration implements AiInte
 
     public function getTemperature(): ?float
     {
-        return $this->getTemperatureValue();
+        // Anthropic usage in this integration does not require temperature
+        return null;
     }
 
     protected function getProcessableFields(string $category): array

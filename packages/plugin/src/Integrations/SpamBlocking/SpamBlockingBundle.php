@@ -83,12 +83,25 @@ class SpamBlockingBundle extends FeatureBundle
         $settings = $this->plugin()->settings;
         $isQueueEnabled = $settings->isAiFieldQueueEnabled();
 
+        if (!$this->integrationsProvider->hasAsyncSpamBlocking($form)) {
+            return;
+        }
+
         if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 
-        // Skip forms that are already marked as spam
         if ($form->isMarkedAsSpam()) {
+            return;
+        }
+
+        // Store-data-off path already ran AI inline in handleSubmission.
+        if ($form->isAsyncSpamValidated()) {
+            return;
+        }
+
+        $submission = $form->getSubmission();
+        if (!$submission?->id) {
             return;
         }
 
@@ -101,8 +114,8 @@ class SpamBlockingBundle extends FeatureBundle
 
         $job = new ProcessSpamValidationJob([
             'formId' => $form->getId(),
-            'submissionId' => $form->getSubmission()?->getId(),
-            'postedData' => $form->getSubmission()->getFormFieldValues(),
+            'submissionId' => $submission->getId(),
+            'postedData' => $submission->getFormFieldValues(),
             'displayErrors' => false,
         ]);
 

@@ -46,6 +46,12 @@ class PostForwardingTrigger extends FeatureBundle
 
         Event::on(
             Form::class,
+            Form::EVENT_AFTER_ASYNC_SPAM_VALIDATION,
+            [$this, 'sendPostPayload']
+        );
+
+        Event::on(
+            Form::class,
             Form::EVENT_OUTPUT_AS_JSON,
             [$this, 'attachToJson']
         );
@@ -57,6 +63,11 @@ class PostForwardingTrigger extends FeatureBundle
         $submission = $form->getSubmission();
 
         if ($form->isDisabled()->payload || $form->isMarkedAsSpam()) {
+            return;
+        }
+
+        // Wait for AI / async spam before forwarding (only when "hold notifications" is on).
+        if ($this->integrationsProvider->shouldDeferPostProcessForAsyncSpam($form) && !$form->isAsyncSpamValidated()) {
             return;
         }
 

@@ -36,7 +36,9 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
+use Solspace\Freeform\Events\Submissions\SubmitEvent as SubmissionSubmitEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
@@ -781,6 +783,21 @@ class Freeform extends Plugin
             SubmissionsService::class,
             SubmissionsService::EVENT_AFTER_SUBMIT,
             [$this->relations, 'relate']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_AFTER_ASYNC_SPAM_VALIDATION,
+            function (FormSubmitEvent $event) {
+                $submission = $event->getSubmission();
+                if (!$submission) {
+                    return;
+                }
+
+                $this->relations->relate(
+                    new SubmissionSubmitEvent($event->getForm(), $submission)
+                );
+            }
         );
 
         Event::on(

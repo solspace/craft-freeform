@@ -3,23 +3,15 @@ import type { FieldSelectionProperty } from "@ff-client/types/properties";
 import { useSelector } from "react-redux";
 
 export const generateValue = (value: string, format?: string): string => {
-  // Extract all field handles from the value
-  const fieldMatches = value.match(/field:([a-zA-Z0-9_]+)/g);
+  // Mirror calculation-box: replace each field:handle in place.
+  // Do not join with commas — Tagify MixedTags expects `[[a]] [[b]]`.
+  return value.replace(/field:([a-zA-Z0-9_]+)/g, (_, variable: string) => {
+    if (format === "<mark>...</mark>") {
+      return `<mark>${variable}</mark>`;
+    }
 
-  if (!fieldMatches || fieldMatches.length === 0) {
-    return value;
-  }
-
-  // Extract just the handle names (remove 'field:' prefix)
-  const fieldHandles = fieldMatches.map((match) => match.replace("field:", ""));
-
-  if (format === "<mark>...</mark>") {
-    // Join with commas and wrap each in mark tags
-    return fieldHandles.map((handle) => `<mark>${handle}</mark>`).join(", ");
-  }
-
-  // For other formats, join with commas and wrap in brackets
-  return fieldHandles.map((handle) => `[[${handle}]]`).join(", ");
+    return `[[${variable}]]`;
+  });
 };
 
 export const useFieldSelectionHandles = (

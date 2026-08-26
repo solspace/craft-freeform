@@ -724,6 +724,9 @@ return [
     'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Pas aan hoe de AI inzendingen op spam moet analyseren. Laat leeg om de standaardprompt te gebruiken.',
     'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analyseer de inhoud en geef een duidelijke beoordeling of het spam of legitieme inhoud lijkt.',
     'Send labels with values (e.g., "Name: John Doe").' => 'Verstuur labels met waarden (bijv. "Name: John Doe").',
+    'Wait for Analysis Before Processing Submission Actions' => 'Wacht op analyse voordat inzendingsacties worden verwerkt',
+    'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.' => 'Wanneer ingeschakeld, worden e-mailmeldingen, CRM-integraties, webhooks en andere inzendingsacties uitgesteld totdat de AI-spamanalyse is voltooid. Als de inzending als spam wordt geïdentificeerd, worden deze acties niet uitgevoerd.',
+    'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.' => 'Dit kan tijdgevoelige integraties en inzendingsacties vertragen. Test je configuratie zorgvuldig wanneer je deze functie gebruikt.',
     'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'Indien ingeschakeld, wordt een gedetailleerde foutmelding aan de gebruiker getoond in plaats van de inzending stilzwijgend als spam te markeren.',
 
     // Form Builder // Integrations // Post Forwarding

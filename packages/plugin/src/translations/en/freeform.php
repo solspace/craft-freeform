@@ -724,9 +724,9 @@ return [
     'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.',
     'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.',
     'Send labels with values (e.g., "Name: John Doe").' => 'Send labels with values (e.g., "Name: John Doe").',
-    'Hold notifications until analysis completes' => 'Hold notifications until analysis completes',
-    'When enabled, emails, CRM, webhooks, and other side effects wait until AI spam analysis finishes. If spam is detected, they are not sent. Off by default.' => 'When enabled, emails, CRM, webhooks, and other side effects wait until AI spam analysis finishes. If spam is detected, they are not sent. Off by default.',
-    'Note: Emails, CRM, webhooks, and related side effects will wait until AI analysis finishes. If your form uses payments or other time-sensitive integrations, verify that this delay works for your setup before enabling in production.' => 'Note: Emails, CRM, webhooks, and related side effects will wait until AI analysis finishes. If your form uses payments or other time-sensitive integrations, verify that this delay works for your setup before enabling in production.',
+    'Wait for Analysis Before Processing Submission Actions' => 'Wait for Analysis Before Processing Submission Actions',
+    'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.' => 'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.',
+    'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.' => 'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.',
     'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.',
 
     // Form Builder // Integrations // Post Forwarding

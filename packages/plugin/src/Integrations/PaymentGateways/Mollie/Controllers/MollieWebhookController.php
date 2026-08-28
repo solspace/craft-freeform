@@ -181,6 +181,13 @@ class MollieWebhookController extends BaseMollieController
             return;
         }
 
+        if (
+            $submissionsService->shouldDeferPostProcessForAsyncSpam($form)
+            && $submissionsService->hasPendingAsyncSpamValidation($submission)
+        ) {
+            return;
+        }
+
         $form->setSubmission($submission);
         $submissionsService->postProcessSubmission($form, $submission);
     }

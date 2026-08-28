@@ -34,6 +34,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
@@ -285,6 +286,40 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         return true;
+    }
+
+    /**
+     * Whether a queued async spam validation job is still waiting for this submission.
+     */
+    public function hasPendingAsyncSpamValidation(Submission $submission): bool
+    {
+        if (!$submission->id) {
+            return false;
+        }
+
+        $rows = (new Query())
+            ->select(['job'])
+            ->from(Table::QUEUE)
+            ->where([
+                'fail' => false,
+                'dateReserved' => null,
+            ])
+            ->all()
+        ;
+
+        foreach ($rows as $row) {
+            try {
+                $job = unserialize($row['job'], ['allowed_classes' => true]);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if ($job instanceof ProcessSpamValidationJob && (int) $job->submissionId === (int) $submission->id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

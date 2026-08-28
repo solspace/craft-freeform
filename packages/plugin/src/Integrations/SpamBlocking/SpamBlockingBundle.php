@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -84,6 +85,11 @@ class SpamBlockingBundle extends FeatureBundle
         $isQueueEnabled = $settings->isAiFieldQueueEnabled();
 
         if (!$this->integrationsProvider->hasAsyncSpamBlocking($form)) {
+            return;
+        }
+
+        $formMonitorProvider = \Craft::$container->get(FormMonitorProvider::class);
+        if ($formMonitorProvider->isRequestFromFormMonitor($form)) {
             return;
         }
 

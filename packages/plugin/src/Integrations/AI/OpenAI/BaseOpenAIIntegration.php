@@ -32,9 +32,9 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     #[Input\Text(
         label: 'Model',
         instructions: 'The OpenAI model to use for AI processing.',
-        placeholder: 'gpt-5.4-nano',
+        placeholder: 'gpt-5.6-luna',
     )]
-    protected string $model = 'gpt-5.4-nano';
+    protected string $model = 'gpt-5.6-luna';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(

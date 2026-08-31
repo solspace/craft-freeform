@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
@@ -23,6 +24,11 @@ class RelationsService extends BaseService
         $submission = $form->getSubmission();
 
         if (empty($relationships) || !$submission || !$submission->id) {
+            return;
+        }
+
+        $integrationsProvider = \Craft::$container->get(FormIntegrationsProvider::class);
+        if ($integrationsProvider->shouldDeferPostProcessForAsyncSpam($form) && !$form->isAsyncSpamValidated()) {
             return;
         }
 

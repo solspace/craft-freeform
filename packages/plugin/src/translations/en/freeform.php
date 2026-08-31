@@ -724,6 +724,9 @@ return [
     'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.',
     'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.',
     'Send labels with values (e.g., "Name: John Doe").' => 'Send labels with values (e.g., "Name: John Doe").',
+    'Wait for Analysis Before Processing Submission Actions' => 'Wait for Analysis Before Processing Submission Actions',
+    'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.' => 'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.',
+    'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.' => 'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.',
     'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.',
 
     // Form Builder // Integrations // Post Forwarding

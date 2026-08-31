@@ -27,6 +27,22 @@ npm install @solspace/freeform-core \
 - Deferred for later: payments, Vue adapter, Bootstrap/Tailwind themes.
 - Legacy GraphQL form/submit APIs (`freeform` query, `save_{handle}_Submission`) remain; prefer REST or the new headless GraphQL adapters for new work.
 
+## 5.15.28 - 2026-08-31
+
+### Changed
+- **AI Spam Analysis**: Added async spam validation handling for submission post-processing and related integrations:
+  - New **Wait for Analysis Before Processing Submission Actions** setting.
+  - Defers post-processing for submissions awaiting async spam validation.
+  - Ensures **Mollie** webhooks wait for pending async spam validation before processing submissions.
+  - Updates post-forwarding behavior to account for async spam validation before sending payloads.
+  - Skips spam checks for **Form Monitor** requests.
+- Updated AI model versions in documentation.
+- Improved AI field selection logic when inserting field handles into prompts.
+- Simplified temperature handling in the **Anthropic** integration.
+
+### Fixed
+- **Mailchimp** birthday and date fields now respect configured output date formats.
+
 ## 5.15.27 - 2026-08-20
 
 ### Added

@@ -724,6 +724,9 @@ return [
     'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Passen Sie an, wie die KI Einsendungen auf Spam analysieren soll. Lassen Sie das Feld leer, um die Standard-Aufforderung zu verwenden.',
     'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analysieren Sie den Inhalt und geben Sie eine klare Einschätzung ab, ob es sich um Spam oder legitime Inhalte handelt.',
     'Send labels with values (e.g., "Name: John Doe").' => 'Senden Sie Labels mit Werten (z.B. "Name: John Doe").',
+    'Wait for Analysis Before Processing Submission Actions' => 'Vor der Verarbeitung von Übermittlungsaktionen auf die Analyse warten',
+    'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.' => 'Wenn aktiviert, werden E-Mail-Benachrichtigungen, CRM-Integrationen, Webhooks und andere Übermittlungsaktionen verzögert, bis die KI-Spamanalyse abgeschlossen ist. Wenn die Übermittlung als Spam erkannt wird, werden diese Aktionen nicht ausgeführt.',
+    'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.' => 'Dies kann zeitkritische Integrationen und Übermittlungsaktionen verzögern. Testen Sie Ihre Konfiguration sorgfältig, wenn Sie diese Funktion verwenden.',
     'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'Wenn aktiviert, wird dem Benutzer eine detaillierte Fehlermeldung angezeigt, anstatt die Einsendung stillschweigend als Spam zu markieren.',
 
     // Form Builder // Integrations // Post Forwarding

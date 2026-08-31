@@ -32,9 +32,9 @@ abstract class BaseAnthropicIntegration extends APIIntegration implements AiInte
     #[Input\Text(
         label: 'Model',
         instructions: 'The Anthropic model to use for AI processing.',
-        placeholder: 'claude-haiku-4.5',
+        placeholder: 'claude-haiku-4-5-20251001',
     )]
-    protected string $model = 'claude-haiku-4.5';
+    protected string $model = 'claude-haiku-4-5-20251001';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(
@@ -62,7 +62,8 @@ abstract class BaseAnthropicIntegration extends APIIntegration implements AiInte
 
     public function getTemperature(): ?float
     {
-        return $this->getTemperatureValue();
+        // Anthropic usage in this integration does not require temperature
+        return null;
     }
 
     protected function getProcessableFields(string $category): array

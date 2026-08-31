@@ -32,9 +32,9 @@ abstract class BasexAIIntegration extends APIIntegration implements AiIntegratio
     #[Input\Text(
         label: 'Model',
         instructions: 'The xAI model to use for AI processing.',
-        placeholder: 'grok-4.1-fast',
+        placeholder: 'grok-4.20',
     )]
-    protected string $model = 'grok-4.1-fast';
+    protected string $model = 'grok-4.20';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(

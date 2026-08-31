@@ -397,12 +397,26 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
                 continue;
             }
 
+            $options = null;
+            if (!empty($field->options)) {
+                $options = [];
+                foreach ($field->options as $key => $value) {
+                    if (\is_scalar($value)) {
+                        $options[] = [
+                            'key' => $key,
+                            'label' => (string) $value,
+                        ];
+                    }
+                }
+            }
+
             $fieldList[] = new FieldObject(
                 $field->tag,
                 $field->name,
                 $type,
                 $category,
                 $field->required,
+                $options,
             );
         }
 

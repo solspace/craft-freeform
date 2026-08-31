@@ -1,8 +1,8 @@
 import type { ManifestFieldDefinition } from "@solspace/freeform-core";
 import type {
   FreeformVueTheme,
-  VueFieldRenderer,
   RendererOverrides,
+  VueFieldRenderer,
 } from "../types.js";
 import { builtinRenderers } from "./builtin/index.js";
 

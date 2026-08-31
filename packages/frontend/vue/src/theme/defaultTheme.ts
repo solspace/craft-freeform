@@ -1,4 +1,4 @@
-import type { FreeformVueTheme, FreeformThemeClassNames } from "../types.js";
+import type { FreeformThemeClassNames, FreeformVueTheme } from "../types.js";
 
 export const defaultTheme: FreeformVueTheme = {
   name: "default",

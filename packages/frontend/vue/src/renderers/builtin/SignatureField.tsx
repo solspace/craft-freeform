@@ -176,7 +176,11 @@ export const SignatureFieldRenderer = defineComponent({
           onPointerleave={endStroke}
         />
         {config.showClearButton !== false ? (
-          <button type="button" disabled={!hasInk.value || !enabled} onClick={clear}>
+          <button
+            type="button"
+            disabled={!hasInk.value || !enabled}
+            onClick={clear}
+          >
             Clear
           </button>
         ) : null}

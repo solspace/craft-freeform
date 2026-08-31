@@ -1,5 +1,5 @@
 import type { ManifestFieldDefinition } from "@solspace/freeform-core";
-import type { FreeformVueTheme, FreeformThemeClassNames } from "../types.js";
+import type { FreeformThemeClassNames, FreeformVueTheme } from "../types.js";
 import { joinClassNames } from "./mergeClassNames.js";
 
 const CHOICE_TYPES = new Set([

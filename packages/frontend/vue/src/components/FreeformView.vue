@@ -4,8 +4,6 @@ import { builtinComponents } from "../renderers/builtin/index.js";
 import { joinClassNames } from "../theme/mergeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import type { UseFreeformResult } from "../types.js";
-import CaptchaHost from "./CaptchaHost.vue";
-import FieldRenderer from "./FieldRenderer.vue";
 
 const props = defineProps<{
   form: UseFreeformResult & {
@@ -19,9 +17,7 @@ const components = computed(() => ({
   ...props.form.theme.renderers?.components,
 }));
 
-const strategy = computed(
-  () => props.form.theme.classNameStrategy ?? "merge",
-);
+const strategy = computed(() => props.form.theme.classNameStrategy ?? "merge");
 const colorScheme = computed(
   () => props.form.theme.defaults?.colorScheme ?? "system",
 );

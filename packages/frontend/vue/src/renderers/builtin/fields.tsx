@@ -1,4 +1,3 @@
-
 // @ts-nocheck
 import ExtensionHost from "../../components/ExtensionHost.vue";
 import type { VueFieldRendererProps } from "../../types.js";
@@ -8,9 +7,7 @@ function inputProps(props: VueFieldRendererProps) {
     id?: string;
     name?: string;
     value?: string;
-    onChange?: (
-      event: Event,
-    ) => void;
+    onChange?: (event: Event) => void;
     onBlur?: () => void;
     disabled?: boolean;
     required?: boolean;
@@ -53,9 +50,7 @@ export function RegexFieldRenderer(props: VueFieldRendererProps) {
 
 export function PasswordFieldRenderer(props: VueFieldRendererProps) {
   const input = inputProps(props);
-  return (
-    <input type="password" class={props.classNames.input} {...input} />
-  );
+  return <input type="password" class={props.classNames.input} {...input} />;
 }
 
 export function ConfirmFieldRenderer(props: VueFieldRendererProps) {
@@ -530,12 +525,7 @@ export function HtmlFieldRenderer(props: VueFieldRendererProps) {
   const html = props.field.content?.rendered?.html?.trim();
 
   if (props.allowRawHtml && html) {
-    return (
-      <div
-        class={contentClass}
-        innerHTML={html}
-      />
-    );
+    return <div class={contentClass} innerHTML={html} />;
   }
 
   // Empty rich-text / html with no renderable content — don't invent a second row.

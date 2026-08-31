@@ -28,8 +28,8 @@ import {
 import { defaultTheme } from "../theme/defaultTheme.js";
 import {
   CLIENT_NAME,
-  PACKAGE_VERSION,
   type FreeformRuntime,
+  PACKAGE_VERSION,
   type UseFreeformOptions,
   type UseFreeformResult,
 } from "../types.js";
@@ -107,10 +107,7 @@ export function useFreeform(
     }
 
     visibilityVersionRef.value += 1;
-    snapshot.value = snapshotFromState(
-      formState,
-      visibilityVersionRef.value,
-    );
+    snapshot.value = snapshotFromState(formState, visibilityVersionRef.value);
   }
 
   function getClient(): FreeformClient {
@@ -451,8 +448,7 @@ export function useFreeform(
 
     const pages = currentManifest.layout.pages;
     const isLastPage =
-      pages.length === 0 ||
-      snapshot.value.currentPageIndex >= pages.length - 1;
+      pages.length === 0 || snapshot.value.currentPageIndex >= pages.length - 1;
 
     if (currentManifest.settings.multiPage && !isLastPage) {
       await goNext();

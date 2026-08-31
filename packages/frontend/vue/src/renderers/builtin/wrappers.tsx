@@ -1,14 +1,10 @@
 import { defineComponent, type PropType } from "vue";
 import type {
-  FreeformButtonProps,
-  FreeformButtonRowProps,
   FreeformComponentProps,
-  FreeformErrorsProps,
   FreeformFieldWrapperProps,
   FreeformInstructionsProps,
   FreeformLabelProps,
   FreeformPageProps,
-  FreeformRowProps,
   VueFieldRenderer,
   VueFieldRendererProps,
 } from "../../types.js";
@@ -49,7 +45,10 @@ import { TableFieldRenderer } from "./TableField.js";
 export const DefaultForm = defineComponent({
   name: "DefaultForm",
   props: {
-    form: { type: Object as PropType<FreeformComponentProps["form"]>, required: true },
+    form: {
+      type: Object as PropType<FreeformComponentProps["form"]>,
+      required: true,
+    },
     class: { type: String, default: undefined },
     onSubmit: {
       type: Function as PropType<FreeformComponentProps["onSubmit"]>,
@@ -68,7 +67,10 @@ export const DefaultForm = defineComponent({
 export const DefaultPage = defineComponent({
   name: "DefaultPage",
   props: {
-    form: { type: Object as PropType<FreeformPageProps["form"]>, required: true },
+    form: {
+      type: Object as PropType<FreeformPageProps["form"]>,
+      required: true,
+    },
     pageIndex: { type: Number, required: true },
     class: { type: String, default: undefined },
   },
@@ -118,7 +120,9 @@ export const DefaultFieldWrapper = defineComponent({
           data-freeform-field={props.field.handle}
           data-field-container={props.field.handle}
           data-field-type={props.field.type}
-          hidden={!props.form.isFieldVisible(props.field.handle) || isVisuallyHidden}
+          hidden={
+            !props.form.isFieldVisible(props.field.handle) || isVisuallyHidden
+          }
         >
           {slots.default?.()}
         </div>
@@ -130,7 +134,10 @@ export const DefaultFieldWrapper = defineComponent({
 export const DefaultLabel = defineComponent({
   name: "DefaultLabel",
   props: {
-    field: { type: Object as PropType<FreeformLabelProps["field"]>, required: true },
+    field: {
+      type: Object as PropType<FreeformLabelProps["field"]>,
+      required: true,
+    },
     class: { type: String, default: undefined },
     requiredIndicator: { type: String, default: "*" },
   },
@@ -208,7 +215,10 @@ export const DefaultButtonRow = defineComponent({
   },
 });
 
-function buttonComponent(name: string, defaultType: "button" | "submit" = "submit") {
+function buttonComponent(
+  name: string,
+  defaultType: "button" | "submit" = "submit",
+) {
   return defineComponent({
     name,
     props: {

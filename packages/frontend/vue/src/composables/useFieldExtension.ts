@@ -28,7 +28,11 @@ export function useFieldExtension(
   onMounted(mount);
 
   watch(
-    () => [field.frontend?.extension, field.handle, form.isFieldVisible(field.handle)],
+    () => [
+      field.frontend?.extension,
+      field.handle,
+      form.isFieldVisible(field.handle),
+    ],
     mount,
   );
 

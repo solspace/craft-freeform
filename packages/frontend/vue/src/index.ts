@@ -11,9 +11,9 @@ export type {
   SubmitIntent,
   SubmitResponse,
 } from "@solspace/freeform-core";
+export { default as FormLoader } from "./components/FormLoader.vue";
 export { default as Freeform } from "./components/Freeform.vue";
 export { default as FreeformView } from "./components/FreeformView.vue";
-export { default as FormLoader } from "./components/FormLoader.vue";
 export { useFieldExtension } from "./composables/useFieldExtension.js";
 export { useFreeform } from "./composables/useFreeform.js";
 export {

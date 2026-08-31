@@ -66,9 +66,7 @@ const showInstructions = computed(
     props.theme.defaults?.renderInstructions !== false,
 );
 
-const showErrors = computed(
-  () => props.theme.defaults?.renderErrors !== false,
-);
+const showErrors = computed(() => props.theme.defaults?.renderErrors !== false);
 
 const shouldRender = computed(() => {
   if (!isPresentational.value) {
@@ -76,7 +74,9 @@ const shouldRender = computed(() => {
   }
 
   if (props.field.type === "image") {
-    const config = (props.field.frontend?.config ?? {}) as { src?: string | null };
+    const config = (props.field.frontend?.config ?? {}) as {
+      src?: string | null;
+    };
     const image = (
       props.field.content as { image?: { src?: string | null } } | undefined
     )?.image;

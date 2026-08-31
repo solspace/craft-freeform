@@ -1,0 +1,47 @@
+{
+  "name": "@solspace/freeform-theme-tailwind",
+  "version": "0.1.16",
+  "description": "Official Tailwind starter theme for Freeform (React & Vue)",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "lint": "biome check src"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-react": "^0.1.0"
+  },
+  "devDependencies": {
+    "@solspace/freeform-react": "workspace:*",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "react",
+    "vue",
+    "theme",
+    "tailwind"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

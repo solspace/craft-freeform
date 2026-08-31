@@ -94,11 +94,23 @@ class FinalizePayment extends FeatureBundle
             return;
         }
 
+        $sourceUrl = (string) $request->post(Form::SOURCE_URL_KEY);
+        if ('' === $sourceUrl) {
+            $payload = $form->getProperties()->get('headlessPayload');
+            if (\is_array($payload)) {
+                $sourceUrl = (string) ($payload['context']['sourceUrl'] ?? '');
+            }
+        }
+
+        if ('' !== $sourceUrl && false === filter_var($sourceUrl, \FILTER_VALIDATE_URL)) {
+            $sourceUrl = '';
+        }
+
         \Craft::$app->getSession()->set(
             Mollie::SESSION_RETURN_KEY.$form->getId(),
             [
                 'paymentId' => $paymentId,
-                'sourceUrl' => (string) $request->post(Form::SOURCE_URL_KEY),
+                'sourceUrl' => $sourceUrl,
             ]
         );
     }

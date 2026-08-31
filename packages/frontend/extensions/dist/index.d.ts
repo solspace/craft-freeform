@@ -1,0 +1,16 @@
+export { calculationExtension, createCalculationExtension, } from "./calculation/index.js";
+export * from "./captchas/index.js";
+export { createDatetimeExtension, datetimeExtension, } from "./datetime/index.js";
+export { createFileDndExtension, fileDndExtension, } from "./file-dnd/index.js";
+export { createMolliePaymentExtension, MolliePaymentRedirectError, molliePaymentExtension, } from "./payments/mollie/index.js";
+export { createPayPalPaymentExtension, paypalPaymentExtension, } from "./payments/paypal/index.js";
+export { createSquarePaymentExtension, squarePaymentExtension, } from "./payments/square/index.js";
+export { createStripePaymentExtension, stripePaymentExtension, } from "./payments/stripe/index.js";
+export { createSignatureExtension, signatureExtension, supportsSignature, } from "./signature/index.js";
+export { createTableExtension, supportsTable, tableExtension, } from "./table/index.js";
+import type { FreeformExtension } from "@solspace/freeform-core";
+import { captchaExtensions } from "./captchas/index.js";
+export { captchaExtensions };
+export declare const recommendedExtensions: FreeformExtension[];
+export default captchaExtensions;
+//# sourceMappingURL=index.d.ts.map

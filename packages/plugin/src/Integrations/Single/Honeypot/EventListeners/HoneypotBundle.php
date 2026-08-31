@@ -104,6 +104,26 @@ class HoneypotBundle extends FeatureBundle
 
                 return;
             }
+        } elseif ($form->isHeadlessPosted()) {
+            $payload = $form->getProperties()->get('headlessPayload', []);
+            $meta = \is_array($payload['meta'] ?? null) ? $payload['meta'] : [];
+            $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];
+
+            if (
+                isset($meta['honeypot']['name'], $meta['honeypot']['value'])
+                && $honeypotName === $meta['honeypot']['name']
+                && '' === $meta['honeypot']['value']
+            ) {
+                $logger->debug('Honeypot check passed for headless request');
+
+                return;
+            }
+
+            if (\array_key_exists($honeypotName, $values) && '' === $values[$honeypotName]) {
+                $logger->debug('Honeypot check passed for headless values');
+
+                return;
+            }
         } else {
             if ('' === $postedValue) {
                 $logger->debug('Honeypot check passed successfully for POST request');

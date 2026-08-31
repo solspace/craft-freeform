@@ -1,0 +1,45 @@
+{
+  "name": "@solspace/freeform-core",
+  "version": "0.1.16",
+  "description": "Framework-neutral headless runtime for Solspace Freeform",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run --config vitest.config.ts",
+    "lint": "biome check"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "4.1.9"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "forms"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "expression-language": "^2.5.4"
+  }
+}

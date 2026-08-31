@@ -1,0 +1,57 @@
+{
+  "name": "@solspace/freeform-extensions",
+  "version": "0.1.16",
+  "description": "Official Freeform headless extensions for captchas and advanced field behavior",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./captchas": {
+      "types": "./dist/captchas/index.d.ts",
+      "import": "./dist/captchas/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "test": "vitest run --config vitest.config.ts",
+    "lint": "biome check src"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-core": "^0.1.0"
+  },
+  "devDependencies": {
+    "@solspace/freeform-core": "workspace:*",
+    "typescript": "^5.8.3",
+    "vitest": "4.1.9"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "captcha",
+    "extensions"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "@friendlycaptcha/sdk": "^0.1.37",
+    "@paypal/paypal-js": "^9.6.0",
+    "@stripe/stripe-js": "^8.11.0",
+    "expression-language": "^2.5.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

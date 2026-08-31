@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-vue",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Vue components and composables for Solspace Freeform headless forms",
   "private": true,
   "type": "module",

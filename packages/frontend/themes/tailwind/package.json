@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-theme-tailwind",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Official Tailwind starter theme for Freeform (React & Vue)",
   "private": false,
   "type": "module",

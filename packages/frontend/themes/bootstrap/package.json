@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-theme-bootstrap",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Official Bootstrap 5 starter theme for Freeform (React & Vue)",
   "private": false,
   "type": "module",

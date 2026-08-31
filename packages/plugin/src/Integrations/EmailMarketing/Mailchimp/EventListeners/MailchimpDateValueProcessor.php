@@ -25,6 +25,39 @@ class MailchimpDateValueProcessor extends FeatureBundle
 {
     private const DATE_FORMAT = 'm/d/Y';
 
+    private const YEAR_FIRST_INPUT_FORMATS = [
+        'Y/m/d',
+        'Y/n/j',
+        'Y-m-d',
+        'Y-n-j',
+        'Y.m.d',
+        'Y.n.j',
+        'Y m d',
+        'Y n j',
+    ];
+
+    private const MONTH_FIRST_INPUT_FORMATS = [
+        'm/d/Y',
+        'n/j/Y',
+        'm-d-Y',
+        'n-j-Y',
+        'm.d.Y',
+        'n.j.Y',
+        'm d Y',
+        'n j Y',
+    ];
+
+    private const DAY_FIRST_INPUT_FORMATS = [
+        'd/m/Y',
+        'j/n/Y',
+        'd-m-Y',
+        'j-n-Y',
+        'd.m.Y',
+        'j.n.Y',
+        'd m Y',
+        'j n Y',
+    ];
+
     public function __construct()
     {
         Event::on(
@@ -53,44 +86,88 @@ class MailchimpDateValueProcessor extends FeatureBundle
             return;
         }
 
+        $inputDateFormat = $this->getInputDateFormat($integrationField);
+        $outputDateFormat = $this->getOutputDateFormat($inputDateFormat);
+        $monthFirst = $this->isMonthFirst($inputDateFormat);
+
         if ($freeformField instanceof DatetimeField) {
-            $event->setValue($freeformField->getCarbon()->format(self::DATE_FORMAT));
+            $event->setValue($freeformField->getCarbon()->format($outputDateFormat));
 
             return;
         }
 
-        // Mailchimp requires MM/DD/YYYY for a valid date input even though it shows other formats when creating date fields
-        $event->setValue($this->normalizeToMMDDYYYY($value));
+        $event->setValue($this->normalizeToConfiguredOuputFormat($value, $monthFirst, $outputDateFormat));
     }
 
-    private function normalizeToMMDDYYYY(string $value): string
+    /**
+     * Mailchimp stores the configuerd date format (MM/DD/YYYY or DD/MM/YYYY) for a date field in its own field options.
+     */
+    private function getInputDateFormat(FieldObject $integrationField): ?string
     {
-        $possibleFormats = [
-            'Y.m.d',
-            'Y/m/d',
-            'Y-m-d',
-            'Y m d',
-            'd.m.Y',
-            'd/m/Y',
-            'd-m-Y',
-            'd m Y',
-            'm.d.Y',
-            'm/d/Y',
-            'm-d-Y',
-            'm d Y',
+        foreach ($integrationField->getOptions() as $option) {
+            if ('date_format' === $option->key) {
+                return $option->label;
+            }
+        }
+
+        return null;
+    }
+
+    private function getOutputDateFormat(?string $dateFormat): string
+    {
+        if (null === $dateFormat) {
+            return self::DATE_FORMAT;
+        }
+
+        $normalized = strtoupper($dateFormat);
+        $positions = [
+            'Y' => strpos($normalized, 'YYYY'),
+            'm' => strpos($normalized, 'MM'),
+            'd' => strpos($normalized, 'DD'),
         ];
 
-        foreach ($possibleFormats as $format) {
+        // Fall back to the default format when any part of the input date format is missing so the output stays a valid Mailchimp date.
+        if (\in_array(false, $positions, true)) {
+            return self::DATE_FORMAT;
+        }
+
+        asort($positions);
+
+        return implode('/', array_keys($positions));
+    }
+
+    private function isMonthFirst(?string $dateFormat): bool
+    {
+        if (null === $dateFormat) {
+            return false;
+        }
+
+        $normalized = strtoupper($dateFormat);
+        $monthPosition = strpos($normalized, 'MM');
+        $dayPosition = strpos($normalized, 'DD');
+
+        if (false === $monthPosition || false === $dayPosition) {
+            return false;
+        }
+
+        return $monthPosition < $dayPosition;
+    }
+
+    private function normalizeToConfiguredOuputFormat(string $value, bool $monthFirst, string $dateFormat): string
+    {
+        $formats = array_merge(
+            self::YEAR_FIRST_INPUT_FORMATS,
+            $monthFirst
+                ? array_merge(self::MONTH_FIRST_INPUT_FORMATS, self::DAY_FIRST_INPUT_FORMATS)
+                : array_merge(self::DAY_FIRST_INPUT_FORMATS, self::MONTH_FIRST_INPUT_FORMATS),
+        );
+
+        foreach ($formats as $format) {
             $date = \DateTime::createFromFormat($format, $value);
 
             // Check for valid date and matching format
             if ($date && $date->format($format) === $value) {
-                // already correct format, return as-is
-                if (self::DATE_FORMAT === $format) {
-                    return $value;
-                }
-
-                return $date->format(self::DATE_FORMAT);
+                return $date->format($dateFormat);
             }
         }
 

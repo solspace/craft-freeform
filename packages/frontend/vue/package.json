@@ -1,0 +1,55 @@
+{
+  "name": "@solspace/freeform-vue",
+  "version": "0.1.15",
+  "description": "Vue components and composables for Solspace Freeform headless forms",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly && vite build",
+    "dev": "vite build --watch",
+    "test": "vitest run --config vitest.config.ts",
+    "lint": "biome check src"
+  },
+  "peerDependencies": {
+    "@solspace/freeform-core": "^0.1.0",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@solspace/freeform-core": "workspace:*",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "@vitejs/plugin-vue-jsx": "^5.1.1",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "29.1.1",
+    "typescript": "^5.8.3",
+    "vite": "^8.1.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "4.1.9",
+    "vue": "^3.5.22",
+    "vue-tsc": "^3.0.7"
+  },
+  "keywords": [
+    "freeform",
+    "craft-cms",
+    "headless",
+    "vue"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

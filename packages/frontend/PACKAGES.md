@@ -3,7 +3,7 @@
 > **Maintainers / repo only.** This file is **not** published to npm. Customer-facing install docs live at:
 > [Headless Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/).
 
-Official Freeform frontend packages for **React / Next.js**. These npm packages use an **independent semver line** from the Freeform Craft plugin.
+Official Freeform frontend packages for **React / Next.js** and **Vue / Nuxt**. These npm packages use an **independent semver line** from the Freeform Craft plugin.
 
 | Layer | Versioning |
 | --- | --- |
@@ -15,11 +15,12 @@ Official Freeform frontend packages for **React / Next.js**. These npm packages 
 | Package | Role |
 | --- | --- |
 | `@solspace/freeform-core` | Manifest client, state, conditionals, submit |
-| `@solspace/freeform-react` | `<Freeform />` + `useFreeform()` |
+| `@solspace/freeform-react` | `<Freeform />` + `useFreeform()` (React) |
+| `@solspace/freeform-vue` | `<Freeform />` + `useFreeform()` (Vue 3) |
 | `@solspace/freeform-extensions` | Captchas, calculation, datetime, file DnD |
-| `@solspace/freeform-react-theme-default` | Default light/dark BEM CSS |
-| `@solspace/freeform-react-theme-tailwind` | Official Tailwind starter theme for React forms |
-| `@solspace/freeform-react-theme-bootstrap` | Official Bootstrap 5 starter theme for React forms |
+| `@solspace/freeform-theme-default` | Default light/dark BEM CSS |
+| `@solspace/freeform-theme-tailwind` | Official Tailwind starter theme for React & Vue forms |
+| `@solspace/freeform-theme-bootstrap` | Official Bootstrap 5 starter theme for React & Vue forms |
 
 Requires a Freeform plugin build that includes the headless REST API, with headless enabled in config.
 
@@ -29,15 +30,15 @@ Requires a Freeform plugin build that includes the headless REST API, with headl
 npm install @solspace/freeform-core \
   @solspace/freeform-react \
   @solspace/freeform-extensions \
-  @solspace/freeform-react-theme-default \
-  @solspace/freeform-react-theme-tailwind \
-  @solspace/freeform-react-theme-bootstrap
+  @solspace/freeform-theme-default \
+  @solspace/freeform-theme-tailwind \
+  @solspace/freeform-theme-bootstrap
 ```
 
 ```tsx
 import { Freeform } from "@solspace/freeform-react";
 import { recommendedExtensions } from "@solspace/freeform-extensions";
-import "@solspace/freeform-react-theme-default/styles.css";
+import "@solspace/freeform-theme-default/styles.css";
 
 export function ContactForm() {
   return (
@@ -66,7 +67,7 @@ Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
 
 ## Known limitations
 
-- Vue adapter — not yet
+- Vue adapter — `@solspace/freeform-vue` (local; publish with next bump)
 - Full GraphQL parity with the REST contract — not yet
 - Conditional show/hide is **client UX only** (not a security boundary)
 

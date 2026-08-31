@@ -185,17 +185,17 @@ Configure captcha integrations in Freeform before going live. The form manifest 
 Pass a theme object to customize class names and default wrappers.
 
 ```bash
-npm install @solspace/freeform-react-theme-default
+npm install @solspace/freeform-theme-default
 # or, if the app already uses Tailwind:
-npm install @solspace/freeform-react-theme-tailwind
+npm install @solspace/freeform-theme-tailwind
 # or Bootstrap 5:
-npm install @solspace/freeform-react-theme-bootstrap bootstrap
+npm install @solspace/freeform-theme-bootstrap bootstrap
 ```
 
 ```tsx
 import { Freeform, createTheme } from "@solspace/freeform-react";
-import { darkTheme } from "@solspace/freeform-react-theme-default";
-// or: import { tailwindTheme } from "@solspace/freeform-react-theme-tailwind";
+import { darkTheme } from "@solspace/freeform-theme-default";
+// or: import { tailwindTheme } from "@solspace/freeform-theme-tailwind";
 
 const theme = createTheme({
   classNames: {

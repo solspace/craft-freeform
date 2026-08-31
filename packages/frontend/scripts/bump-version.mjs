@@ -32,17 +32,22 @@ const packages = [
     peerOf: "@solspace/freeform-core",
   },
   {
-    dir: join(frontendRoot, "themes/react-default"),
+    dir: join(frontendRoot, "vue"),
+    versionFile: join(frontendRoot, "vue/src/version.ts"),
+    peerOf: "@solspace/freeform-core",
+  },
+  {
+    dir: join(frontendRoot, "themes/default"),
     versionFile: null,
     peerOf: "@solspace/freeform-react",
   },
   {
-    dir: join(frontendRoot, "themes/react-tailwind"),
+    dir: join(frontendRoot, "themes/tailwind"),
     versionFile: null,
     peerOf: "@solspace/freeform-react",
   },
   {
-    dir: join(frontendRoot, "themes/react-bootstrap"),
+    dir: join(frontendRoot, "themes/bootstrap"),
     versionFile: null,
     peerOf: "@solspace/freeform-react",
   },

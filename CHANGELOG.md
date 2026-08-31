@@ -9,13 +9,13 @@
   - `@solspace/freeform-core`
   - `@solspace/freeform-react`
   - `@solspace/freeform-extensions`
-  - `@solspace/freeform-react-theme-default`
+  - `@solspace/freeform-theme-default`
 
 ```bash
 npm install @solspace/freeform-core \
   @solspace/freeform-react \
   @solspace/freeform-extensions \
-  @solspace/freeform-react-theme-default
+  @solspace/freeform-theme-default
 ```
 
 ### Changed

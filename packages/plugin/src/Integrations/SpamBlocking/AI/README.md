@@ -57,15 +57,17 @@ You can leave this empty to use the default. To customize the analysis, a good s
 
 > Analyze the following form submission and decide if it is spam. Consider factors like promotional or sales language, excessive links, irrelevant content, suspicious patterns, profanity, or automation signals.
 
-## Known limitations
+## Known Limitations
 
-**Wait for Analysis Before Processing Submission Actions** is **on by default** when you enable AI Spam Analysis on a form. Forms that already saved this setting keep their saved value.
+**Wait for Analysis Before Processing Submission Actions** is enabled by default when AI Spam Analysis is enabled for a form. Existing forms retain their previously saved setting.
 
-When that setting is enabled, the following applies:
+When enabled, keep the following limitations in mind:
 
-- **Built-in side effects only.** Freeform defers its own outbound actions (email notifications, CRM, webhooks, elements, POST forwarding, and related post-processing). Custom code or plugins that listen directly to `Form::EVENT_AFTER_SUBMIT` are not automatically deferred.
-- **Queued AI analysis.** If AI field processing runs through Craft’s queue, notifications and integrations run in the queue worker, not in the original browser request. Ensure your queue is running in production; a stopped or backlogged queue can leave stored submissions waiting for their side effects.
-- **Payment forms.** Forms with payment gateways (e.g. Mollie) may need extra verification. Side effects can be tied to both AI completion and payment webhooks. Test your full submit-and-pay flow before using this in production.
-- **Job retries.** Async validation state is not persisted on the submission. If a spam validation job fails and retries after partially completing, non-idempotent integrations could theoretically run more than once. A future improvement would persist a “validated” or “post-processed” flag on the submission.
-
-A unified pipeline for all outbound side effects would reduce the above edge cases but requires a larger refactor. This integration scopes the hold behavior to Freeform’s built-in paths behind a per-form toggle (enabled by default).
+- **Built-in actions only**
+  - Freeform delays its own email notifications, integrations, webhooks, element integrations, POST forwarding, and related processing. Custom code or plugins listening directly to `Form::EVENT_AFTER_SUBMIT` are not automatically delayed.
+- **Queued AI analysis**
+  - When AI processing uses Craft's queue, delayed actions run through the queue worker rather than the original browser request. Ensure the queue is running reliably in production, as stopped or backlogged jobs can leave submissions waiting to be processed.
+- **Payment forms**
+  - Payment gateways such as Mollie may require additional testing because submission actions can depend on both AI analysis and payment webhooks. Test the complete submission and payment flow before using this setting in production.
+- **Job retries**
+  - Freeform does not currently store the completed AI validation state on the submission. If a job fails after partially completing and is retried, integrations that do not prevent duplicate processing could run more than once.

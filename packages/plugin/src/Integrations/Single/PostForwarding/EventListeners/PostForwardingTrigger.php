@@ -41,7 +41,13 @@ class PostForwardingTrigger extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_AFTER_SUBMIT,
-            [$this, 'sendPostPayload']
+            [$this, 'sendPostPayloadAfterSubmit']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_AFTER_ASYNC_SPAM_VALIDATION,
+            [$this, 'sendPostPayloadAfterAsyncSpamValidation']
         );
 
         Event::on(
@@ -51,7 +57,42 @@ class PostForwardingTrigger extends FeatureBundle
         );
     }
 
-    public function sendPostPayload(SubmitEvent $event): void
+    public function sendPostPayloadAfterSubmit(SubmitEvent $event): void
+    {
+        // When hold is enabled, forwarding is triggered only after async spam validation.
+        if ($this->integrationsProvider->shouldDeferPostProcessForAsyncSpam($event->getForm())) {
+            return;
+        }
+
+        $this->sendPostPayload($event);
+    }
+
+    public function sendPostPayloadAfterAsyncSpamValidation(SubmitEvent $event): void
+    {
+        $this->sendPostPayload($event);
+    }
+
+    public function attachToJson(OutputAsJsonEvent $event): void
+    {
+        $form = $event->getForm();
+
+        if ($form->isDisabled()->payload) {
+            return;
+        }
+
+        $integration = $this->integrationsProvider->getSingleton($form, PostForwarding::class);
+        if (!$integration) {
+            return;
+        }
+
+        $event->add('postForwarding', [
+            'url' => $integration->getUrl(),
+            'errorTrigger' => $integration->getErrorTrigger(),
+            'sendFiles' => $integration->isSendFiles(),
+        ]);
+    }
+
+    private function sendPostPayload(SubmitEvent $event): void
     {
         $form = $event->getForm();
         $submission = $form->getSubmission();
@@ -230,25 +271,5 @@ class PostForwardingTrigger extends FeatureBundle
 
             $logger->error('POST forwarding could not send payload', $logContext);
         }
-    }
-
-    public function attachToJson(OutputAsJsonEvent $event): void
-    {
-        $form = $event->getForm();
-
-        if ($form->isDisabled()->payload) {
-            return;
-        }
-
-        $integration = $this->integrationsProvider->getSingleton($form, PostForwarding::class);
-        if (!$integration) {
-            return;
-        }
-
-        $event->add('postForwarding', [
-            'url' => $integration->getUrl(),
-            'errorTrigger' => $integration->getErrorTrigger(),
-            'sendFiles' => $integration->isSendFiles(),
-        ]);
     }
 }

@@ -1,7 +1,7 @@
 {
-  "name": "@solspace/freeform-react-theme-tailwind",
+  "name": "@solspace/freeform-react-theme-bootstrap",
   "version": "0.1.14",
-  "description": "Official Tailwind starter theme for Freeform React",
+  "description": "Official Bootstrap 5 starter theme for Freeform React",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -11,10 +11,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./styles.css": "./src/styles.css"
   },
   "files": [
     "dist",
+    "src/styles.css",
     "README.md",
     "LICENSE"
   ],
@@ -28,6 +30,8 @@
   },
   "devDependencies": {
     "@solspace/freeform-react": "workspace:*",
+    "@types/react": "^19.2.17",
+    "react": "^19.2.7",
     "typescript": "^5.8.3"
   },
   "keywords": [
@@ -36,7 +40,7 @@
     "headless",
     "react",
     "theme",
-    "tailwind"
+    "bootstrap"
   ],
   "author": "Solspace Inc.",
   "license": "MIT",

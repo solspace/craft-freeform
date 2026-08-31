@@ -188,6 +188,8 @@ Pass a theme object to customize class names and default wrappers.
 npm install @solspace/freeform-react-theme-default
 # or, if the app already uses Tailwind:
 npm install @solspace/freeform-react-theme-tailwind
+# or Bootstrap 5:
+npm install @solspace/freeform-react-theme-bootstrap bootstrap
 ```
 
 ```tsx
@@ -225,5 +227,4 @@ Documentation and support for Freeform are available through [Solspace](https://
 ## Known limitations
 
 - Vue adapter — not yet
-- Bootstrap theme package — not yet
 - Conditional show/hide is client UX only (not a security boundary)

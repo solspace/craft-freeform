@@ -19,6 +19,7 @@ Official Freeform frontend packages for **React / Next.js**. These npm packages 
 | `@solspace/freeform-extensions` | Captchas, calculation, datetime, file DnD |
 | `@solspace/freeform-react-theme-default` | Default light/dark BEM CSS |
 | `@solspace/freeform-react-theme-tailwind` | Official Tailwind starter theme for React forms |
+| `@solspace/freeform-react-theme-bootstrap` | Official Bootstrap 5 starter theme for React forms |
 
 Requires a Freeform plugin build that includes the headless REST API, with headless enabled in config.
 
@@ -29,7 +30,8 @@ npm install @solspace/freeform-core \
   @solspace/freeform-react \
   @solspace/freeform-extensions \
   @solspace/freeform-react-theme-default \
-  @solspace/freeform-react-theme-tailwind
+  @solspace/freeform-react-theme-tailwind \
+  @solspace/freeform-react-theme-bootstrap
 ```
 
 ```tsx
@@ -65,7 +67,6 @@ Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
 ## Known limitations
 
 - Vue adapter — not yet
-- Bootstrap theme package — not yet
 - Full GraphQL parity with the REST contract — not yet
 - Conditional show/hide is **client UX only** (not a security boundary)
 

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
 class FormIntegrationsProvider
@@ -77,5 +78,31 @@ class FormIntegrationsProvider
     public function getSingleton(Form $form, string $class, ?callable $filter = null): ?IntegrationInterface
     {
         return $this->getFirstForForm($form, $class, filter: $filter);
+    }
+
+    /**
+     * Whether the form has an enabled async spam blocker (e.g. AI Spam Analysis).
+     */
+    public function hasAsyncSpamBlocking(Form $form): bool
+    {
+        return [] !== $this->getForForm(
+            $form,
+            AsyncSpamBlockingIntegrationInterface::class,
+            true,
+        );
+    }
+
+    /**
+     * Whether outbound post-processing must wait for async spam (opt-in per integration).
+     */
+    public function shouldDeferPostProcessForAsyncSpam(Form $form): bool
+    {
+        foreach ($this->getForForm($form, AsyncSpamBlockingIntegrationInterface::class, true) as $integration) {
+            if ($integration->shouldDeferPostProcess()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

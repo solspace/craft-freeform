@@ -20,6 +20,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Db;
 use craft\helpers\Session;
 use craft\records\Element;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
@@ -32,8 +33,11 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SavedFormRecord;
@@ -243,9 +247,96 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         $this->markFormAsSubmitted($form);
-        $this->postProcessSubmission($form, $submission);
+
+        if ($this->shouldDeferPostProcessForAsyncSpam($form)) {
+            // No stored row: run AI spam inline, then post-process only if clean.
+            if (!$submission->id) {
+                $this->runAsyncSpamValidation($form);
+                if (!$form->isMarkedAsSpam()) {
+                    $form->markAsyncSpamValidated();
+                    $this->postProcessSubmission($form, $submission);
+                }
+            }
+        // Stored row: ProcessSpamValidationJob runs AI then post-process (or marks spam).
+        } else {
+            $this->postProcessSubmission($form, $submission);
+        }
 
         Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
+    }
+
+    /**
+     * Whether outbound post-processing must wait for async spam (e.g. AI Spam Analysis).
+     */
+    public function shouldDeferPostProcessForAsyncSpam(Form $form): bool
+    {
+        $integrationsProvider = \Craft::$container->get(FormIntegrationsProvider::class);
+        if (!$integrationsProvider->shouldDeferPostProcessForAsyncSpam($form)) {
+            return false;
+        }
+
+        $formMonitorProvider = \Craft::$container->get(FormMonitorProvider::class);
+        if ($formMonitorProvider->isRequestFromFormMonitor($form)) {
+            return false;
+        }
+
+        $settings = $this->getSettingsService();
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Whether a queued async spam validation job is still waiting for this submission.
+     */
+    public function hasPendingAsyncSpamValidation(Submission $submission): bool
+    {
+        if (!$submission->id) {
+            return false;
+        }
+
+        $rows = (new Query())
+            ->select(['job'])
+            ->from(Table::QUEUE)
+            ->where([
+                'fail' => false,
+                'dateReserved' => null,
+            ])
+            ->all()
+        ;
+
+        foreach ($rows as $row) {
+            try {
+                $job = unserialize($row['job'], ['allowed_classes' => true]);
+            } catch (\Throwable) {
+                continue;
+            }
+
+            if ($job instanceof ProcessSpamValidationJob && (int) $job->submissionId === (int) $submission->id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Run enabled async spam integrations against the current form/submission values.
+     */
+    public function runAsyncSpamValidation(Form $form, bool $displayErrors = false): void
+    {
+        $integrationsProvider = \Craft::$container->get(FormIntegrationsProvider::class);
+        $integrations = $integrationsProvider->getForForm(
+            $form,
+            AsyncSpamBlockingIntegrationInterface::class,
+            true,
+        );
+
+        foreach ($integrations as $integration) {
+            $integration->validate($form, $displayErrors);
+        }
     }
 
     /**

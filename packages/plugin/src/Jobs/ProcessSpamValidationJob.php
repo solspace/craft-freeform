@@ -5,8 +5,10 @@ namespace Solspace\Freeform\Jobs;
 use craft\queue\BaseJob;
 use Solspace\Freeform\Bundles\Form\SpamControl\SpamControl;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use yii\base\Event;
@@ -25,11 +27,19 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
         $spamControl = \Craft::$container->get(SpamControl::class);
 
         $form = $freeform->forms->getFormById($this->formId);
-        $submission = $freeform->submissions->getSubmissionById($this->submissionId);
-
-        if ($submission) {
-            $form->setSubmission($submission);
+        if (!$form) {
+            return;
         }
+
+        $submission = $this->submissionId
+            ? $freeform->submissions->getSubmissionById($this->submissionId)
+            : null;
+
+        if (!$submission) {
+            return;
+        }
+
+        $form->setSubmission($submission);
 
         $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
         Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
@@ -45,15 +55,31 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
 
         if ($form->isMarkedAsSpam()) {
             $submission->isSpam = true;
-            $event = new SubmitEvent($form, $submission);
-            $spamControl->persistSpamReasons($event);
+            $spamEvent = new SubmitEvent($form, $submission);
+            $spamControl->persistSpamReasons($spamEvent);
 
             \Craft::$app->elements->saveElement($submission, false, false, true);
 
             if (!$originalIsSpam) {
                 $form->removeMarkedAsSpam();
             }
+
+            return;
         }
+
+        // Only run outbound side effects here when the form opted into holding them.
+        if (!$integrationProvider->shouldDeferPostProcessForAsyncSpam($form)) {
+            return;
+        }
+
+        $form->markAsyncSpamValidated();
+        $freeform->submissions->postProcessSubmission($form, $submission);
+
+        Event::trigger(
+            Form::class,
+            Form::EVENT_AFTER_ASYNC_SPAM_VALIDATION,
+            new FormSubmitEvent($form)
+        );
     }
 
     protected function defaultDescription(): ?string

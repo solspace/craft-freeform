@@ -13,19 +13,19 @@ Visit your [account settings area](https://platform.openai.com/api-keys) on the 
 ### 2. Configure the Integration
 
 - Copy and paste your API key into the integration in Freeform.
-- Select the AI model you want to use. The default is `gpt-5.4-nano`.
+- Select the AI model you want to use. The default is `gpt-5.6-luna`.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
 - Configure the Max Tokens setting. This can be overrided per form.
 - Click the **Save** button.
 
 #### Recommended Models
 
-- ⚡ `gpt-5.4-nano` — fast + cheap
-  - High-volume, simple tasks
-- ⚖️ `gpt-5.4-mini` — balanced
-  - Balance of speed + intelligence
-- 🧠 `gpt-5.4` — smartest
-  - Complex reasoning, coding, agents
+- ⚡ `gpt-5.6-luna` — fast + cheap
+  - High-volume and cost-sensitive workloads
+- ⚖️ `gpt-5.6-terra` — balanced
+  - Balance of intelligence, speed, and cost
+- 🧠 `gpt-5.6-sol` — smartest
+  - Complex reasoning, coding, and professional workflows
 
 ### 3. Authorize the Integration
 

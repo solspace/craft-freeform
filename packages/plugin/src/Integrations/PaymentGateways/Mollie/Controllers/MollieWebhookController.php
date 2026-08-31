@@ -174,6 +174,21 @@ class MollieWebhookController extends BaseMollieController
 
         $submissionsService = Freeform::getInstance()->submissions;
         $submissionsService->storeSubmission($form, $submission);
+
+        // Reload in case AI spam marked it after the initial submit.
+        $submission = $submissionsService->getSubmissionById((int) $submission->id) ?? $submission;
+        if ($submission->isSpam) {
+            return;
+        }
+
+        if (
+            $submissionsService->shouldDeferPostProcessForAsyncSpam($form)
+            && $submissionsService->hasPendingAsyncSpamValidation($submission)
+        ) {
+            return;
+        }
+
+        $form->setSubmission($submission);
         $submissionsService->postProcessSubmission($form, $submission);
     }
 

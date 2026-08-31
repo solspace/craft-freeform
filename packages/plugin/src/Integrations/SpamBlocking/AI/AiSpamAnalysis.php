@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
@@ -92,6 +93,18 @@ class AiSpamAnalysis extends SpamBlockingIntegration implements AsyncSpamBlockin
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
+        label: 'Wait for Analysis Before Processing Submission Actions',
+        instructions: 'When enabled, email notifications, CRM integrations, webhooks, and other submission actions are delayed until AI spam analysis is complete. If the submission is identified as spam, these actions will not run.',
+    )]
+    #[Message(
+        'This may delay time-sensitive integrations and submission actions. Test your setup carefully when using this feature.',
+    )]
+    protected bool $deferSideEffects = true;
+
+    #[Section('ai-spam')]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Input\Boolean(
         label: 'Display Errors',
         instructions: 'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.',
     )]
@@ -100,6 +113,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration implements AsyncSpamBlockin
     public static function isInstallable(): bool
     {
         return true;
+    }
+
+    public function shouldDeferPostProcess(): bool
+    {
+        return $this->isEnabled() && $this->deferSideEffects;
     }
 
     public function validate(Form $form, bool $displayErrors): void

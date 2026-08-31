@@ -91,6 +91,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_SUBMIT = 'submit';
     public const EVENT_ON_SUBMIT_RESPONSE = 'on-submit-response';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
+    public const EVENT_AFTER_ASYNC_SPAM_VALIDATION = 'after-async-spam-validation';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
     public const EVENT_AFTER_VALIDATE = 'after-validate';
     public const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
@@ -112,6 +113,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const PROPERTY_PAGE_INDEX = 'pageIndex';
     public const PROPERTY_PAGE_HISTORY = 'pageHistory';
     public const PROPERTY_SPAM_REASONS = 'spamReasons';
+    public const PROPERTY_ASYNC_SPAM_VALIDATED = 'asyncSpamValidated';
 
     public const RETURN_URI_KEY = 'formReturnUrl';
     public const SOURCE_URL_KEY = 'formSourceUrl';
@@ -452,6 +454,18 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function isMarkedAsSpam(): bool
     {
         return !empty($this->getSpamReasons());
+    }
+
+    public function isAsyncSpamValidated(): bool
+    {
+        return (bool) $this->getProperties()->get(self::PROPERTY_ASYNC_SPAM_VALIDATED, false);
+    }
+
+    public function markAsyncSpamValidated(): self
+    {
+        $this->getProperties()->set(self::PROPERTY_ASYNC_SPAM_VALIDATED, true);
+
+        return $this;
     }
 
     public function removeMarkedAsSpam(): self

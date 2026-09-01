@@ -15,7 +15,6 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
-use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
@@ -110,23 +109,14 @@ class FormDuplicator
         $clone->setAttributes($formRecord->getAttributes(), false);
         $clone->uid = StringHelper::UUID();
         $clone->id = null;
-        $clone->name = FreeformStringHelper::incrementStringWithNumber($formRecord->name, true);
-        $clone->handle = FreeformStringHelper::incrementStringWithNumber($formRecord->handle);
+        [$clone->name, $clone->handle] = $this->formsService->getUniqueNameAndHandle($formRecord->name, $formRecord->handle);
 
-        $i = 0;
-        do {
-            $metadata = JsonHelper::decode($clone->metadata);
-            $metadata->general->name = $clone->name;
-            $metadata->general->handle = $clone->handle;
-            $clone->metadata = json_encode($metadata);
+        $metadata = JsonHelper::decode($clone->metadata);
+        $metadata->general->name = $clone->name;
+        $metadata->general->handle = $clone->handle;
+        $clone->metadata = json_encode($metadata);
 
-            $clone->save();
-
-            if ($clone->hasErrors('handle')) {
-                $clone->name = FreeformStringHelper::incrementStringWithNumber($clone->name, true);
-                $clone->handle = FreeformStringHelper::incrementStringWithNumber($clone->handle);
-            }
-        } while ($clone->hasErrors() || $i++ > 1000);
+        $clone->save();
 
         if ($clone->hasErrors()) {
             return null;

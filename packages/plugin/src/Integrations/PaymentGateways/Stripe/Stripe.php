@@ -68,8 +68,16 @@ class Stripe extends PaymentGatewayIntegration
         instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
         placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
     )]
-    #[Message('This applies to one-time payments only. Stripe subscriptions do not support payment method configurations and will always use your Stripe account default.')]
+    #[Message('Payment configurations apply to one-time payments only. To limit methods on subscriptions, use the Subscription Payment Methods setting below.')]
     protected string $paymentConfigurationId = '';
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Text(
+        label: 'Subscription Payment Methods',
+        instructions: 'Comma-separated Stripe payment method types allowed on subscriptions (e.g. "bacs_debit, card, us_bank_account"). Leave blank to use your Stripe account default.',
+        placeholder: 'e.g. "bacs_debit"',
+    )]
+    protected string $subscriptionPaymentMethods = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
@@ -138,6 +146,13 @@ class Stripe extends PaymentGatewayIntegration
     public function getPaymentConfigurationId(): ?string
     {
         return $this->getProcessedValue($this->paymentConfigurationId) ?: null;
+    }
+
+    public function getSubscriptionPaymentMethodTypes(): array
+    {
+        $value = $this->getProcessedValue($this->subscriptionPaymentMethods);
+
+        return array_values(array_filter(array_map('trim', explode(',', (string) $value))));
     }
 
     public function getWebhookSecret(): ?string

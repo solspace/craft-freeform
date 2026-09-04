@@ -357,23 +357,31 @@ class FreeformImporter
                 $pageRecord->label = $page->label;
                 $pageRecord->layoutId = $layoutRecord->id;
                 $pageRecord->order = $pageIndex;
-                $pageRecord->metadata = json_encode([
-                    'buttons' => [
-                        'layout' => 'save back|submit',
-                        'attributes' => [
-                            'container' => [],
-                            'column' => [],
-                            'submit' => [],
-                            'back' => [],
-                            'save' => [],
-                        ],
-                        'submitLabel' => 'Submit',
-                        'back' => true,
-                        'backLabel' => 'Back',
-                        'save' => false,
-                        'saveLabel' => 'Save',
+
+                $pageMetadata = $page->metadata;
+                $pageMetadata['buttons'] ??= [
+                    'layout' => 'save back|submit',
+                    'attributes' => [
+                        'container' => [],
+                        'column' => [],
+                        'submit' => [],
+                        'back' => [],
+                        'save' => [],
                     ],
-                ]);
+                    'submitLabel' => 'Submit',
+                    'back' => true,
+                    'backLabel' => 'Back',
+                    'save' => false,
+                    'saveLabel' => 'Save',
+                ];
+
+                $notificationTemplateId = $pageMetadata['buttons']['notificationTemplate'] ?? null;
+                if (null !== $notificationTemplateId) {
+                    $mappedNotificationTemplateId = $this->notificationTransferIdMap[$notificationTemplateId] ?? null;
+                    $pageMetadata['buttons']['notificationTemplate'] = $mappedNotificationTemplateId;
+                }
+
+                $pageRecord->metadata = json_encode($pageMetadata);
 
                 $pageRecord->save();
 
@@ -386,7 +394,7 @@ class FreeformImporter
             foreach ($form->rules as $rule) {
                 $ruleRecord = RuleRecord::findOne(['uid' => $rule->uid]);
                 if ($ruleRecord) {
-                    if ($isStrategySkip) {
+                    if ($isStrategySkip && $this->hasTypedRuleRecord($rule->type, $ruleRecord->id)) {
                         continue;
                     }
                     $ruleRecord->delete();
@@ -482,6 +490,25 @@ class FreeformImporter
 
             $this->sse->message('progress', 1);
         }
+    }
+
+    private function hasTypedRuleRecord(string $ruleType, int $ruleId): bool
+    {
+        $recordClass = match ($ruleType) {
+            FieldRule::class => FieldRuleRecord::class,
+            PageRule::class => PageRuleRecord::class,
+            ButtonRule::class => ButtonRuleRecord::class,
+            SubmitFormRule::class => SubmitFormRuleRecord::class,
+            NotificationRule::class => NotificationRuleRecord::class,
+            IntegrationRule::class => IntegrationRuleRecord::class,
+            default => null,
+        };
+
+        if (!$recordClass) {
+            return false;
+        }
+
+        return $recordClass::find()->where(['id' => $ruleId])->exists();
     }
 
     private function importLayout(Layout $layout, FormRecord $formRecord): array

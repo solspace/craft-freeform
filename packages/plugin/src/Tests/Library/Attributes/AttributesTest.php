@@ -316,4 +316,17 @@ class AttributesTest extends TestCase
             $attributes->toHtmlTagArray(),
         );
     }
+
+    public function testEmptyAttributeNamesAreExcludedFromHtmlTagArray(): void
+    {
+        $attributes = new Attributes([
+            '' => '',
+            'data-valid' => 'value',
+        ]);
+
+        $this->assertSame(
+            ['data-valid' => 'value'],
+            $attributes->toHtmlTagArray(),
+        );
+    }
 }

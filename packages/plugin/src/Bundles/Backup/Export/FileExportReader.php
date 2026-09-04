@@ -195,6 +195,7 @@ class FileExportReader extends BaseExporter
                 $page->uid = $pageJson['uid'];
                 $page->layout = $this->parseLayout($pageJson['layout']);
                 $page->label = $pageJson['label'];
+                $page->metadata = $pageJson['metadata'] ?? [];
 
                 $form->pages->add($page);
             }

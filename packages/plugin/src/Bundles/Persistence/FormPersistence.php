@@ -52,6 +52,8 @@ class FormPersistence extends FeatureBundle
             }
         }
 
+        $this->setUniqueHandle($payload);
+
         $record = FormRecord::create();
         $record->uid = $payload->uid;
         $record->type = $payload->type;
@@ -138,5 +140,33 @@ class FormPersistence extends FeatureBundle
         }
 
         return $metadata;
+    }
+
+    /**
+     * Makes sure a form is created with a unique handle, keeping the form name
+     * and handle in sync (e.g. handle "brevoTest1" -> name "Brevo Test 1").
+     * Only applies on create. Any form handle duplicate during an update still
+     * surface as errors.
+     */
+    private function setUniqueHandle(\stdClass $payload): void
+    {
+        $handle = $payload->settings?->general?->handle ?? null;
+        if (!$handle) {
+            return;
+        }
+
+        $name = (string) ($payload->settings?->general?->name ?? '');
+
+        [$name, $handle] = $this->formsService->getUniqueNameAndHandle($name, $handle);
+
+        $payload->settings->general->name = $name;
+        if (isset($payload->name)) {
+            $payload->name = $name;
+        }
+
+        $payload->settings->general->handle = $handle;
+        if (isset($payload->handle)) {
+            $payload->handle = $handle;
+        }
     }
 }

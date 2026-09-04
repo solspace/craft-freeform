@@ -35,6 +35,7 @@ use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -656,6 +657,51 @@ class FormsService extends BaseService implements FormHandlerInterface
             ->from(FormRecord::TABLE.' forms')
             ->orderBy(['forms.order' => \SORT_ASC, 'forms.name' => \SORT_ASC])
         ;
+    }
+
+    /**
+     * Single source of truth for form handle uniqueness, used by the new-form modal, AI generation and form duplication.
+     *
+     * Returns a form handle that does not collide with any other existing form handles.
+     * Appends an incrementing number when necessary (e.g. "brevoTest" -> "brevoTest1" -> "brevoTest2").
+     */
+    public function getUniqueHandle(string $handle): string
+    {
+        $handle = trim($handle);
+        if ('' === $handle) {
+            $handle = 'form';
+        }
+
+        $iterations = 0;
+        while (FormRecord::find()->where(['handle' => $handle])->exists()) {
+            $handle = StringHelper::incrementStringWithNumber($handle);
+            if (++$iterations > 1000) {
+                break;
+            }
+        }
+
+        return $handle;
+    }
+
+    /**
+     * Single source of truth for unique form name + handle pairs, used by the new-form modal, AI generation and form duplication.
+     * Returns a form [name, handle] pair that does not duplicate against any existing form handle.
+     *
+     * When a duplicate forces the handle to change, the trailing number is mirrored onto the name too,
+     * keeping the two in sync (e.g. handle "brevoTest1" -> name "Brevo Test 1").
+     */
+    public function getUniqueNameAndHandle(string $name, string $handle): array
+    {
+        $uniqueHandle = $this->getUniqueHandle($handle);
+
+        if ($uniqueHandle !== $handle && preg_match('/(\d+)$/', $uniqueHandle, $matches)) {
+            $baseName = trim($name);
+            if ('' !== $baseName) {
+                $name = trim((string) preg_replace('/\s*\d+$/', '', $baseName)).' '.$matches[1];
+            }
+        }
+
+        return [$name, $uniqueHandle];
     }
 
     private function attachSitesToQuery(Query $query, array|string|null $sites = null): void

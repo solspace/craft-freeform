@@ -24,42 +24,55 @@ export const loadStripeContainers =
   };
 
 export const submitStripe =
-  (props: StripeFunctionConstructorProps) => async (event: FreeformEvent) => {
-    event.addCallback(async () => {
-      if (event.isBackButtonPressed) {
-        return;
+  (props: StripeFunctionConstructorProps) => (event: FreeformEvent) => {
+    if (event.isBackButtonPressed || event.defaultPrevented) {
+      return;
+    }
+
+    const { elementMap, form } = props;
+    const containers = selectVisibleContainers(form);
+
+    for (const container of containers) {
+      const { required, integration, site } = config(container);
+      const field = container.querySelector<HTMLDivElement>(cardSelector)!;
+
+      const element = elementMap.get(field);
+      if (!element) {
+        throw new Error("Stripe element not found for container");
       }
 
-      const { elementMap, form } = props;
+      const {
+        empty,
+        stripe,
+        elements,
+        paymentIntent: { id, secret },
+      } = element;
 
-      const containers = selectVisibleContainers(form);
-      for (const container of containers) {
-        const { required, integration, site } = config(container);
-        const field = container.querySelector<HTMLDivElement>(cardSelector)!;
+      if (empty && !required) {
+        continue;
+      }
 
-        const element = elementMap.get(field);
-        if (!element) {
-          throw new Error("Stripe element not found for container");
-        }
+      // Must be initiated synchronously while user activation is still active.
+      const submitPromise = elements.submit();
 
-        const {
-          empty,
-          stripe,
-          elements,
-          paymentIntent: { id, secret },
-        } = element;
+      event.addCallback(async () => {
+        const { error: submitError } = await submitPromise;
+        if (submitError) {
+          event.freeform._renderFormErrors([
+            submitError.message ||
+              "An error occurred while submitting the payment.",
+          ]);
+          event.freeform._scrollToForm();
 
-        if (empty && !required) {
-          continue;
+          return false;
         }
 
         const token = await event.freeform.quickSave(secret, id);
-        // If token is false, we proceed, because stripe is not meant to execute
+
         if (token === false) {
           return true;
         }
 
-        // If token is undefined, we halt submit, because it could not save
         if (token === undefined) {
           return false;
         }
@@ -71,16 +84,6 @@ export const submitStripe =
         returnUrl.searchParams.append("integration", integration);
         returnUrl.searchParams.append("stripe_token", token);
         returnUrl.searchParams.append("site", site);
-
-        const { error: submitError } = await elements.submit();
-        if (submitError) {
-          event.freeform._renderFormErrors([
-            submitError.message ||
-              "An error occurred while submitting the payment.",
-          ]);
-          event.freeform._scrollToForm();
-          return false;
-        }
 
         const { error } = await stripe.confirmPayment({
           elements,
@@ -97,6 +100,10 @@ export const submitStripe =
         }
 
         return false;
-      }
-    }, 100);
+      }, 100);
+
+      // Preserve the current behavior of processing the first applicable
+      // visible Stripe field.
+      return;
+    }
   };

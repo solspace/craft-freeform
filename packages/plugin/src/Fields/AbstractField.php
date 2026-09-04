@@ -461,7 +461,54 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
 
         Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
 
-        return $event->getAttributes();
+        /** @var FieldAttributesCollection $attributes */
+        $attributes = $event->getAttributes();
+
+        if (!$this->canRender()) {
+            return $attributes;
+        }
+
+        $fieldId = $this->getIdAttribute();
+        $describedBy = [];
+
+        if ($this->getInstructions()) {
+            $instructionAttributes = $attributes->getInstructions();
+            $instructionAttributes->setIfEmpty(
+                'id',
+                "{$fieldId}-instructions"
+            );
+
+            $describedBy[] = $instructionAttributes->get('id');
+        }
+
+        $errorAttributes = $attributes->getError();
+        $errorAttributes->setIfEmpty('id', "{$fieldId}-error");
+
+        $errorId = $errorAttributes->get('id');
+
+        // Allows AJAX validation to use the same error ID.
+        $attributes
+            ->getContainer()
+            ->replace('data-field-error-id', $errorId)
+        ;
+
+        if ($this->hasErrors()) {
+            $attributes
+                ->getInput()
+                ->replace('aria-invalid', 'true')
+            ;
+
+            $describedBy[] = $errorId;
+        }
+
+        if ($describedBy) {
+            $attributes
+                ->getInput()
+                ->append('aria-describedby', $describedBy)
+            ;
+        }
+
+        return $attributes;
     }
 
     public function getParameters(): Parameters

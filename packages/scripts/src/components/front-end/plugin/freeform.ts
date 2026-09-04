@@ -530,6 +530,8 @@ export default class Freeform {
 
     const { options } = this;
     const { errorClassList, errorClassField } = options;
+    const fieldContainer = field.closest<HTMLElement>("[data-field-container]");
+    const errorId = fieldContainer?.dataset.fieldErrorId;
 
     let errorContainerNode = field.parentNode;
     if (field.type) {
@@ -552,6 +554,34 @@ export default class Freeform {
     );
     for (let i = 0; i < fields.length; i++) {
       removeClass(fields[i], errorClassField);
+      fields[i].removeAttribute("aria-invalid");
+
+      if (errorId) {
+        this._removeAriaDescribedBy(fields[i], errorId);
+      }
+    }
+  };
+
+  _addAriaDescribedBy = (element: HTMLElement, id: string): void => {
+    const describedBy = new Set(
+      (element.getAttribute("aria-describedby") || "")
+        .split(/\s+/)
+        .filter(Boolean),
+    );
+
+    describedBy.add(id);
+    element.setAttribute("aria-describedby", Array.from(describedBy).join(" "));
+  };
+
+  _removeAriaDescribedBy = (element: HTMLElement, id: string): void => {
+    const describedBy = (element.getAttribute("aria-describedby") || "")
+      .split(/\s+/)
+      .filter((describedById) => describedById && describedById !== id);
+
+    if (describedBy.length) {
+      element.setAttribute("aria-describedby", describedBy.join(" "));
+    } else {
+      element.removeAttribute("aria-describedby");
     }
   };
 
@@ -627,7 +657,7 @@ export default class Freeform {
       const errorAppendTarget = form.querySelector<HTMLElement>(
         `[data-error-append-target="${key}"]`,
       );
-      const inputList = form.querySelectorAll(
+      const inputList = form.querySelectorAll<HTMLElement>(
         `
           [name="${key}"],
           [type=file][name="${key}"],
@@ -643,9 +673,19 @@ export default class Freeform {
         return;
       }
 
+      const errorId = container.dataset.fieldErrorId;
+      if (errorId) {
+        errorsList.id = errorId;
+      }
+
       for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
-        const input = inputList[inputIndex] as HTMLInputElement;
+        const input = inputList[inputIndex];
         addClass(input, errorClassField);
+        input.setAttribute("aria-invalid", "true");
+
+        if (errorId) {
+          this._addAriaDescribedBy(input, errorId);
+        }
       }
 
       if (errorAppendTarget) {

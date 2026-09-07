@@ -55,6 +55,7 @@ use Solspace\Freeform\Form\Form as FreeformForm;
 use Solspace\Freeform\Form\Layout\Layout as FreeformLayout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -63,6 +64,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
+use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
@@ -165,6 +167,13 @@ class FreeformFormsExporter extends BaseExporter
         foreach ($forms as $index => $form) {
             /** @var FormFieldRecord[] $formFieldRecords */
             $formFieldRecords = FormFieldRecord::find()
+                ->where(['formId' => $form->getId()])
+                ->indexBy('uid')
+                ->all()
+            ;
+
+            /** @var FormPageRecord[] $formPageRecords */
+            $formPageRecords = FormPageRecord::find()
                 ->where(['formId' => $form->getId()])
                 ->indexBy('uid')
                 ->all()
@@ -274,6 +283,9 @@ class FreeformFormsExporter extends BaseExporter
                 $exportedPage->uid = $page->getUid();
                 $exportedPage->layout = $this->compileLayout($page->getLayout(), $formFieldRecords);
                 $exportedPage->label = $page->getLabel();
+
+                $pageRecord = $formPageRecords[$page->getUid()] ?? null;
+                $exportedPage->metadata = JsonHelper::decode($pageRecord?->metadata ?? [], true) ?? [];
 
                 $exported->pages->add($exportedPage);
             }

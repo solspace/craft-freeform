@@ -48,7 +48,6 @@ class FormGenerationService
     private const PROMPT_MAX_LENGTH = 10000;
     private const AI_MAX_TOKENS = 12000;
     private const AI_TIMEOUT_SECONDS = 120;
-    private const MAX_UNIQUE_FORM_HANDLE_ATTEMPTS = 1000;
 
     /** Field types that take the full row (one per row). Others share 2 per row. */
     private const FULL_WIDTH_TYPES = [
@@ -502,21 +501,7 @@ class FormGenerationService
 
         $baseHandle = $this->generateHandle($baseName);
 
-        for ($n = 0; $n < self::MAX_UNIQUE_FORM_HANDLE_ATTEMPTS; ++$n) {
-            $suffix = 0 === $n ? '' : (string) $n;
-            $handle = $baseHandle.$suffix;
-            if ('' === $handle) {
-                $handle = 'form'.$suffix;
-            }
-
-            $name = 0 === $n ? $baseName : $baseName.' '.$n;
-
-            if (null === $this->formsService->getFormByHandle($handle)) {
-                return [$name, $handle];
-            }
-        }
-
-        throw new \RuntimeException(Freeform::t('Could not find an unused form handle. Please try a different form name.'));
+        return $this->formsService->getUniqueNameAndHandle($baseName, $baseHandle);
     }
 
     /**

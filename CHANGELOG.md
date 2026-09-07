@@ -27,6 +27,18 @@
 ### Added
 - Added compatibility for Craft 6.x.
 
+## 5.15.29 - 2026-09-07
+
+### Added
+- Added support for payment method type overrides in **Stripe** subscription payments.
+
+### Fixed
+- Fixed an issue where **Apple Pay** payments could fail to open when using the **Stripe** integration.
+- Fixed an accessibility issue where field instructions and validation errors, including AJAX validation errors, were not properly announced by screen readers.
+- Fixed an issue where importing forms could omit conditional rules and reset custom button layouts and labels.
+- Fixed duplicate form handle handling so new forms automatically receive unique handles, with names kept in sync across modal, AI-generated, and duplicated forms.
+- Fixed an issue where blank custom attribute names could render invalid HTML and break frontend JavaScript.
+
 ## 5.15.28 - 2026-08-31
 
 ### Changed

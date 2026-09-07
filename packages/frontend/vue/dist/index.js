@@ -1,15 +1,15 @@
-import { Fragment as e, computed as t, createBlock as n, createCommentVNode as r, createElementBlock as i, createElementVNode as a, createTextVNode as o, createVNode as s, defineComponent as c, mergeProps as l, normalizeClass as u, normalizeProps as d, normalizeStyle as f, onMounted as p, onScopeDispose as m, onUnmounted as h, openBlock as g, reactive as _, ref as v, renderList as y, renderSlot as b, resolveComponent as x, resolveDynamicComponent as S, shallowRef as C, toDisplayString as w, toValue as ee, unref as T, watch as E, watchEffect as te, withCtx as D } from "vue";
-import { canAddTableRow as O, canRemoveTableRow as k, collectExtensionSubmitMeta as ne, createFormState as A, createFreeformClient as re, emptyTableRow as j, evaluateCalculation as M, getCalculationConfig as N, getSignatureConfig as P, getTableConfig as F, isSignatureValueEmpty as I, normalizeTableRows as L, prepareSubmitValues as ie, resolveTableColumnOptions as R, runExtensionAfterSubmit as ae, runExtensionSetups as oe } from "@solspace/freeform-core";
+import { Fragment as e, computed as t, createBlock as n, createCommentVNode as r, createElementBlock as i, createElementVNode as a, createTextVNode as o, createVNode as s, defineComponent as c, guardReactiveProps as l, mergeProps as u, normalizeClass as d, normalizeProps as f, normalizeStyle as p, onMounted as m, onScopeDispose as h, onUnmounted as g, openBlock as _, reactive as ee, ref as v, renderList as y, renderSlot as b, resolveComponent as x, resolveDynamicComponent as S, shallowRef as C, toDisplayString as w, toValue as T, unref as E, watch as D, watchEffect as O, withCtx as k } from "vue";
+import { canAddTableRow as A, canRemoveTableRow as j, collectExtensionSubmitMeta as te, createFormState as ne, createFreeformClient as re, emptyTableRow as ie, evaluateCalculation as M, getCalculationConfig as N, getSignatureConfig as P, getTableConfig as F, isSignatureValueEmpty as I, normalizeTableRows as L, prepareSubmitValues as ae, resolveTableColumnOptions as R, runExtensionAfterSubmit as oe, runExtensionSetups as se } from "@solspace/freeform-core";
 //#region src/components/FormLoader.vue?vue&type=script&setup=true&lang.ts
 var z = ["data-variant"], B = {
 	key: 0,
 	class: "ff-loader-skeleton",
 	"aria-hidden": "true"
-}, V = {
+}, ce = {
 	key: 1,
 	class: "ff-loader-spinner",
 	"aria-hidden": "true"
-}, se = { class: "ff-loader-message" }, ce = /*#__PURE__*/ ((e, t) => {
+}, le = { class: "ff-loader-message" }, V = /*#__PURE__*/ ((e, t) => {
 	let n = e.__vccOpts || e;
 	for (let [e, r] of t) n[e] = r;
 	return n;
@@ -21,23 +21,23 @@ var z = ["data-variant"], B = {
 		variant: { default: "skeleton" }
 	},
 	setup(t) {
-		return (n, r) => (g(), i("div", {
+		return (n, r) => (_(), i("div", {
 			role: "status",
 			"aria-live": "polite",
 			"aria-busy": "true",
 			"data-variant": t.variant,
-			class: u(["ff-loader-root", t.loaderClass])
-		}, [t.variant === "skeleton" ? (g(), i("div", B, [
+			class: d(["ff-loader-root", t.loaderClass])
+		}, [t.variant === "skeleton" ? (_(), i("div", B, [
 			r[0] ||= a("div", { class: "ff-loader-line ff-loader-line--title" }, null, -1),
-			(g(), i(e, null, y(3, (e) => a("div", {
+			(_(), i(e, null, y(3, (e) => a("div", {
 				key: e,
 				class: "ff-loader-field"
 			}, [a("div", {
 				class: "ff-loader-line ff-loader-line--label",
-				style: f({ animationDelay: `${e * .12}s` })
+				style: p({ animationDelay: `${e * .12}s` })
 			}, null, 4), a("div", {
 				class: "ff-loader-line ff-loader-line--input",
-				style: f({
+				style: p({
 					width: e === 2 ? "62%" : "100%",
 					animationDelay: `${e * .12}s`
 				})
@@ -46,7 +46,7 @@ var z = ["data-variant"], B = {
 				class: "ff-loader-line ff-loader-line--button",
 				style: { animationDelay: "0.36s" }
 			}, null, -1)
-		])) : (g(), i("div", V)), a("p", se, w(t.message), 1)], 10, z));
+		])) : (_(), i("div", ce)), a("p", le, w(t.message), 1)], 10, z));
 	}
 }), [["__scopeId", "data-v-36bcdb81"]]), H = {
 	name: "default",
@@ -82,7 +82,7 @@ var z = ["data-variant"], B = {
 		colorScheme: "system"
 	}
 };
-function U(e, t) {
+function ue(e, t) {
 	if (!e && !t) return;
 	let n = /* @__PURE__ */ new Set([...Object.keys(e ?? {}), ...Object.keys(t ?? {})]), r = {};
 	for (let i of n) r[i] = {
@@ -91,7 +91,7 @@ function U(e, t) {
 	};
 	return r;
 }
-function le(e = {}) {
+function de(e = {}) {
 	let t = e.classNameStrategy ?? H.classNameStrategy, n = t !== "replace";
 	return {
 		...H,
@@ -101,7 +101,7 @@ function le(e = {}) {
 			...H.classNames,
 			...e.classNames
 		} : { ...e.classNames },
-		classNamesByType: U(n ? H.classNamesByType : void 0, e.classNamesByType),
+		classNamesByType: ue(n ? H.classNamesByType : void 0, e.classNamesByType),
 		defaults: {
 			...H.defaults,
 			...e.defaults
@@ -126,10 +126,10 @@ function le(e = {}) {
 }
 //#endregion
 //#region src/version.ts
-var ue = "0.1.17", de = "@solspace/freeform-vue";
+var fe = "0.1.19", pe = "@solspace/freeform-vue";
 //#endregion
 //#region src/utils/securityMeta.ts
-function fe(e) {
+function me(e) {
 	let t = {};
 	return e.security.honeypot?.name && (t.honeypot = {
 		name: e.security.honeypot.name,
@@ -141,7 +141,7 @@ function fe(e) {
 }
 //#endregion
 //#region src/composables/useFreeform.ts
-function pe(e, t) {
+function he(e, t) {
 	return {
 		values: { ...e.values },
 		touched: { ...e.touched },
@@ -152,8 +152,8 @@ function pe(e, t) {
 		visibilityVersion: t
 	};
 }
-function me(e) {
-	let n = t(() => ee(e)), r = t(() => n.value.theme ?? H), i = t(() => n.value.renderers ?? {}), a = t(() => n.value.allowRawHtml ?? !1), o = C(null), s = C(null), c = C(/* @__PURE__ */ new Map()), l = C(/* @__PURE__ */ new Map()), u = C([]), d = v(0), f = v(null), p = v(n.value.manifest ?? null), h = v(!n.value.manifest), g = v(null), y = v(!1), b = v(!1), x = v(null), S = v({
+function ge(e) {
+	let n = t(() => T(e)), r = t(() => n.value.theme ?? H), i = t(() => n.value.renderers ?? {}), a = t(() => n.value.allowRawHtml ?? !1), o = C(null), s = C(null), c = C(/* @__PURE__ */ new Map()), l = C(/* @__PURE__ */ new Map()), u = C([]), d = v(0), f = v(null), p = v(n.value.manifest ?? null), m = v(!n.value.manifest), g = v(null), _ = v(!1), y = v(!1), b = v(null), x = v({
 		values: {},
 		touched: {},
 		fieldErrors: {},
@@ -162,29 +162,29 @@ function me(e) {
 		currentPageIndex: 0,
 		visibilityVersion: 0
 	});
-	E(() => n.value.extensions, (e) => {
+	D(() => n.value.extensions, (e) => {
 		u.value = e ?? [];
 	}, { immediate: !0 });
-	function w() {
+	function S() {
 		let e = s.value;
-		e && (d.value += 1, S.value = pe(e, d.value));
+		e && (d.value += 1, x.value = he(e, d.value));
 	}
-	function T() {
+	function w() {
 		o.value ||= re({
 			baseUrl: n.value.baseUrl,
-			clientVersion: n.value.clientVersion ?? "0.1.17",
+			clientVersion: n.value.clientVersion ?? "0.1.19",
 			fetch: n.value.fetch,
 			credentials: n.value.credentials
 		});
 		for (let e of u.value) o.value.extensions.register(e);
 		return o.value;
 	}
-	E(() => n.value.extensions, () => {
-		let e = T();
+	D(() => n.value.extensions, () => {
+		let e = w();
 		for (let t of u.value) e.extensions.register(t);
-	}), E(p, (e) => {
-		e && oe(u.value, { manifest: e });
-	}), E(() => [
+	}), D(p, (e) => {
+		e && se(u.value, { manifest: e });
+	}), D(() => [
 		n.value.handle,
 		n.value.profile,
 		n.value.properties,
@@ -192,59 +192,59 @@ function me(e) {
 		n.value.initialValues
 	], () => {
 		if (n.value.manifest) {
-			s.value = A({
+			s.value = ne({
 				manifest: n.value.manifest,
 				initialValues: n.value.initialValues,
 				draftToken: n.value.draftToken,
 				draftKey: n.value.draftKey
-			}), p.value = n.value.manifest, w(), h.value = !1;
+			}), p.value = n.value.manifest, S(), m.value = !1;
 			return;
 		}
 		if (!n.value.handle && !n.value.profile) {
-			g.value = /* @__PURE__ */ Error("Either handle, profile, or manifest is required."), h.value = !1;
+			g.value = /* @__PURE__ */ Error("Either handle, profile, or manifest is required."), m.value = !1;
 			return;
 		}
 		let e = !1;
 		(async () => {
-			h.value = !0, g.value = null;
+			m.value = !0, g.value = null;
 			try {
-				let t = await T().loadManifest({
+				let t = await w().loadManifest({
 					handle: n.value.handle,
 					profile: n.value.profile,
 					properties: n.value.properties
 				});
 				if (e) return;
-				s.value = A({
+				s.value = ne({
 					manifest: t,
 					initialValues: n.value.initialValues,
 					draftToken: n.value.draftToken,
 					draftKey: n.value.draftKey
-				}), p.value = t, w(), n.value.onManifestLoaded?.(t);
+				}), p.value = t, S(), n.value.onManifestLoaded?.(t);
 			} catch (t) {
 				e || (g.value = t instanceof Error ? t : /* @__PURE__ */ Error("Failed to load manifest."));
 			} finally {
-				e || (h.value = !1);
+				e || (m.value = !1);
 			}
-		})(), m(() => {
+		})(), h(() => {
 			e = !0;
 		});
-	}, { immediate: !0 }), E(() => [n.value.draftToken, n.value.draftKey], () => {
+	}, { immediate: !0 }), D(() => [n.value.draftToken, n.value.draftKey], () => {
 		let e = s.value;
 		e && (n.value.draftToken !== void 0 && (e.draftToken = n.value.draftToken ?? null), n.value.draftKey !== void 0 && (e.draftKey = n.value.draftKey ?? null));
 	});
-	function D(e, t) {
-		s.value?.setValue(e, t), w();
-	}
-	function O(e) {
-		return s.value?.getValue(e);
+	function E(e, t) {
+		s.value?.setValue(e, t), S();
 	}
 	function k(e) {
+		return s.value?.getValue(e);
+	}
+	function A(e) {
 		return s.value?.isFieldVisible(e) ?? !1;
 	}
 	function j(e) {
 		return s.value?.isFieldEnabled(e) ?? !0;
 	}
-	function M(e) {
+	function ie(e) {
 		let t = s.value, n = p.value?.fields[e], r = t?.getValue(e);
 		return {
 			id: `freeform-${e}`,
@@ -252,14 +252,14 @@ function me(e) {
 			value: r ?? "",
 			onChange: (t) => {
 				let n = t.target;
-				D(e, n.value);
+				E(e, n.value);
 			},
 			onBlur: () => {
 				let t = s.value;
 				t && (t.touched = {
 					...t.touched,
 					[e]: !0
-				}, w());
+				}, S());
 			},
 			disabled: !j(e),
 			required: n?.required ?? !1,
@@ -267,45 +267,45 @@ function me(e) {
 			"aria-invalid": (t?.fieldErrors[e]?.length ?? 0) > 0
 		};
 	}
-	async function N(e = "submit") {
+	async function M(e = "submit") {
 		let t = s.value, r = p.value;
 		if (!(!t || !r)) {
-			y.value = !0;
+			_.value = !0;
 			try {
-				let i = t.getValuesForSubmit(), { values: a, files: o } = ie(i, r.fields), s = {
+				let i = t.getValuesForSubmit(), { values: a, files: o } = ae(i, r.fields), s = {
 					...t.getSubmitContext(),
 					sourceUrl: typeof window < "u" ? window.location.href : void 0
-				}, c = fe(r), l = await ne(u.value, {
+				}, c = me(r), l = await te(u.value, {
 					manifest: r,
 					intent: e,
 					values: a,
 					meta: c,
 					context: s,
 					baseUrl: n.value.baseUrl
-				}), d = await T().submit({
+				}), d = await w().submit({
 					manifest: r,
 					request: {
 						values: a,
 						intent: e,
 						context: s,
 						meta: {
-							client: de,
-							clientVersion: n.value.clientVersion ?? "0.1.17",
+							client: pe,
+							clientVersion: n.value.clientVersion ?? "0.1.19",
 							...l
 						}
 					},
 					files: Object.keys(o).length > 0 ? o : void 0
 				});
-				return t.applySubmitResponse(d), w(), await ae(u.value, {
+				return t.applySubmitResponse(d), S(), await oe(u.value, {
 					manifest: r,
 					intent: e,
 					response: d,
 					baseUrl: n.value.baseUrl
-				}), d.complete && (b.value = !0, x.value = d.message ?? r.settings.successMessage ?? "Thank you for your submission."), d.success ? n.value.onSuccess?.(d) : n.value.onError?.(d), d;
+				}), d.complete && (y.value = !0, b.value = d.message ?? r.settings.successMessage ?? "Thank you for your submission."), d.success ? n.value.onSuccess?.(d) : n.value.onError?.(d), d;
 			} catch (e) {
 				if (e instanceof Error && (e.name === "StripePaymentRedirectError" || e.name === "MolliePaymentRedirectError")) return;
 				let r = e instanceof Error ? e : /* @__PURE__ */ Error("Something went wrong while submitting the form.");
-				t && (t.formErrors = [r.message], t.fieldErrors = {}, t.pageErrors = [], w()), n.value.onError?.({
+				t && (t.formErrors = [r.message], t.fieldErrors = {}, t.pageErrors = [], S()), n.value.onError?.({
 					success: !1,
 					status: "error",
 					complete: !1,
@@ -317,12 +317,12 @@ function me(e) {
 				});
 				return;
 			} finally {
-				y.value = !1;
+				_.value = !1;
 			}
 		}
 	}
-	let P = () => N("validate"), F = () => N("next"), I = () => N("back"), L = () => N("saveDraft");
-	E(() => [
+	let N = () => M("validate"), P = () => M("next"), F = () => M("back"), I = () => M("saveDraft");
+	D(() => [
 		p.value,
 		n.value.draftToken,
 		n.value.draftKey
@@ -331,28 +331,28 @@ function me(e) {
 		let e = n.value.draftToken, t = n.value.draftKey;
 		if (!e || !t) return;
 		let r = `${e}:${t}`;
-		f.value !== r && (f.value = r, N("validate"));
+		f.value !== r && (f.value = r, M("validate"));
 	});
-	function R() {
-		p.value && (s.value = A({
+	function L() {
+		p.value && (s.value = ne({
 			manifest: p.value,
 			initialValues: n.value.initialValues,
 			draftToken: n.value.draftToken,
 			draftKey: n.value.draftKey
-		}), b.value = !1, x.value = null, w());
+		}), y.value = !1, b.value = null, S());
 	}
-	async function z(e) {
+	async function R(e) {
 		e?.preventDefault();
 		let t = p.value;
 		if (!t) return;
-		let n = t.layout.pages, r = n.length === 0 || S.value.currentPageIndex >= n.length - 1;
+		let n = t.layout.pages, r = n.length === 0 || x.value.currentPageIndex >= n.length - 1;
 		if (t.settings.multiPage && !r) {
-			await F();
+			await P();
 			return;
 		}
-		await N("submit");
+		await M("submit");
 	}
-	function B(e, t) {
+	function z(e, t) {
 		let r = p.value;
 		if (!r) return () => {};
 		c.value.set(e, t);
@@ -370,12 +370,12 @@ function me(e) {
 					element: t,
 					value: s.value?.getValue(e),
 					setValue: (t) => {
-						s.value?.setValue(e, t), w();
+						s.value?.setValue(e, t), S();
 					},
 					getValues: () => s.value?.getValuesForSubmit() ?? {},
 					baseUrl: n.value.baseUrl,
 					requestSubmit: () => {
-						N("submit");
+						M("submit");
 					}
 				});
 				if (a) {
@@ -390,7 +390,7 @@ function me(e) {
 			c.value.delete(e);
 		};
 	}
-	function V(e, t) {
+	function B(e, t) {
 		let n = p.value;
 		if (!n) return () => {};
 		let r = !1, i = [];
@@ -415,35 +415,35 @@ function me(e) {
 		};
 		return l.value.set(e.name, a), a;
 	}
-	let se = t(() => {
+	let ce = t(() => {
 		let e = p.value;
 		return e ? {
 			manifest: e,
-			values: S.value.values,
-			touched: S.value.touched,
-			fieldErrors: S.value.fieldErrors,
-			formErrors: S.value.formErrors,
-			pageErrors: S.value.pageErrors,
-			currentPageIndex: S.value.currentPageIndex,
-			isSubmitting: y.value,
-			isComplete: b.value,
-			successMessage: x.value,
-			setValue: D,
-			getValue: O,
-			isFieldVisible: k,
+			values: x.value.values,
+			touched: x.value.touched,
+			fieldErrors: x.value.fieldErrors,
+			formErrors: x.value.formErrors,
+			pageErrors: x.value.pageErrors,
+			currentPageIndex: x.value.currentPageIndex,
+			isSubmitting: _.value,
+			isComplete: y.value,
+			successMessage: b.value,
+			setValue: E,
+			getValue: k,
+			isFieldVisible: A,
 			isFieldEnabled: j,
-			getFieldProps: M,
-			submit: N,
-			validate: P,
-			goNext: F,
-			goBack: I,
-			saveDraft: L,
-			reset: R,
-			handleSubmit: z,
-			mountFieldExtension: B,
-			mountCaptcha: V
+			getFieldProps: ie,
+			submit: M,
+			validate: N,
+			goNext: P,
+			goBack: F,
+			saveDraft: I,
+			reset: L,
+			handleSubmit: R,
+			mountFieldExtension: z,
+			mountCaptcha: B
 		} : null;
-	}), ce = {
+	}), le = {
 		values: {},
 		touched: {},
 		fieldErrors: {},
@@ -453,84 +453,46 @@ function me(e) {
 		isSubmitting: !1,
 		isComplete: !1,
 		successMessage: null,
-		setValue: D,
-		getValue: O,
-		isFieldVisible: k,
+		setValue: E,
+		getValue: k,
+		isFieldVisible: A,
 		isFieldEnabled: j,
-		getFieldProps: M,
-		submit: N,
-		validate: P,
-		goNext: F,
-		goBack: I,
-		saveDraft: L,
-		reset: R,
-		handleSubmit: z,
-		mountFieldExtension: B,
-		mountCaptcha: V
-	}, U = _({});
-	return te(() => {
-		let e = se.value;
+		getFieldProps: ie,
+		submit: M,
+		validate: N,
+		goNext: P,
+		goBack: F,
+		saveDraft: I,
+		reset: L,
+		handleSubmit: R,
+		mountFieldExtension: z,
+		mountCaptcha: B
+	}, V = ee({});
+	return O(() => {
+		let e = ce.value;
 		if (!e) {
-			Object.assign(U, {
-				loading: h.value,
+			Object.assign(V, {
+				loading: m.value,
 				error: g.value,
 				manifest: null,
 				theme: r.value,
 				renderers: i.value,
 				allowRawHtml: a.value,
-				...ce
+				...le
 			});
 			return;
 		}
-		Object.assign(U, {
+		Object.assign(V, {
 			...e,
-			loading: h.value,
+			loading: m.value,
 			error: g.value,
 			manifest: p.value,
 			theme: r.value,
 			renderers: i.value,
 			allowRawHtml: a.value
 		});
-	}), U;
+	}), V;
 }
-//#endregion
-//#region src/components/Freeform.vue?vue&type=script&setup=true&lang.ts
-var he = { role: "alert" }, ge = /* @__PURE__ */ c({
-	__name: "Freeform",
-	props: {
-		handle: {},
-		profile: {},
-		properties: {},
-		baseUrl: {},
-		manifest: {},
-		initialValues: {},
-		draftToken: {},
-		draftKey: {},
-		clientVersion: {},
-		fetch: {},
-		credentials: {},
-		theme: {},
-		renderers: {},
-		extensions: {},
-		allowRawHtml: { type: Boolean },
-		onSuccess: { type: Function },
-		onError: { type: Function },
-		onManifestLoaded: { type: Function },
-		class: {},
-		loadingMessage: {}
-	},
-	setup(e) {
-		let i = e, o = me(() => i), c = t(() => o.manifest ? o : null);
-		return (t, l) => {
-			let d = x("FormLoader"), f = x("FreeformView");
-			return t.$slots.default ? b(t.$slots, "default", { form: T(o) }, void 0, void 0, 0) : T(o).loading ? b(t.$slots, "loading", {}, () => [s(d, { message: e.loadingMessage ?? "Loading form…" }, null, 8, ["message"])], void 0, 1) : T(o).error ? b(t.$slots, "error", { error: T(o).error }, () => [a("div", he, w(T(o).error.message), 1)], void 0, 2) : c.value ? (g(), n(f, {
-				key: 3,
-				form: c.value,
-				class: u(i.class)
-			}, null, 8, ["form", "class"])) : r("", !0);
-		};
-	}
-});
 //#endregion
 //#region src/composables/useFieldExtension.ts
 function _e(e, t) {
@@ -540,17 +502,17 @@ function _e(e, t) {
 		let i = n.value;
 		!i || !e.frontend?.extension || t.isFieldVisible(e.handle) && (r = t.mountFieldExtension(e.handle, i));
 	}
-	return p(i), E(() => [
+	return m(i), D(() => [
 		e.frontend?.extension,
 		e.handle,
 		t.isFieldVisible(e.handle)
-	], i), h(() => {
+	], i), g(() => {
 		r?.();
 	}), n;
 }
 //#endregion
 //#region src/components/ExtensionHost.vue?vue&type=script&setup=true&lang.ts
-var ve = ["hidden"], W = /* @__PURE__ */ c({
+var ve = ["hidden"], U = /* @__PURE__ */ c({
 	__name: "ExtensionHost",
 	props: {
 		field: {},
@@ -565,7 +527,7 @@ var ve = ["hidden"], W = /* @__PURE__ */ c({
 		function r(e) {
 			n.value = e ?? null;
 		}
-		return (n, a) => (g(), i("div", d({
+		return (n, a) => (_(), i("div", f({
 			ref: r,
 			class: t.class,
 			[e.dataAttr || ""]: e.dataValue ?? e.field.handle,
@@ -575,7 +537,7 @@ var ve = ["hidden"], W = /* @__PURE__ */ c({
 });
 //#endregion
 //#region src/renderers/builtin/fields.tsx
-function G(e) {
+function W(e) {
 	let t = e.input;
 	return {
 		...t,
@@ -583,82 +545,82 @@ function G(e) {
 	};
 }
 function ye(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "text",
 		class: e.classNames.input
 	}, t), null);
 }
 function be(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "url",
 		class: e.classNames.input
 	}, t), null);
 }
 function xe(e) {
-	let t = G(e), n = e.field.validation?.pattern || (e.field.frontend?.config?.pattern ?? void 0);
-	return s("input", l({
+	let t = W(e), n = e.field.validation?.pattern || (e.field.frontend?.config?.pattern ?? void 0);
+	return s("input", u({
 		type: "text",
 		class: e.classNames.input,
 		pattern: n || void 0
 	}, t), null);
 }
 function Se(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "password",
 		class: e.classNames.input
 	}, t), null);
 }
 function Ce(e) {
-	let t = G(e), n = e.field.frontend?.config?.targetType === "password" ? "password" : "text";
-	return s("input", l({
+	let t = W(e), n = e.field.frontend?.config?.targetType === "password" ? "password" : "text";
+	return s("input", u({
 		type: n,
 		class: e.classNames.input
 	}, t), null);
 }
 function we(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "email",
 		class: e.classNames.input
 	}, t), null);
 }
 function Te(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "number",
 		class: e.classNames.input
 	}, t), null);
 }
 function Ee(e) {
-	let t = G(e);
-	return s("input", l({
+	let t = W(e);
+	return s("input", u({
 		type: "tel",
 		class: e.classNames.input
 	}, t), null);
 }
 function De(e) {
-	let t = G(e);
-	return s("input", l({ type: "hidden" }, t), null);
+	let t = W(e);
+	return s("input", u({ type: "hidden" }, t), null);
 }
 function Oe(e) {
-	let t = G(e);
-	return s("textarea", l({
+	let t = W(e);
+	return s("textarea", u({
 		class: e.classNames.input,
 		rows: 4
 	}, t), null);
 }
-function K(e) {
-	let t = G(e), n = String(t.value ?? "");
-	return s("select", l({ class: e.classNames.input }, t, { value: n }), [e.field.placeholder ? s("option", { value: "" }, [e.field.placeholder]) : null, (e.field.options ?? []).map((e) => s("option", {
+function G(e) {
+	let t = W(e), n = String(t.value ?? "");
+	return s("select", u({ class: e.classNames.input }, t, { value: n }), [e.field.placeholder ? s("option", { value: "" }, [e.field.placeholder]) : null, (e.field.options ?? []).map((e) => s("option", {
 		key: e.value,
 		value: e.value
 	}, [e.label]))]);
 }
 function ke(e) {
-	let t = G(e), n = Array.isArray(e.value) ? e.value.map(String) : e.value ? [String(e.value)] : [];
+	let t = W(e), n = Array.isArray(e.value) ? e.value.map(String) : e.value ? [String(e.value)] : [];
 	return s("select", {
 		class: e.classNames.input,
 		id: t.id,
@@ -678,7 +640,7 @@ function ke(e) {
 	}, [e.label]))]);
 }
 function Ae(e) {
-	let t = G(e), n = t.value === "1" || e.value === !0 || t.value === "true";
+	let t = W(e), n = t.value === "1" || e.value === !0 || t.value === "true";
 	return s("label", { class: e.classNames.optionLabel ?? e.classNames.input }, [s("input", {
 		type: "checkbox",
 		class: e.classNames.optionInput,
@@ -711,7 +673,7 @@ function je(e) {
 		}
 	}, null), s("span", null, [n.label])]))]);
 }
-function q(e) {
+function K(e) {
 	let t = String(e.value ?? "");
 	return s("div", {
 		class: e.classNames.input,
@@ -852,8 +814,8 @@ function Pe(e) {
 		]);
 	})]);
 }
-function J(e) {
-	let t = G(e), n = e.field.frontend?.config ?? {};
+function q(e) {
+	let t = W(e), n = e.field.frontend?.config ?? {};
 	return s("input", {
 		type: "file",
 		class: e.classNames.input,
@@ -875,7 +837,7 @@ function J(e) {
 	}, null);
 }
 function Fe(e) {
-	return s(W, {
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		class: e.classNames.input,
@@ -883,7 +845,7 @@ function Fe(e) {
 	}, null);
 }
 function Ie(e) {
-	return s(W, {
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		class: e.classNames.input,
@@ -891,7 +853,7 @@ function Ie(e) {
 	}, null);
 }
 function Le(e) {
-	return s(W, {
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		class: e.classNames.input,
@@ -899,7 +861,7 @@ function Le(e) {
 	}, null);
 }
 function Re(e) {
-	return s(W, {
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		class: e.classNames.input,
@@ -907,7 +869,7 @@ function Re(e) {
 	}, null);
 }
 function ze(e) {
-	return s(W, {
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		class: e.classNames.input,
@@ -915,7 +877,7 @@ function ze(e) {
 		hidden: !0
 	}, null);
 }
-function Y(e) {
+function J(e) {
 	let t = e.classNames.content ?? e.classNames.input ?? "ff-field__content", n = e.field.content?.rendered?.html?.trim();
 	return e.allowRawHtml && n ? s("div", {
 		class: t,
@@ -935,12 +897,12 @@ function Be(e) {
 	}, null) : null;
 }
 function Ve(e) {
-	let t = G(e), n = e.field.frontend?.config ?? {}, r = n.useNativeTypes ? n.nativeInputType || "datetime-local" : "text";
-	return s(W, {
+	let t = W(e), n = e.field.frontend?.config ?? {}, r = n.useNativeTypes ? n.nativeInputType || "datetime-local" : "text";
+	return s(U, {
 		field: e.field,
 		form: e.form,
 		dataAttr: "data-freeform-datetime"
-	}, { default: () => [s("input", l({
+	}, { default: () => [s("input", u({
 		type: r,
 		class: e.classNames.input,
 		"data-datepicker": "",
@@ -974,7 +936,7 @@ var Ue = /* @__PURE__ */ c({
 	},
 	setup(e) {
 		let t = N(e.field.frontend?.config), n = t.inputType ?? "regularTextInput", r = C(e.form.setValue);
-		return r.value = e.form.setValue, E(() => [
+		return r.value = e.form.setValue, D(() => [
 			e.field.handle,
 			t.calculations,
 			t.decimalCount,
@@ -1036,26 +998,26 @@ var Ue = /* @__PURE__ */ c({
 		}
 	},
 	setup(e) {
-		let t = C(null), n = C(!1), r = v(!I(e.value)), i = P(e.field), a = i.width ?? 400, c = i.height ?? 100, l = e.form.isFieldEnabled(e.field.handle), u = i.penColor || "#000000", d = i.backgroundColor || "rgba(0,0,0,0)", f = i.borderColor || "#999999", m = i.penDotSize ?? 2.5;
-		function g(e) {
+		let t = C(null), n = C(!1), r = v(!I(e.value)), i = P(e.field), a = i.width ?? 400, c = i.height ?? 100, l = e.form.isFieldEnabled(e.field.handle), u = i.penColor || "#000000", d = i.backgroundColor || "rgba(0,0,0,0)", f = i.borderColor || "#999999", p = i.penDotSize ?? 2.5;
+		function h(e) {
 			e.fillStyle = d, e.fillRect(0, 0, a, c);
 		}
 		function _() {
 			let n = t.value;
 			n && e.form.setValue(e.field.handle, n.toDataURL("image/png"));
 		}
-		function y() {
+		function ee() {
 			let n = t.value, i = n?.getContext("2d");
-			!n || !i || (i.clearRect(0, 0, a, c), g(i), r.value = !1, e.form.setValue(e.field.handle, ""));
+			!n || !i || (i.clearRect(0, 0, a, c), h(i), r.value = !1, e.form.setValue(e.field.handle, ""));
 		}
-		function b() {
+		function y() {
 			let n = t.value;
 			if (!n) return;
 			let i = typeof window < "u" && window.devicePixelRatio || 1;
 			n.width = Math.floor(a * i), n.height = Math.floor(c * i), n.style.width = `${a}px`, n.style.height = `${c}px`;
 			let o = n.getContext("2d");
 			if (o) {
-				if (o.setTransform(i, 0, 0, i, 0, 0), g(o), o.strokeStyle = u, o.lineWidth = m, o.lineCap = "round", o.lineJoin = "round", typeof e.value == "string" && e.value.startsWith("data:")) {
+				if (o.setTransform(i, 0, 0, i, 0, 0), h(o), o.strokeStyle = u, o.lineWidth = p, o.lineCap = "round", o.lineJoin = "round", typeof e.value == "string" && e.value.startsWith("data:")) {
 					let t = new Image();
 					t.onload = () => {
 						o.drawImage(t, 0, 0, a, c), r.value = !I(e.value);
@@ -1063,10 +1025,10 @@ var Ue = /* @__PURE__ */ c({
 				} else r.value = !1;
 			}
 		}
-		p(b), E(() => [a, c], b), h(() => {
+		m(y), D(() => [a, c], y), g(() => {
 			n.value = !1;
 		});
-		function x(e) {
+		function b(e) {
 			let n = t.value;
 			if (!n) return {
 				x: 0,
@@ -1078,7 +1040,7 @@ var Ue = /* @__PURE__ */ c({
 				y: (e.clientY - r.top) / r.height * c
 			};
 		}
-		function S() {
+		function x() {
 			n.value && (n.value = !1, _());
 		}
 		return () => s("div", {
@@ -1103,24 +1065,24 @@ var Ue = /* @__PURE__ */ c({
 				if (!l) return;
 				let r = t.value, i = r?.getContext("2d");
 				if (!i || !r) return;
-				n.value = !0, r.setPointerCapture(e.pointerId), i.strokeStyle = u, i.lineWidth = m, i.lineCap = "round", i.lineJoin = "round";
-				let { x: a, y: o } = x(e);
+				n.value = !0, r.setPointerCapture(e.pointerId), i.strokeStyle = u, i.lineWidth = p, i.lineCap = "round", i.lineJoin = "round";
+				let { x: a, y: o } = b(e);
 				i.beginPath(), i.moveTo(a, o);
 			},
 			onPointermove: (e) => {
 				if (!n.value) return;
 				let i = t.value?.getContext("2d");
 				if (!i) return;
-				let { x: a, y: o } = x(e);
+				let { x: a, y: o } = b(e);
 				i.lineTo(a, o), i.stroke(), r.value = !0;
 			},
-			onPointerup: S,
-			onPointercancel: S,
-			onPointerleave: S
+			onPointerup: x,
+			onPointercancel: x,
+			onPointerleave: x
 		}, null), i.showClearButton === !1 ? null : s("button", {
 			type: "button",
 			disabled: !r.value || !l,
-			onClick: y
+			onClick: ee
 		}, [o("Clear")])]);
 	}
 }), Ge = /* @__PURE__ */ c({
@@ -1142,7 +1104,7 @@ var Ue = /* @__PURE__ */ c({
 	},
 	setup(e) {
 		let n = t(() => F(e.field)), r = t(() => n.value.columns ?? []), i = t(() => e.form.isFieldEnabled(e.field.handle)), a = t(() => L(e.value, r.value, n.value)), o = C(!1);
-		E(() => [e.field.handle, e.value], () => {
+		D(() => [e.field.handle, e.value], () => {
 			o.value || (!Array.isArray(e.value) || e.value.length === 0) && (o.value = !0, e.form.setValue(e.field.handle, a.value));
 		}, { immediate: !0 });
 		let c = (t) => {
@@ -1152,7 +1114,7 @@ var Ue = /* @__PURE__ */ c({
 			r[e][t] = n, c(r);
 		};
 		return () => {
-			let t = a.value, o = r.value, u = n.value, d = i.value, f = O(t, u);
+			let t = a.value, o = r.value, u = n.value, d = i.value, f = A(t, u);
 			return s("div", {
 				class: e.classNames.input,
 				"data-freeform-table": ""
@@ -1234,7 +1196,7 @@ var Ue = /* @__PURE__ */ c({
 						l(r, i, e.target.value);
 					}
 				}, null)]);
-			}), s("td", null, [k(t, r, u) ? s("button", {
+			}), s("td", null, [j(t, r, u) ? s("button", {
 				type: "button",
 				disabled: !d,
 				onClick: () => {
@@ -1243,7 +1205,7 @@ var Ue = /* @__PURE__ */ c({
 			}, [u.removeButtonLabel || "Remove"]) : null])]))])]), f ? s("button", {
 				type: "button",
 				disabled: !d,
-				onClick: () => c([...t, j(o)])
+				onClick: () => c([...t, ie(o)])
 			}, [u.addButtonLabel || "Add"]) : null]);
 		};
 	}
@@ -1398,7 +1360,7 @@ var Ue = /* @__PURE__ */ c({
 		return () => s("div", { class: e.class }, [t.default?.()]);
 	}
 });
-function X(e, t = "submit") {
+function Y(e, t = "submit") {
 	return /* @__PURE__ */ c({
 		name: e,
 		props: {
@@ -1433,7 +1395,7 @@ function X(e, t = "submit") {
 		}
 	});
 }
-var et = X("DefaultSubmitButton"), tt = X("DefaultNextButton", "button"), nt = X("DefaultBackButton", "button"), rt = X("DefaultSaveButton", "button"), it = /* @__PURE__ */ c({
+var et = Y("DefaultSubmitButton"), tt = Y("DefaultNextButton", "button"), nt = Y("DefaultBackButton", "button"), rt = Y("DefaultSaveButton", "button"), it = /* @__PURE__ */ c({
 	name: "DefaultSuccessMessage",
 	props: {
 		message: {
@@ -1451,7 +1413,7 @@ var et = X("DefaultSubmitButton"), tt = X("DefaultNextButton", "button"), nt = X
 			role: "status"
 		}, [e.message]);
 	}
-}), Z = {
+}), X = {
 	frontend: {
 		text: ye,
 		textarea: Oe,
@@ -1463,22 +1425,22 @@ var et = X("DefaultSubmitButton"), tt = X("DefaultNextButton", "button"), nt = X
 		password: Se,
 		confirm: Ce,
 		hidden: De,
-		dropdown: K,
-		select: K,
+		dropdown: G,
+		select: G,
 		"multiple-select": ke,
 		checkbox: Ae,
 		checkboxes: je,
-		radios: q,
-		radio: q,
+		radios: K,
+		radio: K,
 		"opinion-scale": Me,
 		rating: Ne,
 		cards: Pe,
 		datetime: Ve,
-		file: J,
-		"file-upload": J,
+		file: q,
+		"file-upload": q,
 		"file-dnd": Fe,
-		html: Y,
-		"rich-text": Y,
+		html: J,
+		"rich-text": J,
 		image: Be,
 		table: Ge,
 		signature: We,
@@ -1499,23 +1461,23 @@ var et = X("DefaultSubmitButton"), tt = X("DefaultNextButton", "button"), nt = X
 		password: Se,
 		confirm: Ce,
 		hidden: De,
-		select: K,
-		dropdown: K,
+		select: G,
+		dropdown: G,
 		"multiple-select": ke,
 		checkbox: Ae,
 		checkboxes: je,
-		radio: q,
-		radios: q,
-		radiobox: q,
+		radio: K,
+		radios: K,
+		radiobox: K,
 		"opinion-scale": Me,
 		rating: Ne,
 		cards: Pe,
 		datetime: Ve,
-		file: J,
-		"file-upload": J,
+		file: q,
+		"file-upload": q,
 		"file-dnd": Fe,
-		html: Y,
-		"rich-text": Y,
+		html: J,
+		"rich-text": J,
 		image: Be,
 		table: Ge,
 		signature: We,
@@ -1544,7 +1506,7 @@ var et = X("DefaultSubmitButton"), tt = X("DefaultNextButton", "button"), nt = X
 };
 //#endregion
 //#region src/theme/mergeClassNames.ts
-function Q(...e) {
+function Z(...e) {
 	return e.filter((e) => typeof e == "string" && e.trim() !== "").join(" ").replace(/\s+/g, " ").trim() || void 0;
 }
 function ot(e, t, n) {
@@ -1552,162 +1514,47 @@ function ot(e, t, n) {
 }
 //#endregion
 //#region src/theme/toBemModifier.ts
-function st(e) {
+function Q(e) {
 	return e.replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/[_\s]+/g, "-").replace(/-+/g, "-").toLowerCase();
 }
 //#endregion
-//#region src/components/FreeformView.vue
-var ct = /* @__PURE__ */ c({
-	__name: "FreeformView",
+//#region src/components/CaptchaHost.vue?vue&type=script&setup=true&lang.ts
+var st = ["data-freeform-captcha", "data-freeform-captcha-provider"], ct = /* @__PURE__ */ c({
+	__name: "CaptchaHost",
 	props: {
 		form: {},
-		class: {}
+		captcha: {}
 	},
-	setup(a) {
-		let o = a, s = t(() => ({
-			...at,
-			...o.form.theme.renderers?.components
-		})), c = t(() => o.form.theme.classNameStrategy ?? "merge"), l = t(() => o.form.theme.defaults?.colorScheme ?? "system"), d = t(() => Q(o.form.theme.classNames?.form, c.value === "merge" ? `ff-form--${st(o.form.manifest.form.handle)}` : void 0, c.value === "merge" && (l.value === "light" || l.value === "dark") ? `ff-form--${l.value}` : void 0, o.class)), f = t(() => o.form.manifest.layout.pages[o.form.currentPageIndex] ?? o.form.manifest.layout.pages[0] ?? {
-			rows: [],
-			buttons: {}
-		}), p = t(() => o.form.manifest.layout.pages.length === 0 || o.form.currentPageIndex >= o.form.manifest.layout.pages.length - 1), m = t(() => o.form.currentPageIndex === 0);
-		function h(e) {
-			if (e.type === "image") {
-				let t = e.frontend?.config ?? {};
-				return !!(e.content?.image?.src || t.src);
-			}
-			if (e.type === "html" || e.type === "rich-text") {
-				let t = e.content?.rendered?.html?.trim();
-				return !!(o.form.allowRawHtml && t || e.instructions);
-			}
-			return !0;
+	setup(e) {
+		let t = e, n = v(null), r;
+		function a(e) {
+			return [
+				e.name,
+				e.provider ?? "",
+				e.siteKey ?? "",
+				e.startMode ?? "",
+				e.theme ?? "",
+				e.locale ?? "",
+				e.apiEndpoint ?? "",
+				e.version ?? "",
+				e.size ?? ""
+			].join("|");
 		}
-		function _(e) {
-			o.form.handleSubmit(e);
+		function o() {
+			r?.(), r = void 0, n.value && (r = t.form.mountCaptcha(t.captcha, n.value));
 		}
-		return (t, o) => {
-			let l = x("FieldRenderer"), v = x("CaptchaHost");
-			return a.form.isComplete && a.form.successMessage ? (g(), n(S(s.value.SuccessMessage), {
-				key: 0,
-				message: a.form.successMessage,
-				class: u(a.form.theme.classNames?.success)
-			}, null, 8, ["message", "class"])) : (g(), n(S(s.value.Form), {
-				key: 1,
-				form: a.form,
-				class: u(d.value),
-				"on-submit": _
-			}, {
-				default: D(() => [
-					a.form.formErrors.length > 0 ? (g(), n(S(s.value.Errors), {
-						key: 0,
-						errors: a.form.formErrors,
-						class: u(a.form.theme.classNames?.errors),
-						"error-class": a.form.theme.classNames?.error
-					}, null, 8, [
-						"errors",
-						"class",
-						"error-class"
-					])) : r("", !0),
-					(g(), n(S(s.value.Page), {
-						form: a.form,
-						"page-index": a.form.currentPageIndex,
-						class: u(T(Q)(a.form.theme.classNames?.page, c.value === "merge" ? `ff-page--${a.form.currentPageIndex}` : void 0))
-					}, {
-						default: D(() => [(g(!0), i(e, null, y(f.value.rows, (t) => (g(), i(e, { key: t.uid }, [t.fields.filter((e) => {
-							let t = a.form.manifest.fields[e];
-							return t ? h(t) : !1;
-						}).length > 0 ? (g(), n(S(s.value.Row), {
-							key: 0,
-							class: u(T(Q)(a.form.theme.classNames?.row, c.value === "merge" ? `ff-row--${t.fields.filter((e) => {
-								let t = a.form.manifest.fields[e];
-								return t ? h(t) : !1;
-							}).length}-fields` : void 0))
-						}, {
-							default: D(() => [(g(!0), i(e, null, y(t.fields.filter((e) => {
-								let t = a.form.manifest.fields[e];
-								return t ? h(t) : !1;
-							}), (e) => (g(), n(l, {
-								key: e,
-								field: a.form.manifest.fields[e],
-								form: a.form,
-								theme: a.form.theme,
-								renderers: a.form.renderers,
-								"allow-raw-html": a.form.allowRawHtml
-							}, null, 8, [
-								"field",
-								"form",
-								"theme",
-								"renderers",
-								"allow-raw-html"
-							]))), 128))]),
-							_: 2
-						}, 1032, ["class"])) : r("", !0)], 64))), 128))]),
-						_: 1
-					}, 8, [
-						"form",
-						"page-index",
-						"class"
-					])),
-					(g(!0), i(e, null, y(a.form.manifest.security.captchas ?? [], (e) => (g(), n(v, {
-						key: e.name,
-						form: a.form,
-						captcha: e
-					}, null, 8, ["form", "captcha"]))), 128)),
-					(g(), n(S(s.value.ButtonRow), { class: u(a.form.theme.classNames?.buttons) }, {
-						default: D(() => [
-							!m.value && f.value.buttons?.back ? (g(), n(S(s.value.BackButton), {
-								key: 0,
-								label: f.value.buttons.back.label,
-								class: u(a.form.theme.classNames?.backButton),
-								disabled: a.form.isSubmitting,
-								"on-click": () => void a.form.goBack()
-							}, null, 40, [
-								"label",
-								"class",
-								"disabled",
-								"on-click"
-							])) : r("", !0),
-							a.form.manifest.settings.multiPage && !p.value && f.value.buttons?.submit ? (g(), n(S(s.value.NextButton), {
-								key: 1,
-								label: f.value.buttons.submit.label,
-								class: u(a.form.theme.classNames?.nextButton),
-								disabled: a.form.isSubmitting,
-								"on-click": () => void a.form.goNext()
-							}, null, 40, [
-								"label",
-								"class",
-								"disabled",
-								"on-click"
-							])) : r("", !0),
-							(!a.form.manifest.settings.multiPage || p.value) && f.value.buttons?.submit ? (g(), n(S(s.value.SubmitButton), {
-								key: 2,
-								label: f.value.buttons.submit.label,
-								class: u(a.form.theme.classNames?.submitButton),
-								disabled: a.form.isSubmitting
-							}, null, 8, [
-								"label",
-								"class",
-								"disabled"
-							])) : r("", !0),
-							f.value.buttons?.save ? (g(), n(S(s.value.SaveButton), {
-								key: 3,
-								label: f.value.buttons.save.label,
-								class: u(a.form.theme.classNames?.saveButton),
-								disabled: a.form.isSubmitting,
-								"on-click": () => void a.form.saveDraft()
-							}, null, 40, [
-								"label",
-								"class",
-								"disabled",
-								"on-click"
-							])) : r("", !0)
-						]),
-						_: 1
-					}, 8, ["class"]))
-				]),
-				_: 1
-			}, 40, ["form", "class"]));
-		};
+		m(o), D(() => a(t.captcha), o), g(() => {
+			r?.();
+		});
+		function s(e) {
+			n.value = e ?? null;
+		}
+		return (t, n) => (_(), i("div", {
+			ref: s,
+			class: "ff-captcha",
+			"data-freeform-captcha": e.captcha.name,
+			"data-freeform-captcha-provider": e.captcha.provider ?? e.captcha.name
+		}, null, 8, st));
 	}
 });
 //#endregion
@@ -1721,10 +1568,10 @@ function lt(e, t, n) {
 		n?.renderers?.handles?.[e.handle],
 		r ? n?.renderers?.frontend?.[r] : void 0,
 		n?.renderers?.types?.[e.type],
-		r ? Z.frontend[r] : void 0,
-		r ? Z.types[r] : void 0,
-		Z.types[e.type]
-	].find((e) => !!e) ?? Z.types._unsupported;
+		r ? X.frontend[r] : void 0,
+		r ? X.types[r] : void 0,
+		X.types[e.type]
+	].find((e) => !!e) ?? X.types._unsupported;
 }
 //#endregion
 //#region src/theme/resolveThemeClassNames.ts
@@ -1752,13 +1599,348 @@ function dt(e, t, n = !1) {
 	let o = t.frontend?.extension;
 	return o && (i = $(i, r?.[o])), n && i.inputError && (i = ut.has(t.type) ? {
 		...i,
-		optionInput: Q(i.optionInput, i.inputError)
+		optionInput: Z(i.optionInput, i.inputError)
 	} : {
 		...i,
-		input: Q(i.input, i.inputError)
+		input: Z(i.input, i.inputError)
 	}), i;
 }
 //#endregion
-export { de as CLIENT_NAME, ce as FormLoader, ge as Freeform, ct as FreeformView, ue as PACKAGE_VERSION, at as builtinComponents, Z as builtinRenderers, le as createTheme, H as defaultTheme, Q as joinClassNames, ot as mergeClassNames, lt as resolveFieldRenderer, dt as resolveThemeClassNames, st as toBemModifier, _e as useFieldExtension, me as useFreeform };
+//#region src/components/FieldRenderer.vue?vue&type=script&setup=true&lang.ts
+var ft = ["data-freeform-group"], pt = /* @__PURE__ */ c({
+	name: "FieldRenderer",
+	__name: "FieldRenderer",
+	props: {
+		field: {},
+		form: {},
+		theme: {},
+		renderers: {},
+		allowRawHtml: { type: Boolean }
+	},
+	setup(o) {
+		let s = o, c = t(() => s.theme.classNameStrategy ?? "merge"), u = t(() => s.form.fieldErrors[s.field.handle] ?? []), p = t(() => dt(s.theme, s.field, u.value.length > 0)), m = t(() => ({
+			...at,
+			...s.theme.renderers?.components
+		})), h = t(() => lt(s.field, s.renderers, s.theme)), g = t(() => s.form.values[s.field.handle]), ee = t(() => s.field.type === "checkbox"), v = t(() => s.field.type === "html" || s.field.type === "rich-text" || s.field.type === "image"), b = t(() => s.field.type === "hidden" || s.field.type === "mollie" || s.field.frontend?.renderer === "payment.mollie" || s.field.frontend?.extension === "payment.mollie"), C = t(() => !ee.value && !v.value && !b.value && s.theme.defaults?.renderLabels !== !1), w = t(() => !v.value && !b.value && s.theme.defaults?.renderInstructions !== !1), T = t(() => s.theme.defaults?.renderErrors !== !1), D = t(() => {
+			if (!v.value) return !0;
+			if (s.field.type === "image") {
+				let e = s.field.frontend?.config ?? {};
+				return !!(s.field.content?.image?.src || e.src);
+			}
+			let e = s.field.content?.rendered?.html?.trim();
+			return !!(s.allowRawHtml && e || s.field.instructions);
+		}), O = t(() => Z(p.value.field, s.field.required ? p.value.fieldRequired : void 0, u.value.length ? p.value.fieldHasErrors : void 0, !s.form.isFieldVisible(s.field.handle) || b.value ? p.value.fieldHidden : void 0, c.value === "merge" ? `ff-field--${Q(s.field.type)}` : void 0, c.value === "merge" ? `ff-field--${Q(s.field.handle)}` : void 0)), A = t(() => ({
+			field: s.field,
+			form: s.form,
+			value: g.value,
+			errors: u.value,
+			input: s.form.getFieldProps(s.field.handle),
+			classNames: p.value,
+			allowRawHtml: s.allowRawHtml,
+			renderLabel: () => null,
+			renderInstructions: () => null,
+			renderErrors: () => null
+		}));
+		return (t, s) => {
+			let g = x("FieldRenderer", !0);
+			return D.value ? (_(), i(e, { key: 0 }, [b.value ? (_(), n(S(m.value.FieldWrapper), {
+				key: 0,
+				field: o.field,
+				form: o.form,
+				class: d(O.value)
+			}, {
+				default: k(() => [(_(), n(S(h.value), f(l(A.value)), null, 16))]),
+				_: 1
+			}, 8, [
+				"field",
+				"form",
+				"class"
+			])) : o.field.type === "group" ? (_(), n(S(m.value.FieldWrapper), {
+				key: 1,
+				field: o.field,
+				form: o.form,
+				class: d(O.value)
+			}, {
+				default: k(() => [
+					C.value ? (_(), n(S(m.value.Label), {
+						key: 0,
+						field: o.field,
+						class: d(p.value.label),
+						"required-indicator": o.theme.defaults?.requiredIndicator
+					}, null, 8, [
+						"field",
+						"class",
+						"required-indicator"
+					])) : r("", !0),
+					w.value ? (_(), n(S(m.value.Instructions), {
+						key: 1,
+						field: o.field,
+						class: d(p.value.instructions)
+					}, null, 8, ["field", "class"])) : r("", !0),
+					a("div", {
+						class: d(p.value.input),
+						"data-freeform-group": o.field.handle
+					}, [(_(!0), i(e, null, y(o.field.layout?.rows ?? [], (t) => (_(), n(S(m.value.Row), {
+						key: t.uid,
+						class: d(E(Z)(p.value.row, c.value === "merge" ? `ff-row--${t.fields.length}-fields` : void 0))
+					}, {
+						default: k(() => [(_(!0), i(e, null, y(t.fields, (e) => (_(), n(g, {
+							key: e,
+							field: o.form.manifest.fields[e],
+							form: o.form,
+							theme: o.theme,
+							renderers: o.renderers,
+							"allow-raw-html": o.allowRawHtml
+						}, null, 8, [
+							"field",
+							"form",
+							"theme",
+							"renderers",
+							"allow-raw-html"
+						]))), 128))]),
+						_: 2
+					}, 1032, ["class"]))), 128))], 10, ft),
+					T.value ? (_(), n(S(m.value.Errors), {
+						key: 2,
+						errors: u.value,
+						class: d(p.value.errors),
+						"error-class": p.value.error
+					}, null, 8, [
+						"errors",
+						"class",
+						"error-class"
+					])) : r("", !0)
+				]),
+				_: 1
+			}, 8, [
+				"field",
+				"form",
+				"class"
+			])) : (_(), n(S(m.value.FieldWrapper), {
+				key: 2,
+				field: o.field,
+				form: o.form,
+				class: d(O.value)
+			}, {
+				default: k(() => [
+					C.value ? (_(), n(S(m.value.Label), {
+						key: 0,
+						field: o.field,
+						class: d(p.value.label),
+						"required-indicator": o.theme.defaults?.requiredIndicator
+					}, null, 8, [
+						"field",
+						"class",
+						"required-indicator"
+					])) : r("", !0),
+					w.value ? (_(), n(S(m.value.Instructions), {
+						key: 1,
+						field: o.field,
+						class: d(p.value.instructions)
+					}, null, 8, ["field", "class"])) : r("", !0),
+					(_(), n(S(h.value), f(l(A.value)), null, 16)),
+					T.value ? (_(), n(S(m.value.Errors), {
+						key: 2,
+						errors: u.value,
+						class: d(p.value.errors),
+						"error-class": p.value.error
+					}, null, 8, [
+						"errors",
+						"class",
+						"error-class"
+					])) : r("", !0)
+				]),
+				_: 1
+			}, 8, [
+				"field",
+				"form",
+				"class"
+			]))], 64)) : r("", !0);
+		};
+	}
+}), mt = /* @__PURE__ */ c({
+	__name: "FreeformView",
+	props: {
+		form: {},
+		class: {}
+	},
+	setup(a) {
+		let o = a, s = t(() => ({
+			...at,
+			...o.form.theme.renderers?.components
+		})), c = t(() => o.form.theme.classNameStrategy ?? "merge"), l = t(() => o.form.theme.defaults?.colorScheme ?? "system"), u = t(() => Z(o.form.theme.classNames?.form, c.value === "merge" ? `ff-form--${Q(o.form.manifest.form.handle)}` : void 0, c.value === "merge" && (l.value === "light" || l.value === "dark") ? `ff-form--${l.value}` : void 0, o.class)), f = t(() => o.form.manifest.layout.pages[o.form.currentPageIndex] ?? o.form.manifest.layout.pages[0] ?? {
+			rows: [],
+			buttons: {}
+		}), p = t(() => o.form.manifest.layout.pages.length === 0 || o.form.currentPageIndex >= o.form.manifest.layout.pages.length - 1), m = t(() => o.form.currentPageIndex === 0);
+		function h(e) {
+			if (e.type === "image") {
+				let t = e.frontend?.config ?? {};
+				return !!(e.content?.image?.src || t.src);
+			}
+			if (e.type === "html" || e.type === "rich-text") {
+				let t = e.content?.rendered?.html?.trim();
+				return !!(o.form.allowRawHtml && t || e.instructions);
+			}
+			return !0;
+		}
+		function g(e) {
+			o.form.handleSubmit(e);
+		}
+		return (t, o) => a.form.isComplete && a.form.successMessage ? (_(), n(S(s.value.SuccessMessage), {
+			key: 0,
+			message: a.form.successMessage,
+			class: d(a.form.theme.classNames?.success)
+		}, null, 8, ["message", "class"])) : (_(), n(S(s.value.Form), {
+			key: 1,
+			form: a.form,
+			class: d(u.value),
+			"on-submit": g
+		}, {
+			default: k(() => [
+				a.form.formErrors.length > 0 ? (_(), n(S(s.value.Errors), {
+					key: 0,
+					errors: a.form.formErrors,
+					class: d(a.form.theme.classNames?.errors),
+					"error-class": a.form.theme.classNames?.error
+				}, null, 8, [
+					"errors",
+					"class",
+					"error-class"
+				])) : r("", !0),
+				(_(), n(S(s.value.Page), {
+					form: a.form,
+					"page-index": a.form.currentPageIndex,
+					class: d(E(Z)(a.form.theme.classNames?.page, c.value === "merge" ? `ff-page--${a.form.currentPageIndex}` : void 0))
+				}, {
+					default: k(() => [(_(!0), i(e, null, y(f.value.rows, (t) => (_(), i(e, { key: t.uid }, [t.fields.filter((e) => {
+						let t = a.form.manifest.fields[e];
+						return t ? h(t) : !1;
+					}).length > 0 ? (_(), n(S(s.value.Row), {
+						key: 0,
+						class: d(E(Z)(a.form.theme.classNames?.row, c.value === "merge" ? `ff-row--${t.fields.filter((e) => {
+							let t = a.form.manifest.fields[e];
+							return t ? h(t) : !1;
+						}).length}-fields` : void 0))
+					}, {
+						default: k(() => [(_(!0), i(e, null, y(t.fields.filter((e) => {
+							let t = a.form.manifest.fields[e];
+							return t ? h(t) : !1;
+						}), (e) => (_(), n(pt, {
+							key: e,
+							field: a.form.manifest.fields[e],
+							form: a.form,
+							theme: a.form.theme,
+							renderers: a.form.renderers,
+							"allow-raw-html": a.form.allowRawHtml
+						}, null, 8, [
+							"field",
+							"form",
+							"theme",
+							"renderers",
+							"allow-raw-html"
+						]))), 128))]),
+						_: 2
+					}, 1032, ["class"])) : r("", !0)], 64))), 128))]),
+					_: 1
+				}, 8, [
+					"form",
+					"page-index",
+					"class"
+				])),
+				(_(!0), i(e, null, y(a.form.manifest.security.captchas ?? [], (e) => (_(), n(ct, {
+					key: e.name,
+					form: a.form,
+					captcha: e
+				}, null, 8, ["form", "captcha"]))), 128)),
+				(_(), n(S(s.value.ButtonRow), { class: d(a.form.theme.classNames?.buttons) }, {
+					default: k(() => [
+						!m.value && f.value.buttons?.back ? (_(), n(S(s.value.BackButton), {
+							key: 0,
+							label: f.value.buttons.back.label,
+							class: d(a.form.theme.classNames?.backButton),
+							disabled: a.form.isSubmitting,
+							"on-click": () => void a.form.goBack()
+						}, null, 40, [
+							"label",
+							"class",
+							"disabled",
+							"on-click"
+						])) : r("", !0),
+						a.form.manifest.settings.multiPage && !p.value && f.value.buttons?.submit ? (_(), n(S(s.value.NextButton), {
+							key: 1,
+							label: f.value.buttons.submit.label,
+							class: d(a.form.theme.classNames?.nextButton),
+							disabled: a.form.isSubmitting,
+							"on-click": () => void a.form.goNext()
+						}, null, 40, [
+							"label",
+							"class",
+							"disabled",
+							"on-click"
+						])) : r("", !0),
+						(!a.form.manifest.settings.multiPage || p.value) && f.value.buttons?.submit ? (_(), n(S(s.value.SubmitButton), {
+							key: 2,
+							label: f.value.buttons.submit.label,
+							class: d(a.form.theme.classNames?.submitButton),
+							disabled: a.form.isSubmitting
+						}, null, 8, [
+							"label",
+							"class",
+							"disabled"
+						])) : r("", !0),
+						f.value.buttons?.save ? (_(), n(S(s.value.SaveButton), {
+							key: 3,
+							label: f.value.buttons.save.label,
+							class: d(a.form.theme.classNames?.saveButton),
+							disabled: a.form.isSubmitting,
+							"on-click": () => void a.form.saveDraft()
+						}, null, 40, [
+							"label",
+							"class",
+							"disabled",
+							"on-click"
+						])) : r("", !0)
+					]),
+					_: 1
+				}, 8, ["class"]))
+			]),
+			_: 1
+		}, 40, ["form", "class"]));
+	}
+}), ht = { role: "alert" }, gt = /* @__PURE__ */ c({
+	__name: "Freeform",
+	props: {
+		handle: {},
+		profile: {},
+		properties: {},
+		baseUrl: {},
+		manifest: {},
+		initialValues: {},
+		draftToken: {},
+		draftKey: {},
+		clientVersion: {},
+		fetch: {},
+		credentials: {},
+		theme: {},
+		renderers: {},
+		extensions: {},
+		allowRawHtml: { type: Boolean },
+		onSuccess: { type: Function },
+		onError: { type: Function },
+		onManifestLoaded: { type: Function },
+		class: {},
+		loadingMessage: {}
+	},
+	setup(e) {
+		let i = e, o = ge(() => i), c = t(() => o.manifest ? o : null);
+		return (t, l) => t.$slots.default ? b(t.$slots, "default", { form: E(o) }, void 0, void 0, 0) : E(o).loading ? b(t.$slots, "loading", {}, () => [s(V, { message: e.loadingMessage ?? "Loading form…" }, null, 8, ["message"])], void 0, 1) : E(o).error ? b(t.$slots, "error", { error: E(o).error }, () => [a("div", ht, w(E(o).error.message), 1)], void 0, 2) : c.value ? (_(), n(mt, {
+			key: 3,
+			form: c.value,
+			class: d(i.class)
+		}, null, 8, ["form", "class"])) : r("", !0);
+	}
+});
+//#endregion
+export { pe as CLIENT_NAME, V as FormLoader, gt as Freeform, mt as FreeformView, fe as PACKAGE_VERSION, at as builtinComponents, X as builtinRenderers, de as createTheme, H as defaultTheme, Z as joinClassNames, ot as mergeClassNames, lt as resolveFieldRenderer, dt as resolveThemeClassNames, Q as toBemModifier, _e as useFieldExtension, ge as useFreeform };
 
 //# sourceMappingURL=index.js.map

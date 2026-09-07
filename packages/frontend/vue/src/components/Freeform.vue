@@ -2,6 +2,8 @@
 import { computed } from "vue";
 import { useFreeform } from "../composables/useFreeform.js";
 import type { UseFreeformOptions } from "../types.js";
+import FormLoader from "./FormLoader.vue";
+import FreeformView from "./FreeformView.vue";
 
 const props = defineProps<
   UseFreeformOptions & {

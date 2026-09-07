@@ -1,2 +1,2 @@
 /** Kept in sync with package.json by `pnpm frontend:bump`. */
-export declare const PACKAGE_VERSION = "0.1.17";
+export declare const PACKAGE_VERSION = "0.1.19";

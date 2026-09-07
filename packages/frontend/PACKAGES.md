@@ -26,13 +26,22 @@ Requires a Freeform plugin build that includes the headless REST API, with headl
 
 ## Install
 
+**React / Next.js**
+
 ```bash
 npm install @solspace/freeform-core \
   @solspace/freeform-react \
   @solspace/freeform-extensions \
-  @solspace/freeform-theme-default \
-  @solspace/freeform-theme-tailwind \
-  @solspace/freeform-theme-bootstrap
+  @solspace/freeform-theme-default
+```
+
+**Vue 3**
+
+```bash
+npm install @solspace/freeform-core \
+  @solspace/freeform-vue \
+  @solspace/freeform-extensions \
+  @solspace/freeform-theme-default
 ```
 
 ```tsx
@@ -61,14 +70,13 @@ Do **not** hand-edit version strings in source. From the Freeform repo root:
 pnpm frontend:bump patch   # or minor / major / 0.2.0
 ```
 
-That updates all five `package.json` files, peer ranges, and the `src/version.ts` files used at runtime.
+That updates all package.json files, peer ranges, and the `src/version.ts` files used at runtime.
 
 Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
 
 ## Known limitations
 
-- Vue adapter — `@solspace/freeform-vue` (local; publish with next bump)
-- Full GraphQL parity with the REST contract — not yet
+- Full GraphQL parity with the REST contract — not yet (use headless GraphQL adapters + custom `fetch`, or REST)
 - Conditional show/hide is **client UX only** (not a security boundary)
 
 ## Security checklist

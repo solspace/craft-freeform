@@ -8,7 +8,7 @@ Vue 3 adapter for Solspace Freeform headless forms.
 npm install @solspace/freeform-vue @solspace/freeform-core @solspace/freeform-extensions
 ```
 
-Load the default theme CSS (shared BEM styles from the React default theme package for now):
+Load the default theme CSS:
 
 ```bash
 npm install @solspace/freeform-theme-default
@@ -58,4 +58,4 @@ const form = useFreeform({
 
 ## Docs
 
-[Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/) (API parity; Vue docs coming)
+[Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [Vue.js](https://docs.solspace.com/craft/freeform/v5/headless/vuejs/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/) (API parity)

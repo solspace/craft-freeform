@@ -4,6 +4,8 @@ import { builtinComponents } from "../renderers/builtin/index.js";
 import { joinClassNames } from "../theme/mergeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
 import type { UseFreeformResult } from "../types.js";
+import CaptchaHost from "./CaptchaHost.vue";
+import FieldRenderer from "./FieldRenderer.vue";
 
 const props = defineProps<{
   form: UseFreeformResult & {

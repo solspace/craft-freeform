@@ -4,6 +4,27 @@ export function getTableConfig(field) {
 export function normalizeTableOptions(options = []) {
     return options.map((option) => typeof option === "string" ? { label: option, value: option } : option);
 }
+/**
+ * Resolve select/radio choices for a table column.
+ * Prefer `options`; fall back to classic Freeform `value` as "a;b;c".
+ */
+export function resolveTableColumnOptions(column) {
+    const fromOptions = normalizeTableOptions(column.options);
+    if (fromOptions.length > 0) {
+        return fromOptions;
+    }
+    if ((column.type === "select" ||
+        column.type === "dropdown" ||
+        column.type === "radio") &&
+        typeof column.value === "string" &&
+        column.value.includes(";")) {
+        return normalizeTableOptions(column.value
+            .split(";")
+            .map((option) => option.trim())
+            .filter(Boolean));
+    }
+    return [];
+}
 export function emptyTableRow(columns) {
     return columns.map((column) => {
         if (column.type === "checkbox") {

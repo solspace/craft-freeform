@@ -34,6 +34,14 @@ export declare function normalizeTableOptions(options?: TableColumn["options"]):
     label: string;
     value: string;
 }>;
+/**
+ * Resolve select/radio choices for a table column.
+ * Prefer `options`; fall back to classic Freeform `value` as "a;b;c".
+ */
+export declare function resolveTableColumnOptions(column: TableColumn): Array<{
+    label: string;
+    value: string;
+}>;
 export declare function emptyTableRow(columns: TableColumn[]): TableCellValue[];
 export declare function resolveInitialRowCount(config: TableConfig): number;
 export declare function normalizeTableRows(value: unknown, columns: TableColumn[], config: TableConfig): TableRows;

@@ -50,6 +50,36 @@ export function normalizeTableOptions(
   );
 }
 
+/**
+ * Resolve select/radio choices for a table column.
+ * Prefer `options`; fall back to classic Freeform `value` as "a;b;c".
+ */
+export function resolveTableColumnOptions(
+  column: TableColumn,
+): Array<{ label: string; value: string }> {
+  const fromOptions = normalizeTableOptions(column.options);
+  if (fromOptions.length > 0) {
+    return fromOptions;
+  }
+
+  if (
+    (column.type === "select" ||
+      column.type === "dropdown" ||
+      column.type === "radio") &&
+    typeof column.value === "string" &&
+    column.value.includes(";")
+  ) {
+    return normalizeTableOptions(
+      column.value
+        .split(";")
+        .map((option) => option.trim())
+        .filter(Boolean),
+    );
+  }
+
+  return [];
+}
+
 export function emptyTableRow(columns: TableColumn[]): TableCellValue[] {
   return columns.map((column) => {
     if (column.type === "checkbox") {

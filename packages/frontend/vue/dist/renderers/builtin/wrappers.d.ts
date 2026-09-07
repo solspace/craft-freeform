@@ -128,8 +128,8 @@ export declare const DefaultLabel: import("vue").DefineComponent<import("vue").E
         default: string;
     };
 }>> & Readonly<{}>, {
-    requiredIndicator: string;
     class: string;
+    requiredIndicator: string;
 }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export declare const DefaultInstructions: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     field: {
@@ -238,10 +238,10 @@ export declare const DefaultSubmitButton: import("vue").DefineComponent<import("
         default: undefined;
     };
 }>> & Readonly<{}>, {
-    type: "button" | "submit";
-    disabled: boolean;
     onClick: () => void;
     class: string;
+    type: "button" | "submit";
+    disabled: boolean;
 }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export declare const DefaultNextButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     label: {
@@ -286,10 +286,10 @@ export declare const DefaultNextButton: import("vue").DefineComponent<import("vu
         default: undefined;
     };
 }>> & Readonly<{}>, {
-    type: "button" | "submit";
-    disabled: boolean;
     onClick: () => void;
     class: string;
+    type: "button" | "submit";
+    disabled: boolean;
 }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export declare const DefaultBackButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     label: {
@@ -334,10 +334,10 @@ export declare const DefaultBackButton: import("vue").DefineComponent<import("vu
         default: undefined;
     };
 }>> & Readonly<{}>, {
-    type: "button" | "submit";
-    disabled: boolean;
     onClick: () => void;
     class: string;
+    type: "button" | "submit";
+    disabled: boolean;
 }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export declare const DefaultSaveButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     label: {
@@ -382,10 +382,10 @@ export declare const DefaultSaveButton: import("vue").DefineComponent<import("vu
         default: undefined;
     };
 }>> & Readonly<{}>, {
-    type: "button" | "submit";
-    disabled: boolean;
     onClick: () => void;
     class: string;
+    type: "button" | "submit";
+    disabled: boolean;
 }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
 export declare const DefaultSuccessMessage: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
     message: {
@@ -540,8 +540,8 @@ export declare const builtinComponents: {
             default: string;
         };
     }>> & Readonly<{}>, {
-        requiredIndicator: string;
         class: string;
+        requiredIndicator: string;
     }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
     Instructions: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
         field: {
@@ -650,10 +650,10 @@ export declare const builtinComponents: {
             default: undefined;
         };
     }>> & Readonly<{}>, {
-        type: "button" | "submit";
-        disabled: boolean;
         onClick: () => void;
         class: string;
+        type: "button" | "submit";
+        disabled: boolean;
     }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
     NextButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
         label: {
@@ -698,10 +698,10 @@ export declare const builtinComponents: {
             default: undefined;
         };
     }>> & Readonly<{}>, {
-        type: "button" | "submit";
-        disabled: boolean;
         onClick: () => void;
         class: string;
+        type: "button" | "submit";
+        disabled: boolean;
     }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
     BackButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
         label: {
@@ -746,10 +746,10 @@ export declare const builtinComponents: {
             default: undefined;
         };
     }>> & Readonly<{}>, {
-        type: "button" | "submit";
-        disabled: boolean;
         onClick: () => void;
         class: string;
+        type: "button" | "submit";
+        disabled: boolean;
     }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
     SaveButton: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
         label: {
@@ -794,10 +794,10 @@ export declare const builtinComponents: {
             default: undefined;
         };
     }>> & Readonly<{}>, {
-        type: "button" | "submit";
-        disabled: boolean;
         onClick: () => void;
         class: string;
+        type: "button" | "submit";
+        disabled: boolean;
     }, {}, {}, {}, string, import("vue").ComponentProvideOptions, true, {}, any>;
     SuccessMessage: import("vue").DefineComponent<import("vue").ExtractPropTypes<{
         message: {

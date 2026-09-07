@@ -3,8 +3,8 @@ import {
   canRemoveTableRow,
   emptyTableRow,
   getTableConfig,
-  normalizeTableOptions,
   normalizeTableRows,
+  resolveTableColumnOptions,
   type TableCellValue,
   type TableRows,
 } from "@solspace/freeform-core";
@@ -60,9 +60,9 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
       <table className="ff-table">
         <thead>
           <tr>
-            {columns.map((column) => (
+            {columns.map((column, colIndex) => (
               <th
-                key={column.label}
+                key={`${column.label}-${colIndex}`}
                 className={column.required ? "is-required" : undefined}
                 data-column-required={column.required ? "true" : undefined}
               >
@@ -77,11 +77,12 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
             <tr key={`row-${rowIndex}`}>
               {columns.map((column, colIndex) => {
                 const cellValue = row[colIndex];
-                const optionList = normalizeTableOptions(column.options);
+                const optionList = resolveTableColumnOptions(column);
+                const cellKey = `${rowIndex}-${colIndex}`;
 
                 if (column.type === "checkbox") {
                   return (
-                    <td key={column.label}>
+                    <td key={cellKey}>
                       <input
                         type="checkbox"
                         checked={Boolean(cellValue)}
@@ -101,7 +102,7 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
 
                 if (column.type === "select" || column.type === "dropdown") {
                   return (
-                    <td key={column.label}>
+                    <td key={cellKey}>
                       <select
                         value={String(cellValue ?? "")}
                         disabled={!enabled}
@@ -125,7 +126,7 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
 
                 if (column.type === "radio") {
                   return (
-                    <td key={column.label}>
+                    <td key={cellKey}>
                       <div className="ff-table__radios">
                         {optionList.map((option) => {
                           const id = `${props.field.handle}-${rowIndex}-${colIndex}-${option.value}`;
@@ -155,7 +156,7 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
 
                 if (column.type === "textarea") {
                   return (
-                    <td key={column.label}>
+                    <td key={cellKey}>
                       <textarea
                         value={String(cellValue ?? "")}
                         placeholder={column.placeholder}
@@ -175,10 +176,13 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
                     : [];
                   const fileCount = Math.max(
                     1,
-                    Number(column.metadata?.fileCount ?? 1),
+                    Number(
+                      (column.metadata as { fileCount?: number } | null)
+                        ?.fileCount ?? 1,
+                    ),
                   );
                   return (
-                    <td key={column.label}>
+                    <td key={cellKey}>
                       <input
                         type="file"
                         multiple={fileCount > 1}
@@ -206,9 +210,9 @@ export function TableFieldRenderer(props: ReactFieldRendererProps) {
                 }
 
                 return (
-                  <td key={column.label}>
+                  <td key={cellKey}>
                     <input
-                      type="text"
+                      type={column.type === "number" ? "number" : "text"}
                       value={String(cellValue ?? "")}
                       placeholder={column.placeholder}
                       disabled={!enabled}

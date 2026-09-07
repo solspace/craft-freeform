@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from "vue";
+import { computed } from "vue";
 import { useFreeform } from "../composables/useFreeform.js";
 import type { UseFreeformOptions } from "../types.js";
 
@@ -10,10 +10,7 @@ const props = defineProps<
   }
 >();
 
-const attrs = useAttrs();
 const form = useFreeform(() => props);
-
-const hasDefaultSlot = computed(() => Boolean(attrs.default || props));
 
 defineSlots<{
   default?: (props: { form: typeof form }) => unknown;

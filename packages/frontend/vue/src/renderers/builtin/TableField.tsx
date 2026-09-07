@@ -4,12 +4,12 @@ import {
   canRemoveTableRow,
   emptyTableRow,
   getTableConfig,
-  normalizeTableOptions,
   normalizeTableRows,
+  resolveTableColumnOptions,
   type TableCellValue,
   type TableRows,
 } from "@solspace/freeform-core";
-import { defineComponent, shallowRef, watch } from "vue";
+import { computed, defineComponent, shallowRef, watch } from "vue";
 import type { VueFieldRendererProps } from "../../types.js";
 
 export const TableFieldRenderer = defineComponent({
@@ -21,14 +21,18 @@ export const TableFieldRenderer = defineComponent({
     classNames: { type: Object, required: true },
   },
   setup(props: VueFieldRendererProps) {
-    const config = getTableConfig(props.field);
-    const columns = config.columns ?? [];
-    const enabled = props.form.isFieldEnabled(props.field.handle);
+    const config = computed(() => getTableConfig(props.field));
+    const columns = computed(() => config.value.columns ?? []);
+    const enabled = computed(() =>
+      props.form.isFieldEnabled(props.field.handle),
+    );
+    const rows = computed(() =>
+      normalizeTableRows(props.value, columns.value, config.value),
+    );
     const seededRef = shallowRef(false);
-    const rows = normalizeTableRows(props.value, columns, config);
 
     watch(
-      () => [props.field.handle, props.value, rows],
+      () => [props.field.handle, props.value] as const,
       () => {
         if (seededRef.value) {
           return;
@@ -37,7 +41,7 @@ export const TableFieldRenderer = defineComponent({
           seededRef.value = true;
           props.form.setValue(
             props.field.handle,
-            rows as unknown as Parameters<typeof props.form.setValue>[1],
+            rows.value as unknown as Parameters<typeof props.form.setValue>[1],
           );
         }
       },
@@ -56,209 +60,238 @@ export const TableFieldRenderer = defineComponent({
       columnIndex: number,
       value: TableCellValue,
     ) => {
-      const next = rows.map((row) => [...row]);
+      const next = rows.value.map((row) => [...row]);
       next[rowIndex][columnIndex] = value;
       setRows(next);
     };
 
-    const showAdd = canAddTableRow(rows, config);
+    return () => {
+      const currentRows = rows.value;
+      const currentColumns = columns.value;
+      const currentConfig = config.value;
+      const isEnabled = enabled.value;
+      const showAdd = canAddTableRow(currentRows, currentConfig);
 
-    return () => (
-      <div class={props.classNames.input} data-freeform-table="">
-        <table class="ff-table">
-          <thead>
-            <tr>
-              {columns.map((column) => (
-                <th
-                  key={column.label}
-                  class={column.required ? "is-required" : undefined}
-                  data-column-required={column.required ? "true" : undefined}
-                >
-                  {column.label}
-                </th>
-              ))}
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={`row-${rowIndex}`}>
-                {columns.map((column, colIndex) => {
-                  const cellValue = row[colIndex];
-                  const optionList = normalizeTableOptions(column.options);
+      return (
+        <div class={props.classNames.input} data-freeform-table="">
+          <table class="ff-table">
+            <thead>
+              <tr>
+                {currentColumns.map((column, colIndex) => (
+                  <th
+                    key={`${column.label}-${colIndex}`}
+                    class={column.required ? "is-required" : undefined}
+                    data-column-required={column.required ? "true" : undefined}
+                  >
+                    {column.label}
+                  </th>
+                ))}
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {currentRows.map((row, rowIndex) => (
+                <tr key={`row-${rowIndex}`}>
+                  {currentColumns.map((column, colIndex) => {
+                    const cellValue = row[colIndex];
+                    const optionList = resolveTableColumnOptions(column);
+                    const cellKey = `${rowIndex}-${colIndex}`;
 
-                  if (column.type === "checkbox") {
-                    return (
-                      <td key={column.label}>
-                        <input
-                          type="checkbox"
-                          checked={Boolean(cellValue)}
-                          disabled={!enabled}
-                          required={column.required || undefined}
-                          onChange={(event) => {
-                            updateCell(
-                              rowIndex,
-                              colIndex,
-                              event.target.checked ? "1" : "",
-                            );
-                          }}
-                        />
-                      </td>
-                    );
-                  }
+                    if (column.type === "checkbox") {
+                      return (
+                        <td key={cellKey}>
+                          <input
+                            type="checkbox"
+                            checked={Boolean(cellValue)}
+                            disabled={!isEnabled}
+                            required={column.required || undefined}
+                            onChange={(event) => {
+                              updateCell(
+                                rowIndex,
+                                colIndex,
+                                event.target.checked ? "1" : "",
+                              );
+                            }}
+                          />
+                        </td>
+                      );
+                    }
 
-                  if (column.type === "select" || column.type === "dropdown") {
-                    return (
-                      <td key={column.label}>
-                        <select
-                          value={String(cellValue ?? "")}
-                          disabled={!enabled}
-                          required={column.required || undefined}
-                          onChange={(event) => {
-                            updateCell(rowIndex, colIndex, event.target.value);
-                          }}
-                        >
-                          <option value="">
-                            {column.placeholder || "Select…"}
-                          </option>
-                          {optionList.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
+                    if (
+                      column.type === "select" ||
+                      column.type === "dropdown"
+                    ) {
+                      return (
+                        <td key={cellKey}>
+                          <select
+                            value={String(cellValue ?? "")}
+                            disabled={!isEnabled}
+                            required={column.required || undefined}
+                            onChange={(event) => {
+                              updateCell(
+                                rowIndex,
+                                colIndex,
+                                event.target.value,
+                              );
+                            }}
+                          >
+                            <option value="">
+                              {column.placeholder || "Select…"}
                             </option>
-                          ))}
-                        </select>
-                      </td>
-                    );
-                  }
-
-                  if (column.type === "radio") {
-                    return (
-                      <td key={column.label}>
-                        <div class="ff-table__radios">
-                          {optionList.map((option) => {
-                            const id = `${props.field.handle}-${rowIndex}-${colIndex}-${option.value}`;
-                            return (
-                              <label key={option.value} for={id}>
-                                <input
-                                  id={id}
-                                  type="radio"
-                                  name={`${props.field.handle}[${rowIndex}][${colIndex}]`}
-                                  value={option.value}
-                                  checked={
-                                    String(cellValue ?? "") === option.value
-                                  }
-                                  disabled={!enabled}
-                                  onChange={() => {
-                                    updateCell(
-                                      rowIndex,
-                                      colIndex,
-                                      option.value,
-                                    );
-                                  }}
-                                />{" "}
+                            {optionList.map((option) => (
+                              <option key={option.value} value={option.value}>
                                 {option.label}
-                              </label>
-                            );
-                          })}
-                        </div>
-                      </td>
-                    );
-                  }
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                      );
+                    }
 
-                  if (column.type === "textarea") {
+                    if (column.type === "radio") {
+                      return (
+                        <td key={cellKey}>
+                          <div class="ff-table__radios">
+                            {optionList.map((option) => {
+                              const id = `${props.field.handle}-${rowIndex}-${colIndex}-${option.value}`;
+                              return (
+                                <label key={option.value} for={id}>
+                                  <input
+                                    id={id}
+                                    type="radio"
+                                    name={`${props.field.handle}[${rowIndex}][${colIndex}]`}
+                                    value={option.value}
+                                    checked={
+                                      String(cellValue ?? "") === option.value
+                                    }
+                                    disabled={!isEnabled}
+                                    onChange={() => {
+                                      updateCell(
+                                        rowIndex,
+                                        colIndex,
+                                        option.value,
+                                      );
+                                    }}
+                                  />{" "}
+                                  {option.label}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      );
+                    }
+
+                    if (column.type === "textarea") {
+                      return (
+                        <td key={cellKey}>
+                          <textarea
+                            value={String(cellValue ?? "")}
+                            placeholder={column.placeholder}
+                            disabled={!isEnabled}
+                            required={column.required || undefined}
+                            onInput={(event) => {
+                              updateCell(
+                                rowIndex,
+                                colIndex,
+                                event.target.value,
+                              );
+                            }}
+                          />
+                        </td>
+                      );
+                    }
+
+                    if (column.type === "file") {
+                      const selected = Array.isArray(cellValue)
+                        ? (cellValue as File[])
+                        : [];
+                      const fileCount = Math.max(
+                        1,
+                        Number(
+                          (column.metadata as { fileCount?: number } | null)
+                            ?.fileCount ?? 1,
+                        ),
+                      );
+                      return (
+                        <td key={cellKey}>
+                          <input
+                            type="file"
+                            multiple={fileCount > 1}
+                            disabled={!isEnabled}
+                            onChange={(event) => {
+                              const files = Array.from(
+                                event.target.files ?? [],
+                              );
+                              updateCell(
+                                rowIndex,
+                                colIndex,
+                                fileCount > 1 ? files : files.slice(0, 1),
+                              );
+                            }}
+                          />
+                          {selected.length > 0 ? (
+                            <div class="ff-table__file-names">
+                              {selected.map((file) => (
+                                <span key={`${file.name}-${file.size}`}>
+                                  {file.name}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                        </td>
+                      );
+                    }
+
                     return (
-                      <td key={column.label}>
-                        <textarea
+                      <td key={cellKey}>
+                        <input
+                          type={column.type === "number" ? "number" : "text"}
                           value={String(cellValue ?? "")}
                           placeholder={column.placeholder}
-                          disabled={!enabled}
+                          disabled={!isEnabled}
                           required={column.required || undefined}
-                          onChange={(event) => {
+                          onInput={(event) => {
                             updateCell(rowIndex, colIndex, event.target.value);
                           }}
                         />
                       </td>
                     );
-                  }
-
-                  if (column.type === "file") {
-                    const selected = Array.isArray(cellValue)
-                      ? (cellValue as File[])
-                      : [];
-                    const fileCount = Math.max(
-                      1,
-                      Number(column.metadata?.fileCount ?? 1),
-                    );
-                    return (
-                      <td key={column.label}>
-                        <input
-                          type="file"
-                          multiple={fileCount > 1}
-                          disabled={!enabled}
-                          onChange={(event) => {
-                            const files = Array.from(event.target.files ?? []);
-                            updateCell(
-                              rowIndex,
-                              colIndex,
-                              fileCount > 1 ? files : files.slice(0, 1),
-                            );
-                          }}
-                        />
-                        {selected.length > 0 ? (
-                          <div class="ff-table__file-names">
-                            {selected.map((file) => (
-                              <span key={`${file.name}-${file.size}`}>
-                                {file.name}
-                              </span>
-                            ))}
-                          </div>
-                        ) : null}
-                      </td>
-                    );
-                  }
-
-                  return (
-                    <td key={column.label}>
-                      <input
-                        type="text"
-                        value={String(cellValue ?? "")}
-                        placeholder={column.placeholder}
-                        disabled={!enabled}
-                        required={column.required || undefined}
-                        onChange={(event) => {
-                          updateCell(rowIndex, colIndex, event.target.value);
+                  })}
+                  <td>
+                    {canRemoveTableRow(currentRows, rowIndex, currentConfig) ? (
+                      <button
+                        type="button"
+                        disabled={!isEnabled}
+                        onClick={() => {
+                          setRows(
+                            currentRows.filter(
+                              (_, index) => index !== rowIndex,
+                            ),
+                          );
                         }}
-                      />
-                    </td>
-                  );
-                })}
-                <td>
-                  {canRemoveTableRow(rows, rowIndex, config) ? (
-                    <button
-                      type="button"
-                      disabled={!enabled}
-                      onClick={() => {
-                        setRows(rows.filter((_, index) => index !== rowIndex));
-                      }}
-                    >
-                      {config.removeButtonLabel || "Remove"}
-                    </button>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {showAdd ? (
-          <button
-            type="button"
-            disabled={!enabled}
-            onClick={() => setRows([...rows, emptyTableRow(columns)])}
-          >
-            {config.addButtonLabel || "Add"}
-          </button>
-        ) : null}
-      </div>
-    );
+                      >
+                        {currentConfig.removeButtonLabel || "Remove"}
+                      </button>
+                    ) : null}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {showAdd ? (
+            <button
+              type="button"
+              disabled={!isEnabled}
+              onClick={() =>
+                setRows([...currentRows, emptyTableRow(currentColumns)])
+              }
+            >
+              {currentConfig.addButtonLabel || "Add"}
+            </button>
+          ) : null}
+        </div>
+      );
+    };
   },
 });

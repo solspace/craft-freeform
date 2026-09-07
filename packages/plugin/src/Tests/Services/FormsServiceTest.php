@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Tests\Services;
 
 use craft\db\Query;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
@@ -65,5 +66,45 @@ class FormsServiceTest extends TestCase
         $this->assertSame('not', $siteFilter[2][0]);
         $this->assertSame('exists', $siteFilter[2][1][0]);
         $this->assertInstanceOf(Query::class, $siteFilter[2][1][1]);
+    }
+
+    #[DataProvider('uniqueNameAndHandleProvider')]
+    public function testGetUniqueNameAndHandleMirrorsTrailingNumberOntoName(
+        string $name,
+        string $handle,
+        string $resolvedHandle,
+        array $expected,
+    ): void {
+        $service = $this->getMockBuilder(FormsService::class)
+            ->setConstructorArgs([
+                null,
+                $this->createMock(PropertyProvider::class),
+                $this->createMock(TranslationProvider::class),
+            ])
+            ->onlyMethods(['getUniqueHandle'])
+            ->getMock()
+        ;
+
+        $service->method('getUniqueHandle')->willReturn($resolvedHandle);
+
+        $this->assertSame($expected, $service->getUniqueNameAndHandle($name, $handle));
+    }
+
+    public static function uniqueNameAndHandleProvider(): array
+    {
+        return [
+            'duplicate mirrors the handle number onto the name' => [
+                'Brevo Test', 'brevoTest', 'brevoTest1', ['Brevo Test 1', 'brevoTest1'],
+            ],
+            'no duplicate leaves the name alone' => [
+                'Brevo Test', 'brevoTest', 'brevoTest', ['Brevo Test', 'brevoTest'],
+            ],
+            'a name already ending in a number is replaced, not doubled up' => [
+                'Brevo Test 1', 'brevoTest1', 'brevoTest2', ['Brevo Test 2', 'brevoTest2'],
+            ],
+            'an empty name stays empty' => [
+                '', 'brevoTest', 'brevoTest1', ['', 'brevoTest1'],
+            ],
+        ];
     }
 }

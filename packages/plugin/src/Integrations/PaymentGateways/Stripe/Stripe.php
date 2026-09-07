@@ -74,8 +74,8 @@ class Stripe extends PaymentGatewayIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Subscription Payment Methods',
-        instructions: 'Comma-separated Stripe payment method types allowed on subscriptions (e.g. "bacs_debit, card, us_bank_account"). Leave blank to use your Stripe account default.',
-        placeholder: 'e.g. "bacs_debit"',
+        instructions: 'Comma-separated Stripe payment method types allowed on subscriptions (e.g. `card, paypal, bacs_debit, us_bank_account`). Leave blank to use your Stripe account default.',
+        placeholder: 'e.g. "card, paypal, bacs_debit, us_bank_account"',
     )]
     protected string $subscriptionPaymentMethods = '';
 

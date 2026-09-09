@@ -7,4 +7,5 @@ class Page
     public string $uid;
     public string $label;
     public Layout $layout;
+    public array $metadata = [];
 }

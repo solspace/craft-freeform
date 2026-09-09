@@ -287,9 +287,13 @@ class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, 
 
     public function toHtmlTagArray(?array $properties = null): array
     {
-        $array = $this->attributes;
-        foreach (self::EXCLUDED_ATTRIBUTES as $attribute) {
-            unset($array[$attribute]);
+        $array = [];
+        foreach ($this->attributes as $key => $value) {
+            if (empty($key) || \in_array($key, self::EXCLUDED_ATTRIBUTES, true)) {
+                continue;
+            }
+
+            $array[$key] = $value;
         }
 
         if (!empty($properties)) {
@@ -298,6 +302,9 @@ class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, 
             $replacements = [];
             foreach ($array as $key => $value) {
                 $key = $twig->render($key, $properties);
+                if (empty($key)) {
+                    continue;
+                }
 
                 if (!empty($value) && !\in_array($key, self::EXCLUDED_TWIG_ATTRIBUTES, true)) {
                     $value = $twig->render($value, $properties);

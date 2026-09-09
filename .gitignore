@@ -27,3 +27,6 @@ cghooks.lock
 
 WARP.md
 .docs/
+
+# Built npm package output — build locally / in CI before publish; do not commit.
+packages/frontend/**/dist/

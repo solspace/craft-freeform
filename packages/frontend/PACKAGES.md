@@ -72,7 +72,36 @@ pnpm frontend:bump patch   # or minor / major / 0.2.0
 
 That updates all package.json files, peer ranges, and the `src/version.ts` files used at runtime.
 
-Then build + publish (see frontend-library `PACKAGE-RELEASE.md`).
+## Build & publish
+
+`dist/` is **not** committed (see `.gitignore`). Always build before publishing so npm gets fresh artifacts.
+
+From the Freeform repo root:
+
+```bash
+# 1. Bump (if needed)
+pnpm frontend:bump patch
+
+# 2. Build every frontend package (order matters for local linking)
+pnpm --filter @solspace/freeform-core build
+pnpm --filter @solspace/freeform-react build
+pnpm --filter @solspace/freeform-vue build
+pnpm --filter @solspace/freeform-extensions build
+pnpm --filter @solspace/freeform-theme-default build
+pnpm --filter @solspace/freeform-theme-tailwind build
+pnpm --filter @solspace/freeform-theme-bootstrap build
+
+# 3. Publish (same order — core first, then consumers)
+pnpm --filter @solspace/freeform-core publish --access public
+pnpm --filter @solspace/freeform-react publish --access public
+pnpm --filter @solspace/freeform-vue publish --access public
+pnpm --filter @solspace/freeform-extensions publish --access public
+pnpm --filter @solspace/freeform-theme-default publish --access public
+pnpm --filter @solspace/freeform-theme-tailwind publish --access public
+pnpm --filter @solspace/freeform-theme-bootstrap publish --access public
+```
+
+Local demos (`FREEFORM_PACKAGES=local`) should alias to package **`src`**, not `dist`, so day-to-day work does not depend on committed build output.
 
 ## Known limitations
 

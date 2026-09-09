@@ -59,21 +59,21 @@ withDefaults(
 }
 
 .ff-loader-line {
-  animation: ff-loader-pulse 1.4s ease-in-out infinite;
   background-color: currentColor;
-  opacity: 0.12;
   border-radius: 8px;
+  opacity: 0.12;
+  animation: ff-loader-pulse 1.4s ease-in-out infinite;
 }
 
 .ff-loader-line--title {
-  height: 0.75rem;
   width: 38%;
+  height: 0.75rem;
   margin-bottom: 1.25rem;
 }
 
 .ff-loader-line--label {
-  height: 0.65rem;
   width: 28%;
+  height: 0.65rem;
   margin-bottom: 0.45rem;
 }
 
@@ -82,8 +82,8 @@ withDefaults(
 }
 
 .ff-loader-line--button {
-  height: 2.5rem;
   width: 7rem;
+  height: 2.5rem;
   margin-top: 0.5rem;
 }
 

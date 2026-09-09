@@ -47,6 +47,7 @@ abstract class BaseStripeController extends BaseApiController
 
         $form->disableFunctionality(['captchas']);
         $form->handleRequest($this->request, true);
+        $this->applyPaymentFieldValues($form);
 
         /** @var Stripe $integration */
         $integrations = $this->getIntegrationsService()->getForForm($form, Type::TYPE_PAYMENT_GATEWAYS);
@@ -81,5 +82,47 @@ abstract class BaseStripeController extends BaseApiController
         }
 
         return [$form, $integration, $field, $hash, $opts];
+    }
+
+    /**
+     * Apply posted field values so dynamic amount/interval fields are available
+     * when creating or updating PaymentIntents. Classic Freeform sessions may
+     * already populate values; headless SPAs send them explicitly.
+     */
+    private function applyPaymentFieldValues(Form $form): void
+    {
+        $values = [];
+        $bodyParams = $this->request->getBodyParams();
+        if (\is_array($bodyParams['values'] ?? null)) {
+            $values = $bodyParams['values'];
+        } else {
+            $raw = json_decode($this->request->getRawBody() ?: '', true);
+            if (\is_array($raw['values'] ?? null)) {
+                $values = $raw['values'];
+            } else {
+                foreach ($form->getLayout()->getFields() as $formField) {
+                    $handle = $formField->getHandle();
+                    if (!$handle) {
+                        continue;
+                    }
+
+                    $posted = $this->request->getBodyParam($handle);
+                    if (null !== $posted) {
+                        $values[$handle] = $posted;
+                    }
+                }
+            }
+        }
+
+        foreach ($values as $handle => $value) {
+            if (!\is_string($handle) || '' === $handle) {
+                continue;
+            }
+
+            $formField = $form->get($handle);
+            if ($formField) {
+                $formField->setValue($value);
+            }
+        }
     }
 }

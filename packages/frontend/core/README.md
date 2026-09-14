@@ -63,5 +63,4 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 ## Known limitations
 
-- Vue adapter — not yet
 - Conditional show/hide is client UX only (not a security boundary)

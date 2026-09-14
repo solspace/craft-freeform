@@ -859,15 +859,15 @@ return [
     'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Selecteer de Freeform-velden die moeten worden gekoppeld aan de juiste HubSpot Bedrijfsvelden',
     'Append checkbox group field values on Contact update' => 'Waarden van checkboxgroep toevoegen bij contactupdate',
 
-    // Form Builder // Integrations // CRM // SugarCRM
-    'Map submission data to create Leads in SugarCRM.' => 'Koppel indieningsgegevens om Leads in SugarCRM aan te maken.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Lead fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Lead-velden in SugarCRM.',
-    'Map submission data to create Opportunities in SugarCRM.' => 'Koppel indieningsgegevens om Opportunities in SugarCRM aan te maken.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Opportunity fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Opportunity-velden in SugarCRM.',
-    'Map submission data to create Accounts in SugarCRM.' => 'Koppel indieningsgegevens om Accounts in SugarCRM aan te maken.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Account-velden in SugarCRM.',
-    'Map submission data to create Contacts in SugarCRM.' => 'Koppel indieningsgegevens om Contacten in SugarCRM aan te maken.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Contact-velden in SugarCRM.',
+    // Form Builder // Integrations // CRM // SugarAI
+    'Map submission data to create Leads in SugarAI.' => 'Koppel indieningsgegevens om Leads in SugarAI aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Lead fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Lead-velden in SugarAI.',
+    'Map submission data to create Opportunities in SugarAI.' => 'Koppel indieningsgegevens om Opportunities in SugarAI aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Opportunity fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Opportunity-velden in SugarAI.',
+    'Map submission data to create Accounts in SugarAI.' => 'Koppel indieningsgegevens om Accounts in SugarAI aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Account fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Account-velden in SugarAI.',
+    'Map submission data to create Contacts in SugarAI.' => 'Koppel indieningsgegevens om Contacten in SugarAI aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Contact fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Contact-velden in SugarAI.',
 
     // Form Builder // Settings
     'Settings' => 'Instellingen',
@@ -1800,7 +1800,7 @@ return [
     'Mapping' > 'In kaart brengen',
     'Select the Freeform fields to be mapped to the applicable Jira Issue fields.' => 'Selecteer de Freeform-velden die moeten worden toegewezen aan de toepasselijke Jira Issue-velden.',
     'Domain Name' => 'Domeinnaam',
-    'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Voer de volledige domeinnaam van de SugarCRM-instantie in, bijv. `https://your-domain.sugarcrm.eu`',
+    'Enter the full domain name of the SugarAI instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Voer de volledige domeinnaam van de SugarAI-instantie in, bijv. `https://your-domain.sugarcrm.eu`',
     'Username' => 'Gebruikersnaam',
     'The username to use for authentication' => 'De gebruikersnaam voor authenticatie',
     'The password to use for authentication' => 'Het wachtwoord voor authenticatie',

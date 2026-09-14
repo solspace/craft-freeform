@@ -859,15 +859,15 @@ return [
     'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Sélectionnez les champs Freeform à mapper aux champs d’entreprise HubSpot appropriés',
     'Append checkbox group field values on Contact update' => 'Ajouter les valeurs du groupe de cases à cocher lors de la mise à jour du contact',
 
-    // Form Builder // Integrations // CRM // SugarCRM
-    'Map submission data to create Leads in SugarCRM.' => 'Mapper les données de soumission pour créer des Leads dans SugarCRM.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Lead fields.' => 'Sélectionnez les champs Freeform à associer aux champs Lead correspondants dans SugarCRM.',
-    'Map submission data to create Opportunities in SugarCRM.' => 'Mapper les données de soumission pour créer des Opportunités dans SugarCRM.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Opportunity fields.' => 'Sélectionnez les champs Freeform à associer aux champs Opportunité correspondants dans SugarCRM.',
-    'Map submission data to create Accounts in SugarCRM.' => 'Mapper les données de soumission pour créer des Comptes dans SugarCRM.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.' => 'Sélectionnez les champs Freeform à associer aux champs Compte correspondants dans SugarCRM.',
-    'Map submission data to create Contacts in SugarCRM.' => 'Mapper les données de soumission pour créer des Contacts dans SugarCRM.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.' => 'Sélectionnez les champs Freeform à associer aux champs Contact correspondants dans SugarCRM.',
+    // Form Builder // Integrations // CRM // SugarAI
+    'Map submission data to create Leads in SugarAI.' => 'Mapper les données de soumission pour créer des Leads dans SugarAI.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Lead fields.' => 'Sélectionnez les champs Freeform à associer aux champs Lead correspondants dans SugarAI.',
+    'Map submission data to create Opportunities in SugarAI.' => 'Mapper les données de soumission pour créer des Opportunités dans SugarAI.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Opportunity fields.' => 'Sélectionnez les champs Freeform à associer aux champs Opportunité correspondants dans SugarAI.',
+    'Map submission data to create Accounts in SugarAI.' => 'Mapper les données de soumission pour créer des Comptes dans SugarAI.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Account fields.' => 'Sélectionnez les champs Freeform à associer aux champs Compte correspondants dans SugarAI.',
+    'Map submission data to create Contacts in SugarAI.' => 'Mapper les données de soumission pour créer des Contacts dans SugarAI.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Contact fields.' => 'Sélectionnez les champs Freeform à associer aux champs Contact correspondants dans SugarAI.',
 
     // Form Builder // Settings
     'Settings' => 'Paramètres',
@@ -1800,7 +1800,7 @@ return [
     'Mapping' > 'Mappage',
     'Select the Freeform fields to be mapped to the applicable Jira Issue fields.' => 'Sélectionnez les champs de forme libre à mapper aux champs de problème Jira applicables.',
     'Domain Name' => 'Nom de domaine',
-    'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Saisissez le nom de domaine complet de l’instance SugarCRM, par ex. `https://your-domain.sugarcrm.eu`',
+    'Enter the full domain name of the SugarAI instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Saisissez le nom de domaine complet de l’instance SugarAI, par ex. `https://your-domain.sugarcrm.eu`',
     'Username' => 'Nom d’utilisateur',
     'The username to use for authentication' => 'Le nom d’utilisateur à utiliser pour l’authentification',
     'The password to use for authentication' => 'Le mot de passe à utiliser pour l’authentification',

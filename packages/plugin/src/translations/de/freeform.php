@@ -859,15 +859,15 @@ return [
     'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden HubSpot-Unternehmensfeldern zugeordnet werden sollen',
     'Append checkbox group field values on Contact update' => 'Checkbox-Gruppenwerte bei Kontaktaktualisierung anhängen',
 
-    // Form Builder // Integrations // CRM // SugarCRM
-    'Map submission data to create Leads in SugarCRM.' => 'Ordnen Sie Übermittlungsdaten zu, um Leads in SugarCRM zu erstellen.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Lead fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Lead-Feldern in SugarCRM zugeordnet werden sollen.',
-    'Map submission data to create Opportunities in SugarCRM.' => 'Ordnen Sie Übermittlungsdaten zu, um Verkaufschancen in SugarCRM zu erstellen.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Opportunity fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Verkaufschancen-Feldern in SugarCRM zugeordnet werden sollen.',
-    'Map submission data to create Accounts in SugarCRM.' => 'Ordnen Sie Übermittlungsdaten zu, um Konten in SugarCRM zu erstellen.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Konto-Feldern in SugarCRM zugeordnet werden sollen.',
-    'Map submission data to create Contacts in SugarCRM.' => 'Ordnen Sie Übermittlungsdaten zu, um Kontakte in SugarCRM zu erstellen.',
-    'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Kontakt-Feldern in SugarCRM zugeordnet werden sollen.',
+    // Form Builder // Integrations // CRM // SugarAI
+    'Map submission data to create Leads in SugarAI.' => 'Ordnen Sie Übermittlungsdaten zu, um Leads in SugarAI zu erstellen.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Lead fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Lead-Feldern in SugarAI zugeordnet werden sollen.',
+    'Map submission data to create Opportunities in SugarAI.' => 'Ordnen Sie Übermittlungsdaten zu, um Verkaufschancen in SugarAI zu erstellen.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Opportunity fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Verkaufschancen-Feldern in SugarAI zugeordnet werden sollen.',
+    'Map submission data to create Accounts in SugarAI.' => 'Ordnen Sie Übermittlungsdaten zu, um Konten in SugarAI zu erstellen.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Account fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Konto-Feldern in SugarAI zugeordnet werden sollen.',
+    'Map submission data to create Contacts in SugarAI.' => 'Ordnen Sie Übermittlungsdaten zu, um Kontakte in SugarAI zu erstellen.',
+    'Select the Freeform fields to be mapped to the applicable SugarAI Contact fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Kontakt-Feldern in SugarAI zugeordnet werden sollen.',
 
     // Form Builder // Settings
     'Settings' => 'Einstellungen',
@@ -1800,7 +1800,7 @@ return [
     'Mapping' > 'Zuordnung',
     'Select the Freeform fields to be mapped to the applicable Jira Issue fields.' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden Jira-Issue-Feldern zugeordnet werden sollen.',
     'Domain Name' => 'Domainname',
-    'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Geben Sie den vollständigen Domainnamen der SugarCRM-Instanz ein, z.B. `https://your-domain.sugarcrm.eu`',
+    'Enter the full domain name of the SugarAI instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Geben Sie den vollständigen Domainnamen der SugarAI-Instanz ein, z.B. `https://your-domain.sugarcrm.eu`',
     'Username' => 'Benutzername',
     'The username to use for authentication' => 'Der Benutzername für die Authentifizierung',
     'The password to use for authentication' => 'Das Passwort für die Authentifizierung',

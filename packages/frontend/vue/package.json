@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-vue",
-  "version": "0.1.20",
+  "version": "1.0.0",
   "description": "Vue components and composables for Solspace Freeform headless forms",
   "private": false,
   "type": "module",
@@ -25,7 +25,7 @@
     "lint": "biome check src"
   },
   "peerDependencies": {
-    "@solspace/freeform-core": "^0.1.0",
+    "@solspace/freeform-core": "^1.0.0",
     "vue": "^3.5.0"
   },
   "devDependencies": {

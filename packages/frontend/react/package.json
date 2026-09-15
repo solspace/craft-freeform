@@ -33,7 +33,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "typescript": "^5.8.3",
-    "vitest": "4.1.9"
+    "vitest": "4.1.11"
   },
   "peerDependencies": {
     "@solspace/freeform-core": "^1.0.0",

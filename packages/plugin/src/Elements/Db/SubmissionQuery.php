@@ -161,7 +161,13 @@ class SubmissionQuery extends ElementQuery
         $requestedLookup = [];
         $requestedFieldIdLookup = [];
 
-        if ($isCpSubmissionIndexRequest) {
+        // Only table-loading requests may limit content to visible columns.
+        // Element actions and explicit content loads need every stored field.
+        if (
+            $isCpSubmissionIndexRequest
+            && !$this->skipContentExplicit
+            && \in_array(basename($normalizedPath), ['get-elements', 'get-more-elements', 'count-elements'], true)
+        ) {
             $viewState = $request->getBodyParam('viewState') ?? [];
             if (\is_array($viewState)) {
                 $tableColumns = $viewState['tableColumns'] ?? $viewState['columns'] ?? $viewState['attributes'] ?? [];
@@ -219,18 +225,16 @@ class SubmissionQuery extends ElementQuery
             $source = \is_string($source) ? trim($source) : null;
 
             // If source="*" but Craft has already limited formId to a single allowed form (e.g. [1]), treat it as a single-form query so custom fields can still render safely.
-            if (!$this->skipContentExplicit) {
-                if ('*' === $source) {
-                    if (\is_array($this->formId) && 1 === \count($this->formId)) {
-                        $this->formId = (int) $this->formId[0];
+            if ('*' === $source) {
+                if (\is_array($this->formId) && 1 === \count($this->formId)) {
+                    $this->formId = (int) $this->formId[0];
 
-                        $this->skipContent = false;
-                    } else {
-                        $this->skipContent = true;
-                    }
-                } else {
                     $this->skipContent = false;
+                } else {
+                    $this->skipContent = true;
                 }
+            } else {
+                $this->skipContent = false;
             }
         }
 

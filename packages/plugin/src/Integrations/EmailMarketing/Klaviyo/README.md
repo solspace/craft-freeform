@@ -16,10 +16,9 @@ This integration requires Freeform Pro and a [Klaviyo](https://www.klaviyo.com) 
 
 Create a private API key in your [Klaviyo API key settings](https://www.klaviyo.com/settings/account/api-keys) with these scopes:
 
-- `lists:read`
-- `lists:write`
-- `profiles:write`
-- `subscriptions:write`
+- **List**: Full Access
+- **Profiles**: Full Access
+- **Subscriptions**: Full Access
 
 A public API key (site ID) cannot be used for this integration.
 

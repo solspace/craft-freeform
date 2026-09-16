@@ -120,7 +120,8 @@ export const UsageChart = styled.div`
   border-radius: ${borderRadius.md};
   padding: ${spacings.md};
   box-shadow: none;
-  overflow-x: auto;
+  height: 260px;
+  overflow: hidden;
 `;
 
 export const MetricsTable = styled.table`

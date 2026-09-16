@@ -240,7 +240,7 @@ export const AiDashboard: React.FC = () => {
               <Skeleton width={140} height={12} />
             </SectionTitle>
             <UsageChart>
-              <div style={{ height: 220 }} />
+              <div style={{ height: 260 }} />
             </UsageChart>
           </Section>
         </DashboardWrapper>

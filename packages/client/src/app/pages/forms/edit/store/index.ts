@@ -9,6 +9,7 @@ import form from "./slices/form";
 import integrations from "./slices/integrations";
 import layout from "./slices/layout";
 import notifications from "./slices/notifications";
+import optionSources from "./slices/option-sources";
 import rules from "./slices/rules";
 import search from "./slices/search";
 import translations from "./slices/translations";
@@ -21,6 +22,7 @@ export const store = configureStore({
     layout,
     integrations,
     notifications,
+    optionSources,
     rules,
     context,
     search,

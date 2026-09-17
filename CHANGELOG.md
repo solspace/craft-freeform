@@ -1,31 +1,29 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.16.0 - 2026-09-17
 
 ### Added
-- Added a headless REST API for form manifests and submissions (`/freeform/api/forms/{handle}/manifest` and `/submit`), including CSRF, CORS, captcha meta, multipart uploads, file drag-and-drop upload endpoints, and optional named profiles.
-- Added GraphQL headless adapters over the same services: `freeformHeadlessManifest` query and `freeformHeadlessSubmit` mutation (structured REST-compatible payloads; multipart uploads remain REST-only).
-- Added official frontend npm packages (independent semver — **`1.0.0`**):
-  - `@solspace/freeform-core`
-  - `@solspace/freeform-react`
-  - `@solspace/freeform-extensions`
-  - `@solspace/freeform-theme-default`
+- Added **headless form support** for building custom frontends with Freeform handling form configuration, validation, and submissions.
+- Added a **headless REST API** for retrieving form manifests and submitting forms through `/freeform/api/forms/{handle}/manifest` and `/freeform/api/forms/{handle}/submit`. Includes CSRF support, CORS configuration, captcha metadata, multipart file uploads, dedicated drag-and-drop upload endpoints, and optional named profiles.
+- Added **headless GraphQL support** through the `freeformHeadlessManifest` query and `freeformHeadlessSubmit` mutation. Both use the same underlying services and structured payloads as the REST API. Multipart file uploads are available through REST only.
+- Added **official frontend npm packages** for building headless forms with React or Vue: `@solspace/freeform-core`, `@solspace/freeform-react`, `@solspace/freeform-vue`, and `@solspace/freeform-extensions`.
+- Added **Default, Tailwind, and Bootstrap starter themes**: `@solspace/freeform-theme-default`, `@solspace/freeform-theme-tailwind`, and `@solspace/freeform-theme-bootstrap`.
+- Added a **Microsoft Dynamics 365 CRM integration** with Lead and Contact creation and automatic discovery of supported standard and custom fields.
+- Added a **Klaviyo email marketing integration** with list subscriptions, profile and custom property mapping, and opt-in support.
+- Added **Nationalities** to the predefined field options.
 
-```bash
-npm install @solspace/freeform-core \
-  @solspace/freeform-react \
-  @solspace/freeform-extensions \
-  @solspace/freeform-theme-default
-```
+> [!IMPORTANT]
+> **Headless setup:** Enable headless support globally in Freeform settings or configuration, then individually for each form. Install the core and extensions npm packages alongside your preferred framework adapter and starter theme.
+>
+> **Versioning and compatibility:** Frontend packages launch at **1.0.0** and are versioned independently from Freeform. The manifest's `minimumClientVersion` refers to the npm client version. Existing GraphQL APIs remain available, but the new headless APIs are recommended for new implementations. Payment support is planned for a later release.
 
-### Changed
-- Headless remains **opt-in** (global + per-form). Enable in Freeform settings / config before exposing forms.
+### Fixed
+- Fixed a potential display issue in the **SolspaceAI dashboard**.
+- Fixed a bug where switching a field's option source and then switching back could clear its configured options and custom values.
+- Fixed a bug where resending email notifications could fail or omit submission data depending on the columns displayed in the submissions table.
 
-### Notes
-- npm packages use independent semver (`1.0.x`), not the Freeform plugin version.
-- Manifest `minimumClientVersion` targets the npm client line (`1.0.0+`).
-- Deferred for later: payments, Vue adapter, Bootstrap/Tailwind themes.
-- Legacy GraphQL form/submit APIs (`freeform` query, `save_{handle}_Submission`) remain; prefer REST or the new headless GraphQL adapters for new work.
+### Security
+- Updated Vitest to **4.1.11** to address a security vulnerability in development tooling.
 
 ## 5.15.29 - 2026-09-07
 

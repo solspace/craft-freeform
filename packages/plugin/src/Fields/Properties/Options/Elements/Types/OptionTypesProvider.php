@@ -14,6 +14,7 @@ use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Days\Days;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\DaysOfWeek\DaysOfWeek;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Languages\Languages;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months\Months;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Nationalities\Nationalities;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Provinces\Provinces;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
@@ -48,6 +49,7 @@ class OptionTypesProvider
             new States(),
             new Provinces(),
             new Countries(),
+            new Nationalities(),
             new Languages(),
             new Currencies(),
             new Numbers(),

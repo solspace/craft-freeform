@@ -392,6 +392,7 @@ return [
     'USA States' => 'Amerikaanse staten',
     'Canadian Provinces' => 'Canadese provincies',
     'Countries' => 'Landen',
+    'Nationalities' => 'Nationaliteiten',
     'Languages' => 'Talen',
     'Currencies' => 'Valuta',
     'Numbers' => 'Getallen',

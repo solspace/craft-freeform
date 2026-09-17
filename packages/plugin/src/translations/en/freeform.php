@@ -392,6 +392,7 @@ return [
     'USA States' => 'USA States',
     'Canadian Provinces' => 'Canadian Provinces',
     'Countries' => 'Countries',
+    'Nationalities' => 'Nationalities',
     'Languages' => 'Languages',
     'Currencies' => 'Currencies',
     'Numbers' => 'Numbers',

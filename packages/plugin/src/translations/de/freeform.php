@@ -3120,5 +3120,4 @@ return [
     'Nationality: Yemeni' => 'Jemenitisch',
     'Nationality: Zambian' => 'Sambisch',
     'Nationality: Zimbabwean' => 'Simbabwisch',
-
 ];

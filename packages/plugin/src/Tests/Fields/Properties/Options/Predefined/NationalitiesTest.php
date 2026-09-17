@@ -45,13 +45,13 @@ class NationalitiesTest extends TestCase
     {
         $nationalities = json_decode(
             file_get_contents(
-                dirname(__DIR__, 5).'/Fields/Properties/Options/Predefined/Types/Nationalities/nationalities.json'
+                \dirname(__DIR__, 5).'/Fields/Properties/Options/Predefined/Types/Nationalities/nationalities.json'
             ),
             true
         );
 
         foreach (['en', 'de', 'fr', 'it', 'nl'] as $language) {
-            $translations = require dirname(__DIR__, 5)."/translations/{$language}/freeform.php";
+            $translations = require \dirname(__DIR__, 5)."/translations/{$language}/freeform.php";
 
             foreach ($nationalities as $nationality) {
                 $key = "Nationality: {$nationality}";

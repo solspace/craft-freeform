@@ -11,6 +11,7 @@
 - Added a **Microsoft Dynamics 365 CRM integration** with Lead and Contact creation and automatic discovery of supported standard and custom fields.
 - Added a **Klaviyo email marketing integration** with list subscriptions, profile and custom property mapping, and opt-in support.
 - Added **Nationalities** to the predefined field options.
+- Verified support for **Craft 5.11.x** and **4.19.x**.
 
 > [!IMPORTANT]
 > **Headless setup:** Enable headless support globally in Freeform settings or configuration, then individually for each form. Install the core and extensions npm packages alongside your preferred framework adapter and starter theme.

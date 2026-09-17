@@ -57,11 +57,15 @@ class ClientAssetsService extends BaseService
             );
         }
 
+        // Do not append ?v= — Vite lazy chunks import this file without a query
+        // string. A versioned URL is treated as a different module and re-boots
+        // the entire CP app (skeleton → content blink) when those chunks load.
         $view->registerJsFile(
             $this->buildAssetUrl($resourceBaseUrl, $entry['file']),
             [
                 'type' => 'module',
                 'position' => View::POS_HEAD,
+                'appendTimestamp' => false,
             ],
             'ff-client-entry'
         );

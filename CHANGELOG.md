@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
+
 ## 5.16.0 - 2026-09-17
 
 ### Added

@@ -1,5 +1,32 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added a headless REST API for form manifests and submissions (`/freeform/api/forms/{handle}/manifest` and `/submit`), including CSRF, CORS, captcha meta, multipart uploads, file drag-and-drop upload endpoints, and optional named profiles.
+- Added GraphQL headless adapters over the same services: `freeformHeadlessManifest` query and `freeformHeadlessSubmit` mutation (structured REST-compatible payloads; multipart uploads remain REST-only).
+- Added official frontend npm packages (independent semver — **`1.0.0`**):
+  - `@solspace/freeform-core`
+  - `@solspace/freeform-react`
+  - `@solspace/freeform-extensions`
+  - `@solspace/freeform-theme-default`
+
+```bash
+npm install @solspace/freeform-core \
+  @solspace/freeform-react \
+  @solspace/freeform-extensions \
+  @solspace/freeform-theme-default
+```
+
+### Changed
+- Headless remains **opt-in** (global + per-form). Enable in Freeform settings / config before exposing forms.
+
+### Notes
+- npm packages use independent semver (`1.0.x`), not the Freeform plugin version.
+- Manifest `minimumClientVersion` targets the npm client line (`1.0.0+`).
+- Deferred for later: payments, Vue adapter, Bootstrap/Tailwind themes.
+- Legacy GraphQL form/submit APIs (`freeform` query, `save_{handle}_Submission`) remain; prefer REST or the new headless GraphQL adapters for new work.
+
 ## 5.15.29 - 2026-09-07
 
 ### Added
@@ -655,7 +682,7 @@
 - **Mollie** integration: Accept payments with Mollie.
 - **xAI** integration: Use xAI models to process form submissions.
 - **Anthropic** integration: Use Anthropic models to process form submissions.
-- **SugarCRM** integration: Send submission data to _Leads_, _Opportunities_, _Accounts_, and _Contacts_ endpoints.
+- **SugarAI** integration: Send submission data to _Leads_, _Opportunities_, _Accounts_, and _Contacts_ endpoints.
 - **Gibberish Spam Blocking**: Block spam when submissions score as gibberish or contain random-looking values (e.g., `X76fddHg8qw8`, `sadjfgasfh`).
 - **Check MX Record** option for _Email Blocking_: Validate email domains against their MX records to ensure they can receive mail.
 - **Check DNS Block Lists** option for _IP Address Blocking_: Check IP addresses against the DNS block lists you provide to help detect spam and abuse.

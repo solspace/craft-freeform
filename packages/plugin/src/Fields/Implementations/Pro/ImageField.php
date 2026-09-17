@@ -63,6 +63,14 @@ class ImageField extends AbstractField implements ExtraFieldInterface, InputOnly
         return self::TYPE_IMAGE;
     }
 
+    /**
+     * @return array<int, int>
+     */
+    public function getAssetId(): array
+    {
+        return $this->assetId;
+    }
+
     public function includeInGqlSchema(): bool
     {
         return false;

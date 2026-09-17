@@ -11,8 +11,10 @@ use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Mollie;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Services\MolliePaymentService;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Services\MolliePriceService;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Helpers\ComparisonHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Services\Headless\HeadlessAccessService;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -67,7 +69,8 @@ class MolliePaymentController extends BaseMollieController
 
         $currency = strtoupper((string) ($body['currency'] ?? $field->getCurrency() ?? 'EUR'));
         $description = $this->resolveDescription($field, $form);
-        $redirectUrl = $this->buildCallbackUrl($form, $integration, $field);
+        $returnOrigin = $this->resolveReturnOrigin($form, $body);
+        $redirectUrl = $this->buildCallbackUrl($form, $integration, $field, $returnOrigin);
         $webhookUrl = (string) ($body['webhookUrl'] ?? $integration->getWebhookUrl() ?? '');
 
         if ($amount <= 0) {
@@ -191,11 +194,81 @@ class MolliePaymentController extends BaseMollieController
         return \Craft::$app->getEntries()->getEntryById((int) $entryId)?->getUrl();
     }
 
-    private function buildCallbackUrl(Form $form, Mollie $integration, MollieField $field): string
-    {
+    private function buildCallbackUrl(
+        Form $form,
+        Mollie $integration,
+        MollieField $field,
+        ?string $returnOrigin = null,
+    ): string {
         $hash = HashHelper::hash([$form->getId(), $integration->getId(), $field->getId()]);
+        $params = ['integration' => $hash];
 
-        return UrlHelper::siteUrl('freeform/payments/mollie/callback', ['integration' => $hash]);
+        // Headless SPAs (Vite/Next proxy) need Mollie to return through the same
+        // browser origin that created the session cookies. Only allow origins from
+        // headless.allowedOrigins — never trust an arbitrary posted URL.
+        if ($returnOrigin) {
+            return rtrim($returnOrigin, '/').'/freeform/payments/mollie/callback?'.http_build_query($params);
+        }
+
+        return UrlHelper::siteUrl('freeform/payments/mollie/callback', $params);
+    }
+
+    /**
+     * @param array<string, mixed> $body
+     */
+    private function resolveReturnOrigin(Form $form, array $body): ?string
+    {
+        $candidate = $body['returnOrigin'] ?? $this->request->getHeaders()->get('Origin');
+        if (!\is_string($candidate) || '' === trim($candidate)) {
+            return null;
+        }
+
+        $origin = $this->normalizeOrigin($candidate);
+        if (!$origin) {
+            return null;
+        }
+
+        $allowed = \Craft::$container->get(HeadlessAccessService::class)->getEffectiveOrigins($form);
+        foreach ($allowed as $pattern) {
+            if (!\is_string($pattern) || '' === $pattern || '*' === $pattern) {
+                continue;
+            }
+
+            $pattern = rtrim($pattern, '/');
+            if (str_contains($pattern, '*')) {
+                if (ComparisonHelper::stringMatchesWildcard($pattern, $origin)) {
+                    return $origin;
+                }
+
+                continue;
+            }
+
+            if ($pattern === $origin) {
+                return $origin;
+            }
+        }
+
+        return null;
+    }
+
+    private function normalizeOrigin(string $value): ?string
+    {
+        $parts = parse_url(trim($value));
+        if (!$parts || empty($parts['scheme']) || empty($parts['host'])) {
+            return null;
+        }
+
+        $scheme = strtolower((string) $parts['scheme']);
+        if (!\in_array($scheme, ['http', 'https'], true)) {
+            return null;
+        }
+
+        $origin = $scheme.'://'.$parts['host'];
+        if (isset($parts['port'])) {
+            $origin .= ':'.$parts['port'];
+        }
+
+        return $origin;
     }
 
     private function fetchPaymentStatus(Mollie $integration, ?string $paymentId): ?string

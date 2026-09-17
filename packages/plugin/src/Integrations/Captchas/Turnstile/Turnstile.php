@@ -14,6 +14,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
+use Solspace\Freeform\Services\Headless\HeadlessPayloadHelper;
 
 #[Type(
     name: 'Turnstile',
@@ -293,6 +294,10 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
             }
 
             return $property['value'];
+        }
+
+        if ($form->isHeadlessPosted()) {
+            return HeadlessPayloadHelper::getCaptchaResponse($form, 'cf-turnstile-response');
         }
 
         return \Craft::$app->request->post('cf-turnstile-response');

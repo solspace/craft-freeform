@@ -3,7 +3,9 @@
   "workspaces": [
     "packages/client",
     "packages/scripts",
-    "packages/styles"
+    "packages/styles",
+    "packages/frontend/*",
+    "packages/frontend/themes/*"
   ],
   "engines": {
     "pnpm": ">=11"
@@ -25,6 +27,7 @@
     "format:verify": "biome check",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
+    "frontend:bump": "node packages/frontend/scripts/bump-version.mjs",
     "prepare": "husky"
   },
   "author": "Solspace, Inc.",

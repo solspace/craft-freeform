@@ -44,6 +44,20 @@ class PageContext
             return;
         }
 
+        if ($form->isHeadlessPosted()
+            && 'back' === $form->getProperties()->get('headlessIntent')
+        ) {
+            $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
+            $index = array_pop($pageHistory) ?? 0;
+
+            $bag->set(Form::PROPERTY_PAGE_INDEX, $index);
+            $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
+            $form->setPagePosted(false);
+            $form->setNavigatingBack(true);
+
+            return;
+        }
+
         $shouldWalkBack = null !== RequestHelper::post(PageButtons::INPUT_NAME_PREVIOUS_PAGE);
         if ($shouldWalkBack) {
             $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
@@ -65,6 +79,10 @@ class PageContext
         $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
 
         if (!$form->isPagePosted() || !$form->isValid()) {
+            return;
+        }
+
+        if ('validate' === $form->getProperties()->get('headlessIntent')) {
             return;
         }
 

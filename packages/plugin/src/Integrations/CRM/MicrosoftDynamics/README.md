@@ -53,23 +53,6 @@ API failures use Freeform's normal integration error handling and logs. A missin
 
 Lead and Contact requests are separate operations. If one succeeds and the other fails, the successful record remains. Timeouts can also occur after Dynamics has created a record. Check Dynamics before retrying or resending a submission, since another attempt can create duplicates. This version does not automatically retry writes or provide exactly-once delivery.
 
-## Customer verification before release
+---
 
-This integration has automated tests with simulated API responses. It still needs validation against a real Dynamics environment and the customer's Craft/Freeform installation. Start in a test environment and verify:
-
-- App registration, application user, connection check, and the assigned security role.
-- Separate Lead and Contact submissions, then a form with both enabled.
-- Standard fields and a newly added custom field after refreshing the mapping UI.
-- Choice and multiple-choice values, true/false checkboxes, zero/negative numbers, Date Only and User Local date/time values.
-- Required fields, field security, custom validation, duplicate-detection rules and error reporting.
-- Integration conditions and queued submissions, including token acquisition in the queue worker.
-- Failed/expired credentials and replacement of the secret.
-
-Share the Dynamics error code and a redacted field mapping if a test fails. Do not include client secrets or access tokens.
-
-## API references
-
-- [Query field metadata](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/query-metadata-web-api)
-- [Create records](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/create-entity-web-api)
-- [Multiple-choice values](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/multi-select-picklist)
-- [Duplicate detection](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/webapi/manage-duplicate-detection-create-update)
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>

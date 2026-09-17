@@ -20,7 +20,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'Microsoft Dynamics 365',
+    name: 'MS Dynamics 365',
     type: Type::TYPE_CRM,
     version: 'v9.2',
     readme: __DIR__.'/README.md',

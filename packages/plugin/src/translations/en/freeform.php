@@ -3128,5 +3128,7 @@ return [
     'Hide Empty Fields' => 'Hide Empty Fields',
     'Omit unanswered fields from the summary.' => 'Omit unanswered fields from the summary.',
     'Not answered' => 'Not answered',
+    'Yes' => 'Yes',
+    'No' => 'No',
     'A review of answers entered before this field will appear here.' => 'A review of answers entered before this field will appear here.',
 ];

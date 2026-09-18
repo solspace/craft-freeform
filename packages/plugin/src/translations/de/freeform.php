@@ -3120,4 +3120,15 @@ return [
     'Nationality: Yemeni' => 'Jemenitisch',
     'Nationality: Zambian' => 'Sambisch',
     'Nationality: Zimbabwean' => 'Simbabwisch',
+
+    // Summary field
+    'Summary' => 'Zusammenfassung',
+    'Included Field Handles' => 'Einbezogene Feld-Handles',
+    'Leave blank to summarize all supported fields before this field, or enter comma-separated field handles. Fields remain in form order.' => 'Lassen Sie dieses Feld leer, um alle unterstützten Felder vor diesem Feld zusammenzufassen, oder geben Sie kommagetrennte Feld-Handles ein. Die Felder bleiben in der Reihenfolge des Formulars.',
+    'Hide Empty Fields' => 'Leere Felder ausblenden',
+    'Omit unanswered fields from the summary.' => 'Unbeantwortete Felder aus der Zusammenfassung auslassen.',
+    'Not answered' => 'Nicht beantwortet',
+    'Yes' => 'Ja',
+    'No' => 'Nein',
+    'A review of answers entered before this field will appear here.' => 'Eine Zusammenfassung der vor diesem Feld eingegebenen Antworten wird hier angezeigt.',
 ];

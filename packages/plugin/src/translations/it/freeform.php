@@ -3120,4 +3120,8 @@ return [
     'Nationality: Yemeni' => 'Yemenita',
     'Nationality: Zambian' => 'Zambiano',
     'Nationality: Zimbabwean' => 'Zimbabwese',
+
+    // MailerLite
+    'Subscriber Fields' => 'Campi degli iscritti',
+    'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Seleziona i campi Freeform da associare ai campi degli iscritti MailerLite.',
 ];

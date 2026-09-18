@@ -11,6 +11,7 @@ export function inputProps(props: VueFieldRendererProps) {
     required?: boolean;
     placeholder?: string | null;
     "aria-invalid"?: boolean;
+    "aria-describedby"?: string;
   };
 
   return {

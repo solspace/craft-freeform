@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Added an **Enable Search** setting to Dropdown and Multiple Select fields, with local option filtering, keyboard navigation, removable multiple selections, and support for Twig, React, and Vue forms.
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
 ## 5.16.0 - 2026-09-17

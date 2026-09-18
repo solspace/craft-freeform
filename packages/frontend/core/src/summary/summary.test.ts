@@ -106,6 +106,51 @@ describe("summary values", () => {
 });
 
 describe("headless summary", () => {
+  it("preserves labels as text, including markup and literal angle brackets", () => {
+    const labels = [
+      "Age < 18 & score > 5",
+      "<strong>Name</strong>",
+      '<img src=x onerror="alert(1)">',
+      "<scr<script>ipt>alert(1)</script>",
+      "<script",
+    ];
+    const fields = Object.fromEntries(
+      labels.map((label, index) => [
+        String(index),
+        { ...field(String(index)), label },
+      ]),
+    );
+    const summary = {
+      ...field("review", "summary"),
+      frontend: { config: { fields: Object.keys(fields), hideEmpty: false } },
+    };
+    const entries = getSummaryEntries(summary, {
+      manifest: { fields } as unknown as FreeformManifest,
+      values: {},
+      isFieldVisible: () => true,
+    });
+    expect(entries.map((entry) => entry.label)).toEqual(labels);
+  });
+
+  it("handles long malformed labels without regex backtracking", () => {
+    const label = "<".repeat(100_000);
+    const summary = {
+      ...field("review", "summary"),
+      frontend: { config: { fields: ["name"], hideEmpty: false } },
+    };
+    const start = performance.now();
+    const entries = getSummaryEntries(summary, {
+      manifest: {
+        fields: { name: { ...field("name"), label } },
+      } as unknown as FreeformManifest,
+      values: {},
+      isFieldVisible: () => true,
+    });
+    const elapsed = performance.now() - start;
+    expect(entries[0].label).toBe(label);
+    expect(elapsed).toBeLessThan(1000);
+  });
+
   it("uses current values, explicit source order, option labels and empty settings", () => {
     const name = field("name");
     const interests = {

@@ -24,6 +24,7 @@ export type SummarySource = {
   }>;
 };
 
+/** Untrusted text: escape label and text at rendering time; never insert as HTML. */
 export type SummaryEntry = { handle: string; label: string; text: string };
 
 // Keep in sync with the PHP SummaryFormatter allowlist. Unknown types are private.
@@ -174,7 +175,7 @@ export function getSummaryEntries(
     if (config.hideEmpty !== false && text === "") continue;
     entries.push({
       handle,
-      label: field.label.replace(/<[^>]*>/g, ""),
+      label: field.label,
       text: text === "" ? (config.emptyValue ?? "Not answered") : text,
     });
   }

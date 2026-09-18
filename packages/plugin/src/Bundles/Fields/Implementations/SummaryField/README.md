@@ -22,4 +22,6 @@ For custom styling, target `[data-freeform-summary]`, its `dt`/`dd` elements, or
 
 The manifest uses renderer `summary` and provides `frontend.config.fields`, `hideEmpty`, and translated display labels. The built-in React and Vue renderers derive the review from current runtime values and conditional visibility, including hidden parent groups. No extension or `allowRawHtml` is needed. Custom renderers can call `getSummaryEntries(field, form)` from `@solspace/freeform-core`.
 
+Summary entries contain untrusted text, not sanitized HTML. The built-in headless renderers display labels and answers literally, including any markup. Custom renderers must use escaped text interpolation or `textContent` for both `entry.label` and `entry.text`, never `innerHTML`, `v-html`, or `dangerouslySetInnerHTML`.
+
 Formie imports create a native Summary field using Freeform's defaults. Review the imported field selection and empty-answer settings; Formie's custom summary template/settings are not migrated.

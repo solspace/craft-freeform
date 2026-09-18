@@ -24,3 +24,28 @@ it("renders escaped answers without raw HTML and updates from runtime state", as
   await view.setProps({ form: { ...props.form, isFieldVisible: () => false } });
   expect(view.find("dd").exists()).toBe(false);
 });
+
+it.each([
+  '<img src=x onerror="alert(1)">',
+  '<svg onload="alert(1)"></svg>',
+  "<scr<script>ipt>alert(1)</script>",
+  "<script",
+  "Age < 18 & score > 5",
+])("renders hostile or HTML-like labels as text: %s", (label) => {
+  const props = {
+    field: { handle: "review", frontend: { config: { fields: ["name"] } } },
+    form: {
+      manifest: {
+        fields: { name: { handle: "name", label, type: "text" } },
+      } as unknown as FreeformManifest,
+      values: { name: "Answer" },
+      isFieldVisible: () => true,
+    },
+    classNames: {},
+  } as VueFieldRendererProps;
+  const view = mount(SummaryFieldRenderer, { props });
+  const term = view.get("dt").element;
+  expect(term?.textContent).toBe(label);
+  expect(term?.children.length).toBe(0);
+  view.unmount();
+});

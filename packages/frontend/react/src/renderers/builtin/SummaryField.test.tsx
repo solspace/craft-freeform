@@ -36,3 +36,28 @@ it("renders escaped answers without raw HTML and updates from runtime state", ()
   );
   expect(view.container.querySelector("dd")).toBeNull();
 });
+
+it.each([
+  '<img src=x onerror="alert(1)">',
+  '<svg onload="alert(1)"></svg>',
+  "<scr<script>ipt>alert(1)</script>",
+  "<script",
+  "Age < 18 & score > 5",
+])("renders hostile or HTML-like labels as text: %s", (label) => {
+  const props = {
+    field: { handle: "review", frontend: { config: { fields: ["name"] } } },
+    form: {
+      manifest: {
+        fields: { name: { handle: "name", label, type: "text" } },
+      } as unknown as FreeformManifest,
+      values: { name: "Answer" },
+      isFieldVisible: () => true,
+    },
+    classNames: {},
+  } as ReactFieldRendererProps;
+  const view = render(<SummaryFieldRenderer {...props} />);
+  const term = view.container.querySelector("dt");
+  expect(term?.textContent).toBe(label);
+  expect(term?.children.length).toBe(0);
+  view.unmount();
+});

@@ -1,0 +1,59 @@
+.ff-range {
+  width: 100%;
+  min-width: 0;
+  color: inherit;
+}
+.ff-range input.ff-range-input[type="range"] {
+  display: block;
+  width: 100%;
+  height: 1.75rem;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  -webkit-appearance: auto;
+  appearance: auto;
+  accent-color: var(
+    --ff-range-accent,
+    var(--ff-color-primary, var(--bs-primary, var(--color-indigo-500, auto)))
+  );
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.ff-range input.ff-range-input:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.ff-range input.ff-range-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+.ff-range .ff-range-values {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 0.25rem;
+  font-size: 0.875em;
+  font-variant-numeric: tabular-nums;
+}
+.ff-range .ff-range-values > span {
+  opacity: 0.7;
+}
+.ff-range output.ff-range-value {
+  display: inline;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  color: inherit;
+}
+.ff-range input[aria-invalid="true"] {
+  outline: 2px solid var(--ff-range-error, #dc3545);
+  outline-offset: 3px;
+}
+
+.ff-range output[hidden] {
+  display: none;
+}

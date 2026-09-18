@@ -227,3 +227,14 @@ Documentation and support for Freeform are available through [Solspace](https://
 ## Known limitations
 
 - Conditional show/hide is client UX only (not a security boundary)
+
+
+## Range Slider
+
+The built-in `range` renderer supports the Range Slider field's minimum, maximum, step, and default value. Import its stylesheet alongside your theme:
+
+```ts
+import "@solspace/freeform-core/range.css";
+```
+
+The native slider supports keyboard and touch input and displays its current value and bounds. Decimal steps and negative ranges are supported. A slider always has a value, starting at the configured default or minimum; making it required does not require the visitor to move it. Values outside the bounds or off the configured step are rejected by Freeform on submission. Override `--ff-range-accent` to customize the native track and thumb color.

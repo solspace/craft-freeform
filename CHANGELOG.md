@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Added a **Range Slider** field with configurable bounds, decimal steps, a default value, live value display, and Twig, React, and Vue support.
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
 ## 5.16.0 - 2026-09-17

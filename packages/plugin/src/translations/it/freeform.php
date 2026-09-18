@@ -3131,4 +3131,8 @@ return [
     'Yes' => 'Sì',
     'No' => 'No',
     'A review of answers entered before this field will appear here.' => 'Qui verrà visualizzato un riepilogo delle risposte inserite prima di questo campo.',
+
+    // MailerLite
+    'Subscriber Fields' => 'Campi degli iscritti',
+    'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Seleziona i campi Freeform da associare ai campi degli iscritti MailerLite.',
 ];

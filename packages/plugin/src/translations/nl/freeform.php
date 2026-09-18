@@ -3094,4 +3094,8 @@ return [
     'Yes' => 'Ja',
     'No' => 'Nee',
     'A review of answers entered before this field will appear here.' => 'Hier verschijnt een samenvatting van de antwoorden die vóór dit veld zijn ingevoerd.',
+
+    // MailerLite
+    'Subscriber Fields' => 'Abonneevelden',
+    'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 ];

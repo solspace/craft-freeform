@@ -3131,4 +3131,8 @@ return [
     'Yes' => 'Yes',
     'No' => 'No',
     'A review of answers entered before this field will appear here.' => 'A review of answers entered before this field will appear here.',
+
+    // MailerLite
+    'Subscriber Fields' => 'Subscriber Fields',
+    'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Select the Freeform fields to map to MailerLite subscriber fields.',
 ];

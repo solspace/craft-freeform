@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -122,6 +124,10 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof DropdownField || $field instanceof MultipleSelectField) {
+            return ['searchable' => $field->getSearchableConfig()];
+        }
+
         if ($field instanceof DatetimeField) {
             return [
                 'dateTimeType' => $field->getDateTimeType(),

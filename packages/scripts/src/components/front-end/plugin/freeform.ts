@@ -6,6 +6,7 @@ import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
 import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
 import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SearchableSelectHandler from "@lib/plugin/handlers/fields/searchable-select";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
 import TableHandler from "@lib/plugin/handlers/fields/table";
 import AbTestHandler from "@lib/plugin/handlers/form/ab-test";
@@ -89,6 +90,7 @@ export default class Freeform {
     DragAndDropHandler,
     SaveFormHandler,
     CardsHandler,
+    SearchableSelectHandler,
   ];
 
   _lastButtonPressed?: HTMLButtonElement;

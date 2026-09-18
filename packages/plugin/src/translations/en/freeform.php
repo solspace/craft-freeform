@@ -3124,4 +3124,13 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Subscriber Fields',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Select the Freeform fields to map to MailerLite subscriber fields.',
+
+    // Searchable select fields
+    'Enable Search' => 'Enable Search',
+    'Allow users to filter options by typing.' => 'Allow users to filter options by typing.',
+    'Search options...' => 'Search options...',
+    'No results found.' => 'No results found.',
+    'Remove {label}' => 'Remove {label}',
+    'Show options' => 'Show options',
+    '{count} results available.' => '{count} results available.',
 ];

@@ -16,6 +16,7 @@ export function inputProps(props: ReactFieldRendererProps) {
     required?: boolean;
     placeholder?: string | null;
     "aria-invalid"?: boolean;
+    "aria-describedby"?: string;
   };
 
   return {

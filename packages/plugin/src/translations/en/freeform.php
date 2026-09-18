@@ -3120,4 +3120,13 @@ return [
     'Nationality: Yemeni' => 'Yemeni',
     'Nationality: Zambian' => 'Zambian',
     'Nationality: Zimbabwean' => 'Zimbabwean',
+
+    // Summary field
+    'Summary' => 'Summary',
+    'Included Field Handles' => 'Included Field Handles',
+    'Leave blank to summarize all supported fields before this field, or enter comma-separated field handles. Fields remain in form order.' => 'Leave blank to summarize all supported fields before this field, or enter comma-separated field handles. Fields remain in form order.',
+    'Hide Empty Fields' => 'Hide Empty Fields',
+    'Omit unanswered fields from the summary.' => 'Omit unanswered fields from the summary.',
+    'Not answered' => 'Not answered',
+    'A review of answers entered before this field will appear here.' => 'A review of answers entered before this field will appear here.',
 ];

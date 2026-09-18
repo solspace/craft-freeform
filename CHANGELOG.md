@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added a Pro **Summary field** for reviewing answers before submission, with live updates, conditional visibility, selected field handles, and React/Vue headless support.
+- Formie Summary fields now import as native Freeform Summary fields.
+
 ## 5.16.0 - 2026-09-17
 
 ### Added

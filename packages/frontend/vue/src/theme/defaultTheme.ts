@@ -14,6 +14,8 @@ export const defaultTheme: FreeformVueTheme = {
     fieldHasErrors: "ff-field--has-errors",
     label: "ff-field__label",
     instructions: "ff-field__instructions",
+    characterCount: "ff-field__character-count",
+    characterCountError: "ff-field__character-count--error",
     input: "ff-field__input",
     content: "ff-field__content",
     errors: "ff-field__errors",

@@ -18,6 +18,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
@@ -122,6 +124,13 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if (($field instanceof TextField || $field instanceof TextareaField) && $field->isShowCharacterCount()) {
+            return [
+                'showCharacterCount' => true,
+                'characterCountMessages' => $field->getCharacterCountMessages(),
+            ];
+        }
+
         if ($field instanceof DatetimeField) {
             return [
                 'dateTimeType' => $field->getDateTimeType(),

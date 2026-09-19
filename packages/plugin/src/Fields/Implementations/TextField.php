@@ -22,6 +22,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
+use Solspace\Freeform\Fields\Traits\CharacterCountTrait;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
@@ -39,6 +40,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 )]
 class TextField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, TextInterface, EncryptionInterface, MaxLengthInterface
 {
+    use CharacterCountTrait;
     use DefaultTextValueTrait;
     use EncryptionTrait;
     use MaxLengthTrait;
@@ -83,6 +85,8 @@ class TextField extends AbstractField implements PlaceholderInterface, DefaultVa
             ->setIfEmpty('placeholder', $this->translate('placeholder', $this->getPlaceholder()))
             ->setIfEmpty('value', $this->getValue())
         ;
+
+        $this->addCharacterCountAttributes($attributes);
 
         return Html::tag(
             $attributes->getTag('input'),

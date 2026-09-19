@@ -498,3 +498,10 @@
     flex: 1 1 100%;
   }
 }
+
+.ff-field__character-count {
+  color: var(--ff-color-text-muted);
+}
+.ff-field__character-count--error {
+  color: var(--ff-color-danger);
+}

@@ -122,3 +122,5 @@ export const FIELD_RENDERERS = {
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export { getCharacterCount } from "./utils/character-count.js";

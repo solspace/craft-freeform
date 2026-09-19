@@ -392,6 +392,7 @@ class Freeform extends Plugin
             CheckboxesField::class,
             RadiosField::class,
             OpinionScaleField::class,
+            RangeField::class,
             RatingField::class,
             CardsField::class,
         ];

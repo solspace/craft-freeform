@@ -69,7 +69,6 @@ class FieldsBundle extends FeatureBundle
             FileUploadField::class,
             FileDragAndDropField::class,
             NumberField::class,
-            RangeField::class,
 
             // Pro fields
             ConfirmationField::class,
@@ -80,6 +79,7 @@ class FieldsBundle extends FeatureBundle
             RegexField::class,
             WebsiteField::class,
             OpinionScaleField::class,
+            RangeField::class,
             SignatureField::class,
             TableField::class,
             InvisibleField::class,

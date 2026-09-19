@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
+use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 
@@ -19,7 +20,7 @@ use Solspace\Freeform\Fields\Traits\EncryptionTrait;
     iconPath: __DIR__.'/Icons/range.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/range.ejs',
 )]
-class RangeField extends AbstractField implements DefaultValueInterface, NumericInterface, EncryptionInterface
+class RangeField extends AbstractField implements DefaultValueInterface, NumericInterface, EncryptionInterface, ExtraFieldInterface
 {
     use EncryptionTrait;
 

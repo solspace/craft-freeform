@@ -68,6 +68,8 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 ## Range Slider
 
+Requires **Freeform Pro**.
+
 Freeform's **Range Slider** field stores a single numeric value. Configure its minimum (default `0`), maximum (`100`), step (`1`), and optional default value in the builder. Decimal steps and negative bounds are supported. A blank default starts at the minimum; configured defaults are clamped to the bounds and aligned to the nearest step, with ties rounded upward.
 
 The manifest uses the `range` renderer and `frontend.config` containing `min`, `max`, and `step`. Its `defaultValue` contains the normalized starting value. The built-in React and Vue adapters render a native range input with a current-value display and bound labels. Layout is built into the renderers, and appearance comes from the existing Default, Bootstrap, or Tailwind theme assets; no separate range stylesheet is needed. Classic Twig forms use the bundled Freeform script and stylesheet automatically.

@@ -17,6 +17,7 @@ export { PasswordFieldRenderer } from "./PasswordField.js";
 export { PayPalPaymentFieldRenderer } from "./PayPalPaymentField.js";
 export { PhoneFieldRenderer } from "./PhoneField.js";
 export { RadioFieldRenderer } from "./RadioField.js";
+export { RangeFieldRenderer } from "./RangeField.js";
 export { RatingFieldRenderer } from "./RatingField.js";
 export { RegexFieldRenderer } from "./RegexField.js";
 export { SelectFieldRenderer } from "./SelectField.js";

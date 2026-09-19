@@ -183,6 +183,7 @@ class SummaryService extends Component
         $fields->regex = $this->usesField('regex', $fieldTypes);
         $fields->website = $this->usesField('website', $fieldTypes);
         $fields->opinionScale = $this->usesField('opinion-scale', $fieldTypes);
+        $fields->range = $this->usesField('range', $fieldTypes);
         $fields->cards = $this->usesField('cards', $fieldTypes);
         $fields->image = $this->usesField('image', $fieldTypes);
         $fields->signature = $this->usesField('signature', $fieldTypes);

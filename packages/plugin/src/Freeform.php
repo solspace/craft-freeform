@@ -59,6 +59,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
@@ -392,6 +393,7 @@ class Freeform extends Plugin
             CheckboxesField::class,
             RadiosField::class,
             OpinionScaleField::class,
+            RangeField::class,
             RatingField::class,
             CardsField::class,
         ];

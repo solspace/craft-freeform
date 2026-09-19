@@ -5,6 +5,7 @@ import CardsHandler from "@lib/plugin/handlers/fields/cards";
 import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
 import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
 import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
+import RangeHandler from "@lib/plugin/handlers/fields/range";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
 import TableHandler from "@lib/plugin/handlers/fields/table";
@@ -76,6 +77,7 @@ export default class Freeform {
 
   _initializedHandlers: FreeformHandler[] = [];
   _handlers: FreeformHandlerConstructor[] = [
+    RangeHandler,
     IdempotencyHandler,
     AbTestHandler,
     BackButtonHandler,

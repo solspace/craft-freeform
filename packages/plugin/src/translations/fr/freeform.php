@@ -3124,4 +3124,14 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Champs des abonnés',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Sélectionnez les champs Freeform à associer aux champs des abonnés MailerLite.',
+
+    // Range Slider
+    'Range Slider' => 'Curseur',
+    'Minimum value' => 'Valeur minimale',
+    'Maximum value' => 'Valeur maximale',
+    'The lowest value available on the slider.' => 'La valeur la plus basse disponible sur le curseur.',
+    'The highest value available on the slider.' => 'La valeur la plus élevée disponible sur le curseur.',
+    'The increment between slider values. Must be greater than zero.' => 'L’incrément entre les valeurs du curseur. Doit être supérieur à zéro.',
+    'Leave blank to start at the minimum. Values are aligned to the nearest available step.' => 'Laisser vide pour commencer au minimum. Les valeurs sont arrondies au pas disponible le plus proche.',
+    'Choose a slider value in increments of {{step}} from {{min}}.' => 'Choisissez une valeur par incréments de {{step}} à partir de {{min}}.',
 ];

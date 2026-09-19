@@ -12,6 +12,7 @@ use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
+use Solspace\Freeform\Fields\Implementations\RangeField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
@@ -42,6 +43,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         availableFieldTypes: [
             TextField::class,
             NumberField::class,
+            RangeField::class,
             TextareaField::class,
             DropdownField::class,
             RadiosField::class,

@@ -104,6 +104,7 @@ export const FIELD_RENDERERS = {
   TEXTAREA: "textarea",
   EMAIL: "email",
   NUMBER: "number",
+  RANGE: "range",
   PHONE: "phone",
   HIDDEN: "hidden",
   SELECT: "select",

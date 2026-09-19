@@ -137,6 +137,9 @@ class RuleHandler implements FreeformHandler {
             case "checkbox":
               listener = "change";
               break;
+            case "range":
+              listener = ["input", "change"];
+              break;
             case "number":
               listener = ["keyup", "change"];
               break;

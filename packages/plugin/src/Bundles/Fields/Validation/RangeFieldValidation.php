@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\RangeField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 

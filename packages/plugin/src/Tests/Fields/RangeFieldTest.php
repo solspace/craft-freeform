@@ -5,10 +5,11 @@ namespace Solspace\Freeform\Tests\Fields;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Bundles\Fields\Validation\RangeFieldValidation;
 use Solspace\Freeform\Bundles\Fields\Validation\RequiredFieldValidation;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
-use Solspace\Freeform\Fields\Implementations\RangeField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Services\Headless\Manifest\ManifestFieldSerializer;
@@ -18,6 +19,18 @@ use Solspace\Freeform\Services\Headless\Manifest\ManifestFieldSerializer;
 #[CoversClass(ManifestFieldSerializer::class)]
 class RangeFieldTest extends TestCase
 {
+    public function testPreviouslySavedClassNameResolvesToProField(): void
+    {
+        $legacyClass = 'Solspace\Freeform\Fields\Implementations\RangeField';
+        $field = new $legacyClass($this->createMock(Form::class));
+
+        self::assertSame(RangeField::class, $field::class);
+
+        $type = (new \ReflectionClass($field))->getAttributes(Type::class)[0]->newInstance();
+        self::assertFileExists($type->iconPath);
+        self::assertFileExists($type->previewTemplatePath);
+    }
+
     #[DataProvider('defaults')]
     public function testDefaultMatchesBoundsAndStep(array $config, float $expected): void
     {

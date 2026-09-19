@@ -27,13 +27,16 @@ describe("classic Range Slider", () => {
   it("updates on input and change without replacing the native field", () => {
     const { input, form, output } = setup();
     expect(output.hidden).toBe(false);
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("50%");
     input.value = "-2.5";
     input.dispatchEvent(new Event("input", { bubbles: true }));
     expect(output.textContent).toBe("-2.5");
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("37.5%");
     expect(new FormData(form).get("budget")).toBe("-2.5");
     input.value = "5";
     input.dispatchEvent(new Event("change", { bubbles: true }));
     expect(output.textContent).toBe("5");
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("75%");
     input.disabled = true;
     expect(new FormData(form).has("budget")).toBe(false);
   });
@@ -44,6 +47,7 @@ describe("classic Range Slider", () => {
     form.reset();
     await tick();
     expect(output.textContent).toBe("0");
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("50%");
     input.value = "5";
     input.dispatchEvent(new Event("input", { bubbles: true }));
     form.addEventListener("reset", (event) => event.preventDefault(), {
@@ -52,6 +56,7 @@ describe("classic Range Slider", () => {
     form.reset();
     await tick();
     expect(output.textContent).toBe("5");
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("75%");
     form.innerHTML =
       '<div class="ff-range"><input name="next" type="range" value="25" data-freeform-range><output hidden></output></div>';
     handler.reload();
@@ -59,6 +64,25 @@ describe("classic Range Slider", () => {
     next.value = "30";
     next.dispatchEvent(new Event("input", { bubbles: true }));
     expect(form.querySelector("output")?.textContent).toBe("30");
+    expect(next.style.getPropertyValue("--ff-range-progress")).toBe("30%");
+  });
+  it("handles endpoints and fixed-value ranges without invalid progress", () => {
+    const { input, handler } = setup();
+    for (const [value, progress] of [
+      ["-10", "0%"],
+      ["10", "100%"],
+    ]) {
+      input.value = value;
+      handler.reload();
+      expect(input.style.getPropertyValue("--ff-range-progress")).toBe(
+        progress,
+      );
+    }
+    input.min = "5";
+    input.max = "5";
+    input.value = "5";
+    handler.reload();
+    expect(input.style.getPropertyValue("--ff-range-progress")).toBe("0%");
   });
   it("updates conditional Rules when moved with a pointer", () => {
     const { form, input, freeform } = setup();

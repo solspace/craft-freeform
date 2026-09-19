@@ -22,6 +22,14 @@ export default class RangeHandler implements FreeformHandler {
   }
 
   private update(input: HTMLInputElement) {
+    const min = input.min === "" ? 0 : Number(input.min);
+    const max = input.max === "" ? 100 : Number(input.max);
+    const progress =
+      max > min ? ((input.valueAsNumber - min) / (max - min)) * 100 : 0;
+    input.style.setProperty(
+      "--ff-range-progress",
+      `${Number.isFinite(progress) ? Math.max(0, Math.min(100, progress)) : 0}%`,
+    );
     const output = input.closest(".ff-range")?.querySelector("output");
     if (output) {
       output.textContent = input.value;

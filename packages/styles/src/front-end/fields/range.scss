@@ -57,3 +57,137 @@
 .ff-range output[hidden] {
   display: none;
 }
+
+// Tailwind 4 formatting templates opt in; other templates keep native controls.
+.freeform-range-tailwind .ff-range {
+  color: var(--ff-range-text);
+
+  input.ff-range-input[type="range"] {
+    height: 2rem;
+    appearance: none;
+    -webkit-appearance: none;
+    border-radius: 9999px;
+    outline: none;
+
+    // Keep these selectors separate: browsers reject unknown pseudo-elements.
+    @mixin track {
+      height: 0.375rem;
+      background: linear-gradient(
+        to right,
+        var(--ff-range-accent) var(--ff-range-progress, 0%),
+        var(--ff-range-track) var(--ff-range-progress, 0%)
+      );
+      border: 0;
+      border-radius: 9999px;
+    }
+
+    @mixin thumb {
+      width: 1.125rem;
+      height: 1.125rem;
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--ff-range-accent);
+      border: 0;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+    }
+
+    &::-webkit-slider-runnable-track {
+      @include track;
+    }
+    &::-moz-range-track {
+      @include track;
+    }
+    &::-webkit-slider-thumb {
+      @include thumb;
+      margin-top: -0.375rem;
+    }
+    &::-moz-range-thumb {
+      @include thumb;
+    }
+
+    &:focus-visible::-webkit-slider-thumb {
+      outline: 2px solid var(--ff-range-accent);
+      outline-offset: 3px;
+    }
+    &:focus-visible::-moz-range-thumb {
+      outline: 2px solid var(--ff-range-accent);
+      outline-offset: 3px;
+    }
+
+    &[aria-invalid="true"] {
+      outline: 2px solid var(--ff-range-error);
+      outline-offset: 2px;
+    }
+
+    &:dir(rtl) {
+      &::-webkit-slider-runnable-track {
+        background-image: linear-gradient(
+          to left,
+          var(--ff-range-accent) var(--ff-range-progress, 0%),
+          var(--ff-range-track) var(--ff-range-progress, 0%)
+        );
+      }
+      &::-moz-range-track {
+        background-image: linear-gradient(
+          to left,
+          var(--ff-range-accent) var(--ff-range-progress, 0%),
+          var(--ff-range-track) var(--ff-range-progress, 0%)
+        );
+      }
+    }
+  }
+
+  .ff-range-values {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    margin-top: 0;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+
+    > span {
+      opacity: 1;
+      overflow-wrap: anywhere;
+    }
+    > span:last-child {
+      grid-column: 3;
+      text-align: end;
+    }
+  }
+
+  output.ff-range-value {
+    grid-column: 2;
+    padding: 0.125rem 0.5rem;
+    color: var(--ff-range-value-color);
+    background: var(--ff-range-value-bg);
+    border-radius: 0.375rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .freeform-range-tailwind .ff-range {
+    --ff-range-accent: Highlight;
+    --ff-range-track: CanvasText;
+    --ff-range-error: LinkText;
+
+    input.ff-range-input[type="range"] {
+      &::-webkit-slider-runnable-track {
+        background: CanvasText;
+      }
+      &::-moz-range-track {
+        background: CanvasText;
+      }
+      &::-webkit-slider-thumb {
+        background: Highlight;
+        border: 1px solid Canvas;
+        forced-color-adjust: none;
+      }
+      &::-moz-range-thumb {
+        background: Highlight;
+        border: 1px solid Canvas;
+        forced-color-adjust: none;
+      }
+    }
+  }
+}

@@ -107,6 +107,11 @@ export function lightClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(lightTextInput),
+    range: {
+      input: "form-range",
+      inputError: "is-invalid border border-danger rounded",
+      content: "text-body",
+    },
     dropdown: { input: lightSelectInput },
     select: { input: lightSelectInput },
     "multiple-select": { input: lightSelectInput },
@@ -179,6 +184,11 @@ export function darkClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(darkTextInput),
+    range: {
+      input: "form-range",
+      inputError: "is-invalid border border-danger rounded",
+      content: "text-white",
+    },
     dropdown: { input: darkSelectInput },
     select: { input: darkSelectInput },
     "multiple-select": { input: darkSelectInput },

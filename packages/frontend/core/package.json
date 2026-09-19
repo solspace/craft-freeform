@@ -11,14 +11,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./range.css": "./src/range/range.css"
+    }
   },
   "files": [
     "dist",
     "README.md",
-    "LICENSE",
-    "src/range/range.css"
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

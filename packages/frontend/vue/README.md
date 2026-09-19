@@ -62,10 +62,6 @@ const form = useFreeform({
 
 ## Range Slider
 
-The built-in `range` renderer supports the Range Slider field's minimum, maximum, step, and default value. Import its stylesheet alongside your theme:
+The built-in `range` renderer supports the Range Slider field's minimum, maximum, step, and default value. Layout is built into the renderer. Use your normal theme assets: the Default theme stylesheet, Bootstrap CSS, or Tailwind utilities. No separate range stylesheet is needed.
 
-```ts
-import "@solspace/freeform-core/range.css";
-```
-
-The native slider supports keyboard and touch input and displays its current value and bounds. Decimal steps and negative ranges are supported. A slider always has a value, starting at the configured default or minimum; making it required does not require the visitor to move it. Values outside the bounds or off the configured step are rejected by Freeform on submission. Override `--ff-range-accent` to customize the native track and thumb color.
+The native slider supports keyboard and touch input and displays its current value and bounds. Decimal steps and negative ranges are supported. A slider always has a value, starting at the configured default or minimum; making it required does not require the visitor to move it. Values outside the bounds or off the configured step are rejected by Freeform on submission. With the Default theme, override `--ff-range-accent` to customize the native track and thumb color. Bootstrap uses `form-range`; Tailwind uses the theme’s accent utilities.

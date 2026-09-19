@@ -133,6 +133,13 @@ export function lightClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(lightTextInput),
+    range: {
+      input:
+        "block w-full appearance-auto border-0 bg-transparent p-0 accent-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+      inputError:
+        "outline-2 outline-offset-2 outline-red-600 focus-visible:outline-red-600",
+      content: "text-gray-900",
+    },
     dropdown: { input: lightSelectInput },
     select: { input: lightSelectInput },
     "multiple-select": {
@@ -207,6 +214,13 @@ export function darkClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(darkTextInput),
+    range: {
+      input:
+        "block w-full appearance-auto border-0 bg-transparent p-0 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500",
+      inputError:
+        "outline-2 outline-offset-2 outline-red-500 focus-visible:outline-red-500",
+      content: "text-white",
+    },
     dropdown: { input: darkSelectInput },
     select: { input: darkSelectInput },
     "multiple-select": {

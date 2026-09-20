@@ -56,12 +56,13 @@ it("searches only allowed countries by name, code or dial code, supports Escape 
   const search = document.querySelector(
     "input[type=search]",
   )! as HTMLInputElement;
-  const select = document.querySelector("select")!;
+  const options = () => [
+    ...document.querySelectorAll<HTMLElement>('[role="option"]'),
+  ];
   search.value = "United States";
   search.dispatchEvent(new Event("input"));
-  expect([...select.options].map((o) => o.value)).toEqual(["US"]);
-  select.value = "US";
-  select.dispatchEvent(new Event("change"));
+  expect(options().map((o) => o.dataset.country)).toEqual(["US"]);
+  options()[0].click();
   expect(button.getAttribute("aria-expanded")).toBe("false");
   input.value = "2015550123";
   input.dispatchEvent(new Event("input"));
@@ -69,7 +70,7 @@ it("searches only allowed countries by name, code or dial code, supports Escape 
   button.click();
   search.value = "Germany";
   search.dispatchEvent(new Event("input"));
-  expect(select.options).toHaveLength(0);
+  expect(options()).toHaveLength(0);
   search.dispatchEvent(
     new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
   );
@@ -80,10 +81,10 @@ it("handles pasted numbers, external changes, resets and cleanup", async () => {
   const { input, button, controller } = setup();
   input.value = "+12015550123";
   input.dispatchEvent(new Event("input"));
-  expect(button.textContent).toContain("United States");
+  expect(button.getAttribute("aria-label")).toContain("United States");
   controller.update("");
   expect(input.value).toBe("");
-  expect(button.textContent).toContain("United Kingdom");
+  expect(button.getAttribute("aria-label")).toContain("United Kingdom");
   input.value = "020 7946 0018";
   input.dispatchEvent(new Event("input"));
   input.form!.reset();
@@ -114,4 +115,57 @@ it("preserves custom placeholders and fails closed when no configured countries 
   cleanup = controller.destroy;
   expect(input.placeholder).toBe("Custom example");
   expect(document.querySelector("button")!.disabled).toBe(true);
+});
+
+it("navigates the country list without submitting the form and closes when focus leaves", () => {
+  const { button, input, controller } = setup();
+  button.click();
+  const search =
+    document.querySelector<HTMLInputElement>("input[type=search]")!;
+  const key = (key: string) =>
+    search.dispatchEvent(
+      new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }),
+    );
+  key("Home");
+  const active = () =>
+    document.getElementById(search.getAttribute("aria-activedescendant")!)!;
+  expect(active().dataset.country).toBe("CA");
+  key("ArrowDown");
+  expect(active().dataset.country).toBe("GB");
+  key("End");
+  expect(active().dataset.country).toBe("US");
+  expect(key("Enter")).toBe(false);
+  expect(button.getAttribute("aria-label")).toContain("United States");
+  input.value = "2015550123";
+  expect(controller.getValue()).toBe("+12015550123");
+  button.click();
+  input.focus();
+  expect(button.getAttribute("aria-expanded")).toBe("false");
+});
+it("restores layout styles and handles multiple fields sharing a parent", () => {
+  const { input, controller } = setup();
+  const parent = input.parentElement!;
+  const other = document.createElement("input");
+  other.style.setProperty("padding-inline-start", "20px", "important");
+  parent.append(other);
+  const second = mountInternationalPhone(other, { defaultCountry: "CA" });
+  expect(input.parentElement).toBe(parent);
+  expect(parent.style.position).toBe("relative");
+  controller.destroy();
+  expect(input.style.paddingInlineStart).toBe("");
+  expect(parent.style.position).toBe("relative");
+  second.destroy();
+  expect(parent.style.position).toBe("");
+  expect(other.style.paddingInlineStart).toBe("20px");
+  expect(other.style.getPropertyPriority("padding-inline-start")).toBe(
+    "important",
+  );
+});
+it("closes an open selector when the input becomes readonly", async () => {
+  const { input, button } = setup();
+  button.click();
+  input.readOnly = true;
+  await Promise.resolve();
+  expect(button.disabled).toBe(true);
+  expect(button.getAttribute("aria-expanded")).toBe("false");
 });

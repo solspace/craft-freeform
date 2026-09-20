@@ -1,4 +1,11 @@
-<input type="tel" placeholder="<%= placeholder %>" value="<%= defaultValue %>" />
 <% if (international) { %>
-<div style="font-size:11px;margin-top:4px;"><%= defaultCountry %> ▾</div>
+<div style="position:relative;">
+  <input type="tel" placeholder="<%= placeholder %>" value="<%= defaultValue %>" style="padding-inline-start:61px;" />
+  <span aria-hidden="true" style="position:absolute;inset-inline-start:1px;top:1px;bottom:1px;width:48px;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(116,136,165,.1);border-inline-end:1px solid rgba(96,125,159,.25);border-start-start-radius:3px;border-end-start-radius:3px;">
+    <span style="font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;"><%= /^[A-Z]{2}$/.test(defaultCountry || '') ? String.fromCodePoint(...defaultCountry.split('').map(letter => 127397 + letter.charCodeAt(0))) : '🌐' %></span>
+    <span style="font-size:10px;">▾</span>
+  </span>
+</div>
+<% } else { %>
+<input type="tel" placeholder="<%= placeholder %>" value="<%= defaultValue %>" />
 <% } %>

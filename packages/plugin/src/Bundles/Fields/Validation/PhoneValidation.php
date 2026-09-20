@@ -2,6 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Validation;
 
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\PhoneNumberUtil;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
@@ -28,10 +31,37 @@ class PhoneValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        if (!$value) {
+        if (null === $value || '' === $value) {
             return;
         }
 
+        if ($field->isInternational()) {
+            try {
+                // Do not silently discard letters, extensions, or excessively long input.
+                if (!\is_string($value) || \strlen($value) > 100 || !preg_match('/^\+?[0-9\s().\/-]+$/D', trim($value))) {
+                    $field->addError(Freeform::t('Invalid phone number'));
+
+                    return;
+                }
+                $phone = PhoneNumberUtil::getInstance();
+                $number = $phone->parse($value, $field->getInitialCountryCode());
+                $country = $phone->getRegionCodeForNumber($number);
+                if (!$phone->isValidNumber($number) || !\in_array($country, $field->getAllowedCountryCodes(), true)) {
+                    $field->addError(Freeform::t('Invalid phone number'));
+
+                    return;
+                }
+                $field->setValue($phone->format($number, PhoneNumberFormat::E164));
+            } catch (NumberParseException $exception) {
+                $field->addError(Freeform::t('Invalid phone number'));
+            }
+
+            return;
+        }
+
+        if (!$value) {
+            return;
+        }
         $pattern = $field->getPattern();
         $message = 'Invalid phone number';
 

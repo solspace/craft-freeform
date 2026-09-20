@@ -122,3 +122,9 @@ export const FIELD_RENDERERS = {
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export {
+  type InternationalPhoneConfig,
+  mountInternationalPhone,
+  phoneValue,
+} from "./phone/international-phone.js";

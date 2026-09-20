@@ -498,3 +498,9 @@
     flex: 1 1 100%;
   }
 }
+
+.ff-form {
+  --ff-phone-background: var(--ff-color-surface);
+  --ff-phone-color: var(--ff-color-text);
+  --ff-phone-border: var(--ff-color-border);
+}

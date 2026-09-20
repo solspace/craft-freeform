@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
@@ -122,6 +123,9 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof PhoneField && $field->isInternational()) {
+            return $field->getInternationalConfig();
+        }
         if ($field instanceof DatetimeField) {
             return [
                 'dateTimeType' => $field->getDateTimeType(),

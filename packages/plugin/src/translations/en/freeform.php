@@ -3124,4 +3124,13 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Subscriber Fields',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Select the Freeform fields to map to MailerLite subscriber fields.',
+
+    // International phone input
+    'Use international phone input' => 'Use international phone input',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.',
+    'Default country' => 'Default country',
+    'Allowed countries' => 'Allowed countries',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.',
+    'Search countries' => 'Search countries',
+    'No countries found' => 'No countries found',
 ];

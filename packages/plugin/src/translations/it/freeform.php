@@ -3124,4 +3124,13 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Campi degli iscritti',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Seleziona i campi Freeform da associare ai campi degli iscritti MailerLite.',
+
+    // International phone input
+    'Use international phone input' => 'Usa il campo telefono internazionale',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Aggiunge un selettore di paesi con ricerca e convalida i numeri internazionali. Sostituisce la convalida del modello quando attivato.',
+    'Default country' => 'Paese predefinito',
+    'Allowed countries' => 'Paesi consentiti',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Codici paese di due lettere separati da virgole, ad esempio US, CA, GB. Lascia vuoto per consentire tutti i paesi.',
+    'Search countries' => 'Cerca paesi',
+    'No countries found' => 'Nessun paese trovato',
 ];

@@ -50,7 +50,7 @@ export const lightPaymentHost = "block min-h-10 w-full";
 export const darkPaymentHost = "block min-h-10 w-full";
 
 export const lightClassNames: FreeformThemeClassNames = {
-  form: "w-full",
+  form: "[--ff-phone-background:#fff] [--ff-phone-color:#1f2937] [--ff-phone-border:#d1d5db] w-full",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-4",
   field: "mb-1 min-w-0 flex-1 basis-0",
@@ -79,7 +79,7 @@ export const lightClassNames: FreeformThemeClassNames = {
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "w-full",
+  form: "[--ff-phone-background:#292a2d] [--ff-phone-color:#f3f4f6] [--ff-phone-border:#4b5563] w-full",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-4",
   field: "mb-1 min-w-0 flex-1 basis-0",

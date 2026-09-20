@@ -3087,4 +3087,10 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
+
+    // Password visibility
+    'Show password visibility toggle' => 'Knop voor wachtwoordzichtbaarheid tonen',
+    'Let visitors show or hide their password while entering it.' => 'Laat bezoekers hun wachtwoord tijdens het invoeren tonen of verbergen.',
+    'Show password' => 'Wachtwoord tonen',
+    'Hide password' => 'Wachtwoord verbergen',
 ];

@@ -3124,4 +3124,10 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Abonnentenfelder',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Wählen Sie die Freeform-Felder aus, die den MailerLite-Abonnentenfeldern zugeordnet werden sollen.',
+
+    // Password visibility
+    'Show password visibility toggle' => 'Passwort-Sichtbarkeit umschalten',
+    'Let visitors show or hide their password while entering it.' => 'Besucher können ihr Passwort während der Eingabe ein- oder ausblenden.',
+    'Show password' => 'Passwort anzeigen',
+    'Hide password' => 'Passwort ausblenden',
 ];

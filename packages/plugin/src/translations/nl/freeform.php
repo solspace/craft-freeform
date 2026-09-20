@@ -3087,4 +3087,10 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
+
+    // Email typo suggestions
+    'Suggest email corrections' => 'E-mailcorrecties voorstellen',
+    'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.' => 'Stel correcties voor veelvoorkomende typefouten in e-maildomeinen voor na het verlaten van het veld. Adressen veranderen alleen als de bezoeker een suggestie accepteert.',
+    'Did you mean {suggestion}?' => 'Bedoelde u {suggestion}?',
+    'Use suggestion' => 'Suggestie gebruiken',
 ];

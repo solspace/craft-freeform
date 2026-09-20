@@ -122,3 +122,9 @@ export const FIELD_RENDERERS = {
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export {
+  type EmailSuggestionLabels,
+  getEmailSuggestion,
+  mountEmailSuggestions,
+} from "./email/suggestions.js";

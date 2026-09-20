@@ -3124,4 +3124,10 @@ return [
     // MailerLite
     'Subscriber Fields' => 'Campi degli iscritti',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Seleziona i campi Freeform da associare ai campi degli iscritti MailerLite.',
+
+    // Email typo suggestions
+    'Suggest email corrections' => 'Suggerisci correzioni email',
+    'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.' => 'Suggerisci correzioni per errori comuni nei domini email dopo aver lasciato il campo. Gli indirizzi cambiano solo quando il visitatore accetta un suggerimento.',
+    'Did you mean {suggestion}?' => 'Intendevi {suggestion}?',
+    'Use suggestion' => 'Usa suggerimento',
 ];

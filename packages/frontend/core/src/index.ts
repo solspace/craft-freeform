@@ -124,7 +124,10 @@ export const FIELD_RENDERERS = {
 } as const;
 
 export {
-  type EmailSuggestionLabels,
   getEmailSuggestion,
   mountEmailSuggestions,
 } from "./email/suggestions.js";
+export type {
+  EmailSuggestionConfig,
+  EmailSuggestionLabels,
+} from "./email/types.js";

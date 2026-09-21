@@ -1,3 +1,5 @@
+import type { EmailSuggestionLabels } from "./types.js";
+
 // Intentionally curated: do not fuzzy-match arbitrary company or regional domains.
 const corrections = new Map<string, string>([
   ["gmial.com", "gmail.com"],
@@ -55,7 +57,6 @@ export function getEmailSuggestion(value: string): string | undefined {
   return replacement ? `${local}@${replacement}` : undefined;
 }
 
-export type EmailSuggestionLabels = { message?: string; action?: string };
 let nextId = 0;
 
 /** Shared DOM behavior for classic forms and the React/Vue built-in renderers. */

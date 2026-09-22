@@ -3125,6 +3125,12 @@ return [
     'Subscriber Fields' => 'Subscriber Fields',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Select the Freeform fields to map to MailerLite subscriber fields.',
 
+    // Password visibility
+    'Show Password Toggle' => 'Show Password Toggle',
+    'Let visitors show or hide their password while entering it.' => 'Let visitors show or hide their password while entering it.',
+    'Show password' => 'Show password',
+    'Hide password' => 'Hide password',
+
     // Email typo suggestions
     'Suggest email corrections' => 'Suggest email corrections',
     'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.' => 'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.',

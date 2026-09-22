@@ -3088,6 +3088,12 @@ return [
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 
+    // Password visibility
+    'Show Password Toggle' => 'Wachtwoordschakelaar tonen',
+    'Let visitors show or hide their password while entering it.' => 'Laat bezoekers hun wachtwoord tijdens het invoeren tonen of verbergen.',
+    'Show password' => 'Wachtwoord tonen',
+    'Hide password' => 'Wachtwoord verbergen',
+
     // Email typo suggestions
     'Suggest email corrections' => 'E-mailcorrecties voorstellen',
     'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.' => 'Stel correcties voor veelvoorkomende typefouten in e-maildomeinen voor na het verlaten van het veld. Adressen veranderen alleen als de bezoeker een suggestie accepteert.',

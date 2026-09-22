@@ -4,3 +4,61 @@ form[data-freeform-multipage] { --ff-character-count-color: #6c757d; --ff-charac
 
 /* Email typo suggestions */
 form[data-freeform-multipage] { --ff-email-suggestion-color: #6c757d; --ff-email-suggestion-action: #0d6efd; }
+
+/* Style generated summary rows, including replacements from live updates. */
+.freeform-form[data-freeform-multipage] [data-freeform-summary] {
+    container-name: freeform-summary;
+    container-type: inline-size;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #cbced0;
+    border-radius: 5px;
+    background: #ffffff;
+    outline: none;
+    box-shadow: none;
+}
+
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.125rem 1.5rem;
+    margin: 0;
+    padding: 0.625rem 1rem;
+}
+
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] + [data-summary-field] {
+    border-top: 1px solid #e9ecef;
+}
+
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] > dt,
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] > dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.375rem;
+    overflow-wrap: anywhere;
+}
+
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] > dt {
+    color: #6c757d;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] > dd {
+    color: #212529;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+@container freeform-summary (min-width: 30rem) {
+    .freeform-form[data-freeform-multipage] [data-freeform-summary] > [data-summary-field] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+}

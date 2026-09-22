@@ -4,3 +4,61 @@ form[data-freeform-grid] { --ff-character-count-color: #6c757d; --ff-character-c
 
 /* Email typo suggestions */
 form[data-freeform-grid] { --ff-email-suggestion-color: #6c757d; --ff-email-suggestion-action: #0d6efd; }
+
+/* Style generated summary rows, including replacements from live updates. */
+.freeform-form[data-freeform-grid] [data-freeform-summary] {
+    container-name: freeform-summary;
+    container-type: inline-size;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: 5px 0 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #dddddd;
+    border-radius: 0;
+    background: transparent;
+    outline: none;
+    box-shadow: none;
+}
+
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.125rem 1.5rem;
+    margin: 0;
+    padding: 0.5em 0.75em;
+}
+
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] + [data-summary-field] {
+    border-top: 1px solid #eeeeee;
+}
+
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] > dt,
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] > dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] > dt {
+    color: inherit;
+    font-size: 0.875em;
+    font-weight: 600;
+}
+
+.freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] > dd {
+    color: inherit;
+    font-size: 1em;
+    font-weight: normal;
+}
+
+@container freeform-summary (min-width: 30rem) {
+    .freeform-form[data-freeform-grid] [data-freeform-summary] > [data-summary-field] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+}

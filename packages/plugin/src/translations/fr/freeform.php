@@ -3121,6 +3121,17 @@ return [
     'Nationality: Zambian' => 'Zambien',
     'Nationality: Zimbabwean' => 'Zimbabwéen',
 
+    // Summary field
+    'Summary' => 'Récapitulatif',
+    'Included Field Handles' => 'Identifiants des champs inclus',
+    'Leave blank to summarize all supported fields before this field, or enter comma-separated field handles. Fields remain in form order.' => 'Laissez ce champ vide pour récapituler tous les champs pris en charge qui précèdent ce champ, ou saisissez des identifiants de champ séparés par des virgules. Les champs conservent l’ordre du formulaire.',
+    'Hide Empty Fields' => 'Masquer les champs vides',
+    'Omit unanswered fields from the summary.' => 'Omettre du récapitulatif les champs sans réponse.',
+    'Not answered' => 'Sans réponse',
+    'Yes' => 'Oui',
+    'No' => 'Non',
+    'A review of answers entered before this field will appear here.' => 'Un récapitulatif des réponses saisies avant ce champ apparaîtra ici.',
+
     // MailerLite
     'Subscriber Fields' => 'Champs des abonnés',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Sélectionnez les champs Freeform à associer aux champs des abonnés MailerLite.',

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
@@ -122,6 +123,10 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof EmailField && $field->isSuggestEmailCorrections()) {
+            return ['suggestEmailCorrections' => true, 'emailSuggestionLabels' => $field->getEmailSuggestionLabels()];
+        }
+
         if ($field instanceof DatetimeField) {
             return [
                 'dateTimeType' => $field->getDateTimeType(),

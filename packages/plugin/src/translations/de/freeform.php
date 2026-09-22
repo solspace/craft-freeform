@@ -3125,6 +3125,12 @@ return [
     'Subscriber Fields' => 'Abonnentenfelder',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Wählen Sie die Freeform-Felder aus, die den MailerLite-Abonnentenfeldern zugeordnet werden sollen.',
 
+    // Email typo suggestions
+    'Suggest email corrections' => 'E-Mail-Korrekturen vorschlagen',
+    'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.' => 'Schlägt nach dem Verlassen des Feldes Korrekturen für häufige Tippfehler in E-Mail-Domains vor. Adressen werden nur geändert, wenn der Besucher einen Vorschlag annimmt.',
+    'Did you mean {suggestion}?' => 'Meinten Sie {suggestion}?',
+    'Use suggestion' => 'Vorschlag übernehmen',
+
     // Additional predefined options (regional names adapted from Unicode CLDR; see RegionalSubdivisions/UNICODE-LICENSE.txt).
     'Regional Subdivisions' => 'Regionale Unterteilungen',
     'Survey Scales' => 'Umfrageskalen',

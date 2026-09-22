@@ -24,6 +24,7 @@ export type FreeformThemeClassNames = {
   instructions?: string;
   characterCount?: string;
   characterCountError?: string;
+  passwordToggle?: string;
   input?: string;
   inputError?: string;
   optionLabel?: string;

@@ -1,0 +1,22 @@
+{
+    "agriculture": "Agriculture, Forestry and Fishing",
+    "arts-entertainment": "Arts and Entertainment",
+    "construction": "Construction",
+    "education": "Education",
+    "energy-utilities": "Energy and Utilities",
+    "finance-insurance": "Finance and Insurance",
+    "government": "Government and Public Administration",
+    "healthcare": "Healthcare and Social Assistance",
+    "hospitality": "Hospitality and Food Services",
+    "information-technology": "Information Technology",
+    "manufacturing": "Manufacturing",
+    "media-communications": "Media and Communications",
+    "mining": "Mining and Extraction",
+    "nonprofit": "Nonprofit and Charitable Organizations",
+    "professional-services": "Professional and Business Services",
+    "real-estate": "Real Estate",
+    "retail": "Retail",
+    "transportation-logistics": "Transportation and Logistics",
+    "wholesale": "Wholesale",
+    "other": "Other"
+}

@@ -505,3 +505,8 @@
 .ff-field__character-count--error {
   color: var(--ff-color-danger);
 }
+
+.ff-form {
+  --ff-email-suggestion-color: var(--ff-color-text-muted);
+  --ff-email-suggestion-action: var(--ff-color-primary);
+}

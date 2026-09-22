@@ -4,3 +4,6 @@ form[data-freeform-tailwind] { --ff-character-count-color: #99a1af; --ff-charact
 
 /* Email typo suggestions */
 form[data-freeform-tailwind] { --ff-email-suggestion-color: #99a1af; --ff-email-suggestion-action: #818cf8; }
+
+/* Show password icon */
+form[data-freeform-tailwind] { --ff-password-toggle-color: #fff; }

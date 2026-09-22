@@ -3088,6 +3088,12 @@ return [
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 
+    // Character counts
+    'Show Character Count' => 'Aantal tekens weergeven',
+    'Display a live character count below the field. If a maximum length is set, show the limit as well.' => 'Toont het huidige aantal tekens onder het veld. Als een maximale lengte is ingesteld, wordt ook de limiet weergegeven.',
+    '{count} characters' => '{count} tekens',
+    '{count} / {limit} characters' => '{count} / {limit} tekens',
+
     // Password visibility
     'Show Password Toggle' => 'Wachtwoordschakelaar tonen',
     'Let visitors show or hide their password while entering it.' => 'Laat bezoekers hun wachtwoord tijdens het invoeren tonen of verbergen.',

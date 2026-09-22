@@ -14,6 +14,8 @@ export const defaultTheme: FreeformReactTheme = {
     fieldHasErrors: "ff-field--has-errors",
     label: "ff-field__label",
     instructions: "ff-field__instructions",
+    characterCount: "ff-field__character-count",
+    characterCountError: "ff-field__character-count--error",
     passwordToggle: "ff-field__password-toggle",
     input: "ff-field__input",
     content: "ff-field__content",

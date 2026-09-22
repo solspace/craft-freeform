@@ -2,6 +2,7 @@ import events from "@lib/plugin/constants/event-types";
 import { SuccessBehavior } from "@lib/plugin/constants/form";
 import BackButtonHandler from "@lib/plugin/handlers/fields/back-button";
 import CardsHandler from "@lib/plugin/handlers/fields/cards";
+import CharacterCountHandler from "@lib/plugin/handlers/fields/character-count";
 import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
 import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
 import EmailSuggestionsHandler from "@lib/plugin/handlers/fields/email-suggestions";
@@ -93,6 +94,7 @@ export default class Freeform {
     DragAndDropHandler,
     SaveFormHandler,
     CardsHandler,
+    CharacterCountHandler,
   ];
 
   _lastButtonPressed?: HTMLButtonElement;

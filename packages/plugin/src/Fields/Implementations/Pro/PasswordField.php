@@ -38,6 +38,8 @@ class PasswordField extends TextField implements NoStorageInterface, ExtraFieldI
 {
     use CharacterVariabilityTrait;
     use MinLengthTrait;
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
 
     #[Input\Boolean(
         label: 'Show Password Toggle',

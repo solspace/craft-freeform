@@ -22,6 +22,8 @@ export type FreeformThemeClassNames = {
   fieldHasErrors?: string;
   label?: string;
   instructions?: string;
+  characterCount?: string;
+  characterCountError?: string;
   passwordToggle?: string;
   input?: string;
   inputError?: string;

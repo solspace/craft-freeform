@@ -124,3 +124,13 @@ export const FIELD_RENDERERS = {
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export {
+  getEmailSuggestion,
+  mountEmailSuggestions,
+} from "./email/suggestions.js";
+export type {
+  EmailSuggestionConfig,
+  EmailSuggestionLabels,
+} from "./email/types.js";
+export { getCharacterCount } from "./utils/character-count.js";

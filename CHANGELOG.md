@@ -5,6 +5,7 @@
 ### Added
 - Added a Pro **Summary field** for reviewing answers before submission, with live updates, conditional visibility, selected field handles, and React/Vue headless support.
 - Formie Summary fields now import as native Freeform Summary fields.
+- Added predefined options for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with German, French, Italian, and Dutch translations.
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
 ## 5.16.0 - 2026-09-17

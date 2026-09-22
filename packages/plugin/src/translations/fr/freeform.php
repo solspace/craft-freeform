@@ -3126,7 +3126,7 @@ return [
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Sélectionnez les champs Freeform à associer aux champs des abonnés MailerLite.',
 
     // Password visibility
-    'Show password visibility toggle' => 'Afficher le bouton de visibilité du mot de passe',
+    'Show Password Toggle' => 'Afficher/masquer le mot de passe',
     'Let visitors show or hide their password while entering it.' => 'Permettre aux visiteurs d’afficher ou de masquer leur mot de passe pendant la saisie.',
     'Show password' => 'Afficher le mot de passe',
     'Hide password' => 'Masquer le mot de passe',

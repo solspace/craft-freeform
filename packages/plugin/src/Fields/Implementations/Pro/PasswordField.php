@@ -40,7 +40,7 @@ class PasswordField extends TextField implements NoStorageInterface, ExtraFieldI
     use MinLengthTrait;
 
     #[Input\Boolean(
-        label: 'Show password visibility toggle',
+        label: 'Show Password Toggle',
         instructions: 'Let visitors show or hide their password while entering it.',
     )]
     protected bool $showPasswordToggle = false;

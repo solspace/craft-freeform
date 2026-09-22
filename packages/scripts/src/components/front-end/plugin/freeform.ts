@@ -4,6 +4,7 @@ import BackButtonHandler from "@lib/plugin/handlers/fields/back-button";
 import CardsHandler from "@lib/plugin/handlers/fields/cards";
 import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
 import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
+import EmailSuggestionsHandler from "@lib/plugin/handlers/fields/email-suggestions";
 import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
 import PasswordToggleHandler from "@lib/plugin/handlers/fields/password-toggle";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
@@ -83,6 +84,7 @@ export default class Freeform {
     RuleHandler,
     DatePickerHandler,
     InputMaskHandler,
+    EmailSuggestionsHandler,
     RatingHandler,
     PasswordToggleHandler,
     SignatureHandler,

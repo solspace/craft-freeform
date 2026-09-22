@@ -3126,7 +3126,7 @@ return [
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Seleziona i campi Freeform da associare ai campi degli iscritti MailerLite.',
 
     // Character counts
-    'Show character count' => 'Mostra il conteggio dei caratteri',
+    'Show Character Count' => 'Mostra il conteggio dei caratteri',
     'Display a live character count below the field. If a maximum length is set, show the limit as well.' => 'Mostra il conteggio dei caratteri in tempo reale sotto il campo. Se è impostata una lunghezza massima, mostra anche il limite.',
     '{count} characters' => '{count} caratteri',
     '{count} / {limit} characters' => '{count} / {limit} caratteri',

@@ -10,7 +10,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 trait CharacterCountTrait
 {
     #[Input\Boolean(
-        label: 'Show character count',
+        label: 'Show Character Count',
         instructions: 'Display a live character count below the field. If a maximum length is set, show the limit as well.',
         order: 51,
     )]

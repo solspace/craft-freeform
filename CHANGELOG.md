@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Added
+- Added an optional **Auto Grow** setting for Textarea fields, with a configurable maximum height before scrolling.
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
 ## 5.16.0 - 2026-09-17

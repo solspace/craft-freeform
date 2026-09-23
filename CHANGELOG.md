@@ -5,6 +5,9 @@
 ### Added
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
+### Fixed
+- Improved **Opinion Scale** fields on control panel submission detail pages with consistent field labels, compact rounded options, and clearer selection and keyboard focus states.
+
 ## 5.16.0 - 2026-09-17
 
 ### Added

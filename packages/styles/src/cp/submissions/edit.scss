@@ -14,9 +14,16 @@ $gutter: 10px;
     border-bottom: none;
   }
 
-  > div {
+  > .fields-column {
     flex: 1 1 0;
+    min-width: 0;
     padding: $spacing $gutter;
+    margin: 0;
+    border: 0;
+
+    > .field {
+      margin: 0;
+    }
   }
 
   @extend .reset-lists;

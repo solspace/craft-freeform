@@ -12,6 +12,7 @@ import RatingHandler from "@lib/plugin/handlers/fields/rating";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
 import SummaryHandler from "@lib/plugin/handlers/fields/summary";
 import TableHandler from "@lib/plugin/handlers/fields/table";
+import TextareaAutoGrowHandler from "@lib/plugin/handlers/fields/textarea-auto-grow";
 import AbTestHandler from "@lib/plugin/handlers/form/ab-test";
 import GoogleTagManager from "@lib/plugin/handlers/form/google-tag-manager";
 import IdempotencyHandler from "@lib/plugin/handlers/form/idempotency";
@@ -95,6 +96,7 @@ export default class Freeform {
     DragAndDropHandler,
     SaveFormHandler,
     CardsHandler,
+    TextareaAutoGrowHandler,
     SummaryHandler,
     CharacterCountHandler,
   ];

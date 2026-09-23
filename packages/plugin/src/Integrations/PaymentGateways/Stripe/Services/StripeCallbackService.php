@@ -185,17 +185,19 @@ class StripeCallbackService
                 );
             }
 
-            $stripe->paymentIntents->update(
-                $paymentIntent->id,
-                [
-                    'description' => $description,
-                    'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
-                    'metadata' => array_merge(
-                        $paymentMetadata,
-                        $submissionMetadata,
-                    ),
-                ]
-            );
+            $paymentIntentData = [
+                'description' => $description,
+                'metadata' => array_merge(
+                    $paymentMetadata,
+                    $submissionMetadata,
+                ),
+            ];
+
+            if ($integration->isSendSuccessMail()) {
+                $paymentIntentData['receipt_email'] = $paymentIntent->customer->email;
+            }
+
+            $stripe->paymentIntents->update($paymentIntent->id, $paymentIntentData);
         }
 
         return true;

@@ -787,11 +787,27 @@ export default class Freeform {
         },
       );
     } catch (error) {
-      if (error?.response?.status === 417) {
+      // HttpError stores the status directly; spreading an XMLHttpRequest into
+      // its response object does not copy the browser's prototype getters.
+      if ((error?.status ?? error?.response?.status) === 417) {
         this.unlockSubmit();
 
         return false;
       }
+
+      this._removeMessages();
+      this._dispatchEvent(events.form.ajaxError, {
+        request: error?.response,
+        response: error?.response?.data ?? error,
+      });
+      this._renderFormErrors([]);
+      this.unlockSubmit();
+
+      if (this.options.autoScroll) {
+        this._scrollToForm();
+      }
+
+      return;
     }
 
     this._removeMessages();

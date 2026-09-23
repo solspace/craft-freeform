@@ -28,6 +28,7 @@ use craft\models\Volume;
 use craft\models\VolumeFolder;
 use craft\web\UploadedFile;
 use GuzzleHttp\Exception\GuzzleException;
+use Solspace\Freeform\Bundles\Fields\Validation\Helpers\FileUploadValidationHelper;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -339,6 +340,20 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         if (is_countable($_FILES[$field->getHandle()]['name'])) {
+            return null;
+        }
+
+        // Upload restrictions must hold even when page or conditional validation is skipped.
+        $file = $_FILES[$field->getHandle()];
+        $validationHelper = new FileUploadValidationHelper($this);
+        $validationHelper->validateFileEntry(
+            $file,
+            $this->getValidExtensions($field),
+            $field->getMaxFileSizeKB(),
+            static fn (string $message) => $field->addError($message),
+        );
+
+        if (!$field->isValid() || \UPLOAD_ERR_OK !== (int) ($file['error'] ?? \UPLOAD_ERR_NO_FILE)) {
             return null;
         }
 

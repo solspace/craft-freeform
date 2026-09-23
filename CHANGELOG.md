@@ -1,14 +1,20 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.16.1 - 2026-09-23
 
 ### Added
 - Added a **MailerLite email marketing integration** with group subscriptions, automatic discovery of standard and custom subscriber fields, and opt-in support.
 
 ### Fixed
-- Improved **Opinion Scale** fields on control panel submission detail pages with consistent field labels, compact rounded options, and clearer selection and keyboard focus states.
-- Fixed uneven column widths and spacing for fields with fieldset containers on control panel submission detail pages.
-- Fixed custom HTML attributes configured in the form builder affecting field appearance and editing on control panel submission detail pages.
+- Improved **Opinion Scale** fields on Control Panel submission detail pages with consistent field labels, compact rounded options, and clearer selection and keyboard focus states.
+- Fixed uneven column widths and spacing for fields using fieldset containers on Control Panel submission detail pages.
+- Fixed an issue where custom HTML attributes configured in the form builder could affect field appearance and editing on Control Panel submission detail pages.
+- Fixed an issue where **Stripe** receipt email updates could still be attempted when receipts were disabled.
+- Updated form submission handling to prioritize Freeform validation errors before displaying **Stripe** error messages.
+- Fixed an issue where the submit state was not properly restored after a failed quick-save request.
+
+### Security
+- Enforced **File Upload (Drag & Drop)** restrictions before files are stored.
 
 ## 5.16.0 - 2026-09-17
 

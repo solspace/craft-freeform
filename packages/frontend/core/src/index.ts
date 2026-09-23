@@ -93,6 +93,7 @@ export * from "./conditionals/operators.js";
 export * from "./extensions/registry.js";
 export * from "./signature/signature.js";
 export * from "./state/form-state.js";
+export * from "./summary/summary.js";
 export * from "./table/table.js";
 export * from "./types/manifest.js";
 export * from "./types/submit.js";
@@ -118,7 +119,18 @@ export const FIELD_RENDERERS = {
   SIGNATURE: "signature",
   TABLE: "table",
   HTML: "html",
+  SUMMARY: "summary",
   BUTTON: "button",
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export {
+  getEmailSuggestion,
+  mountEmailSuggestions,
+} from "./email/suggestions.js";
+export type {
+  EmailSuggestionConfig,
+  EmailSuggestionLabels,
+} from "./email/types.js";
+export { getCharacterCount } from "./utils/character-count.js";

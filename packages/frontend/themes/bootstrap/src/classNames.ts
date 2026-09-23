@@ -40,6 +40,8 @@ export const lightClassNames: FreeformThemeClassNames = {
   fieldHasErrors: "",
   label: "form-label mb-1",
   instructions: "form-text text-muted mt-n1 mb-1",
+  characterCount: "text-body-secondary",
+  characterCountError: "text-danger",
   input: lightTextInput,
   inputError: "is-invalid",
   optionLabel: lightOptionLabel,
@@ -57,7 +59,7 @@ export const lightClassNames: FreeformThemeClassNames = {
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "freeform-form w-100",
+  form: "ff-email-suggestions-dark freeform-form w-100",
   page: "w-100",
   row: "row g-3",
   field: "col mb-3",
@@ -65,6 +67,8 @@ export const darkClassNames: FreeformThemeClassNames = {
   fieldHasErrors: "",
   label: "form-label mb-1 text-white",
   instructions: "form-text text-muted mt-n1 mb-1",
+  characterCount: "text-white-50",
+  characterCountError: "text-danger",
   input: darkTextInput,
   inputError: "is-invalid",
   optionLabel: darkOptionLabel,

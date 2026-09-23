@@ -1,1 +1,64 @@
 .freeform-form button[type=submit].freeform-processing{display:inline-flex;flex-wrap:nowrap;align-items:center;}.freeform-form button[type=submit].freeform-processing:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:freeform-processing .5s linear infinite;}.freeform-form .freeform-fieldtype-table [type=radio]{display:inline;padding:0;margin-right:8px;}.freeform-form .freeform-fieldtype-table [type=radio] + label{display:inline;}@keyframes freeform-processing{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}.freeform-form label.required:after{content:"*";color:#d00;margin-left:3px;}.freeform-form .alert p:last-of-type{margin-bottom:0;}.freeform-form .mt-n1{margin-top:-.5rem!important;}.freeform-form .opinion-scale .opinion-scale-scales>:first-child>label{border-top-left-radius:5px;border-bottom-left-radius:5px;}.freeform-form .opinion-scale .opinion-scale-scales>:last-child>label{border-top-right-radius:5px;border-bottom-right-radius:5px;}.freeform-form .opinion-scale .opinion-scale-scales li label{color:#fff!important;border-color:#495057!important;background:#1a1d20!important;}.freeform-form .opinion-scale .opinion-scale-scales>* input:checked~label{color:#fff!important;background:#495057!important;}
+/* Live character counters */
+form[data-freeform-bootstrap-dark] { --ff-character-count-color: #99a1af; --ff-character-count-error: #ff6467; }
+
+/* Email typo suggestions */
+form[data-freeform-bootstrap-dark] { --ff-email-suggestion-color: #99a1af; --ff-email-suggestion-action: #818cf8; }
+
+/* Style generated summary rows, including replacements from live updates. */
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] {
+    container-name: freeform-summary;
+    container-type: inline-size;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color, #495057);
+    border-radius: var(--bs-border-radius, 0.375rem);
+    background: var(--bs-dark-bg-subtle, #1a1d20);
+    outline: none;
+    box-shadow: none;
+}
+
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.125rem 1.5rem;
+    margin: 0;
+    padding: 0.625rem 1rem;
+}
+
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] + [data-summary-field] {
+    border-top: 1px solid var(--bs-border-color, #495057);
+}
+
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] > dt,
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] > dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.375rem;
+    overflow-wrap: anywhere;
+}
+
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] > dt {
+    color: var(--bs-secondary-color, #adb5bd);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] > dd {
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+@container freeform-summary (min-width: 30rem) {
+    .freeform-form[data-freeform-bootstrap-dark] [data-freeform-summary] > [data-summary-field] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+}

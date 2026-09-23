@@ -57,16 +57,9 @@ export const submitStripe =
 
       event.addCallback(async () => {
         const { error: submitError } = await submitPromise;
-        if (submitError) {
-          event.freeform._renderFormErrors([
-            submitError.message ||
-              "An error occurred while submitting the payment.",
-          ]);
-          event.freeform._scrollToForm();
 
-          return false;
-        }
-
+        // Validate Freeform fields and clear previous messages before displaying
+        // Stripe errors, while keeping elements.submit() in the user gesture.
         const token = await event.freeform.quickSave(secret, id);
 
         if (token === false) {
@@ -74,6 +67,16 @@ export const submitStripe =
         }
 
         if (token === undefined) {
+          return false;
+        }
+
+        if (submitError) {
+          event.freeform._renderFormErrors([
+            submitError.message ||
+              "An error occurred while submitting the payment.",
+          ]);
+          event.freeform._scrollToForm();
+
           return false;
         }
 

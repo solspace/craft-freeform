@@ -1,10 +1,15 @@
-<div class="field">
-    <div class="heading">
-        {{ field.label }}
-    </div>
-    <div class="opinion-scale">
+{% import "_includes/forms" as forms %}
+
+{% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
+{% set errors = submission.errors(field.handle) %}
+{% set input %}
+    <div class="freeform-submission-opinion-scale"
+         role="radiogroup"
+         aria-label="{{ field.label }}"
+         {% if field.required %}aria-required="true"{% endif %}
+         {% if errors %}aria-invalid="true"{% endif %}
+    >
         <ul class="opinion-scale-scales">
-            {% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
             {% for index, scale in field.scales %}
                 <li>
                     <input type="radio"
@@ -20,10 +25,20 @@
                 </li>
             {% endfor %}
         </ul>
-        <ul class="opinion-scale-legends">
-            {% for legend in field.legends %}
-                <li>{{ legend|t("app") }}</li>
-            {% endfor %}
-        </ul>
+        {% if field.legends %}
+            <ul class="opinion-scale-legends">
+                {% for legend in field.legends %}
+                    <li>{{ legend|t("app") }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
-</div>
+{% endset %}
+
+{{ forms.field({
+    label: field.label,
+    instructions: field.instructions,
+    id: field.handle ~ '-0',
+    required: field.required,
+    errors: errors,
+}, input) }}

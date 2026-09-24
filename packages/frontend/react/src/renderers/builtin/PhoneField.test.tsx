@@ -37,6 +37,7 @@ it("writes canonical values to the form while preserving editable text and follo
   }
   const view = render(<Fixture />);
   const input = view.container.querySelector("input")!;
+  expect(input.hasAttribute("autocomplete")).toBe(false);
   fireEvent.input(input, { target: { value: "020 7946 0018" } });
   expect(view.container.querySelector("output")!.textContent).toBe(
     "+442079460018",
@@ -52,11 +53,14 @@ it("writes canonical values to the form while preserving editable text and follo
 it("keeps the existing renderer when opted out and supports switching on", () => {
   const props = {
     field: { uid: "phone", handle: "phone", type: "phone" },
-    input: { value: "555", onChange: () => {} },
+    input: { value: "555", autoComplete: "mobile tel", onChange: () => {} },
     classNames: {},
     form: { setValue: () => {} },
   } as unknown as ReactFieldRendererProps;
   const view = render(<PhoneFieldRenderer {...props} />);
+  expect(
+    view.container.querySelector("input")?.getAttribute("autocomplete"),
+  ).toBe("mobile tel");
   expect(view.container.querySelector("button")).toBeNull();
   view.rerender(
     <PhoneFieldRenderer
@@ -74,4 +78,7 @@ it("keeps the existing renderer when opted out and supports switching on", () =>
     />,
   );
   expect(view.container.querySelector("button")).toBeTruthy();
+  expect(
+    view.container.querySelector("input")?.getAttribute("autocomplete"),
+  ).toBe("mobile tel");
 });

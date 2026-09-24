@@ -278,6 +278,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
         disabled: !isFieldEnabled(handle),
         required: field?.required ?? false,
         placeholder: field?.placeholder ?? undefined,
+        autoComplete: field?.attributes?.input?.autocomplete ?? undefined,
         "aria-invalid": (formState?.fieldErrors[handle]?.length ?? 0) > 0,
       };
     },

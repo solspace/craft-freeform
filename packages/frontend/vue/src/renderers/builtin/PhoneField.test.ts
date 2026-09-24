@@ -29,6 +29,7 @@ it("writes canonical values, follows external updates and cleans up on unmount",
   const app = createApp({ render: () => h(PhoneFieldRenderer, props) });
   app.mount(host);
   const input = host.querySelector("input")!;
+  expect(input.hasAttribute("autocomplete")).toBe(false);
   input.value = "020 7946 0018";
   input.dispatchEvent(new Event("input", { bubbles: true }));
   await nextTick();
@@ -39,6 +40,9 @@ it("writes canonical values, follows external updates and cleans up on unmount",
   props.input.value = "";
   await nextTick();
   expect(input.value).toBe("");
+  Object.assign(props.input, { autoComplete: "mobile tel" });
+  await nextTick();
+  expect(input.getAttribute("autocomplete")).toBe("mobile tel");
   props.input.disabled = true;
   await nextTick();
   await Promise.resolve();

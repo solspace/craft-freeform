@@ -63,7 +63,6 @@ export const PhoneFieldRenderer = defineComponent({
       return (
         <input
           type="tel"
-          autocomplete="tel"
           class={props.classNames.input}
           {...attributes}
           ref={element}

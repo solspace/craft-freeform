@@ -50,13 +50,15 @@ export const lightPaymentHost = "block min-h-10 w-full";
 export const darkPaymentHost = "block min-h-10 w-full";
 
 export const lightClassNames: FreeformThemeClassNames = {
-  form: "w-full",
+  form: "[--ff-email-suggestion-color:#6b7280] [--ff-email-suggestion-action:#6366f1] w-full",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-4",
   field: "mb-1 min-w-0 flex-1 basis-0",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-gray-900",
   instructions: "-mt-0.5 mb-1 text-sm text-gray-500",
+  characterCount: "text-gray-500",
+  characterCountError: "text-red-600",
   input: lightTextInput,
   inputError: "outline-red-600 focus:outline-red-600",
   optionLabel: lightOptionLabel,
@@ -79,13 +81,15 @@ export const lightClassNames: FreeformThemeClassNames = {
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "w-full",
+  form: "[--ff-email-suggestion-color:#9ca3af] [--ff-email-suggestion-action:#818cf8] w-full",
   page: "w-full",
   row: "mb-4 flex flex-wrap gap-x-4",
   field: "mb-1 min-w-0 flex-1 basis-0",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-white",
   instructions: "-mt-0.5 mb-1 text-sm text-gray-400",
+  characterCount: "text-gray-400",
+  characterCountError: "text-red-400",
   input: darkTextInput,
   inputError: "outline-red-500 focus:outline-red-500",
   optionLabel: darkOptionLabel,
@@ -133,6 +137,13 @@ export function lightClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(lightTextInput),
+    range: {
+      input:
+        "block w-full appearance-auto border-0 bg-transparent p-0 accent-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+      inputError:
+        "outline-2 outline-offset-2 outline-red-600 focus-visible:outline-red-600",
+      content: "text-gray-900",
+    },
     dropdown: { input: lightSelectInput },
     select: { input: lightSelectInput },
     "multiple-select": {
@@ -207,6 +218,13 @@ export function darkClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(darkTextInput),
+    range: {
+      input:
+        "block w-full appearance-auto border-0 bg-transparent p-0 accent-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500",
+      inputError:
+        "outline-2 outline-offset-2 outline-red-500 focus-visible:outline-red-500",
+      content: "text-white",
+    },
     dropdown: { input: darkSelectInput },
     select: { input: darkSelectInput },
     "multiple-select": {

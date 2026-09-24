@@ -17,6 +17,7 @@ export function inputProps(props: ReactFieldRendererProps) {
     placeholder?: string | null;
     "aria-invalid"?: boolean;
     "aria-describedby"?: string;
+    maxLength?: number;
   };
 
   return {

@@ -1,0 +1,12 @@
+.freeform-character-count {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  color: var(--ff-character-count-color, inherit);
+}
+
+.freeform-character-count[data-over-limit="true"] {
+  color: var(--ff-character-count-error, #dc3545);
+}

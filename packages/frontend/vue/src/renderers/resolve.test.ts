@@ -2,6 +2,7 @@ import type { ManifestFieldDefinition } from "@solspace/freeform-core";
 import { describe, expect, it } from "vitest";
 import {
   EmailFieldRenderer,
+  SummaryFieldRenderer,
   UnsupportedFieldRenderer,
 } from "./builtin/fields.js";
 import { resolveFieldRenderer } from "./resolve.js";
@@ -20,6 +21,16 @@ describe("resolveFieldRenderer", () => {
   it("resolves built-in type renderer", () => {
     const renderer = resolveFieldRenderer(field);
     expect(renderer).toBe(EmailFieldRenderer);
+  });
+
+  it("resolves Summary without an extension", () => {
+    expect(
+      resolveFieldRenderer({
+        ...field,
+        type: "summary",
+        frontend: { renderer: "summary" },
+      }),
+    ).toBe(SummaryFieldRenderer);
   });
 
   it("prefers user handle override", () => {

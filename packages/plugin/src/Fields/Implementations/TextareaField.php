@@ -18,12 +18,14 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Translatable;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
+use Solspace\Freeform\Fields\Traits\CharacterCountTrait;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
@@ -37,6 +39,7 @@ use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 )]
 class TextareaField extends AbstractField implements PlaceholderInterface, TextInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
+    use CharacterCountTrait;
     use DefaultTextValueTrait;
     use EncryptionTrait;
     use MaxLengthTrait;
@@ -55,6 +58,20 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
     )]
     protected int $rows = 2;
 
+    #[Input\Boolean(
+        label: 'Auto Grow',
+        instructions: 'Automatically adjust the height of this field to fit its contents.',
+    )]
+    protected bool $autoGrow = false;
+
+    #[VisibilityFilter('Boolean(properties.autoGrow)')]
+    #[Input\Integer(
+        label: 'Maximum Height',
+        instructions: 'The maximum height in pixels before scrolling. Leave blank for no limit.',
+        min: 1,
+    )]
+    protected ?int $autoGrowMaxHeight = null;
+
     public function getType(): string
     {
         return self::TYPE_TEXTAREA;
@@ -63,6 +80,16 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
     public function getRows(): ?int
     {
         return $this->rows;
+    }
+
+    public function isAutoGrow(): bool
+    {
+        return $this->autoGrow;
+    }
+
+    public function getAutoGrowMaxHeight(): ?int
+    {
+        return $this->autoGrowMaxHeight > 0 ? $this->autoGrowMaxHeight : null;
     }
 
     public function getInputHtml(): string
@@ -76,6 +103,15 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
             ->setIfEmpty('placeholder', $this->translate('placeholder', $this->getPlaceholder()))
             ->set($this->getRequiredAttribute())
         ;
+
+        if ($this->isAutoGrow()) {
+            $attributes->set('data-freeform-auto-grow', true);
+            if (null !== $this->getAutoGrowMaxHeight()) {
+                $attributes->setIfEmpty('data-freeform-auto-grow-max-height', $this->getAutoGrowMaxHeight());
+            }
+        }
+
+        $this->addCharacterCountAttributes($attributes);
 
         return Html::tag(
             $attributes->getTag('textarea'),

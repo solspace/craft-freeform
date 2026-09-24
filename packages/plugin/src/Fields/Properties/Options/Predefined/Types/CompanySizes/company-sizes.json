@@ -1,0 +1,10 @@
+{
+    "1": "1 employee",
+    "2-10": "2–10 employees",
+    "11-50": "11–50 employees",
+    "51-200": "51–200 employees",
+    "201-500": "201–500 employees",
+    "501-1000": "501–1,000 employees",
+    "1001-5000": "1,001–5,000 employees",
+    "5001-plus": "5,001 or more employees"
+}

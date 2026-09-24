@@ -12,6 +12,7 @@ export function inputProps(props: VueFieldRendererProps) {
     placeholder?: string | null;
     "aria-invalid"?: boolean;
     "aria-describedby"?: string;
+    maxLength?: number;
   };
 
   return {

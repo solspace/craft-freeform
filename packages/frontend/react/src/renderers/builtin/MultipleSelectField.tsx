@@ -1,5 +1,7 @@
+import type { SearchableSelectConfig } from "@solspace/freeform-core";
 import type { ReactFieldRendererProps } from "../../types.js";
 import { inputProps } from "./inputProps.js";
+import { SearchableSelectWrapper } from "./SearchableSelect.js";
 
 export function MultipleSelectFieldRenderer(props: ReactFieldRendererProps) {
   const input = inputProps(props);
@@ -9,14 +11,16 @@ export function MultipleSelectFieldRenderer(props: ReactFieldRendererProps) {
       ? [String(props.value)]
       : [];
 
-  return (
+  const select = (
     <select
       className={props.classNames.input}
       id={input.id}
       name={input.name}
       multiple
+      required={input.required}
       disabled={input.disabled}
       aria-invalid={input["aria-invalid"]}
+      aria-describedby={input["aria-describedby"]}
       value={selected}
       onChange={(event) => {
         const next = Array.from(event.target.selectedOptions).map(
@@ -32,5 +36,15 @@ export function MultipleSelectFieldRenderer(props: ReactFieldRendererProps) {
         </option>
       ))}
     </select>
+  );
+  const config = props.field.frontend?.config?.searchable as
+    | SearchableSelectConfig
+    | undefined;
+  return config?.enabled ? (
+    <SearchableSelectWrapper config={{ ...config, label: props.field.label }}>
+      {select}
+    </SearchableSelectWrapper>
+  ) : (
+    select
   );
 }

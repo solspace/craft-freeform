@@ -60,6 +60,18 @@ const form = useFreeform({
 
 [Getting Started](https://docs.solspace.com/craft/freeform/v5/headless/getting-started/) · [Vue.js](https://docs.solspace.com/craft/freeform/v5/headless/vuejs/) · [React JS](https://docs.solspace.com/craft/freeform/v5/headless/reactjs/) (API parity)
 
+## Searchable dropdowns
+
+Enable **Enable Search** on a Dropdown or Multiple Select field in the Freeform builder. The built-in renderers read `frontend.config.searchable` from the manifest and enhance the native select automatically. Import the shared stylesheet once, alongside your theme:
+
+```ts
+import "@solspace/freeform-core/searchable-select.css";
+```
+
+Typing filters the existing options locally. Arrow keys and Enter select an option; Escape and Tab close the list without changing the selection. Multiple Select shows removable choices. Only option values are submitted, never the search text. Fields without this setting retain their native select.
+
+Custom renderer overrides are responsible for their own search UI. The framework-neutral `SearchableSelect` controller is available from `@solspace/freeform-core` for that purpose.
+
 ## Range Slider
 
 Requires **Freeform Pro**.
@@ -75,7 +87,6 @@ Enable **Show Character Count** on a Text or Textarea field to show its current 
 The manifest exposes `frontend.config.showCharacterCount` and translated `characterCountMessages`; the maximum comes from `validation.maxLength`. React and Vue include the layout and use existing theme assets, with `characterCount` and `characterCountError` class-name overrides. No additional stylesheet import is needed. Counters update with controlled values, including the form API's `reset()` method. They are associated with the input using `aria-describedby` and do not announce every keystroke.
 
 Counts follow native HTML `maxlength` semantics (UTF-16 units, with normalized line endings), so some emoji count as more than one unit. Server-side maximum-length validation uses the same convention. Classic Twig counters initialize with Freeform's JavaScript and update on input, change, reset, and AJAX replacement. Dispatch an `input` or `change` event after setting a value in custom scripts.
-
 
 ## Password visibility
 

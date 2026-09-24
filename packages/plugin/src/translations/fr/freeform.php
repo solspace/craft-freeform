@@ -3140,6 +3140,15 @@ return [
     'Subscriber Fields' => 'Champs des abonnés',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Sélectionnez les champs Freeform à associer aux champs des abonnés MailerLite.',
 
+    // Searchable select fields
+    'Enable Search' => 'Activer la recherche',
+    'Allow users to filter options by typing.' => 'Permet aux utilisateurs de filtrer les options en saisissant du texte.',
+    'Search options...' => 'Rechercher des options...',
+    'No results found.' => 'Aucun résultat trouvé.',
+    'Remove {label}' => 'Supprimer {label}',
+    'Show options' => 'Afficher les options',
+    '{count} results available.' => '{count} résultats disponibles.',
+
     // Range Slider
     'Range Slider' => 'Curseur',
     'Minimum value' => 'Valeur minimale',

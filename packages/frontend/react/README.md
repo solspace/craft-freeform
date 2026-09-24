@@ -228,6 +228,18 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 - Conditional show/hide is client UX only (not a security boundary)
 
+## Searchable dropdowns
+
+Enable **Enable Search** on a Dropdown or Multiple Select field in the Freeform builder. The built-in renderers read `frontend.config.searchable` from the manifest and enhance the native select automatically. Import the shared stylesheet once, alongside your theme:
+
+```ts
+import "@solspace/freeform-core/searchable-select.css";
+```
+
+Typing filters the existing options locally. Arrow keys and Enter select an option; Escape and Tab close the list without changing the selection. Multiple Select shows removable choices. Only option values are submitted, never the search text. Fields without this setting retain their native select.
+
+Custom renderer overrides are responsible for their own search UI. The framework-neutral `SearchableSelect` controller is available from `@solspace/freeform-core` for that purpose.
+
 ## Range Slider
 
 Requires **Freeform Pro**.

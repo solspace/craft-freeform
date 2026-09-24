@@ -134,4 +134,5 @@ export type {
   EmailSuggestionConfig,
   EmailSuggestionLabels,
 } from "./email/types.js";
+export * from "./select/searchable-select.js";
 export { getCharacterCount } from "./utils/character-count.js";

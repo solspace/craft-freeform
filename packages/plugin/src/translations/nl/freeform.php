@@ -3103,6 +3103,15 @@ return [
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 
+    // Searchable select fields
+    'Enable Search' => 'Zoeken inschakelen',
+    'Allow users to filter options by typing.' => 'Laat gebruikers opties filteren door te typen.',
+    'Search options...' => 'Opties zoeken...',
+    'No results found.' => 'Geen resultaten gevonden.',
+    'Remove {label}' => '{label} verwijderen',
+    'Show options' => 'Opties tonen',
+    '{count} results available.' => '{count} resultaten beschikbaar.',
+
     // Range Slider
     'Range Slider' => 'Schuifregelaar',
     'Minimum value' => 'Minimumwaarde',

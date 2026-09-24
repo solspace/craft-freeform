@@ -11,12 +11,14 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./searchable-select.css": "./src/select/searchable-select.css"
   },
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "src/select/searchable-select.css"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -25,6 +27,7 @@
     "lint": "biome check"
   },
   "devDependencies": {
+    "jsdom": "29.1.1",
     "typescript": "^5.8.3",
     "vitest": "4.1.11"
   },

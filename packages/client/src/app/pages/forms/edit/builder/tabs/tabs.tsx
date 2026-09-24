@@ -22,12 +22,13 @@ import type React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
-
+import { HistoryArrow } from "./history-arrow";
 import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
 import {
   FormName,
   Heading,
   HistoryButton,
+  HistoryControls,
   SaveButton,
   SaveButtonWrapper,
   SubmissionsShortcut,
@@ -188,24 +189,26 @@ export const Tabs: React.FC = () => {
       )}
 
       <SaveButtonWrapper>
-        <HistoryButton
-          type="button"
-          onClick={() => dispatch(historyActions.undo())}
-          disabled={!undoCount || state === State.Processing || hasOpenModals}
-          title={translate("Undo")}
-          aria-label={translate("Undo")}
-        >
-          ↶
-        </HistoryButton>
-        <HistoryButton
-          type="button"
-          onClick={() => dispatch(historyActions.redo())}
-          disabled={!redoCount || state === State.Processing || hasOpenModals}
-          title={translate("Redo")}
-          aria-label={translate("Redo")}
-        >
-          ↷
-        </HistoryButton>
+        <HistoryControls>
+          <HistoryButton
+            type="button"
+            onClick={() => dispatch(historyActions.undo())}
+            disabled={!undoCount || state === State.Processing || hasOpenModals}
+            title={translate("Undo")}
+            aria-label={translate("Undo")}
+          >
+            <HistoryArrow direction="undo" />
+          </HistoryButton>
+          <HistoryButton
+            type="button"
+            onClick={() => dispatch(historyActions.redo())}
+            disabled={!redoCount || state === State.Processing || hasOpenModals}
+            title={translate("Redo")}
+            aria-label={translate("Redo")}
+          >
+            <HistoryArrow direction="redo" />
+          </HistoryButton>
+        </HistoryControls>
         <SaveButton
           type="button"
           onClick={triggerSave}

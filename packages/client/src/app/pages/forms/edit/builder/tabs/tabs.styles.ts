@@ -97,20 +97,38 @@ export const SaveButtonWrapper = styled.div`
 
 export const SaveButton = styled.button``;
 
-export const HistoryButton = styled.button`
-  width: 30px;
-  height: 30px;
-  padding: 0;
+export const HistoryControls = styled.div`
+  display: flex;
+  align-items: center;
+  overflow: hidden;
   border: 1px solid ${colors.gray300};
   border-radius: ${borderRadius.md};
   background: ${colors.white};
+`;
+
+export const HistoryButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: ${colors.gray700};
-  font-size: 23px;
-  line-height: 1;
   cursor: pointer;
+
+  & + & {
+    border-left: 1px solid ${colors.gray300};
+  }
 
   &:hover:not(:disabled) {
     background: ${colors.gray050};
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
   }
 
   &:disabled {

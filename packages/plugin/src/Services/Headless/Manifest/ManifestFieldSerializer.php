@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
@@ -13,12 +14,16 @@ use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
@@ -125,6 +130,25 @@ class ManifestFieldSerializer
     {
         if ($field instanceof RangeField) {
             return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
+        if ($field instanceof SummaryField) {
+            return $field->getSummaryConfig();
+        }
+
+        if (($field instanceof TextField || $field instanceof TextareaField) && $field->isShowCharacterCount()) {
+            return [
+                'showCharacterCount' => true,
+                'characterCountMessages' => $field->getCharacterCountMessages(),
+            ];
+        }
+
+        if ($field instanceof PasswordField && $field->isShowPasswordToggle()) {
+            return ['showPasswordToggle' => true, 'passwordToggleLabels' => $field->getPasswordToggleLabels()];
+        }
+
+        if ($field instanceof EmailField && $field->isSuggestEmailCorrections()) {
+            return ['suggestEmailCorrections' => true, 'emailSuggestionLabels' => $field->getEmailSuggestionLabels()];
         }
 
         if ($field instanceof DatetimeField) {

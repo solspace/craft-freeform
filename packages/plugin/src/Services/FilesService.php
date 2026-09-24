@@ -23,19 +23,21 @@ use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\Db;
 use craft\helpers\FileHelper;
-use craft\helpers\UrlHelper;
 use craft\models\Volume;
 use craft\models\VolumeFolder;
 use craft\web\UploadedFile;
 use GuzzleHttp\Exception\GuzzleException;
+use Solspace\Freeform\Bundles\Fields\Validation\Helpers\FileUploadValidationHelper;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
+use Solspace\Freeform\Library\Security\RemoteFileDownloader;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\ErrorException;
 use yii\base\Exception;
@@ -184,25 +186,23 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
     public function uploadGraphQL(FileUploadField $field, Form $form): ?FileUploadResponse
     {
         $errors = [];
-
         $uploadedAssetIds = [];
 
         $handle = $field->getHandle();
-
         $arguments = $form->getGraphQLArguments();
-
         if (!$arguments || !isset($arguments[$handle])) {
             return null;
         }
 
         $beforeUploadEvent = new UploadEvent($field);
         $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);
-
         if (!$beforeUploadEvent->isValid) {
             return null;
         }
 
         $folder = $this->getFileUploadFolder($form, $field);
+        $validExtensions = array_map('strtolower', $this->getValidExtensions($field));
+        $remoteFileDownloader = new RemoteFileDownloader();
 
         foreach ($arguments[$handle] as $fileUpload) {
             $asset = null;
@@ -210,31 +210,58 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             $filename = null;
             $tempPath = null;
 
-            if (!empty($fileUpload['fileData'])) {
-                $filename = Assets::prepareAssetName($fileUpload['filename']);
-                $extension = pathinfo($filename, \PATHINFO_EXTENSION);
+            try {
+                if (!empty($fileUpload['fileData'])) {
+                    if (empty($fileUpload['filename'])) {
+                        throw new \InvalidArgumentException(Freeform::t('Invalid file data provided'));
+                    }
 
-                $tempPath = $this->moveToBase64FileTempFolder($fileUpload, $extension);
-            } elseif (!empty($fileUpload['url'])) {
-                $url = $fileUpload['url'];
+                    $sourceFilename = $fileUpload['filename'];
+                } elseif (!empty($fileUpload['url'])) {
+                    $url = $fileUpload['url'];
 
-                if (empty($fileUpload['filename'])) {
-                    $filename = AssetsHelper::prepareAssetName(pathinfo(UrlHelper::stripQueryString($url), \PATHINFO_BASENAME));
+                    if (empty($fileUpload['filename'])) {
+                        $path = parse_url($url, \PHP_URL_PATH);
+                        $sourceFilename = pathinfo((string) $path, \PATHINFO_BASENAME);
+                    } else {
+                        $sourceFilename = $fileUpload['filename'];
+                    }
                 } else {
-                    $filename = AssetsHelper::prepareAssetName($fileUpload['filename']);
+                    continue;
                 }
 
+                $extension = pathinfo($sourceFilename, \PATHINFO_EXTENSION);
+                if (!\in_array(strtolower($extension), $validExtensions, true)) {
+                    throw new \InvalidArgumentException(
+                        Freeform::t(
+                            "'{extension}' is not an allowed file extension",
+                            ['extension' => $extension]
+                        )
+                    );
+                }
+
+                $filename = Assets::prepareAssetName($sourceFilename);
                 $extension = pathinfo($filename, \PATHINFO_EXTENSION);
+                if (!\in_array(strtolower($extension), $validExtensions, true)) {
+                    throw new \InvalidArgumentException(
+                        Freeform::t(
+                            "'{extension}' is not an allowed file extension",
+                            ['extension' => $extension]
+                        )
+                    );
+                }
 
-                // Download the file
-                $tempPath = AssetsHelper::tempFilePath($extension);
+                if (!empty($fileUpload['fileData'])) {
+                    $tempPath = $this->moveToBase64FileTempFolder($fileUpload, $extension);
+                } else {
+                    $tempPath = AssetsHelper::tempFilePath($extension);
+                    $remoteFileDownloader->download(
+                        $url,
+                        $tempPath,
+                        $field->getMaxFileSizeBytes(),
+                    );
+                }
 
-                \Craft::createGuzzleClient()->request('GET', $url, [
-                    'sink' => $tempPath,
-                ]);
-            }
-
-            try {
                 $asset = new Asset();
                 $asset->kind = AssetsHelper::getFileKindByExtension($filename);
                 $asset->tempFilePath = $tempPath;
@@ -246,8 +273,12 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 $asset->uploaderId = \Craft::$app->getUser()->getId();
 
                 $response = \Craft::$app->getElements()->saveElement($asset);
-            } catch (Exception|\Throwable $e) {
+            } catch (\Throwable $e) {
                 $errors[] = $e->getMessage();
+
+                if ($tempPath && is_file($tempPath)) {
+                    @unlink($tempPath);
+                }
             }
 
             if ($response) {
@@ -339,6 +370,20 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         if (is_countable($_FILES[$field->getHandle()]['name'])) {
+            return null;
+        }
+
+        // Upload restrictions must hold even when page or conditional validation is skipped.
+        $file = $_FILES[$field->getHandle()];
+        $validationHelper = new FileUploadValidationHelper($this);
+        $validationHelper->validateFileEntry(
+            $file,
+            $this->getValidExtensions($field),
+            $field->getMaxFileSizeKB(),
+            static fn (string $message) => $field->addError($message),
+        );
+
+        if (!$field->isValid() || \UPLOAD_ERR_OK !== (int) ($file['error'] ?? \UPLOAD_ERR_NO_FILE)) {
             return null;
         }
 

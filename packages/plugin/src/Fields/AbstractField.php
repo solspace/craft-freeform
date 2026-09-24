@@ -453,9 +453,15 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
 
     public function getAttributes(): FieldAttributesCollection
     {
+        // CP submission rendering still needs compiled runtime attributes, but
+        // should not inherit the builder's custom frontend HTML attributes.
+        $attributes = false === $this->parameters->useCustomAttributes
+            ? new FieldAttributesCollection()
+            : $this->attributes->clone();
+
         $event = new CompileFieldAttributesEvent(
             $this,
-            $this->attributes->clone(),
+            $attributes,
             FieldAttributesCollection::class
         );
 

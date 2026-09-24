@@ -191,6 +191,7 @@ class SummaryService extends Component
         $fields->invisible = $this->usesField('invisible', $fieldTypes);
         $fields->html = $this->usesField('html', $fieldTypes);
         $fields->richText = $this->usesField('rich-text', $fieldTypes);
+        $fields->summary = $this->usesField('summary', $fieldTypes);
         $fields->confirm = $this->usesField('confirm', $fieldTypes);
         $fields->password = $this->usesField('password', $fieldTypes);
         $fields->usingSource = $composer->usingSource;

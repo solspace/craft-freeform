@@ -8,6 +8,11 @@
 - Formie Summary fields now import as native Freeform Summary fields.
 - Added predefined options for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with German, French, Italian, and Dutch translations.
 
+## 5.16.2 - 2026-09-24
+
+### Security
+- Fixed a security issue in GraphQL file uploads by URL that could allow requests to internal network addresses and bypass a field's allowed file extensions. Remote downloads now validate destinations, reject redirects, and enforce the file size limit.
+
 ## 5.16.1 - 2026-09-23
 
 ### Added

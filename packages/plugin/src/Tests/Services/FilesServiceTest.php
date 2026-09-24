@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Events\Files\UploadEvent;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
@@ -110,5 +111,36 @@ class FilesServiceTest extends TestCase
 
             yield $context.' rejects a failed upload' => ['image.png', 512, \UPLOAD_ERR_PARTIAL, $navigateBack, false, null];
         }
+    }
+
+    public function testGraphQlUrlUploadRejectsDisallowedExtensionBeforeDownload(): void
+    {
+        $form = $this->createMock(Form::class);
+        $form->method('getGraphQLArguments')->willReturn([
+            'attachment' => [[
+                'filename' => 'shell.php',
+                'url' => 'https://public.example/image.png',
+            ]],
+        ]);
+
+        $field = $this->getMockBuilder(FileUploadField::class)
+            ->setConstructorArgs([$form])
+            ->onlyMethods(['getHandle'])
+            ->getMock()
+        ;
+        $field->method('getHandle')->willReturn('attachment');
+
+        $service = $this->getMockBuilder(FilesService::class)
+            ->onlyMethods(['getValidExtensions', 'getFileUploadFolder'])
+            ->getMock()
+        ;
+        $service->method('getValidExtensions')->willReturn(['png']);
+        $service->method('getFileUploadFolder')->willReturn(null);
+
+        $response = $service->uploadGraphQL($field, $form);
+
+        self::assertNotNull($response);
+        self::assertSame([], $response->getAssetIds());
+        self::assertStringContainsString('not an allowed file extension', implode(' ', $response->getErrors()));
     }
 }

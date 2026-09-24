@@ -65,6 +65,18 @@ Documentation and support for Freeform are available through [Solspace](https://
 
 - Conditional show/hide is client UX only (not a security boundary)
 
+## Range Slider
+
+Requires **Freeform Pro**.
+
+Freeform's **Range Slider** field stores a single numeric value. Configure its minimum (default `0`), maximum (`100`), step (`1`), and optional default value in the builder. Decimal steps and negative bounds are supported. A blank default starts at the minimum; configured defaults are clamped to the bounds and aligned to the nearest step, with ties rounded upward.
+
+The manifest uses the `range` renderer and `frontend.config` containing `min`, `max`, and `step`. Its `defaultValue` contains the normalized starting value. The built-in React and Vue adapters render a native range input with a current-value display and bound labels. Layout is built into the renderers, and appearance comes from the existing Default, Bootstrap, or Tailwind theme assets; no separate range stylesheet is needed. Classic Twig forms use the bundled Freeform script and stylesheet automatically.
+
+A slider always has a value. Required validation rejects a missing submission but does not require visitors to move the thumb. Submitted values are validated on the server for numeric content, bounds, and step alignment without silently clamping them. Zero is a valid value. Invalid configuration falls back to a step of `1`; a maximum below the minimum produces a fixed-value slider at the minimum.
+
+For precise edits, the submission control panel uses a numeric input. Slider values are available to conditional Rules, calculations, integrations, exports, and survey results through the usual field interfaces. In custom scripts, dispatch an `input` or `change` event after assigning the range input's value so its visible output stays synchronized.
+
 ## Character counts
 
 Enable **Show Character Count** on a Text or Textarea field to show its current length. When a maximum length is configured, the counter also displays the limit (for example, `120 / 500 characters`). Without a maximum, it shows the count alone. The option is off by default.

@@ -24,6 +24,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
@@ -79,6 +80,7 @@ class FieldsBundle extends FeatureBundle
             RegexField::class,
             WebsiteField::class,
             OpinionScaleField::class,
+            RangeField::class,
             SignatureField::class,
             TableField::class,
             InvisibleField::class,

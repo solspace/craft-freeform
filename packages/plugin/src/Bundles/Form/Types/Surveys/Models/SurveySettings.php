@@ -10,6 +10,7 @@ use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
@@ -39,6 +40,7 @@ class SurveySettings extends Model
         TextareaField::class => self::CHART_TEXT,
         EmailField::class => self::CHART_TEXT,
         NumberField::class => self::CHART_TEXT,
+        RangeField::class => self::CHART_TEXT,
         PhoneField::class => self::CHART_TEXT,
         RegexField::class => self::CHART_TEXT,
         WebsiteField::class => self::CHART_TEXT,

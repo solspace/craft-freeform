@@ -7,6 +7,7 @@
 - Added a Pro **Summary field** for reviewing answers before submission, with live updates, conditional visibility, selected field handles, and React/Vue headless support.
 - Formie Summary fields now import as native Freeform Summary fields.
 - Added predefined options for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with German, French, Italian, and Dutch translations.
+- Added a **Range Slider** field with configurable bounds, decimal steps, a default value, live value display, and Twig, React, and Vue support.
 
 ## 5.16.2 - 2026-09-24
 

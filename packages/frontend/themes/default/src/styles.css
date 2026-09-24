@@ -168,7 +168,7 @@
 .ff-field
   input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(
     [type="hidden"]
-  ),
+  ):not([type="range"]),
 .ff-field textarea,
 .ff-field select {
   display: block;
@@ -191,6 +191,27 @@
 .ff-field select:focus {
   outline: 0;
   border-color: var(--ff-color-border-focus);
+}
+
+/* Range layout is provided by the renderer; appearance follows the theme. */
+.ff-range input.ff-range-input[type="range"] {
+  appearance: auto;
+  accent-color: var(--ff-range-accent, var(--ff-color-primary));
+  resize: none;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ff-range input.ff-range-input:focus-visible {
+  outline: 2px solid var(--ff-range-accent, var(--ff-color-primary));
+  outline-offset: 3px;
+}
+
+.ff-range input.ff-range-input[aria-invalid="true"] {
+  outline: 2px solid var(--ff-color-danger);
+  outline-offset: 3px;
 }
 
 .ff-field input::placeholder,

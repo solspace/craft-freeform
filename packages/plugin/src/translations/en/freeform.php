@@ -3140,6 +3140,16 @@ return [
     'Subscriber Fields' => 'Subscriber Fields',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Select the Freeform fields to map to MailerLite subscriber fields.',
 
+    // Range Slider
+    'Range Slider' => 'Range Slider',
+    'Minimum value' => 'Minimum value',
+    'Maximum value' => 'Maximum value',
+    'The lowest value available on the slider.' => 'The lowest value available on the slider.',
+    'The highest value available on the slider.' => 'The highest value available on the slider.',
+    'The increment between slider values. Must be greater than zero.' => 'The increment between slider values. Must be greater than zero.',
+    'Leave blank to start at the minimum. Values are aligned to the nearest available step.' => 'Leave blank to start at the minimum. Values are aligned to the nearest available step.',
+    'Choose a slider value in increments of {{step}} from {{min}}.' => 'Choose a slider value in increments of {{step}} from {{min}}.',
+
     // Character counts
     'Show Character Count' => 'Show Character Count',
     'Display a live character count below the field. If a maximum length is set, show the limit as well.' => 'Display a live character count below the field. If a maximum length is set, show the limit as well.',

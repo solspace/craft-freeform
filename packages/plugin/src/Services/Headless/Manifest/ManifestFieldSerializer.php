@@ -15,6 +15,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
@@ -127,6 +128,10 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof RangeField) {
+            return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
         if ($field instanceof SummaryField) {
             return $field->getSummaryConfig();
         }

@@ -25,6 +25,9 @@ class SummaryFormatterTest extends TestCase
     {
         $formatter = new SummaryFormatter();
         self::assertSame('0', $formatter->formatValue(['type' => 'number'], 0, self::CONFIG));
+        self::assertTrue(SummaryFormatter::supports('range'));
+        self::assertSame('0', $formatter->formatValue(['type' => 'range'], 0, self::CONFIG));
+        self::assertSame('2.5', $formatter->formatValue(['type' => 'range'], 2.5, self::CONFIG));
         self::assertSame('', $formatter->formatValue(['type' => 'text'], null, self::CONFIG));
         self::assertSame('', $formatter->formatValue(['type' => 'checkbox'], false, self::CONFIG));
         self::assertSame('No', $formatter->formatValue(['type' => 'checkbox'], false, array_replace(self::CONFIG, ['hideEmpty' => false])));
@@ -104,12 +107,13 @@ class SummaryFormatterTest extends TestCase
         (new \ReflectionProperty($summary, 'handle'))->setValue($summary, 'review');
         $first = $this->field('first');
         $second = $this->field('second');
-        foreach ([$first, $this->field('secret', 'password'), $second, $this->field('hiddenCalc', 'calculation', false), $summary, $this->field('later')] as $field) {
+        $slider = $this->field('slider', 'range');
+        foreach ([$first, $this->field('secret', 'password'), $second, $slider, $this->field('hiddenCalc', 'calculation', false), $summary, $this->field('later')] as $field) {
             $layout->getFields()->add($field);
         }
-        self::assertSame([$first, $second], $summary->getSourceFields());
-        (new \ReflectionProperty($summary, 'includedFields'))->setValue($summary, 'second, secret, hiddenCalc, later, missing');
-        self::assertSame([$second], $summary->getSourceFields());
+        self::assertSame([$first, $second, $slider], $summary->getSourceFields());
+        (new \ReflectionProperty($summary, 'includedFields'))->setValue($summary, 'second, slider, secret, hiddenCalc, later, missing');
+        self::assertSame([$second, $slider], $summary->getSourceFields());
         self::assertFalse($summary->canStoreValues());
         self::assertFalse($summary->includeInGqlSchema());
         self::assertFalse($summary->isRequired());

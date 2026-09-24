@@ -101,29 +101,32 @@ export const HistoryControls = styled.div`
   display: flex;
   align-items: center;
   overflow: hidden;
-  border: 1px solid ${colors.gray300};
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
+  background: #c4cfe1;
 `;
 
 export const HistoryButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
+  width: 39px;
   height: 34px;
   padding: 0;
   border: 0;
-  background: transparent;
-  color: ${colors.gray700};
+  background: #c4cfe1;
+  color: #5a6875;
   cursor: pointer;
 
   & + & {
-    border-left: 1px solid ${colors.gray300};
+    border-left: 1px solid #e3ecfb;
   }
 
   &:hover:not(:disabled) {
-    background: ${colors.gray050};
+    background: #b5c4d8;
+  }
+
+  &:active:not(:disabled) {
+    background: #a6b4c9;
   }
 
   &:focus-visible {
@@ -132,7 +135,8 @@ export const HistoryButton = styled.button`
   }
 
   &:disabled {
-    opacity: 0.4;
+    background: #d5dfeb;
+    color: #a0aab4;
     cursor: default;
   }
 `;

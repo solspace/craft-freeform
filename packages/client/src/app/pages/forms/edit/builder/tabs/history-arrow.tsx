@@ -6,7 +6,7 @@ type Props = {
 };
 
 export const HistoryArrow: React.FC<Props> = ({ direction }) => (
-  <SvgTag viewBox="0 0 96 80" width="27" height="24">
+  <SvgTag viewBox="0 0 96 80" width="18" height="16">
     <g
       transform={
         direction === "redo" ? "translate(96 0) scale(-1 1)" : undefined

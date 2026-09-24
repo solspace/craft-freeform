@@ -213,17 +213,22 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         }
 
         $fieldList = [];
+        $fields = $json->result->customField ?? [];
 
-        foreach ($json->result->customField as $field) {
+        if (\is_object($fields)) {
+            $fields = [$fields];
+        }
+
+        foreach ($fields as $field) {
             if (\is_array($field)) {
                 $field = (object) $field;
             }
 
-            if (!\is_object($field) || !isset($field->type)) {
+            if (!\is_object($field) || !isset($field->type, $field->field_id, $field->name)) {
                 continue;
             }
 
-            $type = match ($field->data_type) {
+            $type = match ($field->type) {
                 'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
                 'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
                 'Number' => FieldObject::TYPE_NUMERIC,

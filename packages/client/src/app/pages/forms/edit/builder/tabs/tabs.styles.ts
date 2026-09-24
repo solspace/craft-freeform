@@ -97,6 +97,28 @@ export const SaveButtonWrapper = styled.div`
 
 export const SaveButton = styled.button``;
 
+export const HistoryButton = styled.button`
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid ${colors.gray300};
+  border-radius: ${borderRadius.md};
+  background: ${colors.white};
+  color: ${colors.gray700};
+  font-size: 23px;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: ${colors.gray050};
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+`;
+
 export const SubmissionsShortcut = styled.a`
   display: inline-flex;
   align-items: center;

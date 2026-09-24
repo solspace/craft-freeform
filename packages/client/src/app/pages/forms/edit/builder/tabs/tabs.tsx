@@ -2,8 +2,9 @@ import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import { useModal } from "@components/modals/modal.context";
 import config, { Edition } from "@config/freeform/freeform.config";
-import { useAppDispatch } from "@editor/store";
+import { useAppDispatch, useAppSelector } from "@editor/store";
 import { save } from "@editor/store/actions/form";
+import { historyActions } from "@editor/store/history";
 import { State } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
@@ -18,6 +19,7 @@ import { hasErrors } from "@ff-client/utils/errors";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
 import type React from "react";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -25,6 +27,7 @@ import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
 import {
   FormName,
   Heading,
+  HistoryButton,
   SaveButton,
   SaveButtonWrapper,
   SubmissionsShortcut,
@@ -37,7 +40,8 @@ export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
   const state = useSelector(contextSelectors.state);
-  const { openModal } = useModal();
+  const { openModal, hasOpenModals } = useModal();
+  const { undoCount, redoCount } = useAppSelector((state) => state.history);
 
   const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(fieldSelectors.hasErrors);
@@ -56,6 +60,38 @@ export const Tabs: React.FC = () => {
 
   const triggerSave = (): void => void dispatch(save());
   useSaveShortcut(triggerSave);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (
+        hasOpenModals ||
+        state === State.Processing ||
+        !(event.metaKey || event.ctrlKey) ||
+        event.altKey
+      )
+        return;
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.closest(
+          "input, textarea, select, [contenteditable], [role='textbox']",
+        )
+      )
+        return;
+
+      const key = event.key.toLowerCase();
+      const redo =
+        (key === "z" && event.shiftKey) || (key === "y" && !event.shiftKey);
+      const undo = key === "z" && !event.shiftKey;
+      if (!(redo || undo)) return;
+      if (redo ? !redoCount : !undoCount) return;
+
+      event.preventDefault();
+      dispatch(redo ? historyActions.redo() : historyActions.undo());
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [dispatch, hasOpenModals, state, undoCount, redoCount]);
 
   const storeDataEnabled = form.settings?.general?.storeData !== false;
   const canManageSubmissions = Boolean(form.canManageSubmissions);
@@ -152,6 +188,24 @@ export const Tabs: React.FC = () => {
       )}
 
       <SaveButtonWrapper>
+        <HistoryButton
+          type="button"
+          onClick={() => dispatch(historyActions.undo())}
+          disabled={!undoCount || state === State.Processing || hasOpenModals}
+          title={translate("Undo")}
+          aria-label={translate("Undo")}
+        >
+          ↶
+        </HistoryButton>
+        <HistoryButton
+          type="button"
+          onClick={() => dispatch(historyActions.redo())}
+          disabled={!redoCount || state === State.Processing || hasOpenModals}
+          title={translate("Redo")}
+          aria-label={translate("Redo")}
+        >
+          ↷
+        </HistoryButton>
         <SaveButton
           type="button"
           onClick={triggerSave}

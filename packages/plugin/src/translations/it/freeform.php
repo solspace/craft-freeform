@@ -50,6 +50,8 @@ return [
     'Saving' => 'Salvataggio',
     'Deleting' => 'Eliminazione',
     'Save' => 'Salva',
+    'Undo' => 'Annulla',
+    'Redo' => 'Ripristina',
     'Close' => 'Chiudi',
     'Enabled' => 'Abilitato',
     'empty' => 'vuoto',

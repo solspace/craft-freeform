@@ -5,6 +5,7 @@ import type { AxiosResponse } from "axios";
 import axios from "axios";
 import type { Middleware } from "redux";
 import { save } from "../actions/form";
+import { historyActions } from "../history";
 import { contextActions, State } from "../slices/context";
 import PubSub from "./pubsub";
 
@@ -70,6 +71,7 @@ const publishCreated = (
   } as CreateData);
 
   dispatch(contextActions.setState(State.Idle));
+  dispatch(historyActions.clear());
 };
 
 const publishUpdated = (
@@ -89,6 +91,7 @@ const publishUpdated = (
   } as CreateData);
 
   dispatch(contextActions.setState(State.Idle));
+  dispatch(historyActions.clear());
 };
 
 export const statePersistMiddleware: Middleware =

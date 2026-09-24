@@ -34,6 +34,25 @@ afterEach(() => {
 });
 
 describe("searchable select", () => {
+  it("uses the visible outline for borderless Tailwind selects and preserves real borders", () => {
+    const { control, select } = setup();
+    select.style.color = "white";
+    select.style.border = "0 solid white";
+    select.style.outlineColor = "rgba(255, 255, 255, 0.1)";
+    select.style.outlineWidth = "1px";
+    select.style.outlineStyle = "solid";
+    control.sync();
+    expect(
+      control.element.style.getPropertyValue("--ff-searchable-border"),
+    ).toBe("rgba(255, 255, 255, 0.1)");
+
+    select.style.border = "1px solid rgb(113, 113, 122)";
+    control.sync();
+    expect(
+      control.element.style.getPropertyValue("--ff-searchable-border"),
+    ).toBe("rgb(113, 113, 122)");
+  });
+
   it("filters accents, selects with keys, and submits only the native value", () => {
     const { input, select, form } = setup();
     const change = vi.fn();

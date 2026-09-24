@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details, addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
 - Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.
 - Added a Pro **Summary** field that gives visitors a live review of answers from earlier fields before submitting. It can include all supported fields or selected field handles, hide unanswered fields, and respect conditional field visibility. Option labels and file counts are displayed in a readable format, with support for standard forms and the React and Vue headless renderers.

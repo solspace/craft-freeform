@@ -91,6 +91,15 @@ class ManifestFieldSerializer
             ],
         ];
 
+        if (method_exists($field, 'getBrowserAutofill')) {
+            // Match standard rendering: a custom input attribute takes precedence.
+            $custom = $field->getAttributes()->getInput()->get('autocomplete');
+            $autofill = $custom ?? $field->getBrowserAutofill();
+            if (\is_string($autofill) && '' !== $autofill) {
+                $data['attributes']['input'] = ['autocomplete' => $autofill];
+            }
+        }
+
         if ($field instanceof OptionsInterface) {
             $data['options'] = $this->serializeOptions($field);
         }

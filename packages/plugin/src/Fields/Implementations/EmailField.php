@@ -23,6 +23,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Fields\Traits\BrowserAutofillTrait;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
@@ -39,6 +40,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 )]
 class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
+    use BrowserAutofillTrait;
     use DefaultTextValueTrait;
     use EncryptionTrait;
     use MaxLengthTrait;
@@ -83,6 +85,8 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
             ->setIfEmpty('value', $this->getValue())
             ->set($this->getRequiredAttribute())
         ;
+
+        $this->addBrowserAutofillAttribute($attributes);
 
         if ($this->suggestEmailCorrections) {
             $labels = $this->getEmailSuggestionLabels();

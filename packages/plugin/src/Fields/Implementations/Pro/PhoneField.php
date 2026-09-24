@@ -151,10 +151,12 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
                 ->replace('data-freeform-phone', json_encode($this->getInternationalConfig(), \JSON_THROW_ON_ERROR))
                 ->setIfEmpty('name', $this->getHandle())
                 ->setIfEmpty('id', $this->getIdAttribute())
-                ->setIfEmpty('autocomplete', 'tel')
                 ->setIfEmpty('placeholder', $this->translate('placeholder', $this->getPlaceholder()))
                 ->setIfEmpty('value', $this->getValue())
             ;
+
+            $this->addBrowserAutofillAttribute($attributes);
+            $attributes->setIfEmpty('autocomplete', 'tel');
 
             return Html::tag('input', '', $attributes->toHtmlTagArray(['field' => $this]));
         }
@@ -177,6 +179,8 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
             ->setIfEmpty('data-masked-input', $pattern)
             ->setIfEmpty('data-pattern', $pattern)
         ;
+
+        $this->addBrowserAutofillAttribute($attributes);
 
         return Html::tag(
             $attributes->getTag('input'),

@@ -25,6 +25,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
+use Solspace\Freeform\Fields\Traits\BrowserAutofillTrait;
 use Solspace\Freeform\Fields\Traits\CharacterCountTrait;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
@@ -39,6 +40,7 @@ use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 )]
 class TextareaField extends AbstractField implements PlaceholderInterface, TextInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
+    use BrowserAutofillTrait;
     use CharacterCountTrait;
     use DefaultTextValueTrait;
     use EncryptionTrait;
@@ -111,6 +113,7 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
             }
         }
 
+        $this->addBrowserAutofillAttribute($attributes);
         $this->addCharacterCountAttributes($attributes);
 
         return Html::tag(

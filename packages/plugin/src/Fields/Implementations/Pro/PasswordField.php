@@ -75,6 +75,8 @@ class PasswordField extends TextField implements NoStorageInterface, ExtraFieldI
             ->setIfEmpty('value', $this->getValue())
         ;
 
+        $this->addBrowserAutofillAttribute($attributes);
+
         if ($this->showPasswordToggle) {
             $labels = $this->getPasswordToggleLabels();
             $attributes->replace('data-freeform-password-toggle', true)

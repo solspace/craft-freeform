@@ -26,6 +26,9 @@ use Solspace\Freeform\Freeform;
 )]
 class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInterface
 {
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
+
     protected string $customInputType = 'tel';
 
     #[Input\Boolean(

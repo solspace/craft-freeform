@@ -14,6 +14,9 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 )]
 class WebsiteField extends TextField implements ExtraFieldInterface
 {
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
+
     protected string $customInputType = 'url';
 
     /**

@@ -3,7 +3,9 @@
 
     <div class="fields-row">
         {%- for field in row.allFields -%}
+            {% set useCustomAttributes = field.parameters.useCustomAttributes ?? null %}
             {{ field.renderContainerOpeningTag({
+                useCustomAttributes: false,
                 attributes: {
                     container: {
                         class: [
@@ -17,6 +19,7 @@
                 {{ craft.freeformSubmissions.renderSubmissionField(field, submission) }}
 
             {{ field.renderContainerClosingTag }}
+            {% do field.setParameters({ useCustomAttributes: useCustomAttributes }) %}
         {% endfor %}
     </div>
 {% endmacro %}

@@ -49,6 +49,7 @@ interface FieldInterface
     public const TYPE_CALCULATION = 'calculation';
     public const TYPE_RADIO_GROUP = 'radios';
     public const TYPE_HTML = 'html';
+    public const TYPE_SUMMARY = 'summary';
     public const TYPE_SUBMIT = 'submit';
     public const TYPE_SAVE = 'save';
     public const TYPE_DYNAMIC_RECIPIENTS = 'dynamic-recipients';
@@ -59,6 +60,7 @@ interface FieldInterface
     public const TYPE_RICH_TEXT = 'rich-text';
     public const TYPE_DATETIME = 'datetime';
     public const TYPE_NUMBER = 'number';
+    public const TYPE_RANGE = 'range';
     public const TYPE_PHONE = 'phone';
     public const TYPE_WEBSITE = 'website';
     public const TYPE_RATING = 'rating';

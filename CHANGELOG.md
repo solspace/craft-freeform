@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.16.2 - 2026-09-24
+
+### Security
+- Fixed a security issue in GraphQL file uploads by URL that could allow requests to internal network addresses and bypass a field's allowed file extensions. Remote downloads now validate destinations, reject redirects, and enforce the file size limit.
+
 ## 5.16.1 - 2026-09-23
 
 ### Added

@@ -50,6 +50,8 @@ return [
     'Saving' => 'Speichern',
     'Deleting' => 'Löschen',
     'Save' => 'Speichern',
+    'Undo' => 'Rückgängig',
+    'Redo' => 'Wiederholen',
     'Close' => 'Schließen',
     'Enabled' => 'Aktiviert',
     'empty' => 'leer',

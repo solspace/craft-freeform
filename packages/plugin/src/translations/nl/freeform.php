@@ -50,6 +50,8 @@ return [
     'Saving' => 'Opslaan',
     'Deleting' => 'Verwijderen',
     'Save' => 'Opslaan',
+    'Undo' => 'Ongedaan maken',
+    'Redo' => 'Opnieuw uitvoeren',
     'Close' => 'Sluiten',
     'Enabled' => 'Ingeschakeld',
     'empty' => 'leeg',

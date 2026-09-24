@@ -50,6 +50,8 @@ return [
     'Saving' => 'Enregistrement',
     'Deleting' => 'Suppression',
     'Save' => 'Enregistrer',
+    'Undo' => 'Annuler',
+    'Redo' => 'Rétablir',
     'Close' => 'Fermer',
     'Enabled' => 'Activé',
     'empty' => 'vide',

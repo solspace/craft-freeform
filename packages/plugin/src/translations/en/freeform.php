@@ -50,6 +50,8 @@ return [
     'Saving' => 'Saving',
     'Deleting' => 'Deleting',
     'Save' => 'Save',
+    'Undo' => 'Undo',
+    'Redo' => 'Redo',
     'Close' => 'Close',
     'Enabled' => 'Enabled',
     'empty' => 'empty',

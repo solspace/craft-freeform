@@ -59,7 +59,7 @@ export const lightClassNames: FreeformThemeClassNames = {
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "ff-email-suggestions-dark freeform-form w-100",
+  form: "ff-email-suggestions-dark freeform-form ff-phone-dark w-100",
   page: "w-100",
   row: "row g-3",
   field: "col mb-3",

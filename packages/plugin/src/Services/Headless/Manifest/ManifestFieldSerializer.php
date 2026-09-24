@@ -17,6 +17,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
 use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
@@ -130,6 +131,9 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof PhoneField && $field->isInternational()) {
+            return $field->getInternationalConfig();
+        }
         if ($field instanceof DropdownField || $field instanceof MultipleSelectField) {
             return ['searchable' => $field->getSearchableConfig()];
         }

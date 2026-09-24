@@ -3103,6 +3103,15 @@ return [
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 
+    // International phone input
+    'Use international phone input' => 'Internationale telefooninvoer gebruiken',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Voegt een doorzoekbare landkiezer toe en valideert internationale nummers. Vervangt patroonvalidatie wanneer ingeschakeld.',
+    'Default country' => 'Standaardland',
+    'Allowed countries' => 'Toegestane landen',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Landcodes van twee letters, gescheiden door komma’s, bijvoorbeeld US, CA, GB. Laat leeg om alle landen toe te staan.',
+    'Search countries' => 'Landen zoeken',
+    'No countries found' => 'Geen landen gevonden',
+
     // Searchable select fields
     'Enable Search' => 'Zoeken inschakelen',
     'Allow users to filter options by typing.' => 'Laat gebruikers opties filteren door te typen.',

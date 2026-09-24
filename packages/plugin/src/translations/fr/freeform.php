@@ -3140,6 +3140,15 @@ return [
     'Subscriber Fields' => 'Champs des abonnés',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Sélectionnez les champs Freeform à associer aux champs des abonnés MailerLite.',
 
+    // International phone input
+    'Use international phone input' => 'Utiliser la saisie de téléphone international',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Ajoute un sélecteur de pays avec recherche et valide les numéros internationaux. Remplace la validation par modèle une fois activé.',
+    'Default country' => 'Pays par défaut',
+    'Allowed countries' => 'Pays autorisés',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Codes de pays à deux lettres séparés par des virgules, par exemple US, CA, GB. Laisser vide pour autoriser tous les pays.',
+    'Search countries' => 'Rechercher un pays',
+    'No countries found' => 'Aucun pays trouvé',
+
     // Searchable select fields
     'Enable Search' => 'Activer la recherche',
     'Allow users to filter options by typing.' => 'Permet aux utilisateurs de filtrer les options en saisissant du texte.',

@@ -299,9 +299,19 @@ export class SearchableSelect {
       [...layers, "#ffffff"].join(", "),
     );
     this.element.style.setProperty("--ff-searchable-color", style.color);
+    // Tailwind 4 uses an outline for select borders. A zero-width border's
+    // computed color is still currentColor, which is white on dark templates.
+    const hasBorder =
+      parseFloat(style.borderTopWidth) > 0 && style.borderTopStyle !== "none";
+    const hasOutline =
+      parseFloat(style.outlineWidth) > 0 && style.outlineStyle !== "none";
     this.element.style.setProperty(
       "--ff-searchable-border",
-      style.borderTopColor || "#b8c2cc",
+      (hasBorder
+        ? style.borderTopColor
+        : hasOutline
+          ? style.outlineColor
+          : style.borderTopColor) || "#b8c2cc",
     );
     this.element.style.setProperty(
       "--ff-searchable-radius",

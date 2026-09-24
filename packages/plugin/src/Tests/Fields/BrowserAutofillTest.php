@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Tests\Fields;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
@@ -22,6 +23,17 @@ use Solspace\Freeform\Services\Headless\Manifest\ManifestLayoutSerializer;
  */
 class BrowserAutofillTest extends TestCase
 {
+    public function testContactPresetsUseValidOrderedTokens(): void
+    {
+        $setting = new \ReflectionProperty(PhoneField::class, 'browserAutofill');
+        $options = $setting->getAttributes(Input\Select::class)[0]->newInstance()->options;
+
+        self::assertSame('Cell / mobile phone', $options['mobile tel']);
+        self::assertSame('Home phone', $options['home tel']);
+        self::assertSame('Work phone', $options['work tel']);
+        self::assertSame('Home email address', $options['home email']);
+    }
+
     #[DataProvider('fields')]
     public function testSettingAndCustomAttributePrecedence(string $class, string $value): void
     {
@@ -58,7 +70,7 @@ class BrowserAutofillTest extends TestCase
             [TextField::class, 'given-name'],
             [TextareaField::class, 'street-address'],
             [EmailField::class, 'email'],
-            [PhoneField::class, 'tel'],
+            [PhoneField::class, 'mobile tel'],
             [WebsiteField::class, 'url'],
             [PasswordField::class, 'new-password'],
         ];

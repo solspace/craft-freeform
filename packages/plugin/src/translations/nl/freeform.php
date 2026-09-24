@@ -3351,4 +3351,13 @@ return [
     'Website URL' => 'Website-URL',
     'Current password' => 'Huidig wachtwoord',
     'New password' => 'Nieuw wachtwoord',
+    'Home email address' => 'Privé-e-mailadres',
+    'Work email address' => 'Zakelijk e-mailadres',
+    'Cell / mobile phone' => 'Mobiele telefoon',
+    'Home phone' => 'Telefoon thuis',
+    'Work phone' => 'Telefoon werk',
+    'Fax number' => 'Faxnummer',
+    'Phone country code' => 'Landnummer telefoon',
+    'National phone number' => 'Nationaal telefoonnummer',
+    'Phone extension' => 'Doorkiesnummer',
 ];

@@ -3388,4 +3388,13 @@ return [
     'Website URL' => 'Website URL',
     'Current password' => 'Current password',
     'New password' => 'New password',
+    'Home email address' => 'Home email address',
+    'Work email address' => 'Work email address',
+    'Cell / mobile phone' => 'Cell / mobile phone',
+    'Home phone' => 'Home phone',
+    'Work phone' => 'Work phone',
+    'Fax number' => 'Fax number',
+    'Phone country code' => 'Phone country code',
+    'National phone number' => 'National phone number',
+    'Phone extension' => 'Phone extension',
 ];

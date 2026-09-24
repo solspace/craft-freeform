@@ -3142,6 +3142,34 @@ return [
     'Subscriber Fields' => 'Abonnentenfelder',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Wählen Sie die Freeform-Felder aus, die den MailerLite-Abonnentenfeldern zugeordnet werden sollen.',
 
+    // International phone input
+    'Use international phone input' => 'Internationale Telefonnummerneingabe verwenden',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Fügt eine durchsuchbare Länderauswahl hinzu und validiert internationale Nummern. Ersetzt die Mustervalidierung, wenn aktiviert.',
+    'Default country' => 'Standardland',
+    'Allowed countries' => 'Zulässige Länder',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Kommagetrennte Ländercodes mit zwei Buchstaben, z. B. US, CA, GB. Leer lassen, um alle Länder zuzulassen.',
+    'Search countries' => 'Länder suchen',
+    'No countries found' => 'Keine Länder gefunden',
+
+    // Searchable select fields
+    'Enable Search' => 'Suche aktivieren',
+    'Allow users to filter options by typing.' => 'Ermöglicht Benutzern, Optionen durch Eingabe zu filtern.',
+    'Search options...' => 'Optionen suchen...',
+    'No results found.' => 'Keine Ergebnisse gefunden.',
+    'Remove {label}' => '{label} entfernen',
+    'Show options' => 'Optionen anzeigen',
+    '{count} results available.' => '{count} Ergebnisse verfügbar.',
+
+    // Range Slider
+    'Range Slider' => 'Schieberegler',
+    'Minimum value' => 'Minimalwert',
+    'Maximum value' => 'Maximalwert',
+    'The lowest value available on the slider.' => 'Der niedrigste verfügbare Wert des Schiebereglers.',
+    'The highest value available on the slider.' => 'Der höchste verfügbare Wert des Schiebereglers.',
+    'The increment between slider values. Must be greater than zero.' => 'Die Schrittweite zwischen den Werten. Muss größer als null sein.',
+    'Leave blank to start at the minimum. Values are aligned to the nearest available step.' => 'Leer lassen, um beim Minimalwert zu beginnen. Werte werden auf den nächsten verfügbaren Schritt gerundet.',
+    'Choose a slider value in increments of {{step}} from {{min}}.' => 'Wählen Sie einen Wert in Schritten von {{step}} ab {{min}}.',
+
     // Character counts
     'Show Character Count' => 'Zeichenanzahl anzeigen',
     'Display a live character count below the field. If a maximum length is set, show the limit as well.' => 'Zeigt die aktuelle Zeichenanzahl unter dem Feld an. Wenn eine maximale Länge festgelegt ist, wird auch das Limit angezeigt.',

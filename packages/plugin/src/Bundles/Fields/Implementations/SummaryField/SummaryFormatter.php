@@ -11,7 +11,7 @@ class SummaryFormatter
 {
     // An allowlist prevents newly registered/sensitive field types leaking into a review.
     private const TYPES = [
-        'text', 'textarea', 'email', 'number', 'phone', 'website', 'regex',
+        'text', 'textarea', 'email', 'number', 'range', 'phone', 'website', 'regex',
         'dropdown', 'multiple-select', 'checkbox', 'checkboxes', 'radios',
         'datetime', 'rating', 'opinion-scale', 'cards', 'calculation', 'file', 'file-dnd', 'table',
     ];

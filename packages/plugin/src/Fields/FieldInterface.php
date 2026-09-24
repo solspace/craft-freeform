@@ -60,6 +60,7 @@ interface FieldInterface
     public const TYPE_RICH_TEXT = 'rich-text';
     public const TYPE_DATETIME = 'datetime';
     public const TYPE_NUMBER = 'number';
+    public const TYPE_RANGE = 'range';
     public const TYPE_PHONE = 'phone';
     public const TYPE_WEBSITE = 'website';
     public const TYPE_RATING = 'rating';

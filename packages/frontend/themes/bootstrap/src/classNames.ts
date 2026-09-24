@@ -59,7 +59,7 @@ export const lightClassNames: FreeformThemeClassNames = {
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "ff-email-suggestions-dark freeform-form w-100",
+  form: "ff-email-suggestions-dark freeform-form ff-phone-dark w-100",
   page: "w-100",
   row: "row g-3",
   field: "col mb-3",
@@ -111,6 +111,11 @@ export function lightClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(lightTextInput),
+    range: {
+      input: "form-range",
+      inputError: "is-invalid border border-danger rounded",
+      content: "text-body",
+    },
     dropdown: { input: lightSelectInput },
     select: { input: lightSelectInput },
     "multiple-select": { input: lightSelectInput },
@@ -183,6 +188,11 @@ export function darkClassNamesByType(): Record<
 > {
   return {
     ...textTypeMap(darkTextInput),
+    range: {
+      input: "form-range",
+      inputError: "is-invalid border border-danger rounded",
+      content: "text-white",
+    },
     dropdown: { input: darkSelectInput },
     select: { input: darkSelectInput },
     "multiple-select": { input: darkSelectInput },

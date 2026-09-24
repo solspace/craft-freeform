@@ -8,6 +8,13 @@
 - Added a Pro **Summary field** for reviewing answers before submission, with live updates, conditional visibility, selected field handles, and React/Vue headless support.
 - Formie Summary fields now import as native Freeform Summary fields.
 - Added predefined options for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with German, French, Italian, and Dutch translations.
+- Added a **Range Slider** field with configurable bounds, decimal steps, a default value, live value display, and Twig, React, and Vue support.
+- Added an **Enable Search** setting to Dropdown and Multiple Select fields, with local option filtering, keyboard navigation, removable multiple selections, and support for Twig, React, and Vue forms.
+
+## 5.16.2 - 2026-09-24
+
+### Security
+- Fixed a security issue in GraphQL file uploads by URL that could allow requests to internal network addresses and bypass a field's allowed file extensions. Remote downloads now validate destinations, reject redirects, and enforce the file size limit.
 
 ## 5.16.1 - 2026-09-23
 

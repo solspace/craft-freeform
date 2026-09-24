@@ -3105,6 +3105,34 @@ return [
     'Subscriber Fields' => 'Abonneevelden',
     'Select the Freeform fields to map to MailerLite subscriber fields.' => 'Selecteer de Freeform-velden die je aan MailerLite-abonneevelden wilt koppelen.',
 
+    // International phone input
+    'Use international phone input' => 'Internationale telefooninvoer gebruiken',
+    'Add a searchable country selector and validate international numbers. Replaces pattern validation when enabled.' => 'Voegt een doorzoekbare landkiezer toe en valideert internationale nummers. Vervangt patroonvalidatie wanneer ingeschakeld.',
+    'Default country' => 'Standaardland',
+    'Allowed countries' => 'Toegestane landen',
+    'Comma-separated two-letter country codes, e.g. US, CA, GB. Leave empty to allow all countries.' => 'Landcodes van twee letters, gescheiden door komma’s, bijvoorbeeld US, CA, GB. Laat leeg om alle landen toe te staan.',
+    'Search countries' => 'Landen zoeken',
+    'No countries found' => 'Geen landen gevonden',
+
+    // Searchable select fields
+    'Enable Search' => 'Zoeken inschakelen',
+    'Allow users to filter options by typing.' => 'Laat gebruikers opties filteren door te typen.',
+    'Search options...' => 'Opties zoeken...',
+    'No results found.' => 'Geen resultaten gevonden.',
+    'Remove {label}' => '{label} verwijderen',
+    'Show options' => 'Opties tonen',
+    '{count} results available.' => '{count} resultaten beschikbaar.',
+
+    // Range Slider
+    'Range Slider' => 'Schuifregelaar',
+    'Minimum value' => 'Minimumwaarde',
+    'Maximum value' => 'Maximumwaarde',
+    'The lowest value available on the slider.' => 'De laagste beschikbare waarde op de schuifregelaar.',
+    'The highest value available on the slider.' => 'De hoogste beschikbare waarde op de schuifregelaar.',
+    'The increment between slider values. Must be greater than zero.' => 'De stapgrootte tussen waarden. Moet groter zijn dan nul.',
+    'Leave blank to start at the minimum. Values are aligned to the nearest available step.' => 'Laat leeg om bij het minimum te beginnen. Waarden worden afgerond naar de dichtstbijzijnde beschikbare stap.',
+    'Choose a slider value in increments of {{step}} from {{min}}.' => 'Kies een waarde in stappen van {{step}} vanaf {{min}}.',
+
     // Character counts
     'Show Character Count' => 'Aantal tekens weergeven',
     'Display a live character count below the field. If a maximum length is set, show the limit as well.' => 'Toont het huidige aantal tekens onder het veld. Als een maximale lengte is ingesteld, wordt ook de limiet weergegeven.',

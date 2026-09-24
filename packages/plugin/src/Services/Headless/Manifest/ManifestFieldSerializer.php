@@ -3,9 +3,11 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -15,6 +17,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
@@ -127,6 +131,17 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof PhoneField && $field->isInternational()) {
+            return $field->getInternationalConfig();
+        }
+        if ($field instanceof DropdownField || $field instanceof MultipleSelectField) {
+            return ['searchable' => $field->getSearchableConfig()];
+        }
+
+        if ($field instanceof RangeField) {
+            return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
         if ($field instanceof SummaryField) {
             return $field->getSummaryConfig();
         }

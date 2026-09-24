@@ -105,6 +105,7 @@ export const FIELD_RENDERERS = {
   TEXTAREA: "textarea",
   EMAIL: "email",
   NUMBER: "number",
+  RANGE: "range",
   PHONE: "phone",
   HIDDEN: "hidden",
   SELECT: "select",
@@ -133,4 +134,10 @@ export type {
   EmailSuggestionConfig,
   EmailSuggestionLabels,
 } from "./email/types.js";
+export {
+  type InternationalPhoneConfig,
+  mountInternationalPhone,
+  phoneValue,
+} from "./phone/international-phone.js";
+export * from "./select/searchable-select.js";
 export { getCharacterCount } from "./utils/character-count.js";

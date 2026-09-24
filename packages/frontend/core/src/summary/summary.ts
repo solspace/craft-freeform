@@ -33,6 +33,7 @@ const supportedTypes = new Set([
   "textarea",
   "email",
   "number",
+  "range",
   "phone",
   "website",
   "regex",

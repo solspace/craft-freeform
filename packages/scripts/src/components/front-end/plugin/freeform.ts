@@ -8,7 +8,9 @@ import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
 import EmailSuggestionsHandler from "@lib/plugin/handlers/fields/email-suggestions";
 import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
 import PasswordToggleHandler from "@lib/plugin/handlers/fields/password-toggle";
+import RangeHandler from "@lib/plugin/handlers/fields/range";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SearchableSelectHandler from "@lib/plugin/handlers/fields/searchable-select";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
 import SummaryHandler from "@lib/plugin/handlers/fields/summary";
 import TableHandler from "@lib/plugin/handlers/fields/table";
@@ -81,6 +83,7 @@ export default class Freeform {
 
   _initializedHandlers: FreeformHandler[] = [];
   _handlers: FreeformHandlerConstructor[] = [
+    RangeHandler,
     IdempotencyHandler,
     AbTestHandler,
     BackButtonHandler,
@@ -96,6 +99,7 @@ export default class Freeform {
     DragAndDropHandler,
     SaveFormHandler,
     CardsHandler,
+    SearchableSelectHandler,
     TextareaAutoGrowHandler,
     SummaryHandler,
     CharacterCountHandler,

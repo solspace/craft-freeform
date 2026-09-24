@@ -76,7 +76,7 @@ class BrowserAutofillTest extends TestCase
         ];
     }
 
-    public function testInternationalPhoneKeepsItsDefaultAndAllowsAnOverride(): void
+    public function testInternationalPhoneOnlyAddsAutocompleteWhenConfigured(): void
     {
         $form = $this->createMock(Form::class);
         $field = $this->getMockBuilder(PhoneField::class)
@@ -90,9 +90,9 @@ class BrowserAutofillTest extends TestCase
         $field->method('getAttributes')->willReturn($attributes);
         (new \ReflectionProperty($field, 'international'))->setValue($field, true);
 
-        self::assertStringContainsString('autocomplete="tel"', $field->getInputHtml());
-        (new \ReflectionProperty($field, 'browserAutofill'))->setValue($field, 'off');
-        self::assertStringContainsString('autocomplete="off"', $field->getInputHtml());
+        self::assertStringNotContainsString('autocomplete=', $field->getInputHtml());
+        (new \ReflectionProperty($field, 'browserAutofill'))->setValue($field, 'mobile tel');
+        self::assertStringContainsString('autocomplete="mobile tel"', $field->getInputHtml());
         $attributes->getInput()->replace('autocomplete', 'tel-national');
         self::assertStringContainsString('autocomplete="tel-national"', $field->getInputHtml());
     }

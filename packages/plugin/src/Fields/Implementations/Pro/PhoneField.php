@@ -156,7 +156,6 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
             ;
 
             $this->addBrowserAutofillAttribute($attributes);
-            $attributes->setIfEmpty('autocomplete', 'tel');
 
             return Html::tag('input', '', $attributes->toHtmlTagArray(['field' => $this]));
         }

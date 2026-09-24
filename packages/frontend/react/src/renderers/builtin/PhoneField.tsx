@@ -40,7 +40,6 @@ export function PhoneFieldRenderer(props: ReactFieldRendererProps) {
   return (
     <input
       type="tel"
-      autoComplete="tel"
       className={props.classNames.input}
       {...attributes}
       ref={element}

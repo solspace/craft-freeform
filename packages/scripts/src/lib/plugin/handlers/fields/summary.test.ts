@@ -43,6 +43,19 @@ afterEach(() => {
 });
 
 describe("SummaryHandler", () => {
+  it("includes a range slider and updates as it moves", async () => {
+    const { form, summary } = setup(
+      '<div data-field-container="rating"><input type="range" name="rating" min="0" max="10" step="0.5" value="0"></div>',
+      [source("rating", "range")],
+    );
+    expect(summary.querySelector("dd")?.textContent).toBe("0");
+    const slider = form.querySelector<HTMLInputElement>('input[type="range"]')!;
+    slider.value = "2.5";
+    slider.dispatchEvent(new Event("input", { bubbles: true }));
+    await Promise.resolve();
+    expect(summary.querySelector("dd")?.textContent).toBe("2.5");
+  });
+
   it("updates live values safely and retains previous-page answers", async () => {
     const { form, summary } = setup(
       '<div data-field-container="name"><input name="name" value="Initial"></div>',

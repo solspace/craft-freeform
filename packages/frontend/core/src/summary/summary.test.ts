@@ -27,6 +27,9 @@ const config = {
 describe("summary values", () => {
   it("preserves zero and treats unchecked/empty answers as empty", () => {
     expect(formatSummaryValue({ type: "number" }, 0, config)).toBe("0");
+    expect(supportsSummary("range")).toBe(true);
+    expect(formatSummaryValue({ type: "range" }, 0, config)).toBe("0");
+    expect(formatSummaryValue({ type: "range" }, 2.5, config)).toBe("2.5");
     expect(formatSummaryValue({ type: "text" }, null, config)).toBe("");
     expect(formatSummaryValue({ type: "checkbox" }, false, config)).toBe("");
     expect(formatSummaryValue({ type: "checkbox" }, "0", config)).toBe("");
@@ -106,6 +109,25 @@ describe("summary values", () => {
 });
 
 describe("headless summary", () => {
+  it("includes the current range slider value, including zero", () => {
+    const summary = {
+      ...field("review", "summary"),
+      frontend: { config: { fields: ["rating"] } },
+    };
+    const form = {
+      manifest: {
+        fields: { rating: field("rating", "range") },
+      } as unknown as FreeformManifest,
+      values: { rating: 0 },
+      isFieldVisible: () => true,
+    };
+    expect(getSummaryEntries(summary, form)).toEqual([
+      { handle: "rating", label: "rating", text: "0" },
+    ]);
+    form.values.rating = 2.5;
+    expect(getSummaryEntries(summary, form)[0].text).toBe("2.5");
+  });
+
   it("preserves labels as text, including markup and literal angle brackets", () => {
     const labels = [
       "Age < 18 & score > 5",

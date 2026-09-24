@@ -12,10 +12,11 @@
 - Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
 - Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye-icon button.
 - Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
-- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15-, 30-, or 60-minute increments with 12- or 24-hour labels. Available labels are translated into German, French, Italian, and Dutch.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15-, 30-, or 60-minute increments with 12- or 24-hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
 
 ### Changed
 - **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+
 ## 5.16.2 - 2026-09-24
 
 ### Security

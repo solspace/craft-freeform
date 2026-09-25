@@ -155,11 +155,32 @@ class ManifestFieldSerializer
             return $field->getSummaryConfig();
         }
 
-        if (($field instanceof TextField || $field instanceof TextareaField) && $field->isShowCharacterCount()) {
-            return [
-                'showCharacterCount' => true,
-                'characterCountMessages' => $field->getCharacterCountMessages(),
-            ];
+        if ($field instanceof TextField || $field instanceof TextareaField) {
+            $textConfig = [];
+
+            if ($field instanceof TextareaField) {
+                $rows = $field->getRows();
+                if ($rows) {
+                    $textConfig['rows'] = $rows;
+                }
+
+                if ($field->isAutoGrow()) {
+                    $textConfig['autoGrow'] = true;
+                    $maxHeight = $field->getAutoGrowMaxHeight();
+                    if (null !== $maxHeight) {
+                        $textConfig['autoGrowMaxHeight'] = $maxHeight;
+                    }
+                }
+            }
+
+            if ($field->isShowCharacterCount()) {
+                $textConfig['showCharacterCount'] = true;
+                $textConfig['characterCountMessages'] = $field->getCharacterCountMessages();
+            }
+
+            if ($textConfig) {
+                return $textConfig;
+            }
         }
 
         if ($field instanceof PasswordField && $field->isShowPasswordToggle()) {

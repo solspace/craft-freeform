@@ -98,6 +98,12 @@ The manifest exposes `frontend.config.showCharacterCount` and translated `charac
 
 Counts follow native HTML `maxlength` semantics (UTF-16 units, with normalized line endings), so some emoji count as more than one unit. Server-side maximum-length validation uses the same convention. Classic Twig counters initialize with Freeform's JavaScript and update on input, change, reset, and AJAX replacement. Dispatch an `input` or `change` event after setting a value in custom scripts.
 
+## Textarea auto grow
+
+Enable **Auto Grow** on a Textarea field so its height expands and shrinks with the contents. An optional maximum height switches the field to scrolling once reached. It is off by default.
+
+The manifest exposes `frontend.config.autoGrow`, optional `autoGrowMaxHeight`, and `rows`. React and Vue include the behavior automatically and can combine it with character counts on the same field. Classic Twig forms use Freeform's bundled JavaScript. No additional stylesheet import is needed. Custom renderers can use `mountTextareaAutoGrow()` from core; call `update()` after controlled value changes and `destroy()` on unmount.
+
 ## Password visibility
 
 Enable **Show Password Toggle** on the Pro Password field to add a Show/Hide button. It is off by default. The input remains masked initially and is masked again on native form reset or when its controlled value is cleared. The manifest supplies `frontend.config.showPasswordToggle` and translated `passwordToggleLabels`. Use the `passwordToggle` theme class override to customize the button. No extra stylesheet is required; password storage and submission behavior are unchanged.

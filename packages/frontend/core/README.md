@@ -136,6 +136,12 @@ The manifest exposes `frontend.config.showCharacterCount` and translated `charac
 
 Counts follow native HTML `maxlength` semantics (UTF-16 units, with normalized line endings), so some emoji count as more than one unit. Server-side maximum-length validation uses the same convention. Classic Twig counters initialize with Freeform's JavaScript and update on input, change, reset, and AJAX replacement. Dispatch an `input` or `change` event after setting a value in custom scripts.
 
+## Textarea auto grow
+
+Enable **Auto Grow** on a Textarea field so its height expands and shrinks with the contents. An optional maximum height switches the field to scrolling once reached. It is off by default.
+
+The manifest exposes `frontend.config.autoGrow`, optional `autoGrowMaxHeight`, and `rows`. React and Vue include the behavior automatically and can combine it with character counts on the same field. Classic Twig forms use Freeform's bundled JavaScript. No additional stylesheet import is needed. Custom renderers can use `mountTextareaAutoGrow()` from core; call `update()` after controlled value changes and `destroy()` on unmount.
+
 ## Email typo suggestions
 
 Enable **Suggest email corrections** on an Email field to offer corrections for common domain typos after the visitor leaves the field. It is off by default. For example, `Jane+sales@gmial.com` prompts “Did you mean Jane+sales@gmail.com?” with a **Use suggestion** button. The address changes only when that button is activated. Suggestions never block submission or replace server-side validation.

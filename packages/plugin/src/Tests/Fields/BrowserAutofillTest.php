@@ -82,7 +82,8 @@ class BrowserAutofillTest extends TestCase
         $field = $this->getMockBuilder(PhoneField::class)
             ->setConstructorArgs([$form])
             ->onlyMethods(['getAttributes', 'getInternationalConfig', 'translate'])
-            ->getMock();
+            ->getMock()
+        ;
         $field->method('getInternationalConfig')->willReturn([]);
         $field->method('translate')->willReturn('');
         $field->setValue('');

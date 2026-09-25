@@ -44,10 +44,11 @@ class BrowserAutofillTest extends TestCase
         $field->setValue('');
         $attributes = new FieldAttributesCollection();
         $field->method('getAttributes')->willReturn($attributes);
+        $html = new \ReflectionMethod($field, 'getInputHtml');
 
-        self::assertStringNotContainsString('autocomplete=', $field->getInputHtml());
+        self::assertStringNotContainsString('autocomplete=', $html->invoke($field));
         (new \ReflectionProperty($field, 'browserAutofill'))->setValue($field, $value);
-        self::assertStringContainsString('autocomplete="'.$value.'"', $field->getInputHtml());
+        self::assertStringContainsString('autocomplete="'.$value.'"', $html->invoke($field));
 
         $serializer = new ManifestFieldSerializer(
             $this->createMock(ManifestLayoutSerializer::class),
@@ -59,7 +60,7 @@ class BrowserAutofillTest extends TestCase
         self::assertSame($value, $manifest['attributes']['input']['autocomplete']);
 
         $attributes->getInput()->replace('autocomplete', 'off');
-        self::assertStringContainsString('autocomplete="off"', $field->getInputHtml());
+        self::assertStringContainsString('autocomplete="off"', $html->invoke($field));
         $manifest = $serialize->invoke($serializer, $form, $field);
         self::assertSame('off', $manifest['attributes']['input']['autocomplete']);
     }
@@ -90,11 +91,12 @@ class BrowserAutofillTest extends TestCase
         $attributes = new FieldAttributesCollection();
         $field->method('getAttributes')->willReturn($attributes);
         (new \ReflectionProperty($field, 'international'))->setValue($field, true);
+        $html = new \ReflectionMethod($field, 'getInputHtml');
 
-        self::assertStringNotContainsString('autocomplete=', $field->getInputHtml());
+        self::assertStringNotContainsString('autocomplete=', $html->invoke($field));
         (new \ReflectionProperty($field, 'browserAutofill'))->setValue($field, 'mobile tel');
-        self::assertStringContainsString('autocomplete="mobile tel"', $field->getInputHtml());
+        self::assertStringContainsString('autocomplete="mobile tel"', $html->invoke($field));
         $attributes->getInput()->replace('autocomplete', 'tel-national');
-        self::assertStringContainsString('autocomplete="tel-national"', $field->getInputHtml());
+        self::assertStringContainsString('autocomplete="tel-national"', $html->invoke($field));
     }
 }

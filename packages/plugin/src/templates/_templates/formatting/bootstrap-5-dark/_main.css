@@ -2,15 +2,18 @@
 /* International phone picker */
 form[data-freeform-bootstrap-dark] { --ff-phone-background: #292a2d; --ff-phone-color: #f3f4f6; --ff-phone-border: #4b5563; }
 
-/* Keep invalid fields visible without Bootstrap's bright pink border and focus glow. */
+/* Use one visible edge for invalid fields instead of layering on Bootstrap's border. */
 .freeform-form[data-freeform-bootstrap-dark] :is(.form-control, .form-select).is-invalid {
-    border-color: #bd6b74;
+    border-color: transparent;
+    outline: 1px solid #bd6b74;
+    outline-offset: -1px;
     box-shadow: none;
 }
 
 .freeform-form[data-freeform-bootstrap-dark] :is(.form-control, .form-select).is-invalid:focus {
-    border-color: #d9838c;
-    box-shadow: 0 0 0 0.2rem rgb(189 107 116 / 18%);
+    outline: 2px solid #d9838c;
+    outline-offset: -2px;
+    box-shadow: none;
 }
 
 /* Live character counters */

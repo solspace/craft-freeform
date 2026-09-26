@@ -109,6 +109,8 @@ export default class Freeform {
   _lastButtonPressed?: HTMLButtonElement;
   _processingOverlay?: HTMLElement;
   _processingOverlayObserver?: ResizeObserver;
+  _successBannerAttributes: Record<string, unknown> = {};
+  _errorBannerAttributes: Record<string, unknown> = {};
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
@@ -123,6 +125,8 @@ export default class Freeform {
 
     this.id = form.dataset.id;
     this.form = form;
+    this._successBannerAttributes = this._readBannerAttributes("success");
+    this._errorBannerAttributes = this._readBannerAttributes("error");
 
     this._setInstances();
 
@@ -143,6 +147,15 @@ export default class Freeform {
       errorBannerMessage: form.getAttribute("data-error-message"),
       skipHtmlReload: form.getAttribute("data-skip-html-reload") !== null,
     };
+
+    // The class from the formatting template becomes the AJAX default. JS
+    // overrides made in freeform-ready still take precedence over it.
+    if (typeof this._successBannerAttributes.class === "string") {
+      options.successClassBanner = this._successBannerAttributes.class;
+    }
+    if (typeof this._errorBannerAttributes.class === "string") {
+      options.errorClassBanner = this._errorBannerAttributes.class;
+    }
 
     this.options = {
       ...this.options,
@@ -641,8 +654,56 @@ export default class Freeform {
     });
 
     // Remove success messages
-    removeElement(form.querySelectorAll(getClassQuery(successClassBanner)));
-    removeElement(document.querySelectorAll(getClassQuery(errorClassBanner)));
+    if (successClassBanner) {
+      removeElement(form.getElementsByClassName(successClassBanner));
+    }
+    if (errorClassBanner) {
+      removeElement(form.getElementsByClassName(errorClassBanner));
+    }
+    removeElement(form.querySelectorAll("[data-freeform-ajax-banner]"));
+  };
+
+  _readBannerAttributes = (
+    banner: "success" | "error",
+  ): Record<string, unknown> => {
+    const json = this.form.getAttribute(`data-${banner}-banner-attributes`);
+    if (!json) {
+      return {};
+    }
+
+    try {
+      const attributes: unknown = JSON.parse(json);
+      return attributes &&
+        typeof attributes === "object" &&
+        !Array.isArray(attributes)
+        ? (attributes as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  };
+
+  _applyBannerAttributes = (
+    element: HTMLElement,
+    attributes: Record<string, unknown>,
+  ): void => {
+    for (const [name, value] of Object.entries(attributes)) {
+      if (
+        name === "class" ||
+        name === "tag" ||
+        name === "data-freeform-ajax-banner" ||
+        !/^[a-zA-Z_:][a-zA-Z\d_:.-]*$/.test(name) ||
+        value === false
+      ) {
+        continue;
+      }
+
+      if (value === true || value === null) {
+        element.setAttribute(name, "");
+      } else if (typeof value === "string" || typeof value === "number") {
+        element.setAttribute(name, String(value));
+      }
+    }
   };
 
   _removeMessageFrom = (field: HTMLInputElement): void => {
@@ -732,7 +793,11 @@ export default class Freeform {
     const { successBannerMessage, successClassBanner } = options;
 
     const successMessage = document.createElement("div");
-    addClass(successMessage, successClassBanner);
+    this._applyBannerAttributes(successMessage, this._successBannerAttributes);
+    if (successClassBanner) {
+      addClass(successMessage, successClassBanner);
+    }
+    successMessage.setAttribute("data-freeform-ajax-banner", "success");
 
     const paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode(successBannerMessage));
@@ -836,7 +901,11 @@ export default class Freeform {
     const { errorClassBanner, errorBannerMessage } = options;
 
     const errorBlock = document.createElement("div");
-    addClass(errorBlock, errorClassBanner);
+    this._applyBannerAttributes(errorBlock, this._errorBannerAttributes);
+    if (errorClassBanner) {
+      addClass(errorBlock, errorClassBanner);
+    }
+    errorBlock.setAttribute("data-freeform-ajax-banner", "error");
 
     const paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode(errorBannerMessage));

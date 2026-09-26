@@ -68,3 +68,34 @@ form[data-freeform-basic-dark] { --ff-password-toggle-color: #fff; }
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
 }
+
+/* Keep the upload drop zone separate from the template's standard buttons. */
+.freeform-form button.freeform-file-dnd__input {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    min-height: 160px;
+    padding: 2rem 1rem;
+    margin: 0 !important;
+    color: #e5e7eb;
+    font: 400 1rem/1.5 sans-serif;
+}
+.freeform-form button.freeform-file-dnd__input [data-placeholder] {
+    color: #cbd5e1;
+    font: 400 1rem/1.5 sans-serif !important;
+}
+.freeform-form button.freeform-file-dnd__input:hover {
+    color: #e5e7eb;
+    background-color: #272a30 !important;
+}
+.freeform-form button.freeform-file-dnd__input:focus-visible {
+    outline: 2px solid #93c5fd;
+    outline-offset: 2px;
+}
+.freeform-form button.freeform-file-dnd__input[data-contains-files] {
+    min-height: 0;
+    padding: 1rem;
+}

@@ -65,3 +65,34 @@ form[data-freeform-multipage] { --ff-email-suggestion-color: #6c757d; --ff-email
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
 }
+
+/* Keep the upload drop zone separate from the template's standard buttons. */
+.freeform-form button.freeform-file-dnd__input {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    width: 100%;
+    min-height: 160px;
+    padding: 2rem 1rem;
+    margin: 0 !important;
+    color: #495057;
+    font: 400 1rem/1.5 sans-serif;
+}
+.freeform-form button.freeform-file-dnd__input [data-placeholder] {
+    color: #495057;
+    font: 400 1rem/1.5 sans-serif !important;
+}
+.freeform-form button.freeform-file-dnd__input:hover {
+    color: #495057;
+    background-color: #f8f9fa !important;
+}
+.freeform-form button.freeform-file-dnd__input:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+.freeform-form button.freeform-file-dnd__input[data-contains-files] {
+    min-height: 0;
+    padding: 1rem;
+}

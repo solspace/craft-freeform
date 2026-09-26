@@ -335,7 +335,11 @@ class SummaryService extends Component
                 $formTagAttributes = true;
             }
 
-            if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingSpinner) {
+            if (
+                $behaviorSettings->showProcessingText
+                || $behaviorSettings->showProcessingSpinner
+                || $behaviorSettings->showProcessingOverlay
+            ) {
                 $loadingIndicators = true;
             }
 

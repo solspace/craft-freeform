@@ -10,6 +10,7 @@ export type FreeformOptions = {
   scrollElement?: HTMLElement | Window | null;
   showProcessingSpinner?: boolean;
   showProcessingText?: boolean;
+  showProcessingOverlay?: boolean;
   processingText?: string;
   prevButtonName?: string;
 

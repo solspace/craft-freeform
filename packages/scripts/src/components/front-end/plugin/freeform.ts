@@ -61,6 +61,7 @@ export default class Freeform {
     scrollElement: window,
     showProcessingSpinner: false,
     showProcessingText: false,
+    showProcessingOverlay: false,
     processingText: null,
     prevButtonName: "form_previous_page_button",
 
@@ -106,6 +107,7 @@ export default class Freeform {
   ];
 
   _lastButtonPressed?: HTMLButtonElement;
+  _processingOverlay?: HTMLElement;
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
@@ -133,6 +135,8 @@ export default class Freeform {
         form.getAttribute("data-show-processing-spinner") !== null,
       showProcessingText:
         form.getAttribute("data-show-processing-text") !== null,
+      showProcessingOverlay:
+        form.getAttribute("data-show-processing-overlay") !== null,
       processingText: form.getAttribute("data-processing-text"),
       successBannerMessage: form.getAttribute("data-success-message"),
       errorBannerMessage: form.getAttribute("data-error-message"),
@@ -301,6 +305,42 @@ export default class Freeform {
     this._unlockSubmitButtons();
   };
 
+  _showProcessingOverlay = (): void => {
+    if (
+      !this.options.showProcessingOverlay ||
+      this._processingOverlay?.isConnected
+    ) {
+      return;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.className = "freeform-processing-overlay";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+
+    const message = document.createElement("div");
+    message.className = "freeform-processing-overlay__message";
+
+    const spinner = document.createElement("span");
+    spinner.className = "freeform-processing-overlay__spinner";
+    spinner.setAttribute("aria-hidden", "true");
+
+    const label = document.createElement("span");
+    label.textContent = this.options.processingText || "Processing...";
+
+    message.append(spinner, label);
+    overlay.appendChild(message);
+    this.form.dataset.freeformOverlayActive = "";
+    this.form.appendChild(overlay);
+    this._processingOverlay = overlay;
+  };
+
+  _hideProcessingOverlay = (): void => {
+    this._processingOverlay?.remove();
+    this._processingOverlay = undefined;
+    delete this.form.dataset.freeformOverlayActive;
+  };
+
   triggerResubmit = (): void => {
     this.unlockSubmit();
 
@@ -321,6 +361,8 @@ export default class Freeform {
   };
 
   _unlockSubmitButtons = (id?: string): void => {
+    this._hideProcessingOverlay();
+
     const { disableSubmit, showProcessingSpinner, showProcessingText } =
       this.options;
 
@@ -434,6 +476,14 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
+    if (
+      !isBackButtonPressed &&
+      (!pressedButton?.dataset.freeformAction ||
+        pressedButton.dataset.freeformAction === "submit")
+    ) {
+      this._showProcessingOverlay();
+    }
+
     const submitCallbacks: Record<number, Callback[]> = {};
 
     const onSubmitEvent = this._dispatchEvent(events.form.submit, {
@@ -459,39 +509,44 @@ export default class Freeform {
       .sort(([priorityA], [priorityB]) => Number(priorityA) - Number(priorityB))
       .flatMap(([, callbackList]) => callbackList);
 
-    for (const callback of sortedCallbacks) {
-      const callbackResult = await callback();
-      if (callbackResult === false) {
-        this.forceUnlockSubmit();
-        this._dispatchEvent(events.form.afterFailedSubmit, {
-          cancelable: false,
-        });
+    try {
+      for (const callback of sortedCallbacks) {
+        const callbackResult = await callback();
+        if (callbackResult === false) {
+          this.forceUnlockSubmit();
+          this._dispatchEvent(events.form.afterFailedSubmit, {
+            cancelable: false,
+          });
+          return false;
+        }
+      }
+
+      if (ajax) {
+        this._onSubmitAjax(event);
+
         return false;
       }
-    }
 
-    if (ajax) {
-      this._onSubmitAjax(event);
+      const csrf = await fetchCsrf();
+      if (csrf) {
+        let csrfInput = this.form.querySelector<HTMLInputElement>(
+          `input[name="${csrf.name}"]`,
+        );
+        if (!csrfInput) {
+          csrfInput = document.createElement("input");
+          csrfInput.type = "hidden";
+          csrfInput.name = csrf.name;
+          this.form.appendChild(csrfInput);
+        }
 
-      return false;
-    }
-
-    const csrf = await fetchCsrf();
-    if (csrf) {
-      let csrfInput = this.form.querySelector<HTMLInputElement>(
-        `input[name="${csrf.name}"]`,
-      );
-      if (!csrfInput) {
-        csrfInput = document.createElement("input");
-        csrfInput.type = "hidden";
-        csrfInput.name = csrf.name;
-        this.form.appendChild(csrfInput);
+        csrfInput.value = csrf.value;
       }
 
-      csrfInput.value = csrf.value;
+      this.form.submit();
+    } catch (error) {
+      this.forceUnlockSubmit();
+      throw error;
     }
-
-    this.form.submit();
   };
 
   /**
@@ -874,6 +929,7 @@ export default class Freeform {
       request,
     });
     if (submitEvent.defaultPrevented) {
+      this.forceUnlockSubmit();
       return;
     }
 
@@ -901,6 +957,7 @@ export default class Freeform {
             { request, response },
           );
           if (onBeforeSuccess.defaultPrevented) {
+            this.forceUnlockSubmit();
             return;
           }
 
@@ -918,6 +975,7 @@ export default class Freeform {
                 );
 
                 if (redirectEvent.defaultPrevented) {
+                  this.forceUnlockSubmit();
                   return;
                 }
 

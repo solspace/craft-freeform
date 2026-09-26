@@ -70,14 +70,23 @@ class BehaviorSettings extends SettingsNamespace
     )]
     public bool $showProcessingText = false;
 
+    #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.showOverlay')]
+    #[Input\Boolean(
+        label: 'Show Processing Overlay on Submit',
+        instructions: 'Dim the form and show a centered spinner and processing message while a submission is being processed.',
+        order: 4,
+    )]
+    public bool $showProcessingOverlay = false;
+
     #[Translatable]
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(showProcessingText)')]
+    #[VisibilityFilter('Boolean(showProcessingText) || Boolean(showProcessingOverlay)')]
     #[DefaultValue('settings.processing.processingText')]
     #[Input\Text(
         'Processing Text',
-        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
-        order: 4,
+        instructions: 'Text shown on the submit button or processing overlay when the form is processing.',
+        order: 5,
     )]
     public string $processingText = 'Processing...';
 

@@ -70,6 +70,31 @@ describe("AJAX banner template overrides", () => {
     expect(form.querySelector("[data-freeform-ajax-banner]")).toBeNull();
   });
 
+  it("accepts extra whitespace in custom template banner classes", () => {
+    vi.useFakeTimers();
+    document.body.innerHTML = "<form data-freeform></form>";
+    const form = document.querySelector("form")!;
+    form.setAttribute(
+      "data-success-banner-attributes",
+      JSON.stringify({ class: "alert  alert-success\n rounded" }),
+    );
+    form.setAttribute(
+      "data-error-banner-attributes",
+      JSON.stringify({ class: "alert\t alert-danger" }),
+    );
+
+    const freeform = setup(form);
+    expect(() => freeform._renderSuccessBanner()).not.toThrow();
+    expect(
+      form.querySelector('[data-freeform-ajax-banner="success"]')?.className,
+    ).toBe("alert alert-success rounded");
+    freeform._removeMessages();
+    expect(() => freeform._renderFormErrors([])).not.toThrow();
+    expect(
+      form.querySelector('[data-freeform-ajax-banner="error"]')?.className,
+    ).toBe("alert alert-danger");
+  });
+
   it("honors existing freeform-ready class overrides and custom render callbacks", () => {
     vi.useFakeTimers();
     document.body.innerHTML =

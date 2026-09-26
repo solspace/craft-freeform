@@ -1,1 +1,77 @@
 :root{--color-indigo-500:oklch(.585 .233 277.117);--color-indigo-600:oklch(.511 .262 276.966);--color-gray-300:oklch(.872 .01 258.338);--color-gray-600:oklch(.446 .043 257.281);--color-gray-900:oklch(.21 .034 264.665);--color-red-600:oklch(.577 .245 27.325);}.freeform-form a{color:var(--color-indigo-600);font-weight:bold;text-decoration:none;}.freeform-form a:hover{color:var(--color-indigo-500);text-decoration:none;}.freeform-form{font-family:sans-serif;box-sizing:border-box;}.freeform-form .freeform-required::after{content:"*";color:var(--color-red-600);margin-left:3px;}@keyframes freeform-processing{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}.freeform-form button[type=submit].freeform-processing{display:inline-flex;flex-wrap:nowrap;align-items:center;}.freeform-form button[type=submit].freeform-processing:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:freeform-processing .5s linear infinite;}.freeform-form [data-field-type=multiple-select] option:checked{background-color:var(--color-indigo-600);color:#ffffff;}.freeform-form [data-field-type=signature] canvas{border:1px solid var(--color-gray-300)!important;}.freeform-form [data-field-type=table] [type=radio]{margin-bottom:-3px!important;}.freeform-form [data-field-type=table] [type=radio]+label{color:var(--color-gray-900);}.freeform-form [data-field-type=table] table thead tr th{color:var(--color-gray-600);font-size:.75rem;text-transform:uppercase;letter-spacing:.025em;border-bottom:1px solid var(--color-gray-300);padding-bottom:3px!important;}.freeform-form [data-field-type=table] table tbody tr:first-child td{padding-top:10px!important;}.freeform-form [data-field-type=file-dnd] [data-placeholder]{font-size:.875rem;color:var(--color-gray-600);text-align:center;width:auto;}
+/* International phone picker */
+form[data-freeform-tailwind] { --ff-phone-background: #fff; --ff-phone-color: #1f2937; --ff-phone-border: #d1d5db; }
+
+/* Range Slider palette; layout and controls are in Freeform’s bundled CSS. */
+.freeform-form .freeform-range-tailwind-light {
+  --ff-range-accent: var(--color-indigo-500, #615fff);
+  --ff-range-track: #e5e7eb;
+  --ff-range-text: #6a7282;
+  --ff-range-value-color: #4f39f6;
+  --ff-range-value-bg: #eef2ff;
+  --ff-range-error: #e7000b;
+}
+
+/* Live character counters */
+form[data-freeform-tailwind] { --ff-character-count-color: #6a7282; --ff-character-count-error: #dc3545; }
+
+/* Email typo suggestions */
+form[data-freeform-tailwind] { --ff-email-suggestion-color: #6c757d; --ff-email-suggestion-action: #6366f1; }
+
+
+/* Style generated summary rows, including replacements from live updates. */
+.freeform-form [data-freeform-summary] {
+    container-name: freeform-summary;
+    container-type: inline-size;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 1px 3px rgba(17, 24, 39, 0.04);
+}
+
+.freeform-form [data-freeform-summary] > [data-summary-field] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.125rem 1.5rem;
+    margin: 0;
+    padding: 0.625rem 1.25rem;
+}
+
+.freeform-form [data-freeform-summary] > [data-summary-field] + [data-summary-field] {
+    border-top: 1px solid #f3f4f6;
+}
+
+.freeform-form [data-freeform-summary] > [data-summary-field] > dt {
+    min-width: 0;
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+    overflow-wrap: anywhere;
+}
+
+.freeform-form [data-freeform-summary] > [data-summary-field] > dd {
+    min-width: 0;
+    margin: 0;
+    color: #111827;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.375rem;
+    overflow-wrap: anywhere;
+}
+
+@container freeform-summary (min-width: 30rem) {
+    .freeform-form [data-freeform-summary] > [data-summary-field] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+        padding: 0.625rem 1.5rem;
+    }
+}

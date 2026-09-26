@@ -3,8 +3,11 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
+use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -13,11 +16,17 @@ use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
@@ -82,6 +91,15 @@ class ManifestFieldSerializer
             ],
         ];
 
+        if (method_exists($field, 'getBrowserAutofill')) {
+            // Match standard rendering: a custom input attribute takes precedence.
+            $custom = $field->getAttributes()->getInput()->get('autocomplete');
+            $autofill = $custom ?? $field->getBrowserAutofill();
+            if (\is_string($autofill) && '' !== $autofill) {
+                $data['attributes']['input'] = ['autocomplete' => $autofill];
+            }
+        }
+
         if ($field instanceof OptionsInterface) {
             $data['options'] = $this->serializeOptions($field);
         }
@@ -122,6 +140,57 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof PhoneField && $field->isInternational()) {
+            return $field->getInternationalConfig();
+        }
+        if ($field instanceof DropdownField || $field instanceof MultipleSelectField) {
+            return ['searchable' => $field->getSearchableConfig()];
+        }
+
+        if ($field instanceof RangeField) {
+            return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
+        if ($field instanceof SummaryField) {
+            return $field->getSummaryConfig();
+        }
+
+        if ($field instanceof TextField || $field instanceof TextareaField) {
+            $textConfig = [];
+
+            if ($field instanceof TextareaField) {
+                $rows = $field->getRows();
+                if ($rows) {
+                    $textConfig['rows'] = $rows;
+                }
+
+                if ($field->isAutoGrow()) {
+                    $textConfig['autoGrow'] = true;
+                    $maxHeight = $field->getAutoGrowMaxHeight();
+                    if (null !== $maxHeight) {
+                        $textConfig['autoGrowMaxHeight'] = $maxHeight;
+                    }
+                }
+            }
+
+            if ($field->isShowCharacterCount()) {
+                $textConfig['showCharacterCount'] = true;
+                $textConfig['characterCountMessages'] = $field->getCharacterCountMessages();
+            }
+
+            if ($textConfig) {
+                return $textConfig;
+            }
+        }
+
+        if ($field instanceof PasswordField && $field->isShowPasswordToggle()) {
+            return ['showPasswordToggle' => true, 'passwordToggleLabels' => $field->getPasswordToggleLabels()];
+        }
+
+        if ($field instanceof EmailField && $field->isSuggestEmailCorrections()) {
+            return ['suggestEmailCorrections' => true, 'emailSuggestionLabels' => $field->getEmailSuggestionLabels()];
+        }
+
         if ($field instanceof DatetimeField) {
             return [
                 'dateTimeType' => $field->getDateTimeType(),
@@ -258,6 +327,10 @@ class ManifestFieldSerializer
                 'maxFiles' => $field->getFileCount(),
                 'multiple' => $field->getFileCount() > 1,
             ];
+
+            if ($field->isShowUploadRequirements()) {
+                $config['uploadRequirements'] = $field->getUploadRequirementsText();
+            }
 
             if ($field instanceof FileDragAndDropField) {
                 $config['accent'] = $field->getAccent();

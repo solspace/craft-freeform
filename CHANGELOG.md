@@ -1,5 +1,23 @@
 # Solspace Freeform Changelog
 
+## 5.17.0 - Unreleased
+
+### Added
+- Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
+- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
+- Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.
+- Added a Pro **Summary** field that gives visitors a live review of answers from earlier fields before submitting. It can include all supported fields or selected field handles, hide unanswered fields, and respect conditional field visibility. Option labels and file counts are displayed in a readable format, with support for standard forms and the React and Vue headless renderers.
+- Added a Pro **Range Slider** field with configurable minimum and maximum values, step size, default value, and a live display of the selected value. Supports decimal steps, conditional rules, survey results, and the React and Vue headless renderers.
+- Added **Enable Search** to Dropdown and Multiple Select fields. Visitors can filter the available options by typing, navigate results with the keyboard, and remove selections from a searchable Multiple Select field. Available in standard forms and the React and Vue headless renderers.
+- Added **Auto Grow** to Textarea fields so the input expands and shrinks with its contents. An optional maximum height switches the field to scrolling once reached. Supported in standard forms and the React and Vue headless renderers.
+- Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
+- Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye icon button.
+- Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
+
+### Changed
+- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+
 ## 5.16.2 - 2026-09-24
 
 ### Security

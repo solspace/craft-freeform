@@ -10,7 +10,10 @@ export function inputProps(props: VueFieldRendererProps) {
     disabled?: boolean;
     required?: boolean;
     placeholder?: string | null;
+    autoComplete?: string;
     "aria-invalid"?: boolean;
+    "aria-describedby"?: string;
+    maxLength?: number;
   };
 
   return {

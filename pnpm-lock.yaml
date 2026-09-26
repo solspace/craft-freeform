@@ -158,16 +158,22 @@ importers:
 
   packages/frontend/core:
     dependencies:
+      libphonenumber-js:
+        specifier: ^1.13.13
+        version: 1.13.13
       expression-language:
         specifier: ^2.5.4
         version: 2.7.0
     devDependencies:
+      jsdom:
+        specifier: 29.1.1
+        version: 29.1.1
       typescript:
         specifier: ^5.8.3
         version: 5.9.3
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@26.2.0)(jsdom@30.0.1)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(sass@1.102.0))
+        version: 4.1.11(@types/node@26.2.0)(jsdom@29.1.1)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(sass@1.102.0))
 
   packages/frontend/extensions:
     dependencies:
@@ -320,9 +326,15 @@ importers:
       glob:
         specifier: ^13.0.6
         version: 13.0.6
+      jsdom:
+        specifier: 29.1.1
+        version: 29.1.1
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+      vitest:
+        specifier: 4.1.11
+        version: 4.1.11(@types/node@26.2.0)(jsdom@29.1.1)(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(sass@1.102.0))
 
   packages/styles:
     devDependencies:
@@ -2836,6 +2848,9 @@ packages:
     resolution: {integrity: sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
+  libphonenumber-js@1.13.13:
+    resolution: {integrity: sha512-hV6SmWnyQ8U1QXhhqbqYBHIStNnscG7A5XbGodgdHhf/8N5PwhYpJA5U/yHDjYwPYTd8uNGXqq416XctuvK2PA==}
+
 snapshots:
 
   '@asamuzakjp/css-color@5.1.11':
@@ -5152,3 +5167,5 @@ snapshots:
       string-width: 7.2.0
       y18n: 5.0.8
       yargs-parser: 22.0.0
+
+  libphonenumber-js@1.13.13: {}

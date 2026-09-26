@@ -59,6 +59,7 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->replace('data-ajax', $form->isAjaxEnabled());
         $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
         $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
+        $attributes->replace('data-show-processing-overlay', $behaviorSettings->showProcessingOverlay);
 
         if (null === $attributes->get('method')) {
             $attributes->set('method', 'post');
@@ -79,6 +80,9 @@ class FormAttributesBundle extends FeatureBundle
 
         if ($behaviorSettings->showProcessingText) {
             $attributes->replace('data-show-processing-text', true);
+        }
+
+        if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingOverlay) {
             $attributes->replace(
                 'data-processing-text',
                 $this->translationProvider

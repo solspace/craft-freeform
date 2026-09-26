@@ -2,12 +2,19 @@ import events from "@lib/plugin/constants/event-types";
 import { SuccessBehavior } from "@lib/plugin/constants/form";
 import BackButtonHandler from "@lib/plugin/handlers/fields/back-button";
 import CardsHandler from "@lib/plugin/handlers/fields/cards";
+import CharacterCountHandler from "@lib/plugin/handlers/fields/character-count";
 import DatePickerHandler from "@lib/plugin/handlers/fields/datepicker";
 import DragAndDropHandler from "@lib/plugin/handlers/fields/drag-and-drop";
+import EmailSuggestionsHandler from "@lib/plugin/handlers/fields/email-suggestions";
 import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
+import PasswordToggleHandler from "@lib/plugin/handlers/fields/password-toggle";
+import RangeHandler from "@lib/plugin/handlers/fields/range";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SearchableSelectHandler from "@lib/plugin/handlers/fields/searchable-select";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
+import SummaryHandler from "@lib/plugin/handlers/fields/summary";
 import TableHandler from "@lib/plugin/handlers/fields/table";
+import TextareaAutoGrowHandler from "@lib/plugin/handlers/fields/textarea-auto-grow";
 import AbTestHandler from "@lib/plugin/handlers/form/ab-test";
 import GoogleTagManager from "@lib/plugin/handlers/form/google-tag-manager";
 import IdempotencyHandler from "@lib/plugin/handlers/form/idempotency";
@@ -54,6 +61,7 @@ export default class Freeform {
     scrollElement: window,
     showProcessingSpinner: false,
     showProcessingText: false,
+    showProcessingOverlay: false,
     processingText: null,
     prevButtonName: "form_previous_page_button",
 
@@ -76,22 +84,31 @@ export default class Freeform {
 
   _initializedHandlers: FreeformHandler[] = [];
   _handlers: FreeformHandlerConstructor[] = [
+    RangeHandler,
     IdempotencyHandler,
     AbTestHandler,
     BackButtonHandler,
     RuleHandler,
     DatePickerHandler,
     InputMaskHandler,
+    EmailSuggestionsHandler,
     RatingHandler,
+    PasswordToggleHandler,
     SignatureHandler,
     TableHandler,
     GoogleTagManager,
     DragAndDropHandler,
     SaveFormHandler,
     CardsHandler,
+    SearchableSelectHandler,
+    TextareaAutoGrowHandler,
+    SummaryHandler,
+    CharacterCountHandler,
   ];
 
   _lastButtonPressed?: HTMLButtonElement;
+  _processingOverlay?: HTMLElement;
+  _processingOverlayObserver?: ResizeObserver;
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
@@ -119,6 +136,8 @@ export default class Freeform {
         form.getAttribute("data-show-processing-spinner") !== null,
       showProcessingText:
         form.getAttribute("data-show-processing-text") !== null,
+      showProcessingOverlay:
+        form.getAttribute("data-show-processing-overlay") !== null,
       processingText: form.getAttribute("data-processing-text"),
       successBannerMessage: form.getAttribute("data-success-message"),
       errorBannerMessage: form.getAttribute("data-error-message"),
@@ -287,6 +306,97 @@ export default class Freeform {
     this._unlockSubmitButtons();
   };
 
+  _showProcessingOverlay = (): void => {
+    if (
+      !this.options.showProcessingOverlay ||
+      this._processingOverlay?.isConnected
+    ) {
+      return;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.className = "freeform-processing-overlay";
+    overlay.setAttribute("role", "status");
+    overlay.setAttribute("aria-live", "polite");
+
+    const message = document.createElement("div");
+    message.className = "freeform-processing-overlay__message";
+
+    const spinner = document.createElement("span");
+    spinner.className = "freeform-processing-overlay__spinner";
+    spinner.setAttribute("aria-hidden", "true");
+
+    const label = document.createElement("span");
+    label.textContent = this.options.processingText || "Processing...";
+
+    message.append(spinner, label);
+    overlay.appendChild(message);
+    this.form.dataset.freeformOverlayActive = "";
+    this.form.appendChild(overlay);
+    this._processingOverlay = overlay;
+    this._updateProcessingOverlayPosition();
+
+    window.addEventListener("scroll", this._updateProcessingOverlayPosition, {
+      passive: true,
+    });
+    window.addEventListener("resize", this._updateProcessingOverlayPosition);
+    window.visualViewport?.addEventListener(
+      "scroll",
+      this._updateProcessingOverlayPosition,
+      { passive: true },
+    );
+    window.visualViewport?.addEventListener(
+      "resize",
+      this._updateProcessingOverlayPosition,
+    );
+    if (typeof ResizeObserver !== "undefined") {
+      this._processingOverlayObserver = new ResizeObserver(
+        this._updateProcessingOverlayPosition,
+      );
+      this._processingOverlayObserver.observe(this.form);
+    }
+  };
+
+  _updateProcessingOverlayPosition = (): void => {
+    if (!this._processingOverlay?.isConnected) {
+      return;
+    }
+
+    const rect = this.form.getBoundingClientRect();
+    const viewportTop = window.visualViewport?.offsetTop ?? 0;
+    const viewportBottom =
+      viewportTop + (window.visualViewport?.height ?? window.innerHeight);
+    const visibleTop = Math.max(rect.top, viewportTop);
+    const visibleBottom = Math.min(rect.bottom, viewportBottom);
+    const center =
+      visibleBottom > visibleTop
+        ? (visibleTop + visibleBottom) / 2 - rect.top
+        : rect.height / 2;
+
+    this._processingOverlay.style.setProperty(
+      "--ff-processing-overlay-center-y",
+      `${Math.max(0, Math.min(rect.height, center))}px`,
+    );
+  };
+
+  _hideProcessingOverlay = (): void => {
+    window.removeEventListener("scroll", this._updateProcessingOverlayPosition);
+    window.removeEventListener("resize", this._updateProcessingOverlayPosition);
+    window.visualViewport?.removeEventListener(
+      "scroll",
+      this._updateProcessingOverlayPosition,
+    );
+    window.visualViewport?.removeEventListener(
+      "resize",
+      this._updateProcessingOverlayPosition,
+    );
+    this._processingOverlayObserver?.disconnect();
+    this._processingOverlayObserver = undefined;
+    this._processingOverlay?.remove();
+    this._processingOverlay = undefined;
+    delete this.form.dataset.freeformOverlayActive;
+  };
+
   triggerResubmit = (): void => {
     this.unlockSubmit();
 
@@ -307,6 +417,8 @@ export default class Freeform {
   };
 
   _unlockSubmitButtons = (id?: string): void => {
+    this._hideProcessingOverlay();
+
     const { disableSubmit, showProcessingSpinner, showProcessingText } =
       this.options;
 
@@ -420,6 +532,14 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
+    if (
+      !isBackButtonPressed &&
+      (!pressedButton?.dataset.freeformAction ||
+        pressedButton.dataset.freeformAction === "submit")
+    ) {
+      this._showProcessingOverlay();
+    }
+
     const submitCallbacks: Record<number, Callback[]> = {};
 
     const onSubmitEvent = this._dispatchEvent(events.form.submit, {
@@ -445,39 +565,44 @@ export default class Freeform {
       .sort(([priorityA], [priorityB]) => Number(priorityA) - Number(priorityB))
       .flatMap(([, callbackList]) => callbackList);
 
-    for (const callback of sortedCallbacks) {
-      const callbackResult = await callback();
-      if (callbackResult === false) {
-        this.forceUnlockSubmit();
-        this._dispatchEvent(events.form.afterFailedSubmit, {
-          cancelable: false,
-        });
+    try {
+      for (const callback of sortedCallbacks) {
+        const callbackResult = await callback();
+        if (callbackResult === false) {
+          this.forceUnlockSubmit();
+          this._dispatchEvent(events.form.afterFailedSubmit, {
+            cancelable: false,
+          });
+          return false;
+        }
+      }
+
+      if (ajax) {
+        this._onSubmitAjax(event);
+
         return false;
       }
-    }
 
-    if (ajax) {
-      this._onSubmitAjax(event);
+      const csrf = await fetchCsrf();
+      if (csrf) {
+        let csrfInput = this.form.querySelector<HTMLInputElement>(
+          `input[name="${csrf.name}"]`,
+        );
+        if (!csrfInput) {
+          csrfInput = document.createElement("input");
+          csrfInput.type = "hidden";
+          csrfInput.name = csrf.name;
+          this.form.appendChild(csrfInput);
+        }
 
-      return false;
-    }
-
-    const csrf = await fetchCsrf();
-    if (csrf) {
-      let csrfInput = this.form.querySelector<HTMLInputElement>(
-        `input[name="${csrf.name}"]`,
-      );
-      if (!csrfInput) {
-        csrfInput = document.createElement("input");
-        csrfInput.type = "hidden";
-        csrfInput.name = csrf.name;
-        this.form.appendChild(csrfInput);
+        csrfInput.value = csrf.value;
       }
 
-      csrfInput.value = csrf.value;
+      this.form.submit();
+    } catch (error) {
+      this.forceUnlockSubmit();
+      throw error;
     }
-
-    this.form.submit();
   };
 
   /**
@@ -860,6 +985,7 @@ export default class Freeform {
       request,
     });
     if (submitEvent.defaultPrevented) {
+      this.forceUnlockSubmit();
       return;
     }
 
@@ -887,6 +1013,7 @@ export default class Freeform {
             { request, response },
           );
           if (onBeforeSuccess.defaultPrevented) {
+            this.forceUnlockSubmit();
             return;
           }
 
@@ -904,6 +1031,7 @@ export default class Freeform {
                 );
 
                 if (redirectEvent.defaultPrevented) {
+                  this.forceUnlockSubmit();
                   return;
                 }
 

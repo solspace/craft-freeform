@@ -1,1 +1,70 @@
 .freeform-form{font-family:sans-serif;box-sizing:border-box;}.freeform-form .required::after{content:"*";color:#7f1d1d;margin-left:5px;}.freeform-form button[type=submit].freeform-processing{display:inline-flex;flex-wrap:nowrap;align-items:center;}.freeform-form button[type=submit].freeform-processing:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:freeform-processing .5s linear infinite;}.freeform-form [data-field-type=table] [type=radio]+label{color:#e4e4e7;}@keyframes freeform-processing{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}.freeform-form .input-group-one-line>div{float:left;margin-right:15px;}
+/* International phone picker */
+form[data-freeform-tailwind-dark] { --ff-phone-background: #292a2d; --ff-phone-color: #f3f4f6; --ff-phone-border: #4b5563; }
+
+/* Live character counters */
+form[data-freeform-tailwind-dark] { --ff-character-count-color: #99a1af; --ff-character-count-error: #ff6467; }
+
+/* Email typo suggestions */
+form[data-freeform-tailwind-dark] { --ff-email-suggestion-color: #99a1af; --ff-email-suggestion-action: #818cf8; }
+
+/* Show password icon */
+form[data-freeform-tailwind-dark] { --ff-password-toggle-color: #fff; }
+
+/* Style generated summary rows, including replacements from live updates. */
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] {
+    container-name: freeform-summary;
+    container-type: inline-size;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #71717a;
+    border-radius: 0.25rem;
+    background: #18181b;
+    outline: none;
+    box-shadow: none;
+}
+
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: baseline;
+    gap: 0.125rem 1.5rem;
+    margin: 0;
+    padding: 0.625rem 1rem;
+}
+
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] + [data-summary-field] {
+    border-top: 1px solid #3f3f46;
+}
+
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] > dt,
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] > dd {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    line-height: 1.375rem;
+    overflow-wrap: anywhere;
+}
+
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] > dt {
+    color: #a1a1aa;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] > dd {
+    color: #e4e4e7;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+@container freeform-summary (min-width: 30rem) {
+    .freeform-form[data-freeform-tailwind-dark] [data-freeform-summary] > [data-summary-field] {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    }
+}

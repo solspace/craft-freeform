@@ -41,6 +41,10 @@ class File extends BaseCategory
     #[SetDefaultValue('2048')]
     public TextItem $maxFileSizeKB;
 
+    #[Label('Show Upload Requirements')]
+    #[SetDefaultValue(false)]
+    public BoolItem $showUploadRequirements;
+
     #[Label('Accent Color')]
     #[SetDefaultValue(FileDragAndDropField::DEFAULT_ACCENT)]
     public ColorItem $accentColor;

@@ -22,6 +22,10 @@ class Processing extends BaseCategory
     #[SetDefaultValue(true)]
     public BoolItem $showText;
 
+    #[Label('Show Processing Overlay on Submit')]
+    #[SetDefaultValue(false)]
+    public BoolItem $showOverlay;
+
     #[SetDefaultValue('Processing...')]
     public TextItem $processingText;
 

@@ -10,7 +10,7 @@
 
 {{ field.renderContainerOpeningTag }}
 
-  {{ field.renderInput }}
+  {{ field.renderInput({ uploadRequirementsInInput: false }) }}
 
   <label class="{{ field.attributes.label.get("class") }}">
     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,6 +19,8 @@
     <span{{ field.required ? ' class="freeform-required"' }}>{{ field.label }}</span>
   </label>
   <p class="freeform-file-name-display mt-1 text-sm text-gray-500">{{ "No files selected"|t('freeform') }}</p>
+  {{ field.renderUploadRequirements }}
+  {% do field.setParameters({ uploadRequirementsInInput: true }) %}
 
   {{ field.renderInstructions }}
   {{ field.renderErrors }}

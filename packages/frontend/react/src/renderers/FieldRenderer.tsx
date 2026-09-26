@@ -204,8 +204,16 @@ export function FieldRenderer({
       {uploadRequirements && (
         <div
           id={`freeform-${field.handle}-upload-requirements`}
-          className="freeform-upload-requirements"
-          style={{ marginTop: "0.25em", fontSize: "0.875em", opacity: 0.75 }}
+          className={joinClassNames(
+            "freeform-upload-requirements",
+            classNames.instructions,
+          )}
+          style={{
+            marginTop: "0.375em",
+            marginBottom: 0,
+            fontSize: "0.875em",
+            lineHeight: 1.4,
+          }}
         >
           {uploadRequirements}
         </div>

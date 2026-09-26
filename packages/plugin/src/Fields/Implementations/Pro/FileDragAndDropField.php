@@ -199,7 +199,9 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             $attributes->toHtmlTagArray(['field' => $this])
         );
 
-        return $tag.$this->getUploadRequirementsHtml().$errorTag;
+        $requirements = $this->parameters->uploadRequirementsInInput === false ? '' : $this->getUploadRequirementsHtml();
+
+        return $tag.$requirements.$errorTag;
     }
 
     public function uploadFile(): ?array

@@ -36,6 +36,7 @@ use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Freeform;
+use Twig\Markup;
 
 #[Type(
     name: 'File Upload',
@@ -169,10 +170,16 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         }
 
         $allowedKinds = Assets::getAllowedFileKinds();
+        $friendlyKinds = [
+            'image' => Freeform::t('Images'),
+            'pdf' => Freeform::t('PDFs'),
+            'audio' => Freeform::t('Audio files'),
+            'video' => Freeform::t('Videos'),
+        ];
         $kinds = [];
         foreach ($this->getFileKinds() as $kind) {
             if (isset($allowedKinds[$kind])) {
-                $kinds[] = Craft::t('app', $allowedKinds[$kind]['label']);
+                $kinds[] = $friendlyKinds[$kind] ?? Craft::t('app', $allowedKinds[$kind]['label']);
             }
         }
 
@@ -198,11 +205,18 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             return '';
         }
 
+        $instructionClass = $this->getAttributes()->getInstructions()->get('class', '');
+
         return Html::tag('div', Html::encode($this->getUploadRequirementsText()), [
             'id' => $this->getIdAttribute().'-upload-requirements',
-            'class' => 'freeform-upload-requirements',
-            'style' => 'margin-top: 0.25em; font-size: 0.875em; opacity: 0.75;',
+            'class' => trim('freeform-upload-requirements '.$instructionClass),
+            'style' => 'margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4;',
         ]);
+    }
+
+    public function renderUploadRequirements(): Markup
+    {
+        return $this->renderRaw($this->getUploadRequirementsHtml());
     }
 
     public function getInputHtml(): string
@@ -253,7 +267,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             $attributes->toHtmlTagArray(['field' => $this])
         );
 
-        return $preview.$input.$this->getUploadRequirementsHtml();
+        return $preview.$input.($this->parameters->uploadRequirementsInInput === false ? '' : $this->getUploadRequirementsHtml());
     }
 
     public function getContentGqlType(): array|GQLType

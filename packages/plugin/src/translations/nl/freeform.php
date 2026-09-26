@@ -3365,4 +3365,8 @@ return [
     '1 file' => '1 bestand',
     'Up to {count} files' => 'Maximaal {count} bestanden',
     'Up to {size} KB per file' => 'Maximaal {size} KB per bestand',
+    'Images' => 'Afbeeldingen',
+    'PDFs' => 'PDF-bestanden',
+    'Audio files' => 'Audiobestanden',
+    'Videos' => "Video's",
 ];

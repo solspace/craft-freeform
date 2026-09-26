@@ -3402,4 +3402,8 @@ return [
     '1 file' => '1 file',
     'Up to {count} files' => 'Up to {count} files',
     'Up to {size} KB per file' => 'Up to {size} KB per file',
+    'Images' => 'Images',
+    'PDFs' => 'PDFs',
+    'Audio files' => 'Audio files',
+    'Videos' => 'Videos',
 ];

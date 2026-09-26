@@ -216,8 +216,8 @@ const rendererProps = computed(() => ({
       <div
         v-if="uploadRequirements"
         :id="`freeform-${field.handle}-upload-requirements`"
-        class="freeform-upload-requirements"
-        style="margin-top: 0.25em; font-size: 0.875em; opacity: 0.75"
+        :class="['freeform-upload-requirements', classNames.instructions]"
+        style="margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4"
       >
         {{ uploadRequirements }}
       </div>

@@ -7,6 +7,8 @@
   attributes: {
     form: { class: "freeform-form", "data-freeform-tailwind": true },
     row: { class: "flex gap-x-2 -mx-2 mb-4" },
+    success: { class: "rounded-md bg-green-50 p-4 mb-10" },
+    errors: { class: "rounded-md bg-red-50 p-4 mb-10" },
     novalidate: true,
   },
   buttons: {
@@ -173,10 +175,9 @@
   },
 }) }}
 
-{# Success and error message handling for non-AJAX forms #}
-{% if not form.settings.ajax %}
-  {% if form.submittedSuccessfully %}
-    <div class="rounded-md bg-green-50 p-4 mb-10">
+{# Reuse the same icon banners for standard and AJAX submissions #}
+{% set successBanner %}
+    <div{{ form.attributes.success|raw }}>
       <div class="flex">
         <div class="shrink-0">
           <svg class="size-6 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
@@ -188,9 +189,9 @@
         </div>
       </div>
     </div>
-  {% endif %}
-  {% if form.hasErrors %}
-    <div class="rounded-md bg-red-50 p-4 mb-10">
+{% endset %}
+{% set errorBanner %}
+    <div{{ form.attributes.errors|raw }}>
       <div class="flex">
         <div class="shrink-0">
         <svg class="size-6 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
@@ -199,19 +200,23 @@
         </div>
         <div class="ml-2">
           <h3 class="text-md font-medium text-red-800">{{ form.errorMessage | t('freeform') }}</h3>
-          {% if form.errors|length %}
-            <div class="mt-2 text-sm text-red-700">
-              <ul role="list" class="list-disc space-y-1 pl-5">
+            <div class="mt-2 text-sm text-red-700"{% if not form.errors|length %} hidden{% endif %}>
+              <ul role="list" class="list-disc space-y-1 pl-5" data-freeform-banner-errors>
                 {% for error in form.errors %}
                   <li>{{ error }}</li>
                 {% endfor %}
               </ul>
             </div>
-          {% endif %}
         </div>
       </div>
     </div>
-  {% endif %}
+{% endset %}
+{% if form.settings.ajax %}
+  <template data-freeform-success-template>{{ successBanner }}</template>
+  <template data-freeform-error-template>{{ errorBanner }}</template>
+{% else %}
+  {% if form.submittedSuccessfully %}{{ successBanner }}{% endif %}
+  {% if form.hasErrors %}{{ errorBanner }}{% endif %}
 {% endif %}
 
 {# Render page tabs if multi-page #}

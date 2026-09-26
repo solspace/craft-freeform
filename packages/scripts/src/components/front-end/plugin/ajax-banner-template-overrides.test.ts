@@ -121,4 +121,84 @@ describe("AJAX banner template overrides", () => {
       second.querySelector('[data-freeform-ajax-banner="error"]')?.textContent,
     ).toBe("Second");
   });
+
+  it("does not remove unrelated elements that share a template banner class", () => {
+    vi.useFakeTimers();
+    document.body.innerHTML =
+      '<form data-freeform><div class="alert" id="instructions">Instructions</div></form>';
+    const form = document.querySelector("form")!;
+    form.setAttribute(
+      "data-success-banner-attributes",
+      JSON.stringify({ class: "alert" }),
+    );
+    form.setAttribute(
+      "data-error-banner-attributes",
+      JSON.stringify({ class: "alert" }),
+    );
+
+    const freeform = setup(form);
+    freeform._renderSuccessBanner();
+    freeform._removeMessages();
+    expect(form.querySelector("#instructions")?.textContent).toBe(
+      "Instructions",
+    );
+    expect(form.querySelector("[data-freeform-ajax-banner]")).toBeNull();
+
+    freeform._renderFormErrors([]);
+    freeform._removeMessages();
+    expect(form.querySelector("#instructions")?.textContent).toBe(
+      "Instructions",
+    );
+    expect(form.querySelector("[data-freeform-ajax-banner]")).toBeNull();
+  });
+
+  it("still cleans up banners created by legacy render callbacks", () => {
+    vi.useFakeTimers();
+    document.body.innerHTML = "<form data-freeform></form>";
+    const form = document.querySelector("form")!;
+    form.setAttribute(
+      "data-success-banner-attributes",
+      JSON.stringify({ class: "custom-success" }),
+    );
+    form.setAttribute(
+      "data-error-banner-attributes",
+      JSON.stringify({ class: "custom-error" }),
+    );
+
+    const freeform = setup(form);
+    freeform.options.renderSuccess = () => {
+      form.insertAdjacentHTML(
+        "afterbegin",
+        '<div class="custom-success"></div>',
+      );
+    };
+    freeform.options.renderFormErrors = () => {
+      form.insertAdjacentHTML("afterbegin", '<div class="custom-error"></div>');
+    };
+    freeform._renderSuccessBanner();
+    freeform._renderFormErrors([]);
+    freeform._removeMessages();
+
+    expect(form.querySelector(".custom-success, .custom-error")).toBeNull();
+  });
+
+  it("still cleans up an unmarked banner from a custom render event", () => {
+    vi.useFakeTimers();
+    document.body.innerHTML = "<form data-freeform></form>";
+    const form = document.querySelector("form")!;
+    form.setAttribute(
+      "data-success-banner-attributes",
+      JSON.stringify({ class: "notice" }),
+    );
+    form.addEventListener("freeform-render-success", (event) => {
+      event.preventDefault();
+      form.insertAdjacentHTML("afterbegin", '<div class="notice"></div>');
+    });
+
+    const freeform = setup(form);
+    freeform._renderSuccessBanner();
+    expect(form.querySelector(".notice")).not.toBeNull();
+    freeform._removeMessages();
+    expect(form.querySelector(".notice")).toBeNull();
+  });
 });

@@ -110,6 +110,8 @@ export default class Freeform {
   _successBannerAttributes: Record<string, unknown> = {};
   _errorBannerAttributes: Record<string, unknown> = {};
   _baseFieldClasses = new WeakMap<HTMLElement, Set<string>>();
+  _unmarkedSuccessBanner = false;
+  _unmarkedErrorBanner = false;
   _errorClassChanges = new Map<
     HTMLElement,
     { added: string[]; removed: string[] }
@@ -670,13 +672,28 @@ export default class Freeform {
     this._restoreErrorClasses();
 
     // Remove success messages
-    if (successClassBanner) {
+    // Template classes may be shared by unrelated elements (for example,
+    // Bootstrap's "alert"). Built-in AJAX banners have their own marker;
+    // retain class-based cleanup for explicit JS overrides and callbacks.
+    if (
+      successClassBanner &&
+      (successClassBanner !== this._successBannerAttributes.class ||
+        typeof options.renderSuccess === "function" ||
+        this._unmarkedSuccessBanner)
+    ) {
       removeElement(form.getElementsByClassName(successClassBanner));
     }
-    if (errorClassBanner) {
+    if (
+      errorClassBanner &&
+      (errorClassBanner !== this._errorBannerAttributes.class ||
+        typeof options.renderFormErrors === "function" ||
+        this._unmarkedErrorBanner)
+    ) {
       removeElement(form.getElementsByClassName(errorClassBanner));
     }
     removeElement(form.querySelectorAll("[data-freeform-ajax-banner]"));
+    this._unmarkedSuccessBanner = false;
+    this._unmarkedErrorBanner = false;
   };
 
   _readBannerAttributes = (
@@ -843,6 +860,9 @@ export default class Freeform {
   _renderSuccessBanner = (): void => {
     const event = this._dispatchEvent(events.form.renderSuccess);
     if (event.defaultPrevented) {
+      this._unmarkedSuccessBanner = !this.form.querySelector(
+        '[data-freeform-ajax-banner="success"]',
+      );
       return;
     }
 
@@ -1007,6 +1027,9 @@ export default class Freeform {
   _renderFormErrors = (errors: string[]) => {
     const event = this._dispatchEvent(events.form.renderFormErrors, { errors });
     if (event.defaultPrevented) {
+      this._unmarkedErrorBanner = !this.form.querySelector(
+        '[data-freeform-ajax-banner="error"]',
+      );
       return false;
     }
 

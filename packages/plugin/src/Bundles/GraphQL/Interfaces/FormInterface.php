@@ -194,10 +194,18 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->showProcessingText;
                 },
             ],
+            'showProcessingOverlay' => [
+                'name' => 'showProcessingOverlay',
+                'type' => Type::boolean(),
+                'description' => 'Should the form show a processing overlay while submitting',
+                'resolve' => static function ($source) {
+                    return $source->getSettings()->showProcessingOverlay;
+                },
+            ],
             'processingText' => [
                 'name' => 'processingText',
                 'type' => Type::string(),
-                'description' => 'The submit button processing label text',
+                'description' => 'The submit button or overlay processing label text',
             ],
             'pages' => [
                 'name' => 'pages',

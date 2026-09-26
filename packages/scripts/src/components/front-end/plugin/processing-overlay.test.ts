@@ -13,6 +13,7 @@ const setup = (overlay = true) => {
 
 afterEach(() => {
   vi.useRealTimers();
+  vi.unstubAllGlobals();
   document.body.innerHTML = "";
 });
 
@@ -75,5 +76,44 @@ describe("processing overlay", () => {
     freeform._onSubmitAjax(new SubmitEvent("submit", { submitter: button }));
     expect(beforeAjax).toBe(true);
     expect(form.querySelector(".freeform-processing-overlay")).toBeNull();
+  });
+
+  it("centers the message in the visible part of a tall form as it scrolls", () => {
+    vi.useFakeTimers();
+    vi.stubGlobal("innerHeight", 800);
+    const { form, freeform } = setup();
+    let top = -400;
+    let height = 2000;
+    vi.spyOn(form, "getBoundingClientRect").mockImplementation(
+      () => ({ top, bottom: top + height, height }) as DOMRect,
+    );
+
+    freeform._showProcessingOverlay();
+    const overlay = form.querySelector<HTMLElement>(
+      ".freeform-processing-overlay",
+    )!;
+    expect(
+      overlay.style.getPropertyValue("--ff-processing-overlay-center-y"),
+    ).toBe("800px");
+
+    top = -600;
+    window.dispatchEvent(new Event("scroll"));
+    expect(
+      overlay.style.getPropertyValue("--ff-processing-overlay-center-y"),
+    ).toBe("1000px");
+
+    top = -1800;
+    window.dispatchEvent(new Event("resize"));
+    expect(
+      overlay.style.getPropertyValue("--ff-processing-overlay-center-y"),
+    ).toBe("1900px");
+
+    top = 100;
+    height = 200;
+    window.dispatchEvent(new Event("scroll"));
+    expect(
+      overlay.style.getPropertyValue("--ff-processing-overlay-center-y"),
+    ).toBe("100px");
+    freeform._hideProcessingOverlay();
   });
 });

@@ -108,6 +108,7 @@ export default class Freeform {
 
   _lastButtonPressed?: HTMLButtonElement;
   _processingOverlay?: HTMLElement;
+  _processingOverlayObserver?: ResizeObserver;
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
@@ -333,9 +334,64 @@ export default class Freeform {
     this.form.dataset.freeformOverlayActive = "";
     this.form.appendChild(overlay);
     this._processingOverlay = overlay;
+    this._updateProcessingOverlayPosition();
+
+    window.addEventListener("scroll", this._updateProcessingOverlayPosition, {
+      passive: true,
+    });
+    window.addEventListener("resize", this._updateProcessingOverlayPosition);
+    window.visualViewport?.addEventListener(
+      "scroll",
+      this._updateProcessingOverlayPosition,
+      { passive: true },
+    );
+    window.visualViewport?.addEventListener(
+      "resize",
+      this._updateProcessingOverlayPosition,
+    );
+    if (typeof ResizeObserver !== "undefined") {
+      this._processingOverlayObserver = new ResizeObserver(
+        this._updateProcessingOverlayPosition,
+      );
+      this._processingOverlayObserver.observe(this.form);
+    }
+  };
+
+  _updateProcessingOverlayPosition = (): void => {
+    if (!this._processingOverlay?.isConnected) {
+      return;
+    }
+
+    const rect = this.form.getBoundingClientRect();
+    const viewportTop = window.visualViewport?.offsetTop ?? 0;
+    const viewportBottom =
+      viewportTop + (window.visualViewport?.height ?? window.innerHeight);
+    const visibleTop = Math.max(rect.top, viewportTop);
+    const visibleBottom = Math.min(rect.bottom, viewportBottom);
+    const center =
+      visibleBottom > visibleTop
+        ? (visibleTop + visibleBottom) / 2 - rect.top
+        : rect.height / 2;
+
+    this._processingOverlay.style.setProperty(
+      "--ff-processing-overlay-center-y",
+      `${Math.max(0, Math.min(rect.height, center))}px`,
+    );
   };
 
   _hideProcessingOverlay = (): void => {
+    window.removeEventListener("scroll", this._updateProcessingOverlayPosition);
+    window.removeEventListener("resize", this._updateProcessingOverlayPosition);
+    window.visualViewport?.removeEventListener(
+      "scroll",
+      this._updateProcessingOverlayPosition,
+    );
+    window.visualViewport?.removeEventListener(
+      "resize",
+      this._updateProcessingOverlayPosition,
+    );
+    this._processingOverlayObserver?.disconnect();
+    this._processingOverlayObserver = undefined;
     this._processingOverlay?.remove();
     this._processingOverlay = undefined;
     delete this.form.dataset.freeformOverlayActive;

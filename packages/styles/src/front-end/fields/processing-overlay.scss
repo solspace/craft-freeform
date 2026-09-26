@@ -10,21 +10,26 @@ form[data-freeform-overlay-active] > :not(.freeform-processing-overlay) {
   position: absolute;
   z-index: 10;
   inset: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .freeform-processing-overlay__message {
+  position: absolute;
+  top: var(--ff-processing-overlay-center-y, 50%);
+  left: 50%;
+
+  box-sizing: border-box;
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  width: max-content;
   max-width: calc(100% - 2rem);
   padding: 0.875rem 1.25rem;
 
+  transform: translate(-50%, -50%);
+
   font: 500 1rem/1.4 system-ui, sans-serif;
   color: var(--ff-processing-overlay-color, #212529);
+  overflow-wrap: anywhere;
 
   background: var(--ff-processing-overlay-surface, #ffffff);
   border-radius: 0.5rem;

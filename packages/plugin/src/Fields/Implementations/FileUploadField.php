@@ -13,7 +13,6 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
-use Craft;
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
 use craft\gql\interfaces\elements\Asset as FileUploadType;
@@ -179,7 +178,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         $kinds = [];
         foreach ($this->getFileKinds() as $kind) {
             if (isset($allowedKinds[$kind])) {
-                $kinds[] = $friendlyKinds[$kind] ?? Craft::t('app', $allowedKinds[$kind]['label']);
+                $kinds[] = $friendlyKinds[$kind] ?? \Craft::t('app', $allowedKinds[$kind]['label']);
             }
         }
 
@@ -193,25 +192,10 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             ? Freeform::t('1 file')
             : Freeform::t('Up to {count} files', ['count' => $count]);
         $requirements[] = Freeform::t('Up to {size} KB per file', [
-            'size' => Craft::$app->getFormatter()->asInteger($this->getMaxFileSizeKB()),
+            'size' => \Craft::$app->getFormatter()->asInteger($this->getMaxFileSizeKB()),
         ]);
 
         return implode(' · ', $requirements);
-    }
-
-    protected function getUploadRequirementsHtml(): string
-    {
-        if (!$this->isShowUploadRequirements()) {
-            return '';
-        }
-
-        $instructionClass = $this->getAttributes()->getInstructions()->get('class', '');
-
-        return Html::tag('div', Html::encode($this->getUploadRequirementsText()), [
-            'id' => $this->getIdAttribute().'-upload-requirements',
-            'class' => trim('freeform-upload-requirements '.$instructionClass),
-            'style' => 'margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4;',
-        ]);
     }
 
     public function renderUploadRequirements(): Markup
@@ -295,5 +279,20 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             'type' => FileUploadInputType::getType(),
             'description' => trim($description),
         ];
+    }
+
+    protected function getUploadRequirementsHtml(): string
+    {
+        if (!$this->isShowUploadRequirements()) {
+            return '';
+        }
+
+        $instructionClass = $this->getAttributes()->getInstructions()->get('class', '');
+
+        return Html::tag('div', Html::encode($this->getUploadRequirementsText()), [
+            'id' => $this->getIdAttribute().'-upload-requirements',
+            'class' => trim('freeform-upload-requirements '.$instructionClass),
+            'style' => 'margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4;',
+        ]);
     }
 }

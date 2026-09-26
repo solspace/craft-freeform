@@ -96,3 +96,28 @@ form[data-freeform-multipage] { --ff-email-suggestion-color: #6c757d; --ff-email
     min-height: 0;
     padding: 1rem;
 }
+
+.freeform-form button.freeform-file-dnd__input [data-remove-button] {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0 !important;
+}
+.freeform-form button.freeform-file-dnd__input [data-remove-button] svg {
+    display: none;
+}
+.freeform-form button.freeform-file-dnd__input [data-remove-button]::before,
+.freeform-form button.freeform-file-dnd__input [data-remove-button]::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 2px;
+    background: currentColor;
+    content: "";
+}
+.freeform-form button.freeform-file-dnd__input [data-remove-button]::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+.freeform-form button.freeform-file-dnd__input [data-remove-button]::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}

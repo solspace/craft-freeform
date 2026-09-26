@@ -3397,4 +3397,13 @@ return [
     'Phone country code' => 'Phone country code',
     'National phone number' => 'National phone number',
     'Phone extension' => 'Phone extension',
+    'Show Upload Requirements' => 'Show Upload Requirements',
+    'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.' => 'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.',
+    '1 file' => '1 file',
+    'Up to {count} files' => 'Up to {count} files',
+    'Up to {size} KB per file' => 'Up to {size} KB per file',
+    'Images' => 'Images',
+    'PDFs' => 'PDFs',
+    'Audio files' => 'Audio files',
+    'Videos' => 'Videos',
 ];

@@ -3397,4 +3397,13 @@ return [
     'Phone country code' => 'Indicatif téléphonique du pays',
     'National phone number' => 'Numéro de téléphone national',
     'Phone extension' => 'Poste téléphonique',
+    'Show Upload Requirements' => 'Afficher les limites de téléversement',
+    'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.' => 'Afficher les types de fichiers autorisés, le nombre maximal de fichiers et la taille maximale sous le champ de téléversement.',
+    '1 file' => '1 fichier',
+    'Up to {count} files' => 'Jusqu’à {count} fichiers',
+    'Up to {size} KB per file' => 'Jusqu’à {size} Ko par fichier',
+    'Images' => 'Images',
+    'PDFs' => 'PDF',
+    'Audio files' => 'Fichiers audio',
+    'Videos' => 'Vidéos',
 ];

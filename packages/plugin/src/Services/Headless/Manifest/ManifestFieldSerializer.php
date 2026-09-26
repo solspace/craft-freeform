@@ -328,6 +328,10 @@ class ManifestFieldSerializer
                 'multiple' => $field->getFileCount() > 1,
             ];
 
+            if ($field->isShowUploadRequirements()) {
+                $config['uploadRequirements'] = $field->getUploadRequirementsText();
+            }
+
             if ($field instanceof FileDragAndDropField) {
                 $config['accent'] = $field->getAccent();
                 $config['theme'] = $field->getTheme();

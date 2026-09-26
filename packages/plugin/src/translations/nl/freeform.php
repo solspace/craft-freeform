@@ -3360,4 +3360,9 @@ return [
     'Phone country code' => 'Landnummer telefoon',
     'National phone number' => 'Nationaal telefoonnummer',
     'Phone extension' => 'Doorkiesnummer',
+    'Show Upload Requirements' => 'Uploadvereisten tonen',
+    'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.' => 'Toon de toegestane bestandstypen, het maximale aantal bestanden en de maximale bestandsgrootte onder het uploadveld.',
+    '1 file' => '1 bestand',
+    'Up to {count} files' => 'Maximaal {count} bestanden',
+    'Up to {size} KB per file' => 'Maximaal {size} KB per bestand',
 ];

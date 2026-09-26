@@ -1,1 +1,6 @@
 <input type="file" />
+<% if (typeof showUploadRequirements !== 'undefined' && showUploadRequirements) { %>
+    <div style="margin-top: 4px; font-size: 0.875em; opacity: 0.75;">
+        <% if (typeof fileKinds !== 'undefined' && fileKinds.length) { %><%= fileKinds.map(kind => kind.charAt(0).toUpperCase() + kind.slice(1)).join(', ') %> · <% } %><% if (fileCount > 1) { %>Up to <%= fileCount %> files<% } else { %>1 file<% } %> · Up to <%= maxFileSizeKB || 2048 %> KB per file
+    </div>
+<% } %>

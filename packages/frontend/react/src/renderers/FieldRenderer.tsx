@@ -34,6 +34,11 @@ export function FieldRenderer({
   const Renderer = resolveFieldRenderer(field, renderers, theme);
   const value = form.values[field.handle];
   const isCheckbox = field.type === "checkbox";
+  const uploadRequirements =
+    field.type === "file" || field.type === "file-dnd"
+      ? ((field.frontend?.config as { uploadRequirements?: string } | undefined)
+          ?.uploadRequirements ?? "")
+      : "";
   const isPresentational =
     field.type === "html" ||
     field.type === "rich-text" ||
@@ -196,6 +201,15 @@ export function FieldRenderer({
         renderInstructions={renderInstructions}
         renderErrors={renderErrors}
       />
+      {uploadRequirements && (
+        <div
+          id={`freeform-${field.handle}-upload-requirements`}
+          className="freeform-upload-requirements"
+          style={{ marginTop: "0.25em", fontSize: "0.875em", opacity: 0.75 }}
+        >
+          {uploadRequirements}
+        </div>
+      )}
       {renderErrors()}
     </components.FieldWrapper>
   );

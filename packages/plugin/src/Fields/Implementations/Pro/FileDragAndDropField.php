@@ -165,6 +165,10 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->set('data-confirm-message', $this->getRemoveFileMessage())
         ;
 
+        if ($this->isShowUploadRequirements()) {
+            $attributes->append('aria-describedby', $this->getIdAttribute().'-upload-requirements');
+        }
+
         if ($this->isUseCustomDialog()) {
             $attributes->set('data-dialog-selector', $this->getConfirmDialogSelector());
         }
@@ -195,7 +199,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             $attributes->toHtmlTagArray(['field' => $this])
         );
 
-        return $tag.$errorTag;
+        return $tag.$this->getUploadRequirementsHtml().$errorTag;
     }
 
     public function uploadFile(): ?array

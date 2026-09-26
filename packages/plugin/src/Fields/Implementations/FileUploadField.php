@@ -13,9 +13,11 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use Craft;
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
 use craft\gql\interfaces\elements\Asset as FileUploadType;
+use craft\helpers\Assets;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
@@ -33,6 +35,7 @@ use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
+use Solspace\Freeform\Freeform;
 
 #[Type(
     name: 'File Upload',
@@ -76,6 +79,15 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         instructions: 'Specify the maximum uploadable file count.',
     )]
     protected int $fileCount = self::DEFAULT_FILE_COUNT;
+
+    #[Limitation('props.file', 'showUploadRequirements')]
+    #[DefaultValue('props.file.showUploadRequirements')]
+    #[Input\Boolean(
+        label: 'Show Upload Requirements',
+        instructions: 'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.',
+        order: 5,
+    )]
+    protected bool $showUploadRequirements = false;
 
     /**
      * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
@@ -145,6 +157,54 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         return $this->fileCount <= 1 ? self::DEFAULT_FILE_COUNT : $this->fileCount;
     }
 
+    public function isShowUploadRequirements(): bool
+    {
+        return $this->showUploadRequirements;
+    }
+
+    public function getUploadRequirementsText(): string
+    {
+        if (!$this->isShowUploadRequirements()) {
+            return '';
+        }
+
+        $allowedKinds = Assets::getAllowedFileKinds();
+        $kinds = [];
+        foreach ($this->getFileKinds() as $kind) {
+            if (isset($allowedKinds[$kind])) {
+                $kinds[] = Craft::t('app', $allowedKinds[$kind]['label']);
+            }
+        }
+
+        $requirements = [];
+        if ($kinds) {
+            $requirements[] = implode(', ', $kinds);
+        }
+
+        $count = $this->getFileCount();
+        $requirements[] = 1 === $count
+            ? Freeform::t('1 file')
+            : Freeform::t('Up to {count} files', ['count' => $count]);
+        $requirements[] = Freeform::t('Up to {size} KB per file', [
+            'size' => Craft::$app->getFormatter()->asInteger($this->getMaxFileSizeKB()),
+        ]);
+
+        return implode(' · ', $requirements);
+    }
+
+    protected function getUploadRequirementsHtml(): string
+    {
+        if (!$this->isShowUploadRequirements()) {
+            return '';
+        }
+
+        return Html::tag('div', Html::encode($this->getUploadRequirementsText()), [
+            'id' => $this->getIdAttribute().'-upload-requirements',
+            'class' => 'freeform-upload-requirements',
+            'style' => 'margin-top: 0.25em; font-size: 0.875em; opacity: 0.75;',
+        ]);
+    }
+
     public function getInputHtml(): string
     {
         $preview = '';
@@ -183,13 +243,17 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             ->set($this->getRequiredAttribute())
         ;
 
+        if ($this->isShowUploadRequirements()) {
+            $attributes->append('aria-describedby', $this->getIdAttribute().'-upload-requirements');
+        }
+
         $input = Html::tag(
             $attributes->getTag('input'),
             '',
             $attributes->toHtmlTagArray(['field' => $this])
         );
 
-        return $preview.$input;
+        return $preview.$input.$this->getUploadRequirementsHtml();
     }
 
     public function getContentGqlType(): array|GQLType

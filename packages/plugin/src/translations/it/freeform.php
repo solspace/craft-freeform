@@ -3397,4 +3397,9 @@ return [
     'Phone country code' => 'Prefisso internazionale',
     'National phone number' => 'Numero di telefono nazionale',
     'Phone extension' => 'Interno telefonico',
+    'Show Upload Requirements' => 'Mostra i limiti di caricamento',
+    'Display the allowed file kinds, maximum number of files, and maximum size beneath the upload field.' => 'Mostra i tipi di file consentiti, il numero massimo di file e la dimensione massima sotto il campo di caricamento.',
+    '1 file' => '1 file',
+    'Up to {count} files' => 'Fino a {count} file',
+    'Up to {size} KB per file' => 'Fino a {size} KB per file',
 ];

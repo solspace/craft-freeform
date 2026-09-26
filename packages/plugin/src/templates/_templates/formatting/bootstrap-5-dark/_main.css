@@ -65,3 +65,8 @@ form[data-freeform-bootstrap-dark] { --ff-email-suggestion-color: #99a1af; --ff-
         grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
 }
+
+/* Bootstrap's negative instruction margin must not pull upload hints over the input. */
+.freeform-form[data-freeform-bootstrap-dark] .freeform-upload-requirements {
+    margin-top: 0.375em !important;
+}

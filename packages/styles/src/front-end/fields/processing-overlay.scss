@@ -2,6 +2,10 @@ form[data-freeform-overlay-active] {
   position: relative;
 }
 
+form[data-freeform-overlay-active] > :not(.freeform-processing-overlay) {
+  opacity: var(--ff-processing-overlay-content-opacity, 0.4);
+}
+
 .freeform-processing-overlay {
   position: absolute;
   z-index: 10;
@@ -10,8 +14,6 @@ form[data-freeform-overlay-active] {
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: var(--ff-processing-overlay-background, rgb(0 0 0 / 35%));
 }
 
 .freeform-processing-overlay__message {

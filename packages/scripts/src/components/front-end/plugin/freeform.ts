@@ -23,11 +23,9 @@ import SaveFormHandler from "@lib/plugin/handlers/form/save-form";
 import { ajax } from "@lib/plugin/helpers/ajax";
 import type { ResponseObject } from "@lib/plugin/helpers/ajax/ajax.types";
 import { isSafari } from "@lib/plugin/helpers/browser-check";
-import { getClassQuery } from "@lib/plugin/helpers/classes";
 import { fetchCsrf } from "@lib/plugin/helpers/csrf";
 import {
   addClass,
-  getClassArray,
   removeClass,
   removeElement,
 } from "@lib/plugin/helpers/elements";
@@ -111,6 +109,11 @@ export default class Freeform {
   _processingOverlayObserver?: ResizeObserver;
   _successBannerAttributes: Record<string, unknown> = {};
   _errorBannerAttributes: Record<string, unknown> = {};
+  _baseFieldClasses = new WeakMap<HTMLElement, Set<string>>();
+  _errorClassChanges = new Map<
+    HTMLElement,
+    { added: string[]; removed: string[] }
+  >();
   _lockList: Set<string> = new Set<string>();
   _disableList: Set<string> = new Set<string>();
 
@@ -208,6 +211,16 @@ export default class Freeform {
 
   _setUp = (): void => {
     this._attachListeners();
+
+    this.form
+      .querySelectorAll<HTMLElement>(
+        "[data-field-container], input, select, textarea, label, legend, [data-freeform-file-upload]",
+      )
+      .forEach((element) => {
+        if (!this._baseFieldClasses.has(element)) {
+          this._baseFieldClasses.set(element, new Set(element.classList));
+        }
+      });
 
     const submitButtons = this._getSubmitButtons();
     submitButtons.forEach((button) => {
@@ -642,16 +655,19 @@ export default class Freeform {
     } = options;
 
     // Remove any existing errors that are being shown
-    removeElement(
-      form.querySelectorAll(`.${getClassArray(errorClassList).join(".")}`),
-    );
+    if (errorClassList) {
+      removeElement(form.getElementsByClassName(errorClassList));
+    }
+    removeElement(form.querySelectorAll("[data-field-errors]"));
 
-    const fieldsWithErrors = form.querySelectorAll<HTMLInputElement>(
-      `.${getClassArray(errorClassField).join(".")}`,
-    );
-    fieldsWithErrors.forEach((field) => {
-      this._removeMessageFrom(field);
-    });
+    if (errorClassField) {
+      Array.from(form.getElementsByClassName(errorClassField)).forEach(
+        (field) => {
+          this._removeMessageFrom(field as HTMLInputElement);
+        },
+      );
+    }
+    this._restoreErrorClasses();
 
     // Remove success messages
     if (successClassBanner) {
@@ -706,6 +722,36 @@ export default class Freeform {
     }
   };
 
+  _applyErrorClasses = (element: HTMLElement, source: HTMLElement): void => {
+    const base =
+      this._baseFieldClasses.get(element) ?? new Set(element.classList);
+    const error = new Set(source.classList);
+    const added = [...error].filter(
+      (name) => !base.has(name) && !element.classList.contains(name),
+    );
+    const removed = [...base].filter(
+      (name) => !error.has(name) && element.classList.contains(name),
+    );
+
+    element.classList.remove(...removed);
+    element.classList.add(...added);
+    if (added.length || removed.length) {
+      this._errorClassChanges.set(element, { added, removed });
+    }
+  };
+
+  _restoreErrorClasses = (container?: HTMLElement): void => {
+    for (const [element, { added, removed }] of this._errorClassChanges) {
+      if (container && element !== container && !container.contains(element)) {
+        continue;
+      }
+
+      element.classList.remove(...added);
+      element.classList.add(...removed);
+      this._errorClassChanges.delete(element);
+    }
+  };
+
   _removeMessageFrom = (field: HTMLInputElement): void => {
     const event = this._dispatchEvent(events.form.fieldRemoveMessages, {
       field,
@@ -729,22 +775,39 @@ export default class Freeform {
       }
     }
 
-    removeElement(
-      errorContainerNode.querySelector<HTMLElement>(
-        getClassQuery(errorClassList),
-      ),
-    );
+    const fieldError = errorId
+      ? Array.from(
+          fieldContainer?.querySelectorAll<HTMLElement>(
+            "[data-field-errors]",
+          ) ?? [],
+        ).find((element) => element.id === errorId)
+      : null;
+    if (fieldError) {
+      removeElement(fieldError);
+    } else {
+      removeElement(
+        errorContainerNode.querySelector<HTMLElement>("[data-field-errors]"),
+      );
+    }
+    if (errorClassList && !fieldError) {
+      removeElement(errorContainerNode.getElementsByClassName(errorClassList));
+    }
 
     const fields = errorContainerNode.querySelectorAll<HTMLInputElement>(
       "input, select, textarea",
     );
     for (let i = 0; i < fields.length; i++) {
-      removeClass(fields[i], errorClassField);
+      if (errorClassField) {
+        removeClass(fields[i], errorClassField);
+      }
       fields[i].removeAttribute("aria-invalid");
 
       if (errorId) {
         this._removeAriaDescribedBy(fields[i], errorId);
       }
+    }
+    if (fieldContainer) {
+      this._restoreErrorClasses(fieldContainer);
     }
   };
 
@@ -807,7 +870,7 @@ export default class Freeform {
     form.insertBefore(successMessage, form.childNodes[0]);
   };
 
-  _renderFieldErrors = (errors: Record<string, string[]>) => {
+  _renderFieldErrors = (errors: Record<string, string[]>, html?: string) => {
     const event = this._dispatchEvent(events.form.renderFieldErrors, {
       errors,
     });
@@ -823,54 +886,106 @@ export default class Freeform {
 
     const { form, options } = this;
     const { errorClassList, errorClassField } = options;
+    const responseForm = html
+      ? new DOMParser().parseFromString(html, "text/html").querySelector("form")
+      : null;
+    const responseContainers = Array.from(
+      responseForm?.querySelectorAll<HTMLElement>("[data-field-container]") ??
+        [],
+    );
 
     for (const key in errors) {
       const messages = errors[key];
-      const errorsList = document.createElement("ul");
-      errorsList.setAttribute("data-field-errors", "");
-      addClass(errorsList, errorClassList);
+      const container = Array.from(
+        form.querySelectorAll<HTMLElement>("[data-field-container]"),
+      ).find((element) => element.dataset.fieldContainer === key);
 
-      for (
-        let messageIndex = 0;
-        messageIndex < messages.length;
-        messageIndex++
-      ) {
-        const message = messages[messageIndex];
+      if (!container) {
+        continue;
+      }
+
+      const responseContainer = responseContainers.find(
+        (element) => element.dataset.fieldContainer === key,
+      );
+      const errorId = container.dataset.fieldErrorId;
+      const responseError = errorId
+        ? Array.from(
+            responseContainer?.querySelectorAll<HTMLElement>("[id]") ?? [],
+          ).find((element) => element.id === errorId)
+        : null;
+      const sourceTag = responseError?.tagName.toLowerCase();
+      const errorsList = document.createElement(
+        sourceTag && ["ul", "ol", "div"].includes(sourceTag) ? sourceTag : "ul",
+      );
+      if (responseError) {
+        this._applyBannerAttributes(
+          errorsList,
+          Object.fromEntries(
+            Array.from(responseError.attributes, (attribute) => [
+              attribute.name,
+              attribute.value,
+            ]),
+          ),
+        );
+      }
+      errorsList.setAttribute("data-field-errors", "");
+      const listClass =
+        responseError && errorClassList === "freeform-errors"
+          ? responseError.getAttribute("class")
+          : errorClassList;
+      if (listClass) {
+        addClass(errorsList, listClass);
+      }
+
+      for (const message of messages) {
         const listItem = document.createElement("li");
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
       }
 
-      const container = form.querySelector<HTMLElement>(
-        `[data-field-container="${key}"]`,
-      );
-      const errorAppendTarget = form.querySelector<HTMLElement>(
-        `[data-error-append-target="${key}"]`,
-      );
-      const inputList = form.querySelectorAll<HTMLElement>(
-        `
-          [name="${key}"],
-          [type=file][name="${key}"],
-          [type=file][name="${key}[]"],
-          [type=checkbox][name="${key}[]"],
-          [type=radio][name="${key}"],
-          select[multiple][name="${key}[]"],
-          [data-freeform-file-upload="${key}"]
-        `,
-      );
-
-      if (!container) {
-        return;
-      }
-
-      const errorId = container.dataset.fieldErrorId;
       if (errorId) {
         errorsList.id = errorId;
       }
 
+      if (responseContainer) {
+        this._applyErrorClasses(container, responseContainer);
+        const label = container.querySelector<HTMLElement>("legend, label");
+        const responseLabel =
+          responseContainer.querySelector<HTMLElement>("legend, label");
+        if (label && responseLabel && label.tagName === responseLabel.tagName) {
+          this._applyErrorClasses(label, responseLabel);
+        }
+      }
+
+      const fieldInputs = (root: HTMLElement): HTMLElement[] =>
+        Array.from(
+          root.querySelectorAll<HTMLElement>(
+            "input, select, textarea, [data-freeform-file-upload]",
+          ),
+        ).filter(
+          (element) =>
+            element.getAttribute("name") === key ||
+            element.getAttribute("name") === `${key}[]` ||
+            element.getAttribute("data-freeform-file-upload") === key,
+        );
+      const inputList = fieldInputs(container);
+      const responseInputs = responseContainer
+        ? fieldInputs(responseContainer)
+        : [];
+
       for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
         const input = inputList[inputIndex];
-        addClass(input, errorClassField);
+        const responseInput = responseInputs[inputIndex];
+        if (
+          responseInput &&
+          input.tagName === responseInput.tagName &&
+          input.getAttribute("name") === responseInput.getAttribute("name")
+        ) {
+          this._applyErrorClasses(input, responseInput);
+        }
+        if (errorClassField) {
+          addClass(input, errorClassField);
+        }
         input.setAttribute("aria-invalid", "true");
 
         if (errorId) {
@@ -878,6 +993,9 @@ export default class Freeform {
         }
       }
 
+      const errorAppendTarget = Array.from(
+        container.querySelectorAll<HTMLElement>("[data-error-append-target]"),
+      ).find((element) => element.dataset.errorAppendTarget === key);
       if (errorAppendTarget) {
         errorAppendTarget.appendChild(errorsList);
       } else {
@@ -1015,7 +1133,7 @@ export default class Freeform {
         this._dispatchEvent(events.form.afterFailedSubmit, {
           cancelable: false,
         });
-        this._renderFieldErrors(errors);
+        this._renderFieldErrors(errors, responseData.html);
         this._renderFormErrors(formErrors);
       }
 
@@ -1146,7 +1264,7 @@ export default class Freeform {
               this._dispatchEvent(events.form.afterFailedSubmit, {
                 cancelable: false,
               });
-              this._renderFieldErrors(errors);
+              this._renderFieldErrors(errors, response.html);
               this._renderFormErrors(formErrors);
             }
           } else {

@@ -1313,9 +1313,13 @@ export default class Freeform {
       method,
       request,
     })
-      .then((serverResponse) => {
+      .then(async (serverResponse) => {
         this._removeMessages();
         let validationErrors: Record<string, string[]> | undefined;
+        const pendingCaptchaTasks: Promise<unknown>[] = [];
+        const waitUntil = (promise: Promise<unknown>) => {
+          pendingCaptchaTasks.push(promise);
+        };
 
         if (serverResponse.status === 200) {
           const response = serverResponse.data as FreeformResponseWithToken;
@@ -1397,6 +1401,7 @@ export default class Freeform {
               });
               this._dispatchEvent(events.form.afterFailedSubmit, {
                 cancelable: false,
+                waitUntil,
               });
               this._renderFieldErrors(errors, response.html);
               this._renderFormErrors(formErrors);
@@ -1424,6 +1429,7 @@ export default class Freeform {
             request,
             response,
             cancelable: false,
+            waitUntil,
           });
         } else {
           const response = request.response;
@@ -1432,6 +1438,13 @@ export default class Freeform {
         }
 
         this.unlockSubmit();
+        if (
+          validationErrors &&
+          this.options.focusFirstError &&
+          pendingCaptchaTasks.length
+        ) {
+          await Promise.allSettled(pendingCaptchaTasks);
+        }
         if (
           validationErrors &&
           this.options.focusFirstError &&

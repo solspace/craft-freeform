@@ -71,7 +71,7 @@
                                                     {% set asset = craft.assets.id(assetId).one() %}
                                                     {% if asset %}
                                                         {% if asset.kind == "image" %}
-                                                            <img src="{{ asset.url }}" style="max-width: 350px; max-height: 350px;" />
+                                                            <img src="{{ asset.url }}" alt="{{ asset.title ?: asset.filename }}" style="max-width: 350px; max-height: 350px;" />
                                                         {% else %}
                                                             <a href="{{ asset.url }}">{{ asset.filename }}</a>
                                                         {% endif %}

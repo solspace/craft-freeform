@@ -14,6 +14,10 @@ class Processing extends BaseCategory
     #[SetDefaultValue(true)]
     public BoolItem $ajax;
 
+    #[Label('Focus First Error After Submit')]
+    #[SetDefaultValue(false)]
+    public BoolItem $focusFirstError;
+
     #[Label('Show Processing Indicator on Submit')]
     #[SetDefaultValue(true)]
     public BoolItem $showIndicator;

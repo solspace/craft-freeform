@@ -260,7 +260,14 @@ html:has(.freeform-warning-notice) {
     height: 5px;
 }
 #freeform-menu-toggle {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+#freeform-menu-toggle:focus-visible + .freeform-menu-hamburger {
+    outline: 2px solid #0d6efd;
+    outline-offset: 8px;
 }
 #freeform-menu-toggle:checked + .freeform-menu-hamburger .top {
     transform: rotate(-45deg);
@@ -327,6 +334,7 @@ html:has(.freeform-warning-notice) {
     padding: 5px 8px;
     margin: 0 3px;
     font-size: 12px;
+    font-family: inherit;
     text-decoration: none;
     border: none;
     border-radius: 5px;
@@ -349,6 +357,10 @@ html:has(.freeform-warning-notice) {
     color: var(--nav-button-hover);
     background: #0d6efd;
 }
+.freeform-nav-button:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
 .freeform-nav-button .freeform-form-circle,
 .freeform-nav-dropdown-content a .freeform-form-circle {
     display: inline-block;
@@ -357,6 +369,9 @@ html:has(.freeform-warning-notice) {
     height: 8px;
     margin: 0 6px 0 0;
     border-radius: 50%;
+}
+.freeform-form-circle[hidden] {
+    display: none;
 }
 
 /* Freeform Info Dropdown */
@@ -410,10 +425,12 @@ html:has(.freeform-warning-notice) {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.freeform-nav-dropdown:hover .freeform-nav-dropdown-content {
+.freeform-nav-dropdown:hover .freeform-nav-dropdown-content,
+.freeform-nav-dropdown:focus-within .freeform-nav-dropdown-content {
     display: block;
 }
-.freeform-nav-dropdown:hover .freeform-nav-button {
+.freeform-nav-dropdown:hover .freeform-nav-button,
+.freeform-nav-dropdown:focus-within .freeform-nav-button {
     color: var(--nav-button-active);
     background: #0d6efd;
     border-bottom-left-radius: 0px;

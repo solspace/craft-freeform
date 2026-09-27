@@ -17,10 +17,10 @@
     {% if form %}
     
         <div class="freeform-page-heading">
-            <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
+            <h2{{ craft.app.request.segment(baseUrlSegments + 4) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
         </div>
 
-        {# Check which if a duplicate check is applied #}
+        {# Describe the duplicate check if one is enabled. #}
         {% set duplicateCheck = form.settings.duplicateCheck %}
         {% if duplicateCheck == "no_limit" %}
             {% set duplicateCheckType = false %}
@@ -30,12 +30,12 @@
             {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
         {% elseif duplicateCheck == "limit_once_per_email" %}
             {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-        {% elseif duplicateCheck == "limit_once_per_email" %}
-            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
         {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
             {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
         {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
             {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP or Cookie" %}
+        {% else %}
+            {% set duplicateCheckType = false %}
         {% endif %}
         
         {# Handle message content for Guests viewing a Logged-in User only form #}
@@ -83,16 +83,14 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>
-                    Make sure you have the <b>Duplicate Check</b> setting enabled (inside the form builder Settings tab).
-                </li>
-                <li>This page template contains a conditional that will hide the form once it detects that the user has already submitted the form.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            <li>
+                Make sure you have the <b>Duplicate Check</b> setting enabled (inside the form builder Settings tab).
+            </li>
+            <li>This page template contains a conditional that will hide the form once it detects that the user has already submitted the form.</li>
+        </ol>
     </div>
 
 {% endblock %}

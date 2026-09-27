@@ -97,5 +97,15 @@ class FormAttributesBundle extends FeatureBundle
 
         $attributes->replace('data-success-message', $form->getSuccessMessage());
         $attributes->replace('data-error-message', $form->getErrorMessage());
+
+        // Pass the resolved template overrides to the AJAX renderer. Attributes
+        // escapes the JSON when it is written to the form tag.
+        foreach (['success' => 'getSuccess', 'error' => 'getErrors'] as $banner => $getter) {
+            $bannerAttributes = $form->getAttributes()->{$getter}()->toHtmlTagArray();
+            $attributes->replace(
+                'data-'.$banner.'-banner-attributes',
+                $bannerAttributes ? json_encode($bannerAttributes, \JSON_THROW_ON_ERROR) : false,
+            );
+        }
     }
 }

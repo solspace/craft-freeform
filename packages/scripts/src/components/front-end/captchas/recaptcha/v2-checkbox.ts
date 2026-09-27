@@ -70,21 +70,15 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 addListeners(
   document,
   [events.form.ajaxAfterSubmit],
-  (event: FreeformEvent) => {
-    const reset = loadReCaptcha(event.form, true)
+  async (event: FreeformEvent) => {
+    loadReCaptcha(event.form, true)
       .then(() => {
         const element = createCaptcha(event);
         if (element) {
           const id = element.dataset.captchaId;
-          return new Promise<void>((resolve) => {
-            grecaptcha.ready(() => {
-              grecaptcha.reset(id ? Number(id) : undefined);
-              resolve();
-            });
-          });
+          grecaptcha.ready(() => grecaptcha.reset(id ? Number(id) : undefined));
         }
       })
       .catch(() => {});
-    event.waitUntil?.(reset);
   },
 );

@@ -23,7 +23,7 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
 };
 
 const initRecaptchaInvisible = (event: FreeformEvent): void => {
-  const reset = loadReCaptcha(event.form)
+  loadReCaptcha(event.form)
     .then(() => {
       const container = getContainer(event.form);
       if (!container) {
@@ -54,16 +54,10 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
           element.dataset.captchaId = String(id);
         });
       } else {
-        return new Promise<void>((resolve) => {
-          grecaptcha.ready(() => {
-            grecaptcha.reset();
-            resolve();
-          });
-        });
+        grecaptcha.ready(grecaptcha.reset);
       }
     })
     .catch(() => {});
-  event.waitUntil?.(reset);
 };
 
 document.addEventListener(events.form.submit, async (event: FreeformEvent) => {

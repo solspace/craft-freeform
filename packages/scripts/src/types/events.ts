@@ -8,7 +8,6 @@ export type FreeformEvent = CustomEvent & {
   form: HTMLFormElement;
   isBackButtonPressed?: boolean;
   addCallback: (callback: Callback, priority?: number) => void;
-  waitUntil?: (promise: Promise<unknown>) => void;
 };
 
 type AllTypes = string | number | boolean | null | undefined;

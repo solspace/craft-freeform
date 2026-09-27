@@ -138,8 +138,8 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 addListeners(
   document,
   [events.form.ajaxAfterSubmit],
-  (event: FreeformEvent) => {
-    const reset = loadCaptcha(event.form, true)
+  async (event: FreeformEvent) => {
+    loadCaptcha(event.form, true)
       .then(() => {
         const handle = createCaptcha(event);
         const container = getContainer(event.form);
@@ -155,6 +155,5 @@ addListeners(
         }
       })
       .catch(() => {});
-    event.waitUntil?.(reset);
   },
 );

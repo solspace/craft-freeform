@@ -60,7 +60,7 @@
                         {% for field in row %}
                             {% if field.type != "submit" and field.type != "save" %}
                                 <tr>
-                                    <th style="width: 30%;">{{ field.label }}</th>
+                                    <th scope="row" style="width: 30%;">{{ field.label }}</th>
                                     <td>
                                         {% if field.type == "password" %}
                                             •••••

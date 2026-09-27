@@ -227,7 +227,7 @@ export default class Freeform {
         current = current.parentElement
       ) {
         if (
-          current.hidden ||
+          current.hasAttribute("hidden") ||
           current.hasAttribute("inert") ||
           current.getAttribute("aria-hidden") === "true"
         ) {

@@ -70,6 +70,26 @@ describe("AJAX focus first error", () => {
     ).toBe("true");
   });
 
+  it("focuses an invalid field when another field is named hidden", async () => {
+    const { form, freeform } = setup(`
+      <form data-freeform data-ajax data-focus-first-error data-auto-scroll>
+        <div data-field-container="hidden"><input id="form-input-hidden" name="hidden" type="hidden"></div>
+        <div data-field-container="confirm"><input name="confirm"></div>
+      </form>
+    `);
+    // Browsers can resolve form.hidden to an input named hidden instead of the HTML attribute.
+    Object.defineProperty(form, "hidden", {
+      value: form.querySelector('[name="hidden"]'),
+      configurable: true,
+    });
+    const scroll = vi.spyOn(freeform, "_scrollToForm");
+
+    await submitWithErrors(freeform, { confirm: ["Does not match"] });
+
+    expect(document.activeElement).toBe(form.querySelector('[name="confirm"]'));
+    expect(scroll).not.toHaveBeenCalled();
+  });
+
   it("focuses a form-level error banner when there are no field errors", async () => {
     const { form, freeform } = setup(
       '<form data-freeform data-ajax data-focus-first-error data-error-message="Try again"><input name="email"></form>',

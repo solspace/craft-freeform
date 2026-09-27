@@ -53,11 +53,10 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(ajax)')]
     #[DefaultValue('settings.processing.focusFirstError')]
     #[Input\Boolean(
-        label: 'Focus First Error After AJAX Submit',
-        instructions: 'After an AJAX submission fails validation, move focus to the first visible field with an error, or to the error message if there are no field errors.',
+        label: 'Focus First Error After Submit',
+        instructions: 'After validation fails, move focus to the first visible field with an error, or to the error message if there are no field errors.',
         order: 2,
     )]
     public bool $focusFirstError = false;

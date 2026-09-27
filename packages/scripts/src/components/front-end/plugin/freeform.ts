@@ -190,7 +190,12 @@ export default class Freeform {
         this.enableSubmit("init");
 
         const { scrollToAnchor } = this.options;
-        if (scrollToAnchor) {
+        const focusedError =
+          !this.options.ajax &&
+          this.options.focusFirstError &&
+          form.querySelector("[data-freeform-error-banner]") &&
+          this._focusFirstError();
+        if (scrollToAnchor && !focusedError) {
           this._scrollToForm();
         }
       }
@@ -243,13 +248,25 @@ export default class Freeform {
     for (const container of Array.from(
       this.form.querySelectorAll<HTMLElement>("[data-field-container]"),
     )) {
-      if (!errors?.[container.dataset.fieldContainer]?.length) continue;
+      const renderedError = container.querySelector(
+        '[aria-invalid="true"], [data-field-errors]',
+      );
+      if (
+        !renderedError &&
+        !errors?.[container.dataset.fieldContainer]?.length
+      ) {
+        continue;
+      }
 
-      for (const field of Array.from(
+      const fields = Array.from(
         container.querySelectorAll<HTMLElement>(
           "input, select, textarea, [data-freeform-file-upload]",
         ),
-      )) {
+      );
+      const invalidFields = fields.filter(
+        (field) => field.getAttribute("aria-invalid") === "true",
+      );
+      for (const field of invalidFields.length ? invalidFields : fields) {
         const target = field.hasAttribute("data-freeform-file-upload")
           ? field.matches("button, [tabindex]")
             ? field
@@ -265,7 +282,7 @@ export default class Freeform {
     }
 
     const banner = this.form.querySelector<HTMLElement>(
-      '[data-freeform-ajax-banner="error"]',
+      '[data-freeform-ajax-banner="error"], [data-freeform-error-banner]',
     );
     if (!banner || !isVisible(banner)) return false;
 

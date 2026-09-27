@@ -181,7 +181,7 @@ class FormInterface extends AbstractInterface
             'focusFirstError' => [
                 'name' => 'focusFirstError',
                 'type' => Type::boolean(),
-                'description' => 'Should AJAX validation focus the first visible field with an error',
+                'description' => 'Should failed validation focus the first visible field with an error',
                 'resolve' => static function ($source) {
                     return $source->getSettings()->focusFirstError;
                 },

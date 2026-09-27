@@ -924,6 +924,8 @@ return [
     'Processing' => 'Elaborazione',
     'Use AJAX' => 'Usa AJAX',
     'Use built-in AJAX for this form when handling validation and submission of the form' => 'Usa AJAX integrato per questo modulo quando gestisci la validazione e l’invio del modulo',
+    'Focus First Error After AJAX Submit' => 'Porta il focus sul primo errore dopo l’invio AJAX',
+    'After an AJAX submission fails validation, move focus to the first visible field with an error, or to the error message if there are no field errors.' => 'Se la convalida fallisce dopo un invio AJAX, sposta il focus sul primo campo visibile con un errore oppure sul messaggio di errore se non ci sono errori nei campi.',
     'Show Processing Indicator on Submit' => 'Mostra Indicatore di Elaborazione al Momento dell’Invio',
     'Show a spinner icon on the submit button when the user submits the form until it finishes processing.' => 'Mostra un’icona di caricamento sul pulsante di invio quando l’utente invia il modulo fino al termine dell’elaborazione.',
     'Show Processing Text on Submit' => 'Mostra Testo di Elaborazione al Momento dell’Invio',

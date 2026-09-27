@@ -57,6 +57,7 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->replace('data-id', $form->getAnchor());
         $attributes->replace('data-handle', $form->getHandle());
         $attributes->replace('data-ajax', $form->isAjaxEnabled());
+        $attributes->replace('data-focus-first-error', $behaviorSettings->ajax && $behaviorSettings->focusFirstError);
         $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
         $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
         $attributes->replace('data-show-processing-overlay', $behaviorSettings->showProcessingOverlay);

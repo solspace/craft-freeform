@@ -54,6 +54,7 @@ export default class Freeform {
     disableReset: false,
     disableSubmit: false,
     autoScroll: false,
+    focusFirstError: false,
     scrollToAnchor: false,
     scrollOffset: 0,
     scrollElement: window,
@@ -140,6 +141,7 @@ export default class Freeform {
       disableReset: form.getAttribute("data-disable-reset") !== null,
       scrollToAnchor: form.getAttribute("data-scroll-to-anchor") !== null,
       autoScroll: form.getAttribute("data-auto-scroll") !== null,
+      focusFirstError: form.getAttribute("data-focus-first-error") !== null,
       disableSubmit: form.getAttribute("data-disable-submit") !== null,
       showProcessingSpinner:
         form.getAttribute("data-show-processing-spinner") !== null,
@@ -203,6 +205,87 @@ export default class Freeform {
       top: y,
       behavior: this._isReducedMotion() ? "instant" : "smooth",
     });
+  };
+
+  _focusFirstError = (errors?: Record<string, string[]>): boolean => {
+    const isVisible = (element: HTMLElement): boolean => {
+      if (
+        (element instanceof HTMLInputElement && element.type === "hidden") ||
+        element.matches(":disabled")
+      ) {
+        return false;
+      }
+
+      for (
+        let current: HTMLElement | null = element;
+        current;
+        current = current.parentElement
+      ) {
+        if (
+          current.hidden ||
+          current.hasAttribute("inert") ||
+          current.getAttribute("aria-hidden") === "true"
+        ) {
+          return false;
+        }
+
+        const style = window.getComputedStyle(current);
+        if (style.display === "none" || style.visibility === "hidden") {
+          return false;
+        }
+
+        if (current === this.form) break;
+      }
+
+      return true;
+    };
+
+    for (const container of Array.from(
+      this.form.querySelectorAll<HTMLElement>("[data-field-container]"),
+    )) {
+      if (!errors?.[container.dataset.fieldContainer]?.length) continue;
+
+      for (const field of Array.from(
+        container.querySelectorAll<HTMLElement>(
+          "input, select, textarea, [data-freeform-file-upload]",
+        ),
+      )) {
+        const target = field.hasAttribute("data-freeform-file-upload")
+          ? field.matches("button, [tabindex]")
+            ? field
+            : field.querySelector<HTMLElement>(
+                "button, [tabindex], input:not([type=hidden])",
+              )
+          : field;
+        if (!target || !isVisible(target)) continue;
+
+        target.focus();
+        if (document.activeElement === target) return true;
+      }
+    }
+
+    const banner = this.form.querySelector<HTMLElement>(
+      '[data-freeform-ajax-banner="error"]',
+    );
+    if (!banner || !isVisible(banner)) return false;
+
+    const needsTabIndex = !banner.hasAttribute("tabindex");
+    if (needsTabIndex) banner.tabIndex = -1;
+    banner.focus();
+    if (document.activeElement !== banner) {
+      if (needsTabIndex) banner.removeAttribute("tabindex");
+      return false;
+    }
+
+    if (needsTabIndex) {
+      banner.addEventListener(
+        "blur",
+        () => banner.removeAttribute("tabindex"),
+        { once: true },
+      );
+    }
+
+    return true;
   };
 
   _isReducedMotion = (): boolean => {
@@ -1138,6 +1221,7 @@ export default class Freeform {
     this._removeMessages();
 
     const responseData = response.data;
+    let validationErrors: Record<string, string[]> | undefined;
 
     if (response.status === 200) {
       const { success, errors, formErrors, storageToken } = responseData;
@@ -1147,6 +1231,7 @@ export default class Freeform {
       }
 
       if (errors || formErrors) {
+        validationErrors = errors || {};
         this._dispatchEvent(events.form.ajaxError, {
           request: response,
           response: responseData,
@@ -1159,10 +1244,6 @@ export default class Freeform {
         this._renderFieldErrors(errors, responseData.html);
         this._renderFormErrors(formErrors);
       }
-
-      if (this.options.autoScroll) {
-        this._scrollToForm();
-      }
     } else {
       this._dispatchEvent(events.form.ajaxError, {
         request: response,
@@ -1172,6 +1253,17 @@ export default class Freeform {
     }
 
     this.unlockSubmit();
+
+    if (
+      validationErrors &&
+      this.options.focusFirstError &&
+      this._focusFirstError(validationErrors)
+    ) {
+      return;
+    }
+    if (response.status === 200 && this.options.autoScroll) {
+      this._scrollToForm();
+    }
 
     return;
   };
@@ -1206,6 +1298,7 @@ export default class Freeform {
     })
       .then((serverResponse) => {
         this._removeMessages();
+        let validationErrors: Record<string, string[]> | undefined;
 
         if (serverResponse.status === 200) {
           const response = serverResponse.data as FreeformResponseWithToken;
@@ -1278,6 +1371,7 @@ export default class Freeform {
                 response,
               });
             } else if (errors || formErrors) {
+              validationErrors = errors || {};
               this._dispatchEvent(events.form.ajaxError, {
                 request,
                 response,
@@ -1314,10 +1408,6 @@ export default class Freeform {
             response,
             cancelable: false,
           });
-
-          if (this.options.autoScroll) {
-            this._scrollToForm();
-          }
         } else {
           const response = request.response;
 
@@ -1325,6 +1415,16 @@ export default class Freeform {
         }
 
         this.unlockSubmit();
+        if (
+          validationErrors &&
+          this.options.focusFirstError &&
+          this._focusFirstError(validationErrors)
+        ) {
+          return;
+        }
+        if (serverResponse.status === 200 && this.options.autoScroll) {
+          this._scrollToForm();
+        }
       })
       .catch((error) => {
         console.error("Error submitting form:", error);

@@ -924,6 +924,8 @@ return [
     'Processing' => 'Verwerken',
     'Use AJAX' => 'Gebruik AJAX',
     'Use built-in AJAX for this form when handling validation and submission of the form' => 'Gebruik ingebouwde AJAX voor dit formulier bij het afhandelen van de validatie en indiening van het formulier',
+    'Focus First Error After AJAX Submit' => 'Focus op eerste fout na AJAX-verzending',
+    'After an AJAX submission fails validation, move focus to the first visible field with an error, or to the error message if there are no field errors.' => 'Als de validatie na een AJAX-verzending mislukt, verplaats de focus dan naar het eerste zichtbare veld met een fout, of naar de foutmelding als er geen veldfouten zijn.',
     'Show Processing Indicator on Submit' => 'Toon verwerkingsindicator bij indiening',
     'Show a spinner icon on the submit button when the user submits the form until it finishes processing.' => 'Toon een draaipictogram op de verzendknop wanneer de gebruiker het formulier verzendt totdat de verwerking is voltooid.',
     'Show Processing Text on Submit' => 'Toon verwerkingstekst bij indiening',

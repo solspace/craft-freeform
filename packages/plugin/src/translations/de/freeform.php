@@ -924,6 +924,8 @@ return [
     'Processing' => 'Verarbeitung',
     'Use AJAX' => 'AJAX verwenden',
     'Use built-in AJAX for this form when handling validation and submission of the form' => 'Verwenden Sie integriertes AJAX für dieses Formular, wenn es um die Validierung und Übermittlung des Formulars geht',
+    'Focus First Error After AJAX Submit' => 'Ersten Fehler nach AJAX-Übermittlung fokussieren',
+    'After an AJAX submission fails validation, move focus to the first visible field with an error, or to the error message if there are no field errors.' => 'Wenn die Validierung nach einer AJAX-Übermittlung fehlschlägt, den Fokus auf das erste sichtbare fehlerhafte Feld oder, falls kein Feld betroffen ist, auf die Fehlermeldung setzen.',
     'Show Processing Indicator on Submit' => 'Verarbeitungsanzeige beim Absenden anzeigen',
     'Show a spinner icon on the submit button when the user submits the form until it finishes processing.' => 'Zeigen Sie ein Lade-Symbol auf der Absenden-Schaltfläche an, wenn der Benutzer das Formular absendet, bis die Verarbeitung abgeschlossen ist.',
     'Show Processing Text on Submit' => 'Verarbeitungstext beim Absenden anzeigen',

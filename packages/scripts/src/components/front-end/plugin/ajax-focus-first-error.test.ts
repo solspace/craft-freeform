@@ -1,0 +1,114 @@
+import { ajax } from "@lib/plugin/helpers/ajax";
+import { afterEach, describe, expect, it, vi } from "vitest";
+
+import Freeform from "./freeform";
+
+vi.mock("@lib/plugin/helpers/ajax", () => ({ ajax: vi.fn() }));
+
+const setup = (markup: string) => {
+  vi.useFakeTimers();
+  document.body.innerHTML = markup;
+  const form = document.querySelector<HTMLFormElement>("form")!;
+  const freeform = new Freeform(form);
+  freeform._handlers = [];
+  vi.advanceTimersByTime(60);
+  return { form, freeform };
+};
+
+const submitWithErrors = async (
+  freeform: Freeform,
+  errors: Record<string, string[]>,
+  formErrors: string[] = [],
+) => {
+  vi.mocked(ajax).mockResolvedValueOnce({
+    status: 200,
+    data: {
+      success: false,
+      errors,
+      formErrors,
+      actions: [],
+      html: null,
+    },
+    request: new XMLHttpRequest(),
+  } as never);
+  freeform._onSubmitAjax(new SubmitEvent("submit"));
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+afterEach(() => {
+  vi.useRealTimers();
+  vi.mocked(ajax).mockReset();
+  document.body.innerHTML = "";
+});
+
+describe("AJAX focus first error", () => {
+  it("focuses the first visible invalid field in form order and skips scrolling to the top", async () => {
+    const { form, freeform } = setup(`
+      <form data-freeform data-ajax data-focus-first-error data-auto-scroll>
+        <div data-field-container="hidden"><input name="hidden" hidden></div>
+        <div data-field-container="concealed" style="display:none"><input name="concealed"></div>
+        <div data-field-container="disabled"><input name="disabled" disabled></div>
+        <div data-field-container="name"><input name="name"></div>
+        <div data-field-container="email"><input name="email"></div>
+      </form>
+    `);
+    const scroll = vi.spyOn(freeform, "_scrollToForm");
+
+    await submitWithErrors(freeform, {
+      email: ["Email required"],
+      name: ["Name required"],
+      hidden: ["Hidden"],
+      concealed: ["Concealed"],
+      disabled: ["Disabled"],
+    });
+
+    expect(document.activeElement).toBe(form.querySelector('[name="name"]'));
+    expect(scroll).not.toHaveBeenCalled();
+    expect(
+      form.querySelector('[name="name"]')?.getAttribute("aria-invalid"),
+    ).toBe("true");
+  });
+
+  it("focuses a form-level error banner when there are no field errors", async () => {
+    const { form, freeform } = setup(
+      '<form data-freeform data-ajax data-focus-first-error data-error-message="Try again"><input name="email"></form>',
+    );
+
+    await submitWithErrors(freeform, {}, ["Form could not be submitted"]);
+
+    const banner = form.querySelector<HTMLElement>(
+      '[data-freeform-ajax-banner="error"]',
+    )!;
+    expect(document.activeElement).toBe(banner);
+    expect(banner.tabIndex).toBe(-1);
+    form.querySelector("input")!.focus();
+    expect(banner.hasAttribute("tabindex")).toBe(false);
+  });
+
+  it("focuses the drag-and-drop upload control when it has a field error", async () => {
+    const { form, freeform } = setup(
+      '<form data-freeform data-ajax data-focus-first-error><div data-field-container="files"><button type="button" data-freeform-file-upload="files">Upload files</button></div></form>',
+    );
+
+    await submitWithErrors(freeform, { files: ["Upload a file"] });
+
+    const upload = form.querySelector<HTMLButtonElement>(
+      "[data-freeform-file-upload]",
+    )!;
+    expect(document.activeElement).toBe(upload);
+    expect(upload.getAttribute("aria-invalid")).toBe("true");
+  });
+
+  it("preserves the existing scroll behavior when the setting is off", async () => {
+    const { form, freeform } = setup(
+      '<form data-freeform data-ajax data-auto-scroll><div data-field-container="name"><input name="name"></div></form>',
+    );
+    const scroll = vi.spyOn(freeform, "_scrollToForm");
+
+    await submitWithErrors(freeform, { name: ["Required"] });
+
+    expect(scroll).toHaveBeenCalledOnce();
+    expect(document.activeElement).not.toBe(form.querySelector("input"));
+  });
+});

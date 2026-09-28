@@ -8,12 +8,6 @@ use Solspace\Freeform\Services\Headless\HeadlessAccessService;
 use yii\base\Event;
 use yii\filters\Cors;
 
-/**
- * CSRF token endpoint used by Freeform JS and headless clients.
- *
- * Applies the same headless CORS policy as BaseHeadlessController so
- * cross-origin demos (e.g. Vercel → Craft) can fetch tokens with credentials.
- */
 class TokensController extends BaseApiController
 {
     public const EVENT_CONFIGURE_CORS = 'configure-tokens-cors';

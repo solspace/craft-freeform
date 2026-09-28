@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.16.3 - 2026-09-28
+
+### Fixed
+- Fixed **Pardot custom fields** not appearing in form builder integration mappings, including support for single-field API responses and proper Pardot v4 field type handling.
+- Fixed **CSRF token requests for headless forms** to properly support CORS, including allowed origins configured globally, per form, and through headless profiles.
+
 ## 5.16.2 - 2026-09-24
 
 ### Security

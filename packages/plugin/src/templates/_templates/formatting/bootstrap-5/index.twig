@@ -7,8 +7,8 @@
     attributes: {
         form: { class: "freeform-form", "data-freeform-bootstrap": true },
         row: { class: "row" },
-        success: { class: "alert alert-success" },
-        errors: { class: "alert alert-danger" },
+        success: { class: "alert alert-success", role: "status" },
+        errors: { class: "alert alert-danger", role: "alert" },
         novalidate: true,
     },
     buttons: {
@@ -105,7 +105,7 @@
 {% if form.pages|length > 1 %}
     <ul class="nav nav-tabs mb-4">
         {% for page in form.pages %}
-            <li class="nav-item">
+            <li class="nav-item"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
                 <span class="nav-link{{ form.currentPage.index == page.index ? ' fw-bold active' : ' disabled' }}">
                     {{ page.label }}
                 </span>

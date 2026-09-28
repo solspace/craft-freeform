@@ -160,6 +160,7 @@ class AiModelCatalog
             }
 
             $alias = $matches[1];
+
             try {
                 $resolved = $this->getJson(
                     $client,
@@ -167,7 +168,7 @@ class AiModelCatalog
                     [],
                     3,
                 );
-                if (isset($resolved['id']) && isset($models[$resolved['id']])) {
+                if (isset($resolved['id'], $models[$resolved['id']])) {
                     $models[$alias] = ['id' => $alias, 'label' => $alias.' (alias)'];
                 }
             } catch (\Throwable) {

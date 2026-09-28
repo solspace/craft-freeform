@@ -14,6 +14,7 @@ Visit your the [console area](https://console.x.ai/) on the xAI site to get your
 
 - Copy and paste your API key into the integration in Freeform.
 - Select the AI model you want to use. The default is `grok-4.20`.
+  - After entering an API key, search the models available to that key, including aliases supplied by xAI. Use **Other / Custom model ID** if your model is not listed; existing selections are kept.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
 - Configure the Max Tokens setting. This can be overrided per form.
 - Click the **Save** button.

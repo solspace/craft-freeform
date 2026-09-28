@@ -291,7 +291,7 @@ export const IntegrationsEditor: FC = () => {
 
         {data.properties.map((property) => (
           <EditorInput
-            key={property.handle}
+            key={`${data.type.class}-${data.id ?? "new"}-${property.handle}`}
             integration={data}
             property={property}
             values={values}

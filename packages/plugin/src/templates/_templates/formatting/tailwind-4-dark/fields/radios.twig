@@ -11,6 +11,8 @@
         id="{{ field.idAttribute }}-{{ index }}"
         class="{{ field.attributes.input.get("class") }}{{ field.hasErrors ? ' outline-1 -outline-offset-1 outline-red-700' }}"
         {{ option.value == field.value ? "checked" }}
+        {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+        {% if field.hasErrors %}aria-invalid="true"{% endif %}
       />
       <label for="{{ field.idAttribute }}-{{ index }}" class="{{ field.attributes.optionLabel.get("class") }}{{ field.hasErrors ? ' text-red-700' }}">
         {{ field.translateOptionLabel(option) }} {# Use this for form builder translations #}

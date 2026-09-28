@@ -7,8 +7,8 @@
   attributes: {
     form: { class: "freeform-form", "data-freeform-tailwind": true },
     row: { class: "flex gap-x-2 -mx-2 mb-4" },
-    success: { class: "rounded-md bg-green-900/20 p-4 mb-10" },
-    errors: { class: "rounded-md bg-red-900/20 p-4 mb-10" },
+    success: { class: "rounded-md bg-green-900/20 p-4 mb-10", role: "status" },
+    errors: { class: "rounded-md bg-red-900/20 p-4 mb-10", role: "alert" },
     novalidate: true,
   },
   buttons: {
@@ -242,7 +242,7 @@
       </div>
       {% if (page.index + 1) != form.pages.count %}
       <div class="absolute top-0 right-0 hidden h-full w-5 sm:block" aria-hidden="true">
-        <svg class="size-full text-white/15" viewBox="0 0 22 80" fill="none" preserveAspectRatio="none">
+        <svg aria-hidden="true" focusable="false" class="size-full text-white/15" viewBox="0 0 22 80" fill="none" preserveAspectRatio="none">
           <path d="M0 -2L20 40L0 82" vector-effect="non-scaling-stroke" stroke="currentcolor" stroke-linejoin="round" />
         </svg>
       </div>

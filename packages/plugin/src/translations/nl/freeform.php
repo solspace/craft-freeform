@@ -3374,4 +3374,11 @@ return [
     'PDFs' => 'PDF-bestanden',
     'Audio files' => 'Audiobestanden',
     'Videos' => "Video's",
+    'Other / Custom model ID' => 'Anders / Aangepaste model-ID',
+    'Choose a model' => 'Kies een model',
+    'Refresh models' => 'Modellen vernieuwen',
+    'Custom model ID' => 'Aangepaste model-ID',
+    'Enter the exact model ID supported by this provider.' => 'Voer de exacte model-ID in die deze aanbieder ondersteunt.',
+    'Could not load models. You can still enter a custom model ID.' => 'Kan modellen niet laden. Je kunt nog steeds een aangepaste model-ID invoeren.',
+    'No compatible models were returned. You can enter a custom model ID.' => 'Er zijn geen compatibele modellen gevonden. Je kunt een aangepaste model-ID invoeren.',
 ];

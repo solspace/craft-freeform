@@ -3411,4 +3411,11 @@ return [
     'PDFs' => 'PDFs',
     'Audio files' => 'Audio files',
     'Videos' => 'Videos',
+    'Other / Custom model ID' => 'Other / Custom model ID',
+    'Choose a model' => 'Choose a model',
+    'Refresh models' => 'Refresh models',
+    'Custom model ID' => 'Custom model ID',
+    'Enter the exact model ID supported by this provider.' => 'Enter the exact model ID supported by this provider.',
+    'Could not load models. You can still enter a custom model ID.' => 'Could not load models. You can still enter a custom model ID.',
+    'No compatible models were returned. You can enter a custom model ID.' => 'No compatible models were returned. You can enter a custom model ID.',
 ];

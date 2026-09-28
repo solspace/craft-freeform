@@ -7,8 +7,8 @@
     attributes: {
         form: { class: "freeform-form", "data-freeform-foundation": true },
         row: { class: "grid-x grid-margin-x" },
-        success: { class: "callout success" },
-        errors: { class: "callout alert" },
+        success: { class: "callout success", role: "status" },
+        errors: { class: "callout alert", role: "alert" },
         novalidate: true,
     },
     buttons: {
@@ -80,7 +80,7 @@
 {% if form.pages|length > 1 %}
     <ul class="menu freeform-page-tabs">
         {% for page in form.pages %}
-            <li class="menu-text{{ form.currentPage.index == page.index ? ' is-active' : '' }}">
+            <li class="menu-text{{ form.currentPage.index == page.index ? ' is-active' : '' }}"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
                 {{ page.label }}
             </li>
         {% endfor %}

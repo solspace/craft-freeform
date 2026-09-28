@@ -7,12 +7,13 @@ import type React from "react";
 import { useParams, useResolvedPath } from "react-router-dom";
 
 import { FieldComponent } from "./field-component";
-import { TAB_USAGE } from "./settings";
+import { TAB_EMBED, TAB_USAGE } from "./settings";
 import {
   FormSettingsContainer,
   SectionContainer,
   SectionHeader,
 } from "./settings.editor.styles";
+import { FormEmbed } from "./settings.embed";
 import { FormUsage } from "./settings.usage";
 
 export const SettingsEditor: React.FC = () => {
@@ -36,6 +37,10 @@ export const SettingsEditor: React.FC = () => {
   });
 
   if (!selectedNamespace || !selectedSection) {
+    if (sectionHandle === TAB_EMBED) {
+      return <FormEmbed />;
+    }
+
     if (sectionHandle === TAB_USAGE) {
       return <FormUsage />;
     }

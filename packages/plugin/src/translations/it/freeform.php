@@ -975,6 +975,27 @@ return [
     'Stop Submissions After Date' => 'Interrompi le Sottomissioni Dopo la Data',
     'Set a date after which this form will no longer accept new submissions.' => 'Imposta una data dopo la quale questo modulo non accetterà più nuove sottomissioni.',
 
+    // Form Builder // Settings // Embed Form
+    'Embed Form' => 'Incorpora modulo',
+    'Embed this form' => 'Incorpora questo modulo',
+    'Add this code to a Craft Twig template where you want the form to appear.' => 'Aggiungi questo codice a un template Twig di Craft nel punto in cui vuoi visualizzare il modulo.',
+    'Save this form before copying its embed code.' => 'Salva questo modulo prima di copiarne il codice di incorporamento.',
+    'Twig code' => 'Codice Twig',
+    'Copy code' => 'Copia codice',
+    'Could not copy automatically. Select and copy the code above.' => 'Impossibile copiare automaticamente. Seleziona e copia il codice qui sopra.',
+    'Helpful to know' => 'Da sapere',
+    'This code uses the Formatting Template selected in Settings → General.' => 'Questo codice utilizza il template di formattazione selezionato in Impostazioni → Generale.',
+    'Custom styling' => 'Stile personalizzato',
+    "Customize one placement without changing the form's default appearance." => 'Personalizza una singola posizione senza modificare l’aspetto predefinito del modulo.',
+    'Template Overrides' => 'Sostituzioni del template',
+    'Using a Form field?' => 'Utilizzi un campo Modulo?',
+    'If this form is attached to an entry, you can render it through that field instead.' => 'Se questo modulo è associato a una voce, puoi visualizzarlo direttamente tramite quel campo.',
+    'Freeform Form field' => 'Campo Modulo Freeform',
+    'Caching the page?' => 'La pagina è in cache?',
+    'Keep the form dynamic when caching the page.' => 'Se la pagina è in cache, assicurati che il modulo rimanga dinamico.',
+    'Form caching guide' => 'Guida alla cache dei moduli',
+    'More examples of rendering forms in Twig' => 'Altri esempi per visualizzare moduli in Twig',
+
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Utilizzo negli Elementi',
     'Element' => 'Elemento',

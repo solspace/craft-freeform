@@ -975,6 +975,27 @@ return [
     'Stop Submissions After Date' => 'Einreichungen nach Datum stoppen',
     'Set a date after which this form will no longer accept new submissions.' => 'Legen Sie ein Datum fest, nach dem dieses Formular keine neuen Einreichungen mehr akzeptiert.',
 
+    // Form Builder // Settings // Embed Form
+    'Embed Form' => 'Formular einbetten',
+    'Embed this form' => 'Dieses Formular einbetten',
+    'Add this code to a Craft Twig template where you want the form to appear.' => 'Fügen Sie diesen Code an der gewünschten Stelle in ein Craft-Twig-Template ein.',
+    'Save this form before copying its embed code.' => 'Speichern Sie dieses Formular, bevor Sie den Einbettungscode kopieren.',
+    'Twig code' => 'Twig-Code',
+    'Copy code' => 'Code kopieren',
+    'Could not copy automatically. Select and copy the code above.' => 'Der Code konnte nicht automatisch kopiert werden. Markieren und kopieren Sie den Code oben.',
+    'Helpful to know' => 'Gut zu wissen',
+    'This code uses the Formatting Template selected in Settings → General.' => 'Dieser Code verwendet das unter Einstellungen → Allgemein ausgewählte Formatierungs-Template.',
+    'Custom styling' => 'Individuelle Gestaltung',
+    "Customize one placement without changing the form's default appearance." => 'Passen Sie eine einzelne Einbindung an, ohne das Standarddesign des Formulars zu ändern.',
+    'Template Overrides' => 'Template-Überschreibungen',
+    'Using a Form field?' => 'Verwenden Sie ein Formularfeld?',
+    'If this form is attached to an entry, you can render it through that field instead.' => 'Wenn dieses Formular mit einem Eintrag verknüpft ist, können Sie es stattdessen über dieses Feld ausgeben.',
+    'Freeform Form field' => 'Freeform-Formularfeld',
+    'Caching the page?' => 'Wird die Seite zwischengespeichert?',
+    'Keep the form dynamic when caching the page.' => 'Stellen Sie beim Zwischenspeichern der Seite sicher, dass das Formular dynamisch bleibt.',
+    'Form caching guide' => 'Anleitung zum Zwischenspeichern von Formularen',
+    'More examples of rendering forms in Twig' => 'Weitere Beispiele zum Ausgeben von Formularen in Twig',
+
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Verwendung in Elementen',
     'Element' => 'Element',

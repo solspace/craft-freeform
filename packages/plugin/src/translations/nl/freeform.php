@@ -975,6 +975,27 @@ return [
     'Stop Submissions After Date' => 'Inzendingen stoppen na datum',
     'Set a date after which this form will no longer accept new submissions.' => 'Stel een datum in waarna dit formulier geen nieuwe inzendingen meer accepteert.',
 
+    // Form Builder // Settings // Embed Form
+    'Embed Form' => 'Formulier insluiten',
+    'Embed this form' => 'Dit formulier insluiten',
+    'Add this code to a Craft Twig template where you want the form to appear.' => 'Voeg deze code toe aan een Craft Twig-template op de plek waar je het formulier wilt weergeven.',
+    'Save this form before copying its embed code.' => 'Sla dit formulier op voordat je de insluitcode kopieert.',
+    'Twig code' => 'Twig-code',
+    'Copy code' => 'Code kopiëren',
+    'Could not copy automatically. Select and copy the code above.' => 'Automatisch kopiëren is mislukt. Selecteer en kopieer de code hierboven.',
+    'Helpful to know' => 'Goed om te weten',
+    'This code uses the Formatting Template selected in Settings → General.' => 'Deze code gebruikt de opmaaktemplate die is geselecteerd onder Instellingen → Algemeen.',
+    'Custom styling' => 'Aangepaste opmaak',
+    "Customize one placement without changing the form's default appearance." => 'Pas één plaatsing aan zonder de standaardopmaak van het formulier te wijzigen.',
+    'Template Overrides' => 'Template-overschrijvingen',
+    'Using a Form field?' => 'Gebruik je een formulierveld?',
+    'If this form is attached to an entry, you can render it through that field instead.' => 'Als dit formulier aan een item is gekoppeld, kun je het via dat veld weergeven.',
+    'Freeform Form field' => 'Freeform-formulierveld',
+    'Caching the page?' => 'Wordt de pagina gecachet?',
+    'Keep the form dynamic when caching the page.' => 'Zorg ervoor dat het formulier dynamisch blijft wanneer de pagina wordt gecachet.',
+    'Form caching guide' => 'Handleiding voor formuliercaching',
+    'More examples of rendering forms in Twig' => 'Meer voorbeelden van formulieren weergeven in Twig',
+
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Gebruik in Elementen',
     'Element' => 'Element',

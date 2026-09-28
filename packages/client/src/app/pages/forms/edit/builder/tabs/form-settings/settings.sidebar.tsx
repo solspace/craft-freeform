@@ -14,7 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useLastTab } from "../tabs.hooks";
 
 import NewsIcon from "./news.icon";
-import { TAB_USAGE } from "./settings";
+import { TAB_EMBED, TAB_USAGE } from "./settings";
 import {
   SectionIcon,
   SectionLink,
@@ -76,6 +76,19 @@ export const SettingsSidebar: React.FC = () => {
               </SectionLink>
             )),
         )}
+
+        <SectionLink
+          onClick={() => {
+            setLastTab(TAB_EMBED);
+            navigate(TAB_EMBED);
+          }}
+          className={classes(sectionHandle === TAB_EMBED && "active")}
+        >
+          <SectionIcon>
+            <i className="fa-light fa-code" aria-hidden="true" />
+          </SectionIcon>
+          {translate("Embed Form")}
+        </SectionLink>
 
         {isCraft5 && (
           <SectionLink

@@ -1,3 +1,57 @@
+/* Demo color modes */
+:root {
+    --page-bg: #ffffff;
+    --page-text: #4e4e4e;
+    --nav-text: #8a8a8a;
+    --nav-bg: rgb(232,232,232,0.85);
+    --nav-highlight: #4e4e4e;
+    --nav-bg-hover: rgb(232,232,232,0.25);
+    --logo-glow: 0 0 7px 1px rgb(0,0,0,0.1);
+    --menu-bg: #4e4e4e;
+    --menu-list-bg: #f1f1f1;
+    --menu-list-border: 1px solid #c5c5c5;
+    --nav-button-bg: #d0d0d0;
+    --nav-button-text: #4e4e4e;
+    --nav-button-hover: #dfdfdf;
+    --nav-button-active: #eeeeee;
+    --nav-dropdown-bg: #f1f1f1;
+    --nav-dropdown-bg-hover: #dedede;
+    --nav-dropdown-text: #4e4e4e;
+    --nav-dropdown-divider: 1px solid #c5c5c5;
+    --form-box-submissions: rgb(0,0,0,0.05);
+    --table-row-bg: #ffffff;
+    --table-row-bg-alt: #f3f3f3;
+    --table-head-bg: #d0d0d0;
+    --table-head-bg-alt: #eeeeee;
+    --table-head-bg-alt2: #e3e3e3;
+}
+
+:root[data-theme="dark"] {
+    --page-bg: #1f2226;
+    --page-text: #dfdfdf;
+    --nav-text: #959595;
+    --nav-bg: rgb(19,22,24,0.85);
+    --nav-highlight: #dfdfdf;
+    --nav-bg-hover: rgb(19,22,24,0.25);
+    --logo-glow: 0 0 7px 1px rgb(255,255,255,0.2);
+    --menu-bg: #dfdfdf;
+    --menu-list-bg: #191c1f;
+    --menu-list-border: 1px solid #252b31;
+    --nav-button-bg: #3c474f;
+    --nav-button-text: #dfdfdf;
+    --nav-button-active: #dfdfdf;
+    --nav-dropdown-bg: #191c1f;
+    --nav-dropdown-bg-hover: #252b31;
+    --nav-dropdown-text: #dfdfdf;
+    --nav-dropdown-divider: 1px solid #252b31;
+    --form-box-submissions: rgb(0,0,0,0.2);
+    --table-row-bg: #212529;
+    --table-row-bg-alt: #3c474f;
+    --table-head-bg: #3c474f;
+    --table-head-bg-alt: #404b53;
+    --table-head-bg-alt2: #404b53;
+}
+
 /* Freeform Core Styles */
 html {
     background: var(--page-bg);

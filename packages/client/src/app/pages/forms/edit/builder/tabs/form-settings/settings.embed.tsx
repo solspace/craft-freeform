@@ -157,42 +157,42 @@ export const FormEmbed: React.FC = () => {
           <h2>{translate("Common next steps")}</h2>
           <dl>
             <HelpTopic>
-              <dt>{translate("Want AJAX submissions?")}</dt>
+              <dt>{translate("Create a custom formatting template")}</dt>
               <dd>
                 {translate(
-                  "Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.",
+                  "Start with a sample template, then tailor the form's layout and styles.",
                 )}{" "}
                 <a
-                  href="https://docs.solspace.com/craft/freeform/v5/templates/ajax/"
+                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/custom-formatting-templates/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("About AJAX forms")}
+                  {translate("Custom formatting template guide")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Using this form twice on a page?")}</dt>
+              <dt>{translate("Pass dynamic data to this form")}</dt>
               <dd>
                 {translate(
-                  "Give each instance a unique form ID and field ID prefix to avoid conflicts.",
+                  "Use Template Overrides to prefill fields or select options from your Twig template.",
                 )}{" "}
                 <a
-                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/multiple-instances-of-same-form/"
+                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/passing-dynamic-data-to-forms/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Multiple form instances guide")}
+                  {translate("Passing dynamic data guide")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Need a custom success page?")}</dt>
+              <dt>{translate("Choose a success behavior")}</dt>
               <dd>
                 {translate(
-                  "Choose a redirect and Return URL in Settings → Success & Errors.",
+                  "Show a message or redirect visitors after a successful submission.",
                 )}{" "}
                 <a
                   href="https://docs.solspace.com/craft/freeform/v5/guides/guide/success-return-on-forms/"
@@ -200,6 +200,22 @@ export const FormEmbed: React.FC = () => {
                   rel="noopener noreferrer"
                 >
                   {translate("Success return guide")}
+                </a>
+              </dd>
+            </HelpTopic>
+
+            <HelpTopic>
+              <dt>{translate("Improve spam protection")}</dt>
+              <dd>
+                {translate(
+                  "Review available spam controls and choose the ones that fit your site.",
+                )}{" "}
+                <a
+                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/spam-protection/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {translate("Spam protection guide")}
                 </a>
               </dd>
             </HelpTopic>
@@ -213,6 +229,22 @@ export const FormEmbed: React.FC = () => {
         >
           {translate("More examples of rendering forms in Twig")}
         </DocsLink>
+
+        <HelpSection>
+          <h2>{translate("Troubleshooting Form Issues")}</h2>
+          <Description>
+            {translate(
+              "Quick troubleshooting the most commonly reported issues with your form's appearance, behavior, or submission of the form on the front end.",
+            )}
+          </Description>
+          <a
+            href="https://docs.solspace.com/craft/freeform/v5/guides/guide/troubleshooting-form-issues/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {translate("Troubleshooting guide")}
+          </a>
+        </HelpSection>
       </EmbedContent>
     </FormSettingsContainer>
   );

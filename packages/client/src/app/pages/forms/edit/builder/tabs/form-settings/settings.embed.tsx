@@ -153,6 +153,59 @@ export const FormEmbed: React.FC = () => {
           </dl>
         </HelpSection>
 
+        <HelpSection>
+          <h2>{translate("Common next steps")}</h2>
+          <dl>
+            <HelpTopic>
+              <dt>{translate("Want AJAX submissions?")}</dt>
+              <dd>
+                {translate(
+                  "Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.",
+                )}{" "}
+                <a
+                  href="https://docs.solspace.com/craft/freeform/v5/templates/ajax/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {translate("About AJAX forms")}
+                </a>
+              </dd>
+            </HelpTopic>
+
+            <HelpTopic>
+              <dt>{translate("Using this form twice on a page?")}</dt>
+              <dd>
+                {translate(
+                  "Give each instance a unique form ID and field ID prefix to avoid conflicts.",
+                )}{" "}
+                <a
+                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/multiple-instances-of-same-form/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {translate("Multiple form instances guide")}
+                </a>
+              </dd>
+            </HelpTopic>
+
+            <HelpTopic>
+              <dt>{translate("Need a custom success page?")}</dt>
+              <dd>
+                {translate(
+                  "Choose a redirect and Return URL in Settings → Success & Errors.",
+                )}{" "}
+                <a
+                  href="https://docs.solspace.com/craft/freeform/v5/guides/guide/success-return-on-forms/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {translate("Success return guide")}
+                </a>
+              </dd>
+            </HelpTopic>
+          </dl>
+        </HelpSection>
+
         <DocsLink
           href="https://docs.solspace.com/craft/freeform/v5/templates/queries/form/"
           target="_blank"

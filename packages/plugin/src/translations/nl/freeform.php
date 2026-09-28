@@ -995,6 +995,16 @@ return [
     'Keep the form dynamic when caching the page.' => 'Zorg ervoor dat het formulier dynamisch blijft wanneer de pagina wordt gecachet.',
     'Form caching guide' => 'Handleiding voor formuliercaching',
     'More examples of rendering forms in Twig' => 'Meer voorbeelden van formulieren weergeven in Twig',
+    'Common next steps' => 'Veelvoorkomende vervolgstappen',
+    'Want AJAX submissions?' => 'Wil je AJAX-inzendingen?',
+    'Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.' => 'Schakel AJAX gebruiken in onder Instellingen → Verwerking. De Twig-insluitcode blijft hetzelfde.',
+    'About AJAX forms' => 'Over AJAX-formulieren',
+    'Using this form twice on a page?' => 'Gebruik je dit formulier twee keer op een pagina?',
+    'Give each instance a unique form ID and field ID prefix to avoid conflicts.' => 'Geef elke instantie een unieke formulier-ID en een uniek voorvoegsel voor veld-ID’s om conflicten te voorkomen.',
+    'Multiple form instances guide' => 'Handleiding voor meerdere formulierinstanties',
+    'Need a custom success page?' => 'Een aangepaste bevestigingspagina nodig?',
+    'Choose a redirect and Return URL in Settings → Success & Errors.' => 'Kies een omleiding en een retour-URL onder Instellingen → Succes en fouten.',
+    'Success return guide' => 'Handleiding voor de pagina na verzending',
 
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Gebruik in Elementen',

@@ -995,6 +995,16 @@ return [
     'Keep the form dynamic when caching the page.' => 'Stellen Sie beim Zwischenspeichern der Seite sicher, dass das Formular dynamisch bleibt.',
     'Form caching guide' => 'Anleitung zum Zwischenspeichern von Formularen',
     'More examples of rendering forms in Twig' => 'Weitere Beispiele zum Ausgeben von Formularen in Twig',
+    'Common next steps' => 'Nächste Schritte',
+    'Want AJAX submissions?' => 'AJAX-Übermittlungen verwenden?',
+    'Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.' => 'Aktivieren Sie „AJAX verwenden“ unter Einstellungen → Verarbeitung. Der Twig-Code zum Einbetten bleibt unverändert.',
+    'About AJAX forms' => 'Über AJAX-Formulare',
+    'Using this form twice on a page?' => 'Dieses Formular zweimal auf einer Seite verwenden?',
+    'Give each instance a unique form ID and field ID prefix to avoid conflicts.' => 'Geben Sie jeder Instanz eine eindeutige Formular-ID und ein eindeutiges Präfix für Feld-IDs, um Konflikte zu vermeiden.',
+    'Multiple form instances guide' => 'Anleitung für mehrere Formularinstanzen',
+    'Need a custom success page?' => 'Eine eigene Erfolgsseite verwenden?',
+    'Choose a redirect and Return URL in Settings → Success & Errors.' => 'Wählen Sie unter Einstellungen → Erfolg & Fehler eine Weiterleitung und eine Rückkehr-URL aus.',
+    'Success return guide' => 'Anleitung zur Weiterleitung nach dem Absenden',
 
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Verwendung in Elementen',

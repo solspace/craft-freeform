@@ -994,6 +994,16 @@ return [
     'Keep the form dynamic when caching the page.' => 'Keep the form dynamic when caching the page.',
     'Form caching guide' => 'Form caching guide',
     'More examples of rendering forms in Twig' => 'More examples of rendering forms in Twig',
+    'Common next steps' => 'Common next steps',
+    'Want AJAX submissions?' => 'Want AJAX submissions?',
+    'Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.' => 'Enable Use AJAX in Settings → Processing. The Twig embed code stays the same.',
+    'About AJAX forms' => 'About AJAX forms',
+    'Using this form twice on a page?' => 'Using this form twice on a page?',
+    'Give each instance a unique form ID and field ID prefix to avoid conflicts.' => 'Give each instance a unique form ID and field ID prefix to avoid conflicts.',
+    'Multiple form instances guide' => 'Multiple form instances guide',
+    'Need a custom success page?' => 'Need a custom success page?',
+    'Choose a redirect and Return URL in Settings → Success & Errors.' => 'Choose a redirect and Return URL in Settings → Success & Errors.',
+    'Success return guide' => 'Success return guide',
 
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Usage in Elements',

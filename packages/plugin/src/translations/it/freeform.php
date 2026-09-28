@@ -3411,4 +3411,11 @@ return [
     'PDFs' => 'PDF',
     'Audio files' => 'File audio',
     'Videos' => 'Video',
+    'Other / Custom model ID' => 'Altro / ID modello personalizzato',
+    'Choose a model' => 'Seleziona un modello',
+    'Refresh models' => 'Aggiorna i modelli',
+    'Custom model ID' => 'ID modello personalizzato',
+    'Enter the exact model ID supported by this provider.' => 'Inserisci l’ID esatto del modello supportato da questo provider.',
+    'Could not load models. You can still enter a custom model ID.' => 'Impossibile caricare i modelli. Puoi comunque inserire un ID modello personalizzato.',
+    'No compatible models were returned. You can enter a custom model ID.' => 'Non sono stati restituiti modelli compatibili. Puoi inserire un ID modello personalizzato.',
 ];

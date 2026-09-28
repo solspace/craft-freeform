@@ -975,6 +975,26 @@ return [
     'Stop Submissions After Date' => 'Stop Submissions After Date',
     'Set a date after which this form will no longer accept new submissions.' => 'Set a date after which this form will no longer accept new submissions.',
 
+    // Form Builder // Settings // Embed Form
+    'Embed Form' => 'Embed Form',
+    'Embed this form' => 'Embed this form',
+    'Add this code to a Craft Twig template where you want the form to appear.' => 'Add this code to a Craft Twig template where you want the form to appear.',
+    'Save this form before copying its embed code.' => 'Save this form before copying its embed code.',
+    'Copy code' => 'Copy code',
+    'Could not copy automatically. Select and copy the code above.' => 'Could not copy automatically. Select and copy the code above.',
+    'Helpful to know' => 'Helpful to know',
+    'This code uses the Formatting Template selected in Settings → General.' => 'This code uses the Formatting Template selected in Settings → General.',
+    'Custom styling' => 'Custom styling',
+    "Customize one placement without changing the form's default appearance." => "Customize one placement without changing the form's default appearance.",
+    'Template Overrides' => 'Template Overrides',
+    'Using a Form field?' => 'Using a Form field?',
+    'If this form is attached to an entry, you can render it through that field instead.' => 'If this form is attached to an entry, you can render it through that field instead.',
+    'Freeform Form field' => 'Freeform Form field',
+    'Caching the page?' => 'Caching the page?',
+    'Keep the form dynamic when caching the page.' => 'Keep the form dynamic when caching the page.',
+    'Form caching guide' => 'Form caching guide',
+    'More examples of rendering forms in Twig' => 'More examples of rendering forms in Twig',
+
     // Form Builder // Settings // Usage in Elements
     'Usage in Elements' => 'Usage in Elements',
     'Element' => 'Element',

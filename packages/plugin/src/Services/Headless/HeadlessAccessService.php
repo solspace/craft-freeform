@@ -137,6 +137,45 @@ class HeadlessAccessService
     }
 
     /**
+     * Origins for shared headless endpoints (e.g. CSRF tokens) that are not form-scoped.
+     * Unions global, per-form, and per-profile allowedOrigins.
+     *
+     * @return string[]
+     */
+    public function resolveSharedCorsOrigins(): array
+    {
+        $origins = $this->getGlobalAllowedOrigins();
+        $config = \Craft::$app->config->getConfigFromFile('freeform');
+        $forms = $config['headless']['forms'] ?? [];
+
+        if (\is_array($forms)) {
+            foreach ($forms as $formConfig) {
+                if (!\is_array($formConfig)) {
+                    continue;
+                }
+
+                $formOrigins = $formConfig['allowedOrigins'] ?? [];
+                if (\is_array($formOrigins) && [] !== $formOrigins) {
+                    $origins = array_merge($origins, $formOrigins);
+                }
+            }
+        }
+
+        foreach (\Craft::$container->get(HeadlessProfileRegistry::class)->all() as $profile) {
+            if ([] !== $profile->allowedOrigins) {
+                $origins = array_merge($origins, $profile->allowedOrigins);
+            }
+        }
+
+        if ([] === $origins) {
+            $general = \Craft::$app->getConfig()->getGeneral()->allowedGraphqlOrigins;
+            $origins = '*' === $general ? ['*'] : (\is_array($general) ? $general : [$general]);
+        }
+
+        return $this->normalizeOriginsForRequest(array_values(array_unique($origins)));
+    }
+
+    /**
      * Expands wildcard origin patterns to include the current request Origin when it matches.
      *
      * @param string[] $origins

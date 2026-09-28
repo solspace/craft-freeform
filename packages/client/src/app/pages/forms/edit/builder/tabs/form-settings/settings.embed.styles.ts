@@ -2,7 +2,7 @@ import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const EmbedContent = styled.div`
-  max-width: 760px;
+  max-width: 950px;
 `;
 
 export const Description = styled.p`

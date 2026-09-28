@@ -13,10 +13,29 @@
 - Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
 - Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye icon button.
 - Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
-- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
+- Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop. It defaults off for existing fields. Displays allowed file kinds, maximum file count, and maximum size per file beneath the input, derived from the field's current settings. Keep the hint separate from editable instructions and connect it to the control with `aria-describedby`.
+- Added an optional per-form processing indicator (**Show Processing Overlay on Submit**) that dims the form and shows a spinner and translated message centered in the visible area while a submission is processing.
+- Added an opt-in **Focus First Error After Submit** setting. When a submission fails validation, Freeform focuses the first visible field with an error, or the form error banner, for both AJAX and standard submissions.
+- Added an **Embed Form** tab to the form builder with a copyable Twig snippet for the current form, plus guides for formatting, dynamic data, success behavior, spam protection, and troubleshooting.
 
 ### Changed
+- AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
+- Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
+- Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.
 - **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+- Improved **File Upload Drag & Drop** drop-zone layout, spacing, focus styles, and circular Remove controls in Basic Light, Basic Dark, Basic Floating Labels, and Multipage All Fields.
+- Corrected upload hint spacing in Bootstrap 5 and Bootstrap 5 Dark, and placed the Drag & Drop label above the drop zone in Bootstrap 5 Floating Labels.
+- Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
+
+> [!WARNING]
+> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
+
+## 5.16.3 - 2026-09-28
+
+### Fixed
+- Fixed **Pardot custom fields** not appearing in form builder integration mappings, including support for single-field API responses and proper Pardot v4 field type handling.
+- Fixed **CSRF token requests for headless forms** to properly support CORS, including allowed origins configured globally, per form, and through headless profiles.
 
 ## 5.16.2 - 2026-09-24
 

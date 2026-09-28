@@ -264,7 +264,7 @@ html:has(.freeform-warning-notice) {
     position: absolute;
     top: 0;
     left: 0;
-    margin: 10px 25px;
+    margin: 15px 25px;
 }
 .freeform-logo img {
     display: inline-block;
@@ -284,7 +284,7 @@ html:has(.freeform-warning-notice) {
 /* Freeform Nav Menu */
 .freeform-menu {
     position: absolute;
-    top: 8px;
+    top: 13px;
     right: 25px;
     margin: 0;
 }
@@ -439,7 +439,7 @@ html:has(.freeform-warning-notice) {
     text-align: left;
     display: none;
     position: absolute;
-    margin-top: 5px;
+    margin-top: 0;
     margin-left: 3px;
     background: var(--nav-dropdown-bg);
     border-bottom-left-radius: 5px;
@@ -449,6 +449,14 @@ html:has(.freeform-warning-notice) {
     box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
     z-index: 1;
     transition: all 0.25s;
+}
+.freeform-nav-dropdown-content::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 8px;
 }
 .freeform-nav-dropdown-content.extras-dropdown {
     min-width: 310px;

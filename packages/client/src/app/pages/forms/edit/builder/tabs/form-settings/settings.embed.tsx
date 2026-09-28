@@ -12,7 +12,6 @@ import {
   CodeLabel,
   CopyFeedback,
   Description,
-  DocsLink,
   EmbedContent,
   HelpSection,
   HelpTopic,
@@ -53,7 +52,7 @@ export const FormEmbed: React.FC = () => {
       />
 
       <EmbedContent>
-        <SectionHeader>{translate("Embed this form")}</SectionHeader>
+        <SectionHeader>{translate("Embed this Form")}</SectionHeader>
         <Description>
           {translate(
             "Add this code to a Craft Twig template where you want the form to appear.",
@@ -94,7 +93,7 @@ export const FormEmbed: React.FC = () => {
         )}
 
         <HelpSection>
-          <h2>{translate("Helpful to know")}</h2>
+          <h2>{translate("Helpful to Know")}</h2>
           <dl>
             <HelpTopic>
               <dt>{translate("Appearance")}</dt>
@@ -106,39 +105,39 @@ export const FormEmbed: React.FC = () => {
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Custom styling")}</dt>
+              <dt>{translate("Custom Styling")}</dt>
               <dd>
                 {translate(
-                  "Customize one placement without changing the form's default appearance.",
+                  "Customize one placement without changing the form's default appearance using the Template Overrides feature.",
                 )}{" "}
                 <a
                   href="https://docs.solspace.com/craft/freeform/v5/templates/formatting/#template-overrides"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Template Overrides")}
+                  {translate("View Documentation")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Using a Form field?")}</dt>
+              <dt>{translate("Using a Form Field?")}</dt>
               <dd>
                 {translate(
-                  "If this form is attached to an entry, you can render it through that field instead.",
+                  "If this form is attached to an entry, you can render it through the Freeform Form field type instead.",
                 )}{" "}
                 <a
                   href="https://docs.solspace.com/craft/freeform/v5/forms/fieldtype/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Freeform Form field")}
+                  {translate("View Documentation")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Caching the page?")}</dt>
+              <dt>{translate("Caching the Page?")}</dt>
               <dd>
                 {translate("Keep the form dynamic when caching the page.")}{" "}
                 <a
@@ -146,7 +145,7 @@ export const FormEmbed: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Form caching guide")}
+                  {translate("View Guide")}
                 </a>
               </dd>
             </HelpTopic>
@@ -154,10 +153,10 @@ export const FormEmbed: React.FC = () => {
         </HelpSection>
 
         <HelpSection>
-          <h2>{translate("Common next steps")}</h2>
+          <h2>{translate("Common Next Steps")}</h2>
           <dl>
             <HelpTopic>
-              <dt>{translate("Create a custom formatting template")}</dt>
+              <dt>{translate("Create a Custom Formatting Template")}</dt>
               <dd>
                 {translate(
                   "Start with a sample template, then tailor the form's layout and styles.",
@@ -167,13 +166,13 @@ export const FormEmbed: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Custom formatting template guide")}
+                  {translate("View Guide")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Pass dynamic data to this form")}</dt>
+              <dt>{translate("Pass Dynamic Data to this Form")}</dt>
               <dd>
                 {translate(
                   "Use Template Overrides to prefill fields or select options from your Twig template.",
@@ -183,13 +182,13 @@ export const FormEmbed: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Passing dynamic data guide")}
+                  {translate("View Guide")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Choose a success behavior")}</dt>
+              <dt>{translate("Choose a Success Behavior")}</dt>
               <dd>
                 {translate(
                   "Show a message or redirect visitors after a successful submission.",
@@ -199,13 +198,13 @@ export const FormEmbed: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Success return guide")}
+                  {translate("View Guide")}
                 </a>
               </dd>
             </HelpTopic>
 
             <HelpTopic>
-              <dt>{translate("Improve spam protection")}</dt>
+              <dt>{translate("Protect Against Spam")}</dt>
               <dd>
                 {translate(
                   "Review available spam controls and choose the ones that fit your site.",
@@ -215,20 +214,12 @@ export const FormEmbed: React.FC = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {translate("Spam protection guide")}
+                  {translate("View Guide")}
                 </a>
               </dd>
             </HelpTopic>
           </dl>
         </HelpSection>
-
-        <DocsLink
-          href="https://docs.solspace.com/craft/freeform/v5/templates/queries/form/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {translate("More examples of rendering forms in Twig")}
-        </DocsLink>
 
         <HelpSection>
           <h2>{translate("Troubleshooting Form Issues")}</h2>
@@ -242,7 +233,7 @@ export const FormEmbed: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {translate("Troubleshooting guide")}
+            {translate("View Troubleshooting Guide")}
           </a>
         </HelpSection>
       </EmbedContent>

@@ -18,7 +18,14 @@ class TokensController extends BaseApiController
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-        $origins = \Craft::$container->get(HeadlessAccessService::class)->resolveCorsOrigins();
+        $access = \Craft::$container->get(HeadlessAccessService::class);
+
+        // Same-origin Freeform JS does not need CORS; only apply when headless is enabled.
+        if (!$access->isEnabled()) {
+            return $behaviors;
+        }
+
+        $origins = $access->resolveSharedCorsOrigins();
 
         $corsHeaders = [
             'Access-Control-Request-Method' => ['GET', 'OPTIONS'],

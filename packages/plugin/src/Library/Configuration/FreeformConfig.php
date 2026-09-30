@@ -54,6 +54,7 @@ class FreeformConfig implements \JsonSerializable
                     'version' => $plugin->getVersion(),
                     'canCreate' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_CREATE),
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
+                    'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
                 ],
                 'tinymce' => [
                     'stylesPath' => \Craft::$app->assetManager->getPublishedUrl('@freeform/Resources/css/cp/tinymce/style.css', true),

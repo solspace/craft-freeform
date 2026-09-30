@@ -1,4 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import config from "@config/freeform/freeform.config";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import translate from "@ff-client/utils/translations";
@@ -113,7 +114,9 @@ export const FormEmbed: React.FC = () => {
             ) : (
               <Description>
                 {translate(
-                  "Enable Allow HTML Embeds in General settings and save the form to get the HTML code.",
+                  config.metadata.freeform.canManageHtmlEmbeds
+                    ? "Enable Allow HTML Embeds in General settings and save the form to get the HTML code."
+                    : "Ask a Craft administrator to enable HTML embeds for this form.",
                 )}
               </Description>
             )}

@@ -981,6 +981,7 @@ return [
     'HTML page on this site' => 'HTML-Seite auf dieser Website',
     'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Fügen Sie diesen Code in eine HTML-Seite auf derselben Domain wie die ausgewählte Craft-Website ein. Änderungen am Formular in Freeform werden automatisch übernommen.',
     'Enable Allow HTML Embeds in General settings and save the form to get the HTML code.' => 'Aktivieren Sie „HTML-Einbettungen erlauben“ in den allgemeinen Einstellungen und speichern Sie das Formular, um den HTML-Code zu erhalten.',
+    'Ask a Craft administrator to enable HTML embeds for this form.' => 'Bitten Sie einen Craft-Administrator, HTML-Einbettungen für dieses Formular zu aktivieren.',
     'Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.' => 'Speichern Sie das Formular nach dem Aktivieren der HTML-Einbettung. Verwenden Sie eine Erfolgsmeldung; Weiterleitungen öffnen sich innerhalb des eingebetteten Formulars.',
     'Allow HTML Embeds' => 'HTML-Einbettungen erlauben',
     'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.' => 'Erlaubt das Laden dieses Formulars über eine öffentliche Einbettungs-URL. Aktivieren Sie dies nur für öffentlich zugängliche Formulare.',

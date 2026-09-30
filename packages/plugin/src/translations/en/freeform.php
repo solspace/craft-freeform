@@ -981,6 +981,7 @@ return [
     'HTML page on this site' => 'HTML page on this site',
     'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.',
     'Enable Allow HTML Embeds in General settings and save the form to get the HTML code.' => 'Enable Allow HTML Embeds in General settings and save the form to get the HTML code.',
+    'Ask a Craft administrator to enable HTML embeds for this form.' => 'Ask a Craft administrator to enable HTML embeds for this form.',
     'Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.' => 'Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.',
     'Allow HTML Embeds' => 'Allow HTML Embeds',
     'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.' => 'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.',

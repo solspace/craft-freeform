@@ -147,6 +147,7 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
     #[Input\Boolean(
         label: 'Allow HTML Embeds',
         instructions: 'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.',

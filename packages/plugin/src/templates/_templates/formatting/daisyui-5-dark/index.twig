@@ -95,7 +95,7 @@
 
 {% if form.pages|length > 1 %}
     <nav class="ff-daisy-page-nav" aria-label="{{ 'Form progress'|t('freeform') }}">
-        <ol class="steps steps-horizontal">
+        <ol class="steps">
             {% for page in form.pages %}
                 <li class="step{% if form.currentPage.index >= page.index %} step-primary{% endif %}"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>{{ page.label }}</li>
             {% endfor %}

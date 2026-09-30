@@ -1,12 +1,19 @@
-{{ field.render({
-    tableAttributes: {
-        table: { class: 'table' },
-        input: { class: 'input' },
-        textarea: { class: 'textarea' },
-        dropdown: { class: 'select' },
-        checkbox: { class: 'checkbox checkbox-primary' },
-        radios: { class: 'radio radio-primary' },
-        addButton: { class: 'btn btn-primary' },
-        removeButton: { class: 'btn' },
-    },
-}) }}
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="ff-daisy-table-scroll">
+        {{ field.renderInput({
+            tableAttributes: {
+                table: { class: 'table' },
+                input: { class: 'input' },
+                textarea: { class: 'textarea' },
+                dropdown: { class: 'select' },
+                checkbox: { class: 'checkbox checkbox-primary' },
+                radios: { class: 'radio radio-primary' },
+                addButton: { class: 'btn btn-primary' },
+                removeButton: { class: 'btn' },
+            },
+        }) }}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

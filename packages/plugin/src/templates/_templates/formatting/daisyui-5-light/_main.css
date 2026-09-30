@@ -19,21 +19,25 @@
 .ff-daisy-form .ff-daisy-help { margin: 0 0 .5rem; font-size: .875rem; color: var(--color-base-content); opacity: .8; }
 .ff-daisy-form .ff-daisy-error { margin: .375rem 0 0; color: var(--ff-daisy-error-text); font-size: .875rem; font-weight: 600; }
 .ff-daisy-form .input, .ff-daisy-form .textarea, .ff-daisy-form .select, .ff-daisy-form .file-input, .ff-daisy-form .ff-daisy-multiple { width: 100%; max-width: 100%; }
-.ff-daisy-form .textarea { min-height: 7rem; }
-.ff-daisy-form .ff-daisy-multiple { height: auto; min-height: 7rem; }
+.ff-daisy-form .textarea { min-height: 7rem; font-family: inherit; }
+.ff-daisy-form .ff-daisy-multiple { display: block; width: 100%; min-height: 9rem; padding: .375rem; overflow-x: hidden; overflow-y: auto; white-space: normal; font: inherit; color: var(--color-base-content); background: var(--color-base-100); border: 1px solid color-mix(in oklab, var(--color-base-content) 25%, transparent); border-radius: var(--radius-field); }
+.ff-daisy-form .ff-daisy-multiple option { display: block; padding: .375rem .5rem; white-space: normal; }
+.ff-daisy-form .freeform-fieldtype-checkbox .ff-daisy-label { display: inline-block; margin: 0; }
+.ff-daisy-form .freeform-fieldtype-checkbox .checkbox { margin-inline-end: .625rem; vertical-align: middle; }
 .ff-daisy-form .ff-daisy-options { display: flex; flex-direction: column; gap: .625rem; }
 .ff-daisy-form .ff-daisy-options-inline { flex-direction: row; flex-wrap: wrap; column-gap: 1.25rem; }
 .ff-daisy-form .ff-daisy-option { display: inline-flex; align-items: center; gap: .625rem; cursor: pointer; }
 .ff-daisy-form .ff-daisy-options .input-group-one-line { display: contents; }
 .ff-daisy-form .ff-daisy-option input { flex: none; }
 .ff-daisy-form .ff-daisy-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.ff-daisy-form .ff-daisy-scale, .ff-daisy-form .ff-daisy-rating { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ff-daisy-form .ff-daisy-scale { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ff-daisy-form .rating { gap: .25rem; }
+.ff-daisy-form .rating .mask-star-2 { background-color: var(--color-primary); }
 .ff-daisy-form .ff-daisy-choice { position: relative; display: inline-flex; align-items: center; justify-content: center; min-width: 2.75rem; padding: .6rem .9rem; border: 1px solid var(--color-base-300); border-radius: var(--radius-field); background: var(--color-base-200); cursor: pointer; }
 .ff-daisy-form .ff-daisy-choice:has(input:checked) { border-color: var(--color-primary); box-shadow: inset 0 0 0 2px var(--color-primary); }
 .ff-daisy-form .ff-daisy-choice:has(input:focus-visible) { outline: 3px solid var(--color-primary); outline-offset: 3px; }
 .ff-daisy-form .ff-daisy-choice:has(input:disabled) { opacity: .55; cursor: not-allowed; }
 .ff-daisy-form .ff-daisy-scale-legends { display: flex; justify-content: space-between; gap: 1rem; margin-top: .375rem; font-size: .875rem; }
-.ff-daisy-form .ff-daisy-star { font-size: 1.75rem; line-height: 1; color: var(--color-base-content); }
 .ff-daisy-form .ff-daisy-cards { display: grid; grid-template-columns: repeat(var(--ff-daisy-card-columns, 3), minmax(0, 1fr)); gap: .75rem; }
 .ff-daisy-form .ff-daisy-card { display: flex; flex-direction: column; align-items: stretch; overflow: hidden; text-align: start; }
 .ff-daisy-form .ff-daisy-card img { display: block; width: 100%; height: auto; }
@@ -47,7 +51,11 @@
 .ff-daisy-form .ff-daisy-progress li { display: inline-flex; align-items: center; gap: .5rem; }
 .ff-daisy-form .ff-daisy-step { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border: 1px solid var(--color-base-content); border-radius: 50%; }
 .ff-daisy-form .ff-daisy-step-active { color: var(--color-primary-content); background: var(--color-primary); border-color: var(--color-primary); }
-.ff-daisy-form table { display: block; max-width: 100%; overflow-x: auto; }
+.ff-daisy-form .ff-daisy-table-scroll { max-width: 100%; overflow-x: auto; }
+.ff-daisy-form .ff-daisy-table-scroll table { display: table; width: max-content; min-width: 100%; }
+.ff-daisy-form .ff-daisy-table-scroll td { min-width: 8rem; vertical-align: top; }
+.ff-daisy-form .ff-daisy-table-scroll td:has(textarea) { min-width: 14rem; }
+.ff-daisy-form .ff-daisy-table-scroll .input, .ff-daisy-form .ff-daisy-table-scroll .select, .ff-daisy-form .ff-daisy-table-scroll .textarea { min-width: 0; width: 100%; }
 .ff-daisy-form button.freeform-file-dnd__input { display: block; width: 100%; min-height: 9rem; border: 2px dashed var(--color-base-content); border-radius: var(--radius-box); color: var(--color-base-content); background: var(--color-base-200); }
 .ff-daisy-form button.freeform-file-dnd__input:hover { background: var(--color-base-300); }
 .ff-daisy-form .freeform-file-dnd__placeholder { color: var(--color-base-content); }

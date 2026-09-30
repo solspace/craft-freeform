@@ -1,13 +1,9 @@
 {{ field.renderContainerOpeningTag }}
     {{ field.renderLabel }}
     {{ field.renderInstructions }}
-    <div class="ff-daisy-rating">
+    <div class="rating rating-lg">
         {% for count in 1..field.maxValue %}
-            <label class="ff-daisy-choice ff-daisy-star">
-                <input class="ff-daisy-visually-hidden" type="radio"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}" value="{{ count }}"{% if field.value == count %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
-                <span aria-hidden="true">★</span>
-                <span class="ff-daisy-visually-hidden">{{ count == 1 ? '{count} star'|t('freeform', {count: count}) : '{count} stars'|t('freeform', {count: count}) }}</span>
-            </label>
+            <input class="mask mask-star-2" type="radio"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}" value="{{ count }}" aria-label="{{ count == 1 ? '{count} star'|t('freeform', {count: count}) : '{count} stars'|t('freeform', {count: count}) }}"{% if field.value == count %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
         {% endfor %}
     </div>
     {{ field.renderErrors }}

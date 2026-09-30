@@ -18,7 +18,7 @@
 .ff-daisy-form[data-theme="light"] .ff-daisy-help { margin: 0 0 .5rem; font-size: .875rem; color: var(--color-base-content); opacity: .8; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-error { margin: .375rem 0 0; padding: 0; list-style: none; color: var(--ff-daisy-error-text); font-size: .875rem; font-weight: 600; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-error li + li { margin-top: .25rem; }
-.ff-daisy-form[data-theme="light"] .input, .ff-daisy-form[data-theme="light"] .textarea, .ff-daisy-form[data-theme="light"] .select, .ff-daisy-form[data-theme="light"] .file-input, .ff-daisy-form[data-theme="light"] .ff-daisy-multiple { width: 100%; max-width: 100%; }
+.ff-daisy-form[data-theme="light"] .input, .ff-daisy-form[data-theme="light"] .textarea, .ff-daisy-form[data-theme="light"] .select, .ff-daisy-form[data-theme="light"] .file-input, .ff-daisy-form[data-theme="light"] .ff-daisy-multiple { width: 100%; max-width: 100%; color: var(--color-base-content); }
 .ff-daisy-form[data-theme="light"] .textarea { min-height: 7rem; font-family: inherit; }
 .ff-daisy-form[data-theme="light"] .ff-range { container-type: inline-size; color: var(--color-base-content); }
 .ff-daisy-form[data-theme="light"] .ff-range input.range.ff-range-input[type=range] { --range-bg: color-mix(in oklab, var(--color-base-content) 22%, transparent); width: 100%; height: var(--range-thumb-size); -webkit-appearance: none; appearance: none; border: 0; border-radius: calc(var(--radius-selector) + min(var(--range-p), var(--radius-selector-max))); overflow: hidden; color: var(--color-primary); background: transparent; box-shadow: none; }

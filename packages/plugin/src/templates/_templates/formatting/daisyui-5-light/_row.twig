@@ -7,6 +7,11 @@
     {% for row in rows %}
         {% tag form.attributes.row.tag with form.attributes.row.toHtmlTagArray %}
             {% for field in row %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: { '+class': 'freeform-fieldtype-' ~ field.type },
+                    },
+                }) %}
                 {% include [self.getFieldTemplate(field.type), self.getFieldTemplate('_default')] %}
             {% endfor %}
         {% endtag %}

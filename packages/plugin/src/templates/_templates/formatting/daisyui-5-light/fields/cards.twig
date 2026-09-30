@@ -12,21 +12,23 @@
     {{ field.renderInstructions }}
     <div class="ff-daisy-cards" style="--ff-daisy-card-columns: {{ field.cardsPerRow|default(3) }}">
         {% for card in field.layout %}
-            <label class="card card-border ff-daisy-card">
+            {% set cardId = field.idAttribute ~ '-card-' ~ loop.index %}
+            {% set renderedMeta = card.metadata is defined and card.metadata is not empty ? meta.renderMeta(card.metadata) : '' %}
+            {% set describedBy = [field.attributes.input.get('aria-describedby')] %}
+            {% if card.description %}{% set describedBy = describedBy|merge([cardId ~ '-description']) %}{% endif %}
+            {% if renderedMeta|trim %}{% set describedBy = describedBy|merge([cardId ~ '-meta']) %}{% endif %}
+            <div class="card card-border ff-daisy-card">
                 {% if card.assetId %}
                     {% set asset = craft.assets.id(card.assetId).one %}
                     {% if asset %}<figure><img src="{{ asset.getUrl(field.transform) }}" alt="" loading="lazy"></figure>{% endif %}
                 {% endif %}
-                <input class="ff-daisy-visually-hidden" type="checkbox"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}[]" value="{{ card.value ?: card.label }}"{% if (card.value ?: card.label) in field.value %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
-                <span class="card-body">
-                    <span class="card-title">{{ card.label }}</span>
-                    {% if card.description %}<span>{{ card.description }}</span>{% endif %}
-                    {% if card.metadata is defined and card.metadata is not empty %}
-                        {% set renderedMeta = meta.renderMeta(card.metadata) %}
-                        {% if renderedMeta|trim %}<ul class="ff-daisy-card-meta">{{ renderedMeta|raw }}</ul>{% endif %}
-                    {% endif %}
-                </span>
-            </label>
+                <input id="{{ cardId }}" class="ff-daisy-visually-hidden" type="checkbox"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}[]" value="{{ card.value ?: card.label }}"{% if (card.value ?: card.label) in field.value %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if describedBy|filter(value => value is not empty) %} aria-describedby="{{ describedBy|filter(value => value is not empty)|join(' ') }}"{% endif %}>
+                <div class="card-body">
+                    <label class="card-title" for="{{ cardId }}">{{ card.label }}</label>
+                    {% if card.description %}<p id="{{ cardId }}-description">{{ card.description }}</p>{% endif %}
+                    {% if renderedMeta|trim %}<ul id="{{ cardId }}-meta" class="ff-daisy-card-meta">{{ renderedMeta|raw }}</ul>{% endif %}
+                </div>
+            </div>
         {% endfor %}
     </div>
     {{ field.renderErrors }}

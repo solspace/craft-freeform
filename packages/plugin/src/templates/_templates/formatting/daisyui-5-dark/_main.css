@@ -71,6 +71,8 @@
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card:has(> input:checked), .ff-daisy-form[data-theme="dark"] .ff-daisy-card:has(> input:focus-visible) { outline-color: var(--color-primary); }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card:has(> input:disabled) { opacity: .55; cursor: not-allowed; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card img { display: block; width: 100%; height: auto; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-card .card-title::before { content: ''; position: absolute; inset: 0; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-card p { margin: 0; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card-meta { width: 100%; margin: 0; padding-inline-start: 1.25rem; font-size: .8125rem; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-actions { display: flex; flex-wrap: wrap; gap: .625rem; margin-block: 1.5rem; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-banner { margin-block: 1.5rem 2rem; }

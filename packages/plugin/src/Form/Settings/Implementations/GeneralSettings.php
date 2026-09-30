@@ -147,6 +147,14 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[Input\Boolean(
+        label: 'Allow HTML Embeds',
+        instructions: 'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.',
+        order: 10,
+    )]
+    public bool $allowHtmlEmbeds = false;
+
+    #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.attributes')]
     #[ValueTransformer(FormAttributesTransformer::class)]
     #[Input\Attributes(

@@ -18,7 +18,7 @@ class EmbedController extends BaseController
         }
 
         $form = $this->getFormsService()->getFormByHandle($handle, SitesHelper::getFrontendSiteHandle());
-        if (!$form || $form->getDateArchived()) {
+        if (!$form || $form->getDateArchived() || !$form->getSettings()->getGeneral()->allowHtmlEmbeds) {
             throw new NotFoundHttpException('Form not found');
         }
 
@@ -26,12 +26,18 @@ class EmbedController extends BaseController
         // success messages in the frame, including forms configured for page reloads.
         $form->getSettings()->getBehavior()->ajax = true;
 
-        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
-        $this->response->getHeaders()->set('X-Frame-Options', 'SAMEORIGIN');
-
-        return $this->renderTemplate('freeform-embed/form', [
+        $response = $this->renderTemplate('freeform-embed/form', [
             'form' => $form,
             'formattingTemplate' => $form->getSettings()->getGeneral()->formattingTemplate,
         ]);
+
+        $headers = $response->getHeaders();
+        $headers->set('Cache-Control', 'no-store, private');
+        $headers->set('X-Frame-Options', 'SAMEORIGIN');
+        // A separate policy is enforced alongside any CSP registered by the
+        // site's forms or payment integrations.
+        $headers->add('Content-Security-Policy', "frame-ancestors 'self'");
+
+        return $response;
     }
 }

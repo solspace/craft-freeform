@@ -24,7 +24,7 @@ const escapeAttribute = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
 
 export const FormEmbed: React.FC = () => {
-  const { handle, name, isNew } = useSelector(formSelectors.current);
+  const { handle, name, isNew, settings } = useSelector(formSelectors.current);
   const { current: site } = useSiteContext();
   const currentPath = useResolvedPath("");
   const [copyStatus, setCopyStatus] = useState<Record<string, CopyStatus>>({});
@@ -101,12 +101,22 @@ export const FormEmbed: React.FC = () => {
                 "Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.",
               )}
             </Description>
-            {htmlCode && copyButton("html", htmlCode)}
-            <Description>
-              {translate(
-                "Use a success message for this placement. Redirects open inside the embedded form.",
-              )}
-            </Description>
+            {settings?.general?.allowHtmlEmbeds === true ? (
+              <>
+                {htmlCode && copyButton("html", htmlCode)}
+                <Description>
+                  {translate(
+                    "Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.",
+                  )}
+                </Description>
+              </>
+            ) : (
+              <Description>
+                {translate(
+                  "Enable Allow HTML Embeds in General settings and save the form to get the HTML code.",
+                )}
+              </Description>
+            )}
 
             <CodeLabel>{translate("Twig code")}</CodeLabel>
             <Description>

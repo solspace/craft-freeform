@@ -978,6 +978,9 @@ return [
     // Form Builder // Settings // Embed Form
     'Embed Form' => 'Embed Form',
     'Embed this Form' => 'Embed this Form',
+    'HTML page on this site' => 'HTML page on this site',
+    'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.',
+    'Use a success message for this placement. Redirects open inside the embedded form.' => 'Use a success message for this placement. Redirects open inside the embedded form.',
     'Add this code to a Craft Twig template where you want the form to appear.' => 'Add this code to a Craft Twig template where you want the form to appear.',
     'Save this form before copying its embed code.' => 'Save this form before copying its embed code.',
     'Copy code' => 'Copy code',

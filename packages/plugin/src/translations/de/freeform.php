@@ -978,6 +978,9 @@ return [
     // Form Builder // Settings // Embed Form
     'Embed Form' => 'Formular einbetten',
     'Embed this Form' => 'Dieses Formular einbetten',
+    'HTML page on this site' => 'HTML-Seite auf dieser Website',
+    'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Fügen Sie diesen Code in eine HTML-Seite auf derselben Domain wie die ausgewählte Craft-Website ein. Änderungen am Formular in Freeform werden automatisch übernommen.',
+    'Use a success message for this placement. Redirects open inside the embedded form.' => 'Verwenden Sie für diese Einbettung eine Erfolgsmeldung. Weiterleitungen öffnen sich innerhalb des eingebetteten Formulars.',
     'Add this code to a Craft Twig template where you want the form to appear.' => 'Fügen Sie diesen Code an der gewünschten Stelle in ein Craft-Twig-Template ein.',
     'Save this form before copying its embed code.' => 'Speichern Sie dieses Formular, bevor Sie den Einbettungscode kopieren.',
     'Twig code' => 'Twig-Code',

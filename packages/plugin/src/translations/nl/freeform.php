@@ -978,6 +978,9 @@ return [
     // Form Builder // Settings // Embed Form
     'Embed Form' => 'Formulier insluiten',
     'Embed this Form' => 'Dit formulier insluiten',
+    'HTML page on this site' => 'HTML-pagina op deze site',
+    'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Plak deze code in een HTML-pagina op hetzelfde domein als de geselecteerde Craft-site. Het formulier wordt bijgewerkt wanneer je het in Freeform bewerkt.',
+    'Use a success message for this placement. Redirects open inside the embedded form.' => 'Gebruik voor deze plaatsing een succesbericht. Doorverwijzingen openen binnen het ingesloten formulier.',
     'Add this code to a Craft Twig template where you want the form to appear.' => 'Voeg deze code toe aan een Craft Twig-template op de plek waar je het formulier wilt weergeven.',
     'Save this form before copying its embed code.' => 'Sla dit formulier op voordat je de insluitcode kopieert.',
     'Twig code' => 'Twig-code',

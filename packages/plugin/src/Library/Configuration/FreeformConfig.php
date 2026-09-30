@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Configuration;
 
+use craft\helpers\UrlHelper;
 use craft\models\Site;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Freeform;
@@ -71,6 +72,8 @@ class FreeformConfig implements \JsonSerializable
                         'name' => $site->name,
                         'handle' => $site->handle,
                         'primary' => $site->primary,
+                        'embedUrl' => UrlHelper::siteUrl('freeform/embed/__FREEFORM_HANDLE__', siteId: $site->id),
+                        'embedScriptUrl' => UrlHelper::siteUrl('freeform/embed.js', siteId: $site->id),
                     ],
                     $sites,
                 ),

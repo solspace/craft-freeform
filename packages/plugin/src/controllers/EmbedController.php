@@ -26,9 +26,20 @@ class EmbedController extends BaseController
         // success messages in the frame, including forms configured for page reloads.
         $form->getSettings()->getBehavior()->ajax = true;
 
+        $formattingTemplate = $form->getSettings()->getGeneral()->formattingTemplate;
+        $isCustomFormattingTemplate = false;
+        foreach ($this->getSettingsService()->getCustomFormTemplates() as $template) {
+            if ($template->getFileName() === $formattingTemplate) {
+                $isCustomFormattingTemplate = true;
+
+                break;
+            }
+        }
+
         $response = $this->renderTemplate('freeform-embed/form', [
             'form' => $form,
-            'formattingTemplate' => $form->getSettings()->getGeneral()->formattingTemplate,
+            'formattingTemplate' => $formattingTemplate,
+            'isCustomFormattingTemplate' => $isCustomFormattingTemplate,
         ]);
 
         $headers = $response->getHeaders();

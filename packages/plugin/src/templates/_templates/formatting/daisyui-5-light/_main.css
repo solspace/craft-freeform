@@ -4,7 +4,7 @@
     font: 1rem/1.5 system-ui, sans-serif;
     box-sizing: border-box;
     max-width: 100%;
-    --ff-daisy-error-text: color-mix(in oklab, var(--color-error) 76%, black);
+    --ff-daisy-error-text: oklch(from var(--color-error) 54% c h);
 }
 .ff-daisy-form[data-theme="light"] *, .ff-daisy-form[data-theme="light"] *::before, .ff-daisy-form[data-theme="light"] *::after { box-sizing: border-box; }
 .ff-daisy-form[data-theme="light"] :focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }

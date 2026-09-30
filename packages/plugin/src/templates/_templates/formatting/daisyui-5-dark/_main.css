@@ -41,11 +41,11 @@
 .ff-daisy-form[data-theme="dark"] .freeform-fieldtype-checkbox .checkbox { margin-inline-end: .625rem; vertical-align: middle; }
 .ff-daisy-form[data-theme="dark"] .checkbox:checked { --input-color: var(--color-primary); color: var(--color-primary-content); }
 .ff-daisy-form[data-theme="dark"] .radio:checked { --input-color: var(--color-primary); }
-.ff-daisy-form[data-theme="dark"] .ff-daisy-options { display: flex; flex-direction: column; gap: .625rem; }
-.ff-daisy-form[data-theme="dark"] .ff-daisy-options-inline { flex-direction: row; flex-wrap: wrap; column-gap: 1.25rem; }
-.ff-daisy-form[data-theme="dark"] .ff-daisy-option { display: inline-flex; align-items: center; gap: .625rem; cursor: pointer; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-options { display: flex; flex-direction: column; gap: .375rem; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-options-inline { flex-direction: row; flex-wrap: wrap; gap: .5rem 1rem; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-option { display: inline-flex; align-items: center; gap: .5rem; cursor: pointer; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-options .input-group-one-line { display: contents; }
-.ff-daisy-form[data-theme="dark"] .ff-daisy-option input { flex: none; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-option input { flex: none; margin: 0; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-scale-wrap { display: inline-block; max-width: 100%; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-scale { display: flex; flex-wrap: wrap; gap: .5rem; }

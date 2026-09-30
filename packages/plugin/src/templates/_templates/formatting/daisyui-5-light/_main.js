@@ -26,7 +26,16 @@ document.querySelectorAll('[data-freeform-daisyui]').forEach((form) => {
             if (resolved) variables[stripeName] = resolved;
         }
         variables.borderRadius = styles.getPropertyValue('--radius-field').trim() || '0.25rem';
+        variables.inputBoxShadow = 'none';
+        variables.inputFocusBoxShadow = 'none';
+        variables.inputFocusColorBorder = 'var(--colorPrimary)';
         appearance.variables = variables;
+        appearance.rules = {
+            ...appearance.rules,
+            '.Tab': { ...appearance.rules?.['.Tab'], boxShadow: 'none' },
+            '.Tab:hover': { ...appearance.rules?.['.Tab:hover'], boxShadow: 'none' },
+            '.Tab--selected': { ...appearance.rules?.['.Tab--selected'], boxShadow: 'none' },
+        };
     });
 
     const showBanner = (kind, errors = []) => {

@@ -36,6 +36,7 @@ export const FormEmbed: React.FC = () => {
   const { current: site } = useSiteContext();
   const currentPath = useResolvedPath("");
   const [copyStatus, setCopyStatus] = useState<Record<string, CopyStatus>>({});
+  const allowHtmlEmbeds = settings?.general?.allowHtmlEmbeds === true;
   const embedCode = `{{ freeform.form(${JSON.stringify(handle)}).render() }}`;
   const htmlCode = site
     ? `<script src="${escapeAttribute(site.embedScriptUrl)}" data-freeform-url="${escapeAttribute(site.embedUrl.replace("__FREEFORM_HANDLE__", encodeURIComponent(handle)))}" data-freeform-title="${escapeAttribute(name || handle)}" defer></script>`
@@ -109,23 +110,25 @@ export const FormEmbed: React.FC = () => {
           </Description>
         ) : (
           <>
-            <CodeLabel>{translate("HTML page on this site")}</CodeLabel>
-            <Description>
-              {translate(
-                "Add this script to an HTML page on the same domain as the selected Craft site. Save the form before using it. Redirects open inside the embedded form, so a success message works best.",
-              )}
-            </Description>
-            {settings?.general?.allowHtmlEmbeds === true ? (
-              htmlCode && copyButton("html", htmlCode)
-            ) : (
-              <Description>
-                {translate(
-                  config.metadata.freeform.canManageHtmlEmbeds
-                    ? "Enable HTML embeds above and save the form to copy the code."
-                    : "Ask a Craft administrator to enable HTML embeds for this form.",
-                )}
-              </Description>
+            {allowHtmlEmbeds && (
+              <>
+                <CodeLabel>{translate("HTML page on this site")}</CodeLabel>
+                <Description>
+                  {translate(
+                    "Add this script to an HTML page on the same domain as the selected Craft site. Save the form before using it. Redirects open inside the embedded form, so a success message works best.",
+                  )}
+                </Description>
+                {htmlCode && copyButton("html", htmlCode)}
+              </>
             )}
+            {!allowHtmlEmbeds &&
+              !config.metadata.freeform.canManageHtmlEmbeds && (
+                <Description>
+                  {translate(
+                    "Ask a Craft administrator to enable HTML embeds for this form.",
+                  )}
+                </Description>
+              )}
 
             <CodeLabel>{translate("Twig code")}</CodeLabel>
             <Description>

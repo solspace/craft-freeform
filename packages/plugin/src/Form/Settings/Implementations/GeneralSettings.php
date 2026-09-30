@@ -150,7 +150,7 @@ class GeneralSettings extends SettingsNamespace
     #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
     #[Input\Boolean(
         label: 'Allow HTML Embeds',
-        instructions: 'Allow this form to be loaded from a public embed URL. Enable only for forms intended to be publicly accessible.',
+        instructions: 'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.',
         order: 10,
     )]
     public bool $allowHtmlEmbeds = false;

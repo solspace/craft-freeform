@@ -4,10 +4,10 @@
     font: 1rem/1.5 system-ui, sans-serif;
     box-sizing: border-box;
     max-width: 100%;
-    --ff-daisy-error-text: oklch(42% 0.19 13);
+    --ff-daisy-error-text: var(--color-error);
 }
 .ff-daisy-form[data-theme="dark"] *, .ff-daisy-form[data-theme="dark"] *::before, .ff-daisy-form[data-theme="dark"] *::after { box-sizing: border-box; }
-.ff-daisy-form[data-theme="dark"] { --color-primary: oklch(45% 0.20 277); --ff-daisy-error-text: oklch(83% 0.12 13); }
+.ff-daisy-form[data-theme="dark"] { --color-primary: oklch(45% 0.20 277); }
 .ff-daisy-form[data-theme="dark"] :focus-visible { outline: 3px solid var(--color-primary); outline-offset: 3px; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-row { display: flex; flex-wrap: wrap; gap: 1rem; margin-block: 1rem; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-row > * { flex: 1 1 min(100%, 14rem); min-width: 0; }

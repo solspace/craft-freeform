@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers;
 
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -12,7 +13,9 @@ class EmbedController extends BaseController
 
     public function actionForm(string $handle): Response
     {
-        $this->requireGetRequest();
+        if (!$this->request->getIsGet()) {
+            throw new HttpException(405, 'GET required');
+        }
 
         $form = $this->getFormsService()->getFormByHandle($handle, SitesHelper::getFrontendSiteHandle());
         if (!$form || $form->getDateArchived()) {

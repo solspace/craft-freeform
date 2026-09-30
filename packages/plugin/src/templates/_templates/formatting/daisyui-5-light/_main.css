@@ -21,6 +21,12 @@
 .ff-daisy-form .ff-daisy-error li + li { margin-top: .25rem; }
 .ff-daisy-form .input, .ff-daisy-form .textarea, .ff-daisy-form .select, .ff-daisy-form .file-input, .ff-daisy-form .ff-daisy-multiple { width: 100%; max-width: 100%; }
 .ff-daisy-form .textarea { min-height: 7rem; font-family: inherit; }
+.ff-daisy-form .ff-range { container-type: inline-size; color: var(--color-base-content); }
+.ff-daisy-form .ff-range input.range.ff-range-input[type=range] { --range-bg: color-mix(in oklab, var(--color-base-content) 22%, transparent); width: 100%; height: var(--range-thumb-size); -webkit-appearance: none; appearance: none; border: 0; border-radius: var(--radius-selector); overflow: hidden; color: var(--color-primary); background: transparent; box-shadow: none; }
+.ff-daisy-form .ff-range .ff-range-values { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: .5rem; margin-top: .375rem; font-size: .8125rem; line-height: 1.35; }
+.ff-daisy-form .ff-range .ff-range-values > span { overflow-wrap: anywhere; }
+.ff-daisy-form .ff-range .ff-range-values > span:last-child { grid-column: 3; text-align: end; }
+.ff-daisy-form .ff-range output.ff-range-value { grid-column: 2; min-width: 2.5rem; padding: .125rem .5rem; border-radius: var(--radius-selector); text-align: center; color: var(--color-base-content); background: color-mix(in oklab, var(--color-primary) 16%, var(--color-base-100)); }
 .ff-daisy-form .ff-daisy-multiple { display: block; width: 100%; min-height: 9rem; padding: .375rem; overflow-x: hidden; overflow-y: auto; white-space: normal; font: inherit; color: var(--color-base-content); background: var(--color-base-100); border: 1px solid color-mix(in oklab, var(--color-base-content) 25%, transparent); border-radius: var(--radius-field); }
 .ff-daisy-form .ff-daisy-multiple option { display: block; padding: .375rem .5rem; white-space: normal; }
 .ff-daisy-form .freeform-fieldtype-checkbox .ff-daisy-label { display: inline-block; margin: 0; }
@@ -72,8 +78,11 @@
 .ff-daisy-form button.freeform-file-dnd__input { display: block; width: 100%; min-height: 9rem; border: 2px dashed var(--color-base-content); border-radius: var(--radius-box); color: var(--color-base-content); background: var(--color-base-200); }
 .ff-daisy-form button.freeform-file-dnd__input:hover { background: var(--color-base-300); }
 .ff-daisy-form .freeform-file-dnd__placeholder { color: var(--color-base-content); }
-.ff-daisy-form [data-freeform-summary] { max-width: 100%; overflow-wrap: anywhere; }
-.ff-daisy-form [data-freeform-summary] > [data-summary-field] { display: flex; flex-wrap: wrap; gap: .5rem 1rem; padding: .5rem; border-bottom: 1px solid var(--color-base-300); }
-.ff-daisy-form [data-freeform-summary] dt, .ff-daisy-form [data-freeform-summary] dd { margin: 0; }
-.ff-daisy-form [data-freeform-summary] dt { font-weight: 600; }
+.ff-daisy-form .ff-daisy-row > .freeform-fieldtype-summary { flex: 1 1 100%; }
+.ff-daisy-form [data-freeform-summary] { container: ff-daisy-summary / inline-size; display: block; width: 100%; height: auto; margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--color-base-300); border-radius: var(--radius-box); background: var(--color-base-100); }
+.ff-daisy-form [data-freeform-summary] > [data-summary-field] { display: grid; grid-template-columns: minmax(0, 1fr); gap: .125rem 1.25rem; padding: .75rem 1rem; }
+.ff-daisy-form [data-freeform-summary] > [data-summary-field] + [data-summary-field] { border-top: 1px solid var(--color-base-300); }
+.ff-daisy-form [data-freeform-summary] :is(dt, dd) { min-width: 0; margin: 0; overflow-wrap: anywhere; line-height: 1.4; }
+.ff-daisy-form [data-freeform-summary] dt { font-size: .875rem; font-weight: 600; opacity: .8; }
+@container ff-daisy-summary (min-width: 32rem) { .ff-daisy-form [data-freeform-summary] > [data-summary-field] { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); } }
 @media (max-width: 40rem) { .ff-daisy-form .ff-daisy-cards { grid-template-columns: 1fr; } }

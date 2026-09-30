@@ -1,6 +1,6 @@
 .ff-daisy-form {
     color: var(--color-base-content);
-    background: var(--color-base-100);
+    background: transparent;
     font: 1rem/1.5 system-ui, sans-serif;
     box-sizing: border-box;
     max-width: 100%;

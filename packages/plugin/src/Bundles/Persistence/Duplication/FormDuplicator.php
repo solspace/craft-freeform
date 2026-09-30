@@ -114,6 +114,8 @@ class FormDuplicator
         $metadata = JsonHelper::decode($clone->metadata);
         $metadata->general->name = $clone->name;
         $metadata->general->handle = $clone->handle;
+        // A clone receives a new public URL, which must be enabled separately.
+        $metadata->general->allowHtmlEmbeds = false;
         $clone->metadata = json_encode($metadata);
 
         $clone->save();

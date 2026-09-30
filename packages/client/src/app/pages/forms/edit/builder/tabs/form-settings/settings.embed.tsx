@@ -1,11 +1,15 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import config from "@config/freeform/freeform.config";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
+import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useResolvedPath } from "react-router-dom";
 
+import { FieldComponent } from "./field-component";
 import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 import {
   CodeBlock,
@@ -13,35 +17,76 @@ import {
   CopyFeedback,
   Description,
   EmbedContent,
+  EmbedSetting,
   HelpSection,
   HelpTopic,
 } from "./settings.embed.styles";
 
 type CopyStatus = "idle" | "copied" | "failed";
 
+const escapeAttribute = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
 export const FormEmbed: React.FC = () => {
-  const { handle, isNew } = useSelector(formSelectors.current);
+  const { handle, name, isNew, settings } = useSelector(formSelectors.current);
+  const { data: formSettings } = useQueryFormSettings();
+  const embedSetting = formSettings
+    ?.find((namespace) => namespace.handle === "general")
+    ?.properties.find((property) => property.handle === "allowHtmlEmbeds");
+  const { current: site } = useSiteContext();
   const currentPath = useResolvedPath("");
-  const [copyStatus, setCopyStatus] = useState<CopyStatus>("idle");
+  const [copyStatus, setCopyStatus] = useState<Record<string, CopyStatus>>({});
+  const allowHtmlEmbeds = settings?.general?.allowHtmlEmbeds === true;
   const embedCode = `{{ freeform.form(${JSON.stringify(handle)}).render() }}`;
+  const htmlCode = site
+    ? `<script src="${escapeAttribute(site.embedScriptUrl)}" data-freeform-url="${escapeAttribute(site.embedUrl.replace("__FREEFORM_HANDLE__", encodeURIComponent(handle)))}" data-freeform-title="${escapeAttribute(name || handle)}" defer></script>`
+    : "";
 
   useEffect(() => {
-    if (copyStatus !== "copied") {
+    if (!Object.values(copyStatus).includes("copied")) {
       return;
     }
 
-    const timeout = window.setTimeout(() => setCopyStatus("idle"), 2000);
+    const timeout = window.setTimeout(() => setCopyStatus({}), 2000);
     return () => window.clearTimeout(timeout);
   }, [copyStatus]);
 
-  const onCopy = async () => {
+  const onCopy = async (key: string, code: string) => {
     try {
-      await navigator.clipboard.writeText(embedCode);
-      setCopyStatus("copied");
+      await navigator.clipboard.writeText(code);
+      setCopyStatus((current) => ({ ...current, [key]: "copied" }));
     } catch {
-      setCopyStatus("failed");
+      setCopyStatus((current) => ({ ...current, [key]: "failed" }));
     }
   };
+
+  const copyButton = (key: string, code: string) => (
+    <>
+      <CodeBlock>
+        <code>{code}</code>
+        <button type="button" className="btn" onClick={() => onCopy(key, code)}>
+          <i
+            className={
+              copyStatus[key] === "copied"
+                ? "fa-classic fa-check"
+                : "fa-classic fa-copy"
+            }
+            aria-hidden="true"
+          />
+          {translate(copyStatus[key] === "copied" ? "Copied" : "Copy code")}
+        </button>
+      </CodeBlock>
+      <CopyFeedback role="status" aria-live="polite">
+        {copyStatus[key] === "copied"
+          ? translate("Copied")
+          : copyStatus[key] === "failed"
+            ? translate(
+                "Could not copy automatically. Select and copy the code above.",
+              )
+            : null}
+      </CopyFeedback>
+    </>
+  );
 
   return (
     <FormSettingsContainer>
@@ -53,42 +98,45 @@ export const FormEmbed: React.FC = () => {
 
       <EmbedContent>
         <SectionHeader>{translate("Embed this Form")}</SectionHeader>
-        <Description>
-          {translate(
-            "Add this code to a Craft Twig template where you want the form to appear.",
+        {config.metadata.freeform.canManageHtmlEmbeds &&
+          embedSetting?.visible && (
+            <EmbedSetting>
+              <FieldComponent namespace="general" property={embedSetting} />
+            </EmbedSetting>
           )}
-        </Description>
-
         {isNew ? (
           <Description>
             {translate("Save this form before copying its embed code.")}
           </Description>
         ) : (
           <>
+            {allowHtmlEmbeds && (
+              <>
+                <CodeLabel>{translate("HTML page on this site")}</CodeLabel>
+                <Description>
+                  {translate(
+                    "Add this script to an HTML page on the same domain as the selected Craft site. Save the form before using it. Redirects open inside the embedded form, so a success message works best.",
+                  )}
+                </Description>
+                {htmlCode && copyButton("html", htmlCode)}
+              </>
+            )}
+            {!allowHtmlEmbeds &&
+              !config.metadata.freeform.canManageHtmlEmbeds && (
+                <Description>
+                  {translate(
+                    "Ask a Craft administrator to enable HTML embeds for this form.",
+                  )}
+                </Description>
+              )}
+
             <CodeLabel>{translate("Twig code")}</CodeLabel>
-            <CodeBlock>
-              <code>{embedCode}</code>
-              <button type="button" className="btn" onClick={onCopy}>
-                <i
-                  className={
-                    copyStatus === "copied"
-                      ? "fa-classic fa-check"
-                      : "fa-classic fa-copy"
-                  }
-                  aria-hidden="true"
-                />
-                {translate(copyStatus === "copied" ? "Copied" : "Copy code")}
-              </button>
-            </CodeBlock>
-            <CopyFeedback role="status" aria-live="polite">
-              {copyStatus === "copied"
-                ? translate("Copied")
-                : copyStatus === "failed"
-                  ? translate(
-                      "Could not copy automatically. Select and copy the code above.",
-                    )
-                  : null}
-            </CopyFeedback>
+            <Description>
+              {translate(
+                "Add this code to a Craft Twig template where you want the form to appear.",
+              )}
+            </Description>
+            {copyButton("twig", embedCode)}
           </>
         )}
 

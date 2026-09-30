@@ -5,6 +5,10 @@ export const EmbedContent = styled.div`
   max-width: 950px;
 `;
 
+export const EmbedSetting = styled.div`
+  margin-bottom: ${spacings.lg};
+`;
+
 export const Description = styled.p`
   margin: 0 0 ${spacings.lg};
   color: ${colors.gray600};
@@ -16,9 +20,9 @@ export const CodeLabel = styled.h2`
 `;
 
 export const CodeBlock = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
   gap: ${spacings.sm};
   padding: ${spacings.sm};
   border: 1px solid ${colors.gray200};
@@ -26,7 +30,6 @@ export const CodeBlock = styled.div`
   background: ${colors.gray050};
 
   code {
-    flex: 1 1 auto;
     min-width: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -37,7 +40,10 @@ export const CodeBlock = styled.div`
     display: inline-flex;
     align-items: center;
     gap: ${spacings.sm};
-    flex: none;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 

@@ -202,6 +202,26 @@ class FormsController extends BaseApiController
 
         $data = json_decode($this->request->getRawBody(), false);
 
+        // Enabling the embed creates a public URL. Form editors can continue
+        // editing an enabled form, but only a Craft admin may change this flag.
+        if (!PermissionHelper::isAdmin()) {
+            $general = $data?->form?->settings?->general;
+            if (!\is_object($general)) {
+                throw new BadRequestHttpException('Form settings are required');
+            }
+
+            $existing = false;
+            if (is_numeric($id)) {
+                $existing = $this->getFormsService()->getFormById((int) $id)?->getSettings()->getGeneral()->allowHtmlEmbeds ?? false;
+            }
+
+            if (isset($general->allowHtmlEmbeds) && $general->allowHtmlEmbeds !== $existing) {
+                throw new ForbiddenHttpException('Only a Craft administrator can change HTML embed access');
+            }
+
+            $general->allowHtmlEmbeds = $existing;
+        }
+
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPDATE_FORM, $event);
         $this->trigger(self::EVENT_UPSERT_FORM, $event);

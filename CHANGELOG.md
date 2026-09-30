@@ -18,6 +18,7 @@
 - Added an optional per-form processing indicator (**Show Processing Overlay on Submit**) that dims the form and shows a spinner and translated message centered in the visible area while a submission is processing.
 - Added an opt-in **Focus First Error After Submit** setting. When a submission fails validation, Freeform focuses the first visible field with an error, or the form error banner, for both AJAX and standard submissions.
 - Added an **Embed Form** tab to the form builder with a copyable Twig snippet for the current form, plus guides for formatting, dynamic data, success behavior, spam protection, and troubleshooting.
+- Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
 
 ### Changed
 - AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.

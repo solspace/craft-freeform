@@ -42,6 +42,7 @@ type Config = {
       version: string;
       canCreate: boolean;
       canDelete: boolean;
+      canManageHtmlEmbeds: boolean;
     };
     tinymce: {
       stylesPath: string;

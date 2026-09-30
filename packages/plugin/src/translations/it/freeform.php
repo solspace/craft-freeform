@@ -978,6 +978,11 @@ return [
     // Form Builder // Settings // Embed Form
     'Embed Form' => 'Incorpora modulo',
     'Embed this Form' => 'Incorpora questo modulo',
+    'HTML page on this site' => 'Pagina HTML su questo sito',
+    'Add this script to an HTML page on the same domain as the selected Craft site. Save the form before using it. Redirects open inside the embedded form, so a success message works best.' => 'Aggiungi questo script a una pagina HTML sullo stesso dominio del sito Craft selezionato. Salva il modulo prima di utilizzarlo. I reindirizzamenti si aprono nel modulo incorporato, quindi è preferibile un messaggio di conferma.',
+    'Ask a Craft administrator to enable HTML embeds for this form.' => 'Chiedi a un amministratore di Craft di abilitare gli incorporamenti HTML per questo modulo.',
+    'Allow HTML Embeds' => 'Consenti incorporamenti HTML',
+    'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.' => 'Consenti il caricamento di questo modulo da un URL di incorporamento pubblico. Salva il modulo per applicare le modifiche. Abilita questa opzione solo per i moduli destinati a essere accessibili pubblicamente.',
     'Add this code to a Craft Twig template where you want the form to appear.' => 'Aggiungi questo codice a un template Twig di Craft nel punto in cui vuoi visualizzare il modulo.',
     'Save this form before copying its embed code.' => 'Salva questo modulo prima di copiarne il codice di incorporamento.',
     'Twig code' => 'Codice Twig',

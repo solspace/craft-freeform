@@ -1,0 +1,62 @@
+/* daisyUI 5.7.27 Steps component (core and primary), with @apply utilities expanded for standalone CSS.
+   Copyright (c) 2020 Pouya Saadeghi, MIT License. See DAISYUI-LICENSE.txt. */
+@scope (.ff-daisy-form[data-theme="light"]) {
+    @layer utilities {
+        @layer daisyui.l1.l2.l3 {
+            .steps {
+                display: inline-grid;
+                grid-auto-flow: column;
+                grid-auto-columns: 1fr;
+                overflow: hidden;
+                overflow-x: auto;
+                counter-reset: step;
+            }
+            .steps .step {
+                display: grid;
+                grid-template-columns: auto;
+                grid-template-rows: 40px 1fr;
+                min-width: 4rem;
+                place-items: center;
+                text-align: center;
+                --step-bg: var(--color-base-300);
+                --step-fg: var(--color-base-content);
+            }
+            .steps .step::before {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                height: .5rem;
+                margin-inline-start: -100%;
+                border: 1px solid;
+                color: var(--step-bg);
+                background-color: var(--step-bg);
+                content: "";
+            }
+            .steps .step:first-child::before { content: none; }
+            .steps .step:not(:has(.step-icon))::after {
+                position: relative;
+                z-index: 1;
+                grid-column: 1;
+                grid-row: 1;
+                display: grid;
+                width: 2rem;
+                height: 2rem;
+                place-items: center;
+                place-self: center;
+                border: 1px solid var(--step-bg);
+                border-radius: 50%;
+                color: var(--step-fg);
+                background-color: var(--step-bg);
+                content: counter(step);
+                counter-increment: step;
+            }
+        }
+        @layer daisyui.l1.l2 {
+            .steps .step-primary + .step-primary::before,
+            .steps .step-primary::after {
+                --step-bg: var(--color-primary);
+                --step-fg: var(--color-primary-content);
+            }
+        }
+    }
+}

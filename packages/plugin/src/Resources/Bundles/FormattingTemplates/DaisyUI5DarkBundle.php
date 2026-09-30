@@ -10,7 +10,7 @@ class DaisyUI5DarkBundle extends AssetBundle
     {
         $this->sourcePath = '@Solspace/Freeform/templates/_templates/formatting/daisyui-5-dark';
 
-        $this->css = ['_theme-dark.css', '_daisyui.css', '_main.css'];
+        $this->css = ['_theme-dark.css', '_daisyui.css', '_steps.css', '_main.css'];
         $this->js = ['_main.js'];
 
         parent::init();

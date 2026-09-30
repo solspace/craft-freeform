@@ -26,20 +26,19 @@
   },
   "peerDependencies": {
     "@solspace/freeform-core": "^1.0.0",
-    "vue": "^3.5.0"
+    "vue": "^3.5.43"
   },
   "devDependencies": {
     "@solspace/freeform-core": "workspace:*",
     "@vitejs/plugin-vue": "^6.0.1",
     "@vitejs/plugin-vue-jsx": "^5.1.1",
     "@vue/test-utils": "^2.4.6",
-    "jsdom": "29.1.1",
+    "jsdom": "30.1.1",
     "typescript": "^5.8.3",
     "vite": "^8.1.0",
-    "vite-plugin-dts": "^4.5.4",
     "vitest": "4.1.11",
-    "vue": "^3.5.22",
-    "vue-tsc": "^3.0.7"
+    "vue": "^3.5.43",
+    "vue-tsc": "^3.3.11"
   },
   "keywords": [
     "freeform",

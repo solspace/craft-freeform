@@ -77,10 +77,12 @@
 {% endset %}
 {% set errorBanner %}
     <div{{ form.attributes.errors|raw }}>
-        <div>{{ form.errorMessage|t('freeform') }}</div>
-        <ul data-freeform-banner-errors{% if not form.errors|length %} hidden{% endif %}>
-            {% for error in form.errors %}<li>{{ error }}</li>{% endfor %}
-        </ul>
+        <div>
+            <div>{{ form.errorMessage|t('freeform') }}</div>
+            <ul data-freeform-banner-errors{% if not form.errors|length %} hidden{% endif %}>
+                {% for error in form.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+        </div>
     </div>
 {% endset %}
 {% if form.settings.ajax %}

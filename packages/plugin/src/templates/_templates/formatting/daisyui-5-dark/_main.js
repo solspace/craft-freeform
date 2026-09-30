@@ -35,6 +35,7 @@ document.querySelectorAll('[data-freeform-daisyui][data-theme="dark"]').forEach(
             '.Tab': { ...appearance.rules?.['.Tab'], boxShadow: 'none' },
             '.Tab:hover': { ...appearance.rules?.['.Tab:hover'], boxShadow: 'none' },
             '.Tab--selected': { ...appearance.rules?.['.Tab--selected'], boxShadow: 'none' },
+            '.Input--invalid': { ...appearance.rules?.['.Input--invalid'], boxShadow: 'none' },
         };
     });
 

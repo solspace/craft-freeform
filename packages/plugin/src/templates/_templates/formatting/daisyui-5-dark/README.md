@@ -1,6 +1,6 @@
-# daisyUI 5 Light
+# daisyUI 5 Dark
 
-This Freeform sample formatting template has its own Twig partials, JavaScript, light theme CSS and `DaisyUI5LightBundle` asset bundle.
+This Freeform sample formatting template has its own Twig partials, JavaScript, dark theme CSS and `DaisyUI5DarkBundle` asset bundle. The JavaScript passes the dark palette to Stripe Elements through its Appearance API.
 
 The bundle includes selected daisyUI 5.7.27 component CSS locally. Component rules are wrapped in CSS `@scope (.ff-daisy-form)` so common classes such as `.btn` and `.input` only affect this form. It uses CSS nesting, `color-mix()`, OKLCH colors and `:has()`; use current browsers. The upstream MIT license is in `DAISYUI-LICENSE.txt`. To update the vendor CSS, download the component files listed in `_daisyui.css` from the pinned daisyUI version and preserve the scope wrapper and license.
 

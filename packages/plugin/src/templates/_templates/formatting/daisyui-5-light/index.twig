@@ -1,9 +1,9 @@
-{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5Bundle') %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5LightBundle') %}
 {% import 'freeform/_templates/formatting/daisyui-5-light/_row.twig' as rowMacro %}
 
 {{ form.renderTag({
     attributes: {
-        form: { class: 'ff-daisy-form', 'data-theme': daisyTheme|default('light'), 'data-freeform-daisyui': true },
+        form: { class: 'ff-daisy-form', 'data-theme': 'light', 'data-freeform-daisyui': true },
         row: { class: 'ff-daisy-row' },
         success: { class: 'ff-daisy-banner alert alert-success', role: 'status' },
         errors: { class: 'ff-daisy-banner alert alert-error', role: 'alert' },

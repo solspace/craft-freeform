@@ -1,1 +1,108 @@
-{% include 'freeform/_templates/formatting/daisyui-5-light/index.twig' with {daisyTheme: 'dark'} %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5DarkBundle') %}
+{% import 'freeform/_templates/formatting/daisyui-5-dark/_row.twig' as rowMacro %}
+
+{{ form.renderTag({
+    attributes: {
+        form: { class: 'ff-daisy-form', 'data-theme': 'dark', 'data-freeform-daisyui': true },
+        row: { class: 'ff-daisy-row' },
+        success: { class: 'ff-daisy-banner alert alert-success', role: 'status' },
+        errors: { class: 'ff-daisy-banner alert alert-error', role: 'alert' },
+        novalidate: true,
+    },
+    buttons: {
+        attributes: {
+            container: { class: 'ff-daisy-actions' },
+            submit: { class: 'btn btn-primary' },
+            back: { class: 'btn' },
+            save: { class: 'btn btn-neutral' },
+        },
+    },
+    fields: {
+        '@global': {
+            attributes: {
+                container: { class: 'ff-daisy-field' },
+                label: { class: 'ff-daisy-label' },
+                input: { class: 'input' },
+                instructions: { class: 'ff-daisy-help' },
+                error: { class: 'ff-daisy-error' },
+            },
+        },
+        ':required': {
+            attributes: { label: { '+class': 'ff-daisy-required' } },
+        },
+        ':errors': {
+            attributes: { input: { '+class': 'input-error', 'aria-invalid': 'true' } },
+        },
+        '@checkboxes, @radios, @opinion-scale, @rating, @cards': {
+            attributes: { container: { tag: 'fieldset' }, label: { tag: 'legend' } },
+        },
+        '@checkboxes': {
+            attributes: { input: { '=class': 'checkbox' }, optionLabel: { class: 'ff-daisy-option' } },
+        },
+        '@radios': {
+            attributes: { input: { '=class': 'radio' }, optionLabel: { class: 'ff-daisy-option' } },
+        },
+        '@checkbox': {
+            attributes: { input: { '=class': 'checkbox' } },
+        },
+        '@dropdown': {
+            attributes: { input: { '=class': 'select ff-daisy-select-control' } },
+        },
+        '@multiple-select': {
+            attributes: { input: { '=class': 'ff-daisy-multiple ff-daisy-select-control' } },
+        },
+        '@textarea': {
+            attributes: { input: { '=class': 'textarea' } },
+        },
+        '@file': {
+            attributes: { input: { '=class': 'file-input' } },
+        },
+        '@range': {
+            attributes: { input: { '=class': 'range range-primary' } },
+        },
+        '@summary': {
+            attributes: { input: { '=class': 'ff-daisy-summary' } },
+        },
+        '@signature': {
+            attributes: { input: { '=class': 'btn btn-outline btn-sm' } },
+        },
+        '@stripe': {
+            attributes: { input: { '-class': 'input' } },
+        },
+    },
+}) }}
+
+{% set successBanner %}
+    <div{{ form.attributes.success|raw }}>{{ form.successMessage|t('freeform') }}</div>
+{% endset %}
+{% set errorBanner %}
+    <div{{ form.attributes.errors|raw }}>
+        <div>{{ form.errorMessage|t('freeform') }}</div>
+        <ul data-freeform-banner-errors{% if not form.errors|length %} hidden{% endif %}>
+            {% for error in form.errors %}<li>{{ error }}</li>{% endfor %}
+        </ul>
+    </div>
+{% endset %}
+{% if form.settings.ajax %}
+    <template data-freeform-success-template>{{ successBanner }}</template>
+    <template data-freeform-error-template>{{ errorBanner }}</template>
+{% else %}
+    {% if form.submittedSuccessfully %}{{ successBanner }}{% endif %}
+    {% if form.hasErrors %}{{ errorBanner }}{% endif %}
+{% endif %}
+
+{% if form.pages|length > 1 %}
+    <nav aria-label="{{ 'Form progress'|t('freeform') }}">
+        <ol class="ff-daisy-progress">
+            {% for page in form.pages %}
+                <li{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
+                    <span class="ff-daisy-step{% if form.currentPage.index >= page.index %} ff-daisy-step-active{% endif %}" aria-hidden="true">{{ loop.index }}</span>
+                    <span>{{ page.label }}</span>
+                </li>
+            {% endfor %}
+        </ol>
+    </nav>
+{% endif %}
+
+{{ rowMacro.render(form.rows, form) }}
+{{ form.renderClosingTag }}

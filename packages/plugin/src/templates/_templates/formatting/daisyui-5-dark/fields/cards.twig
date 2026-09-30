@@ -1,0 +1,31 @@
+{% macro renderMeta(value, key = null) %}
+    {% if value is iterable %}
+        {% for label, item in value %}{{ _self.renderMeta(item, label is same as(loop.index0) ? key : label) }}{% endfor %}
+    {% elseif value is not empty %}
+        <li>{% if key is not null %}{{ key }}: {% endif %}{{ value is object ? value|json_encode : value }}</li>
+    {% endif %}
+{% endmacro %}
+{% import _self as meta %}
+
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="ff-daisy-cards" style="--ff-daisy-card-columns: {{ field.cardsPerRow|default(3) }}">
+        {% for card in field.layout %}
+            <label class="ff-daisy-choice ff-daisy-card">
+                <input class="ff-daisy-visually-hidden" type="checkbox"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}[]" value="{{ card.value ?: card.label }}"{% if (card.value ?: card.label) in field.value %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
+                {% if card.assetId %}
+                    {% set asset = craft.assets.id(card.assetId).one %}
+                    {% if asset %}<img src="{{ asset.getUrl(field.transform) }}" alt="" loading="lazy">{% endif %}
+                {% endif %}
+                <span class="ff-daisy-card-title">{{ card.label }}</span>
+                {% if card.description %}<span class="ff-daisy-card-description">{{ card.description }}</span>{% endif %}
+                {% if card.metadata is defined and card.metadata is not empty %}
+                    {% set renderedMeta = meta.renderMeta(card.metadata) %}
+                    {% if renderedMeta|trim %}<ul class="ff-daisy-card-meta">{{ renderedMeta|raw }}</ul>{% endif %}
+                {% endif %}
+            </label>
+        {% endfor %}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

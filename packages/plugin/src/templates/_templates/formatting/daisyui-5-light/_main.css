@@ -35,6 +35,10 @@
 .ff-daisy-form .ff-daisy-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .ff-daisy-form .ff-daisy-scale-wrap { display: inline-block; max-width: 100%; }
 .ff-daisy-form .ff-daisy-scale { display: flex; flex-wrap: wrap; gap: .5rem; }
+.ff-daisy-form .ff-daisy-scale-option { position: relative; min-width: 2.75rem; }
+.ff-daisy-form .ff-daisy-scale-option:has(input:checked) { --btn-color: var(--color-primary); --btn-rest-fg: var(--color-base-content); box-shadow: inset 0 0 0 2px var(--color-primary); }
+.ff-daisy-form .ff-daisy-scale-option:has(input:focus-visible) { outline: 3px solid var(--color-primary); outline-offset: 3px; }
+.ff-daisy-form .ff-daisy-scale-option:has(input:disabled) { opacity: .55; cursor: not-allowed; }
 .ff-daisy-form .rating { gap: .25rem; }
 .ff-daisy-form .rating .mask-star-2 { background-color: var(--color-base-content); opacity: .55; }
 .ff-daisy-form .rating .mask-star-2:is(:checked, :has(~ :checked)) { background-color: var(--color-primary); opacity: 1; }

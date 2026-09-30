@@ -3453,4 +3453,7 @@ return [
     'Enter the exact model ID supported by this provider.' => 'Enter the exact model ID supported by this provider.',
     'Could not load models. You can still enter a custom model ID.' => 'Could not load models. You can still enter a custom model ID.',
     'No compatible models were returned. You can enter a custom model ID.' => 'No compatible models were returned. You can enter a custom model ID.',
+    'Form progress' => 'Form progress',
+    '{count} star' => '{count} star',
+    '{count} stars' => '{count} stars',
 ];

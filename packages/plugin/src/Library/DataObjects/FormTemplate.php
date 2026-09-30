@@ -34,6 +34,7 @@ class FormTemplate implements \JsonSerializable
         $name = preg_replace('/(?<!^)([A-Z])/', ' $1', $name);
         $name = str_replace(['-', '_'], ' ', $name);
         $name = StringHelper::titleize($name);
+        $name = str_replace('Daisyui', 'daisyUI', $name);
 
         $this->name = $name;
     }

@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. Their selected framework styles and theme variables are bundled locally and scoped to the form.
 - Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
 - Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.

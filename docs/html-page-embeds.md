@@ -24,7 +24,7 @@ Copy the complete tag from Freeform so it contains the correct site URL and form
 
 ## Appearance and behavior
 
-The embed displays the form in an iframe and adjusts its height as the form changes. Craft renders the form using its selected **Formatting Template**. The bundled Bootstrap, Foundation, and Tailwind templates load their corresponding framework assets in the embedded page. Custom formatting templates do not receive framework assets automatically, regardless of their filename. Register the styles and scripts a custom template needs, and test it in the embed.
+The embed displays the form in an iframe and adjusts its height as the form changes. Craft renders the form using its selected **Formatting Template**. The bundled Bootstrap, Foundation, and Tailwind templates load their corresponding framework assets in the embedded page. The daisyUI 5 Light and Dark templates include their selected daisyUI styles locally through their asset bundle. Custom formatting templates do not receive framework assets automatically, regardless of their filename. Register the styles and scripts a custom template needs, and test it in the embed.
 
 Submissions are handled by the Craft site inside the iframe. A **success message** is usually the best completion behavior: a redirect opens *inside* the embedded form rather than navigating the whole HTML page. See [Success Behavior](https://docs.solspace.com/craft/freeform/v5/guides/guide/success-return-on-forms/) for your form's options.
 

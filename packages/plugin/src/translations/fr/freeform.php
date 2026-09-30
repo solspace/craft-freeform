@@ -3454,4 +3454,7 @@ return [
     'Enter the exact model ID supported by this provider.' => 'Saisissez l’identifiant exact du modèle pris en charge par ce fournisseur.',
     'Could not load models. You can still enter a custom model ID.' => 'Impossible de charger les modèles. Vous pouvez toujours saisir un identifiant de modèle personnalisé.',
     'No compatible models were returned. You can enter a custom model ID.' => 'Aucun modèle compatible n’a été trouvé. Vous pouvez saisir un identifiant de modèle personnalisé.',
+    'Form progress' => 'Progression du formulaire',
+    '{count} star' => '{count} étoile',
+    '{count} stars' => '{count} étoiles',
 ];

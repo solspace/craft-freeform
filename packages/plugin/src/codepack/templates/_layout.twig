@@ -83,7 +83,7 @@
         {% if template == "divider" %}
             <hr />
         {% else %}
-            <a{% if craft.app.request.segment(pageTemplateSegment) == template %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ template|title|replace({'-':' '}) }}</a>
+            <a{% if craft.app.request.segment(pageTemplateSegment) == template %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ template|title|replace({'-':' ', 'Daisyui':'daisyUI'}) }}</a>
         {% endif %}
     {% endmacro %}
 
@@ -95,7 +95,7 @@
             This section {{ craft.app.request.segment(baseUrlSegments + 3) ? "has" : "will" }} automatically {{ craft.app.request.segment(baseUrlSegments + 3) ? "loaded" : "load" }} the
             <div class="freeform-nav-dropdown">
                 <button class="freeform-nav-button" type="button">
-                    {{ pageTemplate ? pageTemplate|title|replace({'-':' '}) : 'Select a template...' }}
+                    {{ pageTemplate ? pageTemplate|title|replace({'-':' ', 'Daisyui':'daisyUI'}) : 'Select a template...' }}
                 </button>
                 <div class="freeform-nav-dropdown-content">
                 {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "daisyui-5-light", "daisyui-5-dark", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}

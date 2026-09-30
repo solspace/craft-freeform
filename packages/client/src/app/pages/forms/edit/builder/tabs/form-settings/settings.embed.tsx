@@ -112,18 +112,11 @@ export const FormEmbed: React.FC = () => {
             <CodeLabel>{translate("HTML page on this site")}</CodeLabel>
             <Description>
               {translate(
-                "Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.",
+                "Add this script to an HTML page on the same domain as the selected Craft site. Save the form before using it. Redirects open inside the embedded form, so a success message works best.",
               )}
             </Description>
             {settings?.general?.allowHtmlEmbeds === true ? (
-              <>
-                <Description>
-                  {translate(
-                    "Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.",
-                  )}
-                </Description>
-                {htmlCode && copyButton("html", htmlCode)}
-              </>
+              htmlCode && copyButton("html", htmlCode)
             ) : (
               <Description>
                 {translate(

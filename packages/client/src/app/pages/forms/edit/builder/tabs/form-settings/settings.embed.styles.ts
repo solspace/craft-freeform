@@ -5,6 +5,10 @@ export const EmbedContent = styled.div`
   max-width: 950px;
 `;
 
+export const EmbedSetting = styled.div`
+  margin-bottom: ${spacings.lg};
+`;
+
 export const Description = styled.p`
   margin: 0 0 ${spacings.lg};
   color: ${colors.gray600};

@@ -62,6 +62,7 @@ export const SettingsEditor: React.FC = () => {
       <SectionContainer>
         {properties
           .filter((property) => property.section === selectedSection?.handle)
+          .filter((property) => property.handle !== "allowHtmlEmbeds")
           .filter((property) => property.visible)
           .map((property) => (
             <FieldComponent

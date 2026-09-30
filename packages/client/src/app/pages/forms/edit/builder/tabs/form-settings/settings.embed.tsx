@@ -2,12 +2,14 @@ import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import config from "@config/freeform/freeform.config";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
+import { useQueryFormSettings } from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useResolvedPath } from "react-router-dom";
 
+import { FieldComponent } from "./field-component";
 import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 import {
   CodeBlock,
@@ -15,6 +17,7 @@ import {
   CopyFeedback,
   Description,
   EmbedContent,
+  EmbedSetting,
   HelpSection,
   HelpTopic,
 } from "./settings.embed.styles";
@@ -26,6 +29,10 @@ const escapeAttribute = (value: string) =>
 
 export const FormEmbed: React.FC = () => {
   const { handle, name, isNew, settings } = useSelector(formSelectors.current);
+  const { data: formSettings } = useQueryFormSettings();
+  const embedSetting = formSettings
+    ?.find((namespace) => namespace.handle === "general")
+    ?.properties.find((property) => property.handle === "allowHtmlEmbeds");
   const { current: site } = useSiteContext();
   const currentPath = useResolvedPath("");
   const [copyStatus, setCopyStatus] = useState<Record<string, CopyStatus>>({});
@@ -90,6 +97,12 @@ export const FormEmbed: React.FC = () => {
 
       <EmbedContent>
         <SectionHeader>{translate("Embed this Form")}</SectionHeader>
+        {config.metadata.freeform.canManageHtmlEmbeds &&
+          embedSetting?.visible && (
+            <EmbedSetting>
+              <FieldComponent namespace="general" property={embedSetting} />
+            </EmbedSetting>
+          )}
         {isNew ? (
           <Description>
             {translate("Save this form before copying its embed code.")}
@@ -104,18 +117,18 @@ export const FormEmbed: React.FC = () => {
             </Description>
             {settings?.general?.allowHtmlEmbeds === true ? (
               <>
-                {htmlCode && copyButton("html", htmlCode)}
                 <Description>
                   {translate(
                     "Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.",
                   )}
                 </Description>
+                {htmlCode && copyButton("html", htmlCode)}
               </>
             ) : (
               <Description>
                 {translate(
                   config.metadata.freeform.canManageHtmlEmbeds
-                    ? "Enable Allow HTML Embeds in General settings and save the form to get the HTML code."
+                    ? "Enable HTML embeds above and save the form to copy the code."
                     : "Ask a Craft administrator to enable HTML embeds for this form.",
                 )}
               </Description>

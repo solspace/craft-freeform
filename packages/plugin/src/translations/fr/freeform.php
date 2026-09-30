@@ -980,7 +980,7 @@ return [
     'Embed this Form' => 'Intégrer ce formulaire',
     'HTML page on this site' => 'Page HTML sur ce site',
     'Paste this code into an HTML page on the same domain as the selected Craft site. The form stays up to date when you edit it in Freeform.' => 'Collez ce code dans une page HTML sur le même domaine que le site Craft sélectionné. Le formulaire se met à jour lorsque vous le modifiez dans Freeform.',
-    'Enable Allow HTML Embeds in General settings and save the form to get the HTML code.' => 'Activez « Autoriser les intégrations HTML » dans les paramètres généraux, puis enregistrez le formulaire pour obtenir le code HTML.',
+    'Enable HTML embeds above and save the form to copy the code.' => 'Activez les intégrations HTML ci-dessus et enregistrez le formulaire pour copier le code.',
     'Ask a Craft administrator to enable HTML embeds for this form.' => 'Demandez à un administrateur Craft d’activer les intégrations HTML pour ce formulaire.',
     'Save the form after enabling HTML embeds. Use a success message for this placement; redirects open inside the embedded form.' => 'Enregistrez le formulaire après avoir activé son intégration HTML. Utilisez un message de confirmation ; les redirections s’ouvrent dans le formulaire intégré.',
     'Allow HTML Embeds' => 'Autoriser les intégrations HTML',

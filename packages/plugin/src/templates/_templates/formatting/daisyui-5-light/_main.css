@@ -22,7 +22,7 @@
 .ff-daisy-form .input, .ff-daisy-form .textarea, .ff-daisy-form .select, .ff-daisy-form .file-input, .ff-daisy-form .ff-daisy-multiple { width: 100%; max-width: 100%; }
 .ff-daisy-form .textarea { min-height: 7rem; font-family: inherit; }
 .ff-daisy-form .ff-range { container-type: inline-size; color: var(--color-base-content); }
-.ff-daisy-form .ff-range input.range.ff-range-input[type=range] { --range-bg: color-mix(in oklab, var(--color-base-content) 22%, transparent); width: 100%; height: var(--range-thumb-size); -webkit-appearance: none; appearance: none; border: 0; border-radius: var(--radius-selector); overflow: hidden; color: var(--color-primary); background: transparent; box-shadow: none; }
+.ff-daisy-form .ff-range input.range.ff-range-input[type=range] { --range-bg: color-mix(in oklab, var(--color-base-content) 22%, transparent); width: 100%; height: var(--range-thumb-size); -webkit-appearance: none; appearance: none; border: 0; border-radius: calc(var(--radius-selector) + min(var(--range-p), var(--radius-selector-max))); overflow: hidden; color: var(--color-primary); background: transparent; box-shadow: none; }
 .ff-daisy-form .ff-range .ff-range-values { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: .5rem; margin-top: .375rem; font-size: .8125rem; line-height: 1.35; }
 .ff-daisy-form .ff-range .ff-range-values > span { overflow-wrap: anywhere; }
 .ff-daisy-form .ff-range .ff-range-values > span:last-child { grid-column: 3; text-align: end; }

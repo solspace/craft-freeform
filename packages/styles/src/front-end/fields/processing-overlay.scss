@@ -1,0 +1,60 @@
+form[data-freeform-overlay-active] {
+  position: relative;
+}
+
+form[data-freeform-overlay-active] > :not(.freeform-processing-overlay) {
+  opacity: var(--ff-processing-overlay-content-opacity, 0.4);
+}
+
+.freeform-processing-overlay {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+}
+
+.freeform-processing-overlay__message {
+  position: absolute;
+  top: var(--ff-processing-overlay-center-y, 50%);
+  left: 50%;
+
+  box-sizing: border-box;
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  width: max-content;
+  max-width: calc(100% - 2rem);
+  padding: 0.875rem 1.25rem;
+
+  transform: translate(-50%, -50%);
+
+  font: 500 1rem/1.4 system-ui, sans-serif;
+  color: var(--ff-processing-overlay-color, #212529);
+  overflow-wrap: anywhere;
+
+  background: var(--ff-processing-overlay-surface, #ffffff);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+}
+
+.freeform-processing-overlay__spinner {
+  box-sizing: border-box;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: freeform-overlay-spin 0.7s linear infinite;
+}
+
+@keyframes freeform-overlay-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .freeform-processing-overlay__spinner {
+    animation: none;
+  }
+}

@@ -548,6 +548,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             $thAttributes = new Attributes();
             $thAttributes
                 ->merge($attributes->getLabel())
+                ->setIfEmpty('scope', 'col')
                 ->set('data-default-value', $defaultValue)
                 ->set('data-column-required', $isRequired)
                 ->set(($isRequired ? '+' : '-').'class', 'freeform-required')

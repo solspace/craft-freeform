@@ -41,23 +41,21 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>
-                    Make sure your test form includes the following fields at minimum, or adjust the overrides inside this template:
-                    <ul>
-                        <li>First Name text field with handle of <code>firstName</code>.</li>
-                        <li>Last Name text field with handle of <code>lastName</code>.</li>
-                        <li>USA State select field with handle of <code>state</code>, and option values that use 2-letter codes (e.g. <code>CA</code>).</li>
-                        <li>Email address field with handle of <code>email</code>.</li>
-                    </ul>
-                </li>
-                <li>The person viewing this form is logged into their Craft account to see this working.</li>
-                <li>The person viewing this form have a first and last name set in their User account.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            <li>
+                Make sure your test form includes the following fields at minimum, or adjust the overrides inside this template:
+                <ul>
+                    <li>First Name text field with handle of <code>firstName</code>.</li>
+                    <li>Last Name text field with handle of <code>lastName</code>.</li>
+                    <li>USA State select field with handle of <code>state</code>, and option values that use 2-letter codes (e.g. <code>CA</code>).</li>
+                    <li>Email address field with handle of <code>email</code>.</li>
+                </ul>
+            </li>
+            <li>The person viewing this form is logged into their Craft account to see this working.</li>
+            <li>The person viewing this form have a first and last name set in their User account.</li>
+        </ol>
     </div>
 
 {% endblock %}

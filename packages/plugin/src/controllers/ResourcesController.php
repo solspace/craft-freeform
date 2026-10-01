@@ -9,7 +9,14 @@ use yii\web\Response;
  */
 class ResourcesController extends BaseFilesProxyController
 {
-    protected array|bool|int $allowAnonymous = ['plugin-js', 'plugin-css'];
+    protected array|bool|int $allowAnonymous = ['plugin-js', 'plugin-css', 'embed-js'];
+
+    public function actionEmbedJs(): Response
+    {
+        $path = \Craft::getAlias('@freeform-resources/js/external/embed.js');
+
+        return $this->getFileResponse($path, 'embed.js', 'text/javascript');
+    }
 
     public function actionPluginJs(): Response
     {

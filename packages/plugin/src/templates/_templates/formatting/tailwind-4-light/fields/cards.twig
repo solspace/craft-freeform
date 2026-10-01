@@ -58,7 +58,10 @@
   <div class="grid gap-3 grid-cols-1 {{ colsClass }}">
     {% for card in field.layout %}
       <div {{ field.cardAttributes.card }}>
-        <input type="checkbox" name="{{ field.handle }}[]" value="{{ card.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == card.value ? "checked" }} class="hidden peer" />
+        <input type="checkbox" name="{{ field.handle }}[]" value="{{ card.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == card.value ? "checked" }} class="freeform-visually-hidden peer"
+          {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+          {% if field.hasErrors %}aria-invalid="true"{% endif %}
+        />
         <label for="{{ field.idAttribute }}-{{ loop.index }}" class="{{ field.attributes.optionLabel.get("class") }}">
           {% set asset = craft.assets.id(card.assetId).one %}
           {% if asset %}

@@ -29,6 +29,7 @@ export enum Fields {
   Regex = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\RegexField",
   RichText = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\RichTextField",
   Signature = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\SignatureField",
+  Summary = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\SummaryField",
   Table = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\TableField",
   Website = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\WebsiteField",
 }

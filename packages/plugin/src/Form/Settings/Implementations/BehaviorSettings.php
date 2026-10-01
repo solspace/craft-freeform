@@ -53,11 +53,20 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.focusFirstError')]
+    #[Input\Boolean(
+        label: 'Focus First Error After Submit',
+        instructions: 'After validation fails, move focus to the first visible field with an error, or to the error message if there are no field errors.',
+        order: 2,
+    )]
+    public bool $focusFirstError = false;
+
+    #[Section(self::SECTION_PROCESSING)]
     #[DefaultValue('settings.processing.showIndicator')]
     #[Input\Boolean(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
-        order: 2,
+        order: 3,
     )]
     public bool $showProcessingSpinner = false;
 
@@ -66,18 +75,27 @@ class BehaviorSettings extends SettingsNamespace
     #[Input\Boolean(
         label: 'Show Processing Text on Submit',
         instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
-        order: 3,
+        order: 4,
     )]
     public bool $showProcessingText = false;
 
+    #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.showOverlay')]
+    #[Input\Boolean(
+        label: 'Show Processing Overlay on Submit',
+        instructions: 'Dim the form and show a centered spinner and processing message while a submission is being processed.',
+        order: 5,
+    )]
+    public bool $showProcessingOverlay = false;
+
     #[Translatable]
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(showProcessingText)')]
+    #[VisibilityFilter('Boolean(showProcessingText) || Boolean(showProcessingOverlay)')]
     #[DefaultValue('settings.processing.processingText')]
     #[Input\Text(
         'Processing Text',
-        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
-        order: 4,
+        instructions: 'Text shown on the submit button or processing overlay when the form is processing.',
+        order: 6,
     )]
     public string $processingText = 'Processing...';
 

@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-theme-default",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Default Freeform theme — semantic ff-* BEM styles (React & Vue)",
   "private": false,
   "type": "module",

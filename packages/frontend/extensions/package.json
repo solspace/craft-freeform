@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-extensions",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Official Freeform headless extensions for captchas and advanced field behavior",
   "private": false,
   "type": "module",

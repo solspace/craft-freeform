@@ -9,21 +9,8 @@
         <p>This section of the demo templates shows Freeform handling some real world / common implementations of forms.</p>
     </div>
 
-    {% macro extrasIndex(template, name, description) %}
-        {% if template == "divider" %}
-            <hr />
-        {% else %}
-            <a href="{{ siteUrl }}demo/extras/{{ template }}" class="freeform-form-tile-item">
-                <h3 class="freeform-form-title">{{ name }}</h3>
-                <p>{{ description }}</p>
-            </a>
-        {% endif %}
-    {% endmacro %}
-
     <div class="freeform-form-tiles">
-    {% for extrasItems in extrasTemplates -%}
-        {{ _self.extrasIndex(extrasItems['t'], extrasItems['n'], extrasItems['d']) }}
-    {%- endfor %}
+        {% include "demo/extras/_items.twig" with { mode: "tiles" } %}
     </div>
 
 {% endblock %}

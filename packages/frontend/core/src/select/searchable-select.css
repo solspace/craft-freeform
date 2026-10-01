@@ -1,0 +1,170 @@
+/* The native select remains available until the enhancement has initialized. */
+select.ff-searchable-native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  clip-path: inset(50%) !important;
+}
+.ff-searchable {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  color: var(--ff-searchable-color, inherit);
+}
+.ff-searchable .ff-searchable__control {
+  position: relative;
+}
+.ff-searchable.ff-searchable .ff-searchable__input {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 2.5em;
+  padding: 0.5em 2.5em 0.5em 0.75em;
+  margin: 0;
+  font: inherit;
+  color: var(--ff-searchable-color, inherit);
+  background: var(--ff-searchable-bg, #fff);
+  border: 1px solid var(--ff-searchable-border, #b8c2cc);
+  border-radius: var(--ff-searchable-radius, 4px);
+}
+.ff-searchable.ff-searchable button.ff-searchable__toggle,
+.ff-searchable.ff-searchable button.ff-searchable__remove {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 !important;
+  font: inherit;
+  line-height: 1.4;
+  color: inherit;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+.ff-searchable.ff-searchable button.ff-searchable__toggle {
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+  height: 100%;
+  padding: 0 0.75em;
+}
+.ff-searchable.ff-searchable .ff-searchable__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375em;
+  margin: 0 0 0.375em;
+}
+.ff-searchable.ff-searchable .ff-searchable__pills:empty {
+  margin: 0;
+}
+.ff-searchable.ff-searchable button.ff-searchable__remove {
+  padding: 0.25em 0.5em;
+  font-size: 0.875em;
+  text-align: start;
+  overflow-wrap: anywhere;
+  background: var(--ff-searchable-bg, #fff);
+  border: 1px solid var(--ff-searchable-border, #b8c2cc);
+  border-radius: var(--ff-searchable-radius, 4px);
+}
+.ff-searchable .ff-searchable__list {
+  position: absolute;
+  inset-inline: 0;
+  top: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  max-height: 16rem;
+  margin-top: 0.25em;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ff-searchable-color, inherit);
+  background: var(--ff-searchable-bg, #fff);
+  background: var(--ff-searchable-menu-bg, var(--ff-searchable-bg, #fff));
+  border: 1px solid var(--ff-searchable-border, #b8c2cc);
+  border-radius: var(--ff-searchable-radius, 4px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+}
+.ff-searchable .ff-searchable__option,
+.ff-searchable .ff-searchable__empty,
+.ff-searchable .ff-searchable__group {
+  padding: 0.5em 0.75em;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.ff-searchable .ff-searchable__group {
+  font-size: 0.85em;
+  font-weight: 600;
+  opacity: 0.75;
+}
+.ff-searchable .ff-searchable__option {
+  cursor: pointer;
+}
+.ff-searchable .ff-searchable__option[aria-selected="true"] {
+  font-weight: 600;
+}
+.ff-searchable .ff-searchable__option[aria-selected="true"]::after {
+  content: " ✓";
+}
+.ff-searchable .ff-searchable__option:not([aria-disabled="true"]):hover,
+.ff-searchable .ff-searchable__option[data-active] {
+  color: HighlightText;
+  background: Highlight;
+}
+.ff-searchable .ff-searchable__option[aria-disabled="true"],
+.ff-searchable button:disabled,
+.ff-searchable input:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.ff-searchable button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+.ff-searchable .ff-searchable__status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.ff-searchable [hidden] {
+  display: none !important;
+}
+/* A searchable select has a normal heading in floating-label templates. */
+.freeform-form .floating.ff-searchable-field.ff-searchable-field > label,
+.freeform-form .form-floating.ff-searchable-field > label {
+  position: static;
+  display: block;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0 0 0.25em;
+  opacity: 1;
+  transform: none;
+}
+.freeform-form .form-floating.ff-searchable-field > label::after {
+  display: none;
+}
+
+.freeform-form .floating.ff-searchable-field,
+.freeform-form .form-floating.ff-searchable-field {
+  display: flex;
+  flex-direction: column;
+}
+.freeform-form .floating.ff-searchable-field.ff-searchable-field > label,
+.freeform-form .form-floating.ff-searchable-field > label {
+  order: -1;
+}
+/* Sample Tailwind templates already supply a decorative select arrow. */
+select.ff-searchable-native ~ svg[data-slot="icon"],
+select.ff-searchable-native ~ .pointer-events-none:has(> svg) {
+  display: none;
+}

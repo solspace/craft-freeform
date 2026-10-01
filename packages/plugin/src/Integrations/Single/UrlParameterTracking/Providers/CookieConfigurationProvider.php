@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Single\UrlParameterTracking\Providers;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\DTO\UrlParamConfig;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\UrlParameterTracking;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\caching\TagDependency;
 
@@ -29,6 +30,18 @@ class CookieConfigurationProvider
             function (): UrlParamConfig {
                 $parameters = [];
                 $ttlMinutes = UrlParameterTracking::DEFAULT_COOKIE_TTL_MINUTES;
+
+                $hasIntegration = IntegrationRecord::find()
+                    ->where(['class' => UrlParameterTracking::class])
+                    ->exists()
+                ;
+
+                if (!$hasIntegration) {
+                    $config = new UrlParamConfig();
+                    $config->ttlMinutes = $ttlMinutes;
+
+                    return $config;
+                }
 
                 foreach ($this->formsService->getAllForms() as $form) {
                     $integration = $this->integrationsProvider->getSingleton(

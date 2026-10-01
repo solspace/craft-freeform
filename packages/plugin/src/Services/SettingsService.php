@@ -303,7 +303,7 @@ class SettingsService extends BaseService
     {
         if (null === self::$settingsModel) {
             $plugin = Freeform::getInstance();
-            self::$settingsModel = $plugin->getSettings();
+            self::$settingsModel = $plugin->getSettings() ?? new Settings();
         }
 
         return self::$settingsModel;

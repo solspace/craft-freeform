@@ -23,6 +23,7 @@ class DigestBundle extends FeatureBundle
             return;
         }
 
+        // Queue before response preparation so Craft can start its automatic queue runner.
         Event::on(
             Application::class,
             Application::EVENT_AFTER_REQUEST,
@@ -32,20 +33,20 @@ class DigestBundle extends FeatureBundle
 
     public function triggerDigest(): void
     {
-        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
-            return;
-        }
-
-        if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
-            return;
-        }
-
         $settings = $this->plugin()->settings;
 
         $devRecipients = $settings->getDigestRecipients();
         $clientRecipients = $settings->getClientDigestRecipients();
 
         if (!$devRecipients->count() && !$clientRecipients->count()) {
+            return;
+        }
+
+        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+            return;
+        }
+
+        if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
             return;
         }
 

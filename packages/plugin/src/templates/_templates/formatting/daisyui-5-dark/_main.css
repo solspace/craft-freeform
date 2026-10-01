@@ -72,7 +72,7 @@
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card:has(> input:disabled) { opacity: .55; cursor: not-allowed; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card figure { margin: 0; aspect-ratio: 3 / 2; min-height: 9rem; max-height: 12rem; padding: .5rem; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card img { display: block; width: 100%; height: 100%; object-fit: contain; }
-.ff-daisy-form[data-theme="dark"] .ff-daisy-card .card-title { padding-inline-end: 2rem; }
+.ff-daisy-form[data-theme="dark"] .ff-daisy-card .card-title { padding-inline-end: 2rem; cursor: inherit; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card .card-title::before { content: ''; position: absolute; inset: 0; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card-check { position: absolute; inset-block-start: .625rem; inset-inline-end: .625rem; display: none; width: 1.75rem; height: 1.75rem; place-items: center; border-radius: 50%; color: var(--color-primary-content); background: var(--color-primary); box-shadow: 0 0 0 2px var(--color-base-100); pointer-events: none; }
 .ff-daisy-form[data-theme="dark"] .ff-daisy-card:has(> input:checked) > .ff-daisy-card-check { display: grid; }

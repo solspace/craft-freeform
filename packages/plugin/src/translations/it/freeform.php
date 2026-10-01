@@ -2295,6 +2295,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Eliminazione dei vecchi invii di spam',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: eliminazione delle risorse non finalizzate',
     'Freeform: Sending Digest Email' => 'Freeform: invio di email riassuntiva',
+    'Freeform: Refreshing News Feed' => 'Freeform: aggiornamento del feed delle notizie',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Pulizia dei vecchi log di notifica',
     'Freeform: Processing AI Fields' => 'Freeform: Elaborazione dei campi AI',
     'Freeform: Enable Pinging Service' => 'Freeform: Abilita servizio ping',

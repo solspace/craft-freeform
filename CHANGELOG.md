@@ -33,6 +33,16 @@
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
+## 5.16.4 - 2026-10-01
+
+### Fixed
+- Fixed an issue where news feed checks could delay frontend page loads by moving feed refreshes to Craft's queue.
+- Fixed unnecessary loading of all forms on frontend requests after a cache clear when URL Parameter Tracking is not configured.
+
+### Security
+- Updated Axios, DOMPurify, JSDom, and Vue dependencies to resolve multiple security vulnerabilities.
+- Updated `brace-expansion` to resolve three denial-of-service vulnerabilities in build dependencies.
+
 ## 5.16.3 - 2026-09-28
 
 ### Fixed

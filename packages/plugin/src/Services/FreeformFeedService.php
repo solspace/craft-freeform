@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\helpers\App;
+use craft\helpers\Queue;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\RefreshFeedJob;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\FeedItem;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
@@ -19,6 +21,8 @@ class FreeformFeedService extends Component
     public const LOCK_KEY_FEED = 'freeform-feed-lock-key';
     public const CACHE_KEY_FEED = 'freeform-feed-cache-key';
     public const CACHE_TTL_FEED = 60 * 60 * 5; // every 5 hours
+    public const CACHE_KEY_QUEUED_FEED = 'freeform-feed-job-pending';
+    public const LOCK_KEY_QUEUED_FEED = 'freeform-feed-job-lock';
 
     public function __construct()
     {
@@ -83,11 +87,11 @@ class FreeformFeedService extends Component
 
     public function fetchFeed(): void
     {
-        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+        if (!Freeform::getInstance()->settings->isDisplayFeed()) {
             return;
         }
 
-        if (!Freeform::getInstance()->settings->isDisplayFeed()) {
+        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
             return;
         }
 
@@ -96,6 +100,51 @@ class FreeformFeedService extends Component
         }
 
         $this->parseFeed();
+    }
+
+    public function queueFeedRefresh(): void
+    {
+        $settings = Freeform::getInstance()->settings;
+        if (!$settings->isDisplayFeed() || !$this->isFeedRefreshDue()) {
+            return;
+        }
+
+        $mutex = \Craft::$app->getMutex();
+        if (!$mutex->acquire(self::LOCK_KEY_QUEUED_FEED, 0)) {
+            return;
+        }
+
+        try {
+            if (!$this->isFeedRefreshDue() || !\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+                return;
+            }
+
+            $token = bin2hex(random_bytes(16));
+            $cache = \Craft::$app->getCache();
+            if (!$cache->set(self::CACHE_KEY_QUEUED_FEED, $token, self::CACHE_TTL_FEED)) {
+                return;
+            }
+
+            try {
+                $id = Queue::push(new RefreshFeedJob($token), $settings->getQueuePriority());
+                if (null === $id) {
+                    $this->releaseQueuedFeedRefresh($token);
+                }
+            } catch (\Throwable $exception) {
+                $this->releaseQueuedFeedRefresh($token);
+                \Craft::error('Unable to queue the Freeform news feed refresh: '.$exception->getMessage(), __METHOD__);
+            }
+        } finally {
+            $mutex->release(self::LOCK_KEY_QUEUED_FEED);
+        }
+    }
+
+    public function releaseQueuedFeedRefresh(string $token): void
+    {
+        $cache = \Craft::$app->getCache();
+        if ($cache->get(self::CACHE_KEY_QUEUED_FEED) === $token) {
+            $cache->delete(self::CACHE_KEY_QUEUED_FEED);
+        }
     }
 
     public function parseFeed(): void
@@ -191,12 +240,24 @@ class FreeformFeedService extends Component
         }
     }
 
+    private function isFeedRefreshDue(): bool
+    {
+        $cache = \Craft::$app->getCache();
+        $lastRefresh = (int) $cache->get(self::CACHE_KEY_FEED);
+
+        return (!$lastRefresh || time() - $lastRefresh >= self::CACHE_TTL_FEED)
+            && !$cache->get(self::CACHE_KEY_QUEUED_FEED);
+    }
+
     /**
      * @return FeedItem[]
      */
     private function getFeed(): array
     {
-        $client = \Craft::createGuzzleClient(['verify' => false]);
+        $client = \Craft::createGuzzleClient([
+            'connect_timeout' => 2,
+            'timeout' => 5,
+        ]);
 
         $feed = [];
 

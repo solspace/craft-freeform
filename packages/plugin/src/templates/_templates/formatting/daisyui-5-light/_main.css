@@ -50,6 +50,7 @@
 .ff-daisy-form[data-theme="light"] .ff-daisy-scale { display: flex; flex-wrap: wrap; gap: .5rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-scale-option { position: relative; min-width: 2.75rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-scale-option:has(input:checked) { --btn-color: var(--color-primary); --btn-rest-fg: var(--color-base-content); box-shadow: inset 0 0 0 2px var(--color-primary); }
+.ff-daisy-form[data-theme="light"] .ff-daisy-scale-option:has(> input:checked:not(:disabled)):hover { --btn-fg: var(--color-primary-content); color: var(--color-primary-content); }
 .ff-daisy-form[data-theme="light"] .ff-daisy-scale-option:has(input:focus-visible) { outline: 3px solid var(--color-primary); outline-offset: 3px; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-scale-option:has(input:disabled) { opacity: .55; cursor: not-allowed; }
 .ff-daisy-form[data-theme="light"] .rating { gap: 2px; }

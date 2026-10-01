@@ -46,22 +46,28 @@ class BackgroundRequestsTest extends TestCase
         \Yii::$app = $this->previousYiiApp;
     }
 
-    #[TestWith([false, false])]
-    #[TestWith([true, false])]
-    #[TestWith([false, true])]
-    public function testFeedOnlyRefreshesAutomaticallyInControlPanel(bool $console, bool $cp): void
+    #[TestWith([false, false, true])]
+    #[TestWith([true, false, true])]
+    #[TestWith([false, true, true])]
+    #[TestWith([false, false, false])]
+    #[TestWith([false, true, false])]
+    public function testFeedRefreshesInControlPanelAndQueuesOnFrontend(bool $console, bool $cp, bool $installed): void
     {
         $this->setRequest($console, $cp);
         $feed = $this->createMock(FreeformFeedService::class);
-        $feed->expects($cp && !$console ? self::once() : self::never())->method('fetchFeed');
+        $feed->expects($cp && !$console && $installed ? self::once() : self::never())->method('fetchFeed');
+        $feed->expects(!$cp && !$console && $installed ? self::once() : self::never())->method('queueFeedRefresh');
 
         $plugin = $this->createMock(Freeform::class);
-        $plugin->expects($cp && !$console ? self::once() : self::never())
+        $plugin->isInstalled = $installed;
+        $plugin->expects(!$console && $installed ? self::once() : self::never())
             ->method('__get')->with('feed')->willReturn($feed)
         ;
         \Yii::$app->loadedModules[Freeform::class] = $plugin;
 
-        new FeedBundle();
+        $bundle = new FeedBundle();
+        $this->handlers[] = [$bundle, 'queueFeedRefresh'];
+        Event::trigger(Application::class, Application::EVENT_AFTER_REQUEST);
     }
 
     public function testDisabledFeedDoesNotAccessDatabaseOrParseFeed(): void

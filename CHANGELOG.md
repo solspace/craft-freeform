@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Fixed
-- Fixed Freeform news feed refreshes delaying frontend and console requests. Automatic refreshes now run only in the Control Panel, and feed requests use connection and response timeouts.
+- Fixed Freeform news feed refreshes delaying frontend requests by refreshing the feed through the queue. Frontend traffic continues to trigger periodic checks so admin notices stay current without requiring Control Panel visits. Feed requests now use connection and response timeouts.
 - Moved scheduled export notifications to after the response is sent, and skipped digest table checks when no recipients are configured.
 
 ## 5.16.3 - 2026-09-28

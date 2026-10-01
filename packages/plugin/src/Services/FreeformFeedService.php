@@ -83,11 +83,11 @@ class FreeformFeedService extends Component
 
     public function fetchFeed(): void
     {
-        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+        if (!Freeform::getInstance()->settings->isDisplayFeed()) {
             return;
         }
 
-        if (!Freeform::getInstance()->settings->isDisplayFeed()) {
+        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
             return;
         }
 
@@ -196,7 +196,10 @@ class FreeformFeedService extends Component
      */
     private function getFeed(): array
     {
-        $client = \Craft::createGuzzleClient(['verify' => false]);
+        $client = \Craft::createGuzzleClient([
+            'connect_timeout' => 2,
+            'timeout' => 5,
+        ]);
 
         $feed = [];
 

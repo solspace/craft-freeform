@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\Notifications\Export;
 
 use Carbon\Carbon;
 use craft\helpers\StringHelper;
-use craft\web\Application;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Freeform;
@@ -21,6 +20,7 @@ use Twig\Error\SyntaxError;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\web\Response;
 
 class ExportNotifications extends FeatureBundle
 {
@@ -35,7 +35,11 @@ class ExportNotifications extends FeatureBundle
     public function __construct(
         private NotificationLoggerProvider $notificationLoggerProvider,
     ) {
-        Event::on(Application::class, Application::EVENT_AFTER_REQUEST, [$this, 'handleNotifications']);
+        if (\Craft::$app->getRequest()->getIsConsoleRequest()) {
+            return;
+        }
+
+        Event::on(Response::class, Response::EVENT_AFTER_SEND, [$this, 'handleNotifications']);
     }
 
     /**

@@ -13,10 +13,9 @@
     {% elseif not isCustomFormattingTemplate and formattingTemplate == 'foundation-6/index.twig' %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js" crossorigin="anonymous"></script>
-    {% elseif not isCustomFormattingTemplate and formattingTemplate == 'daisyui-5-light/index.twig' %}
-        {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5LightComponentsBundle') %}
-    {% elseif not isCustomFormattingTemplate and formattingTemplate == 'daisyui-5-dark/index.twig' %}
-        {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5DarkComponentsBundle') %}
+    {% elseif not isCustomFormattingTemplate and formattingTemplate in ['daisyui-5-light/index.twig', 'daisyui-5-dark/index.twig'] %}
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@5.7.27" rel="stylesheet" type="text/css">
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
     {% elseif not isCustomFormattingTemplate and formattingTemplate in ['tailwind-4-light/index.twig', 'tailwind-4-dark/index.twig'] %}
         <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
     {% elseif not isCustomFormattingTemplate and formattingTemplate in ['tailwind-3/index.twig', 'tailwind-3-dark/index.twig'] %}

@@ -4,14 +4,13 @@ namespace Solspace\Freeform\Resources\Bundles\FormattingTemplates;
 
 use craft\web\AssetBundle;
 
-class DaisyUI5DarkBundle extends AssetBundle
+class DaisyUI5DarkComponentsBundle extends AssetBundle
 {
     public function init(): void
     {
         $this->sourcePath = '@Solspace/Freeform/templates/_templates/formatting/daisyui-5-dark';
 
-        $this->css = ['_main.css'];
-        $this->js = ['_main.js'];
+        $this->css = ['_daisyui.css'];
 
         parent::init();
     }

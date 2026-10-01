@@ -41,14 +41,24 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
   for (const wrapper of root.querySelectorAll<HTMLElement>(
     '.global-sidebar__nav craft-nav-item > span[slot="icon"]',
   )) {
-    if (!wrapper.querySelector("svg")) continue;
-    const icon = document.createElement("craft-icon");
-    icon.setAttribute("slot", "icon");
-    icon.setAttribute("aria-hidden", "true");
-    icon.append(...wrapper.childNodes);
     const row = wrapper.parentElement as
       | (HTMLElement & { requestUpdate?: () => void })
       | null;
+    const hasSvg = !!wrapper.querySelector("svg");
+    // The legacy SVG helper treats Craft's custom icon name as a file path.
+    // Let the native loader resolve GraphQL's icon when that leaves it empty.
+    const missingGraphql =
+      !wrapper.children.length &&
+      !wrapper.textContent?.trim() &&
+      /\/graphql\/?$/.test(
+        new URL(row?.getAttribute("href") || "", document.baseURI).pathname,
+      );
+    if (!hasSvg && !missingGraphql) continue;
+    const icon = document.createElement("craft-icon");
+    icon.setAttribute("slot", "icon");
+    icon.setAttribute("aria-hidden", "true");
+    if (missingGraphql) icon.setAttribute("name", "custom-icons/graphql");
+    icon.append(...wrapper.childNodes);
     wrapper.replaceWith(icon);
     row?.requestUpdate?.();
   }

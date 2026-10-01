@@ -82,6 +82,23 @@ describe("Craft 6 Freeform shell", () => {
     expect(update).toHaveBeenCalledOnce();
   });
 
+  it("restores an empty GraphQL icon without replacing supplied icons", () => {
+    shell();
+    const nav = document.querySelector(".global-sidebar__nav")!;
+    nav.insertAdjacentHTML(
+      "beforeend",
+      '<craft-nav-item href="/admin/graphql"><span slot="icon">\n </span>GraphQL</craft-nav-item><craft-nav-item href="/admin/graphql"><span slot="icon"><svg></svg></span>GraphQL</craft-nav-item><craft-nav-item href="/admin/other"><span slot="icon"> </span>Other</craft-nav-item>',
+    );
+    enhanceCraft6Shell();
+    expect(
+      nav.querySelectorAll('craft-icon[name="custom-icons/graphql"]'),
+    ).toHaveLength(1);
+    expect(
+      nav.querySelector('craft-nav-item[href="/admin/other"] craft-icon'),
+    ).toBeNull();
+    expect(nav.querySelectorAll('craft-icon[slot="icon"] svg')).toHaveLength(2);
+  });
+
   it("ships styles that hide the cog's accessible text on a legacy CP page", () => {
     shell();
     document.body.classList.add("freeform-cp");

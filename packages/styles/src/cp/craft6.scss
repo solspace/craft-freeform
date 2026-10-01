@@ -142,6 +142,22 @@
       width: calc(var(--c-size-touch-target) - var(--c-spacing-sm));
       height: auto;
       color: inherit;
+
+      svg {
+        width: 100%;
+        height: auto;
+
+        circle,
+        ellipse,
+        line,
+        path,
+        polygon,
+        polyline,
+        rect,
+        text {
+          fill: currentColor;
+        }
+      }
     }
 
     #system-name {
@@ -175,16 +191,20 @@
     min-width: 0;
   }
 
-  #crumb-list {
+  // Include the header ID: legacy :not(.current) rules otherwise have equal
+  // specificity and can win when Craft's stylesheet is loaded after ours.
+  #global-header #crumb-list {
     height: auto;
     align-items: center;
     gap: var(--c-spacing-md);
-    font-size: var(--c-text-sm);
+    font-size: var(--c-text-xs, 12px);
 
-    li.crumb {
+    > li.crumb {
       padding: 0;
+      padding-inline: 0;
       margin: 0;
       min-height: 0;
+      gap: 0;
       color: var(--c-text-default);
 
       &::before {
@@ -195,11 +215,13 @@
         height: auto;
         background: none;
         transform: none;
+        inset: auto;
         color: var(--c-text-quiet);
         margin-inline-end: var(--c-spacing-sm);
       }
 
       &::after {
+        content: none;
         display: none;
       }
 

@@ -1,10 +1,14 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.16.4 - 2026-10-01
 
 ### Fixed
-- Fixed Freeform news feed refreshes delaying frontend requests by refreshing the feed through the queue. Frontend traffic continues to trigger periodic checks so admin notices stay current without requiring Control Panel visits. Feed requests now use connection and response timeouts.
-- Moved scheduled export notifications to after the response is sent, and skipped digest table checks when no recipients are configured.
+- Fixed an issue where news feed checks could delay frontend page loads by moving feed refreshes to Craft's queue.
+- Fixed unnecessary loading of all forms on frontend requests after a cache clear when URL Parameter Tracking is not configured.
+
+### Security
+- Updated Axios, DOMPurify, JSDom, and Vue dependencies to resolve multiple security vulnerabilities.
+- Updated `brace-expansion` to resolve three denial-of-service vulnerabilities in build dependencies.
 
 ## 5.16.3 - 2026-09-28
 

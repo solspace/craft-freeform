@@ -17,5 +17,6 @@
 
 {% block body %}
     {{ parent() }}
+    {% include 'freeform/_components/shell-indicators' %}
     {% hook 'freeform-beta-widget' %}
 {% endblock %}

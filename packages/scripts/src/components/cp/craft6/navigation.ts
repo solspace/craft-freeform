@@ -65,8 +65,7 @@ export function enhanceCraft6Navigation(root: ParentNode = document): void {
     action.setAttribute("size", "small");
     const label = settings.textContent?.trim() || "Settings";
     action.setAttribute("aria-label", label);
-    // Give the icon a fixed size rather than compounding the button and icon's
-    // relative font-size reductions.
+    // Use Craft's normal icon sizing, with the link label in its content slot.
     const icon = document.createElement("craft-icon");
     icon.setAttribute("name", "gear");
     icon.setAttribute("aria-hidden", "true");

@@ -36,10 +36,6 @@
     font-weight: 600;
   }
 
-  [data-freeform-settings] craft-icon {
-    font-size: var(--c-text-base, 14px);
-  }
-
   // The unlayered legacy .btn rule overrides the layered .skip-link position.
   // Remove the list from document flow, keeping the links visible on focus.
   #global-skip-links {
@@ -99,5 +95,259 @@
   > form > p,
   > p {
     margin-block-end: var(--c-spacing-md, 16px);
+  }
+}
+
+// The legacy Twig layout and native Vue pages share Craft's components, but the
+// legacy shell still supplies different geometry, surfaces, and breadcrumb art.
+.freeform-cp {
+  --padding: var(--cp-container-padding, var(--c-spacing-lg));
+  --header-height: var(--cp-header-height);
+
+  #global-container {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas: 'topbar topbar' 'navigation page';
+    background: var(--c-surface-header);
+  }
+
+  #global-header {
+    grid-area: topbar;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    gap: var(--c-spacing-md);
+    min-height: var(--cp-header-height);
+    padding: var(--c-spacing-sm) var(--c-spacing-md);
+    margin: 0;
+    border: 0;
+    background: var(--c-surface-header);
+    color: var(--c-text-default);
+
+    > .flex {
+      height: auto;
+      gap: var(--c-spacing-md);
+    }
+
+    #system-info {
+      grid-template-columns: calc(var(--c-size-touch-target) - var(--c-spacing-sm)) auto;
+      gap: var(--c-spacing-md);
+      padding: 0;
+      flex: 0 0 auto;
+      color: inherit;
+      border: 0;
+      background: transparent;
+    }
+
+    #site-icon {
+      width: calc(var(--c-size-touch-target) - var(--c-spacing-sm));
+      height: auto;
+      color: inherit;
+    }
+
+    #system-name {
+      opacity: 1;
+      color: inherit;
+    }
+
+    #user-info {
+      width: auto;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: var(--c-radius-full);
+      background: transparent;
+      box-shadow: none;
+      color: inherit;
+
+      &::after {
+        display: none;
+      }
+    }
+
+    .header-photo img,
+    .header-photo svg {
+      width: var(--c-size-control-sm);
+      height: var(--c-size-control-sm);
+    }
+  }
+
+  #crumbs {
+    min-width: 0;
+  }
+
+  #crumb-list {
+    height: auto;
+    align-items: center;
+    gap: var(--c-spacing-md);
+    font-size: var(--c-text-sm);
+
+    li.crumb {
+      padding: 0;
+      margin: 0;
+      min-height: 0;
+      color: var(--c-text-default);
+
+      &::before {
+        position: static;
+        content: '/';
+        display: inline;
+        width: auto;
+        height: auto;
+        background: none;
+        transform: none;
+        color: var(--c-text-quiet);
+        margin-inline-end: var(--c-spacing-sm);
+      }
+
+      &::after {
+        display: none;
+      }
+
+      > a,
+      .crumb-link {
+        padding: 0;
+        color: var(--c-text-link);
+      }
+    }
+  }
+
+  #page-container {
+    grid-area: page;
+    min-width: 0;
+    background: var(--c-surface-default);
+    border-start-end-radius: var(--c-radius-xl);
+    overflow: clip;
+  }
+
+  cp-global-sidebar {
+    grid-area: navigation;
+    background: var(--c-surface-sunken);
+    border-start-start-radius: var(--c-radius-xl);
+  }
+
+  .global-sidebar {
+    height: calc(100dvh - var(--cp-header-height));
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: var(--c-surface-sunken);
+    border-color: var(--c-color-border-quiet);
+  }
+
+  .global-sidebar__header,
+  #devmode {
+    display: none;
+  }
+
+  .global-sidebar__nav {
+    padding: var(--c-spacing-md);
+  }
+
+  .global-sidebar__footer {
+    padding: var(--c-spacing-md);
+    background: var(--c-surface-sunken);
+    border-color: var(--c-color-border-quiet);
+  }
+
+  #header-container {
+    margin-block-end: var(--c-spacing-sm);
+  }
+
+  #header {
+    padding-block: var(--c-spacing-lg) var(--c-spacing-sm);
+  }
+
+  #freeform-client-app {
+    padding: var(--c-spacing-lg) var(--cp-container-padding);
+
+    > header h1 {
+      font-size: 20px;
+      line-height: 1.3;
+    }
+  }
+
+  #content.content-pane {
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: var(--c-surface-default);
+  }
+
+  #freeform-client-app #content.content-pane {
+    padding-inline: 0;
+  }
+
+  #footer {
+    min-height: var(--cp-footer-height);
+    padding: var(--c-spacing-md) var(--cp-container-padding);
+    border-block-start: 1px solid var(--c-color-border-quiet);
+    background: var(--c-surface-default);
+  }
+
+  .freeform-form-footer {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    inset-block-end: 0;
+    z-index: var(--c-layer-sticky);
+
+    .buttons {
+      margin: 0;
+    }
+  }
+
+  #global-footer {
+    padding: 0;
+    background: var(--c-surface-default);
+
+    #app-info {
+      display: none;
+    }
+  }
+
+  // The native UI's shadow-only hidden class isn't part of the legacy stylesheet.
+  // Define it here so the link keeps its name without showing label text.
+  [data-freeform-settings] .cp-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+// Preserve the legacy menu toggle at its existing mobile breakpoint. The top
+// bar stays in place while the sidebar floats over the page.
+@media (width < 75rem) {
+  .freeform-cp {
+    #global-container {
+      inset-inline-start: 0;
+      width: auto;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: 'topbar' 'page';
+    }
+
+    cp-global-sidebar {
+      position: fixed;
+      inset-block-start: var(--cp-header-height);
+      inset-inline-start: 0;
+      width: var(--cp-sidebar-width);
+      z-index: var(--c-layer-overlay);
+      transform: translateX(-100%);
+    }
+
+    &.rtl cp-global-sidebar {
+      transform: translateX(100%);
+    }
+
+    &.showing-nav cp-global-sidebar {
+      transform: none;
+    }
+
+    #global-header #system-name {
+      display: none;
+    }
   }
 }

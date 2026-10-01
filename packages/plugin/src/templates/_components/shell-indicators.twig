@@ -1,0 +1,10 @@
+<template id="freeform-shell-indicators">
+    <div data-freeform-shell-indicators>
+        {% if currentUser.admin and devMode %}
+            <craft-badge fill="warning">
+                <craft-icon name="code" slot="prefix" aria-hidden="true"></craft-icon>
+                {{ 'Dev Mode'|t('app') }}
+            </craft-badge>
+        {% endif %}
+    </div>
+</template>

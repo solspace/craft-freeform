@@ -69,10 +69,16 @@
 .ff-daisy-form[data-theme="light"] .ff-daisy-card { --card-p: 1rem; --cardtitle-fs: 1rem; min-width: 0; text-align: start; color: var(--color-base-content); background: var(--color-base-100); border-color: color-mix(in oklab, var(--color-base-content) 20%, transparent); }
 .ff-daisy-form[data-theme="light"] .ff-daisy-card:has(> input:checked), .ff-daisy-form[data-theme="light"] .ff-daisy-card:has(> input:focus-visible) { outline-color: var(--color-primary); }
 .ff-daisy-form[data-theme="light"] .ff-daisy-card:has(> input:disabled) { opacity: .55; cursor: not-allowed; }
-.ff-daisy-form[data-theme="light"] .ff-daisy-card img { display: block; width: 100%; height: auto; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card figure { margin: 0; aspect-ratio: 3 / 2; min-height: 9rem; max-height: 12rem; padding: .5rem; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card .card-title { padding-inline-end: 2rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-card .card-title::before { content: ''; position: absolute; inset: 0; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card-check { position: absolute; inset-block-start: .625rem; inset-inline-end: .625rem; display: none; width: 1.75rem; height: 1.75rem; place-items: center; border-radius: 50%; color: var(--color-primary-content); background: var(--color-primary); box-shadow: 0 0 0 2px var(--color-base-100); pointer-events: none; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card:has(> input:checked) > .ff-daisy-card-check { display: grid; }
+.ff-daisy-form[data-theme="light"] .ff-daisy-card-check svg { width: 1rem; height: 1rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-card p { margin: 0; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-card-meta { width: 100%; margin: 0; padding-inline-start: 1.25rem; font-size: .8125rem; }
+@media (hover: hover) { .ff-daisy-form[data-theme="light"] .ff-daisy-card:not(:has(> input:disabled)):hover { border-color: color-mix(in oklab, var(--color-primary) 60%, var(--color-base-300)); } }
 .ff-daisy-form[data-theme="light"] .ff-daisy-actions { display: flex; flex-wrap: wrap; gap: .625rem; margin-block: 1.5rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-banner { margin-block: 1.5rem 2rem; }
 .ff-daisy-form[data-theme="light"] .ff-daisy-banner ul { margin: .5rem 0 0; padding-inline-start: 1.25rem; }

@@ -28,6 +28,9 @@
                     {% if card.description %}<p id="{{ cardId }}-description">{{ card.description }}</p>{% endif %}
                     {% if renderedMeta|trim %}<ul id="{{ cardId }}-meta" class="ff-daisy-card-meta">{{ renderedMeta|raw }}</ul>{% endif %}
                 </div>
+                <span class="ff-daisy-card-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
+                </span>
             </div>
         {% endfor %}
     </div>

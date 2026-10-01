@@ -25,6 +25,7 @@ use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
 use CraftCms\Cms\Cp\Data\NavItem;
+use CraftCms\Cms\Cp\Icons;
 use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
@@ -380,6 +381,7 @@ class Freeform extends Plugin
 
         $navItem = $event->getNav();
         $navItem->icon = __DIR__.'/icon-mask.svg';
+        $navItem->iconSvg = Icons::svg($navItem->icon);
         $navItem->subnav = $this->convertSubnavToNavItems($event->getSubnavItems());
 
         return $navItem;
@@ -540,15 +542,19 @@ class Freeform extends Plugin
     /**
      * @param array<string, array<string, mixed>|NavItem> $items
      *
-     * @return array<string, NavItem>
+     * @return list<NavItem>
      */
     private function convertSubnavToNavItems(array $items): array
     {
         $result = [];
 
-        foreach ($items as $handle => $item) {
+        foreach ($items as $item) {
             if ($item instanceof NavItem) {
-                $result[$handle] = $item;
+                if (\is_array($item->subnav)) {
+                    $item->subnav = $this->convertSubnavToNavItems($item->subnav);
+                }
+
+                $result[] = $item;
 
                 continue;
             }
@@ -559,10 +565,13 @@ class Freeform extends Plugin
             }
 
             if (isset($item['subnav']) && \is_array($item['subnav'])) {
-                $item['subnav'] = array_values($this->convertSubnavToNavItems($item['subnav']));
+                $item['subnav'] = $this->convertSubnavToNavItems($item['subnav']);
             }
 
-            $result[$handle] = new NavItem($item);
+            // Native navigation is JSON consumed by Vue. Associative keys turn
+            // subnav into an object, which the native renderer ignores.
+            $item['badgeCount'] = (int) ($item['badgeCount'] ?? 0);
+            $result[] = new NavItem($item);
         }
 
         return $result;

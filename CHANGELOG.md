@@ -3,6 +3,7 @@
 ## 6.0.0 - Unreleased
 
 ### Added
+- Added native Craft 6 navigation flyouts and a permission-aware Settings cog to Freeform's control panel navigation.
 - Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. The host website supplies the framework styles; demo templates and HTML embeds load the required libraries automatically.
 - Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
@@ -31,6 +32,7 @@
 - Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
 
 ### Fixed
+- Fixed Freeform's missing icon and subpages on native Craft 6 pages, and corrected heading sizes and settings sidebar alignment.
 - Fixed Craft 6 control panel styling for skip links, buttons, navigation, and settings field spacing.
 - Fixed spurious validation messages in Craft 6 settings and submission editing screens.
 - Updated migration discovery and wrapping for Craft 6's migrator, including Freeform's namespaced legacy migrations.

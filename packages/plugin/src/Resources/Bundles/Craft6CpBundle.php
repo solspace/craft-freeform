@@ -9,6 +9,11 @@ use function CraftCms\Cms\craftAsset;
  */
 class Craft6CpBundle extends AbstractFreeformAssetBundle
 {
+    public function getScripts(): array
+    {
+        return ['js/scripts/cp/craft6/navigation.js'];
+    }
+
     public function getStylesheets(): array
     {
         return [

@@ -23,6 +23,19 @@
   --secondary-button-border--hover: var(--button-border--hover);
   --secondary-button-border--active: var(--button-border--active);
 
+  // The legacy Tailwind reset makes headings inherit body size and weight.
+  #page-title h1,
+  #content h1 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  #content h2,
+  #content h3 {
+    font-size: var(--c-text-lg, 16px);
+    font-weight: 600;
+  }
+
   // The unlayered legacy .btn rule overrides the layered .skip-link position.
   // Remove the list from document flow, keeping the links visible on focus.
   #global-skip-links {
@@ -52,6 +65,20 @@
         clip-path: none;
       }
     }
+  }
+}
+
+// The legacy sidebar's negative margins extend its active row over the divider.
+.freeform-settings #sidebar {
+  padding-inline: var(--c-spacing-sm, 8px);
+
+  nav {
+    margin-inline: 0;
+  }
+
+  nav li a,
+  .heading > span {
+    padding-inline: var(--c-spacing-md, 16px);
   }
 }
 

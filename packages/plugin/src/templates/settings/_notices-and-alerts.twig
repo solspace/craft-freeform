@@ -80,7 +80,7 @@
             instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
             name: "settings[digestFrequency]",
             value: settings.digestFrequency,
-            errors: settings.errors("digestFrequency"),
+            errors: settings.errors().get("digestFrequency"),
             disabled: readOnly,
             options: {
                 "-1": "Daily" | t('freeform'),
@@ -110,7 +110,7 @@
             instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
             name: "settings[clientDigestFrequency]",
             value: settings.clientDigestFrequency,
-            errors: settings.errors("clientDigestFrequency"),
+            errors: settings.errors().get("clientDigestFrequency"),
             disabled: readOnly,
             options: {
                 "-1": "Daily" | t('freeform'),

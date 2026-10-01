@@ -5,7 +5,7 @@
     name: field.handle,
     id: field.handle,
     required: field.required,
-    errors: submission.errors(field.handle),
+    errors: submission.errors().get(field.handle),
     values: submission[field.handle] is not null ? submission[field.handle].value : [],
     options: field.options.toTwigArray,
 }) }}

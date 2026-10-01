@@ -13,6 +13,6 @@
 {{ forms.field({
     label: null,
     class: "checkbox-field",
-    errors: submission.errors(field.handle),
+    errors: submission.errors().get(field.handle),
     required: field.required,
 }, checkboxInput) }}

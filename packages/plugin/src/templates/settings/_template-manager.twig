@@ -150,7 +150,7 @@
         instructions: "Choose whether you want to use form-specific templates, global templates, or both."|t('freeform'),
         name: "settings[emailTemplateMethod]",
         value: settings.emailTemplateMethod,
-        errors: settings.errors("emailTemplateMethod"),
+        errors: settings.errors().get("emailTemplateMethod"),
         disabled: readOnly,
         options: {
             "form": "Form-specific only" | t('freeform'),
@@ -166,7 +166,7 @@
             instructions: "Choose whether you want to enable email notification templates stored as files, in the database, or have both options available."|t('freeform'),
             name: "settings[emailTemplateStorageType]",
             value: settings.emailTemplateStorageType,
-            errors: settings.errors("emailTemplateStorageType"),
+            errors: settings.errors().get("emailTemplateStorageType"),
             disabled: readOnly,
             options: {
                 "files": "File" | t('freeform'),
@@ -182,7 +182,7 @@
                 instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
                 name: "settings[allowBuilderTemplateCreation]",
                 value: settings.allowBuilderTemplateCreation,
-                errors: settings.errors("allowBuilderTemplateCreation"),
+                errors: settings.errors().get("allowBuilderTemplateCreation"),
                 disabled: readOnly,
                 on: settings.allowBuilderTemplateCreation,
             }) }}
@@ -196,7 +196,7 @@
                     instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
                     name: "settings[emailTemplateDefault]",
                     value: settings.emailTemplateDefault,
-                    errors: settings.errors("emailTemplateDefault"),
+                    errors: settings.errors().get("emailTemplateDefault"),
                     disabled: readOnly,
                     options: {
                         "files": "File" | t('freeform'),
@@ -213,7 +213,7 @@
                 instructions: "Allows users to create and edit file-based email templates from the Notifications area and form builder."|t('freeform'),
                 name: "settings[allowFileTemplateEdit]",
                 on: settings.allowFileTemplateEdit,
-                errors: settings.errors("allowFileTemplateEdit"),
+                errors: settings.errors().get("allowFileTemplateEdit"),
                 disabled: readOnly,
                 tip: "Managing template files from inside the Control Panel may not be suitable for workflows that rely on external file management or version control."|t('freeform'),
             }) }}

@@ -9,6 +9,6 @@
     max: field.maxValue,
     step: field.step,
     required: field.required,
-    errors: submission.errors(field.handle),
+    errors: submission.errors().get(field.handle),
     value: submission[field.handle] is not null ? submission[field.handle].value : '',
 }) }}

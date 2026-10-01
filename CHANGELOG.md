@@ -31,6 +31,8 @@
 - Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
 
 ### Fixed
+- Fixed Craft 6 control panel styling for skip links, buttons, navigation, and settings field spacing.
+- Fixed spurious validation messages in Craft 6 settings and submission editing screens.
 - Updated migration discovery and wrapping for Craft 6's migrator, including Freeform's namespaced legacy migrations.
 - Updated headless CSRF validation and token metadata for Craft 6's session tokens.
 - Updated serializer metadata for Symfony 7.4 and 8.x.

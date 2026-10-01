@@ -40,7 +40,7 @@
         instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
         name: "settings[defaultView]",
         value: settings.defaultView,
-        errors: settings.errors("defaultView"),
+        errors: settings.errors().get("defaultView"),
         disabled: readOnly,
         options: {
             forms: "Forms"|t('freeform'),
@@ -53,7 +53,7 @@
         instructions: "Select the options you'd like to be included in the plugin badge count (when applicable)."|t('freeform'),
         name: "settings[badgeType]",
         value: settings.badgeType,
-        errors: settings.errors("badgeType"),
+        errors: settings.errors().get("badgeType"),
         disabled: readOnly,
         options: {
             '': "Don't Show"|t('freeform'),
@@ -73,7 +73,7 @@
             instructions: "When enabled, forms become aware of the currently active Site when loaded on the front end. In the control panel, you can filter form lists by Site and prevent other admins from accessing forms that belong to Sites they don't have access to. By default, any new forms created will be visible for the Site they were created on (with the ability to enable additional sites)."|t('freeform'),
             name: "settings[sitesEnabled]",
             value: settings.sitesEnabled,
-            errors: settings.errors("sitesEnabled"),
+            errors: settings.errors().get("sitesEnabled"),
             disabled: readOnly,
             tip: "To enable translations on forms per Site, go to the form builder and enable the 'Translatable' setting under the 'Settings' tab."|t('freeform'),
         }) }}
@@ -84,7 +84,7 @@
             instructions: "When enabled, the `A/B Tests` section appears in the Freeform navigation and allows you to create A/B tests for your forms. Disable this to hide the section if you do not plan to use this feature."|t('freeform'),
             name: "settings[abTests]",
             value: settings.abTests,
-            errors: settings.errors("abTests"),
+            errors: settings.errors().get("abTests"),
             disabled: readOnly,
         }) }}
 
@@ -95,7 +95,7 @@
         instructions: "Set the queue job priority for background Freeform tasks to determine if they should run with a different priority compared to other jobs. Jobs with a lower priority are executed first."|t('freeform'),
         name: "settings[queuePriority]",
         value: settings.queuePriority,
-        errors: settings.errors("queuePriority"),
+        errors: settings.errors().get("queuePriority"),
         disabled: readOnly,
         placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
@@ -105,7 +105,7 @@
         instructions: "Set the logging level for Freeform. 'Errors' logs only errors, 'Info' logs information about what's been processed, and 'Debug' logs all processes occurring, which is useful for setup and debugging."|t('freeform'),
         name: "settings[loggingLevel]",
         value: settings.loggingLevel,
-        errors: settings.errors("loggingLevel"),
+        errors: settings.errors().get("loggingLevel"),
         disabled: readOnly,
         options: {
             error: "Errors (recommended)"|t('freeform'),
@@ -124,7 +124,7 @@
         instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Element Field Type (relating forms in Entries, etc)."|t('freeform'),
         name: "settings[formFieldShowOnlyAllowedForms]",
         value: settings.formFieldShowOnlyAllowedForms,
-        errors: settings.errors("formFieldShowOnlyAllowedForms"),
+        errors: settings.errors().get("formFieldShowOnlyAllowedForms"),
         disabled: readOnly,
     }) }}
 
@@ -138,7 +138,7 @@
         instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
         name: "settings[removeNewlines]",
         value: settings.removeNewlines,
-        errors: settings.errors("removeNewlines"),
+        errors: settings.errors().get("removeNewlines"),
         disabled: readOnly,
     }) }}
 
@@ -148,7 +148,7 @@
         instructions: "Enable this to have fields with options use the submission's option labels instead of values when exporting."|t('freeform'),
         name: "settings[exportLabels]",
         value: settings.exportLabels,
-        errors: settings.errors("exportLabels"),
+        errors: settings.errors().get("exportLabels"),
         disabled: readOnly,
     }) }}
 
@@ -158,7 +158,7 @@
         instructions: "Enable this to use field handles as headings instead of field labels when exporting submissions."|t('freeform'),
         name: "settings[exportHandlesAsNames]",
         value: settings.exportHandlesAsNames,
-        errors: settings.errors("exportHandlesAsNames"),
+        errors: settings.errors().get("exportHandlesAsNames"),
         disabled: readOnly,
     }) }}
 
@@ -170,7 +170,7 @@
             instructions: "Enable this to include tracked URL parameter values (e.g. UTM campaign data) in exported submission data."|t('freeform'),
             name: "settings[exportTrackedUrlParameters]",
             value: settings.exportTrackedUrlParameters,
-            errors: settings.errors("exportTrackedUrlParameters"),
+            errors: settings.errors().get("exportTrackedUrlParameters"),
             disabled: readOnly,
         }) }}
 
@@ -186,7 +186,7 @@
         instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
         name: "settings[fillWithGet]",
         value: settings.fillWithGet,
-        errors: settings.errors("fillWithGet"),
+        errors: settings.errors().get("fillWithGet"),
         disabled: readOnly,
     }) }}
 
@@ -197,7 +197,7 @@
         warning: "Dashes in field handle names are not allowed by default. Enabling this could negatively affect other parts of Craft, especially GraphQL functionality. Use with caution and only if necessary."|t('freeform'),
         name: "settings[allowDashesInFieldHandles]",
         value: settings.allowDashesInFieldHandles,
-        errors: settings.errors("allowDashesInFieldHandles"),
+        errors: settings.errors().get("allowDashesInFieldHandles"),
         disabled: readOnly,
     }) }}
 
@@ -211,7 +211,7 @@
         instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
         name: "settings[updateSearchIndexes]",
         value: settings.updateSearchIndexes,
-        errors: settings.errors("updateSearchIndexes"),
+        errors: settings.errors().get("updateSearchIndexes"),
         disabled: readOnly,
     }) }}
 
@@ -224,7 +224,7 @@
             name: "purge-toggle",
             on: settings.purgableSubmissionAgeInDays,
             toggle: "purge",
-            errors: settings.errors("purgableSubmissionAgeInDays"),
+            errors: settings.errors().get("purgableSubmissionAgeInDays"),
             disabled: readOnly,
         }) }}
 
@@ -234,7 +234,7 @@
                 instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
                 name: "settings[purgableSubmissionAgeInDays]",
                 value: settings.purgableSubmissionAgeInDays,
-                errors: settings.errors("purgableSubmissionAgeInDays"),
+                errors: settings.errors().get("purgableSubmissionAgeInDays"),
                 disabled: readOnly,
                 id: "purge-value",
                 options: {
@@ -264,7 +264,7 @@
                 values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
                 showAllOption: true,
                 options: forms|sort,
-                errors: settings.errors("purgableFormIds"),
+                errors: settings.errors().get("purgableFormIds"),
             }) }}
 		</div>
 
@@ -276,7 +276,7 @@
         name: "settings[purgeAssets]",
         on: settings.purgeAssets,
         toggle: "purge-assets",
-        errors: settings.errors("purgeAssets"),
+        errors: settings.errors().get("purgeAssets"),
         disabled: readOnly,
     }) }}
 

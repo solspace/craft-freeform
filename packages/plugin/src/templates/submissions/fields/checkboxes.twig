@@ -19,7 +19,7 @@
         instructions: field.instructions,
         id: field.handle,
         required: field.required,
-        errors: submission.errors(field.handle),
+        errors: submission.errors().get(field.handle),
     },
     inputs | raw
 ) }}

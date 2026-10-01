@@ -1,7 +1,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set selectedValue = submission[field.handle] is not null ? submission[field.handle].value : '' %}
-{% set errors = submission.errors(field.handle) %}
+{% set errors = submission.errors().get(field.handle) %}
 {% set input %}
     <div class="freeform-submission-opinion-scale"
          role="radiogroup"

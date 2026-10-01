@@ -27,7 +27,7 @@
         instructions: "Use Craft's queue system to trigger AI processing."|t('freeform'),
         name: "settings[useQueueForAiFields]",
         value: settings.useQueueForAiFields,
-        errors: settings.errors("useQueueForAiFields"),
+        errors: settings.errors().get("useQueueForAiFields"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
@@ -38,7 +38,7 @@
         instructions: "Use Craft's queue system to trigger emails."|t('freeform'),
         name: "settings[useQueueForEmailNotifications]",
         value: settings.useQueueForEmailNotifications,
-        errors: settings.errors("useQueueForEmailNotifications"),
+        errors: settings.errors().get("useQueueForEmailNotifications"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
@@ -49,7 +49,7 @@
         instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing)."|t('freeform'),
         name: "settings[useQueueForIntegrations]",
         value: settings.useQueueForIntegrations,
-        errors: settings.errors("useQueueForIntegrations"),
+        errors: settings.errors().get("useQueueForIntegrations"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}

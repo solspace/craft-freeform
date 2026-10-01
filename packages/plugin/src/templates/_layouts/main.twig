@@ -1,5 +1,8 @@
 {% extends "_layouts/cp" %}
 
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp') %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
+
 {% block body %}
     {{ parent() }}
     {% hook 'freeform-beta-widget' %}

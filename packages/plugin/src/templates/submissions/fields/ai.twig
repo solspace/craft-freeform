@@ -8,7 +8,7 @@
     name: field.handle,
     id: field.handle,
     required: false,
-    errors: submission.errors(field.handle),
+    errors: submission.errors().get(field.handle),
     value: displayValue,
     readonly: true,
     rows: 3,

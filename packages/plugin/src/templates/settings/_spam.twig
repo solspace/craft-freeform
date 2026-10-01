@@ -80,7 +80,7 @@
             instructions: "When enabled, Freeform will not run any spam protection measures for logged in users."|t('freeform'),
             name: "settings[bypassSpamCheckOnLoggedInUsers]",
             value: settings.bypassSpamCheckOnLoggedInUsers,
-            errors: settings.errors("bypassSpamCheckOnLoggedInUsers"),
+            errors: settings.errors().get("bypassSpamCheckOnLoggedInUsers"),
             disabled: readOnly,
         }) }}
 
@@ -95,7 +95,7 @@
             name: "settings[spamFolderEnabled]",
             value: settings.spamFolderEnabled,
             toggle: "spam-features",
-            errors: settings.errors("spamFolderEnabled"),
+            errors: settings.errors().get("spamFolderEnabled"),
             disabled: readOnly,
         }) }}
 
@@ -107,7 +107,7 @@
                 name: "purge-toggle",
                 on: settings.purgableSpamAgeInDays,
                 toggle: "purge",
-                errors: settings.errors("purgableSpamAgeInDays"),
+                errors: settings.errors().get("purgableSpamAgeInDays"),
                 disabled: readOnly,
             }) }}
 
@@ -117,7 +117,7 @@
                     instructions: "Select the number of days after spammy submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
                     name: "settings[purgableSpamAgeInDays]",
                     value: settings.purgableSpamAgeInDays,
-                    errors: settings.errors("purgableSpamAgeInDays"),
+                    errors: settings.errors().get("purgableSpamAgeInDays"),
                     disabled: readOnly,
                     id: "purge-value",
                     options: {
@@ -165,7 +165,7 @@
         {{ forms.field({
             label: "Form Submission Throttling"|t("freeform"),
             instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
-            errors: settings.errors("submissionThrottlingCount"),
+            errors: settings.errors().get("submissionThrottlingCount"),
             disabled: readOnly,
             warning: "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. For example, if you set it to '1 per minute', once one user submits any form, any other user will not be able to submit a form within that timeframe. A more realistic value for smaller websites is something like 50 per minute. Use extreme caution for larger and more active sites."|t('freeform'),
         }, input) }}
@@ -175,7 +175,7 @@
             instructions: "The minimum amount of time (in seconds) that has to go by since loading the form for the user to be able to submit the form successfully. Otherwise the submission will be flagged as spam and the Spam Protection Behavior setting will take effect."|t('freeform'),
             name: "settings[minimumSubmitTime]",
             value: settings.minimumSubmitTime,
-            errors: settings.errors("minimumSubmitTime"),
+            errors: settings.errors().get("minimumSubmitTime"),
             disabled: readOnly,
         }) }}
 
@@ -184,7 +184,7 @@
             instructions: "The maximum amount of time (in minutes) a user has to submit the form before the form expires and the Spam Protection Behavior setting will take effect. This still has to be less than the Craft CSRF token expiry and PHP Session limit set for your server."|t('freeform'),
             name: "settings[formSubmitExpiration]",
             value: settings.formSubmitExpiration,
-            errors: settings.errors("formSubmitExpiration"),
+            errors: settings.errors().get("formSubmitExpiration"),
             disabled: readOnly,
         }) }}
 

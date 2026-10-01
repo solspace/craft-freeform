@@ -1,5 +1,8 @@
 {% extends "_layouts/elementindex" %}
 
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp') %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
+
 {% set extraPageHeaderHtml %}
 
     {% if currentUser.can("freeform-formsManage") %}

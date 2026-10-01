@@ -1,5 +1,7 @@
 {% extends "freeform/_layouts/main" %}
 
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-settings') %}
+
 {% set selectedSubnavItem = 'settings' %}
 {% set fullPageForm = true %}
 

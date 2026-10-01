@@ -32,6 +32,7 @@
 - Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
 
 ### Fixed
+- Fixed Craft 6 control panel breadcrumb sizing, doubled React page gutters, and the missing rounded sidebar corner.
 - Fixed legacy breadcrumb chevrons, top-bar logo contrast, and the missing GraphQL navigation icon on Craft 6 Freeform pages.
 - Aligned Freeform's Craft 6 shell with native control panel pages, including the dark top bar, breadcrumbs, sidebar, content spacing, and form footers. Fixed the Settings shortcut displaying its accessible label beside the cog.
 - Fixed inconsistent Craft 6 subnav indentation, the Settings cog's accessible link label and icon size, and secondary sidebar selection styling across settings, notifications, and import/export.

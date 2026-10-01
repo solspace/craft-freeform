@@ -197,7 +197,10 @@
     height: auto;
     align-items: center;
     gap: var(--c-spacing-md);
-    font-size: var(--c-text-xs, 12px);
+    // Native Breadcrumbs.vue uses Tailwind's text-xs (12px), rather than the
+    // UI component token c-text-xs (9px).
+    font-size: var(--text-xs, 0.75rem);
+    line-height: var(--text-xs--line-height, calc(1 / 0.75));
 
     > li.crumb {
       padding: 0;
@@ -252,6 +255,8 @@
     grid-template-rows: minmax(0, 1fr) auto;
     background: var(--c-surface-sunken);
     border-color: var(--c-color-border-quiet);
+    // This element paints the surface inside the custom-element host.
+    border-start-start-radius: var(--c-radius-xl);
   }
 
   .global-sidebar__header,
@@ -284,6 +289,12 @@
       font-size: 20px;
       line-height: 1.3;
     }
+  }
+
+  // The React app owns its page gutter. The surrounding legacy main-content
+  // padding otherwise adds a second gutter beside the native-sized one.
+  #main-content:has(#freeform-client-app) {
+    padding: 0;
   }
 
   #content.content-pane {
@@ -358,6 +369,11 @@
       width: var(--cp-sidebar-width);
       z-index: var(--c-layer-overlay);
       transform: translateX(-100%);
+      border-start-start-radius: 0;
+
+      .global-sidebar {
+        border-start-start-radius: 0;
+      }
     }
 
     &.rtl cp-global-sidebar {

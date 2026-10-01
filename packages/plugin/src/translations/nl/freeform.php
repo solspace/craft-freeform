@@ -3417,4 +3417,7 @@ return [
     'Enter the exact model ID supported by this provider.' => 'Voer de exacte model-ID in die deze aanbieder ondersteunt.',
     'Could not load models. You can still enter a custom model ID.' => 'Kan modellen niet laden. Je kunt nog steeds een aangepaste model-ID invoeren.',
     'No compatible models were returned. You can enter a custom model ID.' => 'Er zijn geen compatibele modellen gevonden. Je kunt een aangepaste model-ID invoeren.',
+    'Form progress' => 'Formuliervoortgang',
+    '{count} star' => '{count} ster',
+    '{count} stars' => '{count} sterren',
 ];

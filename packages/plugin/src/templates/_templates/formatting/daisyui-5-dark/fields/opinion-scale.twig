@@ -1,0 +1,20 @@
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="ff-daisy-scale-wrap">
+        <div class="ff-daisy-scale">
+            {% for scale in field.scales %}
+                <label class="ff-daisy-scale-option btn btn-soft">
+                    <input class="ff-daisy-visually-hidden" type="radio"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}" value="{{ scale.value }}"{% if field.value == scale.value %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
+                    <span>{{ scale.label ?: scale.value }}</span>
+                </label>
+            {% endfor %}
+        </div>
+        {% if field.legends %}
+            <div class="ff-daisy-scale-legends">
+                {% for legend in field.legends %}<span>{{ legend }}</span>{% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

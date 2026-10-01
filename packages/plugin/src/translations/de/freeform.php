@@ -3454,4 +3454,7 @@ return [
     'Enter the exact model ID supported by this provider.' => 'Geben Sie die genaue Modell-ID ein, die dieser Anbieter unterstützt.',
     'Could not load models. You can still enter a custom model ID.' => 'Modelle konnten nicht geladen werden. Sie können weiterhin eine benutzerdefinierte Modell-ID eingeben.',
     'No compatible models were returned. You can enter a custom model ID.' => 'Es wurden keine kompatiblen Modelle gefunden. Sie können eine benutzerdefinierte Modell-ID eingeben.',
+    'Form progress' => 'Formularfortschritt',
+    '{count} star' => '{count} Stern',
+    '{count} stars' => '{count} Sterne',
 ];

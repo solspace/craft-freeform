@@ -29,7 +29,7 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\TableAttributesCollection;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 use yii\base\Event;
 
 #[Type(
@@ -548,6 +548,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             $thAttributes = new Attributes();
             $thAttributes
                 ->merge($attributes->getLabel())
+                ->setIfEmpty('scope', 'col')
                 ->set('data-default-value', $defaultValue)
                 ->set('data-column-required', $isRequired)
                 ->set(($isRequired ? '+' : '-').'class', 'freeform-required')

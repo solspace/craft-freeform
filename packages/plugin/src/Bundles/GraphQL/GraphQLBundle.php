@@ -33,8 +33,10 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\RuleConditionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RulesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\UrlParameterTrackingInterface;
+use Solspace\Freeform\Bundles\GraphQL\Mutations\HeadlessSubmitMutation;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
+use Solspace\Freeform\Bundles\GraphQL\Queries\HeadlessManifestQuery;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
@@ -102,7 +104,8 @@ class GraphQLBundle extends FeatureBundle
             static function (RegisterGqlQueriesEvent $event) {
                 $event->queries = array_merge(
                     $event->queries,
-                    FreeformQuery::getQueries()
+                    FreeformQuery::getQueries(),
+                    HeadlessManifestQuery::getQueries()
                 );
             }
         );
@@ -113,7 +116,8 @@ class GraphQLBundle extends FeatureBundle
             static function (RegisterGqlMutationsEvent $event) {
                 $event->mutations = array_merge(
                     $event->mutations,
-                    SubmissionMutation::getMutations()
+                    SubmissionMutation::getMutations(),
+                    HeadlessSubmitMutation::getMutations()
                 );
             }
         );

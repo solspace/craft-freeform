@@ -1,19 +1,14 @@
 {% extends "demo/_layout" %}
 
-{% if craft.app.request.segment(3) %}
-    {% set form = freeform.form(craft.app.request.segment(3)) %}
-    {% set spamMode = craft.app.request.segment(4) ? true : false %}
-{% endif %}
-{% set pageTitle = "Submissions for " ~ form.name|default("-Select a Form-") %}
+{% block title %}Freeform Demo | Submissions for {{ form.name|default('-Select a Form-') }}{% endblock %}
 
 {% block content %}
 
 {% if currentUser and currentUser.admin %}
 
-    {% if craft.app.request.segment(3) %}
+    {% if craft.app.request.segment(baseUrlSegments + 2) %}
 
-        {% set form = freeform.form(formHandle) %}
-
+        {% if form %}
         {% paginate freeform.submissions({
             form: form.handle,
             isSpam: spamMode|default(false),
@@ -40,17 +35,17 @@
             <table class="freeform-table">
                 <thead>
                     <tr>
-                        <th>ID#</th>
-                        <th class="table-col-wide-120">Date</th>
-                        <th>Status</th>
-                        <th>Author</th>
-                        <th class="table-col-wide-150">Title</th>
+                        <th scope="col">ID#</th>
+                        <th scope="col" class="table-col-wide-120">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Author</th>
+                        <th scope="col" class="table-col-wide-150">Title</th>
                         {% for field in (submissions|first) %}
-                            <th>{{ field.label|truncate(20, '...') }}</th>
+                            <th scope="col">{{ field.label|truncate(20, '...') }}</th>
                         {% endfor %}
                         {% if freeform.pro %}
                             {% if currentUser and currentUser.admin %}
-                                <th class="table-col-wide-120">{{ "Actions"|t("freeform") }}</th>
+                                <th scope="col" class="table-col-wide-120">{{ "Actions"|t("freeform") }}</th>
                             {% endif %}
                         {% endif %}
                     </tr>
@@ -58,12 +53,12 @@
                 <tbody>
             {% if submissions is empty %}
                     <tr>
-                        <td colspan="200" class="table-no-results">There are currently no submissions for this form.</td>
+                        <td colspan="{{ 5 + (freeform.pro ? 1 : 0) }}" class="table-no-results">There are currently no submissions for this form.</td>
                     </tr>
             {% else %}
                 {% for submission in submissions %}
                     <tr>
-                        <td>{{ submission.id }}</td>
+                        <th scope="row">{{ submission.id }}</th>
                         <td>{{ submission.dateCreated|date('Y-m-d H:i') }}</td>
                         <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
                         <td>{{ submission.author ? submission.author.username : "Guest"|t("freeform") }}</td>
@@ -95,7 +90,7 @@
                             {% if spamMode %}
                                 N/A
                             {% else %}
-                                <a class="freeform-button orange" href="{{ siteUrl }}demo/forms/basic-light/{{ pageTemplate }}/edit/{{ submission.token }}">
+                                <a class="freeform-button orange" href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
                                     {{- "Edit"|t("freeform") -}}
                                 </a>
                                 <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/delete/{{ form.handle }}/{{ submission.token }}">
@@ -120,7 +115,7 @@
                 {% for page, url in pageInfo.getPrevUrls(2) %}
                     <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
                 {% endfor %}
-                <strong>{{ pageInfo.currentPage }}</strong>&nbsp;&nbsp;
+                <strong aria-current="page">{{ pageInfo.currentPage }}</strong>&nbsp;&nbsp;
                 {% for page, url in pageInfo.getNextUrls(2) %}
                     <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
                 {% endfor %}
@@ -128,6 +123,11 @@
                     <a href="{{ pageInfo.nextUrl }}">Next →</a>
                 {% endif %}
             </nav>
+        {% endif %}
+        {% else %}
+            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
+                Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
+            </div>
         {% endif %}
 
     {% else %}

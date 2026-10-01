@@ -16,8 +16,13 @@ class JavascriptTestResolver extends Resolver
             return null;
         }
 
+        return static::resolveForForm($source);
+    }
+
+    public static function resolveForForm(Form $form): ?array
+    {
         $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $javascriptTest = $integrationProvider->getSingleton($source, JavascriptTest::class);
+        $javascriptTest = $integrationProvider->getSingleton($form, JavascriptTest::class);
         if (!$javascriptTest) {
             return null;
         }

@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'SugarCRM',
+    name: 'SugarAI',
     type: Type::TYPE_CRM,
     version: 'v1',
     readme: __DIR__.'/README.md',
@@ -35,7 +35,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     use OAuth2PasswordTrait;
     use OAuth2RefreshTokenTrait;
 
-    protected const LOG_CATEGORY = 'SugarCRM';
+    protected const LOG_CATEGORY = 'SugarAI';
 
     protected const CATEGORY_LEAD = 'Leads';
     protected const CATEGORY_OPPORTUNITY = 'Opportunities';
@@ -54,7 +54,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Domain Name',
-        instructions: 'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`',
+        instructions: 'Enter the full domain name of the SugarAI instance, e.g. `https://your-domain.sugarcrm.eu`',
     )]
     protected string $domain = '';
 
@@ -81,7 +81,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Delimiter('Leads')]
     #[Input\Boolean(
         label: 'Map to Leads',
-        instructions: 'Map submission data to create Leads in SugarCRM.',
+        instructions: 'Map submission data to create Leads in SugarAI.',
         order: 4,
     )]
     protected bool $mapLeads = false;
@@ -91,7 +91,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Lead fields.',
+        instructions: 'Select the Freeform fields to be mapped to the applicable SugarAI Lead fields.',
         order: 10,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
@@ -107,7 +107,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Delimiter('Contacts')]
     #[Input\Boolean(
         label: 'Map to Contacts',
-        instructions: 'Map submission data to create Contacts in SugarCRM.',
+        instructions: 'Map submission data to create Contacts in SugarAI.',
         order: 20,
     )]
     protected bool $mapContacts = false;
@@ -117,7 +117,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.',
+        instructions: 'Select the Freeform fields to be mapped to the applicable SugarAI Contact fields.',
         order: 24,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
@@ -133,7 +133,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Delimiter('Accounts')]
     #[Input\Boolean(
         label: 'Map to Accounts',
-        instructions: 'Map submission data to create Accounts in SugarCRM.',
+        instructions: 'Map submission data to create Accounts in SugarAI.',
         order: 16,
     )]
     protected bool $mapAccounts = false;
@@ -143,7 +143,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.',
+        instructions: 'Select the Freeform fields to be mapped to the applicable SugarAI Account fields.',
         order: 19,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
@@ -159,7 +159,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Delimiter('Opportunities')]
     #[Input\Boolean(
         label: 'Map to Opportunities',
-        instructions: 'Map submission data to create Opportunities in SugarCRM.',
+        instructions: 'Map submission data to create Opportunities in SugarAI.',
         order: 11,
     )]
     protected bool $mapOpportunities = false;
@@ -169,7 +169,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Opportunity fields.',
+        instructions: 'Select the Freeform fields to be mapped to the applicable SugarAI Opportunity fields.',
         order: 15,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_OPPORTUNITY,
         parameterFields: ['id' => 'id'],

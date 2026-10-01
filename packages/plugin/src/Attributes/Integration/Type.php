@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Attributes\Integration;
 
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
-use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type implements \Stringable

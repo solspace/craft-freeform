@@ -10,8 +10,10 @@
                     value="{{ scale.value }}"
                     id="{{ field.idAttribute }}-{{ loop.index }}"
                     {{ field.value == scale.value ? "checked" }}
-                    class="hidden peer"
-                 />
+                    class="freeform-visually-hidden peer"
+                    {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+                    {% if field.hasErrors %}aria-invalid="true"{% endif %}
+                />
                 <label for="{{ field.idAttribute }}-{{ loop.index }}"
                     class="inline-flex text-center w-full py-2 px-3 text-zinc-200 bg-zinc-900 cursor-pointer peer-checked:bg-zinc-700 hover:bg-black
                         {% if loop.index == 1 %}

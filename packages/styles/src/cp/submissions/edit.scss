@@ -1,6 +1,6 @@
 @use "../../shared/variables";
 @use "../../shared/classes";
-@use "../../front-end/fields/opinion-scale";
+@use "opinion-scale";
 
 $spacing: 10px;
 $gutter: 10px;
@@ -14,9 +14,16 @@ $gutter: 10px;
     border-bottom: none;
   }
 
-  > div {
+  > .fields-column {
     flex: 1 1 0;
+    min-width: 0;
     padding: $spacing $gutter;
+    margin: 0;
+    border: 0;
+
+    > .field {
+      margin: 0;
+    }
   }
 
   @extend .reset-lists;
@@ -143,6 +150,59 @@ label.required:after {
 
   td.action {
     vertical-align: middle;
+  }
+}
+
+.freeform-submission-summary {
+  [data-freeform-summary] {
+    container-name: freeform-cp-summary;
+    container-type: inline-size;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #d8e2ec;
+    border-radius: 5px;
+    background: #fbfcfe;
+
+    > [data-summary-field] {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: baseline;
+      gap: 2px 20px;
+      padding: 8px 14px;
+
+      + [data-summary-field] {
+        border-top: 1px solid #e7edf4;
+      }
+
+      > dt,
+      > dd {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 13px;
+        line-height: 20px;
+        overflow-wrap: anywhere;
+      }
+
+      > dt {
+        color: #596673;
+        font-weight: 600;
+      }
+
+      > dd {
+        color: variables.$color-input-text;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+@container freeform-cp-summary (min-width: 420px) {
+  .freeform-submission-summary [data-freeform-summary] > [data-summary-field] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   }
 }
 

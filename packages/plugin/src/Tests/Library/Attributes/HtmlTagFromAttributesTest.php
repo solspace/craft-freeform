@@ -31,7 +31,7 @@ class HtmlTagFromAttributesTest extends TestCase
         );
 
         $this->assertEquals(
-            '<div data-null data-boolean text="text value" empty-text="" number-value="123" void array-value="one two three">content</div>',
+            '<div data-null data-boolean text="text value" empty-text number-value="123" void array-value="one two three">content</div>',
             Html::tag('div', 'content', $attributes->toHtmlTagArray())
         );
     }

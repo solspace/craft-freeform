@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Attributes\Property;
 
 use Solspace\Freeform\Freeform;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 /**
  * @template T

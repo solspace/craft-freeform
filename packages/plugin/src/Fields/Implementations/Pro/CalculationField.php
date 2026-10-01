@@ -42,6 +42,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         availableFieldTypes: [
             TextField::class,
             NumberField::class,
+            RangeField::class,
             TextareaField::class,
             DropdownField::class,
             RadiosField::class,
@@ -87,6 +88,11 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     public function getDecimalCount(): ?int
     {
         return $this->decimalCount ?? null;
+    }
+
+    public function getInputType(): string
+    {
+        return $this->inputType;
     }
 
     public function getValue(): mixed

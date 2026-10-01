@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Services\Headless\HeadlessPayloadHelper;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
@@ -109,12 +110,37 @@ class JavascriptTestBundle extends FeatureBundle
             return;
         }
 
-        /** @var array $postValues */
-        $postedValue = \Craft::$app->request->post($javascriptTestInputName);
-        if ('' === $postedValue) {
-            $logger->debug('Javascript Test passed successfully.');
+        $postedValue = null;
 
-            return;
+        if ($form->isHeadlessPosted()) {
+            $meta = HeadlessPayloadHelper::getMeta($form);
+            $values = HeadlessPayloadHelper::getValues($form);
+
+            if (
+                isset($meta['javascriptTest']['name'], $meta['javascriptTest']['value'])
+                && $javascriptTestInputName === $meta['javascriptTest']['name']
+                && '' === $meta['javascriptTest']['value']
+            ) {
+                $logger->debug('Javascript Test passed for headless meta');
+
+                return;
+            }
+
+            if (\array_key_exists($javascriptTestInputName, $values) && '' === $values[$javascriptTestInputName]) {
+                $logger->debug('Javascript Test passed for headless values');
+
+                return;
+            }
+
+            $postedValue = $values[$javascriptTestInputName] ?? $meta['javascriptTest']['value'] ?? null;
+        } else {
+            /** @var array $postValues */
+            $postedValue = \Craft::$app->request->post($javascriptTestInputName);
+            if ('' === $postedValue) {
+                $logger->debug('Javascript Test passed successfully.');
+
+                return;
+            }
         }
 
         if ($settings->isSpamBehaviorDisplayErrors()) {

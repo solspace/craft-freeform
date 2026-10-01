@@ -13,6 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\FileHelper;
+use Solspace\Freeform\Library\Security\RemoteUrlValidator;
 use Solspace\Freeform\Services\FilesService;
 use yii\base\Event;
 use yii\base\InvalidArgumentException;
@@ -22,7 +23,10 @@ class FileUploadValidation extends FeatureBundle
     public function __construct(
         private FilesService $filesService,
         private FileUploadValidationHelper $validationHelper,
+        private ?RemoteUrlValidator $remoteUrlValidator = null,
     ) {
+        $this->remoteUrlValidator ??= new RemoteUrlValidator();
+
         Event::on(
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
@@ -174,13 +178,33 @@ class FileUploadValidation extends FeatureBundle
                         $field->addError(Freeform::t('Invalid file data provided'));
                     }
                 } elseif (!empty($fileUpload['url'])) {
+                    try {
+                        $this->remoteUrlValidator->validate($fileUpload['url']);
+                    } catch (\InvalidArgumentException) {
+                        $field->addError(
+                            Freeform::t('The remote file URL must use HTTP or HTTPS and resolve to a public IP address')
+                        );
+                    }
+
                     if (empty($fileUpload['filename'])) {
                         // Make up a filename
-                        $url = parse_url($fileUpload['url']);
-                        $filename = pathinfo($url['path'], \PATHINFO_FILENAME);
-                        $extension = pathinfo($url['path'], \PATHINFO_EXTENSION);
+                        try {
+                            $path = parse_url($fileUpload['url'], \PHP_URL_PATH);
+                        } catch (\ValueError) {
+                            $path = '';
+                        }
 
-                        $fileUpload['filename'] = $filename.'.'.$extension;
+                        $fileUpload['filename'] = pathinfo((string) $path, \PATHINFO_BASENAME);
+                    }
+
+                    $extension = pathinfo($fileUpload['filename'], \PATHINFO_EXTENSION);
+                    if (!\in_array(strtolower($extension), $validExtensions, true)) {
+                        $field->addError(
+                            Freeform::t(
+                                "'{extension}' is not an allowed file extension",
+                                ['extension' => $extension]
+                            )
+                        );
                     }
 
                     ++$uploadedFiles;

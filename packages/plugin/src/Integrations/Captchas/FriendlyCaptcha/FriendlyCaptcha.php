@@ -14,6 +14,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
+use Solspace\Freeform\Services\Headless\HeadlessPayloadHelper;
 
 #[Type(
     name: 'Friendly Captcha',
@@ -366,6 +367,10 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
             }
 
             return $property['value'];
+        }
+
+        if ($form->isHeadlessPosted()) {
+            return HeadlessPayloadHelper::getCaptchaResponse($form, 'frc-captcha-response');
         }
 
         return \Craft::$app->request->post('frc-captcha-response');

@@ -1,0 +1,37 @@
+{
+    "agreement": {
+        "1": "Strongly disagree",
+        "2": "Disagree",
+        "3": "Neither agree nor disagree",
+        "4": "Agree",
+        "5": "Strongly agree"
+    },
+    "satisfaction": {
+        "1": "Very dissatisfied",
+        "2": "Dissatisfied",
+        "3": "Neither satisfied nor dissatisfied",
+        "4": "Satisfied",
+        "5": "Very satisfied"
+    },
+    "frequency": {
+        "1": "Never",
+        "2": "Rarely",
+        "3": "Sometimes",
+        "4": "Often",
+        "5": "Always"
+    },
+    "importance": {
+        "1": "Not at all important",
+        "2": "Slightly important",
+        "3": "Moderately important",
+        "4": "Very important",
+        "5": "Extremely important"
+    },
+    "likelihood": {
+        "1": "Very unlikely",
+        "2": "Unlikely",
+        "3": "Neither likely nor unlikely",
+        "4": "Likely",
+        "5": "Very likely"
+    }
+}

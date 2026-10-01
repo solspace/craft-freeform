@@ -196,8 +196,8 @@
                 </div>
             {% endif %}
             {% if form.hasErrors %}
-                <div{{ form.hasErrors }}>
-                    {{ form.settings.behavior.errorMessage | t('freeform') }}
+                <div{{ form.attributes.errors|raw }} role="alert">
+                    {{ form.settings.errorMessage | t('freeform') }}
 
                     {% if form.errors|length %}
                         <ul>
@@ -272,12 +272,10 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+        </ol>
     </div>
 
 {% endblock %}

@@ -5,11 +5,13 @@ export type FreeformOptions = {
   disableReset?: boolean;
   disableSubmit?: boolean;
   autoScroll?: boolean;
+  focusFirstError?: boolean;
   scrollToAnchor?: boolean;
   scrollOffset?: number;
   scrollElement?: HTMLElement | Window | null;
   showProcessingSpinner?: boolean;
   showProcessingText?: boolean;
+  showProcessingOverlay?: boolean;
   processingText?: string;
   prevButtonName?: string;
 

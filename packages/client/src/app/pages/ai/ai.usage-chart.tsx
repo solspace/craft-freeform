@@ -39,7 +39,7 @@ const AiUsageChart: React.FC<Props> = ({ metrics }) => {
         {translate("Daily credits and total AI time for the last 30 days.")}
       </SectionDescription>
       <UsageChart>
-        <ResponsiveContainer width="100%" height={260}>
+        <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={metrics}
             margin={{

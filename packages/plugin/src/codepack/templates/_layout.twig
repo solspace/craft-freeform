@@ -1,6 +1,6 @@
 {%- set demoPrefix = "%prefix%" -%}
 {%- set demoRouteSegment = demoPrefix|split('/')|last -%}
-{%- set baseUrlSegments = 1 -%}
+{% set baseUrlSegments = 1 %}
 {%- if craft.app.request.segment(baseUrlSegments) != demoRouteSegment -%}
     {%- if craft.app.request.segment(baseUrlSegments + 1) == demoRouteSegment -%}
         {%- set baseUrlSegments = baseUrlSegments + 1 -%}
@@ -15,8 +15,14 @@
 {%- set demoArea = craft.app.request.segment(baseUrlSegments + 1) -%}
 {%- set pageTemplate = craft.app.request.segment(baseUrlSegments + 2)|default('basic-light') -%}
 {%- set pageTemplateFile = pageTemplate ~ '/index.twig' -%}
+{%- if demoArea == "submissions" -%}
+    {%- set spamMode = craft.app.request.segment(baseUrlSegments + 2) != "delete" and (craft.app.request.segment(baseUrlSegments + 4) == "spam" or craft.app.request.segment(baseUrlSegments + 3) == "spam") -%}
+{%- endif -%}
 {%- if demoArea == "forms" -%}
     {%- set formHandle = craft.app.request.segment(baseUrlSegments + 3) -%}
+{%- elseif demoArea == "submissions" and craft.app.request.segment(baseUrlSegments + 2) == "delete" -%}
+    {%- set formHandle = craft.app.request.segment(baseUrlSegments + 3) -%}
+    {%- set pageTemplateFile = null -%}
 {%- elseif demoArea in ["submissions", "custom"] -%}
     {%- set formHandle = craft.app.request.segment(baseUrlSegments + 2) -%}
     {%- set pageTemplateFile = null -%}
@@ -33,67 +39,40 @@
     }) -%}
 {%- endif -%}
 
+{%- set colorMode = pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "daisyui-5-dark", "conversational"] ? "dark" : "light" -%}
+
 <!doctype html>
 <html lang="en"
-{%- if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "conversational"] %}
+{%- if colorMode == "dark" %}
  data-theme="dark"
 {%- endif -%}
 {%- if pageTemplate == "bootstrap-5-dark" %} data-bs-theme="dark"{%- endif %}>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>{{ pageTitle ? "Freeform Demo | " ~ pageTitle : "Freeform Demo" }}</title>
-    {% if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "conversational"] %}
-        {% set colorMode = "dark" %}
-    {% else %}
-        {% set colorMode = "light" %}
-    {% endif %}
+    <title>{% block title %}{{ pageTitle ? "Freeform Demo | " ~ pageTitle : "Freeform Demo" }}{% endblock %}</title>
     {% if demoArea == "forms" and craft.app.request.segment(baseUrlSegments + 3) %}
+        {% if pageTemplate in ["daisyui-5-light", "daisyui-5-dark"] %}
+            <link href="https://cdn.jsdelivr.net/npm/daisyui@5.7.27" rel="stylesheet" type="text/css">
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
+        {% endif %}
         {% if pageTemplate in ["bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels"] %}
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
         {% endif %}
         {% if pageTemplate == "foundation-6" %}
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css" crossorigin="anonymous">
             <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js" crossorigin="anonymous"></script>
         {% endif %}
         {% if pageTemplate in ["tailwind-4-light", "tailwind-4-dark"] %}
-            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.3.3"></script>
         {% endif %}
         {% if pageTemplate in ["tailwind-3", "tailwind-3-dark"] %}
-            <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+            <script src="https://cdn.tailwindcss.com/3.4.17"></script>
         {% endif %}
     {% endif %}
-    <style>
-        :root {
-            --page-bg: #{% if colorMode == "dark" %}1f2226{% else %}ffffff{% endif %};
-            --page-text: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            --nav-text: #{% if colorMode == "dark" %}959595{% else %}8a8a8a{% endif %};
-            --nav-bg: {% if colorMode == "dark" %}rgb(19,22,24,0.85){% else %}rgb(232,232,232,0.85){% endif %};
-            --nav-highlight: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            --nav-bg-hover: {% if colorMode == "dark" %}rgb(19,22,24,0.25){% else %}rgb(232,232,232,0.25){% endif %};
-            --logo-glow: 0 0 7px 1px {% if colorMode == "dark" %}rgb(255,255,255,0.2){% else %}rgb(0,0,0,0.1){% endif %};
-            --menu-bg: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            --menu-list-bg: #{% if colorMode == "dark" %}191c1f{% else %}f1f1f1{% endif %};
-            --menu-list-border: 1px solid #{% if colorMode == "dark" %}252b31{% else %}c5c5c5{% endif %};
-            --nav-button-bg: #{% if colorMode == "dark" %}3c474f{% else %}d0d0d0{% endif %};
-            --nav-button-text: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            --nav-button-hover: #{% if colorMode == "dark" %}dfdfdf{% else %}dfdfdf{% endif %};
-            --nav-button-active:  #{% if colorMode == "dark" %}dfdfdf{% else %}eeeeee{% endif %};
-            --nav-dropdown-bg: #{% if colorMode == "dark" %}191c1f{% else %}f1f1f1{% endif %};
-            --nav-dropdown-bg-hover: #{% if colorMode == "dark" %}252b31{% else %}dedede{% endif %};
-            --nav-dropdown-text: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            --nav-dropdown-divider: 1px solid #{% if colorMode == "dark" %}252b31{% else %}c5c5c5{% endif %};
-            --form-box-submissions: {% if colorMode == "dark" %}rgb(0,0,0,0.2){% else %}rgb(0,0,0,0.05){% endif %};
-            --table-row-bg: #{% if colorMode == "dark" %}212529{% else %}ffffff{% endif %};
-            --table-row-bg-alt: #{% if colorMode == "dark" %}3c474f{% else %}f3f3f3{% endif %};
-            --table-head-bg: #{% if colorMode == "dark" %}3c474f{% else %}d0d0d0{% endif %};
-            --table-head-bg-alt: #{% if colorMode == "dark" %}404b53{% else %}eeeeee{% endif %};
-            --table-head-bg-alt2: #{% if colorMode == "dark" %}404b53{% else %}e3e3e3{% endif %};
-        }
-    </style>
     <link href="{{ assetBaseUrl }}/css/demo.css" rel="stylesheet">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ assetBaseUrl }}/favicon/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ assetBaseUrl }}/favicon/apple-icon-180x180.png">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ assetBaseUrl }}/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ assetBaseUrl }}/favicon/favicon-16x16.png">
     <meta name="msapplication-TileColor" content="#da532c">
@@ -108,143 +87,35 @@
         {% if template == "divider" %}
             <hr />
         {% else %}
-            <a{% if craft.app.request.segment(pageTemplateSegment) == template %} class="active"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ template|title|replace({'-':' '}) }}</a>
+            <a{% if craft.app.request.segment(pageTemplateSegment) == template %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}/{{ form }}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ template|title|replace({'-':' ', 'Daisyui':'daisyUI'}) }}</a>
         {% endif %}
     {% endmacro %}
 
-    {% macro extrasItem(template, name, demoBaseUrl, extrasSegment) %}
-        {% if template == "divider" %}
-            <hr />
-        {% else %}
-            <a{% if craft.app.request.segment(extrasSegment) == template %} class="active"{% endif %} href="{{ demoBaseUrl }}/extras/{{ template }}">{{ name }}</a>
-        {% endif %}
-    {% endmacro %}
-
-    {% set extrasTemplates = {
-        1: {
-            "t": "current-user-data",
-            "n": "Populate a form with Current User Data",
-            "d": "This example shows you how to populate a form with some User account values from the currently logged in user.",
-        },
-        2: {
-            "t": "craft-entry-data",
-            "n": "Populate a form with Craft Entry Data",
-            "d": "This example shows how to populate some of a form's fields with some data from a Craft Entry.",
-        },
-        3: {
-            "t": "date-pickers",
-            "n": "Adjustments to a Date Field Date/Time Picker",
-            "d": "This example shows some ways to manipulate a Date & Time field type using Freeform's developer events.",
-        },
-        4: {
-            "t": "suppress-edit-submissions",
-            "n": "Suppress Notifications when Editing Submissions",
-            "d": "This example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.",
-        },
-        5: {
-            "t": "js-override",
-            "n": "Overriding Freeform JS behavior",
-            "d": "This example shows how to manually override Freeform's built-in JS behavior inside a template.",
-        },
-        6: {
-            "t": "submission-limit",
-            "n": "Setting Submission Limits",
-            "d": "This example shows how to set a limit for the number of submissions a form can have.",
-        },
-        7: {
-            "t": "submission-duplicate",
-            "n": "Checking Submission Duplicates",
-            "d": "This example shows how to check if the user has already submitted the form when using the Limit Form Submission Rate setting.",
-        },
-        8: {
-            "t": "twig-cache",
-            "n": "Twig Template Caching on Forms",
-            "d": "This example will show how to refresh the CSRF token and other parts of Freeform when using Twig Caching on a template that contains a form.",
-        },
-        9: {
-            "t": "formatting-inside-template",
-            "n": "Formatting Directly Inside Regular Template",
-            "d": "This example shows how you can add formatting code directly inside a regular template.",
-        },
-        10: {
-            "t": "manual-form",
-            "n": "Manual Rendering of Forms",
-            "d": "This example shows how to manually template a basic form.",
-        },
-        11: {
-            "t": "manual-multipage",
-            "n": "Manual Multi-Page Forms",
-            "d": "This example shows how to manually template multi-page forms.",
-        },
-        12: {
-            "t": "multiple-forms",
-            "n": "Multiple Forms in the Same Page",
-            "d": "This example shows how you might have the same form (or 2 similar ones) more than once in the same template.",
-        },
-        13: {
-            "t": "parsley",
-            "n": "Form Validation with Parsley",
-            "d": "This example will show you how to implement form validation for your Freeform forms with Parsley JS.",
-        },
-        14: {
-            "t": "relating-submission",
-            "n": "Relating Submissions to Elements",
-            "d": "This example will relate the newly created submission to another element via the Freeform Submission relation element field type.",
-        },
-        15: {
-            "t": "form-field-type",
-            "n": "Freeform Form Element Field Type",
-            "d": "This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.",
-        },
-        16: {
-            "t": "ajax-div-success",
-            "n": "Alternate Success Markup from Div after AJAX Submit",
-            "d": "This example shows how to override the default AJAX success message and load a success message from a `div` instead.",
-        },
-        17: {
-            "t": "ajax-template-success",
-            "n": "Alternate Success from Template after AJAX Submit",
-            "d": "This example shows how to override the default AJAX success message and load a success message from another template instead.",
-        },
-        18: {
-            "t": "override-return-url",
-            "n": "Overriding Success Return URL",
-            "d": "This example shows how to manipulate a form to allow a user to override the Return URL for successful submits.",
-        },
-        19: {
-            "t": "success-same-page",
-            "n": "Returning Success to Same Page",
-            "d": "This example shows how to have a successful submit return to the same page with a success query in the URL.",
-        }
-    } %}
-
-    <div class="freeform-nav">
+    <header class="freeform-nav">
         <a href="{{ demoBaseUrl }}/" class="freeform-logo">
-            <img src="{{ assetBaseUrl }}/images/freeform.svg" alt="Freeform Demo"><h1>Freeform Demo</h1>
+            <img src="{{ assetBaseUrl }}/images/freeform.svg" alt=""><h1>Freeform Demo</h1>
         </a>
         {% if demoArea == "forms" or demoArea is empty %}
             This section {{ craft.app.request.segment(baseUrlSegments + 3) ? "has" : "will" }} automatically {{ craft.app.request.segment(baseUrlSegments + 3) ? "loaded" : "load" }} the
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button">
-                    {{ pageTemplate ? pageTemplate|title|replace({'-':' '}) : 'Select a template...' }}
-                </span>
+                <button class="freeform-nav-button" type="button">
+                    {{ pageTemplate ? pageTemplate|title|replace({'-':' ', 'Daisyui':'daisyUI'}) : 'Select a template...' }}
+                </button>
                 <div class="freeform-nav-dropdown-content">
-                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
+                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "daisyui-5-light", "daisyui-5-dark", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
                     {{ _self.pageTemplateItem(pageTemplate, formHandle, demoBaseUrl, baseUrlSegments + 2, baseUrlSegments + 4, baseUrlSegments + 5) }}
                 {%- endfor %}
                 </div>
             </div>
             formatting template for the
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
-                    {% set formColor = form.color is defined ? 'style="background:' ~ form.color ~ '"' : 'style="display:none"' %}
-                    <div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
-                </span>
+                <button class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}" type="button">
+                    <span class="freeform-form-circle"{% if form.color is defined %} style="background-color: {{ form.color|e('html_attr') }}"{% else %} hidden{% endif %}></span>{{ form.name is defined ? form.name : 'Select a form...' }}
+                </button>
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    {% set formColor = 'style="background:' ~ form.color ~ '"' %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/forms/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name }}</a>
+                    <a{% if formHandle == form.handle %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/forms/{{ pageTemplate ?: 'basic-light' }}/{{ form.handle }}"><span class="freeform-form-circle" style="background-color: {{ form.color|e('html_attr') }}"></span>{{ form.name }}</a>
                 {% endfor %}
                 </div>
             </div>
@@ -252,37 +123,37 @@
         {% elseif demoArea == "submissions" %}
             {{ craft.app.request.segment(baseUrlSegments + 2) ? "Viewing" : "View" }} submissions for the
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
-                    <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
-                </span>
+                <button class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}" type="button">
+                    <span class="freeform-form-circle"{% if form.color is defined %} style="background-color: {{ form.color|e('html_attr') }}"{% else %} hidden{% endif %}></span>{{ form.name is defined ? form.name : 'Select a form...' }}
+                </button>
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/submissions/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
+                    <a{% if formHandle == form.handle %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/submissions/{{ form.handle }}"><span class="freeform-form-circle" style="background-color: {{ form.color|e('html_attr') }}"></span>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
                 {% endfor %}
                 </div>
             </div>
             form.
         {% elseif demoArea == "custom" %}
-            This section {{ craft.app.request.segment(baseUrlSegments + 2) ? "has" : "will" }} automatically {% if craft.app.request.segment(baseUrlSegments + 2) %}loaded the <code>{{ form.settings.formattingTemplate }}</code>{% else %}load the{% endif %} formatting template for the
+            This section {{ form is defined and form ? "has" : "will" }} automatically {% if form is defined and form %}loaded the <code>{{ form.settings.formattingTemplate }}</code>{% else %}load the{% endif %} formatting template for the
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
-                    <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
-                </span>
+                <button class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}" type="button">
+                    <span class="freeform-form-circle"{% if form.color is defined %} style="background-color: {{ form.color|e('html_attr') }}"{% else %} hidden{% endif %}></span>{{ form.name is defined ? form.name : 'Select a form...' }}
+                </button>
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ demoBaseUrl }}/custom/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
+                    <a{% if formHandle == form.handle %} class="active" aria-current="page"{% endif %} href="{{ demoBaseUrl }}/custom/{{ form.handle }}"><span class="freeform-form-circle" style="background-color: {{ form.color|e('html_attr') }}"></span>{{ form.name }}</a>
                 {% endfor %}
                 </div>
             </div>
             form. Consider forcing a
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button">
+                <button class="freeform-nav-button" type="button">
                     {{ "sample template"|t('freeform') }}
-                </span>
+                </button>
                 <div class="freeform-nav-dropdown-content">
-                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
+                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "daisyui-5-light", "daisyui-5-dark", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
                     {{ _self.pageTemplateItem(pageTemplate, formHandle, demoBaseUrl, baseUrlSegments + 2, baseUrlSegments + 4, baseUrlSegments + 5) }}
                 {%- endfor %}
                 </div>
@@ -291,19 +162,17 @@
         {% elseif demoArea == "extras" %}
             Try another extras demo:
             <div class="freeform-nav-dropdown">
-                <span class="freeform-nav-button">
+                <button class="freeform-nav-button" type="button">
                     Please select...
-                </span>
+                </button>
                 <div class="freeform-nav-dropdown-content extras-dropdown">
-                {% for extras in extrasTemplates -%}
-                    {{ _self.extrasItem(extras['t'], extras['n'], demoBaseUrl, baseUrlSegments + 2) }}
-                {%- endfor %}
+                    {% include "demo/extras/_items.twig" with { mode: "navigation" } %}
                 </div>
             </div>
         {% else %}
         {% endif %}
         <div class="freeform-menu">
-            <input id="freeform-menu-toggle" type="checkbox" />
+            <input id="freeform-menu-toggle" type="checkbox" aria-label="Toggle demo navigation" />
             <label class="freeform-menu-hamburger" for="freeform-menu-toggle">
                 <div class="top"></div>
                 <div class="top-inner"></div>
@@ -311,20 +180,20 @@
                 <div class="bottom-inner"></div>
                 <div class="bottom"></div>
             </label>
-            <div class="freeform-menu-list">
-                <a href="{{ demoBaseUrl }}/forms" class="{{ demoArea == 'forms' ? ' active' }}">Forms</a>
-                <a href="{{ demoBaseUrl }}/submissions" class="{{ demoArea == 'submissions' ? ' active' }}">Submissions</a>
-                <a href="{{ demoBaseUrl }}/custom" class="{{ demoArea == 'custom' ? ' active' }}">Custom</a>
-                <a href="{{ demoBaseUrl }}/extras" class="{{ demoArea == 'extras' ? ' active' }}">Extras</a>
-            </div>
+            <nav class="freeform-menu-list" aria-label="Demo sections">
+                <a href="{{ demoBaseUrl }}/forms"{% if demoArea == 'forms' %} class="active" aria-current="page"{% endif %}>Forms</a>
+                <a href="{{ demoBaseUrl }}/submissions"{% if demoArea == 'submissions' %} class="active" aria-current="page"{% endif %}>Submissions</a>
+                <a href="{{ demoBaseUrl }}/custom"{% if demoArea == 'custom' %} class="active" aria-current="page"{% endif %}>Custom</a>
+                <a href="{{ demoBaseUrl }}/extras"{% if demoArea == 'extras' %} class="active" aria-current="page"{% endif %}>Extras</a>
+            </nav>
         </div>
-    </div>
+    </header>
 
-    <div class="freeform-form-content">
+    <main class="freeform-form-content" id="main-content">
 
 {% block content %}{% endblock %}
 
-    </div>
+    </main>
 
 {% block footerJs %}{% endblock %}
 

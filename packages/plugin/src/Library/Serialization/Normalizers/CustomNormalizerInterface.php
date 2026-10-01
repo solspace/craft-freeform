@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Serialization\Normalizers;
 
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 interface CustomNormalizerInterface
 {

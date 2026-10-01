@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Library\Rules;
 
 use Solspace\Freeform\Fields\FieldInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\SerializedName;
+use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 class Condition
 {

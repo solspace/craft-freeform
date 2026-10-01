@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Parameters;
 /**
  * @property string $id
  * @property string $fieldIdPrefix
+ * @property bool   $useCustomAttributes Whether to include builder-defined HTML attributes (defaults to true).
  */
 class Parameters
 {

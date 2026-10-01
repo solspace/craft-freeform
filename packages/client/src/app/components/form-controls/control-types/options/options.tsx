@@ -5,8 +5,9 @@ import { Label } from "@components/form-controls/label.styles";
 import type { ControlType } from "@components/form-controls/types";
 import { useFieldOptions } from "@components/options/use-field-options";
 import config, { Edition } from "@config/freeform/freeform.config";
-import { useAppDispatch } from "@editor/store";
+import { useAppDispatch, useAppSelector } from "@editor/store";
 import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
+import { optionSourceActions } from "@editor/store/slices/option-sources";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { useFieldType } from "@ff-client/queries/field-types";
 import type { OptionsProperty } from "@ff-client/types/properties";
@@ -37,6 +38,20 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   const [options] = useFieldOptions(context, fieldType);
   const dispatch = useAppDispatch();
+  const sourceConfigurations = useAppSelector(
+    (state) => state.optionSources[context.uid]?.[property.handle],
+  );
+
+  const rememberSource = (): void => {
+    dispatch(
+      optionSourceActions.remember({
+        uid: context.uid,
+        handle: property.handle,
+        value,
+      }),
+    );
+  };
+
   const updateDefaultValue = (value: string | string[]): void => {
     dispatch(
       fieldActions.edit({
@@ -47,12 +62,14 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
     );
   };
 
-  const convertToCustomValues = (): void =>
+  const convertToCustomValues = (): void => {
+    rememberSource();
     updateValue({
       source: Source.Custom,
       useCustomValues: true,
       options: [...options] as Option[],
     });
+  };
 
   if (willTranslate(property.handle)) {
     return (
@@ -77,7 +94,11 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
             value={source}
             onClick={(selectedSource) => {
               if (selectedSource !== source) {
-                updateValue(generateDefaultValue(selectedSource as Source));
+                rememberSource();
+                updateValue(
+                  sourceConfigurations?.[selectedSource as Source] ??
+                    generateDefaultValue(selectedSource as Source),
+                );
               }
             }}
           />

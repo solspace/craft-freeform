@@ -1,0 +1,66 @@
+/**
+ * Optional checked-state styling for opinion scale and cards.
+ * Import when you use those field types with the Bootstrap theme.
+ */
+
+.freeform-bootstrap-opinion-scale {
+  min-width: 2.75rem;
+  cursor: pointer;
+}
+
+.freeform-bootstrap-opinion-scale:has(:checked) {
+  color: var(--bs-primary-text-emphasis) !important;
+  background-color: var(--bs-primary-bg-subtle) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+[data-bs-theme="dark"] .freeform-bootstrap-opinion-scale {
+  color: #fff !important;
+  background-color: #1a1d20 !important;
+  border-color: #495057 !important;
+}
+
+[data-bs-theme="dark"] .freeform-bootstrap-opinion-scale:has(:checked) {
+  color: #fff !important;
+  background-color: #495057 !important;
+  border-color: #6c757d !important;
+}
+
+.freeform-bootstrap-card {
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.freeform-bootstrap-card:has(:checked) {
+  border-color: var(--bs-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+[data-bs-theme="dark"] .freeform-bootstrap-card:has(:checked) {
+  background-color: #2b3035 !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.freeform-phone-country {
+  --ff-phone-background: var(--bs-body-bg, #fff);
+  --ff-phone-color: var(--bs-body-color, #212529);
+  --ff-phone-border: var(--bs-border-color, #dee2e6);
+}
+
+.ff-phone-dark .freeform-phone-country {
+  --ff-phone-background: #292a2d;
+  --ff-phone-color: #f3f4f6;
+  --ff-phone-border: #4b5563;
+}
+
+.freeform-email-suggestion {
+  --ff-email-suggestion-color: var(--bs-secondary-color, #6c757d);
+  --ff-email-suggestion-action: var(--bs-link-color, #0d6efd);
+}
+.ff-email-suggestions-dark .freeform-email-suggestion {
+  --ff-email-suggestion-color: #99a1af;
+  --ff-email-suggestion-action: #8ab4f8;
+}

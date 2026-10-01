@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Types\Surveys\Collections;
 
 use Solspace\Freeform\Bundles\Form\Types\Surveys\DTO\FieldTotals;
 use Solspace\Freeform\Library\Collections\Collection;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 /**
  * @extends Collection<FieldTotals>

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Backup\DTO;
 
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 class Submission implements CustomNormalizerInterface
 {

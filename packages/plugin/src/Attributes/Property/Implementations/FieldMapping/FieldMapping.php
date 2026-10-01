@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\FieldMapping;
 
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 /**
  * @extends \IteratorAggregate<int, FieldMapItem>

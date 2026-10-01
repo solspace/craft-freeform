@@ -21,7 +21,7 @@ class PostContext
         $form = $event->getForm();
         $request = $event->getRequest();
 
-        if ($form->isGraphQLPosted()) {
+        if ($form->isGraphQLPosted() || $form->isHeadlessPosted()) {
             return;
         }
 

@@ -16,8 +16,13 @@ class HoneypotResolver extends Resolver
             return null;
         }
 
+        return static::resolveForForm($source);
+    }
+
+    public static function resolveForForm(Form $form): ?array
+    {
         $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $honeypot = $integrationProvider->getSingleton($source, Honeypot::class);
+        $honeypot = $integrationProvider->getSingleton($form, Honeypot::class);
         if (!$honeypot) {
             return null;
         }

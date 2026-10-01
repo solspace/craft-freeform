@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\FieldMapping;
 
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 class FieldMapItem
 {

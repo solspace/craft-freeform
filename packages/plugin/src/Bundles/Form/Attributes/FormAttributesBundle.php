@@ -57,8 +57,13 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->replace('data-id', $form->getAnchor());
         $attributes->replace('data-handle', $form->getHandle());
         $attributes->replace('data-ajax', $form->isAjaxEnabled());
+        $attributes->replace('data-focus-first-error', $behaviorSettings->focusFirstError);
+        if ($behaviorSettings->focusFirstError && !$form->isAjaxEnabled() && $form->hasErrors()) {
+            $attributes->getErrors()->replace('data-freeform-error-banner', true);
+        }
         $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
         $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
+        $attributes->replace('data-show-processing-overlay', $behaviorSettings->showProcessingOverlay);
 
         if (null === $attributes->get('method')) {
             $attributes->set('method', 'post');
@@ -79,6 +84,9 @@ class FormAttributesBundle extends FeatureBundle
 
         if ($behaviorSettings->showProcessingText) {
             $attributes->replace('data-show-processing-text', true);
+        }
+
+        if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingOverlay) {
             $attributes->replace(
                 'data-processing-text',
                 $this->translationProvider
@@ -93,5 +101,15 @@ class FormAttributesBundle extends FeatureBundle
 
         $attributes->replace('data-success-message', $form->getSuccessMessage());
         $attributes->replace('data-error-message', $form->getErrorMessage());
+
+        // Pass the resolved template overrides to the AJAX renderer. Attributes
+        // escapes the JSON when it is written to the form tag.
+        foreach (['success' => 'getSuccess', 'error' => 'getErrors'] as $banner => $getter) {
+            $bannerAttributes = $form->getAttributes()->{$getter}()->toHtmlTagArray();
+            $attributes->replace(
+                'data-'.$banner.'-banner-attributes',
+                $bannerAttributes ? json_encode($bannerAttributes, \JSON_THROW_ON_ERROR) : false,
+            );
+        }
     }
 }

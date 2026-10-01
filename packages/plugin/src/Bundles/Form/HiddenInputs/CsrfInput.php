@@ -57,7 +57,7 @@ class CsrfInput extends FeatureBundle
         $attributes = $event->getForm()->getAttributes();
 
         if (!$isAsyncEnabled) {
-            $attributes->set('data-csrf-name', \Craft::$app->getConfig()->getGeneral()->csrfTokenName);
+            $attributes->set('data-csrf-name', \Craft::$app->getRequest()->csrfParam);
 
             return;
         }
@@ -78,7 +78,7 @@ class CsrfInput extends FeatureBundle
             $this->setNoCacheHeaders();
         }
 
-        $csrfTokenName = \Craft::$app->getConfig()->getGeneral()->csrfTokenName;
+        $csrfTokenName = \Craft::$app->getRequest()->csrfParam;
         $csrfTokenValue = \Craft::$app->getRequest()->getCsrfToken();
 
         $event->add('csrfToken', [

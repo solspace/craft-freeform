@@ -97,6 +97,50 @@ export const SaveButtonWrapper = styled.div`
 
 export const SaveButton = styled.button``;
 
+export const HistoryControls = styled.div`
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: ${borderRadius.md};
+  background: #c4cfe1;
+`;
+
+export const HistoryButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 39px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: #c4cfe1;
+  color: #5a6875;
+  cursor: pointer;
+
+  & + & {
+    border-left: 1px solid #e3ecfb;
+  }
+
+  &:hover:not(:disabled) {
+    background: #b5c4d8;
+  }
+
+  &:active:not(:disabled) {
+    background: #a6b4c9;
+  }
+
+  &:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    background: #d5dfeb;
+    color: #a0aab4;
+    cursor: default;
+  }
+`;
+
 export const SubmissionsShortcut = styled.a`
   display: inline-flex;
   align-items: center;

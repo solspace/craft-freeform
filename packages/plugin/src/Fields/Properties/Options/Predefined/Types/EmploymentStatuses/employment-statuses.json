@@ -1,0 +1,12 @@
+{
+    "full-time": "Employed full-time",
+    "part-time": "Employed part-time",
+    "self-employed": "Self-employed",
+    "unemployed": "Unemployed",
+    "student": "Student",
+    "retired": "Retired",
+    "homemaker": "Homemaker",
+    "unable-to-work": "Unable to work",
+    "other": "Other",
+    "prefer-not-to-say": "Prefer not to say"
+}

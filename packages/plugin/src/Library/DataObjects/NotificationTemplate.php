@@ -20,7 +20,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
-use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 class NotificationTemplate implements IdentificatorInterface
 {

@@ -1,0 +1,18 @@
+<nav class="freeform-secondary-nav" aria-label="{{ label }}">
+    <craft-nav-list>
+        {% for item in items %}
+            {% if item.heading is defined %}
+                <craft-nav-item group>{{ item.heading }}</craft-nav-item>
+            {% else %}
+                {% set selected = item.selected ?? false %}
+                <craft-nav-item {{ attr({
+                    href: cpUrl(item.url),
+                    active: selected,
+                    current: selected,
+                }) }}>
+                    {{ item.title|raw }}
+                </craft-nav-item>
+            {% endif %}
+        {% endfor %}
+    </craft-nav-list>
+</nav>

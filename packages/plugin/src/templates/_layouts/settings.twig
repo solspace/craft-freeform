@@ -28,23 +28,18 @@
 {% block sidebar %}
     {% set segment = segment3~(segment4 ? '/'~segment4) %}
     {% set segment = segment|freeformRegexReplace('/\\/\\d+$/') %}
-
-    <nav>
-        <ul>
-            {% for id, item in navItems %}
-                {% if item.heading is defined %}
-                    <li class="heading"><span>{{ item.heading }}</span></li>
-                {% else %}
-                    <li>
-                        {% set selected = id == segment %}
-                        <a href="{{ url('freeform/settings/'~id) }}"{% if selected %} class="sel"{% endif %}>
-                            {{ item.title | raw }}
-                        </a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-        </ul>
-    </nav>
+    {% set items = [] %}
+    {% for id, item in navItems %}
+        {% set items = items|merge([item.heading is defined ? item : {
+            title: item.title,
+            url: 'freeform/settings/'~id,
+            selected: id == segment,
+        }]) %}
+    {% endfor %}
+    {% include 'freeform/_components/secondary-navigation' with {
+        label: 'Settings'|t('freeform'),
+        items: items,
+    } only %}
 {% endblock %}
 
 {% block content %}

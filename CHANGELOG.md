@@ -32,6 +32,7 @@
 - Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
 
 ### Fixed
+- Fixed inconsistent Craft 6 subnav indentation, the Settings cog's accessible link label and icon size, and secondary sidebar selection styling across settings, notifications, and import/export.
 - Fixed Freeform's missing icon and subpages on native Craft 6 pages, and corrected heading sizes and settings sidebar alignment.
 - Fixed Craft 6 control panel styling for skip links, buttons, navigation, and settings field spacing.
 - Fixed spurious validation messages in Craft 6 settings and submission editing screens.

@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { enhanceCraft6Navigation } from "./navigation";
 
 function sidebar(settings = true): HTMLElement {
@@ -43,14 +43,48 @@ describe("Craft 6 legacy CP navigation", () => {
     expect(actions).toHaveLength(1);
     const action = actions[0];
     expect(action.getAttribute("slot")).toBe("actions");
-    expect(action.getAttribute("icon")).toBe("gear");
+    expect(action.hasAttribute("icon")).toBe(true);
+    expect(action.querySelector('craft-icon[name="gear"]')).not.toBeNull();
     expect(action.getAttribute("href")).toBe("/admin/freeform/settings");
     expect(action.getAttribute("aria-label")).toBe("Einstellungen");
+    expect(action.querySelector(".cp-visually-hidden")?.textContent).toBe(
+      "Einstellungen",
+    );
   });
 
   it("omits the cog when the settings permission removed the link", () => {
     const freeform = sidebar(false);
     enhanceCraft6Navigation();
     expect(freeform.querySelector('[slot="actions"]')).toBeNull();
+  });
+
+  it("refreshes rows whose placeholder icon reserved a prefix column", () => {
+    const freeform = sidebar();
+    const rows = freeform.querySelectorAll<HTMLElement>("craft-nav-item");
+    const refresh = vi.fn();
+    for (const row of rows) {
+      Object.assign(row, { requestUpdate: refresh });
+    }
+    enhanceCraft6Navigation();
+    expect(refresh).toHaveBeenCalledTimes(rows.length);
+    for (const row of rows) {
+      expect(row.querySelector('[slot="icon"]')).toBeNull();
+    }
+  });
+
+  it("marks the selected leaf as the current page", () => {
+    const freeform = sidebar();
+    const forms = freeform.querySelector<HTMLElement>(
+      'craft-nav-item[href="/admin/freeform/forms"]',
+    )!;
+    forms.setAttribute("active", "");
+    enhanceCraft6Navigation();
+    expect(forms.hasAttribute("current")).toBe(true);
+    expect(freeform.hasAttribute("current")).toBe(false);
+    expect(
+      freeform
+        .querySelector('craft-nav-item[href$="/settings"]')
+        ?.hasAttribute("current"),
+    ).toBe(false);
   });
 });

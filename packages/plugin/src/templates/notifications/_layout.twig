@@ -6,38 +6,33 @@
 {% set title = "Email Notifications"|t('freeform') %}
 
 {% block sidebar %}
-
     {% set segment = craft.app.request.segment(3) %}
     {% set settings = freeform.settings %}
-
-    <nav>
-        <ul>
-            <li class="heading">
-                <span>{{ "Templates"|t('freeform') }}</span>
-            </li>
-            <li>
-                {% if settings.emailTemplateStorageType in ['files_database', 'files'] %}
-                <a href="{{ url('freeform/notifications/files') }}" class="{{ segment == "files" ? 'sel' }}">
-                    {{ "File Templates"|t('freeform') }}
-                </a>
-                {% endif %}
-
-                {% if settings.emailTemplateStorageType in ['files_database', 'database'] %}
-                <a href="{{ url('freeform/notifications/database') }}" class="{{ segment == "database" ? 'sel' }}">
-                    {{ "Database Templates"|t('freeform') }}
-                </a>
-                {% endif %}
-            </li>
-
-            <li class="heading">
-                <span>{{ "Template Wrappers"|t('freeform') }}</span>
-            </li>
-            <li>
-                <a href="{{ url('freeform/notifications/wrappers') }}" class="{{ segment == "wrappers" ? 'sel' }}">
-                    {{ "Notification Wrappers"|t('freeform') }}
-                </a>
-            </li>
-        </ul>
-    </nav>
-
+    {% set items = [{ heading: 'Templates'|t('freeform') }] %}
+    {% if settings.emailTemplateStorageType in ['files_database', 'files'] %}
+        {% set items = items|merge([{
+            title: 'File Templates'|t('freeform'),
+            url: 'freeform/notifications/files',
+            selected: segment == 'files',
+        }]) %}
+    {% endif %}
+    {% if settings.emailTemplateStorageType in ['files_database', 'database'] %}
+        {% set items = items|merge([{
+            title: 'Database Templates'|t('freeform'),
+            url: 'freeform/notifications/database',
+            selected: segment == 'database',
+        }]) %}
+    {% endif %}
+    {% set items = items|merge([
+        { heading: 'Template Wrappers'|t('freeform') },
+        {
+            title: 'Notification Wrappers'|t('freeform'),
+            url: 'freeform/notifications/wrappers',
+            selected: segment == 'wrappers',
+        },
+    ]) %}
+    {% include 'freeform/_components/secondary-navigation' with {
+        label: 'Email Notifications'|t('freeform'),
+        items: items,
+    } only %}
 {% endblock %}

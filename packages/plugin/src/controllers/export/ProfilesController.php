@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\export;
 
 use craft\helpers\Cp;
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;

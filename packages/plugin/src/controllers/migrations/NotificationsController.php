@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\migrations;
 
 use Solspace\Freeform\Bundles\Migrations\Notifications\NotificationsMigrator;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use yii\web\Response;
 
 class NotificationsController extends BaseController

@@ -1,3 +1,4 @@
+import { initializeSettingsControls } from "./controls";
 import { loadFormattingTemplatesScript } from "./templates.formatting";
 import { loadTemplatesModeScript } from "./templates.mode";
 
@@ -5,6 +6,7 @@ import { loadTemplatesModeScript } from "./templates.mode";
 $(() => {
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
+  initializeSettingsControls();
 
   const sessionTime = $("#session-time");
   const sessionCount = $("#session-count");
@@ -35,16 +37,6 @@ $(() => {
     },
   });
 
-  const purgeToggle = $("input[name='purge-toggle']").parents(".lightswitch");
-  purgeToggle.on({
-    change: function () {
-      const isOn = $("input", this).val();
-      if (!isOn) {
-        $("select#purge-value").val(0);
-      }
-    },
-  });
-
   const spamProtectionBehavior = $("select#spam-protection-behavior");
   spamProtectionBehavior.on({
     change: function () {
@@ -57,50 +49,6 @@ $(() => {
     },
   });
 
-  const scriptInsertLocation = $(
-    'select[name="settings[scriptInsertLocation]"]',
-  );
-  const warningText = $("#script-insert-warning").text();
-  scriptInsertLocation.on({
-    change: function () {
-      const value = $(this).val();
-      const parent = $(this).parents(".field:first");
-
-      if (value === "manual") {
-        const warning = document.createElement("div");
-        warning.classList.add("warning", "with-icon");
-        warning.innerText = warningText;
-
-        parent.append(warning);
-      } else {
-        parent.find(".warning.with-icon").remove();
-      }
-    },
-  });
-
-  scriptInsertLocation.trigger("change");
-
-  const loggingLevel = $('select[name="settings[loggingLevel]"]');
-  const loggingLevelWarningText = $("#logging-level-warning").text();
-  loggingLevel.on({
-    change: function () {
-      const value = $(this).val();
-      const parent = $(this).parents(".field:first");
-
-      if (value === "info" || value === "debug") {
-        const warning = document.createElement("div");
-        warning.classList.add("warning", "with-icon");
-        warning.innerText = loggingLevelWarningText;
-
-        parent.append(warning);
-      } else {
-        parent.find(".warning.with-icon").remove();
-      }
-    },
-  });
-
-  loggingLevel.trigger("change");
-
   const filesDirectory = $("#files-directory");
   const templateDefault = $("#template-default");
   $("#storage-type").on({
@@ -112,16 +60,6 @@ $(() => {
       filesDirectory.toggleClass("hidden", !isFiles);
       templateDefault
         .toggleClass("combined", value === "files_database")
-        .trigger("change");
-    },
-  });
-
-  $("#allow-builder-templates").on({
-    change: (event) => {
-      // biome-ignore lint/suspicious/noDoubleEquals: We want type coercion here
-      const checked = $("input", event.target).val() == "1";
-      templateDefault
-        .toggleClass("builder-templates", checked)
         .trigger("change");
     },
   });

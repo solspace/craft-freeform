@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\export;
 
 use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
 use Solspace\Freeform\Bundles\Export\Objects\FieldDescriptor;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;

@@ -1,18 +1,28 @@
 import { QKForms } from "@ff-client/queries/forms";
 import { QKIntegrations } from "@ff-client/queries/integrations";
 import { QKNotifications } from "@ff-client/queries/notifications";
+import {
+  findFreeformNavLink,
+  isPlainNavigation,
+  selectFreeformNavLink,
+  withCurrentSite,
+} from "@ff-client/utils/craft-navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const useFreeformNavigation = (): void => {
   const { formId } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { pathname, search } = useLocation();
+
+  useEffect(() => selectFreeformNavLink(pathname), [pathname]);
 
   useEffect(() => {
-    const link = findLink("/freeform/forms");
+    const link = findFreeformNavLink("/freeform/forms");
     const onClick = (event: MouseEvent): boolean => {
+      if (!isPlainNavigation(event)) return true;
       event.preventDefault();
 
       if (formId) {
@@ -27,7 +37,7 @@ export const useFreeformNavigation = (): void => {
         });
       }
 
-      navigate("/forms");
+      navigate(withCurrentSite("/forms", search));
 
       return false;
     };
@@ -41,13 +51,14 @@ export const useFreeformNavigation = (): void => {
         link.removeEventListener("click", onClick);
       }
     };
-  }, [formId, navigate, queryClient]);
+  }, [formId, navigate, queryClient, search]);
 
   useEffect(() => {
-    const link = findLink("/freeform/integrations");
+    const link = findFreeformNavLink("/freeform/integrations");
     const onClick = (event: MouseEvent): boolean => {
+      if (!isPlainNavigation(event)) return true;
       event.preventDefault();
-      navigate("/integrations");
+      navigate(withCurrentSite("/integrations", search));
 
       return false;
     };
@@ -61,13 +72,14 @@ export const useFreeformNavigation = (): void => {
         link.removeEventListener("click", onClick);
       }
     };
-  }, [navigate]);
+  }, [navigate, search]);
 
   useEffect(() => {
-    const link = findLink("/freeform/ab-tests");
+    const link = findFreeformNavLink("/freeform/ab-tests");
     const onClick = (event: MouseEvent): boolean => {
+      if (!isPlainNavigation(event)) return true;
       event.preventDefault();
-      navigate("/ab-tests");
+      navigate(withCurrentSite("/ab-tests", search));
 
       return false;
     };
@@ -81,21 +93,5 @@ export const useFreeformNavigation = (): void => {
         link.removeEventListener("click", onClick);
       }
     };
-  }, [navigate]);
-};
-
-const findLink = (path: string): HTMLAnchorElement | null => {
-  // Craft 5
-  let link = document.querySelector<HTMLAnchorElement>(
-    `ul.nav-item__subnav li a[href*="${path}"]`,
-  );
-
-  if (!link) {
-    // Craft 4
-    link = document.querySelector<HTMLAnchorElement>(
-      `ul.subnav li a[href*="${path}"]`,
-    );
-  }
-
-  return link;
+  }, [navigate, search]);
 };

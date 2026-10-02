@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\notifications;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\StringHelper;

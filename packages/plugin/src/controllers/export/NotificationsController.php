@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\export;
 
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;

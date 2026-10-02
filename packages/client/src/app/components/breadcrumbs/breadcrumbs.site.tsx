@@ -1,17 +1,42 @@
 import config from "@config/freeform/freeform.config";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import classes from "@ff-client/utils/classes";
-import { type FC, useState } from "react";
+import translate from "@ff-client/utils/translations";
+import { type FC, useEffect, useRef, useState } from "react";
 
 import { Crumb, PopupMenu, TriggerButton } from "./breadcrumbs.site.style";
 
 export const SiteCrumb: FC = () => {
   const [open, setOpen] = useState(false);
+  const crumb = useRef<HTMLLIElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
   const { current, list, change } = useSiteContext();
 
   const {
     sites: { enabled },
   } = config;
+
+  useEffect(() => {
+    if (!open) return;
+    const dismiss = (event: MouseEvent): void => {
+      if (!crumb.current?.contains(event.target as Node)) setOpen(false);
+    };
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        trigger.current?.focus();
+      }
+    };
+    document.addEventListener("click", dismiss);
+    document.addEventListener("keydown", onKeyDown);
+    crumb.current
+      ?.querySelector<HTMLButtonElement>("#site-crumb-menu button")
+      ?.focus();
+    return () => {
+      document.removeEventListener("click", dismiss);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
 
   if (!enabled) {
     return null;
@@ -22,8 +47,8 @@ export const SiteCrumb: FC = () => {
   }
 
   return (
-    <Crumb className="crumb">
-      <a id="site-crumb" className="crumb-link">
+    <Crumb className="crumb" ref={crumb}>
+      <span id="site-crumb" className="crumb-link">
         <span className="cp-icon puny">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -34,42 +59,47 @@ export const SiteCrumb: FC = () => {
           </svg>
         </span>
         <span>{current.name}</span>
-      </a>
+      </span>
       <TriggerButton
-        className="btn menubtn"
+        ref={trigger}
+        className="btn menubtn site-switcher-toggle"
         type="button"
-        aria-label="Select site"
+        aria-label={translate("Select site")}
         aria-controls="site-crumb-menu"
         aria-expanded={open}
-        data-disclosure-trigger="true"
         onClick={() => setOpen(!open)}
-      >
+      />
+      {open && (
         <PopupMenu
+          id="site-crumb-menu"
           className="menu"
-          style={{ display: open ? "block" : "none" }}
+          style={{ display: "block" }}
         >
           <ul className="padded">
             {list.map((site) => (
-              <li
-                key={site.id}
-                onClick={() => {
-                  change(site.handle);
-                  setOpen(false);
-                }}
-              >
-                <a
+              <li key={site.id}>
+                <button
+                  type="button"
+                  aria-current={
+                    current.handle === site.handle ? "true" : undefined
+                  }
+                  onClick={() => {
+                    change(site.handle);
+                    setOpen(false);
+                    trigger.current?.focus();
+                  }}
                   className={classes(
                     "menu-item",
                     current.handle === site.handle && "sel",
                   )}
                 >
                   <span className="menu-item-label">{site.name}</span>
-                </a>
+                </button>
               </li>
             ))}
           </ul>
         </PopupMenu>
-      </TriggerButton>
+      )}
     </Crumb>
   );
 };

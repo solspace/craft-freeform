@@ -17,7 +17,7 @@ function shell(): void {
         <div id="global-header"><div class="flex"><div id="crumbs"><a href="/admin/freeform">Freeform</a></div></div><cp-notification-center></cp-notification-center><button id="user-info">Account</button></div>
         <form id="main-form" method="post">
           <input type="hidden" name="_token" value="csrf">
-          <header id="header"><h1>General</h1><div class="buttons"><button type="submit">Save</button></div></header>
+          <header id="header"><h1>General</h1><div id="action-buttons" class="flex"><div class="buttons"><button type="submit">Save</button></div></div></header>
           <div id="main-content"><input name="settings[name]" value="Freeform"></div>
         </form>
       </div>
@@ -80,6 +80,22 @@ describe("Craft 6 Freeform shell", () => {
     ).not.toBeNull();
     expect(row.querySelector('span[slot="icon"]')).toBeNull();
     expect(update).toHaveBeenCalledOnce();
+  });
+
+  it("keeps submission and spam actions together even without a buttons wrapper", () => {
+    shell();
+    const actions = document.querySelector("#action-buttons")!;
+    actions.innerHTML =
+      '<button type="button" id="delete-button">Delete</button><div class="btngroup"><input type="submit" value="Allow"></div>';
+    const form = document.querySelector<HTMLFormElement>("#main-form")!;
+    enhanceCraft6Shell();
+    enhanceCraft6Shell();
+    expect(form.querySelector("#footer #action-buttons")).toBe(actions);
+    expect(form.querySelectorAll("#footer")).toHaveLength(1);
+    expect(
+      form.querySelector<HTMLInputElement>('input[type="submit"]')?.form,
+    ).toBe(form);
+    expect(document.querySelector("#header #delete-button")).toBeNull();
   });
 
   it("restores an empty GraphQL icon without replacing supplied icons", () => {

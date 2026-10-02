@@ -244,6 +244,26 @@
     overflow: clip;
   }
 
+  // Global header buttons default to a full touch target in the legacy layout.
+  // A breadcrumb's site selector uses Craft's compact inline control size.
+  #global-header #crumb-list {
+    #site-crumb {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--c-spacing-xs);
+    }
+
+    .site-switcher-toggle {
+      width: var(--c-size-control-xs);
+      height: var(--c-size-control-xs);
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: inherit;
+    }
+  }
+
   cp-global-sidebar {
     grid-area: navigation;
     background: var(--c-surface-sunken);
@@ -315,15 +335,34 @@
     background: var(--c-surface-default);
   }
 
-  .freeform-form-footer {
+  #footer.freeform-form-footer {
     display: flex;
     align-items: center;
     position: sticky;
     inset-block-end: 0;
     z-index: var(--c-layer-sticky);
+    // The legacy pane footer uses negative margins and smaller buttons. This
+    // footer is outside the pane and must span the form without overflowing it.
+    margin: 0;
+    border-radius: 0;
+    gap: var(--c-spacing-sm);
+    flex-wrap: wrap;
+
+    #action-buttons {
+      margin: 0;
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .btn {
+      height: var(--c-size-control-md);
+      padding-block: var(--button-padding-block, 7px);
+    }
 
     .buttons {
       margin: 0;
+      height: auto;
     }
   }
 

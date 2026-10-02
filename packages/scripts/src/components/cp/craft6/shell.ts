@@ -25,7 +25,7 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
 
   // Keep save controls inside their original form, in Craft's sticky footer row.
   const form = root.querySelector<HTMLFormElement>("form#main-form");
-  const actions = form?.querySelector<HTMLElement>("#header .buttons");
+  const actions = form?.querySelector<HTMLElement>("#header #action-buttons");
   if (form && actions) {
     let footer = form.querySelector<HTMLElement>("#footer");
     if (!footer) {

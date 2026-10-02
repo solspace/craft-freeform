@@ -123,6 +123,7 @@ return [
     'CVC' => 'CVC',
     'Country' => 'Land',
     'Select' => 'Selecteren',
+    'Select site' => 'Site selecteren',
     'Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.' => 'Verborgen betaalveld. Na het verzenden wordt de gebruiker doorgestuurd naar Mollie om de betaling te voltooien.',
 
     // Form Builder // Layout // Field Managers

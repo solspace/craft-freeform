@@ -123,6 +123,7 @@ return [
     'CVC' => 'CVC',
     'Country' => 'Country',
     'Select' => 'Select',
+    'Select site' => 'Select site',
     'Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.' => 'Hidden payment field. On submit, the user will be redirected to Mollie to complete checkout.',
 
     // Form Builder // Layout // Field Managers

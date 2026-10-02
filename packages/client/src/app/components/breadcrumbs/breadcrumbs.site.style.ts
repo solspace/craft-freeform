@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const TriggerButton = styled.button`
   z-index: 3 !important;
+  margin-inline-start: var(--c-spacing-xs);
 
   &:after {
     margin-left: 0 !important;
@@ -10,11 +11,12 @@ export const TriggerButton = styled.button`
 
 export const PopupMenu = styled.div`
   position: absolute;
-  left: 0;
-  top: 24px;
-  z-index: 10;
-
-  background: white;
+  inset-inline-start: 0;
+  inset-block-start: 100%;
+  z-index: var(--c-layer-popover);
+  min-width: max-content;
+  background: var(--c-surface-default);
+  color: var(--c-text-default);
 
   ul {
     li {
@@ -24,6 +26,8 @@ export const PopupMenu = styled.div`
 `;
 
 export const Crumb = styled.li`
+  position: relative;
+
   &.craft-4 {
     gap: var(--xs);
 

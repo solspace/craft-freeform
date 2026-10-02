@@ -17,9 +17,18 @@
         grid-area: header;
         padding-inline: var(--cp-container-padding);
         margin: 0;
+        // Legacy CP.js freezes the header's dimensions when scrolling. Craft
+        // 6's page title stays in document flow, above the content instead.
+        height: auto !important;
 
         #header {
           padding-inline: 0;
+          position: relative !important;
+          inset: auto;
+          width: auto !important;
+          background: transparent;
+          box-shadow: none;
+          backdrop-filter: none;
         }
       }
 
@@ -31,6 +40,8 @@
       > #main-content > #content-container {
         grid-area: content;
         min-width: 0;
+        // Ignore the legacy fixed-header handler's inline viewport minimum.
+        min-height: 0 !important;
         width: auto;
         margin: 0;
         padding: 0;
@@ -51,7 +62,9 @@
         #sidebar {
           // The legacy CP explicitly pins this to relative with !important.
           position: sticky !important;
-          inset-block-start: 0;
+          // CP.js writes an inline top offset below its fixed header. Keeping
+          // this at zero prevents the secondary nav from jumping on scroll.
+          inset-block-start: 0 !important;
           width: auto;
           margin: 0;
           padding: 0;

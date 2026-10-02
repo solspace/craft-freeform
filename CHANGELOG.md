@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Fixed settings headings sticking and secondary navigation jumping down when scrolling Craft 6 pages.
 - Matched diagnostics status indicators to Craft 6 colors and refined status banner alignment and column sizing.
 - Added the missing Limited Users table header divider to match Craft 6 settings tables.
 - Fixed sticky Save footer placement and sizing across Craft 6 settings and editors, and matched the primary sidebar Collapse control to Craft’s native navigation.

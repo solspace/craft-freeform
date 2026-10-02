@@ -1,52 +1,10 @@
 # Solspace Freeform Changelog
 
-## 6.0.0 - Unreleased
-
-### Added
-- Added native Craft 6 navigation flyouts and a permission-aware Settings cog to Freeform's control panel navigation.
-- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. The host website supplies the framework styles; demo templates and HTML embeds load the required libraries automatically.
-- Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
-- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
-- Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.
-- Added a Pro **Summary** field that gives visitors a live review of answers from earlier fields before submitting. It can include all supported fields or selected field handles, hide unanswered fields, and respect conditional field visibility. Option labels and file counts are displayed in a readable format, with support for standard forms and the React and Vue headless renderers.
-- Added a Pro **Range Slider** field with configurable minimum and maximum values, step size, default value, and a live display of the selected value. Supports decimal steps, conditional rules, survey results, and the React and Vue headless renderers.
-- Added **Enable Search** to Dropdown and Multiple Select fields. Visitors can filter the available options by typing, navigate results with the keyboard, and remove selections from a searchable Multiple Select field. Available in standard forms and the React and Vue headless renderers.
-- Added **Auto Grow** to Textarea fields so the input expands and shrinks with its contents. An optional maximum height switches the field to scrolling once reached. Supported in standard forms and the React and Vue headless renderers.
-- Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
-- Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye icon button.
-- Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
-- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
-- Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop. It defaults off for existing fields. Displays allowed file kinds, maximum file count, and maximum size per file beneath the input, derived from the field's current settings. Keep the hint separate from editable instructions and connect it to the control with `aria-describedby`.
-- Added an optional per-form processing indicator (**Show Processing Overlay on Submit**) that dims the form and shows a spinner and translated message centered in the visible area while a submission is processing.
-- Added an opt-in **Focus First Error After Submit** setting. When a submission fails validation, Freeform focuses the first visible field with an error, or the form error banner, for both AJAX and standard submissions.
-- Added an **Embed Form** tab to the form builder with a copyable Twig snippet for the current form, plus guides for formatting, dynamic data, success behavior, spam protection, and troubleshooting.
-- Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
-
-### Changed
-- AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
-- Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
-- Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.
-- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
-- Improved **File Upload Drag & Drop** drop-zone layout, spacing, focus styles, and circular Remove controls in Basic Light, Basic Dark, Basic Floating Labels, and Multipage All Fields.
-- Corrected upload hint spacing in Bootstrap 5 and Bootstrap 5 Dark, and placed the Drag & Drop label above the drop zone in Bootstrap 5 Floating Labels.
-- Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
+## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
-- Fixed Craft 6 control panel breadcrumb sizing, doubled React page gutters, and the missing rounded sidebar corner.
-- Fixed legacy breadcrumb chevrons, top-bar logo contrast, and the missing GraphQL navigation icon on Craft 6 Freeform pages.
-- Aligned Freeform's Craft 6 shell with native control panel pages, including the dark top bar, breadcrumbs, sidebar, content spacing, and form footers. Fixed the Settings shortcut displaying its accessible label beside the cog.
-- Fixed inconsistent Craft 6 subnav indentation, the Settings cog's accessible link label and icon size, and secondary sidebar selection styling across settings, notifications, and import/export.
-- Fixed Freeform's missing icon and subpages on native Craft 6 pages, and corrected heading sizes and settings sidebar alignment.
-- Fixed Craft 6 control panel styling for skip links, buttons, navigation, and settings field spacing.
-- Fixed spurious validation messages in Craft 6 settings and submission editing screens.
-- Updated migration discovery and wrapping for Craft 6's migrator, including Freeform's namespaced legacy migrations.
-- Updated headless CSRF validation and token metadata for Craft 6's session tokens.
-- Updated serializer metadata for Symfony 7.4 and 8.x.
-- Restored submission batch processing for Craft 6 exports, cleanup jobs, and surveys.
-- Preserved news feed queue deduplication when Craft 6 dispatches background jobs through Laravel.
-
-> [!WARNING]
-> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
+- Updated plugin compatibility with Craft 6.0.0-alpha.19.
+- Various visual improvements and fixes.
 
 ## 6.0.0-beta.4 - 2026-07-27
 
@@ -74,6 +32,39 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.17.0 - Unreleased
+
+### Added
+- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. Their selected framework styles and theme variables are bundled locally and scoped to the form.
+- Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
+- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
+- Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.
+- Added a Pro **Summary** field that gives visitors a live review of answers from earlier fields before submitting. It can include all supported fields or selected field handles, hide unanswered fields, and respect conditional field visibility. Option labels and file counts are displayed in a readable format, with support for standard forms and the React and Vue headless renderers.
+- Added a Pro **Range Slider** field with configurable minimum and maximum values, step size, default value, and a live display of the selected value. Supports decimal steps, conditional rules, survey results, and the React and Vue headless renderers.
+- Added **Enable Search** to Dropdown and Multiple Select fields. Visitors can filter the available options by typing, navigate results with the keyboard, and remove selections from a searchable Multiple Select field. Available in standard forms and the React and Vue headless renderers.
+- Added **Auto Grow** to Textarea fields so the input expands and shrinks with its contents. An optional maximum height switches the field to scrolling once reached. Supported in standard forms and the React and Vue headless renderers.
+- Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
+- Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye icon button.
+- Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
+- Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop. It defaults off for existing fields. Displays allowed file kinds, maximum file count, and maximum size per file beneath the input, derived from the field's current settings. Keep the hint separate from editable instructions and connect it to the control with `aria-describedby`.
+- Added an optional per-form processing indicator (**Show Processing Overlay on Submit**) that dims the form and shows a spinner and translated message centered in the visible area while a submission is processing.
+- Added an opt-in **Focus First Error After Submit** setting. When a submission fails validation, Freeform focuses the first visible field with an error, or the form error banner, for both AJAX and standard submissions.
+- Added an **Embed Form** tab to the form builder with a copyable Twig snippet for the current form, plus guides for formatting, dynamic data, success behavior, spam protection, and troubleshooting.
+- Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
+
+### Changed
+- AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
+- Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
+- Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.
+- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+- Improved **File Upload Drag & Drop** drop-zone layout, spacing, focus styles, and circular Remove controls in Basic Light, Basic Dark, Basic Floating Labels, and Multipage All Fields.
+- Corrected upload hint spacing in Bootstrap 5 and Bootstrap 5 Dark, and placed the Drag & Drop label above the drop zone in Bootstrap 5 Floating Labels.
+- Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
+
+> [!WARNING]
+> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ## 5.16.4 - 2026-10-01
 

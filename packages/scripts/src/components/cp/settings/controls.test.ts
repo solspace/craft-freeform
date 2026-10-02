@@ -4,6 +4,32 @@ import { initializeSettingsControls } from "./controls";
 afterEach(() => document.body.replaceChildren());
 
 describe("Craft 6 settings controls", () => {
+  it("reveals dependent fields on the first enable before Craft updates aria-checked", () => {
+    document.body.innerHTML =
+      '<craft-switch><craft-switch-button class="fieldtoggle" role="switch" aria-checked="false" data-target="purge" data-reverse-target="disabled"></craft-switch-button></craft-switch><div id="purge" class="hidden"></div><div id="disabled"></div>';
+    const button = document.querySelector("craft-switch-button")!;
+    const target = document.querySelector("#purge")!;
+    const reverseTarget = document.querySelector("#disabled")!;
+    // Craft's FieldToggle listens before Freeform and reads the ARIA state.
+    button.addEventListener("change", () => {
+      const enabled = button.getAttribute("aria-checked") === "true";
+      target.classList.toggle("hidden", !enabled);
+      reverseTarget.classList.toggle("hidden", enabled);
+    });
+    initializeSettingsControls();
+    for (const checked of [true, false, true, false]) {
+      Object.assign(button, { checked });
+      button.dispatchEvent(new Event("change", { bubbles: true }));
+      expect(target.classList.contains("hidden")).toBe(!checked);
+      expect(reverseTarget.classList.contains("hidden")).toBe(checked);
+      expect(button.getAttribute("aria-checked")).toBe(String(checked));
+    }
+    Object.assign(button, { indeterminate: true });
+    button.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(button.getAttribute("aria-checked")).toBe("mixed");
+    expect(target.classList.contains("hidden")).toBe(true);
+  });
+
   it("clears the purge age when the native switch turns off before its hidden input updates", () => {
     document.body.innerHTML =
       '<craft-switch><craft-switch-button checked></craft-switch-button><input slot="hidden-input" name="purge-toggle" value="1"></craft-switch><select id="purge-value"><option value="0">Disabled</option><option value="30" selected>30 days</option></select>';

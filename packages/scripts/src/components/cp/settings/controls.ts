@@ -1,4 +1,7 @@
-type SwitchButton = HTMLElement & { checked?: boolean };
+type SwitchButton = HTMLElement & {
+  checked?: boolean;
+  indeterminate?: boolean;
+};
 
 // Craft 6 emits change from the light-DOM switch button. Its hidden input is
 // updated later in the component's render cycle, so read the button's state.
@@ -13,6 +16,28 @@ function switchIsOn(control: HTMLElement): boolean {
 }
 
 export function initializeSettingsControls(root: ParentNode = document): void {
+  for (const button of root.querySelectorAll<SwitchButton>(
+    "craft-switch-button.fieldtoggle",
+  )) {
+    // Craft.FieldToggle reads aria-checked during change, before the native
+    // switch's render updates it. Capture runs before that handler even when
+    // Craft initialized its listeners first.
+    button.addEventListener(
+      "change",
+      () => {
+        button.setAttribute(
+          "aria-checked",
+          switchIsOn(button)
+            ? "true"
+            : button.indeterminate
+              ? "mixed"
+              : "false",
+        );
+      },
+      { capture: true },
+    );
+  }
+
   for (const input of root.querySelectorAll<HTMLInputElement>(
     'input[name="purge-toggle"]',
   )) {

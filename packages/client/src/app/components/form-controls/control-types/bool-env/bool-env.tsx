@@ -1,11 +1,10 @@
-import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import { useCodeblockText } from "@ff-client/hooks/use-codeblock-text";
 import { useAutosuggestEnvVariables } from "@ff-client/queries/autosuggest";
 import type { BooleanEnvProperty } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
-import type { ReactNode } from "react";
+import { createElement, type ReactNode, useEffect, useRef } from "react";
 import { useEnvOptions } from "./bool-env.options";
 import { EnvLine } from "./env.line";
 
@@ -24,6 +23,25 @@ const BoolEnv = ({
 
   const { data, isFetching } = useAutosuggestEnvVariables();
   const options = useEnvOptions();
+  const comboboxRef = useRef<HTMLElement & { modelValue?: string }>(null);
+
+  useEffect(() => {
+    const combobox = comboboxRef.current;
+    if (!combobox) return;
+    let active = true;
+    const onChange = (event: Event): void => {
+      if ((event as CustomEvent).detail?.initialize) return;
+      queueMicrotask(() => {
+        const nextValue = combobox.modelValue;
+        if (active && nextValue && nextValue !== value) updateValue(nextValue);
+      });
+    };
+    combobox.addEventListener("model-value-changed", onChange);
+    return () => {
+      active = false;
+      combobox.removeEventListener("model-value-changed", onChange);
+    };
+  }, [updateValue, value]);
 
   if (["", "0", "no", "off"].includes(String(value).toLowerCase())) {
     value = "false";
@@ -31,16 +49,28 @@ const BoolEnv = ({
     value = "true";
   }
 
+  const selected = options
+    .flatMap((option) => ("options" in option ? option.options : [option]))
+    .find((option) => option.value === value);
+
   return (
     <Control property={property} errors={errors} context={context}>
-      <Dropdown
-        value={value}
-        options={options}
-        onChange={(val) => updateValue(val)}
-        loading={isFetching && !data}
-        showSelectedIcon
-        showHints
-      />
+      <div className="freeform-boolean-menu">
+        {createElement("craft-combobox", {
+          ref: comboboxRef,
+          "model-value": value,
+          options: JSON.stringify(options),
+          requireoptionmatch: true,
+          disabled: property.disabled || (isFetching && !data) || undefined,
+          "aria-label": property.label,
+          "aria-invalid": errors?.length ? "true" : undefined,
+        })}
+        <span className="freeform-boolean-menu-status" aria-hidden="true">
+          {createElement("craft-indicator", {
+            variant: selected?.data.indicator.variant ?? "empty",
+          })}
+        </span>
+      </div>
       <EnvLine>{codeblock}</EnvLine>
     </Control>
   );

@@ -33,6 +33,7 @@ class Craft6CpBundle extends AbstractFreeformAssetBundle
     public function getScripts(): array
     {
         return [
+            'js/scripts/cp/craft6/boolean-menu.js',
             'js/scripts/cp/craft6/shell.js',
             'js/scripts/cp/craft6/navigation.js',
         ];

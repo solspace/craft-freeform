@@ -54,6 +54,7 @@ return [
     'Redo' => 'Wiederholen',
     'Close' => 'Schließen',
     'Enabled' => 'Aktiviert',
+    'Disabled' => 'Deaktiviert',
     'empty' => 'leer',
     'Empty' => 'Leer',
     'Loading data' => 'Daten werden geladen',

@@ -1,6 +1,28 @@
 // The Twig form macros still output legacy selects and Selectize controls.
 // Give their live inputs the same chrome as Craft 6's native select/combobox.
 .freeform-cp {
+  .freeform-boolean-menu {
+    position: relative;
+
+    craft-combobox > input[slot='input'] {
+      padding-inline-start: calc(var(--c-input-spacing-inline) + 0.6em + var(--c-spacing-sm));
+    }
+
+    .freeform-boolean-menu-status {
+      position: absolute;
+      inset-inline-start: var(--c-input-spacing-inline);
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    &:has(craft-combobox[disabled]) .freeform-boolean-menu-status {
+      opacity: 0.5;
+    }
+  }
+
   .select:not(.selectize) select,
   .selectize:is(.select, .multiselect) .selectize-input {
     box-sizing: border-box;

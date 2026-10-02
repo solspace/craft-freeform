@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Replaced boolean settings dropdowns with Craft 6’s native combobox, using Enabled/Disabled labels and retaining selected status indicators and environment-variable support.
 - Fixed saving settings through Craft 6’s native plugin settings model and corrected primary button hover and pressed colors.
 - Fixed settings headings sticking and secondary navigation jumping down when scrolling Craft 6 pages.
 - Matched diagnostics status indicators to Craft 6 colors and refined status banner alignment and column sizing.

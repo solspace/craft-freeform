@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/boolean-menu" as booleanMenu %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -74,7 +75,7 @@
             }
         }) }}
 
-        {{ forms.booleanMenuField({
+        {{ booleanMenu.field({
             includeEnvVars: true,
             label: "Bypass All Spam Checks for Logged in Users"|t('freeform'),
             instructions: "When enabled, Freeform will not run any spam protection measures for logged in users."|t('freeform'),
@@ -88,7 +89,7 @@
 
         <h2>{{ "Spam Folder"|t('freeform') }}</h2>
 
-        {{ forms.booleanMenuField({
+        {{ booleanMenu.field({
             includeEnvVars: true,
             label: "Use Spam Folder"|t('freeform'),
             instructions: "When enabled, all submissions caught by the honeypot or blocked email addresses, keywords and IP addresses will be flagged as spam and stored in the database, but available to manage in a separate menu inside Freeform."|t('freeform'),

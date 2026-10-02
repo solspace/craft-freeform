@@ -54,6 +54,7 @@ return [
     'Redo' => 'Rétablir',
     'Close' => 'Fermer',
     'Enabled' => 'Activé',
+    'Disabled' => 'Désactivé',
     'empty' => 'vide',
     'Empty' => 'Vide',
     'Loading data' => 'Chargement des données',

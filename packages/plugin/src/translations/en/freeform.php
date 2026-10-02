@@ -54,6 +54,7 @@ return [
     'Redo' => 'Redo',
     'Close' => 'Close',
     'Enabled' => 'Enabled',
+    'Disabled' => 'Disabled',
     'empty' => 'empty',
     'Empty' => 'Empty',
     'Loading data' => 'Loading data',

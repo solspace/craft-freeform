@@ -99,10 +99,12 @@ class Craft6TemplateErrorsTest extends TestCase
             new ArrayLoader([
                 'freeform/_layouts/settings' => '{% block content %}{% endblock %}',
                 '_includes/forms' => $macros,
+                'freeform/_components/boolean-menu' => file_get_contents(\dirname(__DIR__, 3).'/templates/_components/boolean-menu.twig'),
             ]),
             new FilesystemLoader(\dirname(__DIR__, 3).'/templates'),
         ]));
         $twig->addFilter(new TwigFilter('t', static fn (string $text): string => $text));
+        $twig->addFunction(new TwigFunction('freeformBooleanMenu', static fn (array $config): string => ''));
         $twig->addFilter(new TwigFilter('fieldErrors', static function ($errors): array {
             self::assertIsArray($errors, 'The CP field must receive a list of messages, not a MessageBag.');
 

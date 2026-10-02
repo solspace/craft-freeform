@@ -54,6 +54,7 @@ return [
     'Redo' => 'Opnieuw uitvoeren',
     'Close' => 'Sluiten',
     'Enabled' => 'Ingeschakeld',
+    'Disabled' => 'Uitgeschakeld',
     'empty' => 'leeg',
     'Empty' => 'Leeg',
     'Loading data' => 'Gegevens laden',

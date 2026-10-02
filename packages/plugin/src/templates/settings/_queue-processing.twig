@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/boolean-menu" as booleanMenu %}
 
 {% set segment3 = craft.app.request.getSegment(3) %}
 
@@ -21,7 +22,7 @@
     <h2 class="first">{{ "Queue Processing"|t('freeform') }}</h2>
     <p>{{ "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically."|t('freeform') }}</p>
 
-    {{ forms.booleanMenuField({
+    {{ booleanMenu.field({
         includeEnvVars: true,
         label: "Use Queue for AI Processing"|t('freeform'),
         instructions: "Use Craft's queue system to trigger AI processing."|t('freeform'),
@@ -32,7 +33,7 @@
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.booleanMenuField({
+    {{ booleanMenu.field({
         includeEnvVars: true,
         label: "Use Queue for Email Notifications"|t('freeform'),
         instructions: "Use Craft's queue system to trigger emails."|t('freeform'),
@@ -43,7 +44,7 @@
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.booleanMenuField({
+    {{ booleanMenu.field({
         includeEnvVars: true,
         label: "Use Queue for Integrations"|t('freeform'),
         instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing)."|t('freeform'),

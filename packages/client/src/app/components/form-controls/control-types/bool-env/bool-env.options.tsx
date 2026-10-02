@@ -1,49 +1,60 @@
 import { useAutosuggestEnvVariables } from "@ff-client/queries/autosuggest";
-import type { OptionCollection } from "@ff-client/types/properties";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { useMemo } from "react";
+import { parseEnvBoolean } from "./bool-env.operations";
 
-import { isEnvTrue } from "./bool-env.operations";
+export type BooleanOption = {
+  label: string;
+  value: string;
+  data: { boolean: string; indicator: { variant: string }; hint?: string };
+};
 
-export const useEnvOptions = (): OptionCollection => {
+export type BooleanOptionGroup = {
+  type: "optgroup";
+  label: string;
+  options: BooleanOption[];
+};
+
+export const useEnvOptions = (): (BooleanOption | BooleanOptionGroup)[] => {
   const { data } = useAutosuggestEnvVariables();
-
-  return useMemo<OptionCollection>(() => {
-    const baseOptions: OptionCollection = [
-      {
-        label: translate("Yes"),
-        value: "true",
-        icon: <span className="status enabled" aria-hidden="true" />,
+  return useMemo(() => {
+    const enabledLabel = translate("Enabled");
+    const disabledLabel = translate("Disabled");
+    const option = (
+      value: string,
+      label: string,
+      enabled: boolean,
+    ): BooleanOption => ({
+      value,
+      label,
+      data: {
+        boolean: enabled ? "1" : "0",
+        indicator: { variant: enabled ? "success" : "empty" },
       },
-      {
-        label: translate("No"),
-        value: "false",
-        icon: <span className="status white" aria-hidden="true" />,
-      },
+    });
+    return [
+      option("true", enabledLabel, true),
+      option("false", disabledLabel, false),
+      ...(data ?? []).map(
+        (category): BooleanOptionGroup => ({
+          type: "optgroup",
+          label: category.label,
+          options: category.data.flatMap((item) => {
+            const enabled = parseEnvBoolean(item.hint);
+            if (enabled === null) return [];
+            return [
+              {
+                ...option(item.name, item.name, enabled),
+                data: {
+                  boolean: enabled ? "1" : "0",
+                  indicator: { variant: enabled ? "success" : "empty" },
+                  hint: enabled ? enabledLabel : disabledLabel,
+                },
+              },
+            ];
+          }),
+        }),
+      ),
     ];
-
-    const envGroups =
-      data?.map((category) => ({
-        label: category.label,
-        children: category.data.map((item) => ({
-          label: item.name,
-          value: item.name,
-          hint: item.hint,
-          icon: (
-            <span
-              className={classes(
-                "status",
-                isEnvTrue(item.hint) ? "enabled" : "white",
-              )}
-              aria-hidden="true"
-            />
-          ),
-        })),
-      })) ?? [];
-
-    const combined: OptionCollection = [...baseOptions, ...envGroups];
-
-    return combined;
   }, [data]);
 };

@@ -1,0 +1,12 @@
+{% macro field(config) %}
+    {% import '_includes/forms' as forms %}
+    {% set config = config|merge({id: config.id ?? "freeform-boolean-#{random()}"}) %}
+    {% if (config.includeEnvVars ?? false) and config.tip is not defined and (config.value ?? '')[0:1] != '$' %}
+        {% set config = config|merge({
+            tip: 'This can be set to an environment variable with a boolean value ({examples}).'|t('app', {
+                examples: '`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`',
+            }),
+        }) %}
+    {% endif %}
+    {{ forms.field(config, freeformBooleanMenu(config)) }}
+{% endmacro %}

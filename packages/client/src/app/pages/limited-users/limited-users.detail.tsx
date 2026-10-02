@@ -1,11 +1,8 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
-import StringInput from "@components/form-controls/control-types/string/string";
-import Textarea from "@components/form-controls/control-types/textarea/textarea";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
 import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
-import { PropertyType } from "@ff-client/types/properties";
 import { notifications } from "@ff-client/utils/notifications";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
@@ -18,7 +15,12 @@ import {
   useLimitedUsersMutation,
   useLimitedUsersSingleQuery,
 } from "./limited-users.queries";
-import { ContentContainer, GroupWrapper, List } from "./limited-users.styles";
+import {
+  ContentContainer,
+  GroupWrapper,
+  List,
+  ProfileFields,
+} from "./limited-users.styles";
 import { ItemBlock } from "./limited-users.sub-components";
 import type { Item, RecursiveUpdate } from "./limited-users.types";
 
@@ -108,7 +110,12 @@ export const LimitedUsersDetail: React.FC = () => {
 
       <HeaderContainer
         extra={
-          <button type="button" className="btn submit" onClick={triggerSave()}>
+          <button
+            type="button"
+            className="btn submit"
+            disabled={mutation.isPending}
+            onClick={triggerSave()}
+          >
             <LoadingText
               loading={mutation.isPending}
               loadingText={translate("Saving")}
@@ -126,39 +133,55 @@ export const LimitedUsersDetail: React.FC = () => {
         <SettingsSidebar activeKey="limited-users" />
 
         <ContentContainer id="content-container">
-          <div id="content" className="content-pane" style={{ padding: 0 }}>
+          <div id="content" className="content-pane">
             <GroupWrapper>
-              <StringInput
-                property={{
-                  handle: "name",
-                  label: translate("Name"),
-                  instructions: translate(
-                    "Enter the name of the limited user permission.",
-                  ),
-                  type: PropertyType.String,
-                }}
-                value={name}
-                updateValue={(value) => setName(value)}
-              />
-
-              <br />
-
-              <Textarea
-                property={{
-                  handle: "description",
-                  label: translate("Description"),
-                  instructions: translate(
-                    "Enter a description for this permission.",
-                  ),
-                  type: PropertyType.Textarea,
-                  rows: 4,
-                  flags: [],
-                }}
-                value={description}
-                updateValue={(value) => setDescription(value)}
-              />
-
-              <hr />
+              <ProfileFields>
+                <div className="profile-field">
+                  <div className="heading">
+                    <label htmlFor="limited-user-name">
+                      {translate("Name")}
+                    </label>
+                    <div className="instructions" id="limited-user-name-help">
+                      {translate(
+                        "Enter the name of the limited user permission.",
+                      )}
+                    </div>
+                  </div>
+                  <div className="input">
+                    <input
+                      id="limited-user-name"
+                      className="cp-form-control"
+                      type="text"
+                      aria-describedby="limited-user-name-help"
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="profile-field">
+                  <div className="heading">
+                    <label htmlFor="limited-user-description">
+                      {translate("Description")}
+                    </label>
+                    <div
+                      className="instructions"
+                      id="limited-user-description-help"
+                    >
+                      {translate("Enter a description for this permission.")}
+                    </div>
+                  </div>
+                  <div className="input">
+                    <textarea
+                      id="limited-user-description"
+                      className="cp-form-control"
+                      aria-describedby="limited-user-description-help"
+                      rows={3}
+                      value={description}
+                      onChange={(event) => setDescription(event.target.value)}
+                    />
+                  </div>
+                </div>
+              </ProfileFields>
 
               <List>
                 {state.map((item) => (

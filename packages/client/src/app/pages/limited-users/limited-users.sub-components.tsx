@@ -1,8 +1,8 @@
-import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
+import CheckmarkIcon from "@ff-icons/actions/checkmark";
 import type React from "react";
-import type { ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 
 import {
   Actions,
@@ -13,6 +13,7 @@ import {
   Label,
   List,
   ListItem,
+  PermissionSwitch,
   TitleBlock,
   ToggleList,
   ToggleListItem,
@@ -28,35 +29,52 @@ import type {
 type Props<I extends Item, T> = {
   item: I;
   updateValue: (value: T) => void;
+  disabled?: boolean;
 };
 
 const BooleanInput: React.FC<Props<BooleanItem, boolean>> = ({
   item,
   updateValue,
+  disabled,
 }) => {
+  const controlId = useId();
+
   return (
     <Block>
       <Control>
-        <LightSwitch
-          enabled={item.enabled}
-          onClick={(enabled) => updateValue(enabled)}
-        />
+        <PermissionSwitch
+          id={controlId}
+          type="button"
+          role="switch"
+          aria-checked={item.enabled}
+          aria-label={translate(item.name)}
+          disabled={disabled}
+          onClick={() => updateValue(!item.enabled)}
+        >
+          {item.enabled && <CheckmarkIcon aria-hidden="true" />}
+        </PermissionSwitch>
       </Control>
       <TitleBlock>
-        <Label onClick={() => updateValue(!item.enabled)}>
-          {translate(item.name)}
-        </Label>
+        <Label htmlFor={controlId}>{translate(item.name)}</Label>
       </TitleBlock>
     </Block>
   );
 };
 
-const Select: React.FC<Props<SelectItem, string>> = ({ item, updateValue }) => {
+const Select: React.FC<Props<SelectItem, string>> = ({
+  item,
+  updateValue,
+  disabled,
+}) => {
+  const controlId = useId();
+
   return (
-    <Block>
+    <Block className="select-control">
       <Control>
         <div className="select">
           <select
+            id={controlId}
+            disabled={disabled}
             value={item.value}
             onChange={(event) => updateValue(event.target.value)}
           >
@@ -71,7 +89,7 @@ const Select: React.FC<Props<SelectItem, string>> = ({ item, updateValue }) => {
         </div>
       </Control>
       <TitleBlock>
-        <Label>{item.name}</Label>
+        <Label htmlFor={controlId}>{translate(item.name)}</Label>
       </TitleBlock>
     </Block>
   );
@@ -80,7 +98,9 @@ const Select: React.FC<Props<SelectItem, string>> = ({ item, updateValue }) => {
 const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
   item,
   updateValue,
+  disabled,
 }) => {
+  const labelId = useId();
   const update = (value: string) => () => {
     updateValue(
       item.values.includes(value)
@@ -91,42 +111,50 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
 
   return (
     <Block className="triage">
-      <Control />
       <TitleBlock>
-        <Label>{translate(item.name)}</Label>
+        <Label as="span" id={labelId}>
+          {translate(item.name)}
+        </Label>
         <Actions>
-          <a
-            className={classes(
-              item.values.length === item.options.length && "disabled",
-            )}
+          <button
+            type="button"
+            disabled={
+              disabled ||
+              item.options.every((option) => item.values.includes(option.value))
+            }
             onClick={() =>
               updateValue(item.options.map((option) => option.value))
             }
           >
             {translate("Enable All")}
-          </a>
-          <a
-            className={classes(item.values.length === 0 && "disabled")}
+          </button>
+          <button
+            type="button"
+            disabled={disabled || item.values.length === 0}
             onClick={() => updateValue([])}
           >
             {translate("Disable All")}
-          </a>
+          </button>
         </Actions>
       </TitleBlock>
       <ControlArea>
-        <ToggleList>
+        <ToggleList aria-labelledby={labelId}>
           {item.options.map((option) => (
             <ToggleListItem
               key={option.value}
-              onClick={update(option.value)}
               className={classes(
                 item.values.includes(option.value) && "selected",
               )}
             >
-              {item.values.includes(option.value) && (
-                <i className="fa-sharp fa-solid fa-check" />
-              )}
-              {translate(option.label)}
+              <label>
+                <input
+                  type="checkbox"
+                  checked={item.values.includes(option.value)}
+                  disabled={disabled}
+                  onChange={update(option.value)}
+                />
+                <span>{translate(option.label)}</span>
+              </label>
             </ToggleListItem>
           ))}
         </ToggleList>
@@ -139,7 +167,8 @@ export const Group: React.FC<{
   item: Item;
   nesting: number;
   updateValue: (list: Array<[string, boolean]>) => void;
-}> = ({ item, nesting, updateValue }) => {
+  disabled?: boolean;
+}> = ({ item, nesting, updateValue, disabled }) => {
   const update = (state: boolean) => () => {
     const traverse = (item: Item, path?: string): Array<[string, boolean]> => {
       const id = path ? `${path}.${item.id}` : item.id;
@@ -167,8 +196,12 @@ export const Group: React.FC<{
         <Heading>{translate(item.name)}</Heading>
         {nesting === 0 && (
           <Actions>
-            <a onClick={update(true)}>{translate("Enable All")}</a>
-            <a onClick={update(false)}>{translate("Disable All")}</a>
+            <button type="button" disabled={disabled} onClick={update(true)}>
+              {translate("Enable All")}
+            </button>
+            <button type="button" disabled={disabled} onClick={update(false)}>
+              {translate("Disable All")}
+            </button>
           </Actions>
         )}
       </TitleBlock>
@@ -181,8 +214,11 @@ export const ItemBlock: React.FC<{
   parentId?: string;
   nesting?: number;
   updateValue: RecursiveUpdate;
-}> = ({ item, parentId, nesting = 0, updateValue }) => {
+  disabled?: boolean;
+}> = ({ item, parentId, nesting = 0, updateValue, disabled = false }) => {
   const id = parentId ? `${parentId}.${item.id}` : item.id;
+  const childrenDisabled =
+    disabled || (item.type === "boolean" && !item.enabled);
   let controls: ReactNode;
 
   switch (item.type) {
@@ -190,6 +226,7 @@ export const ItemBlock: React.FC<{
       controls = (
         <BooleanInput
           item={item}
+          disabled={disabled}
           updateValue={(enabled) => updateValue(id, { enabled })}
         />
       );
@@ -198,6 +235,7 @@ export const ItemBlock: React.FC<{
       controls = (
         <Select
           item={item}
+          disabled={disabled}
           updateValue={(value) => updateValue(id, { value })}
         />
       );
@@ -206,6 +244,7 @@ export const ItemBlock: React.FC<{
       controls = (
         <Toggles
           item={item}
+          disabled={disabled}
           updateValue={(values) => updateValue(id, { values })}
         />
       );
@@ -214,6 +253,7 @@ export const ItemBlock: React.FC<{
       controls = (
         <Group
           item={item}
+          disabled={disabled}
           nesting={nesting}
           updateValue={(list) => {
             list.forEach(([subId, enabled]) => {
@@ -226,21 +266,22 @@ export const ItemBlock: React.FC<{
   }
 
   return (
-    <ListItem data-type={item.type} data-nesting={nesting}>
+    <ListItem
+      data-type={item.type}
+      data-nesting={nesting}
+      data-disabled={disabled || undefined}
+    >
       {controls}
 
       {item.children && (
-        <List
-          className={classes(
-            item.type === "boolean" && !item.enabled && "disabled",
-          )}
-        >
+        <List>
           {item.children.map((item) => (
             <ItemBlock
               key={item.id}
               item={item}
               parentId={id}
               nesting={nesting + 1}
+              disabled={childrenDisabled}
               updateValue={updateValue}
             />
           ))}

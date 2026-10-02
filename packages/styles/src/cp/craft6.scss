@@ -1,4 +1,5 @@
 @use 'craft6/element-index';
+@use 'craft6/settings';
 
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.
@@ -79,27 +80,6 @@
 
   nav {
     margin-inline: 0;
-  }
-}
-
-// Native craft-field elements no longer inherit the old .field margins.
-.freeform-settings #content {
-  craft-field,
-  .field {
-    margin-block: var(--c-spacing-xl, 24px);
-  }
-
-  h2 {
-    margin-block: var(--c-spacing-lg, 20px) var(--c-spacing-md, 16px);
-  }
-
-  hr {
-    margin-block: var(--c-spacing-xl, 24px);
-  }
-
-  > form > p,
-  > p {
-    margin-block-end: var(--c-spacing-md, 16px);
   }
 }
 

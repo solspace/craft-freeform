@@ -1,0 +1,68 @@
+// Keep the settings sidebar inside the page gutter rather than letting the
+// legacy desktop layout pull it back across the global navigation divider.
+.freeform-cp.freeform-settings {
+  #sidebar-container {
+    margin-inline: 0;
+  }
+
+  #sidebar:has(.freeform-secondary-nav) {
+    padding-inline: 0 var(--c-spacing-md, 8px);
+  }
+
+  #content.content-pane {
+    padding: var(--c-spacing-lg, 16px);
+
+    // Native fields need their own rhythm, but conditional wrappers and the
+    // form builder's switch/label grid must not add a second set of margins.
+    craft-field,
+    .field {
+      margin-block: calc(var(--c-spacing-md, 8px) * 3);
+    }
+
+    :is(craft-field, .field) :is(craft-field, .field) {
+      margin-block: 0;
+    }
+
+    :is(craft-field, .field) > :is(craft-field, .field):not(.hidden):not([hidden])
+      ~ :is(craft-field, .field):not(.hidden):not([hidden]) {
+      margin-block-start: calc(var(--c-spacing-md, 8px) * 3);
+    }
+
+    h2 {
+      margin-block: var(--c-spacing-lg, 16px) var(--c-spacing-md, 8px);
+    }
+
+    :is(h2, craft-field, .field).first {
+      margin-block-start: 0;
+    }
+
+    hr {
+      margin-block: var(--c-spacing-xl, 32px);
+    }
+
+    > form > p,
+    > p {
+      margin-block-end: var(--c-spacing-lg, 16px);
+    }
+
+    // Craft's notice callout uses display: contents, so its own top margin
+    // has no effect. Space the input slot instead, moving the icon and text
+    // together and also handling warnings added after the field is rendered.
+    craft-field:has(> [slot='tip'], > [slot='warning']) > [slot='input'] {
+      margin-block-end: var(--c-spacing-md, 8px);
+    }
+
+    .field.smart-switch {
+      align-items: start;
+      gap: var(--c-spacing-lg, 16px);
+    }
+  }
+
+  // Boolean menus still use Selectize's legacy label markup. Its flex gap
+  // token is no longer supplied by Craft 6, leaving status dots against text.
+  .selectize-input .item > .flex,
+  .selectize-dropdown .option > .flex {
+    gap: var(--c-spacing-md, 8px);
+    align-items: center;
+  }
+}

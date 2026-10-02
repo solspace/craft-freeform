@@ -8,6 +8,7 @@ interface Window {
 declare let hcaptcha: any;
 
 declare const Craft: {
+  t: (category: string, message: string) => string;
   csrfTokenName: string;
   csrfTokenValue: string;
   getCpUrl: (url: string) => string;

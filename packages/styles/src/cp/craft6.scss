@@ -3,6 +3,7 @@
 @use 'craft6/dropdowns';
 @use 'craft6/autosuggest';
 @use 'craft6/secondary-navigation';
+@use 'craft6/action-footer';
 
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.
@@ -342,36 +343,6 @@
     background: var(--c-surface-default);
   }
 
-  #footer.freeform-form-footer {
-    display: flex;
-    align-items: center;
-    position: sticky;
-    inset-block-end: 0;
-    z-index: var(--c-layer-sticky);
-    // The legacy pane footer uses negative margins and smaller buttons. This
-    // footer is outside the pane and must span the form without overflowing it.
-    margin: 0;
-    border-radius: 0;
-    gap: var(--c-spacing-sm);
-    flex-wrap: wrap;
-
-    #action-buttons {
-      margin: 0;
-      flex-direction: row;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-    }
-
-    .btn {
-      height: var(--c-size-control-md);
-      padding-block: var(--button-padding-block, 7px);
-    }
-
-    .buttons {
-      margin: 0;
-      height: auto;
-    }
-  }
 
   #global-footer {
     padding: 0;
@@ -437,3 +408,4 @@
 }
 
 @include secondary-navigation.styles;
+@include action-footer.styles;

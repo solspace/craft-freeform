@@ -6,8 +6,8 @@
     .freeform-secondary-layout {
       display: grid;
       grid-template-columns: calc(250rem / 16) minmax(0, 1fr);
-      grid-template-rows: auto minmax(0, 1fr) auto;
-      grid-template-areas: 'sidebar header' 'sidebar content' 'sidebar footer';
+      grid-template-rows: auto minmax(0, 1fr) auto auto;
+      grid-template-areas: 'sidebar header' 'sidebar content' 'sidebar notices' 'sidebar footer';
       gap: 0;
       min-height: calc(100dvh - var(--cp-header-height));
       padding: 0;
@@ -68,8 +68,8 @@
 
       @media (max-width: 1023px) {
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto minmax(0, 1fr) auto;
-        grid-template-areas: 'sidebar' 'header' 'content' 'footer';
+        grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+        grid-template-areas: 'sidebar' 'header' 'content' 'notices' 'footer';
 
         > #sidebar-container,
         > #main-content > #sidebar-container {

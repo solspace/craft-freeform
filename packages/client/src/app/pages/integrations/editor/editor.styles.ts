@@ -5,7 +5,10 @@ import styled from "styled-components";
 
 export const EditorContainer = styled.div`
   position: relative;
-  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
 `;
 
 export const EditorWrapper = styled.div`
@@ -18,8 +21,8 @@ export const EditorWrapper = styled.div`
 
   padding: ${spacings.xl};
 
-  height: 100%;
-  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 
   background: white;
 
@@ -34,11 +37,8 @@ export const EditorWrapper = styled.div`
   }
 `;
 
-export const ActionsWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  top: -44px;
-  z-index: 2;
+export const ActionsWrapper = styled.footer`
+  flex-shrink: 0;
 `;
 
 export const EditorTabsWrapper = styled(TabsWrapper)`

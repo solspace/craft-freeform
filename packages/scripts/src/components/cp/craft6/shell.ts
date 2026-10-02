@@ -35,6 +35,69 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
     footer.classList.add("freeform-form-footer");
     footer.append(actions);
     form.append(footer);
+    const pageFooter = root.querySelector<HTMLElement>("#global-footer");
+    if (pageFooter) {
+      pageFooter.classList.add("freeform-footer-notices");
+      footer.before(pageFooter);
+    }
+  }
+
+  // Use Craft's native nav item while keeping the existing disclosure (and
+  // its live listeners, cookies, and expanded state) as the toggle's owner.
+  const sidebarFooter = root.querySelector<HTMLElement>(
+    ".global-sidebar__footer",
+  );
+  const trigger = sidebarFooter?.querySelector<HTMLButtonElement>(
+    '#sidebar-trigger > button[type="button"]',
+  );
+  if (
+    sidebarFooter &&
+    trigger &&
+    !sidebarFooter.querySelector("[data-freeform-sidebar-toggle]")
+  ) {
+    const list = document.createElement("craft-nav-list");
+    const item = document.createElement("craft-nav-item");
+    item.setAttribute("button", "");
+    item.setAttribute("data-freeform-sidebar-toggle", "");
+    list.append(item);
+    sidebarFooter.prepend(list);
+
+    const update = (): void => {
+      const collapsed = document.body.dataset.sidebar === "collapsed";
+      const rtl = document.body.classList.contains("rtl");
+      const label = collapsed ? "Expand" : "Collapse";
+      item.textContent =
+        typeof Craft !== "undefined" && Craft.t ? Craft.t("app", label) : label;
+      item.setAttribute(
+        "icon",
+        collapsed
+          ? rtl
+            ? "arrow-left-from-line"
+            : "arrow-right-from-line"
+          : rtl
+            ? "arrow-right-to-line"
+            : "arrow-left-to-line",
+      );
+      item.toggleAttribute("icon-only", collapsed);
+      item.setAttribute("aria-controls", "global-sidebar");
+      item.setAttribute("aria-expanded", String(!collapsed));
+    };
+    item.addEventListener("click", async () => {
+      trigger.click();
+      const disclosure = trigger.parentElement as HTMLElement & {
+        updateComplete?: Promise<unknown>;
+      };
+      const row = item as HTMLElement & { updateComplete?: Promise<unknown> };
+      await disclosure.updateComplete;
+      await row.updateComplete;
+      row.focus();
+    });
+    const observer = new MutationObserver(update);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-sidebar"],
+    });
+    update();
   }
 
   // Legacy icon wrappers are larger than the icons in Craft's native sidebar.

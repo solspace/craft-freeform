@@ -1,5 +1,6 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import StringInput from "@components/form-controls/control-types/string/string";
+import { PageFooter } from "@components/layout/blocks/page-footer";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import config from "@config/freeform/freeform.config";
 import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
@@ -167,8 +168,12 @@ export const IntegrationsEditor: FC = () => {
           </EditorTabsWrapper>
         )}
 
+        <EditorLoader />
+
+        {canManage && <PageFooter />}
+
         {canManage && (
-          <ActionsWrapper>
+          <ActionsWrapper className="freeform-form-footer">
             <div className="btngroup">
               {showAddButton && (
                 <button
@@ -190,8 +195,6 @@ export const IntegrationsEditor: FC = () => {
             </div>
           </ActionsWrapper>
         )}
-
-        <EditorLoader />
       </EditorContainer>
     );
   }
@@ -222,41 +225,6 @@ export const IntegrationsEditor: FC = () => {
             </a>
           )}
         </EditorTabsWrapper>
-      )}
-
-      {canManage && (
-        <ActionsWrapper>
-          <div className="btngroup">
-            {showAddButton && (
-              <button
-                type="button"
-                title={translate("Add new integration of the same type")}
-                className={classes(
-                  "btn",
-                  "add",
-                  "icon",
-                  !data.supported && "disabled",
-                )}
-                onClick={() =>
-                  navigate(`/integrations/${type}/${integration}/new`)
-                }
-              />
-            )}
-            <button
-              type="button"
-              className={classes("btn", data.supported ? "submit" : "disabled")}
-              onClick={saveHandler}
-            >
-              <LoadingText
-                loading={isMutating}
-                loadingText={translate("Saving")}
-                spinner
-              >
-                {translate("Save")}
-              </LoadingText>
-            </button>
-          </div>
-        </ActionsWrapper>
       )}
 
       <EditorWrapper>
@@ -308,6 +276,44 @@ export const IntegrationsEditor: FC = () => {
           />
         ))}
       </EditorWrapper>
+
+      {canManage && <PageFooter />}
+
+      {canManage && (
+        <ActionsWrapper className="freeform-form-footer">
+          <div className="btngroup">
+            {showAddButton && (
+              <button
+                type="button"
+                title={translate("Add new integration of the same type")}
+                className={classes(
+                  "btn",
+                  "add",
+                  "icon",
+                  !data.supported && "disabled",
+                )}
+                onClick={() =>
+                  navigate(`/integrations/${type}/${integration}/new`)
+                }
+              />
+            )}
+            <button
+              type="button"
+              className={classes("btn", data.supported ? "submit" : "disabled")}
+              onClick={saveHandler}
+              disabled={!data.supported || isMutating}
+            >
+              <LoadingText
+                loading={isMutating}
+                loadingText={translate("Saving")}
+                spinner
+              >
+                {translate("Save")}
+              </LoadingText>
+            </button>
+          </div>
+        </ActionsWrapper>
+      )}
     </EditorContainer>
   );
 };

@@ -1,0 +1,100 @@
+@mixin styles {
+  .freeform-cp {
+    // overflow-x: hidden implicitly makes the body's vertical overflow auto,
+    // trapping sticky controls in a non-scrolling ancestor of the document.
+    overflow-x: clip;
+
+    .freeform-footer-notices {
+      grid-area: notices;
+      min-width: 0;
+    }
+
+    #freeform-client-app:has(> .freeform-integration-layout) {
+      padding-block-end: 0;
+    }
+
+    #main-form:has(> .freeform-form-footer):not(:has(.freeform-secondary-nav)) {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100dvh - var(--cp-header-height));
+
+      > #main-content {
+        flex: 1;
+        padding-block-end: var(--c-spacing-lg);
+      }
+    }
+
+    // Shared by the Twig form footer and React settings/integration editors.
+    :is(#footer.freeform-form-footer, .freeform-form-footer) {
+      display: flex;
+      align-items: center;
+      align-self: end;
+      grid-area: footer;
+      position: sticky;
+      inset-block-end: var(--cp-debug-bar-height, 0px);
+      z-index: var(--c-layer-sticky);
+      box-sizing: border-box;
+      width: 100%;
+      min-height: var(--cp-footer-height);
+      margin: 0;
+      padding: var(--c-spacing-md) var(--cp-container-padding);
+      border: 0;
+      border-block-start: 1px solid var(--c-color-border-quiet);
+      border-radius: 0;
+      box-shadow: none;
+      background: var(--c-surface-default);
+      background: color-mix(in srgb, var(--c-surface-default) 70%, transparent);
+      backdrop-filter: blur(12px);
+      color: var(--c-text-default);
+      line-height: var(--c-leading-normal);
+      gap: var(--c-spacing-md);
+      flex-wrap: wrap;
+
+      #action-buttons {
+        margin: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: center;
+      }
+
+      .btn {
+        box-sizing: border-box;
+        height: var(--c-size-control-md);
+        min-height: var(--c-size-control-md);
+        padding-block: 0;
+        padding-inline: var(--c-form-control-spacing-inline);
+        font-size: var(--c-text-base);
+        line-height: var(--c-leading-normal);
+      }
+
+      .buttons {
+        margin: 0;
+        height: auto;
+      }
+    }
+
+    .global-sidebar__footer {
+      display: grid;
+      align-content: center;
+      min-height: var(--cp-footer-height);
+      padding: var(--c-spacing-md);
+      box-sizing: border-box;
+
+      // Keep the disclosure connected so its state and listeners survive.
+      .sidebar-actions {
+        display: none;
+      }
+
+      craft-nav-list:not(:defined) {
+        visibility: hidden;
+      }
+    }
+
+    @media (width < 75rem) {
+      .global-sidebar__footer {
+        display: none;
+      }
+    }
+  }
+}

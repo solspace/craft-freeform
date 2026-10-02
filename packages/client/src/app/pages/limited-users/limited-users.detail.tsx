@@ -105,27 +105,22 @@ export const LimitedUsersDetail: React.FC = () => {
 
       <SettingsLayout
         activeKey="limited-users"
-        header={
-          <HeaderContainer
-            extra={
-              <button
-                type="button"
-                className="btn submit"
-                disabled={mutation.isPending}
-                onClick={triggerSave()}
-              >
-                <LoadingText
-                  loading={mutation.isPending}
-                  loadingText={translate("Saving")}
-                  spinner
-                >
-                  {translate("Save")}
-                </LoadingText>
-              </button>
-            }
+        header={<HeaderContainer>{translate("Limited Users")}</HeaderContainer>}
+        footer={
+          <button
+            type="button"
+            className="btn submit"
+            disabled={mutation.isPending}
+            onClick={triggerSave()}
           >
-            {translate("Limited Users")}
-          </HeaderContainer>
+            <LoadingText
+              loading={mutation.isPending}
+              loadingText={translate("Saving")}
+              spinner
+            >
+              {translate("Save")}
+            </LoadingText>
+          </button>
         }
       >
         <GroupWrapper>

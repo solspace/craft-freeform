@@ -11,6 +11,7 @@ function shell(): void {
         <header class="global-sidebar">
           <div class="global-sidebar__header"><a id="system-info" href="https://site.test">Craft</a></div>
           <craft-nav-list class="global-sidebar__nav"><craft-nav-item><span slot="icon"><svg><path></path></svg></span>Freeform</craft-nav-item></craft-nav-list>
+          <div class="global-sidebar__footer"><div class="sidebar-actions"><craft-disclosure id="sidebar-trigger"><button type="button" aria-controls="global-sidebar">Toggle sidebar</button></craft-disclosure></div></div>
         </header>
       </cp-global-sidebar>
       <div id="page-container">
@@ -20,6 +21,7 @@ function shell(): void {
           <header id="header"><h1>General</h1><div id="action-buttons" class="flex"><div class="buttons"><button type="submit">Save</button></div></div></header>
           <div id="main-content"><input name="settings[name]" value="Freeform"></div>
         </form>
+        <footer id="global-footer"><a href="/upgrade">Buy now</a></footer>
       </div>
     </div>
     <template id="freeform-shell-indicators"><div data-freeform-shell-indicators><craft-badge>Dev Mode</craft-badge></div></template>`;
@@ -28,10 +30,47 @@ function shell(): void {
 afterEach(() => {
   document.body.replaceChildren();
   document.body.classList.remove("freeform-cp");
+  document.body.classList.remove("rtl");
+  document.body.removeAttribute("data-sidebar");
   document.head.querySelector("[data-shell-test-style]")?.remove();
 });
 
 describe("Craft 6 Freeform shell", () => {
+  it("uses a native Collapse/Expand control and retains the live disclosure", async () => {
+    shell();
+    const disclosure = document.querySelector("#sidebar-trigger")!;
+    const trigger = disclosure.querySelector<HTMLButtonElement>("button")!;
+    const toggle = vi.fn(() => {
+      document.body.dataset.sidebar =
+        document.body.dataset.sidebar === "collapsed"
+          ? "expanded"
+          : "collapsed";
+    });
+    trigger.addEventListener("click", toggle);
+    enhanceCraft6Shell();
+    enhanceCraft6Shell();
+    const item = document.querySelector<HTMLElement>(
+      "[data-freeform-sidebar-toggle]",
+    )!;
+    expect(
+      document.querySelectorAll("[data-freeform-sidebar-toggle]"),
+    ).toHaveLength(1);
+    expect(document.querySelector("#sidebar-trigger")).toBe(disclosure);
+    expect(item.textContent).toBe("Collapse");
+    expect(item.getAttribute("icon")).toBe("arrow-left-to-line");
+    item.click();
+    await Promise.resolve();
+    expect(toggle).toHaveBeenCalledOnce();
+    expect(item.textContent).toBe("Expand");
+    expect(item.hasAttribute("icon-only")).toBe(true);
+    expect(item.getAttribute("icon")).toBe("arrow-right-from-line");
+    document.body.classList.add("rtl");
+    item.click();
+    await Promise.resolve();
+    expect(item.textContent).toBe("Collapse");
+    expect(item.hasAttribute("icon-only")).toBe(false);
+    expect(item.getAttribute("icon")).toBe("arrow-right-to-line");
+  });
   it("moves the live header and system link into a single full-width top bar", () => {
     shell();
     const account = document.querySelector("#user-info")!;
@@ -67,6 +106,10 @@ describe("Craft 6 Freeform shell", () => {
     expect(form.querySelector("#footer .buttons button")).toBe(button);
     expect(new FormData(form).get("_token")).toBe("csrf");
     expect(new FormData(form).get("settings[name]")).toBe("Freeform");
+    expect(form.querySelector("#global-footer + #footer")).not.toBeNull();
+    expect(form.querySelector("#global-footer a")?.getAttribute("href")).toBe(
+      "/upgrade",
+    );
   });
 
   it("uses the native icon wrapper and refreshes its nav row", () => {

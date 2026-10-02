@@ -30,7 +30,6 @@ use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Twig\Twig;
-use CraftCms\Cms\Validation\Contracts\Validatable;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
@@ -526,7 +525,7 @@ class Freeform extends Plugin
         $group->save();
     }
 
-    protected function createSettingsModel(): ?Validatable
+    protected static function createSettings(): Settings
     {
         return new Settings();
     }

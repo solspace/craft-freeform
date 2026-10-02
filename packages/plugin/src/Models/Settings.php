@@ -13,9 +13,9 @@
 
 namespace Solspace\Freeform\Models;
 
-use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
+use CraftCms\Cms\Plugin\PluginSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -24,7 +24,7 @@ use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class Settings extends Model
+class Settings extends PluginSettings
 {
     public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
@@ -245,34 +245,52 @@ class Settings extends Model
 
     public function setAttributes($values, $safeOnly = false): void
     {
-        if (\array_key_exists('defaults', $values)) {
+        if (\array_key_exists('defaults', $values) && !$values['defaults'] instanceof Defaults) {
             $values['defaults'] = new Defaults($values['defaults']);
         }
 
-        parent::setAttributes($values, $safeOnly);
+        parent::setAttributes($values);
     }
 
-    public function rules(): array
+    public function validationData(): array
+    {
+        $data = parent::validationData();
+        $data['defaults'] = $this->defaults->jsonSerialize();
+
+        return $data;
+    }
+
+    public function fields(): array
+    {
+        $fields = parent::fields();
+        unset($fields['errors']);
+        $fields['defaults'] = fn () => $this->defaults->jsonSerialize();
+
+        return $fields;
+    }
+
+    public function getRules(): array
     {
         return [
-            ['formTemplateDirectory', 'folderExists'],
+            'formTemplateDirectory' => ['nullable', function (string $attribute, mixed $value, \Closure $fail): void {
+                $absolutePath = $this->getAbsolutePath($value);
+
+                if (!file_exists($absolutePath)) {
+                    $fail(Freeform::t('Directory "{directory}" does not exist', ['directory' => $absolutePath]));
+                }
+            }],
         ];
     }
 
-    public function folderExists(string $attribute): void
+    // Legacy Twig fields and controllers still use these Yii error accessors.
+    public function getErrors(?string $attribute = null): array
     {
-        $path = $this->{$attribute};
-        $absolutePath = $this->getAbsolutePath($path);
+        return null === $attribute ? $this->errors()->getMessages() : $this->errors()->get($attribute);
+    }
 
-        if (!file_exists($absolutePath)) {
-            $this->addError(
-                $attribute,
-                Freeform::t(
-                    'Directory "{directory}" does not exist',
-                    ['directory' => $absolutePath]
-                )
-            );
-        }
+    public function addError(string $attribute, string $message): void
+    {
+        $this->errors()->add($attribute, $message);
     }
 
     /**

@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Tests\Library\Compatibility;
 
 use Illuminate\Container\Container;
 use Illuminate\Http\Request;
+use Illuminate\Session\ArraySessionHandler;
+use Illuminate\Session\Store;
 use Illuminate\Support\MessageBag;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
@@ -29,6 +31,7 @@ class Craft6TemplateErrorsTest extends TestCase
         $this->previousContainer = Container::getInstance();
         Container::setInstance(new Container());
         app()->instance('request', Request::create('/login'));
+        app()->instance('session', new Store('test', new ArraySessionHandler(120)));
     }
 
     protected function tearDown(): void

@@ -36,9 +36,9 @@
   --button-border-radius: var(--c-form-control-radius);
   --button-padding: var(--c-form-control-spacing-inline);
   --primary-button-bg: var(--c-color-accent-fill-loud);
-  --primary-button-bg--hover: var(--c-color-accent-fill-normal);
-  --primary-button-bg--active: var(--c-color-accent-fill-normal);
-  --primary-button-border: 1px solid var(--c-color-accent-border-loud);
+  --primary-button-bg--hover: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+  --primary-button-bg--active: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 10));
+  --primary-button-border: 1px solid transparent;
   --primary-button-border--hover: var(--primary-button-border);
   --primary-button-border--active: var(--primary-button-border);
   --primary-button-text-color: var(--c-color-accent-on-loud);

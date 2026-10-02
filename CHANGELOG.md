@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Matched diagnostics status indicators to Craft 6 colors and refined status banner alignment and column sizing.
 - Added the missing Limited Users table header divider to match Craft 6 settings tables.
 - Fixed sticky Save footer placement and sizing across Craft 6 settings and editors, and matched the primary sidebar Collapse control to Craft’s native navigation.
 - Matched Freeform secondary navigation and the Limited Users list table to Craft 6, and fixed duplicated or misaligned autosuggest inputs across control panel pages.

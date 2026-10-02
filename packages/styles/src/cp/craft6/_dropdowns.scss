@@ -4,10 +4,11 @@
   .freeform-boolean-menu {
     position: relative;
 
-    craft-combobox input[slot='input'] {
+    // Craft builds can render the textbox without a slot attribute.
+    craft-combobox input:is([type='text'], [type='search'], :not([type])) {
       // Reserve the dot's content width, two border pixels, and a text gap.
       // Keep this inset when another CP stylesheet resets input padding.
-      padding-inline-start: calc(var(--c-input-spacing-inline, 8px) + 0.6em + 2px + var(--c-spacing-md, 8px)) !important;
+      padding-inline-start: calc(var(--c-input-spacing-inline, 8px) + 0.6em + 2px + var(--c-spacing-sm, 4px)) !important;
     }
 
     .freeform-boolean-menu-status {

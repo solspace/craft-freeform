@@ -40,6 +40,15 @@
     height: auto;
   }
 
+  // Selectize copies the original select's cp-form-control class onto its
+  // wrapper. Only the inner input should draw the border and inset shadow.
+  .selectize .selectize-control.cp-form-control {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+
   .selectize.select .selectize-input {
     display: flex;
     align-items: center;

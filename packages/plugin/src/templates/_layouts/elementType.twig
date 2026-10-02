@@ -1,6 +1,6 @@
 {% extends "_layouts/elementindex" %}
 
-{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp') %}
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp')|push('freeform-element-index') %}
 {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
 
 {% set extraPageHeaderHtml %}

@@ -1,0 +1,196 @@
+// Keep the legacy element index's live controls, with Craft 6 spacing and tokens.
+.freeform-element-index {
+  #header {
+    width: auto;
+    align-items: center;
+    gap: var(--c-spacing-md);
+  }
+
+  #main-content.has-sidebar {
+    width: auto;
+    padding-inline: var(--cp-container-padding);
+  }
+
+  #toolbar {
+    align-items: center;
+    gap: var(--c-spacing-sm);
+    min-width: 0;
+
+    > :not(.search-container) {
+      flex-shrink: 0;
+    }
+
+    .btn {
+      gap: var(--c-spacing-sm);
+      min-height: var(--c-size-control-md);
+      padding-inline: var(--c-spacing-md);
+    }
+
+    .search-container {
+      min-width: 10rem;
+    }
+
+    .search-container craft-input {
+      width: 100%;
+    }
+  }
+
+  #sidebar-container {
+    margin-inline: 0;
+  }
+
+  #sidebar {
+    width: 100%;
+    padding-inline: 0 var(--c-spacing-md);
+
+    nav {
+      margin-inline: 0;
+      padding-inline: 0;
+
+      [data-source-item] {
+        min-height: var(--c-size-control-md);
+        padding: var(--c-spacing-sm) var(--c-spacing-md);
+        margin-block-end: var(--c-spacing-xs);
+        border: 1px solid transparent;
+        border-radius: var(--c-radius-sm);
+        line-height: 1.4;
+        color: var(--c-text-default);
+        text-shadow: none;
+
+        &:not(.sel):hover {
+          background: var(--c-color-neutral-fill-quiet);
+        }
+
+        &.sel {
+          background: var(--c-color-accent-fill-quiet);
+          border-color: var(--c-color-accent-border-normal);
+          color: var(--c-color-accent-on-quiet);
+          text-shadow: none;
+        }
+      }
+    }
+
+    .heading:not(:first-child) {
+      margin-block-start: var(--c-spacing-lg);
+    }
+
+    .source-item--heading {
+      padding-block-end: var(--c-spacing-sm);
+      padding-inline-start: var(--source-item-toggle-size);
+      margin-block-end: var(--c-spacing-xs);
+      color: var(--c-text-quiet);
+
+      .type-heading-small {
+        padding: 0 var(--c-spacing-sm);
+      }
+    }
+  }
+
+  #content.content-pane {
+    padding: 0;
+  }
+
+  .tablepane {
+    margin: 0;
+  }
+
+  #footer {
+    margin: 0;
+    border-radius: 0;
+    padding-inline: var(--c-spacing-md);
+    gap: var(--c-spacing-md);
+  }
+
+  .chart-explorer-container {
+    padding-block-end: var(--c-spacing-lg);
+  }
+
+  .chart-explorer {
+    padding: var(--c-spacing-lg);
+    margin: 0;
+    border-color: var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-md);
+
+    .chart-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--c-spacing-md);
+      margin-block-end: var(--c-spacing-md);
+    }
+
+    .total {
+      order: -1;
+    }
+
+    .total-value-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: var(--c-spacing-sm);
+    }
+
+    .total-value {
+      font-size: var(--c-text-lg);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .total-label,
+    .date-range-separator {
+      color: var(--c-text-quiet);
+      font-size: var(--c-text-base);
+    }
+
+    .date-range {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--c-spacing-sm);
+      float: none;
+
+      craft-input {
+        width: 8.5rem;
+      }
+    }
+
+    .chart-container {
+      margin: 0;
+      min-width: 0;
+    }
+
+    .chart {
+      height: 160px;
+    }
+
+    .chart-header .spinner {
+      position: static;
+    }
+  }
+}
+
+@media (width >= 60.875rem) {
+  .freeform-element-index {
+    #page-title.has-toolbar {
+      flex: 0 0 calc(var(--cp-sidebar-width) - var(--c-spacing-md));
+      min-width: calc(var(--cp-sidebar-width) - var(--c-spacing-md)) !important;
+    }
+
+    #sidebar-container {
+      flex-basis: var(--cp-sidebar-width);
+      width: var(--cp-sidebar-width);
+    }
+  }
+}
+
+@media (width < 60.875rem) {
+  .freeform-element-index {
+    #toolbar {
+      row-gap: var(--c-spacing-md);
+
+      > * {
+        margin-block-start: 0 !important;
+      }
+    }
+  }
+}

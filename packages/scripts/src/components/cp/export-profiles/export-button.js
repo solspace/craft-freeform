@@ -3,14 +3,14 @@
 const toolbarTable = $("#toolbar");
 const button = $(`
 <div>
-  <div class="btn" id="quick-export" tabindex="1" role="combobox">
+  <button type="button" class="btn" id="quick-export" aria-haspopup="dialog">
     ${Craft.t("freeform", "Quick Export")}
-  </div>
+  </button>
 </div>
 `);
 toolbarTable.prepend(button);
 
-$("div.btn", button).on({
+$("#quick-export", button).on({
   click: () => {
     const selectedSource = $("#sidebar").find("li a[data-key].sel").data("key");
 
@@ -36,6 +36,7 @@ $("div.btn", button).on({
 
         const modal = new Garnish.Modal(content, {
           onHide: () => {
+            button.find("#quick-export").trigger("focus");
             setTimeout(() => {
               $("#export-modal-wrapper").remove();
               $(".modal-shade").remove();

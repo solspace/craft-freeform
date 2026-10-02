@@ -1,3 +1,5 @@
+@use 'craft6/element-index';
+
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.
 .freeform-cp {
@@ -43,27 +45,30 @@
     margin: 0;
     padding: 0;
     list-style: none;
+  }
 
-    .skip-link {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      min-height: 0;
-      margin: -1px;
-      padding: 0;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
+  .skip-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    min-height: 0;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 
-      &:focus-visible {
-        width: auto;
-        height: auto;
-        margin: 0;
-        padding: var(--c-spacing-md) var(--c-spacing-lg);
-        overflow: visible;
-        clip: auto;
-        clip-path: none;
-      }
+    &:focus-visible {
+      z-index: var(--c-layer-overlay);
+      inset-inline-start: var(--c-spacing-sm);
+      inset-block-start: var(--c-spacing-sm);
+      width: auto;
+      height: auto;
+      margin: 0;
+      padding: var(--c-spacing-md) var(--c-spacing-lg);
+      overflow: visible;
+      clip: auto;
+      clip-path: none;
     }
   }
 }

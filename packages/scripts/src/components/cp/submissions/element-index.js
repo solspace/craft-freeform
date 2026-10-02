@@ -159,11 +159,11 @@ Craft.Freeform.SubmissionsTableView = Craft.TableElementIndexView.extend(
           $chartExplorer,
         ),
         $dateRange = $('<div class="date-range" />').appendTo($chartHeader),
-        $startDateContainer = $('<div class="datewrapper"></div>').appendTo(
-          $dateRange,
+        $startDateContainer = $(
+          '<craft-input><input type="text" slot="input" class="form-control" autocomplete="off" /></craft-input>',
         ),
-        $endDateContainer = $('<div class="datewrapper"></div>').appendTo(
-          $dateRange,
+        $endDateContainer = $(
+          '<craft-input><input type="text" slot="input" class="form-control" autocomplete="off" /></craft-input>',
         ),
         $total = $('<div class="total"></div>').appendTo($chartHeader),
         $totalValueWrapper = $(
@@ -172,6 +172,10 @@ Craft.Freeform.SubmissionsTableView = Craft.TableElementIndexView.extend(
         $totalValue = $('<span class="total-value">&nbsp;</span>').appendTo(
           $totalValueWrapper,
         );
+
+      $('<span class="total-label"></span>')
+        .text(Craft.t("freeform", "Submissions"))
+        .appendTo($totalValueWrapper);
 
       this.$chartExplorer = $chartExplorer;
       this.$totalValue = $totalValue;
@@ -188,12 +192,22 @@ Craft.Freeform.SubmissionsTableView = Craft.TableElementIndexView.extend(
         this.$chartContainer,
       );
 
-      this.$startDate = $(
-        '<input type="text" class="text" size="20" autocomplete="off" />',
-      ).appendTo($startDateContainer);
-      this.$endDate = $(
-        '<input type="text" class="text" size="20" autocomplete="off" />',
-      ).appendTo($endDateContainer);
+      this.$startDate = $startDateContainer.find("input").attr({
+        id: `freeform-chart-from-${Craft.randomString(10)}`,
+        "aria-label": Craft.t("app", "From"),
+      });
+      this.$endDate = $endDateContainer.find("input").attr({
+        id: `freeform-chart-to-${Craft.randomString(10)}`,
+        "aria-label": Craft.t("app", "To"),
+      });
+
+      // Supply the slotted inputs before connecting the components, so Craft
+      // uses these datepicker controls instead of creating another input.
+      $dateRange.append($startDateContainer, $endDateContainer);
+
+      $(
+        '<span class="date-range-separator" aria-hidden="true">–</span>',
+      ).insertBefore($endDateContainer);
 
       this.$startDate.datepicker(
         $.extend(

@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Cleaned up Craft 6 submission and spam list layouts, including toolbar spacing, form navigation, chart date filters, and keyboard skip links.
 - Fixed notification and export controllers failing to load on case-sensitive servers.
 - Fixed Craft 6 purge switches, template controls, and settings warnings, and corrected submission and spam action footer sizing and placement.
 - Fixed Freeform navigation selection after React page changes and improved breadcrumb site switcher sizing, theme colors, and keyboard behavior on Craft 6.

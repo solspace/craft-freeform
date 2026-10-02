@@ -4,13 +4,15 @@
   .freeform-boolean-menu {
     position: relative;
 
-    craft-combobox > input[slot='input'] {
-      padding-inline-start: calc(var(--c-input-spacing-inline) + 0.6em + var(--c-spacing-sm));
+    craft-combobox input[slot='input'] {
+      // Reserve the dot's content width, two border pixels, and a text gap.
+      // Keep this inset when another CP stylesheet resets input padding.
+      padding-inline-start: calc(var(--c-input-spacing-inline, 8px) + 0.6em + 2px + var(--c-spacing-md, 8px)) !important;
     }
 
     .freeform-boolean-menu-status {
       position: absolute;
-      inset-inline-start: var(--c-input-spacing-inline);
+      inset-inline-start: var(--c-input-spacing-inline, 8px);
       inset-block-start: 50%;
       transform: translateY(-50%);
       display: inline-flex;

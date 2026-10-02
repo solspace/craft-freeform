@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Fixed flashes of unstyled pages and oversized navigation icons while loading Freeform control panel pages on Craft 6.
 - Fixed duplicate borders on Craft 6 dropdowns that support environment variables.
 - Matched Craft 6 dropdown styling throughout Freeform, including settings selects, searchable and boolean menus, and React form builder dropdowns.
 - Corrected Craft 6 settings sidebar gutters, field and section spacing, nested switch alignment, tip spacing, and boolean menu status labels.

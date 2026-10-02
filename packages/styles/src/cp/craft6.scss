@@ -5,6 +5,25 @@
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.
 .freeform-cp {
+  // Native navigation is rendered by web components. Keep its unupgraded
+  // light DOM (including flyouts) out of view while the module initializes.
+  .global-sidebar__nav:not(:defined),
+  .freeform-secondary-nav craft-nav-list:not(:defined) {
+    visibility: hidden;
+  }
+
+  .global-sidebar__nav craft-nav-item > [slot='icon'] {
+    display: inline-flex;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+
+    > svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
   --button-bg: var(--c-color-neutral-fill-normal);
   --button-bg--hover: var(--c-color-neutral-fill-loud);
   --button-bg--active: var(--c-color-neutral-fill-loud);

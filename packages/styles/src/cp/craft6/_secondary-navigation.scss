@@ -98,6 +98,10 @@
       padding-inline: var(--cp-container-padding);
       overflow-x: auto;
 
+      .cp-table thead th {
+        border-block-end: 1px solid var(--c-color-neutral-border-quiet);
+      }
+
       .cp-table a {
         color: var(--c-text-link);
         font-weight: 600;

@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Matched Craft 6 Entries styling for submission list buttons, status menus, View settings, and table colors.
 - Cleaned up Craft 6 submission and spam list layouts, including toolbar spacing, form navigation, chart date filters, and keyboard skip links.
 - Fixed notification and export controllers failing to load on case-sensitive servers.
 - Fixed Craft 6 purge switches, template controls, and settings warnings, and corrected submission and spam action footer sizing and placement.

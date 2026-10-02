@@ -1,4 +1,13 @@
 // Keep the legacy element index's live controls, with Craft 6 spacing and tokens.
+.freeform-cp.freeform-element-index {
+  // Craft's Fill buttons use an invisible border; selects keep their outline.
+  --button-border: 1px solid transparent;
+  --button-border--hover: var(--button-border);
+  --button-border--active: var(--button-border);
+  --button-bg--hover: hsl(from var(--c-color-neutral-fill-normal) h s calc(l - 5));
+  --button-bg--active: hsl(from var(--c-color-neutral-fill-normal) h s calc(l - 10));
+}
+
 .freeform-element-index {
   #header {
     width: auto;
@@ -13,7 +22,7 @@
 
   #toolbar {
     align-items: center;
-    gap: var(--c-spacing-sm);
+    gap: var(--c-spacing-md);
     min-width: 0;
 
     > :not(.search-container) {
@@ -24,6 +33,40 @@
       gap: var(--c-spacing-sm);
       min-height: var(--c-size-control-md);
       padding-inline: var(--c-spacing-md);
+
+      &:not(.submit) {
+        color: var(--c-color-neutral-on-normal);
+      }
+    }
+
+    .btn[aria-controls^='view-menu-']::after {
+      display: none;
+    }
+
+    .btn.statusmenubtn {
+      min-width: 6.5rem;
+      background: var(--c-form-control-fill);
+      border: var(--c-form-control-border-width) var(--c-form-control-border-style) var(--c-form-control-border-color);
+      color: var(--c-text-default);
+      box-shadow: var(--c-input-shadow);
+
+      &::after {
+        margin-inline-start: auto;
+      }
+
+      &:hover {
+        background: var(--c-form-control-fill);
+      }
+    }
+
+    .btn:not(.submit).active,
+    .btn:not(.submit)[aria-expanded='true'] {
+      background: var(--button-bg--hover);
+      color: var(--c-color-neutral-on-normal);
+    }
+
+    .btn.statusmenubtn[aria-expanded='true'] {
+      background: var(--c-form-control-fill);
     }
 
     .search-container {
@@ -32,6 +75,219 @@
 
     .search-container craft-input {
       width: 100%;
+    }
+  }
+
+  // Apply Craft's native button-group selection and focus states to the live
+  // legacy buttons (including the sort direction picker in the View popover).
+  :is(#toolbar, .element-index-view-menu, #footer) {
+    .btn:focus-visible,
+    select:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
+      box-shadow: none;
+    }
+
+    .btngroup .btn {
+      min-width: var(--c-size-control-md);
+      height: var(--c-size-control-md);
+      padding-block: 0;
+      color: var(--c-color-neutral-on-normal);
+    }
+
+    .btngroup .btn[aria-pressed='true'] {
+      background: var(--c-color-neutral-fill-loud);
+      border-color: var(--c-color-neutral-border-loud);
+      color: var(--c-color-neutral-on-loud);
+      box-shadow: none;
+    }
+  }
+
+  :is(#toolbar, .menu:has([data-status])) .status {
+    width: 10px;
+    height: 10px;
+    border: 1px solid rgb(0 0 0 / 0.5);
+    margin: 0;
+
+    &.all {
+      background-image: none;
+      background-color: var(--c-color-neutral-fill-loud);
+    }
+  }
+
+  // These menus are appended to the body by Garnish. Scope them by their
+  // contents so account menus and other control-panel popovers keep their CSS.
+  .menu:is(.element-index-view-menu, :has([data-status]), :has([data-reason])) {
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-md);
+    background: var(--c-surface-overlay);
+    color: var(--c-text-default);
+    box-shadow: var(--c-shadow-sm);
+    font-size: var(--c-text-base);
+
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
+    }
+  }
+
+  .menu:is(:has([data-status]), :has([data-reason])) {
+    min-width: 6.5rem;
+    padding: var(--c-spacing-sm);
+
+    ul.padded li a {
+      display: flex;
+      align-items: center;
+      gap: var(--c-spacing-md);
+      width: 100%;
+      min-height: var(--c-size-control-sm);
+      margin: 0;
+      padding: var(--c-spacing-sm) var(--c-spacing-md);
+      border-radius: var(--c-radius-sm);
+      font-size: inherit;
+      // The legacy hover mixin sets a literal white with !important.
+      color: var(--c-color-neutral-on-normal) !important;
+
+      &.sel::before {
+        content: none;
+        display: none;
+      }
+
+      &:not(.disabled):hover {
+        background: var(--c-color-neutral-fill-normal);
+        color: var(--c-color-neutral-on-normal) !important;
+      }
+
+      &.sel,
+      &.hover,
+      &.sel:not(.disabled):is(:hover, .hover) {
+        background: var(--c-color-neutral-fill-loud);
+        color: var(--c-color-neutral-on-loud) !important;
+      }
+    }
+  }
+
+  .element-index-view-menu {
+    width: 20rem;
+    max-width: calc(100vw - var(--c-spacing-lg));
+
+    .meta {
+      padding: var(--c-spacing-md);
+    }
+
+    .meta > .field {
+      display: block;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      // The legacy meta pane forces negative margins and two-column fields.
+      margin: 0 0 var(--c-spacing-lg) !important;
+
+      &:last-child {
+        margin-block-end: 0 !important;
+      }
+    }
+
+    .meta > .field > .heading {
+      padding: 0;
+      margin: 0 0 var(--c-spacing-sm);
+      border: 0;
+      flex: none;
+
+      :is(label, legend) {
+        font-size: var(--c-text-base);
+        font-weight: 600;
+        color: var(--c-text-default);
+      }
+    }
+
+    .meta > .field > .input {
+      display: block;
+      width: 100%;
+      padding: 0;
+    }
+
+    .sort-field .input .flex {
+      align-items: flex-end;
+      gap: var(--c-spacing-md);
+
+      .flex-grow {
+        max-width: none;
+        min-width: 0;
+      }
+
+      .btngroup .btn {
+        width: var(--c-size-control-md);
+      }
+    }
+
+    .select select {
+      width: 100%;
+      min-height: var(--c-size-control-md);
+      padding-block: 0;
+      padding-inline: var(--c-spacing-md) calc(var(--c-spacing-md) * 1.5 + 1em);
+      border: var(--c-form-control-border-width) var(--c-form-control-border-style) var(--c-form-control-border-color);
+      border-radius: var(--c-form-control-radius);
+      background: var(--c-form-control-fill);
+      color: var(--c-text-default);
+      box-shadow: var(--c-input-shadow);
+    }
+
+    .cp-checkbox-select__item {
+      display: flex;
+      align-items: center;
+      gap: var(--c-spacing-md);
+      padding-block: var(--c-spacing-xs);
+
+      .move {
+        margin: 0;
+        color: var(--c-text-quiet);
+      }
+    }
+
+    .menu-footer {
+      // Craft's legacy View menu hardcodes these declarations as important.
+      padding: var(--c-spacing-md) !important;
+      background: var(--c-color-neutral-fill-quiet);
+    }
+  }
+
+  #elements table.data {
+    // The native full-page element index uses TableSpacing.Spacious (50px).
+    --_row-height: calc(50rem / 16);
+    font-variant-numeric: tabular-nums;
+
+    th,
+    td {
+      padding: var(--c-spacing-sm) var(--c-spacing-md);
+      border-block-end: 1px solid color-mix(in srgb, var(--c-color-neutral-border-quiet) 60%, transparent);
+    }
+
+    thead th {
+      height: calc(var(--_row-height) * 0.8);
+      background: var(--c-surface-default);
+      color: var(--c-text-default);
+      font-size: var(--c-text-base);
+      font-weight: 600;
+    }
+
+    tbody td {
+      height: var(--_row-height);
+    }
+
+    tbody tr.sel td {
+      background: var(--c-color-accent-fill-quiet);
+      border-color: var(--c-color-accent-border-quiet);
+      color: var(--c-text-default);
+    }
+
+    tbody tr.sel:not(:has(+ tr.sel)) td,
+    tbody tr:not(.sel):has(+ tr.sel) td {
+      border-block-end-color: var(--c-color-accent-border-normal);
+    }
+
+    tbody tr.sel:first-child td {
+      border-block-start: 1px solid var(--c-color-accent-border-normal);
     }
   }
 

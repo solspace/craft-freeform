@@ -1,25 +1,12 @@
+import { dropdownControl } from "@ff-client/styles/craft6";
 import { scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const Search = styled.input`
+  ${dropdownControl};
   width: 100%;
-  padding: 7px 30px 7px 10px;
-
-  border-bottom: 1px solid ${colors.hairline};
-
-  &:focus,
-  &:active,
-  &:hover {
-    box-shadow: none;
-    outline: none;
-  }
+  padding: var(--c-spacing-sm) 30px var(--c-spacing-sm) var(--c-input-spacing-inline);
 `;
 
 export const ListWrapper = styled.div`
@@ -31,43 +18,40 @@ export const ListWrapper = styled.div`
 `;
 
 export const CurrentValue = styled.div`
+  ${dropdownControl};
   cursor: pointer;
   position: relative;
 
   display: flex;
   justify-content: start;
-  gap: ${spacings.sm};
-
-  background-color: #dfe5ec;
-  border-radius: ${borderRadius.lg};
-
-  padding: 7px 22px 7px 10px;
+  align-items: center;
+  gap: var(--c-spacing-sm);
+  padding: 0 calc(var(--c-input-spacing-inline) * 1.5 + 1em) 0 var(--c-input-spacing-inline);
 
   &.empty > span {
-    color: ${colors.gray300};
+    color: var(--c-text-quiet);
     font-style: italic;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    cursor: wait;
   }
 
   > span {
     min-height: 20px;
   }
 
-  &:hover {
-    box-shadow: var(--focus-ring);
-    outline-color: transparent;
-  }
-
   &:after {
     content: '';
     position: absolute;
     top: calc(50% - 5px);
-    right: 9px;
+    inset-inline-end: var(--c-input-spacing-inline);
 
     display: block;
     width: 7px;
     height: 7px;
 
-    opacity: 0.8;
     border: solid;
     border-width: 0 2px 2px 0;
 
@@ -94,9 +78,12 @@ export const DropdownRollout = styled(animated.div)`
   right: 0;
   top: 0;
 
-  background-color: ${colors.gray050};
-  border-radius: ${borderRadius.lg};
-  box-shadow: ${shadows.container};
+  background-color: var(--c-surface-overlay);
+  color: var(--c-text-default);
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-radius-md);
+  box-shadow: var(--c-shadow-sm);
+  padding: var(--c-spacing-sm);
 
   overflow: hidden;
   z-index: 1000;
@@ -104,21 +91,21 @@ export const DropdownRollout = styled(animated.div)`
 
 export const CloseButton = styled.button`
   position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  inset-block-start: var(--c-spacing-sm);
+  inset-inline-end: var(--c-spacing-sm);
 
   display: flex;
   justify-content: center;
   align-items: center;
 
   width: 30px;
-  height: 34px;
+  height: var(--c-size-control-md);
+  color: var(--c-text-default);
 
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.gray050};
+    background-color: var(--c-color-neutral-fill-normal);
   }
 `;
 

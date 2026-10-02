@@ -1,0 +1,148 @@
+// The Twig form macros still output legacy selects and Selectize controls.
+// Give their live inputs the same chrome as Craft 6's native select/combobox.
+.freeform-cp {
+  .select:not(.selectize) select,
+  .selectize:is(.select, .multiselect) .selectize-input {
+    box-sizing: border-box;
+    min-height: var(--c-size-control-md);
+    padding-block: 0;
+    padding-inline: var(--c-input-spacing-inline) calc(var(--c-input-spacing-inline) * 1.5 + 1em);
+    border: var(--c-input-border-width) var(--c-input-border-style) var(--c-input-border-color);
+    border-radius: var(--c-input-radius);
+    background: var(--c-input-fill);
+    color: var(--c-input-text);
+    box-shadow: var(--c-input-shadow);
+    font: inherit;
+  }
+
+  .select:not(.selectize) select:hover:not(:disabled) {
+    background: var(--c-input-fill);
+  }
+
+  .select:not(.selectize) select:focus-visible,
+  .selectize:is(.select, .multiselect) .selectize-input.focus {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+    box-shadow: none;
+  }
+
+  .select:not(.selectize) select:disabled,
+  .selectize:is(.select, .multiselect) .selectize-input.disabled {
+    opacity: 0.5;
+  }
+
+  .select:not(.selectize).small select {
+    min-height: var(--c-size-control-sm);
+    padding-block: 0 !important;
+  }
+
+  .selectize.select {
+    height: auto;
+  }
+
+  .selectize.select .selectize-input {
+    display: flex;
+    align-items: center;
+
+    > .item {
+      min-width: 0;
+    }
+  }
+
+  .selectize:is(.select, .multiselect) .selectize-input > input {
+    color: inherit;
+    font: inherit;
+  }
+
+  .selectize.multiselect .selectize-input {
+    padding: var(--c-spacing-xs);
+
+    > .item {
+      background: var(--c-color-neutral-fill-normal);
+      color: var(--c-color-neutral-on-normal);
+      border-radius: var(--c-radius-sm);
+
+      &.active {
+        background: var(--c-color-neutral-fill-loud);
+        color: var(--c-color-neutral-on-loud);
+      }
+
+      > .remove {
+        color: inherit;
+      }
+    }
+  }
+
+  .select:not(.selectize)::after,
+  .selectize.select .selectize-control::after {
+    inset-inline-end: var(--c-input-spacing-inline);
+    color: var(--c-input-text);
+    opacity: 1;
+  }
+
+  :is(craft-field[has-errors]:not([has-errors='false']), .field.has-errors) {
+    .select select,
+    .selectize-input {
+      border-color: var(--c-color-danger-border-loud);
+    }
+  }
+
+  // Selectize appends its popup to body, outside the field/settings container.
+  .selectize-dropdown {
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-md);
+    background: var(--c-surface-overlay);
+    color: var(--c-text-default);
+    box-shadow: var(--c-shadow-sm);
+    font: inherit;
+
+    .selectize-dropdown-content {
+      padding: var(--c-spacing-sm);
+      background: transparent;
+      border-radius: inherit;
+      box-shadow: none;
+      max-height: calc(var(--c-spacing) * 60);
+    }
+
+    .option,
+    [data-selectable] {
+      margin: 0;
+      min-height: var(--c-size-control-sm);
+      padding: var(--c-spacing-sm) var(--c-spacing-md);
+      border-radius: var(--c-radius-sm);
+      color: var(--c-text-default);
+
+      &:hover {
+        background: var(--c-color-neutral-fill-normal);
+      }
+
+      // Craft's legacy selected-option color is !important.
+      &.selected,
+      &.selected:hover,
+      &.active {
+        background: var(--c-color-neutral-fill-loud);
+        color: var(--c-color-neutral-on-loud) !important;
+      }
+    }
+
+    .optgroup {
+      border-color: var(--c-color-neutral-border-quiet);
+
+      .option {
+        padding-inline-start: var(--c-spacing-lg);
+      }
+    }
+
+    .optgroup-header {
+      margin: 0;
+      padding: var(--c-spacing-sm) var(--c-spacing-md);
+      color: var(--c-text-quiet);
+    }
+  }
+
+  .selectize-input .item > .flex,
+  .selectize-dropdown .option > .flex {
+    gap: var(--c-spacing-md);
+    align-items: center;
+  }
+}

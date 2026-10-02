@@ -1,5 +1,6 @@
 @use 'craft6/element-index';
 @use 'craft6/settings';
+@use 'craft6/dropdowns';
 
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.

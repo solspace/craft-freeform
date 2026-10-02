@@ -57,12 +57,4 @@
       gap: var(--c-spacing-lg, 16px);
     }
   }
-
-  // Boolean menus still use Selectize's legacy label markup. Its flex gap
-  // token is no longer supplied by Craft 6, leaving status dots against text.
-  .selectize-input .item > .flex,
-  .selectize-dropdown .option > .flex {
-    gap: var(--c-spacing-md, 8px);
-    align-items: center;
-  }
 }

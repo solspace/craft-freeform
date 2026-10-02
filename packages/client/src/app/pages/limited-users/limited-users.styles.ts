@@ -1,10 +1,6 @@
 import { dropdownControl } from "@ff-client/styles/craft6";
 import styled from "styled-components";
 
-export const ContentContainer = styled.div`
-  min-width: 0;
-`;
-
 export const GroupWrapper = styled.div`
   max-width: 1100px;
   padding-inline: var(--c-spacing-lg);

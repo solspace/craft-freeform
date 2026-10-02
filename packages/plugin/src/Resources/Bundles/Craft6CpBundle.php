@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Resources\Bundles;
 use craft\events\TemplateEvent;
 use craft\web\View;
 use CraftCms\Cms\Twig\Extensions\CpExtension;
+use Solspace\Freeform\Library\Resources\Craft6Autosuggest;
 use Solspace\Freeform\Library\Resources\Craft6CpAssets;
 
 use function CraftCms\Cms\craftAsset;
@@ -24,6 +25,7 @@ class Craft6CpBundle extends AbstractFreeformAssetBundle
             }
 
             $assets = (new CpExtension())->vite(['resources/css/cp.css', 'resources/js/legacy.ts']);
+            $event->output = Craft6Autosuggest::unwrapPreviews($event->output);
             $event->output = Craft6CpAssets::moveToHead($event->output, $assets);
         });
     }

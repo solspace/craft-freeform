@@ -1,102 +1,81 @@
+import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import DOMPurify from "dompurify";
-import type React from "react";
+import { createElement, type FC, type MouseEvent } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-type Item = {
-  title?: string;
-  heading?: string;
-};
-
-type Props = {
-  activeKey: string;
-};
-
+type Item = { title?: string; heading?: string };
+type Props = { activeKey: string };
 const REACT_SETTINGS_KEYS = new Set(["limited-users", "ai"]);
 
-export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
+export const SettingsSidebar: FC<Props> = ({ activeKey }) => {
+  const navigate = useNavigate();
   const { data, isFetching } = useQuery({
     queryKey: ["settings", "navigation"],
-    queryFn: () => {
-      return axios
+    queryFn: () =>
+      axios
         .get("api/settings/navigation")
-        .then((res) => res.data as Record<string, Item>);
-    },
+        .then((res) => res.data as Record<string, Item>),
   });
-
-  if (!data && isFetching) {
-    return (
-      <div id="sidebar-container">
-        <div id="sidebar" className="sidebar">
-          <nav>
-            <ul>
-              {Array.from({ length: 10 }).map((_, idx) => (
-                <li key={idx}>
-                  <Skeleton width={140} height={10} />
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </div>
-    );
-  }
-
-  if (!data) {
-    return (
-      <div id="sidebar-container">
-        <div id="sidebar" className="sidebar" />
-      </div>
-    );
-  }
 
   return (
     <div id="sidebar-container">
       <div id="sidebar" className="sidebar">
-        <nav>
-          <ul>
-            {Object.entries(data).map(([key, item]) => {
-              if (item.title) {
-                const isActive = key === activeKey;
-                const isReactRoute = REACT_SETTINGS_KEYS.has(key);
-
-                return (
-                  <li key={key}>
-                    {isReactRoute ? (
-                      <Link
-                        className={isActive ? "sel" : undefined}
-                        to={`/settings/${key}`}
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(item.title),
-                        }}
-                      />
-                    ) : (
-                      <a
-                        className={isActive ? "sel" : undefined}
-                        href={generateUrl(`settings/${key}`)}
-                        dangerouslySetInnerHTML={{
-                          __html: DOMPurify.sanitize(item.title),
-                        }}
-                      />
-                    )}
-                  </li>
-                );
-              }
-
-              if (item.heading) {
-                return (
-                  <li key={key} className="heading">
-                    <span>{item.heading}</span>
-                  </li>
-                );
-              }
-
-              return null;
-            })}
-          </ul>
+        <nav
+          className="freeform-secondary-nav"
+          aria-label={translate("Settings")}
+        >
+          {!data && isFetching ? (
+            <div aria-busy="true">
+              {Array.from({ length: 10 }).map((_, idx) => (
+                <div key={idx}>
+                  <Skeleton width={140} height={20} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            createElement(
+              "craft-nav-list",
+              null,
+              Object.entries(data ?? {}).map(([key, item]) => {
+                if (item.heading)
+                  return createElement(
+                    "craft-nav-item",
+                    { key, group: true },
+                    item.heading,
+                  );
+                if (!item.title) return null;
+                const selected = key === activeKey;
+                return createElement("craft-nav-item", {
+                  key,
+                  href: generateUrl(`settings/${key}`),
+                  active: selected || undefined,
+                  current: selected || undefined,
+                  "aria-current": selected ? "page" : undefined,
+                  onClick: (event: MouseEvent<HTMLElement>) => {
+                    if (
+                      !REACT_SETTINGS_KEYS.has(key) ||
+                      event.defaultPrevented ||
+                      event.button !== 0 ||
+                      event.metaKey ||
+                      event.ctrlKey ||
+                      event.shiftKey ||
+                      event.altKey
+                    )
+                      return;
+                    event.preventDefault();
+                    navigate(`/settings/${key}`);
+                  },
+                  dangerouslySetInnerHTML: {
+                    __html: DOMPurify.sanitize(item.title),
+                  },
+                });
+              }),
+            )
+          )}
         </nav>
       </div>
     </div>

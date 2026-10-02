@@ -1,6 +1,8 @@
 @use 'craft6/element-index';
 @use 'craft6/settings';
 @use 'craft6/dropdowns';
+@use 'craft6/autosuggest';
+@use 'craft6/secondary-navigation';
 
 // Craft 6's legacy button mappings still reference tokens from the previous UI.
 // Keep the mappings local to Freeform's legacy CP layouts.
@@ -433,3 +435,5 @@
     }
   }
 }
+
+@include secondary-navigation.styles;

@@ -9,18 +9,13 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { SettingsSidebar } from "../settings/settings.sidebar";
+import { SettingsLayout } from "../settings/settings.layout";
 
 import {
   useLimitedUsersMutation,
   useLimitedUsersSingleQuery,
 } from "./limited-users.queries";
-import {
-  ContentContainer,
-  GroupWrapper,
-  List,
-  ProfileFields,
-} from "./limited-users.styles";
+import { GroupWrapper, List, ProfileFields } from "./limited-users.styles";
 import { ItemBlock } from "./limited-users.sub-components";
 import type { Item, RecursiveUpdate } from "./limited-users.types";
 
@@ -108,94 +103,83 @@ export const LimitedUsersDetail: React.FC = () => {
         url={`settings/limited-users/${id}`}
       />
 
-      <HeaderContainer
-        extra={
-          <button
-            type="button"
-            className="btn submit"
-            disabled={mutation.isPending}
-            onClick={triggerSave()}
+      <SettingsLayout
+        activeKey="limited-users"
+        header={
+          <HeaderContainer
+            extra={
+              <button
+                type="button"
+                className="btn submit"
+                disabled={mutation.isPending}
+                onClick={triggerSave()}
+              >
+                <LoadingText
+                  loading={mutation.isPending}
+                  loadingText={translate("Saving")}
+                  spinner
+                >
+                  {translate("Save")}
+                </LoadingText>
+              </button>
+            }
           >
-            <LoadingText
-              loading={mutation.isPending}
-              loadingText={translate("Saving")}
-              spinner
-            >
-              {translate("Save")}
-            </LoadingText>
-          </button>
+            {translate("Limited Users")}
+          </HeaderContainer>
         }
       >
-        {translate("Limited Users")}
-      </HeaderContainer>
-
-      <div id="main-content" className="has-sidebar">
-        <SettingsSidebar activeKey="limited-users" />
-
-        <ContentContainer id="content-container">
-          <div id="content" className="content-pane">
-            <GroupWrapper>
-              <ProfileFields>
-                <div className="profile-field">
-                  <div className="heading">
-                    <label htmlFor="limited-user-name">
-                      {translate("Name")}
-                    </label>
-                    <div className="instructions" id="limited-user-name-help">
-                      {translate(
-                        "Enter the name of the limited user permission.",
-                      )}
-                    </div>
-                  </div>
-                  <div className="input">
-                    <input
-                      id="limited-user-name"
-                      className="cp-form-control"
-                      type="text"
-                      aria-describedby="limited-user-name-help"
-                      value={name}
-                      onChange={(event) => setName(event.target.value)}
-                    />
-                  </div>
+        <GroupWrapper>
+          <ProfileFields>
+            <div className="profile-field">
+              <div className="heading">
+                <label htmlFor="limited-user-name">{translate("Name")}</label>
+                <div className="instructions" id="limited-user-name-help">
+                  {translate("Enter the name of the limited user permission.")}
                 </div>
-                <div className="profile-field">
-                  <div className="heading">
-                    <label htmlFor="limited-user-description">
-                      {translate("Description")}
-                    </label>
-                    <div
-                      className="instructions"
-                      id="limited-user-description-help"
-                    >
-                      {translate("Enter a description for this permission.")}
-                    </div>
-                  </div>
-                  <div className="input">
-                    <textarea
-                      id="limited-user-description"
-                      className="cp-form-control"
-                      aria-describedby="limited-user-description-help"
-                      rows={3}
-                      value={description}
-                      onChange={(event) => setDescription(event.target.value)}
-                    />
-                  </div>
+              </div>
+              <div className="input">
+                <input
+                  id="limited-user-name"
+                  className="cp-form-control"
+                  type="text"
+                  aria-describedby="limited-user-name-help"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </div>
+            </div>
+            <div className="profile-field">
+              <div className="heading">
+                <label htmlFor="limited-user-description">
+                  {translate("Description")}
+                </label>
+                <div
+                  className="instructions"
+                  id="limited-user-description-help"
+                >
+                  {translate("Enter a description for this permission.")}
                 </div>
-              </ProfileFields>
+              </div>
+              <div className="input">
+                <textarea
+                  id="limited-user-description"
+                  className="cp-form-control"
+                  aria-describedby="limited-user-description-help"
+                  rows={3}
+                  value={description}
+                  onChange={(event) => setDescription(event.target.value)}
+                />
+              </div>
+            </div>
+          </ProfileFields>
 
-              <List>
-                {state.map((item) => (
-                  <ItemBlock
-                    key={item.id}
-                    item={item}
-                    updateValue={updateValue}
-                  />
-                ))}
-              </List>
-            </GroupWrapper>
-          </div>
-        </ContentContainer>
-      </div>
+          <List>
+            {state.map((item) => (
+              <ItemBlock key={item.id} item={item} updateValue={updateValue} />
+            ))}
+          </List>
+        </GroupWrapper>
+      </SettingsLayout>
     </div>
   );
 };

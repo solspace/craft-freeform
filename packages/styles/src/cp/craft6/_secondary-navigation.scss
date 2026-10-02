@@ -1,0 +1,151 @@
+@mixin styles {
+  // Craft's secondary sidebar sits beside the title, content, and footer.
+  // Flatten only the legacy wrapper so its children can share that native grid.
+  .freeform-cp {
+    :is(#main, #main-form):has(> #main-content > #sidebar-container .freeform-secondary-nav),
+    .freeform-secondary-layout {
+      display: grid;
+      grid-template-columns: calc(250rem / 16) minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-areas: 'sidebar header' 'sidebar content' 'sidebar footer';
+      gap: 0;
+      min-height: calc(100dvh - var(--cp-header-height));
+      padding: 0;
+      margin: 0;
+
+      > #header-container {
+        grid-area: header;
+        padding-inline: var(--cp-container-padding);
+        margin: 0;
+
+        #header {
+          padding-inline: 0;
+        }
+      }
+
+      > #main-content:has(> #sidebar-container .freeform-secondary-nav) {
+        display: contents;
+      }
+
+      > #main-content:not(:has(> #sidebar-container)),
+      > #main-content > #content-container {
+        grid-area: content;
+        min-width: 0;
+        width: auto;
+        margin: 0;
+        padding: 0;
+      }
+
+      > #sidebar-container,
+      > #main-content > #sidebar-container {
+        display: block;
+        grid-area: sidebar;
+        align-self: stretch;
+        width: auto;
+        min-width: 0;
+        margin: 0;
+        padding: var(--c-spacing-md);
+        border-inline-end: 1px solid var(--c-color-border-quiet);
+        background: var(--c-surface-default);
+
+        #sidebar {
+          // The legacy CP explicitly pins this to relative with !important.
+          position: sticky !important;
+          inset-block-start: 0;
+          width: auto;
+          margin: 0;
+          padding: 0;
+        }
+
+        #sidebar-toggle-container {
+          display: none;
+        }
+      }
+
+      > #footer {
+        grid-area: footer;
+      }
+
+      @media (max-width: 1023px) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr) auto;
+        grid-template-areas: 'sidebar' 'header' 'content' 'footer';
+
+        > #sidebar-container,
+        > #main-content > #sidebar-container {
+          border-inline-end: 0;
+          border-block-end: 1px solid var(--c-color-border-quiet);
+        }
+      }
+    }
+
+    #sidebar .freeform-secondary-nav {
+      margin: 0;
+      padding: var(--c-spacing-md);
+    }
+
+    #freeform-client-app:has(.freeform-secondary-layout) {
+      padding: 0;
+    }
+
+    .freeform-secondary-layout #content-container {
+      min-width: 0;
+      width: auto;
+      margin: 0;
+    }
+
+    .freeform-profile-table {
+      padding-inline: var(--cp-container-padding);
+      overflow-x: auto;
+
+      .cp-table a {
+        color: var(--c-text-link);
+        font-weight: 600;
+      }
+
+      .cp-table .freeform-profile-description {
+        white-space: normal;
+        overflow-wrap: anywhere;
+      }
+
+      .freeform-profile-actions {
+        width: var(--c-size-control-md);
+        text-align: end;
+      }
+
+      .freeform-profile-delete {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--c-size-control-md);
+        height: var(--c-size-control-md);
+        padding: 0;
+        border: 0;
+        border-radius: var(--c-radius-sm);
+        background: transparent;
+        color: var(--c-color-danger-on-normal);
+        cursor: pointer;
+
+        svg {
+          width: var(--c-size-icon-md);
+          height: var(--c-size-icon-md);
+        }
+
+        &:hover {
+          background: var(--c-color-danger-fill-quiet);
+        }
+
+        &:focus-visible {
+          outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+          outline-offset: var(--c-focus-outline-offset);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+}

@@ -142,9 +142,12 @@ export const AiDashboard: React.FC = () => {
         label={translate("SolspaceAI")}
         url="settings/ai"
       />
-      <HeaderContainer>{translate("SolspaceAI")}</HeaderContainer>
-
-      <SettingsLayout activeKey="ai">{body}</SettingsLayout>
+      <SettingsLayout
+        activeKey="ai"
+        header={<HeaderContainer>{translate("SolspaceAI")}</HeaderContainer>}
+      >
+        {body}
+      </SettingsLayout>
     </div>
   );
 

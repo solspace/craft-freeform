@@ -1,0 +1,33 @@
+// Vue 2 autosuggest emits a plain input; Craft 6's text macro emits a component.
+// Apply native control chrome to the Vue input without styling its listbox.
+.freeform-cp .autosuggest-container {
+  input.text {
+    box-sizing: border-box;
+    min-height: var(--c-size-control-md);
+    padding-inline: var(--c-input-spacing-inline);
+    border: var(--c-input-border-width) var(--c-input-border-style) var(--c-input-border-color);
+    border-radius: var(--c-input-radius);
+    background: var(--c-input-fill);
+    color: var(--c-input-text);
+    box-shadow: var(--c-input-shadow);
+    font: inherit;
+
+    &.fullwidth {
+      width: 100%;
+    }
+
+    &.code {
+      font-family: var(--c-font-mono);
+    }
+
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
+      box-shadow: none;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}

@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Matched Freeform secondary navigation and the Limited Users list table to Craft 6, and fixed duplicated or misaligned autosuggest inputs across control panel pages.
 - Improved Craft 6 Limited Users profile layout, form controls, responsive permission choices, and keyboard accessibility.
 - Fixed flashes of unstyled pages and oversized navigation icons while loading Freeform control panel pages on Craft 6.
 - Fixed duplicate borders on Craft 6 dropdowns that support environment variables.

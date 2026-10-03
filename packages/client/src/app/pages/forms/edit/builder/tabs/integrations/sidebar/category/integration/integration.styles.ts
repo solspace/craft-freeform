@@ -1,3 +1,4 @@
+import { sidebarItem } from "@components/layout/sidebar/sidebar";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -10,32 +11,10 @@ export const Wrapper = styled.div`
     padding: ${spacings.sm} ${spacings.md};
     border-radius: ${borderRadius.lg};
 
-    color: ${colors.gray700};
     font-size: 12px;
     line-height: 12px;
 
-    transition: background-color 0.2s ease-out;
-    text-decoration: none;
-
-    &.active {
-      color: ${colors.white};
-      background-color: ${colors.gray500};
-    }
-
-    &.active.inactive {
-      .status-dot {
-        border-color: ${colors.white};
-      }
-    }
-
-    &.errors {
-      color: ${colors.white};
-      background-color: ${colors.error};
-    }
-
-    &:hover:not(.active) {
-      background-color: ${colors.gray200};
-    }
+    ${sidebarItem};
   }
 `;
 

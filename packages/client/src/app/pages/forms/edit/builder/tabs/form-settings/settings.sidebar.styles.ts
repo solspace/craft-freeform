@@ -1,3 +1,4 @@
+import { sidebarItem } from "@components/layout/sidebar/sidebar";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled, { css } from "styled-components";
 
@@ -17,29 +18,7 @@ export const SectionLink = styled.button`
   padding: ${spacings.sm} ${spacings.md};
   border-radius: ${borderRadius.lg};
 
-  color: ${colors.gray700};
-  fill: currentColor;
-
-  transition: background-color 0.2s ease-out;
-  text-decoration: none;
-
-  &.active {
-    color: ${colors.white};
-    background-color: ${colors.gray500};
-  }
-
-  &.errors {
-    color: ${colors.error};
-  }
-
-  &.active.errors {
-    color: ${colors.white};
-    background-color: ${colors.error};
-  }
-
-  &:hover:not(.active) {
-    background-color: ${colors.gray100};
-  }
+  ${sidebarItem};
 `;
 
 export const SectionIcon = styled.div`

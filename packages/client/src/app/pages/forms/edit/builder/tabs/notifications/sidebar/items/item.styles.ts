@@ -1,3 +1,4 @@
+import { sidebarItem } from "@components/layout/sidebar/sidebar";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
@@ -8,7 +9,7 @@ export const Icon = styled.div`
   width: ${iconSize}px;
   height: ${iconSize}px;
   font-size: ${iconSize}px;
-  fill: ${colors.gray550};
+  fill: currentColor;
 `;
 
 export const Link = styled(NavLink)`
@@ -19,39 +20,10 @@ export const Link = styled(NavLink)`
   padding: ${spacings.sm} ${spacings.md};
   border-radius: ${borderRadius.lg};
 
-  color: ${colors.gray700};
   font-size: 12px;
   line-height: 12px;
 
-  transition: background-color 0.2s ease-out;
-  text-decoration: none;
-
-  &.active {
-    color: ${colors.white};
-    background-color: ${colors.gray500};
-
-    ${Icon} {
-      fill: ${colors.white};
-    }
-  }
-
-  &.active.inactive {
-    .status-dot {
-      border-color: ${colors.white};
-    }
-  }
-
-  &:hover {
-    text-decoration: none;
-  }
-
-  &:hover:not(.active) {
-    background-color: ${colors.gray200};
-  }
-
-  &.errors {
-    color: ${colors.error};
-  }
+  ${sidebarItem};
 `;
 
 export const Name = styled.div`

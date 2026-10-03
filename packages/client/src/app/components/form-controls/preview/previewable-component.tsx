@@ -20,6 +20,7 @@ type Props = {
   onEdit?: () => void;
   onAfterEdit?: () => void;
   excludeClassNames?: string[];
+  covered?: boolean;
   children:
     | React.ReactNode
     | ((isEditing: boolean, close: () => void) => React.ReactNode);
@@ -30,6 +31,7 @@ export const PreviewableComponent: React.FC<Props> = ({
   onEdit,
   onAfterEdit,
   excludeClassNames = [],
+  covered = false,
   children,
 }) => {
   const [isEditing, setIsEditing] = useState(undefined);
@@ -82,6 +84,7 @@ export const PreviewableComponent: React.FC<Props> = ({
         <EditableContentWrapper
           style={{
             zIndex,
+            visibility: covered ? "hidden" : "visible",
             pointerEvents: isEditing ? "initial" : "none",
             ...editorAnimation,
           }}

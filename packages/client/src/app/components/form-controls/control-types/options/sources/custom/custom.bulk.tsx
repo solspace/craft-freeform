@@ -1,5 +1,4 @@
-import Bool from "@components/form-controls/control-types/bool/bool";
-import Select from "@components/form-controls/control-types/select/select";
+import { Control } from "@components/form-controls/control";
 import Textarea from "@components/form-controls/control-types/textarea/textarea";
 import {
   CancelButton,
@@ -16,7 +15,11 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useRef, useState } from "react";
 
-import { BulkEditorWrapper } from "./custom.bulk.styles";
+import {
+  BulkEditorWrapper,
+  BulkSelect,
+  BulkSettings,
+} from "./custom.bulk.styles";
 
 type Props = {
   open: boolean;
@@ -69,36 +72,35 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         <h1>{translate("Bulk Editor")}</h1>
       </SlideoutHeader>
       <BulkEditorWrapper>
-        <Select
-          value={separator}
-          updateValue={(value) => setSeparator(value)}
-          property={{
-            label: translate("Separator"),
-            instructions: translate(
-              "Select the separator used to separate the option label and value when using custom values for option labels.",
-            ),
-            handle: "separator",
-            type: PropertyType.Select,
-            value: "|",
-            options: [
-              { value: "|", label: "|" },
-              { value: ",", label: "," },
-              { value: ";", label: ";" },
-              { value: "=>", label: "=>" },
-              { value: " ", label: "Space" },
-            ],
-          }}
-        />
-
-        <Bool
-          updateValue={(value) => setAppend(value)}
-          value={append}
-          property={{
-            label: translate("Append Values"),
-            handle: "append",
-            type: PropertyType.Boolean,
-          }}
-        />
+        <BulkSettings>
+          <Control label={translate("Separator")} handle="bulk-separator">
+            <BulkSelect
+              id="bulk-separator"
+              value={separator}
+              onChange={(event) => setSeparator(event.target.value)}
+            >
+              {["|", ",", ";", "=>", " "].map((value) => (
+                <option key={value} value={value}>
+                  {value === " " ? translate("Space") : value}
+                </option>
+              ))}
+            </BulkSelect>
+          </Control>
+          <Control label={translate("Import Mode")} handle="bulk-import-mode">
+            <BulkSelect
+              id="bulk-import-mode"
+              value={append ? "append" : "replace"}
+              onChange={(event) => setAppend(event.target.value === "append")}
+            >
+              <option value="append">
+                {translate("Append to Existing Values")}
+              </option>
+              <option value="replace">
+                {translate("Replace Existing Values")}
+              </option>
+            </BulkSelect>
+          </Control>
+        </BulkSettings>
 
         <Textarea
           value={bulk}

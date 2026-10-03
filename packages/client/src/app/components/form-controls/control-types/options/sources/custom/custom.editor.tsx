@@ -46,7 +46,9 @@ import {
 } from "./custom.operations";
 
 export const CustomEditor: React.FC<
-  ConfigurationProps<CustomOptionsConfiguration>
+  ConfigurationProps<CustomOptionsConfiguration> & {
+    onBulkOpenChange?: (open: boolean) => void;
+  }
 > = ({
   value,
   updateValue,
@@ -55,6 +57,7 @@ export const CustomEditor: React.FC<
   isMultiple,
   allowOptgroup,
   autoUpdateHandle,
+  onBulkOpenChange,
 }) => {
   const [localValue, setLocalValue] = useState(value);
   const [bulkOpen, setBulkOpen] = useState(false);
@@ -154,7 +157,10 @@ export const CustomEditor: React.FC<
             type="button"
             ref={bulkTrigger}
             aria-haspopup="dialog"
-            onClick={() => setBulkOpen(true)}
+            onClick={() => {
+              setBulkOpen(true);
+              onBulkOpenChange?.(true);
+            }}
           >
             <i className="fa-duotone fa-list" />
             <span>{translate("Add options in bulk")}</span>
@@ -163,7 +169,8 @@ export const CustomEditor: React.FC<
             <NativeSlideout
               onClose={() => {
                 setBulkOpen(false);
-                bulkTrigger.current?.focus();
+                onBulkOpenChange?.(false);
+                requestAnimationFrame(() => bulkTrigger.current?.focus());
               }}
             >
               {(close) => <Bulk open close={close} bulkImport={bulkImport} />}

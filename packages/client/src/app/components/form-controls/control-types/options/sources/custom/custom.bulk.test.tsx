@@ -55,6 +55,28 @@ describe("bulk options slideout content", () => {
     expect(bulkImport).not.toHaveBeenCalled();
   });
 
+  it("keeps import mode as the existing boolean and passes the selected separator", () => {
+    const { textarea, close, bulkImport } = setup();
+    enterValues(textarea);
+    const separator =
+      container.querySelector<HTMLSelectElement>("#bulk-separator")!;
+    const mode =
+      container.querySelector<HTMLSelectElement>("#bulk-import-mode")!;
+    expect(mode.value).toBe("append");
+    act(() => {
+      separator.value = ",";
+      separator.dispatchEvent(new Event("change", { bubbles: true }));
+      mode.value = "replace";
+      mode.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    const importButton =
+      container.querySelectorAll<HTMLButtonElement>("footer button")[1];
+    expect(importButton.textContent).toContain("Replace Options");
+    act(() => importButton.click());
+    expect(bulkImport).toHaveBeenCalledWith("One|1\nTwo|2", ",", false);
+    expect(close).toHaveBeenCalledOnce();
+  });
+
   it.each(["metaKey", "ctrlKey"])(
     "imports with %s+Enter and closes",
     (modifier) => {

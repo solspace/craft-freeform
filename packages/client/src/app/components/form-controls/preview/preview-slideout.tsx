@@ -6,7 +6,7 @@ import {
 } from "@components/slideouts/slideout.styles";
 import translate from "@ff-client/utils/translations";
 import type { ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import {
@@ -53,7 +53,8 @@ const EditorBody = styled.div`
   padding: var(--c-spacing-lg, 24px);
 
   ${PreviewEditor} {
-    flex: 1;
+    flex: 0 0 auto;
+    height: var(--ff-content-editor-height, 500px);
     min-height: 0;
     min-width: 0;
     padding: 0;
@@ -81,6 +82,25 @@ export const PreviewSlideout: React.FC<Props> = ({
 }) => {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
+  const body = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const element = body.current;
+    if (!editing || !element) return;
+    const resize = () => {
+      const style = getComputedStyle(element);
+      const height =
+        element.clientHeight -
+        parseFloat(style.paddingTop) -
+        parseFloat(style.paddingBottom);
+      if (height > 0)
+        element.style.setProperty("--ff-content-editor-height", `${height}px`);
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [editing]);
 
   return (
     <>
@@ -113,6 +133,7 @@ export const PreviewSlideout: React.FC<Props> = ({
                 <h1>{title}</h1>
               </SlideoutHeader>
               <EditorBody
+                ref={body}
                 onKeyDown={(event) => {
                   // Keep editor undo/redo from changing the form layout.
                   if (

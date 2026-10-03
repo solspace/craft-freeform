@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import styled from "styled-components";
 
 export const SlideoutContainer = styled.div`
@@ -6,21 +7,41 @@ export const SlideoutContainer = styled.div`
   flex: 1;
   min-height: 0;
   height: 100%;
+  overflow: hidden;
+  color: var(--c-text-default);
   background: var(--c-modal-fill, #fff);
+
+  --background-color: color-mix(in srgb, var(--c-surface-default, #fff) 98%, var(--c-text-default, #2b3549));
 `;
 
 export const SlideoutHeader = styled.header.attrs({ className: "pane-header" })`
-  flex: 0 0 auto;
-  padding: var(--c-spacing-lg, 24px);
-  border-bottom: 1px solid var(--c-border-default, #e3e7ed);
+  // Override the legacy pane header's negative margins and compact padding.
+  && {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: var(--c-spacing-lg, 24px);
+    border-radius: 0;
+    border-bottom: 1px solid var(--c-color-border-quiet);
+    background: var(--c-modal-fill, #fff);
+    box-shadow: none;
+  }
 
   h1 {
+    ${sectionHeading}
     margin: 0;
+    padding: 0;
+    font-size: var(--c-text-xl, 20px);
   }
 `;
 
 export const SlideoutFooter = styled.footer.attrs({
   className: "slideout__footer",
 })`
-  flex: 0 0 auto;
+  && {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: var(--c-spacing-md, 16px) var(--c-spacing-lg, 24px);
+    border-top: 1px solid var(--c-color-border-quiet);
+    background: var(--c-modal-fill, #fff);
+  }
 `;

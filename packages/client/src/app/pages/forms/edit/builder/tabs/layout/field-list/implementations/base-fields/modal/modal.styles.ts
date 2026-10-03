@@ -1,3 +1,8 @@
+import {
+  EditableLabelWrapper,
+  LabelElement,
+} from "@components/form-controls/control-types/label/label.styles";
+import { sectionHeading, textControl } from "@ff-client/styles/craft6";
 import { scrollBar } from "@ff-client/styles/mixins";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -17,7 +22,7 @@ export const ManagerWrapper = styled.div`
   flex: 1;
   min-height: 0;
   overflow: auto;
-  background: var(--c-surface-alt, var(--gray-050));
+  background: var(--background-color);
 
   @container (max-width: 600px) {
     grid-template-columns: minmax(0, 1fr);
@@ -29,10 +34,10 @@ export const ManagerWrapper = styled.div`
 
 export const GroupLayout = styled.div`
   position: relative;
-  background-color: ${colors.white};
+  background-color: var(--c-surface-default, #fff);
   padding: ${spacings.md};
   border-radius: ${borderRadius.md};
-  border: 1px solid ${colors.hairline};
+  border: 1px solid var(--c-color-border-quiet);
   display: flex;
   gap: ${spacings.md};
 `;
@@ -58,13 +63,23 @@ GroupWrapper.defaultProps = {
 
 export const GroupType = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 export const GroupHeader = styled.div`
   display: flex;
   align-items: flex-start;
   padding-bottom: ${spacings.lg};
-  gap: ${spacings.lg};
+  gap: ${spacings.md};
+
+  ${LabelElement} {
+    ${sectionHeading}
+  }
+
+  ${EditableLabelWrapper} input.text {
+    ${textControl}
+    font-weight: 600;
+  }
 `;
 
 export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
@@ -117,6 +132,10 @@ export const FieldTypes = styled.div<EmptyProps>`
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
+    padding: var(--c-spacing-md);
+    border: 1px dashed var(--c-color-border-quiet);
+    border-radius: var(--c-radius-md);
+    color: var(--c-text-quiet);
   }
 `;
 
@@ -142,7 +161,12 @@ export const UHField = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.md};
-  padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
+  min-width: 0;
+
+  h3 {
+    ${sectionHeading}
+    margin: 0;
+  }
 `;
 
 export const ColorCircle = styled.button`
@@ -151,7 +175,7 @@ export const ColorCircle = styled.button`
   height: 20px;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid ${colors.gray100};
+  border: 1px solid var(--c-color-border-quiet);
   cursor: pointer;
   background-color: ${({ color }) => color || colors.black};
   position: relative;
@@ -168,9 +192,9 @@ export const ColorPopover = styled.div`
   left: calc(100% + ${spacings.sm});
   z-index: 10;
   padding: ${spacings.sm};
-  border: 1px solid ${colors.gray100};
+  border: 1px solid var(--c-color-border-quiet);
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
+  background: var(--c-surface-overlay, #fff);
   box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
 `;
 

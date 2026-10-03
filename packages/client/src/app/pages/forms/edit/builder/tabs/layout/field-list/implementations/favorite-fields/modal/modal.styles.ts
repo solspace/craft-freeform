@@ -1,15 +1,12 @@
+import { sidebarItem } from "@components/layout/sidebar/sidebar";
 import {
   Title,
   Icon as TitleIcon,
 } from "@editor/builder/tabs/layout/property-editor/property-editor.styles";
 import { SectionBlockContainer } from "@editor/builder/tabs/layout/property-editor/section-block.styles";
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { errorAlert, scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const FavoritesWrapper = styled.div`
@@ -19,6 +16,7 @@ export const FavoritesWrapper = styled.div`
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  background: var(--background-color);
 
   @container (max-width: 600px) {
     flex-direction: column;
@@ -40,7 +38,7 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${Title} {
     padding-left: 0;
-    font-size: 18px;
+    ${sectionHeading}
 
     ${TitleIcon} {
       width: ${titleIconSize}px;
@@ -55,7 +53,8 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${SectionBlockContainer} {
     &:after {
-      background-color: var(--c-modal-fill, #fff);
+      background-color: var(--background-color);
+      color: var(--c-text-quiet);
     }
   }
 `;
@@ -73,13 +72,21 @@ export const FieldList = styled.ul`
   flex-direction: column;
   gap: 2px;
 
+  box-sizing: border-box;
+  margin: 0;
   padding: ${spacings.sm};
+  list-style: none;
 
   overflow-y: auto;
   overflow-x: hidden;
 
-  background: ${colors.gray050};
-  box-shadow: ${shadows.right};
+  background: var(--background-color);
+  border-inline-end: 1px solid var(--c-color-border-quiet);
+
+  @container (max-width: 600px) {
+    border-inline-end: 0;
+    border-bottom: 1px solid var(--c-color-border-quiet);
+  }
 
   ${scrollBar};
 `;
@@ -99,7 +106,7 @@ export const FieldListItem = styled.li`
 
   border: 1px solid transparent;
   border-radius: ${borderRadius.lg};
-  font-size: 13px;
+  font-size: var(--c-text-base);
 
   user-select: none;
   transition: all 0.2s ease-in-out;
@@ -112,19 +119,7 @@ export const FieldListItem = styled.li`
     white-space: nowrap;
   }
 
-  &:hover {
-    background-color: ${colors.gray200};
-  }
-
-  &.active {
-    background: ${colors.gray500};
-    color: ${colors.white};
-    fill: currentColor;
-
-    a {
-      color: ${colors.blue300};
-    }
-  }
+  ${sidebarItem}
 
   &.errors {
     color: ${colors.error};

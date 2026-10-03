@@ -5,6 +5,7 @@ import type { UpdateValue } from "@components/form-controls";
 import { Control } from "@components/form-controls/control";
 import {
   ColumnEditor,
+  ColumnSettings,
   ColumnTabsWrapper,
   TableContainer,
   TableEditorWrapper,
@@ -15,7 +16,6 @@ import type {
 } from "@components/form-controls/control-types/table/table.types";
 import IconCross from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
-import { FlexRow } from "@components/layout/blocks/flex";
 import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type {
@@ -341,7 +341,7 @@ export const TableEditor: React.FC<Props> = ({
         </ColumnTabsWrapper>
 
         <ColumnEditor>
-          <FlexRow>
+          <ColumnSettings>
             <Control width={60} label={translate("Label")} handle="label">
               <input
                 type="text"
@@ -399,7 +399,7 @@ export const TableEditor: React.FC<Props> = ({
                 }}
               />
             </Control>
-          </FlexRow>
+          </ColumnSettings>
           {renderCellEditor(
             column,
             (col: ColumnDescription) =>

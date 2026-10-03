@@ -16,6 +16,11 @@ import { TableColumnTabsWrapper } from "./editor/table.editor.styles";
 export const TableEditorWrapper = styled(PreviewEditor)`
   gap: 0;
   padding: 0;
+  container-type: inline-size;
+
+  ${PreviewEditorContainer} {
+    max-height: none;
+  }
 `;
 
 export const TableContainer = styled(PreviewEditorContainer)`
@@ -36,6 +41,22 @@ export const ColumnEditor = styled.div`
   gap: ${spacings.lg};
 
   padding: ${spacings.lg};
+`;
+
+export const ColumnSettings = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  gap: var(--c-spacing-md, 16px);
+  align-items: end;
+
+  > div {
+    width: auto;
+    min-width: 0;
+  }
+
+  @container (max-width: 480px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 `;
 
 export const TabularOptions = styled.table`

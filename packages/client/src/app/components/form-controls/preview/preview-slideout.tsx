@@ -78,6 +78,8 @@ type Props = {
   preview: ReactNode;
   children: ReactNode;
   fillEditor?: boolean;
+  onEdit?: () => void;
+  onAfterEdit?: () => void;
 };
 
 export const PreviewSlideout: React.FC<Props> = ({
@@ -85,6 +87,8 @@ export const PreviewSlideout: React.FC<Props> = ({
   preview,
   children,
   fillEditor = true,
+  onEdit,
+  onAfterEdit,
 }) => {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
@@ -108,6 +112,11 @@ export const PreviewSlideout: React.FC<Props> = ({
     return () => observer.disconnect();
   }, [editing, fillEditor]);
 
+  const open = () => {
+    setEditing(true);
+    onEdit?.();
+  };
+
   return (
     <>
       <Trigger
@@ -116,11 +125,11 @@ export const PreviewSlideout: React.FC<Props> = ({
         tabIndex={0}
         aria-label={translate("Click to edit data")}
         aria-haspopup="dialog"
-        onClick={() => setEditing(true)}
+        onClick={open}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            setEditing(true);
+            open();
           }
         }}
       >
@@ -130,6 +139,7 @@ export const PreviewSlideout: React.FC<Props> = ({
         <NativeSlideout
           onClose={() => {
             setEditing(false);
+            onAfterEdit?.();
             trigger.current?.focus();
           }}
         >

@@ -1,3 +1,4 @@
+import { contentPreview } from "@ff-client/styles/content-preview";
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -8,6 +9,7 @@ export const Pre = styled.pre`
 `;
 
 export const PreviewContainer = styled(PreviewTable)`
+  ${contentPreview}
   height: auto;
   min-height: 30px;
   padding: ${spacings.sm};

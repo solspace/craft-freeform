@@ -1,3 +1,4 @@
+import { contentPreview } from "@ff-client/styles/content-preview";
 import { CardCell } from "@ff-client/styles/field-cells/cards";
 import { RatingCell } from "@ff-client/styles/field-cells/rating";
 import { SquareCell } from "@ff-client/styles/field-cells/square";
@@ -246,6 +247,7 @@ export const Row = styled.div`
 `;
 
 export const HtmlPreviewElement = styled.div`
+  ${contentPreview}
   a {
     pointer-events: none;
   }

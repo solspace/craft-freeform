@@ -3466,4 +3466,5 @@ return [
     'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.',
     'Are you sure you want to delete "{name}" from this form?' => 'Are you sure you want to delete "{name}" from this form?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.',
+    'Finish & Close' => 'Finish & Close',
 ];

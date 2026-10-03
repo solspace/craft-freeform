@@ -31,6 +31,7 @@ type Props = {
   menu: boolean;
   statusbar: boolean;
   toolbar: string[] | boolean;
+  fullHeight?: boolean;
 };
 
 export const WysiwygEditor: FC<Props> = ({
@@ -39,6 +40,7 @@ export const WysiwygEditor: FC<Props> = ({
   statusbar,
   toolbar,
   updateValue,
+  fullHeight = false,
 }) => {
   const {
     metadata: {
@@ -49,9 +51,10 @@ export const WysiwygEditor: FC<Props> = ({
   return (
     <PreviewEditor>
       <PreviewContainer>
-        <WysiwygEditorWrapper>
+        <WysiwygEditorWrapper $fullHeight={fullHeight}>
           <Editor
             init={{
+              ...(fullHeight ? { height: "100%", resize: false } : {}),
               menubar: menu,
               statusbar: statusbar,
               promotion: false,

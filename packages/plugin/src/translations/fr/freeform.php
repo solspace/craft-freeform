@@ -3467,4 +3467,5 @@ return [
     'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Voulez-vous vraiment supprimer le champ favori « {name} » ? Les champs déjà ajoutés aux formulaires ne seront pas affectés.',
     'Are you sure you want to delete "{name}" from this form?' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ? Tous les champs de ce groupe seront également supprimés.',
+    'Finish & Close' => 'Terminer et fermer',
 ];

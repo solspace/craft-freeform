@@ -23,6 +23,7 @@ export const WysiwygRich: React.FC<Props> = ({
       preview={<WysiwygPreview value={value} />}
     >
       <WysiwygEditor
+        fullHeight
         menu={property.menu}
         statusbar={property.statusbar}
         toolbar={property.toolbar}

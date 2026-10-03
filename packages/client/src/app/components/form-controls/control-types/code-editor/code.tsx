@@ -23,6 +23,7 @@ const Code: React.FC<ControlType<CodeEditorProperty>> = ({
         preview={<CodePreview value={value} />}
       >
         <CodeEditor
+          fullHeight
           value={value}
           language={language}
           updateValue={updateValue}

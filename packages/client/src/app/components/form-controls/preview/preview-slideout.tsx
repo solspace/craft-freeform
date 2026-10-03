@@ -23,13 +23,38 @@ const Trigger = styled.div`
   }
 `;
 
+const FinishButton = styled.button.attrs({
+  type: "button",
+  className: "btn submit",
+})`
+  && {
+    --primary-button-bg: var(--c-color-accent-fill-loud);
+    --primary-button-bg--hover: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+    --primary-button-bg--active: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 10));
+    --primary-button-text-color: var(--c-color-accent-on-loud);
+    --primary-button-border: 1px solid transparent;
+    --primary-button-border--hover: 1px solid transparent;
+    --primary-button-border--active: 1px solid transparent;
+    background: var(--c-color-accent-fill-loud);
+    border: 1px solid transparent;
+    color: var(--c-color-accent-on-loud);
+  }
+  &&:hover {
+    background: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+  }
+`;
+
 const EditorBody = styled.div`
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-height: 0;
   overflow: auto;
   padding: var(--c-spacing-lg, 24px);
 
   ${PreviewEditor} {
+    flex: 1;
+    min-height: 0;
     min-width: 0;
     padding: 0;
     background: transparent;
@@ -38,6 +63,8 @@ const EditorBody = styled.div`
   }
 
   ${PreviewContainer} {
+    flex: 1;
+    min-height: 0;
     cursor: auto;
     input, select, textarea {
       pointer-events: auto;
@@ -99,9 +126,9 @@ export const PreviewSlideout: React.FC<Props> = ({
                 {children}
               </EditorBody>
               <SlideoutFooter>
-                <button type="button" className="btn" onClick={close}>
-                  {translate("Close")}
-                </button>
+                <FinishButton onClick={close}>
+                  {translate("Finish & Close")}
+                </FinishButton>
               </SlideoutFooter>
             </SlideoutContainer>
           )}

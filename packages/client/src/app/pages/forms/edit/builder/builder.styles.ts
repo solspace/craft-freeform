@@ -1,3 +1,4 @@
+import { textControl } from "@ff-client/styles/craft6";
 import { borderRadius, colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -7,6 +8,11 @@ export const BuilderWrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  input.text:not([slot='input']),
+  textarea.text:not([slot='input']) {
+    ${textControl}
+  }
 `;
 
 export const BuilderContent = styled.div`

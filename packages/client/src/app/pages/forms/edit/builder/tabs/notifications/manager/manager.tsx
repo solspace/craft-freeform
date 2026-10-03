@@ -35,7 +35,7 @@ export const NotificationManager: FC = () => {
       />
 
       <SettingsWrapper>
-        <h1>{translate("Notification Manager")}</h1>
+        <h2>{translate("Notification Manager")}</h2>
 
         <NotificationTemplateSelector>
           <Category

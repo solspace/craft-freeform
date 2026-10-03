@@ -19,6 +19,7 @@ export const BooleanInput: FC<InputControl> = (props) => {
       <CheckboxWrapper>
         <CheckboxItem>
           <LightSwitch
+            label={translate(label)}
             enabled={value}
             onClick={(enabled) => onChange(enabled)}
           />

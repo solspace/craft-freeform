@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { scrollBar } from "@ff-client/styles/mixins";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -23,7 +24,8 @@ export const FormSettingsContainer = styled.div`
   }
 `;
 
-export const SectionHeader = styled.h1`
+export const SectionHeader = styled.h2`
+  ${sectionHeading}
   display: flex;
 
   width: 100%;

@@ -385,6 +385,8 @@ export const TableEditor: React.FC<Props> = ({
               justify="center"
             >
               <LightSwitch
+                id="required"
+                label={translate("Required")}
                 enabled={!!column?.required}
                 onClick={(value) => {
                   updateValue(

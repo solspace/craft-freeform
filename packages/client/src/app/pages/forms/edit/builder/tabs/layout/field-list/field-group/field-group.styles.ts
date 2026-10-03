@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -12,6 +13,7 @@ export const FieldGroupWrapper = styled.div`
 `;
 
 export const GroupTitle = styled.h2`
+  ${sectionHeading}
   position: relative;
 
   margin: 0;

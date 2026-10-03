@@ -24,12 +24,14 @@ const PageButton: React.FC<ControlType<PageButtonProperty>> = ({
         <CheckboxWrapper>
           {property.togglable && (
             <LightSwitch
+              id={property.handle}
+              label={translate(property.label)}
               enabled={value.enabled}
               onClick={(enabled) => updateValue({ ...value, enabled })}
             />
           )}
 
-          <Label>{translate(property.label)}</Label>
+          <Label htmlFor={property.handle}>{translate(property.label)}</Label>
         </CheckboxWrapper>
       </PageButtonWrapper>
 

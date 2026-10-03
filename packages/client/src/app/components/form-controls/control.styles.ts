@@ -1,3 +1,4 @@
+import { textControl } from "@ff-client/styles/craft6";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -6,11 +7,11 @@ import { Label } from "./label.styles";
 export const Instructions = styled.span`
   display: block;
 
-  color: ${colors.gray300};
+  color: var(--c-text-quiet);
   padding-top: 0;
-  line-height: 16px;
-  font-size: 12px;
-  font-style: italic;
+  line-height: var(--c-leading-normal);
+  font-size: var(--c-text-base);
+  font-style: normal;
   margin: ${spacings.xs} 0;
 
   &:not(:last-child) {
@@ -81,6 +82,11 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   justify-content: flex-start;
 
   width: ${({ $width }) => ($width ? `${$width}%` : "100%")};
+
+  input.text:not([slot='input']),
+  textarea.text:not([slot='input']) {
+    ${textControl}
+  }
 
   &.disabled {
     opacity: 0.5;
@@ -153,8 +159,8 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   }
 
   ::placeholder {
-    color: ${colors.gray200};
-    font-style: italic;
+    color: var(--c-text-quiet);
+    font-style: normal;
   }
 
   .btn {
@@ -177,6 +183,7 @@ export const LabelGroup = styled.div`
 
 export const LabelInstructionsWrapper = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 export const ExtraContent = styled.div``;

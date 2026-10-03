@@ -1,3 +1,4 @@
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 
@@ -14,16 +15,12 @@ export const BooleanValueRule: React.FC<Props> = ({
 }) => {
   return (
     <div className="checkbox-wrapper">
-      <input
+      <Checkbox
         id={`${fieldUid}-rule-checkbox`}
-        type="checkbox"
-        className="checkbox"
+        label={translate(value ? "Checked" : "Unchecked")}
         onChange={(event) => onChange?.(event.target.checked ? "1" : "")}
         checked={Boolean(value)}
       />
-      <label htmlFor={`${fieldUid}-rule-checkbox`}>
-        {translate(value ? "Checked" : "Unchecked")}
-      </label>
     </div>
   );
 };

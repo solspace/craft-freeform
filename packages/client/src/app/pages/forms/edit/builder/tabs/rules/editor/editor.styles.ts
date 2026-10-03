@@ -1,7 +1,9 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const Label = styled.h1`
+export const Label = styled.h2`
+  ${sectionHeading}
   padding: 0;
 `;
 

@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { colors, shadows, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
@@ -58,7 +59,7 @@ export const Title = styled.h3`
   margin: 0;
   padding: ${spacings.lg};
 
-  font-size: 16px;
+  ${sectionHeading}
   box-shadow: ${shadows.bottom};
 
   > span {

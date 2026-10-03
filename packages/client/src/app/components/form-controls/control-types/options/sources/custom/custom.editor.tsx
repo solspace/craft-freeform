@@ -199,6 +199,7 @@ export const CustomEditor: React.FC<
                       <Cell $tiny>
                         <CenterPoint>
                           <LightSwitch
+                            label={translate("Option Group")}
                             enabled={option.optgroup}
                             onClick={(enabled) =>
                               setLocalValue(

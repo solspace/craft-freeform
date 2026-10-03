@@ -18,3 +18,35 @@ export const dropdownControl = css`
     box-shadow: none;
   }
 `;
+
+// React-managed inputs use the same tokens as Craft's native form controls.
+export const textControl = css`
+  ${dropdownControl}
+  padding-block: var(--c-input-spacing-block);
+  padding-inline: var(--c-input-spacing-inline);
+
+  &.fullwidth {
+    width: 100%;
+  }
+
+  &.code {
+    font-family: var(--c-font-mono);
+  }
+
+  &::placeholder {
+    color: var(--c-text-quiet);
+    font-style: normal;
+  }
+
+  &:disabled,
+  &[readonly] {
+    color: var(--c-text-quiet);
+  }
+`;
+
+export const sectionHeading = css`
+  color: var(--c-text-default);
+  font-size: var(--c-text-lg);
+  font-weight: 700;
+  line-height: var(--c-leading-normal);
+`;

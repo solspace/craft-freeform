@@ -19,12 +19,12 @@ export const TableCheckboxEditor: React.FC<TableEditorProps> = ({
       <FlexRow $alignItems="center">
         <Checkbox
           id={id}
+          label={translate(
+            isChecked ? "checked by default" : "unchecked by default",
+          )}
           checked={isChecked}
           onChange={() => onUpdate({ ...column, checked: !column.checked })}
         />
-        <label htmlFor={id}>
-          {translate(isChecked ? "checked by default" : "unchecked by default")}
-        </label>
       </FlexRow>
     </FlexColumn>
   );

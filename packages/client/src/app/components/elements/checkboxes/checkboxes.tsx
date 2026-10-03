@@ -1,3 +1,4 @@
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import FormInstructions from "@components/form-controls/instructions";
 import type { Option, OptionCollection } from "@ff-client/types/properties";
 import { generateRandomHash } from "@ff-client/utils/hash";
@@ -42,10 +43,9 @@ export const Checkboxes: FC<Props> = ({
     <>
       {selectAll && (
         <SelectAllWrapper>
-          <input
+          <Checkbox
             id={`${uniqueId}-all`}
-            type="checkbox"
-            className="checkbox"
+            label={translate("Select All")}
             checked={isAllSelected}
             onChange={() => {
               if (isAllSelected) {
@@ -59,7 +59,6 @@ export const Checkboxes: FC<Props> = ({
               }
             }}
           />
-          <label htmlFor={`${uniqueId}-all`}>{translate("Select All")}</label>
         </SelectAllWrapper>
       )}
 
@@ -87,10 +86,9 @@ export const Checkboxes: FC<Props> = ({
 
             return (
               <div key={option.value} title={option.label}>
-                <input
+                <Checkbox
                   id={id}
-                  type="checkbox"
-                  className="checkbox"
+                  label={option.label}
                   checked={value.includes(option.value)}
                   onChange={() => {
                     if (value.includes(option.value)) {
@@ -100,7 +98,6 @@ export const Checkboxes: FC<Props> = ({
                     }
                   }}
                 />
-                <label htmlFor={id}>{option.label}</label>
               </div>
             );
           })}

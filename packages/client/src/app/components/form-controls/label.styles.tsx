@@ -11,7 +11,7 @@ export const Label = styled.label<LabelProps>`
   align-items: center;
   gap: 6px;
 
-  color: ${colors.gray550};
+  color: var(--c-text-default);
   font-weight: ${({ $regular }) => ($regular ? "normal" : "bold")} !important;
 `;
 

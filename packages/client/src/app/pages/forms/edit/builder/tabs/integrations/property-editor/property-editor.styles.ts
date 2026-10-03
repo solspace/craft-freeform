@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { scrollBar } from "@ff-client/styles/mixins";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -19,7 +20,8 @@ export const PropertyEditorWrapper = styled.div`
   --background-color: ${colors.white};
   --margins: -24px;
 
-  h1 {
+  h2 {
+    ${sectionHeading}
     padding: 0;
     margin-top: -11px;
     margin-bottom: -5px;

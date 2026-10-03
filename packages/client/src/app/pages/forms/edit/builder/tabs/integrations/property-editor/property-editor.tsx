@@ -54,7 +54,7 @@ export const PropertyEditor: React.FC = () => {
         url={currentPath.pathname}
       />
 
-      <h1 title={handle}>{name}</h1>
+      <h2 title={handle}>{name}</h2>
       {!!description && <p>{description}</p>}
 
       <SettingsWrapper>

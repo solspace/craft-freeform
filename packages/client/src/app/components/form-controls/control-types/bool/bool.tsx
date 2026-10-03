@@ -2,6 +2,7 @@ import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import type { BooleanProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import { CheckboxItem, CheckboxWrapper } from "./bool.styles";
@@ -26,6 +27,8 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
         <CheckboxWrapper>
           <CheckboxItem>
             <LightSwitch
+              id={property.handle}
+              label={translate(property.label)}
               enabled={enabled}
               readOnly={isReadonly}
               onClick={(enabled) => updateValue(enabled)}

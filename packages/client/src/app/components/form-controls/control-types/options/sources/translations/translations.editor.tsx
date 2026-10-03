@@ -124,6 +124,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
 
                   <Cell $tiny>
                     <LightSwitch
+                      label={translate("Default")}
                       enabled={isChecked}
                       onClick={(value) => {
                         if (!isMultiple) {

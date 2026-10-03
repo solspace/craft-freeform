@@ -6,7 +6,10 @@ export const SelectAllWrapper = styled.div`
 
   padding-bottom: 5px;
   margin-bottom: 5px;
-  font-style: italic;
+  font-style: normal;
+  display: flex;
+  align-items: center;
+  gap: var(--c-spacing-md);
 
   &:after {
     content: '';
@@ -29,10 +32,23 @@ type CheckboxesWrapperProps = {
 export const CheckboxesWrapper = styled.div<CheckboxesWrapperProps>`
   columns: ${({ $columns }) => $columns || 1};
 
+  > div {
+    display: flex;
+    align-items: center;
+    gap: var(--c-spacing-md);
+    break-inside: avoid;
+    padding-block: var(--c-spacing-xs);
+  }
+
+  craft-checkbox {
+    width: 100%;
+    min-width: 0;
+  }
+
   label {
     display: block;
     max-width: 100%;
-    padding: 0 10px;
+    padding: 0;
 
     white-space: nowrap;
     text-overflow: ellipsis;

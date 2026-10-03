@@ -1,9 +1,4 @@
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 import {
@@ -29,10 +24,11 @@ export const TableContainer = styled(PreviewEditorContainer)`
 `;
 
 export const ColumnTabsWrapper = styled(TableColumnTabsWrapper)`
-  padding: 0 ${spacings.lg};
+  padding: 0 var(--c-spacing-md, 16px);
 
-  background: ${colors.gray050};
-  box-shadow: ${shadows.bottom};
+  background: transparent;
+  border-bottom: 1px solid var(--c-color-neutral-border-quiet);
+  box-shadow: none;
 `;
 
 export const ColumnEditor = styled.div`

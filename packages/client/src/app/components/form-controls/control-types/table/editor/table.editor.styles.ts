@@ -1,11 +1,6 @@
-import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
+import { BuilderTabsWrapper } from "@editor/builder/tabs/tabs.styles";
 import { scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const OptionContainer = styled.div`
@@ -76,13 +71,14 @@ export const CheckboxContainer = styled.div`
   }
 `;
 
-export const TableColumnTabs = styled(TabsWrapper)`
+export const TableColumnTabs = styled(BuilderTabsWrapper)`
   flex: 1;
+  min-width: 0;
   overflow-x: auto;
-  align-self: flex-start;
+  align-self: stretch;
 
-  padding: ${spacings.md} 1px 0;
-  box-shadow: ${shadows.bottom};
+  padding: 0;
+  box-shadow: none;
 
   ${scrollBar};
 
@@ -90,7 +86,8 @@ export const TableColumnTabs = styled(TabsWrapper)`
     cursor: pointer;
 
     display: flex;
-    gap: 5px;
+    gap: var(--c-spacing-sm, 8px);
+    flex: 0 0 auto;
 
     user-select: none;
   }
@@ -145,14 +142,14 @@ export const RemoveColumnButton = styled.button`
   padding: 0;
   margin-left: 2px;
 
-  border: 1px solid rgba(51, 64, 77, 0.1);
-  border-radius: ${borderRadius.sm};
-  background: rgba(51, 64, 77, 0.08);
-  color: ${colors.gray500};
+  border: 1px solid transparent;
+  border-radius: var(--c-radius-sm);
+  background: transparent;
+  color: var(--c-text-quiet);
 
   &:hover {
-    color: ${colors.gray700};
-    background: rgba(51, 64, 77, 0.2);
+    color: var(--c-text-default);
+    background: var(--c-color-neutral-fill-normal);
   }
 
   svg {
@@ -172,15 +169,15 @@ export const ReorderColumnButton = styled.button`
   padding: 0;
   margin-left: auto;
 
-  border: 1px solid rgba(51, 64, 77, 0.1);
-  border-radius: ${borderRadius.sm};
-  background: rgba(51, 64, 77, 0.08);
-  color: ${colors.gray500};
+  border: 1px solid transparent;
+  border-radius: var(--c-radius-sm);
+  background: transparent;
+  color: var(--c-text-quiet);
   cursor: move;
 
   &:hover {
-    color: ${colors.gray700};
-    background: rgba(51, 64, 77, 0.2);
+    color: var(--c-text-default);
+    background: var(--c-color-neutral-fill-normal);
   }
 
   svg {

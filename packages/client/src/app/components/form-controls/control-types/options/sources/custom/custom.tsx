@@ -32,7 +32,11 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
             isMultiple={isMultiple}
           />
         }
-        excludeClassNames={["bulk-editor"]}
+        excludeClassNames={[
+          "bulk-editor",
+          "slideout-container",
+          "cp-slideout-shade",
+        ]}
         onAfterEdit={() => updateValue(cleanOptions(value))}
       >
         <CustomEditor

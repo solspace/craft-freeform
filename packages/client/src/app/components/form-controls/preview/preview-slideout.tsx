@@ -44,7 +44,7 @@ const FinishButton = styled.button.attrs({
   }
 `;
 
-const EditorBody = styled.div`
+const EditorBody = styled.div<{ $fillEditor: boolean }>`
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -54,7 +54,7 @@ const EditorBody = styled.div`
 
   ${PreviewEditor} {
     flex: 0 0 auto;
-    height: var(--ff-content-editor-height, 500px);
+    height: ${({ $fillEditor }) => ($fillEditor ? "var(--ff-content-editor-height, 500px)" : "auto")};
     min-height: 0;
     min-width: 0;
     padding: 0;
@@ -73,12 +73,18 @@ const EditorBody = styled.div`
   }
 `;
 
-type Props = { title: string; preview: ReactNode; children: ReactNode };
+type Props = {
+  title: string;
+  preview: ReactNode;
+  children: ReactNode;
+  fillEditor?: boolean;
+};
 
 export const PreviewSlideout: React.FC<Props> = ({
   title,
   preview,
   children,
+  fillEditor = true,
 }) => {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
@@ -86,7 +92,7 @@ export const PreviewSlideout: React.FC<Props> = ({
 
   useLayoutEffect(() => {
     const element = body.current;
-    if (!editing || !element) return;
+    if (!editing || !fillEditor || !element) return;
     const resize = () => {
       const style = getComputedStyle(element);
       const height =
@@ -100,7 +106,7 @@ export const PreviewSlideout: React.FC<Props> = ({
     const observer = new ResizeObserver(resize);
     observer.observe(element);
     return () => observer.disconnect();
-  }, [editing]);
+  }, [editing, fillEditor]);
 
   return (
     <>
@@ -134,6 +140,7 @@ export const PreviewSlideout: React.FC<Props> = ({
               </SlideoutHeader>
               <EditorBody
                 ref={body}
+                $fillEditor={fillEditor}
                 onKeyDown={(event) => {
                   // Keep editor undo/redo from changing the form layout.
                   if (

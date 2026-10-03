@@ -14,8 +14,8 @@ import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
 import CrossIcon from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
-import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
 import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
+import { NativeSlideout } from "@components/slideouts/slideout";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
@@ -57,6 +57,8 @@ export const CustomEditor: React.FC<
   autoUpdateHandle,
 }) => {
   const [localValue, setLocalValue] = useState(value);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const bulkTrigger = useRef<HTMLButtonElement>(null);
   const debouncedValue = useDebounce(localValue, 500);
 
   useEffect(() => {
@@ -148,18 +150,25 @@ export const CustomEditor: React.FC<
         />
 
         <BulkWrapper>
-          <PreviewableComponent
-            preview={
-              <BulkButton>
-                <i className="fa-duotone fa-list" />
-                <span>{translate("Add options in bulk")}</span>
-              </BulkButton>
-            }
+          <BulkButton
+            type="button"
+            ref={bulkTrigger}
+            aria-haspopup="dialog"
+            onClick={() => setBulkOpen(true)}
           >
-            {(isEditing, close) => (
-              <Bulk open={isEditing} close={close} bulkImport={bulkImport} />
-            )}
-          </PreviewableComponent>
+            <i className="fa-duotone fa-list" />
+            <span>{translate("Add options in bulk")}</span>
+          </BulkButton>
+          {bulkOpen && (
+            <NativeSlideout
+              onClose={() => {
+                setBulkOpen(false);
+                bulkTrigger.current?.focus();
+              }}
+            >
+              {(close) => <Bulk open close={close} bulkImport={bulkImport} />}
+            </NativeSlideout>
+          )}
 
           <CopyToClipboardButton
             options={localValue.options}

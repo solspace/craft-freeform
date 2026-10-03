@@ -5,6 +5,7 @@ import { contextSelectors } from "@editor/store/slices/context/context.selectors
 import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { useFieldType } from "@ff-client/queries/field-types";
+import { Fields } from "@ff-client/types/field.classes";
 import { Type } from "@ff-client/types/fields";
 import classes from "@ff-client/utils/classes";
 import { hasErrors } from "@ff-client/utils/errors";
@@ -66,6 +67,10 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     "instructions",
     field.properties.instructions,
   );
+  const PreviewElement =
+    field.typeClass === Fields.Html || field.typeClass === Fields.RichText
+      ? HtmlPreviewElement
+      : "div";
 
   return (
     <FieldCellWrapper
@@ -118,7 +123,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
             <FieldAssociationsBadges uid={uid} />
           </Row>
         ) : (
-          <div
+          <PreviewElement
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(preview) }}
           />
         ))}

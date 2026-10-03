@@ -3457,4 +3457,19 @@ return [
     'Form progress' => 'Form progress',
     '{count} star' => '{count} star',
     '{count} stars' => '{count} stars',
+
+    // Supabase Integration
+    'Supabase' => 'Supabase',
+    'Project URL' => 'Project URL',
+    'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.' => 'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.',
+    'Secret API Key' => 'Secret API Key',
+    'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.' => 'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.',
+    'Database Schema' => 'Database Schema',
+    'Enter the schema exposed through the Supabase Data API. Usually `public`.' => 'Enter the schema exposed through the Supabase Data API. Usually `public`.',
+    'Supabase Table' => 'Supabase Table',
+    'Choose the table that should receive a new row for each submission.' => 'Choose the table that should receive a new row for each submission.',
+    'Select a table' => 'Select a table',
+    'Submission UID Column (optional)' => 'Submission UID Column (optional)',
+    'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.',
+    'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.',
 ];

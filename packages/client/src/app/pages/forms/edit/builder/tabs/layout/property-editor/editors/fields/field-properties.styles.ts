@@ -1,4 +1,3 @@
-import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const FieldPropertiesWrapper = styled.div`
@@ -6,5 +5,5 @@ export const FieldPropertiesWrapper = styled.div`
   flex-direction: column;
 
   height: 100%;
-  background: ${colors.gray050};
+  background: var(--background-color);
 `;

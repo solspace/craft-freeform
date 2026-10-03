@@ -1,5 +1,5 @@
 import { sectionHeading } from "@ff-client/styles/craft6";
-import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import { shadows, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
@@ -21,7 +21,7 @@ export const PropertyEditorWrapper = styled.div<PropertyEditorProps>`
   border-right: 1px solid rgb(154 165 177 / 25%);
 
   pointer-events: ${({ $active }) => ($active ? "auto" : "none")};
-  background: ${({ $active }) => ($active ? colors.gray050 : "transparent")};
+  background: ${({ $active }) => ($active ? "var(--background-color)" : "transparent")};
 
   transition: background-color 0.2s ease-in-out;
 `;

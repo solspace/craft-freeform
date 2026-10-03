@@ -1,5 +1,5 @@
 import { labelText, scrollBar } from "@ff-client/styles/mixins";
-import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import { shadows, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 import { Icon } from "./property-editor.styles";
@@ -72,7 +72,7 @@ export const SectionBlockContainer = styled.section`
     display: block;
     padding: 0 5px 0 26px;
 
-    background-color: ${colors.gray050};
+    background-color: var(--background-color);
 
     ${labelText};
     font-size: 11px;

@@ -8,21 +8,21 @@ export const sidebarItem = css`
   color: var(--c-text-default);
   fill: currentColor;
   text-decoration: none;
-  transition: color 0.15s ease-out, border-color 0.15s ease-out;
+  transition: color 0.15s ease-out, border-color 0.15s ease-out,
+    background-color 0.15s ease-out;
 
   &.active {
-    color: var(--c-text-link);
+    background: var(--c-color-accent-fill-quiet);
+    color: var(--c-color-accent-on-quiet);
     border-color: var(--c-color-accent-border-normal);
   }
 
   &:hover {
-    background: transparent;
     text-decoration: none;
   }
 
   &:hover:not(.active) {
-    color: var(--c-text-link);
-    border-color: var(--c-color-accent-border-quiet);
+    background: color-mix(in srgb, currentColor, transparent 95%);
   }
 
   &:focus-visible {

@@ -1,47 +1,20 @@
-import { Modal } from "@components/modals/modal";
-import {
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from "@components/modals/modal.styles";
-import type { ModalContainerProps } from "@components/modals/modal.types";
+import { useModal } from "@components/modals/modal.context";
 import translate from "@ff-client/utils/translations";
-import type React from "react";
 
-type ConfirmSubmissionsModalData = {
-  url: string;
-};
+export const useConfirmLeaveBuilder = (): ((url: string) => void) => {
+  const { confirm } = useModal();
 
-export const ConfirmSubmissionsModal: React.FC<
-  ModalContainerProps<ConfirmSubmissionsModalData>
-> = ({ closeModal, data }) => {
-  const onContinue = (): void => {
-    closeModal();
-    window.location.href = data?.url;
+  return (url) => {
+    confirm({
+      title: translate("Leave the form builder?"),
+      message: translate(
+        "You are about to leave the form builder. Any unsaved changes may be lost if you continue.",
+      ),
+      confirmLabel: translate("Continue"),
+      destructive: false,
+      onConfirm: () => {
+        window.location.href = url;
+      },
+    });
   };
-
-  return (
-    <Modal closeModal={closeModal}>
-      <ModalContainer>
-        <ModalHeader>
-          <h1>{translate("Leave the form builder?")}</h1>
-        </ModalHeader>
-
-        <div style={{ padding: 20 }}>
-          {translate(
-            "You are about to leave the form builder. Any unsaved changes may be lost if you continue.",
-          )}
-        </div>
-
-        <ModalFooter>
-          <button type="button" className="btn cancel" onClick={closeModal}>
-            {translate("Cancel")}
-          </button>
-          <button type="button" className="btn submit" onClick={onContinue}>
-            {translate("Continue")}
-          </button>
-        </ModalFooter>
-      </ModalContainer>
-    </Modal>
-  );
 };

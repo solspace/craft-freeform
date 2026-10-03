@@ -78,3 +78,14 @@ export const DeleteButton = styled.button.attrs({
     outline-offset: var(--c-focus-outline-offset);
   }
 `;
+
+export const ContinueButton = styled(DeleteButton)`
+  && {
+    background: var(--c-color-accent-fill-loud);
+    color: var(--c-color-accent-on-loud);
+  }
+
+  &&:hover {
+    background: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+  }
+`;

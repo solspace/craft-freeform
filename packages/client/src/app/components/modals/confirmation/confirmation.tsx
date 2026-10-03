@@ -6,6 +6,7 @@ import { createPortal } from "react-dom";
 import {
   Actions,
   CancelButton,
+  ContinueButton,
   DeleteButton,
   DialogStyles,
   Message,
@@ -24,6 +25,8 @@ export const ConfirmationDialog: React.FC<Props> = ({
   title,
   message,
   onConfirm,
+  confirmLabel = translate("Delete"),
+  destructive = true,
   onClose,
 }) => {
   const ref = useRef<CraftDialogElement>(null);
@@ -75,6 +78,8 @@ export const ConfirmationDialog: React.FC<Props> = ({
     current.current.onConfirm();
   };
 
+  const ConfirmButton = destructive ? DeleteButton : ContinueButton;
+
   return createPortal(
     <>
       <DialogStyles />
@@ -108,9 +113,9 @@ export const ConfirmationDialog: React.FC<Props> = ({
           <CancelButton ref={cancelRef} onClick={close}>
             {translate("Cancel")}
           </CancelButton>
-          <DeleteButton ref={deleteRef} onClick={confirm}>
-            {translate("Delete")}
-          </DeleteButton>
+          <ConfirmButton ref={deleteRef} onClick={confirm}>
+            {confirmLabel}
+          </ConfirmButton>
         </Actions>,
       )}
     </>,

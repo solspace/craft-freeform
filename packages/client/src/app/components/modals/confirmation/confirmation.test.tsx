@@ -5,8 +5,9 @@ import {
 import { act, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-
 import { ConfirmationDialog } from "./confirmation";
+import { ContinueButton } from "./confirmation.styles";
+import type { ConfirmationOptions } from "./confirmation.types";
 
 let root: Root;
 let container: HTMLDivElement;
@@ -16,7 +17,11 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-async function setup(onConfirm: () => void, underlyingEscape = vi.fn()) {
+async function setup(
+  onConfirm: () => void,
+  underlyingEscape = vi.fn(),
+  options: Partial<ConfirmationOptions> = {},
+) {
   vi.spyOn(customElements, "whenDefined").mockResolvedValue(HTMLElement);
   container = document.createElement("div");
   document.body.append(container);
@@ -28,6 +33,7 @@ async function setup(onConfirm: () => void, underlyingEscape = vi.fn()) {
       <ConfirmationDialog
         title="Delete field?"
         message={'Delete "<img src=x onerror=alert(1)>"?'}
+        {...options}
         onConfirm={onConfirm}
         onClose={() => setOpen(false)}
       />
@@ -45,7 +51,22 @@ async function setup(onConfirm: () => void, underlyingEscape = vi.fn()) {
   return { dialog, cancel: buttons[0], confirm: buttons[1] };
 }
 
-describe("delete confirmation", () => {
+describe("confirmation", () => {
+  it("supports a blue Continue action without changing deletion defaults", async () => {
+    const onConfirm = vi.fn();
+    const { confirm, cancel } = await setup(onConfirm, vi.fn(), {
+      confirmLabel: "Continue",
+      destructive: false,
+    });
+    expect(confirm.textContent).toBe("Continue");
+    expect(confirm.classList.contains(ContinueButton.styledComponentId)).toBe(
+      true,
+    );
+    expect(document.activeElement).toBe(cancel);
+    act(() => confirm.click());
+    expect(onConfirm).toHaveBeenCalledOnce();
+  });
+
   it("focuses Cancel and renders names as plain text without deleting", async () => {
     const onConfirm = vi.fn();
     const { dialog, cancel } = await setup(onConfirm);

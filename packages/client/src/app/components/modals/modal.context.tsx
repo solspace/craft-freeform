@@ -23,6 +23,7 @@ type ContextType = {
     modalConfig?: ModalConfig,
   ) => void;
   openSlideout: (content: ModalType, data?: GenericValue) => void;
+  confirm: (options: ConfirmationOptions) => void;
   confirmDelete: (options: ConfirmationOptions) => void;
   closeModal: () => void;
 };
@@ -31,6 +32,7 @@ const ModalContext = createContext<ContextType>({
   hasOpenModals: false,
   openModal: () => void {},
   openSlideout: () => void {},
+  confirm: () => void {},
   confirmDelete: () => void {},
   closeModal: () => void {},
 });
@@ -89,6 +91,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
         openModal,
         openSlideout,
         closeModal,
+        confirm: confirmDelete,
         confirmDelete,
         hasOpenModals: modals.length > 0 || !!slideout || !!confirmation,
       }}

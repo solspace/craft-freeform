@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { HistoryArrow } from "./history-arrow";
-import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
+import { useConfirmLeaveBuilder } from "./modals/confirm-submissions.modal";
 import {
   BuilderTabsWrapper,
   FormName,
@@ -41,7 +41,7 @@ export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
   const state = useSelector(contextSelectors.state);
-  const { openModal, hasOpenModals } = useModal();
+  const { hasOpenModals } = useModal();
   const { undoCount, redoCount } = useAppSelector((state) => state.history);
 
   const formErrors = useSelector(formSelectors.errors);
@@ -103,6 +103,8 @@ export const Tabs: React.FC = () => {
   const siteHandle = params.get("site");
   const submissionsUrl = `submissions?${siteHandle ? `site=${siteHandle}&` : ""}source=form:${form.id}`;
 
+  const confirmLeaveBuilder = useConfirmLeaveBuilder();
+
   const onSubmissionsClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
   ): void => {
@@ -112,9 +114,7 @@ export const Tabs: React.FC = () => {
       return;
     }
 
-    openModal(ConfirmSubmissionsModal, {
-      url: generateUrl(submissionsUrl),
-    });
+    confirmLeaveBuilder(generateUrl(submissionsUrl));
   };
 
   return (

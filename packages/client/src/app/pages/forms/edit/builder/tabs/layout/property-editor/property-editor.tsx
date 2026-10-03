@@ -33,6 +33,8 @@ export const PropertyEditor: React.FC = () => {
       "save-button",
       "main-tabs",
       "editable-content",
+      "slideout-container",
+      "cp-slideout-shade",
       "dropdown-rollout",
       "breadcrumbs",
       "tagify__dropdown",

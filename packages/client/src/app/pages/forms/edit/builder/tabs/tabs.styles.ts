@@ -14,7 +14,16 @@ export const TabWrapper = styled.nav`
 
   box-sizing: border-box;
   overflow-x: hidden;
-  box-shadow: inset 0 -1px 0 var(--c-color-neutral-border-quiet);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset-inline: var(--c-spacing-md, 8px);
+    inset-block-end: 0;
+    height: 1px;
+    background: var(--c-color-neutral-border-quiet);
+    pointer-events: none;
+  }
 `;
 
 export const Heading = styled.h1`

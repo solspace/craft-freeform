@@ -3,7 +3,13 @@ import translate from "@ff-client/utils/translations";
 import { createElement, useLayoutEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 
-import { Actions, DeleteButton, Message } from "./confirmation.styles";
+import {
+  Actions,
+  CancelButton,
+  DeleteButton,
+  DialogStyles,
+  Message,
+} from "./confirmation.styles";
 import type { ConfirmationOptions } from "./confirmation.types";
 
 type CraftDialogElement = HTMLElement & {
@@ -70,40 +76,44 @@ export const ConfirmationDialog: React.FC<Props> = ({
   };
 
   return createPortal(
-    createElement(
-      "craft-dialog",
-      {
-        ref,
-        label: title,
-        "no-close": true,
-        onKeyDownCapture: (event: React.KeyboardEvent) => {
-          // Let the native dialog handle these keys without reaching the
-          // builder or the Craft slideout underneath it.
-          if (event.key === "Escape" || event.key === "Tab") {
-            event.stopPropagation();
-          }
-          if (event.key === "Tab") {
-            const wrapsBack =
-              event.shiftKey && event.target === cancelRef.current;
-            const wrapsForward =
-              !event.shiftKey && event.target === deleteRef.current;
-            if (wrapsBack || wrapsForward) {
-              event.preventDefault();
-              (wrapsBack ? deleteRef : cancelRef).current?.focus();
+    <>
+      <DialogStyles />
+      {createElement(
+        "craft-dialog",
+        {
+          ref,
+          className: "ff-delete-confirmation",
+          label: title,
+          "no-close": true,
+          onKeyDownCapture: (event: React.KeyboardEvent) => {
+            // Let the native dialog handle these keys without reaching the
+            // builder or the Craft slideout underneath it.
+            if (event.key === "Escape" || event.key === "Tab") {
+              event.stopPropagation();
             }
-          }
+            if (event.key === "Tab") {
+              const wrapsBack =
+                event.shiftKey && event.target === cancelRef.current;
+              const wrapsForward =
+                !event.shiftKey && event.target === deleteRef.current;
+              if (wrapsBack || wrapsForward) {
+                event.preventDefault();
+                (wrapsBack ? deleteRef : cancelRef).current?.focus();
+              }
+            }
+          },
         },
-      },
-      <Message>{message}</Message>,
-      <Actions>
-        <button ref={cancelRef} type="button" className="btn" onClick={close}>
-          {translate("Cancel")}
-        </button>
-        <DeleteButton ref={deleteRef} onClick={confirm}>
-          {translate("Delete")}
-        </DeleteButton>
-      </Actions>,
-    ),
+        <Message>{message}</Message>,
+        <Actions>
+          <CancelButton ref={cancelRef} onClick={close}>
+            {translate("Cancel")}
+          </CancelButton>
+          <DeleteButton ref={deleteRef} onClick={confirm}>
+            {translate("Delete")}
+          </DeleteButton>
+        </Actions>,
+      )}
+    </>,
     document.body,
   );
 };

@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added a Pro **Supabase** integration under **Other**, with per-form table selection, field-to-column mappings, typed values, conditional rules, and optional duplicate prevention using saved submission UIDs.
 - Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. Their selected framework styles and theme variables are bundled locally and scoped to the form.
 - Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.

@@ -3458,4 +3458,19 @@ return [
     'Form progress' => 'Avanzamento del modulo',
     '{count} star' => '{count} stella',
     '{count} stars' => '{count} stelle',
+
+    // Supabase Integration
+    'Supabase' => 'Supabase',
+    'Project URL' => 'URL del progetto',
+    'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.' => 'Inserisci l’URL HTTPS del progetto Supabase senza il percorso API, ad esempio `https://your-project.supabase.co`.',
+    'Secret API Key' => 'Chiave API segreta',
+    'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.' => 'Inserisci una chiave segreta Supabase (`sb_secret_...`) o una chiave service-role precedente. Questa chiave lato server aggira la sicurezza a livello di riga. Usa una variabile d’ambiente per escluderla dalla configurazione del progetto.',
+    'Database Schema' => 'Schema del database',
+    'Enter the schema exposed through the Supabase Data API. Usually `public`.' => 'Inserisci lo schema esposto tramite la Data API di Supabase. Generalmente `public`.',
+    'Supabase Table' => 'Tabella Supabase',
+    'Choose the table that should receive a new row for each submission.' => 'Scegli la tabella che deve ricevere una nuova riga per ogni invio.',
+    'Select a table' => 'Seleziona una tabella',
+    'Submission UID Column (optional)' => 'Colonna UID dell’invio (facoltativa)',
+    'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'Per evitare inserimenti duplicati, indica una colonna di testo o UUID con un vincolo UNIQUE. Freeform la compila con l’UID dell’invio salvato e ignora gli invii ripetuti. Il salvataggio degli invii deve essere abilitato.',
+    'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Associa i campi Freeform alle colonne Supabase. Lascia senza associazione le colonne con valori predefiniti del database. I valori personalizzati possono includere i metadati dell’invio.',
 ];

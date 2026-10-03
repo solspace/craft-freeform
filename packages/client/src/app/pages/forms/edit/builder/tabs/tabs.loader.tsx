@@ -4,10 +4,10 @@ import type React from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
 import {
+  BuilderTabsWrapper,
   FormName,
   Heading,
   SaveButtonWrapper,
-  TabsWrapper,
   TabWrapper,
 } from "./tabs.styles";
 
@@ -25,7 +25,7 @@ export const LoaderTabs: React.FC = () => {
           </FormName>
         </Heading>
 
-        <TabsWrapper>
+        <BuilderTabsWrapper>
           <a className="active">
             <span>
               <Skeleton width={43} />
@@ -55,7 +55,7 @@ export const LoaderTabs: React.FC = () => {
               <Skeleton width={54} />
             </span>
           </a>
-        </TabsWrapper>
+        </BuilderTabsWrapper>
 
         <SaveButtonWrapper>
           <Skeleton />

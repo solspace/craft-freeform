@@ -25,6 +25,7 @@ import { NavLink } from "react-router-dom";
 import { HistoryArrow } from "./history-arrow";
 import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
 import {
+  BuilderTabsWrapper,
   FormName,
   Heading,
   HistoryButton,
@@ -32,7 +33,6 @@ import {
   SaveButton,
   SaveButtonWrapper,
   SubmissionsShortcut,
-  TabsWrapper,
   TabWrapper,
 } from "./tabs.styles";
 
@@ -129,7 +129,7 @@ export const Tabs: React.FC = () => {
         <FormName>{formName || translate("Create a new Form")}</FormName>
       </Heading>
 
-      <TabsWrapper className="main-tabs">
+      <BuilderTabsWrapper className="main-tabs">
         <NavLink
           to={`/forms/${form.id}`}
           end
@@ -175,7 +175,7 @@ export const Tabs: React.FC = () => {
             <span>{translate("Settings")}</span>
           </NavLink>
         )}
-      </TabsWrapper>
+      </BuilderTabsWrapper>
 
       {showSubmissionsShortcut && (
         <SubmissionsShortcut

@@ -14,6 +14,7 @@ export const TabWrapper = styled.nav`
 
   box-sizing: border-box;
   overflow-x: hidden;
+  box-shadow: inset 0 -1px 0 var(--c-color-neutral-border-quiet);
 `;
 
 export const Heading = styled.h1`
@@ -84,6 +85,60 @@ export const TabsWrapper = styled.div`
     > span[data-icon] {
       position: relative;
       left: 5px;
+    }
+  }
+`;
+
+export const BuilderTabsWrapper = styled(TabsWrapper)`
+  gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+
+  a {
+    position: relative;
+    box-sizing: border-box;
+    padding-inline: var(--c-tab-spacing-inline, 1em);
+    color: var(--c-text-default);
+    font-size: var(--c-tabs-font-size, var(--c-text-base));
+    text-decoration: none;
+    border-radius: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      inset-block-end: 0;
+      height: 2px;
+      background: transparent;
+    }
+
+    &:hover,
+    &:hover:not(.active):not(:first-child),
+    &:hover:not(.active):not(:last-child) {
+      background: transparent;
+      border-radius: 0;
+      color: var(--c-text-link);
+    }
+
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: calc(-1 * var(--c-focus-outline-width));
+    }
+
+    &.active {
+      background: transparent;
+      color: var(--c-text-default);
+      font-weight: 700;
+      box-shadow: none !important;
+
+      &::after {
+        background: var(--c-tab-border-active, var(--c-color-accent-border-loud));
+      }
+    }
+
+    &.errors {
+      color: var(--c-color-danger-on-normal);
     }
   }
 `;

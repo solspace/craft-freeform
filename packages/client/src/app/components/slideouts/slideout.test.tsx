@@ -48,6 +48,33 @@ function setup(element: React.ReactNode) {
 }
 
 describe("native Craft manager slideout", () => {
+  it("keeps a live editor mounted as its value changes", () => {
+    const mounted = vi.fn();
+    function Editor({ value }: { value: string }) {
+      const [identity] = useState(() => {
+        mounted();
+        return "editor";
+      });
+      return <input aria-label={identity} value={value} readOnly />;
+    }
+    const panel = setup(
+      <NativeSlideout onClose={() => {}}>
+        {() => <Editor value="Initial content" />}
+      </NativeSlideout>,
+    );
+    act(() =>
+      root.render(
+        <NativeSlideout onClose={() => {}}>
+          {() => <Editor value="Updated content" />}
+        </NativeSlideout>,
+      ),
+    );
+    expect(CraftSlideout.instances).toHaveLength(1);
+    expect(mounted).toHaveBeenCalledOnce();
+    expect(panel.container.querySelector("input")?.value).toBe(
+      "Updated content",
+    );
+  });
   it("preserves React context and waits for Craft's close transition before unmounting", () => {
     const Context = createContext("missing");
     const onClose = vi.fn();

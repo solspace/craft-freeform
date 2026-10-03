@@ -5,7 +5,8 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 type Props = {
-  content: ModalType;
+  content?: ModalType;
+  children?: (close: () => void) => React.ReactNode;
   data?: GenericValue;
   onClose: () => void;
 };
@@ -14,6 +15,7 @@ export const NativeSlideout: React.FC<Props> = ({
   content: Content,
   data,
   onClose,
+  children,
 }) => {
   const [host] = useState(() => {
     const element = document.createElement("div");
@@ -45,5 +47,8 @@ export const NativeSlideout: React.FC<Props> = ({
   }, [host]);
 
   const close = useCallback(() => panelRef.current?.close(), []);
-  return createPortal(<Content closeModal={close} data={data} />, host);
+  return createPortal(
+    Content ? <Content closeModal={close} data={data} /> : children?.(close),
+    host,
+  );
 };

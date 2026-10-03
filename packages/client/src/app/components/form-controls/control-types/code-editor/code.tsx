@@ -1,7 +1,8 @@
 import { Control } from "@components/form-controls/control";
-import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
 import type { ControlType } from "@components/form-controls/types";
 import type { CodeEditorProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import { CodeEditor } from "./code.editor";
@@ -17,13 +18,16 @@ const Code: React.FC<ControlType<CodeEditorProperty>> = ({
 
   return (
     <Control property={property} errors={errors}>
-      <PreviewableComponent preview={<CodePreview value={value} />}>
+      <PreviewSlideout
+        title={translate(property.label)}
+        preview={<CodePreview value={value} />}
+      >
         <CodeEditor
           value={value}
           language={language}
           updateValue={updateValue}
         />
-      </PreviewableComponent>
+      </PreviewSlideout>
     </Control>
   );
 };

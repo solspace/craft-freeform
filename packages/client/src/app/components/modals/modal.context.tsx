@@ -1,3 +1,4 @@
+import { NativeSlideout } from "@components/slideouts/slideout";
 import type { GenericValue } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
 import cloneDeep from "lodash/cloneDeep";
@@ -18,18 +19,28 @@ type ContextType = {
     modalData?: GenericValue,
     modalConfig?: ModalConfig,
   ) => void;
+  openSlideout: (content: ModalType, data?: GenericValue) => void;
   closeModal: () => void;
 };
 
 const ModalContext = createContext<ContextType>({
   hasOpenModals: false,
   openModal: () => void {},
+  openSlideout: () => void {},
   closeModal: () => void {},
 });
 
 export const useModal = (): ContextType => useContext(ModalContext);
 
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const [slideout, setSlideout] = useState<{
+    content: ModalType;
+    data?: GenericValue;
+  }>();
+  const openSlideout = (content: ModalType, data?: GenericValue): void => {
+    setSlideout({ content, data });
+  };
+
   const [data, setData] = useState<GenericValue[]>([]);
   const [modals, setModals] = useState<ModalType[]>([]);
   const [configs, setConfigs] = useState<ModalConfig[]>([]);
@@ -51,11 +62,12 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   };
 
   useEffect(() => {
-    if (modals.length > 0) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
+    if (!modals.length) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
   }, [modals]);
 
   const overlayAnimation = useAnimateOverlay(modals.length > 0);
@@ -63,7 +75,12 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <ModalContext.Provider
-      value={{ openModal, closeModal, hasOpenModals: modals.length > 0 }}
+      value={{
+        openModal,
+        openSlideout,
+        closeModal,
+        hasOpenModals: modals.length > 0 || !!slideout,
+      }}
     >
       {children}
       {createPortal(
@@ -89,7 +106,13 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
         </ModalHub>,
         document.body,
       )}
-      {}
+      {slideout && (
+        <NativeSlideout
+          content={slideout.content}
+          data={slideout.data}
+          onClose={() => setSlideout(undefined)}
+        />
+      )}
     </ModalContext.Provider>
   );
 };

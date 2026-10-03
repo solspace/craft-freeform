@@ -1,10 +1,10 @@
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
-import {
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from "@components/modals/modal.styles";
 import type { ModalType } from "@components/modals/modal.types";
+import {
+  SlideoutContainer,
+  SlideoutFooter,
+  SlideoutHeader,
+} from "@components/slideouts/slideout.styles";
 import {
   useFavoritesDeleteMutation,
   useFavoritesUpdateMutation,
@@ -73,10 +73,10 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
   const isLoading = updateMutation.isPending || deleteMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: "70%" }}>
-      <ModalHeader>
+    <SlideoutContainer>
+      <SlideoutHeader>
         <h1>{translate("Favorite Fields")}</h1>
-      </ModalHeader>
+      </SlideoutHeader>
       <FavoritesWrapper>
         <FieldList>
           {data.map((favorite) => (
@@ -118,7 +118,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
           )}
         </FavoritesEditorWrapper>
       </FavoritesWrapper>
-      <ModalFooter>
+      <SlideoutFooter>
         <button
           type="button"
           className="btn"
@@ -141,7 +141,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
             {translate("Save")}
           </LoadingText>
         </button>
-      </ModalFooter>
-    </ModalContainer>
+      </SlideoutFooter>
+    </SlideoutContainer>
   );
 };

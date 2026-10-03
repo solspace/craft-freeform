@@ -16,7 +16,13 @@ export const FavoritesWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 
-  height: 600px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  @container (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const titleIconSize = 22;
@@ -24,7 +30,8 @@ const titleIconSize = 22;
 export const FavoritesEditorWrapper = styled.div`
   flex: 1;
 
-  height: 100%;
+  min-width: 0;
+  min-height: 0;
   padding: 0 ${spacings.lg};
 
   overflow-x: hidden;
@@ -48,12 +55,20 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${SectionBlockContainer} {
     &:after {
-      background-color: white;
+      background-color: var(--c-modal-fill, #fff);
     }
   }
 `;
 
 export const FieldList = styled.ul`
+  flex: 0 0 220px;
+  min-height: 0;
+
+  @container (max-width: 600px) {
+    flex-basis: auto;
+    max-height: 180px;
+  }
+
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -78,7 +93,8 @@ export const FieldListItem = styled.li`
   align-items: center;
   gap: 10px;
 
-  width: 250px;
+  width: 100%;
+  box-sizing: border-box;
   padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
 
   border: 1px solid transparent;

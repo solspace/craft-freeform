@@ -8,6 +8,14 @@ type CraftElement = {
 };
 
 declare namespace Craft {
+  class Slideout {
+    constructor(contents: HTMLElement, settings?: { autoOpen?: boolean });
+    on(event: "close", callback: () => void): void;
+    open(): void;
+    close(): void;
+    destroy(): void;
+  }
+
   function createElementSelectorModal(
     elementType: string,
     settings: {

@@ -3,9 +3,9 @@ import { useModal } from "@components/modals/modal.context";
 import { FavoriteFieldsManagerModal } from "./modal";
 
 export const useFavoriteFieldsManagerModal = (): (() => void) => {
-  const { openModal } = useModal();
+  const { openSlideout } = useModal();
 
   return (): void => {
-    openModal(FavoriteFieldsManagerModal);
+    openSlideout(FavoriteFieldsManagerModal);
   };
 };

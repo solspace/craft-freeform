@@ -7,6 +7,9 @@ import type { PropsWithChildren } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
+import { ConfirmationDialog } from "./confirmation/confirmation";
+import type { ConfirmationOptions } from "./confirmation/confirmation.types";
+
 import { Modal } from "./modal";
 import { useAnimateModals, useAnimateOverlay } from "./modal.animations";
 import { ModalHub, ModalOverlay } from "./modal.styles";
@@ -20,6 +23,7 @@ type ContextType = {
     modalConfig?: ModalConfig,
   ) => void;
   openSlideout: (content: ModalType, data?: GenericValue) => void;
+  confirmDelete: (options: ConfirmationOptions) => void;
   closeModal: () => void;
 };
 
@@ -27,12 +31,18 @@ const ModalContext = createContext<ContextType>({
   hasOpenModals: false,
   openModal: () => void {},
   openSlideout: () => void {},
+  confirmDelete: () => void {},
   closeModal: () => void {},
 });
 
 export const useModal = (): ContextType => useContext(ModalContext);
 
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const [confirmation, setConfirmation] = useState<ConfirmationOptions>();
+  const confirmDelete = (options: ConfirmationOptions): void => {
+    setConfirmation(options);
+  };
+
   const [slideout, setSlideout] = useState<{
     content: ModalType;
     data?: GenericValue;
@@ -79,7 +89,8 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
         openModal,
         openSlideout,
         closeModal,
-        hasOpenModals: modals.length > 0 || !!slideout,
+        confirmDelete,
+        hasOpenModals: modals.length > 0 || !!slideout || !!confirmation,
       }}
     >
       {children}
@@ -111,6 +122,12 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
           content={slideout.content}
           data={slideout.data}
           onClose={() => setSlideout(undefined)}
+        />
+      )}
+      {confirmation && (
+        <ConfirmationDialog
+          {...confirmation}
+          onClose={() => setConfirmation(undefined)}
         />
       )}
     </ModalContext.Provider>

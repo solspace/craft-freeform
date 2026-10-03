@@ -1,5 +1,6 @@
 import { RemoveButton } from "@components/elements/remove-button/remove";
 import { TranslateIconWrapper } from "@components/form-controls/label.styles";
+import { useModal } from "@components/modals/modal.context";
 import type { Page } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
@@ -37,6 +38,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
   const totalPages = useSelector(pageSelecors.count);
 
   const dispatch = useAppDispatch();
+  const { confirmDelete } = useModal();
   const {
     willTranslate,
     updateTranslation,
@@ -153,11 +155,16 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
             <RemoveButton
               active={isHovering && !isEditing}
               onClick={() => {
-                if (!confirm(translate("Are you sure?"))) {
-                  return;
-                }
-
-                dispatch(deletePage(page));
+                confirmDelete({
+                  title: translate("Delete page?"),
+                  message: translate(
+                    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.',
+                    { name: getTranslation("label", page.label) },
+                  ),
+                  onConfirm: () => {
+                    dispatch(deletePage(page));
+                  },
+                });
               }}
             />
           </RemoveButtonWrapper>

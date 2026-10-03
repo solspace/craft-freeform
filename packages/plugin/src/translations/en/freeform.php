@@ -3459,4 +3459,11 @@ return [
     'Form progress' => 'Form progress',
     '{count} star' => '{count} star',
     '{count} stars' => '{count} stars',
+    'Delete page?' => 'Delete page?',
+    'Delete favorite field?' => 'Delete favorite field?',
+    'Delete field?' => 'Delete field?',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Are you sure you want to delete "{name}"? All fields on this page will also be removed.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.',
+    'Are you sure you want to delete "{name}" from this form?' => 'Are you sure you want to delete "{name}" from this form?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.',
 ];

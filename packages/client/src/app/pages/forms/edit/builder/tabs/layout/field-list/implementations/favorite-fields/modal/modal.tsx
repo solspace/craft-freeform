@@ -1,4 +1,5 @@
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
+import { useModal } from "@components/modals/modal.context";
 import type { ModalType } from "@components/modals/modal.types";
 import {
   SlideoutContainer,
@@ -28,6 +29,7 @@ import {
 
 export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
   const { data } = useFetchFavorites();
+  const { confirmDelete } = useModal();
 
   const [focusedField, setFocusedField] = useState<FieldFavorite>();
   const [state, setState] = useState<PropertyValueCollection>({});
@@ -88,13 +90,17 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
               isActive={focusedField?.id === favorite.id}
               onClick={() => setFocusedField(favorite)}
               onDelete={() => {
-                if (
-                  confirm(
-                    `Are you sure you wish to delete the "${favorite.label}" field?`,
-                  )
-                ) {
-                  deleteMutation.mutate(favorite.id);
-                }
+                if (isLoading) return;
+                confirmDelete({
+                  title: translate("Delete favorite field?"),
+                  message: translate(
+                    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.',
+                    { name: state?.[favorite.id]?.label || favorite.label },
+                  ),
+                  onConfirm: () => {
+                    deleteMutation.mutate(favorite.id);
+                  },
+                });
               }}
             />
           ))}

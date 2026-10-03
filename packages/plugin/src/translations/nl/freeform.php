@@ -3423,4 +3423,11 @@ return [
     'Form progress' => 'Formuliervoortgang',
     '{count} star' => '{count} ster',
     '{count} stars' => '{count} sterren',
+    'Delete page?' => 'Pagina verwijderen?',
+    'Delete favorite field?' => 'Favoriet veld verwijderen?',
+    'Delete field?' => 'Veld verwijderen?',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Weet je zeker dat je "{name}" wilt verwijderen? Alle velden op deze pagina worden ook verwijderd.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Weet je zeker dat je het favoriete veld "{name}" wilt verwijderen? Velden die al aan formulieren zijn toegevoegd, blijven behouden.',
+    'Are you sure you want to delete "{name}" from this form?' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen? Alle velden in deze groep worden ook verwijderd.',
 ];

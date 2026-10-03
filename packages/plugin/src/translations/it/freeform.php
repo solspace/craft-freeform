@@ -3460,4 +3460,11 @@ return [
     'Form progress' => 'Avanzamento del modulo',
     '{count} star' => '{count} stella',
     '{count} stars' => '{count} stelle',
+    'Delete page?' => 'Eliminare la pagina?',
+    'Delete favorite field?' => 'Eliminare il campo preferito?',
+    'Delete field?' => 'Eliminare il campo?',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Vuoi davvero eliminare "{name}"? Verranno rimossi anche tutti i campi di questa pagina.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Vuoi davvero eliminare il campo preferito "{name}"? I campi già aggiunti ai moduli non saranno interessati.',
+    'Are you sure you want to delete "{name}" from this form?' => 'Vuoi davvero eliminare "{name}" da questo modulo?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Vuoi davvero eliminare "{name}" da questo modulo? Verranno rimossi anche tutti i campi di questo gruppo.',
 ];

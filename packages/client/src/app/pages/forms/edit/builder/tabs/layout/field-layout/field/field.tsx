@@ -1,11 +1,14 @@
 import { DuplicateButton } from "@components/elements/duplicate-button/duplicate";
 import { RemoveButton } from "@components/elements/remove-button/remove";
+import { useModal } from "@components/modals/modal.context";
 import config from "@config/freeform/freeform.config";
 import type { Row } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import type { Field as FieldPropType } from "@editor/store/slices/layout/fields";
 import { fieldThunks } from "@editor/store/thunks/fields";
+import { Fields } from "@ff-client/types/field.classes";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { memo, useState } from "react";
 import { DragPreviewImage } from "react-dnd";
@@ -41,6 +44,7 @@ export const Field: React.FC<Props> = memo(
     hoverPosition,
   }) => {
     const dispatch = useAppDispatch();
+    const { confirmDelete } = useModal();
     const [hovering, setHovering] = useState(false);
     const { isDragging, drag, preview } = useFieldDrag(field, index);
     const style = useFieldDragAnimation({
@@ -82,8 +86,24 @@ export const Field: React.FC<Props> = memo(
           <RemoveButton
             active={hovering}
             onClick={() => {
-              dispatch(contextActions.unfocus());
-              dispatch(fieldThunks.remove(field));
+              confirmDelete({
+                title: translate("Delete field?"),
+                message: translate(
+                  field.typeClass === Fields.Group
+                    ? 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.'
+                    : 'Are you sure you want to delete "{name}" from this form?',
+                  {
+                    name:
+                      field.properties?.label ||
+                      field.properties?.handle ||
+                      translate("Field"),
+                  },
+                ),
+                onConfirm: () => {
+                  dispatch(contextActions.unfocus());
+                  dispatch(fieldThunks.remove(field));
+                },
+              });
             }}
           />
           <FieldCell field={field} />

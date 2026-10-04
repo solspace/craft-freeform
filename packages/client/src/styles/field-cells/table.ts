@@ -28,10 +28,12 @@ export const TableCell = css`
     }
 
     thead th {
+      font-size: var(--c-text-sm, 0.875em);
       font-weight: 600 !important;
       text-align: start;
       overflow-wrap: anywhere;
-      border-bottom: 1px solid var(--c-color-neutral-border-quiet, #d5dbe3) !important;
+      border-radius: 0 !important;
+      border-bottom: 2px solid var(--c-color-neutral-border-quiet, #d5dbe3) !important;
     }
 
     tbody tr + tr td {

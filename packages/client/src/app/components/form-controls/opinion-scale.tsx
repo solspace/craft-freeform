@@ -34,7 +34,24 @@ const Sections = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--c-spacing-lg, 24px);
+  > div + div {
+    padding-top: var(--c-spacing-lg, 24px);
+    border-top: 1px solid var(--c-color-neutral-border-quiet);
+  }
   min-width: 0;
+`;
+const EditorHint = styled.p`
+  margin: var(--c-spacing-md, 16px) 0 0;
+  font-size: var(--c-text-sm, 12px);
+  line-height: var(--c-leading-normal);
+  color: var(--c-text-light);
+`;
+const EditCue = styled.div`
+  border-top: 1px solid var(--c-color-neutral-border-quiet);
+  padding-top: 10px;
+  color: var(--c-color-accent-on-quiet);
+  font-weight: 600;
+  font-size: var(--c-text-sm, 12px);
 `;
 const Summary = styled.div`
   display: flex;
@@ -76,6 +93,22 @@ const SummaryControl: React.FC<ControlType<TabularDataProperty>> = ({
   </div>
 );
 
+const EditorHintControl: React.FC<ControlType<TabularDataProperty>> = ({
+  property,
+  context,
+}) => {
+  // biome-ignore lint/suspicious/noExplicitAny: Same field context used by the standard tabular data control.
+  const { willTranslate } = useTranslations(context as any);
+  if (willTranslate(property.handle)) return null;
+  return (
+    <EditorHint>
+      {translate(
+        "Drag rows to reorder them. Press Enter in a cell to add another row.",
+      )}
+    </EditorHint>
+  );
+};
+
 const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
   property,
   value,
@@ -88,6 +121,13 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
   const { willTranslate } = useTranslations(context as any);
   const values = Array.isArray(value) ? value : [];
   const isTranslating = willTranslate(property.handle);
+  const isScales = property.handle === "scales";
+  const displayProperty = {
+    ...property,
+    instructions: isScales
+      ? "Values are saved with submissions. Optional labels are displayed instead of values."
+      : "Optional descriptions shown below the scale. They do not need to match the number of choices.",
+  };
   useLayoutEffect(() => {
     registerCleanup(property.handle, () => {
       if (isTranslating) return;
@@ -96,7 +136,7 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
     });
   }, [registerCleanup, property.handle, values, updateValue, isTranslating]);
   return (
-    <Control property={property} errors={errors} context={context}>
+    <Control property={displayProperty} errors={errors} context={context}>
       <TabularDataEditor
         property={property}
         configuration={property.configuration}
@@ -104,6 +144,14 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
         updateValue={updateValue}
         context={context}
         compact
+        addLabel={isScales ? "Add a scale" : "Add a legend"}
+        deleteLabel={isScales ? "Delete scale" : "Delete legend"}
+        emptyMessage={
+          isScales
+            ? "No scales yet. Add a scale to get started."
+            : "No legends yet. Legends are optional."
+        }
+        showHelp={false}
       />
     </Control>
   );
@@ -146,6 +194,7 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             <Summary>
               {renderProperty(scales, SummaryControl as ControlComponent)}
               {renderProperty(legends, SummaryControl as ControlComponent)}
+              <EditCue>{translate("Edit scales & legends")}</EditCue>
             </Summary>
           }
           onAfterEdit={() =>
@@ -158,6 +207,7 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             {renderProperty(scales, InlineControl as ControlComponent)}
             {renderProperty(legends, InlineControl as ControlComponent)}
           </Sections>
+          {renderProperty(legends, EditorHintControl as ControlComponent)}
         </PreviewSlideout>
       </Control>
     </CleanupContext.Provider>

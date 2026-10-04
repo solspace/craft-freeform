@@ -30,6 +30,12 @@ export const CompactEditor = styled(TableEditorWrapper)`
       }
     }
   }
+  .empty-state {
+    padding: 14px 9px;
+    color: var(--c-text-light);
+    background: var(--c-color-neutral-fill-quiet);
+    border-bottom: 1px solid var(--c-color-neutral-border-quiet);
+  }
   ${Cell} { border-color: var(--c-color-neutral-border-quiet); }
   ${Button} {
     appearance: none;
@@ -39,7 +45,8 @@ export const CompactEditor = styled(TableEditorWrapper)`
     color: var(--c-text-light);
     width: 24px;
     height: 24px;
-    &:hover { background: var(--c-color-neutral-fill-normal); color: var(--c-text-default); }
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-normal); color: var(--c-text-default); }
+    &:disabled { opacity: 0.4; cursor: default; }
     &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); }
   }
   ${Input} {

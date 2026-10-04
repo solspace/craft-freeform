@@ -12,9 +12,10 @@
 
 <% if (!tableLayout.length) { %>
     <%= notConfiguredText %>
-<% } %>
+<% } else { %>
 
-<table class="table-cell-preview data fullwidth columns-<%= tableLayout.length %>">
+<div class="table-cell-preview-wrapper">
+<table class="table-cell-preview data fullwidth columns-<%= tableLayout.length %>" style="--table-preview-columns: <%= tableLayout.length %>">
     <thead>
         <tr>
             <% tableLayout.forEach(function(column) { %>
@@ -57,7 +58,7 @@
                                 <% }); %>
                             </div>
                         <% } else if (column.type === 'textarea') { %>
-                            <textarea placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %></textarea>
+                            <textarea rows="1" placeholder="<%= column.placeholder %>"><% if (column.value.length > 0) { %><%= column.value %><% } else { %><%= sampleText %><% } %></textarea>
                         <% } else if (column.type === 'file') { %>
                             <input type="file" />
                         <% } else if (column.type === 'number') { %>
@@ -79,3 +80,6 @@
         <% } %>
     </tbody>
 </table>
+</div>
+
+<% } %>

@@ -360,6 +360,7 @@ return [
     'Add column' => 'Kolom toevoegen',
     'Remove column' => 'Kolom verwijderen',
     'Reorder column' => 'Kolom herschikken',
+    'Reorder option' => 'Optie herschikken',
     'Required' => 'Vereist',
     'Min Length' => 'Min. lengte',
     'The minimum number of characters allowed in the field.' => 'Het minimum aantal toegestane tekens in het veld.',

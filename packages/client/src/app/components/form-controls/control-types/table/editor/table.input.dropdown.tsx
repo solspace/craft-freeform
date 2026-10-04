@@ -1,18 +1,19 @@
-import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import { HelpText } from "@components/elements/help-text";
 import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
 import CrossIcon from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
-import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import update from "immutability-helper";
 import React, { useEffect, useRef, useState } from "react";
 
-import Bool from "../../bool/bool";
-import { TableWithButtonWrapper } from "../../options/sources/custom/custom.editor.styles";
+import {
+  AddOptionButton,
+  TableWithButtonWrapper,
+} from "../../options/sources/custom/custom.editor.styles";
 import {
   Button,
   Cell,
@@ -151,7 +152,7 @@ export const TableDropdownEditor: React.FC<TableEditorProps> = ({
                 <th>{translate("Label")}</th>
                 {localOptions.length > 1 && (
                   <>
-                    <th>{translate("Selected")}</th>
+                    <th>{translate("Default")}</th>
                     <th colSpan={2}>{translate("Actions")}</th>
                   </>
                 )}
@@ -232,21 +233,21 @@ export const TableDropdownEditor: React.FC<TableEditorProps> = ({
                     <>
                       <Cell $tiny>
                         <CenterPoint>
-                          <Bool
-                            property={{
-                              label: "",
-                              handle: `${index}-check`,
-                              type: PropertyType.Boolean,
-                              width: 50,
-                            }}
-                            value={column.value === option}
-                            updateValue={() => setSelectedOption(option)}
+                          <Checkbox
+                            aria-label={translate("Default")}
+                            checked={column.value === option}
+                            onChange={() => setSelectedOption(option)}
                           />
                         </CenterPoint>
                       </Cell>
                       <Cell $tiny>
                         <CenterPoint>
-                          <Button ref={refs.current[index]} className="handle">
+                          <Button
+                            type="button"
+                            aria-label={translate("Reorder option")}
+                            ref={refs.current[index]}
+                            className="handle"
+                          >
                             <MoveIcon />
                           </Button>
                         </CenterPoint>
@@ -254,6 +255,9 @@ export const TableDropdownEditor: React.FC<TableEditorProps> = ({
                       <Cell $tiny>
                         <CenterPoint>
                           <Button
+                            type="button"
+                            className="delete"
+                            aria-label={translate("Delete")}
                             onClick={() => {
                               const nextOptions = deleteOption(
                                 index,
@@ -286,10 +290,13 @@ export const TableDropdownEditor: React.FC<TableEditorProps> = ({
             </tbody>
           </TabularOptions>
         </TableContainer>
-        <AddButtonArea
-          label={translate("Add an option")}
+        <AddOptionButton
+          type="button"
+          className="btn"
           onClick={() => addCell(0)}
-        />
+        >
+          {translate("Add an option")}
+        </AddOptionButton>
       </TableWithButtonWrapper>
 
       <HelpText>

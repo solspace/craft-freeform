@@ -1,6 +1,5 @@
-import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import { HelpText } from "@components/elements/help-text";
-import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import Bool from "@components/form-controls/control-types/bool/bool";
 import {
   Button,
@@ -14,7 +13,6 @@ import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
 import CrossIcon from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
-import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
 import { NativeSlideout } from "@components/slideouts/slideout";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import { PropertyType } from "@ff-client/types/properties";
@@ -31,9 +29,11 @@ import type {
 import { Bulk } from "./custom.bulk";
 import { CopyToClipboardButton } from "./custom.clipboard-button";
 import {
+  AddOptionButton,
   BulkButton,
   BulkWrapper,
   ChoiceWrapper,
+  OptionsEditor,
   TableWithButtonWrapper,
 } from "./custom.editor.styles";
 import {
@@ -138,7 +138,7 @@ export const CustomEditor: React.FC<
   };
 
   return (
-    <PreviewEditor>
+    <OptionsEditor>
       <ChoiceWrapper>
         <Bool
           property={{
@@ -195,7 +195,7 @@ export const CustomEditor: React.FC<
                   {useCustomValues && <th>{translate("Value")}</th>}
                   {options.length > 1 && (
                     <>
-                      <th>{translate("Selected")}</th>
+                      <th>{translate("Default")}</th>
                       <th colSpan={2}>{translate("Actions")}</th>
                     </>
                   )}
@@ -214,16 +214,16 @@ export const CustomEditor: React.FC<
                     {allowOptgroup && (
                       <Cell $tiny>
                         <CenterPoint>
-                          <LightSwitch
-                            label={translate("Option Group")}
-                            enabled={option.optgroup}
-                            onClick={(enabled) =>
+                          <Checkbox
+                            aria-label={translate("Option Group")}
+                            checked={!!option.optgroup}
+                            onChange={() =>
                               setLocalValue(
                                 updateOption(
                                   index,
                                   {
                                     ...option,
-                                    optgroup: enabled,
+                                    optgroup: !option.optgroup,
                                   },
                                   localValue,
                                 ),
@@ -300,19 +300,14 @@ export const CustomEditor: React.FC<
                       <>
                         <Cell $tiny>
                           <CenterPoint>
-                            <Bool
-                              property={{
-                                label: "",
-                                handle: `${index}-check`,
-                                type: PropertyType.Boolean,
-                                width: 50,
-                              }}
-                              value={
+                            <Checkbox
+                              aria-label={translate("Default")}
+                              checked={
                                 isMultiple
                                   ? defaultValue.includes(option.value)
                                   : option.value === defaultValue
                               }
-                              updateValue={() => {
+                              onChange={() => {
                                 if (isMultiple) {
                                   const val = defaultValue as string[];
 
@@ -337,6 +332,8 @@ export const CustomEditor: React.FC<
                         <Cell $tiny>
                           <CenterPoint>
                             <Button
+                              type="button"
+                              aria-label={translate("Reorder option")}
                               ref={refs.current[index]}
                               className="handle"
                             >
@@ -347,6 +344,9 @@ export const CustomEditor: React.FC<
                         <Cell $tiny>
                           <CenterPoint>
                             <Button
+                              type="button"
+                              className="delete"
+                              aria-label={translate("Delete")}
                               onClick={() => {
                                 setLocalValue(deleteOption(index, localValue));
                                 setActiveCell(Math.max(index - 1, 0), 0);
@@ -363,7 +363,13 @@ export const CustomEditor: React.FC<
               </tbody>
             </TabularOptions>
           </TableContainer>
-          <AddButtonArea label="Add an option" onClick={() => addCell(0)} />
+          <AddOptionButton
+            type="button"
+            className="btn"
+            onClick={() => addCell(0)}
+          >
+            {translate("Add an option")}
+          </AddOptionButton>
         </TableWithButtonWrapper>
       )}
 
@@ -378,6 +384,6 @@ export const CustomEditor: React.FC<
           }}
         />
       </HelpText>
-    </PreviewEditor>
+    </OptionsEditor>
   );
 };

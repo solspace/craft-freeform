@@ -360,6 +360,7 @@ return [
     'Add column' => 'Aggiungi colonna',
     'Remove column' => 'Rimuovi colonna',
     'Reorder column' => 'Riordina colonna',
+    'Reorder option' => 'Riordina opzione',
     'Required' => 'Obbligatorio',
     'Min Length' => 'Lunghezza minima',
     'The minimum number of characters allowed in the field.' => 'Il numero minimo di caratteri consentiti nel campo.',

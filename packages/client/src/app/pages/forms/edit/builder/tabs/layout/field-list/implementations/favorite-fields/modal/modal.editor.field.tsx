@@ -5,6 +5,7 @@ import type { GenericValue, Property } from "@ff-client/types/properties";
 import type React from "react";
 
 type Props = {
+  control?: React.ComponentProps<typeof FormComponent>["control"];
   property: Property;
   siblingProperties: Property[];
   state: PropertyValueCollection;
@@ -14,6 +15,7 @@ type Props = {
 
 export const FavoriteFieldComponent: React.FC<Props> = ({
   property,
+  control,
   siblingProperties,
   state,
   errors,
@@ -27,6 +29,7 @@ export const FavoriteFieldComponent: React.FC<Props> = ({
 
   return (
     <FormComponent
+      control={control}
       value={state?.[property.handle] || ""}
       property={property}
       updateValue={generateUpdateHandler(property)}

@@ -22,6 +22,8 @@ import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import React, { useRef } from "react";
 
+import { CompactEditor } from "./tabular-data.editor.styles";
+
 import {
   addRow,
   deleteRow,
@@ -36,6 +38,7 @@ type Props = {
   updateValue: UpdateValue<ColumnValue[]>;
   property: TabularDataProperty;
   context: unknown;
+  compact?: boolean;
 };
 
 export const TabularDataEditor: React.FC<Props> = ({
@@ -44,6 +47,7 @@ export const TabularDataEditor: React.FC<Props> = ({
   updateValue,
   property,
   context,
+  compact = false,
 }) => {
   const { getTranslation, updateTranslation, willTranslate } = useTranslations(
     // biome-ignore lint/suspicious/noExplicitAny: This context is typed as unknown, but we know it will be the correct type for the translation functions.
@@ -82,10 +86,30 @@ export const TabularDataEditor: React.FC<Props> = ({
     );
   };
 
+  const Wrapper = compact ? CompactEditor : TableEditorWrapper;
+
   return (
-    <TableEditorWrapper>
+    <Wrapper>
       <TableContainer>
         <TabularOptions>
+          {compact && (
+            <thead>
+              <tr>
+                {configuration.map((column) => (
+                  <th scope="col" key={column.key}>
+                    {translate(column.label)}
+                  </th>
+                ))}
+                {values.length > 1 && !isTranslating && (
+                  <th
+                    colSpan={2}
+                    style={{ width: 76 }}
+                    aria-label={translate("Actions")}
+                  />
+                )}
+              </tr>
+            </thead>
+          )}
           <tbody>
             {values.map((value, rowIndex) => (
               <DraggableRow
@@ -100,7 +124,13 @@ export const TabularDataEditor: React.FC<Props> = ({
                   <Cell key={columnIndex}>
                     <Input
                       type="text"
-                      value={value[columnIndex]}
+                      value={
+                        compact && isTranslating
+                          ? (translation[rowIndex]?.[columnIndex] ??
+                            value[columnIndex])
+                          : value[columnIndex]
+                      }
+                      aria-label={translate(column.label)}
                       placeholder={translate(column.label)}
                       autoFocus={activeCell === `${rowIndex}:${columnIndex}`}
                       disabled={isTranslating && !column.translatable}
@@ -154,15 +184,22 @@ export const TabularDataEditor: React.FC<Props> = ({
                   </Cell>
                 ))}
 
-                {values.length > 1 && (
+                {values.length > 1 && !(compact && isTranslating) && (
                   <>
                     <Cell $tiny>
-                      <Button ref={refs.current[rowIndex]} className="handle">
+                      <Button
+                        type="button"
+                        aria-label={translate("Reorder")}
+                        ref={refs.current[rowIndex]}
+                        className="handle"
+                      >
                         <MoveIcon />
                       </Button>
                     </Cell>
                     <Cell $tiny>
                       <Button
+                        type="button"
+                        aria-label={translate("Delete")}
                         onClick={() => {
                           updateValue(deleteRow(rowIndex, values));
                           setActiveCell(Math.max(rowIndex - 1, 0), 0);
@@ -179,11 +216,22 @@ export const TabularDataEditor: React.FC<Props> = ({
         </TabularOptions>
       </TableContainer>
 
-      <AddButtonArea
-        label="Add a row"
-        onClick={() => appendAndFocus(0)}
-        disabled={isTranslating}
-      />
+      {compact ? (
+        <button
+          type="button"
+          className="btn add icon"
+          disabled={isTranslating}
+          onClick={() => appendAndFocus(0)}
+        >
+          {translate("Add a row")}
+        </button>
+      ) : (
+        <AddButtonArea
+          label="Add a row"
+          onClick={() => appendAndFocus(0)}
+          disabled={isTranslating}
+        />
+      )}
 
       <HelpText>
         <span
@@ -196,6 +244,6 @@ export const TabularDataEditor: React.FC<Props> = ({
           }}
         />
       </HelpText>
-    </TableEditorWrapper>
+    </Wrapper>
   );
 };

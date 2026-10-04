@@ -10,6 +10,7 @@ import type React from "react";
 import { useSelector } from "react-redux";
 
 type Props = {
+  control?: React.ComponentProps<typeof FormComponent>["control"];
   property: Property;
   field: Field;
   autoFocus?: boolean;
@@ -17,6 +18,7 @@ type Props = {
 
 export const FieldComponent: React.FC<Props> = ({
   property,
+  control,
   field,
   autoFocus,
 }) => {
@@ -52,6 +54,7 @@ export const FieldComponent: React.FC<Props> = ({
 
   return (
     <FormComponent
+      control={control}
       autoFocus={autoFocus}
       value={canUseTranslationValue(property) ? translationEnabledValue : value}
       property={property}

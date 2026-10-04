@@ -44,4 +44,30 @@ export const SlideoutFooter = styled.footer.attrs({
     border-top: 1px solid var(--c-color-border-quiet);
     background: var(--c-modal-fill, #fff);
   }
+
+  && > .btn {
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--c-text-default);
+    box-shadow: none;
+  }
+
+  && > .btn:hover:not(:disabled) {
+    background: var(--c-color-neutral-fill-normal);
+  }
+
+  && > .btn.submit {
+    background: var(--c-color-accent-fill-loud);
+    color: var(--c-color-accent-on-loud);
+  }
+
+  && > .btn.submit:hover:not(:disabled) {
+    background: hsl(from var(--c-color-accent-fill-loud) h s calc(l - 5));
+    color: var(--c-color-accent-on-loud);
+  }
+
+  && > .btn:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+  }
 `;

@@ -3474,4 +3474,6 @@ return [
     'Are you sure you want to delete "{name}" from this form?' => 'Vuoi davvero eliminare "{name}" da questo modulo?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Vuoi davvero eliminare "{name}" da questo modulo? Verranno rimossi anche tutti i campi di questo gruppo.',
     'Finish & Close' => 'Termina e chiudi',
+    'Scales & Legends' => 'Scale e legende',
+    'Opinion Scale Configuration' => 'Configurazione della scala di opinione',
 ];

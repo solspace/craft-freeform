@@ -3474,4 +3474,6 @@ return [
     'Are you sure you want to delete "{name}" from this form?' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ? Tous les champs de ce groupe seront également supprimés.',
     'Finish & Close' => 'Terminer et fermer',
+    'Scales & Legends' => 'Échelles et légendes',
+    'Opinion Scale Configuration' => 'Configuration de l’échelle d’opinion',
 ];

@@ -3437,4 +3437,6 @@ return [
     'Are you sure you want to delete "{name}" from this form?' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen? Alle velden in deze groep worden ook verwijderd.',
     'Finish & Close' => 'Afronden en sluiten',
+    'Scales & Legends' => 'Schalen en legenda’s',
+    'Opinion Scale Configuration' => 'Opinieschaal configureren',
 ];

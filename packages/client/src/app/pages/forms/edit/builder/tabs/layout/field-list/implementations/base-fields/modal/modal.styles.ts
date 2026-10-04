@@ -64,6 +64,7 @@ GroupWrapper.defaultProps = {
 export const GroupType = styled.div`
   flex: 1;
   min-width: 0;
+  container-type: inline-size;
 `;
 
 export const GroupHeader = styled.div`
@@ -85,13 +86,18 @@ export const GroupHeader = styled.div`
 export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   display: grid;
   gap: 6px;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   min-width: 0;
   border-radius: ${borderRadius.md};
 
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
+    grid-column: 1 / -1;
+  }
+
+  @container (max-width: 280px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   svg {
@@ -125,17 +131,23 @@ export const FieldListWrapper = styled.div`
 `;
 
 export const FieldTypes = styled.div<EmptyProps>`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacings.xs};
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
 
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
+    grid-column: 1 / -1;
     padding: var(--c-spacing-md);
     border: 1px dashed var(--c-color-border-quiet);
     border-radius: var(--c-radius-md);
     color: var(--c-text-quiet);
+  }
+
+  @container (max-width: 280px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 `;
 
@@ -162,6 +174,7 @@ export const UHField = styled.div`
   flex-direction: column;
   gap: ${spacings.md};
   min-width: 0;
+  container-type: inline-size;
 
   h3 {
     ${sectionHeading}

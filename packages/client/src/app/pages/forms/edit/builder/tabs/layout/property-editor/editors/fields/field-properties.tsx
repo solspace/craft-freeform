@@ -1,3 +1,4 @@
+import { OpinionScaleProperty } from "@components/form-controls/opinion-scale";
 import config from "@config/freeform/freeform.config";
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
@@ -50,11 +51,19 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         blocks.push(
           <SectionBlock label={translate(label)} icon={icon} key={handle}>
             {properties.map((property, propertyIndex) => (
-              <FieldComponent
-                autoFocus={sectionIndex === 0 && propertyIndex === 0}
+              <OpinionScaleProperty
                 key={property.handle}
-                field={field}
+                typeClass={field.typeClass}
                 property={property}
+                properties={properties}
+                renderProperty={(item, control) => (
+                  <FieldComponent
+                    autoFocus={sectionIndex === 0 && propertyIndex === 0}
+                    field={field}
+                    property={item}
+                    control={control}
+                  />
+                )}
               />
             ))}
           </SectionBlock>,

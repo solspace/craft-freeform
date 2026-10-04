@@ -3473,4 +3473,6 @@ return [
     'Are you sure you want to delete "{name}" from this form?' => 'Are you sure you want to delete "{name}" from this form?',
     'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.',
     'Finish & Close' => 'Finish & Close',
+    'Scales & Legends' => 'Scales & Legends',
+    'Opinion Scale Configuration' => 'Opinion Scale Configuration',
 ];

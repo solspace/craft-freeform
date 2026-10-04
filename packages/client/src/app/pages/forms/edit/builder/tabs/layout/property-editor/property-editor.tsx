@@ -35,6 +35,7 @@ export const PropertyEditor: React.FC = () => {
       "editable-content",
       "slideout-container",
       "cp-slideout-shade",
+      "ff-delete-confirmation",
       "dropdown-rollout",
       "breadcrumbs",
       "tagify__dropdown",

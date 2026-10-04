@@ -16,6 +16,7 @@ import type {
 } from "@components/form-controls/control-types/table/table.types";
 import IconCross from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
+import { useModal } from "@components/modals/modal.context";
 import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type {
@@ -133,6 +134,7 @@ export const TableEditor: React.FC<Props> = ({
   property,
   context,
 }) => {
+  const { confirmDelete } = useModal();
   const [tabIndex, setTabIndex] = useState<number>(0);
   const { getTranslation, willTranslate } = useTranslations(context);
   const labelInputRef = useRef<HTMLInputElement>(null);
@@ -320,7 +322,14 @@ export const TableEditor: React.FC<Props> = ({
                       onClick={(event) => {
                         event.preventDefault();
                         event.stopPropagation();
-                        removeTab(index);
+                        confirmDelete({
+                          title: translate("Delete column?"),
+                          message: translate(
+                            'Are you sure you want to delete the column "{name}" from this table?',
+                            { name: translate(column.label || "New column") },
+                          ),
+                          onConfirm: () => removeTab(index),
+                        });
                       }}
                     >
                       <IconCross />

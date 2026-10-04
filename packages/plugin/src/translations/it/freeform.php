@@ -3463,6 +3463,8 @@ return [
     'Form progress' => 'Avanzamento del modulo',
     '{count} star' => '{count} stella',
     '{count} stars' => '{count} stelle',
+    'Delete column?' => 'Eliminare la colonna?',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Vuoi davvero eliminare la colonna "{name}" da questa tabella?',
     'Delete page?' => 'Eliminare la pagina?',
     'Delete favorite field?' => 'Eliminare il campo preferito?',
     'Delete field?' => 'Eliminare il campo?',

@@ -3426,6 +3426,8 @@ return [
     'Form progress' => 'Formuliervoortgang',
     '{count} star' => '{count} ster',
     '{count} stars' => '{count} sterren',
+    'Delete column?' => 'Kolom verwijderen?',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Weet je zeker dat je de kolom "{name}" uit deze tabel wilt verwijderen?',
     'Delete page?' => 'Pagina verwijderen?',
     'Delete favorite field?' => 'Favoriet veld verwijderen?',
     'Delete field?' => 'Veld verwijderen?',

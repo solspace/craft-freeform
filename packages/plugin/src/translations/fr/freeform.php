@@ -3463,6 +3463,8 @@ return [
     'Form progress' => 'Progression du formulaire',
     '{count} star' => '{count} étoile',
     '{count} stars' => '{count} étoiles',
+    'Delete column?' => 'Supprimer la colonne ?',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Voulez-vous vraiment supprimer la colonne "{name}" de ce tableau ?',
     'Delete page?' => 'Supprimer la page ?',
     'Delete favorite field?' => 'Supprimer le champ favori ?',
     'Delete field?' => 'Supprimer le champ ?',

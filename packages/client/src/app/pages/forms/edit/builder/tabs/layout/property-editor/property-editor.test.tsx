@@ -16,7 +16,7 @@ vi.mock("./editors/pages/page-properties", () => ({
   PageProperties: () => null,
 }));
 
-it("keeps field settings open for native slideout and shade clicks, but still closes for ordinary outside clicks", () => {
+it("keeps field settings open for native slideout, shade, and confirmation clicks, but still closes for ordinary outside clicks", () => {
   const container = document.createElement("div");
   const panel = document.createElement("div");
   panel.className = "slideout-container";
@@ -25,19 +25,25 @@ it("keeps field settings open for native slideout and shade clicks, but still cl
   panel.append(toolbar);
   const shade = document.createElement("div");
   shade.className = "cp-slideout-shade";
+  const confirmation = document.createElement("craft-dialog");
+  confirmation.className = "ff-delete-confirmation";
+  const cancel = document.createElement("button");
+  confirmation.append(cancel);
   const outside = document.createElement("button");
-  document.body.append(container, panel, shade, outside);
+  document.body.append(container, panel, shade, confirmation, outside);
   const root = createRoot(container);
   try {
     act(() => root.render(<PropertyEditor />));
     act(() => toolbar.click());
     act(() => shade.click());
+    act(() => cancel.click());
     expect(dispatch).not.toHaveBeenCalled();
     act(() => outside.click());
     expect(dispatch).toHaveBeenCalledOnce();
   } finally {
     act(() => root.unmount());
-    for (const node of [container, panel, shade, outside]) node.remove();
+    for (const node of [container, panel, shade, confirmation, outside])
+      node.remove();
     dispatch.mockClear();
   }
 });

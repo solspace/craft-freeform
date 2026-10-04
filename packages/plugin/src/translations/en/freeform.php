@@ -3462,6 +3462,8 @@ return [
     'Form progress' => 'Form progress',
     '{count} star' => '{count} star',
     '{count} stars' => '{count} stars',
+    'Delete column?' => 'Delete column?',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Are you sure you want to delete the column "{name}" from this table?',
     'Delete page?' => 'Delete page?',
     'Delete favorite field?' => 'Delete favorite field?',
     'Delete field?' => 'Delete field?',

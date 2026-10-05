@@ -99,55 +99,57 @@ export const TabsWrapper = styled.div`
 `;
 
 export const BuilderTabsWrapper = styled(TabsWrapper)`
+  align-self: center;
   gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
   background: transparent;
   border-radius: 0;
   box-shadow: none;
 
-  a {
+  && a {
     position: relative;
     box-sizing: border-box;
-    padding-inline: var(--c-tab-spacing-inline, 1em);
+    height: var(--c-size-control-md, 34px);
+    padding-inline: calc(var(--c-tab-spacing-inline, 1em) - 1px);
+    border: 1px solid transparent;
+    border-radius: var(--c-form-control-radius);
+    background: transparent;
     color: var(--c-text-default);
     font-size: var(--c-tabs-font-size, var(--c-text-base));
     text-decoration: none;
-    border-radius: 0;
 
     &::after {
-      content: '';
-      position: absolute;
-      inset-inline: 0;
-      inset-block-end: 0;
-      height: 2px;
-      background: transparent;
+      content: none;
     }
 
     &:hover,
     &:hover:not(.active):not(:first-child),
     &:hover:not(.active):not(:last-child) {
-      background: transparent;
-      border-radius: 0;
-      color: var(--c-text-link);
+      background: var(--c-color-neutral-fill-normal);
+      border-radius: var(--c-form-control-radius);
+      color: var(--c-text-default);
     }
 
     &:focus-visible {
       outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
-      outline-offset: calc(-1 * var(--c-focus-outline-width));
+      outline-offset: var(--c-focus-outline-offset);
     }
 
     &.active {
-      background: transparent;
-      color: var(--c-text-default);
+      background: var(--c-color-accent-fill-quiet);
+      border-color: var(--c-color-accent-border-normal);
+      color: var(--c-color-accent-on-quiet);
       font-weight: 700;
       box-shadow: none !important;
-
-      &::after {
-        background: var(--c-tab-border-active, var(--c-color-accent-border-loud));
-      }
     }
 
     &.errors {
       color: var(--c-color-danger-on-normal);
+    }
+
+    &.active.errors {
+      background: var(--c-color-danger-fill-quiet);
+      border-color: var(--c-color-danger-border-normal);
+      color: var(--c-color-danger-on-quiet);
     }
   }
 `;

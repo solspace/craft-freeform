@@ -185,6 +185,7 @@ export const BuilderTabLabel = styled.span`
 `;
 
 export const SaveButtonWrapper = styled.div`
+  --freeform-builder-action-height: 36px;
   display: flex;
   align-items: center;
   justify-self: end;
@@ -194,8 +195,8 @@ export const SaveButtonWrapper = styled.div`
 export const SaveButton = styled.button`
   && {
     box-sizing: border-box;
-    height: var(--c-size-control-md, 34px);
-    min-height: var(--c-size-control-md, 34px);
+    height: var(--freeform-builder-action-height, 36px);
+    min-height: var(--freeform-builder-action-height, 36px);
     padding-block: 0;
     padding-inline: var(--c-form-control-spacing-inline, 8px);
     border-radius: var(--c-form-control-radius);
@@ -213,23 +214,33 @@ export const SaveButton = styled.button`
 export const HistoryControls = styled.div`
   display: flex;
   align-items: center;
-  gap: var(--c-spacing-1px, 1px);
+  gap: 0;
 `;
 
 export const HistoryButton = styled.button`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: var(--c-size-control-md, 34px);
-  height: var(--c-size-control-md, 34px);
-  flex: 0 0 var(--c-size-control-md, 34px);
+  width: calc(var(--freeform-builder-action-height, 36px) * 0.85);
+  height: calc(var(--freeform-builder-action-height, 36px) * 0.85);
+  flex: 0 0 calc(var(--freeform-builder-action-height, 36px) * 0.85);
   padding: 0;
   border: 1px solid var(--c-color-neutral-border-loud);
   border-radius: 0;
   background: transparent;
   color: var(--c-color-neutral-on-quiet);
   cursor: pointer;
+
+  svg {
+    width: calc(18px * 0.85);
+    height: calc(16px * 0.85);
+  }
+
+  & + & {
+    margin-inline-start: -1px;
+  }
 
   &:first-child {
     border-start-start-radius: var(--c-form-control-radius);
@@ -258,6 +269,7 @@ export const HistoryButton = styled.button`
   }
 
   &:focus-visible {
+    z-index: 1;
     outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
     outline-offset: var(--c-focus-outline-offset);
   }

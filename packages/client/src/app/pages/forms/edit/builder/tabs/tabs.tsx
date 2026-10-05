@@ -25,6 +25,7 @@ import { NavLink } from "react-router-dom";
 import { HistoryArrow } from "./history-arrow";
 import { useConfirmLeaveBuilder } from "./modals/confirm-submissions.modal";
 import {
+  BuilderTabLabel,
   BuilderTabsWrapper,
   FormName,
   Heading,
@@ -35,6 +36,13 @@ import {
   SubmissionsShortcut,
   TabWrapper,
 } from "./tabs.styles";
+
+const TabLabel: React.FC<{ children: string }> = ({ children }) => (
+  <BuilderTabLabel>
+    <span aria-hidden="true">{children}</span>
+    <span>{children}</span>
+  </BuilderTabLabel>
+);
 
 export const Tabs: React.FC = () => {
   const limitations = config.limitations;
@@ -126,7 +134,9 @@ export const Tabs: React.FC = () => {
       />
 
       <Heading>
-        <FormName>{formName || translate("Create a new Form")}</FormName>
+        <FormName title={formName || translate("Create a new Form")}>
+          {formName || translate("Create a new Form")}
+        </FormName>
       </Heading>
 
       <BuilderTabsWrapper className="main-tabs">
@@ -135,19 +145,19 @@ export const Tabs: React.FC = () => {
           end
           className={classes(fieldsHaveErrors && "errors")}
         >
-          <span>{translate("Layout")}</span>
+          <TabLabel>{translate("Layout")}</TabLabel>
         </NavLink>
         {limitations.can("notifications.tab") && (
           <NavLink
             to={`/forms/${form.id}/notifications`}
             className={classes(notificationsHaveErrors && "errors")}
           >
-            <span>{translate("Notifications")}</span>
+            <TabLabel>{translate("Notifications")}</TabLabel>
           </NavLink>
         )}
         {limitations.can("rules.tab") && (
           <NavLink to={`/forms/${form.id}/rules`}>
-            <span>{translate("Rules")}</span>
+            <TabLabel>{translate("Rules")}</TabLabel>
           </NavLink>
         )}
         {config.limitations.can("integrations.tab") && (
@@ -155,12 +165,12 @@ export const Tabs: React.FC = () => {
             to={`/forms/${form.id}/integrations`}
             className={classes(hasIntegrationErrors && "errors")}
           >
-            <span>{translate("Integrations")}</span>
+            <TabLabel>{translate("Integrations")}</TabLabel>
           </NavLink>
         )}
         {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
           <NavLink to={`/forms/${form.id}/form-monitor`}>
-            <span>{translate("Monitoring")}</span>
+            <TabLabel>{translate("Monitoring")}</TabLabel>
           </NavLink>
         )}
         {formSettingsData && config.limitations.can("settings.tab") && (
@@ -172,7 +182,7 @@ export const Tabs: React.FC = () => {
                 "errors",
             )}
           >
-            <span>{translate("Settings")}</span>
+            <TabLabel>{translate("Settings")}</TabLabel>
           </NavLink>
         )}
       </BuilderTabsWrapper>

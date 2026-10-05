@@ -1,6 +1,6 @@
 {
   "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-BmZl18Ei.js",
+    "file": "assets/de-CFvfwIm9.js",
     "name": "de",
     "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-ByUToMbp.js",
+    "file": "assets/fr-BFPr6rjq.js",
     "name": "fr",
     "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-2LUmpfUI.js",
+    "file": "assets/it-qkpxWczU.js",
     "name": "it",
     "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-6biesVL-.js",
+    "file": "assets/nl-D4ZyXr1C.js",
     "name": "nl",
     "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -36,7 +36,7 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-BuKJFAnc.js",
+    "file": "assets/ai.usage-chart-DywHVj4a.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -45,7 +45,7 @@
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-j_AVNN2Y.js",
+    "file": "assets/index-B5IpcHzb.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

@@ -28,10 +28,16 @@ export const TabWrapper = styled.nav`
 
 export const Heading = styled.h1`
   position: relative;
+  min-width: 0;
   margin: 0;
+  padding-inline-end: var(--c-spacing-xl, 24px);
 `;
 
 export const FormName = styled.span`
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.2;
@@ -116,6 +122,14 @@ export const BuilderTabsWrapper = styled(TabsWrapper)`
     color: var(--c-text-default);
     font-size: var(--c-tabs-font-size, var(--c-text-base));
     text-decoration: none;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
 
     &::after {
       content: none;
@@ -151,6 +165,22 @@ export const BuilderTabsWrapper = styled(TabsWrapper)`
       border-color: var(--c-color-danger-border-normal);
       color: var(--c-color-danger-on-quiet);
     }
+  }
+`;
+
+export const BuilderTabLabel = styled.span`
+  display: grid;
+
+  > span {
+    grid-area: 1 / 1;
+    text-align: center;
+  }
+
+  /* Reserve the bold label's width so changing tabs doesn't move its neighbors. */
+  > span[aria-hidden] {
+    visibility: hidden;
+    font-weight: 700;
+    user-select: none;
   }
 `;
 

@@ -6,6 +6,7 @@ export function CheckboxFieldRenderer(props: VueFieldRendererProps) {
   const input = inputProps(props);
   const checked =
     input.value === "1" || props.value === true || input.value === "true";
+  const label = props.field.label ?? "";
 
   return (
     <label class={props.classNames.optionLabel ?? props.classNames.input}>
@@ -25,7 +26,7 @@ export function CheckboxFieldRenderer(props: VueFieldRendererProps) {
         }}
         onBlur={input.onBlur}
       />
-      <span>{props.field.label}</span>
+      {props.allowRawHtml ? <span innerHTML={label} /> : <span>{label}</span>}
     </label>
   );
 }

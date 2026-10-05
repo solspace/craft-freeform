@@ -5,6 +5,7 @@ export function CheckboxFieldRenderer(props: ReactFieldRendererProps) {
   const input = inputProps(props);
   const checked =
     input.value === "1" || props.value === true || input.value === "true";
+  const label = props.field.label ?? "";
 
   return (
     <label className={props.classNames.optionLabel ?? props.classNames.input}>
@@ -24,7 +25,11 @@ export function CheckboxFieldRenderer(props: ReactFieldRendererProps) {
         }}
         onBlur={input.onBlur}
       />
-      <span>{props.field.label}</span>
+      {props.allowRawHtml ? (
+        <span dangerouslySetInnerHTML={{ __html: label }} />
+      ) : (
+        <span>{label}</span>
+      )}
     </label>
   );
 }

@@ -113,7 +113,7 @@ Local demos (`FREEFORM_PACKAGES=local`) should alias to package **`src`**, not `
 1. Keep headless **off** until intentionally enabled per form.
 2. Set explicit `headless.allowedOrigins` for cross-origin apps.
 3. Require **captcha** on public forms.
-4. Leave **`allowRawHtml` false** unless HTML fields are trusted CMS content.
+4. Leave **`allowRawHtml` false** unless HTML / rich-text fields and checkbox WYSIWYG labels are trusted CMS content.
 5. Do not treat client-side conditional hiding as access control.
 
 ## Feedback

@@ -138,7 +138,7 @@ function buildJsonBody(
   request: SubmitRequest,
   clientVersion: string,
 ): Record<string, unknown> {
-  return {
+  const body: Record<string, unknown> = {
     values: request.values,
     intent: request.intent,
     context: request.context ?? {},
@@ -148,6 +148,12 @@ function buildJsonBody(
       ...request.meta,
     },
   };
+
+  if (request.properties && Object.keys(request.properties).length > 0) {
+    body.properties = request.properties;
+  }
+
+  return body;
 }
 
 async function parseSubmitResponse(

@@ -19,11 +19,17 @@ class HeadlessSubmitService
     ) {}
 
     /**
+     * @param array<string, mixed> $valueOverrides Forced field values (e.g. profile locked/hidden defaults)
+     *
      * @return array<string, mixed>
      */
-    public function submit(Form $form, Request $request): array
+    public function submit(Form $form, Request $request, array $valueOverrides = []): array
     {
         $payload = $this->parseRequestPayload($request);
+        if ($valueOverrides) {
+            $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];
+            $payload['values'] = array_merge($values, $valueOverrides);
+        }
 
         return $this->submitWithPayload($form, $request, $payload);
     }
@@ -49,6 +55,7 @@ class HeadlessSubmitService
         $intent = (string) ($payload['intent'] ?? 'submit');
         $values = \is_array($payload['values'] ?? null) ? $payload['values'] : [];
         $context = \is_array($payload['context'] ?? null) ? $payload['context'] : [];
+        $context = $this->draftService->filterContext($context);
         $context = $this->draftService->normalizeContext($context);
 
         $stateToken = $context['stateToken'] ?? null;

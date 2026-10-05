@@ -91,12 +91,28 @@ class ProfilePropertyExtractorTest extends TestCase
         ]);
     }
 
-    private function stubRequest(array $query = [], array $body = []): void
+    public function testExtractsPropertiesFromMultipartFreeformMetadata(): void
     {
-        $request = new class($query, $body) {
+        $this->stubRequest(
+            query: [],
+            body: [],
+            freeform: ['properties' => ['eventId' => '7']],
+        );
+
+        $result = (new ProfilePropertyExtractor())->extract([
+            'eventId' => ['type' => 'integer', 'required' => true],
+        ]);
+
+        self::assertSame(['eventId' => 7], $result);
+    }
+
+    private function stubRequest(array $query = [], array $body = [], ?array $freeform = null): void
+    {
+        $request = new class($query, $body, $freeform) {
             public function __construct(
                 private array $query,
                 private array $body,
+                private ?array $freeform,
             ) {}
 
             public function getQueryParam(string $name, mixed $default = null): mixed
@@ -112,6 +128,10 @@ class ProfilePropertyExtractorTest extends TestCase
             {
                 if ('properties' === $name) {
                     return $this->body;
+                }
+
+                if ('_freeform' === $name) {
+                    return null === $this->freeform ? $default : json_encode($this->freeform);
                 }
 
                 return $default;

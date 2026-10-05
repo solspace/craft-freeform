@@ -27,6 +27,15 @@ class ProfilePropertyExtractor
             $raw = array_merge($raw, $body);
         }
 
+        // Multipart submits nest the JSON payload under `_freeform`.
+        $meta = $request->getBodyParam('_freeform');
+        if (\is_string($meta) && '' !== $meta) {
+            $decoded = json_decode($meta, true);
+            if (\is_array($decoded) && isset($decoded['properties']) && \is_array($decoded['properties'])) {
+                $raw = array_merge($raw, $decoded['properties']);
+            }
+        }
+
         $extracted = [];
         foreach ($propertyConfig as $key => $definition) {
             if (!\array_key_exists($key, $raw)) {

@@ -17,6 +17,8 @@ export type FormStateOptions = {
   initialValues?: Record<string, FieldValue>;
   draftToken?: string | null;
   draftKey?: string | null;
+  /** Profile allow-listed properties — resent on every submit */
+  properties?: Record<string, string | number | boolean>;
 };
 
 export class FormState {
@@ -42,17 +44,29 @@ export class FormState {
 
   stateToken: string | null = null;
 
+  properties: Record<string, string | number | boolean> = {};
+
   private visibility: VisibilityState;
+
+  private readonly contextHidden: Set<string>;
+
+  private readonly contextLocked: Set<string>;
 
   constructor(options: FormStateOptions) {
     this.manifest = options.manifest;
+    this.contextHidden = new Set(options.manifest.context?.hiddenFields ?? []);
+    this.contextLocked = new Set(options.manifest.context?.lockedFields ?? []);
     this.values = buildInitialValues(options.manifest, options.initialValues);
     this.draftToken = options.draftToken ?? null;
     this.draftKey = options.draftKey ?? null;
+    this.properties = { ...(options.properties ?? {}) };
     this.visibility = evaluateConditionals(this.manifest, this.values);
   }
 
   setValue(handle: string, value: FieldValue): void {
+    if (this.contextLocked.has(handle) || this.contextHidden.has(handle)) {
+      return;
+    }
     this.values = { ...this.values, [handle]: value };
     this.touched = { ...this.touched, [handle]: true };
     this.dirty = true;
@@ -82,6 +96,12 @@ export class FormState {
     return context;
   }
 
+  getSubmitProperties(): Record<string, string | number | boolean> | undefined {
+    return Object.keys(this.properties).length > 0
+      ? { ...this.properties }
+      : undefined;
+  }
+
   applySubmitResponse(response: SubmitResponse): void {
     const errors = response.errors ?? emptyErrors();
     this.fieldErrors = errors.fields ?? {};
@@ -102,6 +122,9 @@ export class FormState {
     const stateValues = response.state?.values;
     if (stateValues && typeof stateValues === "object") {
       for (const [handle, value] of Object.entries(stateValues)) {
+        if (this.contextLocked.has(handle) || this.contextHidden.has(handle)) {
+          continue;
+        }
         this.values[handle] = value as FieldValue;
       }
       this.recomputeVisibility();
@@ -116,10 +139,16 @@ export class FormState {
   }
 
   isFieldVisible(handle: string): boolean {
+    if (this.contextHidden.has(handle)) {
+      return false;
+    }
     return isFieldVisible(this.visibility, handle);
   }
 
   isFieldEnabled(handle: string): boolean {
+    if (this.contextLocked.has(handle) || this.contextHidden.has(handle)) {
+      return false;
+    }
     return isFieldEnabled(this.visibility, handle);
   }
 
@@ -132,8 +161,13 @@ export class FormState {
   getValuesForSubmit(): Record<string, unknown> {
     const output: Record<string, unknown> = {};
 
-    for (const handle of this.getVisibleFieldHandles()) {
-      if (!this.isFieldEnabled(handle)) {
+    for (const handle of Object.keys(this.manifest.fields)) {
+      const include =
+        this.contextHidden.has(handle) ||
+        this.contextLocked.has(handle) ||
+        (this.isFieldVisible(handle) && this.isFieldEnabled(handle));
+
+      if (!include) {
         continue;
       }
 
@@ -158,10 +192,25 @@ function buildInitialValues(
   const values: Record<string, FieldValue> = {};
 
   for (const [handle, field] of Object.entries(manifest.fields)) {
+    if (field.type === "checkbox") {
+      const config = (field.frontend?.config ?? {}) as {
+        checkedByDefault?: boolean;
+        checkedValue?: string;
+      };
+      const checkedValue =
+        (typeof config.checkedValue === "string" && config.checkedValue) ||
+        (typeof field.defaultValue === "string" && field.defaultValue) ||
+        "yes";
+      values[handle] = config.checkedByDefault ? checkedValue : "";
+      continue;
+    }
+
     if (field.defaultValue !== undefined && field.defaultValue !== null) {
       values[handle] = field.defaultValue as FieldValue;
     } else if (field.options?.length) {
-      const checked = field.options.filter((option) => option.checked);
+      const checked = field.options.filter(
+        (option) => option.checked || (option as { default?: boolean }).default,
+      );
       if (checked.length > 1) {
         values[handle] = checked.map((option) => option.value);
       } else if (checked.length === 1) {

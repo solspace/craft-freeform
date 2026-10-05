@@ -115,6 +115,7 @@ Local demos (`FREEFORM_PACKAGES=local`) should alias to package **`src`**, not `
 3. Require **captcha** on public forms.
 4. Leave **`allowRawHtml` false** unless HTML / rich-text fields and checkbox WYSIWYG labels are trusted CMS content.
 5. Do not treat client-side conditional hiding as access control.
+6. Submit `context` is allow-listed (`draftToken`, `draftKey`, `stateToken`, `sourceUrl`, `token`) — never pass `disable`, `elementId`, etc.
 
 ## Feedback
 

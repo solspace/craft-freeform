@@ -23,6 +23,8 @@ export type SubmitRequest = {
   values: Record<string, unknown>;
   intent: SubmitIntent;
   context?: SubmitContext;
+  /** Profile allow-listed properties (required when the profile demands them) */
+  properties?: Record<string, string | number | boolean>;
   meta?: SubmitMeta;
 };
 

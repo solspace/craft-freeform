@@ -35,7 +35,7 @@ class HeadlessSubmitArguments extends Arguments
             'context' => [
                 'name' => 'context',
                 'type' => FreeformJsonType::getType(),
-                'description' => 'Submit context (draftToken, draftKey, dynamicNotification, etc.)',
+                'description' => 'Submit context allow-list: draftToken, draftKey, stateToken, sourceUrl, token',
             ],
             'csrfToken' => [
                 'name' => 'csrfToken',

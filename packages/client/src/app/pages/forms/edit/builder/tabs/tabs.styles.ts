@@ -138,7 +138,7 @@ export const BuilderTabsWrapper = styled(TabsWrapper)`
     &:hover,
     &:hover:not(.active):not(:first-child),
     &:hover:not(.active):not(:last-child) {
-      background: var(--c-color-neutral-fill-normal);
+      background: var(--c-color-neutral-fill-quiet);
       border-radius: var(--c-form-control-radius);
       color: var(--c-text-default);
     }

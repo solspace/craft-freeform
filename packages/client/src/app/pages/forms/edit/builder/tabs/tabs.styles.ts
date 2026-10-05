@@ -188,51 +188,82 @@ export const SaveButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-self: end;
-  gap: ${spacings.md};
+  gap: var(--c-spacing-md, 8px);
 `;
 
-export const SaveButton = styled.button``;
+export const SaveButton = styled.button`
+  && {
+    box-sizing: border-box;
+    height: var(--c-size-control-md, 34px);
+    min-height: var(--c-size-control-md, 34px);
+    padding-block: 0;
+    padding-inline: var(--c-form-control-spacing-inline, 8px);
+    border-radius: var(--c-form-control-radius);
+    font-size: var(--c-text-base);
+    font-weight: 600;
+    line-height: var(--c-leading-normal);
+  }
+
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+  }
+`;
 
 export const HistoryControls = styled.div`
   display: flex;
   align-items: center;
-  overflow: hidden;
-  border-radius: ${borderRadius.md};
-  background: #c4cfe1;
+  gap: var(--c-spacing-1px, 1px);
 `;
 
 export const HistoryButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 39px;
-  height: 34px;
+  box-sizing: border-box;
+  width: var(--c-size-control-md, 34px);
+  height: var(--c-size-control-md, 34px);
+  flex: 0 0 var(--c-size-control-md, 34px);
   padding: 0;
-  border: 0;
-  background: #c4cfe1;
-  color: #5a6875;
+  border: 1px solid var(--c-color-neutral-border-loud);
+  border-radius: 0;
+  background: transparent;
+  color: var(--c-color-neutral-on-quiet);
   cursor: pointer;
 
-  & + & {
-    border-left: 1px solid #e3ecfb;
+  &:first-child {
+    border-start-start-radius: var(--c-form-control-radius);
+    border-end-start-radius: var(--c-form-control-radius);
+  }
+
+  &:last-child {
+    border-start-end-radius: var(--c-form-control-radius);
+    border-end-end-radius: var(--c-form-control-radius);
   }
 
   &:hover:not(:disabled) {
-    background: #b5c4d8;
+    background: color-mix(
+      in oklab,
+      var(--c-color-neutral-fill-quiet),
+      var(--c-color-mix-hover)
+    );
   }
 
   &:active:not(:disabled) {
-    background: #a6b4c9;
+    background: color-mix(
+      in oklab,
+      var(--c-color-neutral-fill-quiet),
+      var(--c-color-mix-active)
+    );
   }
 
   &:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: -2px;
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
   }
 
   &:disabled {
-    background: #d5dfeb;
-    color: #a0aab4;
+    opacity: 0.5;
     cursor: default;
   }
 `;

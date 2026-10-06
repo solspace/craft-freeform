@@ -3466,4 +3466,14 @@ return [
     'Disabled' => 'Disabled',
     'Concern' => 'Concern',
     'Potential issue' => 'Potential issue',
+
+    // Diagnostics support report
+    'Support Report' => 'Support Report',
+    'Copy Support Report' => 'Copy Support Report',
+    'Copied!' => 'Copied!',
+    'Diagnostic report copied.' => 'Diagnostic report copied.',
+    'Copy the selected report using your keyboard.' => 'Copy the selected report using your keyboard.',
+    'Copy this report when contacting Solspace support.' => 'Copy this report when contacting Solspace support.',
+    'Freeform Diagnostics' => 'Freeform Diagnostics',
+    'Generated at {timestamp}' => 'Generated at {timestamp}',
 ];

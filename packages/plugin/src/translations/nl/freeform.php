@@ -3430,4 +3430,14 @@ return [
     'Disabled' => 'Uitgeschakeld',
     'Concern' => 'Aandachtspunt',
     'Potential issue' => 'Mogelijk probleem',
+
+    // Diagnostics support report
+    'Support Report' => 'Ondersteuningsrapport',
+    'Copy Support Report' => 'Ondersteuningsrapport kopiëren',
+    'Copied!' => 'Gekopieerd!',
+    'Diagnostic report copied.' => 'Diagnoserapport gekopieerd.',
+    'Copy the selected report using your keyboard.' => 'Kopieer het geselecteerde rapport met uw toetsenbord.',
+    'Copy this report when contacting Solspace support.' => 'Kopieer dit rapport wanneer u contact opneemt met de ondersteuning van Solspace.',
+    'Freeform Diagnostics' => 'Freeform-diagnostiek',
+    'Generated at {timestamp}' => 'Gegenereerd op {timestamp}',
 ];

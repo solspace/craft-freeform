@@ -3467,4 +3467,14 @@ return [
     'Disabled' => 'Deaktiviert',
     'Concern' => 'Bedenken',
     'Potential issue' => 'Mögliches Problem',
+
+    // Diagnostics support report
+    'Support Report' => 'Supportbericht',
+    'Copy Support Report' => 'Supportbericht kopieren',
+    'Copied!' => 'Kopiert!',
+    'Diagnostic report copied.' => 'Diagnosebericht kopiert.',
+    'Copy the selected report using your keyboard.' => 'Kopieren Sie den ausgewählten Bericht mit der Tastatur.',
+    'Copy this report when contacting Solspace support.' => 'Kopieren Sie diesen Bericht, wenn Sie den Solspace-Support kontaktieren.',
+    'Freeform Diagnostics' => 'Freeform-Diagnose',
+    'Generated at {timestamp}' => 'Erstellt am {timestamp}',
 ];

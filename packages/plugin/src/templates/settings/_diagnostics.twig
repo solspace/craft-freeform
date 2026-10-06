@@ -9,7 +9,9 @@
 ] %}
 {% set title = "Diagnostics"|t("freeform") %}
 
-{% block actionButton %}{% endblock %}
+{% block actionButton %}
+    <button type="button" class="btn" id="freeform-copy-diagnostics" data-copied-label="{{ 'Copied!'|t('freeform')|e('html_attr') }}">{{ 'Copy Support Report'|t('freeform') }}</button>
+{% endblock %}
 
 {% macro status(status, label) %}
     <span class="ff-diag-dot is-{{ status }}" role="img" aria-label="{{ label|e('html_attr') }}" title="{{ label|e('html_attr') }}"></span>
@@ -50,7 +52,7 @@
 
 {% block content %}
     {{ parent() }}
-    <div id="freeform-diagnostics">
+    <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
         <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
             <p>
                 <span class="{{ warnings|length or suggestions|length ? 'alert-icon' : 'checkmark-icon' }}" aria-hidden="true"></span>
@@ -107,5 +109,12 @@
                 </div>
             {% endfor %}
         </div>
+        <details class="ff-diag-report ff-diag-disclosure">
+            <summary>{{ 'Support Report'|t('freeform') }}</summary>
+            <p class="light">{{ 'Copy this report when contacting Solspace support.'|t('freeform') }}</p>
+            <label class="visually-hidden" for="freeform-diagnostic-report">{{ 'Freeform Diagnostics'|t('freeform') }}</label>
+            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}</textarea>
+        </details>
+        <p id="freeform-diagnostic-copy-status" role="status" aria-live="polite"></p>
     </div>
 {% endblock %}

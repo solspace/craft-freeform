@@ -522,4 +522,25 @@
       margin-inline-end: 7px;
     }
   }
+  .ff-diag-disclosure {
+    margin-top: 16px;
+
+    summary {
+      padding: 10px 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--large-border-radius, 5px);
+      background: var(--gray-050);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    > p {
+      margin: 10px 0;
+    }
+  }
+
+  .ff-diag-report textarea {
+    font-family: monospace;
+    resize: vertical;
+  }
 }

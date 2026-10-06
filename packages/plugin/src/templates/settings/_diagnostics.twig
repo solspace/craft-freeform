@@ -27,7 +27,7 @@
                         {{ _self.renderItems(item, sectionKey) }}
                     {% else %}
                         <div class="ff-diag-item {{ item.validationClasses|join(' ') }}{{ sectionKey == 'server' and loop.index <= 2 ? ' is-product' }}">
-                            {% if item.warnings %}<span class="visually-hidden">{{ 'Potential issue'|t('freeform') }}</span>{% elseif item.suggestions %}<span class="visually-hidden">{{ 'Concern'|t('freeform') }}</span>{% endif %}
+                            {% if item.warnings %}<span class="visually-hidden">{{ 'Potential issue'|t('freeform') }}</span>{% elseif item.suggestions %}<span class="visually-hidden">{{ 'Advisory'|t('freeform') }}</span>{% endif %}
                             {% if sectionKey == 'modules' %}
                                 <code>{{ item.markup }}</code>
                             {% elseif sectionKey in ['stats', 'integrations', 'formType'] %}
@@ -59,18 +59,18 @@
                 {% if warnings|length %}
                     <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
                 {% elseif suggestions|length %}
-                    <span>{{ 'Concerns: {count}'|t('freeform', {count: suggestions|length}) }}</span>
+                    <span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>
                 {% else %}
                     <strong>{{ 'No diagnostic warnings'|t('freeform') }}</strong>
                 {% endif %}
-                {% if warnings|length and suggestions|length %}<span>{{ 'Concerns: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
+                {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
             </p>
         </div>
         <div class="ff-diag-legend">
             {% for status, label in {
                 pass: 'Enabled / Valid'|t('freeform'),
                 disabled: 'Disabled'|t('freeform'),
-                warning: 'Concern'|t('freeform'),
+                warning: 'Advisory'|t('freeform'),
                 error: 'Potential issue'|t('freeform')
             } %}
                 <span>{{ _self.status(status, label) }}{{ label }}</span>

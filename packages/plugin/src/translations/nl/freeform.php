@@ -3425,10 +3425,10 @@ return [
     // Diagnostics status summary
     'No diagnostic warnings' => 'Geen diagnosewaarschuwingen',
     'Potential issues: {count}' => 'Mogelijke problemen: {count}',
-    'Concerns: {count}' => 'Aandachtspunten: {count}',
+    'Advisories: {count}' => 'Aandachtspunten: {count}',
     'Enabled / Valid' => 'Ingeschakeld / geldig',
     'Disabled' => 'Uitgeschakeld',
-    'Concern' => 'Aandachtspunt',
+    'Advisory' => 'Aandachtspunt',
     'Potential issue' => 'Mogelijk probleem',
 
     // Diagnostics support report

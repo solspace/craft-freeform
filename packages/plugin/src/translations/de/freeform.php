@@ -3462,10 +3462,10 @@ return [
     // Diagnostics status summary
     'No diagnostic warnings' => 'Keine Diagnosewarnungen',
     'Potential issues: {count}' => 'Mögliche Probleme: {count}',
-    'Concerns: {count}' => 'Bedenken: {count}',
+    'Advisories: {count}' => 'Bedenken: {count}',
     'Enabled / Valid' => 'Aktiviert / Gültig',
     'Disabled' => 'Deaktiviert',
-    'Concern' => 'Bedenken',
+    'Advisory' => 'Bedenken',
     'Potential issue' => 'Mögliches Problem',
 
     // Diagnostics support report

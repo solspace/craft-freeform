@@ -3461,10 +3461,10 @@ return [
     // Diagnostics status summary
     'No diagnostic warnings' => 'No diagnostic warnings',
     'Potential issues: {count}' => 'Potential issues: {count}',
-    'Concerns: {count}' => 'Concerns: {count}',
+    'Advisories: {count}' => 'Advisories: {count}',
     'Enabled / Valid' => 'Enabled / Valid',
     'Disabled' => 'Disabled',
-    'Concern' => 'Concern',
+    'Advisory' => 'Advisory',
     'Potential issue' => 'Potential issue',
 
     // Diagnostics support report

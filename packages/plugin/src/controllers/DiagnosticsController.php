@@ -122,13 +122,13 @@ class DiagnosticsController extends BaseController
             if ($item->getWarnings()) {
                 $status = 'Potential issue';
             } elseif ($item->getSuggestions()) {
-                $status = 'Concern';
+                $status = 'Advisory';
             } elseif (preg_match('/\bdiag-(enabled|disabled|warning|info)\b/', $markup, $matches)) {
                 $status = match ($matches[1]) {
                     'enabled' => 'Enabled / Valid',
                     'disabled' => 'Disabled',
                     'warning' => 'Potential issue',
-                    'info' => 'Concern',
+                    'info' => 'Advisory',
                 };
             }
 

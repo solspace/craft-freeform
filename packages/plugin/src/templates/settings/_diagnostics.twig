@@ -75,6 +75,12 @@
             {% endfor %}
         </div>
         <div class="ff-diag-grid">
+            {% set configurationSections = [] %}
+            {% for heading, items in configurations %}
+                {% set configurationSections = configurationSections|merge([
+                    {key: 'configurations', title: heading, items: items}
+                ]) %}
+            {% endfor %}
             {% set columns = [
                 [
                     {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
@@ -86,9 +92,7 @@
                     {key: 'formType', title: 'Form Types'|t('freeform'), items: formType},
                     {key: 'modules', title: 'Modules'|t('freeform'), items: modules}
                 ],
-                [
-                    {key: 'configurations', title: 'Freeform Configuration'|t('freeform'), items: configurations}
-                ]
+                configurationSections
             ] %}
             {% for column in columns %}
                 <div>

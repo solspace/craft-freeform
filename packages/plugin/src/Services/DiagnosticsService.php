@@ -529,7 +529,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Processing').'</span>',
-                    $settings->getSettingsModel()->useQueueForAiFields
+                    $settings->isAiFieldQueueEnabled()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Email Notifications').'</span>',

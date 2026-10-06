@@ -34,6 +34,14 @@
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
+## 5.16.5 - 2026-10-06
+
+### Fixed
+- Fixed an issue where Opinion Scale fields with missing values or labels, including some AI-generated configurations, could cause errors when loading forms or opening Quick Export.
+- Fixed an issue where email notifications could be silently skipped when a form was not assigned to the submission's site.
+- Fixed an issue where saving settings could unintentionally enable disabled settings, including Site-Aware Forms.
+- Fixed an issue where Diagnostics could display an incorrect status for the AI processing queue setting.
+
 ## 5.16.4 - 2026-10-01
 
 ### Fixed

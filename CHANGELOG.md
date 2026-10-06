@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added a Pro **Supabase** integration under **Other**, with per-form table selection, field-to-column mappings, typed values, conditional rules, and optional duplicate prevention using saved submission UIDs.
 - Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. Their selected framework styles and theme variables are bundled locally and scoped to the form.
 - Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
@@ -22,7 +23,7 @@
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
 
 ### Changed
-- Refreshed **Diagnostics** with a compact layout, clearer status indicators, color-coded warning and suggestion messages, and a copyable support report matching Calendar’s Diagnostics page.
+- Refreshed **Diagnostics** with a compact layout, clearer status indicators, color-coded warning and suggestion messages, and a copyable support report.
 - AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
 - Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.
@@ -33,6 +34,14 @@
 
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
+
+## 5.16.5 - 2026-10-06
+
+### Fixed
+- Fixed an issue where Opinion Scale fields with missing values or labels, including some AI-generated configurations, could cause errors when loading forms or opening Quick Export.
+- Fixed an issue where email notifications could be silently skipped when a form was not assigned to the submission's site.
+- Fixed an issue where saving settings could unintentionally enable disabled settings, including Site-Aware Forms.
+- Fixed an issue where Diagnostics could display an incorrect status for the AI processing queue setting.
 
 ## 5.16.4 - 2026-10-01
 

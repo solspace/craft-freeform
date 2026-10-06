@@ -215,6 +215,8 @@ class Settings extends Model
         unset($config['defaults']);
 
         parent::__construct($config);
+
+        $this->normalizeBooleanStrings();
     }
 
     public function prepareFolderStructure(): void
@@ -250,6 +252,8 @@ class Settings extends Model
         }
 
         parent::setAttributes($values, $safeOnly);
+
+        $this->normalizeBooleanStrings();
     }
 
     public function rules(): array
@@ -461,6 +465,35 @@ class Settings extends Model
             self::CONTEXT_TYPE_DATABASE => 'Database Table',
             default => 'Encrypted Payload',
         };
+    }
+
+    /**
+     * Boolean settings are stored as strings so they can hold environment variables.
+     * Craft's boolean menu only recognizes '1' and '0', so a literal 'true' or 'false'
+     * renders with no selected option and the browser submits the first one ('1'),
+     * silently enabling the setting on the next save. Store '1' / '0' instead.
+     */
+    private function normalizeBooleanStrings(): void
+    {
+        static $booleanProperties = null;
+
+        if (null === $booleanProperties) {
+            $booleanProperties = [];
+
+            foreach ((new \ReflectionClass(self::class))->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+                if ($property->hasDefaultValue() && \in_array($property->getDefaultValue(), ['true', 'false'], true)) {
+                    $booleanProperties[] = $property->getName();
+                }
+            }
+        }
+
+        foreach ($booleanProperties as $property) {
+            $value = $this->{$property};
+
+            if (\is_string($value) && \in_array(strtolower($value), ['true', 'false'], true)) {
+                $this->{$property} = 'true' === strtolower($value) ? '1' : '0';
+            }
+        }
     }
 
     /**

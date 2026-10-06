@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.16.5 - 2026-10-06
+
+### Fixed
+- Fixed an issue where Opinion Scale fields with missing values or labels, including some AI-generated configurations, could cause errors when loading forms or opening Quick Export.
+- Fixed an issue where email notifications could be silently skipped when a form was not assigned to the submission's site.
+- Fixed an issue where saving settings could unintentionally enable disabled settings, including Site-Aware Forms.
+- Fixed an issue where Diagnostics could display an incorrect status for the AI processing queue setting.
+
 ## 5.16.4 - 2026-10-01
 
 ### Fixed

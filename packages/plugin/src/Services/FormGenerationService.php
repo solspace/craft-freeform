@@ -718,7 +718,7 @@ class FormGenerationService
             foreach ($fromAi['options'] as $i => $opt) {
                 $value = \is_string($opt) ? $opt : (string) ($opt['value'] ?? $opt['label'] ?? $i);
                 $label = \is_array($opt) && isset($opt['label']) ? (string) $opt['label'] : $value;
-                $scales[] = ['value' => $value, 'label' => $label];
+                $scales[] = [$value, $label];
             }
             $fromAi['scales'] = $scales;
             unset($fromAi['options']);

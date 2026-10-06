@@ -146,6 +146,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
         initialValues: options.initialValues,
         draftToken: options.draftToken,
         draftKey: options.draftKey,
+        properties: options.properties,
       });
       setManifest(options.manifest);
       syncFromFormState();
@@ -181,6 +182,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
           initialValues: options.initialValues,
           draftToken: options.draftToken,
           draftKey: options.draftKey,
+          properties: options.properties,
         });
         setManifest(loaded);
         syncFromFormState();
@@ -326,6 +328,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
             values,
             intent,
             context: submitContext,
+            properties: formState.getSubmitProperties(),
             meta: {
               client: CLIENT_NAME,
               clientVersion: options.clientVersion ?? PACKAGE_VERSION,

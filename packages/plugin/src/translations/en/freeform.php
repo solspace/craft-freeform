@@ -3457,4 +3457,23 @@ return [
     'Form progress' => 'Form progress',
     '{count} star' => '{count} star',
     '{count} stars' => '{count} stars',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'No diagnostic warnings',
+    'Potential issues: {count}' => 'Potential issues: {count}',
+    'Advisories: {count}' => 'Advisories: {count}',
+    'Enabled / Valid' => 'Enabled / Valid',
+    'Disabled' => 'Disabled',
+    'Advisory' => 'Advisory',
+    'Potential issue' => 'Potential issue',
+
+    // Diagnostics support report
+    'Support Report' => 'Support Report',
+    'Copy Support Report' => 'Copy Support Report',
+    'Copied!' => 'Copied!',
+    'Diagnostic report copied.' => 'Diagnostic report copied.',
+    'Copy the selected report using your keyboard.' => 'Copy the selected report using your keyboard.',
+    'Copy this report when contacting Solspace support.' => 'Copy this report when contacting Solspace support.',
+    'Freeform Diagnostics' => 'Freeform Diagnostics',
+    'Generated at {timestamp}' => 'Generated at {timestamp}',
 ];

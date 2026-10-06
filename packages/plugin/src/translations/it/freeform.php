@@ -3458,4 +3458,23 @@ return [
     'Form progress' => 'Avanzamento del modulo',
     '{count} star' => '{count} stella',
     '{count} stars' => '{count} stelle',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Nessun avviso diagnostico',
+    'Potential issues: {count}' => 'Potenziali problemi: {count}',
+    'Advisories: {count}' => 'Aspetti da verificare: {count}',
+    'Enabled / Valid' => 'Abilitato / valido',
+    'Disabled' => 'Disabilitato',
+    'Advisory' => 'Aspetto da verificare',
+    'Potential issue' => 'Potenziale problema',
+
+    // Diagnostics support report
+    'Support Report' => 'Rapporto per l’assistenza',
+    'Copy Support Report' => 'Copia il rapporto per l’assistenza',
+    'Copied!' => 'Copiato!',
+    'Diagnostic report copied.' => 'Rapporto diagnostico copiato.',
+    'Copy the selected report using your keyboard.' => 'Copia il rapporto selezionato usando la tastiera.',
+    'Copy this report when contacting Solspace support.' => 'Copia questo rapporto quando contatti l’assistenza di Solspace.',
+    'Freeform Diagnostics' => 'Diagnostica Freeform',
+    'Generated at {timestamp}' => 'Generato il {timestamp}',
 ];

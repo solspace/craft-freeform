@@ -3458,4 +3458,23 @@ return [
     'Form progress' => 'Progression du formulaire',
     '{count} star' => '{count} étoile',
     '{count} stars' => '{count} étoiles',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Aucun avertissement de diagnostic',
+    'Potential issues: {count}' => 'Problèmes potentiels : {count}',
+    'Advisories: {count}' => 'Points à vérifier : {count}',
+    'Enabled / Valid' => 'Activé / valide',
+    'Disabled' => 'Désactivé',
+    'Advisory' => 'Point à vérifier',
+    'Potential issue' => 'Problème potentiel',
+
+    // Diagnostics support report
+    'Support Report' => 'Rapport pour l’assistance',
+    'Copy Support Report' => 'Copier le rapport pour l’assistance',
+    'Copied!' => 'Copié !',
+    'Diagnostic report copied.' => 'Rapport de diagnostic copié.',
+    'Copy the selected report using your keyboard.' => 'Copiez le rapport sélectionné avec votre clavier.',
+    'Copy this report when contacting Solspace support.' => 'Copiez ce rapport lorsque vous contactez l’assistance de Solspace.',
+    'Freeform Diagnostics' => 'Diagnostics Freeform',
+    'Generated at {timestamp}' => 'Généré le {timestamp}',
 ];

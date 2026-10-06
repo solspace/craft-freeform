@@ -86,13 +86,13 @@
                     {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
                     {key: 'site', title: 'Site Settings'|t('freeform'), items: site}
                 ],
+                configurationSections,
                 [
                     {key: 'stats', title: 'Statistics'|t('freeform'), items: stats},
                     {key: 'integrations', title: 'Integrations'|t('freeform'), items: integrations},
                     {key: 'formType', title: 'Form Types'|t('freeform'), items: formType},
                     {key: 'modules', title: 'Modules'|t('freeform'), items: modules}
-                ],
-                configurationSections
+                ]
             ] %}
             {% for column in columns %}
                 <div>

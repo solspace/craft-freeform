@@ -3458,4 +3458,13 @@ return [
     'Form progress' => 'Formularfortschritt',
     '{count} star' => '{count} Stern',
     '{count} stars' => '{count} Sterne',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Keine Diagnosewarnungen',
+    'Potential issues: {count}' => 'Mögliche Probleme: {count}',
+    'Concerns: {count}' => 'Bedenken: {count}',
+    'Enabled / Valid' => 'Aktiviert / Gültig',
+    'Disabled' => 'Deaktiviert',
+    'Concern' => 'Bedenken',
+    'Potential issue' => 'Mögliches Problem',
 ];

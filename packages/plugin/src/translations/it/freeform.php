@@ -3458,4 +3458,13 @@ return [
     'Form progress' => 'Avanzamento del modulo',
     '{count} star' => '{count} stella',
     '{count} stars' => '{count} stelle',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Nessun avviso diagnostico',
+    'Potential issues: {count}' => 'Potenziali problemi: {count}',
+    'Concerns: {count}' => 'Aspetti da verificare: {count}',
+    'Enabled / Valid' => 'Abilitato / valido',
+    'Disabled' => 'Disabilitato',
+    'Concern' => 'Aspetto da verificare',
+    'Potential issue' => 'Potenziale problema',
 ];

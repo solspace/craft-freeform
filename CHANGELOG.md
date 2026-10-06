@@ -22,6 +22,7 @@
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
 
 ### Changed
+- Refreshed **Diagnostics** with a compact layout, clearer status indicators, and color-coded warning and suggestion messages matching Calendar’s Diagnostics page.
 - AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
 - Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.

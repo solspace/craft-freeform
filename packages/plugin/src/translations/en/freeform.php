@@ -3457,4 +3457,13 @@ return [
     'Form progress' => 'Form progress',
     '{count} star' => '{count} star',
     '{count} stars' => '{count} stars',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'No diagnostic warnings',
+    'Potential issues: {count}' => 'Potential issues: {count}',
+    'Concerns: {count}' => 'Concerns: {count}',
+    'Enabled / Valid' => 'Enabled / Valid',
+    'Disabled' => 'Disabled',
+    'Concern' => 'Concern',
+    'Potential issue' => 'Potential issue',
 ];

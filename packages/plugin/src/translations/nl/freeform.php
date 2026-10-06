@@ -3421,4 +3421,13 @@ return [
     'Form progress' => 'Formuliervoortgang',
     '{count} star' => '{count} ster',
     '{count} stars' => '{count} sterren',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Geen diagnosewaarschuwingen',
+    'Potential issues: {count}' => 'Mogelijke problemen: {count}',
+    'Concerns: {count}' => 'Aandachtspunten: {count}',
+    'Enabled / Valid' => 'Ingeschakeld / geldig',
+    'Disabled' => 'Uitgeschakeld',
+    'Concern' => 'Aandachtspunt',
+    'Potential issue' => 'Mogelijk probleem',
 ];

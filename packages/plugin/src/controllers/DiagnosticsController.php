@@ -33,7 +33,7 @@ class DiagnosticsController extends BaseController
         $formType = $diagnostics->getFreeformFormType();
         $modules = $diagnostics->getCraftModules();
 
-        $combined = array_merge($server, $stats, $configurations);
+        $combined = array_merge($server, $site, $stats, $configurations, $integrations, $formType, $modules);
         [$warnings, $suggestions] = $this->compileBanners($combined);
 
         return $this->renderTemplate(

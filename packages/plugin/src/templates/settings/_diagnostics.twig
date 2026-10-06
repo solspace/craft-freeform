@@ -1,155 +1,120 @@
 {% extends "freeform/_layouts/settings" %}
 
-{% import "_includes/forms" as forms %}
-
+{% set fullPageForm = false %}
 {% set segment3 = craft.app.request.getSegment(3) %}
-
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "Settings"|t("freeform"), url: url("freeform/settings") },
-    { label: "Reliability"|t("freeform"), url: url("freeform/settings" ~ "/" ~ segment3) },
+    { label: "Diagnostics"|t("freeform"), url: url("freeform/settings/" ~ segment3) },
 ] %}
-
 {% set title = "Diagnostics"|t("freeform") %}
 
-{% block actionButton %}{% endblock %}
+{% block actionButton %}
+    <button type="button" class="btn" id="freeform-copy-diagnostics" data-copied-label="{{ 'Copied!'|t('freeform')|e('html_attr') }}">{{ 'Copy Support Report'|t('freeform') }}</button>
+{% endblock %}
 
-{% macro renderIcon(type) %}
-    {%- if type == 'WarningValidator' -%}
-        <svg aria-hidden="true" viewbox="0 0 576 512">
-            <path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z"></path>
-        </svg>
-    {%- elseif type == 'SuggestionValidator' -%}
-        <svg aria-hidden="true" viewbox="0 0 352 512">
-            <path fill="currentColor" d="M96.06 454.35c.01 6.29 1.87 12.45 5.36 17.69l17.09 25.69a31.99 31.99 0 0 0 26.64 14.28h61.71a31.99 31.99 0 0 0 26.64-14.28l17.09-25.69a31.989 31.989 0 0 0 5.36-17.69l.04-38.35H96.01l.05 38.35zM0 176c0 44.37 16.45 84.85 43.56 115.78 16.52 18.85 42.36 58.23 52.21 91.45.04.26.07.52.11.78h160.24c.04-.26.07-.51.11-.78 9.85-33.22 35.69-72.6 52.21-91.45C335.55 260.85 352 220.37 352 176 352 78.61 272.91-.3 175.45 0 73.44.31 0 82.97 0 176zm176-80c-44.11 0-80 35.89-80 80 0 8.84-7.16 16-16 16s-16-7.16-16-16c0-61.76 50.24-112 112-112 8.84 0 16 7.16 16 16s-7.16 16-16 16z"></path>
-        </svg>
-    {%- endif -%}
+{% macro status(status, label) %}
+    <span class="ff-diag-dot is-{{ status }}" role="img" aria-label="{{ label|e('html_attr') }}" title="{{ label|e('html_attr') }}"></span>
 {% endmacro %}
 
-{% macro renderItems(items, sectionTitle) %}
-    <ul>
-        {%- for key, item in items -%}
-            {%- if item is iterable or item.markup -%}
-                <li>
+{% macro renderItems(items, sectionKey) %}
+    <ul class="ff-diag-items">
+        {% for key, item in items %}
+            {% if item is iterable or item.markup %}
+                <li class="{{ item is iterable ? 'ff-diag-group' : 'ff-diag-row' }}">
                     {% if item is iterable %}
-
                         <h3>{{ key }}</h3>
-                        {{ _self.renderItems(item, sectionTitle) }}
-
+                        {{ _self.renderItems(item, sectionKey) }}
                     {% else %}
-
-                        <div class="items">
-                            <div class="item {{ item.validationClasses|join(' ') }}">
-                                {% if sectionTitle == 'Modules' %}
-                                    <code>
-                                        {{ item.markup }}
-                                    </code>
-                                {% elseif sectionTitle in ['Integrations', 'Form Types'] %}
-                                    <span class="item-inline">
-                                        {{ item.markup }}
-                                    </span>
-                                {% else %}
-                                    {{ item.markup }}
-                                {% endif %}
-
-                                {% if item.warnings %}
-                                    {{ _self.renderIcon('WarningValidator') }}
-                                {% endif %}
-
-                                {% if item.suggestions %}
-                                    {{ _self.renderIcon('SuggestionValidator') }}
-                                {% endif %}
-                            </div>
+                        <div class="ff-diag-item {{ item.validationClasses|join(' ') }}{{ sectionKey == 'server' and loop.index <= 2 ? ' is-product' }}">
+                            {% if item.warnings %}<span class="visually-hidden">{{ 'Potential issue'|t('freeform') }}</span>{% elseif item.suggestions %}<span class="visually-hidden">{{ 'Advisory'|t('freeform') }}</span>{% endif %}
+                            {% if sectionKey == 'modules' %}
+                                <code>{{ item.markup }}</code>
+                            {% elseif sectionKey in ['stats', 'integrations', 'formType'] %}
+                                <span class="item-inline">{{ item.markup }}</span>
+                            {% else %}
+                                {{ item.markup }}
+                            {% endif %}
                         </div>
-
                         {% if item.allValidators %}
-                            <ul class="validators">
+                            <ul class="ff-diag-notes">
                                 {% for validator in item.allValidators %}
-                                    <li class="{{ validator.type|lower }}">
-                                        {{ validator.message }}
-                                    </li>
+                                    <li class="{{ validator.type|lower }}">{{ validator.message }}</li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
-
                     {% endif %}
                 </li>
-            {%- endif -%}
-        {%- endfor -%}
+            {% endif %}
+        {% endfor %}
     </ul>
 {% endmacro %}
 
 {% block content %}
-
     {{ parent() }}
-
-    {% if not warnings|length %}
-        <div class="banner banner-check">
-            <h2>
-                <svg viewbox="0 0 32 32"><path fill="currentColor" d="M11.941 28.877 0 16.935l5.695-5.695 6.246 6.246L26.305 3.123 32 8.818z"/></svg>
-
-                {{ "All checks passed!"|t('freeform') }}
-            </h2>
-        </div>
-    {% endif %}
-
-    {% for noticeType, noticeData in {'Warnings': warnings, 'Suggestions': suggestions} %}
-        {% if noticeData|length %}
-            <div class="banner banner-{{ noticeType|lower }}">
-                <h2>
-                    {{ _self.renderIcon(noticeData[0].type) }}
-                    {{ noticeData|length }}
-                    {{ noticeType|t('freeform') }}
-                </h2>
-            </div>
-        {% endif %}
-    {% endfor %}
-
-    <div class="gridy">
-        {% set leftSections = [
-            {'title': "Server Checks"|t('freeform'), 'items': server},
-            {'title': "Site Settings"|t('freeform'), 'items': site}
-        ] %}
-        <div class="diag">
-            {% for section in leftSections %}
-                {% if section.items|length > 0 %}
-                    <div class="diag-list{{ section.title == "Statistics" ? " diag-no-margin" }}">
-                        <h2>{{ section.title }}</h2>
-                        {{ _self.renderItems(section.items) }}
-                    </div>
+    <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
+        <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
+            <p>
+                <span class="{{ warnings|length or suggestions|length ? 'alert-icon' : 'checkmark-icon' }}" aria-hidden="true"></span>
+                {% if warnings|length %}
+                    <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
+                {% elseif suggestions|length %}
+                    <span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>
+                {% else %}
+                    <strong>{{ 'No diagnostic warnings'|t('freeform') }}</strong>
                 {% endif %}
+                {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
+            </p>
+        </div>
+        <div class="ff-diag-legend">
+            {% for status, label in {
+                pass: 'Enabled / Valid'|t('freeform'),
+                disabled: 'Disabled'|t('freeform'),
+                warning: 'Advisory'|t('freeform'),
+                error: 'Potential issue'|t('freeform')
+            } %}
+                <span>{{ _self.status(status, label) }}{{ label }}</span>
             {% endfor %}
         </div>
-
-        {% set centerSections = [
-            {'title': "Freeform Configuration"|t('freeform'), 'items': configurations}
-        ] %}
-        <div class="diag">
-            {% for section in centerSections %}
-                {% if section.items|length > 0 %}
-                    <div class="diag-list">
-                        <h2>{{ section.title }}</h2>
-                        {{ _self.renderItems(section.items) }}
-                    </div>
-                {% endif %}
+        <div class="ff-diag-grid">
+            {% set configurationSections = [] %}
+            {% for heading, items in configurations %}
+                {% set configurationSections = configurationSections|merge([
+                    {key: 'configurations', title: heading, items: items}
+                ]) %}
+            {% endfor %}
+            {% set columns = [
+                [
+                    {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
+                    {key: 'site', title: 'Site Settings'|t('freeform'), items: site}
+                ],
+                configurationSections,
+                [
+                    {key: 'stats', title: 'Statistics'|t('freeform'), items: stats},
+                    {key: 'integrations', title: 'Integrations'|t('freeform'), items: integrations},
+                    {key: 'formType', title: 'Form Types'|t('freeform'), items: formType},
+                    {key: 'modules', title: 'Modules'|t('freeform'), items: modules}
+                ]
+            ] %}
+            {% for column in columns %}
+                <div>
+                    {% for section in column %}
+                        {% if section.items|length %}
+                            <section class="ff-diag-section">
+                                <h2>{{ section.title }}</h2>
+                                {{ _self.renderItems(section.items, section.key) }}
+                            </section>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
-
-        {% set rightSections = [
-            {'title': "Statistics"|t('freeform'), 'items': stats},
-            {'title': "Integrations"|t('freeform'), 'items': integrations},
-            {'title': "Form Types"|t('freeform'), 'items': formType},
-            {'title': "Modules"|t('freeform'), 'items': modules}
-        ] %}
-        <div class="diag">
-            {% for section in rightSections %}
-                {% if section.items|length > 0 %}
-                    <div class="diag-list diag-no-margin">
-                        <h2>{{ section.title }}</h2>
-                        {{ _self.renderItems(section.items, section.title) }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+        <details class="ff-diag-report ff-diag-disclosure">
+            <summary>{{ 'Support Report'|t('freeform') }}</summary>
+            <p class="light">{{ 'Copy this report when contacting Solspace support.'|t('freeform') }}</p>
+            <label class="visually-hidden" for="freeform-diagnostic-report">{{ 'Freeform Diagnostics'|t('freeform') }}</label>
+            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}</textarea>
+        </details>
+        <p id="freeform-diagnostic-copy-status" role="status" aria-live="polite"></p>
     </div>
 {% endblock %}

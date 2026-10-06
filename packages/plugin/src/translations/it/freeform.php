@@ -3473,4 +3473,23 @@ return [
     'Submission UID Column (optional)' => 'Colonna UID dell’invio (facoltativa)',
     'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'Per evitare inserimenti duplicati, indica una colonna di testo o UUID con un vincolo UNIQUE. Freeform la compila con l’UID dell’invio salvato e ignora gli invii ripetuti. Il salvataggio degli invii deve essere abilitato.',
     'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Associa i campi Freeform alle colonne Supabase. Lascia senza associazione le colonne con valori predefiniti del database. I valori personalizzati possono includere i metadati dell’invio.',
+
+    // Diagnostics status summary
+    'No diagnostic warnings' => 'Nessun avviso diagnostico',
+    'Potential issues: {count}' => 'Potenziali problemi: {count}',
+    'Advisories: {count}' => 'Aspetti da verificare: {count}',
+    'Enabled / Valid' => 'Abilitato / valido',
+    'Disabled' => 'Disabilitato',
+    'Advisory' => 'Aspetto da verificare',
+    'Potential issue' => 'Potenziale problema',
+
+    // Diagnostics support report
+    'Support Report' => 'Rapporto per l’assistenza',
+    'Copy Support Report' => 'Copia il rapporto per l’assistenza',
+    'Copied!' => 'Copiato!',
+    'Diagnostic report copied.' => 'Rapporto diagnostico copiato.',
+    'Copy the selected report using your keyboard.' => 'Copia il rapporto selezionato usando la tastiera.',
+    'Copy this report when contacting Solspace support.' => 'Copia questo rapporto quando contatti l’assistenza di Solspace.',
+    'Freeform Diagnostics' => 'Diagnostica Freeform',
+    'Generated at {timestamp}' => 'Generato il {timestamp}',
 ];

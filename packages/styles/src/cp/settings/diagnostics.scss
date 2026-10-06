@@ -294,3 +294,253 @@
     }
   }
 }
+
+// Keep legacy styles above for Craft Preflight, which shares this asset bundle.
+#freeform-diagnostics {
+  code {
+    padding: 1px 5px;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.8em;
+    font-weight: normal;
+    background-color: var(--gray-100);
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--small-border-radius);
+  }
+
+  .ff-diag-banner {
+    --ff-diag-banner-color: var(--enabled-color);
+    margin-block: 0 14px;
+    padding: 10px 16px;
+    color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
+    border-color: color-mix(in srgb, var(--ff-diag-banner-color) 30%, var(--border-hairline, var(--hairline-color)));
+    background: color-mix(in srgb, var(--ff-diag-banner-color) 6%, var(--secondary-pane-bg, var(--gray-050)));
+
+    &.is-warning {
+      --ff-diag-banner-color: var(--yellow-500, #eab308);
+      --ff-diag-banner-text-color: var(--yellow-700, #a16207);
+      border-color: var(--yellow-500, #eab308);
+      background: var(--yellow-050, #fefce8);
+    }
+
+    &.is-error {
+      --ff-diag-banner-color: var(--error-color);
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .checkmark-icon,
+    .alert-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 1;
+      cursor: default;
+      background-color: transparent;
+
+      &::before {
+        font-size: 2em;
+        color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
+      }
+    }
+  }
+
+  .ff-diag-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 40px;
+    row-gap: 28px;
+    margin-top: 20px;
+
+    @media (max-width: 1400px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+
+
+  .ff-diag-section {
+    margin-bottom: 24px;
+
+    > h2 {
+      margin: 0 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+  }
+
+  .ff-diag-items,
+  .ff-diag-notes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ff-diag-group > h3 {
+    margin: 14px 0 10px;
+    font-size: 14px;
+  }
+
+  .ff-diag-row {
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .ff-diag-item {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+    font-weight: 600;
+
+    .item-inline {
+      min-width: 0;
+      flex: 1;
+      overflow-wrap: anywhere;
+    }
+
+    b,
+    strong {
+      font-weight: normal;
+    }
+
+    &.is-product {
+      font-weight: normal;
+
+      b,
+      strong {
+        font-weight: 600;
+      }
+    }
+
+    &.item-suggestions .diag-check {
+      display: inline-block;
+      background: var(--yellow-500, #eab308);
+      box-shadow: none;
+    }
+
+    &.item-warnings .diag-check {
+      display: inline-block;
+      background: var(--error-color);
+      box-shadow: none;
+    }
+  }
+
+  .diag-check,
+  .ff-diag-dot {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    min-width: 0.6rem;
+    min-height: 0.6rem;
+    flex: 0 0 0.6rem;
+    align-self: center;
+    box-sizing: border-box;
+    border-radius: 50%;
+    margin: 0;
+    vertical-align: middle;
+
+    &.diag-enabled,
+    &.is-pass {
+      background: var(--enabled-color);
+    }
+
+    &.diag-disabled,
+    &.is-disabled {
+      background: transparent;
+      box-shadow: inset 0 0 0 1.4px var(--gray-500);
+    }
+
+    &.diag-info,
+    &.is-warning {
+      background: var(--yellow-500, #eab308);
+    }
+
+    &.diag-warning,
+    &.is-error {
+      background: var(--error-color);
+    }
+
+    &.diag-spacer {
+      display: none;
+    }
+  }
+
+  .ff-diag-notes {
+    margin-top: 3px;
+    color: var(--gray-600);
+    font-size: 12px;
+    line-height: 1.5;
+
+    .suggestionvalidator {
+      color: var(--yellow-700, #a16207);
+    }
+
+    .warningvalidator,
+    .warningnoticevalidator {
+      color: var(--error-color);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+
+  .diagnostic-color-error,
+  .diagnostic-color-pass,
+  .diagnostic-color-base {
+    color: inherit;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  .ff-diag-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 10px;
+    color: var(--gray-600);
+    font-size: 12px;
+
+    > span {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .ff-diag-dot {
+      margin-inline-end: 7px;
+    }
+  }
+  .ff-diag-disclosure {
+    margin-top: 16px;
+
+    summary {
+      padding: 10px 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--large-border-radius, 5px);
+      background: var(--gray-050);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    > p {
+      margin: 10px 0;
+    }
+  }
+
+  .ff-diag-report textarea {
+    font-family: monospace;
+    resize: vertical;
+  }
+}

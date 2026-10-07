@@ -3635,4 +3635,10 @@ return [
     'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'La ligne de téléversement enregistrée ne correspond à aucune soumission. Lancez la vérification de l’intégrité des données associées pour examiner le problème.',
     'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'La soumission ne correspond à aucun élément Craft. Lancez la vérification des soumissions orphelines pour examiner le problème.',
     'The submission has no site record and cannot be opened. Check the database integrity.' => 'La soumission ne possède aucun enregistrement de site et ne peut pas être ouverte. Vérifiez l’intégrité de la base de données.',
+    'Database Integrity' => 'Intégrité de la base de données',
+    'Check foreign keys, tables, columns, and indexes.' => 'Vérifier les clés étrangères, les tables, les colonnes et les index.',
+    'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.' => 'Vérifier les relations et la structure attendues de la base de données sans modifier les données. Utilisez les autres vérifications pour les soumissions et les enregistrements associés.',
+    'Checking database integrity…' => 'Vérification de l’intégrité de la base de données…',
+    'All expected foreign keys, tables, columns, and indexes are present.' => 'Toutes les clés étrangères, tables, colonnes et index attendus sont présents.',
+    'Database integrity needs attention. Review the results below.' => 'L’intégrité de la base de données nécessite une intervention. Consultez les résultats ci-dessous.',
 ];

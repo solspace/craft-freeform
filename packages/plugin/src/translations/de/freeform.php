@@ -3635,4 +3635,10 @@ return [
     'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'Die gespeicherte Upload-Zeile hat keine zugehörige Übermittlung. Führen Sie die Prüfung „Integrität zugehöriger Daten“ aus, um dies zu untersuchen.',
     'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'Die Übermittlung hat kein zugehöriges Craft-Element. Führen Sie die Prüfung „Verwaiste Übermittlungen“ aus, um dies zu untersuchen.',
     'The submission has no site record and cannot be opened. Check the database integrity.' => 'Die Übermittlung hat keinen Website-Datensatz und kann nicht geöffnet werden. Prüfen Sie die Datenbankintegrität.',
+    'Database Integrity' => 'Datenbankintegrität',
+    'Check foreign keys, tables, columns, and indexes.' => 'Fremdschlüssel, Tabellen, Spalten und Indizes prüfen.',
+    'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.' => 'Erwartete Datenbankbeziehungen und -struktur prüfen, ohne Daten zu ändern. Verwenden Sie die anderen Prüfungen für Übermittlungen und zugehörige Datensätze.',
+    'Checking database integrity…' => 'Datenbankintegrität wird geprüft…',
+    'All expected foreign keys, tables, columns, and indexes are present.' => 'Alle erwarteten Fremdschlüssel, Tabellen, Spalten und Indizes sind vorhanden.',
+    'Database integrity needs attention. Review the results below.' => 'Die Datenbankintegrität erfordert Aufmerksamkeit. Prüfen Sie die Ergebnisse unten.',
 ];

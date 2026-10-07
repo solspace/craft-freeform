@@ -104,7 +104,6 @@
                 {% set columns = [
                     [
                         {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
-                        {key: 'database', title: 'Database Checks'|t('freeform'), items: database},
                         {key: 'site', title: 'Site Settings'|t('freeform'), items: site}
                     ],
                     configurationSections,
@@ -121,11 +120,6 @@
                             {% if section.items|length %}
                                 <section class="ff-diag-section">
                                     <h2>{{ section.title }}</h2>
-                                    {% if section.key == 'database' %}
-                                        <p>
-                                            <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'Database Integrity & Repair Guide'|t('freeform') }}</a>
-                                        </p>
-                                    {% endif %}
                                     {{ _self.renderItems(section.items, section.key) }}
                                 </section>
                             {% endif %}
@@ -157,6 +151,12 @@
                 }
             ] %}
             {% set healthChecks = [
+                {
+                    id: 'freeform-database-scan', title: 'Database Integrity'|t('freeform'),
+                    summary: 'Check foreign keys, tables, columns, and indexes.'|t('freeform'),
+                    description: 'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.'|t('freeform'),
+                    databaseGuide: true
+                },
                 {
                     id: 'freeform-orphan-scan', title: 'Orphaned Submissions'|t('freeform'),
                     summary: 'Find submissions whose Craft element or form no longer exists.'|t('freeform'),
@@ -202,7 +202,7 @@
             <summary>{{ 'Support Report'|t('freeform') }}</summary>
             <p class="light">{{ 'Copy this report when contacting Solspace support.'|t('freeform') }}</p>
             <label class="visually-hidden" for="freeform-diagnostic-report">{{ 'Freeform Diagnostics'|t('freeform') }}</label>
-            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}</textarea>
+            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}{{ "\n\n" }}{{ 'Database Integrity'|t('freeform') }}{{ "\n" }}{{ 'Not checked'|t('freeform') }}</textarea>
         </details>
         <p id="freeform-diagnostic-copy-status" role="status" aria-live="polite"></p>
     </div>
@@ -267,6 +267,50 @@
                     else progress.value = Math.max(0, Math.min(1, value));
                 };
             };
+
+            {
+                const id = 'freeform-database-scan';
+                const section = document.getElementById(id);
+                const button = document.getElementById(id + '-button');
+                const spinner = document.getElementById(id + '-spinner');
+                const results = document.getElementById(id + '-results');
+                const updateFeedback = createFeedback(id);
+                const report = document.getElementById('freeform-diagnostic-report');
+                const messages = {{ {
+                    heading: 'Database Integrity'|t('freeform'),
+                    notChecked: 'Not checked'|t('freeform'),
+                    starting: 'Checking database integrity…'|t('freeform'),
+                    success: 'All expected foreign keys, tables, columns, and indexes are present.'|t('freeform'),
+                    complete: 'Database integrity needs attention. Review the results below.'|t('freeform'),
+                    failed: 'The scan could not be completed. Check the Craft logs or ask your developer to investigate.'|t('freeform')
+                }|json_encode|raw }};
+                const initialDatabaseReport = '\n\n' + messages.heading + '\n' + messages.notChecked;
+                const overviewReport = report.value.endsWith(initialDatabaseReport) ? report.value.slice(0, -initialDatabaseReport.length) : report.value;
+                const updateReport = (text) => { report.value = overviewReport + '\n\n' + messages.heading + '\n' + text; };
+                button.addEventListener('click', async () => {
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                    section.setAttribute('aria-busy', 'true');
+                    results.replaceChildren();
+                    updateFeedback('running', messages.starting);
+                    updateReport(messages.starting);
+                    try {
+                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/check-database-integrity');
+                        const data = response.data;
+                        if (data.error || typeof data.needsAttention !== 'boolean' || typeof data.html !== 'string' || typeof data.report !== 'string') throw new Error('Database check failed');
+                        results.innerHTML = data.html;
+                        updateFeedback(data.needsAttention ? 'warning' : 'success', data.needsAttention ? messages.complete : messages.success, 1);
+                        updateReport(data.report);
+                    } catch (error) {
+                        updateFeedback('error', messages.failed);
+                        updateReport(messages.failed);
+                    } finally {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        section.setAttribute('aria-busy', 'false');
+                    }
+                });
+            }
 
             {
                 const section = document.getElementById('freeform-orphan-scan');

@@ -3635,4 +3635,10 @@ return [
     'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'La riga di caricamento salvata non ha un invio corrispondente. Esegui il controllo di integrità dei dati correlati per indagare.',
     'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'L’invio non ha un elemento Craft corrispondente. Esegui il controllo degli invii orfani per indagare.',
     'The submission has no site record and cannot be opened. Check the database integrity.' => 'L’invio non ha un record del sito e non può essere aperto. Controlla l’integrità del database.',
+    'Database Integrity' => 'Integrità del database',
+    'Check foreign keys, tables, columns, and indexes.' => 'Controlla chiavi esterne, tabelle, colonne e indici.',
+    'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.' => 'Controlla le relazioni e la struttura previste del database senza modificare i dati. Usa gli altri controlli per gli invii e i record correlati.',
+    'Checking database integrity…' => 'Controllo dell’integrità del database…',
+    'All expected foreign keys, tables, columns, and indexes are present.' => 'Tutte le chiavi esterne, tabelle, colonne e indici previsti sono presenti.',
+    'Database integrity needs attention. Review the results below.' => 'L’integrità del database richiede attenzione. Esamina i risultati qui sotto.',
 ];

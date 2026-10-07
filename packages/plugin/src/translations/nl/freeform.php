@@ -3598,4 +3598,10 @@ return [
     'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'De opgeslagen uploadrij heeft geen bijbehorende inzending. Voer de controle op de integriteit van gerelateerde gegevens uit om dit te onderzoeken.',
     'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'De inzending heeft geen bijbehorend Craft-element. Voer de controle op verweesde inzendingen uit om dit te onderzoeken.',
     'The submission has no site record and cannot be opened. Check the database integrity.' => 'De inzending heeft geen siterecord en kan niet worden geopend. Controleer de database-integriteit.',
+    'Database Integrity' => 'Database-integriteit',
+    'Check foreign keys, tables, columns, and indexes.' => 'Controleer vreemde sleutels, tabellen, kolommen en indexen.',
+    'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.' => 'Controleer de verwachte databaserelaties en -structuur zonder gegevens te wijzigen. Gebruik de andere controles voor inzendingen en gerelateerde records.',
+    'Checking database integrity…' => 'Database-integriteit controleren…',
+    'All expected foreign keys, tables, columns, and indexes are present.' => 'Alle verwachte vreemde sleutels, tabellen, kolommen en indexen zijn aanwezig.',
+    'Database integrity needs attention. Review the results below.' => 'De database-integriteit vereist aandacht. Bekijk de onderstaande resultaten.',
 ];

@@ -34,7 +34,6 @@ class DiagnosticsController extends BaseController
         $diagnostics = Freeform::getInstance()->diagnostics;
 
         $server = $diagnostics->getServerChecks();
-        $database = $diagnostics->getDatabaseChecks();
         $site = $diagnostics->getSiteChecks();
         $stats = $diagnostics->getFreeformStats();
         $configurations = $diagnostics->getFreeformConfigurations();
@@ -42,12 +41,11 @@ class DiagnosticsController extends BaseController
         $formType = $diagnostics->getFreeformFormType();
         $modules = $diagnostics->getCraftModules();
 
-        $combined = array_merge($server, $database, $site, $stats, $configurations, $integrations, $formType, $modules);
+        $combined = array_merge($server, $site, $stats, $configurations, $integrations, $formType, $modules);
         [$warnings, $suggestions] = $this->compileBanners($combined);
 
         $report = $this->compileReport([
             Freeform::t('Server Checks') => $server,
-            Freeform::t('Database Checks') => $database,
             Freeform::t('Site Settings') => $site,
             ...$configurations,
             Freeform::t('Statistics') => $stats,
@@ -60,7 +58,6 @@ class DiagnosticsController extends BaseController
             'freeform/settings/_diagnostics',
             [
                 'server' => $server,
-                'database' => $database,
                 'site' => $site,
                 'stats' => $stats,
                 'configurations' => $configurations,
@@ -73,6 +70,30 @@ class DiagnosticsController extends BaseController
                 'readOnly' => false,
             ]
         );
+    }
+
+    public function actionCheckDatabaseIntegrity(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        try {
+            \Craft::$app->getDb()->getSchema()->refresh();
+            $database = Freeform::getInstance()->diagnostics->getDatabaseChecks();
+            [$warnings, $suggestions] = $this->compileBanners($database);
+
+            return $this->asJson([
+                'needsAttention' => (bool) ($warnings || $suggestions),
+                'html' => \Craft::$app->getView()->renderTemplate('freeform/settings/_database-check', ['database' => $database]),
+                'report' => implode("\n", $this->compileReportItems($database)),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to check Freeform database integrity: '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
     }
 
     public function actionScanOrphanedSubmissions(): Response

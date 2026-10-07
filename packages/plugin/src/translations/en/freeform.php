@@ -3634,4 +3634,10 @@ return [
     'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.',
     'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.',
     'The submission has no site record and cannot be opened. Check the database integrity.' => 'The submission has no site record and cannot be opened. Check the database integrity.',
+    'Database Integrity' => 'Database Integrity',
+    'Check foreign keys, tables, columns, and indexes.' => 'Check foreign keys, tables, columns, and indexes.',
+    'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.' => 'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.',
+    'Checking database integrity…' => 'Checking database integrity…',
+    'All expected foreign keys, tables, columns, and indexes are present.' => 'All expected foreign keys, tables, columns, and indexes are present.',
+    'Database integrity needs attention. Review the results below.' => 'Database integrity needs attention. Review the results below.',
 ];

@@ -9,22 +9,33 @@ use Solspace\Freeform\Library\Collections\Collection;
  */
 class RecipientCollection extends Collection
 {
-    public static function fromArray(array $recipients): self
+    public static function fromArray(array $recipients, bool $isTemplate = false): self
     {
         $collection = new self();
 
         foreach ($recipients as $recipient) {
-            $collection->add(new Recipient($recipient));
+            $collection->add(new Recipient($recipient, isTemplate: $isTemplate));
         }
 
         return $collection;
     }
 
-    public function emailsToArray(): array
+    /**
+     * Only explicitly configured templates may be passed to the renderer.
+     * Submitted addresses and rendered output must remain literal values.
+     *
+     * @param null|callable(string): string $templateRenderer
+     */
+    public function emailsToArray(?callable $templateRenderer = null): array
     {
         $recipients = [];
         foreach ($this->items as $recipient) {
-            $recipients[] = trim($recipient->getEmail());
+            $email = trim($recipient->getEmail());
+            if ($email && $templateRenderer && $recipient->isTemplate()) {
+                $email = $templateRenderer($email);
+            }
+
+            $recipients[] = $email;
         }
 
         return array_filter($recipients);

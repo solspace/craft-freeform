@@ -55,8 +55,13 @@ class NotificationReadinessScan
         } catch (\Throwable) {
             $result['results'][] = ['message' => 'The notification configuration could not be checked.', 'skipped' => true];
         }
+        $metadata = json_decode($task['metadata'], true);
+        $name = \is_array($metadata) ? ($metadata['name'] ?? null) : null;
         foreach ($result['results'] as &$issue) {
             $issue['context'] = ['form' => $task['formName'], 'notification' => (string) $task['id']];
+            if (\is_string($name) && '' !== trim($name)) {
+                $issue['context']['notificationName'] = $name;
+            }
         }
 
         return $result;
@@ -66,8 +71,8 @@ class NotificationReadinessScan
     public function check(array $notification, array $fields, bool $ruleExists = true): array
     {
         $issues = [];
-        $add = static function (string $message, bool $skipped = false) use (&$issues): void {
-            $issues[] = ['message' => $message, 'skipped' => $skipped];
+        $add = static function (string $message, bool $skipped = false, array $params = []) use (&$issues): void {
+            $issues[] = ['message' => $message, 'skipped' => $skipped, 'params' => $params];
         };
         $class = $notification['class'];
         if (!\in_array($class, [Admin::class, Conditional::class, EmailField::class, Dynamic::class], true)) {
@@ -111,22 +116,26 @@ class NotificationReadinessScan
             }
             $template = ($this->loadTemplate)($identifier);
             if (!$template) {
-                $add('A selected notification template no longer exists.');
+                $add('Notification template “{template}” no longer exists.', params: ['template' => (string) $identifier]);
 
                 continue;
             }
             if (!empty($template['unreadable'])) {
-                $add('A selected notification template could not be read.', true);
+                $add('Notification template “{template}” could not be read.', true, ['template' => (string) $identifier]);
 
                 continue;
             }
+            $params = ['template' => !empty($template['name']) ? $template['name'] : (string) $identifier];
             if ('' === trim($template['subject'] ?? '')) {
-                $add('A selected notification template has no subject.');
+                $add('Notification template “{template}” has no subject.', params: $params);
             }
-            if ('' === trim($template['fromName'] ?? '') || '' === trim($template['fromEmail'] ?? '')) {
-                $add('A selected notification template is missing its sender name or email.');
+            if ('' === trim($template['fromName'] ?? '')) {
+                $add('Notification template “{template}” has no sender name.', params: $params);
+            }
+            if ('' === trim($template['fromEmail'] ?? '')) {
+                $add('Notification template “{template}” has no sender email.', params: $params);
             } elseif (!$this->isTemplate($template['fromEmail']) && !filter_var(trim($template['fromEmail']), \FILTER_VALIDATE_EMAIL)) {
-                $add('A selected notification template has an invalid sender email.');
+                $add('Notification template “{template}” has an invalid sender email: “{value}”.', params: $params + ['value' => $template['fromEmail']]);
             }
         }
 
@@ -148,10 +157,13 @@ class NotificationReadinessScan
         if ($required && !$recipients) {
             $add('No notification recipients are configured.');
         }
-        foreach ($recipients as $recipient) {
-            $email = trim($recipient['email'] ?? '');
-            if (!$this->isTemplate($email) && !filter_var($email, \FILTER_VALIDATE_EMAIL)) {
-                $add('A configured recipient email is empty or invalid.');
+        foreach (array_values($recipients) as $index => $recipient) {
+            $value = $recipient['email'] ?? '';
+            $email = trim($value);
+            if ('' === $email) {
+                $add('Recipient {recipient} has an empty email.', params: ['recipient' => $index + 1]);
+            } elseif (!$this->isTemplate($email) && !filter_var($email, \FILTER_VALIDATE_EMAIL)) {
+                $add('Recipient {recipient} has an invalid email: “{value}”.', params: ['recipient' => $index + 1, 'value' => $value]);
             }
         }
     }
@@ -186,10 +198,12 @@ class NotificationReadinessScan
                 return ['unreadable' => true];
             }
             $template = [];
-            foreach (['subject', 'fromName', 'fromEmail'] as $key) {
+            foreach (['templateName', 'subject', 'fromName', 'fromEmail'] as $key) {
                 preg_match(str_replace('__KEY__', $key, NotificationTemplate::METADATA_PATTERN), $content, $matches);
                 $template[$key] = trim($matches[1] ?? '');
             }
+
+            $template['name'] = $template['templateName'] ?: $identifier;
 
             return $template;
         }

@@ -217,7 +217,7 @@ class DiagnosticsController extends BaseController
         try {
             if (null === $scanId) {
                 $scanId = bin2hex(random_bytes(16));
-                $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'results' => []];
+                $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'info' => 0, 'results' => []];
             } else {
                 $state = $cache->get(['freeform-readiness-scan', $owner, $kind, $scanId]);
                 if (false === $state) {
@@ -230,7 +230,11 @@ class DiagnosticsController extends BaseController
                 $batch = $scan->scanTask($task, $state['cursor'], $state['maxId'], $state['offset']);
                 $state['scanned'] += $batch['scanned'];
                 foreach ($batch['results'] as $issue) {
-                    ++$state[$issue['skipped'] ? 'skipped' : 'issues'];
+                    if (!empty($issue['informational'])) {
+                        $state['info'] = ($state['info'] ?? 0) + 1;
+                    } else {
+                        ++$state[$issue['skipped'] ? 'skipped' : 'issues'];
+                    }
                     if (\count($state['results']) < 100) {
                         $state['results'][] = $issue;
                     }
@@ -256,17 +260,19 @@ class DiagnosticsController extends BaseController
                 'scanned' => $state['scanned'],
                 'issues' => $state['issues'],
                 'skipped' => $state['skipped'],
-                'truncated' => $state['issues'] + $state['skipped'] > \count($state['results']),
+                'info' => $state['info'] ?? 0,
+                'truncated' => $state['issues'] + $state['skipped'] + ($state['info'] ?? 0) > \count($state['results']),
                 'results' => array_map(static function (array $issue) use ($kind): array {
                     $context = $issue['context'];
                     $message = match (true) {
+                        $kind === 'notifications' && isset($context['notificationName']) => 'Form “{form}”, notification “{notificationName}” (ID {notification}): {message}',
                         $kind === 'notifications' => 'Form “{form}”, notification {notification}: {message}',
                         isset($context['asset']) => 'Form “{form}”, field “{field}”, submission {submission}, asset {asset}: {message}',
                         isset($context['submission']) => 'Form “{form}”, field “{field}”, submission {submission}: {message}',
                         default => 'Form “{form}”, field “{field}”: {message}',
                     };
 
-                    return ['message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'])]), 'skipped' => $issue['skipped']];
+                    return ['message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $issue['params'] ?? [])]), 'skipped' => $issue['skipped'], 'informational' => $issue['informational'] ?? false];
                 }, $state['results']),
             ]);
         } catch (\Throwable $exception) {

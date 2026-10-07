@@ -8,6 +8,7 @@ use craft\elements\Asset;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 
 /**
  * Reads stored upload values directly, without hydrating forms or modifying assets.
@@ -17,9 +18,11 @@ class UploadIntegrityScan
     private const BATCH_SIZE = 25;
 
     private \Closure $checkAsset;
+    private \Closure $decrypt;
 
-    public function __construct(private Connection $db, ?\Closure $checkAsset = null)
+    public function __construct(private Connection $db, ?\Closure $checkAsset = null, ?\Closure $decrypt = null)
     {
+        $this->decrypt = $decrypt ?? static fn (string $value, string $formUid) => EncryptionHelper::decrypt(EncryptionHelper::getKey($formUid), $value);
         $this->checkAsset = $checkAsset ?? static function (int $id): ?string {
             $asset = \Craft::$app->getElements()->getElementById($id, Asset::class, '*');
             if (!$asset) {
@@ -33,7 +36,7 @@ class UploadIntegrityScan
     public function getTasks(): array
     {
         $fields = (new Query())
-            ->select(['field.*', 'form.name AS formName', 'form.handle AS formHandle'])
+            ->select(['field.*', 'form.name AS formName', 'form.handle AS formHandle', 'form.uid AS formUid'])
             ->from('{{%freeform_forms_fields}} field')
             ->innerJoin('{{%freeform_forms}} form', '[[form.id]] = [[field.formId]]')
             ->orderBy(['field.id' => \SORT_ASC])
@@ -67,9 +70,9 @@ class UploadIntegrityScan
                 'table' => Submission::generateContentTableName((int) $field['formId'], $field['formHandle']),
                 'column' => Submission::generateFieldColumnName((int) $field['id'], $metadata['handle'] ?? ''),
                 'form' => $field['formName'],
+                'formUid' => $field['formUid'],
                 'field' => $metadata['label'] ?? $metadata['handle'] ?? (string) $field['id'],
                 'columns' => $columns,
-                'encrypted' => $metadata['encrypted'] ?? false,
                 'invalid' => $invalid,
             ];
         }
@@ -81,11 +84,8 @@ class UploadIntegrityScan
     {
         $result = ['cursor' => $cursor, 'maxId' => $maxId, 'offset' => $offset, 'scanned' => 0, 'complete' => true, 'results' => []];
         $context = ['form' => $task['form'], 'field' => $task['field']];
-        if ($task['encrypted'] || $task['invalid']) {
-            $message = $task['encrypted']
-                ? 'Encrypted upload values were not checked. Encryption is enabled for this field.'
-                : 'This upload field could not be checked because its configuration is unreadable.';
-            $result['results'][] = $this->issue($context, $message, true);
+        if ($task['invalid']) {
+            $result['results'][] = $this->issue($context, 'This upload field could not be checked because its configuration is unreadable.', true);
 
             return $result;
         }
@@ -110,8 +110,27 @@ class UploadIntegrityScan
         foreach ($rows as $row) {
             $context['submission'] = (int) $row['id'];
 
+            $value = $row[$task['column']];
+            if (\is_string($value) && str_starts_with($value, 'encrypted:')) {
+                try {
+                    if (empty($task['formUid'])) {
+                        throw new \UnexpectedValueException('Missing form UID.');
+                    }
+                    $value = ($this->decrypt)($value, $task['formUid']);
+                    if (!\is_string($value)) {
+                        throw new \UnexpectedValueException('Unable to decrypt upload value.');
+                    }
+                } catch (\Throwable) {
+                    $result['results'][] = $this->issue($context, 'This encrypted upload value could not be decrypted with the current site key and was not checked.', true, true);
+                    $result['cursor'] = (int) $row['id'];
+                    $result['offset'] = 0;
+
+                    continue;
+                }
+            }
+
             try {
-                $ids = $this->getAssetIds($row[$task['column']], $task['columns']);
+                $ids = $this->getAssetIds($value, $task['columns']);
             } catch (\Throwable) {
                 $result['results'][] = $this->issue($context, 'The stored upload value could not be read.', true);
                 $ids = [];
@@ -181,8 +200,8 @@ class UploadIntegrityScan
         return array_map(intval(...), $value);
     }
 
-    private function issue(array $context, string $message, bool $skipped = false): array
+    private function issue(array $context, string $message, bool $skipped = false, bool $informational = false): array
     {
-        return ['context' => $context, 'message' => $message, 'skipped' => $skipped];
+        return ['context' => $context, 'message' => $message, 'skipped' => $skipped, 'informational' => $informational];
     }
 }

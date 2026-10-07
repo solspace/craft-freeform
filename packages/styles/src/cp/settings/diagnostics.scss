@@ -577,6 +577,10 @@
       --ff-scan-text-color: var(--enabled-color);
     }
 
+    &.is-info {
+      --ff-scan-text-color: var(--link-color, #0b69d5);
+    }
+
     &.is-warning {
       --ff-scan-color: var(--yellow-500, #eab308);
       --ff-scan-text-color: var(--yellow-700, #a16207);
@@ -660,6 +664,10 @@
       cursor: default;
       background: transparent;
 
+      &.ff-diag-scan-info-icon::before {
+        content: "ⓘ";
+      }
+
       &::before {
         font-size: 1em;
         line-height: 1;
@@ -680,6 +688,10 @@
 
     &:empty {
       display: none;
+    }
+
+    .is-info {
+      color: var(--link-color, #0b69d5);
     }
 
     .is-warning {

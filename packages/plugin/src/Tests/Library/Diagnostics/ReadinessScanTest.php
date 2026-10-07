@@ -13,10 +13,12 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
+use yii\base\Security;
 use yii\db\Command;
 use yii\db\sqlite\Schema;
 
@@ -65,7 +67,7 @@ class ReadinessScanTest extends TestCase
         $this->previousApp = \Craft::$app;
         \Craft::$app = (object) ['db' => $this->db];
         $this->pdo->exec('CREATE TABLE craft_uploads (id INTEGER PRIMARY KEY, uploads TEXT)');
-        $this->pdo->exec('CREATE TABLE craft_freeform_forms (id INTEGER PRIMARY KEY, name TEXT, handle TEXT, dateArchived TEXT)');
+        $this->pdo->exec("CREATE TABLE craft_freeform_forms (id INTEGER PRIMARY KEY, name TEXT, handle TEXT, dateArchived TEXT, uid TEXT DEFAULT 'form-uid')");
         $this->pdo->exec('CREATE TABLE craft_freeform_forms_fields (id INTEGER PRIMARY KEY, formId INTEGER, type TEXT, uid TEXT, metadata TEXT, rowId INTEGER DEFAULT 1)');
         $this->pdo->exec('CREATE TABLE craft_freeform_forms_rows (id INTEGER PRIMARY KEY)');
         $this->pdo->exec('INSERT INTO craft_freeform_forms_rows VALUES (1)');
@@ -143,13 +145,9 @@ class ReadinessScanTest extends TestCase
         $this->assertSame([], $result['results']);
     }
 
-    public function testUnreadableAndEncryptedValuesAreNeverReportedAsClean(): void
+    public function testUnreadableValuesAreNeverReportedAsClean(): void
     {
         $scan = new UploadIntegrityScan($this->db, static function () { throw new \LogicException('Must not check invalid IDs.'); });
-        $encrypted = $scan->scanTask(array_replace($this->uploadTask(), ['encrypted' => true]));
-        $this->assertTrue($encrypted['results'][0]['skipped']);
-        $this->assertSame(0, $encrypted['scanned']);
-        $this->assertSame('Encrypted upload values were not checked. Encryption is enabled for this field.', $encrypted['results'][0]['message']);
         $this->pdo->exec("INSERT INTO craft_uploads VALUES (1, 'invalid-json')");
         $this->insertUploads(2, ['not-an-id']);
         $invalid = $scan->scanTask($this->uploadTask());
@@ -161,7 +159,7 @@ class ReadinessScanTest extends TestCase
 
     public function testUploadDiscoveryIncludesStandaloneAndTableFiles(): void
     {
-        $this->pdo->exec("INSERT INTO craft_freeform_forms VALUES (1, 'Contact', 'contact', NULL)");
+        $this->pdo->exec("INSERT INTO craft_freeform_forms (id, name, handle, dateArchived) VALUES (1, 'Contact', 'contact', NULL)");
         $insert = $this->pdo->prepare('INSERT INTO craft_freeform_forms_fields (id, formId, type, uid, metadata) VALUES (?, 1, ?, ?, ?)');
         $insert->execute([1, FileUploadField::class, 'upload', json_encode(['handle' => 'file', 'label' => 'File'])]);
         $insert->execute([2, TableField::class, 'table', json_encode(['handle' => 'table', 'tableLayout' => [['type' => 'string'], ['type' => 'file']]])]);
@@ -175,7 +173,7 @@ class ReadinessScanTest extends TestCase
 
     public function testNotificationDiscoveryExcludesDisabledAndArchived(): void
     {
-        $this->pdo->exec("INSERT INTO craft_freeform_forms VALUES (1, 'Contact', 'contact', NULL), (2, 'Archived', 'archive', '2026-10-01')");
+        $this->pdo->exec("INSERT INTO craft_freeform_forms (id, name, handle, dateArchived) VALUES (1, 'Contact', 'contact', NULL), (2, 'Archived', 'archive', '2026-10-01')");
         $insert = $this->pdo->prepare('INSERT INTO craft_freeform_forms_notifications VALUES (?, ?, ?, ?, ?)');
         foreach ([[1, 1, 1], [2, 1, 0], [3, 2, 1]] as [$id, $form, $enabled]) {
             $insert->execute([$id, $form, Admin::class, $enabled, json_encode(['template' => 1, 'recipients' => [['email' => 'admin@example.com']]])]);
@@ -198,8 +196,10 @@ class ReadinessScanTest extends TestCase
         $scan = new NotificationReadinessScan($this->db, static fn () => false);
         $issues = $scan->check($this->notification(Admin::class, ['recipients' => [['email' => 'invalid']]]), []);
         $this->assertCount(2, $issues);
-        $this->assertStringContainsString('recipient email', $issues[0]['message']);
-        $this->assertStringContainsString('template no longer exists', $issues[1]['message']);
+        $this->assertSame('Recipient {recipient} has an invalid email: “{value}”.', $issues[0]['message']);
+        $this->assertSame(['recipient' => 1, 'value' => 'invalid'], $issues[0]['params']);
+        $this->assertSame('Notification template “{template}” no longer exists.', $issues[1]['message']);
+        $this->assertSame(['template' => '1'], $issues[1]['params']);
         $this->assertFalse($issues[1]['skipped']);
     }
 
@@ -224,7 +224,8 @@ class ReadinessScanTest extends TestCase
         $fields = ['choice' => ['type' => DropdownField::class]];
         $issues = $scan->check($notification, $fields);
         $this->assertCount(1, $issues);
-        $this->assertSame('A selected notification template no longer exists.', $issues[0]['message']);
+        $this->assertSame('Notification template “{template}” no longer exists.', $issues[0]['message']);
+        $this->assertSame(['template' => '99'], $issues[0]['params']);
     }
 
     public function testUnreadableTemplatesAndCustomTypesRequireAttention(): void
@@ -238,11 +239,12 @@ class ReadinessScanTest extends TestCase
 
     public function testMissingSubjectAndSenderAreReported(): void
     {
-        $issues = $this->notificationScan(['subject' => '', 'fromEmail' => 'invalid'])->check(
+        $issues = $this->notificationScan(['name' => 'Admin template', 'subject' => '', 'fromEmail' => 'invalid'])->check(
             $this->notification(Admin::class, ['recipients' => [['email' => 'admin@example.com']]]),
             []
         );
         $this->assertCount(2, $issues);
+        $this->assertSame(['template' => 'Admin template', 'value' => 'invalid'], $issues[1]['params']);
     }
 
     public function testDefaultAssetCheckSearchesAllSitesAndUsesVolumeWithoutDownloading(): void
@@ -311,9 +313,76 @@ class ReadinessScanTest extends TestCase
         $this->assertSame([], $this->notificationScan()->scanTask($task)['results']);
     }
 
+    public function testNotificationNameAndLiteralInvalidValueArePreserved(): void
+    {
+        $task = $this->notification(Admin::class, ['name' => 'Admin <Team>', 'recipients' => [['email' => '<invalid@example>']]])
+            + ['id' => 42, 'formId' => 1, 'formName' => 'Contact'];
+        $result = $this->notificationScan()->scanTask($task);
+        $this->assertSame('Admin <Team>', $result['results'][0]['context']['notificationName']);
+        $this->assertSame('42', $result['results'][0]['context']['notification']);
+        $this->assertSame('<invalid@example>', $result['results'][0]['params']['value']);
+    }
+
+    public function testEmptyEmailIsReportedWithoutAnInvalidValuePlaceholder(): void
+    {
+        $issues = $this->notificationScan(['fromEmail' => ''])->check($this->notification(Admin::class, ['recipients' => [['email' => '']]]), []);
+        $this->assertSame('Recipient {recipient} has an empty email.', $issues[0]['message']);
+        $this->assertSame(['recipient' => 1], $issues[0]['params']);
+        $this->assertSame('Notification template “{template}” has no sender email.', $issues[1]['message']);
+    }
+
+    public function testEncryptedUploadValuesUseTheFormKeyWithoutChangingStoredData(): void
+    {
+        $security = new Security();
+        \Craft::$app = new class($security) {
+            public function __construct(private $security) {}
+
+            public function getSecurity()
+            {
+                return $this->security;
+            }
+        };
+        $key = 'diagnostic-test-key-form-uid';
+        $encrypted = EncryptionHelper::encrypt($key, '[1,2]');
+        $this->pdo->prepare('INSERT INTO craft_uploads VALUES (1, ?)')->execute([$encrypted]);
+        $decrypt = function ($value, $formUid) use ($key) {
+            $this->assertSame('form-uid', $formUid);
+
+            return EncryptionHelper::decrypt($key, $value);
+        };
+        $scan = new UploadIntegrityScan($this->db, static fn ($id) => $id === 2 ? 'The referenced asset no longer exists.' : null, $decrypt);
+        // Encrypted values can remain after the field's encryption setting is disabled.
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertSame(2, $result['scanned']);
+        $this->assertFalse($result['results'][0]['informational']);
+        $this->assertSame(2, $result['results'][0]['context']['asset']);
+        $this->assertSame($encrypted, $this->pdo->query('SELECT uploads FROM craft_uploads')->fetchColumn());
+    }
+
+    public function testFailedDecryptionIsInformationalAndAdvancesTheScan(): void
+    {
+        $this->pdo->exec("INSERT INTO craft_uploads VALUES (10, 'encrypted:unavailable')");
+        $scan = new UploadIntegrityScan($this->db, static function () { throw new \LogicException('Must not check ciphertext as an asset ID.'); }, static fn () => false);
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertTrue($result['complete']);
+        $this->assertSame(10, $result['cursor']);
+        $this->assertSame(0, $result['scanned']);
+        $this->assertTrue($result['results'][0]['skipped']);
+        $this->assertTrue($result['results'][0]['informational']);
+    }
+
+    public function testPlainUploadValuesDoNotNeedDecryption(): void
+    {
+        $this->insertUploads(1, [1]);
+        $scan = new UploadIntegrityScan($this->db, static fn () => null, static function () { throw new \LogicException('Plain values do not need decryption.'); });
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertSame(1, $result['scanned']);
+        $this->assertSame([], $result['results']);
+    }
+
     private function uploadTask(): array
     {
-        return ['table' => '{{%uploads}}', 'column' => 'uploads', 'form' => 'Contact', 'field' => 'Files', 'columns' => [], 'encrypted' => false, 'invalid' => false];
+        return ['table' => '{{%uploads}}', 'column' => 'uploads', 'form' => 'Contact', 'formUid' => 'form-uid', 'field' => 'Files', 'columns' => [], 'invalid' => false];
     }
 
     private function insertUploads(int $id, array $value): void

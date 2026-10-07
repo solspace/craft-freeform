@@ -33,7 +33,7 @@ class ForeignKeyRepair
      *
      * @return array{status: string, orphanCount: int, message: string}
      */
-    public function inspect(array $definition): array
+    public function inspect(array $definition, bool $checkOrphans = true): array
     {
         [, $table, $columns, $reference, $referenceColumns, $onDelete, $onUpdate] = $definition;
         $columns = (array) $columns;
@@ -52,7 +52,8 @@ class ForeignKeyRepair
             }
         }
 
-        $orphans = $this->countOrphans($table, $columns, $reference, $referenceColumns);
+        // Diagnostics checks schema metadata only; row scans remain opt-in via the CLI.
+        $orphans = $checkOrphans ? $this->countOrphans($table, $columns, $reference, $referenceColumns) : 0;
         $conflict = false;
         foreach ($schema->getTableForeignKeys($table) as $key) {
             if ($key->columnNames !== $columns) {
@@ -84,7 +85,7 @@ class ForeignKeyRepair
             return $this->result('blocked', $orphans, 'The key is missing and orphaned rows prevent restoration. Review the data before proceeding.');
         }
 
-        return $this->result('missing', 0, 'The missing key can be restored.');
+        return $this->result('missing', 0, $checkOrphans ? 'The missing key can be restored.' : 'The key is missing. Run the console utility to check for orphaned rows before restoring it.');
     }
 
     /**

@@ -11,6 +11,32 @@ or remove existing data.
 
 ## Inspect the database
 
+The Diagnostics page includes a read-only **Database Foreign Keys** check. It
+compares the expected relationships with database metadata, including per-form
+submission tables. Missing or conflicting keys and missing tables/columns are
+reported with instructions to run the console utility. If inspection fails,
+Diagnostics reports that it could not complete the check rather than showing a
+passing status.
+
+Opening Diagnostics does not scan submission rows or change the database.
+A passing foreign-key check confirms the expected schema relationships are
+present; it does not confirm that there are no orphaned rows. Row-level checks
+remain available through the console utility below.
+
+Click **Scan for orphaned submissions** at the bottom of Diagnostics to run a
+read-only scan in batches of up to 1,000 records. Progress shows the number
+checked and the number affected. Each submission is counted once when its Craft
+element or form is missing. Soft-deleted elements whose rows still exist are not
+orphans. The scan includes spam and trashed submission records and excludes
+submissions created after it starts. Results reflect data at the time each batch
+is checked; run during a quiet period for a stable result.
+
+This scan does not inspect every child table or all possible orphaned data. Use
+the console utility for the full foreign-key relationship check. A failed scan
+reports partial results and can be restarted. The result links to the planned
+documentation page at `/craft/freeform/v5/guides/database-integrity/`, which must
+be published before release using this guide's contents.
+
 Run this from the Craft project directory:
 
 ```sh
@@ -70,4 +96,4 @@ behavior should be reviewed manually rather than replaced blindly.
 - `0`: all inspected relationships were valid or successfully restored.
 - `1`: missing keys, blocked/conflicting relationships, or inspection/repair errors remain.
 
-There is no automatic repair migration and no Diagnostics page change in this patch.
+There is no automatic repair migration.

@@ -26,6 +26,42 @@ class ForeignKeyRepairTest extends TestCase
         $this->assertSame('missing', $repair->inspect(self::DEFINITION)['status']);
     }
 
+    public function testMetadataInspectionReportsMissingKeysWithoutScanningRows(): void
+    {
+        [$repair, , , , $db] = $this->fixture([], 7);
+        $db->expects($this->never())->method('createCommand');
+
+        $result = $repair->inspect(self::DEFINITION, checkOrphans: false);
+        $this->assertSame('missing', $result['status']);
+        $this->assertStringContainsString('check for orphaned rows before restoring', $result['message']);
+    }
+
+    public function testMetadataInspectionRecognizesMatchingKeysWithoutScanningRows(): void
+    {
+        [$repair, , , , $db] = $this->fixture([$this->key()], 7);
+        $db->expects($this->never())->method('createCommand');
+
+        $this->assertSame('ok', $repair->inspect(self::DEFINITION, checkOrphans: false)['status']);
+    }
+
+    public function testMetadataInspectionReportsConflictingKeysWithoutScanningRows(): void
+    {
+        $key = $this->key();
+        $key->onDelete = 'RESTRICT';
+        [$repair, , , , $db] = $this->fixture([$key], 7);
+        $db->expects($this->never())->method('createCommand');
+
+        $this->assertSame('conflict', $repair->inspect(self::DEFINITION, checkOrphans: false)['status']);
+    }
+
+    public function testMetadataInspectionReportsMissingTablesWithoutScanningRows(): void
+    {
+        [$repair, , , , $db] = $this->fixture([], 0, false);
+        $db->expects($this->never())->method('createCommand');
+
+        $this->assertSame('blocked', $repair->inspect(self::DEFINITION, checkOrphans: false)['status']);
+    }
+
     public function testExistingKeysAreRecognizedByRelationshipRatherThanName(): void
     {
         [$repair, $command] = $this->fixture([$this->key()]);

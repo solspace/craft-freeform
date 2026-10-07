@@ -14,6 +14,7 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
+use Solspace\Freeform\Library\Database\ForeignKeyRepair;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
@@ -31,6 +32,60 @@ class DiagnosticsService extends BaseService
         private IntegrationTypeProvider $integrationTypeProvider,
     ) {
         parent::__construct($config);
+    }
+
+    /**
+     * Checks schema metadata without scanning submission data or changing the database.
+     *
+     * @return DiagnosticItem[]
+     */
+    public function getDatabaseChecks(): array
+    {
+        $value = ['available' => true, 'issues' => []];
+
+        try {
+            $db = \Craft::$app->getDb();
+            $repair = new ForeignKeyRepair($db);
+            foreach ($repair->getDefinitions() as $definition) {
+                $result = $repair->inspect($definition, checkOrphans: false);
+                if ('ok' === $result['status']) {
+                    continue;
+                }
+
+                $value['issues'][] = [
+                    'relationship' => $db->getSchema()->getRawTableName($definition[1]).' ('.implode(', ', (array) $definition[2]).')',
+                    'message' => $result['message'],
+                ];
+            }
+        } catch (\Throwable $exception) {
+            $value['available'] = false;
+            \Craft::warning('Unable to inspect Freeform foreign keys: '.$exception->getMessage(), 'freeform');
+        }
+
+        $value['status'] = !$value['available']
+            ? Freeform::t('Unable to check')
+            : ($value['issues'] ? Freeform::t('Requires attention') : Freeform::t('All expected keys present'));
+
+        return [
+            new DiagnosticItem(
+                '<span class="diag-check diag-{{ value.available and not value.issues ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('Database Foreign Keys').': <b>{{ value.status }}</b></span>',
+                $value,
+                [
+                    new WarningValidator(
+                        static fn ($value) => $value['available'] && !$value['issues'],
+                        'Database Foreign Keys Need Attention',
+                        '{% verbatim %}{% if not value.available %}'
+                        .'The foreign key check could not be completed. Check the Craft logs or ask your developer to investigate.'
+                        .'{% else %}'
+                        .'{{ value.issues|length }} expected database relationships require attention. Missing or incorrect foreign keys can prevent related submission data from being deleted.'
+                        .'<ul>{% for issue in value.issues %}<li><code>{{ issue.relationship }}</code>: {{ issue.message|t("freeform") }}</li>{% endfor %}</ul>'
+                        .'Ask your developer to run <code>php craft freeform/database/repair-foreign-keys --dry-run=1</code> to investigate.'
+                        .'{% endif %}'
+                        .' This check examines database structure only; use the submission scan below or the console utility to check orphaned rows.{% endverbatim %}'
+                    ),
+                ]
+            ),
+        ];
     }
 
     /**

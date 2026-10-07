@@ -108,6 +108,7 @@
     <div class="gridy">
         {% set leftSections = [
             {'title': "Server Checks"|t('freeform'), 'items': server},
+            {'title': "Database Checks"|t('freeform'), 'items': database},
             {'title': "Site Settings"|t('freeform'), 'items': site}
         ] %}
         <div class="diag">
@@ -152,4 +153,70 @@
             {% endfor %}
         </div>
     </div>
+    <hr>
+    <section id="freeform-orphan-scan" aria-labelledby="freeform-orphan-scan-heading">
+        <h2 id="freeform-orphan-scan-heading">{{ "Orphaned Submissions"|t('freeform') }}</h2>
+        <p>{{ "Check for submission records whose Craft element or form no longer exists. This read-only scan runs only when requested and may take time on large sites."|t('freeform') }}</p>
+        <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
+        <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
+        <p id="freeform-orphan-scan-status" role="status" aria-live="polite"></p>
+        <p id="freeform-orphan-scan-guide" hidden>
+            {{ "For a full database check and repair instructions, see the"|t('freeform') }}
+            <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
+        </p>
+    </section>
+
+    {% js %}
+        (() => {
+            const section = document.getElementById('freeform-orphan-scan');
+            const button = document.getElementById('freeform-orphan-scan-button');
+            const spinner = document.getElementById('freeform-orphan-scan-spinner');
+            const status = document.getElementById('freeform-orphan-scan-status');
+            const guide = document.getElementById('freeform-orphan-scan-guide');
+            const messages = {{ {
+                starting: "Scanning submissions…"|t('freeform'),
+                progress: "Scanned {scanned} submissions; found {affected} orphaned submissions so far."|t('freeform'),
+                complete: "Scan complete: {affected} orphaned submissions found among {scanned} checked."|t('freeform'),
+                failed: "The scan could not be completed. Partial results: {affected} orphaned submissions found among {scanned} checked. Try again or run the console utility."|t('freeform')
+            }|json_encode|raw }};
+
+            button.addEventListener('click', async () => {
+                button.disabled = true;
+                spinner.classList.remove('hidden');
+                section.setAttribute('aria-busy', 'true');
+                guide.hidden = true;
+                status.textContent = messages.starting;
+                let cursor = 0;
+                let maxId = null;
+                let scanned = 0;
+                let affected = 0;
+                const format = (message) => message.replace('{scanned}', scanned.toLocaleString()).replace('{affected}', affected.toLocaleString());
+
+                try {
+                    while (true) {
+                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-orphaned-submissions', {
+                            data: { cursor, maxId }
+                        });
+                        const batch = response.data;
+                        if (batch.error || !Number.isInteger(batch.scanned) || !Number.isInteger(batch.affected)) {
+                            throw new Error('Scan failed');
+                        }
+                        cursor = batch.cursor;
+                        maxId = batch.maxId;
+                        scanned += batch.scanned;
+                        affected += batch.affected;
+                        status.textContent = format(batch.complete ? messages.complete : messages.progress);
+                        if (batch.complete) break;
+                    }
+                } catch (error) {
+                    status.textContent = format(messages.failed);
+                } finally {
+                    button.disabled = false;
+                    spinner.classList.add('hidden');
+                    section.setAttribute('aria-busy', 'false');
+                    guide.hidden = false;
+                }
+            });
+        })();
+    {% endjs %}
 {% endblock %}

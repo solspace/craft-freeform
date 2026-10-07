@@ -132,8 +132,10 @@
                 {{ "For a full database check and repair instructions, see the"|t('freeform') }}
                 <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
             </p>
-            <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
-            <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
+            <div class="ff-diag-scan-actions">
+                <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
+                <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
+            </div>
             {{ _self.scanFeedback('freeform-orphan-scan', 'Submission scan progress'|t('freeform')) }}
         </section>
 
@@ -144,8 +146,10 @@
                 {{ "For a full database check and repair instructions, see the"|t('freeform') }}
                 <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
             </p>
-            <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
-            <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
+            <div class="ff-diag-scan-actions">
+                <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
+                <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
+            </div>
             {{ _self.scanFeedback('freeform-related-scan', 'Related data scan progress'|t('freeform')) }}
             <ul class="ff-diag-scan-results" id="freeform-related-scan-results"></ul>
         </section>

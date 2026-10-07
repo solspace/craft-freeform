@@ -544,6 +544,21 @@
     resize: vertical;
   }
 
+  .ff-diag-scan-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    > .spinner {
+      --size: 20px;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
   .ff-diag-scan-feedback {
     --ff-scan-color: var(--link-color, #0b69d5);
     --ff-scan-text-color: var(--gray-700);

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.16.6 - Unreleased
+## 5.16.6 - 2026-10-07
 
 ### Added
 - Added database integrity checks and optional orphan and duplicate scans to Diagnostics, with links to repair guidance.
@@ -9,6 +9,9 @@
 ### Fixed
 - Fixed a bug where uninstalling another Craft plugin could remove Freeform's foreign keys, leaving related submission data behind after deletion.
 - Improved **Forms list** performance, particularly on sites with many forms.
+
+### Security
+- Fixed a security vulnerability where visitor-supplied notification recipient addresses could evaluate Twig expressions and disclose server-side information.
 
 ## 5.16.5 - 2026-10-06
 

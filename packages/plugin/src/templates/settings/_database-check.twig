@@ -1,2 +1,5 @@
 {% import 'freeform/settings/_diagnostics' as diagnostics %}
-{{ diagnostics.renderItems(database, 'database') }}
+{% set findings = database|filter(item => item.warnings or item.suggestions) %}
+{% if findings|length %}
+    {{ diagnostics.renderItems(findings, 'database') }}
+{% endif %}

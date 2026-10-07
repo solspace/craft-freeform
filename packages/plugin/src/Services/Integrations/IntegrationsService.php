@@ -36,6 +36,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\PushableInterface;
@@ -158,7 +159,7 @@ class IntegrationsService extends BaseService
      */
     public function getAllIntegrations(?string $type = null): array
     {
-        $this->getAllIntegrationTypes();
+        Profiler::profile('Integration type discovery', fn () => $this->getAllIntegrationTypes());
 
         $integrations = $this->cache->getOrSet(
             'all',
@@ -170,7 +171,7 @@ class IntegrationsService extends BaseService
                     $model = $this->createIntegrationModel($result);
 
                     try {
-                        $model->getIntegrationObject();
+                        Profiler::profile('Initialize integration '.$model->class, static fn () => $model->getIntegrationObject());
                         $models[] = $model;
                     } catch (IntegrationNotFoundException $e) {
                     }

@@ -14,6 +14,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\FlatErrorCollection;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -111,8 +112,8 @@ class IntegrationsController extends BaseApiController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
-        $types = $this->typeProvider->getAllTypeDefinitions(false);
-        $integrations = $this->getIntegrationsService()->getAllIntegrations();
+        $types = Profiler::profile('Navigation integration types', fn () => $this->typeProvider->getAllTypeDefinitions(false));
+        $integrations = Profiler::profile('Load integrations', fn () => $this->getIntegrationsService()->getAllIntegrations());
 
         $sections = [];
 

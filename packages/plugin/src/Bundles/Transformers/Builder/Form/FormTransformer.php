@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TranslationsService;
@@ -44,9 +45,9 @@ class FormTransformer
             $forms
         );
 
-        $transformed = $this->decorateWithSubmissionStatistics($transformed);
+        $transformed = Profiler::profile('Submission statistics', fn () => $this->decorateWithSubmissionStatistics($transformed));
 
-        return $this->attachLinks($forms, $transformed);
+        return Profiler::profile('Form links', fn () => $this->attachLinks($forms, $transformed));
     }
 
     public function checkPermissions(Form $form): ?Form
@@ -145,7 +146,7 @@ class FormTransformer
             'ownership' => $this->getOwnership($form),
             'isNew' => $isNew,
             'dateArchived' => $form->getDateArchived(),
-            'formMonitor' => $this->formMonitorService->getStatus($form),
+            'formMonitor' => Profiler::profile('Form Monitor status', fn () => $this->formMonitorService->getStatus($form)),
             'canManageSubmissions' => $canManageSubmissions,
             'submissionCount' => $submissionCount,
         ];

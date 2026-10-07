@@ -928,8 +928,10 @@ class DiagnosticsService extends BaseService
                     .'The foreign key check could not be completed. Check the Craft logs or ask your developer to investigate.'
                     .'{% else %}'
                     .'{{ value.issues|length }} expected database relationships require attention. Missing or incorrect foreign keys can prevent related submission data from being deleted.'
+                    .'<p><a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Read the database integrity and foreign-key repair guide"|t("freeform") }}</a></p>'
+                    .'<p>{{ "A clean orphan scan does not mean the foreign keys are present."|t("freeform") }}</p>'
                     .'<ul>{% for issue in value.issues %}<li><code>{{ issue.relationship }}</code>: {{ issue.message|t("freeform") }}</li>{% endfor %}</ul>'
-                    .'Ask your developer to run <code>php craft freeform/database/repair-foreign-keys --dry-run=1</code> to investigate.'
+                    .'<p>Ask your developer to run <code>php craft freeform/database/repair-foreign-keys --dry-run=1</code> to inspect the relationships without making changes. Follow the guide before using <code>--apply=1</code> to restore missing keys.</p>'
                     .'{% endif %}'
                     .' This check examines database structure only; use the submission scan below or the console utility to check orphaned rows.{% endverbatim %}'
                 ),
@@ -957,7 +959,8 @@ class DiagnosticsService extends BaseService
                 'Database Structure Needs Attention',
                 '{% verbatim %}{% if not value.available %}The database structure check could not be completed. Check the Craft logs or ask your developer to investigate.{% else %}'
                 .'{{ value.issues|length }} database structure issues require attention.<ul>{% for issue in value.issues %}<li><code>{{ issue.relationship }}</code>: {{ issue.message|t("freeform") }}</li>{% endfor %}</ul>'
-                .'These checks do not change the database. The foreign-key utility restores foreign keys only; other schema issues require developer review.{% endif %}{% endverbatim %}'
+                .'These checks do not change the database. The foreign-key utility restores foreign keys only; other schema issues require developer review.{% endif %}'
+                .'<p><a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Read the database integrity and repair guide"|t("freeform") }}</a></p>{% endverbatim %}'
             )]
         );
     }

@@ -17,6 +17,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
@@ -252,6 +253,8 @@ class DiagnosticsController extends BaseController
                 return $this->asFailure(Freeform::t('The scan progress could not be saved. Check the Craft cache configuration.'));
             }
 
+            $links = new ReadinessLinks(allowFileTemplateEdit: Freeform::getInstance()->settings->getSettingsModel()->allowFileTemplateEdit);
+
             return $this->asJson([
                 'scanId' => $scanId,
                 'complete' => $state['task'] >= \count($state['tasks']),
@@ -262,7 +265,7 @@ class DiagnosticsController extends BaseController
                 'skipped' => $state['skipped'],
                 'info' => $state['info'] ?? 0,
                 'truncated' => $state['issues'] + $state['skipped'] + ($state['info'] ?? 0) > \count($state['results']),
-                'results' => array_map(static function (array $issue) use ($kind): array {
+                'results' => array_map(static function (array $issue) use ($kind, $links): array {
                     $context = $issue['context'];
                     $message = match (true) {
                         $kind === 'notifications' && isset($context['notificationName']) => 'Form “{form}”, notification “{notificationName}” (ID {notification}): {message}',
@@ -272,7 +275,12 @@ class DiagnosticsController extends BaseController
                         default => 'Form “{form}”, field “{field}”: {message}',
                     };
 
-                    return ['message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $issue['params'] ?? [])]), 'skipped' => $issue['skipped'], 'informational' => $issue['informational'] ?? false];
+                    return [
+                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $issue['params'] ?? [])]),
+                        'skipped' => $issue['skipped'],
+                        'informational' => $issue['informational'] ?? false,
+                        'links' => $links->getLinks($issue, $kind),
+                    ];
                 }, $state['results']),
             ]);
         } catch (\Throwable $exception) {

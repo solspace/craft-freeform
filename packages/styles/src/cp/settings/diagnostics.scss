@@ -686,6 +686,12 @@
     padding-inline-start: 20px;
     overflow-wrap: anywhere;
 
+    .ff-diag-result-link {
+      margin-inline-start: 8px;
+      color: var(--link-color, #0b69d5);
+      text-decoration: underline;
+    }
+
     &:empty {
       display: none;
     }

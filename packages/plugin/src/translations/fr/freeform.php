@@ -3609,4 +3609,9 @@ return [
     'Information: {info} encrypted upload values could not be checked.' => 'Information : {info} valeurs de téléversement chiffrées n’ont pas pu être vérifiées.',
     'Information: {info} encrypted upload value could not be checked.' => 'Information : {info} valeur de téléversement chiffrée n’a pas pu être vérifiée.',
     'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.' => 'Vérifiez les fichiers téléversés enregistrés, y compris dans les champs de tableau, pour détecter les ressources et fichiers manquants. Les valeurs chiffrées sont déchiffrées en mémoire si possible. Les valeurs impossibles à déchiffrer sont signalées à titre informatif ; les stockages indisponibles sont signalés comme non vérifiés. Aucun fichier ni aucune soumission n’est modifié.',
+    'View submission' => 'Voir la soumission',
+    'Edit form' => 'Modifier le formulaire',
+    'Edit form notifications' => 'Modifier les notifications du formulaire',
+    'Edit notification template' => 'Modifier le modèle de notification',
+    'View notification templates' => 'Voir les modèles de notification',
 ];

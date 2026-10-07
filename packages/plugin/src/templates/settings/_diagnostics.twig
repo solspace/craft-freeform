@@ -362,13 +362,24 @@
                             if (!Number.isInteger(info) || info < 0 || batch.error || typeof batch.complete !== 'boolean' || !/^[a-f0-9]{32}$/.test(batch.scanId)
                                 || !Array.isArray(batch.results) || !['completedChecks', 'totalChecks', 'scanned', 'issues', 'skipped'].every(key => Number.isInteger(batch[key]) && batch[key] >= 0)
                                 || batch.completedChecks > batch.totalChecks
-                                || !batch.results.every(result => typeof result.message === 'string' && typeof result.skipped === 'boolean')) throw new Error('Scan failed');
+                                || !batch.results.every(result => typeof result.message === 'string' && typeof result.skipped === 'boolean'
+                                    && (result.links === undefined || Array.isArray(result.links)))) throw new Error('Scan failed');
                             scanId = batch.scanId;
                             results.replaceChildren();
                             for (const result of batch.results) {
                                 const row = document.createElement('li');
                                 row.className = result.informational ? 'is-info' : 'is-warning';
                                 row.textContent = result.message;
+                                for (const link of result.links ?? []) {
+                                    if (!link || typeof link.label !== 'string' || typeof link.url !== 'string') continue;
+                                    const url = new URL(link.url, window.location.href);
+                                    if (!['http:', 'https:'].includes(url.protocol) || url.origin !== window.location.origin) continue;
+                                    const anchor = document.createElement('a');
+                                    anchor.className = 'ff-diag-result-link';
+                                    anchor.href = url.href;
+                                    anchor.textContent = link.label;
+                                    row.appendChild(anchor);
+                                }
                                 results.appendChild(row);
                             }
                             if (batch.truncated) {

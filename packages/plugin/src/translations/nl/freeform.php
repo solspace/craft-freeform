@@ -3572,4 +3572,9 @@ return [
     'Information: {info} encrypted upload values could not be checked.' => 'Informatie: {info} versleutelde uploadwaarden konden niet worden gecontroleerd.',
     'Information: {info} encrypted upload value could not be checked.' => 'Informatie: {info} versleutelde uploadwaarde kon niet worden gecontroleerd.',
     'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.' => 'Controleer opgeslagen uploads, inclusief uploads in tabelvelden, op ontbrekende assets en bestanden. Versleutelde waarden worden waar mogelijk in het geheugen ontsleuteld. Waarden die niet kunnen worden ontsleuteld worden ter informatie gemeld; niet-beschikbare opslag wordt als niet gecontroleerd gemeld. Bestanden en inzendingen worden niet gewijzigd.',
+    'View submission' => 'Inzending bekijken',
+    'Edit form' => 'Formulier bewerken',
+    'Edit form notifications' => 'Formuliermeldingen bewerken',
+    'Edit notification template' => 'Meldingssjabloon bewerken',
+    'View notification templates' => 'Meldingssjablonen bekijken',
 ];

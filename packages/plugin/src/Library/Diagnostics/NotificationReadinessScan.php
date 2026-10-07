@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Diagnostics;
 
 use craft\db\Connection;
 use craft\db\Query;
+use craft\helpers\App;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Freeform;
@@ -58,7 +59,7 @@ class NotificationReadinessScan
         $metadata = json_decode($task['metadata'], true);
         $name = \is_array($metadata) ? ($metadata['name'] ?? null) : null;
         foreach ($result['results'] as &$issue) {
-            $issue['context'] = ['form' => $task['formName'], 'notification' => (string) $task['id']];
+            $issue['context'] = ['form' => $task['formName'], 'formId' => (int) $task['formId'], 'notification' => (string) $task['id']];
             if (\is_string($name) && '' !== trim($name)) {
                 $issue['context']['notificationName'] = $name;
             }
@@ -71,8 +72,11 @@ class NotificationReadinessScan
     public function check(array $notification, array $fields, bool $ruleExists = true): array
     {
         $issues = [];
-        $add = static function (string $message, bool $skipped = false, array $params = []) use (&$issues): void {
+        $add = static function (string $message, bool $skipped = false, array $params = [], ?array $template = null) use (&$issues): void {
             $issues[] = ['message' => $message, 'skipped' => $skipped, 'params' => $params];
+            if (null !== $template) {
+                $issues[array_key_last($issues)]['template'] = $template;
+            }
         };
         $class = $notification['class'];
         if (!\in_array($class, [Admin::class, Conditional::class, EmailField::class, Dynamic::class], true)) {
@@ -115,27 +119,29 @@ class NotificationReadinessScan
                 continue;
             }
             $template = ($this->loadTemplate)($identifier);
+            $target = ['id' => (string) $identifier, 'formId' => (int) ($template['formId'] ?? 0), 'exists' => $template && empty($template['unreadable'])];
+            $addTemplate = static fn (string $message, bool $skipped = false, array $params = []) => $add($message, $skipped, $params, $target);
             if (!$template) {
-                $add('Notification template “{template}” no longer exists.', params: ['template' => (string) $identifier]);
+                $addTemplate('Notification template “{template}” no longer exists.', params: ['template' => (string) $identifier]);
 
                 continue;
             }
             if (!empty($template['unreadable'])) {
-                $add('Notification template “{template}” could not be read.', true, ['template' => (string) $identifier]);
+                $addTemplate('Notification template “{template}” could not be read.', true, ['template' => (string) $identifier]);
 
                 continue;
             }
             $params = ['template' => !empty($template['name']) ? $template['name'] : (string) $identifier];
             if ('' === trim($template['subject'] ?? '')) {
-                $add('Notification template “{template}” has no subject.', params: $params);
+                $addTemplate('Notification template “{template}” has no subject.', params: $params);
             }
             if ('' === trim($template['fromName'] ?? '')) {
-                $add('Notification template “{template}” has no sender name.', params: $params);
+                $addTemplate('Notification template “{template}” has no sender name.', params: $params);
             }
             if ('' === trim($template['fromEmail'] ?? '')) {
-                $add('Notification template “{template}” has no sender email.', params: $params);
-            } elseif (!$this->isTemplate($template['fromEmail']) && !filter_var(trim($template['fromEmail']), \FILTER_VALIDATE_EMAIL)) {
-                $add('Notification template “{template}” has an invalid sender email: “{value}”.', params: $params + ['value' => $template['fromEmail']]);
+                $addTemplate('Notification template “{template}” has no sender email.', params: $params);
+            } elseif (!$this->isValidEmail($template['fromEmail'])) {
+                $addTemplate('Notification template “{template}” has an invalid sender email: “{value}”.', params: $params + ['value' => $template['fromEmail']]);
             }
         }
 
@@ -162,7 +168,7 @@ class NotificationReadinessScan
             $email = trim($value);
             if ('' === $email) {
                 $add('Recipient {recipient} has an empty email.', params: ['recipient' => $index + 1]);
-            } elseif (!$this->isTemplate($email) && !filter_var($email, \FILTER_VALIDATE_EMAIL)) {
+            } elseif (!$this->isValidEmail($email)) {
                 $add('Recipient {recipient} has an invalid email: “{value}”.', params: ['recipient' => $index + 1, 'value' => $value]);
             }
         }
@@ -171,6 +177,19 @@ class NotificationReadinessScan
     private function isTemplate(string $value): bool
     {
         return str_contains($value, '{{') || str_contains($value, '{%');
+    }
+
+    private function isValidEmail(string $value): bool
+    {
+        if ($this->isTemplate($value)) {
+            return true;
+        }
+
+        // Resolve any Craft environment reference, as the mailer does. Findings
+        // retain the configured reference, never the resolved environment value.
+        $email = App::parseEnv(trim($value));
+
+        return \is_string($email) && false !== filter_var(trim($email), \FILTER_VALIDATE_EMAIL);
     }
 
     private function loadTemplate(int|string $identifier): array|false

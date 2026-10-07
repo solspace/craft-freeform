@@ -3609,4 +3609,9 @@ return [
     'Information: {info} encrypted upload values could not be checked.' => 'Informazione: impossibile controllare {info} valori crittografati dei caricamenti.',
     'Information: {info} encrypted upload value could not be checked.' => 'Informazione: impossibile controllare {info} valore crittografato di caricamento.',
     'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.' => 'Controlla i caricamenti salvati, inclusi quelli nei campi tabella, per individuare risorse e file mancanti. I valori crittografati vengono decifrati in memoria quando possibile. I valori non decifrabili vengono segnalati come informazioni; gli archivi non disponibili vengono segnalati come non verificati. File e invii non vengono modificati.',
+    'View submission' => 'Visualizza invio',
+    'Edit form' => 'Modifica modulo',
+    'Edit form notifications' => 'Modifica notifiche del modulo',
+    'Edit notification template' => 'Modifica modello di notifica',
+    'View notification templates' => 'Visualizza modelli di notifica',
 ];

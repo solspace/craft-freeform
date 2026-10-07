@@ -203,6 +203,69 @@ class ReadinessScanTest extends TestCase
         $this->assertFalse($issues[1]['skipped']);
     }
 
+    public function testArbitraryEnvironmentReferencesAreResolvedForSendersAndRecipients(): void
+    {
+        $name = 'FREEFORM_DIAGNOSTICS_WHATEVER_75249';
+        $previous = $_SERVER[$name] ?? null;
+
+        try {
+            $_SERVER[$name] = 'custom@example.com';
+            foreach (['$'.$name, '${'.$name.'}'] as $reference) {
+                $issues = $this->notificationScan(['fromEmail' => $reference])->check(
+                    $this->notification(Admin::class, ['recipients' => [['email' => $reference]]]),
+                    []
+                );
+                $this->assertSame([], $issues);
+            }
+        } finally {
+            if (null === $previous) {
+                unset($_SERVER[$name]);
+            } else {
+                $_SERVER[$name] = $previous;
+            }
+        }
+    }
+
+    public function testInvalidEnvironmentValuesRetainOnlyTheConfiguredReferenceInFindings(): void
+    {
+        $name = 'FREEFORM_DIAGNOSTICS_INVALID_75249';
+        $previous = $_SERVER[$name] ?? null;
+        $reference = '$'.$name;
+
+        try {
+            foreach ([null, '', 'private-invalid-value', 'true'] as $value) {
+                if (null === $value) {
+                    unset($_SERVER[$name]);
+                } else {
+                    $_SERVER[$name] = $value;
+                }
+                $issues = $this->notificationScan(['fromEmail' => $reference])->check(
+                    $this->notification(Admin::class, ['recipients' => [['email' => $reference]]]),
+                    []
+                );
+                $this->assertCount(2, $issues);
+                $this->assertSame($reference, $issues[0]['params']['value']);
+                $this->assertSame($reference, $issues[1]['params']['value']);
+                $this->assertStringNotContainsString('private-invalid-value', json_encode($issues));
+            }
+        } finally {
+            if (null === $previous) {
+                unset($_SERVER[$name]);
+            } else {
+                $_SERVER[$name] = $previous;
+            }
+        }
+    }
+
+    public function testTemplateFindingsIdentifyTheirOwnerForEditorLinks(): void
+    {
+        $notification = $this->notification(Admin::class, ['recipients' => [['email' => 'site@example.com']]]);
+        $issues = $this->notificationScan(['subject' => '', 'formId' => 7])->check($notification, []);
+        $this->assertSame(['id' => '1', 'formId' => 7, 'exists' => true], $issues[0]['template']);
+        $issues = (new NotificationReadinessScan($this->db, static fn () => false))->check($notification, []);
+        $this->assertSame(['id' => '1', 'formId' => 0, 'exists' => false], $issues[0]['template']);
+    }
+
     public function testNotificationValidatesSelectedFieldAndConditionalRule(): void
     {
         $scan = $this->notificationScan();
@@ -382,7 +445,7 @@ class ReadinessScanTest extends TestCase
 
     private function uploadTask(): array
     {
-        return ['table' => '{{%uploads}}', 'column' => 'uploads', 'form' => 'Contact', 'formUid' => 'form-uid', 'field' => 'Files', 'columns' => [], 'invalid' => false];
+        return ['table' => '{{%uploads}}', 'column' => 'uploads', 'form' => 'Contact', 'formId' => 1, 'formUid' => 'form-uid', 'field' => 'Files', 'columns' => [], 'invalid' => false];
     }
 
     private function insertUploads(int $id, array $value): void

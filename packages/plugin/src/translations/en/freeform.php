@@ -3608,4 +3608,9 @@ return [
     'Information: {info} encrypted upload values could not be checked.' => 'Information: {info} encrypted upload values could not be checked.',
     'Information: {info} encrypted upload value could not be checked.' => 'Information: {info} encrypted upload value could not be checked.',
     'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.' => 'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.',
+    'View submission' => 'View submission',
+    'Edit form' => 'Edit form',
+    'Edit form notifications' => 'Edit form notifications',
+    'Edit notification template' => 'Edit notification template',
+    'View notification templates' => 'View notification templates',
 ];

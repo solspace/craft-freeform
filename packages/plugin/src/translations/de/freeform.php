@@ -3609,4 +3609,9 @@ return [
     'Information: {info} encrypted upload values could not be checked.' => 'Information: {info} verschlüsselte Upload-Werte konnten nicht geprüft werden.',
     'Information: {info} encrypted upload value could not be checked.' => 'Information: {info} verschlüsselter Upload-Wert konnte nicht geprüft werden.',
     'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.' => 'Gespeicherte Uploads, einschließlich Uploads in Tabellenfeldern, auf fehlende Assets und Dateien prüfen. Verschlüsselte Werte werden nach Möglichkeit im Arbeitsspeicher entschlüsselt. Nicht entschlüsselbare Werte werden als Information gemeldet; nicht erreichbare Speicher werden als ungeprüft gemeldet. Dateien und Einsendungen werden nicht verändert.',
+    'View submission' => 'Übermittlung anzeigen',
+    'Edit form' => 'Formular bearbeiten',
+    'Edit form notifications' => 'Formularbenachrichtigungen bearbeiten',
+    'Edit notification template' => 'Benachrichtigungsvorlage bearbeiten',
+    'View notification templates' => 'Benachrichtigungsvorlagen anzeigen',
 ];

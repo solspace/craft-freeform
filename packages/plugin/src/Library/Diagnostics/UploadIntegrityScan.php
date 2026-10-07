@@ -70,6 +70,7 @@ class UploadIntegrityScan
                 'table' => Submission::generateContentTableName((int) $field['formId'], $field['formHandle']),
                 'column' => Submission::generateFieldColumnName((int) $field['id'], $metadata['handle'] ?? ''),
                 'form' => $field['formName'],
+                'formId' => (int) $field['formId'],
                 'formUid' => $field['formUid'],
                 'field' => $metadata['label'] ?? $metadata['handle'] ?? (string) $field['id'],
                 'columns' => $columns,
@@ -83,7 +84,7 @@ class UploadIntegrityScan
     public function scanTask(array $task, int $cursor = 0, ?int $maxId = null, int $offset = 0): array
     {
         $result = ['cursor' => $cursor, 'maxId' => $maxId, 'offset' => $offset, 'scanned' => 0, 'complete' => true, 'results' => []];
-        $context = ['form' => $task['form'], 'field' => $task['field']];
+        $context = ['form' => $task['form'], 'formId' => $task['formId'] ?? 0, 'field' => $task['field']];
         if ($task['invalid']) {
             $result['results'][] = $this->issue($context, 'This upload field could not be checked because its configuration is unreadable.', true);
 

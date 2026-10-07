@@ -116,6 +116,11 @@
                 {% if section.items|length > 0 %}
                     <div class="diag-list{{ section.title == "Statistics" ? " diag-no-margin" }}">
                         <h2>{{ section.title }}</h2>
+                        {% if section.title == "Database Checks"|t('freeform') %}
+                            <p>
+                                <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Database integrity and repair guide"|t('freeform') }}</a>
+                            </p>
+                        {% endif %}
                         {{ _self.renderItems(section.items) }}
                     </div>
                 {% endif %}
@@ -160,7 +165,7 @@
         <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
         <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
         <p id="freeform-orphan-scan-status" role="status" aria-live="polite"></p>
-        <p id="freeform-orphan-scan-guide" hidden>
+        <p id="freeform-orphan-scan-guide">
             {{ "For a full database check and repair instructions, see the"|t('freeform') }}
             <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
         </p>
@@ -174,7 +179,7 @@
         <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
         <p id="freeform-related-scan-status" role="status" aria-live="polite"></p>
         <ul id="freeform-related-scan-results"></ul>
-        <p id="freeform-related-scan-guide" hidden>
+        <p id="freeform-related-scan-guide">
             <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Database integrity guide"|t('freeform') }}</a>
         </p>
     </section>
@@ -185,7 +190,6 @@
             const button = document.getElementById('freeform-orphan-scan-button');
             const spinner = document.getElementById('freeform-orphan-scan-spinner');
             const status = document.getElementById('freeform-orphan-scan-status');
-            const guide = document.getElementById('freeform-orphan-scan-guide');
             const messages = {{ {
                 starting: "Scanning submissions…"|t('freeform'),
                 progress: "Scanned {scanned} submissions; found {affected} orphaned submissions so far."|t('freeform'),
@@ -197,7 +201,6 @@
                 button.disabled = true;
                 spinner.classList.remove('hidden');
                 section.setAttribute('aria-busy', 'true');
-                guide.hidden = true;
                 status.textContent = messages.starting;
                 let cursor = 0;
                 let maxId = null;
@@ -227,7 +230,6 @@
                     button.disabled = false;
                     spinner.classList.add('hidden');
                     section.setAttribute('aria-busy', 'false');
-                    guide.hidden = false;
                 }
             });
         })();
@@ -240,7 +242,6 @@
             const spinner = document.getElementById('freeform-related-scan-spinner');
             const status = document.getElementById('freeform-related-scan-status');
             const results = document.getElementById('freeform-related-scan-results');
-            const guide = document.getElementById('freeform-related-scan-guide');
             const messages = {{ {
                 starting: "Scanning related data…"|t('freeform'),
                 progress: "Completed {completed} of {total} checks; examined {scanned} related records."|t('freeform'),
@@ -256,7 +257,6 @@
                 button.disabled = true;
                 spinner.classList.remove('hidden');
                 section.setAttribute('aria-busy', 'true');
-                guide.hidden = true;
                 results.replaceChildren();
                 status.textContent = messages.starting;
                 let scanId = null;
@@ -291,7 +291,6 @@
                     button.disabled = false;
                     spinner.classList.add('hidden');
                     section.setAttribute('aria-busy', 'false');
-                    guide.hidden = false;
                 }
             });
         })();

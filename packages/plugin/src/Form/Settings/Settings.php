@@ -36,7 +36,7 @@ class Settings
                 continue;
             }
 
-            $propertyProvider->setObjectProperties($object, $propertySettings);
+            $propertyProvider->setStoredObjectProperties($object, $propertySettings);
         }
     }
 

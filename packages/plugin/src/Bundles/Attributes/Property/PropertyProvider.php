@@ -61,26 +61,27 @@ class PropertyProvider
     ): void {
         $editableProperties = $this->getEditableProperties($object);
 
-        $propertyValueStack = $properties;
-        foreach ($editableProperties as $property) {
-            if (!\array_key_exists($property->handle, $propertyValueStack)) {
-                $propertyValueStack[$property->handle] = null;
+        $this->applyObjectProperties($object, $properties, $editableProperties, $valueUpdateCallback, $form);
+    }
+
+    /**
+     * Restore saved settings without generating options and other editor metadata.
+     */
+    public function setStoredObjectProperties(object $object, array $properties, ?Form $form = null): void
+    {
+        $collection = new PropertyCollection();
+        foreach ($this->getReflection($object::class)->getProperties() as $property) {
+            $attribute = AttributeHelper::findAttribute($property, Property::class);
+            if (!$attribute) {
+                continue;
             }
+
+            $attribute->handle = $property->getName();
+            $this->processTransformer($property, $attribute);
+            $collection->add($attribute);
         }
 
-        foreach ($propertyValueStack as $key => $value) {
-            $editableProperty = $editableProperties->get($key);
-
-            if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
-                $value = $editableProperty->transformer->transform($value, $form);
-            }
-
-            if ($valueUpdateCallback) {
-                $value = $valueUpdateCallback($value, $editableProperty);
-            }
-
-            $this->setObjectValue($object, $key, $value);
-        }
+        $this->applyObjectProperties($object, $properties, $collection, null, $form);
     }
 
     public function setObjectValue(object $object, string $key, mixed $value): void
@@ -201,6 +202,35 @@ class PropertyProvider
     protected function getPluginEdition(): EditionHelper
     {
         return Freeform::getInstance()->edition();
+    }
+
+    private function applyObjectProperties(
+        object $object,
+        array $properties,
+        PropertyCollection $editableProperties,
+        ?callable $valueUpdateCallback,
+        ?Form $form,
+    ): void {
+        $propertyValueStack = $properties;
+        foreach ($editableProperties as $property) {
+            if (!\array_key_exists($property->handle, $propertyValueStack)) {
+                $propertyValueStack[$property->handle] = null;
+            }
+        }
+
+        foreach ($propertyValueStack as $key => $value) {
+            $editableProperty = $editableProperties->get($key);
+
+            if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
+                $value = $editableProperty->transformer->transform($value, $form);
+            }
+
+            if ($valueUpdateCallback) {
+                $value = $valueUpdateCallback($value, $editableProperty);
+            }
+
+            $this->setObjectValue($object, $key, $value);
+        }
     }
 
     private function processToolbarConfigurations(Property $attribute): void

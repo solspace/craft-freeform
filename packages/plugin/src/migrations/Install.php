@@ -11,6 +11,31 @@ use Solspace\Freeform\Library\Migrations\Table;
  */
 class Install extends StreamlinedInstallMigration
 {
+    /**
+     * Returns the expected constraints without running the install migration.
+     *
+     * @return array<array{?string, string, array|string, string, array|string, ?string, ?string}>
+     */
+    public function getForeignKeyDefinitions(): array
+    {
+        $definitions = [];
+        foreach ($this->defineTableData() as $table) {
+            foreach ($table->getForeignKeys() as $key) {
+                $definitions[] = [
+                    $key->getName(),
+                    $table->getDatabaseName(),
+                    $key->getColumn(),
+                    $key->getDatabaseReferenceTableName(),
+                    $key->getReferenceColumn(),
+                    $key->getOnDelete(),
+                    $key->getOnUpdate(),
+                ];
+            }
+        }
+
+        return array_merge($definitions, $this->defineAdditionalForeignKeys());
+    }
+
     protected function defineTableData(): array
     {
         return [
@@ -513,21 +538,30 @@ class Install extends StreamlinedInstallMigration
 
     protected function afterInstall(): bool
     {
-        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey('fk_notifications_ruleId', '{{%freeform_rules_notifications}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey('fk_notificationId', '{{%freeform_rules_notifications}}', ['notificationId'], '{{%freeform_forms_notifications}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey('fk_integrations_ruleId', '{{%freeform_rules_integrations}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey('fk_integrationId', '{{%freeform_rules_integrations}}', ['integrationId'], '{{%freeform_forms_integrations}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_submit_form}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_submit_form}}', ['formId'], '{{%freeform_forms}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_buttons}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_buttons}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE);
+        foreach ($this->defineAdditionalForeignKeys() as $definition) {
+            $this->addForeignKey(...$definition);
+        }
 
         return parent::afterInstall();
+    }
+
+    private function defineAdditionalForeignKeys(): array
+    {
+        return [
+            [null, '{{%freeform_rules_fields}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_fields}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_pages}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_pages}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            ['fk_notifications_ruleId', '{{%freeform_rules_notifications}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            ['fk_notificationId', '{{%freeform_rules_notifications}}', ['notificationId'], '{{%freeform_forms_notifications}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            ['fk_integrations_ruleId', '{{%freeform_rules_integrations}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            ['fk_integrationId', '{{%freeform_rules_integrations}}', ['integrationId'], '{{%freeform_forms_integrations}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_submit_form}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_submit_form}}', ['formId'], '{{%freeform_forms}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_buttons}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_buttons}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE],
+            [null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, null],
+        ];
     }
 }

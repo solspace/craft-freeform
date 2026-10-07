@@ -3514,6 +3514,7 @@ return [
     'Database Foreign Keys Need Attention' => 'Les clés étrangères de la base de données nécessitent une intervention',
     'Database Structure' => 'Structure de la base de données',
     'Database Structure Needs Attention' => 'La structure de la base de données nécessite une intervention',
+    'Database Integrity & Repair Guide' => 'Guide d\'intégrité et de réparation de la base de données',
     'For a full database check and repair instructions, see the {link}.' => 'Pour une vérification complète de la base de données et les instructions de réparation, consultez le {link}.',
     'Form #{id}' => 'Formulaire n° {id}',
     'IP addresses' => 'Adresses IP',
@@ -3639,4 +3640,7 @@ return [
     'Checking database integrity…' => 'Vérification de l’intégrité de la base de données…',
     'All expected foreign keys, tables, columns, and indexes are present.' => 'Toutes les clés étrangères, tables, colonnes et index attendus sont présents.',
     'Database integrity needs attention. Review the results below.' => 'L’intégrité de la base de données nécessite une intervention. Consultez les résultats ci-dessous.',
+    'The stored submission points to an incompatible Craft element. Run the database integrity console utility.' => 'La soumission enregistrée référence un élément Craft incompatible. Exécutez l’utilitaire console de vérification de l’intégrité de la base de données.',
+    'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.' => 'Le statut de la soumission n’existe plus, ce qui empêche l’ouverture de son éditeur. Exécutez l’utilitaire console de vérification de l’intégrité de la base de données.',
+    'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.' => 'La soumission est indisponible sur les sites associés au formulaire. Vérifiez les paramètres de site du formulaire.',
 ];

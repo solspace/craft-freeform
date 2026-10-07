@@ -3477,6 +3477,7 @@ return [
     'Database Foreign Keys Need Attention' => 'Foreign keys van de database vereisen aandacht',
     'Database Structure' => 'Databasestructuur',
     'Database Structure Needs Attention' => 'De databasestructuur vereist aandacht',
+    'Database Integrity & Repair Guide' => 'Handleiding voor database-integriteit en herstel',
     'For a full database check and repair instructions, see the {link}.' => 'Zie de {link} voor een volledige databasecontrole en herstelinstructies.',
     'Form #{id}' => 'Formulier #{id}',
     'IP addresses' => 'IP-adressen',
@@ -3602,4 +3603,7 @@ return [
     'Checking database integrity…' => 'Database-integriteit controleren…',
     'All expected foreign keys, tables, columns, and indexes are present.' => 'Alle verwachte vreemde sleutels, tabellen, kolommen en indexen zijn aanwezig.',
     'Database integrity needs attention. Review the results below.' => 'De database-integriteit vereist aandacht. Bekijk de onderstaande resultaten.',
+    'The stored submission points to an incompatible Craft element. Run the database integrity console utility.' => 'De opgeslagen inzending verwijst naar een incompatibel Craft-element. Voer het consolehulpmiddel voor database-integriteit uit.',
+    'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.' => 'De status van de inzending bestaat niet meer, waardoor de editor niet kan worden geopend. Voer het consolehulpmiddel voor database-integriteit uit.',
+    'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.' => 'De inzending is niet beschikbaar op de sites die aan het formulier zijn toegewezen. Controleer de site-instellingen van het formulier.',
 ];

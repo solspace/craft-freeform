@@ -3514,6 +3514,7 @@ return [
     'Database Foreign Keys Need Attention' => 'Le chiavi esterne del database richiedono attenzione',
     'Database Structure' => 'Struttura del database',
     'Database Structure Needs Attention' => 'La struttura del database richiede attenzione',
+    'Database Integrity & Repair Guide' => 'Guida all\'integrità e alla riparazione del database',
     'For a full database check and repair instructions, see the {link}.' => 'Per una verifica completa del database e le istruzioni di riparazione, consulta la {link}.',
     'Form #{id}' => 'Modulo n. {id}',
     'IP addresses' => 'Indirizzi IP',
@@ -3639,4 +3640,7 @@ return [
     'Checking database integrity…' => 'Controllo dell’integrità del database…',
     'All expected foreign keys, tables, columns, and indexes are present.' => 'Tutte le chiavi esterne, tabelle, colonne e indici previsti sono presenti.',
     'Database integrity needs attention. Review the results below.' => 'L’integrità del database richiede attenzione. Esamina i risultati qui sotto.',
+    'The stored submission points to an incompatible Craft element. Run the database integrity console utility.' => 'L’invio salvato fa riferimento a un elemento Craft incompatibile. Esegui l’utilità da console per l’integrità del database.',
+    'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.' => 'Lo stato dell’invio non esiste più, quindi il suo editor non può essere aperto. Esegui l’utilità da console per l’integrità del database.',
+    'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.' => 'L’invio non è disponibile nei siti assegnati al modulo. Controlla le impostazioni dei siti del modulo.',
 ];

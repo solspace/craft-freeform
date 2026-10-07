@@ -7,6 +7,7 @@ use craft\elements\Asset;
 use craft\models\Volume;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField as EmailInput;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -69,11 +70,15 @@ class ReadinessScanTest extends TestCase
         $this->previousApp = \Craft::$app;
         \Craft::$app = (object) ['db' => $this->db];
         $this->pdo->exec('CREATE TABLE craft_uploads (id INTEGER PRIMARY KEY, uploads TEXT)');
-        $this->pdo->exec('CREATE TABLE craft_freeform_submissions (id INTEGER PRIMARY KEY, formId INTEGER, isSpam INTEGER DEFAULT 0)');
-        $this->pdo->exec('CREATE TABLE craft_elements (id INTEGER PRIMARY KEY, dateDeleted TEXT)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_submissions (id INTEGER PRIMARY KEY, formId INTEGER, statusId INTEGER DEFAULT 1, isSpam INTEGER DEFAULT 0, isHidden INTEGER DEFAULT 0)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_statuses (id INTEGER PRIMARY KEY)');
+        $this->pdo->exec('INSERT INTO craft_freeform_statuses VALUES (1)');
+        $this->pdo->exec('CREATE TABLE craft_elements (id INTEGER PRIMARY KEY, dateDeleted TEXT, archived INTEGER DEFAULT 0, type TEXT DEFAULT '.$this->pdo->quote(Submission::class).')');
         $this->pdo->exec('CREATE TABLE craft_sites (id INTEGER PRIMARY KEY, handle TEXT)');
         $this->pdo->exec("INSERT INTO craft_sites VALUES (1, 'default')");
         $this->pdo->exec('CREATE TABLE craft_elements_sites (elementId INTEGER, siteId INTEGER)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_forms_sites (formId INTEGER, siteId INTEGER)');
+        $this->pdo->exec('INSERT INTO craft_freeform_forms_sites VALUES (1, 1)');
         $this->insertSubmission(1);
         $this->insertSubmission(10);
         $this->pdo->exec("CREATE TABLE craft_freeform_forms (id INTEGER PRIMARY KEY, name TEXT, handle TEXT, dateArchived TEXT, uid TEXT DEFAULT 'form-uid')");
@@ -563,6 +568,72 @@ class ReadinessScanTest extends TestCase
         $this->assertTrue($context['isSpam']);
         $this->assertSame('german', $context['siteHandle']);
         $this->assertSame(99, $context['asset']);
+    }
+
+    public function testMissingStatusAndIncompatibleElementAreNotReportedAsMissingAssets(): void
+    {
+        $this->insertUploads(8669, [8668]);
+        $this->insertUploads(8673, [8672]);
+        $this->pdo->exec('UPDATE craft_freeform_submissions SET statusId = 99 WHERE id = 8669');
+        $this->pdo->prepare('UPDATE craft_elements SET type = ? WHERE id = 8673')->execute([Asset::class]);
+        $scan = new UploadIntegrityScan($this->db, static function () { throw new \LogicException('Broken submission records must not trigger asset checks.'); });
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertSame(0, $result['scanned']);
+        $this->assertCount(2, $result['results']);
+        $this->assertStringContainsString('status no longer exists', $result['results'][0]['message']);
+        $this->assertStringContainsString('incompatible Craft element', $result['results'][1]['message']);
+        foreach ($result['results'] as $issue) {
+            $this->assertFalse($issue['context']['submissionAvailable']);
+            $this->assertSame('console', $issue['context']['integrityCheck']);
+            $this->assertArrayNotHasKey('asset', $issue['context']);
+        }
+    }
+
+    public function testLinksSelectAStoredSiteThatIsAlsoAssignedToTheForm(): void
+    {
+        $this->insertUploads(10, [99]);
+        $this->pdo->exec("INSERT INTO craft_sites VALUES (2, 'german')");
+        $this->pdo->exec('INSERT INTO craft_elements_sites VALUES (10, 2)');
+        $this->pdo->exec('UPDATE craft_freeform_forms_sites SET siteId = 2 WHERE formId = 1');
+        $scan = new UploadIntegrityScan($this->db, static fn () => 'The referenced asset no longer exists.', sitesEnabled: true);
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertTrue($result['results'][0]['context']['submissionAvailable']);
+        $this->assertSame('german', $result['results'][0]['context']['siteHandle']);
+        $this->pdo->exec('DELETE FROM craft_freeform_forms_sites');
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertFalse($result['results'][0]['context']['submissionAvailable']);
+        $this->assertSame('The submission is unavailable in the form’s assigned sites. Check the form’s site settings.', $result['results'][0]['message']);
+        $result = (new UploadIntegrityScan($this->db, static fn () => 'The referenced asset no longer exists.'))->scanTask($this->uploadTask());
+        $this->assertTrue($result['results'][0]['context']['submissionAvailable']);
+        $this->assertSame('default', $result['results'][0]['context']['siteHandle']);
+    }
+
+    public function testArchivedElementsAndHiddenSpamAreExcludedButHiddenSubmissionsCanBeOpened(): void
+    {
+        foreach ([1, 2, 3] as $id) {
+            $this->insertUploads($id, [99]);
+        }
+        $this->pdo->exec('UPDATE craft_elements SET archived = 1 WHERE id = 1');
+        $this->pdo->exec('UPDATE craft_freeform_submissions SET isSpam = 1, isHidden = 1 WHERE id = 2');
+        $this->pdo->exec('UPDATE craft_freeform_submissions SET isHidden = 1 WHERE id = 3');
+        $result = (new UploadIntegrityScan($this->db, static fn () => 'The referenced asset no longer exists.'))->scanTask($this->uploadTask());
+        $this->assertSame(1, $result['scanned']);
+        $this->assertCount(1, $result['results']);
+        $this->assertSame(3, $result['results'][0]['context']['submission']);
+        $this->assertTrue($result['results'][0]['context']['submissionAvailable']);
+    }
+
+    public function testPostgresBooleanStringsDoNotChangeSubmissionAvailabilityOrSpamLinks(): void
+    {
+        $this->insertUploads(1, [99]);
+        $this->insertUploads(2, [99]);
+        $this->pdo->exec("UPDATE craft_elements SET archived = 'f'");
+        $this->pdo->exec("UPDATE craft_freeform_submissions SET isSpam = 'f', isHidden = 'f'");
+        $this->pdo->exec("UPDATE craft_freeform_submissions SET isSpam = 't' WHERE id = 2");
+        $result = (new UploadIntegrityScan($this->db, static fn () => 'The referenced asset no longer exists.'))->scanTask($this->uploadTask());
+        $this->assertSame(2, $result['scanned']);
+        $this->assertSame([false, true], array_column(array_column($result['results'], 'context'), 'isSpam'));
+        $this->assertSame([true, true], array_column(array_column($result['results'], 'context'), 'submissionAvailable'));
     }
 
     public function testPlainUploadValuesDoNotNeedDecryption(): void

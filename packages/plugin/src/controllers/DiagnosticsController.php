@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -234,7 +235,7 @@ class DiagnosticsController extends BaseController
         }
         $cache = \Craft::$app->getCache();
         $owner = (string) \Craft::$app->getUser()->getId();
-        $scan = $kind === 'uploads' ? new UploadIntegrityScan(\Craft::$app->getDb()) : new NotificationReadinessScan(\Craft::$app->getDb());
+        $scan = $kind === 'uploads' ? new UploadIntegrityScan(\Craft::$app->getDb(), sitesEnabled: SitesHelper::isEnabled()) : new NotificationReadinessScan(\Craft::$app->getDb());
 
         try {
             if (null === $scanId) {

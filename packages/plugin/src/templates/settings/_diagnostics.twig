@@ -479,11 +479,16 @@
                                 for (const link of result.links ?? []) {
                                     if (!link || typeof link.label !== 'string' || typeof link.url !== 'string') continue;
                                     const url = new URL(link.url, window.location.href);
-                                    if (!['http:', 'https:'].includes(url.protocol) || url.origin !== window.location.origin) continue;
+                                    const isDatabaseGuide = url.href === 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity';
+                                    if (!['http:', 'https:'].includes(url.protocol) || (url.origin !== window.location.origin && !isDatabaseGuide)) continue;
                                     const anchor = document.createElement('a');
                                     anchor.className = 'ff-diag-result-link';
                                     anchor.href = url.href;
                                     anchor.textContent = link.label;
+                                    if (isDatabaseGuide) {
+                                        anchor.target = '_blank';
+                                        anchor.rel = 'noopener';
+                                    }
                                     row.appendChild(anchor);
                                 }
                                 findings.push({group: result.informational ? 'info' : (result.skipped ? 'unchecked' : 'issues'), row});

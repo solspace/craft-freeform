@@ -20,7 +20,7 @@ class UploadIntegrityScan
     private \Closure $checkAsset;
     private \Closure $decrypt;
 
-    public function __construct(private Connection $db, ?\Closure $checkAsset = null, ?\Closure $decrypt = null)
+    public function __construct(private Connection $db, ?\Closure $checkAsset = null, ?\Closure $decrypt = null, private bool $sitesEnabled = false)
     {
         $this->decrypt = $decrypt ?? static fn (string $value, string $formUid) => EncryptionHelper::decrypt(EncryptionHelper::getKey($formUid), $value);
         $this->checkAsset = $checkAsset ?? static function (int $id): ?string {
@@ -39,6 +39,7 @@ class UploadIntegrityScan
             ->select(['field.*', 'form.name AS formName', 'form.handle AS formHandle', 'form.uid AS formUid'])
             ->from('{{%freeform_forms_fields}} field')
             ->innerJoin('{{%freeform_forms}} form', '[[form.id]] = [[field.formId]]')
+            ->where(['form.dateArchived' => null])
             ->orderBy(['field.id' => \SORT_ASC])
             ->all($this->db)
         ;
@@ -99,12 +100,19 @@ class UploadIntegrityScan
                 ->where('[[elementSite.elementId]] = [[content.id]]')
                 ->orderBy(['elementSite.siteId' => \SORT_ASC])->limit(1)
             ;
+            if ($this->sitesEnabled) {
+                $site->innerJoin('{{%freeform_forms_sites}} formSite', '[[formSite.siteId]] = [[site.id]]')
+                    ->andWhere(['formSite.formId' => $task['formId'] ?? 0])
+                ;
+            }
             $rows = (new Query())->select([
                 'content.id', 'content.'.$task['column'], 'submission.id AS submissionId',
-                'submission.isSpam', 'element.id AS elementId', 'element.dateDeleted', 'siteHandle' => $site,
+                'submission.isSpam', 'submission.isHidden', 'status.id AS submissionStatusId',
+                'element.id AS elementId', 'element.type AS elementType', 'element.archived', 'element.dateDeleted', 'siteHandle' => $site,
             ])->from(['content' => $task['table']])
                 ->leftJoin('{{%freeform_submissions}} submission', '[[submission.id]] = [[content.id]] AND [[submission.formId]] = :formId', [':formId' => $task['formId'] ?? 0])
                 ->leftJoin('{{%elements}} element', '[[element.id]] = [[submission.id]]')
+                ->leftJoin('{{%freeform_statuses}} status', '[[status.id]] = [[submission.statusId]]')
                 ->where(['and', ['>', 'content.id', $cursor], ['<=', 'content.id', $maxId]])
                 ->orderBy(['content.id' => \SORT_ASC])->limit(self::BATCH_SIZE)->all($this->db)
             ;
@@ -120,17 +128,19 @@ class UploadIntegrityScan
         $lookups = 0;
         $baseContext = $context;
         foreach ($rows as $row) {
+            $isSpam = $this->boolean($row['isSpam']);
+            $compatibleElement = null !== $row['elementId'] && is_a($row['elementType'] ?? '', Submission::class, true);
             $context = $baseContext + [
                 'submission' => (int) $row['id'],
-                'submissionAvailable' => null !== $row['submissionId'] && null !== $row['elementId'] && null === $row['dateDeleted'] && !empty($row['siteHandle']),
-                'isSpam' => (bool) $row['isSpam'],
+                'submissionAvailable' => null !== $row['submissionId'] && $compatibleElement && null !== $row['submissionStatusId'] && null === $row['dateDeleted'] && !empty($row['siteHandle']),
+                'isSpam' => $isSpam,
                 'siteHandle' => $row['siteHandle'],
             ];
 
             $value = $row[$task['column']];
             // Trash retains submission content for restoration. It is not an
             // active upload problem and its normal editor cannot be opened.
-            if (null !== $row['dateDeleted']) {
+            if (null !== $row['dateDeleted'] || $this->boolean($row['archived']) || ($isSpam && $this->boolean($row['isHidden']))) {
                 $result['cursor'] = (int) $row['id'];
                 $result['offset'] = 0;
 
@@ -141,10 +151,15 @@ class UploadIntegrityScan
                     $message = match (true) {
                         null === $row['submissionId'] => 'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.',
                         null === $row['elementId'] => 'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.',
+                        !$compatibleElement => 'The stored submission points to an incompatible Craft element. Run the database integrity console utility.',
+                        null === $row['submissionStatusId'] => 'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.',
+                        $this->sitesEnabled => 'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.',
                         default => 'The submission has no site record and cannot be opened. Check the database integrity.',
                     };
                     if (null === $row['submissionId'] || null === $row['elementId']) {
                         $context['integrityCheck'] = null === $row['submissionId'] ? 'related' : 'orphan';
+                    } elseif (!$compatibleElement || null === $row['submissionStatusId']) {
+                        $context['integrityCheck'] = 'console';
                     }
                     $result['results'][] = $this->issue($context, $message);
                 }
@@ -206,6 +221,11 @@ class UploadIntegrityScan
         $result['complete'] = \count($rows) < self::BATCH_SIZE || $result['cursor'] >= $maxId;
 
         return $result;
+    }
+
+    private function boolean(mixed $value): bool
+    {
+        return \in_array($value, [true, 1, '1', 't', 'true'], true);
     }
 
     private function getAssetIds(mixed $value, array $columns): array

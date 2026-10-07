@@ -3514,6 +3514,7 @@ return [
     'Database Foreign Keys Need Attention' => 'Datenbank-Fremdschlüssel erfordern Aufmerksamkeit',
     'Database Structure' => 'Datenbankstruktur',
     'Database Structure Needs Attention' => 'Die Datenbankstruktur erfordert Aufmerksamkeit',
+    'Database Integrity & Repair Guide' => 'Anleitung zur Datenbankintegrität und Reparatur',
     'For a full database check and repair instructions, see the {link}.' => 'Eine vollständige Datenbankprüfung und Reparaturanweisungen finden Sie unter {link}.',
     'Form #{id}' => 'Formular #{id}',
     'IP addresses' => 'IP-Adressen',
@@ -3639,4 +3640,7 @@ return [
     'Checking database integrity…' => 'Datenbankintegrität wird geprüft…',
     'All expected foreign keys, tables, columns, and indexes are present.' => 'Alle erwarteten Fremdschlüssel, Tabellen, Spalten und Indizes sind vorhanden.',
     'Database integrity needs attention. Review the results below.' => 'Die Datenbankintegrität erfordert Aufmerksamkeit. Prüfen Sie die Ergebnisse unten.',
+    'The stored submission points to an incompatible Craft element. Run the database integrity console utility.' => 'Die gespeicherte Übermittlung verweist auf ein inkompatibles Craft-Element. Führen Sie das Konsolenwerkzeug zur Prüfung der Datenbankintegrität aus.',
+    'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.' => 'Der Status der Übermittlung existiert nicht mehr, daher kann ihr Editor nicht geöffnet werden. Führen Sie das Konsolenwerkzeug zur Prüfung der Datenbankintegrität aus.',
+    'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.' => 'Die Übermittlung ist auf den dem Formular zugewiesenen Websites nicht verfügbar. Prüfen Sie die Website-Einstellungen des Formulars.',
 ];

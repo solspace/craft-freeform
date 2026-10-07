@@ -3513,6 +3513,7 @@ return [
     'Database Foreign Keys Need Attention' => 'Database Foreign Keys Need Attention',
     'Database Structure' => 'Database Structure',
     'Database Structure Needs Attention' => 'Database Structure Needs Attention',
+    'Database Integrity & Repair Guide' => 'Database Integrity & Repair Guide',
     'For a full database check and repair instructions, see the {link}.' => 'For a full database check and repair instructions, see the {link}.',
     'Form #{id}' => 'Form #{id}',
     'IP addresses' => 'IP addresses',
@@ -3638,4 +3639,7 @@ return [
     'Checking database integrity…' => 'Checking database integrity…',
     'All expected foreign keys, tables, columns, and indexes are present.' => 'All expected foreign keys, tables, columns, and indexes are present.',
     'Database integrity needs attention. Review the results below.' => 'Database integrity needs attention. Review the results below.',
+    'The stored submission points to an incompatible Craft element. Run the database integrity console utility.' => 'The stored submission points to an incompatible Craft element. Run the database integrity console utility.',
+    'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.' => 'The submission’s status no longer exists, so its editor cannot open. Run the database integrity console utility.',
+    'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.' => 'The submission is unavailable in the form’s assigned sites. Check the form’s site settings.',
 ];

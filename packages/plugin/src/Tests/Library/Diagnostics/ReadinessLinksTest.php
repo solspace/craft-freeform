@@ -43,6 +43,8 @@ class ReadinessLinksTest extends TestCase
         $this->assertSame(['freeform/forms/7', 'freeform/settings/diagnostics#freeform-related-scan'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
         $issue['context']['integrityCheck'] = 'orphan';
         $this->assertSame(['freeform/forms/7', 'freeform/settings/diagnostics#freeform-orphan-scan'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
+        $issue['context']['integrityCheck'] = 'console';
+        $this->assertSame(['freeform/forms/7', 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
         $this->assertSame([], $this->links([])->getLinks($issue, 'uploads'));
     }
 

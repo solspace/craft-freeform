@@ -35,8 +35,12 @@ class ReadinessLinks
         }
 
         if ('uploads' === $kind && !empty($context['integrityCheck']) && ($this->can)(Freeform::PERMISSION_SETTINGS_ACCESS)) {
-            $related = 'related' === $context['integrityCheck'];
-            $links[] = $this->link($related ? 'Related Data Integrity' : 'Orphaned Submissions', 'freeform/settings/diagnostics#freeform-'.($related ? 'related' : 'orphan').'-scan');
+            if ('console' === $context['integrityCheck']) {
+                $links[] = $this->link('Database Integrity & Repair Guide', 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity');
+            } else {
+                $related = 'related' === $context['integrityCheck'];
+                $links[] = $this->link($related ? 'Related Data Integrity' : 'Orphaned Submissions', 'freeform/settings/diagnostics#freeform-'.($related ? 'related' : 'orphan').'-scan');
+            }
         }
 
         $template = $issue['template'] ?? null;

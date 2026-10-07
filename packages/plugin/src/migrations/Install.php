@@ -186,7 +186,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer())
-                ->addIndex(['formId', 'handle'], true, name: 'formId_handle')
                 ->addIndex(['formId'], false, name: 'formId')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('wrapperId', 'freeform_notification_template_wrappers', 'id', ForeignKey::SET_NULL, name: 'fk_wrapperId'),
@@ -276,7 +275,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('requestId', $this->string(255)->null())
                 ->addIndex(['incrementalId'], true)
                 ->addIndex(['token'], true)
-                ->addIndex(['idempotencyKey', 'formId', 'dateCreated'], true)
+                ->addIndex(['idempotencyKey', 'formId', 'dateCreated'])
                 ->addForeignKey('id', 'elements', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
@@ -398,7 +397,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('identifier', $this->string(100)->null())
                 ->addField('digestDate', $this->date()->null()->defaultValue(null))
                 ->addField('name', $this->string())
-                ->addIndex(['type', 'identifier', 'name', 'dateCreated'], name: 'idx_type_identifier_name_digestDate')
+                ->addIndex(['type', 'identifier', 'name', 'digestDate'], name: 'idx_type_identifier_name_digestDate')
                 ->addIndex(['type', 'dateCreated']),
 
             (new Table('freeform_session_context'))

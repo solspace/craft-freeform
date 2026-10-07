@@ -6,6 +6,7 @@ use craft\db\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Database\DatabaseIntegrity;
+use Solspace\Freeform\migrations\Install;
 use yii\db\ColumnSchema;
 use yii\db\Command;
 use yii\db\IndexConstraint;
@@ -46,6 +47,29 @@ class DatabaseIntegrityTest extends TestCase
         $this->assertFalse($integrity->hasIndex('{{%freeform_forms}}', ['columns' => ['id'], 'unique' => true, 'primary' => true]));
     }
 
+    public function testNotificationLogLookupAcceptsItsHistoricalFreshInstallVariantOnly(): void
+    {
+        [$integrity] = $this->fixture([new IndexConstraint(['columnNames' => ['type', 'identifier', 'name', 'dateCreated'], 'isUnique' => false, 'isPrimary' => false])]);
+        $expected = ['columns' => ['type', 'identifier', 'name', 'digestDate'], 'unique' => false, 'primary' => false];
+        $this->assertTrue($integrity->hasIndex('{{%freeform_notification_log}}', $expected));
+        $this->assertFalse($integrity->hasIndex('{{%other}}', $expected));
+        $expected['unique'] = true;
+        $this->assertFalse($integrity->hasIndex('{{%freeform_notification_log}}', $expected));
+    }
+
+    public function testExpectedIndexesRespectLaterUpgradeMigrations(): void
+    {
+        [$integrity, , $db, $schema] = $this->fixture();
+        $definitions = (new Install(['db' => $db]))->getTableDefinitions();
+        $byTable = array_column($definitions, null, 'table');
+        $notificationIndexes = $byTable['{{%freeform_notification_templates}}']['indexes'];
+        $this->assertSame([], array_values(array_filter($notificationIndexes, static fn ($index) => $index['unique'] && !$index['primary'])));
+        $idempotency = array_values(array_filter($byTable['{{%freeform_submissions}}']['indexes'], static fn ($index) => ['idempotencyKey', 'formId', 'dateCreated'] === $index['columns']));
+        $this->assertCount(1, $idempotency);
+        $this->assertFalse($idempotency[0]['unique']);
+        $this->assertContains(['columns' => ['type', 'identifier', 'name', 'digestDate'], 'unique' => false, 'primary' => false], $byTable['{{%freeform_notification_log}}']['indexes']);
+    }
+
     public function testPerFormStorageCheckReadsOnlyFormIds(): void
     {
         [$integrity, , $db] = $this->fixture();
@@ -63,7 +87,7 @@ class DatabaseIntegrityTest extends TestCase
         $db = $this->getMockBuilder(Connection::class)->onlyMethods(['getSchema', 'createCommand'])->getMock();
         $db->tablePrefix = 'craft_';
         $db->dsn = 'mysql:host=localhost;dbname=test';
-        $schema = $this->getMockBuilder(Schema::class)->onlyMethods(['getTableSchema', 'getTableIndexes', 'getTableNames'])->getMock();
+        $schema = $this->getMockBuilder(Schema::class)->onlyMethods(['getTableSchema', 'getTableIndexes', 'getTableNames', 'refresh'])->getMock();
         $schema->db = $db;
         $db->method('getSchema')->willReturn($schema);
         $schema->method('getTableIndexes')->willReturn($indexes);
@@ -73,6 +97,6 @@ class DatabaseIntegrityTest extends TestCase
         $integrity = $this->getMockBuilder(DatabaseIntegrity::class)->setConstructorArgs([$db])->onlyMethods(['getDefinitions'])->getMock();
         $integrity->method('getDefinitions')->willReturn([self::DEFINITION]);
 
-        return [$integrity, $table, $db];
+        return [$integrity, $table, $db, $schema];
     }
 }

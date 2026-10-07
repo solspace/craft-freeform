@@ -26,6 +26,11 @@ These checks inspect metadata and form IDs, not submission rows. They do not
 repair tables, columns, or indexes; ask your developer to investigate missing
 schema objects and pending migrations. A recreated table cannot recover lost data.
 
+Index expectations account for final upgrade migrations and historical fresh
+installs: notification template handles are not required to be unique, the
+idempotency lookup requires an index rather than uniqueness, and notification
+logs accept the shipped `digestDate` or `dateCreated` lookup index variants.
+
 Opening Diagnostics does not scan submission rows or change the database.
 A passing foreign-key check confirms the expected schema relationships are
 present; it does not confirm that there are no orphaned rows. Row-level checks

@@ -91,6 +91,15 @@ class DatabaseIntegrity
             } elseif (\array_slice($actual->columnNames, 0, \count($expected['columns'])) === $expected['columns']) {
                 // A wider index with the same leading columns covers this lookup.
                 return true;
+            } elseif (
+                !$expected['primary']
+                && $this->db->getSchema()->getRawTableName($table) === $this->db->getSchema()->getRawTableName('{{%freeform_notification_log}}')
+                && ['type', 'identifier', 'name', 'digestDate'] === $expected['columns']
+                && ['type', 'identifier', 'name', 'dateCreated'] === $actual->columnNames
+            ) {
+                // Older fresh installs used dateCreated while upgrade migrations
+                // used digestDate. Preserve that shipped index variant as well.
+                return true;
             }
         }
 

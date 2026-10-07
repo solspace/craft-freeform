@@ -18,6 +18,7 @@ use craft\db\Query;
 use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Form\Type;
+use Solspace\Freeform\Bundles\Form\FormUserProvider;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
@@ -631,7 +632,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
             return null;
         }
 
-        return User::findOne($this->createdByUserId);
+        return \Craft::$container->get(FormUserProvider::class)->getUser($this->createdByUserId);
     }
 
     public function getUpdatedBy(): ?User
@@ -640,7 +641,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
             return null;
         }
 
-        return User::findOne($this->updatedByUserId);
+        return \Craft::$container->get(FormUserProvider::class)->getUser($this->updatedByUserId);
     }
 
     public function getDateArchived(): ?Carbon

@@ -62,6 +62,7 @@
 
 {% block content %}
     {{ parent() }}
+    {% set databaseGuideLink %}<a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'database integrity guide'|t('freeform') }}</a>{% endset %}
     <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
         <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
             <p>
@@ -129,8 +130,7 @@
             <h2 id="freeform-orphan-scan-heading">{{ "Orphaned Submissions"|t('freeform') }}</h2>
             <p>
                 {{ "Check for submission records whose Craft element or form no longer exists. This read-only scan runs only when requested and may take time on large sites."|t('freeform') }}
-                {{ "For a full database check and repair instructions, see the"|t('freeform') }}
-                <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
+                {{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}
             </p>
             <div class="ff-diag-scan-actions">
                 <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
@@ -143,8 +143,7 @@
             <h2 id="freeform-related-scan-heading">{{ "Related Data Integrity"|t('freeform') }}</h2>
             <p>
                 {{ "Check related form data and other records for missing parents, and check duplicate values where a unique constraint is missing. Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed."|t('freeform') }}
-                {{ "For a full database check and repair instructions, see the"|t('freeform') }}
-                <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
+                {{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}
             </p>
             <div class="ff-diag-scan-actions">
                 <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>

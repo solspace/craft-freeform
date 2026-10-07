@@ -42,7 +42,7 @@ class DatabaseIntegrity
             }
             foreach ($this->db->createCommand('SELECT [[id]] FROM {{%freeform_forms}}')->queryColumn() as $formId) {
                 if (!isset($formTables[(int) $formId])) {
-                    $issues[] = ['relationship' => 'Form #'.$formId, 'message' => 'The per-form submission table is missing. Ask your developer to investigate before resaving the form; recreating a table does not recover lost data.'];
+                    $issues[] = ['relationship' => 'Form #'.$formId, 'relationshipTemplate' => 'Form #{id}', 'relationshipParams' => ['id' => $formId], 'message' => 'The per-form submission table is missing. Ask your developer to investigate before resaving the form; recreating a table does not recover lost data.'];
                 }
             }
         }
@@ -62,7 +62,7 @@ class DatabaseIntegrity
         $issues = [];
         $missing = array_diff($definition['columns'], array_keys($table->columns));
         if ($missing) {
-            $issues[] = ['relationship' => $name, 'message' => 'Required columns are missing: '.implode(', ', $missing).'.'];
+            $issues[] = ['relationship' => $name, 'message' => 'Required columns are missing: '.implode(', ', $missing).'.', 'messageTemplate' => 'Required columns are missing: {columns}.', 'messageParams' => ['columns' => implode(', ', $missing)]];
         }
 
         foreach ($definition['indexes'] as $index) {
@@ -71,7 +71,10 @@ class DatabaseIntegrity
             }
             if (!$this->hasIndex($name, $index)) {
                 $type = $index['primary'] ? 'primary key' : ($index['unique'] ? 'unique constraint' : 'index');
-                $issues[] = ['relationship' => $name.' ('.implode(', ', $index['columns']).')', 'message' => 'An expected '.$type.' is missing. Ask your developer to review the schema.'];
+                $messageTemplate = $index['primary']
+                    ? 'An expected primary key is missing. Ask your developer to review the schema.'
+                    : ($index['unique'] ? 'An expected unique constraint is missing. Ask your developer to review the schema.' : 'An expected index is missing. Ask your developer to review the schema.');
+                $issues[] = ['relationship' => $name.' ('.implode(', ', $index['columns']).')', 'message' => 'An expected '.$type.' is missing. Ask your developer to review the schema.', 'messageTemplate' => $messageTemplate];
             }
         }
 

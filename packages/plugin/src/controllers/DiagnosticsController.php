@@ -157,7 +157,10 @@ class DiagnosticsController extends BaseController
                 'completedChecks' => $state['task'],
                 'totalChecks' => \count($state['tasks']),
                 'scanned' => $state['scanned'],
-                'results' => array_values(array_filter($state['results'], static fn ($result) => $result['count'] || $result['error'])),
+                'results' => array_values(array_map(
+                    static fn ($result) => array_replace($result, ['error' => $result['error'] ? Freeform::t($result['error']) : null]),
+                    array_filter($state['results'], static fn ($result) => $result['count'] || $result['error'])
+                )),
             ]);
         } catch (\Throwable $exception) {
             \Craft::warning('Unable to scan Freeform related data: '.$exception->getMessage(), 'freeform');

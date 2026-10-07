@@ -54,7 +54,23 @@ class DiagnosticsDatabaseTest extends TestCase
         $this->assertStringContainsString('1 expected database relationships', $message);
     }
 
-    private function fixture(bool $missingContentKey = false): DiagnosticsService
+    public function testDatabaseWarningTranslatesSentencesAndCountParameters(): void
+    {
+        $item = $this->fixture(true, [
+            '{count} expected database relationships require attention. Missing or incorrect foreign keys can prevent related submission data from being deleted.' => '{count} relations nécessitent une intervention.',
+            'The key is missing. Run the console utility to check for orphaned rows before restoring it.' => 'La clé est manquante.',
+            'This check examines database structure only; use the submission scan below or the console utility to check orphaned rows.' => 'Cette vérification examine uniquement la structure.',
+        ])->getDatabaseChecks()[0];
+
+        $message = (string) $item->getWarnings()[0]->getMessage();
+        $this->assertStringContainsString('1 relations nécessitent une intervention.', $message);
+        $this->assertStringContainsString('La clé est manquante.', $message);
+        $this->assertStringContainsString('Cette vérification examine uniquement la structure.', $message);
+        $this->assertStringNotContainsString('{count}', $message);
+        $this->assertStringNotContainsString('{command}', $message);
+    }
+
+    private function fixture(bool $missingContentKey = false, array $translations = []): DiagnosticsService
     {
         $db = $this->getMockBuilder(Connection::class)->onlyMethods(['getSchema', 'createCommand'])->getMock();
         $db->tablePrefix = 'craft_';
@@ -105,7 +121,14 @@ class DiagnosticsDatabaseTest extends TestCase
         $schema->method('getTableIndexes')->willReturnCallback(static fn ($name) => $indexes[$schema->getRawTableName($name)] ?? []);
 
         $twig = new Environment(new ArrayLoader(), ['autoescape' => 'html']);
-        $twig->addFilter(new TwigFilter('t', static fn ($message) => $message));
+        $twig->addFilter(new TwigFilter('t', static function ($message, $category = null, array $params = []) use ($translations) {
+            $replacements = [];
+            foreach ($params as $key => $value) {
+                $replacements['{'.$key.'}'] = $value;
+            }
+
+            return strtr($translations[$message] ?? $message, $replacements);
+        }));
         $view = new class($twig) {
             public function __construct(private Environment $twig) {}
 

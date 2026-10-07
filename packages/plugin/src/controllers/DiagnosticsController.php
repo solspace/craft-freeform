@@ -16,6 +16,8 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
+use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
 use yii\web\BadRequestHttpException;
@@ -169,6 +171,16 @@ class DiagnosticsController extends BaseController
         }
     }
 
+    public function actionScanUploadedFiles(): Response
+    {
+        return $this->scanReadiness('uploads');
+    }
+
+    public function actionScanNotifications(): Response
+    {
+        return $this->scanReadiness('notifications');
+    }
+
     public function actionCraftPreflight(): Response
     {
         \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
@@ -185,6 +197,80 @@ class DiagnosticsController extends BaseController
                 'readOnly' => false,
             ]
         );
+    }
+
+    private function scanReadiness(string $kind): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        $scanId = \Craft::$app->getRequest()->getBodyParam('scanId');
+        if (null !== $scanId && (!\is_string($scanId) || !preg_match('/^[a-f0-9]{32}$/D', $scanId))) {
+            throw new BadRequestHttpException('Invalid scan ID.');
+        }
+        $cache = \Craft::$app->getCache();
+        $owner = (string) \Craft::$app->getUser()->getId();
+        $scan = $kind === 'uploads' ? new UploadIntegrityScan(\Craft::$app->getDb()) : new NotificationReadinessScan(\Craft::$app->getDb());
+
+        try {
+            if (null === $scanId) {
+                $scanId = bin2hex(random_bytes(16));
+                $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'results' => []];
+            } else {
+                $state = $cache->get(['freeform-readiness-scan', $owner, $kind, $scanId]);
+                if (false === $state) {
+                    return $this->asFailure(Freeform::t('The scan expired. Start a new scan.'));
+                }
+            }
+
+            $task = $state['tasks'][$state['task']] ?? null;
+            if ($task) {
+                $batch = $scan->scanTask($task, $state['cursor'], $state['maxId'], $state['offset']);
+                $state['scanned'] += $batch['scanned'];
+                foreach ($batch['results'] as $issue) {
+                    ++$state[$issue['skipped'] ? 'skipped' : 'issues'];
+                    if (\count($state['results']) < 100) {
+                        $state['results'][] = $issue;
+                    }
+                }
+                $state['cursor'] = $batch['cursor'];
+                $state['maxId'] = $batch['maxId'];
+                $state['offset'] = $batch['offset'];
+                if ($batch['complete']) {
+                    ++$state['task'];
+                    $state['cursor'] = $state['offset'] = 0;
+                    $state['maxId'] = null;
+                }
+            }
+            if (!$cache->set(['freeform-readiness-scan', $owner, $kind, $scanId], $state, 3600)) {
+                return $this->asFailure(Freeform::t('The scan progress could not be saved. Check the Craft cache configuration.'));
+            }
+
+            return $this->asJson([
+                'scanId' => $scanId,
+                'complete' => $state['task'] >= \count($state['tasks']),
+                'completedChecks' => $state['task'],
+                'totalChecks' => \count($state['tasks']),
+                'scanned' => $state['scanned'],
+                'issues' => $state['issues'],
+                'skipped' => $state['skipped'],
+                'truncated' => $state['issues'] + $state['skipped'] > \count($state['results']),
+                'results' => array_map(static function (array $issue) use ($kind): array {
+                    $context = $issue['context'];
+                    $message = $kind === 'notifications'
+                        ? 'Form “{form}”, notification {notification}: {message}'
+                        : (isset($context['submission']) ? 'Form “{form}”, field “{field}”, submission {submission}: {message}' : 'Form “{form}”, field “{field}”: {message}');
+
+                    return ['message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'])]), 'skipped' => $issue['skipped']];
+                }, $state['results']),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to scan Freeform '.$kind.': '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
     }
 
     private function compileReport(array $sections): string

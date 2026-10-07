@@ -152,6 +152,36 @@
             {{ _self.scanFeedback('freeform-related-scan', 'Related data scan progress'|t('freeform')) }}
             <ul class="ff-diag-scan-results" id="freeform-related-scan-results"></ul>
         </section>
+        {% set readinessScans = [
+            {
+                id: 'freeform-upload-scan', action: 'scan-uploaded-files',
+                title: 'Uploaded File Integrity'|t('freeform'),
+                description: 'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values and unavailable storage are reported as unchecked. No files or submissions are changed.'|t('freeform'),
+                button: 'Scan uploaded files'|t('freeform'),
+                starting: 'Scanning uploaded files…'|t('freeform'),
+                success: 'No missing files found. Checked {scanned} uploaded file references.'|t('freeform')
+            },
+            {
+                id: 'freeform-notification-scan', action: 'scan-notifications',
+                title: 'Notification Readiness'|t('freeform'),
+                description: 'Check enabled notifications on active forms for missing templates, recipient fields, rules, and invalid email settings. This checks saved configuration only; it does not render Twig or test email delivery.'|t('freeform'),
+                button: 'Check notification readiness'|t('freeform'),
+                starting: 'Checking notifications…'|t('freeform'),
+                success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform')
+            }
+        ] %}
+        {% for scan in readinessScans %}
+            <section class="ff-diag-section" id="{{ scan.id }}" aria-labelledby="{{ scan.id }}-heading">
+                <h2 id="{{ scan.id }}-heading">{{ scan.title }}</h2>
+                <p>{{ scan.description }}</p>
+                <div class="ff-diag-scan-actions">
+                    <button type="button" class="btn" id="{{ scan.id }}-button">{{ scan.button }}</button>
+                    <span class="spinner hidden" id="{{ scan.id }}-spinner" aria-hidden="true"></span>
+                </div>
+                {{ _self.scanFeedback(scan.id, scan.title) }}
+                <ul class="ff-diag-scan-results" id="{{ scan.id }}-results"></ul>
+            </section>
+        {% endfor %}
         <details class="ff-diag-report ff-diag-disclosure">
             <summary>{{ 'Support Report'|t('freeform') }}</summary>
             <p class="light">{{ 'Copy this report when contacting Solspace support.'|t('freeform') }}</p>
@@ -283,6 +313,66 @@
                                 updateFeedback(needsAttention ? 'warning' : 'success', needsAttention
                                     ? format(messages.complete, { orphans, duplicates, skipped })
                                     : format(messages.success, { scanned: batch.scanned, total: batch.totalChecks }), 1);
+                            } else {
+                                updateFeedback('running', format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned }), batch.totalChecks > 0 ? batch.completedChecks / batch.totalChecks : null);
+                            }
+                            if (batch.complete) break;
+                        }
+                    } catch (error) {
+                        updateFeedback('error', messages.failed);
+                    } finally {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        section.setAttribute('aria-busy', 'false');
+                    }
+                });
+            }
+            for (const scan of {{ readinessScans|json_encode|raw }}) {
+                const section = document.getElementById(scan.id);
+                const button = document.getElementById(scan.id + '-button');
+                const spinner = document.getElementById(scan.id + '-spinner');
+                const results = document.getElementById(scan.id + '-results');
+                const updateFeedback = createFeedback(scan.id);
+                const messages = {{ {
+                    progress: 'Completed {completed} of {total} checks; examined {scanned} items.'|t('freeform'),
+                    complete: 'Needs attention: {issues} issues found; {skipped} items could not be checked.'|t('freeform'),
+                    failed: 'The scan could not be completed. Results below are partial. Try again or ask your developer to investigate.'|t('freeform'),
+                    truncated: 'Showing the first 100 results. The totals include all findings.'|t('freeform')
+                }|json_encode|raw }};
+                const format = (message, values) => Object.entries(values).reduce((text, [key, value]) => text.replace('{' + key + '}', value.toLocaleString()), message);
+                button.addEventListener('click', async () => {
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                    section.setAttribute('aria-busy', 'true');
+                    results.replaceChildren();
+                    updateFeedback('running', scan.starting, 0);
+                    let scanId = null;
+                    try {
+                        while (true) {
+                            const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/' + scan.action, { data: { scanId } });
+                            const batch = response.data;
+                            if (batch.error || typeof batch.complete !== 'boolean' || !/^[a-f0-9]{32}$/.test(batch.scanId)
+                                || !Array.isArray(batch.results) || !['completedChecks', 'totalChecks', 'scanned', 'issues', 'skipped'].every(key => Number.isInteger(batch[key]) && batch[key] >= 0)
+                                || batch.completedChecks > batch.totalChecks
+                                || !batch.results.every(result => typeof result.message === 'string' && typeof result.skipped === 'boolean')) throw new Error('Scan failed');
+                            scanId = batch.scanId;
+                            results.replaceChildren();
+                            for (const result of batch.results) {
+                                const row = document.createElement('li');
+                                row.className = 'is-warning';
+                                row.textContent = result.message;
+                                results.appendChild(row);
+                            }
+                            if (batch.truncated) {
+                                const row = document.createElement('li');
+                                row.textContent = messages.truncated;
+                                results.appendChild(row);
+                            }
+                            if (batch.complete) {
+                                const needsAttention = batch.issues > 0 || batch.skipped > 0;
+                                updateFeedback(needsAttention ? 'warning' : 'success', needsAttention
+                                    ? format(messages.complete, { issues: batch.issues, skipped: batch.skipped })
+                                    : format(scan.success, { scanned: batch.scanned }), 1);
                             } else {
                                 updateFeedback('running', format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned }), batch.totalChecks > 0 ? batch.completedChecks / batch.totalChecks : null);
                             }

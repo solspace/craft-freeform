@@ -5,13 +5,16 @@ namespace Solspace\Freeform\Tests\Services;
 use craft\db\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\TwigFilter;
 use yii\db\ColumnSchema;
+use yii\db\Command;
 use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\mysql\Schema;
 use yii\db\TableSchema;
 
@@ -32,9 +35,12 @@ class DiagnosticsDatabaseTest extends TestCase
 
     public function testHealthyMetadataPassesWithoutSubmissionQueries(): void
     {
-        $item = $this->fixture()->getDatabaseChecks()[0];
+        $items = $this->fixture()->getDatabaseChecks();
+        $item = $items[0];
         $this->assertSame([], $item->getWarnings());
         $this->assertStringContainsString('All expected keys present', (string) $item->getMarkup());
+        $this->assertSame([], $items[1]->getWarnings());
+        $this->assertStringContainsString('All expected tables, columns, and indexes present', (string) $items[1]->getMarkup());
     }
 
     public function testMissingKeyRendersWarningAndConsoleInstructions(): void
@@ -52,13 +58,27 @@ class DiagnosticsDatabaseTest extends TestCase
     {
         $db = $this->getMockBuilder(Connection::class)->onlyMethods(['getSchema', 'createCommand'])->getMock();
         $db->tablePrefix = 'craft_';
-        $db->expects($this->never())->method('createCommand');
-        $schema = $this->getMockBuilder(Schema::class)->onlyMethods(['getTableSchema', 'getTableForeignKeys', 'getTableNames', 'refresh'])->getMock();
+        $db->dsn = 'mysql:host=localhost;dbname=test';
+        $command = $this->createMock(Command::class);
+        $command->method('queryColumn')->willReturn([1]);
+        $command->expects($this->never())->method('execute');
+        $db->expects($this->once())->method('createCommand')->with('SELECT [[id]] FROM {{%freeform_forms}}')->willReturn($command);
+        $schema = $this->getMockBuilder(Schema::class)->onlyMethods(['getTableSchema', 'getTableForeignKeys', 'getTableIndexes', 'getTableNames', 'refresh'])->getMock();
         $schema->db = $db;
         $db->method('getSchema')->willReturn($schema);
         $schema->method('getTableNames')->willReturn(['craft_freeform_submissions_contact_1']);
 
-        $tables = $keys = [];
+        $tables = $keys = $indexes = [];
+        foreach ((new DatabaseIntegrity($db))->getDefinitions() as $definition) {
+            $name = $schema->getRawTableName($definition['table']);
+            $tables[$name] = new TableSchema(['name' => $name, 'fullName' => $name, 'primaryKey' => ['id']]);
+            foreach ($definition['columns'] as $column) {
+                $tables[$name]->columns[$column] = new ColumnSchema(['name' => $column]);
+            }
+            foreach ($definition['indexes'] as $index) {
+                $indexes[$name][] = new IndexConstraint(['columnNames' => $index['columns'], 'isUnique' => $index['unique'], 'isPrimary' => $index['primary']]);
+            }
+        }
         foreach ((new ForeignKeyRepair($db))->getDefinitions() as $definition) {
             [, $source, $columns, $target, $referenceColumns, $onDelete, $onUpdate] = $definition;
             $source = $schema->getRawTableName($source);
@@ -82,6 +102,7 @@ class DiagnosticsDatabaseTest extends TestCase
         }
         $schema->method('getTableSchema')->willReturnCallback(static fn ($name) => $tables[$schema->getRawTableName($name)] ?? null);
         $schema->method('getTableForeignKeys')->willReturnCallback(static fn ($name) => $keys[$schema->getRawTableName($name)] ?? []);
+        $schema->method('getTableIndexes')->willReturnCallback(static fn ($name) => $indexes[$schema->getRawTableName($name)] ?? []);
 
         $twig = new Environment(new ArrayLoader(), ['autoescape' => 'html']);
         $twig->addFilter(new TwigFilter('t', static fn ($message) => $message));

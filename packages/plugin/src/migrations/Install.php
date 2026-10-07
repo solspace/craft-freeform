@@ -12,6 +12,35 @@ use Solspace\Freeform\Library\Migrations\Table;
 class Install extends StreamlinedInstallMigration
 {
     /**
+     * Expected current table metadata, including the shared install columns.
+     *
+     * @return array<array{table: string, columns: array, indexes: array}>
+     */
+    public function getTableDefinitions(): array
+    {
+        $definitions = [];
+        foreach ($this->defineTableData() as $table) {
+            $fields = $table->getFieldArray();
+            $indexes = [['columns' => ['id'], 'unique' => true, 'primary' => true]];
+            foreach ($table->getIndexes() as $index) {
+                $indexes[] = ['columns' => $index->getColumns(), 'unique' => $index->isUnique(), 'primary' => false];
+            }
+            foreach ($fields as $column => $builder) {
+                if (preg_match('/\bUNIQUE\b/i', (string) $builder)) {
+                    $indexes[] = ['columns' => [$column], 'unique' => true, 'primary' => false];
+                }
+            }
+            $definitions[] = [
+                'table' => $table->getDatabaseName(),
+                'columns' => array_unique(array_merge(array_keys($fields), ['dateCreated', 'dateUpdated', 'uid'])),
+                'indexes' => $indexes,
+            ];
+        }
+
+        return $definitions;
+    }
+
+    /**
      * Returns the expected constraints without running the install migration.
      *
      * @return array<array{?string, string, array|string, string, array|string, ?string, ?string}>
@@ -157,6 +186,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer())
+                ->addIndex(['formId', 'handle'], true, name: 'formId_handle')
                 ->addIndex(['formId'], false, name: 'formId')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('wrapperId', 'freeform_notification_template_wrappers', 'id', ForeignKey::SET_NULL, name: 'fk_wrapperId'),

@@ -166,6 +166,19 @@
         </p>
     </section>
 
+    <hr>
+    <section id="freeform-related-scan" aria-labelledby="freeform-related-scan-heading">
+        <h2 id="freeform-related-scan-heading">{{ "Related Data Integrity"|t('freeform') }}</h2>
+        <p>{{ "Check related form data and other records for missing parents, and check duplicate values where a unique constraint is missing. Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed."|t('freeform') }}</p>
+        <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
+        <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
+        <p id="freeform-related-scan-status" role="status" aria-live="polite"></p>
+        <ul id="freeform-related-scan-results"></ul>
+        <p id="freeform-related-scan-guide" hidden>
+            <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Database integrity guide"|t('freeform') }}</a>
+        </p>
+    </section>
+
     {% js %}
         (() => {
             const section = document.getElementById('freeform-orphan-scan');
@@ -210,6 +223,70 @@
                     }
                 } catch (error) {
                     status.textContent = format(messages.failed);
+                } finally {
+                    button.disabled = false;
+                    spinner.classList.add('hidden');
+                    section.setAttribute('aria-busy', 'false');
+                    guide.hidden = false;
+                }
+            });
+        })();
+    {% endjs %}
+
+    {% js %}
+        (() => {
+            const section = document.getElementById('freeform-related-scan');
+            const button = document.getElementById('freeform-related-scan-button');
+            const spinner = document.getElementById('freeform-related-scan-spinner');
+            const status = document.getElementById('freeform-related-scan-status');
+            const results = document.getElementById('freeform-related-scan-results');
+            const guide = document.getElementById('freeform-related-scan-guide');
+            const messages = {{ {
+                starting: "Scanning related data…"|t('freeform'),
+                progress: "Completed {completed} of {total} checks; examined {scanned} related records."|t('freeform'),
+                complete: "Scan complete: {orphans} orphaned related rows; {duplicates} rows in duplicate groups; {skipped} checks could not be completed."|t('freeform'),
+                failed: "The scan could not be completed. Results below are partial. Try again or ask your developer to investigate."|t('freeform'),
+                orphans: "{count} orphaned rows"|t('freeform'),
+                duplicates: "{count} rows in duplicate groups"|t('freeform'),
+                skipped: "Could not check"|t('freeform')
+            }|json_encode|raw }};
+            const format = (message, values) => Object.entries(values).reduce((text, [key, value]) => text.replace('{' + key + '}', value.toLocaleString()), message);
+
+            button.addEventListener('click', async () => {
+                button.disabled = true;
+                spinner.classList.remove('hidden');
+                section.setAttribute('aria-busy', 'true');
+                guide.hidden = true;
+                results.replaceChildren();
+                status.textContent = messages.starting;
+                let scanId = null;
+                try {
+                    while (true) {
+                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-related-data', { data: { scanId } });
+                        const batch = response.data;
+                        if (!Array.isArray(batch.results) || !Number.isInteger(batch.completedChecks)) throw new Error('Scan failed');
+                        scanId = batch.scanId;
+                        results.replaceChildren();
+                        let orphans = 0;
+                        let duplicates = 0;
+                        let skipped = 0;
+                        for (const result of batch.results) {
+                            if (result.error) skipped += 1;
+                            else if (result.type === 'orphans') orphans += result.count;
+                            else duplicates += result.count;
+                            if (!result.error && !result.count) continue;
+                            const row = document.createElement('li');
+                            const label = result.table + (result.columns.length ? ' (' + result.columns.join(', ') + ')' : '');
+                            row.textContent = label + ': ' + (result.error ? messages.skipped + '. ' + result.error : format(messages[result.type], { count: result.count }));
+                            results.appendChild(row);
+                        }
+                        status.textContent = batch.complete
+                            ? format(messages.complete, { orphans, duplicates, skipped })
+                            : format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned });
+                        if (batch.complete) break;
+                    }
+                } catch (error) {
+                    status.textContent = messages.failed;
                 } finally {
                     button.disabled = false;
                     spinner.classList.add('hidden');

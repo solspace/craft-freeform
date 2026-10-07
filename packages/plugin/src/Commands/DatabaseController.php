@@ -2,7 +2,9 @@
 
 namespace Solspace\Freeform\Commands;
 
+use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
+use Solspace\Freeform\Library\Database\IntegrityScan;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 
@@ -82,8 +84,70 @@ class DatabaseController extends BaseCommand
             : ExitCode::OK;
     }
 
+    /**
+     * Reports general schema issues, related orphaned records, and unprotected duplicates.
+     * This action is always read-only, including when --apply is supplied.
+     */
+    public function actionCheckIntegrity(): int
+    {
+        $this->banner('Freeform Database Integrity');
+        $this->stdout("Read-only check: no Freeform data or schema will be changed.\n");
+        $issues = 0;
+
+        try {
+            foreach ($this->createIntegrity()->inspect() as $issue) {
+                ++$issues;
+                $this->stdout('SCHEMA: '.$issue['relationship'].' — '.$issue['message']."\n");
+            }
+            $repair = $this->createRepair();
+            foreach ($repair->getDefinitions() as $definition) {
+                $result = $repair->inspect($definition);
+                if ('ok' !== $result['status']) {
+                    ++$issues;
+                    $this->stdout(strtoupper($result['status']).': '.$definition[1].' ('.implode(', ', (array) $definition[2]).') — '.$result['message'].' Orphaned rows: '.$result['orphanCount']."\n");
+                }
+            }
+            $scan = $this->createScan();
+            foreach ($scan->getTasks() as $task) {
+                $cursor = 0;
+                $maxId = null;
+                $affected = 0;
+                do {
+                    $result = $scan->scanTask($task, $cursor, $maxId);
+                    $cursor = $result['cursor'];
+                    $maxId = $result['maxId'];
+                    $affected += $result['affected'];
+                } while (!$result['complete']);
+
+                if ($affected || $result['error']) {
+                    ++$issues;
+                    $label = $task['table'].(isset($task['columns']) ? ' ('.implode(', ', $task['columns']).')' : '');
+                    $this->stdout(strtoupper($task['type']).': '.$label.' — '.($result['error'] ?? $affected.' affected rows')."\n");
+                }
+            }
+        } catch (\Throwable $exception) {
+            $this->stderr('The integrity check could not be completed: '.$exception->getMessage()."\n", Console::FG_RED);
+
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
+        $this->stdout("\nIssues reported: ".$issues."\nCounts are per table or constraint and must not be added as distinct submissions.\n");
+
+        return $issues ? ExitCode::UNSPECIFIED_ERROR : ExitCode::OK;
+    }
+
     protected function createRepair(): ForeignKeyRepair
     {
         return new ForeignKeyRepair(\Craft::$app->getDb());
+    }
+
+    protected function createIntegrity(): DatabaseIntegrity
+    {
+        return new DatabaseIntegrity(\Craft::$app->getDb());
+    }
+
+    protected function createScan(): IntegrityScan
+    {
+        return new IntegrityScan(\Craft::$app->getDb());
     }
 }

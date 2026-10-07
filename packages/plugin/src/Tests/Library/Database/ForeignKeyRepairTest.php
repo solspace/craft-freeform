@@ -235,7 +235,42 @@ class ForeignKeyRepairTest extends TestCase
         $this->assertSame('conflict', $repair->inspect(self::DEFINITION)['status']);
     }
 
-    private function fixture(array $keys = [], int $orphans = 0, bool $targetExists = true): array
+    public function testAllSixHistoricalRuleKeysAcceptDefaultUpdateActions(): void
+    {
+        [$repair] = $this->fixture();
+        $definitions = array_filter($repair->getDefinitions(), static fn ($definition) => \in_array($definition[1], ['{{%freeform_rules_integrations}}', '{{%freeform_rules_submit_form}}', '{{%freeform_rules_buttons}}'], true));
+        $this->assertCount(6, $definitions);
+        foreach ($definitions as $definition) {
+            foreach (['RESTRICT', 'NO ACTION', null] as $action) {
+                $key = $this->key();
+                $key->columnNames = (array) $definition[2];
+                $key->foreignColumnNames = (array) $definition[4];
+                $key->foreignTableName = 'craft_'.trim($definition[3], '{}%');
+                $key->onUpdate = $action;
+                [$historical, $command] = $this->fixture([$key], 0, true, $definition);
+                $command->expects($this->never())->method('execute');
+                $this->assertSame('ok', $historical->inspect($definition)['status']);
+                $historical->restore($definition);
+            }
+        }
+    }
+
+    public function testHistoricalCompatibilityDoesNotAcceptWrongDeleteOrUpdateActions(): void
+    {
+        $definition = [null, '{{%freeform_rules_buttons}}', ['id'], '{{%freeform_rules}}', ['id'], 'CASCADE', 'CASCADE'];
+        $key = $this->key();
+        $key->foreignTableName = 'craft_freeform_rules';
+        $key->onUpdate = 'SET NULL';
+        [$repair] = $this->fixture([$key], 0, true, $definition);
+        $result = $repair->inspect($definition);
+        $this->assertSame('conflict', $result['status']);
+        $this->assertStringContainsString('ON UPDATE SET NULL', $result['message']);
+        $key->onUpdate = 'RESTRICT';
+        $key->onDelete = 'RESTRICT';
+        $this->assertSame('conflict', $repair->inspect($definition)['status']);
+    }
+
+    private function fixture(array $keys = [], int $orphans = 0, bool $targetExists = true, array $definition = self::DEFINITION): array
     {
         $state = (object) ['keys' => $keys, 'orphans' => $orphans, 'commandFactory' => null, 'tableNames' => []];
         $db = $this->getMockBuilder(Connection::class)->onlyMethods(['getSchema', 'createCommand'])->getMock();
@@ -246,16 +281,18 @@ class ForeignKeyRepairTest extends TestCase
         $db->method('getSchema')->willReturn($schema);
         $schema->method('getTableNames')->willReturnCallback(static fn () => $state->tableNames);
         $tables = [];
-        foreach (['craft_freeform_submissions_contact_1', 'craft_freeform_submissions'] as $name) {
+        foreach ([$schema->getRawTableName($definition[1]), $schema->getRawTableName($definition[3])] as $name) {
             $table = new TableSchema();
             $table->name = $table->fullName = $name;
-            $table->columns = ['id' => new ColumnSchema(['name' => 'id'])];
+            foreach (array_unique(array_merge((array) $definition[2], (array) $definition[4])) as $column) {
+                $table->columns[$column] = new ColumnSchema(['name' => $column]);
+            }
             $tables[$name] = $table;
         }
 
-        $schema->method('getTableSchema')->willReturnCallback(static function ($name) use ($tables, $targetExists, $schema) {
+        $schema->method('getTableSchema')->willReturnCallback(static function ($name) use ($tables, $targetExists, $schema, $definition) {
             $raw = $schema->getRawTableName($name);
-            if (!$targetExists && 'craft_freeform_submissions' === $raw) {
+            if (!$targetExists && $schema->getRawTableName($definition[3]) === $raw) {
                 return null;
             }
 

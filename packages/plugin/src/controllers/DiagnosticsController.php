@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\controllers;
 
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
@@ -81,6 +82,73 @@ class DiagnosticsController extends BaseController
             return $this->asJson((new OrphanedSubmissionScanner(\Craft::$app->getDb()))->scan($cursor, $maxId));
         } catch (\Throwable $exception) {
             \Craft::warning('Unable to scan orphaned Freeform submissions: '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
+    }
+
+    public function actionScanRelatedData(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        $request = \Craft::$app->getRequest();
+        $scanId = $request->getBodyParam('scanId');
+        if (null !== $scanId && (!\is_string($scanId) || !preg_match('/^[a-f0-9]{32}$/D', $scanId))) {
+            throw new BadRequestHttpException('Invalid scan ID.');
+        }
+        $cache = \Craft::$app->getCache();
+        $owner = (string) \Craft::$app->getUser()->getId();
+        $scan = new IntegrityScan(\Craft::$app->getDb());
+
+        try {
+            if (null === $scanId) {
+                $scanId = bin2hex(random_bytes(16));
+                $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'affected' => 0, 'scanned' => 0, 'results' => []];
+            } else {
+                $state = $cache->get(['freeform-integrity-scan', $owner, $scanId]);
+                if (false === $state) {
+                    return $this->asFailure(Freeform::t('The scan expired. Start a new scan.'));
+                }
+            }
+
+            $task = $state['tasks'][$state['task']] ?? null;
+            if ($task) {
+                $result = $scan->scanTask($task, $state['cursor'], $state['maxId']);
+                $state['cursor'] = $result['cursor'];
+                $state['maxId'] = $result['maxId'];
+                $state['scanned'] += $result['scanned'];
+                $state['affected'] += $result['affected'];
+                if ($result['complete']) {
+                    $state['results'][] = [
+                        'table' => \Craft::$app->getDb()->getSchema()->getRawTableName($task['table']),
+                        'columns' => $task['columns'] ?? [],
+                        'type' => $task['type'],
+                        'count' => $state['affected'],
+                        'error' => $result['error'],
+                    ];
+                    ++$state['task'];
+                    $state['cursor'] = $state['affected'] = 0;
+                    $state['maxId'] = null;
+                }
+            }
+            $complete = $state['task'] >= \count($state['tasks']);
+            if (!$cache->set(['freeform-integrity-scan', $owner, $scanId], $state, 3600)) {
+                return $this->asFailure(Freeform::t('The scan progress could not be saved. Check the Craft cache configuration.'));
+            }
+
+            return $this->asJson([
+                'scanId' => $scanId,
+                'complete' => $complete,
+                'completedChecks' => $state['task'],
+                'totalChecks' => \count($state['tasks']),
+                'scanned' => $state['scanned'],
+                'results' => array_values(array_filter($state['results'], static fn ($result) => $result['count'] || $result['error'])),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to scan Freeform related data: '.$exception->getMessage(), 'freeform');
 
             return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
         }

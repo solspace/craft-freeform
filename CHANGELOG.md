@@ -4,7 +4,7 @@
 
 ### Added
 - Added an opt-in console utility to check Freeform foreign keys and orphaned rows, and restore missing keys with a dry-run option.
-- Added a Diagnostics check for missing or incorrect Freeform foreign keys and an optional scan for orphaned submissions.
+- Added database integrity checks to Diagnostics, including optional scans for orphaned submissions, related records, and duplicate values.
 
 ### Fixed
 - Fixed an issue where uninstalling another Craft plugin could remove Freeform's foreign keys and prevent submission data from being fully purged.

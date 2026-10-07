@@ -54,7 +54,7 @@ class ForeignKeyRepair
 
         // Diagnostics checks schema metadata only; row scans remain opt-in via the CLI.
         $orphans = $checkOrphans ? $this->countOrphans($table, $columns, $reference, $referenceColumns) : 0;
-        $conflict = false;
+        $conflicts = [];
         foreach ($schema->getTableForeignKeys($table) as $key) {
             if ($key->columnNames !== $columns) {
                 continue;
@@ -65,7 +65,7 @@ class ForeignKeyRepair
                 && (!$target->schemaName || $key->foreignSchemaName === $target->schemaName)
                 && $key->foreignColumnNames === $referenceColumns
                 && $this->matchesAction($onDelete, $key->onDelete)
-                && $this->matchesAction($onUpdate, $key->onUpdate)
+                && $this->matchesUpdateAction($definition, $key->onUpdate)
             ) {
                 return $this->result(
                     $orphans ? 'blocked' : 'ok',
@@ -74,11 +74,12 @@ class ForeignKeyRepair
                 );
             }
 
-            $conflict = true;
+            $conflicts[] = $key->name.': '.($key->foreignSchemaName ? $key->foreignSchemaName.'.' : '').$key->foreignTableName
+                .' ('.implode(', ', $key->foreignColumnNames).'), ON DELETE '.($key->onDelete ?? 'NO ACTION').', ON UPDATE '.($key->onUpdate ?? 'NO ACTION');
         }
 
-        if ($conflict) {
-            return $this->result('conflict', $orphans, 'An existing key on these columns differs from the expected relationship. Review it manually.');
+        if ($conflicts) {
+            return $this->result('conflict', $orphans, 'An existing key differs from the expected relationship (ON DELETE '.($onDelete ?? 'any').', ON UPDATE '.($onUpdate ?? 'any').'). Existing: '.implode('; ', $conflicts).'. Review it manually.');
         }
 
         if ($orphans) {
@@ -136,6 +137,28 @@ class ForeignKeyRepair
     {
         // Install definitions which omit an action allow the database/historical migration default.
         return null === $expected || strtoupper($expected) === strtoupper($actual ?? 'NO ACTION');
+    }
+
+    private function matchesUpdateAction(array $definition, ?string $actual): bool
+    {
+        if ($this->matchesAction($definition[6], $actual)) {
+            return true;
+        }
+
+        // These six upgrade migrations specified only ON DELETE CASCADE. Fresh
+        // installs also specify ON UPDATE CASCADE; both shipped variants are valid.
+        $historical = [
+            '{{%freeform_rules_integrations}}' => ['id' => '{{%freeform_rules}}', 'integrationId' => '{{%freeform_forms_integrations}}'],
+            '{{%freeform_rules_submit_form}}' => ['id' => '{{%freeform_rules}}', 'formId' => '{{%freeform_forms}}'],
+            '{{%freeform_rules_buttons}}' => ['id' => '{{%freeform_rules}}', 'pageId' => '{{%freeform_forms_pages}}'],
+        ];
+        $columns = (array) $definition[2];
+
+        return 'CASCADE' === $definition[6]
+            && 1 === \count($columns)
+            && ($historical[$definition[1]][$columns[0]] ?? null) === $definition[3]
+            && ['id'] === (array) $definition[4]
+            && \in_array(strtoupper($actual ?? 'NO ACTION'), ['NO ACTION', 'RESTRICT'], true);
     }
 
     private function result(string $status, int $orphans, string $message): array

@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Tests\Commands;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Commands\DatabaseController;
+use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
+use Solspace\Freeform\Library\Database\IntegrityScan;
 use yii\console\ExitCode;
 
 #[CoversClass(DatabaseController::class)]
@@ -54,6 +56,26 @@ class DatabaseControllerTest extends TestCase
         $repair->method('restore')->willThrowException(new \RuntimeException('DDL failed'));
 
         $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionRepairForeignKeys());
+    }
+
+    public function testGeneralIntegrityCheckNeverRepairsEvenWithApply(): void
+    {
+        $controller = $this->getMockBuilder(DatabaseController::class)->disableOriginalConstructor()->onlyMethods(['createRepair', 'createIntegrity', 'createScan', 'stdout', 'stderr'])->getMock();
+        $controller->apply = true;
+        $repair = $this->createMock(ForeignKeyRepair::class);
+        $repair->method('getDefinitions')->willReturn([[null, '{{%freeform_submissions}}', 'id', '{{%elements}}', 'id', 'CASCADE', null]]);
+        $repair->method('inspect')->willReturn(['status' => 'missing', 'orphanCount' => 0, 'message' => 'Missing key']);
+        $repair->expects($this->never())->method('restore');
+        $integrity = $this->createMock(DatabaseIntegrity::class);
+        $integrity->method('inspect')->willReturn([['relationship' => 'test', 'message' => 'Missing index']]);
+        $scan = $this->createMock(IntegrityScan::class);
+        $scan->method('getTasks')->willReturn([['type' => 'duplicates', 'table' => 'test', 'columns' => ['id'], 'error' => null]]);
+        $scan->method('scanTask')->willReturn(['cursor' => 0, 'maxId' => null, 'affected' => 2, 'complete' => true, 'error' => null]);
+        $controller->method('createRepair')->willReturn($repair);
+        $controller->method('createIntegrity')->willReturn($integrity);
+        $controller->method('createScan')->willReturn($scan);
+
+        $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionCheckIntegrity());
     }
 
     private function fixture(string $status = 'missing', int $orphans = 0): array

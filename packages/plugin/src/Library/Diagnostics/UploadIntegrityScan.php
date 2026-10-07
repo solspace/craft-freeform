@@ -94,9 +94,19 @@ class UploadIntegrityScan
         try {
             $maxId ??= (int) (new Query())->from($task['table'])->max('id', $this->db);
             $result['maxId'] = $maxId;
-            $rows = (new Query())->select(['id', $task['column']])->from($task['table'])
-                ->where(['and', ['>', 'id', $cursor], ['<=', 'id', $maxId]])
-                ->orderBy(['id' => \SORT_ASC])->limit(self::BATCH_SIZE)->all($this->db)
+            $site = (new Query())->select(['site.handle'])->from('{{%elements_sites}} elementSite')
+                ->innerJoin('{{%sites}} site', '[[site.id]] = [[elementSite.siteId]]')
+                ->where('[[elementSite.elementId]] = [[content.id]]')
+                ->orderBy(['elementSite.siteId' => \SORT_ASC])->limit(1)
+            ;
+            $rows = (new Query())->select([
+                'content.id', 'content.'.$task['column'], 'submission.id AS submissionId',
+                'submission.isSpam', 'element.id AS elementId', 'element.dateDeleted', 'siteHandle' => $site,
+            ])->from(['content' => $task['table']])
+                ->leftJoin('{{%freeform_submissions}} submission', '[[submission.id]] = [[content.id]] AND [[submission.formId]] = :formId', [':formId' => $task['formId'] ?? 0])
+                ->leftJoin('{{%elements}} element', '[[element.id]] = [[submission.id]]')
+                ->where(['and', ['>', 'content.id', $cursor], ['<=', 'content.id', $maxId]])
+                ->orderBy(['content.id' => \SORT_ASC])->limit(self::BATCH_SIZE)->all($this->db)
             ;
         } catch (\Throwable) {
             $result['results'][] = $this->issue($context, 'The stored upload column could not be read. Check the database structure.', true);
@@ -108,10 +118,41 @@ class UploadIntegrityScan
         // resumes a submission with many files without checking earlier files again.
         $checked = [];
         $lookups = 0;
+        $baseContext = $context;
         foreach ($rows as $row) {
-            $context['submission'] = (int) $row['id'];
+            $context = $baseContext + [
+                'submission' => (int) $row['id'],
+                'submissionAvailable' => null !== $row['submissionId'] && null !== $row['elementId'] && null === $row['dateDeleted'] && !empty($row['siteHandle']),
+                'isSpam' => (bool) $row['isSpam'],
+                'siteHandle' => $row['siteHandle'],
+            ];
 
             $value = $row[$task['column']];
+            // Trash retains submission content for restoration. It is not an
+            // active upload problem and its normal editor cannot be opened.
+            if (null !== $row['dateDeleted']) {
+                $result['cursor'] = (int) $row['id'];
+                $result['offset'] = 0;
+
+                continue;
+            }
+            if (!$context['submissionAvailable']) {
+                if (null !== $value && !\in_array(trim((string) $value), ['', '[]', 'null'], true)) {
+                    $message = match (true) {
+                        null === $row['submissionId'] => 'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.',
+                        null === $row['elementId'] => 'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.',
+                        default => 'The submission has no site record and cannot be opened. Check the database integrity.',
+                    };
+                    if (null === $row['submissionId'] || null === $row['elementId']) {
+                        $context['integrityCheck'] = null === $row['submissionId'] ? 'related' : 'orphan';
+                    }
+                    $result['results'][] = $this->issue($context, $message);
+                }
+                $result['cursor'] = (int) $row['id'];
+                $result['offset'] = 0;
+
+                continue;
+            }
             if (\is_string($value) && str_starts_with($value, 'encrypted:')) {
                 try {
                     if (empty($task['formUid'])) {

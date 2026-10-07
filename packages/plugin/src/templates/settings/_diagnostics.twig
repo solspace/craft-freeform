@@ -225,6 +225,15 @@
                 toggle.addEventListener('click', () => setExpanded(section.id, toggle.getAttribute('aria-expanded') !== 'true'));
                 document.getElementById(section.id + '-button').addEventListener('click', () => setExpanded(section.id, true));
             }
+            const revealLinkedCheck = () => {
+                const section = document.getElementById(window.location.hash.slice(1));
+                if (!section?.classList.contains('ff-diag-health-check')) return;
+                document.getElementById('tab-freeform-diagnostics-health-checks')?.click();
+                setExpanded(section.id, true);
+                section.scrollIntoView?.({ block: 'start' });
+            };
+            window.addEventListener('hashchange', revealLinkedCheck);
+            revealLinkedCheck();
             const renderFindings = (container, findings) => {
                 container.replaceChildren();
                 for (const [group, label] of [['issues', labels.issues], ['unchecked', labels.unchecked], ['info', labels.info]]) {

@@ -3631,4 +3631,7 @@ return [
     'This read-only scan runs only when requested and may take time on large sites.' => 'This read-only scan runs only when requested and may take time on large sites.',
     'Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed.' => 'Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed.',
     'Run checks to find problems with submissions, related data, uploaded files, and notifications. Checks run only when requested and do not change your data.' => 'Run checks to find problems with submissions, related data, uploaded files, and notifications. Checks run only when requested and do not change your data.',
+    'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.',
+    'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.',
+    'The submission has no site record and cannot be opened. Check the database integrity.' => 'The submission has no site record and cannot be opened. Check the database integrity.',
 ];

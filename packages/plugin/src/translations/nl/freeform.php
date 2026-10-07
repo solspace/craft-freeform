@@ -3595,4 +3595,7 @@ return [
     'This read-only scan runs only when requested and may take time on large sites.' => 'Deze scan wijzigt niets, wordt alleen op verzoek uitgevoerd en kan bij grote sites enige tijd duren.',
     'Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed.' => 'Controles op verweesde records worden in batches uitgevoerd; controles op dubbele gegevens kunnen bij grote tabellen langer duren. Er worden geen gegevens gewijzigd.',
     'Run checks to find problems with submissions, related data, uploaded files, and notifications. Checks run only when requested and do not change your data.' => 'Voer controles uit om problemen met inzendingen, gerelateerde gegevens, geüploade bestanden en meldingen te vinden. Controles worden alleen op verzoek uitgevoerd en wijzigen uw gegevens niet.',
+    'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'De opgeslagen uploadrij heeft geen bijbehorende inzending. Voer de controle op de integriteit van gerelateerde gegevens uit om dit te onderzoeken.',
+    'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'De inzending heeft geen bijbehorend Craft-element. Voer de controle op verweesde inzendingen uit om dit te onderzoeken.',
+    'The submission has no site record and cannot be opened. Check the database integrity.' => 'De inzending heeft geen siterecord en kan niet worden geopend. Controleer de database-integriteit.',
 ];

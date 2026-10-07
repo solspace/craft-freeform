@@ -23,11 +23,20 @@ class ReadinessLinks
         $context = $issue['context'];
         $formId = (int) ($context['formId'] ?? 0);
         $submissionId = (int) ($context['submission'] ?? 0);
-        if ('uploads' === $kind && $submissionId > 0 && ($this->can)(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
-            && ($this->canForForm(Freeform::PERMISSION_SUBMISSIONS_READ, $formId) || $this->canForForm(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId))) {
-            $links[] = $this->link('View submission', 'freeform/submissions/'.$submissionId);
+        if ('uploads' === $kind && $submissionId > 0 && ($context['submissionAvailable'] ?? true) && ($this->can)(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
+            && $this->canForForm(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId)) {
+            $path = 'freeform/'.(!empty($context['isSpam']) ? 'spam' : 'submissions').'/'.$submissionId;
+            if (!empty($context['siteHandle'])) {
+                $path .= '?site='.rawurlencode($context['siteHandle']);
+            }
+            $links[] = $this->link('View submission', $path);
         } elseif ($this->canEditForm($formId)) {
             $links[] = $this->link('notifications' === $kind ? 'Edit form notifications' : 'Edit form', 'freeform/forms/'.$formId.('notifications' === $kind ? '/notifications' : ''));
+        }
+
+        if ('uploads' === $kind && !empty($context['integrityCheck']) && ($this->can)(Freeform::PERMISSION_SETTINGS_ACCESS)) {
+            $related = 'related' === $context['integrityCheck'];
+            $links[] = $this->link($related ? 'Related Data Integrity' : 'Orphaned Submissions', 'freeform/settings/diagnostics#freeform-'.($related ? 'related' : 'orphan').'-scan');
         }
 
         $template = $issue['template'] ?? null;

@@ -7,6 +7,9 @@ use craft\db\Query;
 use craft\helpers\App;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
@@ -20,10 +23,16 @@ use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 class NotificationReadinessScan
 {
     private \Closure $loadTemplate;
+    private \Closure $elementFieldExists;
 
-    public function __construct(private Connection $db, ?\Closure $loadTemplate = null)
+    public function __construct(private Connection $db, ?\Closure $loadTemplate = null, ?\Closure $elementFieldExists = null)
     {
         $this->loadTemplate = $loadTemplate ?? $this->loadTemplate(...);
+        $this->elementFieldExists = $elementFieldExists ?? static function (string $value): bool {
+            $fields = \Craft::$app->getFields();
+
+            return null !== (ctype_digit($value) ? $fields->getFieldById((int) $value) : $fields->getFieldByHandle($value));
+        };
     }
 
     public function getTasks(): array
@@ -41,7 +50,7 @@ class NotificationReadinessScan
         $result = ['cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 1, 'complete' => true, 'results' => []];
 
         try {
-            $fields = (new Query())->select(['field.uid', 'field.type'])->from('{{%freeform_forms_fields}} field')
+            $fields = (new Query())->select(['field.uid', 'field.type', 'field.metadata'])->from('{{%freeform_forms_fields}} field')
                 ->innerJoin('{{%freeform_forms_rows}} row', '[[row.id]] = [[field.rowId]]')
                 ->where(['field.formId' => $task['formId']])->indexBy('uid')->all($this->db)
             ;
@@ -89,7 +98,8 @@ class NotificationReadinessScan
         if (\in_array($class, [Admin::class, Conditional::class], true)) {
             $this->checkRecipients($metadata['recipients'] ?? [], $add, true);
         } elseif ($class === EmailField::class || $class === Dynamic::class) {
-            $type = $fields[$metadata['field'] ?? '']['type'] ?? null;
+            $field = $fields[$metadata['field'] ?? ''] ?? null;
+            $type = $field['type'] ?? null;
             $interface = $class === EmailField::class ? RecipientInterface::class : OptionsInterface::class;
             if (!$type || !is_a($type, $interface, true)) {
                 $add('The selected recipient field is missing or has an incompatible type.');
@@ -97,7 +107,8 @@ class NotificationReadinessScan
             if ($class === Dynamic::class) {
                 $recipients = $metadata['recipients'] ?? [];
                 $mappings = $metadata['recipientMapping'] ?? [];
-                if (!$recipients && !array_filter($mappings, static fn ($mapping) => !empty($mapping['recipients']))) {
+                if (!$recipients && !array_filter($mappings, static fn ($mapping) => !empty($mapping['recipients']))
+                    && !$this->hasEmailOptionValues($field, $mappings)) {
                     $add('No recipients or recipient mappings are configured.');
                 }
                 $this->checkRecipients($recipients, $add, false);
@@ -177,6 +188,52 @@ class NotificationReadinessScan
     private function isTemplate(string $value): bool
     {
         return str_contains($value, '{{') || str_contains($value, '{%');
+    }
+
+    private function hasEmailOptionValues(?array $field, array $mappings): bool
+    {
+        if (!$field || !is_a($field['type'], OptionsInterface::class, true)) {
+            return false;
+        }
+
+        // DynamicRecipients uses a selected email value when no explicit
+        // recipients are configured. The builder displays these fallback values
+        // without saving them as recipient mappings.
+        foreach ($mappings as $mapping) {
+            if (filter_var($mapping['value'] ?? '', \FILTER_VALIDATE_EMAIL)) {
+                return true;
+            }
+        }
+
+        $metadata = $this->metadata($field + ['metadata' => '{}']);
+        $configuration = $metadata['optionConfiguration'] ?? [];
+        $source = $configuration['source'] ?? OptionsConfigurationInterface::SOURCE_CUSTOM;
+        if (OptionsConfigurationInterface::SOURCE_CUSTOM === $source) {
+            foreach ($configuration['options'] ?? [] as $option) {
+                if (empty($option['optgroup']) && filter_var($option['value'] ?? '', \FILTER_VALIDATE_EMAIL)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        if (OptionsConfigurationInterface::SOURCE_ELEMENTS !== $source) {
+            return false;
+        }
+
+        $type = $configuration['typeClass'] ?? '';
+        $value = (string) ($configuration['properties']['value'] ?? 'id');
+        if (!is_a($type, BaseOptionProvider::class, true) || '' === $value) {
+            return false;
+        }
+        if (is_a($type, Users::class, true) && 'email' === $value) {
+            return true;
+        }
+
+        // An existing custom value field can supply email strings (including
+        // entry Email or Plain Text fields). This static check does not query
+        // element content or attempt to validate every generated recipient.
+        return ($this->elementFieldExists)($value);
     }
 
     private function isValidEmail(string $value): bool

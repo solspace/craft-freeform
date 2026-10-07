@@ -3632,4 +3632,7 @@ return [
     'This read-only scan runs only when requested and may take time on large sites.' => 'Questa scansione di sola lettura viene eseguita solo su richiesta e può richiedere tempo sui siti di grandi dimensioni.',
     'Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed.' => 'I controlli dei record orfani vengono eseguiti in batch; quelli dei duplicati possono richiedere più tempo su tabelle grandi. Nessun dato viene modificato.',
     'Run checks to find problems with submissions, related data, uploaded files, and notifications. Checks run only when requested and do not change your data.' => 'Esegui i controlli per individuare problemi con invii, dati correlati, file caricati e notifiche. I controlli vengono eseguiti solo su richiesta e non modificano i dati.',
+    'The stored upload row has no matching submission. Run the Related Data Integrity check to investigate.' => 'La riga di caricamento salvata non ha un invio corrispondente. Esegui il controllo di integrità dei dati correlati per indagare.',
+    'The submission has no matching Craft element. Run the Orphaned Submissions check to investigate.' => 'L’invio non ha un elemento Craft corrispondente. Esegui il controllo degli invii orfani per indagare.',
+    'The submission has no site record and cannot be opened. Check the database integrity.' => 'L’invio non ha un record del sito e non può essere aperto. Controlla l’integrità del database.',
 ];

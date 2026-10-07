@@ -29,6 +29,23 @@ class ReadinessLinksTest extends TestCase
         $this->assertSame(['freeform/forms/7/notifications', 'freeform/forms/8/notifications'], array_column($this->links()->getLinks($issue, 'notifications'), 'url'));
     }
 
+    public function testSubmissionLinksUseTheCorrectSpamRouteAndSite(): void
+    {
+        $issue = ['context' => ['formId' => 7, 'submission' => 42, 'isSpam' => true, 'siteHandle' => 'german']];
+        $this->assertSame(['freeform/spam/42?site=german'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
+        $issue['context']['isSpam'] = false;
+        $this->assertSame(['freeform/submissions/42?site=german'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
+    }
+
+    public function testUnavailableSubmissionsHaveIntegrityLinksInsteadOfDeadEditorLinks(): void
+    {
+        $issue = ['context' => ['formId' => 7, 'submission' => 42, 'submissionAvailable' => false, 'integrityCheck' => 'related']];
+        $this->assertSame(['freeform/forms/7', 'freeform/settings/diagnostics#freeform-related-scan'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
+        $issue['context']['integrityCheck'] = 'orphan';
+        $this->assertSame(['freeform/forms/7', 'freeform/settings/diagnostics#freeform-orphan-scan'], array_column($this->links()->getLinks($issue, 'uploads'), 'url'));
+        $this->assertSame([], $this->links([])->getLinks($issue, 'uploads'));
+    }
+
     public function testFileNamesAreEncodedAndMissingTemplatesLinkToTheIndex(): void
     {
         $issue = ['context' => [], 'template' => ['id' => 'Team #1.twig', 'exists' => true]];
@@ -42,8 +59,9 @@ class ReadinessLinksTest extends TestCase
     public function testLinksRespectAccessAndIndividualFormPermissions(): void
     {
         $issue = ['context' => ['formId' => 7, 'submission' => 42]];
-        $permissions = [Freeform::PERMISSION_SUBMISSIONS_ACCESS, Freeform::PERMISSION_SUBMISSIONS_READ.':7'];
+        $permissions = [Freeform::PERMISSION_SUBMISSIONS_ACCESS, Freeform::PERMISSION_SUBMISSIONS_MANAGE.':7'];
         $this->assertSame(['freeform/submissions/42'], array_column($this->links($permissions)->getLinks($issue, 'uploads'), 'url'));
+        $this->assertSame([], $this->links([Freeform::PERMISSION_SUBMISSIONS_ACCESS, Freeform::PERMISSION_SUBMISSIONS_READ.':7'])->getLinks($issue, 'uploads'));
         $issue['context']['formId'] = 8;
         $this->assertSame([], $this->links($permissions)->getLinks($issue, 'uploads'));
         $issue = ['context' => ['formId' => 7], 'template' => ['id' => '12', 'formId' => 0, 'exists' => true]];

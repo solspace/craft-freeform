@@ -11,6 +11,8 @@ use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField as EmailInput;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
@@ -67,6 +69,13 @@ class ReadinessScanTest extends TestCase
         $this->previousApp = \Craft::$app;
         \Craft::$app = (object) ['db' => $this->db];
         $this->pdo->exec('CREATE TABLE craft_uploads (id INTEGER PRIMARY KEY, uploads TEXT)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_submissions (id INTEGER PRIMARY KEY, formId INTEGER, isSpam INTEGER DEFAULT 0)');
+        $this->pdo->exec('CREATE TABLE craft_elements (id INTEGER PRIMARY KEY, dateDeleted TEXT)');
+        $this->pdo->exec('CREATE TABLE craft_sites (id INTEGER PRIMARY KEY, handle TEXT)');
+        $this->pdo->exec("INSERT INTO craft_sites VALUES (1, 'default')");
+        $this->pdo->exec('CREATE TABLE craft_elements_sites (elementId INTEGER, siteId INTEGER)');
+        $this->insertSubmission(1);
+        $this->insertSubmission(10);
         $this->pdo->exec("CREATE TABLE craft_freeform_forms (id INTEGER PRIMARY KEY, name TEXT, handle TEXT, dateArchived TEXT, uid TEXT DEFAULT 'form-uid')");
         $this->pdo->exec('CREATE TABLE craft_freeform_forms_fields (id INTEGER PRIMARY KEY, formId INTEGER, type TEXT, uid TEXT, metadata TEXT, rowId INTEGER DEFAULT 1)');
         $this->pdo->exec('CREATE TABLE craft_freeform_forms_rows (id INTEGER PRIMARY KEY)');
@@ -291,6 +300,69 @@ class ReadinessScanTest extends TestCase
         $this->assertSame(['template' => '99'], $issues[0]['params']);
     }
 
+    public function testUserEmailOptionsDoNotRequireSavedRecipientMappings(): void
+    {
+        $this->pdo->prepare('INSERT INTO craft_freeform_forms_fields (id, formId, type, uid, metadata) VALUES (1, 1, ?, ?, ?)')->execute([
+            DropdownField::class, 'users', json_encode(['optionConfiguration' => [
+                'source' => 'elements', 'typeClass' => Users::class, 'properties' => ['value' => 'email', 'label' => 'fullName'],
+            ]]),
+        ]);
+        $task = $this->notification(Dynamic::class, ['field' => 'users', 'recipients' => [], 'recipientMapping' => []])
+            + ['id' => 150, 'formId' => 1, 'formName' => 'Newsletter'];
+        $this->assertSame([], $this->notificationScan()->scanTask($task)['results']);
+    }
+
+    public function testEntryCustomValueFieldsCanSupplyEmailRecipientsByHandleOrId(): void
+    {
+        $lookups = [];
+        $scan = $this->notificationScan(elementFieldExists: static function ($field) use (&$lookups) {
+            $lookups[] = $field;
+
+            return \in_array($field, ['contactEmail', '87'], true);
+        });
+        $notification = $this->notification(Dynamic::class, ['field' => 'entries']);
+        foreach (['contactEmail', '87'] as $value) {
+            $fields = ['entries' => ['type' => DropdownField::class, 'metadata' => json_encode(['optionConfiguration' => [
+                'source' => 'elements', 'typeClass' => Entries::class, 'properties' => ['value' => $value],
+            ]])]];
+            $this->assertSame([], $scan->check($notification, $fields));
+        }
+        $this->assertSame(['contactEmail', '87'], $lookups);
+    }
+
+    public function testCustomOptionsAndMappingValuesCanSupplyEmailRecipients(): void
+    {
+        $fields = ['choice' => ['type' => DropdownField::class, 'metadata' => json_encode(['optionConfiguration' => [
+            'source' => 'custom', 'options' => [
+                ['label' => 'Please choose', 'value' => ''], ['label' => 'Team', 'value' => 'team@example.com'],
+            ],
+        ]])]];
+        $notification = $this->notification(Dynamic::class, ['field' => 'choice']);
+        $this->assertSame([], $this->notificationScan()->check($notification, $fields));
+        $notification = $this->notification(Dynamic::class, ['field' => 'choice', 'recipientMapping' => [
+            ['value' => 'team@example.com', 'recipients' => []],
+        ]]);
+        $this->assertSame([], $this->notificationScan()->check($notification, ['choice' => ['type' => DropdownField::class]]));
+    }
+
+    public function testNonEmailOptionsAndMissingElementFieldsStillRequireRecipients(): void
+    {
+        $scan = $this->notificationScan(elementFieldExists: static fn () => false);
+        $notification = $this->notification(Dynamic::class, ['field' => 'choice']);
+        foreach ([
+            ['source' => 'elements', 'typeClass' => Users::class, 'properties' => ['value' => 'id']],
+            ['source' => 'elements', 'typeClass' => Entries::class, 'properties' => ['value' => 'missingField']],
+            ['source' => 'custom', 'options' => [['value' => 'not-an-email']]],
+            ['source' => 'custom', 'options' => [['value' => 'group@example.com', 'optgroup' => true]]],
+            ['source' => 'predefined'],
+        ] as $configuration) {
+            $fields = ['choice' => ['type' => DropdownField::class, 'metadata' => json_encode(['optionConfiguration' => $configuration])]];
+            $issues = $scan->check($notification, $fields);
+            $this->assertCount(1, $issues);
+            $this->assertSame('No recipients or recipient mappings are configured.', $issues[0]['message']);
+        }
+    }
+
     public function testUnreadableTemplatesAndCustomTypesRequireAttention(): void
     {
         $scan = new NotificationReadinessScan($this->db, static fn () => ['unreadable' => true]);
@@ -434,6 +506,65 @@ class ReadinessScanTest extends TestCase
         $this->assertTrue($result['results'][0]['informational']);
     }
 
+    public function testTrashedSubmissionsAreNotReportedAsMissingUploads(): void
+    {
+        $this->pdo->exec("INSERT INTO craft_uploads VALUES (1, 'encrypted:deleted-submission')");
+        $this->pdo->exec("UPDATE craft_elements SET dateDeleted = '2026-10-07' WHERE id = 1");
+        $this->insertUploads(10, [4]);
+        $calls = [];
+        $scan = new UploadIntegrityScan($this->db, static function ($id) use (&$calls) {
+            $calls[] = $id;
+
+            return null;
+        }, static function () { throw new \LogicException('Trashed values must not be decrypted.'); });
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertSame([], $result['results']);
+        $this->assertSame([4], $calls);
+        $this->assertSame(1, $result['scanned']);
+        $this->assertSame(10, $result['cursor']);
+        $this->assertTrue($result['complete']);
+    }
+
+    public function testUnavailableSubmissionRowsAreReportedSeparatelyFromMissingAssets(): void
+    {
+        foreach ([2, 3, 4, 6] as $id) {
+            $this->insertUploads($id, [99]);
+        }
+        $this->insertUploads(5, []);
+        $this->pdo->exec('DELETE FROM craft_freeform_submissions WHERE id IN (2, 5)');
+        $this->pdo->exec('DELETE FROM craft_elements WHERE id = 3');
+        $this->pdo->exec('UPDATE craft_freeform_submissions SET formId = 9 WHERE id = 4');
+        $this->pdo->exec('DELETE FROM craft_elements_sites WHERE elementId = 6');
+        $scan = new UploadIntegrityScan($this->db, static function () { throw new \LogicException('Unavailable submissions must not trigger asset checks.'); });
+        $result = $scan->scanTask($this->uploadTask());
+        $this->assertSame(0, $result['scanned']);
+        $this->assertCount(4, $result['results']);
+        $this->assertSame([2, 3, 4, 6], array_column(array_column($result['results'], 'context'), 'submission'));
+        $this->assertSame('related', $result['results'][0]['context']['integrityCheck']);
+        $this->assertSame('orphan', $result['results'][1]['context']['integrityCheck']);
+        foreach ($result['results'] as $issue) {
+            $this->assertFalse($issue['context']['submissionAvailable']);
+            $this->assertArrayNotHasKey('asset', $issue['context']);
+            $this->assertFalse($issue['skipped']);
+        }
+        $this->assertSame(6, $result['cursor']);
+        $this->assertTrue($result['complete']);
+    }
+
+    public function testUploadFindingsIncludeSpamStatusAndTheSubmissionSite(): void
+    {
+        $this->insertUploads(10, [99]);
+        $this->pdo->exec("INSERT INTO craft_sites VALUES (2, 'german')");
+        $this->pdo->exec('UPDATE craft_elements_sites SET siteId = 2 WHERE elementId = 10');
+        $this->pdo->exec('UPDATE craft_freeform_submissions SET isSpam = 1 WHERE id = 10');
+        $result = (new UploadIntegrityScan($this->db, static fn () => 'The referenced asset no longer exists.'))->scanTask($this->uploadTask());
+        $context = $result['results'][0]['context'];
+        $this->assertTrue($context['submissionAvailable']);
+        $this->assertTrue($context['isSpam']);
+        $this->assertSame('german', $context['siteHandle']);
+        $this->assertSame(99, $context['asset']);
+    }
+
     public function testPlainUploadValuesDoNotNeedDecryption(): void
     {
         $this->insertUploads(1, [1]);
@@ -450,7 +581,15 @@ class ReadinessScanTest extends TestCase
 
     private function insertUploads(int $id, array $value): void
     {
+        $this->insertSubmission($id);
         $this->pdo->prepare('INSERT INTO craft_uploads VALUES (?, ?)')->execute([$id, json_encode($value)]);
+    }
+
+    private function insertSubmission(int $id): void
+    {
+        $this->pdo->prepare('INSERT OR IGNORE INTO craft_freeform_submissions (id, formId) VALUES (?, 1)')->execute([$id]);
+        $this->pdo->prepare('INSERT OR IGNORE INTO craft_elements (id) VALUES (?)')->execute([$id]);
+        $this->pdo->prepare('INSERT INTO craft_elements_sites (elementId, siteId) SELECT ?, 1 WHERE NOT EXISTS (SELECT 1 FROM craft_elements_sites WHERE elementId = ?)')->execute([$id, $id]);
     }
 
     private function notification(string $class, array $metadata): array
@@ -458,8 +597,8 @@ class ReadinessScanTest extends TestCase
         return ['class' => $class, 'metadata' => json_encode($metadata + ['template' => 1])];
     }
 
-    private function notificationScan(array $template = []): NotificationReadinessScan
+    private function notificationScan(array $template = [], ?\Closure $elementFieldExists = null): NotificationReadinessScan
     {
-        return new NotificationReadinessScan($this->db, static fn () => $template + ['subject' => 'Hello', 'fromName' => 'Site', 'fromEmail' => 'site@example.com']);
+        return new NotificationReadinessScan($this->db, static fn () => $template + ['subject' => 'Hello', 'fromName' => 'Site', 'fromEmail' => 'site@example.com'], $elementFieldExists);
     }
 }

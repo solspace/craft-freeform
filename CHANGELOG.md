@@ -35,6 +35,19 @@
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
+## 5.16.6 - 2026-10-07
+
+### Added
+- Added database integrity checks and optional orphan and duplicate scans to Diagnostics, with links to repair guidance.
+- Added console utilities to inspect database integrity and restore missing foreign keys.
+
+### Fixed
+- Fixed a bug where uninstalling another Craft plugin could remove Freeform's foreign keys, leaving related submission data behind after deletion.
+- Improved **Forms list** performance, particularly on sites with many forms.
+
+### Security
+- Fixed a security vulnerability where visitor-supplied notification recipient addresses could evaluate Twig expressions and disclose server-side information.
+
 ## 5.16.5 - 2026-10-06
 
 ### Fixed

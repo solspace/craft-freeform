@@ -18,7 +18,7 @@ class RecipientTransformer implements TransformerInterface
         }
 
         foreach ($value as $recipient) {
-            $collection->add(new Recipient($recipient['email'], $recipient['name']));
+            $collection->add(new Recipient($recipient['email'], $recipient['name'], isTemplate: true));
         }
 
         return $collection;

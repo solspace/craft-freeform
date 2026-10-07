@@ -28,6 +28,7 @@ use craft\web\twig\variables\CraftVariable;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
+use Solspace\Freeform\Bundles\Form\FormUserProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Rules\RuleProvider;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
@@ -887,6 +888,7 @@ class Freeform extends Plugin
 
                 // Providers with caches
                 FieldProvider::class => FieldProvider::class,
+                FormUserProvider::class => FormUserProvider::class,
                 PropertyProvider::class => PropertyProvider::class,
                 RuleProvider::class => RuleProvider::class,
                 NotificationTemplateProvider::class => NotificationTemplateProvider::class,

@@ -19,8 +19,5 @@ if (!class_exists(Craft::class)) {
 }
 
 if (!class_exists(Yii::class)) {
-    class Yii
-    {
-        public static $app = false;
-    }
+    require_once __DIR__.'/../../../../vendor/yiisoft/yii2/Yii.php';
 }

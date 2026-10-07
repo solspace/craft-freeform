@@ -146,6 +146,7 @@ class ForeignKeyRepairTest extends TestCase
             $this->markTestSkipped('SQLite3 is required for the row-level query test.');
         }
 
+        // phpcs:ignore PHPCompatibility.Extensions.RemovedExtensions.sqliteRemoved -- SQLite3 uses the supported sqlite3 extension, not the removed sqlite extension.
         $sqlite = new \SQLite3(':memory:');
         $sqlite->exec('CREATE TABLE craft_freeform_submissions (id INTEGER PRIMARY KEY)');
         $sqlite->exec('CREATE TABLE craft_freeform_submissions_contact_1 (id INTEGER)');

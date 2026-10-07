@@ -117,26 +117,27 @@
         </div>
         <section class="ff-diag-section" id="freeform-orphan-scan" aria-labelledby="freeform-orphan-scan-heading">
             <h2 id="freeform-orphan-scan-heading">{{ "Orphaned Submissions"|t('freeform') }}</h2>
-            <p>{{ "Check for submission records whose Craft element or form no longer exists. This read-only scan runs only when requested and may take time on large sites."|t('freeform') }}</p>
-            <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
-            <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
-            <p id="freeform-orphan-scan-status" role="status" aria-live="polite"></p>
-            <p id="freeform-orphan-scan-guide">
+            <p>
+                {{ "Check for submission records whose Craft element or form no longer exists. This read-only scan runs only when requested and may take time on large sites."|t('freeform') }}
                 {{ "For a full database check and repair instructions, see the"|t('freeform') }}
                 <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
             </p>
+            <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
+            <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
+            <p id="freeform-orphan-scan-status" role="status" aria-live="polite"></p>
         </section>
 
         <section class="ff-diag-section" id="freeform-related-scan" aria-labelledby="freeform-related-scan-heading">
             <h2 id="freeform-related-scan-heading">{{ "Related Data Integrity"|t('freeform') }}</h2>
-            <p>{{ "Check related form data and other records for missing parents, and check duplicate values where a unique constraint is missing. Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed."|t('freeform') }}</p>
+            <p>
+                {{ "Check related form data and other records for missing parents, and check duplicate values where a unique constraint is missing. Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed."|t('freeform') }}
+                {{ "For a full database check and repair instructions, see the"|t('freeform') }}
+                <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "database integrity guide"|t('freeform') }}</a>.
+            </p>
             <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
             <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
             <p id="freeform-related-scan-status" role="status" aria-live="polite"></p>
             <ul id="freeform-related-scan-results"></ul>
-            <p id="freeform-related-scan-guide">
-                <a href="https://docs.solspace.com/craft/freeform/v5/guides/database-integrity/" target="_blank" rel="noopener">{{ "Database integrity guide"|t('freeform') }}</a>
-            </p>
         </section>
         <details class="ff-diag-report ff-diag-disclosure">
             <summary>{{ 'Support Report'|t('freeform') }}</summary>

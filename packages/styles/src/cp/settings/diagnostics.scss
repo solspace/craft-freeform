@@ -543,4 +543,141 @@
     font-family: monospace;
     resize: vertical;
   }
+
+  .ff-diag-scan-feedback {
+    --ff-scan-color: var(--link-color, #0b69d5);
+    --ff-scan-text-color: var(--gray-700);
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid color-mix(in srgb, var(--ff-scan-color) 30%, var(--hairline-color));
+    border-radius: var(--large-border-radius, 5px);
+    background: color-mix(in srgb, var(--ff-scan-color) 6%, var(--gray-050));
+
+    &.hidden {
+      display: none;
+    }
+
+    &.is-success {
+      --ff-scan-color: var(--enabled-color);
+      --ff-scan-text-color: var(--enabled-color);
+    }
+
+    &.is-warning {
+      --ff-scan-color: var(--yellow-500, #eab308);
+      --ff-scan-text-color: var(--yellow-700, #a16207);
+    }
+
+    &.is-error {
+      --ff-scan-color: var(--error-color);
+      --ff-scan-text-color: var(--error-color);
+
+      progress {
+        display: none;
+      }
+    }
+  }
+
+  .ff-diag-scan-progress {
+    display: block;
+    width: 100%;
+    height: 6px;
+    margin-bottom: 10px;
+    border: 0;
+    border-radius: 3px;
+    overflow: hidden;
+    appearance: none;
+    background: var(--gray-200);
+    accent-color: var(--ff-scan-color);
+
+    &::-webkit-progress-bar {
+      background: var(--gray-200);
+      border-radius: 3px;
+    }
+
+    &::-webkit-progress-value {
+      background: var(--ff-scan-color);
+      border-radius: 3px;
+      transition: width 200ms ease;
+    }
+
+    &::-moz-progress-bar {
+      background: var(--ff-scan-color);
+      border-radius: 3px;
+    }
+
+    &:indeterminate {
+      background: linear-gradient(to right, var(--ff-scan-color) 30%, var(--gray-200) 30%);
+      background-size: 200% 100%;
+      animation: ff-diag-scan-progress 1.2s linear infinite;
+
+      &::-webkit-progress-bar {
+        background: transparent;
+      }
+
+      &::-moz-progress-bar {
+        background: transparent;
+      }
+    }
+  }
+
+  .ff-diag-scan-message {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    color: var(--ff-scan-text-color);
+    font-weight: 600;
+
+    .checkmark-icon,
+    .alert-icon {
+      flex-shrink: 0;
+      color: inherit;
+      cursor: default;
+      background: transparent;
+
+      &::before {
+        color: inherit;
+      }
+    }
+  }
+
+  .ff-diag-scan-results {
+    margin-top: 10px;
+    padding-inline-start: 20px;
+    overflow-wrap: anywhere;
+
+    &:empty {
+      display: none;
+    }
+
+    .is-warning {
+      color: var(--yellow-700, #a16207);
+    }
+
+    .is-error {
+      color: var(--error-color);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-diag-scan-progress {
+      &:indeterminate {
+        animation: none;
+      }
+
+      &::-webkit-progress-value {
+        transition: none;
+      }
+    }
+  }
+}
+
+@keyframes ff-diag-scan-progress {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
 }

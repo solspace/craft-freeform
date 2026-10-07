@@ -17,6 +17,16 @@
     <span class="ff-diag-dot is-{{ status }}" role="img" aria-label="{{ label|e('html_attr') }}" title="{{ label|e('html_attr') }}"></span>
 {% endmacro %}
 
+{% macro scanFeedback(id, label) %}
+    <div class="ff-diag-scan-feedback hidden" id="{{ id }}-feedback">
+        <progress class="ff-diag-scan-progress" id="{{ id }}-progress" max="1" aria-label="{{ label|e('html_attr') }}" aria-describedby="{{ id }}-status"></progress>
+        <p class="ff-diag-scan-message">
+            <span id="{{ id }}-icon" aria-hidden="true"></span>
+            <span id="{{ id }}-status" role="status" aria-live="polite" aria-atomic="true"></span>
+        </p>
+    </div>
+{% endmacro %}
+
 {% macro renderItems(items, sectionKey) %}
     <ul class="ff-diag-items">
         {% for key, item in items %}
@@ -124,7 +134,7 @@
             </p>
             <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
             <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
-            <p id="freeform-orphan-scan-status" role="status" aria-live="polite"></p>
+            {{ _self.scanFeedback('freeform-orphan-scan', 'Submission scan progress'|t('freeform')) }}
         </section>
 
         <section class="ff-diag-section" id="freeform-related-scan" aria-labelledby="freeform-related-scan-heading">
@@ -136,8 +146,8 @@
             </p>
             <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
             <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
-            <p id="freeform-related-scan-status" role="status" aria-live="polite"></p>
-            <ul id="freeform-related-scan-results"></ul>
+            {{ _self.scanFeedback('freeform-related-scan', 'Related data scan progress'|t('freeform')) }}
+            <ul class="ff-diag-scan-results" id="freeform-related-scan-results"></ul>
         </section>
         <details class="ff-diag-report ff-diag-disclosure">
             <summary>{{ 'Support Report'|t('freeform') }}</summary>
@@ -150,113 +160,140 @@
 
     {% js %}
         (() => {
-            const section = document.getElementById('freeform-orphan-scan');
-            const button = document.getElementById('freeform-orphan-scan-button');
-            const spinner = document.getElementById('freeform-orphan-scan-spinner');
-            const status = document.getElementById('freeform-orphan-scan-status');
-            const messages = {{ {
-                starting: "Scanning submissions…"|t('freeform'),
-                progress: "Scanned {scanned} submissions; found {affected} orphaned submissions so far."|t('freeform'),
-                complete: "Scan complete: {affected} orphaned submissions found among {scanned} checked."|t('freeform'),
-                failed: "The scan could not be completed. Partial results: {affected} orphaned submissions found among {scanned} checked. Try again or run the console utility."|t('freeform')
-            }|json_encode|raw }};
+            const createFeedback = (id) => {
+                const feedback = document.getElementById(id + '-feedback');
+                const progress = document.getElementById(id + '-progress');
+                const status = document.getElementById(id + '-status');
+                const icon = document.getElementById(id + '-icon');
+                return (state, message, value = null) => {
+                    feedback.className = 'ff-diag-scan-feedback is-' + state;
+                    status.textContent = message;
+                    icon.className = state === 'success' ? 'checkmark-icon' : (state === 'running' ? '' : 'alert-icon');
+                    if (value === null) progress.removeAttribute('value');
+                    else progress.value = Math.max(0, Math.min(1, value));
+                };
+            };
 
-            button.addEventListener('click', async () => {
-                button.disabled = true;
-                spinner.classList.remove('hidden');
-                section.setAttribute('aria-busy', 'true');
-                status.textContent = messages.starting;
-                let cursor = 0;
-                let maxId = null;
-                let scanned = 0;
-                let affected = 0;
-                const format = (message) => message.replace('{scanned}', scanned.toLocaleString()).replace('{affected}', affected.toLocaleString());
+            {
+                const section = document.getElementById('freeform-orphan-scan');
+                const button = document.getElementById('freeform-orphan-scan-button');
+                const spinner = document.getElementById('freeform-orphan-scan-spinner');
+                const updateFeedback = createFeedback('freeform-orphan-scan');
+                const messages = {{ {
+                    starting: "Scanning submissions…"|t('freeform'),
+                    progress: "Scanned {scanned} submissions; found {affected} orphaned submissions so far."|t('freeform'),
+                    success: "No orphaned submissions found. Checked {scanned} submissions."|t('freeform'),
+                    complete: "Needs attention: {affected} orphaned submissions found among {scanned} checked."|t('freeform'),
+                    failed: "The scan could not be completed. Partial results: {affected} orphaned submissions found among {scanned} checked. Try again or run the console utility."|t('freeform')
+                }|json_encode|raw }};
 
-                try {
-                    while (true) {
-                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-orphaned-submissions', {
-                            data: { cursor, maxId }
-                        });
-                        const batch = response.data;
-                        if (batch.error || !Number.isInteger(batch.scanned) || !Number.isInteger(batch.affected)) {
-                            throw new Error('Scan failed');
+                button.addEventListener('click', async () => {
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                    section.setAttribute('aria-busy', 'true');
+                    updateFeedback('running', messages.starting);
+                    let cursor = 0;
+                    let maxId = null;
+                    let scanned = 0;
+                    let affected = 0;
+                    const format = (message) => message.replace('{scanned}', scanned.toLocaleString()).replace('{affected}', affected.toLocaleString());
+
+                    try {
+                        while (true) {
+                            const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-orphaned-submissions', {
+                                data: { cursor, maxId }
+                            });
+                            const batch = response.data;
+                            if (batch.error || !Number.isInteger(batch.scanned) || !Number.isInteger(batch.affected)) {
+                                throw new Error('Scan failed');
+                            }
+                            cursor = batch.cursor;
+                            maxId = batch.maxId;
+                            scanned += batch.scanned;
+                            affected += batch.affected;
+                            if (batch.complete) {
+                                updateFeedback(affected ? 'warning' : 'success', format(affected ? messages.complete : messages.success), 1);
+                            } else {
+                                updateFeedback('running', format(messages.progress));
+                            }
+                            if (batch.complete) break;
                         }
-                        cursor = batch.cursor;
-                        maxId = batch.maxId;
-                        scanned += batch.scanned;
-                        affected += batch.affected;
-                        status.textContent = format(batch.complete ? messages.complete : messages.progress);
-                        if (batch.complete) break;
+                    } catch (error) {
+                        updateFeedback('error', format(messages.failed));
+                    } finally {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        section.setAttribute('aria-busy', 'false');
                     }
-                } catch (error) {
-                    status.textContent = format(messages.failed);
-                } finally {
-                    button.disabled = false;
-                    spinner.classList.add('hidden');
-                    section.setAttribute('aria-busy', 'false');
-                }
-            });
-        })();
-    {% endjs %}
+                });
+            }
 
-    {% js %}
-        (() => {
-            const section = document.getElementById('freeform-related-scan');
-            const button = document.getElementById('freeform-related-scan-button');
-            const spinner = document.getElementById('freeform-related-scan-spinner');
-            const status = document.getElementById('freeform-related-scan-status');
-            const results = document.getElementById('freeform-related-scan-results');
-            const messages = {{ {
-                starting: "Scanning related data…"|t('freeform'),
-                progress: "Completed {completed} of {total} checks; examined {scanned} related records."|t('freeform'),
-                complete: "Scan complete: {orphans} orphaned related rows; {duplicates} rows in duplicate groups; {skipped} checks could not be completed."|t('freeform'),
-                failed: "The scan could not be completed. Results below are partial. Try again or ask your developer to investigate."|t('freeform'),
-                orphans: "{count} orphaned rows"|t('freeform'),
-                duplicates: "{count} rows in duplicate groups"|t('freeform'),
-                skipped: "Could not check"|t('freeform')
-            }|json_encode|raw }};
-            const format = (message, values) => Object.entries(values).reduce((text, [key, value]) => text.replace('{' + key + '}', value.toLocaleString()), message);
+            {
+                const section = document.getElementById('freeform-related-scan');
+                const button = document.getElementById('freeform-related-scan-button');
+                const spinner = document.getElementById('freeform-related-scan-spinner');
+                const updateFeedback = createFeedback('freeform-related-scan');
+                const results = document.getElementById('freeform-related-scan-results');
+                const messages = {{ {
+                    starting: "Scanning related data…"|t('freeform'),
+                    progress: "Completed {completed} of {total} checks; examined {scanned} related records."|t('freeform'),
+                    success: "No issues found. Checked {scanned} related records across {total} checks."|t('freeform'),
+                    complete: "Needs attention: {orphans} orphaned related rows; {duplicates} rows in duplicate groups; {skipped} checks could not be completed."|t('freeform'),
+                    failed: "The scan could not be completed. Results below are partial. Try again or ask your developer to investigate."|t('freeform'),
+                    orphans: "{count} orphaned rows"|t('freeform'),
+                    duplicates: "{count} rows in duplicate groups"|t('freeform'),
+                    skipped: "Could not check"|t('freeform')
+                }|json_encode|raw }};
+                const format = (message, values) => Object.entries(values).reduce((text, [key, value]) => text.replace('{' + key + '}', value.toLocaleString()), message);
 
-            button.addEventListener('click', async () => {
-                button.disabled = true;
-                spinner.classList.remove('hidden');
-                section.setAttribute('aria-busy', 'true');
-                results.replaceChildren();
-                status.textContent = messages.starting;
-                let scanId = null;
-                try {
-                    while (true) {
-                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-related-data', { data: { scanId } });
-                        const batch = response.data;
-                        if (!Array.isArray(batch.results) || !Number.isInteger(batch.completedChecks)) throw new Error('Scan failed');
-                        scanId = batch.scanId;
-                        results.replaceChildren();
-                        let orphans = 0;
-                        let duplicates = 0;
-                        let skipped = 0;
-                        for (const result of batch.results) {
-                            if (result.error) skipped += 1;
-                            else if (result.type === 'orphans') orphans += result.count;
-                            else duplicates += result.count;
-                            if (!result.error && !result.count) continue;
-                            const row = document.createElement('li');
-                            const label = result.table + (result.columns.length ? ' (' + result.columns.join(', ') + ')' : '');
-                            row.textContent = label + ': ' + (result.error ? messages.skipped + '. ' + result.error : format(messages[result.type], { count: result.count }));
-                            results.appendChild(row);
+                button.addEventListener('click', async () => {
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                    section.setAttribute('aria-busy', 'true');
+                    results.replaceChildren();
+                    updateFeedback('running', messages.starting, 0);
+                    let scanId = null;
+                    try {
+                        while (true) {
+                            const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/scan-related-data', { data: { scanId } });
+                            const batch = response.data;
+                            if (!Array.isArray(batch.results) || !Number.isInteger(batch.completedChecks) || !Number.isInteger(batch.totalChecks) || !Number.isInteger(batch.scanned)) throw new Error('Scan failed');
+                            scanId = batch.scanId;
+                            results.replaceChildren();
+                            let orphans = 0;
+                            let duplicates = 0;
+                            let skipped = 0;
+                            for (const result of batch.results) {
+                                if (!result.error && (!Number.isInteger(result.count) || result.count < 0 || !['orphans', 'duplicates'].includes(result.type))) throw new Error('Scan failed');
+                                if (result.error) skipped += 1;
+                                else if (result.type === 'orphans') orphans += result.count;
+                                else duplicates += result.count;
+                                if (!result.error && !result.count) continue;
+                                const row = document.createElement('li');
+                                row.className = result.error ? 'is-error' : 'is-warning';
+                                const label = result.table + (result.columns.length ? ' (' + result.columns.join(', ') + ')' : '');
+                                row.textContent = label + ': ' + (result.error ? messages.skipped + '. ' + result.error : format(messages[result.type], { count: result.count }));
+                                results.appendChild(row);
+                            }
+                            if (batch.complete) {
+                                const needsAttention = orphans > 0 || duplicates > 0 || skipped > 0;
+                                updateFeedback(needsAttention ? 'warning' : 'success', needsAttention
+                                    ? format(messages.complete, { orphans, duplicates, skipped })
+                                    : format(messages.success, { scanned: batch.scanned, total: batch.totalChecks }), 1);
+                            } else {
+                                updateFeedback('running', format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned }), batch.totalChecks > 0 ? batch.completedChecks / batch.totalChecks : null);
+                            }
+                            if (batch.complete) break;
                         }
-                        status.textContent = batch.complete
-                            ? format(messages.complete, { orphans, duplicates, skipped })
-                            : format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned });
-                        if (batch.complete) break;
+                    } catch (error) {
+                        updateFeedback('error', messages.failed);
+                    } finally {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        section.setAttribute('aria-busy', 'false');
                     }
-                } catch (error) {
-                    status.textContent = messages.failed;
-                } finally {
-                    button.disabled = false;
-                    spinner.classList.add('hidden');
-                    section.setAttribute('aria-busy', 'false');
-                }
-            });
+                });
+            }
         })();
     {% endjs %}
 {% endblock %}

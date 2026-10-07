@@ -648,18 +648,21 @@
     }
   }
 
-  .ff-diag-health-details,
+  .ff-diag-health-details {
+    margin-top: 14px;
+
+    p {
+      margin: 8px 0 0;
+      color: var(--gray-600);
+    }
+  }
+
   .ff-diag-health-results {
     margin-top: 14px;
 
     summary {
       font-weight: 600;
       cursor: pointer;
-    }
-
-    p {
-      margin: 8px 0 0;
-      color: var(--gray-600);
     }
   }
 

@@ -184,13 +184,12 @@
                         </div>
                     </div>
                     <div class="ff-diag-health-body hidden" id="{{ scan.id }}-body">
-                        <details class="ff-diag-health-details">
-                            <summary>{{ 'Details'|t('freeform') }}</summary>
+                        <div class="ff-diag-health-details">
                             <p>{{ scan.description }}</p>
                             {% if scan.databaseGuide ?? false %}
                                 <p>{{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}</p>
                             {% endif %}
-                        </details>
+                        </div>
                         {{ _self.scanFeedback(scan.id, scan.title) }}
                         {% if scan.id != 'freeform-orphan-scan' %}
                             <div class="ff-diag-health-findings" id="{{ scan.id }}-results"></div>

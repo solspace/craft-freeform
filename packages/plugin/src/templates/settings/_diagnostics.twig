@@ -159,7 +159,8 @@
                 description: 'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values and unavailable storage are reported as unchecked. No files or submissions are changed.'|t('freeform'),
                 button: 'Scan uploaded files'|t('freeform'),
                 starting: 'Scanning uploaded files…'|t('freeform'),
-                success: 'No missing files found. Checked {scanned} uploaded file references.'|t('freeform')
+                success: 'No missing files found. Checked {scanned} uploaded file references.'|t('freeform'),
+                successSingular: 'No missing files found. Checked {scanned} uploaded file reference.'|t('freeform')
             },
             {
                 id: 'freeform-notification-scan', action: 'scan-notifications',
@@ -167,7 +168,8 @@
                 description: 'Check enabled notifications on active forms for missing templates, recipient fields, rules, and invalid email settings. This checks saved configuration only; it does not render Twig or test email delivery.'|t('freeform'),
                 button: 'Check notification readiness'|t('freeform'),
                 starting: 'Checking notifications…'|t('freeform'),
-                success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform')
+                success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform'),
+                successSingular: 'No notification configuration issues found. Checked {scanned} enabled notification.'|t('freeform')
             }
         ] %}
         {% for scan in readinessScans %}
@@ -336,6 +338,9 @@
                 const messages = {{ {
                     progress: 'Completed {completed} of {total} checks; examined {scanned} items.'|t('freeform'),
                     complete: 'Needs attention: {issues} issues found; {skipped} items could not be checked.'|t('freeform'),
+                    completeIssue: 'Needs attention: {issues} issue found; {skipped} items could not be checked.'|t('freeform'),
+                    completeItem: 'Needs attention: {issues} issues found; {skipped} item could not be checked.'|t('freeform'),
+                    completeSingular: 'Needs attention: {issues} issue found; {skipped} item could not be checked.'|t('freeform'),
                     failed: 'The scan could not be completed. Results below are partial. Try again or ask your developer to investigate.'|t('freeform'),
                     truncated: 'Showing the first 100 results. The totals include all findings.'|t('freeform')
                 }|json_encode|raw }};
@@ -370,9 +375,12 @@
                             }
                             if (batch.complete) {
                                 const needsAttention = batch.issues > 0 || batch.skipped > 0;
+                                const summary = batch.issues === 1
+                                    ? (batch.skipped === 1 ? messages.completeSingular : messages.completeIssue)
+                                    : (batch.skipped === 1 ? messages.completeItem : messages.complete);
                                 updateFeedback(needsAttention ? 'warning' : 'success', needsAttention
-                                    ? format(messages.complete, { issues: batch.issues, skipped: batch.skipped })
-                                    : format(scan.success, { scanned: batch.scanned }), 1);
+                                    ? format(summary, { issues: batch.issues, skipped: batch.skipped })
+                                    : format(batch.scanned === 1 ? scan.successSingular : scan.success, { scanned: batch.scanned }), 1);
                             } else {
                                 updateFeedback('running', format(messages.progress, { completed: batch.completedChecks, total: batch.totalChecks, scanned: batch.scanned }), batch.totalChecks > 0 ? batch.completedChecks / batch.totalChecks : null);
                             }

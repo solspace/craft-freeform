@@ -103,6 +103,7 @@ class ReadinessScanTest extends TestCase
         $this->assertFalse($result['results'][0]['skipped']);
         $this->assertTrue($result['results'][2]['skipped']);
         $this->assertSame(10, $result['results'][0]['context']['submission']);
+        $this->assertSame([2, 3, 4], array_column(array_column($result['results'], 'context'), 'asset'));
         $this->assertSame('[1,2,3,4,1]', $this->pdo->query('SELECT uploads FROM craft_uploads')->fetchColumn());
     }
 
@@ -148,6 +149,7 @@ class ReadinessScanTest extends TestCase
         $encrypted = $scan->scanTask(array_replace($this->uploadTask(), ['encrypted' => true]));
         $this->assertTrue($encrypted['results'][0]['skipped']);
         $this->assertSame(0, $encrypted['scanned']);
+        $this->assertSame('Encrypted upload values were not checked. Encryption is enabled for this field.', $encrypted['results'][0]['message']);
         $this->pdo->exec("INSERT INTO craft_uploads VALUES (1, 'invalid-json')");
         $this->insertUploads(2, ['not-an-id']);
         $invalid = $scan->scanTask($this->uploadTask());

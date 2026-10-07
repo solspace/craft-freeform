@@ -82,7 +82,10 @@ class UploadIntegrityScan
         $result = ['cursor' => $cursor, 'maxId' => $maxId, 'offset' => $offset, 'scanned' => 0, 'complete' => true, 'results' => []];
         $context = ['form' => $task['form'], 'field' => $task['field']];
         if ($task['encrypted'] || $task['invalid']) {
-            $result['results'][] = $this->issue($context, 'This upload field could not be checked because its values are encrypted or its configuration is unreadable.', true);
+            $message = $task['encrypted']
+                ? 'Encrypted upload values were not checked. Encryption is enabled for this field.'
+                : 'This upload field could not be checked because its configuration is unreadable.';
+            $result['results'][] = $this->issue($context, $message, true);
 
             return $result;
         }
@@ -120,10 +123,10 @@ class UploadIntegrityScan
                     }
                     ++$result['scanned'];
                     if (null !== $checked[$id]) {
-                        $result['results'][] = $this->issue($context, $checked[$id]);
+                        $result['results'][] = $this->issue($context + ['asset' => $id], $checked[$id]);
                     }
                 } catch (\Throwable) {
-                    $result['results'][] = $this->issue($context, 'The asset storage could not be checked. Check the volume connection and permissions.', true);
+                    $result['results'][] = $this->issue($context + ['asset' => $id], 'The asset storage could not be checked. Check the volume connection and permissions.', true);
                 }
                 ++$result['offset'];
                 if (++$lookups >= self::BATCH_SIZE) {

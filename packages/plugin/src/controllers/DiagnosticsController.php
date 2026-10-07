@@ -259,9 +259,12 @@ class DiagnosticsController extends BaseController
                 'truncated' => $state['issues'] + $state['skipped'] > \count($state['results']),
                 'results' => array_map(static function (array $issue) use ($kind): array {
                     $context = $issue['context'];
-                    $message = $kind === 'notifications'
-                        ? 'Form “{form}”, notification {notification}: {message}'
-                        : (isset($context['submission']) ? 'Form “{form}”, field “{field}”, submission {submission}: {message}' : 'Form “{form}”, field “{field}”: {message}');
+                    $message = match (true) {
+                        $kind === 'notifications' => 'Form “{form}”, notification {notification}: {message}',
+                        isset($context['asset']) => 'Form “{form}”, field “{field}”, submission {submission}, asset {asset}: {message}',
+                        isset($context['submission']) => 'Form “{form}”, field “{field}”, submission {submission}: {message}',
+                        default => 'Form “{form}”, field “{field}”: {message}',
+                    };
 
                     return ['message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'])]), 'skipped' => $issue['skipped']];
                 }, $state['results']),

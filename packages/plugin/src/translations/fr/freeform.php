@@ -3459,6 +3459,21 @@ return [
     '{count} star' => '{count} étoile',
     '{count} stars' => '{count} étoiles',
 
+    // Supabase Integration
+    'Supabase' => 'Supabase',
+    'Project URL' => 'URL du projet',
+    'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.' => 'Saisissez l’URL HTTPS de votre projet Supabase sans chemin d’API, par exemple `https://your-project.supabase.co`.',
+    'Secret API Key' => 'Clé API secrète',
+    'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.' => 'Saisissez une clé secrète Supabase (`sb_secret_...`) ou une ancienne clé service-role. Cette clé côté serveur contourne la sécurité au niveau des lignes. Utilisez une variable d’environnement pour ne pas l’inclure dans la configuration du projet.',
+    'Database Schema' => 'Schéma de base de données',
+    'Enter the schema exposed through the Supabase Data API. Usually `public`.' => 'Saisissez le schéma exposé via la Data API de Supabase. Généralement `public`.',
+    'Supabase Table' => 'Table Supabase',
+    'Choose the table that should receive a new row for each submission.' => 'Choisissez la table qui doit recevoir une nouvelle ligne pour chaque soumission.',
+    'Select a table' => 'Sélectionner une table',
+    'Submission UID Column (optional)' => 'Colonne UID de soumission (facultatif)',
+    'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'Pour éviter les insertions en double, indiquez une colonne texte ou UUID avec une contrainte UNIQUE. Freeform y inscrit l’UID de la soumission enregistrée et ignore les envois répétés. Le stockage des soumissions doit être activé.',
+    'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Associez les champs Freeform aux colonnes Supabase. N’associez pas les colonnes ayant des valeurs par défaut dans la base de données. Les valeurs personnalisées peuvent inclure les métadonnées de la soumission.',
+
     // Diagnostics status summary
     'No diagnostic warnings' => 'Aucun avertissement de diagnostic',
     'Potential issues: {count}' => 'Problèmes potentiels : {count}',

@@ -3459,6 +3459,21 @@ return [
     '{count} star' => '{count} Stern',
     '{count} stars' => '{count} Sterne',
 
+    // Supabase Integration
+    'Supabase' => 'Supabase',
+    'Project URL' => 'Projekt-URL',
+    'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.' => 'Geben Sie die HTTPS-Projekt-URL von Supabase ohne API-Pfad ein, z. B. `https://your-project.supabase.co`.',
+    'Secret API Key' => 'Geheimer API-Schlüssel',
+    'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.' => 'Geben Sie einen geheimen Supabase-Schlüssel (`sb_secret_...`) oder einen älteren Service-Role-Schlüssel ein. Dieser serverseitige Schlüssel umgeht Row Level Security. Verwenden Sie eine Umgebungsvariable, damit er nicht in der Projektkonfiguration gespeichert wird.',
+    'Database Schema' => 'Datenbankschema',
+    'Enter the schema exposed through the Supabase Data API. Usually `public`.' => 'Geben Sie das über die Supabase Data API verfügbare Schema ein. Normalerweise `public`.',
+    'Supabase Table' => 'Supabase-Tabelle',
+    'Choose the table that should receive a new row for each submission.' => 'Wählen Sie die Tabelle, die für jede Übermittlung eine neue Zeile erhalten soll.',
+    'Select a table' => 'Tabelle auswählen',
+    'Submission UID Column (optional)' => 'Spalte für Übermittlungs-UID (optional)',
+    'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'Um doppelte Einfügungen zu verhindern, geben Sie eine Text- oder UUID-Spalte mit einer UNIQUE-Einschränkung ein. Freeform trägt die UID der gespeicherten Übermittlung ein und ignoriert wiederholte Übertragungen. Die Speicherung von Übermittlungen muss aktiviert sein.',
+    'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Ordnen Sie Freeform-Felder den Supabase-Spalten zu. Lassen Sie Spalten mit Datenbank-Standardwerten ohne Zuordnung. Benutzerdefinierte Werte können Metadaten der Übermittlung enthalten.',
+
     // Diagnostics status summary
     'No diagnostic warnings' => 'Keine Diagnosewarnungen',
     'Potential issues: {count}' => 'Mögliche Probleme: {count}',

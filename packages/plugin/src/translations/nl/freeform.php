@@ -3422,6 +3422,21 @@ return [
     '{count} star' => '{count} ster',
     '{count} stars' => '{count} sterren',
 
+    // Supabase Integration
+    'Supabase' => 'Supabase',
+    'Project URL' => 'Project-URL',
+    'Enter your Supabase HTTPS project URL without an API path, e.g. `https://your-project.supabase.co`.' => 'Voer de HTTPS-project-URL van Supabase in zonder API-pad, bijvoorbeeld `https://your-project.supabase.co`.',
+    'Secret API Key' => 'Geheime API-sleutel',
+    'Enter a Supabase secret key (`sb_secret_...`) or legacy service-role key. This server-side key bypasses Row Level Security. Use an environment variable to keep it out of project config.' => 'Voer een geheime Supabase-sleutel (`sb_secret_...`) of een oudere service-role-sleutel in. Deze serversleutel omzeilt Row Level Security. Gebruik een omgevingsvariabele om de sleutel buiten de projectconfiguratie te houden.',
+    'Database Schema' => 'Databaseschema',
+    'Enter the schema exposed through the Supabase Data API. Usually `public`.' => 'Voer het schema in dat via de Supabase Data API beschikbaar is. Meestal `public`.',
+    'Supabase Table' => 'Supabase-tabel',
+    'Choose the table that should receive a new row for each submission.' => 'Kies de tabel die voor elke inzending een nieuwe rij moet ontvangen.',
+    'Select a table' => 'Selecteer een tabel',
+    'Submission UID Column (optional)' => 'Kolom voor inzendings-UID (optioneel)',
+    'To prevent duplicate inserts, enter a text or UUID column with a UNIQUE constraint. Freeform fills it with the saved submission UID and ignores repeat deliveries. Requires submission storage to be enabled.' => 'Voer een tekst- of UUID-kolom met een UNIQUE-constraint in om dubbele invoegingen te voorkomen. Freeform vult deze met de UID van de opgeslagen inzending en negeert herhaalde verzendingen. Het opslaan van inzendingen moet zijn ingeschakeld.',
+    'Map Freeform fields to Supabase columns. Leave columns with database defaults unmapped. Custom values can include submission metadata.' => 'Koppel Freeform-velden aan Supabase-kolommen. Laat kolommen met standaardwaarden in de database ongekoppeld. Aangepaste waarden kunnen metadata van de inzending bevatten.',
+
     // Diagnostics status summary
     'No diagnostic warnings' => 'Geen diagnosewaarschuwingen',
     'Potential issues: {count}' => 'Mogelijke problemen: {count}',

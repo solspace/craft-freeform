@@ -622,22 +622,39 @@
 
   .ff-diag-scan-message {
     display: flex;
-    align-items: baseline;
+    align-items: flex-start;
     gap: 8px;
     margin: 0;
     color: var(--ff-scan-text-color);
     font-weight: 600;
+    line-height: 1.5;
 
-    .checkmark-icon,
-    .alert-icon {
-      flex-shrink: 0;
+    > span:first-child {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 1em;
+      width: 1em;
+      height: 1.5em;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-size: 1em;
+      line-height: 1;
       color: inherit;
       cursor: default;
       background: transparent;
 
       &::before {
+        font-size: 1em;
+        line-height: 1;
         color: inherit;
       }
+    }
+
+    > span:last-child {
+      min-width: 0;
+      flex: 1;
     }
   }
 

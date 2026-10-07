@@ -6,7 +6,6 @@ use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
@@ -138,8 +137,11 @@ class FormGroupsController extends BaseApiController
 
         $site = $sitesEnabled ? $siteHandle : SitesHelper::getCurrentCpPageSiteHandle();
 
-        $loadedForms = Profiler::profile('Load forms', fn () => $this->getFormsService()->getAllForms(sites: $site));
-        $allForms = Profiler::profile('Transform forms', fn () => $this->formTransformer->transformList(array_values($loadedForms)));
+        $allForms = $this->formTransformer->transformList(
+            array_values(
+                $this->getFormsService()->getAllForms(sites: $site)
+            )
+        );
 
         $forms = array_values(
             array_filter(

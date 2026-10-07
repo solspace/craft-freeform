@@ -35,7 +35,6 @@ use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
@@ -893,7 +892,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $settings = Profiler::profile('Initialize form settings', fn () => new FormSettings($data['metadata'], $this->propertyProvider));
+        $settings = new FormSettings($data['metadata'], $this->propertyProvider);
 
         return new $type(
             $data,

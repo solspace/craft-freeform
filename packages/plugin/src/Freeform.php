@@ -74,7 +74,6 @@ use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
-use Solspace\Freeform\Library\Helpers\Profiler;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
@@ -264,37 +263,29 @@ class Freeform extends Plugin
 
     public function init(): void
     {
-        $profile = \sprintf(
-            'Bootstrap (PHP %s; Xdebug %s; OPcache configured %s)',
-            \PHP_VERSION,
-            \extension_loaded('xdebug') ? (\ini_get('xdebug.mode') ?: 'loaded') : 'not loaded',
-            \extension_loaded('Zend OPcache') && \ini_get('opcache.enable') ? 'on' : 'off',
-        );
-        Profiler::profile($profile, function (): void {
-            parent::init();
-            \Yii::setAlias('@freeform', __DIR__);
-            \Yii::setAlias('@freeform-resources', '@freeform/Resources');
-            \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
-            \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
-            \Yii::setAlias('@freeform-formatting-templates', '@freeform/templates/_templates/formatting');
+        parent::init();
+        \Yii::setAlias('@freeform', __DIR__);
+        \Yii::setAlias('@freeform-resources', '@freeform/Resources');
+        \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
+        \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
+        \Yii::setAlias('@freeform-formatting-templates', '@freeform/templates/_templates/formatting');
 
-            // TODO: refactor these into separate bundles
-            $this->initControllerMap();
-            $this->initServices();
-            $this->initTwigVariables();
-            $this->initFieldTypes();
-            $this->initEventListeners();
-            $this->initBetaAssets();
-            $this->initPaymentAssets();
-            $this->initContainerItems();
-            Profiler::profile('Initialize bundles', fn () => $this->initBundles());
+        // TODO: refactor these into separate bundles
+        $this->initControllerMap();
+        $this->initServices();
+        $this->initTwigVariables();
+        $this->initFieldTypes();
+        $this->initEventListeners();
+        $this->initBetaAssets();
+        $this->initPaymentAssets();
+        $this->initContainerItems();
+        $this->initBundles();
 
-            if ($this->isPro() && $this->settings->getPluginName()) {
-                $this->name = $this->settings->getPluginName();
-            } else {
-                $this->name = 'Freeform';
-            }
-        });
+        if ($this->isPro() && $this->settings->getPluginName()) {
+            $this->name = $this->settings->getPluginName();
+        } else {
+            $this->name = 'Freeform';
+        }
     }
 
     public function getCpNavItem(): ?array

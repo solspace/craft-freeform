@@ -544,6 +544,125 @@
     resize: vertical;
   }
 
+  .ff-diag-health-intro {
+    margin: 4px 0 20px;
+  }
+
+  .ff-diag-health-check {
+    margin-bottom: 14px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--large-border-radius, 5px);
+    overflow: hidden;
+  }
+
+  .ff-diag-health-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    padding: 16px;
+  }
+
+  .ff-diag-health-title {
+    flex: 1 1 300px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0 0 18px;
+      color: var(--gray-600);
+    }
+  }
+
+  .ff-diag-health-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      flex: 0 0 6px;
+      border-inline-end: 2px solid currentColor;
+      border-block-end: 2px solid currentColor;
+      transform: rotate(-45deg);
+    }
+
+    &[aria-expanded='true']::before {
+      transform: rotate(45deg);
+    }
+  }
+
+  .ff-diag-health-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--gray-600);
+    font-size: 12px;
+    white-space: nowrap;
+
+    &::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gray-400);
+    }
+
+    &.is-success::before {
+      background: var(--enabled-color);
+    }
+
+    &.is-warning::before {
+      background: var(--yellow-500, #eab308);
+    }
+
+    &.is-error::before {
+      background: var(--error-color);
+    }
+
+    &.is-info::before,
+    &.is-running::before {
+      background: var(--link-color, #0b69d5);
+    }
+  }
+
+  .ff-diag-health-body {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--hairline-color);
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .ff-diag-health-details,
+  .ff-diag-health-results {
+    margin-top: 14px;
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    p {
+      margin: 8px 0 0;
+      color: var(--gray-600);
+    }
+  }
+
   .ff-diag-scan-actions {
     display: flex;
     align-items: center;
@@ -694,6 +813,10 @@
 
     &:empty {
       display: none;
+    }
+
+    .is-unchecked {
+      color: var(--gray-600);
     }
 
     .is-info {

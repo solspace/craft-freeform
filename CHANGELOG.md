@@ -23,7 +23,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
-- Refreshed **Diagnostics** with a compact layout, clearer status indicators, and a copyable support report.
+- Refreshed **Diagnostics** with Overview and Health Checks tabs, expandable scan results, clearer status indicators, and a copyable support report.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, with support for custom model IDs.
 - Improved accessibility across the sample formatting templates.
 - AJAX forms now respect formatting template overrides for success banners, error banners, and field validation messages.

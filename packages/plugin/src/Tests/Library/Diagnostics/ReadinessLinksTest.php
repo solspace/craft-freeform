@@ -71,6 +71,18 @@ class ReadinessLinksTest extends TestCase
         $this->assertSame(['freeform/notifications/database'], array_column($this->links([Freeform::PERMISSION_NOTIFICATIONS_ACCESS])->getLinks($issue, 'notifications'), 'url'));
     }
 
+    public function testIntegrationAndQueueLinksRespectPermissions(): void
+    {
+        $issue = ['context' => ['formId' => 7, 'integration' => 3, 'integrationType' => 'other']];
+        $this->assertSame(['freeform/forms/7/integrations', 'freeform/settings/other/3'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        $this->assertSame([], $this->links([])->getLinks($issue, 'integrations'));
+        $this->assertSame(['freeform/forms/7/integrations'], array_column($this->links([Freeform::PERMISSION_FORMS_ACCESS, Freeform::PERMISSION_FORMS_MANAGE.':7'])->getLinks($issue, 'integrations'), 'url'));
+        $issue['context']['integrationType'] = '../unsafe';
+        $this->assertCount(1, $this->links()->getLinks($issue, 'integrations'));
+        $this->assertSame(['utilities/queue-manager'], array_column($this->links(['utility:queue-manager'])->getLinks(['context' => []], 'queue'), 'url'));
+        $this->assertSame([], $this->links([])->getLinks(['context' => []], 'queue'));
+    }
+
     private function links(?array $permissions = null, bool $allowFileTemplateEdit = true): ReadinessLinks
     {
         return new ReadinessLinks(

@@ -11,9 +11,14 @@ use Solspace\Freeform\controllers\DiagnosticsController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\NotificationItem;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\DiagnosticsService;
+use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
+use yii\caching\ArrayCache;
+use yii\db\Command;
 use yii\db\mysql\Schema;
+use yii\db\QueryBuilder;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -102,12 +107,63 @@ class DiagnosticsControllerTest extends TestCase
         $controller->actionCheckDatabaseIntegrity();
     }
 
-    private function fixture(bool $allowed = true, bool $cp = true): array
+    public function testNewReadinessScansRequireSettingsAccessAndCpRequests(): void
+    {
+        foreach (['actionScanIntegrations', 'actionScanQueue'] as $action) {
+            [$controller] = $this->fixture(allowed: false);
+
+            try {
+                $controller->{$action}();
+                self::fail('The scan must require settings access.');
+            } catch (ForbiddenHttpException) {
+                self::assertTrue(true);
+            }
+            [$controller] = $this->fixture(cp: false);
+
+            try {
+                $controller->{$action}();
+                self::fail('The scan must require a CP request.');
+            } catch (BadRequestHttpException) {
+                self::assertTrue(true);
+            }
+        }
+    }
+
+    public function testUnsupportedQueueReturnsAnUncheckedResultAndCanResume(): void
+    {
+        [$controller, , , , $body] = $this->fixture(admin: true);
+        $result = $controller->actionScanQueue()->data;
+        self::assertTrue($result['complete']);
+        self::assertSame(1, $result['skipped']);
+        self::assertSame(0, $result['issues']);
+        self::assertSame([], $result['results'][0]['links']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{32}$/', $result['scanId']);
+        self::assertSame(1, $result['completedChecks']);
+        $body->params = ['scanId' => $result['scanId']];
+        self::assertSame($result, $controller->actionScanQueue()->data);
+    }
+
+    public function testEmptyIntegrationScanReturnsACompleteResult(): void
+    {
+        [$controller] = $this->fixture(admin: true);
+        $result = $controller->actionScanIntegrations()->data;
+        self::assertTrue($result['complete']);
+        self::assertSame(0, $result['totalChecks']);
+        self::assertSame(0, $result['scanned']);
+        self::assertSame([], $result['results']);
+    }
+
+    private function fixture(bool $allowed = true, bool $cp = true, bool $admin = false): array
     {
         $diagnostics = $this->createMock(DiagnosticsService::class);
         $plugin = (new \ReflectionClass(Freeform::class))->newInstanceWithoutConstructor();
         $plugin->set('diagnostics', $diagnostics);
+        $settings = $this->createMock(SettingsService::class);
+        $settings->method('getSettingsModel')->willReturn((new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor());
+        $plugin->set('settings', $settings);
         $request = $this->createMock(Request::class);
+        $body = (object) ['params' => []];
+        $request->method('getBodyParam')->willReturnCallback(static fn ($name, $default = null) => $body->params[$name] ?? $default);
         $request->method('getIsPost')->willReturn(true);
         $request->method('getIsCpRequest')->willReturn($cp);
         $request->method('getAcceptsJson')->willReturn(true);
@@ -115,14 +171,24 @@ class DiagnosticsControllerTest extends TestCase
         $schema = $this->createMock(Schema::class);
         $db = $this->createMock(Connection::class);
         $db->method('getSchema')->willReturn($schema);
+        $db->method('getQueryBuilder')->willReturn(new QueryBuilder($db));
+        $command = $this->createMock(Command::class);
+        $command->expects(self::never())->method('execute');
+        $command->method('queryAll')->willReturn([]);
+        $db->method('createCommand')->willReturn($command);
         $view = $this->createMock(View::class);
         $view->method('registerAssetBundle')->willReturn(null);
-        $user = new class($allowed) {
-            public function __construct(private bool $allowed) {}
+        $user = new class($allowed, $admin) {
+            public function __construct(private bool $allowed, private bool $admin) {}
+
+            public function getId(): int
+            {
+                return 7;
+            }
 
             public function getIsAdmin(): bool
             {
-                return false;
+                return $this->admin;
             }
 
             public function checkPermission($permission): bool
@@ -134,10 +200,12 @@ class DiagnosticsControllerTest extends TestCase
         };
         \Craft::$app = \Yii::$app = new class($plugin, $request, $db, $view, $user) {
             public array $loadedModules;
+            private ArrayCache $cache;
 
             public function __construct($plugin, public Request $request, private Connection $db, public View $view, private object $user)
             {
                 $this->loadedModules = [Freeform::class => $plugin];
+                $this->cache = new ArrayCache();
             }
 
             public function getUser(): object
@@ -148,6 +216,21 @@ class DiagnosticsControllerTest extends TestCase
             public function getDb(): Connection
             {
                 return $this->db;
+            }
+
+            public function getRequest(): Request
+            {
+                return $this->request;
+            }
+
+            public function getCache(): ArrayCache
+            {
+                return $this->cache;
+            }
+
+            public function getQueue(): object
+            {
+                return new \stdClass();
             }
 
             public function getView(): View
@@ -164,7 +247,7 @@ class DiagnosticsControllerTest extends TestCase
             return $response;
         });
 
-        return [$controller, $diagnostics, $schema, $view];
+        return [$controller, $diagnostics, $schema, $view, $body];
     }
 
     private function item(string $label, bool $warning = false): DiagnosticItem

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Tests\Library\Diagnostics;
 use craft\db\Connection;
 use craft\elements\Asset;
 use craft\models\Volume;
+use craft\queue\Queue;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Elements\Submission;
@@ -14,9 +15,14 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
+use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
+use Solspace\Freeform\Integrations\Other\Supabase\Supabase;
+use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\QueueHealthScan;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
+use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegration;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
@@ -27,6 +33,8 @@ use yii\db\sqlite\Schema;
 
 #[CoversClass(UploadIntegrityScan::class)]
 #[CoversClass(NotificationReadinessScan::class)]
+#[CoversClass(IntegrationReadinessScan::class)]
+#[CoversClass(QueueHealthScan::class)]
 class ReadinessScanTest extends TestCase
 {
     private \PDO $pdo;
@@ -643,6 +651,128 @@ class ReadinessScanTest extends TestCase
         $result = $scan->scanTask($this->uploadTask());
         $this->assertSame(1, $result['scanned']);
         $this->assertSame([], $result['results']);
+    }
+
+    public function testIntegrationCredentialsAreCheckedWithoutExposingValuesOrCallingServices(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db, static fn ($value) => 'encrypted-secret' === $value ? 'resolved-secret' : false);
+        $context = ['integration' => 1];
+        $settings = ['projectUrl' => 'https://example.test', 'apiKey' => 'encrypted-secret', 'schema' => 'public'];
+        $this->assertSame([], $scan->check(Supabase::class, $settings, [], $context, false));
+        $settings['apiKey'] = '$FREEFORM_DIAGNOSTICS_NONEXISTENT_SECRET';
+        $issues = $scan->check(Supabase::class, $settings, [], $context, false);
+        $this->assertCount(1, $issues);
+        $this->assertStringContainsString('required setting', $issues[0]['message']);
+        $settings['apiKey'] = 'invalid-ciphertext';
+        $issues = $scan->check(Supabase::class, $settings, [], $context, false);
+        $this->assertTrue($issues[0]['skipped']);
+        $this->assertStringNotContainsString('invalid-ciphertext', json_encode($issues));
+        $this->assertStringNotContainsString('resolved-secret', json_encode($issues));
+    }
+
+    public function testIntegrationMappingsPreserveCustomValuesAndFlagMissingFields(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['table' => 'contacts', 'fieldMapping' => ['email' => ['type' => 'relation', 'value' => 'email-field'], 'name' => ['type' => 'custom', 'value' => '{{ submission.id }}']]];
+        $this->assertSame([], $scan->check(Supabase::class, $metadata, ['email-field' => ['type' => EmailInput::class]], [], true));
+        $result = $scan->check(Supabase::class, $metadata, [], [], true);
+        $this->assertCount(1, $result);
+        $this->assertStringContainsString('no longer exists', $result[0]['message']);
+        $metadata['fieldMapping']['email'] = ['value' => 'missing-type'];
+        $this->assertStringContainsString('incomplete entry', $scan->check(Supabase::class, $metadata, [], [], true)[0]['message']);
+        $metadata['table'] = '';
+        $result = $scan->check(Supabase::class, $metadata, [], [], true);
+        $this->assertCount(1, $result, 'Hidden mappings must not generate warnings when the required table is missing.');
+        $this->assertStringContainsString('required setting', $result[0]['message']);
+        $this->assertSame([], $scan->check(Supabase::class, ['table' => 'contacts'], [], [], true), 'Unmapped columns may have database defaults.');
+    }
+
+    public function testOAuthAuthorizationIsCheckedLocallyWithoutTrustingTheConnectionFlag(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db, static fn ($value) => 'unreadable' === $value ? false : 'secret-token');
+        $class = BaseSalesforceIntegration::class;
+        $metadata = ['clientId' => 'saved-id', 'clientSecret' => 'saved-secret', 'accessToken' => 'saved-token'];
+        $this->assertSame([], $scan->check($class, $metadata, [], [], false));
+        $metadata['accessToken'] = '';
+        $issues = $scan->check($class, $metadata, [], [], false);
+        $this->assertCount(1, $issues);
+        $this->assertStringContainsString('Authorize it again', $issues[0]['message']);
+        $metadata['accessToken'] = 'unreadable';
+        $this->assertCount(1, $scan->check($class, $metadata, [], [], false));
+        $this->assertStringNotContainsString('secret-token', json_encode($issues));
+    }
+
+    public function testIntegrationEmailFieldsMustExistAndHaveCompatibleTypes(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['mailingList' => ['id' => 'list'], 'emailField' => 'email-field'];
+        $this->assertSame([], $scan->check(EmailMarketingIntegration::class, $metadata, ['email-field' => ['type' => EmailInput::class]], [], true));
+        $result = $scan->check(EmailMarketingIntegration::class, $metadata, ['email-field' => ['type' => DropdownField::class]], [], true);
+        $this->assertCount(1, $result);
+        $this->assertStringContainsString('incompatible type', $result[0]['message']);
+    }
+
+    public function testIntegrationTasksExcludeDisabledAndArchivedConnectionsAndKeepCredentialsOutOfCache(): void
+    {
+        $this->pdo->exec('CREATE TABLE craft_freeform_integrations (id INTEGER PRIMARY KEY, enabled INTEGER, name TEXT, type TEXT, class TEXT, metadata TEXT)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_forms_integrations (id INTEGER PRIMARY KEY, formId INTEGER, integrationId INTEGER, enabled INTEGER, metadata TEXT)');
+        $insert = $this->pdo->prepare('INSERT INTO craft_freeform_integrations VALUES (?, ?, ?, ?, ?, ?)');
+        $insert->execute([1, 1, 'Supabase', 'other', Supabase::class, json_encode(['apiKey' => 'secret-value', 'projectUrl' => 'https://example.test'])]);
+        $insert->execute([2, 0, 'Disabled', 'other', Supabase::class, '{}']);
+        $this->pdo->exec("INSERT INTO craft_freeform_forms (id, name, dateArchived) VALUES (1, 'Active', NULL), (2, 'Archived', '2026-10-07')");
+        $this->pdo->exec("INSERT INTO craft_freeform_forms_integrations VALUES (1, 1, 1, 1, '{\"table\":\"contacts\"}'), (2, 1, 1, 0, '{}'), (3, 2, 1, 1, '{}'), (4, 1, 2, 1, '{}'), (5, 1, 999, 1, '{}')");
+        $scan = new IntegrationReadinessScan($this->db, static fn () => 'secret-value');
+        $tasks = $scan->getTasks();
+        $this->assertSame([['id' => 1, 'scope' => 'global'], ['id' => 1, 'scope' => 'form'], ['id' => 5, 'scope' => 'form']], $tasks);
+        $this->assertStringNotContainsString('secret-value', json_encode($tasks));
+        $this->assertSame([], $scan->scanTask($tasks[1])['results']);
+        $this->assertStringContainsString('no longer exists', $scan->scanTask($tasks[2])['results'][0]['message']);
+        $this->pdo->exec("UPDATE craft_freeform_forms_integrations SET metadata = 'invalid' WHERE id = 1");
+        $this->assertTrue($scan->scanTask($tasks[1])['results'][0]['skipped']);
+        $this->pdo->exec('UPDATE craft_freeform_integrations SET enabled = 0 WHERE id = 1');
+        $this->assertSame(0, $scan->scanTask($tasks[0])['scanned']);
+    }
+
+    public function testQueueHealthRespectsDelaysChannelsAndRunTimeWithoutReadingPayloadsOrWriting(): void
+    {
+        $this->pdo->exec('CREATE TABLE craft_queue (id INTEGER PRIMARY KEY, channel TEXT, fail INTEGER, timePushed INTEGER, delay INTEGER, timeUpdated INTEGER, ttr INTEGER)');
+        $this->pdo->exec("INSERT INTO craft_queue VALUES (1, 'queue', 1, 9999, 0, NULL, 300), (2, 'queue', 0, 1000, 0, 9500, 300), (3, 'queue', 0, 1000, 0, 9950, 300), (4, 'queue', 0, 1000, 10000, NULL, 300), (5, 'queue', 0, 6000, 0, NULL, 300), (6, 'queue', 0, 9950, 0, NULL, 300), (7, 'other', 1, 1000, 0, NULL, 300)");
+        $queue = (new \ReflectionClass(Queue::class))->newInstanceWithoutConstructor();
+        $queue->db = $this->db;
+        $scan = new QueueHealthScan($queue, 10000);
+        $result = $scan->scanTask([]);
+        $this->assertTrue($result['complete']);
+        $this->assertSame(6, $result['scanned']);
+        $this->assertSame([1, 2, 5], array_column(array_column($result['results'], 'context'), 'job'));
+        $this->assertStringContainsString('failed', $result['results'][0]['message']);
+        $this->assertStringContainsString('may be stalled', $result['results'][1]['message']);
+        $this->assertSame(7, (int) $this->pdo->query('SELECT COUNT(*) FROM craft_queue')->fetchColumn());
+        $queue->channel = 'other';
+        $this->assertSame(1, $scan->scanTask([])['scanned']);
+    }
+
+    public function testQueueHealthBatchesAndExcludesNewJobsAndReportsUnsupportedDrivers(): void
+    {
+        $unsupported = (new QueueHealthScan(new \stdClass()))->scanTask([]);
+        $this->assertSame(0, $unsupported['scanned']);
+        $this->assertTrue($unsupported['results'][0]['skipped']);
+        $this->pdo->exec('CREATE TABLE craft_queue (id INTEGER PRIMARY KEY, channel TEXT, fail INTEGER, timePushed INTEGER, delay INTEGER, timeUpdated INTEGER, ttr INTEGER)');
+        $queue = (new \ReflectionClass(Queue::class))->newInstanceWithoutConstructor();
+        $queue->db = $this->db;
+        $scan = new QueueHealthScan($queue, 10000);
+        $this->assertSame([], $scan->scanTask([])['results']);
+        $this->assertTrue($scan->scanTask([])['complete']);
+        for ($id = 1; $id <= 30; ++$id) {
+            $this->pdo->exec("INSERT INTO craft_queue VALUES ({$id}, 'queue', 0, 9999, 0, NULL, 300)");
+        }
+        $first = $scan->scanTask([]);
+        $this->assertFalse($first['complete']);
+        $this->assertSame(25, $first['scanned']);
+        $this->pdo->exec("INSERT INTO craft_queue VALUES (31, 'queue', 1, 9999, 0, NULL, 300)");
+        $last = $scan->scanTask([], $first['cursor'], $first['maxId']);
+        $this->assertTrue($last['complete']);
+        $this->assertSame(5, $last['scanned']);
+        $this->assertSame([], $last['results']);
     }
 
     private function uploadTask(): array

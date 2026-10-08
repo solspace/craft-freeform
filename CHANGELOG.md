@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft.
 - Added an **Embed Form** tab to the form builder with a copyable Twig snippet and embedding guides.

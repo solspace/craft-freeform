@@ -129,7 +129,7 @@
             </div>
         </div>
         <div id="freeform-diagnostics-health-checks" class="hidden" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-health-checks">
-            <p class="light ff-diag-health-intro">{{ 'Run checks to find problems with submissions, related data, uploaded files, and notifications. Checks run only when requested and do not change your data.'|t('freeform') }}</p>
+            <p class="light ff-diag-health-intro">{{ 'Run checks to find problems with your database, submissions, uploads, notifications, integrations, and queue. Checks run only when requested and do not change your data.'|t('freeform') }}</p>
             {% set readinessScans = [
                 {
                     id: 'freeform-upload-scan', action: 'scan-uploaded-files',
@@ -148,6 +148,24 @@
                     starting: 'Checking notifications…'|t('freeform'),
                     success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform'),
                     successSingular: 'No notification configuration issues found. Checked {scanned} enabled notification.'|t('freeform')
+                },
+                {
+                    id: 'freeform-integration-scan', action: 'scan-integrations',
+                    title: 'Integration Readiness'|t('freeform'),
+                    summary: 'Check enabled integrations for missing settings and broken mappings.'|t('freeform'),
+                    description: 'Check saved settings for enabled integrations and their active form connections. Checks required settings, available credentials, OAuth tokens, and field references. Does not contact external services, validate credentials remotely, or render Twig.'|t('freeform'),
+                    starting: 'Checking integrations…'|t('freeform'),
+                    success: 'No integration configuration issues found. Checked {scanned} integration configurations.'|t('freeform'),
+                    successSingular: 'No integration configuration issues found. Checked {scanned} integration configuration.'|t('freeform')
+                },
+                {
+                    id: 'freeform-queue-scan', action: 'scan-queue',
+                    title: 'Queue Health'|t('freeform'),
+                    summary: 'Find failed, overdue, and possibly stalled queue jobs.'|t('freeform'),
+                    description: 'Check all jobs in the configured Craft queue, including jobs from other plugins. Flags failed jobs, jobs past their allowed run time, and jobs ready to run for at least an hour. Scheduled delays are respected. Does not run, retry, or delete jobs. Custom queue drivers may require developer review.'|t('freeform'),
+                    starting: 'Checking queue health…'|t('freeform'),
+                    success: 'No queue issues found. Checked {scanned} queued jobs.'|t('freeform'),
+                    successSingular: 'No queue issues found. Checked {scanned} queued job.'|t('freeform')
                 }
             ] %}
             {% set healthChecks = [

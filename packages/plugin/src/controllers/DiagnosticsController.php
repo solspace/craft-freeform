@@ -16,7 +16,9 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
+use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\QueueHealthScan;
 use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -204,6 +206,16 @@ class DiagnosticsController extends BaseController
         return $this->scanReadiness('notifications');
     }
 
+    public function actionScanIntegrations(): Response
+    {
+        return $this->scanReadiness('integrations');
+    }
+
+    public function actionScanQueue(): Response
+    {
+        return $this->scanReadiness('queue');
+    }
+
     public function actionCraftPreflight(): Response
     {
         \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
@@ -235,9 +247,14 @@ class DiagnosticsController extends BaseController
         }
         $cache = \Craft::$app->getCache();
         $owner = (string) \Craft::$app->getUser()->getId();
-        $scan = $kind === 'uploads' ? new UploadIntegrityScan(\Craft::$app->getDb(), sitesEnabled: SitesHelper::isEnabled()) : new NotificationReadinessScan(\Craft::$app->getDb());
 
         try {
+            $scan = match ($kind) {
+                'uploads' => new UploadIntegrityScan(\Craft::$app->getDb(), sitesEnabled: SitesHelper::isEnabled()),
+                'integrations' => new IntegrationReadinessScan(\Craft::$app->getDb()),
+                'queue' => new QueueHealthScan(\Craft::$app->getQueue()),
+                default => new NotificationReadinessScan(\Craft::$app->getDb()),
+            };
             if (null === $scanId) {
                 $scanId = bin2hex(random_bytes(16));
                 $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'info' => 0, 'results' => []];
@@ -290,6 +307,11 @@ class DiagnosticsController extends BaseController
                 'results' => array_map(static function (array $issue) use ($kind, $links): array {
                     $context = $issue['context'];
                     $message = match (true) {
+                        $kind === 'queue' && isset($context['job']) => 'Queue job {job}: {message}',
+                        $kind === 'queue' => '{message}',
+                        $kind === 'integrations' && isset($context['form'], $context['integrationName']) => 'Form “{form}”, integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' && isset($context['integrationName']) => 'Integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' => 'Integration {integration}: {message}',
                         $kind === 'notifications' && isset($context['notificationName']) => 'Form “{form}”, notification “{notificationName}” (ID {notification}): {message}',
                         $kind === 'notifications' => 'Form “{form}”, notification {notification}: {message}',
                         isset($context['asset']) => 'Form “{form}”, field “{field}”, submission {submission}, asset {asset}: {message}',
@@ -297,8 +319,13 @@ class DiagnosticsController extends BaseController
                         default => 'Form “{form}”, field “{field}”: {message}',
                     };
 
+                    $params = $issue['params'] ?? [];
+                    if (isset($params['setting'])) {
+                        $params['setting'] = Freeform::t($params['setting']);
+                    }
+
                     return [
-                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $issue['params'] ?? [])]),
+                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $params)]),
                         'skipped' => $issue['skipped'],
                         'informational' => $issue['informational'] ?? false,
                         'links' => $links->getLinks($issue, $kind),

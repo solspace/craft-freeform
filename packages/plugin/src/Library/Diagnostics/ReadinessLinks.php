@@ -22,6 +22,21 @@ class ReadinessLinks
         $links = [];
         $context = $issue['context'];
         $formId = (int) ($context['formId'] ?? 0);
+        if ('queue' === $kind) {
+            return ($context['queueAvailable'] ?? true) && ($this->can)('utility:queue-manager') ? [$this->link('View Queue Manager', 'utilities/queue-manager')] : [];
+        }
+        if ('integrations' === $kind) {
+            if ($this->canEditForm($formId)) {
+                $links[] = $this->link('Edit form integrations', 'freeform/forms/'.$formId.'/integrations');
+            }
+            $type = $context['integrationType'] ?? '';
+            $id = (int) ($context['integration'] ?? 0);
+            if ($id > 0 && preg_match('/^[a-z-]+$/D', $type) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_ACCESS) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_MANAGE)) {
+                $links[] = $this->link('Edit integration', 'freeform/settings/'.$type.'/'.$id);
+            }
+
+            return $links;
+        }
         $submissionId = (int) ($context['submission'] ?? 0);
         if ('uploads' === $kind && $submissionId > 0 && ($context['submissionAvailable'] ?? true) && ($this->can)(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
             && $this->canForForm(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId)) {

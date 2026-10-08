@@ -806,12 +806,35 @@
   .ff-diag-scan-results {
     margin-top: 10px;
     padding-inline-start: 20px;
+    list-style: disc outside;
+    line-height: 1.5;
     overflow-wrap: anywhere;
 
+    > li {
+      display: list-item;
+
+      + li {
+        margin-top: 12px;
+      }
+    }
+
+    .ff-diag-result-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 4px 14px;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
     .ff-diag-result-link {
-      margin-inline-start: 8px;
       color: var(--link-color, #0b69d5);
-      text-decoration: underline;
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        text-decoration: underline;
+      }
     }
 
     &:empty {

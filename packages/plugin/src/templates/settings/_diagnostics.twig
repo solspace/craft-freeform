@@ -494,6 +494,8 @@
                                 const row = document.createElement('li');
                                 row.className = result.informational ? 'is-info' : (result.skipped ? 'is-unchecked' : 'is-warning');
                                 row.textContent = result.message;
+                                const actions = document.createElement('div');
+                                actions.className = 'ff-diag-result-actions';
                                 for (const link of result.links ?? []) {
                                     if (!link || typeof link.label !== 'string' || typeof link.url !== 'string') continue;
                                     const url = new URL(link.url, window.location.href);
@@ -507,8 +509,9 @@
                                         anchor.target = '_blank';
                                         anchor.rel = 'noopener';
                                     }
-                                    row.appendChild(anchor);
+                                    actions.appendChild(anchor);
                                 }
+                                if (actions.childElementCount) row.appendChild(actions);
                                 findings.push({group: result.informational ? 'info' : (result.skipped ? 'unchecked' : 'issues'), row});
                             }
                             renderFindings(results, findings);

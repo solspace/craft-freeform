@@ -794,11 +794,11 @@ class ReadinessScanTest extends TestCase
 
     public function testIntegrationTasksExcludeDisabledAndArchivedConnectionsAndKeepCredentialsOutOfCache(): void
     {
-        $this->pdo->exec('CREATE TABLE craft_freeform_integrations (id INTEGER PRIMARY KEY, enabled INTEGER, name TEXT, type TEXT, class TEXT, metadata TEXT)');
+        $this->pdo->exec('CREATE TABLE craft_freeform_integrations (id INTEGER PRIMARY KEY, enabled INTEGER, name TEXT, type TEXT, class TEXT, metadata TEXT, handle TEXT)');
         $this->pdo->exec('CREATE TABLE craft_freeform_forms_integrations (id INTEGER PRIMARY KEY, formId INTEGER, integrationId INTEGER, enabled INTEGER, metadata TEXT)');
-        $insert = $this->pdo->prepare('INSERT INTO craft_freeform_integrations VALUES (?, ?, ?, ?, ?, ?)');
-        $insert->execute([1, 1, 'Supabase', 'other', Supabase::class, json_encode(['apiKey' => 'secret-value', 'projectUrl' => 'https://example.test'])]);
-        $insert->execute([2, 0, 'Disabled', 'other', Supabase::class, '{}']);
+        $insert = $this->pdo->prepare('INSERT INTO craft_freeform_integrations VALUES (?, ?, ?, ?, ?, ?, ?)');
+        $insert->execute([1, 1, 'Supabase', 'other', Supabase::class, json_encode(['apiKey' => 'secret-value', 'projectUrl' => 'https://example.test']), 'supabase-test']);
+        $insert->execute([2, 0, 'Disabled', 'other', Supabase::class, '{}', 'disabled']);
         $this->pdo->exec("INSERT INTO craft_freeform_forms (id, name, dateArchived) VALUES (1, 'Active', NULL), (2, 'Archived', '2026-10-07')");
         $this->pdo->exec("INSERT INTO craft_freeform_forms_integrations VALUES (1, 1, 1, 1, '{\"table\":\"contacts\"}'), (2, 1, 1, 0, '{}'), (3, 2, 1, 1, '{}'), (4, 1, 2, 1, '{}'), (5, 1, 999, 1, '{}')");
         $scan = new IntegrationReadinessScan($this->db, static fn () => 'secret-value');
@@ -808,6 +808,7 @@ class ReadinessScanTest extends TestCase
         $this->assertSame([], $scan->scanTask($tasks[1])['results']);
         $this->pdo->exec("UPDATE craft_freeform_forms_integrations SET metadata = '{}' WHERE id = 1");
         $this->assertSame('Supabase', $scan->scanTask($tasks[1])['results'][0]['context']['integrationClass']);
+        $this->assertSame('supabase-test', $scan->scanTask($tasks[1])['results'][0]['context']['integrationHandle']);
         $this->assertStringContainsString('no longer exists', $scan->scanTask($tasks[2])['results'][0]['message']);
         $this->pdo->exec("UPDATE craft_freeform_forms_integrations SET metadata = 'invalid' WHERE id = 1");
         $this->assertTrue($scan->scanTask($tasks[1])['results'][0]['skipped']);

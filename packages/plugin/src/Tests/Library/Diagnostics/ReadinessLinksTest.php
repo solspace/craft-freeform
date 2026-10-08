@@ -75,14 +75,29 @@ class ReadinessLinksTest extends TestCase
 
     public function testIntegrationAndQueueLinksRespectPermissions(): void
     {
-        $issue = ['context' => ['formId' => 7, 'integration' => 3, 'integrationType' => 'other', 'integrationClass' => 'Supabase']];
-        $this->assertSame(['freeform/forms/7/integrations', 'freeform/integrations/other/Supabase/3'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        $issue = ['context' => ['formId' => 7, 'integration' => 3, 'integrationHandle' => 'supabase-test', 'integrationType' => 'other', 'integrationClass' => 'Supabase']];
+        $this->assertSame(['freeform/forms/7/integrations/3/supabase-test', 'freeform/integrations/other/Supabase/3'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
         $this->assertSame([], $this->links([])->getLinks($issue, 'integrations'));
-        $this->assertSame(['freeform/forms/7/integrations'], array_column($this->links([Freeform::PERMISSION_FORMS_ACCESS, Freeform::PERMISSION_FORMS_MANAGE.':7'])->getLinks($issue, 'integrations'), 'url'));
+        $this->assertSame(['freeform/forms/7/integrations/3/supabase-test'], array_column($this->links([Freeform::PERMISSION_FORMS_ACCESS, Freeform::PERMISSION_FORMS_MANAGE.':7'])->getLinks($issue, 'integrations'), 'url'));
         $issue['context']['integrationType'] = '../unsafe';
         $this->assertCount(1, $this->links()->getLinks($issue, 'integrations'));
         $this->assertSame(['utilities/queue-manager'], array_column($this->links(['utility:queue-manager'])->getLinks(['context' => []], 'queue'), 'url'));
         $this->assertSame([], $this->links([])->getLinks(['context' => []], 'queue'));
+    }
+
+    public function testFormIntegrationLinksOpenTheSpecificTabAndFallBackForMissingIdentifiers(): void
+    {
+        $issue = ['context' => ['formId' => 89, 'integration' => 13, 'integrationHandle' => 'salesforce-test']];
+        $this->assertSame(['freeform/forms/89/integrations/13/salesforce-test'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        foreach (['', '../unsafe', 'unsafe/handle', 'handle?site=other', null] as $handle) {
+            $issue['context']['integrationHandle'] = $handle;
+            $this->assertSame(['freeform/forms/89/integrations'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        }
+        unset($issue['context']['integrationHandle']);
+        $this->assertSame(['freeform/forms/89/integrations'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        $issue['context']['integrationHandle'] = 'salesforce-test';
+        $issue['context']['integration'] = 0;
+        $this->assertSame(['freeform/forms/89/integrations'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
     }
 
     public function testPardotEditLinkMatchesTheRegisteredIntegrationEditorRoute(): void

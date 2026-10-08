@@ -26,12 +26,17 @@ class ReadinessLinks
             return ($context['queueAvailable'] ?? true) && ($this->can)('utility:queue-manager') ? [$this->link('View Queue Manager', 'utilities/queue-manager')] : [];
         }
         if ('integrations' === $kind) {
+            $id = (int) ($context['integration'] ?? 0);
+            $handle = $context['integrationHandle'] ?? '';
             if ($this->canEditForm($formId)) {
-                $links[] = $this->link('Edit form integrations', 'freeform/forms/'.$formId.'/integrations');
+                $path = 'freeform/forms/'.$formId.'/integrations';
+                if ($id > 0 && \is_string($handle) && preg_match('/^[a-zA-Z0-9_-]+$/D', $handle)) {
+                    $path .= '/'.$id.'/'.rawurlencode($handle);
+                }
+                $links[] = $this->link('Edit form integrations', $path);
             }
             $type = $context['integrationType'] ?? '';
             $class = $context['integrationClass'] ?? '';
-            $id = (int) ($context['integration'] ?? 0);
             if ($id > 0 && preg_match('/^[a-z-]+$/D', $type) && preg_match('/^[a-zA-Z0-9]+$/D', $class) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_ACCESS) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_MANAGE)) {
                 $links[] = $this->link('Edit integration', 'freeform/integrations/'.$type.'/'.$class.'/'.$id);
             }

@@ -79,7 +79,7 @@ class IntegrationReadinessScan
                 return $result;
             }
             $result['scanned'] = 1;
-            $context += ['integrationName' => $integration['name'], 'integrationType' => $integration['type']];
+            $context += ['integrationName' => $integration['name'], 'integrationHandle' => $integration['handle'], 'integrationType' => $integration['type']];
             if (!is_a($integration['class'], IntegrationInterface::class, true)) {
                 $result['results'][] = $this->issue($context, 'The integration type is unavailable. Check that its plugin or integration is installed.');
 

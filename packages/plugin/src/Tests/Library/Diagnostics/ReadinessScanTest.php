@@ -15,7 +15,10 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
+use Solspace\Freeform\Integrations\CRM\HubSpot\Versions\HubSpotV3;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
+use Solspace\Freeform\Integrations\CRM\Salesforce\Versions\SalesforceV58;
+use Solspace\Freeform\Integrations\Elements\Entry\Entry;
 use Solspace\Freeform\Integrations\Elements\User\User as UserIntegration;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\Versions\MailchimpV3;
 use Solspace\Freeform\Integrations\Other\Supabase\Supabase;
@@ -711,8 +714,8 @@ class ReadinessScanTest extends TestCase
         unset($fields['direct-mail-permission']);
         $issues = $scan->check(MailchimpV3::class, $metadata, $fields, [], true);
         $this->assertCount(1, $issues);
-        $this->assertSame('The mapping for “{setting}” references a field that no longer exists.', $issues[0]['message']);
-        $this->assertSame(['setting' => 'Marketing Permissions'], $issues[0]['params']);
+        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Marketing Permissions', 'target' => 'direct-mail', 'field' => 'direct-mail-permission'], $issues[0]['params']);
     }
 
     public function testUserAttributeMappingsAllowUnmappedFullNameAndPhotoWithoutSkippingOtherChecks(): void
@@ -733,8 +736,35 @@ class ReadinessScanTest extends TestCase
         unset($fields['email-field']);
         $issues = $scan->check(UserIntegration::class, $metadata, $fields, [], true);
         $this->assertCount(1, $issues);
-        $this->assertSame('The mapping for “{setting}” references a field that no longer exists.', $issues[0]['message']);
-        $this->assertSame(['setting' => 'Attribute Mapping'], $issues[0]['params']);
+        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Attribute Mapping', 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
+    }
+
+    public function testIntegrationMappingFindingsIdentifyEveryBrokenTargetAndSavedFieldReference(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $cases = [
+            [SalesforceV58::class, ['mapLeads' => true], 'leadMapping', 'Lead Mapping'],
+            [HubSpotV3::class, ['mapContacts' => true], 'contactMapping', 'Contact Mapping'],
+            [HubSpotV3::class, ['mapCompanies' => true], 'companyMapping', 'Company Mapping'],
+            [Entry::class, ['sectionEntry' => '1:2'], 'fieldMapping', 'Field Mapping'],
+        ];
+        foreach ($cases as [$class, $metadata, $property, $setting]) {
+            $metadata[$property] = [
+                'optional' => ['type' => 'relation', 'value' => ''],
+                'email' => ['type' => 'relation', 'value' => 'email-field'],
+                'company' => ['type' => 'relation', 'value' => 'company-field'],
+                'literal' => ['type' => 'custom', 'value' => 'private-custom-value'],
+                'preset' => ['type' => 'preset', 'value' => 'private-preset-value'],
+            ];
+            $this->assertSame([], $scan->check($class, $metadata, ['email-field' => [], 'company-field' => []], [], true));
+            $issues = $scan->check($class, $metadata, [], [], true);
+            $this->assertCount(2, $issues);
+            $this->assertSame(['setting' => $setting, 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
+            $this->assertSame(['setting' => $setting, 'target' => 'company', 'field' => 'company-field'], $issues[1]['params']);
+            $this->assertStringNotContainsString('private-custom-value', json_encode($issues));
+            $this->assertStringNotContainsString('private-preset-value', json_encode($issues));
+        }
     }
 
     public function testOAuthAuthorizationIsCheckedLocallyWithoutTrustingTheConnectionFlag(): void

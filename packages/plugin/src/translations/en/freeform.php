@@ -3667,7 +3667,7 @@ return [
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'The field selected for “{setting}” is missing or has an incompatible type.',
     'The mapping for “{setting}” could not be read.' => 'The mapping for “{setting}” could not be read.',
     'The mapping for “{setting}” contains an incomplete entry.' => 'The mapping for “{setting}” contains an incomplete entry.',
-    'The mapping for “{setting}” references a field that no longer exists.' => 'The mapping for “{setting}” references a field that no longer exists.',
+    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).',
     'The integration has no readable OAuth access token. Authorize it again.' => 'The integration has no readable OAuth access token. Authorize it again.',
     'The OAuth access token could not be checked with the current site key.' => 'The OAuth access token could not be checked with the current site key.',
     'Queue job {job}: {message}' => 'Queue job {job}: {message}',

@@ -3668,7 +3668,7 @@ return [
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'Le champ sélectionné pour « {setting} » est manquant ou son type est incompatible.',
     'The mapping for “{setting}” could not be read.' => 'L’association de « {setting} » n’a pas pu être lue.',
     'The mapping for “{setting}” contains an incomplete entry.' => 'L’association de « {setting} » contient une entrée incomplète.',
-    'The mapping for “{setting}” references a field that no longer exists.' => 'L’association de « {setting} » référence un champ qui n’existe plus.',
+    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'L’association « {target} » dans « {setting} » référence un champ Freeform qui n’existe plus (référence de champ enregistrée : « {field} »).',
     'The integration has no readable OAuth access token. Authorize it again.' => 'L’intégration ne possède aucun jeton d’accès OAuth lisible. Autorisez-la à nouveau.',
     'The OAuth access token could not be checked with the current site key.' => 'Le jeton d’accès OAuth n’a pas pu être vérifié avec la clé actuelle du site.',
     'Queue job {job}: {message}' => 'Tâche en file d’attente {job} : {message}',

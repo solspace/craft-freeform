@@ -181,7 +181,7 @@ class IntegrationReadinessScan
 
                     continue;
                 }
-                foreach ($value as $mapping) {
+                foreach ($value as $target => $mapping) {
                     if (!\is_array($mapping) || !isset($mapping['type'], $mapping['value']) || !\is_string($mapping['value']) || !\in_array($mapping['type'], ['relation', 'custom', 'preset'], true)) {
                         $results[] = $this->issue($context, 'The mapping for “{setting}” contains an incomplete entry.', $params);
 
@@ -189,9 +189,10 @@ class IntegrationReadinessScan
                     }
                     // The mapping editor saves “Do not map this field” as an empty relation.
                     if ('relation' === $mapping['type'] && '' !== $mapping['value'] && !isset($fields[$mapping['value']])) {
-                        $results[] = $this->issue($context, 'The mapping for “{setting}” references a field that no longer exists.', $params);
-
-                        break;
+                        $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $params + [
+                            'target' => (string) $target,
+                            'field' => $mapping['value'],
+                        ]);
                     }
                 }
             }

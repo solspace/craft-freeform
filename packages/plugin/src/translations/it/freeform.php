@@ -3677,4 +3677,5 @@ return [
     'Integration {integration}: {message}' => 'Integrazione {integration}: {message}',
     'View Queue Manager' => 'Apri il gestore della coda',
     'Edit integration' => 'Modifica integrazione',
+    'Mapped field no longer exists' => 'Il campo associato non esiste più',
 ];

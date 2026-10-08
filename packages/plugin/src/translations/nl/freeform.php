@@ -3640,4 +3640,5 @@ return [
     'Integration {integration}: {message}' => 'Integratie {integration}: {message}',
     'View Queue Manager' => 'Wachtrijbeheer bekijken',
     'Edit integration' => 'Integratie bewerken',
+    'Mapped field no longer exists' => 'Het gekoppelde veld bestaat niet meer',
 ];

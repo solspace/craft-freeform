@@ -3,7 +3,7 @@ import SpinnerIcon from "@components/loaders/spinner";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
-import type { OptionCollection } from "@ff-client/types/properties";
+import type { Option, OptionCollection } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
@@ -34,6 +34,7 @@ import {
 export type DropdownProps = {
   loading?: boolean;
   emptyOption?: string;
+  missingOption?: Pick<Option, "label" | "icon">;
   options?: OptionCollection;
   value?: string;
   showValues?: boolean;
@@ -45,6 +46,7 @@ export type DropdownProps = {
 
 export const Dropdown: React.FC<DropdownProps> = ({
   emptyOption,
+  missingOption,
   value,
   options,
   showValues,
@@ -88,6 +90,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     () => findOptionByValue(options, value),
     [options, value],
   );
+  const missingValue = missingOption && !!value && !selectedOption;
 
   const selectedIndex = useMemo(
     () => findShadowIndexByValue(filteredOptions, value),
@@ -161,13 +164,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
         className={classes(
           loading && "disabled",
           (value === "" || value === null) && "empty",
+          missingValue && "missing",
         )}
       >
-        {showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>}
+        {missingValue && missingOption.icon ? (
+          <Icon aria-hidden="true">{missingOption.icon}</Icon>
+        ) : (
+          showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>
+        )}
         <span
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
-              selectedOption?.label || translate(emptyOption),
+              missingValue
+                ? missingOption.label
+                : selectedOption?.label || translate(emptyOption),
             ),
           }}
         />

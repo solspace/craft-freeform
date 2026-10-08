@@ -3677,4 +3677,5 @@ return [
     'Integration {integration}: {message}' => 'Integration {integration}: {message}',
     'View Queue Manager' => 'Warteschlangenmanager öffnen',
     'Edit integration' => 'Integration bearbeiten',
+    'Mapped field no longer exists' => 'Das zugeordnete Feld existiert nicht mehr',
 ];

@@ -3677,4 +3677,5 @@ return [
     'Integration {integration}: {message}' => 'Intégration {integration} : {message}',
     'View Queue Manager' => 'Voir le gestionnaire de file d’attente',
     'Edit integration' => 'Modifier l’intégration',
+    'Mapped field no longer exists' => 'Le champ associé n’existe plus',
 ];

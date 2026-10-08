@@ -3676,4 +3676,5 @@ return [
     'Integration {integration}: {message}' => 'Integration {integration}: {message}',
     'View Queue Manager' => 'View Queue Manager',
     'Edit integration' => 'Edit integration',
+    'Mapped field no longer exists' => 'Mapped field no longer exists',
 ];

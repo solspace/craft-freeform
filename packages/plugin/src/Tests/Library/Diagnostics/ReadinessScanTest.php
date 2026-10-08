@@ -726,6 +726,8 @@ class ReadinessScanTest extends TestCase
         $this->assertSame([['id' => 1, 'scope' => 'global'], ['id' => 1, 'scope' => 'form'], ['id' => 5, 'scope' => 'form']], $tasks);
         $this->assertStringNotContainsString('secret-value', json_encode($tasks));
         $this->assertSame([], $scan->scanTask($tasks[1])['results']);
+        $this->pdo->exec("UPDATE craft_freeform_forms_integrations SET metadata = '{}' WHERE id = 1");
+        $this->assertSame('Supabase', $scan->scanTask($tasks[1])['results'][0]['context']['integrationClass']);
         $this->assertStringContainsString('no longer exists', $scan->scanTask($tasks[2])['results'][0]['message']);
         $this->pdo->exec("UPDATE craft_freeform_forms_integrations SET metadata = 'invalid' WHERE id = 1");
         $this->assertTrue($scan->scanTask($tasks[1])['results'][0]['skipped']);

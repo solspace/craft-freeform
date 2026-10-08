@@ -30,9 +30,10 @@ class ReadinessLinks
                 $links[] = $this->link('Edit form integrations', 'freeform/forms/'.$formId.'/integrations');
             }
             $type = $context['integrationType'] ?? '';
+            $class = $context['integrationClass'] ?? '';
             $id = (int) ($context['integration'] ?? 0);
-            if ($id > 0 && preg_match('/^[a-z-]+$/D', $type) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_ACCESS) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_MANAGE)) {
-                $links[] = $this->link('Edit integration', 'freeform/settings/'.$type.'/'.$id);
+            if ($id > 0 && preg_match('/^[a-z-]+$/D', $type) && preg_match('/^[a-zA-Z0-9]+$/D', $class) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_ACCESS) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_MANAGE)) {
+                $links[] = $this->link('Edit integration', 'freeform/integrations/'.$type.'/'.$class.'/'.$id);
             }
 
             return $links;

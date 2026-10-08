@@ -6,6 +6,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
+use yii\web\UrlManager;
+use yii\web\UrlRule;
 
 #[CoversClass(ReadinessLinks::class)]
 class ReadinessLinksTest extends TestCase
@@ -73,14 +75,40 @@ class ReadinessLinksTest extends TestCase
 
     public function testIntegrationAndQueueLinksRespectPermissions(): void
     {
-        $issue = ['context' => ['formId' => 7, 'integration' => 3, 'integrationType' => 'other']];
-        $this->assertSame(['freeform/forms/7/integrations', 'freeform/settings/other/3'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
+        $issue = ['context' => ['formId' => 7, 'integration' => 3, 'integrationType' => 'other', 'integrationClass' => 'Supabase']];
+        $this->assertSame(['freeform/forms/7/integrations', 'freeform/integrations/other/Supabase/3'], array_column($this->links()->getLinks($issue, 'integrations'), 'url'));
         $this->assertSame([], $this->links([])->getLinks($issue, 'integrations'));
         $this->assertSame(['freeform/forms/7/integrations'], array_column($this->links([Freeform::PERMISSION_FORMS_ACCESS, Freeform::PERMISSION_FORMS_MANAGE.':7'])->getLinks($issue, 'integrations'), 'url'));
         $issue['context']['integrationType'] = '../unsafe';
         $this->assertCount(1, $this->links()->getLinks($issue, 'integrations'));
         $this->assertSame(['utilities/queue-manager'], array_column($this->links(['utility:queue-manager'])->getLinks(['context' => []], 'queue'), 'url'));
         $this->assertSame([], $this->links([])->getLinks(['context' => []], 'queue'));
+    }
+
+    public function testPardotEditLinkMatchesTheRegisteredIntegrationEditorRoute(): void
+    {
+        $issue = ['context' => ['integration' => 35, 'integrationType' => 'crm', 'integrationClass' => 'PardotV4']];
+        $links = $this->links()->getLinks($issue, 'integrations');
+        $routes = require __DIR__.'/../../../Bundles/Routing/routes/cp/integrations/common.php';
+        foreach ($routes as $pattern => $route) {
+            if (str_contains($pattern, '<class:') && str_contains($pattern, '<id:')) {
+                $rule = new UrlRule(['pattern' => $pattern, 'route' => $route]);
+                $canonical = $rule->createUrl(new UrlManager(), $route, ['type' => 'crm', 'class' => 'PardotV4', 'id' => 35]);
+                $this->assertNotFalse($canonical);
+                $this->assertSame($canonical, $links[0]['url']);
+
+                return;
+            }
+        }
+        $this->fail('The registered integration editor route must exist.');
+    }
+
+    public function testUnavailableOrInvalidIntegrationClassesDoNotProduceDeadEditLinks(): void
+    {
+        $issue = ['context' => ['integration' => 35, 'integrationType' => 'crm']];
+        $this->assertSame([], $this->links()->getLinks($issue, 'integrations'));
+        $issue['context']['integrationClass'] = '../PardotV4';
+        $this->assertSame([], $this->links()->getLinks($issue, 'integrations'));
     }
 
     private function links(?array $permissions = null, bool $allowFileTemplateEdit = true): ReadinessLinks

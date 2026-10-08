@@ -85,6 +85,7 @@ class IntegrationReadinessScan
 
                 return $result;
             }
+            $context['integrationClass'] = (new \ReflectionClass($integration['class']))->getShortName();
             $metadata = $this->metadata($integration['metadata']);
             if ($instance) {
                 $metadata = array_merge($metadata, $this->metadata($instance['metadata']));

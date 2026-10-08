@@ -185,6 +185,10 @@ class IntegrationReadinessScan
                     continue;
                 }
                 foreach ($value as $target => $mapping) {
+                    // Unmapped relations can omit the value or save null instead of an empty string.
+                    if (\is_array($mapping) && 'relation' === ($mapping['type'] ?? null) && (!isset($mapping['value']) || '' === $mapping['value'])) {
+                        continue;
+                    }
                     if (!\is_array($mapping) || !isset($mapping['type'], $mapping['value']) || !\is_string($mapping['value']) || !\in_array($mapping['type'], ['relation', 'custom', 'preset'], true)) {
                         // Describe the saved structure without exposing Twig or literal mapping values.
                         $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).', $params + [
@@ -196,8 +200,7 @@ class IntegrationReadinessScan
 
                         continue;
                     }
-                    // The mapping editor saves “Do not map this field” as an empty relation.
-                    if ('relation' === $mapping['type'] && '' !== $mapping['value'] && !isset($fields[$mapping['value']])) {
+                    if ('relation' === $mapping['type'] && !isset($fields[$mapping['value']])) {
                         $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $params + [
                             'target' => (string) $target,
                             'field' => $mapping['value'],

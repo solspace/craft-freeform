@@ -819,6 +819,28 @@ class ReadinessScanTest extends TestCase
         $this->assertStringNotContainsString('private-value', json_encode($issues));
     }
 
+    public function testHubspotUnmappedRelationsAllowOmittedNullAndEmptyValues(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['mapContacts' => true, 'contactMapping' => [
+            'hs_buying_role' => ['type' => 'relation'],
+            'lifecyclestage' => ['type' => 'relation'],
+            'jobtitle' => ['type' => 'relation', 'value' => null],
+            'phone' => ['type' => 'relation', 'value' => ''],
+            'email' => ['type' => 'relation', 'value' => 'email-field'],
+        ]];
+        $this->assertSame([], $scan->check(HubSpotV3::class, $metadata, ['email-field' => []], [], true));
+        $issues = $scan->check(HubSpotV3::class, $metadata, [], [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame(['setting' => 'Contact Mapping', 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
+        $metadata['contactMapping']['email']['value'] = 42;
+        $issues = $scan->check(HubSpotV3::class, $metadata, [], [], true);
+        $this->assertCount(1, $issues);
+        $this->assertStringContainsString('incomplete entry', $issues[0]['message']);
+        $this->assertSame('email', $issues[0]['params']['target']);
+        $this->assertSame('int', $issues[0]['params']['valueType']);
+    }
+
     public function testFormMonitorAllowsDisabledEmailTestingAndStillRequiresActualSettings(): void
     {
         $scan = new IntegrationReadinessScan($this->db);

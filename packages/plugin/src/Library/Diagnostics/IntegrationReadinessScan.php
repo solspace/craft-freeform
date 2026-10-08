@@ -187,7 +187,8 @@ class IntegrationReadinessScan
 
                         break;
                     }
-                    if ('relation' === $mapping['type'] && !isset($fields[$mapping['value']])) {
+                    // The mapping editor saves “Do not map this field” as an empty relation.
+                    if ('relation' === $mapping['type'] && '' !== $mapping['value'] && !isset($fields[$mapping['value']])) {
                         $results[] = $this->issue($context, 'The mapping for “{setting}” references a field that no longer exists.', $params);
 
                         break;

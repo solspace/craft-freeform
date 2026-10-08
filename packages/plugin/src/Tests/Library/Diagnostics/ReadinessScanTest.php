@@ -16,6 +16,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
+use Solspace\Freeform\Integrations\Elements\User\User as UserIntegration;
+use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\Versions\MailchimpV3;
 use Solspace\Freeform\Integrations\Other\Supabase\Supabase;
 use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
@@ -685,6 +687,54 @@ class ReadinessScanTest extends TestCase
         $this->assertCount(1, $result, 'Hidden mappings must not generate warnings when the required table is missing.');
         $this->assertStringContainsString('required setting', $result[0]['message']);
         $this->assertSame([], $scan->check(Supabase::class, ['table' => 'contacts'], [], [], true), 'Unmapped columns may have database defaults.');
+    }
+
+    public function testMailchimpMarketingPermissionsAllowUnmappedFieldsAndStillDetectDeletedFields(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = [
+            'mailingList' => ['id' => 'newsletter'],
+            'emailField' => 'email-field',
+            'gdprMapping' => [
+                'email' => ['type' => 'relation', 'value' => 'email-permission'],
+                'direct-mail' => ['type' => 'relation', 'value' => 'direct-mail-permission'],
+                'advertising' => ['type' => 'relation', 'value' => ''],
+            ],
+        ];
+        $fields = [
+            'email-field' => ['type' => EmailInput::class],
+            'email-permission' => ['type' => DropdownField::class],
+            'direct-mail-permission' => ['type' => DropdownField::class],
+        ];
+        $this->assertSame([], $scan->check(MailchimpV3::class, $metadata, $fields, [], true));
+
+        unset($fields['direct-mail-permission']);
+        $issues = $scan->check(MailchimpV3::class, $metadata, $fields, [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame('The mapping for “{setting}” references a field that no longer exists.', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Marketing Permissions'], $issues[0]['params']);
+    }
+
+    public function testUserAttributeMappingsAllowUnmappedFullNameAndPhotoWithoutSkippingOtherChecks(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['attributeMapping' => [
+            'username' => ['type' => 'relation', 'value' => 'username-field'],
+            'firstName' => ['type' => 'relation', 'value' => 'first-name-field'],
+            'lastName' => ['type' => 'relation', 'value' => 'last-name-field'],
+            'fullName' => ['type' => 'relation', 'value' => ''],
+            'email' => ['type' => 'relation', 'value' => 'email-field'],
+            'password' => ['type' => 'relation', 'value' => 'password-field'],
+            'photo' => ['type' => 'relation', 'value' => ''],
+        ]];
+        $fields = array_fill_keys(['username-field', 'first-name-field', 'last-name-field', 'email-field', 'password-field'], []);
+        $this->assertSame([], $scan->check(UserIntegration::class, $metadata, $fields, [], true));
+
+        unset($fields['email-field']);
+        $issues = $scan->check(UserIntegration::class, $metadata, $fields, [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame('The mapping for “{setting}” references a field that no longer exists.', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Attribute Mapping'], $issues[0]['params']);
     }
 
     public function testOAuthAuthorizationIsCheckedLocallyWithoutTrustingTheConnectionFlag(): void

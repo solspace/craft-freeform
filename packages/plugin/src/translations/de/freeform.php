@@ -3676,6 +3676,5 @@ return [
     'Integration “{integrationName}” (ID {integration}): {message}' => 'Integration „{integrationName}“ (ID {integration}): {message}',
     'Integration {integration}: {message}' => 'Integration {integration}: {message}',
     'View Queue Manager' => 'Warteschlangenmanager öffnen',
-    'Edit form integrations' => 'Formularintegrationen bearbeiten',
     'Edit integration' => 'Integration bearbeiten',
 ];

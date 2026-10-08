@@ -3676,6 +3676,5 @@ return [
     'Integration “{integrationName}” (ID {integration}): {message}' => 'Integrazione “{integrationName}” (ID {integration}): {message}',
     'Integration {integration}: {message}' => 'Integrazione {integration}: {message}',
     'View Queue Manager' => 'Apri il gestore della coda',
-    'Edit form integrations' => 'Modifica le integrazioni del modulo',
     'Edit integration' => 'Modifica integrazione',
 ];

@@ -3675,6 +3675,5 @@ return [
     'Integration “{integrationName}” (ID {integration}): {message}' => 'Integration “{integrationName}” (ID {integration}): {message}',
     'Integration {integration}: {message}' => 'Integration {integration}: {message}',
     'View Queue Manager' => 'View Queue Manager',
-    'Edit form integrations' => 'Edit form integrations',
     'Edit integration' => 'Edit integration',
 ];

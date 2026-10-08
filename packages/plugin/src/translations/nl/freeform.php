@@ -3639,6 +3639,5 @@ return [
     'Integration “{integrationName}” (ID {integration}): {message}' => 'Integratie “{integrationName}” (ID {integration}): {message}',
     'Integration {integration}: {message}' => 'Integratie {integration}: {message}',
     'View Queue Manager' => 'Wachtrijbeheer bekijken',
-    'Edit form integrations' => 'Formulierintegraties bewerken',
     'Edit integration' => 'Integratie bewerken',
 ];

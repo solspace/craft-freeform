@@ -493,7 +493,12 @@
                             for (const result of batch.results) {
                                 const row = document.createElement('li');
                                 row.className = result.informational ? 'is-info' : (result.skipped ? 'is-unchecked' : 'is-warning');
-                                row.textContent = result.message;
+                                const content = document.createElement('div');
+                                content.className = 'ff-diag-result-content';
+                                const message = document.createElement('span');
+                                message.className = 'ff-diag-result-message';
+                                message.textContent = result.message;
+                                content.appendChild(message);
                                 const actions = document.createElement('div');
                                 actions.className = 'ff-diag-result-actions';
                                 for (const link of result.links ?? []) {
@@ -502,7 +507,7 @@
                                     const isDatabaseGuide = url.href === 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity';
                                     if (!['http:', 'https:'].includes(url.protocol) || (url.origin !== window.location.origin && !isDatabaseGuide)) continue;
                                     const anchor = document.createElement('a');
-                                    anchor.className = 'ff-diag-result-link';
+                                    anchor.className = 'btn small ff-diag-result-link';
                                     anchor.href = url.href;
                                     anchor.textContent = link.label;
                                     if (isDatabaseGuide) {
@@ -511,7 +516,8 @@
                                     }
                                     actions.appendChild(anchor);
                                 }
-                                if (actions.childElementCount) row.appendChild(actions);
+                                if (actions.childElementCount) content.appendChild(actions);
+                                row.appendChild(content);
                                 findings.push({group: result.informational ? 'info' : (result.skipped ? 'unchecked' : 'issues'), row});
                             }
                             renderFindings(results, findings);

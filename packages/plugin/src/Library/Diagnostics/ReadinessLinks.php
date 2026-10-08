@@ -33,7 +33,7 @@ class ReadinessLinks
                 if ($id > 0 && \is_string($handle) && preg_match('/^[a-zA-Z0-9_-]+$/D', $handle)) {
                     $path .= '/'.$id.'/'.rawurlencode($handle);
                 }
-                $links[] = $this->link('Edit form integrations', $path);
+                $links[] = $this->link('Edit form', $path);
             }
             $type = $context['integrationType'] ?? '';
             $class = $context['integrationClass'] ?? '';

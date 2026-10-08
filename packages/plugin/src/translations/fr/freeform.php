@@ -3676,6 +3676,5 @@ return [
     'Integration “{integrationName}” (ID {integration}): {message}' => 'Intégration « {integrationName} » (ID {integration}) : {message}',
     'Integration {integration}: {message}' => 'Intégration {integration} : {message}',
     'View Queue Manager' => 'Voir le gestionnaire de file d’attente',
-    'Edit form integrations' => 'Modifier les intégrations du formulaire',
     'Edit integration' => 'Modifier l’intégration',
 ];

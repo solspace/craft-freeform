@@ -3631,7 +3631,7 @@ return [
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'Het geselecteerde veld voor “{setting}” ontbreekt of heeft een ongeschikt type.',
     'The mapping for “{setting}” could not be read.' => 'De koppeling voor “{setting}” kon niet worden gelezen.',
     'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).' => 'De koppeling “{target}” in “{setting}” bevat een onvolledige vermelding (type vermelding: {entryType}; modus: {mode}; waardetype: {valueType}).',
-    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'De koppeling “{target}” in “{setting}” verwijst naar een Freeform-veld dat niet meer bestaat (opgeslagen veldreferentie: “{field}”).',
+    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists.' => 'De koppeling “{target}” in “{setting}” verwijst naar een Freeform-veld dat niet meer bestaat.',
     'The integration has no readable OAuth access token. Authorize it again.' => 'De integratie heeft geen leesbaar OAuth-toegangstoken. Autoriseer deze opnieuw.',
     'The OAuth access token could not be checked with the current site key.' => 'Het OAuth-toegangstoken kon niet worden gecontroleerd met de huidige sitesleutel.',
     'Queue job {job}: {message}' => 'Wachtrijtaak {job}: {message}',

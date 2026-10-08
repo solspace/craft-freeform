@@ -3668,7 +3668,7 @@ return [
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'Il campo selezionato per “{setting}” manca o ha un tipo incompatibile.',
     'The mapping for “{setting}” could not be read.' => 'Non è stato possibile leggere la mappatura di “{setting}”.',
     'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).' => 'La mappatura “{target}” in “{setting}” contiene una voce incompleta (tipo di voce: {entryType}; modalità: {mode}; tipo di valore: {valueType}).',
-    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'La mappatura “{target}” in “{setting}” fa riferimento a un campo Freeform che non esiste più (riferimento al campo salvato: “{field}”).',
+    'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists.' => 'La mappatura “{target}” in “{setting}” fa riferimento a un campo Freeform che non esiste più.',
     'The integration has no readable OAuth access token. Authorize it again.' => 'L’integrazione non ha un token di accesso OAuth leggibile. Autorizzala di nuovo.',
     'The OAuth access token could not be checked with the current site key.' => 'Non è stato possibile controllare il token di accesso OAuth con la chiave attuale del sito.',
     'Queue job {job}: {message}' => 'Processo in coda {job}: {message}',

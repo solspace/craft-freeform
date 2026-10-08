@@ -715,8 +715,8 @@ class ReadinessScanTest extends TestCase
         unset($fields['direct-mail-permission']);
         $issues = $scan->check(MailchimpV3::class, $metadata, $fields, [], true);
         $this->assertCount(1, $issues);
-        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $issues[0]['message']);
-        $this->assertSame(['setting' => 'Marketing Permissions', 'target' => 'direct-mail', 'field' => 'direct-mail-permission'], $issues[0]['params']);
+        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists.', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Marketing Permissions', 'target' => 'direct-mail'], $issues[0]['params']);
     }
 
     public function testUserAttributeMappingsAllowUnmappedFullNameAndPhotoWithoutSkippingOtherChecks(): void
@@ -737,11 +737,11 @@ class ReadinessScanTest extends TestCase
         unset($fields['email-field']);
         $issues = $scan->check(UserIntegration::class, $metadata, $fields, [], true);
         $this->assertCount(1, $issues);
-        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $issues[0]['message']);
-        $this->assertSame(['setting' => 'Attribute Mapping', 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
+        $this->assertSame('The “{target}” mapping in “{setting}” references a Freeform field that no longer exists.', $issues[0]['message']);
+        $this->assertSame(['setting' => 'Attribute Mapping', 'target' => 'email'], $issues[0]['params']);
     }
 
-    public function testIntegrationMappingFindingsIdentifyEveryBrokenTargetAndSavedFieldReference(): void
+    public function testIntegrationMappingFindingsIdentifyEveryBrokenTarget(): void
     {
         $scan = new IntegrationReadinessScan($this->db);
         $cases = [
@@ -761,8 +761,8 @@ class ReadinessScanTest extends TestCase
             $this->assertSame([], $scan->check($class, $metadata, ['email-field' => [], 'company-field' => []], [], true));
             $issues = $scan->check($class, $metadata, [], [], true);
             $this->assertCount(2, $issues);
-            $this->assertSame(['setting' => $setting, 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
-            $this->assertSame(['setting' => $setting, 'target' => 'company', 'field' => 'company-field'], $issues[1]['params']);
+            $this->assertSame(['setting' => $setting, 'target' => 'email'], $issues[0]['params']);
+            $this->assertSame(['setting' => $setting, 'target' => 'company'], $issues[1]['params']);
             $this->assertStringNotContainsString('private-custom-value', json_encode($issues));
             $this->assertStringNotContainsString('private-preset-value', json_encode($issues));
         }
@@ -832,7 +832,7 @@ class ReadinessScanTest extends TestCase
         $this->assertSame([], $scan->check(HubSpotV3::class, $metadata, ['email-field' => []], [], true));
         $issues = $scan->check(HubSpotV3::class, $metadata, [], [], true);
         $this->assertCount(1, $issues);
-        $this->assertSame(['setting' => 'Contact Mapping', 'target' => 'email', 'field' => 'email-field'], $issues[0]['params']);
+        $this->assertSame(['setting' => 'Contact Mapping', 'target' => 'email'], $issues[0]['params']);
         $metadata['contactMapping']['email']['value'] = 42;
         $issues = $scan->check(HubSpotV3::class, $metadata, [], [], true);
         $this->assertCount(1, $issues);

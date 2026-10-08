@@ -201,9 +201,8 @@ class IntegrationReadinessScan
                         continue;
                     }
                     if ('relation' === $mapping['type'] && !isset($fields[$mapping['value']])) {
-                        $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).', $params + [
+                        $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists.', $params + [
                             'target' => (string) $target,
-                            'field' => $mapping['value'],
                         ]);
                     }
                 }

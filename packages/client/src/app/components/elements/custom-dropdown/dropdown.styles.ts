@@ -46,6 +46,10 @@ export const CurrentValue = styled.div`
   &.missing {
     color: var(--yellow-800, #854d0e);
     background-color: var(--yellow-100, #fef3c7);
+
+    svg {
+      fill: currentColor;
+    }
   }
 
   &.empty > span {

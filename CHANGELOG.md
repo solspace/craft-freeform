@@ -1,5 +1,41 @@
 # Solspace Freeform Changelog
 
+## 5.17.0 - Unreleased
+
+### Added
+- Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
+- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
+- Added opt-in **HTML embeds** for standalone pages on the same origin as Craft.
+- Added an **Embed Form** tab to the form builder with a copyable Twig snippet and embedding guides.
+- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates.
+- Added a Pro **Supabase** integration under **Other** to send submissions to database tables with configurable field mappings.
+- Added a Pro **Summary** field for reviewing answers before submitting.
+- Added a Pro **Range Slider** field with configurable limits, step size, and a live value display.
+- Added an optional **International Phone** mode with country selection, validation, and international number formatting.
+- Added **Enable Search** to Dropdown and Multiple Select fields.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with translated labels where applicable.
+- Added a **Browser Autofill** setting to text-based fields for selecting autocomplete purposes.
+- Added **Auto Grow** to Textarea fields, with an optional maximum height.
+- Added **Show Character Count** to Text and Textarea fields.
+- Added **Show Password Toggle** to Password fields.
+- Added **Suggest Email Corrections** to Email fields for common domain misspellings.
+- Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop fields to display allowed file kinds, counts, and sizes.
+- Added an optional **Show Processing Overlay on Submit** setting to display a spinner and message while processing a submission.
+- Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
+
+### Changed
+- Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.
+- Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, with support for custom model IDs.
+- Improved accessibility across the sample formatting templates.
+- AJAX forms now respect formatting template overrides for success banners, error banners, and field validation messages.
+- Improved **File Upload Drag & Drop** styling in the Basic and Multipage All Fields templates.
+- Corrected upload hint spacing in Bootstrap 5 templates and Drag & Drop label placement in Bootstrap 5 Floating Labels.
+- Improved the installed demo templates with better accessibility, simpler configuration, cleaner styles, corrected routing, and safer submission deletion.
+- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+
+> [!WARNING]
+> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
+
 ## 5.16.6 - 2026-10-07
 
 ### Added

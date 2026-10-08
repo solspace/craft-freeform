@@ -59,6 +59,7 @@ export type ManifestFieldDefinition = {
   required: boolean;
   defaultValue?: unknown;
   placeholder?: string | null;
+  attributes?: { input?: { autocomplete?: string } };
   options?: Array<{ label: string; value: string; checked?: boolean }>;
   frontend?: {
     renderer?: string;

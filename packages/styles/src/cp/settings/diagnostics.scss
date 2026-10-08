@@ -294,3 +294,612 @@
     }
   }
 }
+
+// Keep legacy styles above for Craft Preflight, which shares this asset bundle.
+#freeform-diagnostics {
+  code {
+    padding: 1px 5px;
+    font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 0.8em;
+    font-weight: normal;
+    background-color: var(--gray-100);
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--small-border-radius);
+  }
+
+  .ff-diag-banner {
+    --ff-diag-banner-color: var(--enabled-color);
+    margin-block: 0 14px;
+    padding: 10px 16px;
+    color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
+    border-color: color-mix(in srgb, var(--ff-diag-banner-color) 30%, var(--border-hairline, var(--hairline-color)));
+    background: color-mix(in srgb, var(--ff-diag-banner-color) 6%, var(--secondary-pane-bg, var(--gray-050)));
+
+    &.is-warning {
+      --ff-diag-banner-color: var(--yellow-500, #eab308);
+      --ff-diag-banner-text-color: var(--yellow-700, #a16207);
+      border-color: var(--yellow-500, #eab308);
+      background: var(--yellow-050, #fefce8);
+    }
+
+    &.is-error {
+      --ff-diag-banner-color: var(--error-color);
+    }
+
+    p {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .checkmark-icon,
+    .alert-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      line-height: 1;
+      cursor: default;
+      background-color: transparent;
+
+      &::before {
+        font-size: 2em;
+        color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
+      }
+    }
+  }
+
+  .ff-diag-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1fr);
+    gap: 40px;
+    row-gap: 28px;
+    margin-top: 20px;
+
+    @media (max-width: 1400px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+  }
+
+
+  .ff-diag-section {
+    margin-bottom: 24px;
+
+    > h2 {
+      margin: 0 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+  }
+
+  .ff-diag-items,
+  .ff-diag-notes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ff-diag-group > h3 {
+    margin: 14px 0 10px;
+    font-size: 14px;
+  }
+
+  .ff-diag-row {
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+  }
+
+  .ff-diag-item {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+    font-weight: 600;
+
+    .item-inline {
+      min-width: 0;
+      flex: 1;
+      overflow-wrap: anywhere;
+    }
+
+    b,
+    strong {
+      font-weight: normal;
+    }
+
+    &.is-product {
+      font-weight: normal;
+
+      b,
+      strong {
+        font-weight: 600;
+      }
+    }
+
+    &.item-suggestions .diag-check {
+      display: inline-block;
+      background: var(--yellow-500, #eab308);
+      box-shadow: none;
+    }
+
+    &.item-warnings .diag-check {
+      display: inline-block;
+      background: var(--error-color);
+      box-shadow: none;
+    }
+  }
+
+  .diag-check,
+  .ff-diag-dot {
+    display: inline-block;
+    width: 0.6rem;
+    height: 0.6rem;
+    min-width: 0.6rem;
+    min-height: 0.6rem;
+    flex: 0 0 0.6rem;
+    align-self: center;
+    box-sizing: border-box;
+    border-radius: 50%;
+    margin: 0;
+    vertical-align: middle;
+
+    &.diag-enabled,
+    &.is-pass {
+      background: var(--enabled-color);
+    }
+
+    &.diag-disabled,
+    &.is-disabled {
+      background: transparent;
+      box-shadow: inset 0 0 0 1.4px var(--gray-500);
+    }
+
+    &.diag-info,
+    &.is-warning {
+      background: var(--yellow-500, #eab308);
+    }
+
+    &.diag-warning,
+    &.is-error {
+      background: var(--error-color);
+    }
+
+    &.diag-spacer {
+      display: none;
+    }
+  }
+
+  .ff-diag-notes {
+    margin-top: 3px;
+    color: var(--gray-600);
+    font-size: 12px;
+    line-height: 1.5;
+
+    .suggestionvalidator {
+      color: var(--yellow-700, #a16207);
+    }
+
+    .warningvalidator,
+    .warningnoticevalidator {
+      color: var(--error-color);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+
+  .diagnostic-color-error,
+  .diagnostic-color-pass,
+  .diagnostic-color-base {
+    color: inherit;
+    font-style: normal;
+    font-weight: normal;
+  }
+
+  .ff-diag-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 10px;
+    color: var(--gray-600);
+    font-size: 12px;
+
+    > span {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .ff-diag-dot {
+      margin-inline-end: 7px;
+    }
+  }
+  .ff-diag-disclosure {
+    margin-top: 16px;
+
+    summary {
+      padding: 10px 16px;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--large-border-radius, 5px);
+      background: var(--gray-050);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    > p {
+      margin: 10px 0;
+    }
+  }
+
+  .ff-diag-report textarea {
+    font-family: monospace;
+    resize: vertical;
+  }
+
+  .ff-diag-health-intro {
+    margin: 4px 0 20px;
+  }
+
+  .ff-diag-health-check {
+    margin-bottom: 14px;
+    border: 1px solid var(--hairline-color);
+    border-radius: var(--large-border-radius, 5px);
+    overflow: hidden;
+  }
+
+  .ff-diag-health-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    padding: 16px;
+  }
+
+  .ff-diag-health-title {
+    flex: 1 1 300px;
+    min-width: 0;
+
+    h2 {
+      margin: 0;
+    }
+
+    p {
+      margin: 5px 0 0 18px;
+      color: var(--gray-600);
+    }
+  }
+
+  .ff-diag-health-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      flex: 0 0 6px;
+      border-inline-end: 2px solid currentColor;
+      border-block-end: 2px solid currentColor;
+      transform: rotate(-45deg);
+    }
+
+    &[aria-expanded='true']::before {
+      transform: rotate(45deg);
+    }
+  }
+
+  .ff-diag-health-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--gray-600);
+    font-size: 12px;
+    white-space: nowrap;
+
+    &::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gray-400);
+    }
+
+    &.is-success::before {
+      background: var(--enabled-color);
+    }
+
+    &.is-warning::before {
+      background: var(--yellow-500, #eab308);
+    }
+
+    &.is-error::before {
+      background: var(--error-color);
+    }
+
+    &.is-info::before,
+    &.is-running::before {
+      background: var(--link-color, #0b69d5);
+    }
+  }
+
+  .ff-diag-health-body {
+    padding: 0 16px 16px;
+    border-top: 1px solid var(--hairline-color);
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .ff-diag-health-details {
+    margin-top: 14px;
+
+    p {
+      margin: 8px 0 0;
+      color: var(--gray-600);
+    }
+  }
+
+  .ff-diag-health-results {
+    margin-top: 14px;
+
+    summary {
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .ff-diag-scan-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    > .spinner {
+      --size: 20px;
+      flex: 0 0 20px;
+      width: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .ff-diag-scan-feedback {
+    --ff-scan-color: var(--link-color, #0b69d5);
+    --ff-scan-text-color: var(--gray-700);
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid color-mix(in srgb, var(--ff-scan-color) 30%, var(--hairline-color));
+    border-radius: var(--large-border-radius, 5px);
+    background: color-mix(in srgb, var(--ff-scan-color) 6%, var(--gray-050));
+
+    &.hidden {
+      display: none;
+    }
+
+    &.is-success {
+      --ff-scan-color: var(--enabled-color);
+      --ff-scan-text-color: var(--enabled-color);
+    }
+
+    &.is-info {
+      --ff-scan-text-color: var(--link-color, #0b69d5);
+    }
+
+    &.is-warning {
+      --ff-scan-color: var(--yellow-500, #eab308);
+      --ff-scan-text-color: var(--yellow-700, #a16207);
+    }
+
+    &.is-error {
+      --ff-scan-color: var(--error-color);
+      --ff-scan-text-color: var(--error-color);
+
+      progress {
+        display: none;
+      }
+    }
+  }
+
+  .ff-diag-scan-progress {
+    display: block;
+    width: 100%;
+    height: 6px;
+    margin-bottom: 10px;
+    border: 0;
+    border-radius: 3px;
+    overflow: hidden;
+    appearance: none;
+    background: var(--gray-200);
+    accent-color: var(--ff-scan-color);
+
+    &::-webkit-progress-bar {
+      background: var(--gray-200);
+      border-radius: 3px;
+    }
+
+    &::-webkit-progress-value {
+      background: var(--ff-scan-color);
+      border-radius: 3px;
+      transition: width 200ms ease;
+    }
+
+    &::-moz-progress-bar {
+      background: var(--ff-scan-color);
+      border-radius: 3px;
+    }
+
+    &:indeterminate {
+      background: linear-gradient(to right, var(--ff-scan-color) 30%, var(--gray-200) 30%);
+      background-size: 200% 100%;
+      animation: ff-diag-scan-progress 1.2s linear infinite;
+
+      &::-webkit-progress-bar {
+        background: transparent;
+      }
+
+      &::-moz-progress-bar {
+        background: transparent;
+      }
+    }
+  }
+
+  .ff-diag-scan-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0;
+    color: var(--ff-scan-text-color);
+    font-weight: 600;
+    line-height: 1.5;
+
+    > span:first-child {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 1em;
+      width: 1em;
+      height: 1.5em;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-size: 1em;
+      line-height: 1;
+      color: inherit;
+      cursor: default;
+      background: transparent;
+
+      &.ff-diag-scan-info-icon::before {
+        content: "ⓘ";
+      }
+
+      &::before {
+        font-size: 1em;
+        line-height: 1;
+        color: inherit;
+      }
+    }
+
+    > span:last-child {
+      min-width: 0;
+      flex: 1;
+    }
+  }
+
+  .ff-diag-scan-results {
+    margin-top: 10px;
+    padding-inline-start: 20px;
+    list-style: disc outside;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+
+    > li {
+      display: list-item;
+
+      + li {
+        margin-top: 12px;
+      }
+    }
+
+    .ff-diag-result-content {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 8px 16px;
+    }
+
+    .ff-diag-result-message {
+      flex: 1 1 320px;
+      min-width: 0;
+    }
+
+    .ff-diag-result-actions {
+      display: flex;
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 6px;
+      max-width: 100%;
+      margin-inline-start: auto;
+    }
+
+    .ff-diag-result-link {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 800px) {
+      .ff-diag-result-content {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .ff-diag-result-message {
+        flex-basis: auto;
+      }
+
+      .ff-diag-result-actions {
+        justify-content: flex-start;
+        margin-inline-start: 0;
+      }
+    }
+
+    &:empty {
+      display: none;
+    }
+
+    .is-unchecked {
+      color: var(--gray-600);
+    }
+
+    .is-info {
+      color: var(--link-color, #0b69d5);
+    }
+
+    .is-warning {
+      color: var(--yellow-700, #a16207);
+    }
+
+    .is-error {
+      color: var(--error-color);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ff-diag-scan-progress {
+      &:indeterminate {
+        animation: none;
+      }
+
+      &::-webkit-progress-value {
+        transition: none;
+      }
+    }
+  }
+}
+
+@keyframes ff-diag-scan-progress {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}

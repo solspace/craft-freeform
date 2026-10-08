@@ -16,7 +16,13 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
+use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\QueueHealthScan;
+use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
+use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -31,7 +37,6 @@ class DiagnosticsController extends BaseController
         $diagnostics = Freeform::getInstance()->diagnostics;
 
         $server = $diagnostics->getServerChecks();
-        $database = $diagnostics->getDatabaseChecks();
         $site = $diagnostics->getSiteChecks();
         $stats = $diagnostics->getFreeformStats();
         $configurations = $diagnostics->getFreeformConfigurations();
@@ -39,14 +44,23 @@ class DiagnosticsController extends BaseController
         $formType = $diagnostics->getFreeformFormType();
         $modules = $diagnostics->getCraftModules();
 
-        $combined = array_merge($server, $database, $stats, $configurations);
+        $combined = array_merge($server, $site, $stats, $configurations, $integrations, $formType, $modules);
         [$warnings, $suggestions] = $this->compileBanners($combined);
+
+        $report = $this->compileReport([
+            Freeform::t('Server Checks') => $server,
+            Freeform::t('Site Settings') => $site,
+            ...$configurations,
+            Freeform::t('Statistics') => $stats,
+            Freeform::t('Integrations') => $integrations,
+            Freeform::t('Form Types') => $formType,
+            Freeform::t('Modules') => $modules,
+        ]);
 
         return $this->renderTemplate(
             'freeform/settings/_diagnostics',
             [
                 'server' => $server,
-                'database' => $database,
                 'site' => $site,
                 'stats' => $stats,
                 'configurations' => $configurations,
@@ -55,9 +69,34 @@ class DiagnosticsController extends BaseController
                 'modules' => $modules,
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
+                'report' => $report,
                 'readOnly' => false,
             ]
         );
+    }
+
+    public function actionCheckDatabaseIntegrity(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        try {
+            \Craft::$app->getDb()->getSchema()->refresh();
+            $database = Freeform::getInstance()->diagnostics->getDatabaseChecks();
+            [$warnings, $suggestions] = $this->compileBanners($database);
+
+            return $this->asJson([
+                'needsAttention' => (bool) ($warnings || $suggestions),
+                'html' => \Craft::$app->getView()->renderTemplate('freeform/settings/_database-check', ['database' => $database]),
+                'report' => implode("\n", $this->compileReportItems($database)),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to check Freeform database integrity: '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
     }
 
     public function actionScanOrphanedSubmissions(): Response
@@ -145,13 +184,36 @@ class DiagnosticsController extends BaseController
                 'completedChecks' => $state['task'],
                 'totalChecks' => \count($state['tasks']),
                 'scanned' => $state['scanned'],
-                'results' => array_values(array_filter($state['results'], static fn ($result) => $result['count'] || $result['error'])),
+                'results' => array_values(array_map(
+                    static fn ($result) => array_replace($result, ['error' => $result['error'] ? Freeform::t($result['error']) : null]),
+                    array_filter($state['results'], static fn ($result) => $result['count'] || $result['error'])
+                )),
             ]);
         } catch (\Throwable $exception) {
             \Craft::warning('Unable to scan Freeform related data: '.$exception->getMessage(), 'freeform');
 
             return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
         }
+    }
+
+    public function actionScanUploadedFiles(): Response
+    {
+        return $this->scanReadiness('uploads');
+    }
+
+    public function actionScanNotifications(): Response
+    {
+        return $this->scanReadiness('notifications');
+    }
+
+    public function actionScanIntegrations(): Response
+    {
+        return $this->scanReadiness('integrations');
+    }
+
+    public function actionScanQueue(): Response
+    {
+        return $this->scanReadiness('queue');
     }
 
     public function actionCraftPreflight(): Response
@@ -170,6 +232,175 @@ class DiagnosticsController extends BaseController
                 'readOnly' => false,
             ]
         );
+    }
+
+    private function scanReadiness(string $kind): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        $scanId = \Craft::$app->getRequest()->getBodyParam('scanId');
+        if (null !== $scanId && (!\is_string($scanId) || !preg_match('/^[a-f0-9]{32}$/D', $scanId))) {
+            throw new BadRequestHttpException('Invalid scan ID.');
+        }
+        $cache = \Craft::$app->getCache();
+        $owner = (string) \Craft::$app->getUser()->getId();
+
+        try {
+            $scan = match ($kind) {
+                'uploads' => new UploadIntegrityScan(\Craft::$app->getDb(), sitesEnabled: SitesHelper::isEnabled()),
+                'integrations' => new IntegrationReadinessScan(\Craft::$app->getDb()),
+                'queue' => new QueueHealthScan(\Craft::$app->getQueue()),
+                default => new NotificationReadinessScan(\Craft::$app->getDb()),
+            };
+            if (null === $scanId) {
+                $scanId = bin2hex(random_bytes(16));
+                $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'info' => 0, 'results' => []];
+            } else {
+                $state = $cache->get(['freeform-readiness-scan', $owner, $kind, $scanId]);
+                if (false === $state) {
+                    return $this->asFailure(Freeform::t('The scan expired. Start a new scan.'));
+                }
+            }
+
+            $task = $state['tasks'][$state['task']] ?? null;
+            if ($task) {
+                $batch = $scan->scanTask($task, $state['cursor'], $state['maxId'], $state['offset']);
+                $state['scanned'] += $batch['scanned'];
+                foreach ($batch['results'] as $issue) {
+                    if (!empty($issue['informational'])) {
+                        $state['info'] = ($state['info'] ?? 0) + 1;
+                    } else {
+                        ++$state[$issue['skipped'] ? 'skipped' : 'issues'];
+                    }
+                    if (\count($state['results']) < 100) {
+                        $state['results'][] = $issue;
+                    }
+                }
+                $state['cursor'] = $batch['cursor'];
+                $state['maxId'] = $batch['maxId'];
+                $state['offset'] = $batch['offset'];
+                if ($batch['complete']) {
+                    ++$state['task'];
+                    $state['cursor'] = $state['offset'] = 0;
+                    $state['maxId'] = null;
+                }
+            }
+            if (!$cache->set(['freeform-readiness-scan', $owner, $kind, $scanId], $state, 3600)) {
+                return $this->asFailure(Freeform::t('The scan progress could not be saved. Check the Craft cache configuration.'));
+            }
+
+            $links = new ReadinessLinks(allowFileTemplateEdit: Freeform::getInstance()->settings->getSettingsModel()->allowFileTemplateEdit);
+
+            return $this->asJson([
+                'scanId' => $scanId,
+                'complete' => $state['task'] >= \count($state['tasks']),
+                'completedChecks' => $state['task'],
+                'totalChecks' => \count($state['tasks']),
+                'scanned' => $state['scanned'],
+                'issues' => $state['issues'],
+                'skipped' => $state['skipped'],
+                'info' => $state['info'] ?? 0,
+                'truncated' => $state['issues'] + $state['skipped'] + ($state['info'] ?? 0) > \count($state['results']),
+                'results' => array_map(static function (array $issue) use ($kind, $links): array {
+                    $context = $issue['context'];
+                    $message = match (true) {
+                        $kind === 'queue' && isset($context['job']) => 'Queue job {job}: {message}',
+                        $kind === 'queue' => '{message}',
+                        $kind === 'integrations' && isset($context['form'], $context['integrationName']) => 'Form “{form}”, integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' && isset($context['integrationName']) => 'Integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' => 'Integration {integration}: {message}',
+                        $kind === 'notifications' && isset($context['notificationName']) => 'Form “{form}”, notification “{notificationName}” (ID {notification}): {message}',
+                        $kind === 'notifications' => 'Form “{form}”, notification {notification}: {message}',
+                        isset($context['asset']) => 'Form “{form}”, field “{field}”, submission {submission}, asset {asset}: {message}',
+                        isset($context['submission']) => 'Form “{form}”, field “{field}”, submission {submission}: {message}',
+                        default => 'Form “{form}”, field “{field}”: {message}',
+                    };
+
+                    $params = $issue['params'] ?? [];
+                    if (isset($params['setting'])) {
+                        $params['setting'] = Freeform::t($params['setting']);
+                    }
+
+                    return [
+                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $params)]),
+                        'skipped' => $issue['skipped'],
+                        'informational' => $issue['informational'] ?? false,
+                        'links' => $links->getLinks($issue, $kind),
+                    ];
+                }, $state['results']),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to scan Freeform '.$kind.': '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
+    }
+
+    private function compileReport(array $sections): string
+    {
+        $lines = [
+            Freeform::t('Freeform Diagnostics'),
+            Freeform::t('Generated at {timestamp}', ['timestamp' => gmdate('Y-m-d H:i:s').' UTC']),
+        ];
+
+        foreach ($sections as $heading => $items) {
+            if (!$items) {
+                continue;
+            }
+
+            $lines[] = '';
+            $lines[] = $heading;
+            $lines = array_merge($lines, $this->compileReportItems($items));
+        }
+
+        return implode("\n", $lines);
+    }
+
+    private function compileReportItems(array $items): array
+    {
+        $lines = [];
+        foreach ($items as $heading => $item) {
+            if (\is_array($item)) {
+                $lines[] = $heading;
+                $lines = array_merge($lines, $this->compileReportItems($item));
+
+                continue;
+            }
+
+            $markup = (string) $item->getMarkup();
+            if ($markup === '') {
+                continue;
+            }
+
+            $status = null;
+            if ($item->getWarnings()) {
+                $status = 'Potential issue';
+            } elseif ($item->getSuggestions()) {
+                $status = 'Advisory';
+            } elseif (preg_match('/\bdiag-(enabled|disabled|warning|info)\b/', $markup, $matches)) {
+                $status = match ($matches[1]) {
+                    'enabled' => 'Enabled / Valid',
+                    'disabled' => 'Disabled',
+                    'warning' => 'Potential issue',
+                    'info' => 'Advisory',
+                };
+            }
+
+            $lines[] = $this->reportText($markup).($status ? ' ['.Freeform::t($status).']' : '');
+            foreach ($item->getAllValidators() as $validator) {
+                $lines[] = '  - '.$this->reportText((string) $validator->getMessage());
+            }
+        }
+
+        return $lines;
+    }
+
+    private function reportText(string $markup): string
+    {
+        return trim(html_entity_decode(strip_tags($markup), \ENT_QUOTES | \ENT_HTML5, 'UTF-8'));
     }
 
     private function compileBanners($items): array

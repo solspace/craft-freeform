@@ -1,0 +1,10 @@
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="rating rating-xl">
+        {% for count in 1..field.maxValue %}
+            <input class="mask mask-star-2" type="radio"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}" value="{{ count }}" aria-label="{{ count == 1 ? '{count} star'|t('freeform', {count: count}) : '{count} stars'|t('freeform', {count: count}) }}"{% if field.value == count %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if field.attributes.input.get('aria-describedby') %} aria-describedby="{{ field.attributes.input.get('aria-describedby') }}"{% endif %}>
+        {% endfor %}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

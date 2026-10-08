@@ -1,0 +1,14 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: field.label,
+    name: field.handle,
+    id: field.handle,
+    type: 'number',
+    min: field.minValue,
+    max: field.maxValue,
+    step: field.step,
+    required: field.required,
+    errors: submission.errors(field.handle),
+    value: submission[field.handle] is not null ? submission[field.handle].value : '',
+}) }}

@@ -43,3 +43,24 @@
   background-color: #2b3035 !important;
   border-color: var(--bs-primary) !important;
 }
+
+.freeform-phone-country {
+  --ff-phone-background: var(--bs-body-bg, #fff);
+  --ff-phone-color: var(--bs-body-color, #212529);
+  --ff-phone-border: var(--bs-border-color, #dee2e6);
+}
+
+.ff-phone-dark .freeform-phone-country {
+  --ff-phone-background: #292a2d;
+  --ff-phone-color: #f3f4f6;
+  --ff-phone-border: #4b5563;
+}
+
+.freeform-email-suggestion {
+  --ff-email-suggestion-color: var(--bs-secondary-color, #6c757d);
+  --ff-email-suggestion-action: var(--bs-link-color, #0d6efd);
+}
+.ff-email-suggestions-dark .freeform-email-suggestion {
+  --ff-email-suggestion-color: #99a1af;
+  --ff-email-suggestion-action: #8ab4f8;
+}

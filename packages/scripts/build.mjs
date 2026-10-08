@@ -1,4 +1,4 @@
-import { rename } from "node:fs/promises";
+import { readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,6 +33,21 @@ const normalizeLicenseFilesPlugin = {
       if (result.errors.length) {
         return;
       }
+
+      // The phone bundle includes libphonenumber-js and its Apache-licensed metadata.
+      const phoneDependency = path.resolve(
+        __dirname,
+        "../frontend/core/node_modules/libphonenumber-js",
+      );
+      const phoneLicenses = await Promise.all(
+        ["LICENSE", "LICENSE.Apache", "AUTHORS"].map((file) =>
+          readFile(path.join(phoneDependency, file), "utf8"),
+        ),
+      );
+      await writeFile(
+        path.join(outputRoot, "front-end/fields/phone.LICENSE.txt"),
+        phoneLicenses.join("\n\n"),
+      );
 
       const legalFiles = globSync("**/*.LEGAL.txt", {
         cwd: outputRoot,

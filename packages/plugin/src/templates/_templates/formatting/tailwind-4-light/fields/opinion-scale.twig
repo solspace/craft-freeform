@@ -6,7 +6,10 @@
   <div class="sm:flex gap-x-3">
     {% for scale in field.scales %}
       <div class="group sm:flex-1 mb-2 sm:mb-0">
-        <input type="radio" name="{{ field.handle }}" value="{{ scale.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == scale.value ? "checked" }} class="hidden peer" />
+        <input type="radio" name="{{ field.handle }}" value="{{ scale.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == scale.value ? "checked" }} class="freeform-visually-hidden peer"
+          {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+          {% if field.hasErrors %}aria-invalid="true"{% endif %}
+        />
         <label for="{{ field.idAttribute }}-{{ loop.index }}" class="{{ field.attributes.optionLabel.get("class") }}">
           <span class="w-5"></span>
           <span>{{ scale }}</span>

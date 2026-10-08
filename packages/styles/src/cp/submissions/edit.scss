@@ -109,6 +109,38 @@ $gutter: 10px;
   justify-content: flex-start;
 }
 
+.ff-submission-upload-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 4px 0;
+  padding: 8px 10px;
+  border-radius: 5px;
+  color: var(--yellow-800, #854d0e);
+  background-color: var(--yellow-100, #fef3c7);
+  font-size: 13px;
+  line-height: 20px;
+
+  > svg {
+    flex: 0 0 16px;
+    margin-top: 2px;
+  }
+
+  > span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  > .delete {
+    flex: 0 0 auto;
+    color: inherit;
+    cursor: pointer;
+  }
+}
+
 label.required:after {
   margin: -12px 0 0 5px !important;
 }
@@ -150,6 +182,59 @@ label.required:after {
 
   td.action {
     vertical-align: middle;
+  }
+}
+
+.freeform-submission-summary {
+  [data-freeform-summary] {
+    container-name: freeform-cp-summary;
+    container-type: inline-size;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #d8e2ec;
+    border-radius: 5px;
+    background: #fbfcfe;
+
+    > [data-summary-field] {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-items: baseline;
+      gap: 2px 20px;
+      padding: 8px 14px;
+
+      + [data-summary-field] {
+        border-top: 1px solid #e7edf4;
+      }
+
+      > dt,
+      > dd {
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        font-size: 13px;
+        line-height: 20px;
+        overflow-wrap: anywhere;
+      }
+
+      > dt {
+        color: #596673;
+        font-weight: 600;
+      }
+
+      > dd {
+        color: variables.$color-input-text;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
+@container freeform-cp-summary (min-width: 420px) {
+  .freeform-submission-summary [data-freeform-summary] > [data-summary-field] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   }
 }
 

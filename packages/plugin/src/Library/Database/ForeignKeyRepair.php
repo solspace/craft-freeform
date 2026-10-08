@@ -79,7 +79,10 @@ class ForeignKeyRepair
         }
 
         if ($conflicts) {
-            return $this->result('conflict', $orphans, 'An existing key differs from the expected relationship (ON DELETE '.($onDelete ?? 'any').', ON UPDATE '.($onUpdate ?? 'any').'). Existing: '.implode('; ', $conflicts).'. Review it manually.');
+            return $this->result('conflict', $orphans, 'An existing key differs from the expected relationship (ON DELETE '.($onDelete ?? 'any').', ON UPDATE '.($onUpdate ?? 'any').'). Existing: '.implode('; ', $conflicts).'. Review it manually.') + [
+                'messageTemplate' => 'An existing key differs from the expected relationship (ON DELETE {onDelete}, ON UPDATE {onUpdate}). Existing: {existing}. Review it manually.',
+                'messageParams' => ['onDelete' => $onDelete ?? 'any', 'onUpdate' => $onUpdate ?? 'any', 'existing' => implode('; ', $conflicts)],
+            ];
         }
 
         if ($orphans) {

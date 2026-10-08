@@ -12,6 +12,7 @@ import { ModalHub, ModalOverlay } from "./modal.styles";
 import type { ModalConfig, ModalType } from "./modal.types";
 
 type ContextType = {
+  hasOpenModals: boolean;
   openModal: (
     modal: ModalType,
     modalData?: GenericValue,
@@ -21,6 +22,7 @@ type ContextType = {
 };
 
 const ModalContext = createContext<ContextType>({
+  hasOpenModals: false,
   openModal: () => void {},
   closeModal: () => void {},
 });
@@ -60,7 +62,9 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const transitions = useAnimateModals(modals);
 
   return (
-    <ModalContext.Provider value={{ openModal, closeModal }}>
+    <ModalContext.Provider
+      value={{ openModal, closeModal, hasOpenModals: modals.length > 0 }}
+    >
       {children}
       {createPortal(
         <ModalHub>

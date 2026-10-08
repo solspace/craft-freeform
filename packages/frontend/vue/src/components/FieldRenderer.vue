@@ -37,6 +37,14 @@ const Renderer = computed(() =>
 const value = computed(() => props.form.values[props.field.handle]);
 
 const isCheckbox = computed(() => props.field.type === "checkbox");
+const uploadRequirements = computed(() => {
+  if (props.field.type !== "file" && props.field.type !== "file-dnd") {
+    return "";
+  }
+
+  return ((props.field.frontend?.config as { uploadRequirements?: string } | undefined)
+    ?.uploadRequirements ?? "");
+});
 const isPresentational = computed(
   () =>
     props.field.type === "html" ||
@@ -205,6 +213,14 @@ const rendererProps = computed(() => ({
         :class="classNames.instructions"
       />
       <component :is="Renderer" v-bind="rendererProps" />
+      <div
+        v-if="uploadRequirements"
+        :id="`freeform-${field.handle}-upload-requirements`"
+        :class="['freeform-upload-requirements', classNames.instructions]"
+        style="margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4"
+      >
+        {{ uploadRequirements }}
+      </div>
       <component
         :is="components.Errors"
         v-if="showErrors"

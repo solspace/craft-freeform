@@ -57,6 +57,7 @@ return [
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>/delete' => 'freeform/api/integrations/delete',
     'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
+    'freeform/api/integrations/models' => 'freeform/api/integrations/models',
     'freeform/api/integrations/navigation' => 'freeform/api/integrations/navigation',
     'freeform/api/integrations/properties/<id:\d+>' => 'freeform/api/integrations/properties',
     'freeform/api/integrations/properties/<type:[a-zA-Z0-9\-]+>/<integration:[a-zA-Z0-9\-_]+>' => 'freeform/api/integrations/properties',

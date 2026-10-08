@@ -15,6 +15,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use Solspace\Freeform\Library\Rules\Types\IntegrationRule;
@@ -148,6 +149,14 @@ class FreeformImporter
 
             $formRecord->createdByUserId = \Craft::$app->getUser()->getIdentity()->id;
             $formRecord->updatedByUserId = $formRecord->createdByUserId;
+
+            if (!PermissionHelper::isAdmin()) {
+                // Importing a package must not create a public embed URL for a form editor.
+                $existing = $formRecord->isNewRecord
+                    ? false
+                    : Freeform::getInstance()->forms->getFormById($formRecord->id)?->getSettings()->getGeneral()->allowHtmlEmbeds ?? false;
+                $form->settings->getGeneral()->allowHtmlEmbeds = $existing;
+            }
 
             $serialized = $this->serializer->serialize($form->settings, 'json');
             $formRecord->metadata = $serialized;

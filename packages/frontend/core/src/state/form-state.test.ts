@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { FreeformManifest } from "../types/manifest.js";
 import { FormState } from "./form-state.js";
 
-const manifest: FreeformManifest = {
+const baseManifest: FreeformManifest = {
   schemaVersion: "1.0",
   pluginVersion: "5.16.0",
   minimumClientVersion: "0.1.0",
@@ -62,7 +62,7 @@ const manifest: FreeformManifest = {
 
 describe("FormState", () => {
   it("resends the server-issued multi-page state token", () => {
-    const state = new FormState({ manifest });
+    const state = new FormState({ manifest: baseManifest });
 
     state.applySubmitResponse({
       success: true,
@@ -75,5 +75,105 @@ describe("FormState", () => {
 
     expect(state.currentPageIndex).toBe(1);
     expect(state.getSubmitContext()).toEqual({ stateToken: "state-token" });
+  });
+
+  it("does not seed unchecked checkbox defaults as the checked value", () => {
+    const manifest: FreeformManifest = {
+      ...baseManifest,
+      fields: {
+        newsletter: {
+          id: 1,
+          uid: "newsletter",
+          handle: "newsletter",
+          type: "checkbox",
+          label: "Subscribe",
+          required: false,
+          defaultValue: "yes",
+          frontend: {
+            config: { checkedByDefault: false, checkedValue: "yes" },
+          },
+        },
+      },
+    };
+
+    const state = new FormState({ manifest });
+    expect(state.getValue("newsletter")).toBe("");
+    expect(state.getValuesForSubmit()).toEqual({ newsletter: "" });
+  });
+
+  it("seeds checked-by-default checkboxes with the configured value", () => {
+    const manifest: FreeformManifest = {
+      ...baseManifest,
+      fields: {
+        agree: {
+          id: 1,
+          uid: "agree",
+          handle: "agree",
+          type: "checkbox",
+          label: "Agree",
+          required: true,
+          defaultValue: "yes",
+          frontend: {
+            config: { checkedByDefault: true, checkedValue: "yes" },
+          },
+        },
+      },
+    };
+
+    const state = new FormState({ manifest });
+    expect(state.getValue("agree")).toBe("yes");
+  });
+
+  it("honors profile hidden/locked fields and resends properties", () => {
+    const manifest: FreeformManifest = {
+      ...baseManifest,
+      fields: {
+        title: {
+          id: 1,
+          uid: "title",
+          handle: "title",
+          type: "text",
+          label: "Title",
+          required: true,
+        },
+        eventId: {
+          id: 2,
+          uid: "eventId",
+          handle: "eventId",
+          type: "hidden",
+          label: "Event",
+          required: false,
+        },
+        status: {
+          id: 3,
+          uid: "status",
+          handle: "status",
+          type: "text",
+          label: "Status",
+          required: false,
+          defaultValue: "open",
+        },
+      },
+      context: {
+        defaultValues: { eventId: "42", status: "open" },
+        hiddenFields: ["eventId"],
+        lockedFields: ["status"],
+      },
+    };
+
+    const state = new FormState({
+      manifest,
+      properties: { eventId: 42 },
+    });
+
+    expect(state.isFieldVisible("eventId")).toBe(false);
+    expect(state.isFieldEnabled("status")).toBe(false);
+    state.setValue("status", "hacked");
+    expect(state.getValue("status")).toBe("open");
+    expect(state.getValuesForSubmit()).toMatchObject({
+      eventId: "42",
+      status: "open",
+    });
+    expect(state.getSubmitProperties()).toEqual({ eventId: 42 });
   });
 });

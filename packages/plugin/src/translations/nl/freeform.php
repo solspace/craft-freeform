@@ -3641,4 +3641,8 @@ return [
     'View Queue Manager' => 'Wachtrijbeheer bekijken',
     'Edit integration' => 'Integratie bewerken',
     'Mapped field no longer exists' => 'Het gekoppelde veld bestaat niet meer',
+    'Uploaded asset #{id} no longer exists.' => 'Het geüploade asset #{id} bestaat niet meer.',
+    'The file for “{filename}” (asset #{id}) is missing.' => 'Het bestand “{filename}” (asset #{id}) ontbreekt.',
+    'The file for asset #{id} could not be checked. Its storage may be unavailable.' => 'Het bestand voor asset #{id} kon niet worden gecontroleerd. De opslag is mogelijk niet beschikbaar.',
+    'Remove file reference' => 'Bestandsverwijzing verwijderen',
 ];

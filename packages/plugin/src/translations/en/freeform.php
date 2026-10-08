@@ -3677,4 +3677,8 @@ return [
     'View Queue Manager' => 'View Queue Manager',
     'Edit integration' => 'Edit integration',
     'Mapped field no longer exists' => 'Mapped field no longer exists',
+    'Uploaded asset #{id} no longer exists.' => 'Uploaded asset #{id} no longer exists.',
+    'The file for “{filename}” (asset #{id}) is missing.' => 'The file for “{filename}” (asset #{id}) is missing.',
+    'The file for asset #{id} could not be checked. Its storage may be unavailable.' => 'The file for asset #{id} could not be checked. Its storage may be unavailable.',
+    'Remove file reference' => 'Remove file reference',
 ];

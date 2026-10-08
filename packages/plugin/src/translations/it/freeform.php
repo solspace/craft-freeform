@@ -3678,4 +3678,8 @@ return [
     'View Queue Manager' => 'Apri il gestore della coda',
     'Edit integration' => 'Modifica integrazione',
     'Mapped field no longer exists' => 'Il campo associato non esiste più',
+    'Uploaded asset #{id} no longer exists.' => 'La risorsa caricata #{id} non esiste più.',
+    'The file for “{filename}” (asset #{id}) is missing.' => 'Il file “{filename}” (risorsa #{id}) è mancante.',
+    'The file for asset #{id} could not be checked. Its storage may be unavailable.' => 'Non è stato possibile verificare il file della risorsa #{id}. Lo spazio di archiviazione potrebbe non essere disponibile.',
+    'Remove file reference' => 'Rimuovi il riferimento al file',
 ];

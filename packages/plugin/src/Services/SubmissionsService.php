@@ -36,6 +36,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\Helpers\FileUploadPreviewHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
@@ -504,6 +505,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             [
                 'field' => $field,
                 'submission' => $submission,
+                'uploadPreviews' => $field instanceof FileUploadInterface
+                    ? FileUploadPreviewHelper::getPreviews($submission->{$field->getHandle()}->getValue())
+                    : [],
             ]
         );
 

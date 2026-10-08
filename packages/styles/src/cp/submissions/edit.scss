@@ -109,6 +109,38 @@ $gutter: 10px;
   justify-content: flex-start;
 }
 
+.ff-submission-upload-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 4px 0;
+  padding: 8px 10px;
+  border-radius: 5px;
+  color: var(--yellow-800, #854d0e);
+  background-color: var(--yellow-100, #fef3c7);
+  font-size: 13px;
+  line-height: 20px;
+
+  > svg {
+    flex: 0 0 16px;
+    margin-top: 2px;
+  }
+
+  > span {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  > .delete {
+    flex: 0 0 auto;
+    color: inherit;
+    cursor: pointer;
+  }
+}
+
 label.required:after {
   margin: -12px 0 0 5px !important;
 }

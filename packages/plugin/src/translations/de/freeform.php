@@ -3678,4 +3678,8 @@ return [
     'View Queue Manager' => 'Warteschlangenmanager öffnen',
     'Edit integration' => 'Integration bearbeiten',
     'Mapped field no longer exists' => 'Das zugeordnete Feld existiert nicht mehr',
+    'Uploaded asset #{id} no longer exists.' => 'Das hochgeladene Asset #{id} existiert nicht mehr.',
+    'The file for “{filename}” (asset #{id}) is missing.' => 'Die Datei für „{filename}“ (Asset #{id}) fehlt.',
+    'The file for asset #{id} could not be checked. Its storage may be unavailable.' => 'Die Datei für Asset #{id} konnte nicht geprüft werden. Der Speicher ist möglicherweise nicht verfügbar.',
+    'Remove file reference' => 'Dateiverweis entfernen',
 ];

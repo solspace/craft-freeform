@@ -3678,4 +3678,8 @@ return [
     'View Queue Manager' => 'Voir le gestionnaire de file d’attente',
     'Edit integration' => 'Modifier l’intégration',
     'Mapped field no longer exists' => 'Le champ associé n’existe plus',
+    'Uploaded asset #{id} no longer exists.' => 'La ressource téléversée #{id} n’existe plus.',
+    'The file for “{filename}” (asset #{id}) is missing.' => 'Le fichier « {filename} » (ressource #{id}) est manquant.',
+    'The file for asset #{id} could not be checked. Its storage may be unavailable.' => 'Le fichier de la ressource #{id} n’a pas pu être vérifié. Son stockage est peut-être indisponible.',
+    'Remove file reference' => 'Supprimer la référence au fichier',
 ];

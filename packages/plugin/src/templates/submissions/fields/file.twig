@@ -3,37 +3,48 @@
         <label>{{ field.label }}</label>
     </div>
     <div class="file-preview elements chips chips-small">
-        {% set assets = submission.getAssets(field.handle) %}
-
-        {% if assets %}
-            {% for asset in assets|filter(asset => asset is not null) %}
-                {% set thumbSizes = [30, 60, 100, 200] %}
-                {% set srcset = "" %}
-                {%- if asset.kind == 'image' -%}
-                    {%- for size in thumbSizes -%}
-                        {% set thumbTransform = { width: size, height: size } %}
-                        {% set srcset = srcset ~ ", " ~ asset.getUrl(thumbTransform) ~ " " ~ size ~ "w" %}
-                    {%- endfor -%}
-                    {% set srcset = srcset|trim(", ") %}
-                {%- else -%}
-                    {# Use getThumbUrl for non-image files like PDFs #}
-                    {% set srcset = craft.app.assets.thumbUrl(asset, 200, 200) %}
-                {%- endif -%}
-                {% set srcset = srcset|trim(", ") %}
-
-                <div class="element small removable hasthumb chip" style="padding-right: 20px;">
-                    <input type="hidden" name="{{ field.handle }}[]"
-                           value="{{ asset.id }}">
-                    <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
-                    <div class="elementthumb thumb">
-                        <img sizes="30px" srcset="{{ srcset }}" alt="">
+        {% if uploadPreviews %}
+            {% for preview in uploadPreviews %}
+                {% if preview.warning %}
+                    <div class="element ff-submission-upload-warning" role="status">
+                        <input type="hidden" name="{{ field.handle }}[]" value="{{ preview.id }}">
+                        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z"></path>
+                            <path d="M12 9v4m0 4h.01"></path>
+                        </svg>
+                        <span>{{ preview.warning|t('freeform', preview.parameters) }}</span>
+                        <button type="button" class="icon delete" onclick="removeAsset(this);" title="{{ 'Remove file reference'|t('freeform') }}" aria-label="{{ 'Remove file reference'|t('freeform') }}"></button>
                     </div>
-                    <label class="chip-content">
-                        <a href="javascript:;" data-asset-id="{{ asset.id }}">
-                            {{ asset.title }}
-                        </a>
-                    </label>
-                </div>
+                {% else %}
+                    {% set asset = preview.asset %}
+                    {% set thumbSizes = [30, 60, 100, 200] %}
+                    {% set srcset = "" %}
+                    {%- if asset.kind == 'image' -%}
+                        {%- for size in thumbSizes -%}
+                            {% set thumbTransform = { width: size, height: size } %}
+                            {% set srcset = srcset ~ ", " ~ asset.getUrl(thumbTransform) ~ " " ~ size ~ "w" %}
+                        {%- endfor -%}
+                        {% set srcset = srcset|trim(", ") %}
+                    {%- else -%}
+                        {# Use getThumbUrl for non-image files like PDFs #}
+                        {% set srcset = craft.app.assets.thumbUrl(asset, 200, 200) %}
+                    {%- endif -%}
+                    {% set srcset = srcset|trim(", ") %}
+
+                    <div class="element small removable hasthumb chip" style="padding-right: 20px;">
+                        <input type="hidden" name="{{ field.handle }}[]"
+                               value="{{ asset.id }}">
+                        <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
+                        <div class="elementthumb thumb">
+                            <img sizes="30px" srcset="{{ srcset }}" alt="">
+                        </div>
+                        <label class="chip-content">
+                            <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                                {{ asset.title }}
+                            </a>
+                        </label>
+                    </div>
+                {% endif %}
             {% endfor %}
         {% else %}
             {{ "No files uploaded"|t('freeform') }}

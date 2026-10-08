@@ -22,6 +22,7 @@ use Solspace\Freeform\Integrations\Elements\Entry\Entry;
 use Solspace\Freeform\Integrations\Elements\User\User as UserIntegration;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\Versions\MailchimpV3;
 use Solspace\Freeform\Integrations\Other\Supabase\Supabase;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\QueueHealthScan;
@@ -765,6 +766,82 @@ class ReadinessScanTest extends TestCase
             $this->assertStringNotContainsString('private-custom-value', json_encode($issues));
             $this->assertStringNotContainsString('private-preset-value', json_encode($issues));
         }
+    }
+
+    public function testSalesforceTwigAndPresetDropdownMappingsAreValidWithoutRenderingThem(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['mapLeads' => true, 'leadMapping' => [
+            'LastName' => ['type' => 'relation', 'value' => 'last-name-field'],
+            'FirstName' => ['type' => 'relation', 'value' => 'first-name-field'],
+            'Salutation' => ['type' => 'preset', 'value' => 'Prof.'],
+            'RecordTypeId' => ['type' => 'relation', 'value' => ''],
+            'Title' => ['type' => 'relation', 'value' => ''],
+            'Company' => ['type' => 'custom', 'value' => '{{ firstName }} {{ lastName }} Ltd'],
+        ]];
+        $fields = ['last-name-field' => [], 'first-name-field' => []];
+        $this->assertSame([], $scan->check(SalesforceV58::class, $metadata, $fields, [], true));
+    }
+
+    public function testIncompleteMappingsReportEveryTargetAndStructureWithoutExposingValues(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $mapping = [
+            'MissingMode' => ['value' => 'private-value'],
+            'UnknownMode' => ['type' => 'unsupported', 'value' => 'private-value'],
+            'MissingValue' => ['type' => 'custom'],
+            'NullValue' => ['type' => 'preset', 'value' => null],
+            'NumericValue' => ['type' => 'preset', 'value' => 42],
+            'ArrayValue' => ['type' => 'custom', 'value' => ['private-value']],
+            'ScalarEntry' => 'private-value',
+            'NullEntry' => null,
+        ];
+        $expected = [
+            ['array', 'missing', 'string'],
+            ['array', 'unsupported', 'string'],
+            ['array', 'custom', 'missing'],
+            ['array', 'preset', 'null'],
+            ['array', 'preset', 'int'],
+            ['array', 'custom', 'array'],
+            ['string', 'missing', 'missing'],
+            ['null', 'missing', 'missing'],
+        ];
+        $issues = $scan->check(SalesforceV58::class, ['mapLeads' => true, 'leadMapping' => $mapping], [], [], true);
+        $this->assertCount(\count($mapping), $issues);
+        foreach (array_keys($mapping) as $index => $target) {
+            [$entryType, $mode, $valueType] = $expected[$index];
+            $this->assertSame([
+                'setting' => 'Lead Mapping', 'target' => $target,
+                'entryType' => $entryType, 'mode' => $mode, 'valueType' => $valueType,
+            ], $issues[$index]['params']);
+            $this->assertStringContainsString('incomplete entry', $issues[$index]['message']);
+        }
+        $this->assertStringNotContainsString('private-value', json_encode($issues));
+    }
+
+    public function testFormMonitorAllowsDisabledEmailTestingAndStillRequiresActualSettings(): void
+    {
+        $scan = new IntegrationReadinessScan($this->db);
+        $metadata = ['testUrl' => 'https://example.test/contact-us', 'email' => 'monitor@example.test', 'testEmails' => false];
+        $this->assertSame([], $scan->check(FormMonitor::class, $metadata, [], [], true));
+        $metadata['testEmails'] = true;
+        $this->assertSame([], $scan->check(FormMonitor::class, $metadata, [], [], true));
+        unset($metadata['testEmails']);
+        $this->assertSame([], $scan->check(FormMonitor::class, $metadata, [], [], true), 'The default disabled setting is valid.');
+        $metadata['testEmails'] = null;
+        $issues = $scan->check(FormMonitor::class, $metadata, [], [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame(['setting' => 'Test Email Notifications'], $issues[0]['params']);
+        $metadata['testEmails'] = false;
+        $metadata['testUrl'] = '';
+        $issues = $scan->check(FormMonitor::class, $metadata, [], [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame(['setting' => 'URL the Form Monitor should access to check the form'], $issues[0]['params']);
+        $metadata['testUrl'] = 'https://example.test/contact-us';
+        $metadata['email'] = '$FREEFORM_DIAGNOSTICS_NONEXISTENT_EMAIL';
+        $issues = $scan->check(FormMonitor::class, $metadata, [], [], true);
+        $this->assertCount(1, $issues);
+        $this->assertSame(['setting' => 'Notification Email'], $issues[0]['params']);
     }
 
     public function testOAuthAuthorizationIsCheckedLocallyWithoutTrustingTheConnectionFlag(): void

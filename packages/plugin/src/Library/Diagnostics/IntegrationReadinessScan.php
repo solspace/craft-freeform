@@ -6,6 +6,8 @@ use craft\db\Connection;
 use craft\db\Query;
 use craft\helpers\App;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Input\Boolean;
+use Solspace\Freeform\Attributes\Property\Input\BooleanEnv;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Property;
@@ -164,7 +166,8 @@ class IntegrationReadinessScan
 
                 continue;
             }
-            if ($required && (null === $value || false === $value || [] === $value || (\is_string($value) && '' === trim($value)))) {
+            $disabledBoolean = false === $value && ($input instanceof Boolean || $input instanceof BooleanEnv);
+            if ($required && (null === $value || (false === $value && !$disabledBoolean) || [] === $value || (\is_string($value) && '' === trim($value)))) {
                 $results[] = $this->issue($context, 'The required setting “{setting}” is missing or its environment variable is empty.', $params);
 
                 continue;
@@ -183,9 +186,15 @@ class IntegrationReadinessScan
                 }
                 foreach ($value as $target => $mapping) {
                     if (!\is_array($mapping) || !isset($mapping['type'], $mapping['value']) || !\is_string($mapping['value']) || !\in_array($mapping['type'], ['relation', 'custom', 'preset'], true)) {
-                        $results[] = $this->issue($context, 'The mapping for “{setting}” contains an incomplete entry.', $params);
+                        // Describe the saved structure without exposing Twig or literal mapping values.
+                        $results[] = $this->issue($context, 'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).', $params + [
+                            'target' => (string) $target,
+                            'entryType' => get_debug_type($mapping),
+                            'mode' => \is_array($mapping) && \array_key_exists('type', $mapping) ? (\is_string($mapping['type']) ? $mapping['type'] : get_debug_type($mapping['type'])) : 'missing',
+                            'valueType' => \is_array($mapping) && \array_key_exists('value', $mapping) ? get_debug_type($mapping['value']) : 'missing',
+                        ]);
 
-                        break;
+                        continue;
                     }
                     // The mapping editor saves “Do not map this field” as an empty relation.
                     if ('relation' === $mapping['type'] && '' !== $mapping['value'] && !isset($fields[$mapping['value']])) {

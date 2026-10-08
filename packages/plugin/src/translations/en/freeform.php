@@ -3666,7 +3666,7 @@ return [
     'The required setting “{setting}” is missing or its environment variable is empty.' => 'The required setting “{setting}” is missing or its environment variable is empty.',
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'The field selected for “{setting}” is missing or has an incompatible type.',
     'The mapping for “{setting}” could not be read.' => 'The mapping for “{setting}” could not be read.',
-    'The mapping for “{setting}” contains an incomplete entry.' => 'The mapping for “{setting}” contains an incomplete entry.',
+    'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).' => 'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).',
     'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).',
     'The integration has no readable OAuth access token. Authorize it again.' => 'The integration has no readable OAuth access token. Authorize it again.',
     'The OAuth access token could not be checked with the current site key.' => 'The OAuth access token could not be checked with the current site key.',

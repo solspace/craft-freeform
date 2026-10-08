@@ -3667,7 +3667,7 @@ return [
     'The required setting “{setting}” is missing or its environment variable is empty.' => 'Die erforderliche Einstellung „{setting}“ fehlt oder ihre Umgebungsvariable ist leer.',
     'The field selected for “{setting}” is missing or has an incompatible type.' => 'Das für „{setting}“ ausgewählte Feld fehlt oder hat einen inkompatiblen Typ.',
     'The mapping for “{setting}” could not be read.' => 'Die Zuordnung für „{setting}“ konnte nicht gelesen werden.',
-    'The mapping for “{setting}” contains an incomplete entry.' => 'Die Zuordnung für „{setting}“ enthält einen unvollständigen Eintrag.',
+    'The “{target}” mapping in “{setting}” contains an incomplete entry (entry type: {entryType}; mode: {mode}; value type: {valueType}).' => 'Die Zuordnung „{target}“ in „{setting}“ enthält einen unvollständigen Eintrag (Eintragstyp: {entryType}; Modus: {mode}; Werttyp: {valueType}).',
     'The “{target}” mapping in “{setting}” references a Freeform field that no longer exists (saved field reference: “{field}”).' => 'Die Zuordnung „{target}“ in „{setting}“ verweist auf ein nicht mehr vorhandenes Freeform-Feld (gespeicherte Feldreferenz: „{field}“).',
     'The integration has no readable OAuth access token. Authorize it again.' => 'Die Integration hat kein lesbares OAuth-Zugriffstoken. Autorisieren Sie sie erneut.',
     'The OAuth access token could not be checked with the current site key.' => 'Das OAuth-Zugriffstoken konnte mit dem aktuellen Website-Schlüssel nicht geprüft werden.',

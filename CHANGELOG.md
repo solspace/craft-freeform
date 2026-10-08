@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft.
 - Added an **Embed Form** tab to the form builder with a copyable Twig snippet and embedding guides.
@@ -23,7 +24,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
-- Refreshed **Diagnostics** with a compact layout, clearer status indicators, and a copyable support report.
+- Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, with support for custom model IDs.
 - Improved accessibility across the sample formatting templates.
 - AJAX forms now respect formatting template overrides for success banners, error banners, and field validation messages.

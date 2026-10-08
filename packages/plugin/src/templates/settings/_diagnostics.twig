@@ -9,6 +9,12 @@
 ] %}
 {% set title = "Diagnostics"|t("freeform") %}
 
+{% set tabs = {
+    'freeform-diagnostics-overview': {label: 'Overview'|t('freeform'), url: '#freeform-diagnostics-overview'},
+    'freeform-diagnostics-health-checks': {label: 'Health Checks'|t('freeform'), url: '#freeform-diagnostics-health-checks'}
+} %}
+{% set tablistLabel = 'Diagnostics'|t('freeform') %}
+
 {% block actionButton %}
     <button type="button" class="btn" id="freeform-copy-diagnostics" data-copied-label="{{ 'Copied!'|t('freeform')|e('html_attr') }}">{{ 'Copy Support Report'|t('freeform') }}</button>
 {% endblock %}
@@ -64,143 +70,214 @@
     {{ parent() }}
     {% set databaseGuideLink %}<a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'database integrity guide'|t('freeform') }}</a>{% endset %}
     <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
-        <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
-            <p>
-                <span class="{{ warnings|length or suggestions|length ? 'alert-icon' : 'checkmark-icon' }}" aria-hidden="true"></span>
-                {% if warnings|length %}
-                    <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
-                {% elseif suggestions|length %}
-                    <span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>
-                {% else %}
-                    <strong>{{ 'No diagnostic warnings'|t('freeform') }}</strong>
-                {% endif %}
-                {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
-            </p>
+        <div id="freeform-diagnostics-overview" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-overview">
+            <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
+                <p>
+                    <span class="{{ warnings|length or suggestions|length ? 'alert-icon' : 'checkmark-icon' }}" aria-hidden="true"></span>
+                    {% if warnings|length %}
+                        <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
+                    {% elseif suggestions|length %}
+                        <span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>
+                    {% else %}
+                        <strong>{{ 'No diagnostic warnings'|t('freeform') }}</strong>
+                    {% endif %}
+                    {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
+                </p>
+            </div>
+            <div class="ff-diag-legend">
+                {% for status, label in {
+                    pass: 'Enabled / Valid'|t('freeform'),
+                    disabled: 'Disabled'|t('freeform'),
+                    warning: 'Advisory'|t('freeform'),
+                    error: 'Potential issue'|t('freeform')
+                } %}
+                    <span>{{ _self.status(status, label) }}{{ label }}</span>
+                {% endfor %}
+            </div>
+            <div class="ff-diag-grid">
+                {% set configurationSections = [] %}
+                {% for heading, items in configurations %}
+                    {% set configurationSections = configurationSections|merge([
+                        {key: 'configurations', title: heading, items: items}
+                    ]) %}
+                {% endfor %}
+                {% set columns = [
+                    [
+                        {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
+                        {key: 'site', title: 'Site Settings'|t('freeform'), items: site}
+                    ],
+                    configurationSections,
+                    [
+                        {key: 'stats', title: 'Statistics'|t('freeform'), items: stats},
+                        {key: 'integrations', title: 'Integrations'|t('freeform'), items: integrations},
+                        {key: 'formType', title: 'Form Types'|t('freeform'), items: formType},
+                        {key: 'modules', title: 'Modules'|t('freeform'), items: modules}
+                    ]
+                ] %}
+                {% for column in columns %}
+                    <div>
+                        {% for section in column %}
+                            {% if section.items|length %}
+                                <section class="ff-diag-section">
+                                    <h2>{{ section.title }}</h2>
+                                    {{ _self.renderItems(section.items, section.key) }}
+                                </section>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="ff-diag-legend">
-            {% for status, label in {
-                pass: 'Enabled / Valid'|t('freeform'),
-                disabled: 'Disabled'|t('freeform'),
-                warning: 'Advisory'|t('freeform'),
-                error: 'Potential issue'|t('freeform')
-            } %}
-                <span>{{ _self.status(status, label) }}{{ label }}</span>
-            {% endfor %}
-        </div>
-        <div class="ff-diag-grid">
-            {% set configurationSections = [] %}
-            {% for heading, items in configurations %}
-                {% set configurationSections = configurationSections|merge([
-                    {key: 'configurations', title: heading, items: items}
-                ]) %}
-            {% endfor %}
-            {% set columns = [
-                [
-                    {key: 'server', title: 'Server Checks'|t('freeform'), items: server},
-                    {key: 'database', title: 'Database Checks'|t('freeform'), items: database},
-                    {key: 'site', title: 'Site Settings'|t('freeform'), items: site}
-                ],
-                configurationSections,
-                [
-                    {key: 'stats', title: 'Statistics'|t('freeform'), items: stats},
-                    {key: 'integrations', title: 'Integrations'|t('freeform'), items: integrations},
-                    {key: 'formType', title: 'Form Types'|t('freeform'), items: formType},
-                    {key: 'modules', title: 'Modules'|t('freeform'), items: modules}
-                ]
+        <div id="freeform-diagnostics-health-checks" class="hidden" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-health-checks">
+            <p class="light ff-diag-health-intro">{{ 'Run checks to find problems with your database, submissions, uploads, notifications, integrations, and queue. Checks run only when requested and do not change your data.'|t('freeform') }}</p>
+            {% set readinessScans = [
+                {
+                    id: 'freeform-upload-scan', action: 'scan-uploaded-files',
+                    title: 'Uploaded File Integrity'|t('freeform'),
+                    summary: 'Check saved uploads for missing assets and files.'|t('freeform'),
+                    description: 'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.'|t('freeform'),
+                    starting: 'Scanning uploaded files…'|t('freeform'),
+                    success: 'No missing files found. Checked {scanned} uploaded file references.'|t('freeform'),
+                    successSingular: 'No missing files found. Checked {scanned} uploaded file reference.'|t('freeform')
+                },
+                {
+                    id: 'freeform-notification-scan', action: 'scan-notifications',
+                    title: 'Notification Readiness'|t('freeform'),
+                    summary: 'Check enabled notifications for configuration issues.'|t('freeform'),
+                    description: 'Check enabled notifications on active forms for missing templates, recipient fields, rules, and invalid email settings. This checks saved configuration only; it does not render Twig or test email delivery.'|t('freeform'),
+                    starting: 'Checking notifications…'|t('freeform'),
+                    success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform'),
+                    successSingular: 'No notification configuration issues found. Checked {scanned} enabled notification.'|t('freeform')
+                },
+                {
+                    id: 'freeform-integration-scan', action: 'scan-integrations',
+                    title: 'Integration Readiness'|t('freeform'),
+                    summary: 'Check enabled integrations for missing settings and broken mappings.'|t('freeform'),
+                    description: 'Check saved settings for enabled integrations and their active form connections. Checks required settings, available credentials, OAuth tokens, and field references. Does not contact external services, validate credentials remotely, or render Twig.'|t('freeform'),
+                    starting: 'Checking integrations…'|t('freeform'),
+                    success: 'No integration configuration issues found. Checked {scanned} integration configurations.'|t('freeform'),
+                    successSingular: 'No integration configuration issues found. Checked {scanned} integration configuration.'|t('freeform')
+                },
+                {
+                    id: 'freeform-queue-scan', action: 'scan-queue',
+                    title: 'Queue Health'|t('freeform'),
+                    summary: 'Find failed, overdue, and possibly stalled queue jobs.'|t('freeform'),
+                    description: 'Check all jobs in the configured Craft queue, including jobs from other plugins. Flags failed jobs, jobs past their allowed run time, and jobs ready to run for at least an hour. Scheduled delays are respected. Does not run, retry, or delete jobs. Custom queue drivers may require developer review.'|t('freeform'),
+                    starting: 'Checking queue health…'|t('freeform'),
+                    success: 'No queue issues found. Checked {scanned} queued jobs.'|t('freeform'),
+                    successSingular: 'No queue issues found. Checked {scanned} queued job.'|t('freeform')
+                }
             ] %}
-            {% for column in columns %}
-                <div>
-                    {% for section in column %}
-                        {% if section.items|length %}
-                            <section class="ff-diag-section">
-                                <h2>{{ section.title }}</h2>
-                                {% if section.key == 'database' %}
-                                    <p>
-                                        <a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'Database Integrity & Repair Guide'|t('freeform') }}</a>
-                                    </p>
-                                {% endif %}
-                                {{ _self.renderItems(section.items, section.key) }}
-                            </section>
+            {% set healthChecks = [
+                {
+                    id: 'freeform-database-scan', title: 'Database Integrity'|t('freeform'),
+                    summary: 'Check foreign keys, tables, columns, and indexes.'|t('freeform'),
+                    description: 'Check expected database relationships and structure without changing data. Use the other checks to inspect submissions and related records.'|t('freeform'),
+                    databaseGuide: true
+                },
+                {
+                    id: 'freeform-orphan-scan', title: 'Orphaned Submissions'|t('freeform'),
+                    summary: 'Find submissions whose Craft element or form no longer exists.'|t('freeform'),
+                    description: 'This read-only scan runs only when requested and may take time on large sites.'|t('freeform'),
+                    databaseGuide: true
+                },
+                {
+                    id: 'freeform-related-scan', title: 'Related Data Integrity'|t('freeform'),
+                    summary: 'Find missing parent records and duplicate data.'|t('freeform'),
+                    description: 'Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed.'|t('freeform'),
+                    databaseGuide: true
+                }
+            ]|merge(readinessScans) %}
+            {% for scan in healthChecks %}
+                <section class="ff-diag-health-check" id="{{ scan.id }}" aria-labelledby="{{ scan.id }}-heading">
+                    <div class="ff-diag-health-header">
+                        <div class="ff-diag-health-title">
+                            <h2 id="{{ scan.id }}-heading"><button type="button" class="ff-diag-health-toggle" aria-expanded="false" aria-controls="{{ scan.id }}-body">{{ scan.title }}</button></h2>
+                            <p>{{ scan.summary }}</p>
+                        </div>
+                        <span class="ff-diag-health-status" id="{{ scan.id }}-badge" role="status" aria-live="polite">{{ 'Not checked'|t('freeform') }}</span>
+                        <div class="ff-diag-scan-actions">
+                            <button type="button" class="btn" id="{{ scan.id }}-button" aria-describedby="{{ scan.id }}-heading">{{ 'Run Check'|t('freeform') }}</button>
+                            <span class="spinner hidden" id="{{ scan.id }}-spinner" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="ff-diag-health-body hidden" id="{{ scan.id }}-body">
+                        <div class="ff-diag-health-details">
+                            <p>{{ scan.description }}</p>
+                            {% if scan.databaseGuide ?? false %}
+                                <p>{{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}</p>
+                            {% endif %}
+                        </div>
+                        {{ _self.scanFeedback(scan.id, scan.title) }}
+                        {% if scan.id != 'freeform-orphan-scan' %}
+                            <div class="ff-diag-health-findings" id="{{ scan.id }}-results"></div>
                         {% endif %}
-                    {% endfor %}
-                </div>
+                    </div>
+                </section>
             {% endfor %}
         </div>
-        <section class="ff-diag-section" id="freeform-orphan-scan" aria-labelledby="freeform-orphan-scan-heading">
-            <h2 id="freeform-orphan-scan-heading">{{ "Orphaned Submissions"|t('freeform') }}</h2>
-            <p>
-                {{ "Check for submission records whose Craft element or form no longer exists. This read-only scan runs only when requested and may take time on large sites."|t('freeform') }}
-                {{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}
-            </p>
-            <div class="ff-diag-scan-actions">
-                <button type="button" class="btn" id="freeform-orphan-scan-button">{{ "Scan for orphaned submissions"|t('freeform') }}</button>
-                <span class="spinner hidden" id="freeform-orphan-scan-spinner" aria-hidden="true"></span>
-            </div>
-            {{ _self.scanFeedback('freeform-orphan-scan', 'Submission scan progress'|t('freeform')) }}
-        </section>
-
-        <section class="ff-diag-section" id="freeform-related-scan" aria-labelledby="freeform-related-scan-heading">
-            <h2 id="freeform-related-scan-heading">{{ "Related Data Integrity"|t('freeform') }}</h2>
-            <p>
-                {{ "Check related form data and other records for missing parents, and check duplicate values where a unique constraint is missing. Orphan checks run in batches; duplicate checks may take longer on large tables. No data is changed."|t('freeform') }}
-                {{ 'For a full database check and repair instructions, see the {link}.'|t('freeform', {link: databaseGuideLink})|raw }}
-            </p>
-            <div class="ff-diag-scan-actions">
-                <button type="button" class="btn" id="freeform-related-scan-button">{{ "Scan related data and duplicates"|t('freeform') }}</button>
-                <span class="spinner hidden" id="freeform-related-scan-spinner" aria-hidden="true"></span>
-            </div>
-            {{ _self.scanFeedback('freeform-related-scan', 'Related data scan progress'|t('freeform')) }}
-            <ul class="ff-diag-scan-results" id="freeform-related-scan-results"></ul>
-        </section>
-        {% set readinessScans = [
-            {
-                id: 'freeform-upload-scan', action: 'scan-uploaded-files',
-                title: 'Uploaded File Integrity'|t('freeform'),
-                description: 'Check saved uploads, including table field uploads, for missing assets and stored files. Encrypted values are decrypted in memory when possible. Values that cannot be decrypted are informational; unavailable storage is reported as unchecked. No files or submissions are changed.'|t('freeform'),
-                button: 'Scan uploaded files'|t('freeform'),
-                starting: 'Scanning uploaded files…'|t('freeform'),
-                success: 'No missing files found. Checked {scanned} uploaded file references.'|t('freeform'),
-                successSingular: 'No missing files found. Checked {scanned} uploaded file reference.'|t('freeform')
-            },
-            {
-                id: 'freeform-notification-scan', action: 'scan-notifications',
-                title: 'Notification Readiness'|t('freeform'),
-                description: 'Check enabled notifications on active forms for missing templates, recipient fields, rules, and invalid email settings. This checks saved configuration only; it does not render Twig or test email delivery.'|t('freeform'),
-                button: 'Check notification readiness'|t('freeform'),
-                starting: 'Checking notifications…'|t('freeform'),
-                success: 'No notification configuration issues found. Checked {scanned} enabled notifications.'|t('freeform'),
-                successSingular: 'No notification configuration issues found. Checked {scanned} enabled notification.'|t('freeform')
-            }
-        ] %}
-        {% for scan in readinessScans %}
-            <section class="ff-diag-section" id="{{ scan.id }}" aria-labelledby="{{ scan.id }}-heading">
-                <h2 id="{{ scan.id }}-heading">{{ scan.title }}</h2>
-                <p>{{ scan.description }}</p>
-                <div class="ff-diag-scan-actions">
-                    <button type="button" class="btn" id="{{ scan.id }}-button">{{ scan.button }}</button>
-                    <span class="spinner hidden" id="{{ scan.id }}-spinner" aria-hidden="true"></span>
-                </div>
-                {{ _self.scanFeedback(scan.id, scan.title) }}
-                <ul class="ff-diag-scan-results" id="{{ scan.id }}-results"></ul>
-            </section>
-        {% endfor %}
         <details class="ff-diag-report ff-diag-disclosure">
             <summary>{{ 'Support Report'|t('freeform') }}</summary>
             <p class="light">{{ 'Copy this report when contacting Solspace support.'|t('freeform') }}</p>
             <label class="visually-hidden" for="freeform-diagnostic-report">{{ 'Freeform Diagnostics'|t('freeform') }}</label>
-            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}</textarea>
+            <textarea id="freeform-diagnostic-report" class="text fullwidth" readonly rows="16">{{ report }}{{ "\n\n" }}{{ 'Database Integrity'|t('freeform') }}{{ "\n" }}{{ 'Not checked'|t('freeform') }}</textarea>
         </details>
         <p id="freeform-diagnostic-copy-status" role="status" aria-live="polite"></p>
     </div>
 
     {% js %}
         (() => {
+            const labels = {{ {
+                running: 'Running'|t('freeform'), success: 'Passed'|t('freeform'),
+                warning: 'Needs attention'|t('freeform'), error: 'Incomplete'|t('freeform'),
+                info: 'Information'|t('freeform'), issues: 'Issues'|t('freeform'),
+                unchecked: 'Unchecked'|t('freeform')
+            }|json_encode|raw }};
+            const setExpanded = (id, expanded) => {
+                const section = document.getElementById(id);
+                section.querySelector('.ff-diag-health-toggle').setAttribute('aria-expanded', String(expanded));
+                document.getElementById(id + '-body').classList.toggle('hidden', !expanded);
+            };
+            for (const section of document.querySelectorAll('.ff-diag-health-check')) {
+                const toggle = section.querySelector('.ff-diag-health-toggle');
+                toggle.addEventListener('click', () => setExpanded(section.id, toggle.getAttribute('aria-expanded') !== 'true'));
+                document.getElementById(section.id + '-button').addEventListener('click', () => setExpanded(section.id, true));
+            }
+            const revealLinkedCheck = () => {
+                const section = document.getElementById(window.location.hash.slice(1));
+                if (!section?.classList.contains('ff-diag-health-check')) return;
+                document.getElementById('tab-freeform-diagnostics-health-checks')?.click();
+                setExpanded(section.id, true);
+                section.scrollIntoView?.({ block: 'start' });
+            };
+            window.addEventListener('hashchange', revealLinkedCheck);
+            revealLinkedCheck();
+            const renderFindings = (container, findings) => {
+                container.replaceChildren();
+                for (const [group, label] of [['issues', labels.issues], ['unchecked', labels.unchecked], ['info', labels.info]]) {
+                    const rows = findings.filter(finding => finding.group === group);
+                    if (!rows.length) continue;
+                    const details = document.createElement('details');
+                    details.className = 'ff-diag-health-results';
+                    details.open = group !== 'info';
+                    const summary = document.createElement('summary');
+                    summary.textContent = label + ' (' + rows.length.toLocaleString() + ')';
+                    const list = document.createElement('ul');
+                    list.className = 'ff-diag-scan-results';
+                    for (const finding of rows) list.appendChild(finding.row);
+                    details.append(summary, list);
+                    container.appendChild(details);
+                }
+            };
             const createFeedback = (id) => {
                 const feedback = document.getElementById(id + '-feedback');
                 const progress = document.getElementById(id + '-progress');
                 const status = document.getElementById(id + '-status');
                 const icon = document.getElementById(id + '-icon');
                 return (state, message, value = null) => {
+                    const badge = document.getElementById(id + '-badge');
+                    badge.textContent = labels[state];
+                    badge.className = 'ff-diag-health-status is-' + state;
                     feedback.className = 'ff-diag-scan-feedback is-' + state;
                     status.textContent = message;
                     icon.className = state === 'success' ? 'checkmark-icon' : (state === 'info' ? 'ff-diag-scan-info-icon' : (state === 'running' ? '' : 'alert-icon'));
@@ -208,6 +285,50 @@
                     else progress.value = Math.max(0, Math.min(1, value));
                 };
             };
+
+            {
+                const id = 'freeform-database-scan';
+                const section = document.getElementById(id);
+                const button = document.getElementById(id + '-button');
+                const spinner = document.getElementById(id + '-spinner');
+                const results = document.getElementById(id + '-results');
+                const updateFeedback = createFeedback(id);
+                const report = document.getElementById('freeform-diagnostic-report');
+                const messages = {{ {
+                    heading: 'Database Integrity'|t('freeform'),
+                    notChecked: 'Not checked'|t('freeform'),
+                    starting: 'Checking database integrity…'|t('freeform'),
+                    success: 'All expected foreign keys, tables, columns, and indexes are present.'|t('freeform'),
+                    complete: 'Database integrity needs attention. Review the results below.'|t('freeform'),
+                    failed: 'The scan could not be completed. Check the Craft logs or ask your developer to investigate.'|t('freeform')
+                }|json_encode|raw }};
+                const initialDatabaseReport = '\n\n' + messages.heading + '\n' + messages.notChecked;
+                const overviewReport = report.value.endsWith(initialDatabaseReport) ? report.value.slice(0, -initialDatabaseReport.length) : report.value;
+                const updateReport = (text) => { report.value = overviewReport + '\n\n' + messages.heading + '\n' + text; };
+                button.addEventListener('click', async () => {
+                    button.disabled = true;
+                    spinner.classList.remove('hidden');
+                    section.setAttribute('aria-busy', 'true');
+                    results.replaceChildren();
+                    updateFeedback('running', messages.starting);
+                    updateReport(messages.starting);
+                    try {
+                        const response = await Craft.sendActionRequest('POST', 'freeform/diagnostics/check-database-integrity');
+                        const data = response.data;
+                        if (data.error || typeof data.needsAttention !== 'boolean' || typeof data.html !== 'string' || typeof data.report !== 'string') throw new Error('Database check failed');
+                        results.innerHTML = data.html;
+                        updateFeedback(data.needsAttention ? 'warning' : 'success', data.needsAttention ? messages.complete : messages.success, 1);
+                        updateReport(data.report);
+                    } catch (error) {
+                        updateFeedback('error', messages.failed);
+                        updateReport(messages.failed);
+                    } finally {
+                        button.disabled = false;
+                        spinner.classList.add('hidden');
+                        section.setAttribute('aria-busy', 'false');
+                    }
+                });
+            }
 
             {
                 const section = document.getElementById('freeform-orphan-scan');
@@ -295,6 +416,7 @@
                             if (!Array.isArray(batch.results) || !Number.isInteger(batch.completedChecks) || !Number.isInteger(batch.totalChecks) || !Number.isInteger(batch.scanned)) throw new Error('Scan failed');
                             scanId = batch.scanId;
                             results.replaceChildren();
+                            const findings = [];
                             let orphans = 0;
                             let duplicates = 0;
                             let skipped = 0;
@@ -308,8 +430,9 @@
                                 row.className = result.error ? 'is-error' : 'is-warning';
                                 const label = result.table + (result.columns.length ? ' (' + result.columns.join(', ') + ')' : '');
                                 row.textContent = label + ': ' + (result.error ? messages.skipped + '. ' + result.error : format(messages[result.type], { count: result.count }));
-                                results.appendChild(row);
+                                findings.push({group: result.error ? 'unchecked' : 'issues', row});
                             }
+                            renderFindings(results, findings);
                             if (batch.complete) {
                                 const needsAttention = orphans > 0 || duplicates > 0 || skipped > 0;
                                 updateFeedback(needsAttention ? 'warning' : 'success', needsAttention
@@ -366,24 +489,41 @@
                                     && (result.links === undefined || Array.isArray(result.links)))) throw new Error('Scan failed');
                             scanId = batch.scanId;
                             results.replaceChildren();
+                            const findings = [];
                             for (const result of batch.results) {
                                 const row = document.createElement('li');
-                                row.className = result.informational ? 'is-info' : 'is-warning';
-                                row.textContent = result.message;
+                                row.className = result.informational ? 'is-info' : (result.skipped ? 'is-unchecked' : 'is-warning');
+                                const content = document.createElement('div');
+                                content.className = 'ff-diag-result-content';
+                                const message = document.createElement('span');
+                                message.className = 'ff-diag-result-message';
+                                message.textContent = result.message;
+                                content.appendChild(message);
+                                const actions = document.createElement('div');
+                                actions.className = 'ff-diag-result-actions';
                                 for (const link of result.links ?? []) {
                                     if (!link || typeof link.label !== 'string' || typeof link.url !== 'string') continue;
                                     const url = new URL(link.url, window.location.href);
-                                    if (!['http:', 'https:'].includes(url.protocol) || url.origin !== window.location.origin) continue;
+                                    const isDatabaseGuide = url.href === 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity';
+                                    if (!['http:', 'https:'].includes(url.protocol) || (url.origin !== window.location.origin && !isDatabaseGuide)) continue;
                                     const anchor = document.createElement('a');
-                                    anchor.className = 'ff-diag-result-link';
+                                    anchor.className = 'btn small ff-diag-result-link';
                                     anchor.href = url.href;
                                     anchor.textContent = link.label;
-                                    row.appendChild(anchor);
+                                    if (isDatabaseGuide) {
+                                        anchor.target = '_blank';
+                                        anchor.rel = 'noopener';
+                                    }
+                                    actions.appendChild(anchor);
                                 }
-                                results.appendChild(row);
+                                if (actions.childElementCount) content.appendChild(actions);
+                                row.appendChild(content);
+                                findings.push({group: result.informational ? 'info' : (result.skipped ? 'unchecked' : 'issues'), row});
                             }
+                            renderFindings(results, findings);
                             if (batch.truncated) {
-                                const row = document.createElement('li');
+                                const row = document.createElement('p');
+                                row.className = 'light';
                                 row.textContent = messages.truncated;
                                 results.appendChild(row);
                             }

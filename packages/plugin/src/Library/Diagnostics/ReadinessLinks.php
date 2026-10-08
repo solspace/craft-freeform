@@ -22,12 +22,46 @@ class ReadinessLinks
         $links = [];
         $context = $issue['context'];
         $formId = (int) ($context['formId'] ?? 0);
+        if ('queue' === $kind) {
+            return ($context['queueAvailable'] ?? true) && ($this->can)('utility:queue-manager') ? [$this->link('View Queue Manager', 'utilities/queue-manager')] : [];
+        }
+        if ('integrations' === $kind) {
+            $id = (int) ($context['integration'] ?? 0);
+            $handle = $context['integrationHandle'] ?? '';
+            if ($this->canEditForm($formId)) {
+                $path = 'freeform/forms/'.$formId.'/integrations';
+                if ($id > 0 && \is_string($handle) && preg_match('/^[a-zA-Z0-9_-]+$/D', $handle)) {
+                    $path .= '/'.$id.'/'.rawurlencode($handle);
+                }
+                $links[] = $this->link('Edit form', $path);
+            }
+            $type = $context['integrationType'] ?? '';
+            $class = $context['integrationClass'] ?? '';
+            if ($id > 0 && preg_match('/^[a-z-]+$/D', $type) && preg_match('/^[a-zA-Z0-9]+$/D', $class) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_ACCESS) && ($this->can)(Freeform::PERMISSION_INTEGRATIONS_MANAGE)) {
+                $links[] = $this->link('Edit integration', 'freeform/integrations/'.$type.'/'.$class.'/'.$id);
+            }
+
+            return $links;
+        }
         $submissionId = (int) ($context['submission'] ?? 0);
-        if ('uploads' === $kind && $submissionId > 0 && ($this->can)(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
-            && ($this->canForForm(Freeform::PERMISSION_SUBMISSIONS_READ, $formId) || $this->canForForm(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId))) {
-            $links[] = $this->link('View submission', 'freeform/submissions/'.$submissionId);
+        if ('uploads' === $kind && $submissionId > 0 && ($context['submissionAvailable'] ?? true) && ($this->can)(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
+            && $this->canForForm(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId)) {
+            $path = 'freeform/'.(!empty($context['isSpam']) ? 'spam' : 'submissions').'/'.$submissionId;
+            if (!empty($context['siteHandle'])) {
+                $path .= '?site='.rawurlencode($context['siteHandle']);
+            }
+            $links[] = $this->link('View submission', $path);
         } elseif ($this->canEditForm($formId)) {
             $links[] = $this->link('notifications' === $kind ? 'Edit form notifications' : 'Edit form', 'freeform/forms/'.$formId.('notifications' === $kind ? '/notifications' : ''));
+        }
+
+        if ('uploads' === $kind && !empty($context['integrityCheck']) && ($this->can)(Freeform::PERMISSION_SETTINGS_ACCESS)) {
+            if ('console' === $context['integrityCheck']) {
+                $links[] = $this->link('Database Integrity & Repair Guide', 'https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity');
+            } else {
+                $related = 'related' === $context['integrityCheck'];
+                $links[] = $this->link($related ? 'Related Data Integrity' : 'Orphaned Submissions', 'freeform/settings/diagnostics#freeform-'.($related ? 'related' : 'orphan').'-scan');
+            }
         }
 
         $template = $issue['template'] ?? null;

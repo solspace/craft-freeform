@@ -16,10 +16,13 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrityScan;
 use Solspace\Freeform\Library\Database\OrphanedSubmissionScanner;
+use Solspace\Freeform\Library\Diagnostics\IntegrationReadinessScan;
 use Solspace\Freeform\Library\Diagnostics\NotificationReadinessScan;
+use Solspace\Freeform\Library\Diagnostics\QueueHealthScan;
 use Solspace\Freeform\Library\Diagnostics\ReadinessLinks;
 use Solspace\Freeform\Library\Diagnostics\UploadIntegrityScan;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -34,7 +37,6 @@ class DiagnosticsController extends BaseController
         $diagnostics = Freeform::getInstance()->diagnostics;
 
         $server = $diagnostics->getServerChecks();
-        $database = $diagnostics->getDatabaseChecks();
         $site = $diagnostics->getSiteChecks();
         $stats = $diagnostics->getFreeformStats();
         $configurations = $diagnostics->getFreeformConfigurations();
@@ -42,12 +44,11 @@ class DiagnosticsController extends BaseController
         $formType = $diagnostics->getFreeformFormType();
         $modules = $diagnostics->getCraftModules();
 
-        $combined = array_merge($server, $database, $site, $stats, $configurations, $integrations, $formType, $modules);
+        $combined = array_merge($server, $site, $stats, $configurations, $integrations, $formType, $modules);
         [$warnings, $suggestions] = $this->compileBanners($combined);
 
         $report = $this->compileReport([
             Freeform::t('Server Checks') => $server,
-            Freeform::t('Database Checks') => $database,
             Freeform::t('Site Settings') => $site,
             ...$configurations,
             Freeform::t('Statistics') => $stats,
@@ -60,7 +61,6 @@ class DiagnosticsController extends BaseController
             'freeform/settings/_diagnostics',
             [
                 'server' => $server,
-                'database' => $database,
                 'site' => $site,
                 'stats' => $stats,
                 'configurations' => $configurations,
@@ -73,6 +73,30 @@ class DiagnosticsController extends BaseController
                 'readOnly' => false,
             ]
         );
+    }
+
+    public function actionCheckDatabaseIntegrity(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        try {
+            \Craft::$app->getDb()->getSchema()->refresh();
+            $database = Freeform::getInstance()->diagnostics->getDatabaseChecks();
+            [$warnings, $suggestions] = $this->compileBanners($database);
+
+            return $this->asJson([
+                'needsAttention' => (bool) ($warnings || $suggestions),
+                'html' => \Craft::$app->getView()->renderTemplate('freeform/settings/_database-check', ['database' => $database]),
+                'report' => implode("\n", $this->compileReportItems($database)),
+            ]);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Unable to check Freeform database integrity: '.$exception->getMessage(), 'freeform');
+
+            return $this->asFailure(Freeform::t('The scan could not be completed. Check the Craft logs or ask your developer to investigate.'));
+        }
     }
 
     public function actionScanOrphanedSubmissions(): Response
@@ -182,6 +206,16 @@ class DiagnosticsController extends BaseController
         return $this->scanReadiness('notifications');
     }
 
+    public function actionScanIntegrations(): Response
+    {
+        return $this->scanReadiness('integrations');
+    }
+
+    public function actionScanQueue(): Response
+    {
+        return $this->scanReadiness('queue');
+    }
+
     public function actionCraftPreflight(): Response
     {
         \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
@@ -213,9 +247,14 @@ class DiagnosticsController extends BaseController
         }
         $cache = \Craft::$app->getCache();
         $owner = (string) \Craft::$app->getUser()->getId();
-        $scan = $kind === 'uploads' ? new UploadIntegrityScan(\Craft::$app->getDb()) : new NotificationReadinessScan(\Craft::$app->getDb());
 
         try {
+            $scan = match ($kind) {
+                'uploads' => new UploadIntegrityScan(\Craft::$app->getDb(), sitesEnabled: SitesHelper::isEnabled()),
+                'integrations' => new IntegrationReadinessScan(\Craft::$app->getDb()),
+                'queue' => new QueueHealthScan(\Craft::$app->getQueue()),
+                default => new NotificationReadinessScan(\Craft::$app->getDb()),
+            };
             if (null === $scanId) {
                 $scanId = bin2hex(random_bytes(16));
                 $state = ['tasks' => $scan->getTasks(), 'task' => 0, 'cursor' => 0, 'maxId' => null, 'offset' => 0, 'scanned' => 0, 'issues' => 0, 'skipped' => 0, 'info' => 0, 'results' => []];
@@ -268,6 +307,11 @@ class DiagnosticsController extends BaseController
                 'results' => array_map(static function (array $issue) use ($kind, $links): array {
                     $context = $issue['context'];
                     $message = match (true) {
+                        $kind === 'queue' && isset($context['job']) => 'Queue job {job}: {message}',
+                        $kind === 'queue' => '{message}',
+                        $kind === 'integrations' && isset($context['form'], $context['integrationName']) => 'Form “{form}”, integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' && isset($context['integrationName']) => 'Integration “{integrationName}” (ID {integration}): {message}',
+                        $kind === 'integrations' => 'Integration {integration}: {message}',
                         $kind === 'notifications' && isset($context['notificationName']) => 'Form “{form}”, notification “{notificationName}” (ID {notification}): {message}',
                         $kind === 'notifications' => 'Form “{form}”, notification {notification}: {message}',
                         isset($context['asset']) => 'Form “{form}”, field “{field}”, submission {submission}, asset {asset}: {message}',
@@ -275,8 +319,13 @@ class DiagnosticsController extends BaseController
                         default => 'Form “{form}”, field “{field}”: {message}',
                     };
 
+                    $params = $issue['params'] ?? [];
+                    if (isset($params['setting'])) {
+                        $params['setting'] = Freeform::t($params['setting']);
+                    }
+
                     return [
-                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $issue['params'] ?? [])]),
+                        'message' => Freeform::t($message, $context + ['message' => Freeform::t($issue['message'], $params)]),
                         'skipped' => $issue['skipped'],
                         'informational' => $issue['informational'] ?? false,
                         'links' => $links->getLinks($issue, $kind),

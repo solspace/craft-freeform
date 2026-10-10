@@ -49,11 +49,7 @@ class DateValidation extends FeatureBundle
         $value = $this->parseValue($value);
 
         if ($field->isUseNativeTypes()) {
-            $format = match ($field->getDateTimeType()) {
-                DatetimeField::DATETIME_TYPE_DATE => 'Y-m-d',
-                DatetimeField::DATETIME_TYPE_TIME => 'H:i',
-                DatetimeField::DATETIME_TYPE_BOTH => 'Y-m-d\TH:i',
-            };
+            $format = $field->getNativeFormat();
         }
 
         $date = \DateTime::createFromFormat($format, $value);
@@ -92,7 +88,7 @@ class DateValidation extends FeatureBundle
         $minDate->setTime(0, 0, 0);
 
         try {
-            $format = $field->isUseNativeTypes() ? 'Y-m-d\TH:i' : $field->getFormat();
+            $format = $field->isUseNativeTypes() ? $field->getNativeFormat() : $field->getFormat();
             $date = Carbon::createFromFormat($format, $value);
 
             if ($date->lt($minDate)) {
@@ -132,7 +128,7 @@ class DateValidation extends FeatureBundle
         $maxDate->setTime(23, 59, 59);
 
         try {
-            $format = $field->isUseNativeTypes() ? 'Y-m-d\TH:i' : $field->getFormat();
+            $format = $field->isUseNativeTypes() ? $field->getNativeFormat() : $field->getFormat();
             $date = Carbon::createFromFormat($format, $value);
 
             if ($date->gt($maxDate)) {

@@ -421,14 +421,14 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
                 try {
                     $date = new \DateTime($value);
 
-                    return $date->format($this->getFormat());
+                    return $date->format($this->isUseNativeTypes() ? $this->getNativeFormat() : $this->getFormat());
                 } catch (\Exception $e) {
                 }
             }
         }
 
         if ($value instanceof \DateTime) {
-            return $value->format($this->getFormat());
+            return $value->format($this->isUseNativeTypes() ? $this->getNativeFormat() : $this->getFormat());
         }
 
         return $value;
@@ -438,7 +438,9 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     {
         if ($this->getValue()) {
             try {
-                return Carbon::createFromFormat($this->getFormat(), $this->getValue());
+                $format = $this->isUseNativeTypes() ? $this->getNativeFormat() : $this->getFormat();
+
+                return Carbon::createFromFormat($format, $this->getValue());
             } catch (InvalidFormatException $exception) {
             }
         }
@@ -450,7 +452,9 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     {
         if ($this->getValue()) {
             try {
-                return Carbon::createFromFormat($this->getFormat(), $this->getValue(), 'UTC');
+                $format = $this->isUseNativeTypes() ? $this->getNativeFormat() : $this->getFormat();
+
+                return Carbon::createFromFormat($format, $this->getValue(), 'UTC');
             } catch (InvalidFormatException $exception) {
             }
         }
@@ -508,7 +512,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         return match ($this->getDateTimeType()) {
             self::DATETIME_TYPE_DATE => 'Y-m-d',
             self::DATETIME_TYPE_TIME => 'H:i',
-            default => 'Y-m-d H:i',
+            default => 'Y-m-d\TH:i',
         };
     }
 

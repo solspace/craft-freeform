@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.16.7 - Unreleased
+
+### Fixed
+- Fixed native Date & Time fields appearing empty when returning to an earlier page of a multi-page form.
+- Fixed minimum and maximum date validation for native date-only inputs.
+
 ## 5.16.6 - 2026-10-07
 
 ### Added

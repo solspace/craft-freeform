@@ -37,6 +37,9 @@
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
+### Fixed
+- Fixed Default Status dots showing white for colors from Craft 5's expanded palette.
+
 ## 5.16.6 - 2026-10-07
 
 ### Added

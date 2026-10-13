@@ -1,3 +1,4 @@
+import { PopUpPortal } from "@components/elements/pop-up-portal";
 import {
   EscapeStackProvider,
   useEscapeStack,
@@ -5,7 +6,6 @@ import {
 import { act, createContext, useContext, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-
 import { NativeSlideout } from "./slideout";
 
 class CraftSlideout {
@@ -52,6 +52,42 @@ function setup(element: React.ReactNode) {
 }
 
 describe("native Craft manager slideout", () => {
+  it("keeps dropdown portals inside the native panel and closes the dropdown before the panel on Escape", () => {
+    function Editor() {
+      const [open, setOpen] = useState(false);
+      useEscapeStack(() => setOpen(false), open);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Dropdown
+          </button>
+          {open && (
+            <PopUpPortal>
+              <input aria-label="Dropdown search" />
+            </PopUpPortal>
+          )}
+        </>
+      );
+    }
+    const panel = setup(<NativeSlideout content={Editor} onClose={() => {}} />);
+    act(() => panel.container.querySelector("button")!.click());
+    expect(
+      panel.container.querySelector(".freeform-slideout-popups input"),
+    ).not.toBeNull();
+    act(() =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      ),
+    );
+    expect(panel.container.querySelector("input")).toBeNull();
+    expect(panel.close).not.toHaveBeenCalled();
+    act(() =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      ),
+    );
+    expect(panel.close).toHaveBeenCalledOnce();
+  });
   it("finishes closing on Craft 4 when no transition event fires", () => {
     vi.useFakeTimers();
     const onClose = vi.fn();

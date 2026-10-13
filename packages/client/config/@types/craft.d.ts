@@ -13,6 +13,7 @@ declare namespace Craft {
       contents: HTMLElement,
       settings?: {
         autoOpen?: boolean;
+        closeOnEsc?: boolean;
         containerAttributes?: Record<string, string>;
         triggerElement?: Element;
       },

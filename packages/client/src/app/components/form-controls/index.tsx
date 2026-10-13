@@ -22,6 +22,7 @@ type Props = {
   errors?: string[];
   context?: unknown;
   autoFocus?: boolean;
+  control?: ComponentType<ControlType<Property>>;
 };
 
 const types: {
@@ -35,9 +36,10 @@ export const FormComponent: React.FC<Props> = ({
   errors,
   context,
   autoFocus = false,
+  control,
 }) => {
   const { handle, type, visibilityFilters } = property;
-  const FormControl = types[type];
+  const FormControl = control || types[type];
 
   const isVisible = useVisibility(
     visibilityFilters || [],

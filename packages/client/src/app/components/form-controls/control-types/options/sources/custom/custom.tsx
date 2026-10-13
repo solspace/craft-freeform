@@ -2,6 +2,7 @@ import { Label } from "@components/form-controls/label.styles";
 import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
+import { useState } from "react";
 
 import type {
   ConfigurationProps,
@@ -21,10 +22,13 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
   isMultiple,
   autoUpdateHandle,
 }) => {
+  const [bulkOpen, setBulkOpen] = useState(false);
+
   return (
     <>
       <Label>{translate("Options")}</Label>
       <PreviewableComponent
+        covered={bulkOpen}
         preview={
           <CustomPreview
             value={value}
@@ -32,10 +36,16 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
             isMultiple={isMultiple}
           />
         }
-        excludeClassNames={["bulk-editor"]}
+        excludeClassNames={[
+          "bulk-editor",
+          "slideout-container",
+          "cp-slideout-shade",
+          "slideout-shade",
+        ]}
         onAfterEdit={() => updateValue(cleanOptions(value))}
       >
         <CustomEditor
+          onBulkOpenChange={setBulkOpen}
           value={value}
           updateValue={updateValue}
           property={property}

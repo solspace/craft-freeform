@@ -1,4 +1,5 @@
 import { RenderContextProvider } from "@components/form-controls/context/render.context";
+import { OpinionScaleProperty } from "@components/form-controls/opinion-scale";
 import { SectionWrapper } from "@editor/builder/tabs/form-settings/settings.sidebar.styles";
 import {
   Icon,
@@ -56,13 +57,21 @@ export const FavoritesEditor: React.FC<Props> = ({
       sectionBlocks.push(
         <SectionBlock label={translate(label)} icon={icon} key={handle}>
           {properties.map((property) => (
-            <FavoriteFieldComponent
+            <OpinionScaleProperty
               key={property.handle}
-              errors={errors?.[property.handle]}
-              state={values}
-              siblingProperties={type.properties}
+              typeClass={field.typeClass}
               property={property}
-              updateValueCallback={updateValueCallback}
+              properties={properties}
+              renderProperty={(item, control) => (
+                <FavoriteFieldComponent
+                  errors={errors?.[item.handle]}
+                  state={values}
+                  siblingProperties={type.properties}
+                  property={item}
+                  updateValueCallback={updateValueCallback}
+                  control={control}
+                />
+              )}
             />
           ))}
         </SectionBlock>,

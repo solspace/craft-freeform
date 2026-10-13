@@ -1,8 +1,9 @@
 import { Control } from "@components/form-controls/control";
-import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
 import type { ControlType } from "@components/form-controls/types";
 import type { Field } from "@editor/store/slices/layout/fields";
 import type { CardsProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import { CardsEditor } from "./editor/cards.editor";
@@ -17,7 +18,9 @@ const Cards: React.FC<ControlType<CardsProperty, Field>> = ({
 }) => {
   return (
     <Control property={property} errors={errors} context={context}>
-      <PreviewableComponent
+      <PreviewSlideout
+        title={translate(property.label)}
+        fillEditor={false}
         preview={
           <CardsPreview
             cards={value}
@@ -31,7 +34,7 @@ const Cards: React.FC<ControlType<CardsProperty, Field>> = ({
           property={property}
           context={context}
         />
-      </PreviewableComponent>
+      </PreviewSlideout>
     </Control>
   );
 };

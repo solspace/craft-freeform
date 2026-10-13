@@ -14,8 +14,9 @@ import { DraggableRow } from "@components/form-controls/draggable-row";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
 import CrossIcon from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
-import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
 import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
+import { NativeSlideout } from "@components/slideouts/slideout";
+import { useEventCallback } from "@ff-client/hooks/ts-hooks/use-event-callback";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
@@ -46,7 +47,9 @@ import {
 } from "./custom.operations";
 
 export const CustomEditor: React.FC<
-  ConfigurationProps<CustomOptionsConfiguration>
+  ConfigurationProps<CustomOptionsConfiguration> & {
+    onBulkOpenChange?: (open: boolean) => void;
+  }
 > = ({
   value,
   updateValue,
@@ -55,13 +58,17 @@ export const CustomEditor: React.FC<
   isMultiple,
   allowOptgroup,
   autoUpdateHandle,
+  onBulkOpenChange,
 }) => {
   const [localValue, setLocalValue] = useState(value);
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const bulkTrigger = useRef<HTMLButtonElement>(null);
   const debouncedValue = useDebounce(localValue, 500);
+  const publishValue = useEventCallback(updateValue);
 
   useEffect(() => {
-    updateValue(debouncedValue);
-  }, [debouncedValue, updateValue]);
+    publishValue(debouncedValue);
+  }, [debouncedValue, publishValue]);
 
   useEffect(() => {
     if (!localValue.options.length) {
@@ -129,7 +136,9 @@ export const CustomEditor: React.FC<
       });
     });
 
-    setLocalValue(setOptions(localValue, currentOptions));
+    const updated = setOptions(localValue, currentOptions);
+    setLocalValue(updated);
+    publishValue(updated);
   };
 
   return (
@@ -148,18 +157,30 @@ export const CustomEditor: React.FC<
         />
 
         <BulkWrapper>
-          <PreviewableComponent
-            preview={
-              <BulkButton>
-                <i className="fa-duotone fa-list" />
-                <span>{translate("Add options in bulk")}</span>
-              </BulkButton>
-            }
+          <BulkButton
+            type="button"
+            ref={bulkTrigger}
+            aria-haspopup="dialog"
+            onClick={() => {
+              setBulkOpen(true);
+              onBulkOpenChange?.(true);
+            }}
           >
-            {(isEditing, close) => (
-              <Bulk open={isEditing} close={close} bulkImport={bulkImport} />
-            )}
-          </PreviewableComponent>
+            <i className="fa-duotone fa-list" />
+            <span>{translate("Add options in bulk")}</span>
+          </BulkButton>
+          {bulkOpen && (
+            <NativeSlideout
+              title={translate("Bulk Editor")}
+              onClose={() => {
+                setBulkOpen(false);
+                onBulkOpenChange?.(false);
+                requestAnimationFrame(() => bulkTrigger.current?.focus());
+              }}
+            >
+              {(close) => <Bulk open close={close} bulkImport={bulkImport} />}
+            </NativeSlideout>
+          )}
 
           <CopyToClipboardButton
             options={localValue.options}

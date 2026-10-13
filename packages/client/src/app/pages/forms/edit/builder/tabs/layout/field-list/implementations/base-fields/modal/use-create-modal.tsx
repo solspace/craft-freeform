@@ -1,11 +1,12 @@
 import { useModal } from "@components/modals/modal.context";
+import translate from "@ff-client/utils/translations";
 
 import { CreateModal } from "./modal";
 
 export const useCreateModal = (): (() => void) => {
-  const { openModal } = useModal();
+  const { openSlideout } = useModal();
 
   return (): void => {
-    openModal(CreateModal);
+    openSlideout(CreateModal, undefined, translate("Field Type Manager"));
   };
 };

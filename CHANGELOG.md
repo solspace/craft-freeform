@@ -25,6 +25,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
+- Moved **Manage Form Groups** into a native Craft slideout with a fixed footer and responsive layout.
 - Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, with support for custom model IDs.
 - Improved accessibility across the sample formatting templates.

@@ -1,11 +1,11 @@
 import { FormComponent } from "@components/form-controls";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
-import {
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
+import {
+  SlideoutContainer,
+  SlideoutFooter,
+  SlideoutHeader,
+} from "@components/slideouts/slideout.styles";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
 import type { ErrorList } from "@ff-client/types/api";
 import type {
@@ -47,7 +47,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
   const [loaded, setLoaded] = useState(false);
   const [errors, setErrors] = useState<ErrorList>();
 
-  const { data } = useFetchFormGroups();
+  const { data, isError } = useFetchFormGroups();
 
   const formGroupsListRefs = useRef<FormGroupsListRefs>({});
   const { addGroup, updateGroupInfo, syncFormGroupsRefs } =
@@ -62,7 +62,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
   }, [data, loaded]);
 
   useEffect(() => {
-    initializeSortable(formGroupsListRefs);
+    return initializeSortable(formGroupsListRefs);
   }, []);
 
   const updateMutation = useFormGroupsMutation({
@@ -70,17 +70,25 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
       closeModal();
     },
     onError: (error) => {
-      setErrors(error.errors);
+      setErrors({ message: error.message, ...error.errors });
     },
   });
 
   const isLoading = updateMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: "60%" }}>
-      <ModalHeader>
+    <SlideoutContainer>
+      <SlideoutHeader>
         <h1>{translate("Form Group Manager")}</h1>
-      </ModalHeader>
+        <button
+          type="button"
+          className="btn header-btn"
+          aria-label={translate("Close")}
+          onClick={closeModal}
+        >
+          <CrossIcon />
+        </button>
+      </SlideoutHeader>
 
       <ManagerWrapper>
         <GroupWrapper
@@ -91,8 +99,10 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
             "Click the 'Add Group' button on the right to begin.",
           )}
         >
-          {errors?.length && (
-            <ErrorBlock>{translate("Something went wrong!")}</ErrorBlock>
+          {(isError || (errors && Object.keys(errors).length > 0)) && (
+            <ErrorBlock role="alert">
+              {translate("Something went wrong!")}
+            </ErrorBlock>
           )}
           {state.formGroups?.groups?.map((group) => (
             <GroupLayout key={group.uid} data-id={group.uid}>
@@ -134,6 +144,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
             onClick={addGroup}
             type="button"
             className="btn add icon dashed"
+            disabled={!loaded || isLoading}
           >
             {translate("Add Group")}
           </button>
@@ -159,21 +170,28 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
         </GroupListWrapper>
       </ManagerWrapper>
 
-      <ModalFooter>
+      <SlideoutFooter>
         <button type="button" className="btn cancel" onClick={closeModal}>
           {translate("Close")}
         </button>
-        <button type="button" className="btn submit">
+        <button
+          type="button"
+          className="btn submit"
+          disabled={!loaded || isLoading}
+          onClick={() => {
+            setErrors(undefined);
+            updateMutation.mutate(syncFormGroupsRefs());
+          }}
+        >
           <LoadingText
             loadingText={translate("Saving")}
             loading={isLoading}
-            onClick={() => updateMutation.mutate(syncFormGroupsRefs())}
             spinner
           >
             {translate("Save")}
           </LoadingText>
         </button>
-      </ModalFooter>
-    </ModalContainer>
+      </SlideoutFooter>
+    </SlideoutContainer>
   );
 };

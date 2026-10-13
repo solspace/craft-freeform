@@ -1,11 +1,11 @@
 import { FormComponent } from "@components/form-controls";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
-import {
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
+import {
+  SlideoutContainer,
+  SlideoutFooter,
+  SlideoutHeader,
+} from "@components/slideouts/slideout.styles";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
 import type { ErrorList } from "@ff-client/types/api";
 import type {
@@ -22,11 +22,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   CloseAndMoveWrapper,
   ErrorBlock,
+  GroupColumn,
   GroupHeader,
   GroupItemWrapper,
   GroupLayout,
   GroupListWrapper,
   Groups,
+  GroupToolbar,
   GroupWrapper,
   ManagerWrapper,
   UnassignedGroup,
@@ -47,7 +49,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
   const [loaded, setLoaded] = useState(false);
   const [errors, setErrors] = useState<ErrorList>();
 
-  const { data } = useFetchFormGroups();
+  const { data, isError } = useFetchFormGroups();
 
   const formGroupsListRefs = useRef<FormGroupsListRefs>({});
   const { addGroup, updateGroupInfo, syncFormGroupsRefs } =
@@ -62,7 +64,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
   }, [data, loaded]);
 
   useEffect(() => {
-    initializeSortable(formGroupsListRefs);
+    return initializeSortable(formGroupsListRefs);
   }, []);
 
   const updateMutation = useFormGroupsMutation({
@@ -70,79 +72,96 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
       closeModal();
     },
     onError: (error) => {
-      setErrors(error.errors);
+      setErrors({ message: error.message, ...error.errors });
     },
   });
 
   const isLoading = updateMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: "60%" }}>
-      <ModalHeader>
+    <SlideoutContainer>
+      <SlideoutHeader>
         <h1>{translate("Form Group Manager")}</h1>
-      </ModalHeader>
+        <button
+          type="button"
+          className="btn header-btn"
+          aria-label={translate("Close")}
+          onClick={closeModal}
+        >
+          <CrossIcon />
+        </button>
+      </SlideoutHeader>
 
       <ManagerWrapper>
-        <GroupWrapper
-          ref={(el) => {
-            formGroupsListRefs.current.groupWrapper = el;
-          }}
-          $empty={translate(
-            "Click the 'Add Group' button on the right to begin.",
-          )}
-        >
-          {errors?.length && (
-            <ErrorBlock>{translate("Something went wrong!")}</ErrorBlock>
-          )}
-          {state.formGroups?.groups?.map((group) => (
-            <GroupLayout key={group.uid} data-id={group.uid}>
-              <GroupHeader>
-                <FormComponent
-                  value={group.label}
-                  property={{
-                    type: PropertyType.Label,
-                    handle: group.uid,
-                  }}
-                  updateValue={(value: string) =>
-                    updateGroupInfo("label", value, group.uid)
-                  }
-                />
-              </GroupHeader>
-              <GroupItemWrapper
-                $empty={translate("Drag and drop any field here")}
-                ref={(el) => {
-                  initializeGroupedSortable(el, group.uid, formGroupsListRefs);
-                }}
-              >
-                {group.forms?.map((form) => (
-                  <FormItem key={form.id} form={form} />
-                ))}
-              </GroupItemWrapper>
-              <CloseAndMoveWrapper>
-                <button type="button" className="group-remove">
-                  <CrossIcon />
-                </button>
-                <button type="button" className="handle">
-                  <MoveIcon />
-                </button>
-              </CloseAndMoveWrapper>
-            </GroupLayout>
-          ))}
-        </GroupWrapper>
-        <GroupListWrapper>
-          <button
-            onClick={addGroup}
-            type="button"
-            className="btn add icon dashed"
+        <GroupColumn>
+          <GroupToolbar>
+            <button
+              onClick={addGroup}
+              type="button"
+              className="btn add icon dashed"
+              disabled={!loaded || isLoading}
+            >
+              {translate("Add Group")}
+            </button>
+          </GroupToolbar>
+          <GroupWrapper
+            ref={(el) => {
+              formGroupsListRefs.current.groupWrapper = el;
+            }}
+            $empty={translate("Click 'Add Group' to begin.")}
           >
-            {translate("Add Group")}
-          </button>
+            {(isError || (errors && Object.keys(errors).length > 0)) && (
+              <ErrorBlock role="alert">
+                {translate("Something went wrong!")}
+              </ErrorBlock>
+            )}
+            {state.formGroups?.groups?.map((group) => (
+              <GroupLayout key={group.uid} data-id={group.uid}>
+                <GroupHeader>
+                  <FormComponent
+                    value={group.label}
+                    property={{
+                      type: PropertyType.Label,
+                      handle: group.uid,
+                    }}
+                    updateValue={(value: string) =>
+                      updateGroupInfo("label", value, group.uid)
+                    }
+                  />
+                </GroupHeader>
+                <GroupItemWrapper
+                  $empty={translate("Drag forms here.")}
+                  ref={(el) => {
+                    initializeGroupedSortable(
+                      el,
+                      group.uid,
+                      formGroupsListRefs,
+                    );
+                  }}
+                >
+                  {group.forms?.map((form) => (
+                    <FormItem key={form.id} form={form} />
+                  ))}
+                </GroupItemWrapper>
+                <CloseAndMoveWrapper>
+                  <button type="button" className="group-remove">
+                    <CrossIcon />
+                  </button>
+                  <button type="button" className="handle">
+                    <MoveIcon />
+                  </button>
+                </CloseAndMoveWrapper>
+              </GroupLayout>
+            ))}
+          </GroupWrapper>
+        </GroupColumn>
+        <GroupListWrapper>
           <UnassignedGroupWrapper>
             <UnassignedGroup className="unassigned">
               <h3>{translate("Unassigned")}</h3>
               <Groups
                 $empty={translate(
-                  "Drag and drop any form here. Unassigned form will display at the bottom of the list of Groups.",
+                  "Drag forms here to leave them unassigned. They appear after the groups.",
                 )}
                 ref={(el) => {
                   formGroupsListRefs.current.unassigned = el;
@@ -159,21 +178,28 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
         </GroupListWrapper>
       </ManagerWrapper>
 
-      <ModalFooter>
+      <SlideoutFooter>
         <button type="button" className="btn cancel" onClick={closeModal}>
           {translate("Close")}
         </button>
-        <button type="button" className="btn submit">
+        <button
+          type="button"
+          className="btn submit"
+          disabled={!loaded || isLoading}
+          onClick={() => {
+            setErrors(undefined);
+            updateMutation.mutate(syncFormGroupsRefs());
+          }}
+        >
           <LoadingText
             loadingText={translate("Saving")}
             loading={isLoading}
-            onClick={() => updateMutation.mutate(syncFormGroupsRefs())}
             spinner
           >
             {translate("Save")}
           </LoadingText>
         </button>
-      </ModalFooter>
-    </ModalContainer>
+      </SlideoutFooter>
+    </SlideoutContainer>
   );
 };

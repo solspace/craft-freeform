@@ -1,42 +1,42 @@
 {
-  "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-C1ouUH6h.js",
+  "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
+    "file": "assets/de-CoeRprm-.js",
     "name": "de",
-    "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+    "src": "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-CeekKJkw.js",
+  "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
+    "file": "assets/fr-DklLxxa1.js",
     "name": "fr",
-    "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+    "src": "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-Ck4yitgT.js",
+  "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
+    "file": "assets/it-CYSlNvOD.js",
     "name": "it",
-    "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+    "src": "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-BU2WfPfc.js",
+  "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
+    "file": "assets/nl-IDuOqo38.js",
     "name": "nl",
-    "src": "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+    "src": "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-kVVINR13.js",
+    "file": "assets/ai.usage-chart-CSHVQJmi.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -45,15 +45,15 @@
     ]
   },
   "src/index.tsx": {
-    "file": "assets/index-DbNgVZ7J.js",
+    "file": "assets/index-BScFMrYr.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "dynamicImports": [
-      "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
-      "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
-      "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
-      "../../../../b9bd41178c40/craft-freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+      "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+      "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+      "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+      "../../../freeform/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
       "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [

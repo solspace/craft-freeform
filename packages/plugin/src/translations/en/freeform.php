@@ -3485,4 +3485,10 @@ return [
     'No legends yet. Legends are optional.' => 'No legends yet. Legends are optional.',
     'Edit scales & legends' => 'Edit scales & legends',
     'Drag rows to reorder them. Press Enter in a cell to add another row.' => 'Drag rows to reorder them. Press Enter in a cell to add another row.',
+    // Native slideout editors
+    'Click \'Add Group\' to begin.' => 'Click \'Add Group\' to begin.',
+    'Drag forms here.' => 'Drag forms here.',
+    'Drag forms here to leave them unassigned. They appear after the groups.' => 'Drag forms here to leave them unassigned. They appear after the groups.',
+    'Reorder' => 'Reorder',
+    'Click the \'Add Group\' button on the right to begin.' => 'Click the \'Add Group\' button on the right to begin.',
 ];

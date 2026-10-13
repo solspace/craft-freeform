@@ -3,6 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Fixed
+- Moved **Manage Form Groups** into a native Craft slideout with a fixed footer, responsive layout, and translated helper text.
 - Replaced boolean settings dropdowns with Craft 6’s native combobox, using Enabled/Disabled labels and retaining selected status indicators and environment-variable support.
 - Fixed saving settings through Craft 6’s native plugin settings model and corrected primary button hover and pressed colors.
 - Fixed settings headings sticking and secondary navigation jumping down when scrolling Craft 6 pages.

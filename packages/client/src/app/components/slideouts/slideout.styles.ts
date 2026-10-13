@@ -7,6 +7,7 @@ export const SlideoutContainer = styled.div`
   flex: 1;
   min-height: 0;
   height: 100%;
+  container-type: inline-size;
   overflow: hidden;
   color: var(--c-text-default);
   background: var(--c-modal-fill, #fff);
@@ -17,6 +18,10 @@ export const SlideoutContainer = styled.div`
 export const SlideoutHeader = styled.header.attrs({ className: "pane-header" })`
   // Override the legacy pane header's negative margins and compact padding.
   && {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--c-spacing-md, 16px);
     flex: 0 0 auto;
     margin: 0;
     padding: var(--c-spacing-lg, 24px);
@@ -25,6 +30,8 @@ export const SlideoutHeader = styled.header.attrs({ className: "pane-header" })`
     background: var(--c-modal-fill, #fff);
     box-shadow: none;
   }
+
+  button svg { width: 12px; height: 12px; display: block; }
 
   h1 {
     ${sectionHeading}

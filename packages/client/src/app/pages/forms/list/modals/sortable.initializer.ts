@@ -9,13 +9,16 @@ const putCondition = (_to: Sortable, from: Sortable): boolean =>
 
 export const initializeSortable = (
   formListRefs: RefObject<FormGroupsListRefs>,
-): void => {
+): (() => void) => {
+  const instances: Sortable[] = [];
   const initialize = (
     selector: keyof FormGroupsListRefs,
     options?: Sortable.Options,
   ): void => {
     const createSortable = formListRefs.current[selector];
-    if (createSortable) Sortable.create(createSortable as HTMLElement, options);
+    if (createSortable) {
+      instances.push(Sortable.create(createSortable as HTMLElement, options));
+    }
   };
 
   const handleSortableInit = (): void => {
@@ -46,6 +49,11 @@ export const initializeSortable = (
   };
 
   handleSortableInit();
+  return () => {
+    instances.forEach((instance) => {
+      instance.destroy();
+    });
+  };
 };
 
 export const initializeGroupedSortable = (
@@ -53,7 +61,14 @@ export const initializeGroupedSortable = (
   uid: string,
   formGroupsListRefs: RefObject<FormGroupsListRefs>,
 ): void => {
-  if (el) {
+  const previousElement = formGroupsListRefs.current[uid];
+  if (!el) {
+    if (previousElement) Sortable.get(previousElement)?.destroy();
+    delete formGroupsListRefs.current[uid];
+    return;
+  }
+
+  if (!Sortable.get(el)) {
     Sortable.create(el, {
       animation: 150,
       group: {
@@ -65,6 +80,6 @@ export const initializeGroupedSortable = (
       onFilter: (evt) =>
         formGroupsListRefs.current.unassigned.appendChild(evt.item),
     });
-    formGroupsListRefs.current[uid] = el;
   }
+  formGroupsListRefs.current[uid] = el;
 };

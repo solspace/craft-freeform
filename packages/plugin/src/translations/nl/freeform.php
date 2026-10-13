@@ -3449,4 +3449,10 @@ return [
     'No legends yet. Legends are optional.' => 'Nog geen legenda’s. Legenda’s zijn optioneel.',
     'Edit scales & legends' => 'Schalen en legenda’s bewerken',
     'Drag rows to reorder them. Press Enter in a cell to add another row.' => 'Versleep rijen om ze opnieuw te ordenen. Druk op Enter in een cel om een rij toe te voegen.',
+    // Native slideout editors
+    'Click \'Add Group\' to begin.' => 'Klik op ‘Groep toevoegen’ om te beginnen.',
+    'Drag forms here.' => 'Sleep formulieren hierheen.',
+    'Drag forms here to leave them unassigned. They appear after the groups.' => 'Sleep formulieren hierheen om ze niet aan een groep toe te wijzen. Ze verschijnen na de groepen.',
+    'Reorder' => 'Volgorde aanpassen',
+    'Click the \'Add Group\' button on the right to begin.' => 'Klik rechts op ‘Groep toevoegen’ om te beginnen.',
 ];

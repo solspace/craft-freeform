@@ -3486,4 +3486,10 @@ return [
     'No legends yet. Legends are optional.' => 'Aucune légende pour le moment. Les légendes sont facultatives.',
     'Edit scales & legends' => 'Modifier les échelles et légendes',
     'Drag rows to reorder them. Press Enter in a cell to add another row.' => 'Faites glisser les lignes pour les réorganiser. Appuyez sur Entrée dans une cellule pour ajouter une ligne.',
+    // Native slideout editors
+    'Click \'Add Group\' to begin.' => 'Cliquez sur « Ajouter un groupe » pour commencer.',
+    'Drag forms here.' => 'Faites glisser les formulaires ici.',
+    'Drag forms here to leave them unassigned. They appear after the groups.' => 'Faites glisser les formulaires ici pour les laisser sans groupe. Ils apparaissent après les groupes.',
+    'Reorder' => 'Réordonner',
+    'Click the \'Add Group\' button on the right to begin.' => 'Cliquez sur « Ajouter un groupe » à droite pour commencer.',
 ];

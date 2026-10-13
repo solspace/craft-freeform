@@ -4,11 +4,25 @@ namespace Solspace\Freeform\Tests\Attributes\Property\Implementations\Options;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 
 #[CoversClass(OptionCollection::class)]
 class OptionCollectionTest extends TestCase
 {
+    public function testColorMetadataKeepsPlainOptionsAndTwigValuesUnchanged(): void
+    {
+        $collection = (new OptionCollection())->add('plain', 'Plain')->add(new Option('7', 'Open', color: '#27AE60'));
+        self::assertSame([
+            ['value' => 'plain', 'label' => 'Plain'],
+            ['value' => '7', 'label' => 'Open', 'color' => '#27AE60'],
+        ], $collection->toArray());
+        self::assertSame([
+            ['value' => 'plain', 'label' => 'Plain'],
+            ['value' => '7', 'label' => 'Open'],
+        ], $collection->toTwigArray());
+    }
+
     public function testNestedChildren(): void
     {
         $collection = new OptionCollection();

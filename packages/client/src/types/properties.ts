@@ -61,6 +61,7 @@ export type Option = {
   value: string;
   label: string;
   icon?: string | ReactNode;
+  color?: string;
   hint?: string;
   shadowIndex?: number;
 };

@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
 - Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft.

@@ -170,7 +170,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
         {missingValue && missingOption.icon ? (
           <Icon aria-hidden="true">{missingOption.icon}</Icon>
         ) : (
-          showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>
+          showSelectedIcon &&
+          selectedOption?.icon && <Icon>{selectedOption.icon}</Icon>
         )}
         <span
           dangerouslySetInnerHTML={{

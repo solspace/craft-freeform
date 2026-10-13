@@ -34,10 +34,23 @@ export const GroupLayout = styled.div`
   gap: ${spacings.md};
 `;
 
-export const GroupWrapper = styled.div<EmptyProps>`
-  padding: 25px ${spacings.lg};
+export const GroupColumn = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+`;
+
+export const GroupToolbar = styled.div`
+  flex: 0 0 auto;
+  padding: 25px ${spacings.lg} 0;
+`;
+
+export const GroupWrapper = styled.div<EmptyProps>`
+  padding: ${spacings.md} ${spacings.lg} 25px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   gap: ${spacings.md};
   overflow-x: hidden;
   overflow-y: auto;
@@ -52,7 +65,7 @@ export const GroupWrapper = styled.div<EmptyProps>`
 `;
 
 GroupWrapper.defaultProps = {
-  $empty: "Click the 'Add Group' button on the right to begin.",
+  $empty: "Click 'Add Group' to begin.",
 };
 
 export const GroupHeader = styled.div`
@@ -90,7 +103,7 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
 `;
 
 GroupItemWrapper.defaultProps = {
-  $empty: "Drag and drop any field here",
+  $empty: "Drag forms here.",
   color: colors.black,
 };
 
@@ -131,12 +144,10 @@ export const Groups = styled.div<EmptyProps>`
 `;
 
 Groups.defaultProps = {
-  $empty: "Drag and drop any field here",
+  $empty: "Drag forms here.",
 };
 
 export const UnassignedGroupWrapper = styled.div`
-  padding-top: ${spacings.lg};
-
   > .unassigned {
     .remove {
       display: none;

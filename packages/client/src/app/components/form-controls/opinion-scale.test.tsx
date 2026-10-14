@@ -15,7 +15,11 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (value: string) => value,
 }));
 vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
-  useTranslations: () => ({ willTranslate: () => mode.translating }),
+  useTranslations: () => ({
+    willTranslate: () => mode.translating,
+    hasTranslation: () => true,
+    getTranslation: (_handle: string, value: unknown) => value,
+  }),
 }));
 vi.mock("@components/form-controls/control", () => ({
   Control: ({ children }: { children: ReactNode }) => <div>{children}</div>,
@@ -25,21 +29,40 @@ vi.mock("@components/form-controls/preview/preview-slideout", () => ({
     preview,
     children,
     onAfterEdit,
+    onEdit,
+    onCancel,
   }: {
     preview: ReactNode;
     children: ReactNode;
     onAfterEdit: () => void;
+    onEdit?: () => void;
+    onCancel?: () => void;
   }) => {
     const [open, setOpen] = useState(false);
     return (
       <>
         {preview}
-        <button type="button" onClick={() => setOpen(true)}>
+        <button
+          type="button"
+          onClick={() => {
+            onEdit?.();
+            setOpen(true);
+          }}
+        >
           Open
         </button>
         {open && (
           <>
             {children}
+            <button
+              type="button"
+              onClick={() => {
+                onCancel?.();
+                setOpen(false);
+              }}
+            >
+              Cancel
+            </button>
             <button
               type="button"
               onClick={() => {
@@ -170,6 +193,18 @@ afterEach(() => {
   container.remove();
 });
 describe("combined Opinion Scale configuration", () => {
+  it("restores both property arrays when cancelling the combined editor", () => {
+    act(() => root.render(<Fixture />));
+    click("Open");
+    click("Add scales");
+    click("Add legends");
+    click("Cancel");
+    expect(stored()).toEqual(initial);
+    expect(updates.mock.calls.slice(-2).map(([handle]) => handle)).toEqual([
+      "scales",
+      "legends",
+    ]);
+  });
   it("opens one editor and updates both existing arrays independently", () => {
     act(() => root.render(<Fixture />));
     expect(container.querySelectorAll("button")).toHaveLength(1);

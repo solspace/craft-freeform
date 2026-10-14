@@ -1,5 +1,6 @@
 import { Control } from "@components/form-controls/control";
 import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
+import { usePreviewRollback } from "@components/form-controls/preview/use-preview-rollback";
 import type { ControlType } from "@components/form-controls/types";
 import type { Field } from "@editor/store/slices/layout/fields";
 import type { CardsProperty } from "@ff-client/types/properties";
@@ -16,9 +17,16 @@ const Cards: React.FC<ControlType<CardsProperty, Field>> = ({
   updateValue,
   context,
 }) => {
+  const rollback = usePreviewRollback(
+    value,
+    updateValue,
+    property.handle,
+    context,
+  );
   return (
     <Control property={property} errors={errors} context={context}>
       <PreviewSlideout
+        {...rollback}
         title={translate(property.label)}
         fillEditor={false}
         preview={

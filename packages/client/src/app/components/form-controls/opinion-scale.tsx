@@ -10,6 +10,7 @@ import { TabularDataEditor } from "@components/form-controls/control-types/tabul
 import { cleanRows } from "@components/form-controls/control-types/tabular-data/tabular-data.operations";
 import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
 import { PreviewEmpty } from "@components/form-controls/preview/property-preview.styles";
+import { usePreviewRollback } from "@components/form-controls/preview/use-preview-rollback";
 import type { ControlType } from "@components/form-controls/types";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { Fields } from "@ff-client/types/field.classes";
@@ -34,8 +35,9 @@ type Props = {
   ) => React.ReactNode;
 };
 
+type EditorActions = { finish: () => void; cancel: () => void };
 const CleanupContext = createContext<
-  (handle: string, cleanup: () => void) => void
+  (handle: string, actions: EditorActions) => void
 >(() => {});
 const Sections = styled.div`
   display: flex;
@@ -129,6 +131,13 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
   updateValue,
 }) => {
   const registerCleanup = useContext(CleanupContext);
+  const rollback = usePreviewRollback(
+    value,
+    updateValue,
+    property.handle,
+    context,
+  );
+  const captured = useRef(false);
   // biome-ignore lint/suspicious/noExplicitAny: Same field context used by the standard tabular data control.
   const { willTranslate } = useTranslations(context as any);
   const values = Array.isArray(value) ? value : [];
@@ -141,12 +150,26 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
       : "Optional descriptions shown below the scale. They do not need to match the number of choices.",
   };
   useLayoutEffect(() => {
-    registerCleanup(property.handle, () => {
-      if (isTranslating) return;
-      const cleaned = cleanRows(values);
-      if (cleaned.length !== values.length) updateValue(cleaned);
+    if (!captured.current) {
+      rollback.onEdit();
+      captured.current = true;
+    }
+    registerCleanup(property.handle, {
+      finish: () => {
+        if (isTranslating) return;
+        const cleaned = cleanRows(values);
+        if (cleaned.length !== values.length) updateValue(cleaned);
+      },
+      cancel: rollback.onCancel,
     });
-  }, [registerCleanup, property.handle, values, updateValue, isTranslating]);
+  }, [
+    registerCleanup,
+    property.handle,
+    values,
+    updateValue,
+    isTranslating,
+    rollback,
+  ]);
   return (
     <Control property={displayProperty} errors={errors} context={context}>
       <TabularDataEditor
@@ -176,7 +199,7 @@ export const OpinionScaleProperty: React.FC<Props> = ({
   properties,
   renderProperty,
 }) => {
-  const cleanups = useRef(new Map<string, () => void>());
+  const cleanups = useRef(new Map<string, EditorActions>());
   const scales = properties.find(
     (item) =>
       item.handle === "scales" && item.type === PropertyType.TabularData,
@@ -209,8 +232,14 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             </Summary>
           }
           onAfterEdit={() =>
-            cleanups.current.forEach((cleanup) => {
-              cleanup();
+            cleanups.current.forEach((actions) => {
+              actions.finish();
+            })
+          }
+          onEdit={() => cleanups.current.clear()}
+          onCancel={() =>
+            cleanups.current.forEach((actions) => {
+              actions.cancel();
             })
           }
         >

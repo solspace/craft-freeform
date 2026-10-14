@@ -59,6 +59,7 @@ type Props = {
   fillEditor?: boolean;
   onEdit?: () => void;
   onAfterEdit?: () => void;
+  onCancel?: () => void;
 };
 
 export const PreviewSlideout: React.FC<Props> = ({
@@ -68,10 +69,12 @@ export const PreviewSlideout: React.FC<Props> = ({
   fillEditor = true,
   onEdit,
   onAfterEdit,
+  onCancel,
 }) => {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
+  const cancelled = useRef(false);
 
   useLayoutEffect(() => {
     const element = body.current;
@@ -92,6 +95,7 @@ export const PreviewSlideout: React.FC<Props> = ({
   }, [editing, fillEditor]);
 
   const open = () => {
+    cancelled.current = false;
     setEditing(true);
     onEdit?.();
   };
@@ -120,7 +124,8 @@ export const PreviewSlideout: React.FC<Props> = ({
           title={title}
           onClose={() => {
             setEditing(false);
-            onAfterEdit?.();
+            if (cancelled.current) onCancel?.();
+            else onAfterEdit?.();
             trigger.current?.focus();
           }}
         >
@@ -145,6 +150,16 @@ export const PreviewSlideout: React.FC<Props> = ({
                 {children}
               </EditorBody>
               <SlideoutFooter>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    cancelled.current = true;
+                    close();
+                  }}
+                >
+                  {translate("Cancel")}
+                </button>
                 <FinishButton onClick={close}>
                   {translate("Finish & Close")}
                 </FinishButton>

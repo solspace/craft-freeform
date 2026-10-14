@@ -1,5 +1,11 @@
 import type { FormComponent } from "@components/form-controls";
 import { Control } from "@components/form-controls/control";
+import {
+  ControlWrapper,
+  FormField,
+  Instructions,
+  LabelGroup,
+} from "@components/form-controls/control.styles";
 import { TabularDataEditor } from "@components/form-controls/control-types/tabular-data/tabular-data.editor";
 import { cleanRows } from "@components/form-controls/control-types/tabular-data/tabular-data.operations";
 import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
@@ -33,9 +39,23 @@ const CleanupContext = createContext<
 const Sections = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--xl, 24px);
+  > ${ControlWrapper} {
+    gap: var(--s, 8px);
+  }
+  ${LabelGroup} {
+    flex: 0 0 auto;
+  }
+  ${FormField} {
+    height: auto;
+  }
+  ${Instructions} {
+    font-style: normal;
+    line-height: 1.5;
+    margin: var(--xs, 4px) 0 0;
+  }
   > div + div {
-    padding-top: 24px;
+    padding-top: var(--xl, 24px);
     border-top: 1px solid var(--border-hairline, rgba(51, 64, 77, .1));
   }
   min-width: 0;

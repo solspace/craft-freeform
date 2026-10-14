@@ -34,7 +34,7 @@ const EditorBody = styled.div<{ $fillEditor: boolean }>`
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 24px;
+  padding: var(--l, 18px);
 
   ${PreviewEditor} {
     flex: 0 0 auto;

@@ -41,7 +41,7 @@
 ### Fixed
 - Fixed the Cards Layout editor overflowing native slideouts, with responsive columns and scrolling that keeps all cards accessible.
 - Fixed list markers and indentation in HTML and Rich Text field previews in the form builder.
-- Fixed native form editor slideouts closing when interacting with their contents, and refined the Bulk Editor's Craft controls and layout.
+- Fixed native form editor slideouts closing when interacting with their contents, and refined the Bulk and Opinion Scale editors' Craft controls and layouts.
 - Fixed Default Status dots showing white for colors from Craft 5's expanded palette.
 
 ## 5.16.6 - 2026-10-07

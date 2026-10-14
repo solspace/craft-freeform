@@ -1,68 +1,68 @@
 {
-  "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
     "file": "assets/de-BlvrHwyN.js",
     "name": "de",
-    "src": "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
     "imports": [
-      "packages/client/src/index.tsx"
+      "src/index.tsx"
     ]
   },
-  "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
     "file": "assets/fr-BpVT5y68.js",
     "name": "fr",
-    "src": "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
     "imports": [
-      "packages/client/src/index.tsx"
+      "src/index.tsx"
     ]
   },
-  "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
     "file": "assets/it-qZ64jDp2.js",
     "name": "it",
-    "src": "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
     "imports": [
-      "packages/client/src/index.tsx"
+      "src/index.tsx"
     ]
   },
-  "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
     "file": "assets/nl-CyWjba2m.js",
     "name": "nl",
-    "src": "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
     "imports": [
-      "packages/client/src/index.tsx"
+      "src/index.tsx"
     ]
   },
-  "packages/client/src/app/pages/ai/ai.usage-chart.tsx": {
+  "src/app/pages/ai/ai.usage-chart.tsx": {
     "file": "assets/ai.usage-chart-C6i0PvDv.js",
     "name": "ai.usage-chart",
-    "src": "packages/client/src/app/pages/ai/ai.usage-chart.tsx",
+    "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
     "imports": [
-      "packages/client/src/index.tsx"
+      "src/index.tsx"
     ]
   },
-  "packages/client/src/assets/icons/formatting-templates/daisyui.svg": {
+  "src/assets/icons/formatting-templates/daisyui.svg": {
     "file": "assets/daisyui-Bb46CV6P.svg",
-    "src": "packages/client/src/assets/icons/formatting-templates/daisyui.svg"
+    "src": "src/assets/icons/formatting-templates/daisyui.svg"
   },
-  "packages/client/src/assets/icons/formatting-templates/foundation.svg": {
+  "src/assets/icons/formatting-templates/foundation.svg": {
     "file": "assets/foundation-Ci2_O8Bq.svg",
-    "src": "packages/client/src/assets/icons/formatting-templates/foundation.svg"
+    "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
-  "packages/client/src/index.tsx": {
+  "src/index.tsx": {
     "file": "assets/index-C9PrqKh9.js",
     "name": "index",
-    "src": "packages/client/src/index.tsx",
+    "src": "src/index.tsx",
     "isEntry": true,
     "dynamicImports": [
-      "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
-      "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
-      "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
-      "node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
-      "packages/client/src/app/pages/ai/ai.usage-chart.tsx"
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+      "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [
       "assets/index-CLAzhdmK.css"

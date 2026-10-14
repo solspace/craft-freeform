@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
 use Solspace\Freeform\Bundles\Form\Limiting\FormStopSubmissionsAfter;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
@@ -13,14 +14,69 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Settings;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 
 #[CoversClass(FormSchedule::class)]
 #[CoversClass(FormStopSubmissionsAfter::class)]
 class FormScheduleTest extends TestCase
 {
+    private mixed $previousYiiApp;
+    private string $edition = Freeform::EDITION_LITE;
+
+    protected function setUp(): void
+    {
+        $this->previousYiiApp = \Yii::$app;
+        $plugin = $this->createMock(Freeform::class);
+        $plugin->method('edition')->willReturnCallback(fn () => new EditionHelper($this->edition, [Freeform::EDITION_EXPRESS, Freeform::EDITION_LITE, Freeform::EDITION_PRO]));
+        \Yii::$app = (object) ['loadedModules' => [Freeform::class => $plugin]];
+    }
+
     protected function tearDown(): void
     {
         Carbon::setTestNow();
+        \Yii::$app = $this->previousYiiApp;
+    }
+
+    #[TestWith([Freeform::EDITION_EXPRESS, null, null])]
+    #[TestWith([Freeform::EDITION_LITE, FormSchedule::PENDING, FormSchedule::EXPIRED])]
+    #[TestWith([Freeform::EDITION_PRO, FormSchedule::PENDING, FormSchedule::EXPIRED])]
+    public function testAvailabilityScheduleRequiresLiteOrPro(string $edition, ?string $pending, ?string $expired): void
+    {
+        $this->edition = $edition;
+        self::assertSame($pending, FormSchedule::getStatus($this->settings(), new \DateTimeImmutable('2026-10-14T08:00:00-05:00')));
+        self::assertSame($expired, FormSchedule::getStatus($this->settings(), new \DateTimeImmutable('2026-10-14T18:00:00-05:00')));
+    }
+
+    public function testExpressDoesNotHideFormShowScheduleMessageOrRejectSubmission(): void
+    {
+        $this->edition = Freeform::EDITION_EXPRESS;
+        Carbon::setTestNow(new Carbon('2026-10-14T08:00:00-05:00'));
+        $form = $this->form($this->settings());
+        self::assertTrue($form->isAvailable());
+        self::assertSame('', $form->getScheduleMessage());
+        $event = new ValidationEvent($form);
+        $form->expects(self::never())->method('addError');
+        (new \ReflectionClass(FormStopSubmissionsAfter::class))->newInstanceWithoutConstructor()->handler($event);
+        self::assertTrue($event->isValid);
+    }
+
+    #[TestWith([Freeform::EDITION_EXPRESS, false])]
+    #[TestWith([Freeform::EDITION_LITE, true])]
+    #[TestWith([Freeform::EDITION_PRO, true])]
+    public function testScheduleSettingsValidationRequiresLiteOrPro(string $edition, bool $hasErrors): void
+    {
+        $this->edition = $edition;
+        $errors = FormSchedule::validateSettings((object) ['scheduleEnabled' => true, 'startSubmissionsAt' => 'not-a-date']);
+        self::assertSame($hasErrors, isset($errors['startSubmissionsAt']));
+    }
+
+    public function testEveryScheduleControlRequiresAtLeastLite(): void
+    {
+        foreach (['scheduleEnabled', 'startSubmissionsAt', 'stopSubmissionsAfter', 'schedulePendingMessage', 'scheduleExpiredMessage'] as $handle) {
+            $property = new \ReflectionProperty(BehaviorSettings::class, $handle);
+            self::assertSame(Edition::LITE, $property->getAttributes(Edition::class)[0]->newInstance()->name, $handle);
+        }
     }
 
     #[TestWith(['2026-10-14T08:59:59-05:00', FormSchedule::PENDING])]
@@ -146,7 +202,7 @@ class FormScheduleTest extends TestCase
     {
         $settings = $this->createMock(Settings::class);
         $settings->method('getBehavior')->willReturn($behavior);
-        $form = $this->getMockBuilder(Form::class)->disableOriginalConstructor()->onlyMethods(['getSettings', 'setProperties', 'getFormHandler'])->getMock();
+        $form = $this->getMockBuilder(Form::class)->disableOriginalConstructor()->onlyMethods(['getSettings', 'setProperties', 'getFormHandler', 'addError'])->getMock();
         $form->method('getSettings')->willReturn($settings);
         $form->method('setProperties')->willReturnSelf();
         $translations = $this->createMock(TranslationProvider::class);

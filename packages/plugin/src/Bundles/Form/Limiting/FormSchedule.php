@@ -13,7 +13,7 @@ class FormSchedule
 
     public static function getStatus(BehaviorSettings $settings, ?\DateTimeInterface $now = null): ?string
     {
-        if (false === $settings->scheduleEnabled || (null === $settings->scheduleEnabled && !$settings->stopSubmissionsAfter)) {
+        if (false === $settings->scheduleEnabled || (null === $settings->scheduleEnabled && !$settings->stopSubmissionsAfter) || !self::isSupported()) {
             return null;
         }
 
@@ -33,7 +33,7 @@ class FormSchedule
 
     public static function validateSettings(object $settings): array
     {
-        if (empty($settings->scheduleEnabled)) {
+        if (empty($settings->scheduleEnabled) || !self::isSupported()) {
             return [];
         }
 
@@ -57,5 +57,10 @@ class FormSchedule
         }
 
         return $errors;
+    }
+
+    private static function isSupported(): bool
+    {
+        return Freeform::getInstance()->edition()->isAtLeast(Freeform::EDITION_LITE);
     }
 }

@@ -3,7 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
-- Added form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
+- Added Lite/Pro form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
 - Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
 - Added a Cancel action to content editor slideouts that restores their original values and translations.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.

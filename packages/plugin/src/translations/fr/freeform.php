@@ -3780,4 +3780,5 @@ return [
     'One HTTPS file URL per line. Leave blank if no additional styles are needed.' => 'Une URL HTTPS de fichier par ligne. Laissez vide si aucun style supplémentaire n’est nécessaire.',
     'Script URLs (JavaScript)' => 'URL des scripts (JavaScript)',
     'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'Une URL HTTPS de fichier par ligne, dans l’ordre de chargement. Utilisez uniquement des scripts fiables.',
+    'Preview complete. No submission was sent.' => 'Aperçu terminé. Aucune soumission n’a été envoyée.',
 ];

@@ -7,10 +7,11 @@ import { useQueryFormSettings } from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
 import axios from "axios";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useResolvedPath } from "react-router-dom";
 import { FieldComponent } from "../form-settings/field-component";
+import { type PreviewValues, readPreviewMessage } from "./preview.messages";
 import {
   Frame,
   FrameArea,
@@ -20,7 +21,14 @@ import {
 } from "./preview.styles";
 import { ViewportIcon } from "./viewport-icon";
 
-type PreviewData = { html: string; pages: string[]; available: boolean };
+type PreviewData = {
+  html: string;
+  pages: string[];
+  available: boolean;
+  page: number;
+  channel: string;
+  complete: boolean;
+};
 
 export const FormPreview: React.FC = () => {
   const form = useSelector(formSelectors.current);
@@ -29,27 +37,87 @@ export const FormPreview: React.FC = () => {
   const { data: settings } = useQueryFormSettings();
   const path = useResolvedPath("");
   const [width, setWidth] = useState("100%");
-  const [page, setPage] = useState(0);
-  const [revision, setRevision] = useState(0);
+  const [request, setRequest] = useState({
+    page: 0,
+    advance: false,
+    revision: 0,
+  });
+  const frame = useRef<HTMLIFrameElement>(null);
+  const values = useRef<PreviewValues>(Object.create(null));
+  const history = useRef<number[]>([]);
+  const active = useRef({ channel: "", page: 0, loading: false });
+  const identity = useRef("");
+  const [complete, setComplete] = useState(false);
   const [preview, setPreview] = useState<PreviewData>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    const receive = (event: MessageEvent): void => {
+      const message = readPreviewMessage(
+        event,
+        frame.current?.contentWindow,
+        active.current.channel,
+      );
+      if (!message) return;
+      Object.assign(values.current, message.values);
+      if (message.action === "values" || active.current.loading) return;
+      const back = message.action === "back";
+      const page = back
+        ? (history.current.pop() ?? Math.max(0, active.current.page - 1))
+        : active.current.page;
+      setRequest((previous) => ({
+        page,
+        advance: !back,
+        revision: previous.revision + 1,
+      }));
+    };
+    window.addEventListener("message", receive);
+    return () => window.removeEventListener("message", receive);
+  }, []);
+
+  useEffect(() => {
     if (form.isNew || !form.id) return;
+    const nextIdentity = `${form.id}:${current?.handle}`;
+    const changed = identity.current !== nextIdentity;
+    if (changed) {
+      values.current = Object.create(null);
+      history.current = [];
+      active.current.page = 0;
+      setPreview(undefined);
+      identity.current = nextIdentity;
+    }
     const controller = new AbortController();
+    active.current.loading = true;
+    active.current.channel = "";
     setLoading(true);
+    setComplete(false);
     setError("");
     axios
       .post<PreviewData>(
         `/api/forms/${form.id}/preview`,
-        { page },
         {
-          params: { site: current?.handle, revision },
+          page: changed ? 0 : request.page,
+          advance: !changed && request.advance,
+          values: values.current,
+        },
+        {
+          params: { site: current?.handle, revision: request.revision },
           signal: controller.signal,
         },
       )
-      .then(({ data }) => setPreview(data))
+      .then(({ data }) => {
+        if (controller.signal.aborted) return;
+        if (data.complete) {
+          setComplete(true);
+          return;
+        }
+        if (request.advance && data.page !== active.current.page)
+          history.current.push(active.current.page);
+        active.current.channel = data.channel;
+        active.current.page = data.page ?? request.page;
+        setPreview(data);
+      })
       .catch(() => {
         if (controller.signal.aborted) return;
         setPreview(undefined);
@@ -60,10 +128,13 @@ export const FormPreview: React.FC = () => {
         );
       })
       .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
+        if (!controller.signal.aborted) {
+          active.current.loading = false;
+          setLoading(false);
+        }
       });
     return () => controller.abort();
-  }, [form.id, form.isNew, current?.handle, page, revision]);
+  }, [form.id, form.isNew, current?.handle, request]);
 
   const properties = settings?.find(
     (item) => item.handle === "general",
@@ -117,8 +188,15 @@ export const FormPreview: React.FC = () => {
             <label>
               {translate("Page")}
               <Dropdown
-                value={String(page)}
-                onChange={(value) => setPage(Number(value))}
+                value={String(preview.page ?? request.page)}
+                onChange={(value) => {
+                  history.current = [];
+                  setRequest((previous) => ({
+                    page: Number(value),
+                    advance: false,
+                    revision: previous.revision + 1,
+                  }));
+                }}
                 options={preview.pages.map((label, index) => ({
                   value: String(index),
                   label: label || `${translate("Page")} ${index + 1}`,
@@ -130,11 +208,22 @@ export const FormPreview: React.FC = () => {
             type="button"
             className="btn"
             disabled={loading || form.isNew}
-            onClick={() => setRevision((value) => value + 1)}
+            onClick={() =>
+              setRequest((previous) => ({
+                page: active.current.page,
+                advance: false,
+                revision: previous.revision + 1,
+              }))
+            }
           >
             {translate(loading ? "Loading" : "Refresh Preview")}
           </button>
         </Toolbar>
+        {complete && (
+          <p role="status">
+            {translate("Preview complete. No submission was sent.")}
+          </p>
+        )}
         {form.isNew && (
           <p role="status">
             {translate("Save this form before previewing it.")}
@@ -187,12 +276,13 @@ export const FormPreview: React.FC = () => {
       <FrameArea aria-busy={loading}>
         {preview && (
           <Frame
-            key={`${page}-${revision}`}
+            ref={frame}
+            key={preview.channel}
             title={translate("Form Preview")}
             sandbox="allow-scripts"
             referrerPolicy="no-referrer"
             srcDoc={preview.html}
-            style={{ width }}
+            style={{ width, pointerEvents: loading ? "none" : undefined }}
           />
         )}
       </FrameArea>

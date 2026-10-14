@@ -1,42 +1,42 @@
 {
-  "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-NzKY5BtI.js",
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
+    "file": "assets/de-ChAggcL7.js",
     "name": "de",
-    "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-BMLKxGs1.js",
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
+    "file": "assets/fr-B4-BNvNt.js",
     "name": "fr",
-    "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-k_rW9AV_.js",
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
+    "file": "assets/it-CZM1HgA8.js",
     "name": "it",
-    "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
-  "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-Fa5hKgHY.js",
+  "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
+    "file": "assets/nl-D7obCoqw.js",
     "name": "nl",
-    "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+    "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
     "imports": [
       "src/index.tsx"
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-CZUhoIjC.js",
+    "file": "assets/ai.usage-chart-CZhWRrMW.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -53,15 +53,15 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-CPxor0ij.js",
+    "file": "assets/index-B2X3aU8-.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "dynamicImports": [
-      "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
-      "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
-      "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
-      "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
+      "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
       "src/app/pages/ai/ai.usage-chart.tsx"
     ],
     "css": [

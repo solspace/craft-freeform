@@ -10,6 +10,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
+use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormPreviewService;
@@ -49,7 +50,13 @@ class FormsController extends BaseApiController
         }
 
         try {
-            $data = \Craft::$container->get(FormPreviewService::class)->render($form, (int) $this->request->getBodyParam('page', 0));
+            $values = PreviewState::validateValues($this->request->getBodyParam('values', []));
+            $data = \Craft::$container->get(FormPreviewService::class)->render(
+                $form,
+                (int) $this->request->getBodyParam('page', 0),
+                $values,
+                true === $this->request->getBodyParam('advance', false),
+            );
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }

@@ -3,13 +3,15 @@
 namespace Solspace\Freeform\Services;
 
 use craft\web\View;
+use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
+use Solspace\Freeform\Library\Helpers\PreviewState;
 
 class FormPreviewService
 {
-    public function render(Form $form, int $page = 0): array
+    public function render(Form $form, int $page = 0, array $values = [], bool $advance = false): array
     {
         $settings = $form->getSettings()->getGeneral();
         $templates = $this->getTemplates();
@@ -25,9 +27,23 @@ class FormPreviewService
 
         $available = $form->isAvailable();
         $form->setPreview();
+        $handles = PreviewState::apply($form, PreviewState::validateValues($values));
         $form->getProperties()->set(Form::PROPERTY_PAGE_INDEX, $page);
         $pages->setCurrent($page);
         $form->getSettings()->getBehavior()->ajax = false;
+
+        if ($advance) {
+            $validator = \Craft::$container->get(RuleValidator::class);
+            $next = PreviewState::nextPage($form, $validator);
+            if (null === $next) {
+                return ['complete' => true, 'page' => $page];
+            }
+            $page = $next;
+            $form->getProperties()->set(Form::PROPERTY_PAGE_INDEX, $page);
+            $pages->setCurrent($page);
+        }
+
+        $channel = bin2hex(random_bytes(16));
 
         $markup = $form->render(['disable' => true]);
         // Yii removes registered bundles during endBody(). Capture their local
@@ -41,6 +57,13 @@ class FormPreviewService
             'isCustomFormattingTemplate' => $template,
             'cssUrls' => PreviewAssetHelper::parse($settings->previewCssUrls),
             'jsUrls' => PreviewAssetHelper::parse($settings->previewJsUrls),
+            'isDark' => PreviewState::isDark($settings->formattingTemplate, $template),
+            'previewConfigJson' => json_encode([
+                'channel' => $channel,
+                'parentOrigin' => \Craft::$app->getRequest()->getHostInfo(),
+                'handles' => $handles,
+            ], \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT),
+            'previewScript' => file_get_contents(__DIR__.'/../Resources/js/external/preview.js'),
         ], View::TEMPLATE_MODE_SITE);
 
         // Custom templates remain trusted server-side Twig. Never expose the CP
@@ -54,6 +77,9 @@ class FormPreviewService
             'html' => $this->isolate($html, \Craft::$app->getConfig()->getGeneral()->csrfTokenName, $bundledAssets),
             'pages' => array_map(static fn ($item) => $item->getLabel(), iterator_to_array($pages)),
             'available' => $available,
+            'page' => $page,
+            'channel' => $channel,
+            'complete' => false,
         ];
     }
 

@@ -74,6 +74,9 @@ beforeEach(() => {
       html: "<p>Saved form</p>",
       pages: ["Details", "Review"],
       available: true,
+      page: 0,
+      channel: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      complete: false,
     },
   });
   host = document.createElement("div");
@@ -90,7 +93,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   await act(async () => root.render(<FormPreview />));
   expect(fixture.post).toHaveBeenCalledWith(
     "/api/forms/42/preview",
-    { page: 0 },
+    { page: 0, advance: false, values: {} },
     expect.objectContaining({ params: { site: "default", revision: 0 } }),
   );
   const frame = host.querySelector("iframe")!;
@@ -132,7 +135,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(host.querySelector("iframe")!.style.width).toBe("375px");
   expect(fixture.post).toHaveBeenLastCalledWith(
     "/api/forms/42/preview",
-    { page: 1 },
+    { page: 1, advance: false, values: {} },
     expect.anything(),
   );
 });
@@ -157,4 +160,73 @@ it("clears stale preview content when rendering fails", async () => {
   await act(async () => host.querySelector("button")!.click());
   expect(host.querySelector("iframe")).toBeNull();
   expect(host.querySelector('[role="alert"]')).not.toBeNull();
+});
+
+it("retains page answers and accepts navigation only from the current sandboxed frame", async () => {
+  await act(async () => root.render(<FormPreview />));
+  const send = async (
+    action: string,
+    values: Record<string, string>,
+    channel = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    origin = "null",
+    source: Window | null = host.querySelector("iframe")!.contentWindow,
+  ): Promise<void> => {
+    await act(async () =>
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          source,
+          origin,
+          data: { type: "freeform-preview", channel, action, values },
+        }),
+      ),
+    );
+  };
+  await send("values", { employment: "employed" });
+  expect(fixture.post).toHaveBeenCalledTimes(1);
+  await send("next", {}, "wrong-channel");
+  await send("next", {}, undefined, "https://evil.test");
+  await send("next", {}, undefined, undefined, window);
+  expect(fixture.post).toHaveBeenCalledTimes(1);
+
+  fixture.post.mockResolvedValueOnce({
+    data: {
+      html: "<p>Review</p>",
+      pages: ["Details", "Review"],
+      available: true,
+      page: 1,
+      channel: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      complete: false,
+    },
+  });
+  await send("next", { employment: "employed" });
+  expect(fixture.post).toHaveBeenLastCalledWith(
+    "/api/forms/42/preview",
+    { page: 0, advance: true, values: { employment: "employed" } },
+    expect.anything(),
+  );
+  fixture.post.mockResolvedValueOnce({
+    data: {
+      html: "<p>Details</p>",
+      pages: ["Details", "Review"],
+      available: true,
+      page: 0,
+      channel: "cccccccccccccccccccccccccccccccc",
+      complete: false,
+    },
+  });
+  await send("back", { employer: "Acme" }, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+  expect(fixture.post).toHaveBeenLastCalledWith(
+    "/api/forms/42/preview",
+    {
+      page: 0,
+      advance: false,
+      values: { employment: "employed", employer: "Acme" },
+    },
+    expect.anything(),
+  );
+  fixture.post.mockResolvedValueOnce({ data: { complete: true, page: 0 } });
+  await send("next", {}, "cccccccccccccccccccccccccccccccc");
+  expect(host.textContent).toContain(
+    "Preview complete. No submission was sent.",
+  );
 });

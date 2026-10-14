@@ -2,8 +2,22 @@
 
 The **Preview** tab renders the saved form with its selected formatting template
 inside an isolated frame. Save changes, then click **Refresh Preview**. Select
-Desktop, Tablet, or Mobile to change the frame width. For multi-page forms, use
-the page selector to inspect each page without submitting the form.
+Desktop, Tablet, or Mobile to change the frame width. Dark sample templates use
+a very dark gray (`#181a1b`) preview background.
+
+Field and button visibility rules work in the preview. For multi-page forms,
+use Next and Back to try saved page-jump rules and conditional early completion,
+or use the page selector to inspect a specific page. Answers are retained across
+page changes and refreshes while this Preview tab is open, allowing rules on
+later pages to use earlier answers. Back returns to the previously visited page
+after a conditional jump. Completing the preview displays a confirmation; it
+never submits the form.
+
+Answers are temporary. Switching forms/sites, leaving Preview, or reloading the
+browser clears them. File uploads, nested table answers, and oversized values
+are not carried between pages. Navigation evaluates rules without executing the
+submission-validation pipeline. Custom formatting templates must retain
+Freeform's form, field-container, and button attributes for interactive rules.
 
 Preview ignores schedules and submission limits and displays a notice when a
 form is currently unavailable. It does not require public HTML embeds to be enabled.
@@ -48,7 +62,12 @@ Inspect the browser console when an asset fails to load.
   path from the browser.
 - The frame uses `sandbox="allow-scripts"`, without same-origin, forms, popups, or
   top navigation permissions. It cannot access the parent control panel's DOM or
-  storage. There is no message bridge or arbitrary server-side URL fetcher.
+  storage. There is no arbitrary server-side URL fetcher.
+- A narrowly scoped message bridge accepts only bounded text/multiple-choice
+  answers and Next/Back requests from the current iframe. It checks the exact
+  source window, opaque origin, and a fresh per-render channel token. The parent
+  calls only the authenticated preview endpoint; it never forwards credentials,
+  arbitrary URLs, or submission commands to the frame.
 - A restrictive frame CSP blocks form submissions, fetch/XHR/WebSocket requests,
   child frames, workers, and plugins. Only rendered script/stylesheet URLs and
   hashed inline scripts receive script permissions. Subresources use anonymous
@@ -59,9 +78,10 @@ Inspect the browser console when an asset fails to load.
   is disabled for the preview instance. The preview route never invokes the
   submission pipeline.
 
-Preview is a presentation check, not a submission test. Use a normal frontend
-test form to verify validation, page transitions, uploads, payments, or
-integrations.
+Preview is a presentation and conditional-flow check, not a submission test. Use
+a normal frontend test form to verify full validation, real submission state,
+uploads, payments, or integrations. Notification and integration rules are not
+executed in Preview.
 
 Only configure trusted assets. Allowed scripts can read values typed into the
 preview, and allowed asset requests still reach their hosts. A browser sandbox

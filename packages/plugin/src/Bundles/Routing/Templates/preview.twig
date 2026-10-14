@@ -9,25 +9,15 @@
         <link rel="stylesheet" href="{{ url|e('html_attr') }}" crossorigin="anonymous">
     {% endfor %}
     <style>
-        body { margin: 0; padding: 24px; }
+        html { {% if isDark %}background: #181a1b; color-scheme: dark;{% endif %} }
+        body { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; {% if isDark %}background: #181a1b; color: #e5e7eb;{% endif %} }
         #freeform-preview-status { margin-bottom: 16px; padding: 12px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font: 14px/1.5 system-ui, sans-serif; }
     </style>
-    <script>
-        document.addEventListener('submit', function (event) {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            document.getElementById('freeform-preview-status').hidden = false;
-        }, true);
-        document.addEventListener('click', function (event) {
-            if (event.target.closest('a, [data-freeform-save], [data-freeform-back]')) {
-                event.preventDefault();
-                event.stopImmediatePropagation();
-            }
-        }, true);
-    </script>
+    <script id="freeform-preview-config" type="application/json">{{ previewConfigJson|raw }}</script>
+    <script>{{ previewScript|raw }}</script>
     {{ head() }}
 </head>
-<body>
+<body{% if isDark %} style="background-color: #181a1b; color: #e5e7eb"{% endif %}>
     {{ beginBody() }}
     <div id="freeform-preview-status" role="status" hidden>{{ 'Submissions are disabled in Preview. Choose another page using the page selector.'|t('freeform') }}</div>
     <main>{{ formMarkup }}</main>

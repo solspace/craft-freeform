@@ -3743,4 +3743,5 @@ return [
     'One HTTPS file URL per line. Leave blank if no additional styles are needed.' => 'Eén HTTPS-bestands-URL per regel. Laat leeg als er geen extra stijlen nodig zijn.',
     'Script URLs (JavaScript)' => 'Script-URL’s (JavaScript)',
     'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'Eén HTTPS-bestands-URL per regel, in laadvolgorde. Gebruik alleen vertrouwde scripts.',
+    'Preview complete. No submission was sent.' => 'Voorbeeld voltooid. Er is geen inzending verstuurd.',
 ];

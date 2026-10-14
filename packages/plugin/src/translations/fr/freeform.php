@@ -3788,4 +3788,8 @@ return [
     'Tablet Landscape' => 'Tablette en paysage',
     'Laptop' => 'Ordinateur portable',
     'Wide Desktop' => 'Grand écran de bureau',
+    'Archived Forms' => 'Formulaires archivés',
+    'Archived' => 'Archivé',
+    'Restore' => 'Restaurer',
+    'Restoring' => 'Restauration',
 ];

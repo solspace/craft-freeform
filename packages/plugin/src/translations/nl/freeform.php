@@ -3751,4 +3751,8 @@ return [
     'Tablet Landscape' => 'Tablet liggend',
     'Laptop' => 'Laptop',
     'Wide Desktop' => 'Breed bureaublad',
+    'Archived Forms' => 'Gearchiveerde formulieren',
+    'Archived' => 'Gearchiveerd',
+    'Restore' => 'Herstellen',
+    'Restoring' => 'Bezig met herstellen',
 ];

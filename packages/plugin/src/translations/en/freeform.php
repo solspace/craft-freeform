@@ -3787,4 +3787,8 @@ return [
     'Tablet Landscape' => 'Tablet Landscape',
     'Laptop' => 'Laptop',
     'Wide Desktop' => 'Wide Desktop',
+    'Archived Forms' => 'Archived Forms',
+    'Archived' => 'Archived',
+    'Restore' => 'Restore',
+    'Restoring' => 'Restoring',
 ];

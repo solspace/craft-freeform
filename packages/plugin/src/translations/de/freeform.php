@@ -3788,4 +3788,8 @@ return [
     'Tablet Landscape' => 'Tablet im Querformat',
     'Laptop' => 'Laptop',
     'Wide Desktop' => 'Breiter Desktop',
+    'Archived Forms' => 'Archivierte Formulare',
+    'Archived' => 'Archiviert',
+    'Restore' => 'Wiederherstellen',
+    'Restoring' => 'Wird wiederhergestellt',
 ];

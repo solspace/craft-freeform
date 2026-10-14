@@ -33,6 +33,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
+- Redesigned archived forms as a collapsible panel with a count badge, organized form details, localized dates, and compact restore/delete actions.
 - Replaced **Stop Submissions After Date** with cohesive **Schedule Form** settings and improved date/time controls. Existing cutoff dates retain their end-of-day behavior.
 - Standardized property-editor previews with consistent borders, empty states, compact scrolling content, and an always-visible edit cue.
 - Moved **Manage Form Groups**, **Field Type Manager**, **Favorite Fields**, bulk options, Cards, Table, HTML/code, Rich Text, and Opinion Scale editors into native Craft slideouts with responsive layouts.

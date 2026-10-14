@@ -31,6 +31,8 @@ export const GroupTitle = styled.h2`
 
 export const ArchivedAndGroupWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: ${spacings.lg};
   align-items: baseline;
   justify-content: space-between;
 

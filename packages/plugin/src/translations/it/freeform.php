@@ -3788,4 +3788,8 @@ return [
     'Tablet Landscape' => 'Tablet orizzontale',
     'Laptop' => 'Portatile',
     'Wide Desktop' => 'Desktop ampio',
+    'Archived Forms' => 'Moduli archiviati',
+    'Archived' => 'Archiviato',
+    'Restore' => 'Ripristina',
+    'Restoring' => 'Ripristino',
 ];

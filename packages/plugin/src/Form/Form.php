@@ -20,6 +20,7 @@ use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Form\Type;
 use Solspace\Freeform\Bundles\Form\FormUserProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
+use Solspace\Freeform\Bundles\Form\Limiting\SubmissionLimit;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
@@ -96,6 +97,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_SUBMIT = 'submit';
     public const EVENT_ON_SUBMIT_RESPONSE = 'on-submit-response';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
+    public const EVENT_AFTER_SUBMIT_ATTEMPT = 'after-submit-attempt';
     public const EVENT_AFTER_ASYNC_SPAM_VALIDATION = 'after-async-spam-validation';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
     public const EVENT_AFTER_VALIDATE = 'after-validate';
@@ -756,11 +758,14 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function render(?array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
-        if (!$this->isAvailable()) {
-            $message = $this->getScheduleMessage();
+        $scheduled = null !== FormSchedule::getStatus($this->getSettings()->getBehavior());
+        $limited = !$scheduled && SubmissionLimit::isBuilderEnabled($this) && !$this->isSubmittedSuccessfully() && !$this->isFinished() && $this->isSubmissionLimitReached();
+        if ($scheduled || $limited) {
+            $message = $scheduled ? $this->getScheduleMessage() : $this->getSubmissionLimitMessage();
+            $class = $scheduled ? 'freeform-schedule-message' : 'freeform-submission-limit-message';
 
             return '' === $message ? null : new Markup(
-                '<div class="freeform-schedule-message" role="status">'.nl2br(htmlspecialchars($message, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')).'</div>',
+                '<div class="'.$class.'" role="status">'.nl2br(htmlspecialchars($message, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')).'</div>',
                 'UTF-8'
             );
         }
@@ -784,7 +789,32 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function isAvailable(): bool
     {
-        return null === FormSchedule::getStatus($this->getSettings()->getBehavior());
+        return null === FormSchedule::getStatus($this->getSettings()->getBehavior())
+            && (!SubmissionLimit::isBuilderEnabled($this) || !$this->isSubmissionLimitReached());
+    }
+
+    public function isSubmissionLimitReached(): bool
+    {
+        return !$this->getSubmission()?->id && SubmissionLimit::isReached($this);
+    }
+
+    public function getSubmissionLimitCount(): int
+    {
+        return SubmissionLimit::getCount($this);
+    }
+
+    public function getSubmissionLimitMessage(): string
+    {
+        $behavior = $this->getSettings()->getBehavior();
+        $properties = $this->getProperties();
+        if (\array_key_exists('submissionLimitMessage', $properties->toArray())) {
+            return (string) $properties->get('submissionLimitMessage');
+        }
+        if (!SubmissionLimit::isBuilderEnabled($this)) {
+            return Freeform::t('Submission limit reached');
+        }
+
+        return $this->translationProvider->getTranslation($this, 'behavior', 'submissionLimitMessage', Freeform::t($behavior->submissionLimitMessage));
     }
 
     public function getScheduleMessage(): string

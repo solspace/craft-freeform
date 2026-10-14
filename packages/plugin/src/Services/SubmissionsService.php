@@ -105,6 +105,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function getSubmissionCount(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false): int
     {
+        return $this->getSubmissionCountInRange($formIds, $statusIds, $isSpam);
+    }
+
+    public function getSubmissionCountInRange(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false, ?\DateTimeInterface $rangeStart = null, ?\DateTimeInterface $rangeEnd = null): int
+    {
         $isSitesEnabled = $this->getSettingsService()->isSitesEnabled();
         if ($isSitesEnabled) {
             $siteId = SitesHelper::getCurrentCpPageSiteId();
@@ -140,6 +145,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $elements,
             "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
         );
+        if ($rangeStart) {
+            $query->andWhere(['>=', "{$elements}.[[dateCreated]]", Db::prepareDateForDb($rangeStart)]);
+        }
+        if ($rangeEnd) {
+            $query->andWhere(['<', "{$elements}.[[dateCreated]]", Db::prepareDateForDb($rangeEnd)]);
+        }
 
         return (int) $query->scalar();
     }
@@ -228,42 +239,47 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $submission = $form->getSubmission();
 
         $event = new FormSubmitEvent($form);
-        Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
-        if (!$event->isValid || !empty($form->getActions())) {
-            return;
-        }
+        try {
+            Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
-        $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
-        Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
-
-        $isStoreData = $form->getSettings()->getGeneral()->storeData;
-
-        if ($isStoreData && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
-            $this->storeSubmission($form, $submission);
-        }
-
-        if ($submission->hasErrors()) {
-            $form->addErrors(array_keys($submission->getErrors()));
-        }
-
-        $this->markFormAsSubmitted($form);
-
-        if ($this->shouldDeferPostProcessForAsyncSpam($form)) {
-            // No stored row: run AI spam inline, then post-process only if clean.
-            if (!$submission->id) {
-                $this->runAsyncSpamValidation($form);
-                if (!$form->isMarkedAsSpam()) {
-                    $form->markAsyncSpamValidated();
-                    $this->postProcessSubmission($form, $submission);
-                }
+            if (!$event->isValid || !empty($form->getActions())) {
+                return;
             }
-        // Stored row: ProcessSpamValidationJob runs AI then post-process (or marks spam).
-        } else {
-            $this->postProcessSubmission($form, $submission);
-        }
 
-        Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
+            $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
+            Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
+
+            $isStoreData = $form->getSettings()->getGeneral()->storeData;
+
+            if ($isStoreData && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
+                $this->storeSubmission($form, $submission);
+            }
+
+            if ($submission->hasErrors()) {
+                $form->addErrors(array_keys($submission->getErrors()));
+            }
+
+            $this->markFormAsSubmitted($form);
+
+            if ($this->shouldDeferPostProcessForAsyncSpam($form)) {
+                // No stored row: run AI spam inline, then post-process only if clean.
+                if (!$submission->id) {
+                    $this->runAsyncSpamValidation($form);
+                    if (!$form->isMarkedAsSpam()) {
+                        $form->markAsyncSpamValidated();
+                        $this->postProcessSubmission($form, $submission);
+                    }
+                }
+            // Stored row: ProcessSpamValidationJob runs AI then post-process (or marks spam).
+            } else {
+                $this->postProcessSubmission($form, $submission);
+            }
+
+            Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
+        } finally {
+            Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT_ATTEMPT, $event);
+        }
     }
 
     /**

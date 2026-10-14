@@ -17,6 +17,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\DuplicateCheckScope;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\SubmissionLimitPeriods;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
@@ -253,6 +254,49 @@ class BehaviorSettings extends SettingsNamespace
         order: 7,
     )]
     public string $scheduleExpiredMessage = 'This form is no longer available.';
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[Input\Boolean(
+        label: 'Limit Submissions',
+        instructions: 'Limit the number of stored submissions this form accepts. Template submissionLimit overrides take precedence.',
+        order: 8,
+    )]
+    public bool $submissionLimitEnabled = false;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\Integer(
+        label: 'Number of Submissions',
+        instructions: 'The maximum number of submissions to accept. Requires Store Submitted Data to be enabled. Spam and deleted submissions are excluded.',
+        order: 9,
+        min: 1,
+        step: 1,
+    )]
+    public int $submissionLimit = 50;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\Select(
+        label: 'Limit Period',
+        instructions: 'Calendar periods use Craft\'s timezone and configured week start. Total never resets.',
+        order: 10,
+        options: SubmissionLimitPeriods::class,
+    )]
+    public string $submissionLimitPeriod = 'total';
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\TextArea(
+        label: 'Limit Reached Message',
+        instructions: 'Shown instead of the form when its submission limit is reached. Leave blank to hide the form without a message.',
+        order: 11,
+    )]
+    public string $submissionLimitMessage = 'Submission limit reached';
 
     public function normalizeSchedule(): void
     {

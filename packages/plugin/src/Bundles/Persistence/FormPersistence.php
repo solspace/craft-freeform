@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
+use Solspace\Freeform\Bundles\Form\Limiting\SubmissionLimit;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
@@ -80,9 +81,12 @@ class FormPersistence extends FeatureBundle
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
         $metadata = $this->getValidatedMetadata($payload, $event);
-        $scheduleErrors = FormSchedule::validateSettings($metadata['behavior'] ?? new \stdClass());
-        if ($scheduleErrors) {
-            $event->addErrorsToResponse('form', ['behavior' => $scheduleErrors]);
+        $limitErrors = array_merge(
+            FormSchedule::validateSettings($metadata['behavior'] ?? new \stdClass()),
+            SubmissionLimit::validateSettings($metadata['behavior'] ?? new \stdClass(), $metadata['general']->storeData ?? true),
+        );
+        if ($limitErrors) {
+            $event->addErrorsToResponse('form', ['behavior' => $limitErrors]);
         }
         $record->metadata = $metadata;
         $record->type = $metadata['general']->type ?? Regular::class;

@@ -85,17 +85,26 @@ class FormPersistence extends FeatureBundle
         $user = \Craft::$app->getUser()->getIdentity();
         $record->updatedByUserId = $user->id;
 
-        if (!$event->hasErrors()) {
-            $record->validate();
-            $record->dateUpdated = new \DateTime();
-            $record->save();
+        if ($event->hasErrors()) {
+            return;
         }
 
-        if (!$record->id) {
+        $record->dateUpdated = new \DateTime();
+        if (!$record->save()) {
             $errors = $record->getErrors();
-            if (isset($errors['handle'])) {
-                $errors['name'] = $errors['handle'];
-                unset($errors['handle']);
+            if (!$errors) {
+                throw new \RuntimeException('Could not save form.');
+            }
+
+            if ($record->getIsNewRecord()) {
+                // The create-form modal uses flat errors and exposes only the name.
+                if (isset($errors['handle'])) {
+                    $errors['name'] = $errors['handle'];
+                    unset($errors['handle']);
+                }
+            } else {
+                // Builder controls read errors from their settings namespace.
+                $errors = ['general' => $errors];
             }
             $event->addErrorsToResponse('form', $errors);
 

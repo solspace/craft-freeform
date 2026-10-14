@@ -224,8 +224,12 @@ class FormsController extends BaseApiController
 
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPDATE_FORM, $event);
-        $this->trigger(self::EVENT_UPSERT_FORM, $event);
-        $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_UPSERT_FORM, $event);
+        }
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        }
 
         $this->response->statusCode = $event->getStatus() ?? 204;
 

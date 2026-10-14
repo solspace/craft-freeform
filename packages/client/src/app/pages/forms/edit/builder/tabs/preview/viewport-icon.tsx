@@ -1,4 +1,6 @@
-type Props = { device: "desktop" | "tablet" | "mobile" };
+type Props = {
+  device: "desktop" | "laptop" | "tablet" | "tablet-landscape" | "mobile";
+};
 
 export const ViewportIcon = ({ device }: Props) => (
   <svg
@@ -15,6 +17,16 @@ export const ViewportIcon = ({ device }: Props) => (
       <>
         <rect x="2" y="3" width="20" height="14" rx="2" />
         <path d="M8 21h8M12 17v4" />
+      </>
+    ) : device === "laptop" ? (
+      <>
+        <rect x="4" y="4" width="16" height="12" rx="1.5" />
+        <path d="M4 16l-2 4h20l-2-4M9 20h6" />
+      </>
+    ) : device === "tablet-landscape" ? (
+      <>
+        <rect x="2" y="5" width="20" height="14" rx="2" />
+        <path d="M18.5 11v2" />
       </>
     ) : (
       <>

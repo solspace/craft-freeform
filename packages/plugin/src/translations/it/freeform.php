@@ -3783,4 +3783,9 @@ return [
     'Preview complete. No submission was sent.' => 'Anteprima completata. Nessun invio è stato effettuato.',
     'Use Saved Template' => 'Usa il template salvato',
     'Try a sample template without changing the form\'s saved formatting template.' => 'Prova un template di esempio senza modificare il template di formattazione salvato del modulo.',
+    'Small Mobile' => 'Mobile piccolo',
+    'Large Mobile' => 'Mobile grande',
+    'Tablet Landscape' => 'Tablet orizzontale',
+    'Laptop' => 'Portatile',
+    'Wide Desktop' => 'Desktop ampio',
 ];

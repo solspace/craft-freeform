@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added more Preview viewport sizes with automatic scaling to preserve the selected viewport width.
 - Added a Preview-only formatting template selector for trying bundled samples without changing the saved form template.
 - Added preview answer retention, conditional page jumps and early completion, and dark backgrounds for dark sample templates.
 - Added a **Preview** tab with isolated formatting-template rendering, device widths, page selection, automatic sample framework assets, and saved per-form preview CSS/JavaScript URLs.
@@ -48,6 +49,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.
 - Fixed missing Tailwind 3 preview styles with bundled Tailwind 3.4.19 CSS, Tailwind 4 preview horizontal overflow, Bootstrap Dark preview inputs, and daisyUI Dark progress connector contrast.
 - Fixed unclosed radio option wrappers in Tailwind 4 Light/Dark templates that could collapse row spacing in Preview.
 - Fixed duplicate form handles failing silently when saving an existing form in the builder; validation errors now appear on the Handle field.

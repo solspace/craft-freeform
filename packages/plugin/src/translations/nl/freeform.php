@@ -3746,4 +3746,9 @@ return [
     'Preview complete. No submission was sent.' => 'Voorbeeld voltooid. Er is geen inzending verstuurd.',
     'Use Saved Template' => 'Opgeslagen sjabloon gebruiken',
     'Try a sample template without changing the form\'s saved formatting template.' => 'Probeer een voorbeeldsjabloon zonder de opgeslagen opmaaksjabloon van het formulier te wijzigen.',
+    'Small Mobile' => 'Kleine mobiel',
+    'Large Mobile' => 'Grote mobiel',
+    'Tablet Landscape' => 'Tablet liggend',
+    'Laptop' => 'Laptop',
+    'Wide Desktop' => 'Breed bureaublad',
 ];

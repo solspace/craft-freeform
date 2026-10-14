@@ -3783,4 +3783,9 @@ return [
     'Preview complete. No submission was sent.' => 'Vorschau abgeschlossen. Es wurde keine Übermittlung gesendet.',
     'Use Saved Template' => 'Gespeicherte Vorlage verwenden',
     'Try a sample template without changing the form\'s saved formatting template.' => 'Probieren Sie eine Beispielvorlage aus, ohne die gespeicherte Formatierungsvorlage des Formulars zu ändern.',
+    'Small Mobile' => 'Kleines Mobilgerät',
+    'Large Mobile' => 'Großes Mobilgerät',
+    'Tablet Landscape' => 'Tablet im Querformat',
+    'Laptop' => 'Laptop',
+    'Wide Desktop' => 'Breiter Desktop',
 ];

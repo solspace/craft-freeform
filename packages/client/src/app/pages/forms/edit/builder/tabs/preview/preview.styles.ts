@@ -42,8 +42,8 @@ export const FrameArea = styled.div`
 
 export const Frame = styled.iframe`
   display: block;
-  box-sizing: border-box;
-  max-width: 100%;
+  box-sizing: content-box;
+  flex-shrink: 0;
   height: 100%;
   min-height: 0;
   border: 1px solid ${colors.gray200};

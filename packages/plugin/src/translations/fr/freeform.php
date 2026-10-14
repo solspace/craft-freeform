@@ -3783,4 +3783,9 @@ return [
     'Preview complete. No submission was sent.' => 'Aperçu terminé. Aucune soumission n’a été envoyée.',
     'Use Saved Template' => 'Utiliser le modèle enregistré',
     'Try a sample template without changing the form\'s saved formatting template.' => 'Essayez un modèle fourni sans modifier le modèle de mise en forme enregistré du formulaire.',
+    'Small Mobile' => 'Petit mobile',
+    'Large Mobile' => 'Grand mobile',
+    'Tablet Landscape' => 'Tablette en paysage',
+    'Laptop' => 'Ordinateur portable',
+    'Wide Desktop' => 'Grand écran de bureau',
 ];

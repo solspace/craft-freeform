@@ -114,14 +114,14 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   const viewportOptions = [
     ...host.querySelectorAll(".dropdown-rollout [data-value]"),
   ];
-  expect(viewportOptions).toHaveLength(3);
+  expect(viewportOptions).toHaveLength(8);
   expect(
     new Set(
       viewportOptions.map(
         (option) => option.querySelector('svg[aria-hidden="true"]')?.innerHTML,
       ),
     ).size,
-  ).toBe(3);
+  ).toBeGreaterThanOrEqual(5);
   await act(async () =>
     (
       host.querySelector(
@@ -130,7 +130,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
     ).click(),
   );
   expect(viewport.classList.contains("open")).toBe(false);
-  expect(viewport.textContent).toBe("Mobile");
+  expect(viewport.textContent).toBe("Mobile (375px)");
   await act(async () =>
     (host.querySelectorAll("label > div")[2] as HTMLElement).click(),
   );

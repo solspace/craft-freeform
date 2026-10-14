@@ -1,8 +1,11 @@
 # Builder Preview
 
 The **Preview** tab renders the saved form with its selected formatting template
-inside an isolated frame. Save changes, then click **Refresh Preview**. Select
-Desktop, Tablet, or Mobile to change the frame width. Dark sample templates use
+inside an isolated frame. Save changes, then click **Refresh Preview**. The
+Viewport selector offers Desktop (available width), Wide Desktop (1440px),
+Laptop (1280px), Tablet Landscape (1024px), Tablet (768px), Large Mobile (430px),
+Mobile (375px), and Small Mobile (320px). Fixed widths render at the selected
+viewport size and scale down to fit the workspace when necessary. Dark sample templates use
 a very dark gray (`#181a1b`) preview background.
 
 The **Formatting Template** selector defaults to **Use Saved Template**. Choose

@@ -44,6 +44,12 @@ export const FormPreview: React.FC = () => {
   );
   const path = useResolvedPath("");
   const [width, setWidth] = useState("100%");
+  const [availableWidth, setAvailableWidth] = useState(0);
+  const frameArea = useRef<HTMLDivElement>(null);
+  const scale =
+    width.endsWith("px") && availableWidth > 0
+      ? Math.min(1, availableWidth / (Number.parseFloat(width) + 2))
+      : 1;
   const [template, setTemplate] = useState("");
   const [request, setRequest] = useState({
     page: 0,
@@ -59,6 +65,15 @@ export const FormPreview: React.FC = () => {
   const [preview, setPreview] = useState<PreviewData>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!frameArea.current || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) =>
+      setAvailableWidth(entry.contentRect.width),
+    );
+    observer.observe(frameArea.current);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const receive = (event: MessageEvent): void => {
@@ -213,13 +228,38 @@ export const FormPreview: React.FC = () => {
                   icon: <ViewportIcon device="desktop" />,
                 },
                 {
+                  value: "1440px",
+                  label: `${translate("Wide Desktop")} (1440px)`,
+                  icon: <ViewportIcon device="desktop" />,
+                },
+                {
+                  value: "1280px",
+                  label: `${translate("Laptop")} (1280px)`,
+                  icon: <ViewportIcon device="laptop" />,
+                },
+                {
+                  value: "1024px",
+                  label: `${translate("Tablet Landscape")} (1024px)`,
+                  icon: <ViewportIcon device="tablet-landscape" />,
+                },
+                {
                   value: "768px",
-                  label: translate("Tablet"),
+                  label: `${translate("Tablet")} (768px)`,
                   icon: <ViewportIcon device="tablet" />,
                 },
                 {
+                  value: "430px",
+                  label: `${translate("Large Mobile")} (430px)`,
+                  icon: <ViewportIcon device="mobile" />,
+                },
+                {
                   value: "375px",
-                  label: translate("Mobile"),
+                  label: `${translate("Mobile")} (375px)`,
+                  icon: <ViewportIcon device="mobile" />,
+                },
+                {
+                  value: "320px",
+                  label: `${translate("Small Mobile")} (320px)`,
                   icon: <ViewportIcon device="mobile" />,
                 },
               ]}
@@ -314,7 +354,7 @@ export const FormPreview: React.FC = () => {
           </details>
         )}
       </PreviewSidebar>
-      <FrameArea aria-busy={loading}>
+      <FrameArea ref={frameArea} aria-busy={loading}>
         {preview && (
           <Frame
             ref={frame}
@@ -323,7 +363,13 @@ export const FormPreview: React.FC = () => {
             sandbox="allow-scripts"
             referrerPolicy="no-referrer"
             srcDoc={preview.html}
-            style={{ width, pointerEvents: loading ? "none" : undefined }}
+            style={{
+              width: width === "100%" ? "calc(100% - 2px)" : width,
+              height: `calc(${100 / scale}% - 2px)`,
+              transform: scale < 1 ? `scale(${scale})` : undefined,
+              transformOrigin: "top center",
+              pointerEvents: loading ? "none" : undefined,
+            }}
           />
         )}
       </FrameArea>

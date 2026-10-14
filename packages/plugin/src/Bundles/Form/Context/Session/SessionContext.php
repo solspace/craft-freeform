@@ -88,6 +88,9 @@ class SessionContext
     public function addHiddenInputs(RenderTagEvent $event): void
     {
         $form = $event->getForm();
+        if ($form->isPreview()) {
+            return;
+        }
 
         $value = $form->getProperties()->get(Form::HASH_KEY);
 

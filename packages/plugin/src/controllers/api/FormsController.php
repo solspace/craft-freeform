@@ -9,8 +9,10 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Services\FormPreviewService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -33,6 +35,28 @@ class FormsController extends BaseApiController
         private FormDuplicator $formDuplicator,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionPreview(int $id): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        try {
+            $data = \Craft::$container->get(FormPreviewService::class)->render($form, (int) $this->request->getBodyParam('page', 0));
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($data);
     }
 
     public function actionClone(int $id): Response
@@ -201,6 +225,30 @@ class FormsController extends BaseApiController
         $this->requireFormPermission($id);
 
         $data = json_decode($this->request->getRawBody(), false);
+
+        $general = $data?->form?->settings?->general ?? null;
+        if (\is_object($general)) {
+            $existingSettings = is_numeric($id) ? $this->getFormsService()->getFormById((int) $id)?->getSettings()->getGeneral() : null;
+            foreach (['previewCssUrls', 'previewJsUrls'] as $key) {
+                $existing = $existingSettings?->{$key} ?? '';
+                $value = $general->{$key} ?? $existing;
+                if (!PermissionHelper::isAdmin() && $value !== $existing) {
+                    throw new ForbiddenHttpException('Only a Craft administrator can change preview asset URLs');
+                }
+
+                try {
+                    if (!\is_string($value)) {
+                        throw new \InvalidArgumentException('Enter asset URLs as text, one per line.');
+                    }
+                    PreviewAssetHelper::parse($value);
+                } catch (\InvalidArgumentException $exception) {
+                    $this->response->statusCode = 400;
+
+                    return ['errors' => ['form' => ['general' => [$key => [$exception->getMessage()]]]]];
+                }
+                $general->{$key} = $value;
+            }
+        }
 
         // Enabling the embed creates a public URL. Form editors can continue
         // editing an enabled form, but only a Craft admin may change this flag.

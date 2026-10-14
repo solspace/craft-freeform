@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{ craft.app.language|e('html_attr') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ form.name }}</title>
+    {% include 'freeform-embed/framework-assets' %}
+    {% for url in cssUrls %}
+        <link rel="stylesheet" href="{{ url|e('html_attr') }}" crossorigin="anonymous">
+    {% endfor %}
+    <style>
+        body { margin: 0; padding: 24px; }
+        #freeform-preview-status { margin-bottom: 16px; padding: 12px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font: 14px/1.5 system-ui, sans-serif; }
+    </style>
+    <script>
+        document.addEventListener('submit', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            document.getElementById('freeform-preview-status').hidden = false;
+        }, true);
+        document.addEventListener('click', function (event) {
+            if (event.target.closest('a, [data-freeform-save], [data-freeform-back]')) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
+        }, true);
+    </script>
+    {{ head() }}
+</head>
+<body>
+    {{ beginBody() }}
+    <div id="freeform-preview-status" role="status" hidden>{{ 'Submissions are disabled in Preview. Choose another page using the page selector.'|t('freeform') }}</div>
+    <main>{{ formMarkup }}</main>
+    {% for url in jsUrls %}
+        <script src="{{ url|e('html_attr') }}" crossorigin="anonymous"></script>
+    {% endfor %}
+    {{ endBody() }}
+</body>
+</html>

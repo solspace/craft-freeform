@@ -17,6 +17,7 @@ return [
     'freeform/api/forms/delete' => 'freeform/api/forms/delete',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
+    'freeform/api/forms/<id:\d+>/preview' => 'freeform/api/forms/preview',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM GROUPS

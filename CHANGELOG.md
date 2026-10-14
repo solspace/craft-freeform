@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added a **Preview** tab with isolated formatting-template rendering, device widths, page selection, automatic sample framework assets, and saved per-form preview CSS/JavaScript URLs.
 - Added Lite/Pro submission limits in the form builder, with total or calendar-period quotas, limit-reached messages, and backwards-compatible Twig overrides.
 - Added Lite/Pro form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
 - Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.

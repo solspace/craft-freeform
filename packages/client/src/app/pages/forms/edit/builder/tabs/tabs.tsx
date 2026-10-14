@@ -137,6 +137,16 @@ export const Tabs: React.FC = () => {
         >
           <span>{translate("Layout")}</span>
         </NavLink>
+        <NavLink
+          to={`/forms/${form.id}/preview`}
+          className={classes(
+            (hasErrors(formErrors?.general?.previewCssUrls) ||
+              hasErrors(formErrors?.general?.previewJsUrls)) &&
+              "errors",
+          )}
+        >
+          <span>{translate("Preview")}</span>
+        </NavLink>
         {limitations.can("notifications.tab") && (
           <NavLink
             to={`/forms/${form.id}/notifications`}

@@ -11,6 +11,7 @@ import { LayoutEditor } from "./tabs/layout/layout";
 import { NotificationManager } from "./tabs/notifications/manager/manager";
 import { Notifications } from "./tabs/notifications/notifications";
 import { PropertyEditor as NotificationsEditor } from "./tabs/notifications/property-editor/property-editor";
+import { FormPreview } from "./tabs/preview/preview";
 import { ButtonRulesEditor } from "./tabs/rules/editor/button.editor";
 import { RulesEmpty } from "./tabs/rules/editor/editor.empty";
 import { FieldRulesEditor } from "./tabs/rules/editor/field.editor";
@@ -26,6 +27,7 @@ export const Builder: React.FC = () => {
       <BuilderContent>
         <Routes>
           <Route index element={<LayoutEditor />} />
+          <Route path="preview" element={<FormPreview />} />
           <Route path="notifications" element={<Notifications />}>
             <Route path="manager" element={<NotificationManager />} />
             <Route path=":uid?" element={<NotificationsEditor />} />

@@ -1,0 +1,127 @@
+<?php
+
+namespace Solspace\Freeform\Tests\Services;
+
+use craft\web\Request;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
+use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
+use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PayloadStorage;
+use Solspace\Freeform\Bundles\Form\HiddenInputs\CsrfInput;
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
+use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Form\Bags\PropertyBag;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
+use Solspace\Freeform\Services\FormPreviewService;
+use yii\base\Event;
+
+#[CoversClass(FormPreviewService::class)]
+#[CoversClass(PreviewAssetHelper::class)]
+class FormPreviewServiceTest extends TestCase
+{
+    #[TestWith(['javascript:alert(1)'])]
+    #[TestWith(['0'])]
+    #[TestWith(['http://example.test/styles.css'])]
+    #[TestWith(['//example.test/styles.css'])]
+    #[TestWith(['https://user@example.test/styles.css'])]
+    #[TestWith(['https://example.test/styles.css#fragment'])]
+    #[TestWith(["https://example.test/style.css\tbad"])]
+    #[TestWith(['https://example.test/\';connect-src *'])]
+    public function testRejectsUnsafeAssetUrl(string $url): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        PreviewAssetHelper::parse($url);
+    }
+
+    public function testRejectsExcessiveUrlLength(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        PreviewAssetHelper::parse('https://example.test/'.str_repeat('x', 2048));
+    }
+
+    public function testAssetUrlsPreserveOrderAndDeduplicate(): void
+    {
+        self::assertSame(['https://example.test/a.js?v=2', 'https://cdn.example.test/b.js'], PreviewAssetHelper::parse(" https://example.test/a.js?v=2\r\n\nhttps://cdn.example.test/b.js\nhttps://example.test/a.js?v=2 "));
+        self::assertSame([], PreviewAssetHelper::parse(''));
+        $this->expectException(\InvalidArgumentException::class);
+        PreviewAssetHelper::parse(implode("\n", array_map(static fn ($i) => "https://example.test/{$i}.js", range(1, 21))));
+    }
+
+    public function testFrameRemovesCredentialsAndNavigationAndRestrictsNetwork(): void
+    {
+        $html = (new FormPreviewService())->isolate('<!doctype html><html><head><base href="https://evil.test"><meta http-equiv="refresh" content="0;url=https://evil.test"><script src="https://example.test/app.js"></script><script>window.previewReady = true;</script><link rel="stylesheet" href="https://example.test/app.css"></head><body><iframe src="https://evil.test"></iframe><form action="/actions/freeform/submit"><input name="CSRF" value="secret"><input name="freeform_payload" value="encrypted"><input name="formHash" value="live"><input name="productId" value="42"><button formaction="/danger">Submit</button></form><script src="javascript:alert(1)"></script><p>Überprüfung</p></body></html>', 'CSRF');
+        $document = new \DOMDocument();
+        @$document->loadHTML($html);
+        $xpath = new \DOMXPath($document);
+        self::assertSame(0, $xpath->query('//base | //iframe | //*[@formaction]')->length);
+        self::assertSame(1, $xpath->query('//input')->length);
+        self::assertSame('productId', $xpath->query('//input')->item(0)->getAttribute('name'));
+        self::assertSame('about:blank', $xpath->query('//form')->item(0)->getAttribute('action'));
+        self::assertSame(2, $xpath->query('//script')->length);
+        self::assertSame('anonymous', $xpath->query('//script[@src]')->item(0)->getAttribute('crossorigin'));
+        self::assertSame('no-referrer', $xpath->query('//script[@src]')->item(0)->getAttribute('referrerpolicy'));
+        $policy = $xpath->query('//head/meta')->item(0)->getAttribute('content');
+        self::assertStringContainsString("form-action 'none'; connect-src 'none'", $policy);
+        self::assertStringContainsString("'sha256-".base64_encode(hash('sha256', 'window.previewReady = true;', true))."'", $policy);
+        self::assertStringNotContainsString("'unsafe-eval'", $policy);
+        self::assertStringContainsString('Überprüfung', $html);
+    }
+
+    public function testPreviewDoesNotRegisterContextOrExposeCsrfAndPayload(): void
+    {
+        $form = $this->getMockBuilder(Form::class)->disableOriginalConstructor()->onlyMethods(['getProperties'])->getMock();
+        $bag = new PropertyBag($form);
+        $form->method('getProperties')->willReturn($bag);
+        (new \ReflectionProperty(Form::class, 'propertyBag'))->setValue($form, $bag);
+        $form->setPreview();
+        $bundled = new RenderTagEvent($form);
+        $bundled->addScript('js/scripts/front-end/plugin/freeform.js');
+        $bundled->addScript('/etc/passwd');
+        self::assertFalse($bundled->isScriptsDisabled());
+        self::assertStringContainsString('<script>', $bundled->getChunksAsString());
+        self::assertStringNotContainsString('root:', $bundled->getChunksAsString());
+        self::assertTrue($form->isPreview());
+        self::assertTrue($form->isAvailable());
+        self::assertStringStartsWith('preview-', $form->getHash());
+        $fail = static function () { self::fail('Preview must not register or persist submission context'); };
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, $fail);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, $fail);
+
+        try {
+            $form->registerContext();
+            $form->persistState();
+        } finally {
+            Event::off(Form::class, Form::EVENT_REGISTER_CONTEXT, $fail);
+            Event::off(Form::class, Form::EVENT_PERSIST_STATE, $fail);
+        }
+        self::assertFalse($form->handleRequest($this->createMock(Request::class)));
+
+        $render = new RenderTagEvent($form);
+        $json = new OutputAsJsonEvent($form, []);
+        $csrf = (new \ReflectionClass(CsrfInput::class))->newInstanceWithoutConstructor();
+        $csrf->attachInput($render);
+        $csrf->attachToJson($json);
+        $payload = new PayloadStorage();
+        $payload->attachInput($render);
+        $payload->attachJson($json);
+        (new \ReflectionClass(SessionContext::class))->newInstanceWithoutConstructor()->addHiddenInputs($render);
+        self::assertSame('', $render->getChunksAsString());
+        self::assertSame([], $json->getJsonObject());
+        $this->expectException(\LogicException::class);
+        $form->submit(['productId' => 42]);
+    }
+
+    public function testKnownBundledTemplateAssetsAreInlinedAndHashed(): void
+    {
+        $html = (new FormPreviewService())->isolate('<html><head><link rel="stylesheet" href="/cpresources/example/_main.css?v=1"></head><body><script src="/cpresources/example/_main.js?v=1"></script></body></html>', 'CSRF', [
+            '/cpresources/example/_main.css' => 'body{padding:24px}',
+            '/cpresources/example/_main.js' => 'window.sampleLoaded=true;',
+        ]);
+        self::assertStringNotContainsString('src=', $html);
+        self::assertStringContainsString('<style>body{padding:24px}</style>', $html);
+        self::assertStringContainsString('<script>window.sampleLoaded=true;</script>', $html);
+        self::assertStringContainsString("'sha256-".base64_encode(hash('sha256', 'window.sampleLoaded=true;', true))."'", $html);
+    }
+}

@@ -155,6 +155,20 @@ class GeneralSettings extends SettingsNamespace
     )]
     public bool $allowHtmlEmbeds = false;
 
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
+    #[Input\Textarea(
+        label: 'Preview CSS URLs',
+        instructions: 'Enter absolute HTTPS stylesheet URLs, one per line. These assets load only in the builder preview. Save the form to apply changes.',
+    )]
+    public string $previewCssUrls = '';
+
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
+    #[Input\Textarea(
+        label: 'Preview JavaScript URLs',
+        instructions: 'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.',
+    )]
+    public string $previewJsUrls = '';
+
     #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.attributes')]
     #[ValueTransformer(FormAttributesTransformer::class)]

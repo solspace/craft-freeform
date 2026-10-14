@@ -70,30 +70,34 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
       <BulkEditorWrapper>
         <BulkSettings>
           <Control label={translate("Separator")} handle="bulk-separator">
-            <BulkSelect
-              id="bulk-separator"
-              value={separator}
-              onChange={(event) => setSeparator(event.target.value)}
-            >
-              {["|", ",", ";", "=>", " "].map((value) => (
-                <option key={value} value={value}>
-                  {value === " " ? translate("Space") : value}
-                </option>
-              ))}
+            <BulkSelect>
+              <select
+                id="bulk-separator"
+                value={separator}
+                onChange={(event) => setSeparator(event.target.value)}
+              >
+                {["|", ",", ";", "=>", " "].map((value) => (
+                  <option key={value} value={value}>
+                    {value === " " ? translate("Space") : value}
+                  </option>
+                ))}
+              </select>
             </BulkSelect>
           </Control>
           <Control label={translate("Import Mode")} handle="bulk-import-mode">
-            <BulkSelect
-              id="bulk-import-mode"
-              value={append ? "append" : "replace"}
-              onChange={(event) => setAppend(event.target.value === "append")}
-            >
-              <option value="append">
-                {translate("Append to Existing Values")}
-              </option>
-              <option value="replace">
-                {translate("Replace Existing Values")}
-              </option>
+            <BulkSelect>
+              <select
+                id="bulk-import-mode"
+                value={append ? "append" : "replace"}
+                onChange={(event) => setAppend(event.target.value === "append")}
+              >
+                <option value="append">
+                  {translate("Append to Existing Values")}
+                </option>
+                <option value="replace">
+                  {translate("Replace Existing Values")}
+                </option>
+              </select>
             </BulkSelect>
           </Control>
         </BulkSettings>

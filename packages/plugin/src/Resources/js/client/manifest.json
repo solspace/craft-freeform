@@ -1,6 +1,6 @@
 {
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-DD4jks1u.js",
+    "file": "assets/de-MXQauret.js",
     "name": "de",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-BCKX9DnI.js",
+    "file": "assets/fr-Bxf8bmo3.js",
     "name": "fr",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-CzU-1iUj.js",
+    "file": "assets/it-CEmwHef4.js",
     "name": "it",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-BS6341Jo.js",
+    "file": "assets/nl-BqKIcHt4.js",
     "name": "nl",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -36,7 +36,7 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-D6CbPeaw.js",
+    "file": "assets/ai.usage-chart-DFF2dI77.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -53,7 +53,7 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-DeqM4gGD.js",
+    "file": "assets/index-DXAVdGhC.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

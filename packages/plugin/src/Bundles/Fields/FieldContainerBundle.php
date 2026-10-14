@@ -25,18 +25,20 @@ class FieldContainerBundle extends FeatureBundle
             return;
         }
 
+        $field = $event->getField();
         $request = \Craft::$app->request;
         if ($request && $request->isCpRequest) {
             $isFreeform = 'freeform' === $request->getSegment(1);
             $isApi = 'api' === $request->getSegment(2);
             $isForms = 'forms' === $request->getSegment(3);
 
-            if ($isFreeform && $isApi && $isForms) {
+            // Builder metadata omits frontend hooks, but the rendered Preview
+            // needs them for template styling and conditional field behavior.
+            if ($isFreeform && $isApi && $isForms && !$field->getForm()->isPreview()) {
                 return;
             }
         }
 
-        $field = $event->getField();
         $event
             ->getAttributes()
             ->getContainer()

@@ -39,6 +39,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Fixed the Cards Layout editor overflowing native slideouts, with responsive columns and scrolling that keeps all cards accessible.
 - Fixed list markers and indentation in HTML and Rich Text field previews in the form builder.
 - Fixed native form editor slideouts closing when interacting with their contents, and refined the Bulk Editor's Craft controls and layout.
 - Fixed Default Status dots showing white for colors from Craft 5's expanded palette.

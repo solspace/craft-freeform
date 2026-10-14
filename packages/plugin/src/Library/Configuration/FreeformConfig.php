@@ -53,6 +53,7 @@ class FreeformConfig implements \JsonSerializable
                 'freeform' => [
                     'version' => $plugin->getVersion(),
                     'canCreate' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_CREATE),
+                    'canOrganizeForms' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE),
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
                     'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
                 ],

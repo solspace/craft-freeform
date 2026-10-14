@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added auto-saving drag and keyboard reordering of dashboard form cards, including moves between groups.
 - Added a Cancel action to content editor slideouts that restores their original values and translations.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
 - Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
@@ -26,6 +27,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
+- Moved **Manage Form Groups** beside the Forms view controls and refreshed the responsive cards layout.
 - Standardized property-editor previews with consistent borders, empty states, compact scrolling content, and an always-visible edit cue.
 - Moved **Manage Form Groups**, **Field Type Manager**, **Favorite Fields**, bulk options, Cards, Table, HTML/code, Rich Text, and Opinion Scale editors into native Craft slideouts with responsive layouts.
 - Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.

@@ -1,15 +1,10 @@
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import EditIcon from "@ff-icons/actions/edit";
-import axios from "axios";
 import DOMPurify from "dompurify";
 import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Sortable from "sortablejs";
+import { useEffect } from "react";
 
-import { useEditGroupModal } from "../../modals/hooks/use-edit-group-modal";
 import { Notices } from "../../notices/notices";
 
 import { Archived } from "./archived/archived";
@@ -17,20 +12,21 @@ import { Card } from "./card/card";
 import { CardLoading } from "./card/card.loading";
 import { CardPreview } from "./card/card.preview";
 import { GridEmpty } from "./grid.empty";
+import { useDashboardSorting } from "./grid.sortable";
 import {
   ArchivedAndGroupWrapper,
   Cards,
   CardWrapper,
   ContentContainer,
-  GroupsButton,
   GroupTitle,
   GroupWrap,
+  SortNotice,
   Wrapper,
 } from "./grid.styles";
 
 export const FormGrid: React.FC = () => {
   const { data, isFetching } = useFetchFormGroups();
-  const openEditGroupModal = useEditGroupModal();
+  const sorting = useDashboardSorting(data);
 
   const isForms = (data?.forms?.length ?? 0) > 0;
   const isGroups = data?.formGroups?.groups.some(
@@ -41,34 +37,9 @@ export const FormGrid: React.FC = () => {
   const isExpressEdition = config.editions.is(Edition.Express);
   const isProEdition = config.editions.isAtLeast(Edition.Pro);
 
-  const gridRef = useRef<HTMLUListElement>(null);
-  const sortableRef = useRef<Sortable | null>(null);
-
-  const [isDragging, setIsDragging] = useState(false);
-
-  const onSortEnd = useCallback((): void => {
-    const orderedFormIds = sortableRef.current?.toArray() ?? [];
-    axios.post("/api/forms/sort", { orderedFormIds });
-
-    setIsDragging(false);
-  }, []);
-
   useEffect(() => {
     document.title = translate("Forms");
   }, []);
-
-  useEffect(() => {
-    if (gridRef.current) {
-      sortableRef.current = new Sortable(gridRef.current, {
-        animation: 150,
-        onEnd: onSortEnd,
-        handle: ".handle",
-        onStart: () => {
-          setIsDragging(true);
-        },
-      });
-    }
-  }, [onSortEnd]);
 
   return (
     <ContentContainer>
@@ -78,16 +49,29 @@ export const FormGrid: React.FC = () => {
         <Wrapper>
           {isEmpty && <GridEmpty />}
           {!isEmpty && (
-            <CardWrapper>
+            <CardWrapper
+              ref={sorting.wrapperRef}
+              $dragging={sorting.isDragging}
+              aria-busy={sorting.isSaving}
+            >
+              <SortNotice role="status" $error={sorting.isError}>
+                {sorting.notice}
+              </SortNotice>
               {isProEdition &&
-                data?.formGroups?.groups.map((group, index) =>
-                  (group?.forms?.length ?? 0) ? (
+                data?.formGroups?.groups.map((group) =>
+                  (group?.forms?.length ?? 0) || sorting.canMove ? (
                     <GroupWrap key={group.uid}>
-                      {index !== 0 && <hr />}
                       <GroupTitle>{group.label}</GroupTitle>
-                      <Cards>
+                      <Cards
+                        data-form-group={group.uid}
+                        aria-label={group.label}
+                        $empty={translate("Drag forms here.")}
+                      >
                         {group?.forms?.map((form) => (
                           <Card
+                            isDraggingInProgress={sorting.isDragging}
+                            canMove={sorting.canMove}
+                            onKeyboardMove={sorting.onKeyboardMove}
                             isExpressEdition={isExpressEdition}
                             key={form.id}
                             form={form}
@@ -97,18 +81,22 @@ export const FormGrid: React.FC = () => {
                     </GroupWrap>
                   ) : null,
                 )}
-              {!isEmpty && isForms && (
+              {!isEmpty && (isForms || sorting.canMove) && (
                 <GroupWrap>
-                  {isGroups && <hr />}
-                  {isGroups && <GroupTitle>{translate("Other")}</GroupTitle>}
+                  {data?.formGroups?.groups.length > 0 && (
+                    <GroupTitle>{translate("Other")}</GroupTitle>
+                  )}
 
                   <Cards
-                    ref={gridRef}
-                    className={classes(isDragging && "dragging")}
+                    data-form-group=""
+                    aria-label={translate("Other")}
+                    $empty={translate("Drag forms here.")}
                   >
                     {data?.forms?.map((form) => (
                       <Card
-                        isDraggingInProgress={isDragging}
+                        isDraggingInProgress={sorting.isDragging}
+                        canMove={sorting.canMove}
+                        onKeyboardMove={sorting.onKeyboardMove}
                         isExpressEdition={isExpressEdition}
                         key={form.id}
                         form={form}
@@ -149,16 +137,6 @@ export const FormGrid: React.FC = () => {
           <ArchivedAndGroupWrapper>
             {!isExpressEdition && data?.archivedForms && (
               <Archived data={data.archivedForms} />
-            )}
-
-            {!isEmpty && isProEdition && (
-              <GroupsButton
-                className="edit-groups"
-                onClick={openEditGroupModal}
-              >
-                <EditIcon />
-                {translate("Manage Form Groups")}
-              </GroupsButton>
             )}
           </ArchivedAndGroupWrapper>
         </Wrapper>

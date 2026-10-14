@@ -77,13 +77,23 @@ export const Controls = styled.div`
   gap: ${spacings.sm};
 
   opacity: 0;
-  transform: translateY(-20px);
+  transform: translateY(-4px);
   transition: all 0.2s ease-out;
 `;
 
 export const ControlButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
   font-size: 14px;
-  color: #868f96;
+  color: #687684;
+  background: #ffffffed;
+  &:hover, &:focus-visible { color: var(--link-color); background: #e9f2fc; }
+  &.handle { cursor: grab; }
+  &.handle:active { cursor: grabbing; }
 
   > svg {
     fill: currentColor;
@@ -105,7 +115,8 @@ export const CardWrapper = styled.li`
   overflow: hidden;
 
   background-color: #fcfdff;
-  border: 1px solid #e7eef7;
+  border: 1px solid #dfe6ee;
+  box-shadow: 0 1px 3px #1f344508;
   border-radius: var(--large-border-radius);
 
   opacity: 1;
@@ -113,7 +124,8 @@ export const CardWrapper = styled.li`
 
   transition:
     background-color 0.2s ease-out,
-    border-color 0.2s ease-out;
+    border-color 0.2s ease-out,
+    box-shadow 0.2s ease-out;
 
   &.blurred {
     filter: blur(3px);
@@ -131,9 +143,10 @@ export const CardWrapper = styled.li`
     opacity: 0;
   }
 
-  &:not(.dragging):hover {
+  &:not(.dragging):hover, &:focus-within {
     background-color: #f3f7fd;
-    border-color: #9eb0c5;
+    border-color: #b4c5d8;
+    box-shadow: 0 3px 12px #1f344510;
 
     ${TitleLink} {
       color: var(--link-color);

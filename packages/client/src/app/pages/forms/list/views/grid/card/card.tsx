@@ -2,7 +2,7 @@ import {
   Tooltip,
   type TooltipProps,
 } from "@components/elements/tooltip/tooltip";
-import config, { Edition } from "@config/freeform/freeform.config";
+import config from "@config/freeform/freeform.config";
 import { useDeleteFormModal } from "@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { useCheckOverflow } from "@ff-client/hooks/use-check-overflow";
@@ -54,6 +54,8 @@ type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
   isExpressEdition?: boolean;
+  canMove?: boolean;
+  onKeyboardMove?: (formId: number, key: string) => void;
 };
 
 const tooltipProps: Omit<TooltipProps, "children"> = {
@@ -66,8 +68,9 @@ export const Card: React.FC<Props> = ({
   form,
   isDraggingInProgress,
   isExpressEdition,
+  canMove,
+  onKeyboardMove,
 }) => {
-  const isProEdition = config.editions.is(Edition.Pro);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
 
@@ -124,9 +127,26 @@ export const Card: React.FC<Props> = ({
       )}
     >
       <Controls>
-        {!isExpressEdition && !isProEdition && (
+        {canMove && (
           <Tooltip title={translate("Move this Form Card")} {...tooltipProps}>
-            <ControlButton className="handle">
+            <ControlButton
+              type="button"
+              className="handle"
+              aria-label={translate("Move this Form Card")}
+              title={translate(
+                "Drag to move. Use up/down arrows to reorder, left/right to change group.",
+              )}
+              onKeyDown={(event) => {
+                if (
+                  ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
+                    event.key,
+                  )
+                ) {
+                  event.preventDefault();
+                  onKeyboardMove?.(id, event.key);
+                }
+              }}
+            >
               <MoveIcon />
             </ControlButton>
           </Tooltip>

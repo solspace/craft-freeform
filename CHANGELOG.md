@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed export profile filters overflowing when form fields have long labels.
+
 ## 5.16.6 - 2026-10-07
 
 ### Added

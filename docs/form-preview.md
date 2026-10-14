@@ -36,6 +36,12 @@ same framework assets as Freeform's standalone embed page. Custom templates,
 including templates that share a sample template's filename, provide their own
 assets.
 
+Tailwind 3 samples include locally compiled Tailwind 3.4.19 utilities and do not
+require the browser CDN. Developers can regenerate both sample stylesheets with
+`pnpm build:tailwind3`. Tailwind 4 previews clip horizontal page overflow while
+retaining vertical scrolling. Bootstrap 5 Dark previews set Bootstrap's dark
+theme attribute, and daisyUI Dark progress connectors use a contrasting gray.
+
 A Craft administrator can expand **Additional Preview Assets** to enter **Stylesheet URLs (CSS)**
 and **Script URLs (JavaScript)**. Enter direct absolute HTTPS asset URLs, one per
 line; JavaScript URLs load in the listed order. Save the form to retain these

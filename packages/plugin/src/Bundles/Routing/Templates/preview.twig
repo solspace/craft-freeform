@@ -1,5 +1,6 @@
+{% set clipHorizontalOverflow = not isCustomFormattingTemplate and formattingTemplate in ['tailwind-4-light/index.twig', 'tailwind-4-dark/index.twig'] %}
 <!doctype html>
-<html lang="{{ craft.app.language|e('html_attr') }}">
+<html lang="{{ craft.app.language|e('html_attr') }}"{% if not isCustomFormattingTemplate and formattingTemplate == 'bootstrap-5-dark/index.twig' %} data-bs-theme="dark"{% endif %}>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,8 +10,8 @@
         <link rel="stylesheet" href="{{ url|e('html_attr') }}" crossorigin="anonymous">
     {% endfor %}
     <style>
-        html { {% if isDark %}background: #181a1b; color-scheme: dark;{% endif %} }
-        body { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; {% if isDark %}background: #181a1b; color: #e5e7eb;{% endif %} }
+        html { {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #181a1b; color-scheme: dark;{% endif %} }
+        body { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #181a1b; color: #e5e7eb;{% endif %} }
         #freeform-preview-status { margin-bottom: 16px; padding: 12px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font: 14px/1.5 system-ui, sans-serif; }
     </style>
     <script id="freeform-preview-config" type="application/json">{{ previewConfigJson|raw }}</script>

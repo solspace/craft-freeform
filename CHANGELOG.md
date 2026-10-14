@@ -41,6 +41,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Fixed adjacent field tags merging when editing AI field selections and calculation expressions without spaces.
 - Fixed the Cards Layout editor overflowing native slideouts, with responsive columns and scrolling that keeps all cards accessible.
 - Fixed list markers and indentation in HTML and Rich Text field previews in the form builder.
 - Fixed native form editor slideouts closing when interacting with their contents, and refined the Bulk and Opinion Scale editors' Craft controls and layouts.

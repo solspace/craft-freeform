@@ -9,13 +9,16 @@ const putCondition = (_to: Sortable, from: Sortable): boolean =>
 
 export const initializeSortable = (
   fieldListRefs: RefObject<FieldListRefs>,
-): void => {
+): (() => void) => {
+  const instances: Sortable[] = [];
   const initialize = (
     selector: keyof FieldListRefs,
     options?: Sortable.Options,
   ): void => {
     const createSortable = fieldListRefs.current[selector];
-    if (createSortable) Sortable.create(createSortable as HTMLElement, options);
+    if (createSortable) {
+      instances.push(Sortable.create(createSortable as HTMLElement, options));
+    }
   };
 
   const handleSortableInit = (): void => {
@@ -54,6 +57,10 @@ export const initializeSortable = (
   };
 
   handleSortableInit();
+  return () =>
+    instances.forEach((instance) => {
+      instance.destroy();
+    });
 };
 
 export const initializeGroupedSortable = (
@@ -61,7 +68,14 @@ export const initializeGroupedSortable = (
   uid: string,
   fieldListRefs: RefObject<FieldListRefs>,
 ): void => {
+  const previous = fieldListRefs.current[uid];
+  if (previous && previous !== el) {
+    Sortable.get(previous)?.destroy();
+    delete fieldListRefs.current[uid];
+  }
   if (el) {
+    fieldListRefs.current[uid] = el;
+    if (Sortable.get(el)) return;
     Sortable.create(el, {
       animation: 150,
       group: {
@@ -72,6 +86,5 @@ export const initializeGroupedSortable = (
       filter: ".field-item-remove",
       onFilter: (evt) => fieldListRefs.current.unassigned.appendChild(evt.item),
     });
-    fieldListRefs.current[uid] = el;
   }
 };

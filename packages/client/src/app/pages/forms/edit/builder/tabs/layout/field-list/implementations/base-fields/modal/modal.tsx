@@ -1,12 +1,12 @@
 import { HexColorInput } from "@components/elements/hex-color-input/hex-color-input";
 import { FormComponent } from "@components/form-controls";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
-import {
-  ModalContainer,
-  ModalFooter,
-  ModalHeader,
-} from "@components/modals/modal.styles";
 import type { ModalType } from "@components/modals/modal.types";
+import {
+  SlideoutContainer,
+  SlideoutFooter,
+  SlideoutHeader,
+} from "@components/slideouts/slideout.styles";
 import { useGroupMutation } from "@editor/builder/tabs/layout/property-editor/editors/fields/groups/groups.queries";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useFetchGroups } from "@ff-client/queries/groups";
@@ -100,7 +100,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   }, [data, loaded]);
 
   useEffect(() => {
-    initializeSortable(fieldListRefs);
+    return initializeSortable(fieldListRefs);
   }, []);
 
   const updateMutation = useGroupMutation({
@@ -108,17 +108,17 @@ export const CreateModal: ModalType = ({ closeModal }) => {
       closeModal();
     },
     onError: (error) => {
-      setErrors(error.errors);
+      setErrors({ message: error.message, ...error.errors });
     },
   });
 
   const isLoading = updateMutation.isPending;
 
   return (
-    <ModalContainer style={{ maxWidth: "70%" }}>
-      <ModalHeader>
+    <SlideoutContainer>
+      <SlideoutHeader>
         <h1>{translate("Field Type Manager")}</h1>
-      </ModalHeader>
+      </SlideoutHeader>
       <ManagerWrapper>
         <GroupWrapper
           ref={(el) => {
@@ -128,8 +128,10 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             "Click the 'Add Group' button on the right to begin.",
           )}
         >
-          {errors?.length && (
-            <ErrorBlock>{translate("Something went wrong!")}</ErrorBlock>
+          {errors && Object.keys(errors).length > 0 && (
+            <ErrorBlock role="alert">
+              {translate("Something went wrong!")}
+            </ErrorBlock>
           )}
           {state.groups?.grouped?.map((group) => (
             <GroupLayout key={group.uid} data-id={group.uid}>
@@ -220,7 +222,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
           </UHFieldWrapper>
         </FieldListWrapper>
       </ManagerWrapper>
-      <ModalFooter>
+      <SlideoutFooter>
         <button
           type="button"
           className="btn"
@@ -229,17 +231,21 @@ export const CreateModal: ModalType = ({ closeModal }) => {
         >
           {translate("Cancel")}
         </button>
-        <button type="button" className="btn submit">
+        <button
+          type="button"
+          className="btn submit"
+          disabled={!loaded || isLoading}
+          onClick={() => updateMutation.mutate(syncFromRefs())}
+        >
           <LoadingText
             loadingText={translate("Saving")}
             loading={isLoading}
-            onClick={() => updateMutation.mutate(syncFromRefs())}
             spinner
           >
             {translate("Save")}
           </LoadingText>
         </button>
-      </ModalFooter>
-    </ModalContainer>
+      </SlideoutFooter>
+    </SlideoutContainer>
   );
 };

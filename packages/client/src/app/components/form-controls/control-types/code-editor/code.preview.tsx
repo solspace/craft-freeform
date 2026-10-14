@@ -13,8 +13,11 @@ export const CodePreview: React.FC<Props> = ({ value }) => {
   return (
     <PreviewWrapper data-edit={translate("Click to edit data")}>
       <PreviewContainer>
-        {!value && <NoContent>{translate("Not configured yet")}</NoContent>}
-        <Pre>{value}</Pre>
+        {value?.trim() ? (
+          <Pre>{value}</Pre>
+        ) : (
+          <NoContent>{translate("Not configured yet")}</NoContent>
+        )}
       </PreviewContainer>
     </PreviewWrapper>
   );

@@ -1,4 +1,4 @@
-import { labelText, scrollBar } from "@ff-client/styles/mixins";
+import { labelText } from "@ff-client/styles/mixins";
 import {
   borderRadius,
   colors,
@@ -8,18 +8,7 @@ import {
 import styled from "styled-components";
 
 export const PreviewWrapper = styled.div`
-  min-height: 160px;
-  max-height: 260px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  padding: ${spacings.sm} ${spacings.md};
-
-  background: ${colors.white};
-  box-shadow: ${shadows.box};
-  border-radius: ${borderRadius.lg};
-
-  ${scrollBar};
+  min-width: 0;
 `;
 
 export const AttributeTitle = styled.div`

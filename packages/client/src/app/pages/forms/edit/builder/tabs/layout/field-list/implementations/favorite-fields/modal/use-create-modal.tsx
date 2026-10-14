@@ -1,11 +1,16 @@
 import { useModal } from "@components/modals/modal.context";
+import translate from "@ff-client/utils/translations";
 
 import { FavoriteFieldsManagerModal } from "./modal";
 
 export const useFavoriteFieldsManagerModal = (): (() => void) => {
-  const { openModal } = useModal();
+  const { openSlideout } = useModal();
 
   return (): void => {
-    openModal(FavoriteFieldsManagerModal);
+    openSlideout(
+      FavoriteFieldsManagerModal,
+      undefined,
+      translate("Favorite Fields"),
+    );
   };
 };

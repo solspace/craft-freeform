@@ -13,9 +13,16 @@ interface EmptyProps {
 
 export const ManagerWrapper = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  background: var(--gray-050);
-  height: 600px;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  background: var(--gray-050, #f3f7fc);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+
+  @container (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+  }
 `;
 
 export const GroupLayout = styled.div`
@@ -27,13 +34,28 @@ export const GroupLayout = styled.div`
   gap: ${spacings.md};
 `;
 
-export const GroupWrapper = styled.div<EmptyProps>`
-  padding: 25px ${spacings.lg};
+export const GroupColumn = styled.div`
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+`;
+
+export const GroupToolbar = styled.div`
+  flex: 0 0 auto;
+  padding: 25px ${spacings.lg} 0;
+`;
+
+export const GroupWrapper = styled.div<EmptyProps>`
+  padding: ${spacings.md} ${spacings.lg} 25px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   gap: ${spacings.md};
   overflow-x: hidden;
   overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
   ${scrollBar};
 
   &:empty::before {
@@ -43,20 +65,26 @@ export const GroupWrapper = styled.div<EmptyProps>`
 `;
 
 GroupWrapper.defaultProps = {
-  $empty: "Click the 'Add Group' button on the right to begin.",
+  $empty: "Click 'Add Group' to begin.",
 };
 
 export const GroupHeader = styled.div`
   display: flex;
   padding-bottom: ${spacings.lg};
   gap: ${spacings.lg};
+  padding-right: 24px;
+  min-width: 0;
 `;
 
 export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   display: grid;
   gap: 6px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   border-radius: ${borderRadius.md};
+
+  @container (max-width: 640px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
@@ -75,7 +103,7 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
 `;
 
 GroupItemWrapper.defaultProps = {
-  $empty: "Drag and drop any field here",
+  $empty: "Drag forms here.",
   color: colors.black,
 };
 
@@ -93,7 +121,15 @@ export const GroupListWrapper = styled.div`
 
   overflow-x: hidden;
   overflow-y: auto;
+  min-width: 0;
+  min-height: 0;
+  border-left: 1px solid ${colors.hairline};
   ${scrollBar};
+
+  @container (max-width: 640px) {
+    border-left: 0;
+    border-top: 1px solid ${colors.hairline};
+  }
 `;
 
 export const Groups = styled.div<EmptyProps>`
@@ -108,12 +144,10 @@ export const Groups = styled.div<EmptyProps>`
 `;
 
 Groups.defaultProps = {
-  $empty: "Drag and drop any field here",
+  $empty: "Drag forms here.",
 };
 
 export const UnassignedGroupWrapper = styled.div`
-  padding-top: ${spacings.lg};
-
   > .unassigned {
     .remove {
       display: none;

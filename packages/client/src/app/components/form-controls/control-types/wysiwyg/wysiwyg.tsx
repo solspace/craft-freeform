@@ -68,6 +68,7 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
 
       {mode === EditorMode.Rich ? (
         <WysiwygRich
+          context={context}
           value={value}
           property={property}
           updateValue={updateValue}

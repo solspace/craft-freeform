@@ -3714,4 +3714,22 @@ return [
     'Replace Existing Values' => 'Vorhandene Werte ersetzen',
     'Reorder' => 'Neu ordnen',
     'Click the \'Add Group\' button on the right to begin.' => 'Klicken Sie rechts auf „Gruppe hinzufügen“, um zu beginnen.',
+
+    // Form scheduling
+    'Schedule Form' => 'Formular planen',
+    'Make this form available only during a scheduled period.' => 'Dieses Formular nur während eines geplanten Zeitraums verfügbar machen.',
+    'Schedule Start Date' => 'Geplantes Startdatum',
+    'When the form becomes available. Leave blank to make it available immediately.' => 'Ab wann das Formular verfügbar ist. Leer lassen, um es sofort verfügbar zu machen.',
+    'Schedule End Date' => 'Geplantes Enddatum',
+    'When the form stops being available and accepting submissions. Leave blank for no end date.' => 'Ab wann das Formular nicht mehr verfügbar ist und keine Einsendungen mehr annimmt. Für kein Enddatum leer lassen.',
+    'Pending Message' => 'Nachricht vor dem Start',
+    'Shown instead of the form before its start date. Leave blank to hide the form without a message.' => 'Wird vor dem Startdatum anstelle des Formulars angezeigt. Leer lassen, um das Formular ohne Nachricht auszublenden.',
+    'Expired Message' => 'Nachricht nach Ablauf',
+    'Shown instead of the form after its end date. Leave blank to hide the form without a message.' => 'Wird nach dem Enddatum anstelle des Formulars angezeigt. Leer lassen, um das Formular ohne Nachricht auszublenden.',
+    'This form is not available yet.' => 'Dieses Formular ist noch nicht verfügbar.',
+    'This form is no longer available.' => 'Dieses Formular ist nicht mehr verfügbar.',
+    'Enter a valid date and time.' => 'Geben Sie ein gültiges Datum und eine gültige Uhrzeit ein.',
+    'The schedule end date must be after the start date.' => 'Das geplante Enddatum muss nach dem Startdatum liegen.',
+    'Choose a date' => 'Datum auswählen',
+    'Timezone' => 'Zeitzone',
 ];

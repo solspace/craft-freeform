@@ -3714,4 +3714,22 @@ return [
     'Replace Existing Values' => 'Remplacer les valeurs existantes',
     'Reorder' => 'Réordonner',
     'Click the \'Add Group\' button on the right to begin.' => 'Cliquez sur « Ajouter un groupe » à droite pour commencer.',
+
+    // Form scheduling
+    'Schedule Form' => 'Planifier le formulaire',
+    'Make this form available only during a scheduled period.' => 'Rendre ce formulaire disponible uniquement pendant une période définie.',
+    'Schedule Start Date' => 'Date de début prévue',
+    'When the form becomes available. Leave blank to make it available immediately.' => 'Quand le formulaire devient disponible. Laisser vide pour le rendre disponible immédiatement.',
+    'Schedule End Date' => 'Date de fin prévue',
+    'When the form stops being available and accepting submissions. Leave blank for no end date.' => 'Quand le formulaire devient indisponible et cesse de recevoir des soumissions. Laisser vide pour ne pas définir de date de fin.',
+    'Pending Message' => 'Message avant ouverture',
+    'Shown instead of the form before its start date. Leave blank to hide the form without a message.' => 'Affiché à la place du formulaire avant sa date de début. Laisser vide pour masquer le formulaire sans message.',
+    'Expired Message' => 'Message après fermeture',
+    'Shown instead of the form after its end date. Leave blank to hide the form without a message.' => 'Affiché à la place du formulaire après sa date de fin. Laisser vide pour masquer le formulaire sans message.',
+    'This form is not available yet.' => 'Ce formulaire n’est pas encore disponible.',
+    'This form is no longer available.' => 'Ce formulaire n’est plus disponible.',
+    'Enter a valid date and time.' => 'Saisissez une date et une heure valides.',
+    'The schedule end date must be after the start date.' => 'La date de fin prévue doit être postérieure à la date de début.',
+    'Choose a date' => 'Choisir une date',
+    'Timezone' => 'Fuseau horaire',
 ];

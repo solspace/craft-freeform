@@ -19,6 +19,7 @@ use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Form\Type;
 use Solspace\Freeform\Bundles\Form\FormUserProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
@@ -755,6 +756,15 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function render(?array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
+        if (!$this->isAvailable()) {
+            $message = $this->getScheduleMessage();
+
+            return '' === $message ? null : new Markup(
+                '<div class="freeform-schedule-message" role="status">'.nl2br(htmlspecialchars($message, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')).'</div>',
+                'UTF-8'
+            );
+        }
+
         $formTemplate = $this->getProperties()->get(
             'formattingTemplate',
             $this->getSettings()->getGeneral()->formattingTemplate
@@ -770,6 +780,24 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         }
 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
+    }
+
+    public function isAvailable(): bool
+    {
+        return null === FormSchedule::getStatus($this->getSettings()->getBehavior());
+    }
+
+    public function getScheduleMessage(): string
+    {
+        $behavior = $this->getSettings()->getBehavior();
+        $status = FormSchedule::getStatus($behavior);
+        if (null === $status) {
+            return '';
+        }
+
+        $key = FormSchedule::PENDING === $status ? 'schedulePendingMessage' : 'scheduleExpiredMessage';
+
+        return $this->translationProvider->getTranslation($this, 'behavior', $key, $behavior->{$key});
     }
 
     public function renderTag(?array $renderProperties = null): Markup

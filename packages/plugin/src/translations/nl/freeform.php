@@ -3677,4 +3677,22 @@ return [
     'Replace Existing Values' => 'Bestaande waarden vervangen',
     'Reorder' => 'Volgorde aanpassen',
     'Click the \'Add Group\' button on the right to begin.' => 'Klik rechts op ‘Groep toevoegen’ om te beginnen.',
+
+    // Form scheduling
+    'Schedule Form' => 'Formulier plannen',
+    'Make this form available only during a scheduled period.' => 'Maak dit formulier alleen beschikbaar tijdens een geplande periode.',
+    'Schedule Start Date' => 'Geplande startdatum',
+    'When the form becomes available. Leave blank to make it available immediately.' => 'Wanneer het formulier beschikbaar wordt. Laat leeg om het direct beschikbaar te maken.',
+    'Schedule End Date' => 'Geplande einddatum',
+    'When the form stops being available and accepting submissions. Leave blank for no end date.' => 'Wanneer het formulier niet meer beschikbaar is en geen inzendingen meer accepteert. Laat leeg voor geen einddatum.',
+    'Pending Message' => 'Bericht vóór opening',
+    'Shown instead of the form before its start date. Leave blank to hide the form without a message.' => 'Wordt vóór de startdatum in plaats van het formulier getoond. Laat leeg om het formulier zonder bericht te verbergen.',
+    'Expired Message' => 'Bericht na sluiting',
+    'Shown instead of the form after its end date. Leave blank to hide the form without a message.' => 'Wordt na de einddatum in plaats van het formulier getoond. Laat leeg om het formulier zonder bericht te verbergen.',
+    'This form is not available yet.' => 'Dit formulier is nog niet beschikbaar.',
+    'This form is no longer available.' => 'Dit formulier is niet meer beschikbaar.',
+    'Enter a valid date and time.' => 'Voer een geldige datum en tijd in.',
+    'The schedule end date must be after the start date.' => 'De geplande einddatum moet na de startdatum liggen.',
+    'Choose a date' => 'Kies een datum',
+    'Timezone' => 'Tijdzone',
 ];

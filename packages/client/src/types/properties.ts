@@ -235,6 +235,8 @@ export type AiProperty = BaseProperty<string, PropertyType.Ai> & {
   availableFieldTypes: string[];
 };
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
+  includeTime?: boolean;
+  defaultTime?: string;
   dateFormat?: string;
   minDate?: string;
   maxDate?: string;

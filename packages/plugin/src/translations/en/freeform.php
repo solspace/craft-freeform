@@ -3713,4 +3713,22 @@ return [
     'Replace Existing Values' => 'Replace Existing Values',
     'Reorder' => 'Reorder',
     'Click the \'Add Group\' button on the right to begin.' => 'Click the \'Add Group\' button on the right to begin.',
+
+    // Form scheduling
+    'Schedule Form' => 'Schedule Form',
+    'Make this form available only during a scheduled period.' => 'Make this form available only during a scheduled period.',
+    'Schedule Start Date' => 'Schedule Start Date',
+    'When the form becomes available. Leave blank to make it available immediately.' => 'When the form becomes available. Leave blank to make it available immediately.',
+    'Schedule End Date' => 'Schedule End Date',
+    'When the form stops being available and accepting submissions. Leave blank for no end date.' => 'When the form stops being available and accepting submissions. Leave blank for no end date.',
+    'Pending Message' => 'Pending Message',
+    'Shown instead of the form before its start date. Leave blank to hide the form without a message.' => 'Shown instead of the form before its start date. Leave blank to hide the form without a message.',
+    'Expired Message' => 'Expired Message',
+    'Shown instead of the form after its end date. Leave blank to hide the form without a message.' => 'Shown instead of the form after its end date. Leave blank to hide the form without a message.',
+    'This form is not available yet.' => 'This form is not available yet.',
+    'This form is no longer available.' => 'This form is no longer available.',
+    'Enter a valid date and time.' => 'Enter a valid date and time.',
+    'The schedule end date must be after the start date.' => 'The schedule end date must be after the start date.',
+    'Choose a date' => 'Choose a date',
+    'Timezone' => 'Timezone',
 ];

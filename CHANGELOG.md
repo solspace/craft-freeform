@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
 - Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
 - Added a Cancel action to content editor slideouts that restores their original values and translations.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
@@ -27,6 +28,7 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
+- Replaced **Stop Submissions After Date** with cohesive **Schedule Form** settings and improved date/time controls. Existing cutoff dates retain their end-of-day behavior.
 - Standardized property-editor previews with consistent borders, empty states, compact scrolling content, and an always-visible edit cue.
 - Moved **Manage Form Groups**, **Field Type Manager**, **Favorite Fields**, bulk options, Cards, Table, HTML/code, Rich Text, and Opinion Scale editors into native Craft slideouts with responsive layouts.
 - Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.

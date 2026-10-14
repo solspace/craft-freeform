@@ -3714,4 +3714,22 @@ return [
     'Replace Existing Values' => 'Sostituisci i valori esistenti',
     'Reorder' => 'Riordina',
     'Click the \'Add Group\' button on the right to begin.' => 'Fai clic su «Aggiungi gruppo» a destra per iniziare.',
+
+    // Form scheduling
+    'Schedule Form' => 'Programma modulo',
+    'Make this form available only during a scheduled period.' => 'Rendi questo modulo disponibile solo durante un periodo programmato.',
+    'Schedule Start Date' => 'Data di inizio programmata',
+    'When the form becomes available. Leave blank to make it available immediately.' => 'Quando il modulo diventa disponibile. Lascia vuoto per renderlo disponibile subito.',
+    'Schedule End Date' => 'Data di fine programmata',
+    'When the form stops being available and accepting submissions. Leave blank for no end date.' => 'Quando il modulo non è più disponibile e non accetta più invii. Lascia vuoto per non impostare una data di fine.',
+    'Pending Message' => 'Messaggio prima dell’apertura',
+    'Shown instead of the form before its start date. Leave blank to hide the form without a message.' => 'Visualizzato al posto del modulo prima della data di inizio. Lascia vuoto per nascondere il modulo senza un messaggio.',
+    'Expired Message' => 'Messaggio dopo la chiusura',
+    'Shown instead of the form after its end date. Leave blank to hide the form without a message.' => 'Visualizzato al posto del modulo dopo la data di fine. Lascia vuoto per nascondere il modulo senza un messaggio.',
+    'This form is not available yet.' => 'Questo modulo non è ancora disponibile.',
+    'This form is no longer available.' => 'Questo modulo non è più disponibile.',
+    'Enter a valid date and time.' => 'Inserisci una data e un’ora valide.',
+    'The schedule end date must be after the start date.' => 'La data di fine programmata deve essere successiva alla data di inizio.',
+    'Choose a date' => 'Scegli una data',
+    'Timezone' => 'Fuso orario',
 ];

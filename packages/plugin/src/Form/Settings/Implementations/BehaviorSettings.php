@@ -200,13 +200,73 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_LIMITS)]
     #[Edition(Edition::LITE)]
-    #[ValueTransformer(DateTimeTransformer::class)]
-    #[Input\DatePicker(
-        label: 'Stop Submissions After Date',
-        instructions: 'Set a date after which this form will no longer accept new submissions.',
+    #[Input\Boolean(
+        label: 'Schedule Form',
+        instructions: 'Make this form available only during a scheduled period.',
         order: 3,
     )]
+    public ?bool $scheduleEnabled = null;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[ValueTransformer(DateTimeTransformer::class)]
+    #[Input\DatePicker(
+        label: 'Schedule Start Date',
+        instructions: 'When the form becomes available. Leave blank to make it available immediately.',
+        order: 4,
+        includeTime: true,
+    )]
+    public ?\DateTime $startSubmissionsAt = null;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[ValueTransformer(DateTimeTransformer::class)]
+    #[Input\DatePicker(
+        label: 'Schedule End Date',
+        instructions: 'When the form stops being available and accepting submissions. Leave blank for no end date.',
+        order: 5,
+        includeTime: true,
+        defaultTime: '23:59',
+    )]
     public ?\DateTime $stopSubmissionsAfter = null;
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[Input\TextArea(
+        label: 'Pending Message',
+        instructions: 'Shown instead of the form before its start date. Leave blank to hide the form without a message.',
+        order: 6,
+    )]
+    public string $schedulePendingMessage = 'This form is not available yet.';
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[Input\TextArea(
+        label: 'Expired Message',
+        instructions: 'Shown instead of the form after its end date. Leave blank to hide the form without a message.',
+        order: 7,
+    )]
+    public string $scheduleExpiredMessage = 'This form is no longer available.';
+
+    public function normalizeSchedule(): void
+    {
+        if (null !== $this->scheduleEnabled) {
+            return;
+        }
+
+        // Existing date-only cutoffs continue to include the entire final day.
+        $this->scheduleEnabled = null !== $this->stopSubmissionsAfter;
+        if ($this->stopSubmissionsAfter) {
+            $this->stopSubmissionsAfter = clone $this->stopSubmissionsAfter;
+            $this->stopSubmissionsAfter->setTime(23, 59, 59);
+        }
+    }
 
     public function getSuccessMessage(): string
     {

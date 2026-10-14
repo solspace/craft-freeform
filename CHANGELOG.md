@@ -47,6 +47,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Fixed unclosed radio option wrappers in Tailwind 4 Light/Dark templates that could collapse row spacing in Preview.
 - Fixed duplicate form handles failing silently when saving an existing form in the builder; validation errors now appear on the Handle field.
 - Fixed inserting calculation fields at the start of the expression after typing an operator instead of at the cursor.
 - Fixed adjacent field tags merging when editing AI field selections and calculation expressions without spaces.

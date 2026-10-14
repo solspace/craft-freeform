@@ -13,8 +13,11 @@ use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Services\FormPreviewService;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 use yii\base\Event;
 
 #[CoversClass(FormPreviewService::class)]
@@ -123,5 +126,48 @@ class FormPreviewServiceTest extends TestCase
         self::assertStringContainsString('<style>body{padding:24px}</style>', $html);
         self::assertStringContainsString('<script>window.sampleLoaded=true;</script>', $html);
         self::assertStringContainsString("'sha256-".base64_encode(hash('sha256', 'window.sampleLoaded=true;', true))."'", $html);
+    }
+
+    #[TestWith(['tailwind-4-light', true])]
+    #[TestWith(['tailwind-4-dark', true])]
+    #[TestWith(['tailwind-4-light', false])]
+    #[TestWith(['tailwind-4-dark', false])]
+    public function testRadioTemplatePreservesFollowingRowInPreview(string $template, bool $oneLine): void
+    {
+        $field = new class($oneLine) {
+            public array $attributes;
+            public array $options = [['value' => 'personal', 'label' => 'Personal'], ['value' => 'business', 'label' => 'Business']];
+            public string $handle = 'type';
+            public string $idAttribute = 'type';
+            public string $value = 'personal';
+            public bool $hasErrors = false;
+            public string $renderContainerOpeningTag = '<fieldset id="type-field">';
+            public string $renderContainerClosingTag = '</fieldset>';
+            public string $renderLabel = '<legend>Type</legend>';
+            public string $renderInstructions = '';
+            public string $renderErrors = '<p id="type-errors"></p>';
+
+            public function __construct(public bool $oneLine)
+            {
+                $this->attributes = [
+                    'input' => new Attributes(['class' => 'radio']),
+                    'optionLabel' => new Attributes(['class' => 'option-label']),
+                ];
+            }
+
+            public function translateOptionLabel(array $option): string
+            {
+                return $option['label'];
+            }
+        };
+        $twig = new Environment(new FilesystemLoader(__DIR__.'/../../templates/_templates/formatting'), ['autoescape' => false]);
+        $markup = $twig->render($template.'/fields/radios.twig', ['field' => $field]);
+        $html = (new FormPreviewService())->isolate('<html><head></head><body><form><div id="type-row">'.$markup.'</div><div id="name-row"><input name="firstName"></div></form></body></html>', 'CSRF');
+        $document = new \DOMDocument();
+        @$document->loadHTML($html);
+        $xpath = new \DOMXPath($document);
+        self::assertSame(1, $xpath->query('//form/div[@id="name-row"]')->length);
+        self::assertSame(1, $xpath->query('//fieldset[@id="type-field"]/p[@id="type-errors"]')->length);
+        self::assertSame(2, $xpath->query('//fieldset[@id="type-field"]//input[@type="radio"]')->length);
     }
 }

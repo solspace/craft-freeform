@@ -24,7 +24,9 @@ export const FMContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 30%;
+  width: 34%;
+  min-width: 110px;
+  overflow-wrap: anywhere;
   text-align: right;
   margin-top: 6px;
 `;

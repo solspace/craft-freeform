@@ -21,7 +21,7 @@ export const CardWrapper = styled.div<{ $dragging?: boolean }>`
 
 export const Cards = styled.ul<{ $empty?: string }>`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -103,11 +103,4 @@ export const LoadingWrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: ${spacings.lg};
-`;
-
-export const SortNotice = styled.div<{ $error: boolean }>`
-  min-height: 18px;
-  margin-bottom: -8px;
-  color: ${({ $error }) => ($error ? "#cf1124" : "#687684")};
-  font-size: 12px;
 `;

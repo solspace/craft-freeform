@@ -20,7 +20,6 @@ import {
   ContentContainer,
   GroupTitle,
   GroupWrap,
-  SortNotice,
   Wrapper,
 } from "./grid.styles";
 
@@ -54,9 +53,6 @@ export const FormGrid: React.FC = () => {
               $dragging={sorting.isDragging}
               aria-busy={sorting.isSaving}
             >
-              <SortNotice role="status" $error={sorting.isError}>
-                {sorting.notice}
-              </SortNotice>
               {isProEdition &&
                 data?.formGroups?.groups.map((group) =>
                   (group?.forms?.length ?? 0) || sorting.canMove ? (

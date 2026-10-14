@@ -3704,7 +3704,6 @@ return [
     'Replace Existing Values' => 'Sostituisci i valori esistenti',
     'Reorder' => 'Riordina',
     'Click the \'Add Group\' button on the right to begin.' => 'Fai clic su «Aggiungi gruppo» a destra per iniziare.',
-    'Saving form position…' => 'Salvataggio della posizione del modulo…',
     'Form position saved.' => 'Posizione del modulo salvata.',
     'Could not save the form position. Please try again.' => 'Impossibile salvare la posizione del modulo. Riprova.',
     'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Trascina per spostare. Usa le frecce su/giù per riordinare e sinistra/destra per cambiare gruppo.',

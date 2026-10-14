@@ -3,6 +3,7 @@ import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { QKGroups } from "@ff-client/queries/form-groups";
 import { QKForms } from "@ff-client/queries/forms";
 import type { FormWithGroup } from "@ff-client/types/form-groups";
+import { notifications } from "@ff-client/utils/notifications";
 import translate from "@ff-client/utils/translations";
 import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -17,8 +18,6 @@ export const useDashboardSorting = (data?: FormWithGroup) => {
   const busy = useRef(false);
   const [isDragging, setDragging] = useState(false);
   const [isSaving, setSaving] = useState(false);
-  const [notice, setNotice] = useState("");
-  const [isError, setError] = useState(false);
   const canMove =
     config.metadata.freeform.canOrganizeForms &&
     !config.editions.is(Edition.Express);
@@ -27,8 +26,6 @@ export const useDashboardSorting = (data?: FormWithGroup) => {
     if (!data || busy.current || !canMove) return;
     busy.current = true;
     setSaving(true);
-    setError(false);
-    setNotice(translate("Saving form position…"));
     const key = QKGroups.all(getCurrentHandleWithFallback());
     await queryClient.cancelQueries({ queryKey: key });
     const previous = queryClient.getQueryData<FormWithGroup>(key);
@@ -42,11 +39,10 @@ export const useDashboardSorting = (data?: FormWithGroup) => {
         queryClient.invalidateQueries({ queryKey: key }),
         queryClient.invalidateQueries({ queryKey: QKForms.base }),
       ]);
-      setNotice(translate("Form position saved."));
+      notifications.success(translate("Form position saved."));
     } catch {
       queryClient.setQueryData(key, previous);
-      setError(true);
-      setNotice(
+      notifications.error(
         translate("Could not save the form position. Please try again."),
       );
     } finally {
@@ -127,8 +123,6 @@ export const useDashboardSorting = (data?: FormWithGroup) => {
     wrapperRef,
     isDragging,
     isSaving,
-    notice,
-    isError,
     canMove,
     onKeyboardMove,
   };

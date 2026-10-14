@@ -3704,7 +3704,6 @@ return [
     'Replace Existing Values' => 'Remplacer les valeurs existantes',
     'Reorder' => 'Réordonner',
     'Click the \'Add Group\' button on the right to begin.' => 'Cliquez sur « Ajouter un groupe » à droite pour commencer.',
-    'Saving form position…' => 'Enregistrement de la position du formulaire…',
     'Form position saved.' => 'Position du formulaire enregistrée.',
     'Could not save the form position. Please try again.' => 'Impossible d’enregistrer la position du formulaire. Veuillez réessayer.',
     'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Glissez pour déplacer. Utilisez les flèches haut/bas pour réorganiser et gauche/droite pour changer de groupe.',

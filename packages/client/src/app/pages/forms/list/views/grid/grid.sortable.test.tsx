@@ -11,7 +11,12 @@ import Sortable, { type SortableEvent } from "sortablejs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useDashboardSorting } from "./grid.sortable";
 
-const fixture = vi.hoisted(() => ({ canMove: true, post: vi.fn() }));
+const fixture = vi.hoisted(() => ({
+  canMove: true,
+  post: vi.fn(),
+  success: vi.fn(),
+  error: vi.fn(),
+}));
 vi.mock("@config/freeform/freeform.config", () => ({
   Edition: { Express: "express" },
   default: {
@@ -34,6 +39,9 @@ vi.mock("@ff-client/contexts/site/site.context", () => ({
 vi.mock("@ff-client/queries/forms", () => ({ QKForms: { base: ["forms"] } }));
 vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string) => text,
+}));
+vi.mock("@ff-client/utils/notifications", () => ({
+  notifications: { success: fixture.success, error: fixture.error },
 }));
 vi.mock("axios", () => ({ default: { post: fixture.post } }));
 
@@ -59,7 +67,6 @@ const Harness = () => {
   const sorting = useDashboardSorting(query.data);
   return (
     <div ref={sorting.wrapperRef}>
-      <p role="status">{sorting.notice}</p>
       {query.data &&
         [
           ...query.data.formGroups.groups.map((group) => ({
@@ -138,6 +145,8 @@ beforeEach(() => {
   ).IS_REACT_ACT_ENVIRONMENT = true;
   fixture.canMove = true;
   fixture.post.mockReset();
+  fixture.success.mockReset();
+  fixture.error.mockReset();
   client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   client.setQueryData(key, data);
   host = document.createElement("div");
@@ -189,8 +198,12 @@ describe("dashboard sorting lifecycle", () => {
         );
     });
     expect(fixture.post).toHaveBeenCalledTimes(1);
+    expect(fixture.success).not.toHaveBeenCalled();
     await act(async () => resolve());
-    expect(host.textContent).toContain("Form position saved.");
+    expect(fixture.success).toHaveBeenCalledExactlyOnceWith(
+      "Form position saved.",
+    );
+    expect(fixture.error).not.toHaveBeenCalled();
     expect(Sortable.get(list("b")).option("disabled")).toBe(false);
   });
   it("restores the original layout and re-enables dragging when saving fails", async () => {
@@ -199,13 +212,18 @@ describe("dashboard sorting lifecycle", () => {
     await drag(1, "a", "", 0);
     expect(ids("a")).toEqual([1, 2]);
     expect(ids("")).toEqual([3]);
-    expect(host.textContent).toContain("Could not save the form position");
+    expect(fixture.error).toHaveBeenCalledExactlyOnceWith(
+      "Could not save the form position. Please try again.",
+    );
+    expect(fixture.success).not.toHaveBeenCalled();
     expect(Sortable.get(list("a")).option("disabled")).toBe(false);
   });
   it("does not save a drop in the original position", async () => {
     await render();
     await drag(1, "a", "a", 0);
     expect(fixture.post).not.toHaveBeenCalled();
+    expect(fixture.success).not.toHaveBeenCalled();
+    expect(fixture.error).not.toHaveBeenCalled();
     expect(ids("a")).toEqual([1, 2]);
   });
   it("does not enable rearranging for users without global form management", async () => {

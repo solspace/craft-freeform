@@ -3667,7 +3667,6 @@ return [
     'Replace Existing Values' => 'Bestaande waarden vervangen',
     'Reorder' => 'Volgorde aanpassen',
     'Click the \'Add Group\' button on the right to begin.' => 'Klik rechts op ‘Groep toevoegen’ om te beginnen.',
-    'Saving form position…' => 'Formulierpositie opslaan…',
     'Form position saved.' => 'Formulierpositie opgeslagen.',
     'Could not save the form position. Please try again.' => 'De formulierpositie kon niet worden opgeslagen. Probeer het opnieuw.',
     'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Sleep om te verplaatsen. Gebruik omhoog/omlaag om de volgorde te wijzigen en links/rechts om van groep te wisselen.',

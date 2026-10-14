@@ -1,9 +1,13 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { addSelectOptionIcons } from "@components/form-controls/control-types/select/select-option-icons";
 import config from "@config/freeform/freeform.config";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
-import { useQueryFormSettings } from "@ff-client/queries/forms";
+import {
+  useQueryFormSettings,
+  useQueryPreviewTemplates,
+} from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
 import axios from "axios";
 import type React from "react";
@@ -35,8 +39,12 @@ export const FormPreview: React.FC = () => {
   const formErrors = useSelector(formSelectors.errors);
   const { current } = useSiteContext();
   const { data: settings } = useQueryFormSettings();
+  const { data: samples, isLoading: samplesLoading } = useQueryPreviewTemplates(
+    form.isNew ? undefined : form.id,
+  );
   const path = useResolvedPath("");
   const [width, setWidth] = useState("100%");
+  const [template, setTemplate] = useState("");
   const [request, setRequest] = useState({
     page: 0,
     advance: false,
@@ -81,6 +89,12 @@ export const FormPreview: React.FC = () => {
     const nextIdentity = `${form.id}:${current?.handle}`;
     const changed = identity.current !== nextIdentity;
     if (changed) {
+      setTemplate("");
+      setRequest((previous) =>
+        previous.page || previous.advance
+          ? { page: 0, advance: false, revision: previous.revision + 1 }
+          : previous,
+      );
       values.current = Object.create(null);
       history.current = [];
       active.current.page = 0;
@@ -100,6 +114,7 @@ export const FormPreview: React.FC = () => {
           page: changed ? 0 : request.page,
           advance: !changed && request.advance,
           values: values.current,
+          templateOverride: changed ? null : template || null,
         },
         {
           params: { site: current?.handle, revision: request.revision },
@@ -112,7 +127,7 @@ export const FormPreview: React.FC = () => {
           setComplete(true);
           return;
         }
-        if (request.advance && data.page !== active.current.page)
+        if (!changed && request.advance && data.page !== active.current.page)
           history.current.push(active.current.page);
         active.current.channel = data.channel;
         active.current.page = data.page ?? request.page;
@@ -134,7 +149,7 @@ export const FormPreview: React.FC = () => {
         }
       });
     return () => controller.abort();
-  }, [form.id, form.isNew, current?.handle, request]);
+  }, [form.id, form.isNew, current?.handle, request, template]);
 
   const properties = settings?.find(
     (item) => item.handle === "general",
@@ -159,6 +174,32 @@ export const FormPreview: React.FC = () => {
           )}
         </p>
         <Toolbar>
+          <label>
+            {translate("Formatting Template")}
+            <Dropdown
+              value={template}
+              loading={loading || samplesLoading}
+              showSelectedIcon
+              onChange={(value) => {
+                history.current = [];
+                setTemplate(value);
+                setRequest((previous) => ({
+                  page: 0,
+                  advance: false,
+                  revision: previous.revision + 1,
+                }));
+              }}
+              options={addSelectOptionIcons("formattingTemplate", [
+                { value: "", label: translate("Use Saved Template") },
+                { label: "Solspace", children: samples ?? [] },
+              ])}
+            />
+          </label>
+          <p>
+            {translate(
+              "Try a sample template without changing the form's saved formatting template.",
+            )}
+          </p>
           <label>
             {translate("Viewport")}
             <Dropdown

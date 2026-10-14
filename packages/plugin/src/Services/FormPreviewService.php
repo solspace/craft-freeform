@@ -11,11 +11,21 @@ use Solspace\Freeform\Library\Helpers\PreviewState;
 
 class FormPreviewService
 {
-    public function render(Form $form, int $page = 0, array $values = [], bool $advance = false): array
+    public function getSampleTemplateOptions(): array
+    {
+        return array_map(static fn ($template) => [
+            'value' => $template->getFileName(),
+            'label' => $template->getName(),
+        ], Freeform::getInstance()->settings->getSolspaceFormTemplates());
+    }
+
+    public function render(Form $form, int $page = 0, array $values = [], bool $advance = false, mixed $templateOverride = null): array
     {
         $settings = $form->getSettings()->getGeneral();
+        $sample = PreviewState::resolveTemplateOverride($templateOverride, Freeform::getInstance()->settings->getSolspaceFormTemplates());
+        $formattingTemplate = $sample?->getFileName() ?? $settings->formattingTemplate;
         $templates = $this->getTemplates();
-        $template = $templates[$settings->formattingTemplate] ?? null;
+        $template = $sample ? false : ($templates[$formattingTemplate] ?? null);
         if (null === $template) {
             throw new \InvalidArgumentException('Select an existing formatting template and save the form before previewing.');
         }
@@ -45,7 +55,10 @@ class FormPreviewService
 
         $channel = bin2hex(random_bytes(16));
 
-        $markup = $form->render(['disable' => true]);
+        // Only a server-resolved bundled path may override the saved template.
+        // Its full path also prevents custom templates with matching names from
+        // shadowing the requested sample. The form's saved settings stay intact.
+        $markup = $form->render(['disable' => true, 'formattingTemplate' => $sample?->getFilePath() ?? $formattingTemplate]);
         // Yii removes registered bundles during endBody(). Capture their local
         // assets after rendering the form and before rendering the outer page.
         $bundledAssets = $this->getBundledAssets();
@@ -53,11 +66,11 @@ class FormPreviewService
         $html = \Craft::$app->getView()->renderPageTemplate('freeform-embed/preview', [
             'form' => $form,
             'formMarkup' => $markup,
-            'formattingTemplate' => $settings->formattingTemplate,
+            'formattingTemplate' => $formattingTemplate,
             'isCustomFormattingTemplate' => $template,
             'cssUrls' => PreviewAssetHelper::parse($settings->previewCssUrls),
             'jsUrls' => PreviewAssetHelper::parse($settings->previewJsUrls),
-            'isDark' => PreviewState::isDark($settings->formattingTemplate, $template),
+            'isDark' => PreviewState::isDark($formattingTemplate, $template),
             'previewConfigJson' => json_encode([
                 'channel' => $channel,
                 'parentOrigin' => \Craft::$app->getRequest()->getHostInfo(),

@@ -6,6 +6,7 @@ import type {
   FormSettingNamespace,
   FormWithStats,
 } from "@ff-client/types/forms";
+import type { Option } from "@ff-client/types/properties";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -17,6 +18,8 @@ export const QKForms = {
   all: (site: string) => [...QKForms.base, site] as const,
   single: (id: number) => [...QKForms.base, id] as const,
   settings: () => [...QKForms.base, "settings"] as const,
+  previewTemplates: (id: number, site?: string) =>
+    [...QKForms.single(id), "preview-templates", site] as const,
   usage: (id: number, siteId: number) =>
     [...QKForms.base, id, "usage", siteId] as const,
 };
@@ -72,6 +75,22 @@ export const useQueryFormSettings = (): UseQueryResult<
         }),
     staleTime: Infinity,
     gcTime: Infinity,
+  });
+};
+
+export const useQueryPreviewTemplates = (
+  id?: number,
+): UseQueryResult<Option[], AxiosError> => {
+  const { current } = useSiteContext();
+  return useQuery<Option[], AxiosError>({
+    queryKey: QKForms.previewTemplates(id ?? 0, current?.handle),
+    queryFn: () =>
+      axios
+        .get<Option[]>(`/api/forms/${id}/preview-templates`, {
+          params: { site: current?.handle },
+        })
+        .then((res) => res.data),
+    enabled: !!id,
   });
 };
 

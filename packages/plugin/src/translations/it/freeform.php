@@ -3781,4 +3781,6 @@ return [
     'Script URLs (JavaScript)' => 'URL degli script (JavaScript)',
     'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'Un URL HTTPS di file per riga, nell’ordine di caricamento. Usa solo script attendibili.',
     'Preview complete. No submission was sent.' => 'Anteprima completata. Nessun invio è stato effettuato.',
+    'Use Saved Template' => 'Usa il template salvato',
+    'Try a sample template without changing the form\'s saved formatting template.' => 'Prova un template di esempio senza modificare il template di formattazione salvato del modulo.',
 ];

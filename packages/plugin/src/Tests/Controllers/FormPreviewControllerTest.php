@@ -53,4 +53,14 @@ class FormPreviewControllerTest extends TestCase
         self::assertSame(400, $controller->response->statusCode);
         self::assertArrayHasKey('previewCssUrls', $response['errors']['form']['general']);
     }
+
+    public function testPreviewTemplateListRejectsNonCpRequests(): void
+    {
+        $request = $this->createMock(Request::class);
+        $request->method('getIsCpRequest')->willReturn(false);
+        $controller = (new \ReflectionClass(FormsController::class))->newInstanceWithoutConstructor();
+        $controller->request = $request;
+        $this->expectException(BadRequestHttpException::class);
+        $controller->actionPreviewTemplates(42);
+    }
 }

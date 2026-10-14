@@ -7,9 +7,26 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\DataObjects\FormTemplate;
 
 class PreviewState
 {
+    public static function resolveTemplateOverride(mixed $value, array $samples): ?FormTemplate
+    {
+        if (null === $value || '' === $value) {
+            return null;
+        }
+        if (\is_string($value)) {
+            foreach ($samples as $sample) {
+                if ($sample->getFileName() === $value) {
+                    return $sample;
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException('Select an existing sample formatting template for Preview.');
+    }
+
     public static function validateValues(mixed $values): array
     {
         $encoded = json_encode($values);

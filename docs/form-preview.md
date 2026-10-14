@@ -5,6 +5,13 @@ inside an isolated frame. Save changes, then click **Refresh Preview**. Select
 Desktop, Tablet, or Mobile to change the frame width. Dark sample templates use
 a very dark gray (`#181a1b`) preview background.
 
+The **Formatting Template** selector defaults to **Use Saved Template**. Choose
+any bundled sample to try a different style in Preview, including its framework
+assets and dark background where applicable. This selection never changes the
+form's saved formatting template and resets when you leave Preview. Switching
+templates returns to the first page and retains your temporary answers. Custom
+templates with the same filename do not override the selected bundled sample.
+
 Field and button visibility rules work in the preview. For multi-page forms,
 use Next and Back to try saved page-jump rules and conditional early completion,
 or use the page selector to inspect a specific page. Answers are retained across
@@ -59,7 +66,8 @@ Inspect the browser console when an asset fails to load.
 - The preview route requires an authenticated control-panel request, form
   management permission, a POST request, and Craft's normal CSRF validation.
   It renders the stored template; it accepts neither Twig source nor a template
-  path from the browser.
+  path from the browser. Preview template overrides accept only exact bundled
+  sample identifiers, which the server resolves to its own trusted template paths.
 - The frame uses `sandbox="allow-scripts"`, without same-origin, forms, popups, or
   top navigation permissions. It cannot access the parent control panel's DOM or
   storage. There is no arbitrary server-side URL fetcher.

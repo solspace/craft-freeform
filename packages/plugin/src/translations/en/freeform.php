@@ -3780,4 +3780,6 @@ return [
     'Script URLs (JavaScript)' => 'Script URLs (JavaScript)',
     'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'One HTTPS file URL per line, in loading order. Use trusted scripts only.',
     'Preview complete. No submission was sent.' => 'Preview complete. No submission was sent.',
+    'Use Saved Template' => 'Use Saved Template',
+    'Try a sample template without changing the form\'s saved formatting template.' => 'Try a sample template without changing the form\'s saved formatting template.',
 ];

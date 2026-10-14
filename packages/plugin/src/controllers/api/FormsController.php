@@ -38,6 +38,20 @@ class FormsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
+    public function actionPreviewTemplates(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson(\Craft::$container->get(FormPreviewService::class)->getSampleTemplateOptions());
+    }
+
     public function actionPreview(int $id): Response
     {
         $this->requirePostRequest();
@@ -56,6 +70,7 @@ class FormsController extends BaseApiController
                 (int) $this->request->getBodyParam('page', 0),
                 $values,
                 true === $this->request->getBodyParam('advance', false),
+                $this->request->getBodyParam('templateOverride'),
             );
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage());

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Tests\Services;
 
 use craft\web\Request;
+use craft\web\View;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -14,8 +15,11 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Services\FormPreviewService;
+use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\SettingsService;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use yii\base\Event;
@@ -169,5 +173,31 @@ class FormPreviewServiceTest extends TestCase
         self::assertSame(1, $xpath->query('//form/div[@id="name-row"]')->length);
         self::assertSame(1, $xpath->query('//fieldset[@id="type-field"]/p[@id="type-errors"]')->length);
         self::assertSame(2, $xpath->query('//fieldset[@id="type-field"]//input[@type="radio"]')->length);
+    }
+
+    public function testResolvedSamplePathBypassesCustomTemplateWithTheSameFilename(): void
+    {
+        $path = realpath(__DIR__.'/../../templates/_templates/formatting/tailwind-4-dark/index.twig');
+        $sample = $this->createMock(FormTemplate::class);
+        $sample->method('getFileName')->willReturn('tailwind-4-dark/index.twig');
+        $sample->method('getFilePath')->willReturn($path);
+        $custom = $this->createMock(FormTemplate::class);
+        $custom->method('getFilePath')->willReturn('/custom/tailwind-4-dark/index.twig');
+        $settings = $this->createMock(SettingsService::class);
+        $settings->method('getCustomFormTemplates')->willReturn([$custom]);
+        $settings->method('getSolspaceFormTemplates')->willReturn([$sample]);
+        $service = $this->getMockBuilder(FormsService::class)->disableOriginalConstructor()->onlyMethods(['getSettingsService'])->getMock();
+        $service->method('getSettingsService')->willReturn($settings);
+        $form = $this->createMock(Form::class);
+        $view = $this->createMock(View::class);
+        $view->expects(self::once())->method('renderString')->with(file_get_contents($path), ['form' => $form], View::TEMPLATE_MODE_CP)->willReturn('<p>Sample</p>');
+        $previousApp = \Craft::$app;
+        \Craft::$app = (object) ['view' => $view, 'charset' => 'UTF-8'];
+
+        try {
+            self::assertSame('<p>Sample</p>', (string) $service->renderFormTemplate($form, $sample->getFilePath()));
+        } finally {
+            \Craft::$app = $previousApp;
+        }
     }
 }

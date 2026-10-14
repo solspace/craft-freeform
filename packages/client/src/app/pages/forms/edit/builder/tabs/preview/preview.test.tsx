@@ -46,6 +46,13 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (value: string) => value,
 }));
 vi.mock("@ff-client/queries/forms", () => ({
+  useQueryPreviewTemplates: () => ({
+    data: [
+      { value: "tailwind-4-dark/index.twig", label: "Tailwind 4 Dark" },
+      { value: "basic-light/index.twig", label: "Basic Light" },
+    ],
+    isLoading: false,
+  }),
   useQueryFormSettings: () => ({
     data: [
       {
@@ -93,7 +100,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   await act(async () => root.render(<FormPreview />));
   expect(fixture.post).toHaveBeenCalledWith(
     "/api/forms/42/preview",
-    { page: 0, advance: false, values: {} },
+    { page: 0, advance: false, values: {}, templateOverride: null },
     expect.objectContaining({ params: { site: "default", revision: 0 } }),
   );
   const frame = host.querySelector("iframe")!;
@@ -102,7 +109,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(frame.srcdoc).toContain("Saved form");
   expect(host.querySelectorAll("textarea")).toHaveLength(2);
 
-  const viewport = host.querySelector("label > div") as HTMLElement;
+  const viewport = host.querySelectorAll("label > div")[1] as HTMLElement;
   await act(async () => viewport.click());
   const viewportOptions = [
     ...host.querySelectorAll(".dropdown-rollout [data-value]"),
@@ -125,7 +132,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(viewport.classList.contains("open")).toBe(false);
   expect(viewport.textContent).toBe("Mobile");
   await act(async () =>
-    (host.querySelectorAll("label > div")[1] as HTMLElement).click(),
+    (host.querySelectorAll("label > div")[2] as HTMLElement).click(),
   );
   await act(async () =>
     (
@@ -135,7 +142,7 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(host.querySelector("iframe")!.style.width).toBe("375px");
   expect(fixture.post).toHaveBeenLastCalledWith(
     "/api/forms/42/preview",
-    { page: 1, advance: false, values: {} },
+    { page: 1, advance: false, values: {}, templateOverride: null },
     expect.anything(),
   );
 });
@@ -201,7 +208,12 @@ it("retains page answers and accepts navigation only from the current sandboxed 
   await send("next", { employment: "employed" });
   expect(fixture.post).toHaveBeenLastCalledWith(
     "/api/forms/42/preview",
-    { page: 0, advance: true, values: { employment: "employed" } },
+    {
+      page: 0,
+      advance: true,
+      values: { employment: "employed" },
+      templateOverride: null,
+    },
     expect.anything(),
   );
   fixture.post.mockResolvedValueOnce({
@@ -221,6 +233,7 @@ it("retains page answers and accepts navigation only from the current sandboxed 
       page: 0,
       advance: false,
       values: { employment: "employed", employer: "Acme" },
+      templateOverride: null,
     },
     expect.anything(),
   );
@@ -229,4 +242,62 @@ it("retains page answers and accepts navigation only from the current sandboxed 
   expect(host.textContent).toContain(
     "Preview complete. No submission was sent.",
   );
+});
+
+it("switches sample templates without saving and retains answers when returning to the saved template", async () => {
+  await act(async () => root.render(<FormPreview />));
+  const frame = host.querySelector("iframe")!;
+  await act(async () =>
+    window.dispatchEvent(
+      new MessageEvent("message", {
+        source: frame.contentWindow,
+        origin: "null",
+        data: {
+          type: "freeform-preview",
+          channel: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          action: "values",
+          values: { type: "business" },
+        },
+      }),
+    ),
+  );
+  const template = host.querySelector("label > div") as HTMLElement;
+  expect(template.textContent).toBe("Use Saved Template");
+  await act(async () => template.click());
+  const sample = host.querySelector(
+    '.dropdown-rollout [data-value="tailwind-4-dark/index.twig"]',
+  ) as HTMLElement;
+  expect(sample.querySelector('img[aria-hidden="true"]')).not.toBeNull();
+  await act(async () => sample.click());
+  expect(template.textContent).toBe("Tailwind 4 Dark");
+  expect(fixture.post).toHaveBeenLastCalledWith(
+    "/api/forms/42/preview",
+    {
+      page: 0,
+      advance: false,
+      values: { type: "business" },
+      templateOverride: "tailwind-4-dark/index.twig",
+    },
+    expect.anything(),
+  );
+  await act(async () => template.click());
+  await act(async () =>
+    (
+      host.querySelector('.dropdown-rollout [data-value=""]') as HTMLElement
+    ).click(),
+  );
+  expect(template.textContent).toBe("Use Saved Template");
+  expect(fixture.post).toHaveBeenLastCalledWith(
+    "/api/forms/42/preview",
+    {
+      page: 0,
+      advance: false,
+      values: { type: "business" },
+      templateOverride: null,
+    },
+    expect.anything(),
+  );
+  expect(
+    fixture.post.mock.calls.every(([url]) => url === "/api/forms/42/preview"),
+  ).toBe(true);
 });

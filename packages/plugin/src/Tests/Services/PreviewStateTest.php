@@ -16,6 +16,7 @@ use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
+use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
@@ -27,6 +28,29 @@ use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
  */
 class PreviewStateTest extends TestCase
 {
+    public function testTemplateOverrideResolvesOnlyAnExactBundledIdentifier(): void
+    {
+        $sample = $this->createMock(FormTemplate::class);
+        $sample->method('getFileName')->willReturn('tailwind-4-dark/index.twig');
+        self::assertNull(PreviewState::resolveTemplateOverride(null, [$sample]));
+        self::assertNull(PreviewState::resolveTemplateOverride('', [$sample]));
+        self::assertSame($sample, PreviewState::resolveTemplateOverride('tailwind-4-dark/index.twig', [$sample]));
+    }
+
+    #[TestWith(['../tailwind-4-dark/index.twig'])]
+    #[TestWith(['/etc/passwd'])]
+    #[TestWith(['https://example.com/template.twig'])]
+    #[TestWith(['custom/index.twig'])]
+    #[TestWith([['tailwind-4-dark/index.twig']])]
+    #[TestWith([false])]
+    public function testUnknownPathsAndMalformedTemplateOverridesAreRejected(mixed $value): void
+    {
+        $sample = $this->createMock(FormTemplate::class);
+        $sample->method('getFileName')->willReturn('tailwind-4-dark/index.twig');
+        $this->expectException(\InvalidArgumentException::class);
+        PreviewState::resolveTemplateOverride($value, [$sample]);
+    }
+
     public function testUploadsAndNestedAnswersAreSkippedAndMultipleValuesAreNormalized(): void
     {
         $upload = $this->createMockForIntersectionOfInterfaces([FieldInterface::class, FileUploadInterface::class]);

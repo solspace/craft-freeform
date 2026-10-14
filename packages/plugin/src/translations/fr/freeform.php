@@ -3770,4 +3770,14 @@ return [
     'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.' => 'Saisissez des URL HTTPS absolues de scripts, une par ligne, dans l’ordre de chargement. Utilisez uniquement des ressources fiables. Enregistrez le formulaire pour appliquer les modifications.',
     'Submissions are disabled in Preview. Choose another page using the page selector.' => 'Les soumissions sont désactivées dans l’aperçu. Choisissez une autre page avec le sélecteur de page.',
     'Refresh Preview' => 'Actualiser l’aperçu',
+
+    // Additional preview assets
+    'Additional Preview Assets' => 'Ressources supplémentaires de l’aperçu',
+    'Optional CSS and JavaScript files normally loaded by your site layout. Sample templates already include their framework assets.' => 'Fichiers CSS et JavaScript facultatifs normalement chargés par la mise en page de votre site. Les modèles fournis incluent déjà les ressources de leur framework.',
+    'Use direct file URLs, not a webpage URL. These assets affect only Preview. Save the form, then refresh to apply changes.' => 'Utilisez des URL directes de fichiers, pas une URL de page web. Ces ressources concernent uniquement l’aperçu. Enregistrez le formulaire, puis actualisez.',
+    'External assets must allow anonymous cross-origin requests (CORS).' => 'Les ressources externes doivent autoriser les requêtes anonymes entre origines (CORS).',
+    'Stylesheet URLs (CSS)' => 'URL des feuilles de style (CSS)',
+    'One HTTPS file URL per line. Leave blank if no additional styles are needed.' => 'Une URL HTTPS de fichier par ligne. Laissez vide si aucun style supplémentaire n’est nécessaire.',
+    'Script URLs (JavaScript)' => 'URL des scripts (JavaScript)',
+    'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'Une URL HTTPS de fichier par ligne, dans l’ordre de chargement. Utilisez uniquement des scripts fiables.',
 ];

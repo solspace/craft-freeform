@@ -1,6 +1,6 @@
 {
   "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-BKLHhtKq.js",
+    "file": "assets/de-NzKY5BtI.js",
     "name": "de",
     "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-DBVCeM7G.js",
+    "file": "assets/fr-BMLKxGs1.js",
     "name": "fr",
     "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-CUr9Ow4o.js",
+    "file": "assets/it-k_rW9AV_.js",
     "name": "it",
     "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-DMH_x_40.js",
+    "file": "assets/nl-Fa5hKgHY.js",
     "name": "nl",
     "src": "../../../../3099fc47511f/freeform-scoped-duplicate-check/node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -36,7 +36,7 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-BNNZ2MVE.js",
+    "file": "assets/ai.usage-chart-CZUhoIjC.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -53,7 +53,7 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-e9gY0pCS.js",
+    "file": "assets/index-CPxor0ij.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

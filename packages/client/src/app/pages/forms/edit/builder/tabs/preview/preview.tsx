@@ -1,4 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
 import config from "@config/freeform/freeform.config";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
 import { useSiteContext } from "@ff-client/contexts/site/site.context";
@@ -17,6 +18,7 @@ import {
   PreviewWrapper,
   Toolbar,
 } from "./preview.styles";
+import { ViewportIcon } from "./viewport-icon";
 
 type PreviewData = { html: string; pages: string[]; available: boolean };
 
@@ -88,30 +90,40 @@ export const FormPreview: React.FC = () => {
         <Toolbar>
           <label>
             {translate("Viewport")}
-            <select
-              className="text"
+            <Dropdown
               value={width}
-              onChange={(event) => setWidth(event.target.value)}
-            >
-              <option value="100%">{translate("Desktop")}</option>
-              <option value="768px">{translate("Tablet")}</option>
-              <option value="375px">{translate("Mobile")}</option>
-            </select>
+              onChange={setWidth}
+              showSelectedIcon
+              options={[
+                {
+                  value: "100%",
+                  label: translate("Desktop"),
+                  icon: <ViewportIcon device="desktop" />,
+                },
+                {
+                  value: "768px",
+                  label: translate("Tablet"),
+                  icon: <ViewportIcon device="tablet" />,
+                },
+                {
+                  value: "375px",
+                  label: translate("Mobile"),
+                  icon: <ViewportIcon device="mobile" />,
+                },
+              ]}
+            />
           </label>
           {(preview?.pages.length ?? 0) > 1 && (
             <label>
               {translate("Page")}
-              <select
-                className="text"
-                value={page}
-                onChange={(event) => setPage(Number(event.target.value))}
-              >
-                {preview.pages.map((label, index) => (
-                  <option key={index} value={index}>
-                    {label || `${translate("Page")} ${index + 1}`}
-                  </option>
-                ))}
-              </select>
+              <Dropdown
+                value={String(page)}
+                onChange={(value) => setPage(Number(value))}
+                options={preview.pages.map((label, index) => ({
+                  value: String(index),
+                  label: label || `${translate("Page")} ${index + 1}`,
+                }))}
+              />
             </label>
           )}
           <button
@@ -142,10 +154,15 @@ export const FormPreview: React.FC = () => {
         )}
         {config.metadata.freeform.canManageHtmlEmbeds && properties && (
           <details open={assetErrors ? true : undefined}>
-            <summary>{translate("Preview Assets")}</summary>
+            <summary>{translate("Additional Preview Assets")}</summary>
             <p>
               {translate(
-                "Add the styles and scripts normally supplied by your site layout. Use direct asset URLs, not a webpage URL. JavaScript assets must support anonymous CORS requests. These settings affect Preview only.",
+                "Optional CSS and JavaScript files normally loaded by your site layout. Sample templates already include their framework assets.",
+              )}
+            </p>
+            <p>
+              {translate(
+                "Use direct file URLs, not a webpage URL. These assets affect only Preview. Save the form, then refresh to apply changes.",
               )}
             </p>
             {properties
@@ -159,6 +176,11 @@ export const FormPreview: React.FC = () => {
                   property={property}
                 />
               ))}
+            <p>
+              {translate(
+                "External assets must allow anonymous cross-origin requests (CORS).",
+              )}
+            </p>
           </details>
         )}
       </PreviewSidebar>

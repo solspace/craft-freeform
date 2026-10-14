@@ -157,15 +157,17 @@ class GeneralSettings extends SettingsNamespace
 
     #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
     #[Input\Textarea(
-        label: 'Preview CSS URLs',
-        instructions: 'Enter absolute HTTPS stylesheet URLs, one per line. These assets load only in the builder preview. Save the form to apply changes.',
+        label: 'Stylesheet URLs (CSS)',
+        instructions: 'One HTTPS file URL per line. Leave blank if no additional styles are needed.',
+        placeholder: 'https://example.com/assets/site.css',
     )]
     public string $previewCssUrls = '';
 
     #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
     #[Input\Textarea(
-        label: 'Preview JavaScript URLs',
-        instructions: 'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.',
+        label: 'Script URLs (JavaScript)',
+        instructions: 'One HTTPS file URL per line, in loading order. Use trusted scripts only.',
+        placeholder: 'https://example.com/assets/site.js',
     )]
     public string $previewJsUrls = '';
 

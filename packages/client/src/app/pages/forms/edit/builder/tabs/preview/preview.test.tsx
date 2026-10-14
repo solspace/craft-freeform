@@ -19,6 +19,15 @@ vi.mock("@editor/store/slices/form/form.selectors", () => ({
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
   Breadcrumb: () => null,
 }));
+vi.mock("@components/elements/pop-up-portal", () => ({
+  PopUpPortal: ({ children }: { children: React.ReactNode }) => children,
+}));
+vi.mock(
+  "@components/form-controls/preview/previewable-component.animations",
+  () => ({
+    useEditorAnimations: () => ({ editorAnimation: {} }),
+  }),
+);
 vi.mock("@config/freeform/freeform.config", () => ({
   default: {
     metadata: {
@@ -54,7 +63,9 @@ vi.mock("../form-settings/field-component", () => ({
 
 let root: Root;
 let host: HTMLDivElement;
+const originalScrollIntoView = Element.prototype.scrollIntoView;
 beforeEach(() => {
+  Element.prototype.scrollIntoView = vi.fn();
   fixture.form = { id: 42, isNew: false };
   fixture.admin = true;
   fixture.post.mockReset();
@@ -72,6 +83,7 @@ beforeEach(() => {
 afterEach(async () => {
   await act(async () => root.unmount());
   host.remove();
+  Element.prototype.scrollIntoView = originalScrollIntoView;
 });
 
 it("renders an opaque sandbox and posts only a page selector to the protected route", async () => {
@@ -87,13 +99,36 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(frame.srcdoc).toContain("Saved form");
   expect(host.querySelectorAll("textarea")).toHaveLength(2);
 
-  await act(async () => {
-    const selects = host.querySelectorAll("select");
-    selects[0].value = "375px";
-    selects[0].dispatchEvent(new Event("change", { bubbles: true }));
-    selects[1].value = "1";
-    selects[1].dispatchEvent(new Event("change", { bubbles: true }));
-  });
+  const viewport = host.querySelector("label > div") as HTMLElement;
+  await act(async () => viewport.click());
+  const viewportOptions = [
+    ...host.querySelectorAll(".dropdown-rollout [data-value]"),
+  ];
+  expect(viewportOptions).toHaveLength(3);
+  expect(
+    new Set(
+      viewportOptions.map(
+        (option) => option.querySelector('svg[aria-hidden="true"]')?.innerHTML,
+      ),
+    ).size,
+  ).toBe(3);
+  await act(async () =>
+    (
+      host.querySelector(
+        '.dropdown-rollout [data-value="375px"]',
+      ) as HTMLElement
+    ).click(),
+  );
+  expect(viewport.classList.contains("open")).toBe(false);
+  expect(viewport.textContent).toBe("Mobile");
+  await act(async () =>
+    (host.querySelectorAll("label > div")[1] as HTMLElement).click(),
+  );
+  await act(async () =>
+    (
+      host.querySelector('.dropdown-rollout [data-value="1"]') as HTMLElement
+    ).click(),
+  );
   expect(host.querySelector("iframe")!.style.width).toBe("375px");
   expect(fixture.post).toHaveBeenLastCalledWith(
     "/api/forms/42/preview",

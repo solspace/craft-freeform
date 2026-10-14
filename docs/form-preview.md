@@ -15,8 +15,8 @@ same framework assets as Freeform's standalone embed page. Custom templates,
 including templates that share a sample template's filename, provide their own
 assets.
 
-A Craft administrator can expand **Preview Assets** to enter **Preview CSS URLs**
-and **Preview JavaScript URLs**. Enter direct absolute HTTPS asset URLs, one per
+A Craft administrator can expand **Additional Preview Assets** to enter **Stylesheet URLs (CSS)**
+and **Script URLs (JavaScript)**. Enter direct absolute HTTPS asset URLs, one per
 line; JavaScript URLs load in the listed order. Save the form to retain these
 settings. They are stored per form and do not change its frontend rendering.
 URLs cannot contain credentials or fragments. Each field supports up to 20 URLs.

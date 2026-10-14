@@ -1,3 +1,4 @@
+import { CurrentValue } from "@components/elements/custom-dropdown/dropdown.styles";
 import { Sidebar } from "@components/layout/sidebar/sidebar";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -24,6 +25,7 @@ export const Toolbar = styled.div`
   gap: 16px;
   margin: 20px 0;
   label { display: flex; flex-direction: column; gap: 6px; }
+  ${CurrentValue} { align-items: center; }
 `;
 
 export const FrameArea = styled.div`

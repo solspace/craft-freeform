@@ -3733,4 +3733,14 @@ return [
     'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.' => 'Voer absolute HTTPS-URL’s voor scripts in, één per regel, in laadvolgorde. Gebruik alleen vertrouwde bestanden. Sla het formulier op om de wijzigingen toe te passen.',
     'Submissions are disabled in Preview. Choose another page using the page selector.' => 'Inzendingen zijn uitgeschakeld in het voorbeeld. Kies een andere pagina via de paginaselector.',
     'Refresh Preview' => 'Voorbeeld vernieuwen',
+
+    // Additional preview assets
+    'Additional Preview Assets' => 'Extra voorbeeldbestanden',
+    'Optional CSS and JavaScript files normally loaded by your site layout. Sample templates already include their framework assets.' => 'Optionele CSS- en JavaScript-bestanden die normaal door je sitelay-out worden geladen. Voorbeeldsjablonen bevatten hun frameworkbestanden al.',
+    'Use direct file URLs, not a webpage URL. These assets affect only Preview. Save the form, then refresh to apply changes.' => 'Gebruik directe bestands-URL’s, geen webpagina-URL. Deze bestanden gelden alleen voor het voorbeeld. Sla het formulier op en vernieuw daarna.',
+    'External assets must allow anonymous cross-origin requests (CORS).' => 'Externe bestanden moeten anonieme verzoeken tussen verschillende origins (CORS) toestaan.',
+    'Stylesheet URLs (CSS)' => 'Stylesheet-URL’s (CSS)',
+    'One HTTPS file URL per line. Leave blank if no additional styles are needed.' => 'Eén HTTPS-bestands-URL per regel. Laat leeg als er geen extra stijlen nodig zijn.',
+    'Script URLs (JavaScript)' => 'Script-URL’s (JavaScript)',
+    'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'Eén HTTPS-bestands-URL per regel, in laadvolgorde. Gebruik alleen vertrouwde scripts.',
 ];

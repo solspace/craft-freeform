@@ -3769,4 +3769,14 @@ return [
     'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.' => 'Enter absolute HTTPS script URLs, one per line, in loading order. Use trusted assets only. Save the form to apply changes.',
     'Submissions are disabled in Preview. Choose another page using the page selector.' => 'Submissions are disabled in Preview. Choose another page using the page selector.',
     'Refresh Preview' => 'Refresh Preview',
+
+    // Additional preview assets
+    'Additional Preview Assets' => 'Additional Preview Assets',
+    'Optional CSS and JavaScript files normally loaded by your site layout. Sample templates already include their framework assets.' => 'Optional CSS and JavaScript files normally loaded by your site layout. Sample templates already include their framework assets.',
+    'Use direct file URLs, not a webpage URL. These assets affect only Preview. Save the form, then refresh to apply changes.' => 'Use direct file URLs, not a webpage URL. These assets affect only Preview. Save the form, then refresh to apply changes.',
+    'External assets must allow anonymous cross-origin requests (CORS).' => 'External assets must allow anonymous cross-origin requests (CORS).',
+    'Stylesheet URLs (CSS)' => 'Stylesheet URLs (CSS)',
+    'One HTTPS file URL per line. Leave blank if no additional styles are needed.' => 'One HTTPS file URL per line. Leave blank if no additional styles are needed.',
+    'Script URLs (JavaScript)' => 'Script URLs (JavaScript)',
+    'One HTTPS file URL per line, in loading order. Use trusted scripts only.' => 'One HTTPS file URL per line, in loading order. Use trusted scripts only.',
 ];

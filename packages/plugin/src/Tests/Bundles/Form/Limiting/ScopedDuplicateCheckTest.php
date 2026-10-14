@@ -377,6 +377,7 @@ class ScopedDuplicateCheckTest extends TestCase
         self::assertTrue($event->isValid);
         $cookieName = Cookies::getCookieName($this->form);
         $previousCookie = $_COOKIE[$cookieName] ?? null;
+
         try {
             $_COOKIE[$cookieName] = time();
             $legacy = (new \ReflectionClass(FormLimiting::class))->newInstanceWithoutConstructor();

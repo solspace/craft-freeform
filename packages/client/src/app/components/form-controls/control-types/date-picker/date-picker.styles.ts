@@ -51,17 +51,11 @@ export const TimeInput = styled.div`
   width: 145px;
   max-width: 100%;
 
-  input { width: 100%; min-height: 36px; padding-left: 32px; box-sizing: border-box; }
-  svg {
-    position: absolute;
-    left: 9px;
-    top: 10px;
-    width: 16px;
-    height: 16px;
-    fill: none;
-    stroke: ${colors.gray400};
-    stroke-width: 1.8;
-    pointer-events: none;
+  && input[type='time'].text {
+    width: 100%;
+    min-height: 36px;
+    padding: 7px 10px;
+    box-sizing: border-box;
   }
 `;
 

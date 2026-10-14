@@ -92,16 +92,19 @@ const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
           />
           {includeTime && (
             <TimeInput>
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <circle cx="12" cy="12" r="8" />
-                <path d="M12 7v5l3 2" />
-              </svg>
               <input
                 type="time"
                 className="text"
                 aria-label={`${translate(property.label || "Date")} — ${translate("Time")}`}
                 disabled={!selectedDate || property.disabled}
                 value={selectedDate ? formatDate(selectedDate, "HH:mm") : ""}
+                onClick={(event) => {
+                  try {
+                    event.currentTarget.showPicker?.();
+                  } catch {
+                    // Keep native time editing available when the browser cannot open its picker.
+                  }
+                }}
                 onChange={(event) => {
                   if (!selectedDate || !event.target.value) return;
                   const [hours, minutes] = event.target.value

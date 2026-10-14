@@ -105,4 +105,24 @@ describe("schedule date/time controls", () => {
     await mount(null, { includeTime: false });
     expect(container.querySelector('input[type="time"]')).toBeNull();
   });
+
+  it("opens the native time picker when clicking the input", async () => {
+    await mount(new Date(2026, 9, 14, 9, 30).toISOString());
+    const input =
+      container.querySelector<HTMLInputElement>('input[type="time"]');
+    input.showPicker = vi.fn();
+    act(() => input.click());
+    expect(input.showPicker).toHaveBeenCalledOnce();
+  });
+
+  it("keeps time editing usable when the browser cannot open its picker", async () => {
+    await mount(new Date(2026, 9, 14, 9, 30).toISOString());
+    const input =
+      container.querySelector<HTMLInputElement>('input[type="time"]');
+    input.showPicker = vi.fn(() => {
+      throw new DOMException("Unavailable", "NotSupportedError");
+    });
+    expect(() => act(() => input.click())).not.toThrow();
+    expect(input.value).toBe("09:30");
+  });
 });

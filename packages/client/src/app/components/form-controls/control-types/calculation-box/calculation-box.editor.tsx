@@ -41,9 +41,11 @@ export const CalculationBoxEditor: React.FC<Props> = ({
 
   const onChange = useCallback(
     (event: TagifyChangeEvent): void => {
-      updateValue(
-        serializeFieldTags(event.detail.tagify.getMixedTagsAsString()),
-      );
+      const mixedValue = event.detail.tagify.getMixedTagsAsString();
+      // Keep Tagify's current representation so React doesn't rebuild its DOM
+      // (and invalidate the saved caret) after a local edit.
+      setCalculationBoxValue(mixedValue);
+      updateValue(serializeFieldTags(mixedValue));
     },
     [updateValue],
   );
@@ -63,6 +65,11 @@ export const CalculationBoxEditor: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    const tagify = tagifyRef.current;
+    if (tagify && serializeFieldTags(tagify.getMixedTagsAsString()) === value) {
+      return;
+    }
+    // Only hydrate changes originating outside this editor, such as undo/redo.
     setCalculationBoxValue(generateValue(value));
   }, [value]);
 

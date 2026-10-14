@@ -13,7 +13,7 @@ import { FieldComponent } from "../form-settings/field-component";
 import {
   Frame,
   FrameArea,
-  Panel,
+  PreviewSidebar,
   PreviewWrapper,
   Toolbar,
 } from "./preview.styles";
@@ -78,7 +78,7 @@ export const FormPreview: React.FC = () => {
         label={translate("Preview")}
         url={path.pathname}
       />
-      <Panel>
+      <PreviewSidebar>
         <h2>{translate("Preview")}</h2>
         <p>
           {translate(
@@ -140,18 +140,6 @@ export const FormPreview: React.FC = () => {
             )}
           </p>
         )}
-        {preview && (
-          <FrameArea aria-busy={loading}>
-            <Frame
-              key={`${page}-${revision}`}
-              title={translate("Form Preview")}
-              sandbox="allow-scripts"
-              referrerPolicy="no-referrer"
-              srcDoc={preview.html}
-              style={{ width }}
-            />
-          </FrameArea>
-        )}
         {config.metadata.freeform.canManageHtmlEmbeds && properties && (
           <details open={assetErrors ? true : undefined}>
             <summary>{translate("Preview Assets")}</summary>
@@ -173,7 +161,19 @@ export const FormPreview: React.FC = () => {
               ))}
           </details>
         )}
-      </Panel>
+      </PreviewSidebar>
+      <FrameArea aria-busy={loading}>
+        {preview && (
+          <Frame
+            key={`${page}-${revision}`}
+            title={translate("Form Preview")}
+            sandbox="allow-scripts"
+            referrerPolicy="no-referrer"
+            srcDoc={preview.html}
+            style={{ width }}
+          />
+        )}
+      </FrameArea>
     </PreviewWrapper>
   );
 };

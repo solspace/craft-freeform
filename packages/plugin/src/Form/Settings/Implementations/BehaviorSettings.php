@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Form\Limiting\DuplicateCheckScope;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
@@ -186,12 +187,24 @@ class BehaviorSettings extends SettingsNamespace
     public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::PRO)]
+    #[VisibilityFilter('duplicateCheck !== "no_limit" && duplicateCheck !== "no_limit_logged_in_users_only"')]
+    #[Input\Field(
+        label: 'Scope by Field',
+        instructions: 'Limit repeat submissions to the same value of this field, such as a product or entry ID. Leave blank to check the entire form. Requires stored submissions and a nonempty field value.',
+        order: 2,
+        emptyOption: 'Entire form (no field scope)',
+        availableFieldTypes: DuplicateCheckScope::FIELD_TYPES,
+    )]
+    public ?string $duplicateCheckScopeField = null;
+
+    #[Section(self::SECTION_LIMITS)]
     #[Edition(Edition::LITE)]
     #[ValueTransformer(DateTimeTransformer::class)]
     #[Input\DatePicker(
         label: 'Stop Submissions After Date',
         instructions: 'Set a date after which this form will no longer accept new submissions.',
-        order: 2,
+        order: 3,
     )]
     public ?\DateTime $stopSubmissionsAfter = null;
 

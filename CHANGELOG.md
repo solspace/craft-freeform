@@ -3,6 +3,7 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
 - Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
 - Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.

@@ -58,7 +58,7 @@
     "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
   },
   "extra": {
-    "schemaVersion": "5.16.0",
+    "schemaVersion": "5.17.0",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

@@ -252,6 +252,7 @@ export type TabularDataProperty = BaseProperty<
 };
 
 export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
+  availableFieldTypes?: string[];
   implements?: string[];
   emptyOption?: string;
 };

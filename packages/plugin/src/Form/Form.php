@@ -25,6 +25,7 @@ use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
 use Solspace\Freeform\Events\Forms\DisableFunctionalityEvent;
+use Solspace\Freeform\Events\Forms\DuplicateCheckEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -79,6 +80,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_GRAPHQL_REQUEST = 'graphql-request';
     public const EVENT_HEADLESS_REQUEST = 'headless-request';
     public const EVENT_FORM_LOADED = 'form-loaded';
+    public const EVENT_CHECK_DUPLICATE = 'check-duplicate';
     public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     public const EVENT_REGISTER_CONTEXT = 'register-context';
     public const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
@@ -591,6 +593,8 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function isDuplicate(): bool
     {
+        Event::trigger(self::class, self::EVENT_CHECK_DUPLICATE, new DuplicateCheckEvent($this));
+
         return $this->duplicate;
     }
 

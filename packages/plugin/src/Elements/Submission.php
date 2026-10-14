@@ -73,6 +73,7 @@ class Submission extends Element
     public ?string $ip = null;
     public ?string $sourceUrl = null;
     public ?string $idempotencyKey = null;
+    public ?string $duplicateCheckIdentity = null;
 
     private ?FieldCollection $fieldCollection = null;
     private static array $permissionCache = [];
@@ -539,6 +540,7 @@ class Submission extends Element
             'isHidden' => $this->isHidden,
             'requestId' => $this->requestId,
             'idempotencyKey' => $this->idempotencyKey,
+            'duplicateCheckIdentity' => $this->duplicateCheckIdentity,
             'sourceUrl' => $this->sourceUrl,
         ];
 

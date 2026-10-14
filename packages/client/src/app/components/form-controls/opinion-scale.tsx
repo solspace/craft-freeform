@@ -9,6 +9,7 @@ import {
 import { TabularDataEditor } from "@components/form-controls/control-types/tabular-data/tabular-data.editor";
 import { cleanRows } from "@components/form-controls/control-types/tabular-data/tabular-data.operations";
 import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
+import { PreviewEmpty } from "@components/form-controls/preview/property-preview.styles";
 import type { ControlType } from "@components/form-controls/types";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { Fields } from "@ff-client/types/field.classes";
@@ -66,52 +67,43 @@ const EditorHint = styled.p`
   line-height: 1.5;
   color: var(--gray-500, #606d7b);
 `;
-const EditCue = styled.div`
-  border-top: 1px solid var(--border-hairline, rgba(51, 64, 77, .1));
-  padding-top: 10px;
-  color: var(--blue-600, #0d78b7);
-  font-weight: 600;
-  font-size: 12px;
-`;
 const Summary = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--border-hairline, rgba(51, 64, 77, .1));
-  border-radius: var(--radius-lg, 5px);
-  background: var(--gray-050, #f3f7fc);
   color: var(--gray-800, #33404d);
-  &:hover { background: var(--gray-100, #e4edf6); }
-  strong { display: block; margin-bottom: 4px; }
+  strong { display: block; margin-bottom: 4px; font-size: 12px; }
   span { color: var(--gray-500, #606d7b); }
   p { margin: 0; overflow-wrap: anywhere; }
+`;
+const SummaryEmpty = styled(PreviewEmpty)`
+  min-height: 0;
 `;
 
 const SummaryControl: React.FC<ControlType<TabularDataProperty>> = ({
   property,
   value,
   errors,
-}) => (
-  <div>
-    <strong>{translate(property.label)}</strong>
-    {!value?.length ? (
-      <span>{translate("Not configured yet")}</span>
-    ) : (
-      <p>
-        {value
-          .map((row) => row.filter(Boolean).join(" — "))
-          .filter(Boolean)
-          .join(", ")}
-      </p>
-    )}
-    {errors?.map((error) => (
-      <p className="error" key={error}>
-        {translate(error)}
-      </p>
-    ))}
-  </div>
-);
+}) => {
+  const rows = (value || [])
+    .map((row) => row.filter(Boolean).join(" — "))
+    .filter(Boolean);
+  return (
+    <div>
+      <strong>{translate(property.label)}</strong>
+      {!rows.length ? (
+        <SummaryEmpty>{translate("Not configured yet")}</SummaryEmpty>
+      ) : (
+        <p>{rows.join(", ")}</p>
+      )}
+      {errors?.map((error) => (
+        <p className="error" key={error}>
+          {translate(error)}
+        </p>
+      ))}
+    </div>
+  );
+};
 
 const EditorHintControl: React.FC<ControlType<TabularDataProperty>> = ({
   property,
@@ -214,7 +206,6 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             <Summary>
               {renderProperty(scales, SummaryControl as ControlComponent)}
               {renderProperty(legends, SummaryControl as ControlComponent)}
-              <EditCue>{translate("Edit scales & legends")}</EditCue>
             </Summary>
           }
           onAfterEdit={() =>

@@ -13,15 +13,10 @@ import {
   PreviewContainer,
   PreviewEditor,
 } from "./previewable-component.styles";
+import { PropertyPreview } from "./property-preview";
+import { PreviewSurface } from "./property-preview.styles";
 
-const Trigger = styled.div`
-  cursor: pointer;
-  border-radius: var(--radius-lg, 5px);
-  &:focus-visible {
-    outline: 2px solid var(--blue-500, #0d99f2);
-    outline-offset: 2px;
-  }
-`;
+const Trigger = styled(PreviewSurface)``;
 
 const FinishButton = styled.button.attrs({
   type: "button",
@@ -109,6 +104,7 @@ export const PreviewSlideout: React.FC<Props> = ({
         tabIndex={0}
         aria-label={translate("Click to edit data")}
         aria-haspopup="dialog"
+        aria-expanded={editing}
         onClick={open}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -117,7 +113,7 @@ export const PreviewSlideout: React.FC<Props> = ({
           }
         }}
       >
-        {preview}
+        <PropertyPreview>{preview}</PropertyPreview>
       </Trigger>
       {editing && (
         <NativeSlideout

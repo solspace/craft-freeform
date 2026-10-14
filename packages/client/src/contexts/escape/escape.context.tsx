@@ -14,12 +14,14 @@ type EscapeCallback = () => void;
 
 type ContextType = {
   stack: Array<EscapeCallback>;
+  suspend: () => () => void;
   push: (callback: EscapeCallback) => void;
   pop: (callback?: EscapeCallback) => EscapeCallback | undefined;
 };
 
 const EscapeContext = createContext<ContextType>({
   stack: [],
+  suspend: () => () => {},
   push: () => void {},
   pop: () => undefined,
 });
@@ -44,10 +46,23 @@ export const useEscapeStack = (
   }, [handler, isActive, pop, push]);
 };
 
+// Craft handles Escape itself while a native panel owns the UI layer.
+export const useSuspendEscapeStack = (): void => {
+  const { suspend } = useContext(EscapeContext);
+  useEffect(() => suspend(), [suspend]);
+};
+
 export const EscapeStackProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const stackRef = useRef<Array<EscapeCallback>>([]);
+  const suspensions = useRef(0);
+  const suspend = useCallback(() => {
+    suspensions.current++;
+    return () => {
+      suspensions.current--;
+    };
+  }, []);
 
   const push = useCallback((callback: EscapeCallback): void => {
     const stack = stackRef.current;
@@ -75,7 +90,7 @@ export const EscapeStackProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent): void => {
-      if (event.key === "Escape") {
+      if (event.key === "Escape" && !suspensions.current) {
         const callback = stackRef.current.at(-1);
         if (callback) {
           callback();
@@ -93,10 +108,11 @@ export const EscapeStackProvider: React.FC<PropsWithChildren> = ({
   const value = useMemo(
     () => ({
       stack: stackRef.current,
+      suspend,
       push,
       pop,
     }),
-    [pop, push],
+    [pop, push, suspend],
   );
 
   return (

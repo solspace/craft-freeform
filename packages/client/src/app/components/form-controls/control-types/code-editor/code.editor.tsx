@@ -9,18 +9,20 @@ type Props = {
   value: string;
   language: string;
   updateValue: (value: string) => void;
+  fullHeight?: boolean;
 };
 
 export const CodeEditor: React.FC<Props> = ({
   value,
   language,
   updateValue,
+  fullHeight = false,
 }) => {
   return (
     <PreviewEditor>
       <PreviewContainer>
         <Editor
-          height={500}
+          height={fullHeight ? "100%" : 500}
           value={value}
           defaultLanguage={language}
           onChange={updateValue}

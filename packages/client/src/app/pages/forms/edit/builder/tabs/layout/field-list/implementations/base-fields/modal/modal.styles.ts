@@ -13,9 +13,15 @@ interface EmptyProps {
 
 export const ManagerWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: var(--gray-050);
-  height: 600px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  background: var(--gray-050, #f3f7fc);
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  @container (max-width: 600px) {
+    grid-template-columns: minmax(0, 1fr);
+    > div { overflow: visible; }
+  }
 `;
 
 export const GroupLayout = styled.div`
@@ -49,6 +55,7 @@ GroupWrapper.defaultProps = {
 
 export const GroupType = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 export const GroupHeader = styled.div`
@@ -61,7 +68,7 @@ export const GroupHeader = styled.div`
 export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   display: grid;
   gap: 6px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   border-radius: ${borderRadius.md};
 
   &:empty::before {
@@ -116,7 +123,7 @@ FieldTypes.defaultProps = {
 
 export const UHFieldWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: ${spacings.xl};
 
   padding-top: ${spacings.lg};

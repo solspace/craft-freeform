@@ -11,11 +11,19 @@ type Props = {
 };
 
 export const WysiwygPreview: React.FC<Props> = ({ value }) => {
+  const html = DOMPurify.sanitize(value || "");
+  const body = new DOMParser().parseFromString(html, "text/html").body;
+  const hasContent =
+    !!body.textContent?.trim() ||
+    !!body.querySelector("img, video, audio, hr, table");
   return (
     <PreviewWrapper data-edit={translate("Click to edit data")}>
       <PreviewContainer>
-        {!value && <NoContent>{translate("Not configured yet")}</NoContent>}
-        <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+        {hasContent ? (
+          <div dangerouslySetInnerHTML={{ __html: html }} />
+        ) : (
+          <NoContent>{translate("Not configured yet")}</NoContent>
+        )}
       </PreviewContainer>
     </PreviewWrapper>
   );

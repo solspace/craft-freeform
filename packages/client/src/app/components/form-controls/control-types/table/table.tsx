@@ -1,8 +1,10 @@
 import { Control } from "@components/form-controls/control";
-import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
+import { usePreviewRollback } from "@components/form-controls/preview/use-preview-rollback";
 import type { ControlType } from "@components/form-controls/types";
 import type { Field } from "@editor/store/slices/layout/fields";
 import type { TableProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import { TableEditor } from "./table.editor";
@@ -17,13 +19,23 @@ const Table: React.FC<ControlType<TableProperty, Field>> = ({
   context,
 }) => {
   const { options: columnTypes } = property;
+  const rollback = usePreviewRollback(
+    columns,
+    updateValue,
+    property.handle,
+    context,
+  );
 
   return (
     <Control property={property} errors={errors} context={context}>
-      <PreviewableComponent
+      <PreviewSlideout
+        title={translate(property.label)}
+        fillEditor={false}
         preview={<TablePreview columnTypes={columnTypes} columns={columns} />}
         onAfterEdit={() => updateValue(cleanColumns(columns))}
+        onCancel={rollback.onCancel}
         onEdit={() => {
+          rollback.onEdit();
           if (!columns.length) {
             updateValue(addColumn(columns, 0));
           }
@@ -36,7 +48,7 @@ const Table: React.FC<ControlType<TableProperty, Field>> = ({
           property={property}
           context={context}
         />
-      </PreviewableComponent>
+      </PreviewSlideout>
     </Control>
   );
 };

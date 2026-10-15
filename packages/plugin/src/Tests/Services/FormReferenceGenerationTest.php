@@ -16,6 +16,7 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
@@ -23,6 +24,7 @@ use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use Solspace\Freeform\Tests\Fixtures\ChoicePdfFixture;
 use yii\base\Event;
 use yii\web\UploadedFile;
 
@@ -159,6 +161,87 @@ class FormReferenceGenerationTest extends TestCase
         $service->generate('Exclude office use', null, 'integration', referenceFiles: [$file]);
     }
 
+    public function testPdfChoiceEvidenceReachesIntegrationAndRepairsTextTypeAndIncompleteOptionsInNativePayload(): void
+    {
+        $previous = \Craft::$app;
+        \Craft::$app = (object) ['sites' => new class {
+            public function getEditableSites(): array
+            {
+                return [(object) ['id' => 1]];
+            }
+        }];
+        $file = $this->reference(ChoicePdfFixture::create([
+            3 => '<< /FT /Ch /T (Architecture Style) /Ff 393216 /Opt [(Detached) [(semi) (Semi-Detached)]] /V (PRIVATE ANSWER) >>',
+        ]));
+        $integration = $this->createMock(ReferenceAiIntegrationInterface::class);
+        $integration->method('isEnabled')->willReturn(true);
+        $integration->method('getReferenceMimeTypes')->willReturn(ReferenceFile::MIME_TYPES);
+        $integration->expects(self::once())->method('processAiRequest')->willReturnCallback(static function ($client, $system, $user, $options) {
+            self::assertStringContainsString('untrusted reference data', $system);
+            self::assertStringContainsString('omit referenceField', $system);
+            self::assertStringContainsString('"name":"Architecture Style"', $user);
+            self::assertStringContainsString('"value":"semi"', $user);
+            self::assertStringNotContainsString('PRIVATE ANSWER', $user);
+
+            return '{"name":"Quote","fields":[{"type":"Text","label":"Architecture","handle":"architecture","row":0,"options":["Wrong"],"referenceField":"reference-1.pdf:choice-1"}]}';
+        });
+        $forms = $this->createMock(FormsService::class);
+        $forms->method('getUniqueNameAndHandle')->willReturn(['Quote', 'quote']);
+        $form = $this->createMock(Form::class);
+        $onPersist = static function (PersistFormEvent $event) use ($form) {
+            $field = $event->getPayload()->layout->fields[0];
+            self::assertSame(DropdownField::class, $field->typeClass);
+            self::assertSame('Architecture', $field->properties->label);
+            self::assertSame(['Detached', 'Semi-Detached'], array_column($field->properties->optionConfiguration['options'], 'label'));
+            self::assertSame(['Detached', 'semi'], array_column($field->properties->optionConfiguration['options'], 'value'));
+            self::assertTrue($field->properties->optionConfiguration['useCustomValues']);
+            self::assertObjectNotHasProperty('referenceField', $field->properties);
+            self::assertObjectNotHasProperty('defaultValue', $field->properties);
+            $event->setForm($form);
+        };
+        Event::on(FormsController::class, FormsController::EVENT_UPSERT_FORM, $onPersist);
+
+        try {
+            self::assertSame($form, $this->service($integration, $forms)->generate('', null, 'integration', referenceFiles: [$file]));
+        } finally {
+            Event::off(FormsController::class, FormsController::EVENT_UPSERT_FORM, $onPersist);
+            \Craft::$app = $previous;
+        }
+    }
+
+    public function testReferenceChoiceAliasesAndTextWithOptionsBecomeChoiceFields(): void
+    {
+        $fields = [
+            ['type' => 'select', 'label' => 'One', 'options' => ['A', 'B']],
+            ['type' => 'select-multiple', 'label' => 'Many', 'options' => ['C', 'D']],
+            ['type' => 'Text', 'label' => 'Recovered choice', 'options' => ['Yes', 'No']],
+            ['type' => 'Text', 'label' => 'Name'],
+            ['type' => 'Radios', 'label' => 'Radio', 'options' => ['Yes', 'No']],
+            ['type' => 'Checkboxes', 'label' => 'Checks', 'options' => ['Yes', 'No']],
+        ];
+        $parsed = $this->invoke($this->service(), 'parseAiResponse', json_encode(['fields' => $fields]), true);
+        self::assertSame(['Dropdown', 'MultipleSelect', 'Dropdown', 'Text', 'Radios', 'Checkboxes'], array_column($parsed['fields'], 'type'));
+        $textOnly = $this->invoke($this->service(), 'parseAiResponse', json_encode(['fields' => $fields]));
+        self::assertSame('Text', $textOnly['fields'][2]['type']);
+    }
+
+    public function testOnlyKnownSourceIdentifiersRestoreMetadataAndOverridesRemainPossible(): void
+    {
+        $options = [['label' => '<b>Wood</b>', 'value' => 'wood'], ['label' => 'Brick', 'value' => 'brick']];
+        $fields = $this->invoke($this->service(), 'prepareReferenceFields', [
+            ['type' => 'Text', 'label' => 'Source', 'referenceField' => 'source'],
+            ['type' => 'Radios', 'label' => 'Explicit user override', 'options' => ['Custom']],
+            ['type' => 'Text', 'label' => 'Unknown source', 'referenceField' => 'unknown'],
+        ], ['source' => ['type' => 'MultipleSelect', 'options' => $options]]);
+        self::assertSame(['MultipleSelect', 'Radios', 'Text'], array_column($fields, 'type'));
+        self::assertSame('Wood', $fields[0]['options'][0]['label']);
+        self::assertSame('wood', $fields[0]['options'][0]['value']);
+        self::assertSame(['Custom'], $fields[1]['options']);
+        foreach ($fields as $field) {
+            self::assertArrayNotHasKey('referenceField', $field);
+        }
+    }
+
     public function testUnsupportedIntegrationIsRejectedBeforeAnyProviderCall(): void
     {
         $integration = $this->createMock(AiIntegrationInterface::class);
@@ -237,6 +320,7 @@ class FormReferenceGenerationTest extends TestCase
             self::assertSame($payload->layout->fields[0]->rowUid, $payload->layout->fields[1]->rowUid);
             self::assertNotSame($payload->layout->fields[1]->rowUid, $payload->layout->fields[2]->rowUid);
             self::assertSame('Personal', $payload->layout->fields[2]->properties->optionConfiguration['options'][0]['label']);
+            self::assertFalse($payload->layout->fields[2]->properties->optionConfiguration['useCustomValues']);
             self::assertObjectNotHasProperty('row', $payload->layout->fields[0]->properties);
         } finally {
             \Craft::$app = $previous;
@@ -281,10 +365,10 @@ class FormReferenceGenerationTest extends TestCase
         return (new \ReflectionMethod(FormGenerationService::class, $method))->invoke($service, ...$arguments);
     }
 
-    private function reference(): ReferenceFile
+    private function reference(?string $bytes = null): ReferenceFile
     {
         $path = tempnam(sys_get_temp_dir(), 'ff-ref-');
-        file_put_contents($path, "%PDF-1.4\n%%EOF");
+        file_put_contents($path, $bytes ?? "%PDF-1.4\n%%EOF");
 
         try {
             return ReferenceFile::fromUploads([new UploadedFile(['name' => 'form.pdf', 'tempName' => $path, 'error' => 0])])[0];

@@ -76,4 +76,18 @@ final class ReferenceFile
     {
         return 'data:'.$this->mimeType.';base64,'.$this->data;
     }
+
+    public function getChoiceFields(): array
+    {
+        if ('application/pdf' !== $this->mimeType) {
+            return [];
+        }
+        $fields = PdfChoiceFieldExtractor::extract(base64_decode($this->data));
+        foreach ($fields as $index => &$field) {
+            $field['referenceField'] = $this->name.':choice-'.($index + 1);
+        }
+        unset($field);
+
+        return $fields;
+    }
 }

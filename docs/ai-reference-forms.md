@@ -11,6 +11,10 @@ Freeform's **Create with AI** can use a reference form to create editable native
 
 The generator attempts to preserve labels, choices, required indicators, headings, page order, and rows of up to four fields. Large fields and headings occupy their own rows. It attempts to omit filled-in answers and signatures; generated default values are cleared. Static reference content is sanitized and cannot enable Twig processing.
 
+For supported fillable PDFs, Freeform also reads embedded dropdown and multiple-select definitions, including choices that are hidden when the menu is closed. These definitions are supplied to every compatible provider. Fields the AI links to a definition retain the source choice type, option order, and separate display labels/export values when the form is created. Explicit instructions to change a field's type or choices can override the source definition.
+
+Images, flattened PDFs, and PDFs whose internal structure cannot be read use visual recognition. Dropdowns with no recoverable choices may be created with an empty option list for you to complete; the AI is instructed not to invent choices. Embedded-field extraction currently supports standard PDF cross-reference tables; compressed object/cross-reference streams and XFA forms fall back to visual recognition. Extraction is bounded by document complexity and metadata size, so unusually large definitions may also be omitted.
+
 This is a starting point, rather than an exact visual copy. Review field types, required settings, labels, choices, dates, and page/column layout. Styling, logos, integrations, notifications, conditional rules, calculations, and other behavior must be configured separately. Unclear scans and very complex forms may need several passes or smaller sections. Generation is limited to 20 pages and 200 fields.
 
 ## Integration compatibility
@@ -32,6 +36,8 @@ PHP-FPM, nginx, a reverse proxy, or your hosting provider can enforce a separate
 ## Files and permissions
 
 The reference files are sent to the selected AI provider using the integration's existing credentials. Choose suitable files for that provider and its data policies. Freeform reads PHP's temporary uploads for this request; it does not create Craft assets or retain permanent reference copies. PHP removes temporary uploads at the end of the request. A failed generation keeps the selected files in the open dialog so you can retry.
+
+Local PDF metadata extraction reads choice definitions, not selected/default answers, scripts, actions, or external resources. The extracted data is treated as untrusted reference content and remains subject to the same output sanitization. The original attachment is still sent to the provider, including any answers it contains; use a blank copy when those details should not be shared.
 
 The feature retains the existing Lite-or-higher creation requirement and requires both **Create Forms** and **Access Integrations** permissions in the control panel. Upload content, MIME types, counts, sizes, and model compatibility are also checked on the server. CSRF protection uses Craft's existing authenticated API workflow.
 

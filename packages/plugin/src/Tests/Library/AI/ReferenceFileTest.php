@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\AI\ReferenceFile;
+use Solspace\Freeform\Tests\Fixtures\ChoicePdfFixture;
 use yii\web\UploadedFile;
 
 #[CoversClass(ReferenceFile::class)]
@@ -31,6 +32,7 @@ class ReferenceFileTest extends TestCase
         self::assertSame($bytes, base64_decode($file->getBase64()));
         self::assertStringStartsWith('data:image/png;base64,', $file->getDataUrl());
         self::assertArrayNotHasKey('data', $file->__debugInfo());
+        self::assertSame([], $file->getChoiceFields());
     }
 
     public function testPdfIsKeptAsNativePdfWithoutConversionOrPermanentCopy(): void
@@ -41,6 +43,20 @@ class ReferenceFileTest extends TestCase
         self::assertSame('application/pdf', $file->mimeType);
         self::assertSame($bytes, base64_decode($file->getBase64()));
         self::assertFileExists($upload->tempName);
+    }
+
+    public function testPdfChoiceDefinitionsUseNeutralReferenceIdentifiers(): void
+    {
+        $pdf = ChoicePdfFixture::create([3 => '<< /FT /Ch /T (Material) /Opt [(Wood) (Brick)] /V (Private Answer) >>']);
+        [$first, $second] = ReferenceFile::fromUploads([
+            $this->upload('customer-name.pdf', $pdf),
+            $this->upload('other-private-name.pdf', $pdf),
+        ]);
+        self::assertSame('reference-1.pdf:choice-1', $first->getChoiceFields()[0]['referenceField']);
+        self::assertSame('reference-2.pdf:choice-1', $second->getChoiceFields()[0]['referenceField']);
+        self::assertStringNotContainsString('Private Answer', json_encode($first->getChoiceFields()));
+        self::assertSame($pdf, base64_decode($first->getBase64()));
+        self::assertSame(['name' => 'reference-1.pdf', 'mimeType' => 'application/pdf'], $first->__debugInfo());
     }
 
     #[TestWith(['form.pdf', '<html>Not a PDF</html>'])]

@@ -12,6 +12,21 @@ import { PropertyType } from "@ff-client/types/properties";
 import template from "lodash/template";
 import { useMemo } from "react";
 
+const emptyAssets: AssetUrlRecords = {};
+const compiledTemplates = new WeakMap<
+  FieldType,
+  { source: string; render: ReturnType<typeof template> }
+>();
+
+const compilePreview = (type: FieldType): ReturnType<typeof template> => {
+  const source = type.previewTemplate ?? "";
+  const cached = compiledTemplates.get(type);
+  if (cached?.source === source) return cached.render;
+  const render = template(source);
+  compiledTemplates.set(type, { source, render });
+  return render;
+};
+
 export const useFieldPreview = (
   field?: Field,
   type?: FieldType,
@@ -47,12 +62,12 @@ export const useFieldPreview = (
     }
 
     try {
-      const compiled = template(type.previewTemplate);
+      const compiled = compilePreview(type);
       return compiled(data);
     } catch (error) {
       return `Preview template error: "${error.message}"`;
     }
-  }, [field?.properties, type?.previewTemplate, data]);
+  }, [field?.properties, type, data]);
 
   return [compiledTemplate, isFetching];
 };
@@ -62,7 +77,7 @@ const useAssets = (field: Field, type: FieldType): AssetUrlRecords => {
   const transform = useAssetTransform(field, type);
   const { data } = useAssetQuery(assetIds, transform);
 
-  return data || {};
+  return data || emptyAssets;
 };
 
 const useAssetIds = (field: Field, type: FieldType): number[] => {
@@ -97,7 +112,10 @@ const useAssetIds = (field: Field, type: FieldType): number[] => {
     [field, type],
   );
 
-  return [...(fromAssetPicker || []), ...(fromCards || [])].flat();
+  return useMemo(
+    () => [...(fromAssetPicker || []), ...(fromCards || [])].flat(),
+    [fromAssetPicker, fromCards],
+  );
 };
 
 const useAssetTransform = (field: Field, type: FieldType): string | undefined =>

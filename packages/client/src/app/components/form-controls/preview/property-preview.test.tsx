@@ -1,6 +1,7 @@
 import { CodePreview } from "@components/form-controls/control-types/code-editor/code.preview";
 import { WysiwygPreview } from "@components/form-controls/control-types/wysiwyg/wysiwyg.preview";
-import { act } from "react";
+import { EscapeStackProvider } from "@ff-client/contexts/escape/escape.context";
+import { act, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, expect, it, vi } from "vitest";
 import { PreviewSlideout } from "./preview-slideout";
@@ -37,6 +38,48 @@ afterEach(() => {
   act(() => root?.unmount());
   container?.remove();
   vi.unstubAllGlobals();
+});
+
+it("defers popup editors until first use and retains their state after closing", () => {
+  const mounted = vi.fn();
+  const Editor = () => {
+    const [value, setValue] = useState(0);
+    mounted();
+    return (
+      <button
+        type="button"
+        data-heavy-editor
+        onClick={() => setValue(value + 1)}
+      >
+        {value}
+      </button>
+    );
+  };
+  render(
+    <EscapeStackProvider>
+      <PreviewableComponent preview={<span>Preview</span>}>
+        <Editor />
+      </PreviewableComponent>
+    </EscapeStackProvider>,
+  );
+  expect(mounted).not.toHaveBeenCalled();
+  expect(container.querySelector("[data-heavy-editor]")).toBeNull();
+  const trigger = container.querySelector<HTMLElement>('[role="button"]')!;
+  act(() => trigger.click());
+  const editor = container.querySelector<HTMLButtonElement>(
+    "[data-heavy-editor]",
+  )!;
+  act(() => editor.click());
+  expect(editor.textContent).toBe("1");
+  act(() =>
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    ),
+  );
+  expect(trigger.getAttribute("aria-expanded")).toBe("false");
+  act(() => trigger.click());
+  expect(container.querySelector("[data-heavy-editor]")).toBe(editor);
+  expect(editor.textContent).toBe("1");
 });
 
 it.each(["", " \n ", "<p><br></p>", "<p>&nbsp;</p>"])(

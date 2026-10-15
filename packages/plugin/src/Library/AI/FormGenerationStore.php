@@ -91,6 +91,18 @@ final class FormGenerationStore
                 // Only deliberate validation/provider errors are suitable for display.
                 // Callers wrap them before they reach this storage boundary.
                 $state['message'] = $exception instanceof FormGenerationException ? $exception->getMessage() : '';
+                if (!$exception instanceof FormGenerationException) {
+                    // Messages and trace arguments can contain credentials, SQL,
+                    // document contents or provider payloads. Log code locations only.
+                    \Yii::error([
+                        'message' => 'Unexpected AI form generation failure.',
+                        'generationId' => $id,
+                        'exception' => $exception::class,
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'trace' => array_map(static fn (array $frame) => array_intersect_key($frame, array_flip(['file', 'line', 'class', 'type', 'function'])), $exception->getTrace()),
+                    ], self::class.'::execute');
+                }
             } finally {
                 $this->removeRequest($id);
                 $this->write($id, 'status', $state);

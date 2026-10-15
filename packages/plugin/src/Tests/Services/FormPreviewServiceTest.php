@@ -60,7 +60,7 @@ class FormPreviewServiceTest extends TestCase
     {
         $html = (new FormPreviewService())->isolate('<!doctype html><html><head><base href="https://evil.test"><meta http-equiv="refresh" content="0;url=https://evil.test"><script src="https://example.test/app.js"></script><script>window.previewReady = true;</script><link rel="stylesheet" href="https://example.test/app.css"></head><body><iframe src="https://evil.test"></iframe><form action="/actions/freeform/submit"><input name="CSRF" value="secret"><input name="freeform_payload" value="encrypted"><input name="formHash" value="live"><input name="productId" value="42"><button formaction="/danger">Submit</button></form><script src="javascript:alert(1)"></script><p>Überprüfung</p></body></html>', 'CSRF');
         $document = new \DOMDocument();
-        @$document->loadHTML($html);
+        @$document->loadHTML('<?xml encoding="UTF-8">'.$html);
         $xpath = new \DOMXPath($document);
         self::assertSame(0, $xpath->query('//base | //iframe | //*[@formaction]')->length);
         self::assertSame(1, $xpath->query('//input')->length);
@@ -75,6 +75,39 @@ class FormPreviewServiceTest extends TestCase
         self::assertStringNotContainsString("'unsafe-eval'", $policy);
         // libxml may serialize non-ASCII text as HTML entities.
         self::assertSame('Überprüfung', $xpath->query('//p')->item(0)->textContent);
+    }
+
+    public function testPreviewAllowsOnlyTheDatepickerAssetsNeededByEnabledInputs(): void
+    {
+        $html = (new FormPreviewService())->isolate('<html><head></head><body><form data-freeform data-scripts-datepicker>
+            <input data-datepicker data-datepicker-enabled data-datepicker-locale="default">
+            <input data-datepicker data-datepicker-enabled data-datepicker-locale="fr">
+            <input data-datepicker data-datepicker-enabled data-datepicker-locale="fr">
+            <input data-datepicker data-datepicker-enabled data-datepicker-locale="en">
+            <input data-datepicker data-datepicker-enabled="0" data-datepicker-locale="de">
+            <input data-datepicker data-datepicker-enabled="false" data-datepicker-locale="it">
+            <input data-datepicker data-datepicker-enabled data-datepicker-locale="../../other">
+            </form><input data-datepicker data-datepicker-enabled data-datepicker-locale="nl"></body></html>', 'CSRF');
+        $document = new \DOMDocument();
+        @$document->loadHTML($html);
+        $policy = (new \DOMXPath($document))->query('//head/meta')->item(0)->getAttribute('content');
+        $base = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/';
+        self::assertStringContainsString('script-src '.$base.'flatpickr.min.js '.$base.'l10n/fr.js;', $policy);
+        self::assertStringContainsString("style-src 'unsafe-inline' ".$base.'flatpickr.min.css;', $policy);
+        self::assertStringContainsString("connect-src 'none'", $policy);
+        self::assertStringContainsString("form-action 'none'", $policy);
+        self::assertStringNotContainsString("'unsafe-eval'", $policy);
+    }
+
+    #[TestWith(['<form data-freeform><input data-datepicker data-datepicker-enabled></form>'])]
+    #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="0"></form>'])]
+    #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="false"></form>'])]
+    #[TestWith(['<form data-freeform data-scripts-datepicker><input type="date"></form>'])]
+    public function testPreviewDoesNotAllowDatepickerAssetsForFormsWithoutEnabledPickers(string $markup): void
+    {
+        $html = (new FormPreviewService())->isolate('<html><head></head><body>'.$markup.'</body></html>', 'CSRF');
+        self::assertStringNotContainsString('cdnjs.cloudflare.com', $html);
+        self::assertStringContainsString("script-src 'none'", $html);
     }
 
     public function testPreviewDoesNotRegisterContextOrExposeCsrfAndPayload(): void
@@ -119,6 +152,65 @@ class FormPreviewServiceTest extends TestCase
         self::assertSame([], $json->getJsonObject());
         $this->expectException(\LogicException::class);
         $form->submit(['productId' => 42]);
+    }
+
+    #[TestWith([false])]
+    #[TestWith([true])]
+    public function testPreviewExcludesControlPanelAssetsAndRestoresThemAfterRendering(bool $fail): void
+    {
+        $view = $this->getMockBuilder(View::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
+        $view->assetBundles = ['control-panel' => false];
+        $view->js = [View::POS_END => ['cp' => 'window.controlPanel=true;']];
+        $view->jsFiles = [View::POS_END => ['cp.js' => '<script src="cp.js"></script>']];
+        $view->css = ['cp' => '<style>body{background:red}</style>'];
+        $view->cssFiles = ['cp.css' => '<link href="cp.css">'];
+        $view->metaTags = ['cp' => '<meta name="cp">'];
+        $view->linkTags = ['cp' => '<link rel="icon" href="cp.ico">'];
+        $previous = [];
+        foreach (['assetBundles', 'js', 'jsFiles', 'css', 'cssFiles', 'metaTags', 'linkTags'] as $property) {
+            $previous[$property] = $view->{$property};
+        }
+        $previousApp = \Craft::$app;
+        \Craft::$app = new class($view) {
+            public function __construct(private View $view) {}
+
+            public function getView(): View
+            {
+                return $this->view;
+            }
+        };
+
+        try {
+            $method = new \ReflectionMethod(FormPreviewService::class, 'withIsolatedAssets');
+
+            try {
+                $result = $method->invoke(new FormPreviewService(), static function () use ($view, $previous, $fail) {
+                    foreach ($previous as $property => $value) {
+                        self::assertSame([], $view->{$property}, $property.' must not include CP assets');
+                    }
+                    $view->js[View::POS_END]['form'] = 'window.form=true;';
+                    $view->assetBundles['form'] = false;
+                    if ($fail) {
+                        throw new \RuntimeException('Template failed');
+                    }
+                    // Rendering a page consumes its queues. This must not consume
+                    // the CP queues saved before the preview started.
+                    $view->clear();
+
+                    return 'Rendered preview';
+                });
+                self::assertFalse($fail);
+                self::assertSame('Rendered preview', $result);
+            } catch (\RuntimeException $exception) {
+                self::assertTrue($fail);
+                self::assertSame('Template failed', $exception->getMessage());
+            }
+            foreach ($previous as $property => $value) {
+                self::assertSame($value, $view->{$property});
+            }
+        } finally {
+            \Craft::$app = $previousApp;
+        }
     }
 
     public function testKnownBundledTemplateAssetsAreInlinedAndHashed(): void

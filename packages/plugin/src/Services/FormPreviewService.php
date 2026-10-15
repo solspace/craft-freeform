@@ -55,30 +55,34 @@ class FormPreviewService
 
         $channel = bin2hex(random_bytes(16));
 
-        // Only a server-resolved bundled path may override the saved template.
-        // Its full path also prevents custom templates with matching names from
-        // shadowing the requested sample. The form's saved settings stay intact.
-        $markup = $form->render(['disable' => true, 'formattingTemplate' => $sample?->getFilePath() ?? $formattingTemplate]);
-        // Yii removes registered bundles during endBody(). Capture their local
-        // assets after rendering the form and before rendering the outer page.
-        $bundledAssets = $this->getBundledAssets();
+        [$html, $bundledAssets] = $this->withIsolatedAssets(function () use ($form, $sample, $formattingTemplate, $template, $settings, $channel, $handles, $pages, $page) {
+            // Only a server-resolved bundled path may override the saved template.
+            // Its full path also prevents custom templates with matching names from
+            // shadowing the requested sample. The form's saved settings stay intact.
+            $markup = $form->render(['disable' => true, 'formattingTemplate' => $sample?->getFilePath() ?? $formattingTemplate]);
+            // Yii removes registered bundles during endBody(). Capture their local
+            // assets after rendering the form and before rendering the outer page.
+            $bundledAssets = $this->getBundledAssets();
 
-        $html = \Craft::$app->getView()->renderPageTemplate('freeform-embed/preview', [
-            'form' => $form,
-            'formMarkup' => $markup,
-            'formattingTemplate' => $formattingTemplate,
-            'isCustomFormattingTemplate' => $template,
-            'cssUrls' => PreviewAssetHelper::parse($settings->previewCssUrls),
-            'jsUrls' => PreviewAssetHelper::parse($settings->previewJsUrls),
-            'isDark' => PreviewState::isDark($formattingTemplate, $template),
-            'previewConfigJson' => json_encode([
-                'channel' => $channel,
-                'parentOrigin' => \Craft::$app->getRequest()->getHostInfo(),
-                'handles' => $handles,
-                'hasNextPage' => null !== $pages->getByIndex($page + 1),
-            ], \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT),
-            'previewScript' => file_get_contents(__DIR__.'/../Resources/js/external/preview.js'),
-        ], View::TEMPLATE_MODE_SITE);
+            $html = \Craft::$app->getView()->renderPageTemplate('freeform-embed/preview', [
+                'form' => $form,
+                'formMarkup' => $markup,
+                'formattingTemplate' => $formattingTemplate,
+                'isCustomFormattingTemplate' => $template,
+                'cssUrls' => PreviewAssetHelper::parse($settings->previewCssUrls),
+                'jsUrls' => PreviewAssetHelper::parse($settings->previewJsUrls),
+                'isDark' => PreviewState::isDark($formattingTemplate, $template),
+                'previewConfigJson' => json_encode([
+                    'channel' => $channel,
+                    'parentOrigin' => \Craft::$app->getRequest()->getHostInfo(),
+                    'handles' => $handles,
+                    'hasNextPage' => null !== $pages->getByIndex($page + 1),
+                ], \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT),
+                'previewScript' => file_get_contents(__DIR__.'/../Resources/js/external/preview.js'),
+            ], View::TEMPLATE_MODE_SITE);
+
+            return [$html, $bundledAssets];
+        });
 
         // Custom templates remain trusted server-side Twig. Never expose the CP
         // session's CSRF token to their browser scripts, even if they render it.
@@ -125,8 +129,9 @@ class FormPreviewService
             $node->removeAttribute('formaction');
         }
 
-        $scripts = [];
-        $styles = [];
+        // The date-picker loads its assets dynamically, so they are absent
+        // from the markup scanned below. Allow only the files its inputs need.
+        [$scripts, $styles] = $this->getDatepickerSources($xpath);
         $images = [];
         $fonts = [];
         foreach ($xpath->query('//script | //link | //img') as $node) {
@@ -193,6 +198,50 @@ class FormPreviewService
         $head->insertBefore($meta, $head->firstChild);
 
         return $document->saveHTML();
+    }
+
+    private function getDatepickerSources(\DOMXPath $xpath): array
+    {
+        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false")]');
+        if (!$pickers->length) {
+            return [[], []];
+        }
+
+        $base = 'https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/';
+        $scripts = [$base.'flatpickr.min.js'];
+        foreach ($pickers as $picker) {
+            $locale = $picker->getAttribute('data-datepicker-locale');
+            // Never turn a template attribute into an arbitrary script URL.
+            if (!\in_array($locale, ['default', 'en'], true) && preg_match('/^[a-z]{2,3}(?:-[a-z]{2,3})?$/D', $locale)) {
+                $scripts[] = $base.'l10n/'.$locale.'.js';
+            }
+        }
+
+        return [$scripts, [$base.'flatpickr.min.css']];
+    }
+
+    private function withIsolatedAssets(callable $render): mixed
+    {
+        $view = \Craft::$app->getView();
+        // CP bundles are already registered before this API action runs. Only
+        // assets registered by the formatting template belong in the frame.
+        $previous = [];
+        foreach (['assetBundles', 'js', 'jsFiles', 'css', 'cssFiles', 'metaTags', 'linkTags'] as $property) {
+            $previous[$property] = $view->{$property};
+            $view->{$property} = [];
+        }
+        $view->startScriptBuffer();
+        $view->startHtmlBuffer();
+
+        try {
+            return $render();
+        } finally {
+            $view->clearScriptBuffer();
+            $view->clearHtmlBuffer();
+            foreach ($previous as $property => $value) {
+                $view->{$property} = $value;
+            }
+        }
     }
 
     private function getTemplates(): array

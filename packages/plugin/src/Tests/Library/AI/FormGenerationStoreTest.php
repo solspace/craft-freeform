@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\AI\FormGenerationException;
 use Solspace\Freeform\Library\AI\FormGenerationStore;
 use yii\base\Security;
+use yii\log\Logger;
 
 #[CoversClass(FormGenerationStore::class)]
 class FormGenerationStoreTest extends TestCase
@@ -84,6 +85,38 @@ class FormGenerationStoreTest extends TestCase
         $id = $this->start();
         $this->store->execute($id, static function () { throw new FormGenerationException('Readable error'); });
         self::assertSame('Readable error', $this->store->status(7, $this->requestId)['message']);
+    }
+
+    public function testUnexpectedFailuresLogCodeLocationsWithoutPrivateExceptionData(): void
+    {
+        $previousLogger = \Yii::getLogger();
+        $logger = new Logger(['flushInterval' => 0]);
+        \Yii::setLogger($logger);
+
+        try {
+            $id = $this->start();
+            $exception = new \RuntimeException('PRIVATE provider credentials and document content');
+            $this->store->execute($id, static function () use ($exception) { throw $exception; });
+
+            self::assertCount(1, $logger->messages);
+            [$diagnostic, $level, $category] = $logger->messages[0];
+            self::assertSame(Logger::LEVEL_ERROR, $level);
+            self::assertSame(FormGenerationStore::class.'::execute', $category);
+            self::assertSame($id, $diagnostic['generationId']);
+            self::assertSame(\RuntimeException::class, $diagnostic['exception']);
+            self::assertSame($exception->getFile(), $diagnostic['file']);
+            self::assertSame($exception->getLine(), $diagnostic['line']);
+            self::assertNotEmpty($diagnostic['trace']);
+            foreach ($diagnostic['trace'] as $frame) {
+                self::assertArrayNotHasKey('args', $frame);
+                self::assertArrayNotHasKey('object', $frame);
+            }
+            self::assertStringNotContainsString('PRIVATE', json_encode($diagnostic));
+            self::assertSame(['status' => 'failed', 'message' => ''], $this->store->status(7, $this->requestId));
+            self::assertFileDoesNotExist($this->directory.'/'.$id.'.request');
+        } finally {
+            \Yii::setLogger($previousLogger);
+        }
     }
 
     public function testExpiredQueuedRequestIsNeverExecutedAndItsInputsAreDeleted(): void

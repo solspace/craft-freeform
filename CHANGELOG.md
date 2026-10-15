@@ -3,23 +3,18 @@
 ## 5.17.0 - Unreleased
 
 ### Added
-- Added more Preview viewport sizes with automatic scaling to preserve the selected viewport width.
-- Added a Preview-only formatting template selector for trying bundled samples without changing the saved form template.
-- Added preview answer retention, conditional page jumps and early completion, and dark backgrounds for dark sample templates.
-- Added a **Preview** tab with isolated formatting-template rendering, device widths, page selection, automatic sample framework assets, and saved per-form preview CSS/JavaScript URLs.
-- Added Lite/Pro submission limits in the form builder, with total or calendar-period quotas, limit-reached messages, and backwards-compatible Twig overrides.
-- Added Lite/Pro form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
-- Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
-- Added PDF and image references to **Create with AI**, using SolspaceAI or compatible configured OpenAI, Anthropic, and Gemini integrations to recreate editable form fields and layouts.
-- Added auto-saving drag and keyboard reordering of dashboard form cards, including moves between groups and native Craft toast feedback.
-- Added a Cancel action to content editor slideouts that restores their original values and translations.
-- Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
-- Added manual **Integration Readiness** and **Queue Health** checks to Diagnostics.
-- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
+- Added PDF and image uploads to **Create with AI**, allowing users to recreate existing forms as editable native Freeform fields, with optional instructions to customize the result.
+- Added a **Preview** tab with sample-template selection, eight viewport sizes, automatic scaling, framework assets, and saved per-form CSS and JavaScript URLs.
+- Added interactive Preview support for conditional visibility, page jumps, early completion, and temporary answers retained across page and template changes.
 - Added opt-in **HTML embeds** for standalone pages on the same origin as Craft.
 - Added an **Embed Form** tab to the form builder with a copyable Twig snippet and embedding guides.
-- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates.
+- Added Lite/Pro **form scheduling** with optional opening and expiry dates and times, customizable messages, and availability checks for rendering and submissions.
+- Added Lite/Pro **Limit Submissions** settings with total, daily, weekly, monthly, or yearly caps, customizable messages, and support for existing Twig overrides.
+- Added a Pro **Scope by Field** option to Duplicate Check, allowing one submission per product, entry, or other field value.
 - Added a Pro **Supabase** integration under **Other** to send submissions to database tables with configurable field mappings.
+- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
+- Added auto-saving drag-and-drop and keyboard reordering of dashboard form cards, including moves between groups.
+- Added a **Cancel** action to content editor slideouts to discard changes made during the editing session.
 - Added a Pro **Summary** field for reviewing answers before submitting.
 - Added a Pro **Range Slider** field with configurable limits, step size, and a live value display.
 - Added an optional **International Phone** mode with country selection, validation, and international number formatting.
@@ -33,47 +28,53 @@
 - Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop fields to display allowed file kinds, counts, and sizes.
 - Added an optional **Show Processing Overlay on Submit** setting to display a spinner and message while processing a submission.
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
+- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates.
 
 ### Changed
-- Made form builder navigation responsive with a **More** menu for overflow tabs, an always-visible active tab, and reserved space for Save and Undo/Redo.
-- Adjusted dark sample previews to use a #1f2226 background and restored native dark styling for upcoming steps in daisyUI Dark progress indicators.
-- Redesigned archived forms as a collapsible panel with a count badge, organized form details, localized dates, and compact restore/delete actions.
-- Replaced **Stop Submissions After Date** with cohesive **Schedule Form** settings and improved date/time controls. Existing cutoff dates retain their end-of-day behavior.
-- Moved **Manage Form Groups** beside the Forms view controls and refreshed the responsive cards layout with wider cards and more room for Form Monitor messages.
-- Standardized property-editor previews with consistent borders, empty states, compact scrolling content, and an always-visible edit cue.
-- Moved **Manage Form Groups**, **Field Type Manager**, **Favorite Fields**, bulk options, Cards, Table, HTML/code, Rich Text, and Opinion Scale editors into native Craft slideouts with responsive layouts.
-- Refreshed **Diagnostics** with Overview and Health Checks tabs, on-demand database integrity checks, expandable results, and a copyable support report.
+- Updated **Create with AI** to use Craft's queue, with progress tracking and resumable status checks.
+- Added detection of AI responses cut short by output limits before creating a form.
+- Improved error messages for AI authentication failures, rate limits, timeouts, and provider errors.
+- Moved the Form Group Manager, field managers, bulk options, Cards, Table, HTML, Rich Text, and Opinion Scale editors into native Craft slideouts.
+- Standardized property-editor previews with consistent borders, empty states, scrolling, and clearer editing controls.
+- Made builder navigation responsive with a **More** menu for overflow tabs, a visible active section, and reserved space for **Save**, **Undo**, and **Redo**.
+- Refreshed the dashboard with wider form cards and moved **Manage Form Groups** beside the cards/list view controls.
+- Redesigned **Archived Forms** as a collapsible panel with a count badge, localized archive dates, and clearer Restore and delete actions.
+- Replaced **Stop Submissions After Date** with **Schedule Form** controls. Existing cutoff dates retain their end-of-day behavior.
+- Improved date/time control spacing and allowed the time picker to open by clicking anywhere in the input.
+- Improved the size and alignment of color dots in the **Default Status** dropdown.
 - Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, with support for custom model IDs.
+- Refreshed **Diagnostics** with a compact layout, clearer status indicators, and a copyable support report.
 - Improved accessibility across the sample formatting templates.
 - AJAX forms now respect formatting template overrides for success banners, error banners, and field validation messages.
 - Improved **File Upload Drag & Drop** styling in the Basic and Multipage All Fields templates.
 - Corrected upload hint spacing in Bootstrap 5 templates and Drag & Drop label placement in Bootstrap 5 Floating Labels.
 - Improved the installed demo templates with better accessibility, simpler configuration, cleaner styles, corrected routing, and safer submission deletion.
 - **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+- Avoided PHP 8.5 reflection deprecations and PHP deprecation notices when rendering empty Textarea fields or reading logs.
+- Reduced repeated field-configuration requests.
 
 > [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
-- Fixed PHP 8.0 compatibility for headless profiles, Diagnostics, and translated Opinion Scale and custom option values.
-- Avoided PHP 8.5 reflection deprecations and PHP deprecation notices when rendering empty Textarea fields or reading logs.
-- Fixed Integration Readiness checks incorrectly accepting missing environment variables on Craft 4.
-- Reduced repeated field-configuration requests, builder tab measurements, and unchanged Undo/Redo state updates.
-- Moved AI form generation to Craft's queue with recoverable progress checks, private encrypted references, duplicate-request protection, output-limit detection, and safer failed-save handling.
-- Improved AI reference form dropdown recognition by extracting embedded PDF choices, preserving linked choice types and options, and recognizing common select field aliases.
-- Reduced OpenAI form-generation latency on compatible reasoning models, allowed a bounded PHP runtime for AI requests, and replaced raw provider/gateway errors with actionable messages.
-- Disabled final Submit buttons consistently in Preview and blocked final submission attempts without requesting another preview or clearing the frame.
-- Fixed missing field-container attributes in rendered previews, which prevented Tailwind 4 HTML and Rich Text list styles from applying.
-- Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.
-- Fixed missing Tailwind 3 preview styles with bundled Tailwind 3.4.19 CSS, Tailwind 4 preview horizontal overflow, Bootstrap Dark preview inputs, and daisyUI Dark progress connector contrast.
-- Fixed unclosed radio option wrappers in Tailwind 4 Light/Dark templates that could collapse row spacing in Preview.
-- Fixed duplicate form handles failing silently when saving an existing form in the builder; validation errors now appear on the Handle field.
-- Fixed inserting calculation fields at the start of the expression after typing an operator instead of at the cursor.
-- Fixed adjacent field tags merging when editing AI field selections and calculation expressions without spaces.
-- Fixed the Cards Layout editor overflowing native slideouts, with responsive columns and scrolling that keeps all cards accessible.
-- Fixed list markers and indentation in HTML and Rich Text field previews in the form builder.
-- Fixed native form editor slideouts closing when interacting with their contents, and refined the Bulk and Opinion Scale editors' Craft controls and layouts.
-- Fixed Default Status dots showing white for colors from Craft 5's expanded palette.
+- Fixed duplicate form handles failing silently when saving a form. Validation errors now appear on the corresponding builder settings.
+- Fixed content editor slideouts closing unexpectedly when interacting with their contents.
+- Fixed Cards editor content overflowing its slideout.
+- Fixed adjacent field tags merging in AI and Calculation expressions, and calculation fields being inserted at the beginning instead of the cursor position.
+- Fixed list markers and indentation in builder content previews and Tailwind 4 HTML and Rich Text output.
+- Fixed clipped builder tabs, unwanted header borders and shadows, and cramped Submissions shortcuts on smaller screens.
+- Fixed final Submit controls remaining usable in Preview, preventing submission attempts from clearing or replacing the preview.
+- Fixed malformed Tailwind 4 radio-option markup, collapsed row spacing, and horizontal overflow in Preview.
+- Fixed missing Tailwind 3 preview styles by bundling compiled CSS, and corrected Bootstrap Dark inputs and daisyUI Dark progress styling.
+- Fixed control panel asset loading when building from different directories.
+- Fixed PHP 8.0 compatibility for headless profiles and translated Opinion Scale and custom option values.
+
+## 5.16.7 - 2026-10-15
+
+### Fixed
+- Fixed native Date & Time fields appearing empty when returning to an earlier page of a multi-page form.
+- Fixed minimum and maximum date validation for native date-only inputs.
+- Fixed an issue where long field labels caused export profile filters to overflow and hide other filter controls.
 
 ## 5.16.6 - 2026-10-07
 

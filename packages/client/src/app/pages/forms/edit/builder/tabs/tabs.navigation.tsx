@@ -44,6 +44,7 @@ const Chevron = () => (
 );
 
 export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
+  const tabCount = tabs.length;
   const { pathname } = useLocation();
   const active = Math.max(
     0,
@@ -59,6 +60,7 @@ export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
   const listRef = useRef<Array<HTMLAnchorElement | null>>([]);
   const menuId = useId();
 
+  // ResizeObserver already tracks label and error widths across renders.
   useLayoutEffect(() => {
     const measure = () => {
       if (!region.current || !measurements.current) return;
@@ -66,9 +68,9 @@ export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
       if (available <= 0) return;
       const nodes = Array.from(measurements.current.children);
       const widths = nodes
-        .slice(0, tabs.length)
+        .slice(0, tabCount)
         .map((node) => node.getBoundingClientRect().width);
-      const moreWidth = nodes[tabs.length]?.getBoundingClientRect().width ?? 0;
+      const moreWidth = nodes[tabCount]?.getBoundingClientRect().width ?? 0;
       const next = fitTabs(widths, available, moreWidth, active);
       setVisible((previous) =>
         previous.join() === next.join() ? previous : next,
@@ -92,7 +94,7 @@ export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
       window.removeEventListener("resize", measure);
       document.fonts?.removeEventListener("loadingdone", measure);
     };
-  }, [active, tabs]);
+  }, [active, tabCount]);
 
   const overflow = tabs.filter((_, index) => !visible.includes(index));
   useEffect(() => {

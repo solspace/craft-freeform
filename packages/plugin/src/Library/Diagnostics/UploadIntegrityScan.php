@@ -259,7 +259,7 @@ class UploadIntegrityScan
             }
         }
 
-        return array_map(intval(...), $value);
+        return array_map('intval', $value);
     }
 
     private function issue(array $context, string $message, bool $skipped = false, bool $informational = false): array

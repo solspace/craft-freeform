@@ -98,7 +98,9 @@ class PropertyProvider
 
         $accessible = $reflectionProperty->isPublic();
 
-        $reflectionProperty->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $reflectionProperty->setAccessible(true);
+        }
 
         if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
             $value = null;
@@ -109,7 +111,7 @@ class PropertyProvider
         } catch (\TypeError) {
         }
 
-        if (!$accessible) {
+        if (!$accessible && \PHP_VERSION_ID < 80100) {
             $reflectionProperty->setAccessible(false);
         }
     }
@@ -125,7 +127,9 @@ class PropertyProvider
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
             $accessible = $property->isPublic();
-            $property->setAccessible(true);
+            if (\PHP_VERSION_ID < 80100) {
+                $property->setAccessible(true);
+            }
 
             $attribute = AttributeHelper::findAttribute($property, Property::class);
             $section = AttributeHelper::findAttribute($property, Section::class);
@@ -170,7 +174,7 @@ class PropertyProvider
 
             $collection->add($attribute);
 
-            if (!$accessible) {
+            if (!$accessible && \PHP_VERSION_ID < 80100) {
                 $property->setAccessible(false);
             }
         }
@@ -364,7 +368,7 @@ class PropertyProvider
     {
         $hasDefaultValue = $this->processDefaultValue($property, $attribute);
 
-        $value = $attribute->value ?? $property->getDefaultValue();
+        $value = $attribute->value ?? ($property->hasDefaultValue() ? $property->getDefaultValue() : null);
         if (!$hasDefaultValue && null === $referenceObject && $attribute->valueGenerator) {
             $value = $attribute->valueGenerator->generateValue($referenceObject, $context);
         }

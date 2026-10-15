@@ -25,13 +25,17 @@ class FormMonitorFieldTransformer
 
             $isAccessible = $reflectionProperty->isPublic();
             if (!$isAccessible) {
-                $reflectionProperty->setAccessible(true);
+                if (\PHP_VERSION_ID < 80100) {
+                    $reflectionProperty->setAccessible(true);
+                }
             }
 
             $value = $reflectionProperty->getValue($field);
 
             if (!$isAccessible) {
-                $reflectionProperty->setAccessible(false);
+                if (\PHP_VERSION_ID < 80100) {
+                    $reflectionProperty->setAccessible(false);
+                }
             }
 
             if ($property->transformer) {

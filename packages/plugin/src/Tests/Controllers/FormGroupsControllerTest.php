@@ -16,7 +16,7 @@ use yii\db\Transaction;
 use yii\mutex\FileMutex;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\MethodNotAllowedHttpException;
+use yii\web\HttpException;
 
 #[CoversClass(FormGroupsController::class)]
 class FormGroupsControllerTest extends TestCase
@@ -46,7 +46,8 @@ class FormGroupsControllerTest extends TestCase
     public function testMoveRequiresPost(): void
     {
         [$controller] = $this->fixture(post: false);
-        $this->expectException(MethodNotAllowedHttpException::class);
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Post request required');
         $controller->actionMove();
     }
 

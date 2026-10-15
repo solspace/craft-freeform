@@ -27,7 +27,7 @@ class NotificationReadinessScan
 
     public function __construct(private Connection $db, ?\Closure $loadTemplate = null, ?\Closure $elementFieldExists = null)
     {
-        $this->loadTemplate = $loadTemplate ?? $this->loadTemplate(...);
+        $this->loadTemplate = $loadTemplate ?? \Closure::fromCallable([$this, 'loadTemplate']);
         $this->elementFieldExists = $elementFieldExists ?? static function (string $value): bool {
             $fields = \Craft::$app->getFields();
 

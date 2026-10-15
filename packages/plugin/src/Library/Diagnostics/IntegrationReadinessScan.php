@@ -151,7 +151,7 @@ class IntegrationReadinessScan
 
             try {
                 if (\is_string($value) && StringHelper::isEnvVariable($value)) {
-                    $value = App::parseEnv($value);
+                    $value = $this->parseEnv($value);
                 } elseif (\in_array(IntegrationInterface::FLAG_ENCRYPTED, $flags, true) && \is_string($value) && '' !== $value) {
                     $value = ($this->decrypt)($value);
                     if (false === $value) {
@@ -159,7 +159,7 @@ class IntegrationReadinessScan
                     }
                 }
                 if (\is_string($value) && \in_array(IntegrationInterface::FLAG_ENV_SUGGEST, $flags, true)) {
-                    $value = App::parseEnv($value);
+                    $value = $this->parseEnv($value);
                 }
             } catch (\Throwable) {
                 $results[] = $this->issue($context, 'The saved value for “{setting}” could not be read with the current site key.', $params, true);
@@ -211,9 +211,9 @@ class IntegrationReadinessScan
         if (!$instance && is_a($class, OAuth2ConnectorInterface::class, true)) {
             try {
                 $token = $metadata['accessToken'] ?? '';
-                $token = StringHelper::isEnvVariable($token) ? App::parseEnv($token) : ($token ? ($this->decrypt)($token) : '');
+                $token = StringHelper::isEnvVariable($token) ? $this->parseEnv($token) : ($token ? ($this->decrypt)($token) : '');
                 if (\is_string($token)) {
-                    $token = App::parseEnv($token);
+                    $token = $this->parseEnv($token);
                 }
                 if (!\is_string($token) || '' === trim($token)) {
                     $results[] = $this->issue($context, 'The integration has no readable OAuth access token. Authorize it again.');
@@ -224,6 +224,13 @@ class IntegrationReadinessScan
         }
 
         return $results;
+    }
+
+    private function parseEnv(string $value): bool|string|null
+    {
+        // Craft 4 preserves an unresolved $VARIABLE, while Craft 5 returns null.
+        // Read exact environment references consistently before checking readiness.
+        return StringHelper::isEnvVariable($value) ? App::env(substr($value, 1)) : App::parseEnv($value);
     }
 
     /** Evaluates only the simple saved-setting predicates used by integration editors. */

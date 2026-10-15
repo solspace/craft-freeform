@@ -55,6 +55,10 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Fixed PHP 8.0 compatibility for headless profiles, Diagnostics, and translated Opinion Scale and custom option values.
+- Avoided PHP 8.5 reflection deprecations and PHP deprecation notices when rendering empty Textarea fields or reading logs.
+- Fixed Integration Readiness checks incorrectly accepting missing environment variables on Craft 4.
+- Reduced repeated field-configuration requests, builder tab measurements, and unchanged Undo/Redo state updates.
 - Moved AI form generation to Craft's queue with recoverable progress checks, private encrypted references, duplicate-request protection, output-limit detection, and safer failed-save handling.
 - Improved AI reference form dropdown recognition by extracting embedded PDF choices, preserving linked choice types and options, and recognizing common select field aliases.
 - Reduced OpenAI form-generation latency on compatible reasoning models, allowed a bounded PHP runtime for AI requests, and replaced raw provider/gateway errors with actionable messages.

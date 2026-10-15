@@ -11,6 +11,7 @@ import translate from "@ff-client/utils/translations";
 import EditIcon from "@ff-icons/actions/edit";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
+import { useEffect } from "react";
 import {
   AiButton,
   Button,
@@ -49,14 +50,18 @@ export const ListProvider: React.FC = () => {
   const showEnableAi =
     showAiButtons && aiIntegrations && aiIntegrations.length === 0;
 
-  queryClient.prefetchQuery({
-    queryKey: QKFieldTypes.all,
-    queryFn: fetchFieldTypes,
-  });
-  queryClient.prefetchQuery({
-    queryKey: QKFieldTypes.propertySections(),
-    queryFn: fetchFieldPropertySections,
-  });
+  useEffect(() => {
+    void queryClient.prefetchQuery({
+      queryKey: QKFieldTypes.all,
+      queryFn: fetchFieldTypes,
+      staleTime: Infinity,
+    });
+    void queryClient.prefetchQuery({
+      queryKey: QKFieldTypes.propertySections(),
+      queryFn: fetchFieldPropertySections,
+      staleTime: Infinity,
+    });
+  }, [queryClient]);
 
   return (
     <>

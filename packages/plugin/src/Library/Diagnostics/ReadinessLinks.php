@@ -13,8 +13,8 @@ class ReadinessLinks
 
     public function __construct(?\Closure $can = null, ?\Closure $url = null, private bool $allowFileTemplateEdit = true)
     {
-        $this->can = $can ?? PermissionHelper::checkPermission(...);
-        $this->url = $url ?? UrlHelper::cpUrl(...);
+        $this->can = $can ?? \Closure::fromCallable([PermissionHelper::class, 'checkPermission']);
+        $this->url = $url ?? \Closure::fromCallable([UrlHelper::class, 'cpUrl']);
     }
 
     public function getLinks(array $issue, string $kind): array

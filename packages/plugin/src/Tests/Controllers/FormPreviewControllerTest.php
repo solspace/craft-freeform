@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\controllers\api\FormsController;
 use yii\web\BadRequestHttpException;
-use yii\web\MethodNotAllowedHttpException;
+use yii\web\HttpException;
 use yii\web\Response;
 
 #[CoversClass(FormsController::class)]
@@ -35,7 +35,10 @@ class FormPreviewControllerTest extends TestCase
         $request->method('getIsCpRequest')->willReturn($cp);
         $controller = (new \ReflectionClass(FormsController::class))->newInstanceWithoutConstructor();
         $controller->request = $request;
-        $this->expectException($post ? BadRequestHttpException::class : MethodNotAllowedHttpException::class);
+        $this->expectException($post ? BadRequestHttpException::class : HttpException::class);
+        if (!$post) {
+            $this->expectExceptionMessage('Post request required');
+        }
         $controller->actionPreview(42);
     }
 

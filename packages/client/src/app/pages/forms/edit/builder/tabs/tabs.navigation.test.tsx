@@ -136,6 +136,30 @@ afterEach(async () => {
 });
 
 describe("responsive builder navigation", () => {
+  it("does not remeasure or replace observers on unrelated builder renders", async () => {
+    await render();
+    const measurements = vi.mocked(HTMLElement.prototype.getBoundingClientRect)
+      .mock.calls.length;
+    const observerCount = observers.length;
+
+    for (let edit = 0; edit < 10; edit++) {
+      await act(async () =>
+        root.render(
+          <MemoryRouter>
+            <Harness items={tabs.map((tab) => ({ ...tab }))} />
+          </MemoryRouter>,
+        ),
+      );
+    }
+
+    expect(observers).toHaveLength(observerCount);
+    expect(
+      vi.mocked(HTMLElement.prototype.getBoundingClientRect).mock.calls,
+    ).toHaveLength(measurements);
+    await resize(320);
+    expect(more()).not.toBeNull();
+  });
+
   it("shows all tabs when they fit and responds to the header width", async () => {
     await render();
     expect(links()).toHaveLength(6);

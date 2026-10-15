@@ -16,7 +16,7 @@ use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\MethodNotAllowedHttpException;
+use yii\web\HttpException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 
@@ -97,7 +97,8 @@ class AiFormsControllerTest extends TestCase
     public function testGenerationRequiresPost(): void
     {
         [$controller] = $this->fixture(post: false);
-        $this->expectException(MethodNotAllowedHttpException::class);
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Post request required');
         $controller->actionGenerateFromAi();
     }
 

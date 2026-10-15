@@ -13,17 +13,20 @@ use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Integrations\AI\Anthropic\Versions\AnthropicV1;
 use Solspace\Freeform\Integrations\AI\Gemini\Versions\GeminiV1Beta;
 use Solspace\Freeform\Integrations\AI\OpenAI\Versions\OpenAIV1;
+use Solspace\Freeform\Integrations\AI\SolspaceAI\Versions\SolspaceAIV1;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use yii\web\UploadedFile;
 
 #[CoversClass(OpenAIV1::class)]
 #[CoversClass(AnthropicV1::class)]
 #[CoversClass(GeminiV1Beta::class)]
+#[CoversClass(SolspaceAIV1::class)]
 class ReferenceAiRequestTest extends TestCase
 {
     #[TestWith([OpenAIV1::class])]
     #[TestWith([AnthropicV1::class])]
     #[TestWith([GeminiV1Beta::class])]
+    #[TestWith([SolspaceAIV1::class])]
     public function testNativePdfAndImagePayloadsAndTextCompatibility(string $class): void
     {
         $integration = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
@@ -36,7 +39,7 @@ class ReferenceAiRequestTest extends TestCase
         [$png] = ReferenceFile::fromUploads([new UploadedFile(['name' => 'form.png', 'tempName' => $path, 'size' => filesize($path), 'error' => 0])]);
         unlink($path);
         $response = match ($class) {
-            OpenAIV1::class => ['choices' => [['message' => ['content' => '{"fields":[]}']]]],
+            OpenAIV1::class, SolspaceAIV1::class => ['choices' => [['message' => ['content' => '{"fields":[]}']]]],
             AnthropicV1::class => ['content' => [['text' => '{"fields":[]}']]],
             default => ['candidates' => [['content' => ['parts' => [['text' => '{"fields":[]}']]]]]],
         };
@@ -44,14 +47,21 @@ class ReferenceAiRequestTest extends TestCase
         $stack = HandlerStack::create(new MockHandler([new Response(200, [], json_encode($response)), new Response(200, [], json_encode($response))]));
         $stack->push(Middleware::history($history));
         $client = new Client(['handler' => $stack]);
-        self::assertSame('{"fields":[]}', $integration->processAiRequest($client, 'system', 'user', ['referenceFiles' => [$pdf, $png], 'timeout' => 99]));
+        self::assertSame('{"fields":[]}', $integration->processAiRequest($client, 'system', 'user', ['referenceFiles' => [$pdf, $png], 'timeout' => 99, 'max_tokens' => 12000, 'model' => 'client-model']));
         $payload = json_decode((string) $history[0]['request']->getBody(), true);
         self::assertSame(99, $history[0]['options']['timeout']);
-        if (OpenAIV1::class === $class) {
+        if (\in_array($class, [OpenAIV1::class, SolspaceAIV1::class], true)) {
             $parts = $payload['messages'][1]['content'];
             self::assertSame($pdf->getDataUrl(), $parts[1]['file']['file_data']);
             self::assertSame($png->getDataUrl(), $parts[2]['image_url']['url']);
             self::assertStringEndsWith('/chat/completions', (string) $history[0]['request']->getUri());
+            if (SolspaceAIV1::class === $class) {
+                self::assertArrayNotHasKey('model', $payload);
+                self::assertSame(12000, $payload['max_completion_tokens']);
+                self::assertSame(ReferenceFile::MIME_TYPES, $integration->getReferenceMimeTypes());
+                self::assertSame('', $integration->getModel());
+                self::assertSame('https://ai.solspace.net/v1/chat/completions', (string) $history[0]['request']->getUri());
+            }
         } elseif (AnthropicV1::class === $class) {
             $parts = $payload['messages'][0]['content'];
             self::assertSame('document', $parts[0]['type']);
@@ -65,10 +75,13 @@ class ReferenceAiRequestTest extends TestCase
         $integration->processAiRequest($client, 'system', 'text-only');
         $plain = json_decode((string) $history[1]['request']->getBody(), true);
         self::assertSame('text-only', match ($class) {
-            OpenAIV1::class => $plain['messages'][1]['content'],
+            OpenAIV1::class, SolspaceAIV1::class => $plain['messages'][1]['content'],
             AnthropicV1::class => $plain['messages'][0]['content'],
             default => $plain['contents'][0]['parts'][0]['text'],
         });
+        if (SolspaceAIV1::class === $class) {
+            self::assertSame(['messages' => [['role' => 'system', 'content' => 'system'], ['role' => 'user', 'content' => 'text-only']]], $plain);
+        }
     }
 
     #[TestWith([OpenAIV1::class, 'gpt-3.5-turbo', false])]

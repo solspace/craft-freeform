@@ -15,9 +15,13 @@ This is a starting point, rather than an exact visual copy. Review field types, 
 
 ## Integration compatibility
 
-Attachment controls use the selected integration's configured model. Recognized vision/document model families are supported for OpenAI, Anthropic, and Gemini. Older Claude 3 models support images only. Text-only, unknown/custom model identifiers, and specialized audio/image-generation models may not offer attachments. Text-based form generation remains available for existing integrations, including integrations that do not implement attachment support.
+SolspaceAI supports PDF and image references using the existing authorized account and credit balance, with the model selected by the hosted service. No separate provider key or model setting is needed. Reference requests follow normal SolspaceAI usage billing; document size and page count affect usage.
+
+For other providers, attachment controls use the selected integration's configured model. Recognized vision/document model families are supported for OpenAI, Anthropic, and Gemini. Older Claude 3 models support images only. Text-only, unknown/custom model identifiers, and specialized audio/image-generation models may not offer attachments. Text-based form generation remains available for existing integrations, including integrations that do not implement attachment support.
 
 Your provider must also support the native PDF/image request format and the document's page count. PHP's `upload_max_filesize`, `post_max_size`, and `max_file_uploads`, proxy/request limits, provider context limits, account access, or quotas may impose smaller limits. Password-protected PDFs, unsupported formats, empty files, and images larger than 20 megapixels or 10,000 pixels per side are rejected. Convert encrypted PDFs to an unprotected copy before attaching them.
+
+For SolspaceAI operators: the proxy must retain a document-capable default model. To accommodate the full 10 MiB of uploads, allow at least a 16 MiB JSON request body for `/v1/chat/completions` (files are base64 encoded) and a proxy response timeout longer than Freeform’s 120-second request timeout. Smaller proxy limits still apply even when Freeform accepts the files.
 
 ## Files and permissions
 

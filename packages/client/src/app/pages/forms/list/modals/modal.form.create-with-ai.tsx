@@ -242,7 +242,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
                   "References are sent to the selected AI provider. Review the generated fields and settings before using the form.",
                 )
               : translate(
-                  "Choose a compatible OpenAI, Anthropic, or Gemini model to attach references. You can still generate a form from text.",
+                  "Choose SolspaceAI or a compatible OpenAI, Anthropic, or Gemini model to attach references. You can still generate a form from text.",
                 )}
           </p>
           {selectedIntegration?.model && (

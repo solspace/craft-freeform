@@ -121,7 +121,7 @@ class FormGenerationService
             $supported = $integration instanceof ReferenceAiIntegrationInterface ? $integration->getReferenceMimeTypes() : [];
             foreach ($referenceFiles as $file) {
                 if (!$file instanceof ReferenceFile || !\in_array($file->mimeType, $supported, true)) {
-                    throw new \InvalidArgumentException(Freeform::t('This integration or model does not support the selected reference files. Choose a compatible OpenAI, Anthropic, or Gemini integration.'));
+                    throw new \InvalidArgumentException(Freeform::t('This integration or model does not support the selected reference files. Choose SolspaceAI or a compatible OpenAI, Anthropic, or Gemini integration.'));
                 }
             }
         }

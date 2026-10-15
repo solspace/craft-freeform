@@ -25,6 +25,12 @@ vi.mock("./modal.form.create-with-ai.queries", () => ({
         model: "text-model",
         referenceMimeTypes: [],
       },
+      {
+        uid: "solspace",
+        name: "SolspaceAI",
+        model: "",
+        referenceMimeTypes: ["application/pdf", "image/png", "image/jpeg"],
+      },
     ],
     isLoading: false,
     isError: false,
@@ -106,6 +112,25 @@ afterEach(() => {
   act(() => root.unmount());
   host.remove();
   vi.unstubAllGlobals();
+});
+it("allows references through SolspaceAI without a client model setting", async () => {
+  const select = host.querySelector<HTMLSelectElement>("select")!;
+  act(() => {
+    select.value = "solspace";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  expect(host.querySelector<HTMLInputElement>('[type="file"]')!.disabled).toBe(
+    false,
+  );
+  expect(host.textContent).not.toContain("Configured model:");
+  upload([pdf()]);
+  vi.mocked(axios.post).mockResolvedValue({ data: { id: 43 } });
+  await act(async () => button("Generate form").click());
+  const payload = vi.mocked(axios.post).mock.calls[0][1] as FormData;
+  expect(payload.get("integrationUid")).toBe("solspace");
+  expect(payload.get("model")).toBeNull();
+  expect(payload.getAll("references[]")).toHaveLength(1);
+  expect(fixture.navigate).toHaveBeenCalledWith("/forms/43");
 });
 it("sends a file-only request as multipart in displayed order and opens the builder", async () => {
   upload([pdf("first.pdf"), pdf("second.pdf")]);

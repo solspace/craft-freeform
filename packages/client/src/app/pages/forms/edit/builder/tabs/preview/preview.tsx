@@ -191,6 +191,11 @@ export const FormPreview: React.FC = () => {
         <Toolbar>
           <label>
             {translate("Formatting Template")}
+            <p>
+              {translate(
+                "Try a sample template without changing the form's saved formatting template.",
+              )}
+            </p>
             <Dropdown
               value={template}
               loading={loading || samplesLoading}
@@ -210,11 +215,6 @@ export const FormPreview: React.FC = () => {
               ])}
             />
           </label>
-          <p>
-            {translate(
-              "Try a sample template without changing the form's saved formatting template.",
-            )}
-          </p>
           <label>
             {translate("Viewport")}
             <Dropdown

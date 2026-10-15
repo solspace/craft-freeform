@@ -26,6 +26,7 @@ export const Toolbar = styled.div`
   margin: 20px 0;
   > label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; }
   > label > div { font-weight: 400; }
+  > label > p { margin: 0; font-weight: 400; }
   ${CurrentValue} { align-items: center; }
 `;
 

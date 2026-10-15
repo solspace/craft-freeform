@@ -75,6 +75,7 @@ class FormPreviewService
                 'channel' => $channel,
                 'parentOrigin' => \Craft::$app->getRequest()->getHostInfo(),
                 'handles' => $handles,
+                'hasNextPage' => null !== $pages->getByIndex($page + 1),
             ], \JSON_HEX_TAG | \JSON_HEX_AMP | \JSON_HEX_APOS | \JSON_HEX_QUOT),
             'previewScript' => file_get_contents(__DIR__.'/../Resources/js/external/preview.js'),
         ], View::TEMPLATE_MODE_SITE);

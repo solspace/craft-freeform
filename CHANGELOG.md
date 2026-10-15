@@ -51,6 +51,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Disabled final Submit buttons consistently in Preview and blocked final submission attempts without requesting another preview or clearing the frame.
 - Fixed missing field-container attributes in rendered previews, which prevented Tailwind 4 HTML and Rich Text list styles from applying.
 - Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.
 - Fixed missing Tailwind 3 preview styles with bundled Tailwind 3.4.19 CSS, Tailwind 4 preview horizontal overflow, Bootstrap Dark preview inputs, and daisyUI Dark progress connector contrast.

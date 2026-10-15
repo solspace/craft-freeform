@@ -20,8 +20,8 @@ use Next and Back to try saved page-jump rules and conditional early completion,
 or use the page selector to inspect a specific page. Answers are retained across
 page changes and refreshes while this Preview tab is open, allowing rules on
 later pages to use earlier answers. Back returns to the previously visited page
-after a conditional jump. Completing the preview displays a confirmation; it
-never submits the form.
+after a conditional jump. Final Submit buttons are disabled in Preview. Conditional
+early completion displays a confirmation; it never submits the form.
 
 Answers are temporary. Switching forms/sites, leaving Preview, or reloading the
 browser clears them. File uploads, nested table answers, and oversized values
@@ -43,7 +43,8 @@ Tailwind 3 samples include locally compiled Tailwind 3.4.19 utilities and do not
 require the browser CDN. Developers can regenerate both sample stylesheets with
 `pnpm build:tailwind3`. Tailwind 4 previews clip horizontal page overflow while
 retaining vertical scrolling. Bootstrap 5 Dark previews set Bootstrap's dark
-theme attribute, and daisyUI Dark progress connectors use a contrasting gray.
+theme attribute. Dark sample previews use a #1f2226 background, and daisyUI Dark
+keeps its native dark styling for upcoming progress steps.
 
 A Craft administrator can expand **Additional Preview Assets** to enter **Stylesheet URLs (CSS)**
 and **Script URLs (JavaScript)**. Enter direct absolute HTTPS asset URLs, one per

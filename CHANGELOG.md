@@ -55,6 +55,7 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Reduced OpenAI form-generation latency on compatible reasoning models, allowed a bounded PHP runtime for AI requests, and replaced raw provider/gateway errors with actionable messages.
 - Disabled final Submit buttons consistently in Preview and blocked final submission attempts without requesting another preview or clearing the frame.
 - Fixed missing field-container attributes in rendered previews, which prevented Tailwind 4 HTML and Rich Text list styles from applying.
 - Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.

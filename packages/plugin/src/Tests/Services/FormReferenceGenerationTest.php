@@ -3,6 +3,10 @@
 namespace Solspace\Freeform\Tests\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -25,6 +29,74 @@ use yii\web\UploadedFile;
 #[CoversClass(FormGenerationService::class)]
 class FormReferenceGenerationTest extends TestCase
 {
+    #[TestWith([502, 'temporary server error'])]
+    #[TestWith([401, 'authentication failed'])]
+    #[TestWith([429, 'rate limit or quota'])]
+    #[TestWith([400, 'AI request failed'])]
+    public function testProviderErrorsAreReadableAndNeverExposeRequestData(int $status, string $expected): void
+    {
+        $integration = $this->createMock(AiIntegrationInterface::class);
+        $integration->method('isEnabled')->willReturn(true);
+        $integration->method('getModel')->willReturn('gpt-5-mini');
+        $integration->method('processAiRequest')->willThrowException(new RequestException(
+            'secret-api-key <html>upstream error and uploaded reference content</html>',
+            new Request('POST', 'https://example.test'),
+            new Response($status),
+        ));
+        $forms = $this->createMock(FormsService::class);
+        $forms->expects(self::never())->method('getUniqueNameAndHandle');
+
+        try {
+            $this->service($integration, $forms)->generate('Contact form', null, 'integration');
+            self::fail('Generation should fail before creating a form.');
+        } catch (\RuntimeException $exception) {
+            self::assertStringContainsString($expected, $exception->getMessage());
+            self::assertStringNotContainsString('secret-api-key', $exception->getMessage());
+            self::assertStringNotContainsString('<html>', $exception->getMessage());
+            self::assertNull($exception->getPrevious());
+        }
+    }
+
+    public function testAiTimeoutHasActionableError(): void
+    {
+        $integration = $this->createMock(AiIntegrationInterface::class);
+        $integration->method('isEnabled')->willReturn(true);
+        $integration->method('processAiRequest')->willThrowException(new ConnectException(
+            'cURL error 28 with private request data',
+            new Request('POST', 'https://example.test'),
+            null,
+            ['errno' => 28],
+        ));
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('AI request timed out');
+        $this->service($integration)->generate('Contact form', null, 'integration');
+    }
+
+    #[TestWith([1, 150])]
+    #[TestWith([0, 0])]
+    #[TestWith([300, 300])]
+    public function testPhpBudgetCoversAiTimeoutWithoutReducingHigherLimits(int $limit, int $expected): void
+    {
+        $previous = (int) \ini_get('max_execution_time');
+        $integration = $this->createMock(AiIntegrationInterface::class);
+        $integration->method('isEnabled')->willReturn(true);
+        $integration->method('processAiRequest')->willReturnCallback(static function ($client, $system, $user, $options) use ($expected) {
+            self::assertSame($expected, (int) \ini_get('max_execution_time'));
+            self::assertSame(120, $options['timeout']);
+            self::assertSame('low', $options['reasoning_effort']);
+
+            throw new \RuntimeException('stop after checking execution budget');
+        });
+        set_time_limit($limit);
+
+        try {
+            $this->expectExceptionMessage('stop after checking execution budget');
+            $this->service($integration)->generate('Contact form', null, 'integration');
+        } finally {
+            set_time_limit($previous);
+        }
+    }
+
     public function testReferenceGenerationUsesNativePersistenceEventsAndReturnsEditableForm(): void
     {
         $previous = \Craft::$app;

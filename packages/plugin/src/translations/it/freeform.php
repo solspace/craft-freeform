@@ -12,6 +12,11 @@
  */
 
 return [
+    'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'La richiesta IA è scaduta. Prova un modello più veloce o meno pagine di riferimento e controlla i limiti di tempo del server.',
+    'AI authentication failed. Check the selected integration credentials and model access.' => 'Autenticazione IA non riuscita. Controlla le credenziali dell’integrazione selezionata e l’accesso al modello.',
+    'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'È stato raggiunto il limite di richieste o la quota del fornitore IA. Controlla i limiti del tuo account e riprova più tardi.',
+    'The AI provider returned a temporary server error (HTTP {status}). Please try again later.' => 'Il fornitore IA ha restituito un errore temporaneo del server (HTTP {status}). Riprova più tardi.',
+    'The server timed out or lost its connection while generating the form. Check the Forms list before retrying; the form may still be created.' => 'Il server ha superato il tempo limite o ha perso la connessione durante la generazione del modulo. Controlla l’elenco dei moduli prima di riprovare: il modulo potrebbe essere ancora creato.',
     'More' => 'Altro',
     // Form Builder
     // Form Builder // Form Cards

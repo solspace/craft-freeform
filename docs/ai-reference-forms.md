@@ -23,6 +23,12 @@ Your provider must also support the native PDF/image request format and the docu
 
 For SolspaceAI operators: the proxy must retain a document-capable default model. To accommodate the full 10 MiB of uploads, allow at least a 16 MiB JSON request body for `/v1/chat/completions` (files are base64 encoded) and a proxy response timeout longer than Freeform’s 120-second request timeout. Smaller proxy limits still apply even when Freeform accepts the files.
 
+## Timeouts and gateway errors
+
+Form generation waits up to 120 seconds for the AI provider. Freeform raises a shorter PHP execution limit to 150 seconds for this request and uses low reasoning effort for compatible GPT-5/6 models during form generation. Your selected model stays the same; other AI workflows retain their normal reasoning settings.
+
+PHP-FPM, nginx, a reverse proxy, or your hosting provider can enforce a separate timeout that Freeform cannot change. If generation still fails with a 502/504 after roughly 30–60 seconds, check the PHP and web-server logs and allow those request limits to exceed the AI timeout. A faster model or fewer reference pages can also help. Check the Forms list before retrying after a lost connection, because the original request may still finish creating the form. Freeform does not automatically retry generation requests.
+
 ## Files and permissions
 
 The reference files are sent to the selected AI provider using the integration's existing credentials. Choose suitable files for that provider and its data policies. Freeform reads PHP's temporary uploads for this request; it does not create Craft assets or retain permanent reference copies. PHP removes temporary uploads at the end of the request. A failed generation keeps the selected files in the open dialog so you can retry.

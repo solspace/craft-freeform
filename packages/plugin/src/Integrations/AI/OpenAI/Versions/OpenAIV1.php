@@ -83,6 +83,17 @@ class OpenAIV1 extends BaseOpenAIIntegration implements ReferenceAiIntegrationIn
             ],
         ];
 
+        // Form generation is interactive. Opt into a lower reasoning budget only
+        // for compatible GPT-5/6 models, without changing other AI workflows or
+        // sending unsupported parameters to legacy, chat or pro model variants.
+        $model = $payload['model'];
+        if (isset($options['reasoning_effort'])
+            && preg_match('/^(?:ft:)?gpt-(?:5|6)(?:[.-]|$)/i', $model)
+            && !preg_match('/(?:^|[-_])(?:pro|chat|codex|realtime|audio|search|image)(?:[-_]|$)/i', $model)
+        ) {
+            $payload['reasoning_effort'] = $options['reasoning_effort'];
+        }
+
         $response = $client->post(
             $this->getEndpoint('/chat/completions'),
             ['json' => $payload, 'timeout' => $options['timeout'] ?? 120]

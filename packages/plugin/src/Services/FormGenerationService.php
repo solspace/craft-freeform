@@ -3,7 +3,9 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\StringHelper;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Validators\ReservedWord;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
@@ -136,6 +138,7 @@ class FormGenerationService
         $options = [
             'model' => $integration->getModel(),
             'max_tokens' => self::AI_MAX_TOKENS,
+            'reasoning_effort' => 'low',
         ];
         if (null !== $timeout) {
             $options['timeout'] = $timeout;
@@ -145,14 +148,30 @@ class FormGenerationService
             $options['referenceFiles'] = $referenceFiles;
         }
 
+        // A normal CP request's PHP limit can expire before the AI client's
+        // timeout. Allow a bounded margin for generation and form persistence;
+        // leave unlimited or already-higher execution limits unchanged.
+        $executionLimit = (int) \ini_get('max_execution_time');
+        if (null !== $timeout && $timeout > 0 && $executionLimit > 0 && $executionLimit < $timeout + 30 && \function_exists('set_time_limit')) {
+            @set_time_limit($timeout + 30);
+        }
+
         try {
             $response = $integration->processAiRequest($client, $systemPrompt, $userContent, $options);
         } catch (GuzzleException $exception) {
-            if (!$referenceFiles) {
-                throw $exception;
-            }
+            $status = $exception instanceof RequestException ? $exception->getResponse()?->getStatusCode() : null;
+            $context = $exception instanceof RequestException || $exception instanceof ConnectException ? $exception->getHandlerContext() : [];
+            $message = match (true) {
+                28 === ($context['errno'] ?? null) => Freeform::t('The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.'),
+                \in_array($status, [401, 403], true) => Freeform::t('AI authentication failed. Check the selected integration credentials and model access.'),
+                429 === $status => Freeform::t('The AI provider rate limit or quota was reached. Check your account limits and try again later.'),
+                null !== $status && $status >= 500 => Freeform::t('The AI provider returned a temporary server error (HTTP {status}). Please try again later.', ['status' => $status]),
+                default => Freeform::t('The AI request failed. Check your integration, its model support, and your reference files, then try again.'),
+            };
 
-            throw new \RuntimeException(Freeform::t('The AI request failed. Check your integration, its model support, and your reference files, then try again.'));
+            // Provider exceptions can contain request credentials, reference data
+            // and full HTML responses. Never expose their raw message to the CP.
+            throw new \RuntimeException($message);
         }
         $parsed = $this->parseAiResponse($response);
         if ($referenceFiles && !$parsed['fields']) {

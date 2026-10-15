@@ -12,6 +12,11 @@
  */
 
 return [
+    'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'De AI-aanvraag heeft de tijdslimiet overschreden. Probeer een sneller model of minder referentiepagina’s en controleer de tijdslimieten van de server.',
+    'AI authentication failed. Check the selected integration credentials and model access.' => 'AI-authenticatie is mislukt. Controleer de inloggegevens van de geselecteerde integratie en de toegang tot het model.',
+    'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'De aanvraaglimiet of het quotum van de AI-provider is bereikt. Controleer je accountlimieten en probeer het later opnieuw.',
+    'The AI provider returned a temporary server error (HTTP {status}). Please try again later.' => 'De AI-provider heeft een tijdelijke serverfout geretourneerd (HTTP {status}). Probeer het later opnieuw.',
+    'The server timed out or lost its connection while generating the form. Check the Forms list before retrying; the form may still be created.' => 'De server heeft de tijdslimiet overschreden of de verbinding verloren tijdens het genereren van het formulier. Controleer de formulierenlijst voordat je het opnieuw probeert; het formulier wordt mogelijk nog aangemaakt.',
     'More' => 'Meer',
     // Form Builder
     // Form Builder // Form Cards

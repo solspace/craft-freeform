@@ -12,6 +12,11 @@
  */
 
 return [
+    'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'Die KI-Anfrage hat das Zeitlimit überschritten. Versuchen Sie ein schnelleres Modell oder weniger Referenzseiten und prüfen Sie die Zeitlimits des Servers.',
+    'AI authentication failed. Check the selected integration credentials and model access.' => 'Die KI-Authentifizierung ist fehlgeschlagen. Prüfen Sie die Zugangsdaten der ausgewählten Integration und den Modellzugriff.',
+    'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'Das Anfragelimit oder Kontingent des KI-Anbieters wurde erreicht. Prüfen Sie Ihre Kontolimits und versuchen Sie es später erneut.',
+    'The AI provider returned a temporary server error (HTTP {status}). Please try again later.' => 'Der KI-Anbieter hat einen vorübergehenden Serverfehler zurückgegeben (HTTP {status}). Versuchen Sie es später erneut.',
+    'The server timed out or lost its connection while generating the form. Check the Forms list before retrying; the form may still be created.' => 'Beim Erstellen des Formulars wurde das Zeitlimit überschritten oder die Serververbindung unterbrochen. Prüfen Sie vor einem erneuten Versuch die Formularliste; das Formular wird möglicherweise noch erstellt.',
     'More' => 'Mehr',
     // Form Builder
     // Form Builder // Form Cards

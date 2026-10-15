@@ -23,6 +23,34 @@ use yii\web\UploadedFile;
 #[CoversClass(SolspaceAIV1::class)]
 class ReferenceAiRequestTest extends TestCase
 {
+    #[TestWith(['gpt-5.6-luna', true])]
+    #[TestWith(['gpt-6.1-sol', true])]
+    #[TestWith(['gpt-5-mini', true])]
+    #[TestWith(['gpt-5-pro', false])]
+    #[TestWith(['gpt-5.2-chat-latest', false])]
+    #[TestWith(['gpt-4o', false])]
+    #[TestWith(['o3', false])]
+    public function testInteractiveReasoningBudgetIsSentOnlyToCompatibleModels(string $model, bool $supported): void
+    {
+        $integration = (new \ReflectionClass(OpenAIV1::class))->newInstanceWithoutConstructor();
+        $history = [];
+        $response = json_encode(['choices' => [['message' => ['content' => '{"fields":[]}']]]]);
+        $stack = HandlerStack::create(new MockHandler([new Response(200, [], $response), new Response(200, [], $response)]));
+        $stack->push(Middleware::history($history));
+        $client = new Client(['handler' => $stack]);
+        $integration->processAiRequest($client, 'system', 'user', ['model' => $model, 'reasoning_effort' => 'low']);
+        $payload = json_decode((string) $history[0]['request']->getBody(), true);
+        self::assertSame($model, $payload['model']);
+        if ($supported) {
+            self::assertSame('low', $payload['reasoning_effort']);
+        } else {
+            self::assertArrayNotHasKey('reasoning_effort', $payload);
+        }
+
+        $integration->processAiRequest($client, 'system', 'user', ['model' => $model]);
+        self::assertArrayNotHasKey('reasoning_effort', json_decode((string) $history[1]['request']->getBody(), true));
+    }
+
     #[TestWith([OpenAIV1::class])]
     #[TestWith([AnthropicV1::class])]
     #[TestWith([GeminiV1Beta::class])]

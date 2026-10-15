@@ -171,6 +171,11 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
       navigate(`/forms/${form.id}`);
       closeModal();
     } catch (err: unknown) {
+      const gatewayFailure =
+        axios.isAxiosError(err) &&
+        ([502, 503, 504].includes(err.response?.status ?? 0) ||
+          err.code === "ECONNABORTED" ||
+          err.code === "ETIMEDOUT");
       const message =
         axios.isAxiosError(err) &&
         typeof err.response?.data?.message === "string"
@@ -178,8 +183,17 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           : null;
 
       setError(
-        message ??
-          translate("Form generation failed. Please try again or rephrase."),
+        gatewayFailure
+          ? translate(
+              "The server timed out or lost its connection while generating the form. Check the Forms list before retrying; the form may still be created.",
+            )
+          : ((message &&
+            !/<(?:!doctype|html|head|body|script|style)\b/i.test(message)
+              ? message
+              : null) ??
+              translate(
+                "Form generation failed. Please try again or rephrase.",
+              )),
       );
     } finally {
       submitting.current = false;

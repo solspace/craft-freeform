@@ -8,7 +8,11 @@ import { referenceFileError } from "./modal.form.reference-files";
 const fixture = vi.hoisted(() => ({ navigate: vi.fn(), close: vi.fn() }));
 vi.mock("react-router-dom", () => ({ useNavigate: () => fixture.navigate }));
 vi.mock("axios", () => ({
-  default: { post: vi.fn(), isAxiosError: () => false },
+  default: {
+    post: vi.fn(),
+    isAxiosError: (error: { isAxiosError?: boolean }) =>
+      error?.isAxiosError === true,
+  },
 }));
 vi.mock("./modal.form.create-with-ai.queries", () => ({
   useAiIntegrations: () => ({
@@ -112,6 +116,40 @@ afterEach(() => {
   act(() => root.unmount());
   host.remove();
   vi.unstubAllGlobals();
+});
+it("explains gateway timeouts without displaying HTML or retrying automatically", async () => {
+  input("prompt", "Contact form");
+  vi.mocked(axios.post).mockRejectedValue({
+    isAxiosError: true,
+    response: {
+      status: 502,
+      data: "<html><body>nginx Bad Gateway</body></html>",
+    },
+  });
+  await act(async () => button("Generate form").click());
+  expect(host.textContent).toContain("Check the Forms list before retrying");
+  expect(host.textContent).not.toContain("<html>");
+  expect(host.textContent).not.toContain("nginx");
+  expect(axios.post).toHaveBeenCalledTimes(1);
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  expect(fixture.close).not.toHaveBeenCalled();
+  expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
+    "Contact form",
+  );
+});
+
+it("discards HTML embedded in a JSON error message", async () => {
+  input("prompt", "Contact form");
+  vi.mocked(axios.post).mockRejectedValue({
+    isAxiosError: true,
+    response: {
+      status: 400,
+      data: { message: "AI error: <html>gateway details</html>" },
+    },
+  });
+  await act(async () => button("Generate form").click());
+  expect(host.textContent).toContain("Form generation failed");
+  expect(host.textContent).not.toContain("gateway details");
 });
 it("allows references through SolspaceAI without a client model setting", async () => {
   const select = host.querySelector<HTMLSelectElement>("select")!;

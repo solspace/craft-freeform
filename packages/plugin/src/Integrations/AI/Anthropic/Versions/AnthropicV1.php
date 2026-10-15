@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\Anthropic\BaseAnthropicIntegration;
 use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -94,6 +95,7 @@ class AnthropicV1 extends BaseAnthropicIntegration implements ReferenceAiIntegra
         );
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['stop_reason'] ?? null, $options);
 
         return $data['content'][0]['text'] ?? '';
     }

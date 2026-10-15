@@ -32,6 +32,7 @@ return [
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
     'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
+    'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',

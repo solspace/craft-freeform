@@ -26,11 +26,40 @@ use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Tests\Fixtures\ChoicePdfFixture;
 use yii\base\Event;
+use yii\db\Connection;
 use yii\web\UploadedFile;
 
 #[CoversClass(FormGenerationService::class)]
 class FormReferenceGenerationTest extends TestCase
 {
+    public function testFailedPersistenceRollsBackNewFormAndLayoutRows(): void
+    {
+        $previous = \Craft::$app;
+        $db = new Connection(['dsn' => 'sqlite::memory:']);
+        $db->createCommand('CREATE TABLE generation_test (id INTEGER PRIMARY KEY, kind TEXT)')->execute();
+        \Craft::$app = (object) ['db' => $db];
+        $created = static function () use ($db) { $db->createCommand()->insert('generation_test', ['kind' => 'form'])->execute(); };
+        $upsert = static function () use ($db) {
+            $db->createCommand()->insert('generation_test', ['kind' => 'field'])->execute();
+
+            throw new \RuntimeException('Interrupted save');
+        };
+        Event::on(FormsController::class, FormsController::EVENT_CREATE_FORM, $created);
+        Event::on(FormsController::class, FormsController::EVENT_UPSERT_FORM, $upsert);
+
+        try {
+            $this->invoke($this->service(), 'persistGeneratedForm', (object) [], 'Test');
+            self::fail('Save failure expected.');
+        } catch (\RuntimeException $exception) {
+            self::assertSame('Interrupted save', $exception->getMessage());
+            self::assertSame('0', (string) $db->createCommand('SELECT COUNT(*) FROM generation_test')->queryScalar());
+        } finally {
+            Event::off(FormsController::class, FormsController::EVENT_CREATE_FORM, $created);
+            Event::off(FormsController::class, FormsController::EVENT_UPSERT_FORM, $upsert);
+            \Craft::$app = $previous;
+        }
+    }
+
     #[TestWith([502, 'temporary server error'])]
     #[TestWith([401, 'authentication failed'])]
     #[TestWith([429, 'rate limit or quota'])]
@@ -102,7 +131,7 @@ class FormReferenceGenerationTest extends TestCase
     public function testReferenceGenerationUsesNativePersistenceEventsAndReturnsEditableForm(): void
     {
         $previous = \Craft::$app;
-        \Craft::$app = (object) ['sites' => new class {
+        \Craft::$app = (object) ['db' => new Connection(['dsn' => 'sqlite::memory:']), 'sites' => new class {
             public function getEditableSites(): array
             {
                 return [(object) ['id' => 1]];
@@ -164,7 +193,7 @@ class FormReferenceGenerationTest extends TestCase
     public function testPdfChoiceEvidenceReachesIntegrationAndRepairsTextTypeAndIncompleteOptionsInNativePayload(): void
     {
         $previous = \Craft::$app;
-        \Craft::$app = (object) ['sites' => new class {
+        \Craft::$app = (object) ['db' => new Connection(['dsn' => 'sqlite::memory:']), 'sites' => new class {
             public function getEditableSites(): array
             {
                 return [(object) ['id' => 1]];
@@ -300,7 +329,7 @@ class FormReferenceGenerationTest extends TestCase
     public function testReferenceRowsAndOptionsBecomeNativePageLayout(): void
     {
         $previous = \Craft::$app;
-        \Craft::$app = (object) ['sites' => new class {
+        \Craft::$app = (object) ['db' => new Connection(['dsn' => 'sqlite::memory:']), 'sites' => new class {
             public function getEditableSites(): array
             {
                 return [(object) ['id' => 1]];

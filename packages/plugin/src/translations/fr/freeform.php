@@ -12,6 +12,18 @@
  */
 
 return [
+    'Freeform: Generating form with AI' => 'Freeform : génération du formulaire avec IA',
+    'Form generation is no longer permitted for this user.' => 'Cet utilisateur n’est plus autorisé à générer des formulaires.',
+    'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Impossible de mettre la génération en file d’attente. Vérifiez le gestionnaire de file d’attente avant de lancer une autre demande.',
+    'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.' => 'La réponse de l’IA a été tronquée par sa limite de sortie. Essayez moins de pages ou une section plus petite. Aucun formulaire n’a été enregistré.',
+    'The generated form could not be saved. Review the reference and try a smaller section.' => 'Le formulaire généré n’a pas pu être enregistré. Vérifiez la référence et essayez une section plus petite.',
+    'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.' => 'Impossible de confirmer la progression. Vérifiez la liste des formulaires et le gestionnaire de file d’attente avant de lancer une autre demande.',
+    'Form generation could not complete. Check the Forms list before starting another request.' => 'La génération du formulaire n’a pas pu aboutir. Vérifiez la liste des formulaires avant de lancer une autre demande.',
+    'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.' => 'En attente de la file de Craft. Si le traitement ne démarre pas, vérifiez le gestionnaire de file d’attente.',
+    'Generating your form. You can close this window and reopen Create with AI to check progress.' => 'Génération de votre formulaire. Vous pouvez fermer cette fenêtre et rouvrir « Créer avec IA » pour consulter la progression.',
+    'Check progress' => 'Consulter la progression',
+    'Start a new request' => 'Lancer une nouvelle demande',
+    'Waiting for queue...' => 'En attente de la file...',
     'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'La requête IA a dépassé le délai. Essayez un modèle plus rapide ou moins de pages de référence et vérifiez les délais du serveur.',
     'AI authentication failed. Check the selected integration credentials and model access.' => 'L’authentification IA a échoué. Vérifiez les identifiants de l’intégration sélectionnée et l’accès au modèle.',
     'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'La limite de requêtes ou le quota du fournisseur IA a été atteint. Vérifiez les limites de votre compte et réessayez plus tard.',

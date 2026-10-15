@@ -7,7 +7,7 @@ Freeform's **Create with AI** can use a reference form to create editable native
 1. Open **Forms → Create with AI** and choose a configured AI integration.
 2. Attach or drop a PDF, PNG, or JPEG of the form. You may attach up to five files, with a combined size of 10 MiB. Use the arrow buttons to put multiple files in reading order.
 3. Optionally add instructions, such as “Only recreate pages 1–2” or “Omit the office-use section,” and a form name.
-4. Click **Generate form**. The new form opens in the builder for review and editing.
+4. Click **Generate form**. Freeform queues generation and checks progress, then opens the new form in the builder for review and editing. You can close the dialog and reopen **Create with AI** in the same browser tab to resume checking progress.
 
 The generator attempts to preserve labels, choices, required indicators, headings, page order, and rows of up to four fields. Large fields and headings occupy their own rows. It attempts to omit filled-in answers and signatures; generated default values are cleared. Static reference content is sanitized and cannot enable Twig processing.
 
@@ -29,13 +29,25 @@ For SolspaceAI operators: the proxy must retain a document-capable default model
 
 ## Timeouts and gateway errors
 
-Form generation waits up to 120 seconds for the AI provider. Freeform raises a shorter PHP execution limit to 150 seconds for this request and uses low reasoning effort for compatible GPT-5/6 models during form generation. Your selected model stays the same; other AI workflows retain their normal reasoning settings.
+The current client starts generation through Craft's queue and polls an owner-only status endpoint. The upload/start request does not wait for the AI provider or form persistence. If its response is lost, the client checks the same request identifier instead of resubmitting generation. Releasing or retrying an interrupted job does not automatically generate another form.
 
-PHP-FPM, nginx, a reverse proxy, or your hosting provider can enforce a separate timeout that Freeform cannot change. If generation still fails with a 502/504 after roughly 30–60 seconds, check the PHP and web-server logs and allow those request limits to exceed the AI timeout. A faster model or fewer reference pages can also help. Check the Forms list before retrying after a lost connection, because the original request may still finish creating the form. Freeform does not automatically retry generation requests.
+Craft needs a working asynchronous queue runner. The normal control-panel runner is triggered when automatic queue processing is enabled. If the dialog stays queued, check Craft's Queue Manager. For local Herd testing, run this from the **Craft project directory** in another terminal:
+
+```bash
+php craft queue/listen
+```
+
+A CLI worker avoids nginx/PHP-FPM web-request limits on the runner itself. Production sites should use their normal supervised queue worker. Custom synchronous queue drivers are unsuitable. Web and worker processes must share Craft's private storage and security key; ephemeral or separate worker disks cannot read queued reference files. Jobs reserve up to 240 seconds, while the provider request still times out after 120 seconds. Larger forms can also take time to persist because Freeform creates their content-table columns.
+
+Freeform raises a shorter PHP execution limit to 150 seconds for generation and uses low reasoning effort for compatible GPT-5/6 models. Your selected model stays the same; other AI workflows retain their normal reasoning settings. Provider or hosted SolspaceAI gateway limits still apply independently. A faster model or fewer reference pages can help with those limits.
+
+Known provider output-limit responses are rejected before persistence, including responses containing valid but incomplete JSON. Source-linked dropdowns omit duplicate option data from the AI output; the server restores their original choices. Form persistence uses a transaction and cleanup for failed new forms, though MySQL schema changes can commit implicitly. A forcibly killed worker can still leave work that needs review. If progress cannot be confirmed, check the Forms list and Queue Manager before explicitly starting another request. The client retries status reads only; it never automatically retries a provider call.
 
 ## Files and permissions
 
-The reference files are sent to the selected AI provider using the integration's existing credentials. Choose suitable files for that provider and its data policies. Freeform reads PHP's temporary uploads for this request; it does not create Craft assets or retain permanent reference copies. PHP removes temporary uploads at the end of the request. A failed generation keeps the selected files in the open dialog so you can retry.
+The reference files are sent to the selected AI provider using the integration's existing credentials. Choose suitable files for that provider and its data policies. To support background generation, Freeform encrypts the prompt and reference data using Craft's security key and stores the request in private `storage/runtime/freeform-ai-generation` files. Queue payloads contain only opaque identifiers, and browser storage retains only the request identifier. No Craft assets are created.
+
+Reference inputs are deleted after normal completion or failure. Unstarted requests expire after 30 minutes. Abandoned encrypted inputs and status files older than one hour are removed during later generation starts or Craft garbage collection. These cleanup processes must run to remove abandoned files. The initiating user's current permissions and site access are rechecked in the worker, its user context is restored afterward, and status responses require that same authenticated owner. A failed generation keeps selected browser files in the open dialog so you can retry; reopening resumes progress tracking but does not restore local file selections.
 
 Local PDF metadata extraction reads choice definitions, not selected/default answers, scripts, actions, or external resources. The extracted data is treated as untrusted reference content and remains subject to the same output sanitization. The original attachment is still sent to the provider, including any answers it contains; use a blank copy when those details should not be shared.
 

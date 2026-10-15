@@ -72,6 +72,23 @@ final class ReferenceFile
         return $this->data;
     }
 
+    /** Restore only an authenticated encrypted request previously validated by fromUploads(). */
+    public static function restore(array $file): self
+    {
+        if (!\is_string($file['name'] ?? null) || !preg_match('/^reference-[1-5]\.(?:pdf|png|jpe?g)$/D', $file['name'])
+            || !\in_array($file['mimeType'] ?? null, self::MIME_TYPES, true)
+            || !\is_string($file['data'] ?? null) || \strlen($file['data']) > 4 * (int) ceil(self::MAX_BYTES / 3)
+        ) {
+            throw new \InvalidArgumentException('Invalid stored reference.');
+        }
+        $bytes = base64_decode($file['data'], true);
+        if (false === $bytes || '' === $bytes || \strlen($bytes) > self::MAX_BYTES) {
+            throw new \InvalidArgumentException('Invalid stored reference.');
+        }
+
+        return new self($file['name'], $file['mimeType'], $file['data']);
+    }
+
     public function getDataUrl(): string
     {
         return 'data:'.$this->mimeType.';base64,'.$this->data;

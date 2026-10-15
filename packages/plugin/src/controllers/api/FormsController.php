@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormPreviewService;
+use Solspace\Freeform\Services\QueuedFormGenerationService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -245,6 +246,24 @@ class FormsController extends BaseApiController
                 throw new \InvalidArgumentException(Freeform::t('A reference file could not be uploaded. Check the server upload limits and try again.'));
             }
             $files = ReferenceFile::fromUploads($uploads);
+            if (isset($body['requestId'])) {
+                $requestId = $body['requestId'];
+                if (!\is_string($requestId) || !preg_match('/^[a-f0-9]{32}$/D', $requestId)) {
+                    throw new BadRequestHttpException('Invalid generation request identifier.');
+                }
+                $state = \Craft::$container->get(QueuedFormGenerationService::class)->start(
+                    (int) \Craft::$app->getUser()->getId(),
+                    $requestId,
+                    $prompt,
+                    $name ?: null,
+                    $integrationUid,
+                    $files,
+                );
+                $this->response->statusCode = 202;
+                $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+                return $this->asJson($state);
+            }
             $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid, referenceFiles: $files);
             $afterEvent = new PersistFormEvent((object) ['form' => (object) []], $form->getId());
             $afterEvent->setForm($form);
@@ -258,6 +277,25 @@ class FormsController extends BaseApiController
         } catch (\RuntimeException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+    }
+
+    public function actionAiGenerationStatus(string $requestId): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        try {
+            $state = \Craft::$container->get(QueuedFormGenerationService::class)->status((int) \Craft::$app->getUser()->getId(), $requestId);
+        } catch (\OutOfBoundsException) {
+            throw new NotFoundHttpException('Generation not found.');
+        }
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($state);
     }
 
     protected function get(): array

@@ -8,6 +8,12 @@ type CraftElement = {
 };
 
 declare namespace Craft {
+  const cp: {
+    runQueue?: () => void;
+    displaySuccess: (message: string) => void;
+    displayNotice: (message: string) => void;
+    displayError: (message: string) => void;
+  };
   class Slideout {
     constructor(
       contents: HTMLElement,

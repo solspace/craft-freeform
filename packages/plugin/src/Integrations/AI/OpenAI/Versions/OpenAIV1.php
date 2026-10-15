@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\OpenAI\BaseOpenAIIntegration;
 use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -100,6 +101,7 @@ class OpenAIV1 extends BaseOpenAIIntegration implements ReferenceAiIntegrationIn
         );
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['choices'][0]['finish_reason'] ?? null, $options);
 
         return $data['choices'][0]['message']['content'] ?? '';
     }

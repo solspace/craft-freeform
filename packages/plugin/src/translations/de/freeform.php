@@ -12,6 +12,18 @@
  */
 
 return [
+    'Freeform: Generating form with AI' => 'Freeform: Formular mit KI erstellen',
+    'Form generation is no longer permitted for this user.' => 'Dieser Benutzer darf keine Formulare mehr erstellen.',
+    'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Die Formularerstellung konnte nicht eingereiht werden. Prüfen Sie die Warteschlangenverwaltung, bevor Sie eine weitere Anfrage starten.',
+    'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.' => 'Die KI-Antwort wurde durch das Ausgabelimit abgeschnitten. Versuchen Sie weniger Seiten oder einen kleineren Abschnitt. Es wurde kein Formular gespeichert.',
+    'The generated form could not be saved. Review the reference and try a smaller section.' => 'Das generierte Formular konnte nicht gespeichert werden. Prüfen Sie die Referenz und versuchen Sie einen kleineren Abschnitt.',
+    'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.' => 'Der Fortschritt konnte nicht bestätigt werden. Prüfen Sie die Formularliste und Warteschlangenverwaltung, bevor Sie eine weitere Anfrage starten.',
+    'Form generation could not complete. Check the Forms list before starting another request.' => 'Die Formularerstellung konnte nicht abgeschlossen werden. Prüfen Sie die Formularliste, bevor Sie eine weitere Anfrage starten.',
+    'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.' => 'Warten auf die Craft-Warteschlange. Falls die Verarbeitung nicht startet, prüfen Sie die Warteschlangenverwaltung.',
+    'Generating your form. You can close this window and reopen Create with AI to check progress.' => 'Ihr Formular wird erstellt. Sie können dieses Fenster schließen und „Mit KI erstellen“ erneut öffnen, um den Fortschritt zu prüfen.',
+    'Check progress' => 'Fortschritt prüfen',
+    'Start a new request' => 'Neue Anfrage starten',
+    'Waiting for queue...' => 'Warten auf Warteschlange...',
     'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'Die KI-Anfrage hat das Zeitlimit überschritten. Versuchen Sie ein schnelleres Modell oder weniger Referenzseiten und prüfen Sie die Zeitlimits des Servers.',
     'AI authentication failed. Check the selected integration credentials and model access.' => 'Die KI-Authentifizierung ist fehlgeschlagen. Prüfen Sie die Zugangsdaten der ausgewählten Integration und den Modellzugriff.',
     'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'Das Anfragelimit oder Kontingent des KI-Anbieters wurde erreicht. Prüfen Sie Ihre Kontolimits und versuchen Sie es später erneut.',

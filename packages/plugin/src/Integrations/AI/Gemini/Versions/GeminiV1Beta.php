@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\Gemini\BaseGeminiIntegration;
 use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -83,6 +84,7 @@ class GeminiV1Beta extends BaseGeminiIntegration implements ReferenceAiIntegrati
         );
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['candidates'][0]['finishReason'] ?? null, $options);
 
         return $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
     }

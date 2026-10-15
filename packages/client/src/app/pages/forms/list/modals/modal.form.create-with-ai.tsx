@@ -9,9 +9,16 @@ import { PropertyType, type SelectProperty } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import axios from "axios";
 import type React from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import {
+  GenerationError,
+  type GenerationState,
+  newGenerationId,
+  pendingGeneration,
+  rememberGeneration,
+  waitForGeneration,
+} from "./modal.form.ai-generation";
 import { useAiIntegrations } from "./modal.form.create-with-ai.queries";
 import { fileMimeType, referenceFileError } from "./modal.form.reference-files";
 import {
@@ -33,6 +40,72 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
   const [dragging, setDragging] = useState(false);
   const submitting = useRef(false);
   const [error, setError] = useState<string | null>(null);
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [generationStatus, setGenerationStatus] =
+    useState<GenerationState["status"]>("queued");
+  const monitorController = useRef<AbortController | null>(null);
+  const mounted = useRef(true);
+  const resumed = useRef(false);
+
+  const clearPending = useCallback(() => {
+    rememberGeneration(null);
+    setPendingId(null);
+  }, []);
+
+  const monitor = useCallback(
+    async (requestId: string) => {
+      monitorController.current?.abort();
+      const controller = new AbortController();
+      monitorController.current = controller;
+      submitting.current = true;
+      setIsSubmitting(true);
+      setPendingId(requestId);
+      setError(null);
+      try {
+        if (typeof Craft !== "undefined") Craft.cp?.runQueue?.();
+        const formId = await waitForGeneration(
+          requestId,
+          controller.signal,
+          setGenerationStatus,
+        );
+        if (!mounted.current) return;
+        clearPending();
+        navigate(`/forms/${formId}`);
+        closeModal();
+      } catch (error) {
+        if (!mounted.current || controller.signal.aborted) return;
+        if (error instanceof GenerationError && error.terminal) clearPending();
+        setError(
+          error instanceof GenerationError
+            ? error.message
+            : translate(
+                "Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.",
+              ),
+        );
+      } finally {
+        if (mounted.current && !controller.signal.aborted) {
+          submitting.current = false;
+          setIsSubmitting(false);
+        }
+      }
+    },
+    [clearPending, navigate, closeModal],
+  );
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      monitorController.current?.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (resumed.current) return;
+    resumed.current = true;
+    const requestId = pendingGeneration();
+    if (requestId) void monitor(requestId);
+  }, [monitor]);
 
   const {
     data: aiIntegrations = [],
@@ -120,11 +193,19 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         handleSubmit();
       },
     },
-    [integrationUid, prompt, name, files, isSubmitting, isLoadingIntegrations],
+    [
+      integrationUid,
+      prompt,
+      name,
+      files,
+      isSubmitting,
+      isLoadingIntegrations,
+      pendingId,
+    ],
   );
 
   const handleSubmit = async (): Promise<void> => {
-    if (submitting.current) return;
+    if (submitting.current || pendingId) return;
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt && !files.length) {
       setError(translate("Describe your form or attach a reference file."));
@@ -144,14 +225,24 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
     setError(null);
     submitting.current = true;
     setIsSubmitting(true);
+    const requestId = newGenerationId();
+    rememberGeneration(requestId);
+    setPendingId(requestId);
+    setGenerationStatus("queued");
 
     try {
       let payload:
         | FormData
-        | { prompt: string; name?: string; integrationUid: string } = {
+        | {
+            prompt: string;
+            name?: string;
+            integrationUid: string;
+            requestId: string;
+          } = {
         prompt: trimmedPrompt,
         name: name.trim() || undefined,
         integrationUid,
+        requestId,
       };
       if (files.length) {
         payload = new FormData();
@@ -159,23 +250,38 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         payload.append("name", name.trim());
         payload.append("integrationUid", integrationUid);
         payload.append("referenceFileCount", String(files.length));
+        payload.append("requestId", requestId);
         files.forEach((file) => {
           payload.append("references[]", file);
         });
       }
-      const { data: form } = await axios.post<Form>(
+      const { data: form } = await axios.post<Form | GenerationState>(
         "/api/forms/generate-from-ai",
         payload,
       );
 
-      navigate(`/forms/${form.id}`);
-      closeModal();
+      if (!mounted.current) return;
+      // Accept a synchronous response while old/new PHP and client assets roll out.
+      if ("id" in form) {
+        clearPending();
+        navigate(`/forms/${form.id}`);
+        closeModal();
+      } else {
+        await monitor(requestId);
+      }
     } catch (err: unknown) {
       const gatewayFailure =
         axios.isAxiosError(err) &&
         ([502, 503, 504].includes(err.response?.status ?? 0) ||
           err.code === "ECONNABORTED" ||
           err.code === "ETIMEDOUT");
+      if (!mounted.current) return;
+      if (gatewayFailure || (axios.isAxiosError(err) && !err.response)) {
+        // Reconnect to this same request; never resubmit the provider call.
+        await monitor(requestId);
+        return;
+      }
+      clearPending();
       const message =
         axios.isAxiosError(err) &&
         typeof err.response?.data?.message === "string"
@@ -183,21 +289,17 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           : null;
 
       setError(
-        gatewayFailure
-          ? translate(
-              "The server timed out or lost its connection while generating the form. Check the Forms list before retrying; the form may still be created.",
-            )
-          : ((message &&
-            !/<(?:!doctype|html|head|body|script|style)\b/i.test(message)
-              ? message
-              : null) ??
-              translate(
-                "Form generation failed. Please try again or rephrase.",
-              )),
+        (message &&
+        !/<(?:!doctype|html|head|body|script|style)\b/i.test(message)
+          ? message
+          : null) ??
+          translate("Form generation failed. Please try again or rephrase."),
       );
     } finally {
-      submitting.current = false;
-      setIsSubmitting(false);
+      if (mounted.current) {
+        submitting.current = false;
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -370,16 +472,41 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
             )}
           </ErrorBlock>
         )}
+        {pendingId && isSubmitting && (
+          <p role="status">
+            {translate(
+              generationStatus === "queued"
+                ? "Waiting for Craft's queue. If this does not start, check the Queue Manager."
+                : "Generating your form. You can close this window and reopen Create with AI to check progress.",
+            )}
+          </p>
+        )}
         {error && <ErrorBlock>{error}</ErrorBlock>}
+        {pendingId && !isSubmitting && (
+          <div>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => void monitor(pendingId)}
+            >
+              {translate("Check progress")}
+            </button>{" "}
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                clearPending();
+                setError(null);
+              }}
+            >
+              {translate("Start a new request")}
+            </button>
+          </div>
+        )}
       </AiFormWrapper>
 
       <ModalFooter>
-        <button
-          type="button"
-          className="btn cancel"
-          disabled={isSubmitting}
-          onClick={closeModal}
-        >
+        <button type="button" className="btn cancel" onClick={closeModal}>
           {translate("Close")}
         </button>
         <button
@@ -388,6 +515,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           onClick={handleSubmit}
           disabled={
             isSubmitting ||
+            !!pendingId ||
             (!prompt.trim() && !files.length) ||
             incompatible ||
             !integrationUid ||
@@ -395,7 +523,11 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           }
         >
           <LoadingText
-            loadingText={translate("Generating...")}
+            loadingText={translate(
+              generationStatus === "queued"
+                ? "Waiting for queue..."
+                : "Generating...",
+            )}
             loading={isSubmitting}
             spinner
           >

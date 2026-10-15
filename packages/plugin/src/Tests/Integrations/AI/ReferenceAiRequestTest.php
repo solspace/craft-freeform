@@ -14,6 +14,7 @@ use Solspace\Freeform\Integrations\AI\Anthropic\Versions\AnthropicV1;
 use Solspace\Freeform\Integrations\AI\Gemini\Versions\GeminiV1Beta;
 use Solspace\Freeform\Integrations\AI\OpenAI\Versions\OpenAIV1;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\Versions\SolspaceAIV1;
+use Solspace\Freeform\Library\AI\FormGenerationException;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use yii\web\UploadedFile;
 
@@ -23,6 +24,27 @@ use yii\web\UploadedFile;
 #[CoversClass(SolspaceAIV1::class)]
 class ReferenceAiRequestTest extends TestCase
 {
+    #[TestWith([OpenAIV1::class])]
+    #[TestWith([SolspaceAIV1::class])]
+    #[TestWith([AnthropicV1::class])]
+    #[TestWith([GeminiV1Beta::class])]
+    public function testGenerationRejectsTokenLimitedResponsesEvenWhenJsonIsValid(string $class): void
+    {
+        $integration = (new \ReflectionClass($class))->newInstanceWithoutConstructor();
+        $response = match ($class) {
+            OpenAIV1::class, SolspaceAIV1::class => ['choices' => [['finish_reason' => 'length', 'message' => ['content' => '{"fields":[]}']]]],
+            AnthropicV1::class => ['stop_reason' => 'max_tokens', 'content' => [['text' => '{"fields":[]}']]],
+            default => ['candidates' => [['finishReason' => 'MAX_TOKENS', 'content' => ['parts' => [['text' => '{"fields":[]}']]]]]],
+        };
+        $client = new Client(['handler' => HandlerStack::create(new MockHandler([
+            new Response(200, [], json_encode($response)), new Response(200, [], json_encode($response)),
+        ]))]);
+        self::assertSame('{"fields":[]}', $integration->processAiRequest($client, 'system', 'user', ['model' => 'model', 'max_tokens' => 12000]));
+        $this->expectException(FormGenerationException::class);
+        $this->expectExceptionMessage('output limit');
+        $integration->processAiRequest($client, 'system', 'user', ['model' => 'model', 'max_tokens' => 12000, 'require_complete' => true]);
+    }
+
     #[TestWith(['gpt-5.6-luna', true])]
     #[TestWith(['gpt-6.1-sol', true])]
     #[TestWith(['gpt-5-mini', true])]

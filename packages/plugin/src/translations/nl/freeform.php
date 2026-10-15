@@ -12,6 +12,18 @@
  */
 
 return [
+    'Freeform: Generating form with AI' => 'Freeform: formulier genereren met AI',
+    'Form generation is no longer permitted for this user.' => 'Deze gebruiker mag geen formulieren meer genereren.',
+    'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Het genereren kon niet in de wachtrij worden geplaatst. Controleer de wachtrijbeheerder voordat je een nieuw verzoek start.',
+    'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.' => 'Het AI-antwoord is afgebroken door de uitvoerlimiet. Probeer minder pagina’s of een kleiner gedeelte. Er is geen formulier opgeslagen.',
+    'The generated form could not be saved. Review the reference and try a smaller section.' => 'Het gegenereerde formulier kon niet worden opgeslagen. Controleer de referentie en probeer een kleiner gedeelte.',
+    'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.' => 'De voortgang kon niet worden bevestigd. Controleer de formulierenlijst en wachtrijbeheerder voordat je een nieuw verzoek start.',
+    'Form generation could not complete. Check the Forms list before starting another request.' => 'Het genereren van het formulier kon niet worden voltooid. Controleer de formulierenlijst voordat je een nieuw verzoek start.',
+    'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.' => 'Wachten op de wachtrij van Craft. Controleer de wachtrijbeheerder als de verwerking niet start.',
+    'Generating your form. You can close this window and reopen Create with AI to check progress.' => 'Je formulier wordt gegenereerd. Je kunt dit venster sluiten en Maken met AI opnieuw openen om de voortgang te bekijken.',
+    'Check progress' => 'Voortgang bekijken',
+    'Start a new request' => 'Nieuw verzoek starten',
+    'Waiting for queue...' => 'Wachten op wachtrij...',
     'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'De AI-aanvraag heeft de tijdslimiet overschreden. Probeer een sneller model of minder referentiepagina’s en controleer de tijdslimieten van de server.',
     'AI authentication failed. Check the selected integration credentials and model access.' => 'AI-authenticatie is mislukt. Controleer de inloggegevens van de geselecteerde integratie en de toegang tot het model.',
     'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'De aanvraaglimiet of het quotum van de AI-provider is bereikt. Controleer je accountlimieten en probeer het later opnieuw.',

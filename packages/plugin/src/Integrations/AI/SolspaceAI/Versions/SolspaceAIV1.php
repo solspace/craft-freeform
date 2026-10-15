@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
@@ -100,6 +101,7 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegra
         ]);
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['choices'][0]['finish_reason'] ?? null, $options);
 
         return $data['choices'][0]['message']['content'] ?? '';
     }

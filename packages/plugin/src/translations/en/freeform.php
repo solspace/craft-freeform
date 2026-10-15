@@ -12,6 +12,18 @@
  */
 
 return [
+    'Freeform: Generating form with AI' => 'Freeform: Generating form with AI',
+    'Form generation is no longer permitted for this user.' => 'Form generation is no longer permitted for this user.',
+    'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Could not queue form generation. Check the Queue Manager before starting another request.',
+    'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.' => 'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.',
+    'The generated form could not be saved. Review the reference and try a smaller section.' => 'The generated form could not be saved. Review the reference and try a smaller section.',
+    'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.' => 'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.',
+    'Form generation could not complete. Check the Forms list before starting another request.' => 'Form generation could not complete. Check the Forms list before starting another request.',
+    'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.' => 'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.',
+    'Generating your form. You can close this window and reopen Create with AI to check progress.' => 'Generating your form. You can close this window and reopen Create with AI to check progress.',
+    'Check progress' => 'Check progress',
+    'Start a new request' => 'Start a new request',
+    'Waiting for queue...' => 'Waiting for queue...',
     'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.',
     'AI authentication failed. Check the selected integration credentials and model access.' => 'AI authentication failed. Check the selected integration credentials and model access.',
     'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'The AI provider rate limit or quota was reached. Check your account limits and try again later.',

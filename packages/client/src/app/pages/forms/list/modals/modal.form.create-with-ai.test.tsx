@@ -2,6 +2,7 @@ import axios from "axios";
 import { act, type ReactNode } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { pendingGenerationKey } from "./modal.form.ai-generation";
 import { CreateWithAiFormModal } from "./modal.form.create-with-ai";
 import { referenceFileError } from "./modal.form.reference-files";
 
@@ -10,6 +11,7 @@ vi.mock("react-router-dom", () => ({ useNavigate: () => fixture.navigate }));
 vi.mock("axios", () => ({
   default: {
     post: vi.fn(),
+    get: vi.fn(),
     isAxiosError: (error: { isAxiosError?: boolean }) =>
       error?.isAxiosError === true,
   },
@@ -107,6 +109,12 @@ function input(id: string, value: string) {
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
+  sessionStorage.clear();
+  vi.mocked(axios.post).mockReset();
+  vi.mocked(axios.get).mockReset();
+  vi.mocked(axios.get).mockResolvedValue({
+    data: { status: "complete", formId: 42 },
+  });
   host = document.createElement("div");
   document.body.append(host);
   root = createRoot(host);
@@ -116,8 +124,9 @@ afterEach(() => {
   act(() => root.unmount());
   host.remove();
   vi.unstubAllGlobals();
+  sessionStorage.clear();
 });
-it("explains gateway timeouts without displaying HTML or retrying automatically", async () => {
+it("reconnects after gateway errors without displaying HTML or resubmitting", async () => {
   input("prompt", "Contact form");
   vi.mocked(axios.post).mockRejectedValue({
     isAxiosError: true,
@@ -127,12 +136,12 @@ it("explains gateway timeouts without displaying HTML or retrying automatically"
     },
   });
   await act(async () => button("Generate form").click());
-  expect(host.textContent).toContain("Check the Forms list before retrying");
   expect(host.textContent).not.toContain("<html>");
   expect(host.textContent).not.toContain("nginx");
   expect(axios.post).toHaveBeenCalledTimes(1);
-  expect(fixture.navigate).not.toHaveBeenCalled();
-  expect(fixture.close).not.toHaveBeenCalled();
+  expect(axios.get).toHaveBeenCalledOnce();
+  expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
+  expect(fixture.close).toHaveBeenCalledOnce();
   expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
     "Contact form",
   );
@@ -150,6 +159,17 @@ it("discards HTML embedded in a JSON error message", async () => {
   await act(async () => button("Generate form").click());
   expect(host.textContent).toContain("Form generation failed");
   expect(host.textContent).not.toContain("gateway details");
+});
+it("resumes a queued generation when the dialog is reopened without another POST", async () => {
+  sessionStorage.setItem(pendingGenerationKey, "a".repeat(32));
+  act(() => root.unmount());
+  root = createRoot(host);
+  await act(async () =>
+    root.render(<CreateWithAiFormModal closeModal={fixture.close} />),
+  );
+  expect(axios.post).not.toHaveBeenCalled();
+  expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
+  expect(sessionStorage.getItem(pendingGenerationKey)).toBeNull();
 });
 it("allows references through SolspaceAI without a client model setting", async () => {
   const select = host.querySelector<HTMLSelectElement>("select")!;
@@ -200,6 +220,7 @@ it("preserves JSON for text-only requests", async () => {
     prompt: "Contact form",
     name: undefined,
     integrationUid: "vision",
+    requestId: expect.stringMatching(/^[a-f0-9]{32}$/),
   });
 });
 it("retains references after failure and allows retry", async () => {
@@ -249,7 +270,7 @@ it("prevents duplicate submission while generation is pending", async () => {
     button("Generate form").click();
   });
   expect(axios.post).toHaveBeenCalledOnce();
-  expect(button("Close").disabled).toBe(true);
+  expect(button("Close").disabled).toBe(false);
   await act(async () => resolve({ data: { id: 9 } }));
 });
 it("rejects invalid, empty, excessive and oversized uploads", () => {

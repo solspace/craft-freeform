@@ -12,6 +12,18 @@
  */
 
 return [
+    'Freeform: Generating form with AI' => 'Freeform: generazione del modulo con IA',
+    'Form generation is no longer permitted for this user.' => 'Questo utente non è più autorizzato a generare moduli.',
+    'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Impossibile accodare la generazione del modulo. Controlla il gestore della coda prima di avviare un’altra richiesta.',
+    'The AI response was cut short by its output limit. Try fewer pages or a smaller section. No form was saved.' => 'La risposta dell’IA è stata troncata dal limite di output. Prova con meno pagine o una sezione più piccola. Nessun modulo è stato salvato.',
+    'The generated form could not be saved. Review the reference and try a smaller section.' => 'Impossibile salvare il modulo generato. Controlla il riferimento e prova con una sezione più piccola.',
+    'Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.' => 'Impossibile confermare l’avanzamento. Controlla l’elenco dei moduli e il gestore della coda prima di avviare un’altra richiesta.',
+    'Form generation could not complete. Check the Forms list before starting another request.' => 'Impossibile completare la generazione del modulo. Controlla l’elenco dei moduli prima di avviare un’altra richiesta.',
+    'Waiting for Craft\'s queue. If this does not start, check the Queue Manager.' => 'In attesa della coda di Craft. Se l’elaborazione non si avvia, controlla il gestore della coda.',
+    'Generating your form. You can close this window and reopen Create with AI to check progress.' => 'Generazione del modulo in corso. Puoi chiudere questa finestra e riaprire « Crea con IA » per controllare l’avanzamento.',
+    'Check progress' => 'Controlla avanzamento',
+    'Start a new request' => 'Avvia una nuova richiesta',
+    'Waiting for queue...' => 'In attesa della coda...',
     'The AI request timed out. Try a faster model or fewer reference pages, and check the server time limits.' => 'La richiesta IA è scaduta. Prova un modello più veloce o meno pagine di riferimento e controlla i limiti di tempo del server.',
     'AI authentication failed. Check the selected integration credentials and model access.' => 'Autenticazione IA non riuscita. Controlla le credenziali dell’integrazione selezionata e l’accesso al modello.',
     'The AI provider rate limit or quota was reached. Check your account limits and try again later.' => 'È stato raggiunto il limite di richieste o la quota del fornitore IA. Controlla i limiti del tuo account e riprova più tardi.',

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.16.7 - Unreleased
+## 5.16.7 - 2026-10-15
 
 ### Fixed
 - Fixed native Date & Time fields appearing empty when returning to an earlier page of a multi-page form.

@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\Gemini\BaseGeminiIntegration;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Edition(Edition::PRO)]
@@ -16,8 +18,13 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class GeminiV1Beta extends BaseGeminiIntegration
+class GeminiV1Beta extends BaseGeminiIntegration implements ReferenceAiIntegrationInterface
 {
+    public function getReferenceMimeTypes(): array
+    {
+        return preg_match('/^(?:models\/)?gemini-(?!1\.0|.*(?:embedding|image|tts))/i', $this->getModel()) ? ReferenceFile::MIME_TYPES : [];
+    }
+
     public function getApiRootUrl(): string
     {
         return 'https://generativelanguage.googleapis.com/v1beta';
@@ -47,6 +54,10 @@ class GeminiV1Beta extends BaseGeminiIntegration
         string $userContent,
         array $options = []
     ): string {
+        $parts = [['text' => $userContent]];
+        foreach ($options['referenceFiles'] ?? [] as $file) {
+            $parts[] = ['inline_data' => ['mime_type' => $file->mimeType, 'data' => $file->getBase64()]];
+        }
         $payload = [
             // Provide system instructions via systemInstruction (no role required here)
             'systemInstruction' => [
@@ -56,7 +67,7 @@ class GeminiV1Beta extends BaseGeminiIntegration
             'contents' => [
                 [
                     'role' => 'user',
-                    'parts' => [['text' => $userContent]],
+                    'parts' => $parts,
                 ],
             ],
             'generationConfig' => [
@@ -68,7 +79,7 @@ class GeminiV1Beta extends BaseGeminiIntegration
         $model = $options['model'] ?? $this->getModel();
         $response = $client->post(
             $this->getEndpoint('/models/'.$model.':generateContent'),
-            ['json' => $payload]
+            ['json' => $payload, 'timeout' => $options['timeout'] ?? 120]
         );
 
         $data = json_decode((string) $response->getBody(), true);

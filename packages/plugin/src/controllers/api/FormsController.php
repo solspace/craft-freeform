@@ -7,6 +7,9 @@ use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
@@ -19,6 +22,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class FormsController extends BaseApiController
 {
@@ -180,21 +184,55 @@ class FormsController extends BaseApiController
         return $this->asEmptyResponse(204);
     }
 
+    public function actionAiOptions(): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+        $options = [];
+        foreach ($this->getIntegrationsService()->getAllIntegrations() as $model) {
+            if (!is_subclass_of($model->class, AiIntegrationInterface::class)) {
+                continue;
+            }
+            $integration = $model->getIntegrationObject();
+            if (!$integration->isEnabled()) {
+                continue;
+            }
+            $options[] = [
+                'id' => $model->id, 'uid' => $model->uid, 'name' => $model->name, 'handle' => $model->handle,
+                'model' => $integration->getModel(),
+                'referenceMimeTypes' => $integration instanceof ReferenceAiIntegrationInterface ? $integration->getReferenceMimeTypes() : [],
+            ];
+        }
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($options);
+    }
+
     public function actionGenerateFromAi(): Response
     {
         $this->requirePostRequest();
+        $this->requireCpRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
-        $body = json_decode($this->request->getRawBody(), true) ?: [];
+        $body = $this->request->getBodyParams();
+        if (!\is_array($body)) {
+            throw new BadRequestHttpException('Invalid form generation request.');
+        }
+        $uploads = UploadedFile::getInstancesByName('references');
+        if (!$body && str_starts_with($this->request->getContentType() ?? '', 'multipart/form-data')) {
+            throw new BadRequestHttpException(Freeform::t('A reference file could not be uploaded. Check the server upload limits and try again.'));
+        }
         $prompt = isset($body['prompt']) && \is_string($body['prompt']) ? trim($body['prompt']) : '';
         $name = isset($body['name']) && \is_string($body['name']) ? trim($body['name']) : null;
         $integrationUid = isset($body['integrationUid']) && \is_string($body['integrationUid']) ? trim($body['integrationUid']) : '';
 
-        if ('' === $prompt) {
+        if ('' === $prompt && !$uploads) {
             throw new BadRequestHttpException(Freeform::t('Prompt is required.'));
         }
         if ('' === $integrationUid) {
@@ -202,7 +240,12 @@ class FormsController extends BaseApiController
         }
 
         try {
-            $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid);
+            $expectedCount = filter_var($body['referenceFileCount'] ?? \count($uploads), \FILTER_VALIDATE_INT);
+            if (false === $expectedCount || $expectedCount !== \count($uploads)) {
+                throw new \InvalidArgumentException(Freeform::t('A reference file could not be uploaded. Check the server upload limits and try again.'));
+            }
+            $files = ReferenceFile::fromUploads($uploads);
+            $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid, referenceFiles: $files);
             $afterEvent = new PersistFormEvent((object) ['form' => (object) []], $form->getId());
             $afterEvent->setForm($form);
             Event::trigger(self::class, self::EVENT_AFTER_SAVE_FORM, $afterEvent);

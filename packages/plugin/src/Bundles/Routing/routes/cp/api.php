@@ -30,6 +30,7 @@ return [
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
 
     // FORM ENTRIES

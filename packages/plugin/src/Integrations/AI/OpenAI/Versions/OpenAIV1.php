@@ -6,6 +6,8 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\OpenAI\BaseOpenAIIntegration;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Edition(Edition::PRO)]
@@ -16,8 +18,18 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class OpenAIV1 extends BaseOpenAIIntegration
+class OpenAIV1 extends BaseOpenAIIntegration implements ReferenceAiIntegrationInterface
 {
+    public function getReferenceMimeTypes(): array
+    {
+        $model = $this->getModel();
+        if (preg_match('/audio|realtime|tts|embedding|image|search/i', $model)) {
+            return [];
+        }
+
+        return preg_match('/^(?:ft:)?(?:gpt-(?:4o|4\.1|[5-9])|chatgpt-4o|o[134](?!-(?:mini|preview|pro|deep-research)))/i', $model) ? ReferenceFile::MIME_TYPES : [];
+    }
+
     public function getApiRootUrl(): string
     {
         return 'https://api.openai.com/v1';
@@ -47,6 +59,15 @@ class OpenAIV1 extends BaseOpenAIIntegration
         string $userContent,
         array $options = []
     ): string {
+        $content = $userContent;
+        if (!empty($options['referenceFiles'])) {
+            $content = [['type' => 'text', 'text' => $userContent]];
+            foreach ($options['referenceFiles'] as $file) {
+                $content[] = 'application/pdf' === $file->mimeType
+                    ? ['type' => 'file', 'file' => ['filename' => $file->name, 'file_data' => $file->getDataUrl()]]
+                    : ['type' => 'image_url', 'image_url' => ['url' => $file->getDataUrl(), 'detail' => 'high']];
+            }
+        }
         $payload = [
             'model' => $options['model'] ?? $this->getModel(),
             'max_completion_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
@@ -57,14 +78,14 @@ class OpenAIV1 extends BaseOpenAIIntegration
                 ],
                 [
                     'role' => 'user',
-                    'content' => $userContent,
+                    'content' => $content,
                 ],
             ],
         ];
 
         $response = $client->post(
             $this->getEndpoint('/chat/completions'),
-            ['json' => $payload]
+            ['json' => $payload, 'timeout' => $options['timeout'] ?? 120]
         );
 
         $data = json_decode((string) $response->getBody(), true);

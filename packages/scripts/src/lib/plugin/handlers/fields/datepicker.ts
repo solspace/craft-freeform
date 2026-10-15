@@ -19,43 +19,7 @@ class DatePicker implements FreeformHandler {
   constructor(freeform: Freeform) {
     this.freeform = freeform;
 
-    if (!this.freeform.has("data-scripts-datepicker")) {
-      return;
-    }
-
-    // CSS can be added anytime
-    createLink(
-      "//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css",
-    );
-
-    // If flatpickr is already on the page (after a re-render), bind now
-    if (hasFlatpickr()) {
-      this.reload();
-
-      return;
-    }
-
-    // If another DatePicker instance already kicked off loading, just wait for it
-    if (DatePicker.flatpickrLoading) {
-      this.waitForFlatpickrThenReload();
-
-      return;
-    }
-
-    DatePicker.flatpickrLoading = true;
-
-    createScript(
-      "//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js",
-      {
-        onLoad: () => {
-          DatePicker.flatpickrLoading = false;
-
-          this.reload();
-        },
-      },
-    );
-
-    this.waitForFlatpickrThenReload();
+    this.reload();
   }
 
   waitForFlatpickrThenReload = (retries = 40, interval = 50) => {
@@ -80,20 +44,40 @@ class DatePicker implements FreeformHandler {
       return;
     }
 
+    const pickers = Array.from(
+      this.freeform.form.querySelectorAll(
+        "*[data-datepicker][data-datepicker-enabled]",
+      ),
+    ).filter((picker) => {
+      const enabled = picker.getAttribute("data-datepicker-enabled");
+      return enabled !== "0" && enabled !== "false";
+    });
+    // The form-level flag covers all pages. Load assets only when this page
+    // actually has a picker, including when fields arrive after an AJAX reload.
+    if (!pickers.length) return;
+
+    createLink(
+      "https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css",
+    );
     const flatpickr = getFlatpickr();
     if (!flatpickr) {
+      if (!DatePicker.flatpickrLoading) {
+        DatePicker.flatpickrLoading = true;
+        createScript(
+          "https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js",
+          {
+            onLoad: () => {
+              DatePicker.flatpickrLoading = false;
+              this.reload();
+            },
+          },
+        );
+      }
+      this.waitForFlatpickrThenReload();
       return;
     }
 
-    const pickers = this.freeform.form.querySelectorAll(
-      "*[data-datepicker][data-datepicker-enabled]",
-    );
     pickers.forEach((picker) => {
-      const enabledAttribute = picker.getAttribute("data-datepicker-enabled");
-      if (enabledAttribute === "0" || enabledAttribute === "false") {
-        return;
-      }
-
       // Already bound (after multiple freeform-ready runs)
       if (hasFlatpickrInstance(picker)) {
         return;
@@ -131,9 +115,14 @@ class DatePicker implements FreeformHandler {
         flatpickr: instance,
       });
 
+      // English/default strings are included in Flatpickr itself.
+      if (locale === "default" || locale === "en") {
+        return;
+      }
+
       if (!this.loadedLocales[locale]) {
         createScript(
-          `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`,
+          `https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`,
           {
             onLoad: (script) => {
               instance.set("locale", locale);

@@ -1,5 +1,5 @@
 import SpinnerIcon from "@components/loaders/spinner";
-import { useAppDispatch } from "@editor/store";
+import { type RootState, useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import type { Field } from "@editor/store/slices/layout/fields";
@@ -10,7 +10,7 @@ import classes from "@ff-client/utils/classes";
 import { hasErrors } from "@ff-client/utils/errors";
 import DOMPurify from "dompurify";
 import type React from "react";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
@@ -33,29 +33,33 @@ type Props = {
   field: Field;
 };
 
-export const FieldCell: React.FC<Props> = ({ field }) => {
+export const FieldCell: React.FC<Props> = memo(({ field }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field?.typeClass);
   const { uid } = field;
 
-  const {
-    active,
-    type: contextType,
-    uid: contextUid,
-  } = useSelector(contextSelectors.focus);
+  const isActive = useSelector((state: RootState) => {
+    const focus = contextSelectors.focus(state);
+    return focus.active && focus.type === FocusType.Field && focus.uid === uid;
+  });
   const noLabel = useMemo(
     () => type?.implements?.includes("noLabel") || false,
     [type],
   );
-  const isActive = useMemo(() => {
-    return active && contextType === FocusType.Field && contextUid === uid;
-  }, [active, contextType, contextUid, uid]);
 
   const [preview, isLoadingPreview] = useFieldPreview(field, type);
   const [spinnerAnimation, iconAnimation] =
     useLoaderAnimation(isLoadingPreview);
 
   const { getTranslation } = useTranslations(field);
+  const previewMarkup = useMemo(
+    () => ({ __html: DOMPurify.sanitize(preview) }),
+    [preview],
+  );
+  const iconMarkup = useMemo(
+    () => ({ __html: DOMPurify.sanitize(type?.icon || "") }),
+    [type?.icon],
+  );
 
   if (field?.properties === undefined || !type) {
     return null;
@@ -84,15 +88,12 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       {!noLabel && (
         <Label className="label">
           <LabelIcon>
-            <Icon style={spinnerAnimation}>
-              <SpinnerIcon />
-            </Icon>
-            <Icon
-              style={iconAnimation}
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(type.icon),
-              }}
-            />
+            {isLoadingPreview && (
+              <Icon style={spinnerAnimation}>
+                <SpinnerIcon />
+              </Icon>
+            )}
+            <Icon style={iconAnimation} dangerouslySetInnerHTML={iconMarkup} />
           </LabelIcon>
 
           <LabelText>{label}</LabelText>
@@ -110,18 +111,14 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       {type.type !== Type.Group &&
         (noLabel ? (
           <Row>
-            <HtmlPreviewElement
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(preview),
-              }}
-            />
+            <HtmlPreviewElement dangerouslySetInnerHTML={previewMarkup} />
             <FieldAssociationsBadges uid={uid} />
           </Row>
         ) : (
-          <div
-            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(preview) }}
-          />
+          <div dangerouslySetInnerHTML={previewMarkup} />
         ))}
     </FieldCellWrapper>
   );
-};
+});
+
+FieldCell.displayName = "FieldCell";

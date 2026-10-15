@@ -4,9 +4,10 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { FormPreview } from "./preview";
 
 const fixture = vi.hoisted(() => ({
-  form: { id: 42, isNew: false },
+  form: { id: 42 as number | undefined, isNew: false },
   admin: true,
   post: vi.fn(),
+  templates: vi.fn(),
 }));
 vi.mock("axios", () => ({ default: { post: fixture.post } }));
 vi.mock("react-redux", () => ({ useSelector: () => fixture.form }));
@@ -46,13 +47,16 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (value: string) => value,
 }));
 vi.mock("@ff-client/queries/forms", () => ({
-  useQueryPreviewTemplates: () => ({
-    data: [
-      { value: "tailwind-4-dark/index.twig", label: "Tailwind 4 Dark" },
-      { value: "basic-light/index.twig", label: "Basic Light" },
-    ],
-    isLoading: false,
-  }),
+  useQueryPreviewTemplates: (id?: number) => {
+    fixture.templates(id);
+    return {
+      data: [
+        { value: "tailwind-4-dark/index.twig", label: "Tailwind 4 Dark" },
+        { value: "basic-light/index.twig", label: "Basic Light" },
+      ],
+      isLoading: false,
+    };
+  },
   useQueryFormSettings: () => ({
     data: [
       {
@@ -76,6 +80,7 @@ beforeEach(() => {
   fixture.form = { id: 42, isNew: false };
   fixture.admin = true;
   fixture.post.mockReset();
+  fixture.templates.mockClear();
   fixture.post.mockResolvedValue({
     data: {
       html: "<p>Saved form</p>",
@@ -101,7 +106,10 @@ it("renders an opaque sandbox and posts only a page selector to the protected ro
   expect(fixture.post).toHaveBeenCalledWith(
     "/api/forms/42/preview",
     { page: 0, advance: false, values: {}, templateOverride: null },
-    expect.objectContaining({ params: { site: "default", revision: 0 } }),
+    expect.objectContaining({
+      params: { site: "default", revision: 0 },
+      headers: { "X-Requested-With": "XMLHttpRequest" },
+    }),
   );
   const frame = host.querySelector("iframe")!;
   expect(frame.getAttribute("sandbox")).toBe("allow-scripts");
@@ -155,10 +163,29 @@ it("hides asset configuration for editors without admin access", async () => {
 });
 
 it("does not request a preview before the form has been saved", async () => {
+  fixture.form.id = undefined;
   fixture.form.isNew = true;
   await act(async () => root.render(<FormPreview />));
   expect(fixture.post).not.toHaveBeenCalled();
   expect(host.textContent).toContain("Save this form before previewing it.");
+  expect(fixture.templates).toHaveBeenCalledWith(undefined);
+  expect(host.querySelector("button")!.disabled).toBe(true);
+});
+
+it("previews a saved form created within the last hour and loads its template options", async () => {
+  fixture.form.isNew = true;
+  await act(async () => root.render(<FormPreview />));
+  expect(fixture.post).toHaveBeenCalledWith(
+    "/api/forms/42/preview",
+    expect.anything(),
+    expect.anything(),
+  );
+  expect(fixture.templates).toHaveBeenCalledWith(42);
+  expect(host.querySelector("iframe")).not.toBeNull();
+  expect(host.querySelector("button")!.disabled).toBe(false);
+  expect(host.textContent).not.toContain(
+    "Save this form before previewing it.",
+  );
 });
 
 it("clears stale preview content when rendering fails", async () => {

@@ -36,11 +36,13 @@ type PreviewData = {
 
 export const FormPreview: React.FC = () => {
   const form = useSelector(formSelectors.current);
+  // isNew marks forms created within the last hour, including saved forms.
+  const hasSavedForm = Boolean(form.id);
   const formErrors = useSelector(formSelectors.errors);
   const { current } = useSiteContext();
   const { data: settings } = useQueryFormSettings();
   const { data: samples, isLoading: samplesLoading } = useQueryPreviewTemplates(
-    form.isNew ? undefined : form.id,
+    form.id,
   );
   const path = useResolvedPath("");
   const [width, setWidth] = useState("100%");
@@ -100,7 +102,7 @@ export const FormPreview: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (form.isNew || !form.id) return;
+    if (!hasSavedForm) return;
     const nextIdentity = `${form.id}:${current?.handle}`;
     const changed = identity.current !== nextIdentity;
     if (changed) {
@@ -134,6 +136,7 @@ export const FormPreview: React.FC = () => {
         {
           params: { site: current?.handle, revision: request.revision },
           signal: controller.signal,
+          headers: { "X-Requested-With": "XMLHttpRequest" },
         },
       )
       .then(({ data }) => {
@@ -164,7 +167,7 @@ export const FormPreview: React.FC = () => {
         }
       });
     return () => controller.abort();
-  }, [form.id, form.isNew, current?.handle, request, template]);
+  }, [form.id, hasSavedForm, current?.handle, request, template]);
 
   const properties = settings?.find(
     (item) => item.handle === "general",
@@ -288,7 +291,7 @@ export const FormPreview: React.FC = () => {
           <button
             type="button"
             className="btn"
-            disabled={loading || form.isNew}
+            disabled={loading || !hasSavedForm}
             onClick={() =>
               setRequest((previous) => ({
                 page: active.current.page,
@@ -305,7 +308,7 @@ export const FormPreview: React.FC = () => {
             {translate("Preview complete. No submission was sent.")}
           </p>
         )}
-        {form.isNew && (
+        {!hasSavedForm && (
           <p role="status">
             {translate("Save this form before previewing it.")}
           </p>

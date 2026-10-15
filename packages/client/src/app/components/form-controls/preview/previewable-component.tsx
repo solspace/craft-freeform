@@ -40,6 +40,7 @@ export const PreviewableComponent: React.FC<Props> = ({
   children,
 }) => {
   const [isEditing, setIsEditing] = useState(undefined);
+  const [hasOpened, setHasOpened] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -71,6 +72,7 @@ export const PreviewableComponent: React.FC<Props> = ({
 
   const zIndex = useZIndex();
   const open = (): void => {
+    setHasOpened(true);
     setIsEditing(true);
     onEdit?.();
   };
@@ -102,7 +104,7 @@ export const PreviewableComponent: React.FC<Props> = ({
         >
           {typeof children === "function"
             ? children(isEditing, close)
-            : children}
+            : hasOpened && children}
         </EditableContentWrapper>
       </PopUpPortal>
 

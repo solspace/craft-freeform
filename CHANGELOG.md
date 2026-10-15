@@ -1,9 +1,11 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.16.7 - Unreleased
 
 ### Fixed
-- Fixed export profile filters overflowing when form fields have long labels.
+- Fixed native Date & Time fields appearing empty when returning to an earlier page of a multi-page form.
+- Fixed minimum and maximum date validation for native date-only inputs.
+- Fixed an issue where long field labels caused export profile filters to overflow and hide other filter controls.
 
 ## 5.16.6 - 2026-10-07
 

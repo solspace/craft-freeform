@@ -14,6 +14,7 @@ Visit the [console area](https://console.anthropic.com/) on the Anthropic site t
 
 - Copy and paste your API key into the integration in Freeform.
 - Select the AI model you want to use. The default is `claude-haiku-4-5-20251001`.
+  - After entering an API key, search the models available to that key. Verified short aliases may be shown. Use **Other / Custom model ID** if your model is not listed; existing selections are kept.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
 - Configure the Max Tokens setting. This can be overrided per form.
 - Click the **Save** button.

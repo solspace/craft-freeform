@@ -17,17 +17,22 @@ return [
     'freeform/api/forms/delete' => 'freeform/api/forms/delete',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
+    'freeform/api/forms/<id:\d+>/preview' => 'freeform/api/forms/preview',
+    'freeform/api/forms/<id:\d+>/preview-templates' => 'freeform/api/forms/preview-templates',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM GROUPS
     'freeform/api/forms/groups' => 'freeform/api/form-groups',
+    'freeform/api/forms/groups/move' => 'freeform/api/form-groups/move',
 
     // FORM ELEMENTS
     'freeform/api/forms/<id:\d+>/elements' => 'freeform/api/forms/elements/get',
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
+    'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',
@@ -57,6 +62,7 @@ return [
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>/delete' => 'freeform/api/integrations/delete',
     'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
+    'freeform/api/integrations/models' => 'freeform/api/integrations/models',
     'freeform/api/integrations/navigation' => 'freeform/api/integrations/navigation',
     'freeform/api/integrations/properties/<id:\d+>' => 'freeform/api/integrations/properties',
     'freeform/api/integrations/properties/<type:[a-zA-Z0-9\-]+>/<integration:[a-zA-Z0-9\-_]+>' => 'freeform/api/integrations/properties',

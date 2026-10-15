@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors;
 
-use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
 
 class SummaryProcessor extends AbstractFieldProcessor
 {
@@ -13,14 +13,13 @@ class SummaryProcessor extends AbstractFieldProcessor
 
     public function getFreeformFieldClass(): string
     {
-        return HtmlField::class;
+        return SummaryField::class;
     }
 
     public function getFieldMetadata($formField): array
     {
         $metadata = $this->getBaseMetadata($formField);
-        $metadata['content'] = $formField->content ?? '';
-        $metadata['fieldType'] = 'summary';
+        $metadata['hideEmpty'] = true;
 
         return $metadata;
     }

@@ -14,6 +14,7 @@ Visit the [Google AI Studio](https://aistudio.google.com/app/apikey) site to get
 
 - Copy and paste your API key into the integration in Freeform.
 - Select the AI model you want to use. The default is `gemini-3.5-flash-lite`.
+  - After entering an API key, search the models available to that key. A verified `-latest` alias may also be offered; it can point to a newer model later. Use **Other / Custom model ID** if your model is not listed.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
   - Model IDs change over time. Confirm the current ID in [Google AI Studio](https://aistudio.google.com/) / Gemini API docs before saving. Invalid IDs return `404`; temporary capacity issues return `503`.
 - Configure the Max Tokens and Temperature settings. These can be overrided per form.

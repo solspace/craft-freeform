@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Routing;
 
 use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
+use craft\web\View;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Symfony\Component\Finder\Finder;
 use yii\base\Event;
@@ -22,6 +23,14 @@ class RoutingBundle extends FeatureBundle
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             fn (RegisterUrlRulesEvent $event) => $this->registerRoutesIn(__DIR__.'/routes/site', $event)
+        );
+
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+            static function ($event) {
+                $event->roots['freeform-embed'] = __DIR__.'/Templates';
+            }
         );
     }
 

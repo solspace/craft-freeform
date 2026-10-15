@@ -81,7 +81,8 @@ class RulesBundle extends FeatureBundle
                 $processEvent
             );
 
-            $values[$field->getHandle()] = $processEvent->getValue();
+            $values[$field->getHandle()] = $event->getForm()->isPreview() && $this->ruleValidator->isFieldHidden($event->getForm(), $field)
+                ? null : $processEvent->getValue();
         }
 
         $filterRules = static fn ($rule) => $rule->getConditions()->count() > 0;

@@ -1,11 +1,9 @@
 type ClassList = string | string[];
 
 export const getClassArray = (classList: ClassList): string[] => {
-  if (typeof classList === "string") {
-    classList = classList.split(" ");
-  }
-
-  return classList;
+  return (typeof classList === "string" ? [classList] : classList)
+    .flatMap((classes) => classes.split(/\s+/))
+    .filter(Boolean);
 };
 
 export const addClass = (elem: HTMLElement, classList: ClassList): void => {

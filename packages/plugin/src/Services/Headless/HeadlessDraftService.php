@@ -21,6 +21,40 @@ use yii\base\Event;
 class HeadlessDraftService
 {
     /**
+     * Client-supplied submit context keys accepted by the headless API.
+     * Everything else (disable, elementId, submissionId, …) is stripped before
+     * registerContext so callers cannot override internal form settings.
+     *
+     * @var string[]
+     */
+    public const ALLOWED_CONTEXT_KEYS = [
+        'draftToken',
+        'draftKey',
+        'stateToken',
+        'sourceUrl',
+        'token',
+    ];
+
+    /**
+     * Keep only allow-listed client context keys.
+     *
+     * @param array<string, mixed> $context
+     *
+     * @return array<string, mixed>
+     */
+    public function filterContext(array $context): array
+    {
+        $filtered = [];
+        foreach (self::ALLOWED_CONTEXT_KEYS as $key) {
+            if (\array_key_exists($key, $context)) {
+                $filtered[$key] = $context[$key];
+            }
+        }
+
+        return $filtered;
+    }
+
+    /**
      * @param array<string, mixed> $context
      *
      * @return null|array{token: string, key: string, resumeUrl: null|string}
@@ -38,19 +72,18 @@ class HeadlessDraftService
             return null;
         }
 
+        // Only update an existing draft when LoadSavedForm already proved the
+        // supplied key decrypts that token for this form. Token alone is not
+        // enough — otherwise a guessed token + arbitrary key could overwrite.
         $isLoaded = SaveFormsHelper::isLoaded($form);
         [$key, $token] = SaveFormsHelper::getTokens($form);
 
-        $contextToken = $context['draftToken'] ?? null;
-        $contextKey = $context['draftKey'] ?? null;
-        if ($contextToken && $contextKey) {
-            $token = (string) $contextToken;
-            $key = (string) $contextKey;
-        }
-
         $record = null;
-        if (($isLoaded || ($contextToken && $contextKey)) && $token && $key) {
-            $record = SavedFormRecord::findOne(['token' => $token]);
+        if ($isLoaded && $token && $key) {
+            $record = SavedFormRecord::findOne([
+                'formId' => $form->getId(),
+                'token' => $token,
+            ]);
         }
 
         if (!$record) {

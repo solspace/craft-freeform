@@ -1,0 +1,19 @@
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="ff-daisy-table-scroll">
+        {{ field.renderInput({
+            tableAttributes: {
+                table: { class: 'table table-sm' },
+                input: { class: 'input' },
+                textarea: { class: 'textarea' },
+                dropdown: { class: 'select' },
+                checkbox: { class: 'checkbox' },
+                radios: { class: 'radio' },
+                addButton: { class: 'btn btn-primary' },
+                removeButton: { class: 'btn' },
+            },
+        }) }}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

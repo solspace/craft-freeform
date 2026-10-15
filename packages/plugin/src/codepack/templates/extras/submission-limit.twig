@@ -54,14 +54,12 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>This page template contains a hardcoded value of <code>5</code> for the submission limit. If you wish to experience the limit, you'll need to reach 5 or more submissions, or adjust the limit inside the template.</li>
-                <li>This page template contains a conditional that will hide the form once the submission limit has been reached.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+                <li>This page template sets a limit of <code>{{ submissionLimit|default(10) }}</code> submissions. To experience the limit, submit that many entries or adjust the limit inside the template.</li>
+            <li>This page template contains a conditional that will hide the form once the submission limit has been reached.</li>
+        </ol>
     </div>
 
 {% endblock %}

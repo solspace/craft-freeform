@@ -45,7 +45,14 @@ class Custom implements OptionsConfigurationInterface
         $collection = new OptionCollection();
         foreach ($this->options as $option) {
             if (\is_array($translations)) {
-                $translatedOption = array_find($translations, static fn ($item) => $item->value === $option->getValue());
+                $translatedOption = null;
+                foreach ($translations as $translation) {
+                    if ($translation->value === $option->getValue()) {
+                        $translatedOption = $translation;
+
+                        break;
+                    }
+                }
                 if ($translatedOption) {
                     $option = new Option(
                         $option->getValue(),

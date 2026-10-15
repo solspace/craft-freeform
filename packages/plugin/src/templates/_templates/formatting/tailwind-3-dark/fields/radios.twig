@@ -20,6 +20,8 @@
                     id="{{ field.idAttribute }}-{{ index }}"
                     class="{{ field.attributes.input.get("class") }}{{ field.hasErrors ? ' border-red-500' }}"
                     {{ option.value == field.value ? "checked" }}
+                    {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+                    {% if field.hasErrors %}aria-invalid="true"{% endif %}
             />
             <label for="{{ field.idAttribute }}-{{ index }}" class="ml-2 font-normal text-zinc-300">
                 {{ option.label|t('freeform')|raw }}

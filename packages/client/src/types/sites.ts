@@ -3,4 +3,6 @@ export type Site = {
   handle: string;
   name: string;
   primary: boolean;
+  embedUrl: string;
+  embedScriptUrl: string;
 };

@@ -114,7 +114,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 
     public function isScriptsDisabled(): bool
     {
-        return $this->getSettingsService()->isManualScripts();
+        return !$this->form->isPreview() && $this->getSettingsService()->isManualScripts();
     }
 
     public function getSettingsService(): SettingsService
@@ -127,6 +127,21 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         string $type = self::ELEMENT_SCRIPT,
         array $attributes = [],
     ): self {
+        if ($this->form->isPreview()) {
+            $path = realpath(FileHelper::isAbsolute($filePath) ? $filePath : __DIR__.'/../../Resources/'.$filePath);
+            $root = realpath(__DIR__.'/../../Resources');
+            if ($path && str_starts_with($path, $root.\DIRECTORY_SEPARATOR)) {
+                $content = file_get_contents($path);
+                if (self::ELEMENT_SCRIPT === $type) {
+                    $this->addChunk('<script>'.str_ireplace('</script', '<\/script', $content).'</script>');
+                } else {
+                    $this->addChunk('<style>'.str_ireplace('</style', '<\/style', $content).'</style>');
+                }
+            }
+
+            return $this;
+        }
+
         if ($this->isScriptsDisabled() && !$this->collectScripts) {
             return $this;
         }

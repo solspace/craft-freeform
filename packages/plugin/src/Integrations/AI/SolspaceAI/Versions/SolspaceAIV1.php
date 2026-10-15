@@ -5,7 +5,10 @@ namespace Solspace\Freeform\Integrations\AI\SolspaceAI\Versions;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
@@ -17,8 +20,14 @@ use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegrationInterface
+class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegrationInterface, ReferenceAiIntegrationInterface
 {
+    public function getReferenceMimeTypes(): array
+    {
+        // The hosted service chooses the document-capable model server-side.
+        return ReferenceFile::MIME_TYPES;
+    }
+
     public function getApiRootUrl(): string
     {
         return $this->getApiBaseUrl();
@@ -59,6 +68,15 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegra
         string $userContent,
         array $options = []
     ): string {
+        $content = $userContent;
+        if (!empty($options['referenceFiles'])) {
+            $content = [['type' => 'text', 'text' => $userContent]];
+            foreach ($options['referenceFiles'] as $file) {
+                $content[] = 'application/pdf' === $file->mimeType
+                    ? ['type' => 'file', 'file' => ['filename' => $file->name, 'file_data' => $file->getDataUrl()]]
+                    : ['type' => 'image_url', 'image_url' => ['url' => $file->getDataUrl(), 'detail' => 'high']];
+            }
+        }
         $payload = [
             'messages' => [
                 [
@@ -67,16 +85,23 @@ class SolspaceAIV1 extends BaseSolspaceAIIntegration implements SingletonIntegra
                 ],
                 [
                     'role' => 'user',
-                    'content' => $userContent,
+                    'content' => $content,
                 ],
             ],
         ];
+        // Keep model selection on SolspaceAI; an empty or client-selected model
+        // would bypass the proxy's default or conflict with its key restrictions.
+        if (isset($options['max_tokens'])) {
+            $payload['max_completion_tokens'] = $options['max_tokens'];
+        }
 
         $response = $client->post($this->getEndpoint('/chat/completions'), [
             'json' => $payload,
+            'timeout' => $options['timeout'] ?? 120,
         ]);
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['choices'][0]['finish_reason'] ?? null, $options);
 
         return $data['choices'][0]['message']['content'] ?? '';
     }

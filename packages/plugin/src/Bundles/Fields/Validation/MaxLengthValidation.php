@@ -7,6 +7,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\CharacterCountHelper;
 use yii\base\Event;
 
 class MaxLengthValidation extends FeatureBundle
@@ -37,7 +38,7 @@ class MaxLengthValidation extends FeatureBundle
             return;
         }
 
-        if (\strlen($value) > $maxLength) {
+        if (CharacterCountHelper::count($value) > $maxLength) {
             $field->addError(
                 Freeform::t(
                     'Value must be no more than {maxLength} characters',

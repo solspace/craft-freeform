@@ -1,0 +1,15 @@
+<%
+const lower = typeof minValue === 'number' && Number.isFinite(minValue) ? minValue : 0;
+const upper = Math.max(lower, typeof maxValue === 'number' && Number.isFinite(maxValue) ? maxValue : 100);
+const increment = typeof step === 'number' && Number.isFinite(step) && step > 0 ? step : 1;
+const initial = typeof defaultValue === 'number' && Number.isFinite(defaultValue) ? defaultValue : lower;
+const steps = Math.min(Math.round((Math.max(lower, Math.min(upper, initial)) - lower) / increment), Math.floor((upper - lower) / increment + 1e-9));
+const aligned = lower + steps * increment;
+const current = Number.isFinite(aligned) ? Number(aligned.toPrecision(14)) : lower;
+%>
+<div style="padding: 8px 0;">
+  <input type="range" min="<%- lower %>" max="<%- upper %>" step="<%- increment %>" value="<%- current %>" style="width: 100%; padding: 0; border: 0; background: transparent; appearance: auto;" />
+  <div style="display: flex; justify-content: space-between; font-size: 12px;">
+    <span><%- lower %></span><strong><%- current %></strong><span><%- upper %></span>
+  </div>
+</div>

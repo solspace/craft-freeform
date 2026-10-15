@@ -30,6 +30,7 @@ export type Defaults = {
       ajax: ConfigItem<boolean>;
       showIndicator: ConfigItem<boolean>;
       showText: ConfigItem<boolean>;
+      showOverlay: ConfigItem<boolean>;
       indicatorText: ConfigItem<string>;
     };
     successAndErrors: {

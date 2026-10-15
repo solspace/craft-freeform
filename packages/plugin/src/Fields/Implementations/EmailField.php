@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
@@ -22,10 +23,12 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Fields\Traits\BrowserAutofillTrait;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
@@ -37,10 +40,27 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 )]
 class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
+    use BrowserAutofillTrait;
     use DefaultTextValueTrait;
     use EncryptionTrait;
     use MaxLengthTrait;
     use PlaceholderTrait;
+
+    #[Input\Boolean(
+        label: 'Suggest email corrections',
+        instructions: 'Suggest corrections for common email domain typos after leaving the field. Addresses only change when the visitor accepts a suggestion.',
+    )]
+    protected bool $suggestEmailCorrections = false;
+
+    public function isSuggestEmailCorrections(): bool
+    {
+        return $this->suggestEmailCorrections;
+    }
+
+    public function getEmailSuggestionLabels(): array
+    {
+        return ['message' => Freeform::t('Did you mean {suggestion}?'), 'action' => Freeform::t('Use suggestion')];
+    }
 
     /**
      * Return the field TYPE.
@@ -65,6 +85,16 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
             ->setIfEmpty('value', $this->getValue())
             ->set($this->getRequiredAttribute())
         ;
+
+        $this->addBrowserAutofillAttribute($attributes);
+
+        if ($this->suggestEmailCorrections) {
+            $labels = $this->getEmailSuggestionLabels();
+            $attributes->replace('data-freeform-email-suggestions', true)
+                ->replace('data-email-suggestion-message', $labels['message'])
+                ->replace('data-email-suggestion-action', $labels['action'])
+            ;
+        }
 
         return Html::tag(
             $attributes->getTag('input'),

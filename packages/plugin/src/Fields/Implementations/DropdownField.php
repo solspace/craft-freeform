@@ -29,6 +29,7 @@ use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
+use Solspace\Freeform\Fields\Traits\SearchableSelectTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -40,6 +41,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInterface
 {
     use OptionCollectionTrait;
+    use SearchableSelectTrait;
 
     #[Input\Hidden]
     protected string $defaultValue = '';
@@ -115,11 +117,15 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
         ;
 
         $optionAttributes = $this->getAttributes()->getOption();
+        $htmlAttributes = $attributes->toHtmlTagArray(['field' => $this]);
+        if ($this->enableSearch) {
+            $htmlAttributes['data-freeform-searchable'] = json_encode($this->getSearchableConfig(), \JSON_THROW_ON_ERROR);
+        }
 
         return Html::tag(
             $attributes->getTag('select'),
             $this->renderCollection($this->getOptions(), $optionAttributes),
-            $attributes->toHtmlTagArray(['field' => $this])
+            $htmlAttributes
         );
     }
 

@@ -1,1 +1,7 @@
 <input type="text" placeholder="<%= placeholder %>" value="<%= defaultValue %>" />
+
+<% if (typeof showCharacterCount !== 'undefined' && showCharacterCount) { %>
+    <div style="margin-top: 4px; font-size: 11px; text-align: right; opacity: .65; font-variant-numeric: tabular-nums;">
+        <%= String(defaultValue || '').replace(/\r\n?/g, '\n').length %><% if (maxLength > 0) { %> / <%= maxLength %><% } %>
+    </div>
+<% } %>

@@ -1,11 +1,12 @@
 import { FormComponent } from "@components/form-controls";
 import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-generator";
 import type { ErrorCollection } from "@ff-client/types/api";
+import { IntegrationType } from "@ff-client/types/integrations";
 import type { GenericValue, Property } from "@ff-client/types/properties";
 import type React from "react";
 
 import type { Integration } from "../integration.types";
-
+import { ModelInput } from "./editor.model-input";
 import type { IntegrationState } from "./editor.types";
 
 type Props = {
@@ -51,6 +52,22 @@ export const EditorInput: React.FC<Props> = ({
       ...values.metadata,
     },
   };
+
+  if (
+    integration.type.type === IntegrationType.Ai &&
+    handle === "model" &&
+    ["OpenAI", "Gemini", "Anthropic", "xAI"].includes(integration.type.name)
+  ) {
+    return (
+      <ModelInput
+        integration={integration}
+        property={updatedProperty}
+        values={values}
+        errors={errors}
+        onUpdate={onUpdate}
+      />
+    );
+  }
 
   return (
     <FormComponent

@@ -1,3 +1,4 @@
+import config from "@config/freeform/freeform.config";
 import { QKIntegrations } from "@ff-client/queries/integrations";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
@@ -8,45 +9,22 @@ export type AiIntegrationOption = {
   uid: string;
   name: string;
   handle: string;
+  model: string;
+  referenceMimeTypes: string[];
 };
-
-type Instance = {
-  id: string;
-  uid: string;
-  name: string;
-  handle: string;
-};
-
-type Entry = {
-  type: unknown;
-  instances: Instance[];
-};
-
-type Category = {
-  title: string;
-  handle: string;
-  entries: Entry[];
-};
-
-type NavigationResponse = Category[];
 
 export const useAiIntegrations = (): UseQueryResult<AiIntegrationOption[]> => {
   return useQuery({
     queryKey: [...QKIntegrations.navigation, "ai-list"],
     queryFn: async () => {
-      const { data } = await axios.get<NavigationResponse>(
-        "/api/integrations/navigation",
+      const { data } = await axios.get<AiIntegrationOption[]>(
+        "/api/forms/ai-options",
       );
-      const aiCategory = data?.find((c) => c.handle === "ai");
-      if (!aiCategory) return [];
-      const list = aiCategory.entries.flatMap((e) => e.instances);
-      return list.map((i) => ({
-        id: Number(i.id),
-        uid: i.uid,
-        name: i.name,
-        handle: i.handle,
-      }));
+      return data;
     },
+    enabled:
+      config.metadata.freeform.canCreate &&
+      config.permissions.integrations !== "none",
     gcTime: Infinity,
     staleTime: 60_000,
   });

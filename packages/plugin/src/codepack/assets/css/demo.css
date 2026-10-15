@@ -1,3 +1,57 @@
+/* Demo color modes */
+:root {
+    --page-bg: #ffffff;
+    --page-text: #4e4e4e;
+    --nav-text: #8a8a8a;
+    --nav-bg: rgb(232,232,232,0.85);
+    --nav-highlight: #4e4e4e;
+    --nav-bg-hover: rgb(232,232,232,0.25);
+    --logo-glow: 0 0 7px 1px rgb(0,0,0,0.1);
+    --menu-bg: #4e4e4e;
+    --menu-list-bg: #f1f1f1;
+    --menu-list-border: 1px solid #c5c5c5;
+    --nav-button-bg: #d0d0d0;
+    --nav-button-text: #4e4e4e;
+    --nav-button-hover: #dfdfdf;
+    --nav-button-active: #eeeeee;
+    --nav-dropdown-bg: #f1f1f1;
+    --nav-dropdown-bg-hover: #dedede;
+    --nav-dropdown-text: #4e4e4e;
+    --nav-dropdown-divider: 1px solid #c5c5c5;
+    --form-box-submissions: rgb(0,0,0,0.05);
+    --table-row-bg: #ffffff;
+    --table-row-bg-alt: #f3f3f3;
+    --table-head-bg: #d0d0d0;
+    --table-head-bg-alt: #eeeeee;
+    --table-head-bg-alt2: #e3e3e3;
+}
+
+:root[data-theme="dark"] {
+    --page-bg: #1f2226;
+    --page-text: #dfdfdf;
+    --nav-text: #959595;
+    --nav-bg: rgb(19,22,24,0.85);
+    --nav-highlight: #dfdfdf;
+    --nav-bg-hover: rgb(19,22,24,0.25);
+    --logo-glow: 0 0 7px 1px rgb(255,255,255,0.2);
+    --menu-bg: #dfdfdf;
+    --menu-list-bg: #191c1f;
+    --menu-list-border: 1px solid #252b31;
+    --nav-button-bg: #3c474f;
+    --nav-button-text: #dfdfdf;
+    --nav-button-active: #dfdfdf;
+    --nav-dropdown-bg: #191c1f;
+    --nav-dropdown-bg-hover: #252b31;
+    --nav-dropdown-text: #dfdfdf;
+    --nav-dropdown-divider: 1px solid #252b31;
+    --form-box-submissions: rgb(0,0,0,0.2);
+    --table-row-bg: #212529;
+    --table-row-bg-alt: #3c474f;
+    --table-head-bg: #3c474f;
+    --table-head-bg-alt: #404b53;
+    --table-head-bg-alt2: #404b53;
+}
+
 /* Freeform Core Styles */
 html {
     background: var(--page-bg);
@@ -210,7 +264,7 @@ html:has(.freeform-warning-notice) {
     position: absolute;
     top: 0;
     left: 0;
-    margin: 10px 25px;
+    margin: 15px 25px;
 }
 .freeform-logo img {
     display: inline-block;
@@ -230,7 +284,7 @@ html:has(.freeform-warning-notice) {
 /* Freeform Nav Menu */
 .freeform-menu {
     position: absolute;
-    top: 8px;
+    top: 13px;
     right: 25px;
     margin: 0;
 }
@@ -260,7 +314,14 @@ html:has(.freeform-warning-notice) {
     height: 5px;
 }
 #freeform-menu-toggle {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+}
+#freeform-menu-toggle:focus-visible + .freeform-menu-hamburger {
+    outline: 2px solid #0d6efd;
+    outline-offset: 8px;
 }
 #freeform-menu-toggle:checked + .freeform-menu-hamburger .top {
     transform: rotate(-45deg);
@@ -327,6 +388,7 @@ html:has(.freeform-warning-notice) {
     padding: 5px 8px;
     margin: 0 3px;
     font-size: 12px;
+    font-family: inherit;
     text-decoration: none;
     border: none;
     border-radius: 5px;
@@ -349,6 +411,10 @@ html:has(.freeform-warning-notice) {
     color: var(--nav-button-hover);
     background: #0d6efd;
 }
+.freeform-nav-button:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
 .freeform-nav-button .freeform-form-circle,
 .freeform-nav-dropdown-content a .freeform-form-circle {
     display: inline-block;
@@ -357,6 +423,9 @@ html:has(.freeform-warning-notice) {
     height: 8px;
     margin: 0 6px 0 0;
     border-radius: 50%;
+}
+.freeform-form-circle[hidden] {
+    display: none;
 }
 
 /* Freeform Info Dropdown */
@@ -370,7 +439,7 @@ html:has(.freeform-warning-notice) {
     text-align: left;
     display: none;
     position: absolute;
-    margin-top: 5px;
+    margin-top: 0;
     margin-left: 3px;
     background: var(--nav-dropdown-bg);
     border-bottom-left-radius: 5px;
@@ -380,6 +449,14 @@ html:has(.freeform-warning-notice) {
     box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
     z-index: 1;
     transition: all 0.25s;
+}
+.freeform-nav-dropdown-content::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 8px;
 }
 .freeform-nav-dropdown-content.extras-dropdown {
     min-width: 310px;
@@ -410,10 +487,12 @@ html:has(.freeform-warning-notice) {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.freeform-nav-dropdown:hover .freeform-nav-dropdown-content {
+.freeform-nav-dropdown:hover .freeform-nav-dropdown-content,
+.freeform-nav-dropdown:focus-within .freeform-nav-dropdown-content {
     display: block;
 }
-.freeform-nav-dropdown:hover .freeform-nav-button {
+.freeform-nav-dropdown:hover .freeform-nav-button,
+.freeform-nav-dropdown:focus-within .freeform-nav-button {
     color: var(--nav-button-active);
     background: #0d6efd;
     border-bottom-left-radius: 0px;

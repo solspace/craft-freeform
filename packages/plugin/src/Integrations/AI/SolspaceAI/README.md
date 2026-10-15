@@ -1,6 +1,6 @@
 # SolspaceAI Integration
 
-The **SolspaceAI** integration makes it easy to bring powerful AI capabilities directly into your forms with no extra setup required. [Generate entire forms from a prompt](https://docs.solspace.com/craft/freeform/v5/forms/builder/#create-forms-with-ai), [analyze and categorize submission data](https://docs.solspace.com/craft/freeform/v5/forms/fields/#ai), and [reduce spam with intelligent detection](https://docs.solspace.com/craft/freeform/v5/integrations/ai-spam-analysis/), all from within Freeform.
+The **SolspaceAI** integration makes it easy to bring powerful AI capabilities directly into your forms with no extra setup required. [Generate entire forms from a prompt or reference PDF/image](https://docs.solspace.com/craft/freeform/v5/forms/builder/#create-forms-with-ai), [analyze and categorize submission data](https://docs.solspace.com/craft/freeform/v5/forms/fields/#ai), and [reduce spam with intelligent detection](https://docs.solspace.com/craft/freeform/v5/integrations/ai-spam-analysis/), all from within Freeform.
 
 Built and maintained by [Solspace](https://solspace.com), the team behind _Freeform_, SolspaceAI is a fully turnkey solution that doesn't use any third-party accounts, API keys, or complex configuration needed. You'll get started instantly with **1,000 free credits**, so you can explore its features risk-free. When you're ready to scale, simply purchase additional credit bundles to match your usage.
 
@@ -56,3 +56,7 @@ To use this integration within your form(s), you'll need to configure each form 
 
 ### 4. View Usage or Purchase Additional Credits
 To view your usage stats or purchase additional credits, visit the **SolspaceAI** page in the Freeform **Settings** area.
+
+## Reference forms
+
+In Freeform 5.17+, **Create with AI** also accepts PDF, PNG, and JPEG references through SolspaceAI. Use the existing authorized integration and credits; no separate provider account or model selection is needed. Review the editable fields and layout in the builder after generation. Reference size and page count affect usage.

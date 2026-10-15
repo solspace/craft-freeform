@@ -20,6 +20,8 @@ use Solspace\Freeform\Fields\Traits\MinLengthTrait;
 class NumberField extends TextField implements NumericInterface, MinLengthInterface
 {
     use MinLengthTrait;
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
 
     #[Input\Boolean('Allow negative numbers')]
     protected bool $allowNegative = false;

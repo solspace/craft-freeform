@@ -129,7 +129,10 @@ export const initStripe =
                   // If a client_secret is returned - we need to recreate the Stripe element
                   if (client_secret) {
                     paymentElement.unmount();
-                    elements = stripe.elements({ clientSecret: client_secret });
+                    elements = stripe.elements({
+                      ...event.elementOptions,
+                      clientSecret: client_secret,
+                    });
 
                     paymentElement = elements.create(
                       "payment",

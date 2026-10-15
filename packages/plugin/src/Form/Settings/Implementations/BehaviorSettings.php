@@ -13,9 +13,11 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Form\Limiting\DuplicateCheckScope;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\SubmissionLimitPeriods;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
@@ -53,11 +55,20 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.focusFirstError')]
+    #[Input\Boolean(
+        label: 'Focus First Error After Submit',
+        instructions: 'After validation fails, move focus to the first visible field with an error, or to the error message if there are no field errors.',
+        order: 2,
+    )]
+    public bool $focusFirstError = false;
+
+    #[Section(self::SECTION_PROCESSING)]
     #[DefaultValue('settings.processing.showIndicator')]
     #[Input\Boolean(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
-        order: 2,
+        order: 3,
     )]
     public bool $showProcessingSpinner = false;
 
@@ -66,18 +77,27 @@ class BehaviorSettings extends SettingsNamespace
     #[Input\Boolean(
         label: 'Show Processing Text on Submit',
         instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
-        order: 3,
+        order: 4,
     )]
     public bool $showProcessingText = false;
 
+    #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.showOverlay')]
+    #[Input\Boolean(
+        label: 'Show Processing Overlay on Submit',
+        instructions: 'Dim the form and show a centered spinner and processing message while a submission is being processed.',
+        order: 5,
+    )]
+    public bool $showProcessingOverlay = false;
+
     #[Translatable]
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(showProcessingText)')]
+    #[VisibilityFilter('Boolean(showProcessingText) || Boolean(showProcessingOverlay)')]
     #[DefaultValue('settings.processing.processingText')]
     #[Input\Text(
         'Processing Text',
-        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
-        order: 4,
+        instructions: 'Text shown on the submit button or processing overlay when the form is processing.',
+        order: 6,
     )]
     public string $processingText = 'Processing...';
 
@@ -168,14 +188,129 @@ class BehaviorSettings extends SettingsNamespace
     public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::PRO)]
+    #[VisibilityFilter('duplicateCheck !== "no_limit" && duplicateCheck !== "no_limit_logged_in_users_only"')]
+    #[Input\Field(
+        label: 'Scope by Field',
+        instructions: 'Limit repeat submissions to the same value of this field, such as a product or entry ID. Leave blank to check the entire form. Requires stored submissions and a nonempty field value.',
+        order: 2,
+        emptyOption: 'Entire form (no field scope)',
+        availableFieldTypes: DuplicateCheckScope::FIELD_TYPES,
+    )]
+    public ?string $duplicateCheckScopeField = null;
+
+    #[Section(self::SECTION_LIMITS)]
     #[Edition(Edition::LITE)]
+    #[Input\Boolean(
+        label: 'Schedule Form',
+        instructions: 'Make this form available only during a scheduled period.',
+        order: 3,
+    )]
+    public ?bool $scheduleEnabled = null;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
     #[ValueTransformer(DateTimeTransformer::class)]
     #[Input\DatePicker(
-        label: 'Stop Submissions After Date',
-        instructions: 'Set a date after which this form will no longer accept new submissions.',
-        order: 2,
+        label: 'Schedule Start Date',
+        instructions: 'When the form becomes available. Leave blank to make it available immediately.',
+        order: 4,
+        includeTime: true,
+    )]
+    public ?\DateTime $startSubmissionsAt = null;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[ValueTransformer(DateTimeTransformer::class)]
+    #[Input\DatePicker(
+        label: 'Schedule End Date',
+        instructions: 'When the form stops being available and accepting submissions. Leave blank for no end date.',
+        order: 5,
+        includeTime: true,
+        defaultTime: '23:59',
     )]
     public ?\DateTime $stopSubmissionsAfter = null;
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[Input\TextArea(
+        label: 'Pending Message',
+        instructions: 'Shown instead of the form before its start date. Leave blank to hide the form without a message.',
+        order: 6,
+    )]
+    public string $schedulePendingMessage = 'This form is not available yet.';
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(scheduleEnabled)')]
+    #[Input\TextArea(
+        label: 'Expired Message',
+        instructions: 'Shown instead of the form after its end date. Leave blank to hide the form without a message.',
+        order: 7,
+    )]
+    public string $scheduleExpiredMessage = 'This form is no longer available.';
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[Input\Boolean(
+        label: 'Limit Submissions',
+        instructions: 'Limit the number of stored submissions this form accepts. Template submissionLimit overrides take precedence.',
+        order: 8,
+    )]
+    public bool $submissionLimitEnabled = false;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\Integer(
+        label: 'Number of Submissions',
+        instructions: 'The maximum number of submissions to accept. Requires Store Submitted Data to be enabled. Spam and deleted submissions are excluded.',
+        order: 9,
+        min: 1,
+        step: 1,
+    )]
+    public int $submissionLimit = 50;
+
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\Select(
+        label: 'Limit Period',
+        instructions: 'Calendar periods use Craft\'s timezone and configured week start. Total never resets.',
+        order: 10,
+        options: SubmissionLimitPeriods::class,
+    )]
+    public string $submissionLimitPeriod = 'total';
+
+    #[Translatable]
+    #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::LITE)]
+    #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
+    #[Input\TextArea(
+        label: 'Limit Reached Message',
+        instructions: 'Shown instead of the form when its submission limit is reached. Leave blank to hide the form without a message.',
+        order: 11,
+    )]
+    public string $submissionLimitMessage = 'Submission limit reached';
+
+    public function normalizeSchedule(): void
+    {
+        if (null !== $this->scheduleEnabled) {
+            return;
+        }
+
+        // Existing date-only cutoffs continue to include the entire final day.
+        $this->scheduleEnabled = null !== $this->stopSubmissionsAfter;
+        if ($this->stopSubmissionsAfter) {
+            $this->stopSubmissionsAfter = clone $this->stopSubmissionsAfter;
+            $this->stopSubmissionsAfter->setTime(23, 59, 59);
+        }
+    }
 
     public function getSuccessMessage(): string
     {

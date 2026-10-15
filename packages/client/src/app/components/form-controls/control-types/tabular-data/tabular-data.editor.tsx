@@ -22,6 +22,8 @@ import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import React, { useRef } from "react";
 
+import { CompactEditor } from "./tabular-data.editor.styles";
+
 import {
   addRow,
   deleteRow,
@@ -36,6 +38,11 @@ type Props = {
   updateValue: UpdateValue<ColumnValue[]>;
   property: TabularDataProperty;
   context: unknown;
+  compact?: boolean;
+  addLabel?: string;
+  deleteLabel?: string;
+  emptyMessage?: string;
+  showHelp?: boolean;
 };
 
 export const TabularDataEditor: React.FC<Props> = ({
@@ -44,6 +51,11 @@ export const TabularDataEditor: React.FC<Props> = ({
   updateValue,
   property,
   context,
+  compact = false,
+  addLabel = "Add a row",
+  deleteLabel = "Delete",
+  emptyMessage,
+  showHelp = true,
 }) => {
   const { getTranslation, updateTranslation, willTranslate } = useTranslations(
     // biome-ignore lint/suspicious/noExplicitAny: This context is typed as unknown, but we know it will be the correct type for the translation functions.
@@ -55,6 +67,7 @@ export const TabularDataEditor: React.FC<Props> = ({
   const isTranslating = willTranslate(handle);
   const translation = getTranslation<Array<GenericValue>>(handle, values);
 
+  const addButtonRef = useRef<HTMLButtonElement>(null);
   const refs = useRef([]);
   refs.current = values.map(
     (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>(),
@@ -82,11 +95,47 @@ export const TabularDataEditor: React.FC<Props> = ({
     );
   };
 
+  const Wrapper = compact ? CompactEditor : TableEditorWrapper;
+  const showActions = compact
+    ? values.length > 0 && !isTranslating
+    : values.length > 1;
+
   return (
-    <TableEditorWrapper>
+    <Wrapper>
       <TableContainer>
         <TabularOptions>
+          {compact && (
+            <thead>
+              <tr>
+                {configuration.map((column) => (
+                  <th
+                    scope="col"
+                    key={column.key}
+                    style={
+                      column.key === "value" ? { width: "28%" } : undefined
+                    }
+                  >
+                    {translate(column.label)}
+                  </th>
+                ))}
+                {showActions && (
+                  <th
+                    colSpan={2}
+                    style={{ width: 84 }}
+                    aria-label={translate("Actions")}
+                  />
+                )}
+              </tr>
+            </thead>
+          )}
           <tbody>
+            {compact && !values.length && emptyMessage && (
+              <tr>
+                <td className="empty-state" colSpan={configuration.length}>
+                  {translate(emptyMessage)}
+                </td>
+              </tr>
+            )}
             {values.map((value, rowIndex) => (
               <DraggableRow
                 key={rowIndex}
@@ -100,7 +149,13 @@ export const TabularDataEditor: React.FC<Props> = ({
                   <Cell key={columnIndex}>
                     <Input
                       type="text"
-                      value={value[columnIndex]}
+                      value={
+                        compact && isTranslating
+                          ? (translation[rowIndex]?.[columnIndex] ??
+                            value[columnIndex])
+                          : value[columnIndex]
+                      }
+                      aria-label={translate(column.label)}
                       placeholder={translate(column.label)}
                       autoFocus={activeCell === `${rowIndex}:${columnIndex}`}
                       disabled={isTranslating && !column.translatable}
@@ -154,18 +209,30 @@ export const TabularDataEditor: React.FC<Props> = ({
                   </Cell>
                 ))}
 
-                {values.length > 1 && (
+                {showActions && (
                   <>
                     <Cell $tiny>
-                      <Button ref={refs.current[rowIndex]} className="handle">
+                      <Button
+                        type="button"
+                        aria-label={translate("Reorder")}
+                        title={translate("Reorder")}
+                        disabled={compact && values.length < 2}
+                        ref={refs.current[rowIndex]}
+                        className="handle"
+                      >
                         <MoveIcon />
                       </Button>
                     </Cell>
                     <Cell $tiny>
                       <Button
+                        type="button"
+                        aria-label={translate(deleteLabel)}
+                        title={translate(deleteLabel)}
                         onClick={() => {
                           updateValue(deleteRow(rowIndex, values));
                           setActiveCell(Math.max(rowIndex - 1, 0), 0);
+                          if (compact && values.length === 1)
+                            addButtonRef.current?.focus();
                         }}
                       >
                         <CrossIcon />
@@ -179,23 +246,37 @@ export const TabularDataEditor: React.FC<Props> = ({
         </TabularOptions>
       </TableContainer>
 
-      <AddButtonArea
-        label="Add a row"
-        onClick={() => appendAndFocus(0)}
-        disabled={isTranslating}
-      />
-
-      <HelpText>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(
-              translate(
-                "Press <b>enter</b> while editing a cell to add a new row.",
-              ),
-            ),
-          }}
+      {compact ? (
+        <button
+          type="button"
+          ref={addButtonRef}
+          className="btn add icon"
+          disabled={isTranslating}
+          onClick={() => appendAndFocus(0)}
+        >
+          {translate(addLabel)}
+        </button>
+      ) : (
+        <AddButtonArea
+          label="Add a row"
+          onClick={() => appendAndFocus(0)}
+          disabled={isTranslating}
         />
-      </HelpText>
-    </TableEditorWrapper>
+      )}
+
+      {showHelp && (
+        <HelpText>
+          <span
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(
+                translate(
+                  "Press <b>enter</b> while editing a cell to add a new row.",
+                ),
+              ),
+            }}
+          />
+        </HelpText>
+      )}
+    </Wrapper>
   );
 };

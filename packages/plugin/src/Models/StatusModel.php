@@ -48,6 +48,29 @@ class StatusModel extends Model implements \Stringable, \JsonSerializable
         'black' => '#32475E',
     ];
 
+    private static array $craft5HexMap = [
+        'red' => '#dc2626',
+        'orange' => '#fb923c',
+        'amber' => '#f59e0b',
+        'yellow' => '#eab308',
+        'lime' => '#84cc16',
+        'green' => '#16a34a',
+        'emerald' => '#10b981',
+        'teal' => '#11a697',
+        'cyan' => '#06b6d4',
+        'sky' => '#0ea5e9',
+        'blue' => '#2563eb',
+        'indigo' => '#6366f1',
+        'violet' => '#8b5cf6',
+        'purple' => '#a855f7',
+        'fuchsia' => '#d946ef',
+        'pink' => '#ec4899',
+        'rose' => '#f43f5e',
+        'white' => '#ffffff',
+        'gray' => '#606d7b',
+        'black' => '#000000',
+    ];
+
     public function __toString()
     {
         return $this->name;
@@ -67,6 +90,10 @@ class StatusModel extends Model implements \Stringable, \JsonSerializable
 
     public function getColorHex(): string
     {
+        if (version_compare(\Craft::$app->getVersion(), '5', '>=')) {
+            return self::$craft5HexMap[$this->color] ?? self::$hexMap[$this->color] ?? '#FFFFFF';
+        }
+
         return self::$hexMap[$this->color] ?? '#FFFFFF';
     }
 

@@ -1,0 +1,6 @@
+{% import 'freeform/_templates/formatting/daisyui-5-dark/_row.twig' as rowMacro %}
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    {{ rowMacro.render(field.layout, form) }}
+{{ field.renderContainerClosingTag }}

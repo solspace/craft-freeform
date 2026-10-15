@@ -6,6 +6,9 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Integrations\AI\Anthropic\BaseAnthropicIntegration;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\FormGenerationResponse;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Edition(Edition::PRO)]
@@ -16,8 +19,18 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class AnthropicV1 extends BaseAnthropicIntegration
+class AnthropicV1 extends BaseAnthropicIntegration implements ReferenceAiIntegrationInterface
 {
+    public function getReferenceMimeTypes(): array
+    {
+        $model = $this->getModel();
+        if (preg_match('/^claude-3-(?:haiku|sonnet|opus)/i', $model)) {
+            return ['image/png', 'image/jpeg'];
+        }
+
+        return preg_match('/^claude-(?:3-[57]|[4-9]|(?:sonnet|opus|haiku)-[4-9])/i', $model) ? ReferenceFile::MIME_TYPES : [];
+    }
+
     public function getApiRootUrl(): string
     {
         return 'https://api.anthropic.com/v1';
@@ -48,6 +61,17 @@ class AnthropicV1 extends BaseAnthropicIntegration
         string $userContent,
         array $options = []
     ): string {
+        $content = $userContent;
+        if (!empty($options['referenceFiles'])) {
+            $content = [];
+            foreach ($options['referenceFiles'] as $file) {
+                $content[] = [
+                    'type' => 'application/pdf' === $file->mimeType ? 'document' : 'image',
+                    'source' => ['type' => 'base64', 'media_type' => $file->mimeType, 'data' => $file->getBase64()],
+                ];
+            }
+            $content[] = ['type' => 'text', 'text' => $userContent];
+        }
         $payload = [
             'model' => $options['model'] ?? $this->getModel(),
             'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
@@ -55,7 +79,7 @@ class AnthropicV1 extends BaseAnthropicIntegration
             'messages' => [
                 [
                     'role' => 'user',
-                    'content' => $userContent,
+                    'content' => $content,
                 ],
             ],
         ];
@@ -67,10 +91,11 @@ class AnthropicV1 extends BaseAnthropicIntegration
 
         $response = $client->post(
             $this->getEndpoint('/messages'),
-            ['json' => $payload]
+            ['json' => $payload, 'timeout' => $options['timeout'] ?? 120]
         );
 
         $data = json_decode((string) $response->getBody(), true);
+        FormGenerationResponse::requireComplete($data['stop_reason'] ?? null, $options);
 
         return $data['content'][0]['text'] ?? '';
     }

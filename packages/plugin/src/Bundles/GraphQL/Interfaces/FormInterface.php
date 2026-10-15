@@ -178,6 +178,14 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->ajax;
                 },
             ],
+            'focusFirstError' => [
+                'name' => 'focusFirstError',
+                'type' => Type::boolean(),
+                'description' => 'Should failed validation focus the first visible field with an error',
+                'resolve' => static function ($source) {
+                    return $source->getSettings()->focusFirstError;
+                },
+            ],
             'showProcessingSpinner' => [
                 'name' => 'showProcessingSpinner',
                 'type' => Type::boolean(),
@@ -194,10 +202,18 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->showProcessingText;
                 },
             ],
+            'showProcessingOverlay' => [
+                'name' => 'showProcessingOverlay',
+                'type' => Type::boolean(),
+                'description' => 'Should the form show a processing overlay while submitting',
+                'resolve' => static function ($source) {
+                    return $source->getSettings()->showProcessingOverlay;
+                },
+            ],
             'processingText' => [
                 'name' => 'processingText',
                 'type' => Type::string(),
-                'description' => 'The submit button processing label text',
+                'description' => 'The submit button or overlay processing label text',
             ],
             'pages' => [
                 'name' => 'pages',
@@ -228,6 +244,14 @@ class FormInterface extends AbstractInterface
                 'description' => "The form's duplicate check rule",
                 'resolve' => static function ($source) {
                     return $source->getSettings()->duplicateCheck;
+                },
+            ],
+            'duplicateCheckScopeField' => [
+                'name' => 'duplicateCheckScopeField',
+                'type' => Type::string(),
+                'description' => "The UID of the field used to scope the form's duplicate check",
+                'resolve' => static function ($source) {
+                    return $source->getSettings()->getBehavior()->duplicateCheckScopeField;
                 },
             ],
             'stopSubmissionsAfter' => [

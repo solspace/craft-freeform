@@ -1,30 +1,26 @@
 {% extends "demo/_layout" %}
 
-{% set form = freeform.form(craft.app.request.segment(3)) %}
-{% set pageTitle = "Submission #" ~ craft.app.request.segment(4) ~ " for " ~ form.name|default("N/A") %}
-{% set spamMode = craft.app.request.segment(5) ? true : false %}
+{% block title %}Freeform Demo | Submission #{{ craft.app.request.segment(baseUrlSegments + 3) }} for {{ form ? form.name : 'Unknown form' }}{% endblock %}
 
 {% block content %}
 
-    {% set formHandle = craft.app.request.segment(3) %}
-    {% set submissionId = craft.app.request.segment(4) %}
-    {% set form = freeform.form(formHandle) %}
+    {% set submissionId = craft.app.request.segment(baseUrlSegments + 3) %}
 
     {# Allow Admins only to view submission data for Demo Templates by default #}
     {% if currentUser and currentUser.admin %}
 
-        {% set submission = freeform.submissions({
+        {% set submission = form ? freeform.submissions({
             id: submissionId,
             form: formHandle,
-            isSpam: spamMode|default(false)
-        }).one %}
-
-        <div class="freeform-page-heading">
-            <h2{{ spamMode ? ' class="spam-mode-badge"' }}>View {{ spamMode ? "Spam" : "Submission" }}</h2>
-            <p>Viewing {{ spamMode ? "spammy " }}submission #<b>{{ submission.id }}</b> from the <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}{{ spamMode ? "/spam" }}">{{ form.name }}</a> form.</p>
-        </div>
+            isSpam: spamMode
+        }).one : null %}
 
         {% if submission %}
+
+            <div class="freeform-page-heading">
+                <h2{{ spamMode ? ' class="spam-mode-badge"' }}>View {{ spamMode ? "Spam" : "Submission" }}</h2>
+                <p>Viewing {{ spamMode ? "spammy " }}submission #<b>{{ submission.id }}</b> from the <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}{{ spamMode ? "/spam" }}">{{ form.name }}</a> form.</p>
+            </div>
 
             {% if freeform.pro and not spamMode %}
                 <div class="freeform-submission-controls">
@@ -43,8 +39,8 @@
                 <table class="freeform-table">
                     <thead>
                         <tr>
-                            <th>Field</td>
-                            <th>Value</td>
+                            <th scope="col">Field</th>
+                            <th scope="col">Value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,7 +70,7 @@
                         </tr>
                         {% for field in submission %}
                             <tr>
-                                <th style="width: 20%;">{{ field.label|raw }}</th>
+                                <th scope="row" style="width: 20%;">{{ field.label }}</th>
                                 <td>
                                     {% if (field.type == "file") or (field.type == "file-dnd") %}
 
@@ -84,7 +80,7 @@
                                                 {% set asset = craft.assets.id(assetId).one() %}
                                                 {% if asset %}
                                                     {% if asset.kind == "image" %}
-                                                        <img src="{{ asset.url }}" class="img-responsive" />
+                                                        <img src="{{ asset.url }}" class="img-responsive" alt="{{ asset.title ?: asset.filename }}" />
                                                     {% else %}
                                                         <a href="{{ asset.url }}">{{ asset.filename }}</a>
                                                     {% endif %}
@@ -120,8 +116,8 @@
                                         </table>
 
                                     {% elseif field.type == "signature" %}
-                                        {% if submission[field.handle] %}
-                                            <img src="{{ submission[field.handle] }}" alt="">
+                                        {% if submission[field.handle].value %}
+                                            <img src="{{ submission[field.handle].value }}" alt="Signature">
                                         {% endif %}
                                     {% else %}
                                         {% if field.implements('options') %}

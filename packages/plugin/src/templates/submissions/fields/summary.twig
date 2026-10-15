@@ -1,0 +1,11 @@
+<div class="field freeform-submission-summary">
+    {% if field.label %}
+        <div class="heading">
+            <label>{{ field.label }}</label>
+        </div>
+    {% endif %}
+    {{ field.renderInstructions }}
+    <div class="input">
+        {{ field.renderInput }}
+    </div>
+</div>

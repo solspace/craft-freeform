@@ -1,6 +1,7 @@
 import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
 import { PreviewEditor } from "@components/form-controls/preview/previewable-component.styles";
 import type { CalculationProperty } from "@ff-client/types/properties";
+import { serializeFieldTags } from "@ff-client/utils/field-tags";
 import translate from "@ff-client/utils/translations";
 import type Tagify from "@yaireo/tagify";
 import { MixedTags } from "@yaireo/tagify/dist/react.tagify.jsx";
@@ -40,12 +41,11 @@ export const CalculationBoxEditor: React.FC<Props> = ({
 
   const onChange = useCallback(
     (event: TagifyChangeEvent): void => {
-      updateValue(
-        event.detail.tagify.DOM.input.textContent
-          .replace(/\u200B/g, "")
-          .replace(/\s+/g, " ")
-          .trim(),
-      );
+      const mixedValue = event.detail.tagify.getMixedTagsAsString();
+      // Keep Tagify's current representation so React doesn't rebuild its DOM
+      // (and invalidate the saved caret) after a local edit.
+      setCalculationBoxValue(mixedValue);
+      updateValue(serializeFieldTags(mixedValue));
     },
     [updateValue],
   );
@@ -60,11 +60,16 @@ export const CalculationBoxEditor: React.FC<Props> = ({
     });
 
     tagifyRef.current.injectAtCaret(tagElm);
-    const elm = tagifyRef.current.insertAfterTag(tagElm, "");
+    const elm = tagifyRef.current.insertAfterTag(tagElm, " ");
     tagifyRef.current.placeCaretAfterNode(elm);
   };
 
   useEffect(() => {
+    const tagify = tagifyRef.current;
+    if (tagify && serializeFieldTags(tagify.getMixedTagsAsString()) === value) {
+      return;
+    }
+    // Only hydrate changes originating outside this editor, such as undo/redo.
     setCalculationBoxValue(generateValue(value));
   }, [value]);
 

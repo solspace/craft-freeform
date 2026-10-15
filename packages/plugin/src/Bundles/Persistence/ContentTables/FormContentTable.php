@@ -27,7 +27,7 @@ class FormContentTable extends FeatureBundle
     public function createContentTable(PersistFormEvent $event): void
     {
         $form = $event->getForm();
-        if (!$form || !$form->getId()) {
+        if (!$form || !$form->getId() || $event->hasErrors()) {
             return;
         }
 

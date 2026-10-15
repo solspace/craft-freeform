@@ -49,14 +49,14 @@
 
             <div class="form-field">
                 {# Very manual #}
-                <label>{{ firstName.label }}</label>
-                <input name="firstName" value="{{ firstName.value }}" />
+                <label for="demo-first-name">{{ firstName.label }}</label>
+                <input id="demo-first-name" name="firstName" value="{{ firstName.value }}" />
                 {{ firstName.renderErrors() }}
             </div>
 
             <div class="form-field">
-                <label>{{ lastName.label }}</label>
-                <input name="lastName" value="{{ lastName.value }}" />
+                <label for="demo-last-name">{{ lastName.label }}</label>
+                <input id="demo-last-name" name="lastName" value="{{ lastName.value }}" />
                 {{ lastName.renderErrors() }}
             </div>
 
@@ -68,15 +68,15 @@
             </div>
 
             <div class="form-field">
-                <label>Email Address</label>
-                <input name="email" value="{{ email.value }}" />
+                <label for="demo-email">Email Address</label>
+                <input id="demo-email" type="email" name="email" value="{{ email.value }}" />
                 {{ form.get("email").renderErrors() }}
             </div>
 
             <div class="form-field">
                 {# Manual errors #}
-                <label>Phone</label>
-                <input name="phone" />
+                <label for="demo-phone">Phone</label>
+                <input id="demo-phone" type="tel" name="phone" value="{{ phone.value }}" />
                 {% if form.get("phone").hasErrors %}
                     This field is required!
                 {% endif %}
@@ -84,11 +84,11 @@
 
             <div class="form-field">
                 {# Manual multi-option field #}
-                <label>State</label>
-                <select name="state">
+                <label for="demo-state">State</label>
+                <select id="demo-state" name="state">
                     {# You may also manually hardcode each option as well, as long as these options exist inside the form builder #}
                     {% for option in state.options %}
-                        <option value="{{ option.value }}" {{ option.value in state.value ? "selected" }}>{{ option.label }}</option>
+                        <option value="{{ option.value }}"{{ option.value == state.value ? ' selected' }}>{{ option.label }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -126,25 +126,23 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>
-                    Make sure your test form includes the following fields at minimum, or adjust the overrides inside this template:
-                    <ul>
-                        <li>First Name text field with handle of <code>firstName</code>.</li>
-                        <li>Last Name text field with handle of <code>lastName</code>.</li>
-                        <li>Company text field with handle of <code>company</code>.</li>
-                        <li>Email field (email field type) with handle of <code>email</code>.</li>
-                        <li>Phone text field with handle of <code>phone</code>.</li>
-                        <li>State select field with handle of <code>state</code>, and some option values set.</li>
-                    </ul>
-                </li>
-                <li>If your test form has other fields, that's alright, as long as they are not marked as required, thus triggering an error upon submit since they'll be empty.</li>
-                <li>The template code includes various approaches to manual and semi-manual options.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            <li>
+                Make sure your test form includes the following fields at minimum, or adjust the overrides inside this template:
+                <ul>
+                    <li>First Name text field with handle of <code>firstName</code>.</li>
+                    <li>Last Name text field with handle of <code>lastName</code>.</li>
+                    <li>Company text field with handle of <code>company</code>.</li>
+                    <li>Email field (email field type) with handle of <code>email</code>.</li>
+                    <li>Phone text field with handle of <code>phone</code>.</li>
+                    <li>State select field with handle of <code>state</code>, and some option values set.</li>
+                </ul>
+            </li>
+            <li>If your test form has other fields, that's alright, as long as they are not marked as required, thus triggering an error upon submit since they'll be empty.</li>
+            <li>The template code includes various approaches to manual and semi-manual options.</li>
+        </ol>
     </div>
 
 {% endblock %}

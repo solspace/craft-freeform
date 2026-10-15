@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -25,20 +26,39 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
 use Solspace\Freeform\Fields\Traits\CharacterVariabilityTrait;
 use Solspace\Freeform\Fields\Traits\MinLengthTrait;
+use Solspace\Freeform\Freeform;
 
 #[Type(
     name: 'Password',
     typeShorthand: 'password',
     iconPath: __DIR__.'/../Icons/password.svg',
-    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/password.ejs',
 )]
 class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface, NoEmailPresenceInterface, MinLengthInterface, CharacterVariabilityInterface
 {
     use CharacterVariabilityTrait;
     use MinLengthTrait;
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
+
+    #[Input\Boolean(
+        label: 'Show Password Toggle',
+        instructions: 'Let visitors show or hide their password while entering it.',
+    )]
+    protected bool $showPasswordToggle = false;
 
     #[Input\Hidden]
     protected bool $encrypted = false;
+
+    public function isShowPasswordToggle(): bool
+    {
+        return $this->showPasswordToggle;
+    }
+
+    public function getPasswordToggleLabels(): array
+    {
+        return ['show' => Freeform::t('Show password'), 'hide' => Freeform::t('Hide password')];
+    }
 
     public function getType(): string
     {
@@ -47,9 +67,25 @@ class PasswordField extends TextField implements NoStorageInterface, ExtraFieldI
 
     public function getInputHtml(): string
     {
-        $output = parent::getInputHtml();
+        $attributes = $this->getAttributes()->getInput()->clone()
+            ->replace('type', 'password')
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', $this->translate('placeholder', $this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
+        ;
 
-        return str_replace('type="text"', 'type="password"', $output);
+        $this->addBrowserAutofillAttribute($attributes);
+
+        if ($this->showPasswordToggle) {
+            $labels = $this->getPasswordToggleLabels();
+            $attributes->replace('data-freeform-password-toggle', true)
+                ->replace('data-password-show-label', $labels['show'])
+                ->replace('data-password-hide-label', $labels['hide'])
+            ;
+        }
+
+        return Html::tag('input', '', $attributes->toHtmlTagArray(['field' => $this]));
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

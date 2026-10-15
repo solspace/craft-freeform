@@ -17,6 +17,7 @@ use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
@@ -41,6 +42,7 @@ class TotalsProvider
         TextareaField::class,
         EmailField::class,
         NumberField::class,
+        RangeField::class,
         PhoneField::class,
         RegexField::class,
         WebsiteField::class,
@@ -51,6 +53,7 @@ class TotalsProvider
         TextareaField::class,
         EmailField::class,
         NumberField::class,
+        RangeField::class,
         PhoneField::class,
         RegexField::class,
         WebsiteField::class,

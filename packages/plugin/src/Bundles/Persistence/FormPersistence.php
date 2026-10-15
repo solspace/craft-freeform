@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
+use Solspace\Freeform\Bundles\Form\Limiting\SubmissionLimit;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
@@ -79,23 +81,39 @@ class FormPersistence extends FeatureBundle
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
         $metadata = $this->getValidatedMetadata($payload, $event);
+        $limitErrors = array_merge(
+            FormSchedule::validateSettings($metadata['behavior'] ?? new \stdClass()),
+            SubmissionLimit::validateSettings($metadata['behavior'] ?? new \stdClass(), $metadata['general']->storeData ?? true),
+        );
+        if ($limitErrors) {
+            $event->addErrorsToResponse('form', ['behavior' => $limitErrors]);
+        }
         $record->metadata = $metadata;
         $record->type = $metadata['general']->type ?? Regular::class;
 
         $user = \Craft::$app->getUser()->getIdentity();
         $record->updatedByUserId = $user->id;
 
-        if (!$event->hasErrors()) {
-            $record->validate();
-            $record->dateUpdated = new \DateTime();
-            $record->save();
+        if ($event->hasErrors()) {
+            return;
         }
 
-        if (!$record->id) {
+        $record->dateUpdated = new \DateTime();
+        if (!$record->save()) {
             $errors = $record->getErrors();
-            if (isset($errors['handle'])) {
-                $errors['name'] = $errors['handle'];
-                unset($errors['handle']);
+            if (!$errors) {
+                throw new \RuntimeException('Could not save form.');
+            }
+
+            if ($record->getIsNewRecord()) {
+                // The create-form modal uses flat errors and exposes only the name.
+                if (isset($errors['handle'])) {
+                    $errors['name'] = $errors['handle'];
+                    unset($errors['handle']);
+                }
+            } else {
+                // Builder controls read errors from their settings namespace.
+                $errors = ['general' => $errors];
             }
             $event->addErrorsToResponse('form', $errors);
 

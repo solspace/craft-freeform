@@ -31,6 +31,7 @@ use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
+use Solspace\Freeform\Fields\Traits\SearchableSelectTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -43,6 +44,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
 {
     use MultipleValueTrait;
     use OptionCollectionTrait;
+    use SearchableSelectTrait;
 
     #[Input\Hidden]
     protected ?array $defaultValue = [];
@@ -124,11 +126,15 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
         ;
 
         $optionAttributes = $this->getAttributes()->getOption();
+        $htmlAttributes = $attributes->toHtmlTagArray(['field' => $this]);
+        if ($this->enableSearch) {
+            $htmlAttributes['data-freeform-searchable'] = json_encode($this->getSearchableConfig(), \JSON_THROW_ON_ERROR);
+        }
 
         return Html::tag(
             $attributes->getTag('select'),
             $this->renderCollection($this->getOptions(), $optionAttributes),
-            $attributes->toHtmlTagArray(['field' => $this])
+            $htmlAttributes
         );
     }
 

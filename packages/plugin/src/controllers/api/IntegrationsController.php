@@ -11,6 +11,7 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\AI\AiModelCatalog;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\FlatErrorCollection;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -45,6 +46,7 @@ class IntegrationsController extends BaseApiController
         private IntegrationTypeProvider $typeProvider,
         private PropertyProvider $propertyProvider,
         private ImplementationProvider $implementationProvider,
+        private AiModelCatalog $aiModelCatalog,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -246,6 +248,28 @@ class IntegrationsController extends BaseApiController
         }
 
         return $this->asJson($response);
+    }
+
+    public function actionModels(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_MANAGE);
+
+        $provider = $this->request->post('provider');
+        $apiKey = $this->request->post('apiKey');
+        if (!\in_array($provider, AiModelCatalog::PROVIDERS, true) || !\is_string($apiKey)) {
+            throw new NotFoundHttpException('AI provider not found');
+        }
+
+        try {
+            return $this->asSerializedJson([
+                'models' => $this->aiModelCatalog->fetch($provider, $apiKey),
+                'available' => true,
+            ]);
+        } catch (\Throwable) {
+            // Never expose provider errors: Gemini and other services can include credentials
+            // in their request URLs or exception messages.
+            return $this->asSerializedJson(['models' => [], 'available' => false]);
+        }
     }
 
     public function actionDelete(int $id): Response

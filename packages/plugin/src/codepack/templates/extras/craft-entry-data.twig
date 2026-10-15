@@ -45,26 +45,24 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or on your test from:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>
-                    Make sure your test form includes the following Freeform fields at minimum, or adjust the overrides inside this template:
-                    <ul>
-                        <li>Product ID field (text or hidden) with handle of <code>productId</code>.</li>
-                        <li>Product Title field (text or hidden) with handle of <code>productTitle</code>.</li>
-                        <li>Product URL field (text or hidden) with handle of <code>productUrl</code>.</li>
-                    </ul>
-                </li>
-                <li>
-                    Make sure you have a Craft Entry with a slug of <code>freeform-test</code> and includes the following Craft fields at minimum, or adjust the overrides inside this template:
-                    <ul>
-                        <li>Title field</li>
-                    </ul>
-                </li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or on your test from:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            <li>
+                Make sure your test form includes the following Freeform fields at minimum, or adjust the overrides inside this template:
+                <ul>
+                    <li>Product ID field (text or hidden) with handle of <code>productId</code>.</li>
+                    <li>Product Title field (text or hidden) with handle of <code>productTitle</code>.</li>
+                    <li>Product URL field (text or hidden) with handle of <code>productUrl</code>.</li>
+                </ul>
+            </li>
+            <li>
+                Make sure you have a Craft Entry with a slug of <code>freeform-test</code> and includes the following Craft fields at minimum, or adjust the overrides inside this template:
+                <ul>
+                    <li>Title field</li>
+                </ul>
+            </li>
+        </ol>
     </div>
 
 {% endblock %}

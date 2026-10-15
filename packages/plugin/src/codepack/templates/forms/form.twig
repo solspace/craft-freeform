@@ -1,20 +1,18 @@
 {% extends "demo/_layout" %}
 
-{% set form = freeform.form(craft.app.request.segment(4)) %}
-{% set pageTitle = form.name ~ " form with " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
-{% if craft.app.request.segment(5) == "edit" %}
-    {% set submissionToken = craft.app.request.segment(6) %}
-{% endif %}
+{% block title %}Freeform Demo | {{ form ? form.name : formHandle }} form with {{ pageTemplate|title|replace({'-':' '}) }} template{% endblock %}
 
 {% block content %}
+
+    {% set submissionToken = craft.app.request.segment(baseUrlSegments + 4) == "edit" ? craft.app.request.segment(baseUrlSegments + 5) : null %}
 
     {% if form %}
     
         <div class="freeform-page-heading">
-            <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
+            <h2{{ craft.app.request.segment(baseUrlSegments + 4) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
         </div>
 
-        {# Check which if a duplicate check is applied #}
+        {# Describe the duplicate check if one is enabled. #}
         {% set duplicateCheck = form.settings.duplicateCheck %}
         {% if duplicateCheck == "no_limit" %}
             {% set duplicateCheckType = false %}
@@ -24,12 +22,12 @@
             {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
         {% elseif duplicateCheck == "limit_once_per_email" %}
             {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-        {% elseif duplicateCheck == "limit_once_per_email" %}
-            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
         {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
             {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
         {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
             {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP or Cookie" %}
+        {% else %}
+            {% set duplicateCheckType = false %}
         {% endif %}
         
         {# Handle message content for Guests viewing a Logged-in User only form #}

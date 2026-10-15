@@ -4,25 +4,38 @@
 
 {% block content %}
 
-    {% set formHandle = craft.app.request.segment(4) %}
-    {% set form = freeform.form(formHandle) %}
-    {% set token = craft.app.request.segment(5) %}
+    {% set token = craft.app.request.segment(baseUrlSegments + 4) %}
 
     {# Allow Admins only to modify submission data for Demo Templates by default #}
     {% if currentUser and currentUser.admin %}
 
+        {% set submission = form ? freeform.submissions({formId: form.id, token: token}).one : null %}
+
         <div class="freeform-page-heading">
             <h2>Delete Submission</h2>
-            <p>This page will delete any submission sent to it. This action cannot be undone.</p>
+            <p>Deleting a submission cannot be undone.</p>
         </div>
 
-        {% if freeform.deleteSubmissionByToken(token) %}
-            <div class="freeform-success{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                The submission has been removed successfully!
-            </div>
+        {% if craft.app.request.isPost and submission %}
+            {% if freeform.deleteSubmissionByToken(token) %}
+                <div class="freeform-success{{ colorMode == "dark" ? " freeform-notice-dark" }}" role="status">
+                    The submission has been removed successfully!
+                </div>
+            {% else %}
+                <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}" role="alert">
+                    The submission could not be deleted.
+                </div>
+            {% endif %}
+        {% elseif submission %}
+            <p>Delete submission #{{ submission.id }} from {{ form.name }}?</p>
+            <form method="post">
+                {{ csrfInput() }}
+                <button type="submit" class="freeform-button red">Delete submission</button>
+                <a href="{{ demoBaseUrl }}/submissions/{{ form.handle }}/{{ submission.id }}">Cancel</a>
+            </form>
         {% else %}
-            <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                Error! The submission you specified cannot be found.
+            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}" role="alert">
+                Sorry, the submission you specified cannot be found.
             </div>
         {% endif %}
 

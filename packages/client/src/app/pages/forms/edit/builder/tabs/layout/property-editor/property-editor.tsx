@@ -38,6 +38,9 @@ export const PropertyEditor: React.FC = () => {
       "tagify__dropdown",
       "tox",
       "elementselectormodal",
+      // Native panels live under <body>, outside the property editor's DOM.
+      "freeform-slideout",
+      "slideout-shade",
     ],
   });
 

@@ -8,6 +8,7 @@ export function FileFieldRenderer(props: VueFieldRendererProps) {
     accept?: string;
     multiple?: boolean;
     maxFiles?: number;
+    uploadRequirements?: string;
   };
 
   return (
@@ -18,6 +19,16 @@ export function FileFieldRenderer(props: VueFieldRendererProps) {
       name={input.name}
       disabled={input.disabled}
       aria-invalid={input["aria-invalid"]}
+      aria-describedby={
+        config.uploadRequirements
+          ? [
+              input["aria-describedby"],
+              `freeform-${props.field.handle}-upload-requirements`,
+            ]
+              .filter(Boolean)
+              .join(" ")
+          : input["aria-describedby"]
+      }
       accept={config.accept || undefined}
       multiple={Boolean(config.multiple ?? (config.maxFiles ?? 1) > 1)}
       onChange={(event) => {

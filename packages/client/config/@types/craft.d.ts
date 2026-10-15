@@ -8,6 +8,30 @@ type CraftElement = {
 };
 
 declare namespace Craft {
+  const cp: {
+    runQueue?: () => void;
+    displaySuccess: (message: string) => void;
+    displayNotice: (message: string) => void;
+    displayError: (message: string) => void;
+  };
+  class Slideout {
+    constructor(
+      contents: HTMLElement,
+      settings?: {
+        autoOpen?: boolean;
+        closeOnEsc?: boolean;
+        containerAttributes?: Record<string, string>;
+        triggerElement?: Element;
+      },
+    );
+    $container: { 0: HTMLElement };
+    $outerContainer: { 0: HTMLElement };
+    on(event: "close" | "beforeClose", callback: () => void): void;
+    open(): void;
+    close(): void;
+    destroy(): void;
+  }
+
   function createElementSelectorModal(
     elementType: string,
     settings: {

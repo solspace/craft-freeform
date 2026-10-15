@@ -7,8 +7,8 @@
     attributes: {
         form: { class: "freeform-form", "data-freeform-basic-floating-labels": true },
         row: { class: "freeform-row" },
-        success: { class: "freeform-form-success" },
-        errors: { class: "freeform-form-errors" },
+        success: { class: "freeform-form-success", role: "status" },
+        errors: { class: "freeform-form-errors", role: "alert" },
         novalidate: true,
     },
     fields: {
@@ -42,7 +42,7 @@
                 input: { "-class": "freeform-input" },
             },
         },
-        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @file, @dropdown, @multiple-select, @number, @password, @file-dnd, @signature": {
+        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @file, @dropdown, @multiple-select, @number, @password, @signature": {
             attributes: {
                 container: { "+class": "floating" },
             },
@@ -76,7 +76,7 @@
 {% if form.pages|length > 1 %}
     <ul class="freeform-pages">
         {% for page in form.pages %}
-            <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+            <li {% if form.currentPage.index == page.index %}class="active" aria-current="step"{% endif %}>
                 {% if form.currentPage.index == page.index %}
                     <b>{{ page.label }}</b>
                 {% else %}

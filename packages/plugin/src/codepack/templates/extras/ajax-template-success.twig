@@ -31,12 +31,10 @@
     {# Instructions to get this page working correctly #}
     <div class="extras-instructions">
         <h4>This page will not display correctly until...</h4>
-        <p>
-            In order to view this page live, you'll need to make some adjustments to this template or your test form:
-            <ol>
-                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-            </ol>
-        </p>
+        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+        <ol>
+            <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+        </ol>
         <p class="extras-instructions-warning">
             Please note that using the <b>Load Success Template</b> option for the <b>Success Behavior</b> setting will override this. It's also worth noting that feature supersedes this approach.
         </p>
@@ -46,7 +44,7 @@
 
 {% block footerJs %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script type="text/javascript">
         // Find the form element, can be a specific ID or just look for any forms
         var form = $('form[data-id]');

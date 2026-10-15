@@ -147,6 +147,31 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
+    #[Input\Boolean(
+        label: 'Allow HTML Embeds',
+        instructions: 'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.',
+        order: 10,
+    )]
+    public bool $allowHtmlEmbeds = false;
+
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
+    #[Input\Textarea(
+        label: 'Stylesheet URLs (CSS)',
+        instructions: 'One HTTPS file URL per line. Leave blank if no additional styles are needed.',
+        placeholder: 'https://example.com/assets/site.css',
+    )]
+    public string $previewCssUrls = '';
+
+    #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
+    #[Input\Textarea(
+        label: 'Script URLs (JavaScript)',
+        instructions: 'One HTTPS file URL per line, in loading order. Use trusted scripts only.',
+        placeholder: 'https://example.com/assets/site.js',
+    )]
+    public string $previewJsUrls = '';
+
+    #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.attributes')]
     #[ValueTransformer(FormAttributesTransformer::class)]
     #[Input\Attributes(

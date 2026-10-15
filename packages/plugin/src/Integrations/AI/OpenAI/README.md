@@ -14,6 +14,7 @@ Visit your [account settings area](https://platform.openai.com/api-keys) on the 
 
 - Copy and paste your API key into the integration in Freeform.
 - Select the AI model you want to use. The default is `gpt-5.6-luna`.
+  - After entering an API key, search the models available to that key. Use **Other / Custom model ID** if your model is not listed. Existing model selections are kept when they are not in the list.
   - When choosing a model, consider that AI processing can potentially hold up form submission processing for the user submitting the form, so try to choose a more light-weight model.
 - Configure the Max Tokens setting. This can be overrided per form.
 - Click the **Save** button.

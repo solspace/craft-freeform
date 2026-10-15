@@ -43,6 +43,15 @@ export const CurrentValue = styled.div`
 
   padding: 7px 22px 7px 10px;
 
+  &.missing {
+    color: var(--yellow-800, #854d0e);
+    background-color: var(--yellow-100, #fef3c7);
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
   &.empty > span {
     color: ${colors.gray300};
     font-style: italic;

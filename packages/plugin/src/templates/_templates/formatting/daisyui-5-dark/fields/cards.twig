@@ -1,0 +1,38 @@
+{% macro renderMeta(value, key = null) %}
+    {% if value is iterable %}
+        {% for label, item in value %}{{ _self.renderMeta(item, label is same as(loop.index0) ? key : label) }}{% endfor %}
+    {% elseif value is not empty %}
+        <li>{% if key is not null %}{{ key }}: {% endif %}{{ value is object ? value|json_encode : value }}</li>
+    {% endif %}
+{% endmacro %}
+{% import _self as meta %}
+
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    <div class="ff-daisy-cards" style="--ff-daisy-card-columns: {{ field.cardsPerRow|default(3) }}">
+        {% for card in field.layout %}
+            {% set cardId = field.idAttribute ~ '-card-' ~ loop.index %}
+            {% set renderedMeta = card.metadata is defined and card.metadata is not empty ? meta.renderMeta(card.metadata) : '' %}
+            {% set describedBy = [field.attributes.input.get('aria-describedby')] %}
+            {% if card.description %}{% set describedBy = describedBy|merge([cardId ~ '-description']) %}{% endif %}
+            {% if renderedMeta|trim %}{% set describedBy = describedBy|merge([cardId ~ '-meta']) %}{% endif %}
+            <div class="card card-border ff-daisy-card">
+                {% if card.assetId %}
+                    {% set asset = craft.assets.id(card.assetId).one %}
+                    {% if asset %}<figure><img src="{{ asset.getUrl(field.transform) }}" alt="" loading="lazy"></figure>{% endif %}
+                {% endif %}
+                <input id="{{ cardId }}" class="ff-daisy-visually-hidden" type="checkbox"{% if field.required %} data-required{% endif %}{% if field.attributes.input.get('disabled') is not null %} disabled{% endif %} name="{{ field.handle }}[]" value="{{ card.value ?: card.label }}"{% if (card.value ?: card.label) in field.value %} checked{% endif %}{% if field.hasErrors %} aria-invalid="true"{% endif %}{% if describedBy|filter(value => value is not empty) %} aria-describedby="{{ describedBy|filter(value => value is not empty)|join(' ') }}"{% endif %}>
+                <div class="card-body">
+                    <label class="card-title" for="{{ cardId }}">{{ card.label }}</label>
+                    {% if card.description %}<p id="{{ cardId }}-description">{{ card.description }}</p>{% endif %}
+                    {% if renderedMeta|trim %}<ul id="{{ cardId }}-meta" class="ff-daisy-card-meta">{{ renderedMeta|raw }}</ul>{% endif %}
+                </div>
+                <span class="ff-daisy-card-check" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg>
+                </span>
+            </div>
+        {% endfor %}
+    </div>
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

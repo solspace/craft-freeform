@@ -8,16 +8,24 @@ use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Catego
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\AgeRanges\AgeRanges;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\CompanySizes\CompanySizes;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Continents\Continents;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Countries\Countries;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Currencies\Currencies;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Days\Days;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\DaysOfWeek\DaysOfWeek;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\EmploymentStatuses\EmploymentStatuses;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Industries\Industries;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Languages\Languages;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months\Months;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Nationalities\Nationalities;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Provinces\Provinces;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\RegionalSubdivisions\RegionalSubdivisions;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\SurveyScales\SurveyScales;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\TimeIntervals\TimeIntervals;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Timezones\Timezones;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years;
 use yii\base\Event;
@@ -58,6 +66,14 @@ class OptionTypesProvider
             new Days(),
             new DaysOfWeek(),
             new Timezones(),
+            new AgeRanges(),
+            new CompanySizes(),
+            new Continents(),
+            new EmploymentStatuses(),
+            new Industries(),
+            new RegionalSubdivisions(),
+            new SurveyScales(),
+            new TimeIntervals(),
         ];
 
         $event = new RegisterOptionTypesEvent($types);

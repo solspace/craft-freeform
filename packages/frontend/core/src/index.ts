@@ -93,6 +93,7 @@ export * from "./conditionals/operators.js";
 export * from "./extensions/registry.js";
 export * from "./signature/signature.js";
 export * from "./state/form-state.js";
+export * from "./summary/summary.js";
 export * from "./table/table.js";
 export * from "./types/manifest.js";
 export * from "./types/submit.js";
@@ -104,6 +105,7 @@ export const FIELD_RENDERERS = {
   TEXTAREA: "textarea",
   EMAIL: "email",
   NUMBER: "number",
+  RANGE: "range",
   PHONE: "phone",
   HIDDEN: "hidden",
   SELECT: "select",
@@ -118,7 +120,29 @@ export const FIELD_RENDERERS = {
   SIGNATURE: "signature",
   TABLE: "table",
   HTML: "html",
+  SUMMARY: "summary",
   BUTTON: "button",
   SUBMIT: "submit",
   CALCULATION: "calculation",
 } as const;
+
+export {
+  getEmailSuggestion,
+  mountEmailSuggestions,
+} from "./email/suggestions.js";
+export type {
+  EmailSuggestionConfig,
+  EmailSuggestionLabels,
+} from "./email/types.js";
+export {
+  type InternationalPhoneConfig,
+  mountInternationalPhone,
+  phoneValue,
+} from "./phone/international-phone.js";
+export * from "./select/searchable-select.js";
+export { getCharacterCount } from "./utils/character-count.js";
+export {
+  mountTextareaAutoGrow,
+  type TextareaAutoGrowConfig,
+  type TextareaAutoGrowController,
+} from "./utils/textarea-auto-grow.js";

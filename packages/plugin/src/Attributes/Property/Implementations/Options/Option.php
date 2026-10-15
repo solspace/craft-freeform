@@ -8,6 +8,7 @@ class Option implements \Stringable
         private string $value,
         private string $label,
         private bool $optgroup = false,
+        private ?string $color = null,
     ) {}
 
     public function __toString(): string
@@ -28,5 +29,10 @@ class Option implements \Stringable
     public function isOptgroup(): bool
     {
         return $this->optgroup;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
     }
 }

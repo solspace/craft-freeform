@@ -29,6 +29,9 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 )]
 class HiddenField extends TextField implements NoRenderInterface
 {
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
+
     protected string $instructions = '';
     protected string $placeholder = '';
     protected bool $required = false;

@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="{{ craft.app.language|e('html_attr') }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ form.name }}</title>
+    {% include 'freeform-embed/framework-assets' %}
+    <style>
+        html { overflow: hidden; }
+        body { margin: 0; }
+    </style>
+</head>
+<body>
+    <main id="freeform-embed-content" style="display: flow-root">
+        {{ form.render() }}
+    </main>
+</body>
+</html>

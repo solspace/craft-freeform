@@ -12,6 +12,8 @@
                    id="{{ field.idAttribute }}-{{ index }}"
                    class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
                     {{ option.value in field.value ? "checked" }}
+                   {% if field.attributes.input.get("aria-describedby") %}aria-describedby="{{ field.attributes.input.get("aria-describedby") }}"{% endif %}
+                   {% if field.hasErrors %}aria-invalid="true"{% endif %}
             />
             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
                 {{ option.label|t('freeform')|raw }}

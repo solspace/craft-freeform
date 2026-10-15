@@ -42,6 +42,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         availableFieldTypes: [
             TextField::class,
             NumberField::class,
+            RangeField::class,
             TextareaField::class,
             DropdownField::class,
             RadiosField::class,

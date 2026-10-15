@@ -17,6 +17,7 @@ type FileDndConfig = {
   removeFileMessage?: string;
   uploadUrl?: string;
   deleteUrl?: string;
+  uploadRequirements?: string;
 };
 
 type UploadedFileMeta = {
@@ -184,6 +185,12 @@ export function createFileDndExtension(): FreeformExtension {
         "aria-label",
         config.placeholder || "Upload a file",
       );
+      if (config.uploadRequirements) {
+        dropzone.setAttribute(
+          "aria-describedby",
+          `freeform-${field.handle}-upload-requirements`,
+        );
+      }
 
       const placeholder = document.createElement("div");
       placeholder.className = "ff-file-dnd__placeholder";

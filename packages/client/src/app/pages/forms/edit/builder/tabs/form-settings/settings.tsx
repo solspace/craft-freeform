@@ -17,6 +17,7 @@ import { LoaderFormSettings } from "./settings.loader";
 import { SettingsSidebar } from "./settings.sidebar";
 import { FormSettingsWrapper } from "./settings.styles";
 
+export const TAB_EMBED = "embed";
 export const TAB_USAGE = "usage";
 
 export const FormSettings: React.FC = () => {

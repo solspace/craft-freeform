@@ -18,6 +18,9 @@ use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 )]
 class RegexField extends TextField implements ExtraFieldInterface, SkipGibberishCheckInterface
 {
+    // Character counts are only configurable on Text and Textarea fields.
+    protected bool $showCharacterCount = false;
+
     #[Translatable]
     #[Input\Text(
         instructions: 'Enter any regex pattern here.',

@@ -3,6 +3,13 @@
 ## 5.17.0 - Unreleased
 
 ### Added
+- Added more Preview viewport sizes with automatic scaling to preserve the selected viewport width.
+- Added a Preview-only formatting template selector for trying bundled samples without changing the saved form template.
+- Added preview answer retention, conditional page jumps and early completion, and dark backgrounds for dark sample templates.
+- Added a **Preview** tab with isolated formatting-template rendering, device widths, page selection, automatic sample framework assets, and saved per-form preview CSS/JavaScript URLs.
+- Added Lite/Pro submission limits in the form builder, with total or calendar-period quotas, limit-reached messages, and backwards-compatible Twig overrides.
+- Added Lite/Pro form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
+- Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
 - Added auto-saving drag and keyboard reordering of dashboard form cards, including moves between groups and native Craft toast feedback.
 - Added a Cancel action to content editor slideouts that restores their original values and translations.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
@@ -27,6 +34,10 @@
 - Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
 
 ### Changed
+- Made form builder navigation responsive with a **More** menu for overflow tabs, an always-visible active tab, and reserved space for Save and Undo/Redo.
+- Adjusted dark sample previews to use a #1f2226 background and restored native dark styling for upcoming steps in daisyUI Dark progress indicators.
+- Redesigned archived forms as a collapsible panel with a count badge, organized form details, localized dates, and compact restore/delete actions.
+- Replaced **Stop Submissions After Date** with cohesive **Schedule Form** settings and improved date/time controls. Existing cutoff dates retain their end-of-day behavior.
 - Moved **Manage Form Groups** beside the Forms view controls and refreshed the responsive cards layout with wider cards and more room for Form Monitor messages.
 - Standardized property-editor previews with consistent borders, empty states, compact scrolling content, and an always-visible edit cue.
 - Moved **Manage Form Groups**, **Field Type Manager**, **Favorite Fields**, bulk options, Cards, Table, HTML/code, Rich Text, and Opinion Scale editors into native Craft slideouts with responsive layouts.
@@ -43,6 +54,12 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Disabled final Submit buttons consistently in Preview and blocked final submission attempts without requesting another preview or clearing the frame.
+- Fixed missing field-container attributes in rendered previews, which prevented Tailwind 4 HTML and Rich Text list styles from applying.
+- Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.
+- Fixed missing Tailwind 3 preview styles with bundled Tailwind 3.4.19 CSS, Tailwind 4 preview horizontal overflow, Bootstrap Dark preview inputs, and daisyUI Dark progress connector contrast.
+- Fixed unclosed radio option wrappers in Tailwind 4 Light/Dark templates that could collapse row spacing in Preview.
+- Fixed duplicate form handles failing silently when saving an existing form in the builder; validation errors now appear on the Handle field.
 - Fixed inserting calculation fields at the start of the expression after typing an operator instead of at the cursor.
 - Fixed adjacent field tags merging when editing AI field selections and calculation expressions without spaces.
 - Fixed the Cards Layout editor overflowing native slideouts, with responsive columns and scrolling that keeps all cards accessible.

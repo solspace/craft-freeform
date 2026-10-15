@@ -27,6 +27,10 @@ class CsrfInput extends FeatureBundle
 
     public function attachInput(RenderTagEvent $event): void
     {
+        if ($event->getForm()->isPreview()) {
+            return;
+        }
+
         $isCSRFEnabled = $this->isCSRFEnabled();
         $isAsyncCSRFEnabled = $this->isAsyncCSRFEnabled();
         if (!$isCSRFEnabled) {
@@ -47,6 +51,10 @@ class CsrfInput extends FeatureBundle
 
     public function attachCsrfAttribute(AttachFormAttributesEvent $event): void
     {
+        if ($event->getForm()->isPreview()) {
+            return;
+        }
+
         $isCSRFEnabled = $this->isCSRFEnabled();
         $isAsyncEnabled = $this->isAsyncCSRFEnabled();
 
@@ -69,6 +77,10 @@ class CsrfInput extends FeatureBundle
 
     public function attachToJson(OutputAsJsonEvent $event): void
     {
+        if ($event->getForm()->isPreview()) {
+            return;
+        }
+
         $isCSRFEnabled = $this->isCSRFEnabled();
         if (!$isCSRFEnabled) {
             return;

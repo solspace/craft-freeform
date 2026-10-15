@@ -21,18 +21,18 @@ import { generateUrl } from "@ff-client/utils/urls";
 import type React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
 import { HistoryArrow } from "./history-arrow";
 import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
+import { type BuilderTab, TabsNavigation } from "./tabs.navigation";
 import {
   FormName,
+  HeaderRow,
   Heading,
   HistoryButton,
   HistoryControls,
   SaveButton,
   SaveButtonWrapper,
   SubmissionsShortcut,
-  TabsWrapper,
   TabWrapper,
 } from "./tabs.styles";
 
@@ -117,6 +117,61 @@ export const Tabs: React.FC = () => {
     });
   };
 
+  const tabs: BuilderTab[] = [
+    {
+      to: `/forms/${form.id}`,
+      label: translate("Layout"),
+      end: true,
+      errors: fieldsHaveErrors,
+    },
+    ...(limitations.can("notifications.tab")
+      ? [
+          {
+            to: `/forms/${form.id}/notifications`,
+            label: translate("Notifications"),
+            errors: notificationsHaveErrors,
+          },
+        ]
+      : []),
+    ...(limitations.can("rules.tab")
+      ? [{ to: `/forms/${form.id}/rules`, label: translate("Rules") }]
+      : []),
+    ...(limitations.can("integrations.tab")
+      ? [
+          {
+            to: `/forms/${form.id}/integrations`,
+            label: translate("Integrations"),
+            errors: hasIntegrationErrors,
+          },
+        ]
+      : []),
+    ...(config.editions.is(Edition.Pro) && form.formMonitor.enabled
+      ? [
+          {
+            to: `/forms/${form.id}/form-monitor`,
+            label: translate("Monitoring"),
+          },
+        ]
+      : []),
+    ...(formSettingsData && limitations.can("settings.tab")
+      ? [
+          {
+            to: `/forms/${form.id}/settings`,
+            label: translate("Settings"),
+            errors:
+              hasErrors(formErrors?.general) || hasErrors(formErrors?.behavior),
+          },
+        ]
+      : []),
+    {
+      to: `/forms/${form.id}/preview`,
+      label: translate("Preview"),
+      errors:
+        hasErrors(formErrors?.general?.previewCssUrls) ||
+        hasErrors(formErrors?.general?.previewJsUrls),
+    },
+  ];
+
   return (
     <TabWrapper>
       <Breadcrumb
@@ -125,105 +180,66 @@ export const Tabs: React.FC = () => {
         url={`/forms/${form.id}`}
       />
 
-      <Heading>
-        <FormName>{formName || translate("Create a new Form")}</FormName>
-      </Heading>
+      <HeaderRow>
+        <Heading title={formName || translate("Create a new Form")}>
+          <FormName>{formName || translate("Create a new Form")}</FormName>
+        </Heading>
 
-      <TabsWrapper className="main-tabs">
-        <NavLink
-          to={`/forms/${form.id}`}
-          end
-          className={classes(fieldsHaveErrors && "errors")}
-        >
-          <span>{translate("Layout")}</span>
-        </NavLink>
-        {limitations.can("notifications.tab") && (
-          <NavLink
-            to={`/forms/${form.id}/notifications`}
-            className={classes(notificationsHaveErrors && "errors")}
-          >
-            <span>{translate("Notifications")}</span>
-          </NavLink>
-        )}
-        {limitations.can("rules.tab") && (
-          <NavLink to={`/forms/${form.id}/rules`}>
-            <span>{translate("Rules")}</span>
-          </NavLink>
-        )}
-        {config.limitations.can("integrations.tab") && (
-          <NavLink
-            to={`/forms/${form.id}/integrations`}
-            className={classes(hasIntegrationErrors && "errors")}
-          >
-            <span>{translate("Integrations")}</span>
-          </NavLink>
-        )}
-        {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
-          <NavLink to={`/forms/${form.id}/form-monitor`}>
-            <span>{translate("Monitoring")}</span>
-          </NavLink>
-        )}
-        {formSettingsData && config.limitations.can("settings.tab") && (
-          <NavLink
-            to={`/forms/${form.id}/settings`}
-            className={classes(
-              (hasErrors(formErrors?.general) ||
-                hasErrors(formErrors?.behavior)) &&
-                "errors",
-            )}
-          >
-            <span>{translate("Settings")}</span>
-          </NavLink>
-        )}
-      </TabsWrapper>
+        <TabsNavigation tabs={tabs} />
 
-      {showSubmissionsShortcut && (
-        <SubmissionsShortcut
-          href={generateUrl(submissionsUrl)}
-          onClick={onSubmissionsClick}
-          title={translate("View submissions")}
-          className="go"
-        >
-          {submissionCount} {translate("submissions")}
-        </SubmissionsShortcut>
-      )}
+        <SaveButtonWrapper>
+          {showSubmissionsShortcut && (
+            <SubmissionsShortcut
+              href={generateUrl(submissionsUrl)}
+              onClick={onSubmissionsClick}
+              title={translate("View submissions")}
+              aria-label={`${submissionCount} ${translate("submissions")}`}
+              className="go"
+            >
+              {submissionCount} <span>{translate("submissions")}</span>
+            </SubmissionsShortcut>
+          )}
 
-      <SaveButtonWrapper>
-        <HistoryControls>
-          <HistoryButton
+          <HistoryControls>
+            <HistoryButton
+              type="button"
+              onClick={() => dispatch(historyActions.undo())}
+              disabled={
+                !undoCount || state === State.Processing || hasOpenModals
+              }
+              title={translate("Undo")}
+              aria-label={translate("Undo")}
+            >
+              <HistoryArrow direction="undo" />
+            </HistoryButton>
+            <HistoryButton
+              type="button"
+              onClick={() => dispatch(historyActions.redo())}
+              disabled={
+                !redoCount || state === State.Processing || hasOpenModals
+              }
+              title={translate("Redo")}
+              aria-label={translate("Redo")}
+            >
+              <HistoryArrow direction="redo" />
+            </HistoryButton>
+          </HistoryControls>
+          <SaveButton
             type="button"
-            onClick={() => dispatch(historyActions.undo())}
-            disabled={!undoCount || state === State.Processing || hasOpenModals}
-            title={translate("Undo")}
-            aria-label={translate("Undo")}
+            onClick={triggerSave}
+            disabled={state === State.Processing}
+            className={classes("btn", "submit", "save-button")}
           >
-            <HistoryArrow direction="undo" />
-          </HistoryButton>
-          <HistoryButton
-            type="button"
-            onClick={() => dispatch(historyActions.redo())}
-            disabled={!redoCount || state === State.Processing || hasOpenModals}
-            title={translate("Redo")}
-            aria-label={translate("Redo")}
-          >
-            <HistoryArrow direction="redo" />
-          </HistoryButton>
-        </HistoryControls>
-        <SaveButton
-          type="button"
-          onClick={triggerSave}
-          disabled={state === State.Processing}
-          className={classes("btn", "submit", "save-button")}
-        >
-          <LoadingText
-            loadingText={translate("Saving")}
-            loading={state === State.Processing}
-            spinner
-          >
-            {translate("Save")}
-          </LoadingText>
-        </SaveButton>
-      </SaveButtonWrapper>
+            <LoadingText
+              loadingText={translate("Saving")}
+              loading={state === State.Processing}
+              spinner
+            >
+              {translate("Save")}
+            </LoadingText>
+          </SaveButton>
+        </SaveButtonWrapper>
+      </HeaderRow>
     </TabWrapper>
   );
 };

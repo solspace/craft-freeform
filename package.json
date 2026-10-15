@@ -23,6 +23,7 @@
     "client": "pnpm --filter @ff/client dev",
     "front-end": "concurrently -n scripts,styles \"pnpm --filter @ff/scripts dev\" \"pnpm --filter @ff/styles dev\"",
     "build": "pnpm -r --if-present build",
+    "build:tailwind3": "node packages/scripts/build-tailwind3.mjs",
     "format": "biome check --write",
     "format:verify": "biome check",
     "lint": "pnpm -r --if-present lint",

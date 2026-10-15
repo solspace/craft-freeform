@@ -24,11 +24,18 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
 
   const options = fields
     .filter((field) => {
+      const type = findType(field.typeClass);
+      if (
+        property.availableFieldTypes &&
+        !property.availableFieldTypes.includes(type?.type)
+      ) {
+        return false;
+      }
+
       if (!property.implements) {
         return true;
       }
 
-      const type = findType(field.typeClass);
       if (!type) {
         return false;
       }

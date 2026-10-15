@@ -246,6 +246,14 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->duplicateCheck;
                 },
             ],
+            'duplicateCheckScopeField' => [
+                'name' => 'duplicateCheckScopeField',
+                'type' => Type::string(),
+                'description' => "The UID of the field used to scope the form's duplicate check",
+                'resolve' => static function ($source) {
+                    return $source->getSettings()->getBehavior()->duplicateCheckScopeField;
+                },
+            ],
             'stopSubmissionsAfter' => [
                 'name' => 'stopSubmissionsAfter',
                 'type' => Type::string(),

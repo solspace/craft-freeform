@@ -46,6 +46,10 @@ class FormLimiting extends FeatureBundle
 
         $duplicateCheck = $behaviorSettings->duplicateCheck;
 
+        if (DuplicateCheckScope::isEnabled($form)) {
+            return;
+        }
+
         $token = EditSubmissionContext::getToken($form);
         if ($token) {
             return;

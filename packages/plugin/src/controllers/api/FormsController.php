@@ -9,8 +9,11 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
+use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Services\FormPreviewService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -33,6 +36,49 @@ class FormsController extends BaseApiController
         private FormDuplicator $formDuplicator,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionPreviewTemplates(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson(\Craft::$container->get(FormPreviewService::class)->getSampleTemplateOptions());
+    }
+
+    public function actionPreview(int $id): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        try {
+            $values = PreviewState::validateValues($this->request->getBodyParam('values', []));
+            $data = \Craft::$container->get(FormPreviewService::class)->render(
+                $form,
+                (int) $this->request->getBodyParam('page', 0),
+                $values,
+                true === $this->request->getBodyParam('advance', false),
+                $this->request->getBodyParam('templateOverride'),
+            );
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($data);
     }
 
     public function actionClone(int $id): Response
@@ -202,6 +248,30 @@ class FormsController extends BaseApiController
 
         $data = json_decode($this->request->getRawBody(), false);
 
+        $general = $data?->form?->settings?->general ?? null;
+        if (\is_object($general)) {
+            $existingSettings = is_numeric($id) ? $this->getFormsService()->getFormById((int) $id)?->getSettings()->getGeneral() : null;
+            foreach (['previewCssUrls', 'previewJsUrls'] as $key) {
+                $existing = $existingSettings?->{$key} ?? '';
+                $value = $general->{$key} ?? $existing;
+                if (!PermissionHelper::isAdmin() && $value !== $existing) {
+                    throw new ForbiddenHttpException('Only a Craft administrator can change preview asset URLs');
+                }
+
+                try {
+                    if (!\is_string($value)) {
+                        throw new \InvalidArgumentException('Enter asset URLs as text, one per line.');
+                    }
+                    PreviewAssetHelper::parse($value);
+                } catch (\InvalidArgumentException $exception) {
+                    $this->response->statusCode = 400;
+
+                    return ['errors' => ['form' => ['general' => [$key => [$exception->getMessage()]]]]];
+                }
+                $general->{$key} = $value;
+            }
+        }
+
         // Enabling the embed creates a public URL. Form editors can continue
         // editing an enabled form, but only a Craft admin may change this flag.
         if (!PermissionHelper::isAdmin()) {
@@ -224,8 +294,12 @@ class FormsController extends BaseApiController
 
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPDATE_FORM, $event);
-        $this->trigger(self::EVENT_UPSERT_FORM, $event);
-        $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_UPSERT_FORM, $event);
+        }
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        }
 
         $this->response->statusCode = $event->getStatus() ?? 204;
 

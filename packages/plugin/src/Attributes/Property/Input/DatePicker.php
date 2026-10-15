@@ -22,6 +22,8 @@ class DatePicker extends Property
         public ?string $dateFormat = null,
         public ?string $minDate = null,
         public ?string $maxDate = null,
+        public bool $includeTime = false,
+        public string $defaultTime = '00:00',
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }

@@ -73,7 +73,8 @@ class FormPreviewServiceTest extends TestCase
         self::assertStringContainsString("form-action 'none'; connect-src 'none'", $policy);
         self::assertStringContainsString("'sha256-".base64_encode(hash('sha256', 'window.previewReady = true;', true))."'", $policy);
         self::assertStringNotContainsString("'unsafe-eval'", $policy);
-        self::assertStringContainsString('Überprüfung', $html);
+        // libxml may serialize non-ASCII text as HTML entities.
+        self::assertSame('Überprüfung', $xpath->query('//p')->item(0)->textContent);
     }
 
     public function testPreviewDoesNotRegisterContextOrExposeCsrfAndPayload(): void

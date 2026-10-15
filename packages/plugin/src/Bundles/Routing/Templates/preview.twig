@@ -10,15 +10,15 @@
         <link rel="stylesheet" href="{{ url|e('html_attr') }}" crossorigin="anonymous">
     {% endfor %}
     <style>
-        html { {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #181a1b; color-scheme: dark;{% endif %} }
-        body { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #181a1b; color: #e5e7eb;{% endif %} }
+        html { {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #1f2226; color-scheme: dark;{% endif %} }
+        body { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; {% if clipHorizontalOverflow %}overflow-x: clip;{% endif %} {% if isDark %}background: #1f2226; color: #e5e7eb;{% endif %} }
         #freeform-preview-status { margin-bottom: 16px; padding: 12px; border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; font: 14px/1.5 system-ui, sans-serif; }
     </style>
     <script id="freeform-preview-config" type="application/json">{{ previewConfigJson|raw }}</script>
     <script>{{ previewScript|raw }}</script>
     {{ head() }}
 </head>
-<body{% if isDark %} style="background-color: #181a1b; color: #e5e7eb"{% endif %}>
+<body{% if isDark %} style="background-color: #1f2226; color: #e5e7eb"{% endif %}>
     {{ beginBody() }}
     <div id="freeform-preview-status" role="status" hidden>{{ 'Submissions are disabled in Preview. Choose another page using the page selector.'|t('freeform') }}</div>
     <main>{{ formMarkup }}</main>

@@ -10,6 +10,7 @@
 - Added Lite/Pro submission limits in the form builder, with total or calendar-period quotas, limit-reached messages, and backwards-compatible Twig overrides.
 - Added Lite/Pro form scheduling with optional start and end dates and times, configurable pending and expired messages, and availability checks for rendering and submissions.
 - Added an optional Pro **Scope by Field** setting to Duplicate Check, allowing one submission per product, entry, or other field value for each user, email address, IP address, or visitor cookie.
+- Added PDF and image references to **Create with AI**, using SolspaceAI or compatible configured OpenAI, Anthropic, and Gemini integrations to recreate editable form fields and layouts.
 - Added auto-saving drag and keyboard reordering of dashboard form cards, including moves between groups and native Craft toast feedback.
 - Added a Cancel action to content editor slideouts that restores their original values and translations.
 - Added framework and layout icons to sample formatting template choices, and configured status-color dots to the Default Status picker.
@@ -54,6 +55,9 @@
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
 
 ### Fixed
+- Moved AI form generation to Craft's queue with recoverable progress checks, private encrypted references, duplicate-request protection, output-limit detection, and safer failed-save handling.
+- Improved AI reference form dropdown recognition by extracting embedded PDF choices, preserving linked choice types and options, and recognizing common select field aliases.
+- Reduced OpenAI form-generation latency on compatible reasoning models, allowed a bounded PHP runtime for AI requests, and replaced raw provider/gateway errors with actionable messages.
 - Disabled final Submit buttons consistently in Preview and blocked final submission attempts without requesting another preview or clearing the frame.
 - Fixed missing field-container attributes in rendered previews, which prevented Tailwind 4 HTML and Rich Text list styles from applying.
 - Fixed list markers and spacing in HTML and Rich Text content using Tailwind 4 sample templates.

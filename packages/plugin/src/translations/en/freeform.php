@@ -12,6 +12,7 @@
  */
 
 return [
+    'More' => 'More',
     // Form Builder
     // Form Builder // Form Cards
     'Submissions' => 'Submissions',

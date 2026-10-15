@@ -12,6 +12,7 @@
  */
 
 return [
+    'More' => 'Altro',
     // Form Builder
     // Form Builder // Form Cards
     'Submissions' => 'Invii',

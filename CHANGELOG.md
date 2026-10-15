@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.17.0 - Unreleased
+## 5.17.0 - 2026-10-15
 
 > [!IMPORTANT]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Review customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically. Existing JavaScript render overrides continue to take precedence. See the [AJAX formatting guide](https://docs.solspace.com/craft/freeform/v5/templates/ajax/#updating-custom-templates-to-517) for details on banner attributes, field error styling, and JavaScript render overrides.

@@ -158,13 +158,19 @@
             </div>
             <div class="input">
 
-                <table class="shadow-box editable value-group" id="filter-table"
+                <table class="shadow-box editable value-group fullwidth" id="filter-table"
                        data-type="checkbox_group">
+                    <colgroup>
+                        <col class="filter-field">
+                        <col class="filter-type">
+                        <col>
+                        <col class="filter-action">
+                    </colgroup>
                     <thead>
                     <tr>
-                        <th class="header thin filter-field">{{ "Field"|t('freeform') }}</th>
-                        <th class="header thin filter-type">{{ "Filter Type"|t('freeform') }}</th>
-                        <th class="header thin filter-value" colspan="2">{{ "Value"|t('app') }}</th>
+                        <th class="header">{{ "Field"|t('freeform') }}</th>
+                        <th class="header">{{ "Filter Type"|t('freeform') }}</th>
+                        <th class="header filter-value" colspan="2">{{ "Value"|t('app') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -172,7 +178,7 @@
                         {% set iterator = loop.index0 %}
 
                         <tr data-iterator="{{ iterator }}">
-                            <td width="50">
+                            <td>
                                 <div class="select">
                                     <select name="filters[{{ iterator }}][field]">
                                         {% for field in profile.fieldDescriptors %}
@@ -183,7 +189,7 @@
                                     </select>
                                 </div>
                             </td>
-                            <td width="50">
+                            <td>
                                 <div class="select">
                                     {{ forms.select({
                                         name: 'filters['~iterator~'][type]',
@@ -205,7 +211,7 @@
                     {% endfor %}
                     <template>
                         <tr data-iterator="__iterator__">
-                            <td width="50">
+                            <td>
                                 <div class="select">
                                     <select name="filters[__iterator__][field]">
                                         {% for field in profile.fieldDescriptors %}
@@ -214,7 +220,7 @@
                                     </select>
                                 </div>
                             </td>
-                            <td width="50">
+                            <td>
                                 <div class="select">
                                     {{ forms.select({
                                         name: 'filters[__iterator__][type]',
@@ -244,6 +250,34 @@
         </div>
 
     <style>
+        #filter-table {
+            table-layout: fixed;
+        }
+
+        #filter-table .filter-field {
+            width: 40%;
+        }
+
+        #filter-table .filter-type {
+            width: 25%;
+        }
+
+        #filter-table .filter-action {
+            width: 34px;
+        }
+
+        #filter-table .select,
+        #filter-table select {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        #filter-table select {
+            text-overflow: ellipsis;
+        }
+
         #filter-table textarea.code {
             padding: 10px 9px 9px;
         }

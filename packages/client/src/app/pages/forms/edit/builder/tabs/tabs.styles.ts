@@ -7,18 +7,15 @@ export const TabWrapper = styled.nav`
   container: builder-header / inline-size;
   flex: 0 0 auto;
   min-width: 0;
+  overflow: hidden;
 `;
 
 export const HeaderRow = styled.div`
   display: grid;
-  grid-template: "heading tabs actions" 50px / minmax(100px, 300px) minmax(0, 1fr) max-content;
+  grid-template: "heading tabs actions" 50px / 300px minmax(0, 1fr) max-content;
   align-items: center;
-  column-gap: 12px;
   box-sizing: border-box;
 
-  @container builder-header (max-width: 1100px) {
-    grid-template-columns: minmax(80px, 160px) minmax(0, 1fr) max-content;
-  }
   @container builder-header (max-width: 760px) {
     grid-template: "heading actions" 50px "tabs tabs" 49px / minmax(0, 1fr) max-content;
   }
@@ -173,6 +170,7 @@ export const SaveButtonWrapper = styled.div`
   align-items: center;
   justify-self: end;
   gap: ${spacings.md};
+  margin-inline-start: 12px;
 `;
 
 export const SaveButton = styled.button``;
@@ -250,9 +248,6 @@ export const SubmissionsShortcut = styled.a`
   }
 
   @container builder-header (max-width: 1100px) {
-    > span { display: none; }
-  }
-  @container builder-header (max-width: 360px) {
     display: none;
   }
 `;

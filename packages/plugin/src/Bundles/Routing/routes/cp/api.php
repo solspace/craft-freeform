@@ -23,6 +23,7 @@ return [
 
     // FORM GROUPS
     'freeform/api/forms/groups' => 'freeform/api/form-groups',
+    'freeform/api/forms/groups/move' => 'freeform/api/form-groups/move',
 
     // FORM ELEMENTS
     'freeform/api/forms/<id:\d+>/elements' => 'freeform/api/forms/elements/get',

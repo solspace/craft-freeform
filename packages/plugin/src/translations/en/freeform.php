@@ -3791,4 +3791,7 @@ return [
     'Archived' => 'Archived',
     'Restore' => 'Restore',
     'Restoring' => 'Restoring',
+    'Form position saved.' => 'Form position saved.',
+    'Could not save the form position. Please try again.' => 'Could not save the form position. Please try again.',
+    'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Drag to move. Use up/down arrows to reorder, left/right to change group.',
 ];

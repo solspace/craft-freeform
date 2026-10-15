@@ -3792,4 +3792,7 @@ return [
     'Archived' => 'Archivé',
     'Restore' => 'Restaurer',
     'Restoring' => 'Restauration',
+    'Form position saved.' => 'Position du formulaire enregistrée.',
+    'Could not save the form position. Please try again.' => 'Impossible d’enregistrer la position du formulaire. Veuillez réessayer.',
+    'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Glissez pour déplacer. Utilisez les flèches haut/bas pour réorganiser et gauche/droite pour changer de groupe.',
 ];

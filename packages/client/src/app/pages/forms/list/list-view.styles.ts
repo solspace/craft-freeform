@@ -5,10 +5,19 @@ import styled from "styled-components";
 export const Header = styled.header`
   display: grid;
   grid-template-areas: 'title sites views button';
-  grid-template-columns: min-content 1fr min-content auto;
+  grid-template-columns: min-content 1fr max-content auto;
   justify-content: space-between;
   align-items: center;
   gap: ${spacings.md};
+
+  @media (max-width: 1100px) {
+    grid-template-areas: 'title button' 'views views';
+    grid-template-columns: 1fr auto;
+  }
+  @media (max-width: 600px) {
+    grid-template-areas: 'title' 'views' 'button';
+    grid-template-columns: minmax(0, 1fr);
+  }
 `;
 
 export const Title = styled.h1`
@@ -64,5 +73,11 @@ export const EnableAiLink = styled(Link)`
 `;
 
 export const ViewButtons = styled.section`
+`;
+
+export const ViewControls = styled.div`
   grid-area: views;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.md};
 `;

@@ -3755,4 +3755,7 @@ return [
     'Archived' => 'Gearchiveerd',
     'Restore' => 'Herstellen',
     'Restoring' => 'Bezig met herstellen',
+    'Form position saved.' => 'Formulierpositie opgeslagen.',
+    'Could not save the form position. Please try again.' => 'De formulierpositie kon niet worden opgeslagen. Probeer het opnieuw.',
+    'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Sleep om te verplaatsen. Gebruik omhoog/omlaag om de volgorde te wijzigen en links/rechts om van groep te wisselen.',
 ];

@@ -3792,4 +3792,7 @@ return [
     'Archived' => 'Archiviato',
     'Restore' => 'Ripristina',
     'Restoring' => 'Ripristino',
+    'Form position saved.' => 'Posizione del modulo salvata.',
+    'Could not save the form position. Please try again.' => 'Impossibile salvare la posizione del modulo. Riprova.',
+    'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Trascina per spostare. Usa le frecce su/giù per riordinare e sinistra/destra per cambiare gruppo.',
 ];

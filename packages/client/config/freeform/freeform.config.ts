@@ -42,6 +42,7 @@ type Config = {
       version: string;
       canCreate: boolean;
       canDelete: boolean;
+      canOrganizeForms: boolean;
       canManageHtmlEmbeds: boolean;
     };
     tinymce: {

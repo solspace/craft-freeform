@@ -5,11 +5,16 @@ namespace Solspace\Freeform\controllers\api;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\FormOrderHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
+use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormGroupsService;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\Response;
 
 class FormGroupsController extends BaseApiController
 {
@@ -26,8 +31,108 @@ class FormGroupsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
+    /**
+     * Move one card using the current stored order, preserving forms outside the dashboard's site.
+     */
+    public function actionMove(): Response
+    {
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+        $freeform = Freeform::getInstance();
+        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        $formId = filter_var($this->request->post('formId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $beforeId = $this->request->post('beforeId');
+        $beforeId = null === $beforeId ? null : filter_var($beforeId, \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $groupUid = $this->request->post('groupUid');
+        $siteId = filter_var($this->request->post('siteId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if (!$formId || false === $beforeId || !$siteId || (null !== $groupUid && (!\is_string($groupUid) || '' === $groupUid))) {
+            throw new BadRequestHttpException('Invalid form move');
+        }
+        if (!\in_array($siteId, SitesHelper::getEditableSiteIds(), true)) {
+            throw new ForbiddenHttpException('User cannot edit this site');
+        }
+        if (null !== $groupUid && !$freeform->isPro()) {
+            throw new ForbiddenHttpException('Form groups require Pro');
+        }
+
+        // All dashboard moves share a lock because unassigned ordering is global.
+        $mutex = \Craft::$app->getMutex();
+        $lock = 'freeform-form-card-move';
+        if (!$mutex->acquire($lock, 5)) {
+            throw new BadRequestHttpException('Forms are being rearranged. Please try again.');
+        }
+
+        try {
+            $transaction = \Craft::$app->db->beginTransaction();
+
+            try {
+                $site = \Craft::$app->sites->getSiteById($siteId);
+                $visibleForms = $this->getFormsService()->getAllNonArchivedForms(sites: SitesHelper::isEnabled() ? $site->handle : null);
+                if (!isset($visibleForms[$formId]) || (null !== $beforeId && !isset($visibleForms[$beforeId]))) {
+                    throw new BadRequestHttpException('Form is no longer available in this site');
+                }
+
+                $groups = $freeform->isPro() ? $this->formGroupsService->getAllFormGroupsBySiteId($siteId) : [];
+                $groupIds = array_column($groups, 'id');
+                $target = null;
+                foreach ($groups as $group) {
+                    if ($group['uid'] === $groupUid) {
+                        $target = $group;
+                    }
+                }
+                if (null !== $groupUid && null === $target) {
+                    throw new BadRequestHttpException('Form group no longer exists');
+                }
+
+                if (null !== $target) {
+                    $ids = FormGroupsEntriesRecord::find()->select('formId')->where(['groupId' => $target['id']])->orderBy(['order' => \SORT_ASC, 'id' => \SORT_ASC])->column();
+                } else {
+                    $groupedIds = $groupIds ? FormGroupsEntriesRecord::find()->select('formId')->where(['groupId' => $groupIds])->column() : [];
+                    $ids = FormRecord::find()->select('id')->where(['dateArchived' => null])->andWhere(['not in', 'id', $groupedIds])->orderBy(['order' => \SORT_ASC, 'id' => \SORT_ASC])->column();
+                }
+                $ids = FormOrderHelper::moveBefore($ids, $formId, $beforeId);
+
+                if ($groupIds) {
+                    FormGroupsEntriesRecord::deleteAll(['groupId' => $groupIds, 'formId' => $formId]);
+                }
+                if (null !== $target) {
+                    foreach ($ids as $order => $id) {
+                        $entry = FormGroupsEntriesRecord::findOne(['groupId' => $target['id'], 'formId' => $id]) ?? new FormGroupsEntriesRecord();
+                        $entry->groupId = $target['id'];
+                        $entry->formId = $id;
+                        $entry->order = $order;
+                        if (!$entry->save()) {
+                            throw new \RuntimeException('Could not save form position');
+                        }
+                    }
+                } else {
+                    // Reinsert only this form into the global order, retaining grouped/archived/other-site forms.
+                    $allIds = FormRecord::find()->select('id')->orderBy(['order' => \SORT_ASC, 'id' => \SORT_ASC])->column();
+                    $allIds = FormOrderHelper::moveBefore($allIds, $formId, $beforeId);
+                    foreach ($allIds as $order => $id) {
+                        \Craft::$app->db->createCommand()->update(FormRecord::TABLE, ['order' => $order], ['id' => $id])->execute();
+                    }
+                }
+                $transaction->commit();
+            } catch (\Throwable $exception) {
+                $transaction->rollBack();
+
+                throw $exception;
+            }
+        } finally {
+            $mutex->release($lock);
+        }
+
+        return $this->asEmptyResponse(204);
+    }
+
     protected function post(int|string|null $id = null): array|object|null
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+
         $groups = $this->request->post('groups');
         $siteId = $this->request->post('siteId');
 
@@ -103,7 +208,7 @@ class FormGroupsController extends BaseApiController
                 ]);
             }
 
-            if (!empty($processedFormEntryIds)) {
+            if (!empty($processedGroupIds)) {
                 FormGroupsEntriesRecord::deleteAll([
                     'and',
                     ['groupId' => $processedGroupIds],
@@ -166,7 +271,7 @@ class FormGroupsController extends BaseApiController
         if ($freeform->isPro()) {
             $groupRecords = $this->formGroupsService->getAllFormGroupsBySiteId($siteId);
 
-            $formGroups = ['groups' => []];
+            $formGroups = ['siteId' => (int) $siteId, 'site' => $siteHandle, 'groups' => []];
             $formIdsInGroups = [];
 
             foreach ($groupRecords as $groupRecord) {
@@ -179,12 +284,11 @@ class FormGroupsController extends BaseApiController
                 $formIds = array_map(static fn ($entry) => $entry->formId, $groupFormsEntries);
                 $formIdsInGroups = array_merge($formIdsInGroups, $formIds);
 
-                $groupedForms = array_values(
-                    array_filter(
-                        $forms,
-                        static fn ($form) => \in_array($form->id, $formIds)
-                    )
-                );
+                $formsById = array_column($forms, null, 'id');
+                $groupedForms = array_values(array_filter(array_map(
+                    static fn ($formId) => $formsById[$formId] ?? null,
+                    $formIds
+                )));
 
                 $groupItem = [
                     'uid' => $groupRecord['uid'],

@@ -2,6 +2,12 @@
 
 ## 5.17.0 - Unreleased
 
+> [!IMPORTANT]
+> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Review customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically. Existing JavaScript render overrides continue to take precedence. See the [AJAX formatting guide](https://docs.solspace.com/craft/freeform/v5/templates/ajax/#updating-custom-templates-to-517) for details on banner attributes, field error styling, and JavaScript render overrides.
+
+> [!NOTE]
+> **Craft 4:** Composer may block installation or updates because of security advisories affecting Craft 4's required dependencies. See our [installation and update guide](https://docs.solspace.com/craft/freeform/v5/setup/installing-updating/#craft-4-composer-security-advisories) for available options, a temporary workaround for local testing, and important security considerations.
+
 ### Added
 - Added PDF and image uploads to **Create with AI** to recreate existing forms as editable Freeform fields, with optional instructions to customize the result.
 - Added a **Preview** tab with sample-template selection, eight viewport sizes, automatic scaling, and per-form CSS and JavaScript URLs. Previews support conditional visibility, page jumps, and early completion, and retain test answers across page and template changes.
@@ -46,9 +52,6 @@
 - Improved the installed demo templates with better accessibility, simpler configuration, cleaner styles, corrected routing, and safer submission deletion.
 - **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
 - Reduced repeated requests for field configuration on the Forms dashboard.
-
-> [!WARNING]
-> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Review customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically. Existing JavaScript render overrides continue to take precedence.
 
 ### Fixed
 - Fixed duplicate form handles failing silently when saving an existing form. Validation errors now appear on the **Handle** setting.

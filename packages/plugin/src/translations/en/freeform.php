@@ -3703,4 +3703,7 @@ return [
     'Replace Existing Values' => 'Replace Existing Values',
     'Reorder' => 'Reorder',
     'Click the \'Add Group\' button on the right to begin.' => 'Click the \'Add Group\' button on the right to begin.',
+    'Form position saved.' => 'Form position saved.',
+    'Could not save the form position. Please try again.' => 'Could not save the form position. Please try again.',
+    'Drag to move. Use up/down arrows to reorder, left/right to change group.' => 'Drag to move. Use up/down arrows to reorder, left/right to change group.',
 ];

@@ -53,7 +53,6 @@ return [
     'Show archived forms' => 'Afficher les formulaires archivés',
     'Hide archived forms' => 'Masquer les formulaires archivés',
     'archived' => 'archivé',
-    'Manage Form Groups' => 'Gérer les groupes de formulaires',
     'Form Group Manager' => 'Gestionaire de groupes de formulaires',
     'Click \'Add Group\' to begin.' => 'Cliquez sur « Ajouter un groupe » pour commencer.',
     'Drag forms here.' => 'Faites glisser les formulaires ici.',

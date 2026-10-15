@@ -53,7 +53,6 @@ return [
     'Show archived forms' => 'Mostra moduli archiviati',
     'Hide archived forms' => 'Nascondi moduli archiviati',
     'archived' => 'archiviato',
-    'Manage Form Groups' => 'Gestisci gruppi di moduli',
     'Form Group Manager' => 'Gestore gruppi di moduli',
     'Click \'Add Group\' to begin.' => 'Fai clic su «Aggiungi gruppo» per iniziare.',
     'Drag forms here.' => 'Trascina i moduli qui.',

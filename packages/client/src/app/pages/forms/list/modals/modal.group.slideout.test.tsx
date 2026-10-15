@@ -118,7 +118,7 @@ function Launcher() {
   const open = useEditGroupModal();
   return (
     <button type="button" onClick={open}>
-      Manage Form Groups
+      Form Groups
     </button>
   );
 }
@@ -132,7 +132,7 @@ function render() {
   );
 }
 function open() {
-  act(() => button("Manage Form Groups").click());
+  act(() => button("Form Groups").click());
   return Panel.instances.at(-1)!;
 }
 beforeEach(() => {
@@ -181,7 +181,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("Manage Form Groups slideout", () => {
+describe("Form Groups slideout", () => {
   it("adds, reorders, and removes groups while retaining unassigned forms", () => {
     const panel = open();
     act(() => button("Add Group").click());

@@ -77,7 +77,7 @@ export const FormGrid: React.FC = () => {
                     </GroupWrap>
                   ) : null,
                 )}
-              {!isEmpty && (isForms || sorting.canMove) && (
+              {data && !isEmpty && (isForms || sorting.canMove) && (
                 <GroupWrap>
                   {data?.formGroups?.groups.length > 0 && (
                     <GroupTitle>{translate("Other")}</GroupTitle>

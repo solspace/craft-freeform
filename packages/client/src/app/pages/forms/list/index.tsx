@@ -79,7 +79,7 @@ export const ListProvider: React.FC = () => {
                 onClick={openEditGroupModal}
               >
                 <EditIcon />
-                {translate("Manage Form Groups")}
+                {translate("Form Groups")}
               </GroupsButton>
             )}
           <ViewButtons className="btngroup btngroup--exclusive">

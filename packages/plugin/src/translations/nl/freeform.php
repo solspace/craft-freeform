@@ -53,7 +53,6 @@ return [
     'Show archived forms' => 'Toon gearchiveerde formulieren',
     'Hide archived forms' => 'Gearchiveerde formulieren verbergen',
     'archived' => 'gearchiveerde',
-    'Manage Form Groups' => 'Beheer Formuliergroepen',
     'Form Group Manager' => 'Formulier Groepsmanager',
     'Click \'Add Group\' to begin.' => 'Klik op ‘Groep toevoegen’ om te beginnen.',
     'Drag forms here.' => 'Sleep formulieren hierheen.',

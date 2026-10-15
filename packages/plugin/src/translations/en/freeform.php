@@ -53,7 +53,6 @@ return [
     'Show archived forms' => 'Show archived forms',
     'Hide archived forms' => 'Hide archived forms',
     'archived' => 'archived',
-    'Manage Form Groups' => 'Manage Form Groups',
     'Form Group Manager' => 'Form Group Manager',
     'Click \'Add Group\' to begin.' => 'Click \'Add Group\' to begin.',
     'Drag forms here.' => 'Drag forms here.',

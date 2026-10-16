@@ -2,7 +2,7 @@
 <ruleset name="Freeform">
     <description>PHPCompatibility ruleset for Freeform</description>
     <config name="extensions" value="php"/>
-    <config name="testVersion" value="8.0-"/>
+    <config name="testVersion" value="8.5-"/>
     <file>./packages/plugin</file>
     <rule ref="PHPCompatibility"/>
 </ruleset>

@@ -3,8 +3,8 @@ import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.select
 import { useDimensionsObserver } from "@ff-client/hooks/use-height-animation";
 import type React from "react";
 import type { RefObject } from "react";
-import { memo } from "react";
-import { useSelector } from "react-redux";
+import { memo, useMemo } from "react";
+import { shallowEqual, useSelector } from "react-redux";
 
 import { Field } from "../field/field";
 import { FieldDragPlaceholder } from "../field/field.placeholder";
@@ -24,7 +24,8 @@ type Props = {
 };
 
 const Row: React.FC<Props> = memo(({ row }) => {
-  const fields = useSelector(fieldSelectors.inRow(row));
+  const selectFields = useMemo(() => fieldSelectors.inRow(row), [row]);
+  const fields = useSelector(selectFields, shallowEqual);
 
   const { ref: wrapperRef, dimensions } =
     useDimensionsObserver<HTMLDivElement>();

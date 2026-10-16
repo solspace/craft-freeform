@@ -10,7 +10,7 @@ import { fieldThunks } from "@editor/store/thunks/fields";
 import { Fields } from "@ff-client/types/field.classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
-import { memo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { DragPreviewImage } from "react-dnd";
 
 import { FieldCell } from "./cell/cell";
@@ -59,13 +59,14 @@ export const Field: React.FC<Props> = memo(
     });
 
     const canDuplicate = config.limitations.can("layout.fields.clone");
+    const dragPreview = useMemo(
+      () => createPreview(field.properties?.label),
+      [field.properties?.label],
+    );
 
     return (
       <>
-        <DragPreviewImage
-          connect={preview}
-          src={createPreview(field.properties?.label)}
-        />
+        <DragPreviewImage connect={preview} src={dragPreview} />
         <FieldWrapper
           onMouseEnter={() => setHovering(true)}
           onMouseLeave={() => setHovering(false)}

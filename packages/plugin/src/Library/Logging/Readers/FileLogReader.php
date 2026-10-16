@@ -75,7 +75,7 @@ class FileLogReader extends LogReader
         return $this->getParser()->parse($this->file->current());
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->file->key();
     }

@@ -28,6 +28,15 @@ export const CurrentValue = styled.div`
   gap: var(--c-spacing-sm);
   padding: 0 calc(var(--c-input-spacing-inline) * 1.5 + 1em) 0 var(--c-input-spacing-inline);
 
+  &.missing {
+    color: var(--yellow-800, #854d0e);
+    background-color: var(--yellow-100, #fef3c7);
+
+    svg {
+      fill: currentColor;
+    }
+  }
+
   &.empty > span {
     color: var(--c-text-quiet);
     font-style: italic;

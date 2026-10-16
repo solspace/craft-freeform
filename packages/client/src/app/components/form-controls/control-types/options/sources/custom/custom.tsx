@@ -40,6 +40,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
           "bulk-editor",
           "slideout-container",
           "cp-slideout-shade",
+          "slideout-shade",
         ]}
         onAfterEdit={() => updateValue(cleanOptions(value))}
       >

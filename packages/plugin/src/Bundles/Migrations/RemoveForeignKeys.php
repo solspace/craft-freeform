@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Migrations;
 
 use craft\events\PluginEvent;
 use craft\services\Plugins;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -20,12 +21,16 @@ class RemoveForeignKeys extends FeatureBundle
 
     public function handleRemoveForeignKeys(PluginEvent $event): void
     {
+        if ($event->plugin !== Freeform::getInstance()) {
+            return;
+        }
+
         $db = \Craft::$app->getDb();
         $tables = $db->schema->getTableSchemas();
         $prefix = $db->tablePrefix;
 
         foreach ($tables as $table) {
-            if (!preg_match("/{$prefix}(freeform_.*)$/", $table->name)) {
+            if (!str_starts_with($table->name, $prefix.'freeform_')) {
                 continue;
             }
 

@@ -75,17 +75,25 @@ abstract class AbstractOptionProcessor
             try {
                 $defaultValueProperty = $reflection->getProperty('defaultValue');
                 if ($defaultValueProperty) {
-                    $defaultValueProperty->setAccessible(true);
+                    if (\PHP_VERSION_ID < 80100) {
+                        $defaultValueProperty->setAccessible(true);
+                    }
                     $defaultValueProperty->setValue($object, $value);
-                    $defaultValueProperty->setAccessible(false);
+                    if (\PHP_VERSION_ID < 80100) {
+                        $defaultValueProperty->setAccessible(false);
+                    }
                 }
             } catch (\ReflectionException) {
             }
         }
 
-        $property->setAccessible(true);
+        if (\PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
         $property->setValue($object, $value);
-        $property->setAccessible(false);
+        if (\PHP_VERSION_ID < 80100) {
+            $property->setAccessible(false);
+        }
     }
 
     protected function getContainer(): Container

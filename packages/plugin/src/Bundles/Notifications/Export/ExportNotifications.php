@@ -166,7 +166,7 @@ class ExportNotifications extends FeatureBundle
         $record->bodyText = $body;
 
         $template = NotificationTemplate::fromRecord($record);
-        $recipients = RecipientCollection::fromArray(json_decode($notification->recipients));
+        $recipients = RecipientCollection::fromArray(json_decode($notification->recipients), isTemplate: true);
         $processedRecipients = $mailer->processRecipients($recipients, $form);
 
         $recipientLogContext = [

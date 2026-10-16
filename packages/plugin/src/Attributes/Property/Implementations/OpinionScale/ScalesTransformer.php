@@ -15,8 +15,16 @@ class ScalesTransformer extends Transformer
             return $scales;
         }
 
-        foreach ($value as [$val, $label]) {
-            $scales[] = new Scale($val, $label);
+        foreach ($value as $row) {
+            if (!\is_array($row)) {
+                continue;
+            }
+
+            // AI-generated forms previously stored named keys instead of tabular rows.
+            $val = $row[0] ?? $row['value'] ?? '';
+            $label = $row[1] ?? $row['label'] ?? '';
+
+            $scales[] = new Scale((string) $val, (string) $label);
         }
 
         return $scales;

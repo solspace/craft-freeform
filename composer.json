@@ -11,8 +11,8 @@
   ],
   "require": {
     "php": "^8.5.0",
-    "craftcms/cms": "^6.0.0-alpha.14",
-    "craftcms/yii2-adapter": "^6.0.0-alpha.14",
+    "craftcms/cms": "^6.0.0-alpha.19",
+    "craftcms/yii2-adapter": "^6.0.0-alpha.19",
     "dompdf/dompdf": "^3.1.6",
     "symfony/property-access": "^7.4|^8.0",
     "symfony/finder": "^7.4|^8.0",
@@ -30,7 +30,8 @@
     "composer/class-map-generator": "^1.1",
     "tecnickcom/tcpdf": "^6.10",
     "fakerphp/faker": "^1.0",
-    "giggsey/libphonenumber-for-php-lite": "^8.13|^9.0"
+    "giggsey/libphonenumber-for-php-lite": "^8.13|^9.0",
+    "setasign/fpdi": "^2.6.8"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.5.1",
@@ -40,7 +41,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Solspace\\Freeform\\": "packages/plugin/src/"
+      "Solspace\\Freeform\\": "packages/plugin/src/",
+      "Solspace\\Freeform\\migrations\\": "packages/plugin/migrations/"
     },
     "exclude-from-classmap": [
       "packages/plugin/src/migrations/"
@@ -60,7 +62,7 @@
     "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
   },
   "extra": {
-    "schemaVersion": "5.16.0",
+    "schemaVersion": "5.17.0",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

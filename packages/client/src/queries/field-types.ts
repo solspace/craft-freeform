@@ -4,6 +4,7 @@ import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
+import { useCallback } from "react";
 
 export const QKFieldTypes = {
   all: ["field-types"] as const,
@@ -56,11 +57,9 @@ type FieldTypeSearch = () => (typeClass: string) => FieldType | undefined;
 export const useFieldTypeSearch: FieldTypeSearch = () => {
   const { data } = useFetchFieldTypes();
 
-  return (typeClass: string): FieldType | undefined => {
-    if (!data) {
-      return undefined;
-    }
-
-    return data.find((item) => item.typeClass === typeClass);
-  };
+  return useCallback(
+    (typeClass: string): FieldType | undefined =>
+      data?.find((item) => item.typeClass === typeClass),
+    [data],
+  );
 };

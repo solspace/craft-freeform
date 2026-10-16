@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Tracking;
 
+use Solspace\Freeform\Bundles\Form\Limiting\DuplicateCheckScope;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
@@ -34,6 +35,10 @@ class Cookies extends FeatureBundle
         $form = $event->getForm();
         $behaviorSettings = $form->getSettings()->getBehavior();
         $behavior = $behaviorSettings->duplicateCheck;
+
+        if (DuplicateCheckScope::isEnabled($form)) {
+            return;
+        }
 
         if (!\in_array($behavior, self::COOKIE_BEHAVIORS, true)) {
             return;

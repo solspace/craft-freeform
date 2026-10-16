@@ -2,6 +2,19 @@
 
 namespace Solspace\Freeform\Services\Headless\Profile;
 
+/**
+ * Read-only profile values with PHP 8.0-compatible accessors.
+ *
+ * @property string  $name
+ * @property string  $formHandle
+ * @property bool    $requiresAuth
+ * @property bool    $requiresSignedToken
+ * @property ?string $contextProviderClass
+ * @property bool    $allowSubmit
+ * @property string  $cache
+ * @property array   $properties
+ * @property array   $allowedOrigins
+ */
 class HeadlessProfile
 {
     /**
@@ -9,16 +22,40 @@ class HeadlessProfile
      * @param string[]                                                             $allowedOrigins
      */
     public function __construct(
-        public readonly string $name,
-        public readonly string $formHandle,
-        public readonly bool $requiresAuth = false,
-        public readonly bool $requiresSignedToken = false,
-        public readonly ?string $contextProviderClass = null,
-        public readonly bool $allowSubmit = true,
-        public readonly string $cache = 'no-store',
-        public readonly array $properties = [],
-        public readonly array $allowedOrigins = [],
+        private string $name,
+        private string $formHandle,
+        private bool $requiresAuth = false,
+        private bool $requiresSignedToken = false,
+        private ?string $contextProviderClass = null,
+        private bool $allowSubmit = true,
+        private string $cache = 'no-store',
+        private array $properties = [],
+        private array $allowedOrigins = [],
     ) {}
+
+    public function __get(string $name): mixed
+    {
+        if (!property_exists($this, $name)) {
+            throw new \Error('Undefined property: '.self::class.'::$'.$name);
+        }
+
+        return $this->{$name};
+    }
+
+    public function __isset(string $name): bool
+    {
+        return property_exists($this, $name) && null !== $this->{$name};
+    }
+
+    public function __set(string $name, mixed $value): void
+    {
+        throw new \Error('Cannot modify readonly property '.self::class.'::$'.$name);
+    }
+
+    public function __unset(string $name): void
+    {
+        throw new \Error('Cannot unset readonly property '.self::class.'::$'.$name);
+    }
 
     /**
      * @param array<string, mixed> $config

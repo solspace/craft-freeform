@@ -14,6 +14,9 @@ import {
 import translate from "@ff-client/utils/translations";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useMemo } from "react";
+
+const emptyOptions: OptionCollection = [];
 
 type FieldOptions = (
   field?: Field,
@@ -23,48 +26,52 @@ type FieldOptions = (
 export const useFieldOptions: FieldOptions = (field, type) => {
   const { getOptionTranslations } = useTranslations(field);
 
-  let optionsConfiguration: OptionsConfiguration | undefined;
-  let emptyOption: string | undefined;
+  const { optionsConfiguration, emptyOption } = useMemo(() => {
+    let optionsConfiguration: OptionsConfiguration | undefined;
+    let emptyOption: string | undefined;
 
-  if (type?.type === Type.OpinionScale) {
-    optionsConfiguration = {
-      source: Source.Custom,
-      options: field.properties.scales.map((scale: [string, string]) => ({
-        label: scale[1] || scale[0],
-        value: scale[0],
-      })),
-      useCustomValues: true,
-    };
-  } else if (type?.type === Type.Rating) {
-    optionsConfiguration = {
-      source: Source.Custom,
-      options: Array.from(
-        { length: field.properties.maxValue },
-        (_: number, index: number) => ({
-          label: String(index + 1),
-          value: String(index + 1),
-        }),
-      ),
-      useCustomValues: true,
-    };
-  } else {
-    // Fields that extend BaseGeneratedOptionsField such as CheckboxesField, RadiosField, DropdownField and MultipleSelectField
-    if (type?.implements.includes(Implementation.GeneratedOptions)) {
-      const optionsProperty = type?.properties.find(
-        (property) => property.type === PropertyType.Options,
-      );
-
-      if (optionsProperty) {
-        const fieldValue = field?.properties[optionsProperty.handle];
-        optionsConfiguration = getOptionTranslations(
-          optionsProperty.handle,
-          fieldValue,
+    if (type?.type === Type.OpinionScale) {
+      optionsConfiguration = {
+        source: Source.Custom,
+        options: field.properties.scales.map((scale: [string, string]) => ({
+          label: scale[1] || scale[0],
+          value: scale[0],
+        })),
+        useCustomValues: true,
+      };
+    } else if (type?.type === Type.Rating) {
+      optionsConfiguration = {
+        source: Source.Custom,
+        options: Array.from(
+          { length: field.properties.maxValue },
+          (_: number, index: number) => ({
+            label: String(index + 1),
+            value: String(index + 1),
+          }),
+        ),
+        useCustomValues: true,
+      };
+    } else {
+      // Fields that extend BaseGeneratedOptionsField such as CheckboxesField, RadiosField, DropdownField and MultipleSelectField
+      if (type?.implements.includes(Implementation.GeneratedOptions)) {
+        const optionsProperty = type?.properties.find(
+          (property) => property.type === PropertyType.Options,
         );
 
-        emptyOption = fieldValue?.emptyOption;
+        if (optionsProperty) {
+          const fieldValue = field?.properties[optionsProperty.handle];
+          optionsConfiguration = getOptionTranslations(
+            optionsProperty.handle,
+            fieldValue,
+          );
+
+          emptyOption = fieldValue?.emptyOption;
+        }
       }
     }
-  }
+
+    return { optionsConfiguration, emptyOption };
+  }, [field?.properties, type, getOptionTranslations]);
 
   const isCustomOptions = optionsConfiguration?.source === Source.Custom;
 
@@ -97,19 +104,21 @@ export const useFieldOptions: FieldOptions = (field, type) => {
     },
     staleTime: Infinity,
     gcTime: Infinity,
-    enabled: !isCustomOptions,
+    enabled: !!optionsConfiguration && !isCustomOptions,
   });
 
   const isFetchingAsync =
     !!optionsConfiguration && !isCustomOptions && isFetching;
 
-  let options = isCustomOptions
-    ? (optionsConfiguration as CustomOptionsConfiguration).options
-    : data || [];
+  const options = useMemo(() => {
+    const values = isCustomOptions
+      ? (optionsConfiguration as CustomOptionsConfiguration).options
+      : data || emptyOptions;
 
-  if (emptyOption) {
-    options = [{ label: translate(emptyOption), value: "" }, ...options];
-  }
+    return emptyOption
+      ? [{ label: translate(emptyOption), value: "" }, ...values]
+      : values;
+  }, [isCustomOptions, optionsConfiguration, data, emptyOption]);
 
   return [options, isFetchingAsync];
 };

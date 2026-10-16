@@ -15,19 +15,25 @@ return [
     'freeform/api/forms/settings' => 'freeform/api/forms/settings/index',
     'freeform/api/forms/sort' => 'freeform/api/forms/sort',
     'freeform/api/forms/delete' => 'freeform/api/forms/delete',
+    'freeform/api/forms/<id:\d+>/builder' => 'freeform/api/forms/builder',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
+    'freeform/api/forms/<id:\d+>/preview' => 'freeform/api/forms/preview',
+    'freeform/api/forms/<id:\d+>/preview-templates' => 'freeform/api/forms/preview-templates',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM GROUPS
     'freeform/api/forms/groups' => 'freeform/api/form-groups',
+    'freeform/api/forms/groups/move' => 'freeform/api/form-groups/move',
 
     // FORM ELEMENTS
     'freeform/api/forms/<id:\d+>/elements' => 'freeform/api/forms/elements/get',
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
+    'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',

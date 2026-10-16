@@ -14,10 +14,9 @@ class RedactSensitiveInfoProcessorTest extends TestCase
 {
     public function testRedact(): void
     {
-        $logRecord = new LogRecord(
+        $logRecord = $this->record(
             new \DateTimeImmutable(),
             'channel',
-            Level::Info,
             'This is a message',
             [
                 'pass' => 'password',
@@ -53,16 +52,15 @@ class RedactSensitiveInfoProcessorTest extends TestCase
                     'api_key' => 'nest**********',
                 ],
             ],
-            $output->context,
+            \is_array($output) ? $output['context'] : $output->context,
         );
     }
 
     public function testRedactMixed(): void
     {
-        $logRecord = new LogRecord(
+        $logRecord = $this->record(
             new \DateTimeImmutable(),
             'channel',
-            Level::Info,
             'This is a message',
             [
                 'pass' => 'password',
@@ -98,7 +96,14 @@ class RedactSensitiveInfoProcessorTest extends TestCase
                     'api_key' => 'nest**********',
                 ],
             ],
-            $output->context,
+            \is_array($output) ? $output['context'] : $output->context,
         );
+    }
+
+    private function record(\DateTimeImmutable $datetime, string $channel, string $message, array $context): array|LogRecord
+    {
+        return class_exists(LogRecord::class)
+            ? new LogRecord($datetime, $channel, Level::Info, $message, $context)
+            : ['datetime' => $datetime, 'channel' => $channel, 'level' => 200, 'level_name' => 'INFO', 'message' => $message, 'context' => $context, 'extra' => []];
     }
 }

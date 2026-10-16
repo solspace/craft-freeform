@@ -118,7 +118,7 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
 
         return Html::tag(
             $attributes->getTag('textarea'),
-            htmlentities($this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401),
+            htmlentities((string) $this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401),
             $attributes->toHtmlTagArray(['field' => $this]),
         );
     }

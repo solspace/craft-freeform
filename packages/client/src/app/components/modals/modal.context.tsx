@@ -22,7 +22,11 @@ type ContextType = {
     modalData?: GenericValue,
     modalConfig?: ModalConfig,
   ) => void;
-  openSlideout: (content: ModalType, data?: GenericValue) => void;
+  openSlideout: (
+    content: ModalType,
+    data?: GenericValue,
+    title?: string,
+  ) => void;
   confirm: (options: ConfirmationOptions) => void;
   confirmDelete: (options: ConfirmationOptions) => void;
   closeModal: () => void;
@@ -48,9 +52,14 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [slideout, setSlideout] = useState<{
     content: ModalType;
     data?: GenericValue;
+    title?: string;
   }>();
-  const openSlideout = (content: ModalType, data?: GenericValue): void => {
-    setSlideout({ content, data });
+  const openSlideout = (
+    content: ModalType,
+    data?: GenericValue,
+    title?: string,
+  ): void => {
+    setSlideout({ content, data, title });
   };
 
   const [data, setData] = useState<GenericValue[]>([]);
@@ -124,6 +133,7 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
         <NativeSlideout
           content={slideout.content}
           data={slideout.data}
+          title={slideout.title}
           onClose={() => setSlideout(undefined)}
         />
       )}

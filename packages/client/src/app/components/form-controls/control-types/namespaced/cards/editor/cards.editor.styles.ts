@@ -15,9 +15,17 @@ export const CardsContainer = styled(PreviewEditorContainer)`
 
 export const CardList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--c-spacing-md, 16px);
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @container (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @container (min-width: 1000px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 `;

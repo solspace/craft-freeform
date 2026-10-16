@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Bundles\Form\Limiting;
 
-use Carbon\Carbon;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -23,17 +23,15 @@ class FormStopSubmissionsAfter extends FeatureBundle
     public function handler(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        $stopDate = $form->getSettings()->getBehavior()->stopSubmissionsAfter;
-        if (!$stopDate) {
-            return;
+        $status = FormSchedule::getStatus($form->getSettings()->getBehavior());
+        if (FormSchedule::PENDING === $status) {
+            $form->addError($form->getScheduleMessage() ?: Freeform::t('This form is not available yet.'));
+        } elseif (FormSchedule::EXPIRED === $status) {
+            $form->addError($form->getScheduleMessage() ?: Freeform::t('This form can no longer be submitted.'));
         }
 
-        $today = new Carbon('now');
-        $stopDate = clone $stopDate;
-        $stopDate = $stopDate->setTime(23, 59, 59);
-
-        if ($today->greaterThan($stopDate)) {
-            $form->addError(Freeform::t('This form can no longer be submitted.'));
+        if (null !== $status && $event instanceof ValidationEvent) {
+            $event->setValidationOverride(false);
         }
     }
 }

@@ -500,11 +500,15 @@ class IntegrationsService extends BaseService
             $instanceProperty = $reflection->getProperty($handle);
 
             $accessible = $instanceProperty->isPublic();
-            $instanceProperty->setAccessible(true);
+            if (\PHP_VERSION_ID < 80100) {
+                $instanceProperty->setAccessible(true);
+            }
 
             $value = $instanceProperty->getValue($integration);
 
-            $instanceProperty->setAccessible($accessible);
+            if (\PHP_VERSION_ID < 80100) {
+                $instanceProperty->setAccessible($accessible);
+            }
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(

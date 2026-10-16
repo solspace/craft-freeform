@@ -1,3 +1,4 @@
+import { PopUpPortal } from "@components/elements/pop-up-portal";
 import {
   EscapeStackProvider,
   useEscapeStack,
@@ -5,13 +6,14 @@ import {
 import { act, createContext, useContext, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
-
 import { NativeSlideout } from "./slideout";
 
 class CraftSlideout {
   static instances: CraftSlideout[] = [];
   container = document.createElement("div");
+  $container = { 0: this.container };
   onClose?: () => void;
+  onBeforeClose?: () => void;
   open = vi.fn();
   close = vi.fn();
   destroy = vi.fn(() => this.container.remove());
@@ -24,8 +26,9 @@ class CraftSlideout {
   }
 
   on(event: string, callback: () => void) {
-    expect(event).toBe("close");
-    this.onClose = callback;
+    if (event === "close") this.onClose = callback;
+    else if (event === "beforeClose") this.onBeforeClose = callback;
+    else throw new Error(`Unexpected event: ${event}`);
   }
 }
 
@@ -36,6 +39,7 @@ afterEach(() => {
   container?.remove();
   CraftSlideout.instances = [];
   vi.unstubAllGlobals();
+  vi.useRealTimers();
 });
 
 function setup(element: React.ReactNode) {
@@ -48,6 +52,54 @@ function setup(element: React.ReactNode) {
 }
 
 describe("native Craft manager slideout", () => {
+  it("keeps dropdown portals inside the native panel and closes the dropdown before the panel on Escape", () => {
+    function Editor() {
+      const [open, setOpen] = useState(false);
+      useEscapeStack(() => setOpen(false), open);
+      return (
+        <>
+          <button type="button" onClick={() => setOpen(true)}>
+            Dropdown
+          </button>
+          {open && (
+            <PopUpPortal>
+              <input aria-label="Dropdown search" />
+            </PopUpPortal>
+          )}
+        </>
+      );
+    }
+    const panel = setup(<NativeSlideout content={Editor} onClose={() => {}} />);
+    act(() => panel.container.querySelector("button")!.click());
+    expect(
+      panel.container.querySelector(".freeform-slideout-popups input"),
+    ).not.toBeNull();
+    act(() =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      ),
+    );
+    expect(panel.container.querySelector("input")).toBeNull();
+    expect(panel.close).not.toHaveBeenCalled();
+    act(() =>
+      document.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+      ),
+    );
+    expect(panel.close).toHaveBeenCalledOnce();
+  });
+  it("finishes closing on Craft 4 when no transition event fires", () => {
+    vi.useFakeTimers();
+    const onClose = vi.fn();
+    const panel = setup(
+      <NativeSlideout content={() => <input />} onClose={onClose} />,
+    );
+    act(() => panel.onBeforeClose?.());
+    act(() => vi.advanceTimersByTime(50));
+    expect(onClose).toHaveBeenCalledOnce();
+    act(() => panel.onClose?.());
+    expect(onClose).toHaveBeenCalledOnce();
+  });
   it("keeps a live editor mounted as its value changes", () => {
     const mounted = vi.fn();
     function Editor({ value }: { value: string }) {

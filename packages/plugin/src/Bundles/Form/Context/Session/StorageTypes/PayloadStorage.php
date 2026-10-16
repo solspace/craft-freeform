@@ -36,6 +36,10 @@ class PayloadStorage implements FormContextStorageInterface
 
     public function attachProperty(GetCustomPropertyEvent $event): void
     {
+        if ($event->getForm()->isPreview()) {
+            return;
+        }
+
         if (self::PROPERTY_KEY !== $event->getKey()) {
             return;
         }
@@ -67,6 +71,10 @@ class PayloadStorage implements FormContextStorageInterface
     public function attachInput(RenderTagEvent $event): void
     {
         $form = $event->getForm();
+        if ($form->isPreview()) {
+            return;
+        }
+
         $payload = $this->getEncryptedBag($form);
 
         $name = self::INPUT_PREFIX;
@@ -77,6 +85,10 @@ class PayloadStorage implements FormContextStorageInterface
     public function attachJson(OutputAsJsonEvent $event): void
     {
         $form = $event->getForm();
+        if ($form->isPreview()) {
+            return;
+        }
+
         $payload = $this->getEncryptedBag($form);
 
         $name = self::INPUT_PREFIX;

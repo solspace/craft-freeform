@@ -18,12 +18,16 @@ use craft\db\Query;
 use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Form\Type;
+use Solspace\Freeform\Bundles\Form\FormUserProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\FormSchedule;
+use Solspace\Freeform\Bundles\Form\Limiting\SubmissionLimit;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
 use Solspace\Freeform\Events\Forms\DisableFunctionalityEvent;
+use Solspace\Freeform\Events\Forms\DuplicateCheckEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -78,6 +82,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_GRAPHQL_REQUEST = 'graphql-request';
     public const EVENT_HEADLESS_REQUEST = 'headless-request';
     public const EVENT_FORM_LOADED = 'form-loaded';
+    public const EVENT_CHECK_DUPLICATE = 'check-duplicate';
     public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     public const EVENT_REGISTER_CONTEXT = 'register-context';
     public const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
@@ -92,6 +97,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_SUBMIT = 'submit';
     public const EVENT_ON_SUBMIT_RESPONSE = 'on-submit-response';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
+    public const EVENT_AFTER_SUBMIT_ATTEMPT = 'after-submit-attempt';
     public const EVENT_AFTER_ASYNC_SPAM_VALIDATION = 'after-async-spam-validation';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
     public const EVENT_AFTER_VALIDATE = 'after-validate';
@@ -125,6 +131,8 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     protected FormLayout $layout;
     protected FormAttributesCollection $attributes;
     private PropertyBag $propertyBag;
+
+    private bool $preview = false;
 
     private ?int $id;
     private ?string $uid;
@@ -590,6 +598,8 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function isDuplicate(): bool
     {
+        Event::trigger(self::class, self::EVENT_CHECK_DUPLICATE, new DuplicateCheckEvent($this));
+
         return $this->duplicate;
     }
 
@@ -631,7 +641,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
             return null;
         }
 
-        return User::findOne($this->createdByUserId);
+        return \Craft::$container->get(FormUserProvider::class)->getUser($this->createdByUserId);
     }
 
     public function getUpdatedBy(): ?User
@@ -640,7 +650,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
             return null;
         }
 
-        return User::findOne($this->updatedByUserId);
+        return \Craft::$container->get(FormUserProvider::class)->getUser($this->updatedByUserId);
     }
 
     public function getDateArchived(): ?Carbon
@@ -685,6 +695,10 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function handleRequest(Request $request, bool $lookupCall = false): bool
     {
+        if ($this->preview) {
+            return false;
+        }
+
         $this->createSubmission();
 
         $method = strtoupper($this->getProperties()->get('method', 'post'));
@@ -718,6 +732,10 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
      */
     public function submit(array $data): void
     {
+        if ($this->preview) {
+            throw new \LogicException('Preview forms cannot be submitted');
+        }
+
         Freeform::getInstance()->submit->submit($this, $data);
     }
 
@@ -737,6 +755,10 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
 
     public function persistState(): void
     {
+        if ($this->preview) {
+            return;
+        }
+
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
@@ -744,12 +766,28 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     {
         $this->setProperties($renderProperties);
 
+        if ($this->preview) {
+            return;
+        }
+
         Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
     }
 
     public function render(?array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
+        $scheduled = null !== FormSchedule::getStatus($this->getSettings()->getBehavior());
+        $limited = !$scheduled && SubmissionLimit::isBuilderEnabled($this) && !$this->isSubmittedSuccessfully() && !$this->isFinished() && $this->isSubmissionLimitReached();
+        if ($scheduled || $limited) {
+            $message = $scheduled ? $this->getScheduleMessage() : $this->getSubmissionLimitMessage();
+            $class = $scheduled ? 'freeform-schedule-message' : 'freeform-submission-limit-message';
+
+            return '' === $message ? null : new Markup(
+                '<div class="'.$class.'" role="status">'.nl2br(htmlspecialchars($message, \ENT_QUOTES | \ENT_SUBSTITUTE, 'UTF-8')).'</div>',
+                'UTF-8'
+            );
+        }
+
         $formTemplate = $this->getProperties()->get(
             'formattingTemplate',
             $this->getSettings()->getGeneral()->formattingTemplate
@@ -767,6 +805,66 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
+    public function isAvailable(): bool
+    {
+        if ($this->preview) {
+            return true;
+        }
+
+        return null === FormSchedule::getStatus($this->getSettings()->getBehavior())
+            && (!SubmissionLimit::isBuilderEnabled($this) || !$this->isSubmissionLimitReached());
+    }
+
+    public function isSubmissionLimitReached(): bool
+    {
+        return !$this->getSubmission()?->id && SubmissionLimit::isReached($this);
+    }
+
+    public function getSubmissionLimitCount(): int
+    {
+        return SubmissionLimit::getCount($this);
+    }
+
+    public function getSubmissionLimitMessage(): string
+    {
+        $behavior = $this->getSettings()->getBehavior();
+        $properties = $this->getProperties();
+        if (\array_key_exists('submissionLimitMessage', $properties->toArray())) {
+            return (string) $properties->get('submissionLimitMessage');
+        }
+        if (!SubmissionLimit::isBuilderEnabled($this)) {
+            return Freeform::t('Submission limit reached');
+        }
+
+        return $this->translationProvider->getTranslation($this, 'behavior', 'submissionLimitMessage', Freeform::t($behavior->submissionLimitMessage));
+    }
+
+    #[Ignore]
+    public function isPreview(): bool
+    {
+        return $this->preview;
+    }
+
+    public function setPreview(): void
+    {
+        $this->preview = true;
+        $this->disableFunctionality(true);
+        $this->getProperties()->set(self::HASH_KEY, 'preview-'.bin2hex(random_bytes(16)));
+    }
+
+    public function getScheduleMessage(): string
+    {
+        $behavior = $this->getSettings()->getBehavior();
+        $status = FormSchedule::getStatus($behavior);
+        if (null === $status) {
+            return '';
+        }
+
+        $key = FormSchedule::PENDING === $status ? 'schedulePendingMessage' : 'scheduleExpiredMessage';
+
+        return $this->translationProvider->getTranslation($this, 'behavior', $key, $behavior->{$key});
+    }
+
     public function renderTag(?array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
@@ -774,7 +872,9 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         $output = '';
 
         $beforeTag = new RenderTagEvent($this);
-        Event::trigger(self::class, self::EVENT_RENDER_BEFORE_OPEN_TAG, $beforeTag);
+        if (!$this->preview) {
+            Event::trigger(self::class, self::EVENT_RENDER_BEFORE_OPEN_TAG, $beforeTag);
+        }
         $output .= $beforeTag->getChunksAsString();
 
         $event = new AttachFormAttributesEvent($this);
@@ -783,7 +883,9 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         $output .= '<form'.$this->getAttributes().$this->getAttributes()->getForm().'>'.\PHP_EOL;
 
         $afterTag = new RenderTagEvent($this);
-        Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $afterTag);
+        if (!$this->preview) {
+            Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $afterTag);
+        }
         $output .= $afterTag->getChunksAsString();
 
         return Template::raw($output);

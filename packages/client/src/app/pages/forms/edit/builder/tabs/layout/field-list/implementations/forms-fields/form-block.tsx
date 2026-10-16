@@ -38,7 +38,11 @@ export const FormBlock: React.FC<Props> = ({ form }) => {
 
   return (
     <FormBlockWrapper className={classes(isOpen && "open")}>
-      <FormTitle onClick={() => setExpanded(!expanded)}>
+      <FormTitle
+        type="button"
+        aria-expanded={isOpen}
+        onClick={() => setExpanded(!expanded)}
+      >
         {form.name}
 
         <ExpandedState>
@@ -47,18 +51,19 @@ export const FormBlock: React.FC<Props> = ({ form }) => {
       </FormTitle>
       <FieldListContainer style={animation}>
         <List>
-          {form.fields.map((field) => {
-            const fieldType = findType(field.typeClass);
-            if (!fieldType) {
-              return null;
-            }
+          {isOpen &&
+            form.fields.map((field) => {
+              const fieldType = findType(field.typeClass);
+              if (!fieldType) {
+                return null;
+              }
 
-            if (!fieldType?.visible) {
-              return null;
-            }
+              if (!fieldType?.visible) {
+                return null;
+              }
 
-            return <FieldItem key={field.id} field={field} />;
-          })}
+              return <FieldItem key={field.id} field={field} />;
+            })}
         </List>
       </FieldListContainer>
     </FormBlockWrapper>

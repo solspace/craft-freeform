@@ -121,7 +121,7 @@ export const TabularDataEditor: React.FC<Props> = ({
                 {showActions && (
                   <th
                     colSpan={2}
-                    style={{ width: 76 }}
+                    style={{ width: 84 }}
                     aria-label={translate("Actions")}
                   />
                 )}

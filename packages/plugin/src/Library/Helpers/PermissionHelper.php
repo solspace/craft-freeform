@@ -7,6 +7,25 @@ use yii\web\ForbiddenHttpException;
 
 class PermissionHelper
 {
+    private static bool $authenticatedUserContext = false;
+    private static ?array $authenticatedPermissions = null;
+
+    /** Queue jobs acting for a real user must not inherit the CLI administrator shortcut. */
+    public static function asAuthenticatedUser(callable $callback, ?array $permissions = null): mixed
+    {
+        $previous = self::$authenticatedUserContext;
+        $previousPermissions = self::$authenticatedPermissions;
+        self::$authenticatedUserContext = true;
+        self::$authenticatedPermissions = $permissions;
+
+        try {
+            return $callback();
+        } finally {
+            self::$authenticatedUserContext = $previous;
+            self::$authenticatedPermissions = $previousPermissions;
+        }
+    }
+
     /**
      * Checks a given permission for the currently logged-in user.
      *
@@ -20,6 +39,16 @@ class PermissionHelper
 
         $user = \Craft::$app->getUser();
         $permissionName = strtolower($permissionName);
+
+        if (self::$authenticatedUserContext && null !== self::$authenticatedPermissions) {
+            foreach (self::$authenticatedPermissions as $permission) {
+                if ($checkForNested ? str_starts_with($permission, $permissionName) : $permission === $permissionName) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         if (self::permissionsEnabled()) {
             if ($checkForNested) {
@@ -110,7 +139,7 @@ class PermissionHelper
      */
     public static function isAdmin(): bool
     {
-        if (self::isConsole()) {
+        if (self::isConsole() && !self::$authenticatedUserContext) {
             return true;
         }
 

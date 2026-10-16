@@ -187,27 +187,29 @@ class FormTransformer
             ],
         ];
 
-        if (null !== $form->getCreatedBy()) {
-            if ($currentUser->id === $form->getCreatedBy()->id || $currentUser->can('editUsers')) {
-                $createdByUserUrl = $form->getCreatedBy()->cpEditUrl;
+        $createdBy = $form->getCreatedBy();
+        if (null !== $createdBy) {
+            if ($currentUser->id === $createdBy->id || $currentUser->can('editUsers')) {
+                $createdByUserUrl = $createdBy->cpEditUrl;
             }
 
             $ownership['created']['user'] = [
-                'id' => $form->getCreatedBy()->getId(),
+                'id' => $createdBy->getId(),
                 'url' => $createdByUserUrl,
-                'name' => $form->getCreatedBy()->name,
+                'name' => $createdBy->name,
             ];
         }
 
-        if (null !== $form->getUpdatedBy()) {
-            if ($currentUser->id === $form->getUpdatedBy()->id || $currentUser->can('editUsers')) {
-                $updatedByUserUrl = $form->getUpdatedBy()->cpEditUrl;
+        $updatedBy = $form->getUpdatedBy();
+        if (null !== $updatedBy) {
+            if ($currentUser->id === $updatedBy->id || $currentUser->can('editUsers')) {
+                $updatedByUserUrl = $updatedBy->cpEditUrl;
             }
 
             $ownership['updated']['user'] = [
-                'id' => $form->getUpdatedBy()->getId(),
+                'id' => $updatedBy->getId(),
                 'url' => $updatedByUserUrl,
-                'name' => $form->getUpdatedBy()->name,
+                'name' => $updatedBy->name,
             ];
         }
 

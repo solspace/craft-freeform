@@ -1,10 +1,12 @@
 <?php
 
+use CraftCms\Yii2Adapter\ClassAliases;
+
 echo "Freeform: Unit Test Suite\n";
 
-require_once __DIR__.'/../../../../vendor/autoload.php';
+require_once getenv('FREEFORM_TEST_AUTOLOAD') ?: __DIR__.'/../../../../vendor/autoload.php';
 
-(new \CraftCms\Yii2Adapter\ClassAliases())->register();
+(new ClassAliases())->register();
 
 if (!class_exists(Craft::class)) {
     class Craft
@@ -26,8 +28,5 @@ if (!class_exists(Craft::class)) {
 }
 
 if (!class_exists(Yii::class)) {
-    class Yii
-    {
-        public static $app = false;
-    }
+    require_once __DIR__.'/../../../../vendor/yiisoft/yii2/Yii.php';
 }

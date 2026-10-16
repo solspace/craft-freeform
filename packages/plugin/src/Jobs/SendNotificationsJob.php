@@ -75,6 +75,17 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             // We need to pass in the site so when the form loads, we set the translated field labels for that forms site context.
             $form = $freeform->forms->getFormById($this->formId, $sites->getCurrentSite()->handle);
             if (!$form) {
+                // The form is not mapped to the submission's site (e.g. a site added after the form was created),
+                // so fall back to the site-less form, the same way Submission::getForm() does.
+                $form = $freeform->forms->getFormById($this->formId);
+            }
+
+            if (!$form) {
+                \Craft::warning(
+                    \sprintf('Freeform notification skipped: form ID %d could not be loaded.', $this->formId),
+                    'freeform'
+                );
+
                 return;
             }
 

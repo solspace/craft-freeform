@@ -14,6 +14,7 @@ import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navi
 import CrossIcon from "@components/form-controls/icons/cross";
 import MoveIcon from "@components/form-controls/icons/move";
 import { NativeSlideout } from "@components/slideouts/slideout";
+import { useEventCallback } from "@ff-client/hooks/ts-hooks/use-event-callback";
 import { useDebounce } from "@ff-client/hooks/use-debounce";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
@@ -63,10 +64,11 @@ export const CustomEditor: React.FC<
   const [bulkOpen, setBulkOpen] = useState(false);
   const bulkTrigger = useRef<HTMLButtonElement>(null);
   const debouncedValue = useDebounce(localValue, 500);
+  const publishValue = useEventCallback(updateValue);
 
   useEffect(() => {
-    updateValue(debouncedValue);
-  }, [debouncedValue, updateValue]);
+    publishValue(debouncedValue);
+  }, [debouncedValue, publishValue]);
 
   useEffect(() => {
     if (!localValue.options.length) {
@@ -134,7 +136,9 @@ export const CustomEditor: React.FC<
       });
     });
 
-    setLocalValue(setOptions(localValue, currentOptions));
+    const updated = setOptions(localValue, currentOptions);
+    setLocalValue(updated);
+    publishValue(updated);
   };
 
   return (
@@ -167,6 +171,7 @@ export const CustomEditor: React.FC<
           </BulkButton>
           {bulkOpen && (
             <NativeSlideout
+              title={translate("Bulk Editor")}
               onClose={() => {
                 setBulkOpen(false);
                 onBulkOpenChange?.(false);

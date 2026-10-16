@@ -2,18 +2,23 @@ import { PopUpPortal } from "@components/elements/pop-up-portal";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
 import { useZIndex } from "../context/z-index.context";
 
 import { useEditorAnimations } from "./previewable-component.animations";
 import {
   EditableContentWrapper,
-  PreviewContainer,
   PreviewWrapper,
 } from "./previewable-component.styles";
+import { PropertyPreview } from "./property-preview";
+import { PreviewSurface } from "./property-preview.styles";
+
+const PreviewTrigger = styled(PreviewSurface)``;
 
 type Props = {
   preview: ReactElement;
@@ -35,6 +40,7 @@ export const PreviewableComponent: React.FC<Props> = ({
   children,
 }) => {
   const [isEditing, setIsEditing] = useState(undefined);
+  const [hasOpened, setHasOpened] = useState(false);
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<HTMLDivElement>(null);
@@ -50,7 +56,7 @@ export const PreviewableComponent: React.FC<Props> = ({
     callback: () => {
       setIsEditing(false);
     },
-    isEnabled: isEditing,
+    isEnabled: isEditing && !covered,
     refObject: editorRef,
     excludeClassNames: [
       "tagify__dropdown",
@@ -65,6 +71,11 @@ export const PreviewableComponent: React.FC<Props> = ({
   };
 
   const zIndex = useZIndex();
+  const open = (): void => {
+    setHasOpened(true);
+    setIsEditing(true);
+    onEdit?.();
+  };
   useEscapeStack(() => setIsEditing(false), !!isEditing);
 
   // Call after-edit callbacks when the editor is being closed
@@ -93,18 +104,25 @@ export const PreviewableComponent: React.FC<Props> = ({
         >
           {typeof children === "function"
             ? children(isEditing, close)
-            : children}
+            : hasOpened && children}
         </EditableContentWrapper>
       </PopUpPortal>
 
-      <PreviewContainer
-        onClick={() => {
-          setIsEditing(true);
-          onEdit?.();
+      <PreviewTrigger
+        role="button"
+        tabIndex={0}
+        aria-label={translate("Click to edit data")}
+        aria-expanded={!!isEditing}
+        onClick={open}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            open();
+          }
         }}
       >
-        {preview}
-      </PreviewContainer>
+        <PropertyPreview>{preview}</PropertyPreview>
+      </PreviewTrigger>
     </PreviewWrapper>
   );
 };

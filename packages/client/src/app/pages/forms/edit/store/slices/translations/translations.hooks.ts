@@ -13,7 +13,7 @@ import {
   PropertyType,
 } from "@ff-client/types/properties";
 import cloneDeep from "lodash/cloneDeep";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 
 import { formSelectors } from "../form/form.selectors";
@@ -34,6 +34,7 @@ type WillTranslate = (handle: string) => boolean;
 type CanUseTranslation = (property: Property) => boolean;
 
 const excludedTranslationPropertyTypes = [PropertyType.Options];
+const selectGeneralSettings = formSelectors.settings.one("general");
 
 type UseTranslations = {
   hasTranslation: HasTranslation;
@@ -55,13 +56,14 @@ function useTranslations(
   const dispatch = useAppDispatch();
   const { current, isPrimary } = useSiteContext();
   const searchType = useFieldTypeSearch();
-  const generalSettings = useSelector(formSelectors.settings.one("general"));
+  const generalSettings = useSelector(selectGeneralSettings);
   const isTranslationsEnabled = generalSettings?.translations;
 
   const { data: pageButtonType } = useFetchPageButtonType();
   const { data: formSettings } = useQueryFormSettings();
 
   const isField = target && "typeClass" in target;
+  const typeClass = isField ? target.typeClass : undefined;
   const isForm =
     target && "namespaceType" in target && target.namespaceType === "settings";
 
@@ -69,15 +71,16 @@ function useTranslations(
   const namespace = isForm ? target.namespace : target?.uid;
   const type: TranslationType = isField ? "fields" : isForm ? "form" : "pages";
 
-  const translationNamespace = useAppSelector(
-    translationSelectors.namespace(current.id, target),
+  const selectNamespace = useMemo(
+    () => translationSelectors.namespace(siteId, target),
+    [siteId, target],
   );
+  const translationNamespace = useAppSelector(selectNamespace);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Dependencies are correct as is.
   const findProperty = useCallback(
     (handle: string): Property => {
       if (isField) {
-        const type = searchType(target.typeClass);
+        const type = searchType(typeClass);
         if (!type) {
           return undefined;
         }
@@ -99,7 +102,15 @@ function useTranslations(
 
       return pageButtonType?.properties?.find((prop) => prop.handle === handle);
     },
-    [isField, isForm, searchType, pageButtonType, namespace],
+    [
+      isField,
+      isForm,
+      typeClass,
+      searchType,
+      pageButtonType,
+      namespace,
+      formSettings,
+    ],
   );
 
   // ================

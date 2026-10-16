@@ -71,6 +71,16 @@ export const Label = styled.label`
 
   user-select: none;
 
+  &.has-status-color {
+    padding-left: 12px;
+    padding-right: 34px;
+
+    ${CheckMark} {
+      left: auto;
+      right: 10px;
+    }
+  }
+
   &:hover {
     cursor: pointer;
     background-color: var(--c-color-neutral-fill-normal);

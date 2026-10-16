@@ -20,6 +20,7 @@ class Field extends Property
         ?int $width = null,
         public ?string $emptyOption = null,
         public ?array $implements = [],
+        public ?array $availableFieldTypes = null,
     ) {
         parent::__construct(
             label: $label,

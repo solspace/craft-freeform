@@ -367,24 +367,22 @@ class MailerService extends BaseService implements MailHandlerInterface
             return $testToEmailAddress;
         }
 
-        $recipientList = $recipients->emailsToArray();
-        if ($form) {
-            $variables = [
-                'form' => $form,
-                'allFields' => $form->getLayout()->getFields(),
-            ];
-
-            foreach ($form->getFields() as $field) {
-                $variables[$field->getHandle()] = $field;
-            }
-
-            $recipientList = array_map(
-                fn ($recipient) => $this->isolatedTwig->render($recipient, $variables),
-                $recipientList,
-            );
+        if (!$form) {
+            return $recipients->emailsToArray();
         }
 
-        return $recipientList;
+        $variables = [
+            'form' => $form,
+            'allFields' => $form->getLayout()->getFields(),
+        ];
+
+        foreach ($form->getFields() as $field) {
+            $variables[$field->getHandle()] = $field;
+        }
+
+        return $recipients->emailsToArray(
+            fn (string $recipient): string => $this->isolatedTwig->render($recipient, $variables),
+        );
     }
 
     public function compileTwigVariables(Form $form, NotificationTemplate $template, ?Submission $submission = null): array

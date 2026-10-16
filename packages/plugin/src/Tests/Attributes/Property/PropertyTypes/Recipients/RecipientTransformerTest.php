@@ -29,9 +29,11 @@ class RecipientTransformerTest extends TestCase
 
         $this->assertEquals('test1@solspace.com', $first->getEmail());
         $this->assertEquals('Some Guy', $first->getName());
+        $this->assertTrue($first->isTemplate());
 
         $this->assertEquals('test2@solspace.com', $second->getEmail());
         $this->assertEquals('Some Girl', $second->getName());
+        $this->assertTrue($second->isTemplate());
     }
 
     public function testReverseTransform(): void

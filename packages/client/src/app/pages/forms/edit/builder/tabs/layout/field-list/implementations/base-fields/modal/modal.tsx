@@ -108,7 +108,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
       closeModal();
     },
     onError: (error) => {
-      setErrors(error.errors);
+      setErrors({ message: error.message, ...error.errors });
     },
   });
 
@@ -128,8 +128,10 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             "Click the 'Add Group' button on the right to begin.",
           )}
         >
-          {errors?.length && (
-            <ErrorBlock>{translate("Something went wrong!")}</ErrorBlock>
+          {errors && Object.keys(errors).length > 0 && (
+            <ErrorBlock role="alert">
+              {translate("Something went wrong!")}
+            </ErrorBlock>
           )}
           {state.groups?.grouped?.map((group) => (
             <GroupLayout key={group.uid} data-id={group.uid}>
@@ -232,7 +234,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
         <button
           type="button"
           className="btn submit"
-          disabled={isLoading}
+          disabled={!loaded || isLoading}
           onClick={() => updateMutation.mutate(syncFromRefs())}
         >
           <LoadingText

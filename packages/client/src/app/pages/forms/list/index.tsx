@@ -1,5 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
-import config from "@config/freeform/freeform.config";
+import config, { Edition } from "@config/freeform/freeform.config";
 import { useLocalStorage } from "@ff-client/hooks/ts-hooks/use-local-storage";
 import {
   fetchFieldPropertySections,
@@ -8,8 +8,10 @@ import {
 } from "@ff-client/queries/field-types";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
+import EditIcon from "@ff-icons/actions/edit";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
+import { useEffect } from "react";
 import {
   AiButton,
   Button,
@@ -18,11 +20,14 @@ import {
   Header,
   Title,
   ViewButtons,
+  ViewControls,
 } from "./list-view.styles";
 import { useCreateFormModal } from "./modals/hooks/use-create-form-modal";
 import { useCreateWithAiFormModal } from "./modals/hooks/use-create-with-ai-form-modal";
+import { useEditGroupModal } from "./modals/hooks/use-edit-group-modal";
 import { useAiIntegrations } from "./modals/modal.form.create-with-ai.queries";
 import { FormGrid } from "./views/grid/grid";
+import { GroupsButton } from "./views/grid/grid.styles";
 import { FormList } from "./views/list/list";
 
 enum View {
@@ -32,6 +37,7 @@ enum View {
 
 export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
+  const openEditGroupModal = useEditGroupModal();
   const openCreateFormModal = useCreateFormModal();
   const openCreateWithAiFormModal = useCreateWithAiFormModal();
   const { data: aiIntegrations } = useAiIntegrations();
@@ -43,14 +49,18 @@ export const ListProvider: React.FC = () => {
   const showEnableAi =
     showAiButtons && aiIntegrations && aiIntegrations.length === 0;
 
-  queryClient.prefetchQuery({
-    queryKey: QKFieldTypes.all,
-    queryFn: fetchFieldTypes,
-  });
-  queryClient.prefetchQuery({
-    queryKey: QKFieldTypes.propertySections(),
-    queryFn: fetchFieldPropertySections,
-  });
+  useEffect(() => {
+    void queryClient.prefetchQuery({
+      queryKey: QKFieldTypes.all,
+      queryFn: fetchFieldTypes,
+      staleTime: Infinity,
+    });
+    void queryClient.prefetchQuery({
+      queryKey: QKFieldTypes.propertySections(),
+      queryFn: fetchFieldPropertySections,
+      staleTime: Infinity,
+    });
+  }, [queryClient]);
 
   return (
     <>
@@ -59,23 +69,37 @@ export const ListProvider: React.FC = () => {
       <Header>
         <Title>{translate("Forms")}</Title>
 
-        <ViewButtons className="btngroup btngroup--exclusive">
-          <button
-            type="button"
-            className={classes("btn", View.List === view && "active")}
-            data-icon="list"
-            aria-label="Display in a table"
-            title={translate("Display as list")}
-            onClick={() => setView(View.List)}
-          />
-          <button
-            type="button"
-            className={classes("btn", View.Grid === view && "active")}
-            data-icon={classes("element-cards")}
-            title={translate("Display as cards")}
-            onClick={() => setView(View.Grid)}
-          />
-        </ViewButtons>
+        <ViewControls>
+          {config.editions.isAtLeast(Edition.Pro) &&
+            config.metadata.freeform.canOrganizeForms && (
+              <GroupsButton
+                type="button"
+                className="btn"
+                onClick={openEditGroupModal}
+              >
+                <EditIcon />
+                {translate("Form Groups")}
+              </GroupsButton>
+            )}
+          <ViewButtons className="btngroup btngroup--exclusive">
+            <button
+              type="button"
+              className={classes("btn", View.List === view && "active")}
+              data-icon="list"
+              aria-label="Display in a table"
+              title={translate("Display as list")}
+              onClick={() => setView(View.List)}
+            />
+            <button
+              type="button"
+              className={classes("btn", View.Grid === view && "active")}
+              data-icon="element-cards"
+              aria-label={translate("Display as cards")}
+              title={translate("Display as cards")}
+              onClick={() => setView(View.Grid)}
+            />
+          </ViewButtons>
+        </ViewControls>
 
         {canCreate && (
           <ButtonGroup>

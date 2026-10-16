@@ -84,7 +84,10 @@ export const Options: FC<Props> = ({
             )}
           >
             <Label
-              className={classes(children !== undefined && "has-children")}
+              className={classes(
+                children !== undefined && "has-children",
+                "color" in option && !!option.color && "has-status-color",
+              )}
               data-value={value}
             >
               {!children && selectedValue === value && (

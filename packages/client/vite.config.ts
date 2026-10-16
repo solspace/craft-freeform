@@ -19,6 +19,7 @@ export default defineConfig(({ mode, command }) => {
   const shouldGenerateSourceMaps = command === "build" && mode !== "production";
 
   return {
+    root: __dirname,
     appType: "custom",
     plugins: [react()],
     base: command === "serve" ? "/" : "./",

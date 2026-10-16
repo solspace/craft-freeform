@@ -89,10 +89,14 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
             }
 
             if ($item instanceof Option) {
-                $options[] = [
+                $option = [
                     'value' => $item->getValue(),
                     'label' => $item->getLabel(),
                 ];
+                if (null !== $item->getColor()) {
+                    $option['color'] = $item->getColor();
+                }
+                $options[] = $option;
             }
         }
 

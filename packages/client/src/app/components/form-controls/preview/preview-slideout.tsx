@@ -13,15 +13,10 @@ import {
   PreviewContainer,
   PreviewEditor,
 } from "./previewable-component.styles";
+import { PropertyPreview } from "./property-preview";
+import { PreviewSurface } from "./property-preview.styles";
 
-const Trigger = styled.div`
-  cursor: pointer;
-  border-radius: var(--c-form-control-radius);
-  &:focus-visible {
-    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
-    outline-offset: var(--c-focus-outline-offset);
-  }
-`;
+const Trigger = styled(PreviewSurface)``;
 
 const FinishButton = styled.button.attrs({
   type: "button",
@@ -80,6 +75,7 @@ type Props = {
   fillEditor?: boolean;
   onEdit?: () => void;
   onAfterEdit?: () => void;
+  onCancel?: () => void;
 };
 
 export const PreviewSlideout: React.FC<Props> = ({
@@ -89,10 +85,12 @@ export const PreviewSlideout: React.FC<Props> = ({
   fillEditor = true,
   onEdit,
   onAfterEdit,
+  onCancel,
 }) => {
   const [editing, setEditing] = useState(false);
   const trigger = useRef<HTMLDivElement>(null);
   const body = useRef<HTMLDivElement>(null);
+  const cancelled = useRef(false);
 
   useLayoutEffect(() => {
     const element = body.current;
@@ -113,6 +111,7 @@ export const PreviewSlideout: React.FC<Props> = ({
   }, [editing, fillEditor]);
 
   const open = () => {
+    cancelled.current = false;
     setEditing(true);
     onEdit?.();
   };
@@ -125,6 +124,7 @@ export const PreviewSlideout: React.FC<Props> = ({
         tabIndex={0}
         aria-label={translate("Click to edit data")}
         aria-haspopup="dialog"
+        aria-expanded={editing}
         onClick={open}
         onKeyDown={(event) => {
           if (event.key === "Enter" || event.key === " ") {
@@ -133,13 +133,15 @@ export const PreviewSlideout: React.FC<Props> = ({
           }
         }}
       >
-        {preview}
+        <PropertyPreview>{preview}</PropertyPreview>
       </Trigger>
       {editing && (
         <NativeSlideout
+          title={title}
           onClose={() => {
             setEditing(false);
-            onAfterEdit?.();
+            if (cancelled.current) onCancel?.();
+            else onAfterEdit?.();
             trigger.current?.focus();
           }}
         >
@@ -164,6 +166,16 @@ export const PreviewSlideout: React.FC<Props> = ({
                 {children}
               </EditorBody>
               <SlideoutFooter>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    cancelled.current = true;
+                    close();
+                  }}
+                >
+                  {translate("Cancel")}
+                </button>
                 <FinishButton onClick={close}>
                   {translate("Finish & Close")}
                 </FinishButton>

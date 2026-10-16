@@ -3,19 +3,28 @@
 namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
+use Solspace\Freeform\Bundles\Transformers\Builder\Form\BuilderDataProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
+use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
+use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Services\FormPreviewService;
+use Solspace\Freeform\Services\QueuedFormGenerationService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 
 class FormsController extends BaseApiController
 {
@@ -33,6 +42,64 @@ class FormsController extends BaseApiController
         private FormDuplicator $formDuplicator,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionBuilder(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_ACCESS);
+
+        $form = $this->getFormsService()->getFormById($id);
+        if (!$form) {
+            throw new NotFoundHttpException("Form with ID {$id} not found");
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asSerializedJson(\Craft::$container->get(BuilderDataProvider::class)->getData($form));
+    }
+
+    public function actionPreviewTemplates(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson(\Craft::$container->get(FormPreviewService::class)->getSampleTemplateOptions());
+    }
+
+    public function actionPreview(int $id): Response
+    {
+        $this->requirePostRequest();
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+
+        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
+        if (!$form || $form->getDateArchived()) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        try {
+            $values = PreviewState::validateValues($this->request->getBodyParam('values', []));
+            $data = \Craft::$container->get(FormPreviewService::class)->render(
+                $form,
+                (int) $this->request->getBodyParam('page', 0),
+                $values,
+                true === $this->request->getBodyParam('advance', false),
+                $this->request->getBodyParam('templateOverride'),
+            );
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($data);
     }
 
     public function actionClone(int $id): Response
@@ -134,21 +201,55 @@ class FormsController extends BaseApiController
         return $this->asEmptyResponse(204);
     }
 
+    public function actionAiOptions(): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+        $options = [];
+        foreach ($this->getIntegrationsService()->getAllIntegrations() as $model) {
+            if (!is_subclass_of($model->class, AiIntegrationInterface::class)) {
+                continue;
+            }
+            $integration = $model->getIntegrationObject();
+            if (!$integration->isEnabled()) {
+                continue;
+            }
+            $options[] = [
+                'id' => $model->id, 'uid' => $model->uid, 'name' => $model->name, 'handle' => $model->handle,
+                'model' => $integration->getModel(),
+                'referenceMimeTypes' => $integration instanceof ReferenceAiIntegrationInterface ? $integration->getReferenceMimeTypes() : [],
+            ];
+        }
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($options);
+    }
+
     public function actionGenerateFromAi(): Response
     {
         $this->requirePostRequest();
+        $this->requireCpRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
-        $body = json_decode($this->request->getRawBody(), true) ?: [];
+        $body = $this->request->getBodyParams();
+        if (!\is_array($body)) {
+            throw new BadRequestHttpException('Invalid form generation request.');
+        }
+        $uploads = UploadedFile::getInstancesByName('references');
+        if (!$body && str_starts_with($this->request->getContentType() ?? '', 'multipart/form-data')) {
+            throw new BadRequestHttpException(Freeform::t('A reference file could not be uploaded. Check the server upload limits and try again.'));
+        }
         $prompt = isset($body['prompt']) && \is_string($body['prompt']) ? trim($body['prompt']) : '';
         $name = isset($body['name']) && \is_string($body['name']) ? trim($body['name']) : null;
         $integrationUid = isset($body['integrationUid']) && \is_string($body['integrationUid']) ? trim($body['integrationUid']) : '';
 
-        if ('' === $prompt) {
+        if ('' === $prompt && !$uploads) {
             throw new BadRequestHttpException(Freeform::t('Prompt is required.'));
         }
         if ('' === $integrationUid) {
@@ -156,7 +257,30 @@ class FormsController extends BaseApiController
         }
 
         try {
-            $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid);
+            $expectedCount = filter_var($body['referenceFileCount'] ?? \count($uploads), \FILTER_VALIDATE_INT);
+            if (false === $expectedCount || $expectedCount !== \count($uploads)) {
+                throw new \InvalidArgumentException(Freeform::t('A reference file could not be uploaded. Check the server upload limits and try again.'));
+            }
+            $files = ReferenceFile::fromUploads($uploads);
+            if (isset($body['requestId'])) {
+                $requestId = $body['requestId'];
+                if (!\is_string($requestId) || !preg_match('/^[a-f0-9]{32}$/D', $requestId)) {
+                    throw new BadRequestHttpException('Invalid generation request identifier.');
+                }
+                $state = \Craft::$container->get(QueuedFormGenerationService::class)->start(
+                    (int) \Craft::$app->getUser()->getId(),
+                    $requestId,
+                    $prompt,
+                    $name ?: null,
+                    $integrationUid,
+                    $files,
+                );
+                $this->response->statusCode = 202;
+                $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+                return $this->asJson($state);
+            }
+            $form = Freeform::getInstance()->formGeneration->generate($prompt, $name ?: null, $integrationUid, referenceFiles: $files);
             $afterEvent = new PersistFormEvent((object) ['form' => (object) []], $form->getId());
             $afterEvent->setForm($form);
             Event::trigger(self::class, self::EVENT_AFTER_SAVE_FORM, $afterEvent);
@@ -169,6 +293,25 @@ class FormsController extends BaseApiController
         } catch (\RuntimeException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
+    }
+
+    public function actionAiGenerationStatus(string $requestId): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        try {
+            $state = \Craft::$container->get(QueuedFormGenerationService::class)->status((int) \Craft::$app->getUser()->getId(), $requestId);
+        } catch (\OutOfBoundsException) {
+            throw new NotFoundHttpException('Generation not found.');
+        }
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($state);
     }
 
     protected function get(): array
@@ -202,6 +345,30 @@ class FormsController extends BaseApiController
 
         $data = json_decode($this->request->getRawBody(), false);
 
+        $general = $data?->form?->settings?->general ?? null;
+        if (\is_object($general)) {
+            $existingSettings = is_numeric($id) ? $this->getFormsService()->getFormById((int) $id)?->getSettings()->getGeneral() : null;
+            foreach (['previewCssUrls', 'previewJsUrls'] as $key) {
+                $existing = $existingSettings?->{$key} ?? '';
+                $value = $general->{$key} ?? $existing;
+                if (!PermissionHelper::isAdmin() && $value !== $existing) {
+                    throw new ForbiddenHttpException('Only a Craft administrator can change preview asset URLs');
+                }
+
+                try {
+                    if (!\is_string($value)) {
+                        throw new \InvalidArgumentException('Enter asset URLs as text, one per line.');
+                    }
+                    PreviewAssetHelper::parse($value);
+                } catch (\InvalidArgumentException $exception) {
+                    $this->response->statusCode = 400;
+
+                    return ['errors' => ['form' => ['general' => [$key => [$exception->getMessage()]]]]];
+                }
+                $general->{$key} = $value;
+            }
+        }
+
         // Enabling the embed creates a public URL. Form editors can continue
         // editing an enabled form, but only a Craft admin may change this flag.
         if (!PermissionHelper::isAdmin()) {
@@ -224,8 +391,12 @@ class FormsController extends BaseApiController
 
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPDATE_FORM, $event);
-        $this->trigger(self::EVENT_UPSERT_FORM, $event);
-        $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_UPSERT_FORM, $event);
+        }
+        if (!$event->hasErrors()) {
+            $this->trigger(self::EVENT_AFTER_SAVE_FORM, $event);
+        }
 
         $this->response->statusCode = $event->getStatus() ?? 204;
 

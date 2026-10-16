@@ -2,7 +2,7 @@ name: PHP
 
 on:
   pull_request:
-    branches: [v5]
+    branches: [v6]
 
 permissions:
   contents: read
@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: ['8.2']
+        php-versions: ['8.5']
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +44,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: ['8.2']
+        php-versions: ['8.5']
 
     steps:
       - uses: actions/checkout@v3
@@ -73,7 +73,7 @@ jobs:
 
     strategy:
       matrix:
-        php-versions: ['8.2']
+        php-versions: ['8.5']
 
     steps:
       - uses: actions/checkout@v3

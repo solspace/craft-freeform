@@ -2,7 +2,12 @@
 
 ## 6.0.0-beta.5 - Unreleased
 
+### Added
+- Included the features and fixes from Freeform 5.17.1, including database orphan cleanup, form scheduling, submission limits, and the Preview tab.
+
 ### Fixed
+- Adapted queued AI form generation and uploaded-file checks to Craft 6's Laravel queue and filesystem APIs.
+- Kept Craft 6 controls and confirmation dialogs while adding responsive builder navigation and editor cancellation from Freeform 5.
 - Moved **Manage Form Groups** into a native Craft slideout with a fixed footer, responsive layout, and translated helper text.
 - Replaced boolean settings dropdowns with Craft 6’s native combobox, using Enabled/Disabled labels and retaining selected status indicators and environment-variable support.
 - Fixed saving settings through Craft 6’s native plugin settings model and corrected primary button hover and pressed colors.
@@ -51,38 +56,113 @@
 ### Added
 - Added compatibility for Craft 6.x.
 
-## 5.17.0 - Unreleased
+## 5.17.1 - 2026-10-16
 
 ### Added
-- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates. Their selected framework styles and theme variables are bundled locally and scoped to the form.
-- Added a **Browser Autofill** setting to text-based fields, with selectable HTML autocomplete purposes for names, contact details (including home, work, and mobile phones), addresses, and passwords. Supported in standard forms and the React and Vue headless renderers.
-- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder. Changes to layouts, fields, settings, rules, notifications, and integrations can be stepped backward and forward while editing a form.
-- Added an optional **International Phone** mode for Phone fields. Visitors can search for a country by name or calling code, while form builders can set the default country and restrict the available countries. Numbers are validated for the selected country and saved in international E.164 format. Supported in standard forms and the React and Vue headless renderers.
-- Added a Pro **Summary** field that gives visitors a live review of answers from earlier fields before submitting. It can include all supported fields or selected field handles, hide unanswered fields, and respect conditional field visibility. Option labels and file counts are displayed in a readable format, with support for standard forms and the React and Vue headless renderers.
-- Added a Pro **Range Slider** field with configurable minimum and maximum values, step size, default value, and a live display of the selected value. Supports decimal steps, conditional rules, survey results, and the React and Vue headless renderers.
-- Added **Enable Search** to Dropdown and Multiple Select fields. Visitors can filter the available options by typing, navigate results with the keyboard, and remove selections from a searchable Multiple Select field. Available in standard forms and the React and Vue headless renderers.
-- Added **Auto Grow** to Textarea fields so the input expands and shrinks with its contents. An optional maximum height switches the field to scrolling once reached. Supported in standard forms and the React and Vue headless renderers.
-- Added **Show Character Count** to Text and Textarea fields. The live count also shows the configured maximum length when one is set.
-- Added **Show Password Toggle** to Password fields, allowing visitors to reveal or hide their password with an accessible eye icon button.
-- Added **Suggest Email Corrections** to Email fields. Common misspellings of popular email domains prompt a suggested address after the visitor leaves the field; the address changes only if the visitor accepts it.
-- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**. Regional Subdivisions include country-specific lists; Survey Scales cover agreement, satisfaction, frequency, importance, and likelihood; and Time Intervals can use 15, 30, or 60 minute increments with 12 or 24 hour labels. Where applicable, option labels are translated into German, French, Italian, and Dutch.
-- Added an opt-in **Show Upload Requirements** setting to File Upload and File Drag & Drop. It defaults off for existing fields. Displays allowed file kinds, maximum file count, and maximum size per file beneath the input, derived from the field's current settings. Keep the hint separate from editable instructions and connect it to the control with `aria-describedby`.
-- Added an optional per-form processing indicator (**Show Processing Overlay on Submit**) that dims the form and shows a spinner and translated message centered in the visible area while a submission is processing.
-- Added an opt-in **Focus First Error After Submit** setting. When a submission fails validation, Freeform focuses the first visible field with an error, or the form error banner, for both AJAX and standard submissions.
-- Added an **Embed Form** tab to the form builder with a copyable Twig snippet for the current form, plus guides for formatting, dynamic data, success behavior, spam protection, and troubleshooting.
-- Added opt-in **HTML embeds** for standalone pages on the same origin as Craft. Administrators can enable a form in its Embed tab and copy a script tag that loads the current Craft-rendered form without requiring the page to be served by Craft.
+- Added a `freeform/database/delete-orphans` console command to preview and clean orphaned data before repairing foreign keys.
 
 ### Changed
-- AJAX forms now apply formatting template overrides to success and error banners and field-level validation messages, matching the styling used for non-AJAX submissions. All sample formatting templates have been updated accordingly.
-- Added searchable AI model pickers for **OpenAI, Google Gemini, Anthropic, and xAI**, including supported “latest” aliases and an **Other / Custom ID** option for manually specifying models while preserving existing configured model values.
-- Improved accessibility across the sample formatting templates with enhanced semantic markup, ARIA attributes, form error associations, and screen reader support, while preserving existing markup structures where possible to avoid breaking changes.
-- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
-- Improved **File Upload Drag & Drop** drop-zone layout, spacing, focus styles, and circular Remove controls in Basic Light, Basic Dark, Basic Floating Labels, and Multipage All Fields.
-- Corrected upload hint spacing in Bootstrap 5 and Bootstrap 5 Dark, and placed the Drag & Drop label above the drop zone in Bootstrap 5 Floating Labels.
-- Improved the installed demo templates with cleaner and more accessible markup, better keyboard navigation, simplified Extras configuration, more maintainable light/dark theme styles, corrected demo routing and links, and safer CSRF-protected submission deletion.
+- Improved form builder loading and responsiveness, especially when selecting fields and editing settings in large forms.
+- Refined the **Fields from other Forms** picker with on-demand loading, clearer expandable groups, and updated styling.
+- Improved the appearance and accessibility of control panel error messages.
+- Improved logging for unexpected AI form generation errors.
+
+### Fixed
+- Fixed an issue where newly saved forms could display a blank Preview and no formatting template options.
+- Fixed date pickers failing to load in Preview.
+- Fixed Preview unnecessarily loading control panel assets.
+
+## 5.17.0 - 2026-10-15
 
 > [!WARNING]
-> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Check customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically; existing JavaScript render overrides continue to work and take precedence.
+> If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Review customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically. Existing JavaScript render overrides continue to take precedence. See the [AJAX formatting guide](https://docs.solspace.com/craft/freeform/v5/templates/ajax/#updating-custom-templates-to-517) for details on banner attributes, field error styling, and JavaScript render overrides.
+
+> [!NOTE]
+> **Craft 4:** Composer may block installation or updates because of security advisories affecting Craft 4's required dependencies. See our [installation and update guide](https://docs.solspace.com/craft/freeform/v5/setup/installing-updating/#craft-4-composer-security-advisories) for available options, a temporary workaround for local testing, and important security considerations.
+
+### Added
+- Added PDF and image uploads to **Create with AI** to recreate existing forms as editable Freeform fields, with optional instructions to customize the result.
+- Added a **Preview** tab with sample-template selection, eight viewport sizes, automatic scaling, and per-form CSS and JavaScript URLs. Previews support conditional visibility, page jumps, and early completion, and retain test answers across page and template changes.
+- Added opt-in **HTML embeds** for standalone HTML pages hosted on the same origin as Craft.
+- Added an **Embed Form** tab to the form builder with a copyable Twig snippet and embedding guides.
+- Added **Schedule Form** settings for Lite and Pro, with optional opening and expiry dates and times, customizable messages, and availability checks when rendering forms and accepting submissions. Replaces **Stop Submissions After Date**, preserving the end-of-day behavior of existing cutoff dates.
+- Added **Limit Submissions** settings for Lite and Pro, with total, daily, weekly, monthly, or yearly caps, customizable messages, and support for existing Twig overrides.
+- Added a Pro **Scope by Field** option to Duplicate Check, allowing each visitor to submit once per product, entry, or other field value.
+- Added a Pro **Supabase** integration under **Other** to send submissions to database tables with configurable field mappings.
+- Added **Undo and Redo** buttons and keyboard shortcuts to the form builder.
+- Added drag-and-drop and keyboard reordering of dashboard form cards, with automatic saving and support for moving forms between groups.
+- Added a **Cancel** action to content editor slideouts to discard changes made during the editing session.
+- Added framework and layout icons to sample formatting template selectors and color indicators to the **Default Status** dropdown.
+- Added a Pro **Summary** field for reviewing answers before submitting.
+- Added a Pro **Range Slider** field with configurable limits, step size, and a live value display.
+- Added an optional **International Phone** mode to Phone fields, with country selection, validation, and international number formatting.
+- Added **Enable Search** to Dropdown and Multiple Select fields.
+- Added predefined option lists for **Regional Subdivisions**, **Survey Scales**, **Time Intervals**, **Age Ranges**, **Company Sizes**, **Industries**, **Employment Statuses**, and **Continents**, with translated labels where applicable.
+- Added a **Browser Autofill** setting to text-based fields for selecting autocomplete purposes.
+- Added **Auto Grow** to Textarea fields, with an optional maximum height.
+- Added **Show Character Count** to Text and Textarea fields.
+- Added **Show Password Toggle** to Password fields.
+- Added **Suggest Email Corrections** to Email fields for common domain misspellings.
+- Added an opt-in **Show Upload Requirements** setting to File Upload and File Upload Drag & Drop fields to display allowed file types, counts, and sizes.
+- Added an optional **Show Processing Overlay on Submit** setting to display a spinner and message while a submission is processed.
+- Added an opt-in **Focus First Error After Submit** setting for AJAX and standard submissions.
+- Added accessible **daisyUI 5 Light** and **daisyUI 5 Dark** sample formatting templates.
+
+### Changed
+- Updated **Create with AI** to use Craft's queue, with progress tracking and resumable status checks.
+- Improved AI error handling for authentication failures, rate limits, timeouts, provider errors, and responses cut short by output limits.
+- Moved the Form Group Manager, field managers, bulk option editor, and Cards, Table, HTML, Rich Text, and Opinion Scale editors into native Craft slideouts.
+- Standardized property editor previews with consistent borders, empty states, scrolling, and clearer editing controls.
+- Made builder navigation responsive with a **More** menu for overflow tabs, an always-visible active tab, and space reserved for **Save**, **Undo**, and **Redo**.
+- Refreshed the dashboard with wider form cards and moved **Manage Form Groups** beside the cards/list view controls.
+- Redesigned **Archived Forms** as a collapsible panel with a count badge, localized archive dates, and clearer restore and delete actions.
+- Updated AI model selectors for **OpenAI**, **Google Gemini**, **Anthropic**, and **xAI** with search and support for custom model IDs.
+- Refreshed **Diagnostics** with **Overview** and **Health Checks** tabs, clearer status indicators, and a copyable support report.
+- Improved accessibility across the sample formatting templates.
+- AJAX forms now respect formatting template overrides for success banners, error banners, and field validation messages.
+- Improved **File Upload Drag & Drop** styling in the Basic and Multipage All Fields templates.
+- Improved the installed demo templates with better accessibility, simpler configuration, cleaner styles, corrected routing, and safer submission deletion.
+- **Formie** Summary fields now import as native Freeform Summary fields instead of HTML fields.
+- Reduced repeated requests for field configuration on the Forms dashboard.
+
+### Fixed
+- Fixed duplicate form handles failing silently when saving an existing form. Validation errors now appear on the **Handle** setting.
+- Fixed adjacent field tags merging in AI and Calculation expressions.
+- Fixed fields being inserted at the beginning of Calculation expressions instead of at the cursor position.
+- Fixed missing list markers and incorrect indentation in builder content previews and Tailwind 4 HTML and Rich Text output.
+- Fixed malformed radio option markup in Tailwind 4 templates that could disrupt form layout.
+- Fixed File Upload Drag & Drop label placement in the Bootstrap 5 Floating Labels template.
+- Fixed control panel asset builds when run from a different working directory.
+- Fixed PHP 8.0 compatibility for headless profiles and translated Opinion Scale and custom option values.
+- Fixed PHP 8.5 reflection deprecation notices and PHP deprecation notices when rendering empty Textarea fields or reading logs.
+
+## 5.16.7 - 2026-10-15
+
+### Fixed
+- Fixed native Date & Time fields appearing empty when returning to an earlier page of a multi-page form.
+- Fixed minimum and maximum date validation for native date-only inputs.
+- Fixed an issue where long field labels caused export profile filters to overflow and hide other filter controls.
+
+## 5.16.6 - 2026-10-07
+
+### Added
+- Added database integrity checks and optional orphan and duplicate scans to Diagnostics, with links to repair guidance.
+- Added console utilities to inspect database integrity and restore missing foreign keys.
+
+### Fixed
+- Fixed a bug where uninstalling another Craft plugin could remove Freeform's foreign keys, leaving related submission data behind after deletion.
+- Improved **Forms list** performance, particularly on sites with many forms.
+
+### Security
+- Fixed a security vulnerability where visitor-supplied notification recipient addresses could evaluate Twig expressions and disclose server-side information.
+
+## 5.16.5 - 2026-10-06
+
+### Fixed
+- Fixed an issue where Opinion Scale fields with missing values or labels, including some AI-generated configurations, could cause errors when loading forms or opening Quick Export.
+- Fixed an issue where email notifications could be silently skipped when a form was not assigned to the submission's site.
+- Fixed an issue where saving settings could unintentionally enable disabled settings, including Site-Aware Forms.
+- Fixed an issue where Diagnostics could display an incorrect status for the AI processing queue setting.
 
 ## 5.16.4 - 2026-10-01
 
@@ -132,6 +212,7 @@
 - Added a **Microsoft Dynamics 365 CRM integration** with Lead and Contact creation and automatic discovery of supported standard and custom fields.
 - Added a **Klaviyo email marketing integration** with list subscriptions, profile and custom property mapping, and opt-in support.
 - Added **Nationalities** to the predefined field options.
+- Verified support for **Craft 5.11.x** and **4.19.x**.
 
 > [!IMPORTANT]
 > **Headless setup:** Enable headless support globally in Freeform settings or configuration, then individually for each form. Install the core and extensions npm packages alongside your preferred framework adapter and starter theme.
@@ -309,11 +390,11 @@
 
 ### Changed
 - Made various visual improvements to **Template Manager** settings.
-- Made various performance improvements throughout the control panel and email notifications.
+- Made various performance improvements throughout the Control Panel and email notifications.
 - Aligned workspace dependency configuration.
 
 ### Fixed
-- Fixed an issue where the notification migration utility could return a 404 error due to an incorrect control panel route mapping.
+- Fixed an issue where the notification migration utility could return a 404 error due to an incorrect Control Panel route mapping.
 - Fixed an issue where field values were not site-aware in GraphQL.
 - Fixed an issue where field labels in the **Notifications** and **Rules** tabs of the form builder were not site-aware.
 - Fixed a visual issue with tooltips in the form builder.
@@ -541,14 +622,14 @@
 ## 5.14.13 - 2026-02-10
 
 ### Changed
-- Default built-in columns such as _Title_, _IP Address_, _Status_, etc. are now translated throughout the control panel and in exported files.
+- Default built-in columns such as _Title_, _IP Address_, _Status_, etc. are now translated throughout the Control Panel and in exported files.
 - Auto-generated form and field handles now always start with a letter to ensure GraphQL compatibility. To preserve legacy, existing handles remain unchanged, and handles can still be manually overridden to start with a number if needed.
 - Improved support and behavior for handling **Date & Time** fields as native date inputs.
 - Forms now correctly re-enable the submit button after an internal form error occurs.
 - Optimized and reduced the overall size of the form builder application.
 
 ### Fixed
-- Fixed a potential performance issue in the control panel Submissions area.
+- Fixed a potential performance issue in the Control Panel Submissions area.
 - Fixed an issue where the **Stripe** custom metadata description override was not working.
 - Fixed a bug where the **Template Manager** button appeared in the **Notifications** tab of the form builder when form-specific notifications are not used.
 - Fixed an issue where files from **File Upload Drag & Drop** fields were not attached to email notifications when **Include Attachments** was enabled.

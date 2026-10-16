@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -142,6 +143,12 @@ class ManifestFieldSerializer
     {
         if ($field instanceof PhoneField && $field->isInternational()) {
             return $field->getInternationalConfig();
+        }
+        if ($field instanceof CheckboxField) {
+            return [
+                'checkedByDefault' => $field->isCheckedByDefault(),
+                'checkedValue' => $field->getDefaultValue(),
+            ];
         }
         if ($field instanceof DropdownField || $field instanceof MultipleSelectField) {
             return ['searchable' => $field->getSearchableConfig()];
@@ -470,6 +477,7 @@ class ManifestFieldSerializer
             $options[] = [
                 'label' => $option->getLabel(),
                 'value' => $option->getValue(),
+                'checked' => method_exists($option, 'isChecked') ? $option->isChecked() : false,
                 'default' => method_exists($option, 'isChecked') ? $option->isChecked() : false,
                 'disabled' => false,
                 'attributes' => (object) [],

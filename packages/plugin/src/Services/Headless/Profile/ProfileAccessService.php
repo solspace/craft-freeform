@@ -45,6 +45,7 @@ class ProfileAccessService
     {
         $profile = $this->getProfile($profileName);
         $this->rejectUnsafeRequestParameters();
+        $this->requireSignedTokenWhenConfigured($profile);
         $properties = $this->propertyExtractor->extract($profile->properties);
         $user = $this->resolveUser($profile);
         $provider = $this->resolveProvider($profile);
@@ -98,6 +99,70 @@ class ProfileAccessService
                 ));
             }
         }
+    }
+
+    /**
+     * When a profile opts into signed context, require a token via
+     * X-Freeform-Context or context.token. Cryptographic verification of the
+     * token payload is Phase 2; until then this fails closed on absence so the
+     * flag is not a silent no-op.
+     */
+    private function requireSignedTokenWhenConfigured(HeadlessProfile $profile): void
+    {
+        if (!$profile->requiresSignedToken) {
+            return;
+        }
+
+        $token = $this->resolveSignedContextToken();
+        if (null === $token || '' === $token) {
+            throw new ForbiddenHttpException(
+                'A signed context token is required for this profile (X-Freeform-Context or context.token).'
+            );
+        }
+    }
+
+    private function resolveSignedContextToken(): ?string
+    {
+        $request = \Craft::$app->getRequest();
+        $header = $request->getHeaders()->get('X-Freeform-Context');
+        if (\is_string($header) && '' !== trim($header)) {
+            return trim($header);
+        }
+
+        $fromContext = $this->tokenFromContextValue($request->getBodyParam('context'));
+        if (null !== $fromContext) {
+            return $fromContext;
+        }
+
+        // Multipart submits nest JSON under `_freeform`.
+        $meta = $request->getBodyParam('_freeform');
+        if (\is_string($meta) && '' !== $meta) {
+            $decoded = json_decode($meta, true);
+            if (\is_array($decoded)) {
+                $fromMeta = $this->tokenFromContextValue($decoded['context'] ?? null);
+                if (null !== $fromMeta) {
+                    return $fromMeta;
+                }
+            }
+        }
+
+        $queryToken = $request->getQueryParam('contextToken');
+        if (\is_string($queryToken) && '' !== trim($queryToken)) {
+            return trim($queryToken);
+        }
+
+        return null;
+    }
+
+    private function tokenFromContextValue(mixed $context): ?string
+    {
+        if (!\is_array($context) || !isset($context['token']) || !\is_string($context['token'])) {
+            return null;
+        }
+
+        $token = trim($context['token']);
+
+        return '' !== $token ? $token : null;
     }
 
     private function resolveUser(HeadlessProfile $profile): ?User

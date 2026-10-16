@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Settings\Implementations\Options;
 
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Property;
@@ -16,7 +17,7 @@ class FormStatusOptions implements OptionsGeneratorInterface
         $collection = new OptionCollection();
         $statuses = $this->statusesService->getAllStatuses();
         foreach ($statuses as $status) {
-            $collection->add($status->id, $status->name);
+            $collection->add(new Option((string) $status->id, $status->name, color: $status->getColorHex()));
         }
 
         return $collection;

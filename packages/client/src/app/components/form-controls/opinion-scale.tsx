@@ -1,8 +1,16 @@
 import type { FormComponent } from "@components/form-controls";
 import { Control } from "@components/form-controls/control";
+import {
+  ControlWrapper,
+  FormField,
+  Instructions,
+  LabelGroup,
+} from "@components/form-controls/control.styles";
 import { TabularDataEditor } from "@components/form-controls/control-types/tabular-data/tabular-data.editor";
 import { cleanRows } from "@components/form-controls/control-types/tabular-data/tabular-data.operations";
 import { PreviewSlideout } from "@components/form-controls/preview/preview-slideout";
+import { PreviewEmpty } from "@components/form-controls/preview/property-preview.styles";
+import { usePreviewRollback } from "@components/form-controls/preview/use-preview-rollback";
 import type { ControlType } from "@components/form-controls/types";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { Fields } from "@ff-client/types/field.classes";
@@ -27,13 +35,28 @@ type Props = {
   ) => React.ReactNode;
 };
 
+type EditorActions = { finish: () => void; cancel: () => void };
 const CleanupContext = createContext<
-  (handle: string, cleanup: () => void) => void
+  (handle: string, actions: EditorActions) => void
 >(() => {});
 const Sections = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--c-spacing-lg, 24px);
+  > ${ControlWrapper} {
+    gap: var(--c-spacing-sm, 8px);
+  }
+  ${LabelGroup} {
+    flex: 0 0 auto;
+  }
+  ${FormField} {
+    height: auto;
+  }
+  ${Instructions} {
+    font-style: normal;
+    line-height: 1.5;
+    margin: var(--c-spacing-xs, 4px) 0 0;
+  }
   > div + div {
     padding-top: var(--c-spacing-lg, 24px);
     border-top: 1px solid var(--c-color-neutral-border-quiet);
@@ -41,57 +64,48 @@ const Sections = styled.div`
   min-width: 0;
 `;
 const EditorHint = styled.p`
-  margin: var(--c-spacing-md, 16px) 0 0;
-  font-size: var(--c-text-sm, 12px);
-  line-height: var(--c-leading-normal);
+  margin: 16px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--c-text-light);
-`;
-const EditCue = styled.div`
-  border-top: 1px solid var(--c-color-neutral-border-quiet);
-  padding-top: 10px;
-  color: var(--c-color-accent-on-quiet);
-  font-weight: 600;
-  font-size: var(--c-text-sm, 12px);
 `;
 const Summary = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 14px;
-  border: 1px solid var(--c-color-neutral-border-quiet);
-  border-radius: var(--c-form-control-radius);
-  background: var(--c-color-neutral-fill-quiet);
   color: var(--c-text-default);
-  &:hover { background: var(--c-color-neutral-fill-normal); }
-  strong { display: block; margin-bottom: 4px; }
+  strong { display: block; margin-bottom: 4px; font-size: 12px; }
   span { color: var(--c-text-light); }
   p { margin: 0; overflow-wrap: anywhere; }
+`;
+const SummaryEmpty = styled(PreviewEmpty)`
+  min-height: 0;
 `;
 
 const SummaryControl: React.FC<ControlType<TabularDataProperty>> = ({
   property,
   value,
   errors,
-}) => (
-  <div>
-    <strong>{translate(property.label)}</strong>
-    {!value?.length ? (
-      <span>{translate("Not configured yet")}</span>
-    ) : (
-      <p>
-        {value
-          .map((row) => row.filter(Boolean).join(" — "))
-          .filter(Boolean)
-          .join(", ")}
-      </p>
-    )}
-    {errors?.map((error) => (
-      <p className="error" key={error}>
-        {translate(error)}
-      </p>
-    ))}
-  </div>
-);
+}) => {
+  const rows = (value || [])
+    .map((row) => row.filter(Boolean).join(" — "))
+    .filter(Boolean);
+  return (
+    <div>
+      <strong>{translate(property.label)}</strong>
+      {!rows.length ? (
+        <SummaryEmpty>{translate("Not configured yet")}</SummaryEmpty>
+      ) : (
+        <p>{rows.join(", ")}</p>
+      )}
+      {errors?.map((error) => (
+        <p className="error" key={error}>
+          {translate(error)}
+        </p>
+      ))}
+    </div>
+  );
+};
 
 const EditorHintControl: React.FC<ControlType<TabularDataProperty>> = ({
   property,
@@ -117,6 +131,13 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
   updateValue,
 }) => {
   const registerCleanup = useContext(CleanupContext);
+  const rollback = usePreviewRollback(
+    value,
+    updateValue,
+    property.handle,
+    context,
+  );
+  const captured = useRef(false);
   // biome-ignore lint/suspicious/noExplicitAny: Same field context used by the standard tabular data control.
   const { willTranslate } = useTranslations(context as any);
   const values = Array.isArray(value) ? value : [];
@@ -129,12 +150,26 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
       : "Optional descriptions shown below the scale. They do not need to match the number of choices.",
   };
   useLayoutEffect(() => {
-    registerCleanup(property.handle, () => {
-      if (isTranslating) return;
-      const cleaned = cleanRows(values);
-      if (cleaned.length !== values.length) updateValue(cleaned);
+    if (!captured.current) {
+      rollback.onEdit();
+      captured.current = true;
+    }
+    registerCleanup(property.handle, {
+      finish: () => {
+        if (isTranslating) return;
+        const cleaned = cleanRows(values);
+        if (cleaned.length !== values.length) updateValue(cleaned);
+      },
+      cancel: rollback.onCancel,
     });
-  }, [registerCleanup, property.handle, values, updateValue, isTranslating]);
+  }, [
+    registerCleanup,
+    property.handle,
+    values,
+    updateValue,
+    isTranslating,
+    rollback,
+  ]);
   return (
     <Control property={displayProperty} errors={errors} context={context}>
       <TabularDataEditor
@@ -164,7 +199,7 @@ export const OpinionScaleProperty: React.FC<Props> = ({
   properties,
   renderProperty,
 }) => {
-  const cleanups = useRef(new Map<string, () => void>());
+  const cleanups = useRef(new Map<string, EditorActions>());
   const scales = properties.find(
     (item) =>
       item.handle === "scales" && item.type === PropertyType.TabularData,
@@ -194,12 +229,17 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             <Summary>
               {renderProperty(scales, SummaryControl as ControlComponent)}
               {renderProperty(legends, SummaryControl as ControlComponent)}
-              <EditCue>{translate("Edit scales & legends")}</EditCue>
             </Summary>
           }
           onAfterEdit={() =>
-            cleanups.current.forEach((cleanup) => {
-              cleanup();
+            cleanups.current.forEach((actions) => {
+              actions.finish();
+            })
+          }
+          onEdit={() => cleanups.current.clear()}
+          onCancel={() =>
+            cleanups.current.forEach((actions) => {
+              actions.cancel();
             })
           }
         >

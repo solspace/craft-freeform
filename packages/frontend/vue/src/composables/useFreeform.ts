@@ -159,6 +159,7 @@ export function useFreeform(
           initialValues: opts.value.initialValues,
           draftToken: opts.value.draftToken,
           draftKey: opts.value.draftKey,
+          properties: opts.value.properties,
         });
         manifest.value = opts.value.manifest;
         syncFromFormState();
@@ -196,6 +197,7 @@ export function useFreeform(
             initialValues: opts.value.initialValues,
             draftToken: opts.value.draftToken,
             draftKey: opts.value.draftKey,
+            properties: opts.value.properties,
           });
           manifest.value = loaded;
           syncFromFormState();
@@ -330,6 +332,7 @@ export function useFreeform(
           values,
           intent,
           context: submitContext,
+          properties: formState.getSubmitProperties(),
           meta: {
             client: CLIENT_NAME,
             clientVersion: opts.value.clientVersion ?? PACKAGE_VERSION,

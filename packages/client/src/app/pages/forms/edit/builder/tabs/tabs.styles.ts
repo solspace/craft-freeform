@@ -1,117 +1,81 @@
 import { errorAlert } from "@ff-client/styles/mixins";
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
-import styled from "styled-components";
+import { borderRadius, spacings } from "@ff-client/styles/variables";
+import styled, { css } from "styled-components";
 
 export const TabWrapper = styled.nav`
   position: relative;
+  container: builder-header / inline-size;
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+`;
 
+export const HeaderRow = styled.div`
   display: grid;
-  grid-template-columns: 300px max-content 1fr max-content;
+  grid-template: "heading tabs actions" 50px / 300px minmax(0, 1fr) max-content;
   align-items: center;
-
-  height: 50px;
-  flex: 0 0 50px;
-
   box-sizing: border-box;
-  overflow-x: hidden;
 
-  &::before {
-    content: '';
-    position: absolute;
-    inset-inline: var(--c-spacing-md, 8px);
-    inset-block-end: 0;
-    height: 1px;
-    background: var(--c-color-neutral-border-quiet);
-    pointer-events: none;
+  @container builder-header (max-width: 760px) {
+    grid-template: "heading actions" 50px "tabs tabs" 49px / minmax(0, 1fr) max-content;
   }
 `;
 
 export const Heading = styled.h1`
+  grid-area: heading;
   position: relative;
-  min-width: 0;
   margin: 0;
-  padding-inline-end: var(--c-spacing-xl, 24px);
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `;
 
 export const FormName = styled.span`
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.2;
-  color: ${colors.gray700};
+  color: var(--c-text-default);
+`;
+
+export const TabsRegion = styled.div`
+  grid-area: tabs;
+  position: relative;
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+`;
+
+const tabDimensions = css`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: var(--c-size-control-md, 34px);
+  padding-inline: calc(var(--c-tab-spacing-inline, 1em) - 1px);
+  border: 1px solid transparent;
+  font-size: var(--c-tabs-font-size, var(--c-text-base));
+  box-sizing: border-box;
+  white-space: nowrap;
+  font-family: inherit;
 `;
 
 export const TabsWrapper = styled.div`
   display: flex;
-  align-self: flex-end;
-
-  background-color: ${colors.gray050};
-  border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
-  box-shadow:
-    inset 0 -1px 0 0 rgba(154, 165, 177, 0.25),
-    0 0 0 1px rgba(154, 165, 177, 0.25);
-
-  a {
-    display: flex;
-    align-items: center;
-
-    height: 49px;
-    padding: 0 ${spacings.xl};
-
-    white-space: nowrap;
-
-    color: var(--light-text-color);
-    border-radius: ${borderRadius.md} ${borderRadius.md} 0 0;
-
-    &:hover {
-      text-decoration: none;
-      background-color: rgba(154, 165, 177, 0.15);
-
-      &:not(.active) {
-        &:not(:first-child) {
-          border-top-left-radius: 0;
-        }
-
-        &:not(:last-child) {
-          border-top-right-radius: 0;
-        }
-      }
-    }
-
-    &.active {
-      background: ${colors.white};
-      color: ${colors.gray700};
-      box-shadow:
-        inset 0 2px 0 ${colors.gray500},
-        0 0 0 1px rgba(51, 64, 77, 0.1),
-        0 2px 12px rgba(205, 216, 228, 0.5) !important;
-    }
-
-    &.errors {
-      position: relative;
-      color: ${colors.error};
-
-      ${errorAlert};
-    }
-
-    > span[data-icon] {
-      position: relative;
-      left: 5px;
-    }
-  }
-`;
-
-export const BuilderTabsWrapper = styled(TabsWrapper)`
+  width: max-content;
+  max-width: 100%;
   align-self: center;
   gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
   background: transparent;
   border-radius: 0;
   box-shadow: none;
 
-  && a {
+  && > a, && > button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+    white-space: nowrap;
     position: relative;
     box-sizing: border-box;
     height: var(--c-size-control-md, 34px);
@@ -171,6 +135,14 @@ export const BuilderTabsWrapper = styled(TabsWrapper)`
 export const BuilderTabLabel = styled.span`
   display: grid;
 
+  &::after {
+    content: attr(data-label);
+    grid-area: 1 / 1;
+    visibility: hidden;
+    font-weight: 700;
+    user-select: none;
+  }
+
   > span {
     grid-area: 1 / 1;
     text-align: center;
@@ -184,8 +156,63 @@ export const BuilderTabLabel = styled.span`
   }
 `;
 
+export const BuilderTabsWrapper = styled(TabsWrapper)``;
+
+export const MoreButton = styled.button`
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--c-text-default);
+  cursor: pointer;
+  svg { flex-shrink: 0; }
+`;
+
+export const TabMeasurements = styled.div`
+  display: flex;
+  gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  top: 0;
+  inset-inline-start: 0;
+  visibility: hidden;
+  pointer-events: none;
+  > span { ${tabDimensions}; flex: 0 0 auto; }
+  > .errors { ${errorAlert}; }
+`;
+
+export const OverflowMenu = styled.div`
+  z-index: 1000;
+  min-width: 180px;
+  max-width: calc(100vw - 16px);
+  max-height: min(70vh, 420px);
+  overflow: auto;
+  padding: 6px;
+  border: 1px solid var(--c-color-neutral-border-normal);
+  border-radius: ${borderRadius.md};
+  background: var(--c-modal-fill);
+  box-shadow: 0 4px 16px rgb(51 64 77 / 18%);
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: ${borderRadius.sm};
+    color: var(--c-text-default);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+    &.errors { color: var(--c-color-danger-on-normal); }
+    &:hover, &:focus-visible { background: var(--c-color-neutral-fill-quiet); outline: 2px solid var(--link-color); outline-offset: -2px; }
+  }
+`;
+
 export const SaveButtonWrapper = styled.div`
   --freeform-builder-action-height: 36px;
+  grid-area: actions;
+  margin-inline-start: 12px;
   display: flex;
   align-items: center;
   justify-self: end;
@@ -287,6 +314,7 @@ export const SubmissionsShortcut = styled.a`
   width: max-content;
   font-size: 13px;
   white-space: nowrap;
+  gap: 4px;
   text-decoration: none;
 
   margin-block: 0;
@@ -306,10 +334,14 @@ export const SubmissionsShortcut = styled.a`
     border-color: rgba(154, 165, 177, 0.6);
     background: rgba(154, 165, 177, 0.14);
   }
+
+  @container builder-header (max-width: 1100px) {
+    display: none;
+  }
 `;
 
 export const BetaLabel = styled.span`
-  color: ${colors.gray700};
+  color: var(--c-text-default);
   font-size: 9px;
   margin-left: ${spacings.xs};
   font-weight: bold;

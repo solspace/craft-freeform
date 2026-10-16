@@ -128,13 +128,20 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
         $translationTable = $this->getTranslationTable();
         if ($translationTable->get('scales')) {
-            $translatedScales = $translationTable->get('scales');
+            $translatedScales = (new ScalesTransformer())->transform($translationTable->get('scales'));
 
             $translations = [];
             foreach ($scales as $scale) {
-                $found = array_find($translatedScales, static fn ($item) => $item[0] === $scale->getValue());
+                $found = null;
+                foreach ($translatedScales as $translatedScale) {
+                    if ($translatedScale->getValue() === $scale->getValue()) {
+                        $found = $translatedScale;
+
+                        break;
+                    }
+                }
                 if ($found) {
-                    $translations[] = new Scale($found[0], $found[1]);
+                    $translations[] = $found;
                 } else {
                     $translations[] = $scale;
                 }

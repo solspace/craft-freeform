@@ -4,25 +4,25 @@ import styled from "styled-components";
 export const PreviewCardsList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 5px;
-
-  min-height: 60px;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 `;
 
 export const PreviewCard = styled.li`
   display: grid;
-  column-gap: 5px;
+  column-gap: 8px;
   row-gap: 0;
-  grid-template-columns: 50px auto;
+  grid-template-columns: 40px minmax(0, 1fr);
   grid-template-areas:
     'icon label'
     'icon description';
 
-  padding: 5px;
-
-  background: ${colors.white};
-  border: 1px solid ${colors.gray200};
-  border-radius: 5px;
+  padding: 8px 0;
+  border-bottom: 1px solid ${colors.gray100};
+  &:first-child { padding-top: 0; }
+  &:last-child { border-bottom: 0; padding-bottom: 0; }
 `;
 
 export const Image = styled.div`
@@ -36,12 +36,19 @@ export const Image = styled.div`
   border: 1px solid ${colors.gray200};
   border-radius: 5px;
   overflow: hidden;
+  width: 40px;
+  height: 40px;
+  background: ${colors.gray050};
+
+  img, svg { width: 100%; height: 100%; object-fit: cover; }
+  svg { fill: ${colors.gray400}; padding: 5px; box-sizing: border-box; }
 `;
 
 export const Label = styled.div`
   grid-area: label;
 
-  font-weight: bold;
+  font-weight: 600;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
@@ -51,7 +58,7 @@ export const Description = styled.div`
 
   color: ${colors.gray300};
   font-size: 12px;
-  font-style: italic;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;

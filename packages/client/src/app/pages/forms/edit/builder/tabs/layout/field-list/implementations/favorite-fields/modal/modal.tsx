@@ -81,7 +81,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
       </SlideoutHeader>
       <FavoritesWrapper>
         <FieldList>
-          {data.map((favorite) => (
+          {data?.map((favorite) => (
             <FavoriteListItem
               key={favorite.id}
               favorite={favorite}
@@ -136,7 +136,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
         <button
           type="button"
           className="btn submit"
-          disabled={isLoading}
+          disabled={!loaded || isLoading}
           onClick={() => updateMutation.mutate(state)}
         >
           <LoadingText

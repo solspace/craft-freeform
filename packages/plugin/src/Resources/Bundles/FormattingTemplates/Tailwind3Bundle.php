@@ -11,7 +11,7 @@ class Tailwind3Bundle extends AssetBundle
         $this->sourcePath = '@Solspace/Freeform/templates/_templates/formatting/tailwind-3';
 
         $this->js = ['_main.js'];
-        $this->css = ['_main.css'];
+        $this->css = ['_tailwind.css', '_main.css'];
 
         parent::init();
     }

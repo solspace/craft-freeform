@@ -1,59 +1,12 @@
-import { labelText, scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { PreviewEmpty } from "@components/form-controls/preview/property-preview.styles";
+import { labelText } from "@ff-client/styles/mixins";
+import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const NoContent = styled.div`
-  position: absolute;
-  top: calc(50% - 10px);
-  left: 0;
-  right: 0;
-
-  opacity: 1;
-  transition: opacity 0.2s ease-out;
-
-  color: ${colors.gray200};
-  font-size: 16px;
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
-`;
+export const NoContent = styled(PreviewEmpty)``;
 
 export const PreviewWrapper = styled.div`
-  position: relative;
-
-  &:after {
-    content: attr(data-edit);
-    pointer-events: none;
-
-    position: absolute;
-    left: 30px;
-    top: calc(50% - 10px);
-
-    width: 200px;
-
-    opacity: 0;
-    transition: opacity 0.2s ease-out;
-
-    ${labelText};
-    color: ${colors.gray300};
-    font-size: 11px;
-    text-align: center;
-  }
-
-  &:hover {
-    &:after {
-      opacity: 0.5;
-    }
-
-    ${NoContent} {
-      opacity: 0;
-    }
-  }
+  min-width: 0;
 `;
 
 export const Header = styled.div`
@@ -67,24 +20,14 @@ export const Header = styled.div`
 `;
 
 export const PreviewTable = styled.div`
-  height: 170px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  padding: 0 ${spacings.md};
-
-  background: ${colors.white};
-  box-shadow: ${shadows.box};
-  border-radius: ${borderRadius.lg};
-
-  ${scrollBar};
+  min-width: 0;
 `;
 
 export const PreviewRow = styled.div`
   position: relative;
 
   display: grid;
-  grid-template-columns: auto 100px;
+  grid-template-columns: minmax(0, 1fr) 100px;
   gap: 10px;
 
   justify-items: stretch;
@@ -109,6 +52,7 @@ export const PreviewRow = styled.div`
 
   > div {
     white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
 
     padding: 7px ${spacings.xs} 7px 0;

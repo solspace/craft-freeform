@@ -30,9 +30,13 @@ const historySlice = createSlice({
   initialState: { undoCount: 0, redoCount: 0 },
   reducers: {
     setCounts: (
-      _,
+      state,
       { payload }: { payload: { undoCount: number; redoCount: number } },
-    ) => payload,
+    ) =>
+      state.undoCount === payload.undoCount &&
+      state.redoCount === payload.redoCount
+        ? state
+        : payload,
     clear: () => ({ undoCount: 0, redoCount: 0 }),
     undo: () => {},
     redo: () => {},

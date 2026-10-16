@@ -1,3 +1,7 @@
+import {
+  ControlWrapper,
+  FormField,
+} from "@components/form-controls/control.styles";
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -7,13 +11,25 @@ export const Item = styled.li`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
+
+  min-width: 0;
+  box-sizing: border-box;
 
   padding: 12px 16px;
 
   background-color: ${colors.white};
   border: 1px solid #eee;
   border-radius: 8px;
+
+  ${ControlWrapper} {
+    gap: var(--s, 8px);
+    min-width: 0;
+  }
+
+  ${FormField} {
+    height: auto;
+  }
 
   &:hover {
     border-color: ${colors.gray300};

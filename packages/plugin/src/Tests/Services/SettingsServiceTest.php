@@ -96,7 +96,7 @@ class SettingsServiceTest extends TestCase
                 self::assertSame('plugins.freeform.settings', $path);
                 $saved = ProjectConfigHelper::unpackAssociativeArrays($value);
                 self::assertSame('Existing Name', $saved['pluginName']);
-                self::assertSame('true', $saved['formSubmitDisable']);
+                self::assertSame('1', $saved['formSubmitDisable']);
                 self::assertSame(900, $saved['queuePingMinIntervalSeconds']);
                 self::assertFalse($saved['defaults']['previewHtml']);
                 self::assertSame(['highlightHighest' => false], $saved['surveys']);

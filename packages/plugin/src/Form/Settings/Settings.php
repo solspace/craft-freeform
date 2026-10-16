@@ -36,7 +36,10 @@ class Settings
                 continue;
             }
 
-            $propertyProvider->setObjectProperties($object, $propertySettings);
+            $propertyProvider->setStoredObjectProperties($object, $propertySettings);
+            if ($object instanceof BehaviorSettings) {
+                $object->normalizeSchedule();
+            }
         }
     }
 

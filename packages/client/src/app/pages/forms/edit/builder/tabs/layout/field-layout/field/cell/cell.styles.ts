@@ -128,6 +128,41 @@ export const FieldCellWrapper = styled.div`
     border-radius: 3px;
   }
 
+  &[data-field-type='html'],
+  &[data-field-type='rich-text'] {
+    ul,
+    ol {
+      padding-inline-start: 40px;
+      margin-block: 1em;
+      list-style-position: outside;
+    }
+
+    ul {
+      list-style-type: disc;
+    }
+
+    ol {
+      list-style-type: decimal;
+    }
+
+    ul ul {
+      list-style-type: circle;
+    }
+
+    ul ul ul {
+      list-style-type: square;
+    }
+
+    li {
+      display: list-item;
+    }
+
+    li > ul,
+    li > ol {
+      margin-block: 0.25em;
+    }
+  }
+
   &[data-field-type='rich-text'] {
     blockquote {
       border-left: 2px solid #d9d9d9;
@@ -140,11 +175,6 @@ export const FieldCellWrapper = styled.div`
       padding: 10px;
       white-space: pre-wrap;
       background-color: rgb(247, 247, 247);
-    }
-
-    ul {
-      list-style-type: disc;
-      padding-inline-start: 40px;
     }
 
     table {

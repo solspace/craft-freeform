@@ -87,8 +87,8 @@ export const LoadingText: React.FC<Props> = ({
 
   return (
     <LoadingTextWrapper {...props}>
-      {spinner && (
-        <SpinnerContainer style={spinnerAnimation}>
+      {spinner && loading && (
+        <SpinnerContainer style={spinnerAnimation} aria-hidden="true">
           <SpinnerIcon />
         </SpinnerContainer>
       )}
@@ -108,10 +108,14 @@ export const LoadingText: React.FC<Props> = ({
         </OriginalTextContainer>
       </TextContainer>
 
-      <DotContainer style={dotAnimation}>
-        <Dot />
-        <Dot />
-        <Dot />
+      <DotContainer style={dotAnimation} aria-hidden="true">
+        {loading && (
+          <>
+            <Dot />
+            <Dot />
+            <Dot />
+          </>
+        )}
       </DotContainer>
     </LoadingTextWrapper>
   );

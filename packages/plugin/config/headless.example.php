@@ -43,7 +43,7 @@ return [
             'event-edit' => [
                 'form' => 'event',
                 'requiresAuth' => true,
-                'requiresSignedToken' => false,
+                'requiresSignedToken' => false, // When true, requires X-Freeform-Context / context.token (crypto verify Phase 2)
                 'contextProvider' => null, // EventEditContext::class
                 'allowSubmit' => true,
                 'cache' => 'private, no-store',

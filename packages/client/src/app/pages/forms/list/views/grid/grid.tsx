@@ -77,8 +77,9 @@ export const FormGrid: React.FC = () => {
                     </GroupWrap>
                   ) : null,
                 )}
+              {/* Keep the empty drop target mounted so Sortable can register it before dragging. */}
               {data && !isEmpty && (isForms || sorting.canMove) && (
-                <GroupWrap>
+                <GroupWrap hidden={!isForms && !sorting.isDragging}>
                   {data?.formGroups?.groups.length > 0 && (
                     <GroupTitle>{translate("Other")}</GroupTitle>
                   )}

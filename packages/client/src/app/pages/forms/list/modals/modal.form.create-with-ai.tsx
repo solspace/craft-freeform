@@ -3,6 +3,7 @@ import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import { ModalFooter, ModalHeader } from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
 import { ErrorBlock } from "@components/notification-blocks/error/error-block";
+import { InfoBlock } from "@components/notification-blocks/info/info-block";
 import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
 import type { Form } from "@ff-client/types/forms";
 import { PropertyType, type SelectProperty } from "@ff-client/types/properties";
@@ -473,13 +474,13 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           </ErrorBlock>
         )}
         {pendingId && isSubmitting && (
-          <p role="status">
+          <InfoBlock>
             {translate(
               generationStatus === "queued"
                 ? "Waiting for Craft's queue. If this does not start, check the Queue Manager."
                 : "Generating your form. You can close this window and reopen Create with AI to check progress.",
             )}
-          </p>
+          </InfoBlock>
         )}
         {error && <ErrorBlock>{error}</ErrorBlock>}
         {pendingId && !isSubmitting && (

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.17.1 - Unreleased
+## 5.17.1 - 2026-10-16
 
 ### Added
 - Added a `freeform/database/delete-orphans` console command to preview and clean orphaned data before repairing foreign keys.

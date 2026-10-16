@@ -114,7 +114,7 @@ class FormReferenceGenerationTest extends TestCase
         $integration->method('processAiRequest')->willReturnCallback(static function ($client, $system, $user, $options) use ($expected) {
             self::assertSame($expected, (int) \ini_get('max_execution_time'));
             self::assertSame(120, $options['timeout']);
-            self::assertSame('low', $options['reasoning_effort']);
+            self::assertArrayNotHasKey('reasoning_effort', $options);
 
             throw new \RuntimeException('stop after checking execution budget');
         });
@@ -144,6 +144,7 @@ class FormReferenceGenerationTest extends TestCase
         $integration->method('processAiRequest')->willReturn('{"name":"Contact","fields":[{"type":"Text","handle":"first","label":"First","row":0,"defaultValue":"Private answer"},{"type":"Email","handle":"email","label":"Email","row":0}]}');
         $forms = $this->createMock(FormsService::class);
         $forms->expects(self::once())->method('getUniqueNameAndHandle')->with('Contact', 'contact')->willReturn(['Contact', 'contact']);
+        $forms->method('getDefaultFormattingTemplate')->willReturn('custom/insurance.twig');
         $form = $this->createMock(Form::class);
         $created = false;
         $onCreate = static function (PersistFormEvent $event) use (&$created) { $created = true; };
@@ -151,6 +152,7 @@ class FormReferenceGenerationTest extends TestCase
             self::assertTrue($created);
             $payload = $event->getPayload();
             self::assertSame('Contact', $payload->form->settings->general->name);
+            self::assertSame('custom/insurance.twig', $payload->form->settings->general->formattingTemplate);
             self::assertCount(2, $payload->layout->fields);
             self::assertSame($payload->layout->fields[0]->rowUid, $payload->layout->fields[1]->rowUid);
             self::assertObjectNotHasProperty('defaultValue', $payload->layout->fields[0]->properties);
@@ -326,7 +328,9 @@ class FormReferenceGenerationTest extends TestCase
         self::assertSame('Other', $fields[1]['options'][1]['label']);
     }
 
-    public function testReferenceRowsAndOptionsBecomeNativePageLayout(): void
+    #[TestWith(['tailwind-4-light.html'])]
+    #[TestWith(['custom/insurance.twig'])]
+    public function testReferenceRowsAndOptionsBecomeNativePageLayout(string $defaultTemplate): void
     {
         $previous = \Craft::$app;
         \Craft::$app = (object) ['db' => new Connection(['dsn' => 'sqlite::memory:']), 'sites' => new class {
@@ -337,13 +341,16 @@ class FormReferenceGenerationTest extends TestCase
         }];
 
         try {
-            $service = $this->service();
+            $forms = $this->createMock(FormsService::class);
+            $forms->expects(self::once())->method('getDefaultFormattingTemplate')->willReturn($defaultTemplate);
+            $service = $this->service(forms: $forms);
             $parsed = $this->invoke($service, 'parseAiResponse', json_encode(['pages' => [['label' => 'Contact', 'fields' => [
                 ['type' => 'Text', 'label' => 'First', 'handle' => 'first', 'row' => 0],
                 ['type' => 'Email', 'label' => 'Email', 'handle' => 'email', 'row' => 0],
                 ['type' => 'Radios', 'label' => 'Type', 'handle' => 'type', 'row' => 1, 'options' => ['Personal', 'Business']],
             ]]]]));
             $payload = $this->invoke($service, 'buildPersistPayload', 'Reference Form', 'referenceForm', $parsed['fields'], $parsed['pages']);
+            self::assertSame($defaultTemplate, $payload->form->settings->general->formattingTemplate);
             self::assertCount(2, $payload->layout->rows);
             self::assertSame('Contact', $payload->layout->pages[0]->label);
             self::assertSame($payload->layout->fields[0]->rowUid, $payload->layout->fields[1]->rowUid);

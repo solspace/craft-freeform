@@ -6,7 +6,11 @@ import { pendingGenerationKey } from "./modal.form.ai-generation";
 import { CreateWithAiFormModal } from "./modal.form.create-with-ai";
 import { referenceFileError } from "./modal.form.reference-files";
 
-const fixture = vi.hoisted(() => ({ navigate: vi.fn(), close: vi.fn() }));
+const fixture = vi.hoisted(() => ({
+  navigate: vi.fn(),
+  close: vi.fn(),
+  refresh: vi.fn(),
+}));
 vi.mock("react-router-dom", () => ({ useNavigate: () => fixture.navigate }));
 vi.mock("axios", () => ({
   default: {
@@ -17,6 +21,7 @@ vi.mock("axios", () => ({
   },
 }));
 vi.mock("./modal.form.create-with-ai.queries", () => ({
+  useRefreshGeneratedForms: () => fixture.refresh,
   useAiIntegrations: () => ({
     data: [
       {
@@ -147,6 +152,9 @@ it("reconnects after gateway errors without displaying HTML or resubmitting", as
     expect.any(Object),
   );
   expect(axios.get).not.toHaveBeenCalled();
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(fixture.close).toHaveBeenCalledOnce();
   expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
@@ -180,6 +188,9 @@ it("resumes a queued generation when the dialog is reopened without submitting a
     {},
     expect.any(Object),
   );
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(sessionStorage.getItem(pendingGenerationKey)).toBeNull();
 });
@@ -200,6 +211,8 @@ it("allows references through SolspaceAI without a client model setting", async 
   expect(payload.get("integrationUid")).toBe("solspace");
   expect(payload.get("model")).toBeNull();
   expect(payload.getAll("references[]")).toHaveLength(1);
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/43");
 });
 it("sends a file-only request as multipart in displayed order and opens the builder", async () => {
@@ -221,6 +234,9 @@ it("sends a file-only request as multipart in displayed order and opens the buil
   ).toEqual(["second.pdf", "first.pdf"]);
   expect((body as FormData).get("referenceFileCount")).toBe("2");
   expect((body as FormData).get("integrationUid")).toBe("vision");
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(fixture.close).toHaveBeenCalledOnce();
 });
@@ -277,9 +293,10 @@ it("prevents duplicate submission while generation is pending", async () => {
       resolve = done;
     }) as ReturnType<typeof axios.post>,
   );
+  const generate = button("Generate form");
   act(() => {
-    button("Generate form").click();
-    button("Generate form").click();
+    generate.click();
+    generate.click();
   });
   expect(axios.post).toHaveBeenCalledOnce();
   expect(button("Close").disabled).toBe(false);
@@ -298,4 +315,107 @@ it("rejects invalid, empty, excessive and oversized uploads", () => {
   upload([pdf("invalid.svg")]);
   expect(host.querySelectorAll("li")).toHaveLength(0);
   expect(button("Generate form").disabled).toBe(true);
+});
+
+it("collapses and disables the inputs during generation and restores them on failure", async () => {
+  input("prompt", "Contact form");
+  input("name", "My contact form");
+  let reject!: (error: unknown) => void;
+  vi.mocked(axios.post).mockReturnValue(
+    new Promise((_, fail) => {
+      reject = fail;
+    }) as ReturnType<typeof axios.post>,
+  );
+  act(() => button("Generate form").click());
+  expect(host.querySelector("fieldset")!.disabled).toBe(true);
+  expect(document.activeElement).toBe(button("Close"));
+  expect(host.querySelector("[inert]")!.getAttribute("aria-hidden")).toBe(
+    "true",
+  );
+  expect(host.querySelector('[role="status"]')!.textContent).toContain(
+    "My contact form",
+  );
+  expect(host.textContent).toContain("Your current work will stay open.");
+  expect(host.textContent).toContain("This may take a few minutes.");
+  expect(host.querySelector("time")!.textContent).toMatch(/^\d{2}:\d{2}$/);
+  expect(button("Generate form")).toBeUndefined();
+  await act(async () => reject(new Error("Request failed")));
+  expect(host.querySelector("fieldset")!.disabled).toBe(false);
+  expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
+    "Contact form",
+  );
+  expect(button("Generate form")).toBeDefined();
+});
+
+it("does not navigate or resume polling when a closed dialog receives a late response", async () => {
+  input("prompt", "Contact form");
+  let resolve!: (value: unknown) => void;
+  vi.mocked(axios.post).mockReturnValue(
+    new Promise((done) => {
+      resolve = done;
+    }) as ReturnType<typeof axios.post>,
+  );
+  act(() => button("Generate form").click());
+  act(() => button("Close").click());
+  expect(fixture.close).toHaveBeenCalledOnce();
+  await act(async () => resolve({ data: { status: "running" } }));
+  expect(axios.post).toHaveBeenCalledOnce();
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  expect(localStorage.getItem(pendingGenerationKey)).toMatch(/^[a-f0-9]{32}$/);
+});
+
+it("never navigates when progress completes after the dialog is dismissed", async () => {
+  input("prompt", "Contact form");
+  let resolve!: (value: unknown) => void;
+  vi.mocked(axios.post)
+    .mockResolvedValueOnce({ data: { status: "running" } })
+    .mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+  await act(async () => {
+    button("Generate form").click();
+  });
+  act(() => button("Close").click());
+  await act(async () => resolve({ data: { status: "complete", formId: 99 } }));
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  expect(host.textContent).not.toContain("Your form is ready");
+});
+
+it("refreshes the list and lets the user close a completed generation without opening another form", async () => {
+  input("prompt", "Contact form");
+  await act(async () => button("Generate form").click());
+  expect(host.textContent).toContain("Your form is ready");
+  expect(button("Open form")).toBeDefined();
+  expect(fixture.refresh).toHaveBeenCalledOnce();
+  act(() => button("Close").click());
+  expect(fixture.close).toHaveBeenCalledOnce();
+  expect(fixture.navigate).not.toHaveBeenCalled();
+});
+
+it("fills an example for review without submitting or changing the form name", () => {
+  input("name", "My quote form");
+  act(() => button("Quote request").click());
+  expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toContain(
+    "service type, project description",
+  );
+  expect(host.querySelector<HTMLInputElement>("#name")!.value).toBe(
+    "My quote form",
+  );
+  expect(document.activeElement).toBe(host.querySelector("#prompt"));
+  expect(axios.post).not.toHaveBeenCalled();
+});
+
+it("opens the reference picker and hides prompt examples after attaching a file", () => {
+  const picker = host.querySelector<HTMLInputElement>('[type="file"]')!;
+  const choose = vi.spyOn(picker, "click").mockImplementation(() => {});
+  act(() => button("Choose files").click());
+  expect(choose).toHaveBeenCalledOnce();
+  upload([pdf()]);
+  expect(host.querySelector('[aria-label="Prompt examples"]')).toBeNull();
+  expect(button("Add files")).toBeDefined();
+  expect(host.querySelector("li")!.textContent).toContain("PDF");
+  choose.mockRestore();
 });

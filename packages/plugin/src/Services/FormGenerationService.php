@@ -783,7 +783,7 @@ class FormGenerationService
                     'name' => $formName,
                     'handle' => $formHandle,
                     'type' => Regular::class,
-                    'formattingTemplate' => '',
+                    'formattingTemplate' => $this->formsService->getDefaultFormattingTemplate(),
                     'storeData' => true,
                     'sites' => $siteIds ?? SitesHelper::getEditableSiteIds(),
                     'description' => '',

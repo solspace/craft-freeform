@@ -23,16 +23,28 @@ export class GenerationError extends Error {
 }
 
 export const pendingGenerationKey = "freeform.pending-ai-generation";
+const pendingGenerationTimeKey = `${pendingGenerationKey}.started-at`;
 export function newGenerationId(): string {
   return Array.from(crypto.getRandomValues(new Uint8Array(16)), (value) =>
     value.toString(16).padStart(2, "0"),
   ).join("");
 }
 
-export function rememberGeneration(id: string | null): void {
+export function rememberGeneration(
+  id: string | null,
+  startedAt = Date.now(),
+): void {
   try {
-    if (id) localStorage.setItem(pendingGenerationKey, id);
-    else localStorage.removeItem(pendingGenerationKey);
+    if (id) {
+      localStorage.setItem(pendingGenerationKey, id);
+      localStorage.setItem(
+        pendingGenerationTimeKey,
+        JSON.stringify({ id, startedAt }),
+      );
+    } else {
+      localStorage.removeItem(pendingGenerationKey);
+      localStorage.removeItem(pendingGenerationTimeKey);
+    }
     sessionStorage.removeItem(pendingGenerationKey);
   } catch {
     // Browser storage can be disabled. In-memory polling still works.
@@ -45,6 +57,22 @@ export function pendingGeneration(): string | null {
       localStorage.getItem(pendingGenerationKey) ??
       sessionStorage.getItem(pendingGenerationKey);
     return value && /^[a-f0-9]{32}$/.test(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export function pendingGenerationStartedAt(id: string): number | null {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(pendingGenerationTimeKey) ?? "null",
+    );
+    return saved?.id === id &&
+      Number.isSafeInteger(saved.startedAt) &&
+      saved.startedAt >= 0 &&
+      saved.startedAt <= Date.now()
+      ? saved.startedAt
+      : null;
   } catch {
     return null;
   }

@@ -3,6 +3,8 @@ import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   GenerationError,
   pendingGeneration,
+  pendingGenerationKey,
+  pendingGenerationStartedAt,
   rememberGeneration,
   waitForGeneration,
 } from "./modal.form.ai-generation";
@@ -125,7 +127,7 @@ it("stops polling when the dialog closes", async () => {
   expect(axios.post).toHaveBeenCalledOnce();
 });
 
-it("retains only the opaque request identifier for reopening the dialog", () => {
+it("retains the opaque request identifier and its start time for reopening", () => {
   rememberGeneration("a".repeat(32));
   expect(pendingGeneration()).toBe("a".repeat(32));
   rememberGeneration(null);
@@ -141,4 +143,25 @@ it("keeps the opaque ID across dialog and browser sessions", () => {
   expect(pendingGeneration()).toBe("b".repeat(32));
   rememberGeneration(null);
   expect(localStorage.getItem("freeform.pending-ai-generation")).toBeNull();
+});
+
+it("preserves an original timestamp tied to its request and clears both together", () => {
+  const id = "c".repeat(32);
+  const startedAt = Date.now() - 90000;
+  rememberGeneration(id, startedAt);
+  expect(pendingGenerationStartedAt(id)).toBe(startedAt);
+  expect(pendingGenerationStartedAt("d".repeat(32))).toBeNull();
+  rememberGeneration(null);
+  expect(pendingGenerationStartedAt(id)).toBeNull();
+});
+it("ignores corrupt or future timestamps and supports an old ID without one", () => {
+  const id = "c".repeat(32);
+  const key = `${pendingGenerationKey}.started-at`;
+  localStorage.setItem(pendingGenerationKey, id);
+  expect(pendingGenerationStartedAt(id)).toBeNull();
+  localStorage.setItem(key, "invalid JSON");
+  expect(pendingGenerationStartedAt(id)).toBeNull();
+  rememberGeneration(id, Date.now() + 10000);
+  expect(pendingGenerationStartedAt(id)).toBeNull();
+  expect(pendingGeneration()).toBe(id);
 });

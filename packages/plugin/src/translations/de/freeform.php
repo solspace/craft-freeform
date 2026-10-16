@@ -1118,7 +1118,8 @@ return [
     'Submission with ID {id} not found' => 'Einreichung mit der ID {id} nicht gefunden',
     'Submissions deleted successfully.' => 'Einreichungen erfolgreich gelöscht.',
     'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Sind Sie sicher, dass Sie dieses Formular dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
-    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'Um dieses Formular zu löschen, geben Sie bitte <strong>DELETE</strong> in das Feld unten ein:',
+    'delete' => 'löschen',
+    'To delete this form, type <strong>{word}</strong> below (case-insensitive):' => 'Um dieses Formular zu löschen, geben Sie unten <strong>{word}</strong> ein (Groß- und Kleinschreibung wird nicht beachtet):',
 
     // Submissions // Spam
     'Spam Reasons' => 'Spam-Gründe',

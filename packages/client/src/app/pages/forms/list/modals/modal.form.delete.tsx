@@ -16,7 +16,7 @@ import axios from "axios";
 import DOMPurify from "dompurify";
 import type React from "react";
 import type { ChangeEvent } from "react";
-import { useEffect, useState } from "react";
+import { useId, useState } from "react";
 
 import { FormWrapper } from "./modal.form.styles";
 
@@ -24,9 +24,14 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   data,
   closeModal,
 }) => {
-  const [enabled, setEnabled] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+  const inputId = useId();
+  // Translate separately so the confirmation stays a single, simple word.
+  const confirmationWord = translate("delete");
+  const enabled =
+    inputValue.normalize("NFC").toUpperCase() ===
+    confirmationWord.normalize("NFC").toUpperCase();
 
   const queryClient = useQueryClient();
   const { getCurrentHandleWithFallback } = useSiteContext();
@@ -41,7 +46,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         }
       },
     },
-    [enabled],
+    [enabled, isDeleting],
   );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -49,7 +54,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   };
 
   const handleDelete = async (): Promise<void> => {
-    if (!enabled) {
+    if (!enabled || isDeleting) {
       return;
     }
 
@@ -65,17 +70,12 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
       });
 
       setInputValue("");
-      setEnabled(false);
 
       closeModal();
     } finally {
       setIsDeleting(false);
     }
   };
-
-  useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === "DELETE");
-  }, [inputValue]);
 
   return (
     <ModalContainer>
@@ -89,20 +89,24 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
             "Are you sure you want to permanently delete this form? This action cannot be undone.",
           )}
         </div>
-        <div
+        <label
+          htmlFor={inputId}
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(
               translate(
-                "To delete this form, please type <strong>DELETE</strong> in the box below:",
+                "To delete this form, type <strong>{word}</strong> below (case-insensitive):",
+                { word: confirmationWord.toUpperCase() },
               ),
             ),
           }}
         />
         <input
+          id={inputId}
           type="text"
           autoFocus={true}
           value={inputValue}
           autoComplete="off"
+          spellCheck={false}
           onChange={handleChange}
           className="text fullwidth"
         />
@@ -114,7 +118,11 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         </button>
         <button
           type="button"
-          className={classes("btn submit", !enabled && "disabled")}
+          className={classes(
+            "btn submit",
+            (!enabled || isDeleting) && "disabled",
+          )}
+          disabled={!enabled || isDeleting}
           onClick={handleDelete}
         >
           <LoadingText

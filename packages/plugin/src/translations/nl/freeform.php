@@ -1118,7 +1118,8 @@ return [
     'Submission with ID {id} not found' => 'Inzending met ID {id} niet gevonden',
     'Submissions deleted successfully.' => 'Inzendingen zijn succesvol verwijderd.',
     'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Weet u zeker dat u dit formulier definitief wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden.',
-    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'Om dit formulier te verwijderen, typt u <strong>DELETE</strong> in het onderstaande vak:',
+    'delete' => 'verwijder',
+    'To delete this form, type <strong>{word}</strong> below (case-insensitive):' => 'Om dit formulier te verwijderen, typt u hieronder <strong>{word}</strong> (hoofdletters of kleine letters):',
 
     // Submissions // Spam
     'Spam Reasons' => 'Spam-redenen',

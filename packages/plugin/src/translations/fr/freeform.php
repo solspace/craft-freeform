@@ -1118,7 +1118,8 @@ return [
     'Submission with ID {id} not found' => 'Contribution avec l’ID {id} non trouvée',
     'Submissions deleted successfully.' => 'Soumissions supprimées avec succès.',
     'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Êtes-vous sûr de vouloir supprimer définitivement ce formulaire ? Cette action ne peut pas être annulée.',
-    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'Pour supprimer ce formulaire, veuillez taper <strong>DELETE</strong> dans la case ci-dessous :',
+    'delete' => 'supprimer',
+    'To delete this form, type <strong>{word}</strong> below (case-insensitive):' => 'Pour supprimer ce formulaire, saisissez <strong>{word}</strong> ci-dessous (majuscules ou minuscules) :',
 
     // Submissions // Spam
     'Spam Reasons' => 'Raisons du spam',

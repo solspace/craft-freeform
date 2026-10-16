@@ -1126,7 +1126,8 @@ return [
     'Submission with ID {id} not found' => 'Submission with ID {id} not found',
     'Submissions deleted successfully.' => 'Submissions deleted successfully.',
     'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Are you sure you want to permanently delete this form? This action cannot be undone.',
-    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'To delete this form, please type <strong>DELETE</strong> in the box below:',
+    'delete' => 'delete',
+    'To delete this form, type <strong>{word}</strong> below (case-insensitive):' => 'To delete this form, type <strong>{word}</strong> below (case-insensitive):',
 
     // Submissions // Spam
     'Spam Reasons' => 'Spam Reasons',

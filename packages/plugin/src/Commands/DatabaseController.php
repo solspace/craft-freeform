@@ -5,12 +5,13 @@ namespace Solspace\Freeform\Commands;
 use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
 use Solspace\Freeform\Library\Database\IntegrityScan;
+use Solspace\Freeform\Library\Database\OrphanCleanup;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 
 class DatabaseController extends BaseCommand
 {
-    /** @var bool add missing keys; the default is a read-only inspection */
+    /** @var bool apply the requested repair or cleanup; the default is a read-only inspection */
     public bool $apply = false;
 
     /** @var bool inspect without writing, even when --apply is supplied */
@@ -77,11 +78,50 @@ class DatabaseController extends BaseCommand
 
         if ($counts['blocked'] || $counts['conflict']) {
             $this->stdout("\nReview the reported data/schema issues with your developer before retrying. No orphaned data has been deleted.\n");
+            $this->stdout("To preview orphan cleanup, run: php craft freeform/database/delete-orphans --dry-run=1\n");
         }
 
         return $counts['missing'] || $counts['blocked'] || $counts['conflict'] || $counts['failed']
             ? ExitCode::UNSPECIFIED_ERROR
             : ExitCode::OK;
+    }
+
+    /**
+     * Previews orphaned Freeform data and its dependent rows. Use --apply=1 to
+     * permanently delete them and clear broken SET NULL references before repair.
+     */
+    public function actionDeleteOrphans(): int
+    {
+        $write = $this->apply && !$this->dryRun;
+        $this->banner('Freeform Orphan Cleanup');
+        $this->stdout($write ? "Permanently deleting orphaned Freeform data.\n" : "Dry run: no database changes will be made.\n");
+
+        try {
+            $results = $this->createCleanup()->run($write);
+        } catch (\Throwable $e) {
+            $this->stderr('Orphan cleanup could not be completed. No cleanup changes were committed: '.$e->getMessage()."\n", Console::FG_RED);
+
+            return ExitCode::UNSPECIFIED_ERROR;
+        }
+
+        $deleted = $cleared = 0;
+        foreach ($results as $result) {
+            $deleted += $result['deleted'];
+            $cleared += $result['cleared'];
+            if ($result['deleted'] || $result['cleared']) {
+                $this->stdout($result['table'].': '.$result['deleted'].($write ? ' rows deleted; ' : ' rows to delete; ')
+                    .$result['cleared'].($write ? " references cleared.\n" : " references to clear.\n"));
+            }
+        }
+        $this->stdout("\n".($write ? 'Deleted rows: ' : 'Rows to delete: ').$deleted."\n");
+        $this->stdout(($write ? 'Cleared references: ' : 'References to clear: ').$cleared."\n");
+
+        if (!$write && ($deleted || $cleared)) {
+            $this->stdout("\nBack up the database and pause site writes before applying this permanent cleanup:\nphp craft freeform/database/delete-orphans --apply=1\n");
+        }
+        $this->stdout("\nAfter cleanup, check and restore missing keys with: php craft freeform/database/repair-foreign-keys --apply=1\n");
+
+        return !$write && ($deleted || $cleared) ? ExitCode::UNSPECIFIED_ERROR : ExitCode::OK;
     }
 
     /**
@@ -139,6 +179,11 @@ class DatabaseController extends BaseCommand
     protected function createRepair(): ForeignKeyRepair
     {
         return new ForeignKeyRepair(\Craft::$app->getDb());
+    }
+
+    protected function createCleanup(): OrphanCleanup
+    {
+        return new OrphanCleanup(\Craft::$app->getDb());
     }
 
     protected function createIntegrity(): DatabaseIntegrity

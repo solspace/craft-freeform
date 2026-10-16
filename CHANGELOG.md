@@ -1,8 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.17.1 - Unreleased
+
+### Added
+- Added a `freeform/database/delete-orphans` console command to preview and clean orphaned data before repairing foreign keys.
+
+### Changed
+- Improved form builder loading and responsiveness, especially when selecting fields and editing settings in large forms.
+- Refined the **Fields from other Forms** picker with on-demand loading, clearer expandable groups, and updated styling.
+- Improved the appearance and accessibility of control panel error messages.
+- Improved logging for unexpected AI form generation errors.
+
+### Fixed
+- Fixed an issue where newly saved forms could display a blank Preview and no formatting template options.
+- Fixed date pickers failing to load in Preview.
+- Fixed Preview unnecessarily loading control panel assets.
+
 ## 5.17.0 - 2026-10-15
 
-> [!IMPORTANT]
+> [!WARNING]
 > If using **custom formatting templates**, AJAX success and error banners now inherit their configured attributes, and field errors use styling from the rendered template. Review customized AJAX forms after upgrading, especially if those attributes were previously intended only for non-AJAX output. Custom HTML inside banners or error lists, such as SVG icons, is not copied automatically. Existing JavaScript render overrides continue to take precedence. See the [AJAX formatting guide](https://docs.solspace.com/craft/freeform/v5/templates/ajax/#updating-custom-templates-to-517) for details on banner attributes, field error styling, and JavaScript render overrides.
 
 > [!NOTE]

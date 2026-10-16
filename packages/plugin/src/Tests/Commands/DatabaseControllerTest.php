@@ -8,6 +8,7 @@ use Solspace\Freeform\Commands\DatabaseController;
 use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
 use Solspace\Freeform\Library\Database\IntegrityScan;
+use Solspace\Freeform\Library\Database\OrphanCleanup;
 use yii\console\ExitCode;
 
 #[CoversClass(DatabaseController::class)]
@@ -76,6 +77,52 @@ class DatabaseControllerTest extends TestCase
         $controller->method('createScan')->willReturn($scan);
 
         $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionCheckIntegrity());
+    }
+
+    public function testOrphanCleanupIsReadOnlyByDefault(): void
+    {
+        [$controller, $cleanup] = $this->cleanupFixture();
+        $cleanup->expects($this->once())->method('run')->with(false)->willReturn([['table' => 'test', 'deleted' => 3, 'cleared' => 1]]);
+
+        $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionDeleteOrphans());
+    }
+
+    public function testOrphanCleanupDryRunOverridesApply(): void
+    {
+        [$controller, $cleanup] = $this->cleanupFixture();
+        $controller->apply = true;
+        $controller->dryRun = true;
+        $cleanup->expects($this->once())->method('run')->with(false)->willReturn([]);
+
+        $this->assertSame(ExitCode::OK, $controller->actionDeleteOrphans());
+    }
+
+    public function testOrphanCleanupApplyReportsDeletedRows(): void
+    {
+        [$controller, $cleanup] = $this->cleanupFixture();
+        $controller->apply = true;
+        $cleanup->expects($this->once())->method('run')->with(true)->willReturn([['table' => 'test', 'deleted' => 3, 'cleared' => 1]]);
+
+        $this->assertSame(ExitCode::OK, $controller->actionDeleteOrphans());
+    }
+
+    public function testOrphanCleanupFailuresReturnNonzeroExitCode(): void
+    {
+        [$controller, $cleanup] = $this->cleanupFixture();
+        $controller->apply = true;
+        $cleanup->method('run')->willThrowException(new \RuntimeException('Cleanup failed'));
+        $controller->expects($this->once())->method('stderr')->with($this->stringContains('No cleanup changes were committed'), $this->anything());
+
+        $this->assertSame(ExitCode::UNSPECIFIED_ERROR, $controller->actionDeleteOrphans());
+    }
+
+    private function cleanupFixture(): array
+    {
+        $controller = $this->getMockBuilder(DatabaseController::class)->disableOriginalConstructor()->onlyMethods(['createCleanup', 'stdout', 'stderr'])->getMock();
+        $cleanup = $this->createMock(OrphanCleanup::class);
+        $controller->method('createCleanup')->willReturn($cleanup);
+
+        return [$controller, $cleanup];
     }
 
     private function fixture(string $status = 'missing', int $orphans = 0): array

@@ -110,9 +110,10 @@ beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
   sessionStorage.clear();
+  localStorage.clear();
   vi.mocked(axios.post).mockReset();
   vi.mocked(axios.get).mockReset();
-  vi.mocked(axios.get).mockResolvedValue({
+  vi.mocked(axios.post).mockResolvedValue({
     data: { status: "complete", formId: 42 },
   });
   host = document.createElement("div");
@@ -125,10 +126,11 @@ afterEach(() => {
   host.remove();
   vi.unstubAllGlobals();
   sessionStorage.clear();
+  localStorage.clear();
 });
 it("reconnects after gateway errors without displaying HTML or resubmitting", async () => {
   input("prompt", "Contact form");
-  vi.mocked(axios.post).mockRejectedValue({
+  vi.mocked(axios.post).mockRejectedValueOnce({
     isAxiosError: true,
     response: {
       status: 502,
@@ -138,8 +140,13 @@ it("reconnects after gateway errors without displaying HTML or resubmitting", as
   await act(async () => button("Generate form").click());
   expect(host.textContent).not.toContain("<html>");
   expect(host.textContent).not.toContain("nginx");
-  expect(axios.post).toHaveBeenCalledTimes(1);
-  expect(axios.get).toHaveBeenCalledOnce();
+  expect(axios.post).toHaveBeenCalledTimes(2);
+  expect(axios.post).toHaveBeenLastCalledWith(
+    expect.stringMatching(/ai-generation-progress/),
+    {},
+    expect.any(Object),
+  );
+  expect(axios.get).not.toHaveBeenCalled();
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(fixture.close).toHaveBeenCalledOnce();
   expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
@@ -160,14 +167,19 @@ it("discards HTML embedded in a JSON error message", async () => {
   expect(host.textContent).toContain("Form generation failed");
   expect(host.textContent).not.toContain("gateway details");
 });
-it("resumes a queued generation when the dialog is reopened without another POST", async () => {
+it("resumes a queued generation when the dialog is reopened without submitting another generation", async () => {
   sessionStorage.setItem(pendingGenerationKey, "a".repeat(32));
   act(() => root.unmount());
   root = createRoot(host);
   await act(async () =>
     root.render(<CreateWithAiFormModal closeModal={fixture.close} />),
   );
-  expect(axios.post).not.toHaveBeenCalled();
+  expect(axios.post).toHaveBeenCalledOnce();
+  expect(axios.post).toHaveBeenCalledWith(
+    expect.stringMatching(/ai-generation-progress/),
+    {},
+    expect.any(Object),
+  );
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(sessionStorage.getItem(pendingGenerationKey)).toBeNull();
 });

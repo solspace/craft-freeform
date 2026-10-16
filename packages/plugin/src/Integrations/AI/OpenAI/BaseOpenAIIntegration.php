@@ -37,13 +37,26 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     protected string $model = 'gpt-5.6-luna';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Select(
+        label: 'Reasoning Effort',
+        instructions: 'Model default leaves the reasoning level to OpenAI. Higher levels can take longer and use more tokens. Overrides require a model that supports the selected level.',
+        options: ['default' => 'Model default', 'low' => 'Low', 'medium' => 'Medium', 'high' => 'High', 'xhigh' => 'Extra high', 'max' => 'Maximum'],
+    )]
+    protected string $reasoningEffort = 'default';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(
         label: 'Max Tokens',
-        instructions: 'Maximum number of tokens to generate.',
+        instructions: 'Maximum tokens for the response, including reasoning and the generated content. Large forms and higher reasoning levels may need a larger allowance.',
         min: 1,
         max: 128000,
     )]
     protected int $maxTokens = 15000;
+
+    public function getReasoningEffort(): ?string
+    {
+        return 'default' === $this->reasoningEffort ? null : $this->reasoningEffort;
+    }
 
     public function getApiKey(): string
     {

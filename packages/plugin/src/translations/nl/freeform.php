@@ -12,6 +12,14 @@
  */
 
 return [
+    'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.' => 'Je formulier wordt gegenereerd. Je kunt dit venster sluiten en Maken met AI opnieuw openen om de voortgang te bekijken en het formulier verder aan te maken.',
+    'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.' => 'De voortgang kon niet worden bevestigd. Open Maken met AI opnieuw en controleer de formulierenlijst voordat je een nieuw verzoek start.',
+    'Reasoning Effort' => 'Redeneerniveau',
+    'Model default' => 'Modelstandaard',
+    'Low' => 'Laag',
+    'Medium' => 'Gemiddeld',
+    'High' => 'Hoog',
+    'Extra high' => 'Extra hoog',
     'Freeform: Generating form with AI' => 'Freeform: formulier genereren met AI',
     'Form generation is no longer permitted for this user.' => 'Deze gebruiker mag geen formulieren meer genereren.',
     'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Het genereren kon niet in de wachtrij worden geplaatst. Controleer de wachtrijbeheerder voordat je een nieuw verzoek start.',

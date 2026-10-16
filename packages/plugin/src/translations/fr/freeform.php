@@ -12,6 +12,14 @@
  */
 
 return [
+    'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.' => 'Génération de votre formulaire. Vous pouvez fermer cette fenêtre et rouvrir Créer avec l’IA pour vérifier la progression et terminer la création du formulaire.',
+    'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.' => 'Impossible de confirmer la progression. Rouvrez Créer avec l’IA pour vérifier à nouveau et consultez la liste des formulaires avant de lancer une autre demande.',
+    'Reasoning Effort' => 'Niveau de raisonnement',
+    'Model default' => 'Valeur par défaut du modèle',
+    'Low' => 'Faible',
+    'Medium' => 'Moyen',
+    'High' => 'Élevé',
+    'Extra high' => 'Très élevé',
     'Freeform: Generating form with AI' => 'Freeform : génération du formulaire avec IA',
     'Form generation is no longer permitted for this user.' => 'Cet utilisateur n’est plus autorisé à générer des formulaires.',
     'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Impossible de mettre la génération en file d’attente. Vérifiez le gestionnaire de file d’attente avant de lancer une autre demande.',

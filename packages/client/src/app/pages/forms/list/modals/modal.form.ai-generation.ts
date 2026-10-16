@@ -31,8 +31,9 @@ export function newGenerationId(): string {
 
 export function rememberGeneration(id: string | null): void {
   try {
-    if (id) sessionStorage.setItem(pendingGenerationKey, id);
-    else sessionStorage.removeItem(pendingGenerationKey);
+    if (id) localStorage.setItem(pendingGenerationKey, id);
+    else localStorage.removeItem(pendingGenerationKey);
+    sessionStorage.removeItem(pendingGenerationKey);
   } catch {
     // Browser storage can be disabled. In-memory polling still works.
   }
@@ -40,7 +41,9 @@ export function rememberGeneration(id: string | null): void {
 
 export function pendingGeneration(): string | null {
   try {
-    const value = sessionStorage.getItem(pendingGenerationKey);
+    const value =
+      localStorage.getItem(pendingGenerationKey) ??
+      sessionStorage.getItem(pendingGenerationKey);
     return value && /^[a-f0-9]{32}$/.test(value) ? value : null;
   } catch {
     return null;
@@ -49,7 +52,7 @@ export function pendingGeneration(): string | null {
 
 const uncertainMessage = () =>
   translate(
-    "Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.",
+    "Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.",
   );
 
 export async function waitForGeneration(
@@ -63,8 +66,9 @@ export async function waitForGeneration(
   while (!signal.aborted && Date.now() - started < 15 * 60_000) {
     let state: GenerationState | null = null;
     try {
-      const { data } = await axios.get<GenerationState>(
-        `/api/forms/ai-generation-status/${requestId}`,
+      const { data } = await axios.post<GenerationState>(
+        `/api/forms/ai-generation-progress/${requestId}`,
+        {},
         { signal, timeout: 15_000 },
       );
       if (

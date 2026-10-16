@@ -12,6 +12,14 @@
  */
 
 return [
+    'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.' => 'Generazione del modulo in corso. Puoi chiudere questa finestra e riaprire Crea con IA per controllare lo stato e completare la creazione del modulo.',
+    'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.' => 'Impossibile confermare lo stato della generazione. Riapri Crea con IA per ricontrollare e consulta l’elenco dei moduli prima di avviare un’altra richiesta.',
+    'Reasoning Effort' => 'Livello di ragionamento',
+    'Model default' => 'Predefinito del modello',
+    'Low' => 'Basso',
+    'Medium' => 'Medio',
+    'High' => 'Alto',
+    'Extra high' => 'Molto alto',
     'Freeform: Generating form with AI' => 'Freeform: generazione del modulo con IA',
     'Form generation is no longer permitted for this user.' => 'Questo utente non è più autorizzato a generare moduli.',
     'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Impossibile accodare la generazione del modulo. Controlla il gestore della coda prima di avviare un’altra richiesta.',

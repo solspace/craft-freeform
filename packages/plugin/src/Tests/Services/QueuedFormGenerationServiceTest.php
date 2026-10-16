@@ -9,8 +9,10 @@ use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\OpenAI\Versions\OpenAIV1;
 use Solspace\Freeform\Jobs\GenerateFormJob;
 use Solspace\Freeform\Library\AI\FormGenerationStore;
+use Solspace\Freeform\Library\AI\PendingFormGeneration;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -35,6 +37,7 @@ class QueuedFormGenerationServiceTest extends TestCase
     private UserComponent $component;
     private User $previousIdentity;
     private bool $permitted = true;
+    private AiIntegrationInterface $integration;
 
     protected function setUp(): void
     {
@@ -47,7 +50,8 @@ class QueuedFormGenerationServiceTest extends TestCase
         $this->service->method('store')->willReturn($store);
         $this->service->method('permissionsForUser')->willReturnCallback(fn () => $this->permitted ? array_map('strtolower', [Freeform::PERMISSION_FORMS_CREATE, Freeform::PERMISSION_INTEGRATIONS_ACCESS, 'editSite:allowed', 'editSite:new']) : []);
         $this->generator = $this->createMock(FormGenerationService::class);
-        $this->generator->method('validateRequest')->willReturn($this->createMock(AiIntegrationInterface::class));
+        $this->integration = $this->createMock(AiIntegrationInterface::class);
+        $this->generator->method('validateRequest')->willReturnCallback(fn () => $this->integration);
         $this->user = $this->createMock(User::class);
         $this->user->id = 7;
         $this->user->active = true;
@@ -184,6 +188,42 @@ class QueuedFormGenerationServiceTest extends TestCase
         self::assertSame($this->previousIdentity, $this->component->getIdentity());
         self::assertTrue(PermissionHelper::isAdmin());
         $this->queue->jobs[0]->execute($this->queue);
+    }
+
+    public function testOpenAIStartsWithoutQueueAndResumesSameResponseUntilOneImport(): void
+    {
+        $this->integration = (new \ReflectionClass(OpenAIV1::class))->newInstanceWithoutConstructor();
+        $form = $this->createMock(Form::class);
+        $form->method('getId')->willReturn(51);
+        $calls = 0;
+        $this->generator->expects(self::exactly(3))->method('generate')->willReturnCallback(function ($prompt, $name, $integrationUid, $timeout, $files, $siteIds, $background) use (&$calls, $form) {
+            self::assertSame([1], $siteIds);
+            self::assertSame($this->user, $this->component->getIdentity());
+            self::assertSame(0 === $calls ? null : 'resp_test', $background['responseId']);
+            if (++$calls < 3) {
+                throw new PendingFormGeneration('resp_test');
+            }
+            $background['onResponseReady']();
+
+            return $form;
+        });
+        $id = str_repeat('d', 32);
+        self::assertSame(['status' => 'running'], $this->service->start(7, $id, 'prompt', null, 'integration', []));
+        self::assertSame([], $this->queue->jobs);
+        self::assertSame(['status' => 'running'], $this->service->status(7, $id));
+        self::assertSame(1, $calls, 'Read-only status must not execute provider work.');
+        self::assertSame(['status' => 'running'], $this->service->progress(7, $id));
+        self::assertSame(['status' => 'complete', 'formId' => 51], $this->service->progress(7, $id));
+        self::assertSame(['status' => 'complete', 'formId' => 51], $this->service->progress(7, $id));
+        self::assertSame($this->previousIdentity, $this->component->getIdentity());
+    }
+
+    public function testBrowserProgressDoesNotRunAnotherProvidersQueuedRequest(): void
+    {
+        $this->generator->expects(self::never())->method('generate');
+        $id = str_repeat('e', 32);
+        $this->service->start(7, $id, 'prompt', null, 'integration', []);
+        self::assertSame(['status' => 'queued'], $this->service->progress(7, $id));
     }
 
     public function testRevokedPermissionStopsQueuedGeneration(): void

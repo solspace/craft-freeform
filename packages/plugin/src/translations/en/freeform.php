@@ -12,6 +12,23 @@
  */
 
 return [
+    'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.' => 'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.',
+    'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.' => 'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.',
+    'Reasoning Effort' => 'Reasoning Effort',
+    'Model default' => 'Model default',
+    'Low' => 'Low',
+    'Medium' => 'Medium',
+    'High' => 'High',
+    'Extra high' => 'Extra high',
+    'The selected integration no longer supports this background request.' => 'The selected integration no longer supports this background request.',
+    'The selected model does not support this reasoning setting. Choose Model default or a supported reasoning level in the OpenAI integration.' => 'The selected model does not support this reasoning setting. Choose Model default or a supported reasoning level in the OpenAI integration.',
+    'The saved OpenAI generation could not be resumed. Check the Forms list before starting another request.' => 'The saved OpenAI generation could not be resumed. Check the Forms list before starting another request.',
+    'The OpenAI generation is no longer available. Check the Forms list before starting another request.' => 'The OpenAI generation is no longer available. Check the Forms list before starting another request.',
+    'OpenAI returned an invalid generation response. Check the Forms list before starting another request.' => 'OpenAI returned an invalid generation response. Check the Forms list before starting another request.',
+    'The AI response was cut short by its output limit. Increase Max Tokens in the OpenAI integration or try a smaller section. No form was saved.' => 'The AI response was cut short by its output limit. Increase Max Tokens in the OpenAI integration or try a smaller section. No form was saved.',
+    'OpenAI could not complete form generation. Check the selected model, reasoning level, and account limits. No form was saved.' => 'OpenAI could not complete form generation. Check the selected model, reasoning level, and account limits. No form was saved.',
+    'Model default leaves the reasoning level to OpenAI. Higher levels can take longer and use more tokens. Overrides require a model that supports the selected level.' => 'Model default leaves the reasoning level to OpenAI. Higher levels can take longer and use more tokens. Overrides require a model that supports the selected level.',
+    'Maximum tokens for the response, including reasoning and the generated content. Large forms and higher reasoning levels may need a larger allowance.' => 'Maximum tokens for the response, including reasoning and the generated content. Large forms and higher reasoning levels may need a larger allowance.',
     'Freeform: Generating form with AI' => 'Freeform: Generating form with AI',
     'Form generation is no longer permitted for this user.' => 'Form generation is no longer permitted for this user.',
     'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Could not queue form generation. Check the Queue Manager before starting another request.',

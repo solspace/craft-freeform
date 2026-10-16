@@ -12,6 +12,14 @@
  */
 
 return [
+    'Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.' => 'Ihr Formular wird erstellt. Sie können dieses Fenster schließen und „Mit KI erstellen“ erneut öffnen, um den Fortschritt zu prüfen und die Erstellung abzuschließen.',
+    'Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.' => 'Der Fortschritt konnte nicht bestätigt werden. Öffnen Sie „Mit KI erstellen“ erneut und prüfen Sie die Formularliste, bevor Sie eine weitere Anfrage starten.',
+    'Reasoning Effort' => 'Denkaufwand',
+    'Model default' => 'Modellstandard',
+    'Low' => 'Niedrig',
+    'Medium' => 'Mittel',
+    'High' => 'Hoch',
+    'Extra high' => 'Sehr hoch',
     'Freeform: Generating form with AI' => 'Freeform: Formular mit KI erstellen',
     'Form generation is no longer permitted for this user.' => 'Dieser Benutzer darf keine Formulare mehr erstellen.',
     'Could not queue form generation. Check the Queue Manager before starting another request.' => 'Die Formularerstellung konnte nicht eingereiht werden. Prüfen Sie die Warteschlangenverwaltung, bevor Sie eine weitere Anfrage starten.',

@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\AI\FormGenerationException;
 use Solspace\Freeform\Library\AI\FormGenerationStore;
+use Solspace\Freeform\Library\AI\PendingFormGeneration;
 use yii\base\Security;
 use yii\log\Logger;
 
@@ -155,6 +156,60 @@ class FormGenerationStoreTest extends TestCase
         }
         $this->store->prune();
         self::assertSame([], glob($this->directory.'/*'));
+    }
+
+    public function testBackgroundProgressSurvivesLongGenerationAndImportsOnce(): void
+    {
+        $id = '';
+        $this->store->start(7, $this->requestId, ['background' => true, 'prompt' => 'PRIVATE'], static function ($value) use (&$id) { $id = $value; });
+        $this->store->advance(7, $this->requestId, static function ($request) {
+            self::assertNull($request['responseId']);
+
+            throw new PendingFormGeneration('resp_saved');
+        });
+        self::assertSame(['status' => 'running'], $this->store->status(7, $this->requestId));
+        self::assertFileExists($this->directory.'/'.$id.'.request');
+        $this->changeState($id, ['startedAt' => time() - 600]);
+        self::assertSame(['status' => 'running'], $this->store->status(7, $this->requestId));
+        $this->store->advance(7, $this->requestId, static function ($request, $ready) {
+            self::assertSame('resp_saved', $request['responseId']);
+            $ready();
+
+            return 51;
+        });
+        self::assertSame(['status' => 'complete', 'formId' => 51], $this->store->status(7, $this->requestId));
+        self::assertFileDoesNotExist($this->directory.'/'.$id.'.request');
+        $this->store->advance(7, $this->requestId, static function () { self::fail('A completed import must never run again.'); });
+    }
+
+    public function testImportCheckpointPreventsDuplicateFormAfterWorkerDies(): void
+    {
+        $id = $this->start();
+        $this->changeState($id, ['status' => 'running', 'responseId' => 'resp_saved', 'importing' => true, 'startedAt' => time() - 600]);
+        self::assertSame(['status' => 'interrupted'], $this->store->status(7, $this->requestId));
+        $this->store->advance(7, $this->requestId, static function () { self::fail('An interrupted importer must never run again.'); });
+    }
+
+    public function testLostProviderAcceptanceIsNeverResubmitted(): void
+    {
+        $id = '';
+        $this->store->start(7, $this->requestId, ['background' => true], static function ($value) use (&$id) { $id = $value; });
+        $this->store->advance(7, $this->requestId, static function () { throw new PendingFormGeneration(null); });
+        self::assertSame(['status' => 'interrupted'], $this->store->status(7, $this->requestId));
+        $this->store->advance(7, $this->requestId, static function () { self::fail('An uncertain submission must never be repeated.'); });
+        self::assertFileDoesNotExist($this->directory.'/'.$id.'.request');
+    }
+
+    public function testConcurrentProgressReturnsCurrentStateInsteadOfDuplicatingWork(): void
+    {
+        $id = '';
+        $this->store->start(7, $this->requestId, ['background' => true], static function ($value) use (&$id) { $id = $value; });
+        $this->store->advance(7, $this->requestId, function () {
+            $this->store->advance(7, $this->requestId, static function () { self::fail('Concurrent work must not execute.'); });
+
+            throw new PendingFormGeneration('resp_saved');
+        });
+        self::assertSame(['status' => 'running'], $this->store->status(7, $this->requestId));
     }
 
     private function start(): string

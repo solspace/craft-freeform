@@ -297,21 +297,14 @@ class FormsController extends BaseApiController
 
     public function actionAiGenerationStatus(string $requestId): Response
     {
-        $this->requireCpRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
-        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
-        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
-            throw new ForbiddenHttpException('User is not permitted to perform this action');
-        }
+        return $this->generationStatus($requestId, false);
+    }
 
-        try {
-            $state = \Craft::$container->get(QueuedFormGenerationService::class)->status((int) \Craft::$app->getUser()->getId(), $requestId);
-        } catch (\OutOfBoundsException) {
-            throw new NotFoundHttpException('Generation not found.');
-        }
-        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+    public function actionAiGenerationProgress(string $requestId): Response
+    {
+        $this->requirePostRequest();
 
-        return $this->asJson($state);
+        return $this->generationStatus($requestId, true);
     }
 
     protected function get(): array
@@ -401,6 +394,27 @@ class FormsController extends BaseApiController
         $this->response->statusCode = $event->getStatus() ?? 204;
 
         return $event->getResponseData();
+    }
+
+    private function generationStatus(string $requestId, bool $advance): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        try {
+            $service = \Craft::$container->get(QueuedFormGenerationService::class);
+            $userId = (int) \Craft::$app->getUser()->getId();
+            $state = $advance ? $service->progress($userId, $requestId) : $service->status($userId, $requestId);
+        } catch (\OutOfBoundsException) {
+            throw new NotFoundHttpException('Generation not found.');
+        }
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson($state);
     }
 
     private function requireFormPermission(?int $id = null, string $permission = Freeform::PERMISSION_FORMS_MANAGE): void

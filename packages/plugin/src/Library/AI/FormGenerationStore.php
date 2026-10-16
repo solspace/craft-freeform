@@ -55,7 +55,7 @@ final class FormGenerationStore
         if ('queued' === $state['status'] && time() - $state['createdAt'] > self::QUEUED_TTL) {
             $state['status'] = 'expired';
         }
-        if ('running' === $state['status'] && time() - ($state['startedAt'] ?? 0) > self::RUNNING_TTL) {
+        if ('running' === $state['status'] && (!isset($state['responseId']) || !empty($state['importing'])) && time() - ($state['startedAt'] ?? 0) > self::RUNNING_TTL) {
             $state['status'] = 'interrupted';
         }
 
@@ -63,19 +63,31 @@ final class FormGenerationStore
         return array_intersect_key($state, array_flip(['status', 'formId', 'message']));
     }
 
-    public function execute(string $id, callable $generate): void
+    /** Advance an owner-bound OpenAI request from a short, authenticated CP request. */
+    public function advance(int $userId, string $requestId, callable $generate): void
     {
-        $this->locked($id, 'run', function () use ($id, $generate) {
+        $this->status($userId, $requestId);
+        $this->execute($this->identifier($userId, $requestId), $generate, true);
+    }
+
+    public function execute(string $id, callable $generate, bool $backgroundOnly = false): void
+    {
+        $this->locked($id, 'run', function () use ($id, $generate, $backgroundOnly) {
             $state = $this->read($id, 'status');
             // A killed/released/retried job must never create a second form.
-            if ('queued' !== $state['status']) {
+            $resuming = $backgroundOnly && 'running' === $state['status'] && isset($state['responseId']) && empty($state['importing']);
+            if ('queued' !== $state['status'] && !$resuming) {
                 return;
             }
-            if (time() - $state['createdAt'] > self::QUEUED_TTL) {
+            if (time() - $state['createdAt'] > ($resuming ? self::TTL : self::QUEUED_TTL)) {
                 $state['status'] = 'expired';
                 $this->write($id, 'status', $state);
                 $this->removeRequest($id);
 
+                return;
+            }
+            $request = $this->read($id, 'request');
+            if ($backgroundOnly && empty($request['background'])) {
                 return;
             }
             $state['status'] = 'running';
@@ -83,9 +95,21 @@ final class FormGenerationStore
             $this->write($id, 'status', $state);
 
             try {
-                $request = $this->read($id, 'request');
-                $state['formId'] = $generate($request);
+                $request['responseId'] = $state['responseId'] ?? null;
+                $state['formId'] = $generate($request, function () use ($id, &$state) {
+                    $state['importing'] = true;
+                    $state['startedAt'] = time();
+                    $this->write($id, 'status', $state);
+                });
                 $state['status'] = 'complete';
+            } catch (PendingFormGeneration $pending) {
+                if (null === $pending->responseId) {
+                    // Submission may have reached OpenAI, but its ID was lost.
+                    // Keep this uncertain instead of automatically resubmitting.
+                    $state['status'] = 'interrupted';
+                } else {
+                    $state['responseId'] = $pending->responseId;
+                }
             } catch (\Throwable $exception) {
                 $state['status'] = 'failed';
                 // Only deliberate validation/provider errors are suitable for display.
@@ -104,7 +128,10 @@ final class FormGenerationStore
                     ], self::class.'::execute');
                 }
             } finally {
-                $this->removeRequest($id);
+                if ('running' !== $state['status']) {
+                    $this->removeRequest($id);
+                    unset($state['responseId']);
+                }
                 $this->write($id, 'status', $state);
             }
         });
@@ -154,6 +181,10 @@ final class FormGenerationStore
             fclose($handle);
 
             // Concurrent starts can be polled; a worker never waits behind another worker.
+            if ('run' === $suffix) {
+                return null;
+            }
+
             throw new \RuntimeException('Generation is already being processed.');
         }
 

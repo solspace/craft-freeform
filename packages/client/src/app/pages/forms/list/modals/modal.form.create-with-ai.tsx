@@ -43,7 +43,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [generationStatus, setGenerationStatus] =
-    useState<GenerationState["status"]>("queued");
+    useState<GenerationState["status"]>("running");
   const monitorController = useRef<AbortController | null>(null);
   const mounted = useRef(true);
   const resumed = useRef(false);
@@ -63,11 +63,17 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
       setPendingId(requestId);
       setError(null);
       try {
-        if (typeof Craft !== "undefined") Craft.cp?.runQueue?.();
+        let queueStarted = false;
         const formId = await waitForGeneration(
           requestId,
           controller.signal,
-          setGenerationStatus,
+          (status) => {
+            setGenerationStatus(status);
+            if (status === "queued" && !queueStarted) {
+              queueStarted = true;
+              if (typeof Craft !== "undefined") Craft.cp?.runQueue?.();
+            }
+          },
         );
         if (!mounted.current) return;
         clearPending();
@@ -80,7 +86,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
           error instanceof GenerationError
             ? error.message
             : translate(
-                "Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.",
+                "Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.",
               ),
         );
       } finally {
@@ -229,7 +235,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
     const requestId = newGenerationId();
     rememberGeneration(requestId);
     setPendingId(requestId);
-    setGenerationStatus("queued");
+    setGenerationStatus("running");
 
     try {
       let payload:
@@ -268,6 +274,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         navigate(`/forms/${form.id}`);
         closeModal();
       } else {
+        setGenerationStatus(form.status);
         await monitor(requestId);
       }
     } catch (err: unknown) {
@@ -478,7 +485,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
             {translate(
               generationStatus === "queued"
                 ? "Waiting for Craft's queue. If this does not start, check the Queue Manager."
-                : "Generating your form. You can close this window and reopen Create with AI to check progress.",
+                : "Generating your form. You can close this window and reopen Create with AI to check progress and finish creating the form.",
             )}
           </InfoBlock>
         )}

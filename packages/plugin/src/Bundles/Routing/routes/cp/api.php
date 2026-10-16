@@ -34,6 +34,7 @@ return [
     'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
     'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',
+    'freeform/api/forms/ai-generation-progress/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-progress',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',

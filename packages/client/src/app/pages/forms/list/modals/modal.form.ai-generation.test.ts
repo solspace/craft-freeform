@@ -22,14 +22,16 @@ beforeEach(() => {
   vi.useFakeTimers();
   vi.resetAllMocks();
   sessionStorage.clear();
+  localStorage.clear();
 });
 afterEach(() => {
   vi.useRealTimers();
   sessionStorage.clear();
+  localStorage.clear();
 });
 
 it("polls queued and running work and opens only the completed form", async () => {
-  vi.mocked(axios.get)
+  vi.mocked(axios.post)
     .mockResolvedValueOnce({ data: { status: "queued" } })
     .mockResolvedValueOnce({ data: { status: "running" } })
     .mockResolvedValueOnce({ data: { status: "complete", formId: 17 } });
@@ -45,11 +47,18 @@ it("polls queued and running work and opens only the completed form", async () =
     "queued",
     "running",
   ]);
-  expect(axios.post).not.toHaveBeenCalled();
+  expect(axios.get).not.toHaveBeenCalled();
+  expect(
+    vi
+      .mocked(axios.post)
+      .mock.calls.every(([url]) =>
+        String(url).startsWith("/api/forms/ai-generation-progress/"),
+      ),
+  ).toBe(true);
 });
 
 it("retries lost status reads without creating another generation", async () => {
-  vi.mocked(axios.get)
+  vi.mocked(axios.post)
     .mockRejectedValueOnce(new Error("network"))
     .mockResolvedValueOnce({ data: { status: "complete", formId: 18 } });
   const result = waitForGeneration(
@@ -59,11 +68,18 @@ it("retries lost status reads without creating another generation", async () => 
   );
   await vi.advanceTimersByTimeAsync(2000);
   expect(await result).toBe(18);
-  expect(axios.post).not.toHaveBeenCalled();
+  expect(axios.get).not.toHaveBeenCalled();
+  expect(
+    vi
+      .mocked(axios.post)
+      .mock.calls.every(([url]) =>
+        String(url).startsWith("/api/forms/ai-generation-progress/"),
+      ),
+  ).toBe(true);
 });
 
 it("leaves an interrupted request uncertain and never retries provider work", async () => {
-  vi.mocked(axios.get).mockResolvedValue({ data: { status: "interrupted" } });
+  vi.mocked(axios.post).mockResolvedValue({ data: { status: "interrupted" } });
   const error = await waitForGeneration(
     "request",
     new AbortController().signal,
@@ -71,12 +87,19 @@ it("leaves an interrupted request uncertain and never retries provider work", as
   ).catch((error) => error);
   expect(error).toBeInstanceOf(GenerationError);
   expect(error.terminal).toBe(false);
-  expect(error.message).toContain("Check the Forms list");
-  expect(axios.post).not.toHaveBeenCalled();
+  expect(error.message).toContain("Forms list");
+  expect(axios.get).not.toHaveBeenCalled();
+  expect(
+    vi
+      .mocked(axios.post)
+      .mock.calls.every(([url]) =>
+        String(url).startsWith("/api/forms/ai-generation-progress/"),
+      ),
+  ).toBe(true);
 });
 
 it("filters HTML from a terminal generation error", async () => {
-  vi.mocked(axios.get).mockResolvedValue({
+  vi.mocked(axios.post).mockResolvedValue({
     data: { status: "failed", message: "<html>nginx details</html>" },
   });
   const error = await waitForGeneration(
@@ -90,7 +113,7 @@ it("filters HTML from a terminal generation error", async () => {
 });
 
 it("stops polling when the dialog closes", async () => {
-  vi.mocked(axios.get).mockResolvedValue({ data: { status: "queued" } });
+  vi.mocked(axios.post).mockResolvedValue({ data: { status: "queued" } });
   const controller = new AbortController();
   const result = waitForGeneration("request", controller.signal, vi.fn()).catch(
     (error) => error,
@@ -99,7 +122,7 @@ it("stops polling when the dialog closes", async () => {
   controller.abort();
   expect((await result).name).toBe("AbortError");
   await vi.advanceTimersByTimeAsync(10_000);
-  expect(axios.get).toHaveBeenCalledOnce();
+  expect(axios.post).toHaveBeenCalledOnce();
 });
 
 it("retains only the opaque request identifier for reopening the dialog", () => {
@@ -107,4 +130,15 @@ it("retains only the opaque request identifier for reopening the dialog", () => 
   expect(pendingGeneration()).toBe("a".repeat(32));
   rememberGeneration(null);
   expect(pendingGeneration()).toBeNull();
+});
+
+it("keeps the opaque ID across dialog and browser sessions", () => {
+  rememberGeneration("b".repeat(32));
+  expect(localStorage.getItem("freeform.pending-ai-generation")).toBe(
+    "b".repeat(32),
+  );
+  sessionStorage.clear();
+  expect(pendingGeneration()).toBe("b".repeat(32));
+  rememberGeneration(null);
+  expect(localStorage.getItem("freeform.pending-ai-generation")).toBeNull();
 });

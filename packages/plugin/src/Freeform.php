@@ -30,6 +30,7 @@ use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
 use CraftCms\Cms\Twig\Twig;
+use CraftCms\Yii2Adapter\Console\LegacyCommandCompatibility;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
@@ -362,6 +363,13 @@ class Freeform extends Plugin
     public function boot(): void
     {
         $this->bootFreeformApplication();
+
+        if ($this->app->runningInConsole()) {
+            // The adapter discovers commands before native plugins have booted.
+            $this->app->booted(static function (): void {
+                new LegacyCommandCompatibility()->boot();
+            });
+        }
     }
 
     public function getCpNavItem(): array|NavItem|null

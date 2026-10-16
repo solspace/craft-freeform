@@ -6,6 +6,7 @@
 - Included the features and fixes from Freeform 5.17.1, including database orphan cleanup, form scheduling, submission limits, and the Preview tab.
 
 ### Fixed
+- Restored Freeform console command discovery on Craft 6, including database orphan cleanup and foreign key repair.
 - Adapted queued AI form generation and uploaded-file checks to Craft 6's Laravel queue and filesystem APIs.
 - Kept Craft 6 controls and confirmation dialogs while adding responsive builder navigation and editor cancellation from Freeform 5.
 - Moved **Manage Form Groups** into a native Craft slideout with a fixed footer, responsive layout, and translated helper text.

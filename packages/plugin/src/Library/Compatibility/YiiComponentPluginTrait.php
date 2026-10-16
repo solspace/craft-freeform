@@ -63,8 +63,7 @@ trait YiiComponentPluginTrait
         }
 
         $module = $this->getFreeformYiiModule();
-        // CP/site controllers always live under controllers/, not Commands/
-        $module->controllerNamespace = 'Solspace\Freeform\controllers';
+        $module->controllerNamespace = $this->controllerNamespace ?? 'Solspace\Freeform\controllers';
         $module->controllerMap = $this->controllerMap;
 
         \Craft::$app->setModule($this->handle, $module);

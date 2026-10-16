@@ -85,7 +85,7 @@ class SubmissionsController extends Controller
     public function options($actionID): array
     {
         return match ($actionID) {
-            'fix-titles' => [],
+            'fix-titles', 'fix-table-names' => [],
             'generate' => [
                 'locale',
                 'count',

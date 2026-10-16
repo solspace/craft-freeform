@@ -8,7 +8,14 @@ import {
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
-export const FormTitle = styled.div`
+export const FormTitle = styled.button`
+  display: block;
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
   position: relative;
 
@@ -41,7 +48,7 @@ export const ExpandedState = styled.div`
   width: ${size}px;
   font-size: ${size}px;
 
-  transform: rotate(90deg);
+  transform: rotate(0deg);
   transform-origin: center;
   transition: transform 0.2s ${beziers.easeOut};
 `;
@@ -49,12 +56,13 @@ export const ExpandedState = styled.div`
 export const FormBlockWrapper = styled.div`
   border: 1px solid ${colors.elements.dropdown};
   border-radius: ${borderRadius.md};
+  overflow: hidden;
 
   margin: 0 -8px;
 
   &.open {
     ${ExpandedState} {
-      transform: rotate(180deg);
+      transform: rotate(90deg);
     }
   }
 `;

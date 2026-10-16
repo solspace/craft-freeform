@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
+use Solspace\Freeform\Bundles\Transformers\Builder\Form\BuilderDataProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
@@ -41,6 +42,21 @@ class FormsController extends BaseApiController
         private FormDuplicator $formDuplicator,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionBuilder(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_ACCESS);
+
+        $form = $this->getFormsService()->getFormById($id);
+        if (!$form) {
+            throw new NotFoundHttpException("Form with ID {$id} not found");
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asSerializedJson(\Craft::$container->get(BuilderDataProvider::class)->getData($form));
     }
 
     public function actionPreviewTemplates(int $id): Response

@@ -6,17 +6,22 @@ import type {
   FormSettingNamespace,
   FormWithStats,
 } from "@ff-client/types/forms";
+import type { Integration } from "@ff-client/types/integrations";
+import type { Notification } from "@ff-client/types/notifications";
 import type { Option } from "@ff-client/types/properties";
+import type { NotificationRule } from "@ff-client/types/rules";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import type { FormRules } from "./rules";
 
 export const QKForms = {
   base: ["forms"] as const,
   all: (site: string) => [...QKForms.base, site] as const,
   single: (id: number) => [...QKForms.base, id] as const,
+  builder: (id: number) => [...QKForms.single(id), "builder"] as const,
   settings: () => [...QKForms.base, "settings"] as const,
   previewTemplates: (id: number, site?: string) =>
     [...QKForms.single(id), "preview-templates", site] as const,
@@ -54,6 +59,27 @@ export const useQuerySingleForm = (
     enabled: !!id,
   });
 };
+
+export type FormBuilderData = {
+  form: ExtendedFormType;
+  rules: FormRules;
+  notificationRules: NotificationRule[];
+  notifications: Notification[];
+  integrations: Integration[];
+};
+
+export const useQueryFormBuilder = (
+  id?: number,
+): UseQueryResult<FormBuilderData, AxiosError> =>
+  useQuery<FormBuilderData, AxiosError>({
+    queryKey: QKForms.builder(id),
+    queryFn: () =>
+      axios
+        .get<FormBuilderData>(`/api/forms/${id}/builder`)
+        .then((res) => res.data),
+    staleTime: Infinity,
+    enabled: !!id,
+  });
 
 export const useQueryFormSettings = (): UseQueryResult<
   FormSettingNamespace[],

@@ -11,9 +11,13 @@ export const QKForms = {
 
 type FetchFormsQuery = (options?: {
   select?: (data: FieldForm[]) => FieldForm[];
+  enabled?: boolean;
 }) => UseQueryResult<FieldForm[], AxiosError>;
 
-export const useFetchForms: FetchFormsQuery = ({ select } = {}) => {
+export const useFetchForms: FetchFormsQuery = ({
+  select,
+  enabled = true,
+} = {}) => {
   const { current: currentSite } = useSiteContext();
 
   return useQuery<FieldForm[], AxiosError>({
@@ -26,5 +30,6 @@ export const useFetchForms: FetchFormsQuery = ({ select } = {}) => {
         .then((res) => res.data),
     staleTime: Infinity,
     select,
+    enabled,
   });
 };

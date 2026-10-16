@@ -28,7 +28,7 @@ export const QKRules = {
     [...QKRules.form(formId), "integrations"] as const,
 };
 
-type FormRules = {
+export type FormRules = {
   fields: FieldRule[];
   pages: PageRule[];
   submitForm?: SubmitFormRule;

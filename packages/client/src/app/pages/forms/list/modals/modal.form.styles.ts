@@ -21,16 +21,18 @@ export const AiFormContainer = styled(ModalContainer)`
   > header, > footer { flex: none; }
 `;
 
-export const AiFormHeader = styled(ModalHeader)`
+export const FormCreationHeader = styled(ModalHeader)`
   display: flex;
   align-items: center;
   gap: 14px;
   background: linear-gradient(120deg, #e4edf6, #edf3fa);
   h1 { margin: 0; }
   p { margin: 5px 0 0; color: #617488; font-size: 12px; line-height: 1.5; }
-  .ai-intro-icon { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border: 1px solid #c5d8ed; border-radius: 12px; background: #f6faff; color: #386fa8; box-shadow: 0 2px 5px #376fa80b; }
+  .form-heading-icon, .ai-intro-icon { display: grid; place-items: center; flex: none; width: 42px; height: 42px; border: 1px solid #c5d8ed; border-radius: 12px; background: #f6faff; color: #386fa8; box-shadow: 0 2px 5px #376fa80b; }
   svg { width: 26px; height: 26px; }
 `;
+
+export const AiFormHeader = FormCreationHeader;
 
 export const AiFormWrapper = styled(FormWrapper)`
   min-height: 0;

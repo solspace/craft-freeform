@@ -13,7 +13,7 @@ import axios from "axios";
 import type React from "react";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useResolvedPath } from "react-router-dom";
+import { Navigate, useResolvedPath } from "react-router-dom";
 import { FieldComponent } from "../form-settings/field-component";
 import { type PreviewValues, readPreviewMessage } from "./preview.messages";
 import {
@@ -34,7 +34,14 @@ type PreviewData = {
   complete: boolean;
 };
 
-export const FormPreview: React.FC = () => {
+export const FormPreview: React.FC = () =>
+  config.limitations.can("preview.tab") ? (
+    <PreviewContent />
+  ) : (
+    <Navigate to=".." relative="path" replace />
+  );
+
+const PreviewContent: React.FC = () => {
   const form = useSelector(formSelectors.current);
   // isNew marks forms created within the last hour, including saved forms.
   const hasSavedForm = Boolean(form.id);
@@ -357,7 +364,7 @@ export const FormPreview: React.FC = () => {
           </details>
         )}
       </PreviewSidebar>
-      <FrameArea ref={frameArea} aria-busy={loading}>
+      <FrameArea ref={frameArea} aria-busy={loading} data-wizard-tour="preview">
         {preview && (
           <Frame
             ref={frame}

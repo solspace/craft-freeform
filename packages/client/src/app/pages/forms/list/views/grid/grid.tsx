@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 import type React from "react";
 import { useEffect } from "react";
 
+import { useFormLimitModal } from "../../modals/hooks/use-add-form-modal";
 import { Notices } from "../../notices/notices";
 
 import { Archived } from "./archived/archived";
@@ -24,6 +25,7 @@ import {
 } from "./grid.styles";
 
 export const FormGrid: React.FC = () => {
+  const openFormLimit = useFormLimitModal();
   const { data, isFetching } = useFetchFormGroups();
   const sorting = useDashboardSorting(data);
 
@@ -120,6 +122,15 @@ export const FormGrid: React.FC = () => {
 
           {isExpressEdition && (
             <div
+              onClick={(event) => {
+                if (
+                  event.target instanceof Element &&
+                  event.target.closest("a")
+                ) {
+                  event.preventDefault();
+                  openFormLimit();
+                }
+              }}
               dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(
                   translate(

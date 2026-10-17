@@ -238,3 +238,22 @@ describe("tab fitting", () => {
     expect(fitTabs([], 0, 80, 0)).toEqual([]);
   });
 });
+
+it("can follow an unsaved wizard step without linking away from the wizard", async () => {
+  await act(async () =>
+    root.render(
+      <MemoryRouter initialEntries={["/forms"]}>
+        <TabsNavigation tabs={tabs} previewActive={4} />
+      </MemoryRouter>,
+    ),
+  );
+  expect(host.querySelector(".main-tabs > .active")?.textContent).toBe(
+    "Settings",
+  );
+  expect(host.querySelectorAll(".main-tabs > a")).toHaveLength(0);
+  await resize(230);
+  expect(host.querySelector(".main-tabs > .active")?.textContent).toBe(
+    "Settings",
+  );
+  expect(more()).not.toBeNull();
+});

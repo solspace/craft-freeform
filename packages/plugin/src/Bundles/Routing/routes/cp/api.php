@@ -31,6 +31,10 @@ return [
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/creation-availability' => 'freeform/api/forms/creation-availability',
+    'freeform/api/forms/wizard' => 'freeform/api/forms/wizard/options',
+    'freeform/api/forms/wizard/create' => 'freeform/api/forms/wizard/create',
+    'freeform/api/forms/wizard/preview' => 'freeform/api/forms/wizard/preview',
     'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
     'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',

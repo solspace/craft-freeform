@@ -9,6 +9,25 @@ use Solspace\Freeform\Models\Settings;
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    public function testFormCreationOptionsDefaultToAllAndPreserveTheirDisplayOrder(): void
+    {
+        $settings = $this->normalize([]);
+        self::assertSame(['wizard', 'ai', 'blank'], $settings->getEnabledFormCreationOptions());
+        $settings->formCreationOptions = ['blank', 'wizard', 'wizard'];
+        self::assertSame(['wizard', 'blank'], $settings->getEnabledFormCreationOptions());
+        $settings->formCreationOptions = ['ai'];
+        self::assertSame(['ai'], $settings->getEnabledFormCreationOptions());
+    }
+
+    public function testFormCreationOptionsRejectEmptyAndUnknownChoices(): void
+    {
+        foreach (['', [], ['unknown'], ['wizard', 'unknown']] as $value) {
+            $settings = $this->normalize(['formCreationOptions' => $value]);
+            $settings->validate(['formCreationOptions']);
+            self::assertTrue($settings->hasErrors('formCreationOptions'));
+        }
+    }
+
     public function testDefaultBooleanStringsAreNormalized(): void
     {
         $settings = $this->normalize([]);

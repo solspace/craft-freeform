@@ -12,6 +12,8 @@ class FreeformSettings
     public ?string $emailTemplateDefault = null;
     public ?string $successTemplateDirectory = null;
     public ?string $defaultView = null;
+    public ?array $formCreationOptions = null;
+    public ?string $defaultAiIntegration = null;
     public ?bool $removeNewlines = null;
     public ?bool $exportLabels = null;
     public ?bool $exportHandlesAsNames = null;

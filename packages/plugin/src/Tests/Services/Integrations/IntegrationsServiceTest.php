@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Tests\Services\Integrations;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
@@ -67,6 +68,38 @@ class IntegrationsServiceTest extends TestCase
 
         self::assertFalse($disabledResult[0]->enabled);
         self::assertTrue($enabledResult[0]->enabled);
+    }
+
+    public function testAiOptionsOnlyIncludeEnabledAiIntegrations(): void
+    {
+        $enabled = $this->createMock(ReferenceAiIntegrationInterface::class);
+        $enabled->method('isEnabled')->willReturn(true);
+        $enabled->method('getModel')->willReturn('form-generation-model');
+        $enabled->method('getReferenceMimeTypes')->willReturn(['application/pdf']);
+        $disabled = $this->createMock(ReferenceAiIntegrationInterface::class);
+        $disabled->method('isEnabled')->willReturn(false);
+        $disabled->expects(self::never())->method('getModel');
+        $models = [];
+        foreach ([$enabled, $disabled] as $index => $integration) {
+            $model = $this->createMock(IntegrationModel::class);
+            $model->class = $integration::class;
+            $model->id = $index + 1;
+            $model->uid = 'integration-'.$index;
+            $model->name = 'AI '.$index;
+            $model->handle = 'ai'.$index;
+            $model->method('getIntegrationObject')->willReturn($integration);
+            $models[] = $model;
+        }
+        $other = $this->createMock(IntegrationModel::class);
+        $other->class = \stdClass::class;
+        $other->expects(self::never())->method('getIntegrationObject');
+        $models[] = $other;
+        $service = $this->getMockBuilder(IntegrationsService::class)->disableOriginalConstructor()->onlyMethods(['getAllIntegrations'])->getMock();
+        $service->method('getAllIntegrations')->willReturn($models);
+        self::assertSame([[
+            'id' => 1, 'uid' => 'integration-0', 'name' => 'AI 0', 'handle' => 'ai0',
+            'model' => 'form-generation-model', 'referenceMimeTypes' => ['application/pdf'],
+        ]], $service->getEnabledAiIntegrationOptions());
     }
 
     private function createModel(int $id, bool $enabled, array $metadata): IntegrationModel

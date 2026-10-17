@@ -1,6 +1,7 @@
 import type React from "react";
 import type { PropsWithChildren } from "react";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import styled from "styled-components";
 
 type PortalContextType = {
@@ -35,7 +36,10 @@ export const PortalProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <PortalContext.Provider value={{ element: portalRef.current, dimensions }}>
-      <PortalElement id="pop-up-portal" ref={portalRef} />
+      {createPortal(
+        <PortalElement id="pop-up-portal" ref={portalRef} />,
+        document.body,
+      )}
       {children}
     </PortalContext.Provider>
   );

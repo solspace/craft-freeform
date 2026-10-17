@@ -2,14 +2,13 @@
 
 namespace Solspace\Freeform\controllers\api;
 
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\BuilderDataProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
-use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -40,6 +39,7 @@ class FormsController extends BaseApiController
         $config,
         private FormTransformer $formTransformer,
         private FormDuplicator $formDuplicator,
+        private LimitedUserChecker $limitedUserChecker,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -59,10 +59,24 @@ class FormsController extends BaseApiController
         return $this->asSerializedJson(\Craft::$container->get(BuilderDataProvider::class)->getData($form));
     }
 
+    public function actionCreationAvailability(): Response
+    {
+        $this->requireCpRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+
+        // Match the persistence limit, including forms on other sites or hidden by permissions.
+        $limitReached = Freeform::getInstance()->edition()->is(Freeform::EDITION_EXPRESS)
+            && FormRecord::find()->exists();
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        return $this->asJson(['canCreate' => !$limitReached]);
+    }
+
     public function actionPreviewTemplates(int $id): Response
     {
         $this->requireCpRequest();
-        $this->requireFormPermission($id);
+        $this->requirePreviewPermission($id);
         $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
         if (!$form || $form->getDateArchived()) {
             throw new NotFoundHttpException('Form not found');
@@ -77,7 +91,7 @@ class FormsController extends BaseApiController
     {
         $this->requirePostRequest();
         $this->requireCpRequest();
-        $this->requireFormPermission($id);
+        $this->requirePreviewPermission($id);
 
         $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
         if (!$form || $form->getDateArchived()) {
@@ -206,21 +220,7 @@ class FormsController extends BaseApiController
         $this->requireCpRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
-        $options = [];
-        foreach ($this->getIntegrationsService()->getAllIntegrations() as $model) {
-            if (!is_subclass_of($model->class, AiIntegrationInterface::class)) {
-                continue;
-            }
-            $integration = $model->getIntegrationObject();
-            if (!$integration->isEnabled()) {
-                continue;
-            }
-            $options[] = [
-                'id' => $model->id, 'uid' => $model->uid, 'name' => $model->name, 'handle' => $model->handle,
-                'model' => $integration->getModel(),
-                'referenceMimeTypes' => $integration instanceof ReferenceAiIntegrationInterface ? $integration->getReferenceMimeTypes() : [],
-            ];
-        }
+        $options = $this->getIntegrationsService()->getEnabledAiIntegrationOptions();
         $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         return $this->asJson($options);
@@ -415,6 +415,15 @@ class FormsController extends BaseApiController
         $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         return $this->asJson($state);
+    }
+
+    private function requirePreviewPermission(int $id): void
+    {
+        if (!$this->limitedUserChecker->can('preview.tab')) {
+            throw new ForbiddenHttpException('User is not permitted to preview forms');
+        }
+
+        $this->requireFormPermission($id);
     }
 
     private function requireFormPermission(?int $id = null, string $permission = Freeform::PERMISSION_FORMS_MANAGE): void

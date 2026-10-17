@@ -28,6 +28,7 @@ export const useAiIntegrations = (): UseQueryResult<AiIntegrationOption[]> => {
     },
     enabled:
       config.metadata.freeform.canCreate &&
+      config.editions.edition === "pro" &&
       config.permissions.integrations !== "none",
     gcTime: Infinity,
     staleTime: 60_000,

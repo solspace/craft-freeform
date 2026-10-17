@@ -26,6 +26,8 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Settings extends Model
 {
+    public const FORM_CREATION_OPTIONS = ['wizard', 'ai', 'blank'];
+
     public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
     public const PROTECTION_RELOAD_FORM = 'reload_form';
@@ -89,6 +91,8 @@ class Settings extends Model
     public ?string $successTemplateDirectory = null;
 
     public string $defaultView = Freeform::VIEW_FORMS;
+    public array|string $formCreationOptions = self::FORM_CREATION_OPTIONS;
+    public string $defaultAiIntegration = '';
 
     public string $removeNewlines = 'false';
     public string $exportLabels = 'false';
@@ -260,7 +264,24 @@ class Settings extends Model
     {
         return [
             ['formTemplateDirectory', 'folderExists'],
+            ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
+            ['defaultAiIntegration', 'string', 'max' => 64],
         ];
+    }
+
+    public function getEnabledFormCreationOptions(): array
+    {
+        $configured = \is_array($this->formCreationOptions) ? $this->formCreationOptions : [];
+
+        return array_values(array_filter(self::FORM_CREATION_OPTIONS, static fn ($method) => \in_array($method, $configured, true)));
+    }
+
+    public function validateFormCreationOptions(string $attribute): void
+    {
+        $value = $this->{$attribute};
+        if (!\is_array($value) || !$value || array_filter($value, static fn ($method) => !\in_array($method, self::FORM_CREATION_OPTIONS, true))) {
+            $this->addError($attribute, Freeform::t('Choose at least one available form creation option.'));
+        }
     }
 
     public function folderExists(string $attribute): void

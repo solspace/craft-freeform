@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return [
+return array_merge(require __DIR__.'/wizard.php', [
     'Describe what you need, or recreate a form from a PDF or image.' => 'Descrivi ciò che ti serve o ricrea un modulo da un PDF o un’immagine.',
     'Drop a PDF or image here to recreate its fields.' => 'Trascina qui un PDF o un’immagine per ricrearne i campi.',
     'Choose files' => 'Scegli file',
@@ -1528,6 +1528,8 @@ return [
     'Notifications Defaults' => 'Notifiche Predefinite',
     'Settings Defaults' => 'Impostazioni Predefinite',
     'No default set' => 'Nessun valore predefinito impostato',
+
+    'Preview Tab' => 'Scheda Anteprima',
 
     // Settings // Limited Users
     'Limited Users' => 'Utenti Limitati',
@@ -3876,4 +3878,12 @@ return [
     'Prompt is required.' => 'È necessaria una descrizione.',
     'Page 1' => 'Pagina 1',
     'Page {n}' => 'Pagina {n}',
-];
+    'Could not check the form limit. Please try again.' => 'Impossibile verificare il limite dei moduli. Riprova.',
+    'Need more forms?' => 'Ti servono altri moduli?',
+    'Express includes one form, and yours is already set up.' => 'Express include un modulo, e il tuo è già pronto.',
+    'Unlimited forms' => 'Moduli illimitati',
+    'Upgrade to Lite or Pro whenever you’re ready for more.' => 'Passa a Lite o Pro quando avrai bisogno di più moduli.',
+    'Compare editions' => 'Confronta le edizioni',
+    'Upgrade to Lite or Pro' => 'Passa a Lite o Pro',
+    'Both editions include unlimited forms.' => 'Entrambe le edizioni includono moduli illimitati.',
+]);

@@ -2,6 +2,8 @@ import { FormComponent } from "@components/form-controls";
 import { ModalFooter } from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
 import { ErrorBlock } from "@components/notification-blocks/error/error-block";
+import { InfoBlock } from "@components/notification-blocks/info/info-block";
+import config from "@config/freeform/freeform.config";
 import { useOnKeypress } from "@ff-client/hooks/use-on-keypress";
 import type { Form } from "@ff-client/types/forms";
 import { PropertyType, type SelectProperty } from "@ff-client/types/properties";
@@ -42,6 +44,9 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
 }) => {
   const navigate = useNavigate();
   const refreshForms = useRefreshGeneratedForms();
+  const defaultIntegrationUid =
+    config.metadata?.freeform?.defaultAiIntegration ?? "";
+  const integrationInitialized = useRef(false);
   const [integrationUid, setIntegrationUid] = useState<string>("");
   const [prompt, setPrompt] = useState("");
   const [name, setName] = useState("");
@@ -145,10 +150,24 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
   } = useAiIntegrations();
 
   useEffect(() => {
-    if (aiIntegrations.length > 0 && !integrationUid) {
-      setIntegrationUid(aiIntegrations[0].uid);
-    }
-  }, [aiIntegrations, integrationUid]);
+    if (
+      integrationInitialized.current ||
+      isLoadingIntegrations ||
+      integrationError
+    )
+      return;
+    integrationInitialized.current = true;
+    setIntegrationUid(
+      aiIntegrations.find(
+        (integration) => integration.uid === defaultIntegrationUid,
+      )?.uid ?? "",
+    );
+  }, [
+    aiIntegrations,
+    defaultIntegrationUid,
+    isLoadingIntegrations,
+    integrationError,
+  ]);
 
   const selectedIntegration = aiIntegrations.find(
     (integration) => integration.uid === integrationUid,
@@ -177,8 +196,15 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
   };
 
   const integrationOptions = useMemo(
-    () => aiIntegrations.map((int) => ({ value: int.uid, label: int.name })),
-    [aiIntegrations],
+    () =>
+      aiIntegrations.map((int) => ({
+        value: int.uid,
+        label:
+          int.uid === defaultIntegrationUid
+            ? `${int.name} (${translate("Default")})`
+            : int.name,
+      })),
+    [aiIntegrations, defaultIntegrationUid],
   );
 
   const integrationProperty = useMemo<SelectProperty>(
@@ -226,6 +252,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
     },
     [
       integrationUid,
+      selectedIntegration,
       prompt,
       name,
       files,
@@ -243,7 +270,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
       setError(translate("Describe your form or attach a reference file."));
       return;
     }
-    if (!integrationUid) {
+    if (!selectedIntegration) {
       setError(translate("Please select an AI integration."));
       return;
     }
@@ -398,6 +425,19 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
                   }}
                   autoFocus
                 />
+                {defaultIntegrationUid &&
+                  !integrationUid &&
+                  !isLoadingIntegrations &&
+                  !integrationError &&
+                  !aiIntegrations.some(
+                    (integration) => integration.uid === defaultIntegrationUid,
+                  ) && (
+                    <InfoBlock>
+                      {translate(
+                        "The default AI integration is unavailable. Choose another integration to generate this form.",
+                      )}
+                    </InfoBlock>
+                  )}
                 {selectedIntegration?.model && (
                   <p className="ai-configured-model">
                     {translate("Configured model: {model}", {
@@ -801,7 +841,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
               !!pendingId ||
               (!prompt.trim() && !files.length) ||
               incompatible ||
-              !integrationUid ||
+              !selectedIntegration ||
               isLoadingIntegrations
             }
           >

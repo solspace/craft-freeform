@@ -73,6 +73,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
 
   return (
     <FieldCellWrapper
+      data-field-uid={uid}
       data-field-type={type.type}
       className={classes(
         hasErrors(field.errors) && "errors",

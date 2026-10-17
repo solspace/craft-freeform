@@ -9,7 +9,7 @@ export const FieldLayout: React.FC = () => {
   const page = useSelector(contextSelectors.currentPage);
 
   return (
-    <FieldLayoutWrapper>
+    <FieldLayoutWrapper data-wizard-tour="canvas">
       <PageTabs />
       {page && <Page page={page} />}
     </FieldLayoutWrapper>

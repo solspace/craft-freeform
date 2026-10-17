@@ -13,19 +13,15 @@ import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
 import { useEffect } from "react";
 import {
-  AiButton,
   Button,
   ButtonGroup,
-  EnableAiLink,
   Header,
   Title,
   ViewButtons,
   ViewControls,
 } from "./list-view.styles";
-import { useCreateFormModal } from "./modals/hooks/use-create-form-modal";
-import { useCreateWithAiFormModal } from "./modals/hooks/use-create-with-ai-form-modal";
+import { useAddFormModal } from "./modals/hooks/use-add-form-modal";
 import { useEditGroupModal } from "./modals/hooks/use-edit-group-modal";
-import { useAiIntegrations } from "./modals/modal.form.create-with-ai.queries";
 import { FormGrid } from "./views/grid/grid";
 import { GroupsButton } from "./views/grid/grid.styles";
 import { FormList } from "./views/list/list";
@@ -38,17 +34,11 @@ enum View {
 export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
   const openEditGroupModal = useEditGroupModal();
-  const openCreateFormModal = useCreateFormModal();
-  const openCreateWithAiFormModal = useCreateWithAiFormModal();
-  const { data: aiIntegrations } = useAiIntegrations();
+  const openAddForm = useAddFormModal();
 
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
   const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
-  const canViewIntegrations = config.permissions.integrations !== "none";
-  const showAiButtons = canViewIntegrations;
-  const showEnableAi =
-    showAiButtons && aiIntegrations && aiIntegrations.length === 0;
 
   useEffect(() => {
     void queryClient.prefetchQuery({
@@ -104,30 +94,12 @@ export const ListProvider: React.FC = () => {
 
         {canCreate && (
           <ButtonGroup>
-            {showAiButtons &&
-              (showEnableAi ? (
-                <EnableAiLink
-                  to="/integrations/ai/SolspaceAIV1"
-                  className="btn add icon"
-                  data-icon="sparkles"
-                >
-                  {translate("Enable AI")}
-                </EnableAiLink>
-              ) : (
-                <AiButton
-                  type="button"
-                  className="btn add icon"
-                  data-icon="sparkles"
-                  onClick={openCreateWithAiFormModal}
-                >
-                  {translate("Create with AI")}
-                </AiButton>
-              ))}
             <Button
+              type="button"
               className="btn submit add icon"
-              onClick={openCreateFormModal}
+              onClick={openAddForm}
             >
-              {translate("Add new Form")}
+              {translate("Add new form")}
             </Button>
           </ButtonGroup>
         )}

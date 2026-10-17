@@ -10,6 +10,18 @@ const fixture = vi.hoisted(() => ({
   navigate: vi.fn(),
   close: vi.fn(),
   refresh: vi.fn(),
+  defaultIntegrationUid: "vision",
+}));
+vi.mock("@config/freeform/freeform.config", () => ({
+  default: {
+    metadata: {
+      freeform: {
+        get defaultAiIntegration() {
+          return fixture.defaultIntegrationUid;
+        },
+      },
+    },
+  },
 }));
 vi.mock("react-router-dom", () => ({ useNavigate: () => fixture.navigate }));
 vi.mock("axios", () => ({
@@ -60,7 +72,11 @@ vi.mock("@components/form-controls", () => ({
     updateValue,
   }: {
     value: string;
-    property: { handle: string; options?: { value: string; label: string }[] };
+    property: {
+      handle: string;
+      emptyOption?: string;
+      options?: { value: string; label: string }[];
+    };
     updateValue: (value: string) => void;
   }) =>
     property.options ? (
@@ -69,6 +85,9 @@ vi.mock("@components/form-controls", () => ({
         value={value}
         onChange={(event) => updateValue(event.target.value)}
       >
+        {property.emptyOption && (
+          <option value="">{property.emptyOption}</option>
+        )}
         {property.options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -114,6 +133,7 @@ function input(id: string, value: string) {
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
+  fixture.defaultIntegrationUid = "vision";
   sessionStorage.clear();
   localStorage.clear();
   vi.mocked(axios.post).mockReset();
@@ -419,3 +439,55 @@ it("opens the reference picker and hides prompt examples after attaching a file"
   expect(host.querySelector("li")!.textContent).toContain("PDF");
   choose.mockRestore();
 });
+
+function remountWithDefault(uid: string) {
+  fixture.defaultIntegrationUid = uid;
+  act(() => root.unmount());
+  root = createRoot(host);
+  act(() => root.render(<CreateWithAiFormModal closeModal={fixture.close} />));
+}
+
+it("preselects the configured form-generation default instead of the first integration", () => {
+  remountWithDefault("text");
+  const select = host.querySelector<HTMLSelectElement>("#integrationUid")!;
+  expect(select.value).toBe("text");
+  expect(select.selectedOptions[0].textContent).toBe("Text only (Default)");
+  act(() => {
+    select.value = "vision";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  input("prompt", "Contact form");
+  expect(select.value).toBe("vision");
+  act(() => {
+    select.value = "";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  expect(select.value).toBe("");
+});
+
+it.each(["", "removed-or-disabled"])(
+  "requires an explicit choice when the default is unavailable (%s)",
+  async (uid) => {
+    remountWithDefault(uid);
+    expect(
+      host.querySelector<HTMLSelectElement>("#integrationUid")!.value,
+    ).toBe("");
+    input("prompt", "Contact form");
+    expect(button("Generate form").disabled).toBe(true);
+    if (uid)
+      expect(host.textContent).toContain(
+        "The default AI integration is unavailable.",
+      );
+    await act(async () => button("Generate form").click());
+    expect(axios.post).not.toHaveBeenCalled();
+    const select = host.querySelector<HTMLSelectElement>("#integrationUid")!;
+    act(() => {
+      select.value = "text";
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(button("Generate form").disabled).toBe(false);
+    expect(host.textContent).not.toContain(
+      "The default AI integration is unavailable.",
+    );
+  },
+);

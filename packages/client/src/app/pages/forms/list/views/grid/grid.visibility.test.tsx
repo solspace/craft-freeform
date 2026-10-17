@@ -54,6 +54,9 @@ vi.mock("@ff-client/utils/notifications", () => ({
 }));
 vi.mock("axios", () => ({ default: { post: fixture.post } }));
 vi.mock("../../notices/notices", () => ({ Notices: () => null }));
+vi.mock("../../modals/hooks/use-add-form-modal", () => ({
+  useFormLimitModal: () => vi.fn(),
+}));
 vi.mock("./archived/archived", () => ({ Archived: () => null }));
 vi.mock("./card/card.loading", () => ({ CardLoading: () => <li>Loading</li> }));
 vi.mock("./card/card.preview", () => ({ CardPreview: () => null }));

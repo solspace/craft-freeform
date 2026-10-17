@@ -8,7 +8,7 @@ const script = readFileSync(
   "utf8",
 );
 
-function preview(hasNextPage: boolean, controls: string) {
+function preview(hasNextPage: boolean, controls: string, reduceMotion = false) {
   const doc = document.implementation.createHTMLDocument();
   doc.body.innerHTML = `
     <script id="freeform-preview-config" type="application/json">${JSON.stringify(
@@ -23,6 +23,11 @@ function preview(hasNextPage: boolean, controls: string) {
     <form id="form" data-freeform><input name="name" value="Test">${controls}</form>
     <button id="external" type="submit" form="form">External submit</button>`;
   const postMessage = vi.fn();
+  const scrollIntoView = vi.fn();
+  const focus = vi.fn();
+  const status = doc.getElementById("freeform-preview-status")!;
+  status.scrollIntoView = scrollIntoView;
+  status.focus = focus;
   new Function(
     "document",
     "window",
@@ -30,10 +35,16 @@ function preview(hasNextPage: boolean, controls: string) {
     "FormData",
     "TextEncoder",
     script,
-  )(doc, { parent: { postMessage } }, Element, FormData, TextEncoder);
+  )(
+    doc,
+    { parent: { postMessage }, matchMedia: () => ({ matches: reduceMotion }) },
+    Element,
+    FormData,
+    TextEncoder,
+  );
   doc.dispatchEvent(new Event("DOMContentLoaded"));
   postMessage.mockClear();
-  return { doc, postMessage };
+  return { doc, postMessage, scrollIntoView, focus };
 }
 
 describe("preview submission controls", () => {
@@ -43,15 +54,32 @@ describe("preview submission controls", () => {
     '<button id="submit" type="button" data-freeform-action="submit">Submit</button>',
     '<input id="submit" type="submit" value="Submit">',
     '<input id="submit" type="image" alt="Submit">',
-  ])("disables final submission for %s", (markup) => {
-    const { doc, postMessage } = preview(false, markup);
-    for (const id of ["submit", "external"]) {
-      const control = doc.getElementById(id) as HTMLButtonElement;
-      expect(control.disabled).toBe(true);
-      expect(control.getAttribute("aria-disabled")).toBe("true");
-    }
-    expect(postMessage).not.toHaveBeenCalled();
-  });
+  ])(
+    "shows the notice and scrolls to it instead of submitting for %s",
+    (markup) => {
+      const { doc, postMessage, scrollIntoView, focus } = preview(
+        false,
+        markup,
+      );
+      for (const id of ["submit", "external"]) {
+        const control = doc.getElementById(id) as HTMLButtonElement;
+        expect(control.disabled).toBe(false);
+        expect(control.getAttribute("aria-disabled")).toBeNull();
+        control.click();
+        expect(doc.getElementById("freeform-preview-status")!.hidden).toBe(
+          false,
+        );
+      }
+      expect(postMessage).not.toHaveBeenCalled();
+      expect(scrollIntoView).toHaveBeenCalledTimes(2);
+      expect(scrollIntoView).toHaveBeenCalledWith({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+      expect(focus).toHaveBeenCalledWith({ preventScroll: true });
+    },
+  );
 
   it("blocks Enter/requestSubmit on the final page without another preview request", () => {
     const { doc, postMessage } = preview(false, "<button>Submit</button>");
@@ -65,7 +93,7 @@ describe("preview submission controls", () => {
     expect(doc.getElementById("freeform-preview-status")!.hidden).toBe(false);
   });
 
-  it("still blocks submission if a custom script re-enables the button", () => {
+  it("intercepts nested submit controls before a template handler can submit", () => {
     const { doc, postMessage } = preview(
       false,
       '<button id="submit" type="button" data-freeform-action="submit"><span>Submit</span></button>',
@@ -125,5 +153,19 @@ describe("preview submission controls", () => {
       "back",
     ]);
     expect(doc.getElementById("freeform-preview-status")!.hidden).toBe(false);
+  });
+});
+
+it("scrolls to the notice without animation when reduced motion is preferred", () => {
+  const { doc, scrollIntoView } = preview(
+    false,
+    '<button id="submit">Submit</button>',
+    true,
+  );
+  (doc.getElementById("submit") as HTMLButtonElement).click();
+  expect(scrollIntoView).toHaveBeenCalledWith({
+    behavior: "auto",
+    block: "start",
+    inline: "nearest",
   });
 });

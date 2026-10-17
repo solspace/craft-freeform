@@ -32,7 +32,11 @@
 
   function showNotice() {
     var status = document.getElementById('freeform-preview-status');
-    if (status) status.hidden = false;
+    if (!status) return;
+    status.hidden = false;
+    status.focus({preventScroll: true});
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    status.scrollIntoView({behavior: reduceMotion ? 'auto' : 'smooth', block: 'start', inline: 'nearest'});
   }
 
   function advance() {
@@ -60,14 +64,6 @@
   document.addEventListener('input', function () { send('values'); });
   document.addEventListener('change', function () { send('values'); });
   document.addEventListener('DOMContentLoaded', function () {
-    if (config.hasNextPage !== true) {
-      document.querySelectorAll('button, input[type="submit"], input[type="image"]').forEach(function (control) {
-        if (isPreviewControl(control) && isSubmit(control) && !isBack(control) && !isSave(control)) {
-          control.disabled = true;
-          control.setAttribute('aria-disabled', 'true');
-        }
-      });
-    }
     send('values');
   });
   document.addEventListener('submit', function (event) {

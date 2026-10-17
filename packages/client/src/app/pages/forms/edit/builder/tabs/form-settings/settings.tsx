@@ -6,6 +6,7 @@ import type React from "react";
 import { useEffect } from "react";
 import {
   Outlet,
+  useLocation,
   useNavigate,
   useParams,
   useResolvedPath,
@@ -24,6 +25,11 @@ export const FormSettings: React.FC = () => {
   const limitations = config.limitations;
   const { sectionHandle } = useParams();
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const tourSearch =
+    new URLSearchParams(search).get("wizardTour") === "1"
+      ? "?wizardTour=1"
+      : "";
   const { lastTab, setLastTab } = useLastTab("settings");
   const currentPath = useResolvedPath("");
 
@@ -31,9 +37,9 @@ export const FormSettings: React.FC = () => {
 
   useEffect(() => {
     if (lastTab) {
-      navigate(lastTab);
+      navigate(`${lastTab}${tourSearch}`);
     }
-  }, [navigate, lastTab]);
+  }, [navigate, lastTab, tourSearch]);
 
   useEffect(() => {
     if (!sectionHandle && !lastTab) {
@@ -43,10 +49,10 @@ export const FormSettings: React.FC = () => {
 
       if (firstSection) {
         setLastTab(firstSection.handle);
-        navigate(`${firstSection.handle}`);
+        navigate(`${firstSection.handle}${tourSearch}`);
       }
     }
-  }, [data, sectionHandle, lastTab, navigate, setLastTab]);
+  }, [data, sectionHandle, lastTab, navigate, setLastTab, tourSearch]);
 
   if (!data && isFetching) {
     return <LoaderFormSettings />;

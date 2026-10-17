@@ -331,6 +331,10 @@ class LimitedUsersDefaults
                             new Boolean('limits', 'Limits'),
                         ]),
                 ]),
+            (new Group('preview', 'Preview'))
+                ->setChildren([
+                    new Boolean('tab', 'Preview Tab', true),
+                ]),
         ];
     }
 

@@ -43,15 +43,23 @@ const Chevron = () => (
   </svg>
 );
 
-export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
+export function TabsNavigation({
+  tabs,
+  previewActive,
+}: {
+  tabs: BuilderTab[];
+  previewActive?: number;
+}) {
   const tabCount = tabs.length;
   const { pathname } = useLocation();
-  const active = Math.max(
-    0,
-    tabs.findIndex((tab) =>
-      matchPath({ path: tab.to, end: tab.end ?? false }, pathname),
-    ),
-  );
+  const active =
+    previewActive ??
+    Math.max(
+      0,
+      tabs.findIndex((tab) =>
+        matchPath({ path: tab.to, end: tab.end ?? false }, pathname),
+      ),
+    );
   const region = useRef<HTMLDivElement>(null);
   const measurements = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState<number[]>([active]);
@@ -124,19 +132,35 @@ export function TabsNavigation({ tabs }: { tabs: BuilderTab[] }) {
   );
 
   return (
-    <TabsRegion ref={region}>
+    <TabsRegion ref={region} data-wizard-tour="tabs">
       <TabsWrapper className="main-tabs">
         {tabs.map((tab, index) =>
           visible.includes(index) ? (
-            <NavLink
-              key={tab.to}
-              to={tab.to}
-              end={tab.end}
-              className={classes(tab.errors && "errors")}
-              title={tab.label}
-            >
-              <span>{tab.label}</span>
-            </NavLink>
+            previewActive !== undefined ? (
+              <button
+                key={tab.to}
+                type="button"
+                tabIndex={-1}
+                className={classes(
+                  index === active && "active",
+                  tab.errors && "errors",
+                )}
+                title={tab.label}
+                data-builder-tab={tab.to}
+              >
+                <span>{tab.label}</span>
+              </button>
+            ) : (
+              <NavLink
+                key={tab.to}
+                to={tab.to}
+                end={tab.end}
+                className={classes(tab.errors && "errors")}
+                title={tab.label}
+              >
+                <span>{tab.label}</span>
+              </NavLink>
+            )
           ) : null,
         )}
         {overflow.length > 0 && (

@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return [
+return array_merge(require __DIR__.'/wizard.php', [
     'Describe what you need, or recreate a form from a PDF or image.' => 'Describe what you need, or recreate a form from a PDF or image.',
     'Drop a PDF or image here to recreate its fields.' => 'Drop a PDF or image here to recreate its fields.',
     'Choose files' => 'Choose files',
@@ -1536,6 +1536,8 @@ return [
     'Notifications Defaults' => 'Notifications Defaults',
     'Settings Defaults' => 'Settings Defaults',
     'No default set' => 'No default set',
+
+    'Preview Tab' => 'Preview Tab',
 
     // Settings // Limited Users
     'Limited Users' => 'Limited Users',
@@ -3884,4 +3886,12 @@ return [
     'Prompt is required.' => 'Prompt is required.',
     'Page 1' => 'Page 1',
     'Page {n}' => 'Page {n}',
-];
+    'Could not check the form limit. Please try again.' => 'Could not check the form limit. Please try again.',
+    'Need more forms?' => 'Need more forms?',
+    'Express includes one form, and yours is already set up.' => 'Express includes one form, and yours is already set up.',
+    'Unlimited forms' => 'Unlimited forms',
+    'Upgrade to Lite or Pro whenever you’re ready for more.' => 'Upgrade to Lite or Pro whenever you’re ready for more.',
+    'Compare editions' => 'Compare editions',
+    'Upgrade to Lite or Pro' => 'Upgrade to Lite or Pro',
+    'Both editions include unlimited forms.' => 'Both editions include unlimited forms.',
+]);

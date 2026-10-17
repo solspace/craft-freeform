@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return [
+return array_merge(require __DIR__.'/wizard.php', [
     'Describe what you need, or recreate a form from a PDF or image.' => 'Beschrijf wat je nodig hebt of maak een formulier na vanuit een PDF of afbeelding.',
     'Drop a PDF or image here to recreate its fields.' => 'Sleep hier een PDF of afbeelding om de velden na te maken.',
     'Choose files' => 'Bestanden kiezen',
@@ -1528,6 +1528,8 @@ return [
     'Notifications Defaults' => 'Standaardinstellingen voor meldingen',
     'Settings Defaults' => 'Instellingen Standaardwaarden',
     'No default set' => 'Geen standaard ingesteld',
+
+    'Preview Tab' => 'Tabblad Voorbeeld',
 
     // Settings // Limited Users
     'Limited Users' => 'Beperkte gebruikers',
@@ -3839,4 +3841,12 @@ return [
     'Prompt is required.' => 'Een beschrijving is vereist.',
     'Page 1' => 'Pagina 1',
     'Page {n}' => 'Pagina {n}',
-];
+    'Could not check the form limit. Please try again.' => 'De formulierlimiet kon niet worden gecontroleerd. Probeer het opnieuw.',
+    'Need more forms?' => 'Meer formulieren nodig?',
+    'Express includes one form, and yours is already set up.' => 'Express bevat één formulier, en dat van jou is al ingesteld.',
+    'Unlimited forms' => 'Onbeperkt formulieren',
+    'Upgrade to Lite or Pro whenever you’re ready for more.' => 'Stap over naar Lite of Pro zodra je meer nodig hebt.',
+    'Compare editions' => 'Edities vergelijken',
+    'Upgrade to Lite or Pro' => 'Upgrade naar Lite of Pro',
+    'Both editions include unlimited forms.' => 'Beide edities bevatten onbeperkt formulieren.',
+]);

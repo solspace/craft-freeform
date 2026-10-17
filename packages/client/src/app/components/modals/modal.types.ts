@@ -9,6 +9,7 @@ export type ModalContainerProps<T = GenericValue> = PropsWithChildren<{
 }>;
 
 export type ModalConfig = {
+  animation?: "default" | "fade";
   allowEscape?: boolean;
   requireConfirmation?: boolean;
   confirmationMessage?: string;

@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return [
+return array_merge(require __DIR__.'/wizard.php', [
     'Describe what you need, or recreate a form from a PDF or image.' => 'Beschreiben Sie Ihren Bedarf oder erstellen Sie ein Formular anhand einer PDF-Datei oder eines Bildes nach.',
     'Drop a PDF or image here to recreate its fields.' => 'Ziehen Sie eine PDF-Datei oder ein Bild hierher, um die Felder nachzubilden.',
     'Choose files' => 'Dateien auswählen',
@@ -1528,6 +1528,8 @@ return [
     'Notifications Defaults' => 'Benachrichtigungs-Standards',
     'Settings Defaults' => 'Einstellungs-Standards',
     'No default set' => 'Kein Standard festgelegt',
+
+    'Preview Tab' => 'Vorschau-Tab',
 
     // Settings // Limited Users
     'Limited Users' => 'Eingeschränkte Benutzer',
@@ -3876,4 +3878,12 @@ return [
     'Prompt is required.' => 'Eine Beschreibung ist erforderlich.',
     'Page 1' => 'Seite 1',
     'Page {n}' => 'Seite {n}',
-];
+    'Could not check the form limit. Please try again.' => 'Das Formularlimit konnte nicht geprüft werden. Bitte versuchen Sie es erneut.',
+    'Need more forms?' => 'Brauchen Sie mehr Formulare?',
+    'Express includes one form, and yours is already set up.' => 'Express enthält ein Formular – und Ihres ist bereits eingerichtet.',
+    'Unlimited forms' => 'Unbegrenzte Formulare',
+    'Upgrade to Lite or Pro whenever you’re ready for more.' => 'Wechseln Sie zu Lite oder Pro, sobald Sie mehr benötigen.',
+    'Compare editions' => 'Editionen vergleichen',
+    'Upgrade to Lite or Pro' => 'Auf Lite oder Pro upgraden',
+    'Both editions include unlimited forms.' => 'Beide Editionen enthalten unbegrenzte Formulare.',
+]);

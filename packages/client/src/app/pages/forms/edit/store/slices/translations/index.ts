@@ -1,3 +1,4 @@
+import { applyLabels } from "@editor/store/actions/labels";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -70,6 +71,18 @@ export const translationSlice = createSlice({
     init: (_, action: PayloadAction<TranslationState>) => {
       return action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(applyLabels, (state, { payload }) => {
+      const { siteId, labels } = payload;
+      if (siteId === undefined || !labels.length) return;
+      state[siteId] ??= { fields: {}, form: {}, pages: {} };
+      state[siteId].fields ??= {};
+      for (const { uid, label } of labels) {
+        state[siteId].fields[uid] ??= {};
+        state[siteId].fields[uid].label = label;
+      }
+    });
   },
 });
 

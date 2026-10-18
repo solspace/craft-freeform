@@ -164,6 +164,35 @@ it("turns a manually entered simple Twig expression into a pill on blur", async 
   expect(tagify.getTagElms()[0].textContent).toContain("City");
 });
 
+it.each(["saved", "typed"])(
+  "does not warn when a %s sample token starts the input",
+  async (source) => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const value = "{{ faker.city }}123";
+    try {
+      const tagify = render(source === "saved" ? value : "");
+      if (source === "typed") {
+        act(() => {
+          tagify.DOM.input.focus();
+          tagify.injectAtCaret(value);
+        });
+        await settle();
+        act(() => host.querySelector("button")!.focus());
+      }
+      await settle();
+      expect(tagify.getTagElms()).toHaveLength(1);
+      act(() => expect(editor.current!.flush()).toBe(value));
+      expect(
+        warn.mock.calls.filter((args) =>
+          args.some((arg) => String(arg).includes("tag element doesn't exist")),
+        ),
+      ).toEqual([]);
+    } finally {
+      warn.mockRestore();
+    }
+  },
+);
+
 it("inserts in the middle and removes a pill without consuming surrounding text", async () => {
   const tagify = render(
     "Before {{ faker.firstName }} middle {{ faker.lastName }} after",

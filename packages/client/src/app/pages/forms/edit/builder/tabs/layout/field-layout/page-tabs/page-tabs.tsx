@@ -1,4 +1,5 @@
 import config, { Edition } from "@config/freeform/freeform.config";
+import { LabelUtility } from "@editor/builder/label-utility/label-utility";
 import { useAppDispatch } from "@editor/store";
 import { pageActions } from "@editor/store/slices/layout/pages";
 import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
@@ -66,6 +67,7 @@ export const PageTabs: React.FC = () => {
 
         {canAddPages && <NewTab />}
       </PageTabsContainer>
+      <LabelUtility />
     </PageTabsWrapper>
   );
 };

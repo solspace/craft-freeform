@@ -16,10 +16,12 @@ export const encodeSampleTokens = (
   byId: ReadonlyMap<string, SampleGenerator>,
 ): string =>
   sampleParts(value)
-    .map((part) => {
+    .map((part, index) => {
       const generator = part.type === "sample" ? byId.get(part.id) : undefined;
       return generator
-        ? sampleTokenDelimiters[0] +
+        ? // Tagify expects a caret text node before a leading token.
+          (index === 0 ? "\u200B" : "") +
+            sampleTokenDelimiters[0] +
             JSON.stringify({
               value: generator.id,
               label: generator.label,

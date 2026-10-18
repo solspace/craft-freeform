@@ -1,3 +1,4 @@
+import { applyLabels } from "@editor/store/actions/labels";
 import type {
   FieldType,
   PropertyValueCollection,
@@ -239,6 +240,18 @@ export const fieldsSlice = createSlice({
           });
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(applyLabels, (state, { payload }) => {
+      if (payload.siteId !== undefined) return;
+      const labels = new Map(
+        payload.labels.map(({ uid, label }) => [uid, label]),
+      );
+      for (const field of state) {
+        const label = labels.get(field.uid);
+        if (label !== undefined) field.properties.label = label;
+      }
+    });
   },
 });
 

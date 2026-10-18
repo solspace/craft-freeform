@@ -1,4 +1,5 @@
 import { CurrentValue } from "@components/elements/custom-dropdown/dropdown.styles";
+import { ControlWrapper } from "@components/form-controls/control.styles";
 import { Sidebar } from "@components/layout/sidebar/sidebar";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -15,6 +16,7 @@ export const PreviewSidebar = styled(Sidebar)`
   h2 { margin: 0 0 ${spacings.md}; }
   p { font-size: 13px; line-height: 1.5; }
   details { margin-top: ${spacings.lg}; }
+  details > ${ControlWrapper} + ${ControlWrapper} { margin-top: ${spacings.lg}; }
   summary { cursor: pointer; font-weight: 600; }
 `;
 

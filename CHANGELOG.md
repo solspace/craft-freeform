@@ -1,5 +1,34 @@
 # Solspace Freeform Changelog
 
+## 5.17.2 - 2026-10-18
+
+### Added
+- Added **Guided setup** for creating forms from starter forms, with field customization, live previews, and notification setup.
+- Added settings to choose which form creation methods are available and preselect a default AI integration.
+- Added **Bulk edit labels** with capitalization, trailing colon, spacing, and find-and-replace tools. Supports page and field-type filters, translated labels, and change previews. Field handles remain unchanged, and each update can be undone in one step.
+- Added a searchable **Sample data** picker beside supported Default Value settings, with readable tokens, example values, and support for manually entered Twig expressions.
+- Added optional random sample selections for option fields, including multiple selections for multi-option fields.
+- Added sample PDF, image, and text files for testing upload fields. Samples respect upload restrictions and are ignored when processing submissions. Drag-and-drop fields can display up to three sample files.
+- Added a configurable **Reasoning Effort** setting to the OpenAI integration for supported models.
+
+### Changed
+- Refreshed **Create with AI** with prompt examples, improved reference uploads, clearer progress, an elapsed timer, and an **Open form** action after generation.
+- Updated supported OpenAI form generation to use resumable background requests, honor the configured token allowance, and guard against duplicate requests and form imports.
+- AI-generated forms now prefer **Rich Text** fields for headings, instructions, and other static content.
+- HTML and Rich Text fields now hide their labels in the builder layout when content is present.
+- Refined builder previews with consistent input heights, lighter default values, improved label and instruction spacing, and clearer required indicators.
+- Reduced visual clutter by showing field tools, association badges, and sample data indicators on hover or when a field is active.
+- Added expandable help beside common field settings and standardized token styling throughout the builder.
+- Moved Opinion Scale default selection into the option editor, with one selectable default and updated preview styling.
+- Replaced browser confirmation dialogs throughout the builder with consistent, accessible modals, including confirmations before deleting fields, groups, and table columns.
+- Improved Express edition form-limit messaging with clearer upgrade guidance.
+- Localized the confirmation word used when deleting forms.
+
+### Fixed
+- Fixed AI-generated forms not respecting the default **Formatting Template** setting.
+- Fixed empty **Other** form groups appearing unnecessarily while preserving drag-and-drop support.
+- Fixed the Preview tab not respecting limited-user permissions.
+
 ## 5.17.1 - 2026-10-16
 
 ### Added

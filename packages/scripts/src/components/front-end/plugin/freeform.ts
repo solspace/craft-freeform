@@ -10,6 +10,7 @@ import InputMaskHandler from "@lib/plugin/handlers/fields/input-mask";
 import PasswordToggleHandler from "@lib/plugin/handlers/fields/password-toggle";
 import RangeHandler from "@lib/plugin/handlers/fields/range";
 import RatingHandler from "@lib/plugin/handlers/fields/rating";
+import SampleFilesHandler from "@lib/plugin/handlers/fields/sample-files";
 import SearchableSelectHandler from "@lib/plugin/handlers/fields/searchable-select";
 import SignatureHandler from "@lib/plugin/handlers/fields/signature";
 import SummaryHandler from "@lib/plugin/handlers/fields/summary";
@@ -97,6 +98,7 @@ export default class Freeform {
     TableHandler,
     GoogleTagManager,
     DragAndDropHandler,
+    SampleFilesHandler,
     SaveFormHandler,
     CardsHandler,
     SearchableSelectHandler,

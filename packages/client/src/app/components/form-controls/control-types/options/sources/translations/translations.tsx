@@ -1,5 +1,8 @@
+import { Label } from "@components/form-controls/label.styles";
+import { OptionsHeading } from "@editor/builder/sample-data/sample-data.styles";
 import type { Field } from "@editor/store/slices/layout/fields";
 import type { OptionsProperty } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import type { OptionsConfiguration } from "../../options.types";
@@ -14,6 +17,7 @@ export type TranslateOptionsProps = {
   field: Field;
   property: OptionsProperty;
   context: Field;
+  headerAction?: React.ReactNode;
 };
 
 export const OptionsTranslatable: React.FC<TranslateOptionsProps> = (props) => {
@@ -23,7 +27,15 @@ export const OptionsTranslatable: React.FC<TranslateOptionsProps> = (props) => {
       return <SourceCustom {...props} />;
 
     case "elements":
-      return <SourceElements {...props} />;
+      return (
+        <>
+          <OptionsHeading>
+            <Label>{translate("Options")}</Label>
+            {props.headerAction}
+          </OptionsHeading>
+          <SourceElements {...props} />
+        </>
+      );
 
     default:
       return null;

@@ -15,6 +15,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Library\Security\RemoteUrlValidator;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\SampleFileService;
 use yii\base\Event;
 use yii\base\InvalidArgumentException;
 
@@ -24,8 +25,10 @@ class FileUploadValidation extends FeatureBundle
         private FilesService $filesService,
         private FileUploadValidationHelper $validationHelper,
         private ?RemoteUrlValidator $remoteUrlValidator = null,
+        private ?SampleFileService $sampleFiles = null,
     ) {
         $this->remoteUrlValidator ??= new RemoteUrlValidator();
+        $this->sampleFiles ??= new SampleFileService($filesService);
 
         Event::on(
             FieldInterface::class,
@@ -83,7 +86,7 @@ class FileUploadValidation extends FeatureBundle
             }
         }
 
-        if (!$uploadedFiles && $field->isRequired()) {
+        if (!$uploadedFiles && $field->isRequired() && !$this->sampleFiles->hasSubmittedSample($field)) {
             $field->addError(Freeform::t('This field is required'));
         }
 

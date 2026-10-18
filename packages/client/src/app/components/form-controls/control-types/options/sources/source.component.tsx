@@ -21,6 +21,7 @@ export const SourceComponent: React.FC<ConfigurationProps> = ({
   convertToCustomValues,
   isMultiple,
   autoUpdateHandle,
+  headerAction,
 }) => {
   const { source = Source.Custom } = value;
 
@@ -43,6 +44,7 @@ export const SourceComponent: React.FC<ConfigurationProps> = ({
           convertToCustomValues={convertToCustomValues}
           isMultiple={isMultiple}
           autoUpdateHandle={autoUpdateHandle}
+          headerAction={headerAction}
         />
       </Suspense>
     </ErrorBoundary>

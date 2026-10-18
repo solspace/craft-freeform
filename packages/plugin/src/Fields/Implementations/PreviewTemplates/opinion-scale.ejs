@@ -12,8 +12,8 @@
             <% var id = namespace + '-' + index; %>
             <% var isChecked = (selectedValue !== null && value === selectedValue); %>
 
-            <li style="<%= isChecked ? 'background: rgb(230, 230, 230);' : '' %>">
-                <input id="<%= id %>" type="radio" name="<%= fieldName %>" value="<%= value %>" <%= isChecked ? 'checked' : '' %> />
+            <li>
+                <input id="<%= id %>" type="radio" name="<%= fieldName %>" value="<%= value %>" disabled <%= isChecked ? 'checked' : '' %> />
                 <label for="<%= id %>"><%= label %></label>
             </li>
         <% }); %>

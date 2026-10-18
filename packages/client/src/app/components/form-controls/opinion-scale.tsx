@@ -29,6 +29,7 @@ type Props = {
   typeClass: string;
   property: Property;
   properties: Property[];
+  labelAction?: React.ReactNode;
   renderProperty: (
     property: Property,
     control?: ControlComponent,
@@ -39,6 +40,57 @@ type EditorActions = { finish: () => void; cancel: () => void };
 const CleanupContext = createContext<
   (handle: string, actions: EditorActions) => void
 >(() => {});
+const EditorContentContext = createContext<React.ReactNode>(null);
+const DefaultSelectionContext = createContext<
+  | {
+      value: string;
+      onChange: (value: string) => void;
+      readOnly?: boolean;
+    }
+  | undefined
+>(undefined);
+
+// Use the existing property control to retain field, favorite, and translation updates.
+const DefaultValueControl: React.FC<ControlType<Property>> = ({
+  property,
+  value,
+  updateValue,
+  context,
+}) => {
+  const content = useContext(EditorContentContext);
+  const registerCleanup = useContext(CleanupContext);
+  const rollback = usePreviewRollback(
+    value,
+    updateValue,
+    property.handle,
+    context,
+  );
+  const captured = useRef(false);
+  useLayoutEffect(() => {
+    if (!captured.current) {
+      rollback.onEdit();
+      captured.current = true;
+    }
+    registerCleanup(property.handle, {
+      finish: () => {},
+      cancel: rollback.onCancel,
+    });
+  }, [registerCleanup, property.handle, rollback]);
+  return (
+    <DefaultSelectionContext.Provider
+      value={{
+        value: String(value ?? ""),
+        onChange: (nextValue) => updateValue?.(nextValue),
+        readOnly:
+          property.disabled ||
+          property.flags?.includes("readonly") ||
+          property.flags?.includes("as-readonly-in-instance"),
+      }}
+    >
+      {content}
+    </DefaultSelectionContext.Provider>
+  );
+};
 const Sections = styled.div`
   display: flex;
   flex-direction: column;
@@ -143,6 +195,7 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
   const values = Array.isArray(value) ? value : [];
   const isTranslating = willTranslate(property.handle);
   const isScales = property.handle === "scales";
+  const defaultSelection = useContext(DefaultSelectionContext);
   const displayProperty = {
     ...property,
     instructions: isScales
@@ -187,6 +240,7 @@ const InlineControl: React.FC<ControlType<TabularDataProperty>> = ({
             : "No legends yet. Legends are optional."
         }
         showHelp={false}
+        defaultSelection={isScales ? defaultSelection : undefined}
       />
     </Control>
   );
@@ -197,6 +251,7 @@ export const OpinionScaleProperty: React.FC<Props> = ({
   typeClass,
   property,
   properties,
+  labelAction,
   renderProperty,
 }) => {
   const cleanups = useRef(new Map<string, EditorActions>());
@@ -208,20 +263,33 @@ export const OpinionScaleProperty: React.FC<Props> = ({
     (item) =>
       item.handle === "legends" && item.type === PropertyType.TabularData,
   );
+  const defaultProperty = properties.find(
+    (item) => item.handle === "defaultValue",
+  );
   if (
     typeClass !== Fields.OpinionScale ||
     !scales ||
     !legends ||
-    !["scales", "legends"].includes(property.handle)
+    !["scales", "legends", "defaultValue"].includes(property.handle)
   ) {
     return <>{renderProperty(property)}</>;
   }
-  if (property.handle === "legends") return null;
+  if (property.handle === "legends" || property.handle === "defaultValue")
+    return null;
+  const editorContents = (
+    <>
+      <Sections>
+        {renderProperty(scales, InlineControl as ControlComponent)}
+        {renderProperty(legends, InlineControl as ControlComponent)}
+      </Sections>
+      {renderProperty(legends, EditorHintControl as ControlComponent)}
+    </>
+  );
   return (
     <CleanupContext.Provider
       value={(handle, cleanup) => cleanups.current.set(handle, cleanup)}
     >
-      <Control label="Scales & Legends">
+      <Control label="Scales & Legends" extraContent={labelAction}>
         <PreviewSlideout
           title={translate("Opinion Scale Configuration")}
           fillEditor={false}
@@ -243,11 +311,16 @@ export const OpinionScaleProperty: React.FC<Props> = ({
             })
           }
         >
-          <Sections>
-            {renderProperty(scales, InlineControl as ControlComponent)}
-            {renderProperty(legends, InlineControl as ControlComponent)}
-          </Sections>
-          {renderProperty(legends, EditorHintControl as ControlComponent)}
+          {defaultProperty ? (
+            <EditorContentContext.Provider value={editorContents}>
+              {renderProperty(
+                defaultProperty,
+                DefaultValueControl as ControlComponent,
+              )}
+            </EditorContentContext.Provider>
+          ) : (
+            editorContents
+          )}
         </PreviewSlideout>
       </Control>
     </CleanupContext.Provider>

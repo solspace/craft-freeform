@@ -240,7 +240,7 @@ const dispatchChange = (container: HTMLElement, freeform: Freeform) => {
   ) as OnChangeEvent;
 };
 
-const formatFileSize = (bytes: number): string => {
+export const formatFileSize = (bytes: number): string => {
   const units = ["B", "KB", "MB", "GB", "TB"];
 
   if (bytes < 1024) {

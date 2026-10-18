@@ -35,6 +35,7 @@ use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Services\SampleFileService;
 use Twig\Markup;
 
 #[Type(
@@ -50,6 +51,12 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
     public const DEFAULT_MAX_FILESIZE_KB = 2048;
     public const DEFAULT_FILE_COUNT = 1;
+
+    #[Input\Boolean(
+        label: 'Sample data',
+        instructions: 'Show a sample file for testing. Sample files are ignored on submission.',
+    )]
+    protected bool $sampleData = false;
 
     #[Limitation('props.file', 'fileKinds')]
     #[DefaultValue('props.file.fileKinds')]
@@ -99,6 +106,16 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
      * Contains any errors for a given upload field.
      */
     private static array $filesUploadedErrors = [];
+
+    public function isSampleDataEnabled(): bool
+    {
+        return $this->sampleData;
+    }
+
+    public function getSampleFileDescriptor(): ?array
+    {
+        return (new SampleFileService())->createDescriptor($this);
+    }
 
     public function getType(): string
     {
@@ -243,6 +260,11 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
         if ($this->isShowUploadRequirements()) {
             $attributes->append('aria-describedby', $this->getIdAttribute().'-upload-requirements');
+        }
+
+        $sample = $this->getSampleFileDescriptor();
+        if ($sample) {
+            $attributes->set('data-freeform-sample-file', json_encode($sample, \JSON_THROW_ON_ERROR));
         }
 
         $input = Html::tag(

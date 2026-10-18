@@ -2,7 +2,7 @@ import type Freeform from "@components/front-end/plugin/freeform";
 import events from "@lib/plugin/constants/event-types";
 import { dispatchCustomEvent } from "@lib/plugin/helpers/event-handling";
 import type { FreeformHandler } from "types/form";
-
+import { clearSampleFile } from "../sample-files";
 import { clearFormLock, handleFormLock } from "./error-handling";
 import { handleFileUpload, loadExistingUploads } from "./file-upload";
 import { showError } from "./messaging";
@@ -141,6 +141,8 @@ class DragAndDropFile implements FreeformHandler {
   };
 
   initFileUpload = (files: FileList, container: HTMLElement): void => {
+    if (!files.length) return;
+    clearSampleFile(container);
     const { freeformFileUpload: handle, maxFiles, maxSize } = container.dataset;
     const { messageSize, messageFiles } = container.dataset;
     const previewZone = container.querySelector("[data-preview-zone]");

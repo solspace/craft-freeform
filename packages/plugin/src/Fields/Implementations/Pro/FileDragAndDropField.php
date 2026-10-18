@@ -173,6 +173,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             $attributes->set('data-dialog-selector', $this->getConfirmDialogSelector());
         }
 
+        $sample = $this->getSampleFileDescriptor();
+        if ($sample) {
+            $attributes->set('data-freeform-sample-file', json_encode($sample, \JSON_THROW_ON_ERROR));
+        }
+
         $output = '<div data-placeholder class="freeform-file-dnd__placeholder">';
         $output .= $placeholderText;
         $output .= '</div>';

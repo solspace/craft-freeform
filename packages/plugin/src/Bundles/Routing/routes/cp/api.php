@@ -9,6 +9,7 @@ return [
     'freeform/api/fields/types' => 'freeform/api/fields/types',
     'freeform/api/fields/types/sections' => 'freeform/api/fields/types/sections',
     'freeform/api/fields/types/groups' => 'freeform/api/fields/groups',
+    'freeform/api/sample-data' => 'freeform/api/sample-data',
 
     // FORMS
     'freeform/api/forms' => 'freeform/api/forms',

@@ -16,6 +16,7 @@ type Props = {
   errors?: string[];
   context?: unknown;
   preContent?: React.ReactNode;
+  extraContent?: React.ReactNode;
   align?: "start" | "center" | "end";
   justify?: "start" | "center" | "end";
 };
@@ -32,6 +33,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   errors,
   context,
   preContent,
+  extraContent,
   align,
   justify,
 }) => {
@@ -60,6 +62,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
         resolvedHandle && removeTranslation(resolvedHandle)
       }
       preContent={preContent}
+      extraContent={extraContent}
       align={align}
       justify={justify}
     >

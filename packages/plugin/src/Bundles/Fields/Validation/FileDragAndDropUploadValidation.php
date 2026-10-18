@@ -9,6 +9,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\SampleFileService;
 use yii\base\Event;
 
 class FileDragAndDropUploadValidation extends FeatureBundle
@@ -27,7 +28,9 @@ class FileDragAndDropUploadValidation extends FeatureBundle
     public function __construct(
         private FilesService $filesService,
         private FileUploadValidationHelper $validationHelper,
+        private ?SampleFileService $sampleFiles = null,
     ) {
+        $this->sampleFiles ??= new SampleFileService($filesService);
         Event::on(
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
@@ -47,7 +50,7 @@ class FileDragAndDropUploadValidation extends FeatureBundle
 
         $file = $_FILES[$handle] ?? null;
         if (!$file) {
-            if ($field->isRequired() && empty($field->getValue())) {
+            if ($field->isRequired() && empty($field->getValue()) && !$this->sampleFiles->hasSubmittedSample($field)) {
                 $field->addError(Freeform::t('This field is required'));
             }
 

@@ -77,6 +77,20 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         $uploadedFileCount = \count($_FILES[$field->getHandle()]['name']);
 
+        $sampleIndexes = [];
+        if ($field->isSampleDataEnabled()) {
+            $samples = new SampleFileService($this);
+            $entries = (new FileUploadValidationHelper($this))->normalizeFilesInput($_FILES[$field->getHandle()]);
+            foreach ($entries as $index => $entry) {
+                if ($samples->isSampleUpload($field, $entry)) {
+                    $sampleIndexes[$index] = true;
+                }
+            }
+            if ($sampleIndexes && \count($sampleIndexes) === $uploadedFileCount) {
+                return new FileUploadResponse([]);
+            }
+        }
+
         $beforeUploadEvent = new UploadEvent($field);
         $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);
 
@@ -88,6 +102,9 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         $uploadedAssetIds = $errors = [];
         for ($i = 0; $i < $uploadedFileCount; ++$i) {
+            if (isset($sampleIndexes[$i])) {
+                continue;
+            }
             $uploadedFile = UploadedFile::getInstanceByName($field->getHandle()."[{$i}]");
 
             if (!$uploadedFile) {
@@ -375,6 +392,11 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         // Upload restrictions must hold even when page or conditional validation is skipped.
         $file = $_FILES[$field->getHandle()];
+        if ((new SampleFileService($this))->isSampleUpload($field, $file)) {
+            $field->addError(Freeform::t('Sample files are ignored on submission.'));
+
+            return null;
+        }
         $validationHelper = new FileUploadValidationHelper($this);
         $validationHelper->validateFileEntry(
             $file,

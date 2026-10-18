@@ -1,4 +1,6 @@
+import { Tooltip } from "@components/elements/tooltip/tooltip";
 import SpinnerIcon from "@components/loaders/spinner";
+import { DiceIcon } from "@editor/builder/sample-data/dice-icon";
 import { type RootState, useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
@@ -8,6 +10,7 @@ import { useFieldType } from "@ff-client/queries/field-types";
 import { Type } from "@ff-client/types/fields";
 import classes from "@ff-client/utils/classes";
 import { hasErrors } from "@ff-client/utils/errors";
+import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
 import { memo, useMemo } from "react";
@@ -25,6 +28,7 @@ import {
   LabelIcon,
   LabelText,
   Row,
+  SampleValueMarker,
 } from "./cell.styles";
 import { useFieldPreview } from "./use-field-preview";
 
@@ -46,7 +50,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
     [type],
   );
 
-  const [preview, isLoadingPreview] = useFieldPreview(field, type);
+  const [preview, isLoadingPreview, sample] = useFieldPreview(field, type);
   const [spinnerAnimation, iconAnimation] =
     useLoaderAnimation(isLoadingPreview);
 
@@ -92,6 +96,25 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
     "instructions",
     field.properties.instructions,
   );
+
+  const sampleMarker = sample ? (
+    <SampleValueMarker $select={type.type === "dropdown"}>
+      <Tooltip
+        title={translate("Sample data: {generator}", {
+          generator: translate(sample.label),
+        })}
+      >
+        <button
+          type="button"
+          aria-label={translate("Sample data: {generator}", {
+            generator: translate(sample.label),
+          })}
+        >
+          <DiceIcon />
+        </button>
+      </Tooltip>
+    </SampleValueMarker>
+  ) : null;
 
   return (
     <FieldCellWrapper
@@ -139,15 +162,19 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
 
       {type.type !== Type.Group &&
         (hideLabel ? (
-          <Row>
+          <Row className={sample ? "sample-preview" : undefined}>
             <HtmlPreviewElement
               className={hasContentPreview ? "content-preview" : undefined}
               $fullWidth={hasContentPreview}
               dangerouslySetInnerHTML={previewMarkup}
             />
+            {sampleMarker}
           </Row>
         ) : (
-          <div dangerouslySetInnerHTML={previewMarkup} />
+          <div className={sample ? "sample-preview" : undefined}>
+            <div dangerouslySetInnerHTML={previewMarkup} />
+            {sampleMarker}
+          </div>
         ))}
     </FieldCellWrapper>
   );

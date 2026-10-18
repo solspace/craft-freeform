@@ -119,6 +119,12 @@ export const FieldCellWrapper = styled.div`
     > :last-child { margin-block-end: 0; }
   }
 
+  .sample-preview {
+    position: relative;
+    input:not([type='checkbox']):not([type='radio']), textarea { padding-inline-end: 32px; }
+    select:not([multiple]) { padding-inline-end: 50px; }
+  }
+
   &.errors {
     &,
     label {
@@ -330,6 +336,35 @@ export const FieldCellWrapper = styled.div`
 export const Row = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+export const SampleValueMarker = styled.div<{ $select?: boolean }>`
+  position: absolute;
+  right: ${({ $select }) => ($select ? "30px" : "8px")};
+  top: 8px;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+
+  ${FieldCellWrapper}:hover > .sample-preview > &,
+  ${FieldCellWrapper}.active > .sample-preview > &,
+  ${FieldCellWrapper}:focus-within > .sample-preview > & {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  button {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: ${colors.gray300};
+  }
+  button:hover, button:focus { color: #3476b8; }
+  button:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; border-radius: 3px; }
 `;
 
 export const HtmlPreviewElement = styled.div<{ $fullWidth?: boolean }>`

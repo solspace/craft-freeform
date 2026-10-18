@@ -1,11 +1,23 @@
 <div class="fullwidth">
   <select class="fullwidth" multiple>
-    <% generatedOptions.forEach(function(option) { %>
-        <option value="<%= option.value %>"
-                <% if (option.checked) { %>selected<% } %>
+    <% const renderOptions = function(options) {
+        let openGroup = false;
+        options.forEach(function(option) {
+            if (option.children || option.optgroup) {
+                if (openGroup) { %></optgroup><% openGroup = false; }
+                %><optgroup label="<%- option.label %>"><%
+                if (option.children) {
+                    renderOptions(option.children);
+                    %></optgroup><%
+                } else { openGroup = true; }
+            } else { %>
+        <option value="<%- option.value %>"
+                <% if (defaultValue.includes(option.value)) { %>selected<% } %>
         >
-            <%= option.label %>
+            <%- option.label %>
         </option>
-    <% }); %>
+    <% } });
+        if (openGroup) { %></optgroup><% }
+    }; renderOptions(generatedOptions); %>
   </select>
 </div>

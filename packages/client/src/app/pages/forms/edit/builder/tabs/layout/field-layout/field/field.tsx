@@ -3,18 +3,19 @@ import { RemoveButton } from "@components/elements/remove-button/remove";
 import config from "@config/freeform/freeform.config";
 import type { Row } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
-import { contextActions } from "@editor/store/slices/context";
+import { contextActions, FocusType } from "@editor/store/slices/context";
 import type { Field as FieldPropType } from "@editor/store/slices/layout/fields";
 import { fieldThunks } from "@editor/store/thunks/fields";
 import type React from "react";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo } from "react";
 import { DragPreviewImage } from "react-dnd";
 
 import { FieldCell } from "./cell/cell";
+import { FieldAssociationsBadges } from "./cell/cell-badges";
 import { useFieldDragAnimation } from "./field.animations";
 import { useFieldDrag } from "./field.drag";
 import { createPreview } from "./field.drag.preview";
-import { FieldWrapper } from "./field.styles";
+import { FieldTools, FieldWrapper } from "./field.styles";
 
 type Props = {
   field: FieldPropType;
@@ -41,7 +42,6 @@ export const Field: React.FC<Props> = memo(
     hoverPosition,
   }) => {
     const dispatch = useAppDispatch();
-    const [hovering, setHovering] = useState(false);
     const { isDragging, drag, preview } = useFieldDrag(field, index);
     const style = useFieldDragAnimation({
       width,
@@ -64,29 +64,47 @@ export const Field: React.FC<Props> = memo(
       <>
         <DragPreviewImage connect={preview} src={dragPreview} />
         <FieldWrapper
-          onMouseEnter={() => setHovering(true)}
-          onMouseLeave={() => setHovering(false)}
+          role="group"
+          aria-label={field.properties?.label}
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (
+              event.target === event.currentTarget &&
+              (event.key === "Enter" || event.key === " ")
+            ) {
+              event.preventDefault();
+              dispatch(
+                contextActions.setFocusedItem({
+                  type: FocusType.Field,
+                  uid: field.uid,
+                }),
+              );
+            }
+          }}
           ref={(el) => {
             drag(el);
           }}
           style={style}
         >
-          {canDuplicate && (
-            <DuplicateButton
-              active={hovering}
+          <FieldTools>
+            <FieldAssociationsBadges uid={field.uid} />
+            {canDuplicate && (
+              <DuplicateButton
+                active
+                onClick={() => {
+                  dispatch(contextActions.unfocus());
+                  dispatch(fieldThunks.duplicate(field, row));
+                }}
+              />
+            )}
+            <RemoveButton
+              active
               onClick={() => {
                 dispatch(contextActions.unfocus());
-                dispatch(fieldThunks.duplicate(field, row));
+                dispatch(fieldThunks.remove(field));
               }}
             />
-          )}
-          <RemoveButton
-            active={hovering}
-            onClick={() => {
-              dispatch(contextActions.unfocus());
-              dispatch(fieldThunks.remove(field));
-            }}
-          />
+          </FieldTools>
           <FieldCell field={field} />
         </FieldWrapper>
       </>

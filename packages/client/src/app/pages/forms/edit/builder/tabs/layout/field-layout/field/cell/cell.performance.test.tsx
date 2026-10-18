@@ -15,13 +15,16 @@ const fixture = vi.hoisted(() => ({
   preview: vi.fn(),
   dispatch: vi.fn(),
   loading: false,
+  fieldType: "text",
+  markup: "<input />",
+  translatedContent: undefined as string | undefined,
 }));
 vi.mock("@editor/store", () => ({
   useAppDispatch: () => fixture.dispatch,
 }));
 vi.mock("@ff-client/queries/field-types", () => ({
   useFieldType: () => ({
-    type: "text",
+    type: fixture.fieldType,
     name: "Text",
     implements: [],
     icon: "",
@@ -29,7 +32,10 @@ vi.mock("@ff-client/queries/field-types", () => ({
 }));
 vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
   useTranslations: () => ({
-    getTranslation: (_key: string, value: unknown) => value,
+    getTranslation: (key: string, value: unknown) =>
+      key === "content" && fixture.translatedContent !== undefined
+        ? fixture.translatedContent
+        : value,
   }),
 }));
 vi.mock("../../layout/group-field-layout/group-field-layout", () => ({
@@ -40,7 +46,7 @@ vi.mock("./cell.animations", () => ({ useLoaderAnimation: () => [{}, {}] }));
 vi.mock("./use-field-preview", () => ({
   useFieldPreview: (field: Field) => {
     fixture.preview(field.uid);
-    return ["<input />", fixture.loading];
+    return [fixture.markup, fixture.loading];
   },
 }));
 
@@ -53,6 +59,10 @@ afterEach(async () => {
   host?.remove();
   fixture.preview.mockClear();
   fixture.loading = false;
+  fixture.fieldType = "text";
+  fixture.markup = "<input />";
+  fixture.translatedContent = undefined;
+  fixture.dispatch.mockClear();
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
 });
@@ -140,4 +150,115 @@ it("runs spinner animations only while a field preview is loading", async () => 
     ),
   );
   expect(host.querySelectorAll(".spinner-path")).toHaveLength(0);
+});
+
+const renderContentField = async (
+  type: string,
+  content: string,
+  markup = content,
+) => {
+  fixture.fieldType = type;
+  fixture.markup = markup;
+  const store = configureStore({ reducer: { context } });
+  host = document.createElement("div");
+  document.body.append(host);
+  root = createRoot(host);
+  const field = {
+    uid: "content-field",
+    typeClass: type,
+    properties: { label: "Internal block name", content },
+  } as Field;
+  await act(async () =>
+    root!.render(
+      <Provider store={store}>
+        <FieldCell field={field} />
+      </Provider>,
+    ),
+  );
+  return { store, field };
+};
+
+it.each(["html", "rich-text"])(
+  "shows only the content of a populated %s field and keeps it selectable",
+  async (type) => {
+    await renderContentField(type, "<h2>Client information</h2>");
+    expect(host!.querySelector(".label")).toBeNull();
+    expect(host!.textContent).toBe("Client information");
+    act(() => host!.querySelector<HTMLElement>(".field")!.click());
+    expect(fixture.dispatch).toHaveBeenCalledWith(
+      contextActions.setFocusedItem({
+        type: FocusType.Field,
+        uid: "content-field",
+      }),
+    );
+  },
+);
+
+for (const type of ["html", "rich-text"]) {
+  it.each([
+    ["", "This field has not been configured yet."],
+    ["   ", "   "],
+    ["<p><br></p>", "<p><br></p>"],
+    ["<p>&nbsp;</p>", "<p>&nbsp;</p>"],
+    ["<!-- Comment only -->", "<!-- Comment only -->"],
+    ["<script>alert(1)</script>", "<script>alert(1)</script>"],
+  ])(
+    `keeps the name of an empty ${type} field (%s)`,
+    async (content, markup) => {
+      await renderContentField(type, content, markup);
+      expect(host!.querySelector(".label")?.textContent).toBe(
+        "Internal block name",
+      );
+    },
+  );
+}
+
+it.each(["html", "rich-text"])("treats media as %s content", async (type) => {
+  await renderContentField(type, '<img src="/image.png" alt="Logo">');
+  expect(host!.querySelector(".label")).toBeNull();
+  expect(host!.querySelector("img")?.getAttribute("alt")).toBe("Logo");
+});
+
+it("uses translated content to decide whether to show the block name", async () => {
+  fixture.translatedContent = "";
+  const { store, field } = await renderContentField(
+    "rich-text",
+    "<h2>Original heading</h2>",
+    "This field has not been configured yet.",
+  );
+  expect(host!.querySelector(".label")?.textContent).toBe(
+    "Internal block name",
+  );
+
+  fixture.translatedContent = "<h2>Translated heading</h2>";
+  fixture.markup = fixture.translatedContent;
+  await act(async () =>
+    root!.render(
+      <Provider store={store}>
+        <FieldCell field={{ ...field }} />
+      </Provider>,
+    ),
+  );
+  expect(host!.querySelector(".label")).toBeNull();
+  expect(host!.textContent).toBe("Translated heading");
+
+  fixture.translatedContent = "";
+  fixture.markup = "<p><br></p>";
+  await act(async () =>
+    root!.render(
+      <Provider store={store}>
+        <FieldCell field={{ ...field }} />
+      </Provider>,
+    ),
+  );
+  expect(host!.querySelector(".label")?.textContent).toBe(
+    "Internal block name",
+  );
+});
+
+it("keeps labels on regular input fields", async () => {
+  await renderContentField("text", "Not content", "<input>");
+  expect(host!.querySelector(".label")?.textContent).toBe(
+    "Internal block name",
+  );
 });

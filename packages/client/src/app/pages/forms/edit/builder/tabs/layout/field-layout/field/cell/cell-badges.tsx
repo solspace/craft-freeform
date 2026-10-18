@@ -24,25 +24,48 @@ export const FieldAssociationsBadges: React.FC<Props> = ({ uid }) => {
     integrationSelectors.isFieldInIntegrations(uid),
   );
 
+  if (!isRule && !isEmailNotification && !isIntegrations) {
+    return null;
+  }
+
   return (
     <CellBadgesWrapper>
       {isRule && (
         <Tooltip
           title={translate("Conditional rules are applied to this field")}
         >
-          <RuleIcon />
+          <button
+            type="button"
+            aria-label={translate(
+              "Conditional rules are applied to this field",
+            )}
+          >
+            <RuleIcon aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
       {isEmailNotification && (
         <Tooltip
           title={translate("Email notifications are applied to this field")}
         >
-          <EmailNotificationIcon />
+          <button
+            type="button"
+            aria-label={translate(
+              "Email notifications are applied to this field",
+            )}
+          >
+            <EmailNotificationIcon aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
       {isIntegrations && (
         <Tooltip title={translate("Integrations are applied to this field")}>
-          <IntegrationIcon />
+          <button
+            type="button"
+            aria-label={translate("Integrations are applied to this field")}
+          >
+            <IntegrationIcon aria-hidden="true" />
+          </button>
         </Tooltip>
       )}
     </CellBadgesWrapper>

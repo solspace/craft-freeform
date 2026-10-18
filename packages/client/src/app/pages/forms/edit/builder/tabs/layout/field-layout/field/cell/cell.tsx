@@ -26,7 +26,6 @@ import {
   LabelText,
   Row,
 } from "./cell.styles";
-import { FieldAssociationsBadges } from "./cell-badges";
 import { useFieldPreview } from "./use-field-preview";
 
 type Props = {
@@ -56,6 +55,29 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
     () => ({ __html: DOMPurify.sanitize(preview) }),
     [preview],
   );
+  const isContentField = type?.type === "html" || type?.type === "rich-text";
+  const content = getTranslation("content", field.properties?.content);
+  const contentPreview = useMemo(() => {
+    // Empty preview templates include placeholder text, which is not field content.
+    if (!isContentField || typeof content !== "string" || !content.trim()) {
+      return { hasContent: false, hasHeading: false };
+    }
+
+    const body = new DOMParser().parseFromString(
+      previewMarkup.__html,
+      "text/html",
+    ).body;
+    return {
+      hasContent:
+        !!body.textContent?.trim() ||
+        !!body.querySelector(
+          "img, svg, video, audio, hr, table, canvas, input, button, select, textarea",
+        ),
+      hasHeading: !!body.querySelector("h1, h2, h3, h4, h5, h6"),
+    };
+  }, [isContentField, content, previewMarkup]);
+  const hasContentPreview = contentPreview.hasContent;
+  const hideLabel = noLabel || hasContentPreview;
   const iconMarkup = useMemo(
     () => ({ __html: DOMPurify.sanitize(type?.icon || "") }),
     [type?.icon],
@@ -78,6 +100,8 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       className={classes(
         hasErrors(field.errors) && "errors",
         type.type === Type.Group && "group",
+        hasContentPreview && "content-only",
+        contentPreview.hasHeading && "section-heading",
         isActive && "active",
         "field",
       )}
@@ -86,9 +110,17 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      {!noLabel && (
+      {!hideLabel && (
         <Label className="label">
-          <LabelIcon>
+          <LabelText>
+            {label}
+            {field.properties.required && (
+              <span className="field-required" aria-hidden="true">
+                *
+              </span>
+            )}
+          </LabelText>
+          <LabelIcon aria-hidden="true" data-loading={isLoadingPreview}>
             {isLoadingPreview && (
               <Icon style={spinnerAnimation}>
                 <SpinnerIcon />
@@ -96,10 +128,6 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
             )}
             <Icon style={iconAnimation} dangerouslySetInnerHTML={iconMarkup} />
           </LabelIcon>
-
-          <LabelText>{label}</LabelText>
-          {field.properties.required && <span className="required" />}
-          <FieldAssociationsBadges uid={uid} />
         </Label>
       )}
 
@@ -110,10 +138,13 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       )}
 
       {type.type !== Type.Group &&
-        (noLabel ? (
+        (hideLabel ? (
           <Row>
-            <HtmlPreviewElement dangerouslySetInnerHTML={previewMarkup} />
-            <FieldAssociationsBadges uid={uid} />
+            <HtmlPreviewElement
+              className={hasContentPreview ? "content-preview" : undefined}
+              $fullWidth={hasContentPreview}
+              dangerouslySetInnerHTML={previewMarkup}
+            />
           </Row>
         ) : (
           <div dangerouslySetInnerHTML={previewMarkup} />

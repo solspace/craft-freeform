@@ -1,10 +1,14 @@
-import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const CellBadgesWrapper = styled.div`
   display: flex;
   flex-direction: row;
 
-  gap: ${spacings.sm};
-  margin-left: ${spacings.sm};
+  align-items: center;
+  gap: 4px;
+  margin-right: 4px;
+
+  button { display: inline-flex; border: 0; padding: 0; background: transparent; }
+  button:focus-visible { outline: 2px solid #5782ef; outline-offset: 2px; border-radius: 2px; }
+  svg { width: 16px; height: 16px; }
 `;

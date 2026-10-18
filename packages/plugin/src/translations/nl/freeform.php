@@ -3849,4 +3849,5 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Compare editions' => 'Edities vergelijken',
     'Upgrade to Lite or Pro' => 'Upgrade naar Lite of Pro',
     'Both editions include unlimited forms.' => 'Beide edities bevatten onbeperkt formulieren.',
+    'Help for {label}' => 'Hulp bij {label}',
 ]);

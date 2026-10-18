@@ -3894,4 +3894,5 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Compare editions' => 'Compare editions',
     'Upgrade to Lite or Pro' => 'Upgrade to Lite or Pro',
     'Both editions include unlimited forms.' => 'Both editions include unlimited forms.',
+    'Help for {label}' => 'Help for {label}',
 ]);

@@ -12,6 +12,20 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Delete field?' => 'Feld löschen?',
+    'Delete page?' => 'Seite löschen?',
+    'Delete favorite field?' => 'Favoritenfeld löschen?',
+    'Delete column?' => 'Spalte löschen?',
+    'Are you sure you want to delete "{name}" from this form?' => 'Möchten Sie „{name}“ wirklich aus diesem Formular löschen?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Möchten Sie „{name}“ wirklich aus diesem Formular löschen? Alle Felder innerhalb dieser Gruppe werden ebenfalls entfernt.',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Möchten Sie „{name}“ wirklich löschen? Alle Felder auf dieser Seite werden ebenfalls entfernt.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Möchten Sie das Favoritenfeld „{name}“ wirklich löschen? Felder, die bereits zu Formularen hinzugefügt wurden, sind davon nicht betroffen.',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Möchten Sie die Spalte "{name}" wirklich aus dieser Tabelle löschen?',
+    'Remove translation?' => 'Übersetzung entfernen?',
+    'Change field type?' => 'Feldtyp ändern?',
+    'Change field type' => 'Feldtyp ändern',
+    'Convert to custom values?' => 'In benutzerdefinierte Werte umwandeln?',
+    'Delete notification template?' => 'Benachrichtigungsvorlage löschen?',
     'Update 1 label?' => '1 Beschriftung aktualisieren?',
     'Update {count} labels?' => '{count} Beschriftungen aktualisieren?',
     'Field handles remain unchanged. You can undo this update in one step.' => 'Feld-Handles bleiben unverändert. Sie können diese Änderung in einem Schritt rückgängig machen.',

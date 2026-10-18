@@ -46,6 +46,7 @@ export const PropertyEditor: React.FC = () => {
       "tox",
       "elementselectormodal",
       // Native panels live under <body>, outside the property editor's DOM.
+      "ff-delete-confirmation",
       "freeform-slideout",
       "slideout-shade",
     ],

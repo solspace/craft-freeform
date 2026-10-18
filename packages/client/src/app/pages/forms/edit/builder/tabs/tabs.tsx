@@ -22,7 +22,7 @@ import type React from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { HistoryArrow } from "./history-arrow";
-import { ConfirmSubmissionsModal } from "./modals/confirm-submissions.modal";
+import { useConfirmLeaveBuilder } from "./modals/confirm-submissions.modal";
 import { type BuilderTab, TabsNavigation } from "./tabs.navigation";
 import {
   FormName,
@@ -42,7 +42,8 @@ export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
   const state = useSelector(contextSelectors.state);
-  const { openModal, hasOpenModals } = useModal();
+  const { hasOpenModals } = useModal();
+  const confirmLeaveBuilder = useConfirmLeaveBuilder();
   const { undoCount, redoCount } = useAppSelector((state) => state.history);
 
   const formErrors = useSelector(formSelectors.errors);
@@ -113,9 +114,7 @@ export const Tabs: React.FC = () => {
       return;
     }
 
-    openModal(ConfirmSubmissionsModal, {
-      url: generateUrl(submissionsUrl),
-    });
+    confirmLeaveBuilder(generateUrl(submissionsUrl));
   };
 
   const tabs: BuilderTab[] = [

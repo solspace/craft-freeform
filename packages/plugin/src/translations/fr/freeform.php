@@ -12,6 +12,20 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Delete field?' => 'Supprimer le champ ?',
+    'Delete page?' => 'Supprimer la page ?',
+    'Delete favorite field?' => 'Supprimer le champ favori ?',
+    'Delete column?' => 'Supprimer la colonne ?',
+    'Are you sure you want to delete "{name}" from this form?' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Voulez-vous vraiment supprimer « {name} » de ce formulaire ? Tous les champs de ce groupe seront également supprimés.',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Voulez-vous vraiment supprimer « {name} » ? Tous les champs de cette page seront également supprimés.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Voulez-vous vraiment supprimer le champ favori « {name} » ? Les champs déjà ajoutés aux formulaires ne seront pas affectés.',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Voulez-vous vraiment supprimer la colonne "{name}" de ce tableau ?',
+    'Remove translation?' => 'Supprimer la traduction ?',
+    'Change field type?' => 'Changer le type de champ ?',
+    'Change field type' => 'Changer le type de champ',
+    'Convert to custom values?' => 'Convertir en valeurs personnalisées ?',
+    'Delete notification template?' => 'Supprimer le modèle de notification ?',
     'Update 1 label?' => 'Mettre à jour 1 libellé ?',
     'Update {count} labels?' => 'Mettre à jour {count} libellés ?',
     'Field handles remain unchanged. You can undo this update in one step.' => 'Les identifiants des champs restent inchangés. Vous pouvez annuler cette mise à jour en une seule étape.',

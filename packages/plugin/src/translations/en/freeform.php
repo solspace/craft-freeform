@@ -12,6 +12,20 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Delete field?' => 'Delete field?',
+    'Delete page?' => 'Delete page?',
+    'Delete favorite field?' => 'Delete favorite field?',
+    'Delete column?' => 'Delete column?',
+    'Are you sure you want to delete "{name}" from this form?' => 'Are you sure you want to delete "{name}" from this form?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Are you sure you want to delete "{name}"? All fields on this page will also be removed.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Are you sure you want to delete the column "{name}" from this table?',
+    'Remove translation?' => 'Remove translation?',
+    'Change field type?' => 'Change field type?',
+    'Change field type' => 'Change field type',
+    'Convert to custom values?' => 'Convert to custom values?',
+    'Delete notification template?' => 'Delete notification template?',
     'Update 1 label?' => 'Update 1 label?',
     'Update {count} labels?' => 'Update {count} labels?',
     'Field handles remain unchanged. You can undo this update in one step.' => 'Field handles remain unchanged. You can undo this update in one step.',

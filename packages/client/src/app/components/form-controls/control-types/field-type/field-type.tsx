@@ -1,5 +1,6 @@
 import { FormComponent } from "@components/form-controls";
 import type { ControlType } from "@components/form-controls/types";
+import { useModal } from "@components/modals/modal.context";
 import { useAppDispatch } from "@editor/store";
 import type { Field } from "@editor/store/slices/layout/fields";
 import { fieldThunks } from "@editor/store/thunks/fields";
@@ -17,6 +18,7 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
   context,
 }) => {
   const dispatch = useAppDispatch();
+  const { confirm } = useModal();
   const searchFieldType = useFieldTypeSearch();
   const { data: types } = useFetchFieldTypes();
   const field = context as Field;
@@ -41,19 +43,18 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
           })),
       }}
       updateValue={(value) => {
-        if (
-          !confirm(
-            translate(
-              "Are you sure? You might potentially lose important data.",
+        if (value === field.typeClass) return;
+        confirm({
+          title: translate("Change field type?"),
+          message: translate(
+            "Are you sure? You might potentially lose important data.",
+          ),
+          confirmLabel: translate("Change field type"),
+          onConfirm: () =>
+            dispatch(
+              fieldThunks.change.type(field, searchFieldType(value as string)),
             ),
-          )
-        ) {
-          return;
-        }
-
-        dispatch(
-          fieldThunks.change.type(field, searchFieldType(value as string)),
-        );
+        });
       }}
     />
   );

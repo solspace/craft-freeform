@@ -1,5 +1,5 @@
 import { useModal } from "@components/modals/modal.context";
-import { ConfirmSubmissionsModal } from "@editor/builder/tabs/modals/confirm-submissions.modal";
+import { useConfirmLeaveBuilder } from "@editor/builder/tabs/modals/confirm-submissions.modal";
 import { QKNotifications } from "@ff-client/queries/notifications";
 import type { APIError } from "@ff-client/types/api";
 import type { NotificationTemplate } from "@ff-client/types/notifications";
@@ -36,7 +36,8 @@ export const Item: React.FC<Props> = ({
     ? canEditGlobalTemplates
     : canEditGlobalFileTemplates;
 
-  const { openModal: openModalFn } = useModal();
+  const { confirmDelete } = useModal();
+  const confirmLeaveBuilder = useConfirmLeaveBuilder();
   const queryClient = useQueryClient();
   const openModal = useNotificationEditModal();
 
@@ -71,7 +72,7 @@ export const Item: React.FC<Props> = ({
               if (e.metaKey) {
                 window.open(url, "_blank")?.focus();
               } else {
-                openModalFn(ConfirmSubmissionsModal, { url });
+                confirmLeaveBuilder(url);
               }
             }}
           >
@@ -101,28 +102,32 @@ export const Item: React.FC<Props> = ({
               e.preventDefault();
               e.stopPropagation();
 
-              if (
-                confirm(
-                  translate("Are you sure you want to delete this template?"),
-                )
-              ) {
-                axios
-                  .post("/api/templates/notifications/delete", {
-                    id,
-                  })
-                  .then(() => {
-                    queryClient.invalidateQueries({
-                      queryKey: QKNotifications.templates(),
+              confirmDelete({
+                title: translate("Delete notification template?"),
+                message: translate(
+                  "Are you sure you want to delete this template?",
+                ),
+                onConfirm: () => {
+                  axios
+                    .post("/api/templates/notifications/delete", {
+                      id,
+                    })
+                    .then(() => {
+                      queryClient.invalidateQueries({
+                        queryKey: QKNotifications.templates(),
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: QKNotifications.formTemplates(
+                          template.formId,
+                        ),
+                      });
+                    })
+                    .catch((error: APIError) => {
+                      const errors = Object.values(error.errors).join(", ");
+                      notifications.error(errors);
                     });
-                    queryClient.invalidateQueries({
-                      queryKey: QKNotifications.formTemplates(template.formId),
-                    });
-                  })
-                  .catch((error: APIError) => {
-                    const errors = Object.values(error.errors).join(", ");
-                    notifications.error(errors);
-                  });
-              }
+                },
+              });
 
               return false;
             }}

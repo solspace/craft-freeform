@@ -1,3 +1,4 @@
+import { useModal } from "@components/modals/modal.context";
 import { colors } from "@ff-client/styles/variables";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
@@ -30,6 +31,7 @@ const FormLabel: React.FC<Props> = ({
   isEncrypted,
   removeTranslation,
 }) => {
+  const { confirmDelete } = useModal();
   if (!label) {
     return null;
   }
@@ -49,15 +51,18 @@ const FormLabel: React.FC<Props> = ({
         <TranslateIconWrapper
           className={classes(hasTranslation && "active")}
           title={hasTranslation ? translate("Remove translation") : undefined}
-          onClick={() => {
-            if (
-              hasTranslation &&
-              confirm(
-                translate("Are you sure you want to remove the translation?"),
-              )
-            ) {
-              removeTranslation?.();
-            }
+          onClick={(event) => {
+            if (!hasTranslation) return;
+            event.preventDefault();
+            event.stopPropagation();
+            confirmDelete({
+              title: translate("Remove translation?"),
+              message: translate(
+                "Are you sure you want to remove the translation?",
+              ),
+              confirmLabel: translate("Remove translation"),
+              onConfirm: () => removeTranslation?.(),
+            });
           }}
         >
           <TranslateIcon />

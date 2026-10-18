@@ -12,6 +12,20 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Delete field?' => 'Veld verwijderen?',
+    'Delete page?' => 'Pagina verwijderen?',
+    'Delete favorite field?' => 'Favoriet veld verwijderen?',
+    'Delete column?' => 'Kolom verwijderen?',
+    'Are you sure you want to delete "{name}" from this form?' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Weet je zeker dat je "{name}" uit dit formulier wilt verwijderen? Alle velden in deze groep worden ook verwijderd.',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Weet je zeker dat je "{name}" wilt verwijderen? Alle velden op deze pagina worden ook verwijderd.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Weet je zeker dat je het favoriete veld "{name}" wilt verwijderen? Velden die al aan formulieren zijn toegevoegd, blijven behouden.',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Weet je zeker dat je de kolom "{name}" uit deze tabel wilt verwijderen?',
+    'Remove translation?' => 'Vertaling verwijderen?',
+    'Change field type?' => 'Veldtype wijzigen?',
+    'Change field type' => 'Veldtype wijzigen',
+    'Convert to custom values?' => 'Omzetten naar aangepaste waarden?',
+    'Delete notification template?' => 'Notificatiesjabloon verwijderen?',
     'Update 1 label?' => '1 label bijwerken?',
     'Update {count} labels?' => '{count} labels bijwerken?',
     'Field handles remain unchanged. You can undo this update in one step.' => 'Veldhandles blijven ongewijzigd. Je kunt deze update in één stap ongedaan maken.',

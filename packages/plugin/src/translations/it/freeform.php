@@ -12,6 +12,20 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Delete field?' => 'Eliminare il campo?',
+    'Delete page?' => 'Eliminare la pagina?',
+    'Delete favorite field?' => 'Eliminare il campo preferito?',
+    'Delete column?' => 'Eliminare la colonna?',
+    'Are you sure you want to delete "{name}" from this form?' => 'Vuoi davvero eliminare "{name}" da questo modulo?',
+    'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.' => 'Vuoi davvero eliminare "{name}" da questo modulo? Verranno rimossi anche tutti i campi di questo gruppo.',
+    'Are you sure you want to delete "{name}"? All fields on this page will also be removed.' => 'Vuoi davvero eliminare "{name}"? Verranno rimossi anche tutti i campi di questa pagina.',
+    'Are you sure you want to delete the favorite field "{name}"? Fields already added to forms will not be affected.' => 'Vuoi davvero eliminare il campo preferito "{name}"? I campi già aggiunti ai moduli non saranno interessati.',
+    'Are you sure you want to delete the column "{name}" from this table?' => 'Vuoi davvero eliminare la colonna "{name}" da questa tabella?',
+    'Remove translation?' => 'Rimuovere la traduzione?',
+    'Change field type?' => 'Cambiare il tipo di campo?',
+    'Change field type' => 'Cambia tipo di campo',
+    'Convert to custom values?' => 'Convertire in valori personalizzati?',
+    'Delete notification template?' => 'Eliminare il modello di notifica?',
     'Update 1 label?' => 'Aggiornare 1 etichetta?',
     'Update {count} labels?' => 'Aggiornare {count} etichette?',
     'Field handles remain unchanged. You can undo this update in one step.' => 'Gli handle dei campi restano invariati. Puoi annullare questo aggiornamento in un solo passaggio.',

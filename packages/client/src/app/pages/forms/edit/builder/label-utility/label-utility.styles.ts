@@ -1,4 +1,3 @@
-import { ModalContainer } from "@components/modals/modal.styles";
 import { Wrapper as InfoBanner } from "@components/notification-blocks/info/info-block.styles";
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -10,18 +9,6 @@ export const UtilityTrigger = styled.button.attrs({
   flex: 0 0 auto;
   align-self: center;
   white-space: nowrap;
-`;
-export const LabelConfirmationDialog = styled(ModalContainer)`
-  width: calc(100% - 48px);
-  max-height: calc(100dvh - 48px);
-  margin: auto;
-  padding: 0;
-  border: 0;
-  color: ${colors.gray700};
-  overflow: auto;
-  &::backdrop { background: rgba(123, 135, 147, .35); }
-  h2 { margin: 0; font-size: 18px; }
-  .utility-confirmation-body { padding: 24px; line-height: 1.5; }
 `;
 export const UtilityBody = styled.div`
   flex: 1;

@@ -154,7 +154,7 @@ const requestConfirmation = async () => {
 const apply = async () => {
   await requestConfirmation();
   await act(async () =>
-    host.querySelector<HTMLButtonElement>("dialog button.submit")!.click(),
+    document.querySelector<HTMLButtonElement>("dialog button.confirm")!.click(),
   );
 };
 afterEach(() => {
@@ -427,12 +427,14 @@ it("leaves the preview and form unchanged when confirmation is cancelled", async
   choose("colons", "remove");
   const original = store.getState();
   await requestConfirmation();
-  expect(host.querySelector("dialog h2")?.textContent).toBe("Update 1 label?");
+  expect(document.querySelector("dialog h2")?.textContent).toBe(
+    "Update 1 label?",
+  );
   expect(store.getState()).toBe(original);
   act(() =>
-    host.querySelector<HTMLButtonElement>("dialog button.cancel")!.click(),
+    document.querySelector<HTMLButtonElement>("dialog button.cancel")!.click(),
   );
-  expect(host.querySelector("dialog")).toBeNull();
+  expect(document.querySelector("dialog")).toBeNull();
   expect(store.getState()).toBe(original);
   expect(close).not.toHaveBeenCalled();
   expect(host.querySelectorAll("tbody tr")).toHaveLength(1);
@@ -446,12 +448,12 @@ it("requires confirming the selected count and lets Escape return to the preview
   choose("case", "title");
   const original = store.getState();
   await requestConfirmation();
-  const dialog = host.querySelector<HTMLDialogElement>("dialog")!;
+  const dialog = document.querySelector<HTMLDialogElement>("dialog")!;
   expect(dialog.open).toBe(true);
   expect(dialog.querySelector("h2")?.textContent).toBe("Update 2 labels?");
   expect(dialog.textContent).toContain("Field handles remain unchanged.");
   expect(store.getState()).toBe(original);
-  const confirm = dialog.querySelector<HTMLButtonElement>("button.submit")!;
+  const confirm = dialog.querySelector<HTMLButtonElement>("button.confirm")!;
   const cancel = dialog.querySelector<HTMLButtonElement>("button.cancel")!;
   confirm.focus();
   act(() =>
@@ -484,7 +486,7 @@ it("requires confirming the selected count and lets Escape return to the preview
       }),
     ),
   );
-  expect(host.querySelector("dialog")).toBeNull();
+  expect(document.querySelector("dialog")).toBeNull();
   expect(close).not.toHaveBeenCalled();
   expect(store.getState()).toBe(original);
   await apply();

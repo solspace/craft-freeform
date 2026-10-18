@@ -6,8 +6,10 @@ use craft\web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\controllers\api\FormsController;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -65,5 +67,24 @@ class FormPreviewControllerTest extends TestCase
         $controller->request = $request;
         $this->expectException(BadRequestHttpException::class);
         $controller->actionPreviewTemplates(42);
+    }
+
+    #[TestWith(['actionPreview'])]
+    #[TestWith(['actionPreviewTemplates'])]
+    public function testRestrictedProfileCannotAccessPreviewEndpoints(string $action): void
+    {
+        $request = $this->createMock(Request::class);
+        $request->method('getIsPost')->willReturn(true);
+        $request->method('getIsCpRequest')->willReturn(true);
+        $checker = $this->createMock(LimitedUserChecker::class);
+        $checker->expects(self::once())->method('can')->with('preview.tab')->willReturn(false);
+        $reflection = new \ReflectionClass(FormsController::class);
+        $controller = $reflection->newInstanceWithoutConstructor();
+        $controller->request = $request;
+        $reflection->getProperty('limitedUserChecker')->setValue($controller, $checker);
+
+        $this->expectException(ForbiddenHttpException::class);
+        $this->expectExceptionMessage('User is not permitted to preview forms');
+        $controller->{$action}(42);
     }
 }

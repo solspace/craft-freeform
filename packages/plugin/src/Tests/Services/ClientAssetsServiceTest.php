@@ -17,7 +17,15 @@ class ClientAssetsServiceTest extends TestCase
         self::assertArrayHasKey('src/index.tsx', $manifest);
         $entry = $manifest['src/index.tsx'];
         $view = $this->getMockBuilder(View::class)->disableOriginalConstructor()->onlyMethods(['registerCssFile', 'registerJsFile', 'registerHtml'])->getMock();
-        $view->expects(self::exactly(\count($entry['css'] ?? [])))->method('registerCssFile');
+        $stylesheets = [];
+        $view->expects(self::atLeastOnce())->method('registerCssFile')->willReturnCallback(
+            static function (string $url, array $options, string $key) use ($resources, &$stylesheets): void {
+                $file = substr($url, \strlen('https://example.test/assets/'));
+                self::assertFileExists($resources.'/'.$file);
+                self::assertArrayNotHasKey($key, $stylesheets, 'Stylesheets must only be registered once.');
+                $stylesheets[$key] = $url;
+            }
+        );
         $view->expects(self::once())->method('registerJsFile')->with(
             'https://example.test/assets/js/client/'.$entry['file'],
             ['type' => 'module', 'position' => View::POS_END, 'appendTimestamp' => false],
@@ -29,6 +37,9 @@ class ClientAssetsServiceTest extends TestCase
 
         try {
             (new ClientAssetsService())->registerAssets($view, 'https://example.test/assets', $resources);
+            foreach ($entry['css'] ?? [] as $file) {
+                self::assertContains('https://example.test/assets/js/client/'.$file, $stylesheets);
+            }
         } finally {
             if (null === $previous) {
                 unset($_SERVER['FF_CLIENT_DEV_ENABLED']);

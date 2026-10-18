@@ -335,6 +335,7 @@ class SettingsController extends BaseController
                 'settings' => $this->getSettingsModel(),
                 'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,
+                'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
             ]
         );

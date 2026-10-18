@@ -29,6 +29,8 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\ReferenceAiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\SolspaceAI\BaseSolspaceAIIntegration;
 use Solspace\Freeform\Jobs\FormJobInterface;
 use Solspace\Freeform\Library\Cache\Memo;
@@ -273,6 +275,27 @@ class IntegrationsService extends BaseService
         throw new IntegrationException(
             Freeform::t('Integration with UID {uid} not found', ['uid' => $uid])
         );
+    }
+
+    public function getEnabledAiIntegrationOptions(): array
+    {
+        $options = [];
+        foreach ($this->getAllIntegrations() as $model) {
+            if (!is_subclass_of($model->class, AiIntegrationInterface::class)) {
+                continue;
+            }
+            $integration = $model->getIntegrationObject();
+            if (!$integration->isEnabled()) {
+                continue;
+            }
+            $options[] = [
+                'id' => $model->id, 'uid' => $model->uid, 'name' => $model->name, 'handle' => $model->handle,
+                'model' => $integration->getModel(),
+                'referenceMimeTypes' => $integration instanceof ReferenceAiIntegrationInterface ? $integration->getReferenceMimeTypes() : [],
+            ];
+        }
+
+        return $options;
     }
 
     public function getFirstEnabledSolspaceAIIntegration(): ?IntegrationModel

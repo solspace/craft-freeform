@@ -14,16 +14,20 @@ export const Label = styled.label`
   gap: ${spacings.xs};
 
   min-height: 18px;
-  margin-bottom: 4px;
-  font-weight: bold;
-  color: ${colors.gray550};
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: ${colors.gray600};
 
   overflow: hidden;
 
-  .required {
+  .field-required {
     position: relative;
-    top: -5px;
-    left: -5px;
+    top: -2px;
+    margin-inline-start: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    color: ${colors.error};
+    vertical-align: baseline;
   }
 `;
 
@@ -38,6 +42,12 @@ export const LabelIcon = styled.div`
   width: ${iconSize}px;
   height: ${iconSize}px;
   font-size: ${iconSize}px;
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+
+  &[data-loading='true'] { opacity: 1; }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
 `;
 
 export const Icon = styled(animated.div)`
@@ -54,8 +64,8 @@ export const Icon = styled(animated.div)`
 `;
 
 export const Instructions = styled.div`
-  margin-top: -4px;
-  margin-bottom: 4px;
+  margin-top: -6px;
+  margin-bottom: 6px;
 
   color: ${colors.gray300};
   font-style: italic;
@@ -67,7 +77,7 @@ export const FieldCellWrapper = styled.div`
   flex-direction: column;
 
   height: 100%;
-  padding: ${spacings.sm} ${spacings.md};
+  padding: 10px ${spacings.md};
   margin: 0;
 
   border: 1px solid transparent;
@@ -92,6 +102,28 @@ export const FieldCellWrapper = styled.div`
     &:not(.active) {
       border: 1px solid #cdd8e4;
     }
+  }
+
+  &:hover > ${Label} > ${LabelIcon},
+  &.active > ${Label} > ${LabelIcon},
+  &:focus-within > ${Label} > ${LabelIcon} {
+    opacity: 0.7;
+  }
+
+  &.section-heading {
+    padding-top: 22px;
+    padding-bottom: 8px;
+  }
+
+  &.content-only .content-preview {
+    > :first-child { margin-block-start: 0; }
+    > :last-child { margin-block-end: 0; }
+  }
+
+  .sample-preview {
+    position: relative;
+    input:not([type='checkbox']):not([type='radio']), textarea { padding-inline-end: 32px; }
+    select:not([multiple]) { padding-inline-end: 50px; }
   }
 
   &.errors {
@@ -126,6 +158,37 @@ export const FieldCellWrapper = styled.div`
 
     border: 1px solid rgba(96, 125, 159, 0.25);
     border-radius: 3px;
+    color: ${colors.gray500};
+
+    &::placeholder {
+      color: ${colors.gray300};
+      opacity: 1;
+    }
+  }
+
+  input:not([type='checkbox']):not([type='radio']),
+  select:not([multiple]),
+  .select > select:not([multiple]) {
+    box-sizing: border-box;
+    height: 34px;
+    min-height: 0;
+    padding-block: 6px;
+    line-height: 20px;
+  }
+
+  &[data-field-type='dropdown'],
+  &[data-field-type='multiple-select'] {
+    .select { background: transparent; border: 0; box-shadow: none; }
+    select, .select > select {
+      border: 1px solid ${colors.inputBorder};
+      border-radius: 3px;
+    }
+    select, select:hover, select:focus {
+      background-color: #fff;
+      box-shadow: none;
+      color: ${colors.gray500};
+    }
+    select:not([multiple]) { padding-inline-end: 30px; }
   }
 
   &[data-field-type='html'],
@@ -276,8 +339,39 @@ export const Row = styled.div`
   flex-direction: row;
 `;
 
-export const HtmlPreviewElement = styled.div`
+export const SampleValueMarker = styled.div<{ $select?: boolean }>`
+  position: absolute;
+  right: ${({ $select }) => ($select ? "30px" : "8px")};
+  top: 8px;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease-out;
+
+  ${FieldCellWrapper}:hover > .sample-preview > &,
+  ${FieldCellWrapper}.active > .sample-preview > &,
+  ${FieldCellWrapper}:focus-within > .sample-preview > & {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+
+  button {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: ${colors.gray300};
+  }
+  button:hover, button:focus { color: #3476b8; }
+  button:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; border-radius: 3px; }
+`;
+
+export const HtmlPreviewElement = styled.div<{ $fullWidth?: boolean }>`
   ${contentPreview}
+  ${({ $fullWidth }) => $fullWidth && "flex: 1; min-width: 0;"}
+
   a {
     pointer-events: none;
   }

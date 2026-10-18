@@ -1,10 +1,9 @@
+import { colors } from "@ff-client/styles/variables";
 import { createGlobalStyle } from "styled-components";
-
-const borderColor = "#cccccc";
-const radius = "3px";
 
 const style = createGlobalStyle`
   .opinion-scale {
+    pointer-events: none;
     ul {
       list-style: none;
       margin: 0;
@@ -14,26 +13,33 @@ const style = createGlobalStyle`
     .opinion-scale-scales {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-      grid-gap: 0;
+      gap: 6px;
       align-items: stretch;
 
       > li {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        border: 1px solid ${borderColor};
-        border-left: none;
+        min-width: 0;
 
         > label {
-          display: block;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 1;
+          min-height: 34px;
           padding: 6px 12px;
           margin: 0;
-
+          border: 1px solid ${colors.inputBorder};
+          border-radius: 3px;
+          background: #fff;
+          font-size: 13px;
+          font-weight: 400;
+          line-height: 20px;
           text-align: center;
-          color: black !important;
-          cursor: pointer;
+          overflow-wrap: anywhere;
+          color: ${colors.gray500};
+          cursor: default;
         }
 
         input {
@@ -46,20 +52,10 @@ const style = createGlobalStyle`
           visibility: hidden;
 
           &:checked ~ label {
-            background: #e6e6e6;
+            background: ${colors.gray100};
+            border-color: ${colors.gray250};
+            color: ${colors.gray700};
           }
-        }
-
-        &:first-child {
-          border-left: 1px solid ${borderColor};
-
-          border-top-left-radius: ${radius};
-          border-bottom-left-radius: ${radius};
-        }
-
-        &:last-child {
-          border-top-right-radius: ${radius};
-          border-bottom-right-radius: ${radius};
         }
       }
     }
@@ -67,7 +63,11 @@ const style = createGlobalStyle`
     ul.opinion-scale-legends {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
-      grid-gap: 0;
+      gap: 6px;
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 18px;
+      color: ${colors.gray400};
 
       li {
         text-align: center;

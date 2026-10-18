@@ -4,6 +4,7 @@ import { Control } from "@components/form-controls/control";
 import { ControlWrapper } from "@components/form-controls/control.styles";
 import { Button } from "@components/form-controls/control-types/options/options.styles";
 import { FlexColumn } from "@components/layout/blocks/flex";
+import { useModal } from "@components/modals/modal.context";
 import config from "@config/freeform/freeform.config";
 import type { GenericValue } from "@ff-client/types/properties";
 import { PropertyType } from "@ff-client/types/properties";
@@ -29,6 +30,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
   typeProviderQuery,
   convertToCustomValues,
 }) => {
+  const { confirm } = useModal();
   const [typeClass, setTypeClass] = useState(value.typeClass);
   const { data, isFetching } = typeProviderQuery();
 
@@ -125,17 +127,15 @@ export const ConfigurableOptions: React.FC<Props> = ({
           <Button
             className="btn small"
             onClick={() => {
-              if (
-                !confirm(
-                  translate(
-                    "Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.",
-                  ),
-                )
-              ) {
-                return;
-              }
-
-              convertToCustomValues();
+              confirm({
+                title: translate("Convert to custom values?"),
+                message: translate(
+                  "Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.",
+                ),
+                confirmLabel: translate("Convert to Custom Values"),
+                destructive: false,
+                onConfirm: convertToCustomValues,
+              });
             }}
           >
             {translate("Convert to Custom Values")}

@@ -76,6 +76,10 @@ class PreviewState
                     throw new \InvalidArgumentException('This preview field requires a single value.');
                 }
                 $field->setValue($value);
+            } elseif ($field instanceof MultiValueInterface && null === $field->getValue()) {
+                // CP previews do not run frontend answer initialization. An
+                // untouched checkbox group must render as an empty selection.
+                $field->setValue([]);
             }
         }
 

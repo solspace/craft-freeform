@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Tests\Services;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Rules\ConditionValidator;
@@ -23,9 +24,7 @@ use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
 
-/**
- * @coversNothing
- */
+#[CoversClass(PreviewState::class)]
 class PreviewStateTest extends TestCase
 {
     public function testTemplateOverrideResolvesOnlyAnExactBundledIdentifier(): void
@@ -66,6 +65,20 @@ class PreviewStateTest extends TestCase
         $form->method('isPreview')->willReturn(true);
         $form->method('getLayout')->willReturn($layout);
         self::assertSame(['choices'], PreviewState::apply($form, ['choices' => 'one', 'action' => 'submit']));
+    }
+
+    public function testUntouchedMultipleChoiceFieldsStartWithAnEmptySelection(): void
+    {
+        $multiple = $this->createMockForIntersectionOfInterfaces([FieldInterface::class, MultiValueInterface::class]);
+        $multiple->method('getHandle')->willReturn('choices');
+        $multiple->method('getValue')->willReturn(null);
+        $multiple->expects(self::once())->method('setValue')->with([])->willReturnSelf();
+        $layout = $this->createMock(FormLayout::class);
+        $layout->method('getFields')->willReturn(new FieldCollection([$multiple]));
+        $form = $this->createMock(Form::class);
+        $form->method('isPreview')->willReturn(true);
+        $form->method('getLayout')->willReturn($layout);
+        self::assertSame(['choices'], PreviewState::apply($form, []));
     }
 
     #[TestWith([['field' => ['object' => 'bad']]])]

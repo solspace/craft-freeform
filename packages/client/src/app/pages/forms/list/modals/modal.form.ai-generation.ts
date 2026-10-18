@@ -23,16 +23,29 @@ export class GenerationError extends Error {
 }
 
 export const pendingGenerationKey = "freeform.pending-ai-generation";
+const pendingGenerationTimeKey = `${pendingGenerationKey}.started-at`;
 export function newGenerationId(): string {
   return Array.from(crypto.getRandomValues(new Uint8Array(16)), (value) =>
     value.toString(16).padStart(2, "0"),
   ).join("");
 }
 
-export function rememberGeneration(id: string | null): void {
+export function rememberGeneration(
+  id: string | null,
+  startedAt = Date.now(),
+): void {
   try {
-    if (id) sessionStorage.setItem(pendingGenerationKey, id);
-    else sessionStorage.removeItem(pendingGenerationKey);
+    if (id) {
+      localStorage.setItem(pendingGenerationKey, id);
+      localStorage.setItem(
+        pendingGenerationTimeKey,
+        JSON.stringify({ id, startedAt }),
+      );
+    } else {
+      localStorage.removeItem(pendingGenerationKey);
+      localStorage.removeItem(pendingGenerationTimeKey);
+    }
+    sessionStorage.removeItem(pendingGenerationKey);
   } catch {
     // Browser storage can be disabled. In-memory polling still works.
   }
@@ -40,8 +53,26 @@ export function rememberGeneration(id: string | null): void {
 
 export function pendingGeneration(): string | null {
   try {
-    const value = sessionStorage.getItem(pendingGenerationKey);
+    const value =
+      localStorage.getItem(pendingGenerationKey) ??
+      sessionStorage.getItem(pendingGenerationKey);
     return value && /^[a-f0-9]{32}$/.test(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export function pendingGenerationStartedAt(id: string): number | null {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(pendingGenerationTimeKey) ?? "null",
+    );
+    return saved?.id === id &&
+      Number.isSafeInteger(saved.startedAt) &&
+      saved.startedAt >= 0 &&
+      saved.startedAt <= Date.now()
+      ? saved.startedAt
+      : null;
   } catch {
     return null;
   }
@@ -49,7 +80,7 @@ export function pendingGeneration(): string | null {
 
 const uncertainMessage = () =>
   translate(
-    "Could not confirm generation progress. Check the Forms list and Queue Manager before starting another request.",
+    "Could not confirm generation progress. Reopen Create with AI to check again, and check the Forms list before starting another request.",
   );
 
 export async function waitForGeneration(
@@ -63,8 +94,9 @@ export async function waitForGeneration(
   while (!signal.aborted && Date.now() - started < 15 * 60_000) {
     let state: GenerationState | null = null;
     try {
-      const { data } = await axios.get<GenerationState>(
-        `/api/forms/ai-generation-status/${requestId}`,
+      const { data } = await axios.post<GenerationState>(
+        `/api/forms/ai-generation-progress/${requestId}`,
+        {},
         { signal, timeout: 15_000 },
       );
       if (

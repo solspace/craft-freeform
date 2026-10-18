@@ -48,11 +48,11 @@ class ReferenceAiRequestTest extends TestCase
     #[TestWith(['gpt-5.6-luna', true])]
     #[TestWith(['gpt-6.1-sol', true])]
     #[TestWith(['gpt-5-mini', true])]
-    #[TestWith(['gpt-5-pro', false])]
+    #[TestWith(['gpt-5-pro', true])]
     #[TestWith(['gpt-5.2-chat-latest', false])]
     #[TestWith(['gpt-4o', false])]
-    #[TestWith(['o3', false])]
-    public function testInteractiveReasoningBudgetIsSentOnlyToCompatibleModels(string $model, bool $supported): void
+    #[TestWith(['o3', true])]
+    public function testExplicitReasoningOverridesRequireCompatibleModels(string $model, bool $supported): void
     {
         $integration = (new \ReflectionClass(OpenAIV1::class))->newInstanceWithoutConstructor();
         $history = [];
@@ -60,6 +60,10 @@ class ReferenceAiRequestTest extends TestCase
         $stack = HandlerStack::create(new MockHandler([new Response(200, [], $response), new Response(200, [], $response)]));
         $stack->push(Middleware::history($history));
         $client = new Client(['handler' => $stack]);
+        if (!$supported) {
+            $this->expectException(FormGenerationException::class);
+            $this->expectExceptionMessage('reasoning setting');
+        }
         $integration->processAiRequest($client, 'system', 'user', ['model' => $model, 'reasoning_effort' => 'low']);
         $payload = json_decode((string) $history[0]['request']->getBody(), true);
         self::assertSame($model, $payload['model']);

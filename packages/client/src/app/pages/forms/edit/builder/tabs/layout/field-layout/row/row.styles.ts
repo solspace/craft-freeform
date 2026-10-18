@@ -15,6 +15,9 @@ export const RowWrapper = styled(animated.div)`
 
   transition: all 0.2s ease-out;
   transform-origin: 50% 0%;
+
+  /* Keep the first row aligned without changing headings inside nested groups. */
+  &:first-child > div > div > .section-heading { padding-top: 10px; }
 `;
 
 export const RowFieldsContainer = styled(animated.div)`

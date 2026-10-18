@@ -49,6 +49,49 @@
         },
     }) }}
 
+	{{ forms.checkboxSelectField({
+        label: "Form Creation Options"|t('freeform'),
+        instructions: "Choose the options available under Add new form. When only one option is selected, it opens directly without showing the chooser. Select at least one option."|t('freeform'),
+        name: "settings[formCreationOptions]",
+        values: settings.formCreationOptions,
+        options: [
+            {value: 'wizard', label: "Guided setup"|t('freeform')},
+            {value: 'ai', label: "Create with AI (Pro only)"|t('freeform')},
+            {value: 'blank', label: "Quick setup"|t('freeform')},
+        ],
+        errors: settings.errors().get("formCreationOptions"),
+        disabled: readOnly,
+    }) }}
+    {% if craft.freeform.pro %}
+        {% set aiOptions = [{value: '', label: "No default — choose when creating a form"|t('freeform')}] %}
+        {% set defaultAiAvailable = false %}
+        {% for integration in aiIntegrations %}
+            {% set aiOptions = aiOptions|merge([{
+                value: integration.uid,
+                label: integration.name ~ (integration.model ? ' — ' ~ integration.model : ''),
+            }]) %}
+            {% if integration.uid == settings.defaultAiIntegration %}
+                {% set defaultAiAvailable = true %}
+            {% endif %}
+        {% endfor %}
+        {% if settings.defaultAiIntegration and not defaultAiAvailable %}
+            {% set aiOptions = aiOptions|merge([{
+                value: settings.defaultAiIntegration,
+                label: "Unavailable integration — choose another default"|t('freeform'),
+            }]) %}
+        {% endif %}
+        {{ forms.selectField({
+            label: "Default AI Integration for Form Creation"|t('freeform'),
+            instructions: "Preselect an AI integration for Create with AI. This applies only to form generation; spam protection and other AI features keep their own integration settings. If no default is set or it becomes unavailable, users must choose an integration when creating a form."|t('freeform'),
+            id: "defaultAiIntegration",
+            name: "settings[defaultAiIntegration]",
+            value: settings.defaultAiIntegration,
+            options: aiOptions,
+            errors: settings.errors().get("defaultAiIntegration"),
+            disabled: readOnly,
+        }) }}
+    {% endif %}
+
 	{{ forms.selectField({
         label: "Plugin Badge"|t('freeform'),
         instructions: "Select the options you'd like to be included in the plugin badge count (when applicable)."|t('freeform'),

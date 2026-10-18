@@ -77,7 +77,7 @@ const NativeLightSwitch: FC<Props> = ({
       id,
       role: "switch",
       "aria-label": label,
-      "aria-checked": enabled,
+      "aria-checked": String(enabled),
       "data-tag-name": "craft-switch-button",
     }),
   );

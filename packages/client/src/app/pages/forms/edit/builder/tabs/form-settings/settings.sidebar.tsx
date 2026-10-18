@@ -47,7 +47,7 @@ export const SettingsSidebar: React.FC = () => {
   });
 
   return (
-    <Sidebar $lean>
+    <Sidebar $lean data-wizard-tour="settings">
       <SectionWrapper>
         {data.map((namespace) =>
           namespace.sections

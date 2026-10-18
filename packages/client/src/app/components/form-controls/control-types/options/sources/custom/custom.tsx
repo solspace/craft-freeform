@@ -1,5 +1,6 @@
 import { Label } from "@components/form-controls/label.styles";
 import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { OptionsHeading } from "@editor/builder/sample-data/sample-data.styles";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useState } from "react";
@@ -21,12 +22,16 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
   updateDefaultValue,
   isMultiple,
   autoUpdateHandle,
+  headerAction,
 }) => {
   const [bulkOpen, setBulkOpen] = useState(false);
 
   return (
     <>
-      <Label>{translate("Options")}</Label>
+      <OptionsHeading>
+        <Label>{translate("Options")}</Label>
+        {headerAction}
+      </OptionsHeading>
       <PreviewableComponent
         covered={bulkOpen}
         preview={

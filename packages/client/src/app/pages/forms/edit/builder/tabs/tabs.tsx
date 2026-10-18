@@ -35,6 +35,7 @@ import {
   SubmissionsShortcut,
   TabWrapper,
 } from "./tabs.styles";
+import { WizardTour } from "./wizard-tour";
 
 export const Tabs: React.FC = () => {
   const limitations = config.limitations;
@@ -162,17 +163,22 @@ export const Tabs: React.FC = () => {
           },
         ]
       : []),
-    {
-      to: `/forms/${form.id}/preview`,
-      label: translate("Preview"),
-      errors:
-        hasErrors(formErrors?.general?.previewCssUrls) ||
-        hasErrors(formErrors?.general?.previewJsUrls),
-    },
+    ...(limitations.can("preview.tab")
+      ? [
+          {
+            to: `/forms/${form.id}/preview`,
+            label: translate("Preview"),
+            errors:
+              hasErrors(formErrors?.general?.previewCssUrls) ||
+              hasErrors(formErrors?.general?.previewJsUrls),
+          },
+        ]
+      : []),
   ];
 
   return (
     <TabWrapper>
+      <WizardTour formId={form.id} />
       <Breadcrumb
         id="form-name"
         label={form.name || "Create a new Form"}

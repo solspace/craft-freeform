@@ -1,5 +1,18 @@
 import type { Card } from "@components/form-controls/control-types/namespaced/cards/cards.types";
 import { useFieldOptions } from "@components/options/use-field-options";
+import {
+  optionSampleRange,
+  selectOptionSample,
+} from "@editor/builder/sample-data/option-sample-data";
+import type { SampleGenerator } from "@editor/builder/sample-data/sample-data";
+import {
+  useSampleData,
+  useSamplePreview,
+} from "@editor/builder/sample-data/sample-data.context";
+import {
+  selectSampleFile,
+  selectSampleFiles,
+} from "@editor/builder/sample-data/sample-files";
 import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type { AssetUrlRecords } from "@ff-client/queries/assets";
@@ -30,7 +43,7 @@ const compilePreview = (type: FieldType): ReturnType<typeof template> => {
 export const useFieldPreview = (
   field?: Field,
   type?: FieldType,
-): [string, boolean] => {
+): [string, boolean, SampleGenerator?] => {
   const [generatedOptions, isFetching] = useFieldOptions(field, type);
   const { getTranslation } = useTranslations(field);
   const fetchedAssets = useAssets(field, type);
@@ -53,6 +66,80 @@ export const useFieldPreview = (
     return collection;
   }, [field, type, generatedOptions, fetchedAssets, getTranslation]);
 
+  const sample = useSamplePreview(data.defaultValue);
+  const { optionRevision } = useSampleData();
+  const multiple = type?.implements?.includes("multiValue") ?? false;
+  const optionSampleEnabled =
+    data.sampleData === true &&
+    (type?.implements?.includes("options") ?? false);
+  const [minimum, maximum] = optionSampleRange(data);
+  const optionSample = useMemo(() => {
+    // A refresh changes this dependency without changing the saved field defaults.
+    void optionRevision;
+    return optionSampleEnabled
+      ? selectOptionSample(generatedOptions, multiple, [minimum, maximum])
+      : undefined;
+  }, [
+    optionSampleEnabled,
+    generatedOptions,
+    multiple,
+    minimum,
+    maximum,
+    optionRevision,
+  ]);
+  const optionMarker = useMemo(
+    () =>
+      optionSampleEnabled
+        ? {
+            id: "options",
+            label: multiple ? "Random options" : "Random option",
+            value: "",
+          }
+        : undefined,
+    [optionSampleEnabled, multiple],
+  );
+  const fileSamples = useMemo(() => {
+    if (data.sampleData !== true || !["file", "file-dnd"].includes(type?.type))
+      return [];
+    if (type.type === "file-dnd")
+      return selectSampleFiles(
+        data.fileKinds,
+        data.maxFileSizeKB,
+        data.fileCount,
+      );
+    const file = selectSampleFile(data.fileKinds, data.maxFileSizeKB);
+    return file ? [file] : [];
+  }, [
+    data.sampleData,
+    data.fileKinds,
+    data.maxFileSizeKB,
+    data.fileCount,
+    type?.type,
+  ]);
+  const fileSample = fileSamples[0];
+  const fileMarker = useMemo(
+    () =>
+      fileSample
+        ? {
+            id: `file:${fileSample.kind}`,
+            label: "Sample file",
+            value: fileSample.name,
+          }
+        : undefined,
+    [fileSample],
+  );
+  const previewData = useMemo(
+    () =>
+      fileSample
+        ? { ...data, sampleFile: fileSample, sampleFiles: fileSamples }
+        : optionSampleEnabled
+          ? { ...data, defaultValue: optionSample }
+          : sample
+            ? { ...data, defaultValue: sample.value }
+            : data,
+    [data, sample, optionSampleEnabled, optionSample, fileSample, fileSamples],
+  );
+
   const compiledTemplate = useMemo(() => {
     if (
       field?.properties === undefined ||
@@ -63,13 +150,13 @@ export const useFieldPreview = (
 
     try {
       const compiled = compilePreview(type);
-      return compiled(data);
+      return compiled(previewData);
     } catch (error) {
       return `Preview template error: "${error.message}"`;
     }
-  }, [field?.properties, type, data]);
+  }, [field?.properties, type, previewData]);
 
-  return [compiledTemplate, isFetching];
+  return [compiledTemplate, isFetching, fileMarker ?? optionMarker ?? sample];
 };
 
 const useAssets = (field: Field, type: FieldType): AssetUrlRecords => {

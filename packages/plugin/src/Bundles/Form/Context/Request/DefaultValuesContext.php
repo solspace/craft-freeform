@@ -6,16 +6,20 @@ use Faker\Factory;
 use Faker\Generator;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
+use Solspace\Freeform\Services\OptionSampleDataService;
 use yii\base\Event;
 
 class DefaultValuesContext
 {
+    private ?OptionSampleDataService $optionSamples = null;
+
     public function __construct(
         private TranslationProvider $translationProvider,
     ) {
@@ -34,6 +38,13 @@ class DefaultValuesContext
         $fields = $form->getLayout()->getFields(DefaultValueInterface::class);
         foreach ($fields as $field) {
             if ($field instanceof CheckboxField) {
+                continue;
+            }
+
+            if ($field instanceof BaseOptionsField && $field->isSampleDataEnabled()) {
+                $this->optionSamples ??= new OptionSampleDataService();
+                $field->setValue($this->optionSamples->getValue($field));
+
                 continue;
             }
 

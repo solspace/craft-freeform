@@ -1,5 +1,6 @@
 import FormLabel from "@components/form-controls/label";
 import { PreviewableComponent } from "@components/form-controls/preview/previewable-component";
+import { OptionsHeading } from "@editor/builder/sample-data/sample-data.styles";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
@@ -23,6 +24,7 @@ export const SourceCustom: FC<TranslateOptionsProps> = ({
   isMultiple,
   field,
   property,
+  headerAction,
 }) => {
   const { hasTranslation, getTranslation, removeTranslation } =
     useTranslations(field);
@@ -39,13 +41,16 @@ export const SourceCustom: FC<TranslateOptionsProps> = ({
 
   return (
     <>
-      <FormLabel
-        label="Options"
-        handle={handle}
-        translatable
-        hasTranslation={hasTranslation(handle)}
-        removeTranslation={() => removeTranslation(handle)}
-      />
+      <OptionsHeading>
+        <FormLabel
+          label="Options"
+          handle={handle}
+          translatable
+          hasTranslation={hasTranslation(handle)}
+          removeTranslation={() => removeTranslation(handle)}
+        />
+        {headerAction}
+      </OptionsHeading>
       <PreviewableComponent
         preview={
           <PreviewWrapper data-edit={translate("Click to edit data")}>

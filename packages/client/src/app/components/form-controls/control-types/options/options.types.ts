@@ -6,6 +6,7 @@ import type {
   Property,
 } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
+import type { ReactNode } from "react";
 
 export enum Source {
   Custom = "custom",
@@ -64,6 +65,7 @@ export type OptionsConfiguration =
 export type ConfigurationProps<
   T extends OptionsConfiguration = OptionsConfiguration,
 > = {
+  headerAction?: ReactNode;
   value: T;
   updateValue: (value: T) => void;
   property: OptionsProperty;

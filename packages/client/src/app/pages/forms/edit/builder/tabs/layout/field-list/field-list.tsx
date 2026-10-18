@@ -18,7 +18,10 @@ export const FieldList: React.FC = () => {
     config.editions.is(Edition.Express) && fieldCount >= config.limits.fields;
 
   return (
-    <FieldListWrapper className={classes(disabled && "fields-disabled")}>
+    <FieldListWrapper
+      data-wizard-tour="fields"
+      className={classes(disabled && "fields-disabled")}
+    >
       <Search />
       <FavoriteFields />
       <BaseFields />

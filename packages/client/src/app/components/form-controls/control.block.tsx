@@ -5,7 +5,9 @@ import {
   LabelGroup,
   LabelInstructionsWrapper,
 } from "@components/form-controls/control.styles";
-import FormInstructions from "@components/form-controls/instructions";
+import FormInstructions, {
+  CollapsibleFieldHelp,
+} from "@components/form-controls/instructions";
 import FormLabel from "@components/form-controls/label";
 import config, { Edition } from "@config/freeform/freeform.config";
 import type { Message } from "@ff-client/types/properties";
@@ -59,12 +61,28 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   align,
   justify,
 }) => {
-  const { size } = useRenderContext();
+  const { size, collapsibleInstructions } = useRenderContext();
+  const hasHelp =
+    !!label &&
+    !!handle &&
+    !!instructions &&
+    !!collapsibleInstructions?.includes(handle);
   const {
     editions: { isAtLeast },
   } = config;
   const upsell =
     edition !== Edition.Express && !isAtLeast(edition || Edition.Express);
+  const formLabel = (
+    <FormLabel
+      label={label}
+      handle={handle}
+      required={required}
+      translatable={translatable}
+      hasTranslation={hasTranslation}
+      isEncrypted={isEncrypted}
+      removeTranslation={removeTranslation}
+    />
+  );
 
   return (
     <ControlWrapper
@@ -83,16 +101,16 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
         {preContent !== undefined && <ExtraContent>{preContent}</ExtraContent>}
 
         <LabelInstructionsWrapper>
-          <FormLabel
-            label={label}
-            handle={handle}
-            required={required}
-            translatable={translatable}
-            hasTranslation={hasTranslation}
-            isEncrypted={isEncrypted}
-            removeTranslation={removeTranslation}
-          />
-          <FormInstructions instructions={instructions} />
+          {hasHelp ? (
+            <CollapsibleFieldHelp label={label} instructions={instructions}>
+              {formLabel}
+            </CollapsibleFieldHelp>
+          ) : (
+            <>
+              {formLabel}
+              <FormInstructions instructions={instructions} />
+            </>
+          )}
         </LabelInstructionsWrapper>
 
         {extraContent !== undefined && (

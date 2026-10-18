@@ -5,6 +5,8 @@ import { Label } from "@components/form-controls/label.styles";
 import type { ControlType } from "@components/form-controls/types";
 import { useFieldOptions } from "@components/options/use-field-options";
 import config, { Edition } from "@config/freeform/freeform.config";
+import { OptionsHeading } from "@editor/builder/sample-data/sample-data.styles";
+import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-options";
 import { useAppDispatch, useAppSelector } from "@editor/store";
 import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
 import { optionSourceActions } from "@editor/store/slices/option-sources";
@@ -26,7 +28,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
   updateValue,
   context,
 }) => {
-  const { source } = value;
+  const { source = Source.Custom } = value;
   const defaultValue: string | string[] = context.properties.defaultValue;
 
   const fieldType = useFieldType(context.typeClass);
@@ -38,6 +40,24 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   const [options] = useFieldOptions(context, fieldType);
   const dispatch = useAppDispatch();
+  const sampleProperty = fieldType?.properties?.find(
+    (item) => item.handle === "sampleData",
+  );
+  const sampleAction = sampleProperty ? (
+    <SampleDataOptions
+      property={sampleProperty}
+      value={context.properties.sampleData}
+      updateValue={(enabled) =>
+        dispatch(
+          fieldActions.edit({
+            uid: context.uid,
+            handle: "sampleData",
+            value: enabled,
+          }),
+        )
+      }
+    />
+  ) : undefined;
   const sourceConfigurations = useAppSelector(
     (state) => state.optionSources[context.uid]?.[property.handle],
   );
@@ -80,6 +100,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         defaultValue={defaultValue}
         isMultiple={isMultiple}
         context={context}
+        headerAction={sampleAction}
       />
     );
   }
@@ -88,7 +109,10 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
     <>
       {config.editions.isAtLeast(Edition.Lite) && (
         <ControlWrapper $width={property.width}>
-          <Label>{translate("Source")}</Label>
+          <OptionsHeading>
+            <Label>{translate("Source")}</Label>
+            {source !== Source.Custom && sampleAction}
+          </OptionsHeading>
           <ButtonGroup
             options={sourceLabels}
             value={source}
@@ -115,6 +139,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         isMultiple={isMultiple}
         allowOptgroup={property.allowOptgroup}
         autoUpdateHandle={autoUpdateHandle}
+        headerAction={sampleAction}
       />
 
       <FormErrorList errors={errors} />

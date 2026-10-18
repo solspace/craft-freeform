@@ -41,6 +41,8 @@ type Config = {
     freeform: {
       version: string;
       canCreate: boolean;
+      formCreationOptions?: ("wizard" | "ai" | "blank")[];
+      defaultAiIntegration?: string;
       canDelete: boolean;
       canOrganizeForms: boolean;
       canManageHtmlEmbeds: boolean;

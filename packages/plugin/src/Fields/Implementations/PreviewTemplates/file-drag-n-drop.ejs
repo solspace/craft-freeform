@@ -1,5 +1,5 @@
 <div style="
-  padding: 67px 20px;
+  padding: <% if (typeof sampleFile !== 'undefined' && sampleFile) { %>20px<% } else { %>67px 20px<% } %>;
 
   border-radius: 7px;
   border: 2px dashed <%= accent %>;
@@ -7,9 +7,26 @@
   color: <% if (theme === 'dark') { %>#656666<% } else { %>#000<% } %>;
 
   font-size: 1.25rem;
-  text-align: center;
+  text-align: <% if (typeof sampleFile !== 'undefined' && sampleFile) { %>left<% } else { %>center<% } %>;
 ">
-  <%= placeholder %>
+  <% if (typeof sampleFile !== 'undefined' && sampleFile) { %>
+    <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+    <% (typeof sampleFiles !== 'undefined' ? sampleFiles : [sampleFile]).forEach(function(file) { %>
+    <div style="width: 126px; max-width: 100%;">
+      <div style="position: relative; aspect-ratio: 1; background: #969797;">
+        <% if (file.kind === 'image') { %>
+          <img src="<%- file.url %>" alt="" style="display: block; width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover;" />
+        <% } else { %>
+          <span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #fff;"><%- file.name.split('.').pop().toUpperCase() %></span>
+        <% } %>
+        <span aria-hidden="true" style="position: absolute; top: -9px; right: -9px; display: flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: <% if (theme === 'dark') { %>#666<% } else { %>#e6e5e5<% } %>; color: <% if (theme === 'dark') { %>#bababa<% } else { %>#878787<% } %>; line-height: 0;"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="display: block; flex: none;" xmlns="http://www.w3.org/2000/svg"><path d="m3 3 6 6m0-6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg></span>
+      </div>
+      <span title="<%- file.name %>" style="display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; line-height: 20px; color: <% if (theme === 'dark') { %>#bababa<% } else { %>#5c5c5c<% } %>;"><%- file.name %></span>
+      <span style="display: block; font-size: 13px; line-height: 20px; color: <% if (theme === 'dark') { %>#787878<% } else { %>#b1b1b1<% } %>;"><%- file.size < 1024 ? file.size + ' B' : (file.size / 1024).toFixed(1).replace(/\.0$/, '') + ' KB' %></span>
+    </div>
+    <% }); %>
+    </div>
+  <% } else { %><%= placeholder %><% } %>
 </div>
 <% if (typeof showUploadRequirements !== 'undefined' && showUploadRequirements) { %>
     <div style="margin-top: 4px; font-size: 0.875em; opacity: 0.75;">

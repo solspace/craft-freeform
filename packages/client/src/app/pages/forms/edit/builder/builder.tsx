@@ -20,9 +20,9 @@ import { SubmitFormRulesEditor } from "./tabs/rules/editor/submit-form.editor";
 import { Rules } from "./tabs/rules/rules";
 import { Tabs } from "./tabs/tabs";
 
-export const Builder: React.FC = () => {
+export const Builder: React.FC<{ formId?: number }> = ({ formId }) => {
   return (
-    <BuilderWrapper>
+    <BuilderWrapper data-form-builder-id={formId}>
       <Tabs />
       <BuilderContent>
         <Routes>

@@ -6,7 +6,23 @@ import { pendingGenerationKey } from "./modal.form.ai-generation";
 import { CreateWithAiFormModal } from "./modal.form.create-with-ai";
 import { referenceFileError } from "./modal.form.reference-files";
 
-const fixture = vi.hoisted(() => ({ navigate: vi.fn(), close: vi.fn() }));
+const fixture = vi.hoisted(() => ({
+  navigate: vi.fn(),
+  close: vi.fn(),
+  refresh: vi.fn(),
+  defaultIntegrationUid: "vision",
+}));
+vi.mock("@config/freeform/freeform.config", () => ({
+  default: {
+    metadata: {
+      freeform: {
+        get defaultAiIntegration() {
+          return fixture.defaultIntegrationUid;
+        },
+      },
+    },
+  },
+}));
 vi.mock("react-router-dom", () => ({ useNavigate: () => fixture.navigate }));
 vi.mock("axios", () => ({
   default: {
@@ -17,6 +33,7 @@ vi.mock("axios", () => ({
   },
 }));
 vi.mock("./modal.form.create-with-ai.queries", () => ({
+  useRefreshGeneratedForms: () => fixture.refresh,
   useAiIntegrations: () => ({
     data: [
       {
@@ -55,7 +72,11 @@ vi.mock("@components/form-controls", () => ({
     updateValue,
   }: {
     value: string;
-    property: { handle: string; options?: { value: string; label: string }[] };
+    property: {
+      handle: string;
+      emptyOption?: string;
+      options?: { value: string; label: string }[];
+    };
     updateValue: (value: string) => void;
   }) =>
     property.options ? (
@@ -64,6 +85,9 @@ vi.mock("@components/form-controls", () => ({
         value={value}
         onChange={(event) => updateValue(event.target.value)}
       >
+        {property.emptyOption && (
+          <option value="">{property.emptyOption}</option>
+        )}
         {property.options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -109,10 +133,12 @@ function input(id: string, value: string) {
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
+  fixture.defaultIntegrationUid = "vision";
   sessionStorage.clear();
+  localStorage.clear();
   vi.mocked(axios.post).mockReset();
   vi.mocked(axios.get).mockReset();
-  vi.mocked(axios.get).mockResolvedValue({
+  vi.mocked(axios.post).mockResolvedValue({
     data: { status: "complete", formId: 42 },
   });
   host = document.createElement("div");
@@ -125,10 +151,11 @@ afterEach(() => {
   host.remove();
   vi.unstubAllGlobals();
   sessionStorage.clear();
+  localStorage.clear();
 });
 it("reconnects after gateway errors without displaying HTML or resubmitting", async () => {
   input("prompt", "Contact form");
-  vi.mocked(axios.post).mockRejectedValue({
+  vi.mocked(axios.post).mockRejectedValueOnce({
     isAxiosError: true,
     response: {
       status: 502,
@@ -138,8 +165,16 @@ it("reconnects after gateway errors without displaying HTML or resubmitting", as
   await act(async () => button("Generate form").click());
   expect(host.textContent).not.toContain("<html>");
   expect(host.textContent).not.toContain("nginx");
-  expect(axios.post).toHaveBeenCalledTimes(1);
-  expect(axios.get).toHaveBeenCalledOnce();
+  expect(axios.post).toHaveBeenCalledTimes(2);
+  expect(axios.post).toHaveBeenLastCalledWith(
+    expect.stringMatching(/ai-generation-progress/),
+    {},
+    expect.any(Object),
+  );
+  expect(axios.get).not.toHaveBeenCalled();
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(fixture.close).toHaveBeenCalledOnce();
   expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
@@ -160,14 +195,22 @@ it("discards HTML embedded in a JSON error message", async () => {
   expect(host.textContent).toContain("Form generation failed");
   expect(host.textContent).not.toContain("gateway details");
 });
-it("resumes a queued generation when the dialog is reopened without another POST", async () => {
+it("resumes a queued generation when the dialog is reopened without submitting another generation", async () => {
   sessionStorage.setItem(pendingGenerationKey, "a".repeat(32));
   act(() => root.unmount());
   root = createRoot(host);
   await act(async () =>
     root.render(<CreateWithAiFormModal closeModal={fixture.close} />),
   );
-  expect(axios.post).not.toHaveBeenCalled();
+  expect(axios.post).toHaveBeenCalledOnce();
+  expect(axios.post).toHaveBeenCalledWith(
+    expect.stringMatching(/ai-generation-progress/),
+    {},
+    expect.any(Object),
+  );
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(sessionStorage.getItem(pendingGenerationKey)).toBeNull();
 });
@@ -188,6 +231,8 @@ it("allows references through SolspaceAI without a client model setting", async 
   expect(payload.get("integrationUid")).toBe("solspace");
   expect(payload.get("model")).toBeNull();
   expect(payload.getAll("references[]")).toHaveLength(1);
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/43");
 });
 it("sends a file-only request as multipart in displayed order and opens the builder", async () => {
@@ -209,6 +254,9 @@ it("sends a file-only request as multipart in displayed order and opens the buil
   ).toEqual(["second.pdf", "first.pdf"]);
   expect((body as FormData).get("referenceFileCount")).toBe("2");
   expect((body as FormData).get("integrationUid")).toBe("vision");
+  expect(host.textContent).toContain("Your form is ready");
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  act(() => button("Open form").click());
   expect(fixture.navigate).toHaveBeenCalledWith("/forms/42");
   expect(fixture.close).toHaveBeenCalledOnce();
 });
@@ -265,9 +313,10 @@ it("prevents duplicate submission while generation is pending", async () => {
       resolve = done;
     }) as ReturnType<typeof axios.post>,
   );
+  const generate = button("Generate form");
   act(() => {
-    button("Generate form").click();
-    button("Generate form").click();
+    generate.click();
+    generate.click();
   });
   expect(axios.post).toHaveBeenCalledOnce();
   expect(button("Close").disabled).toBe(false);
@@ -287,3 +336,158 @@ it("rejects invalid, empty, excessive and oversized uploads", () => {
   expect(host.querySelectorAll("li")).toHaveLength(0);
   expect(button("Generate form").disabled).toBe(true);
 });
+
+it("collapses and disables the inputs during generation and restores them on failure", async () => {
+  input("prompt", "Contact form");
+  input("name", "My contact form");
+  let reject!: (error: unknown) => void;
+  vi.mocked(axios.post).mockReturnValue(
+    new Promise((_, fail) => {
+      reject = fail;
+    }) as ReturnType<typeof axios.post>,
+  );
+  act(() => button("Generate form").click());
+  expect(host.querySelector("fieldset")!.disabled).toBe(true);
+  expect(document.activeElement).toBe(button("Close"));
+  expect(host.querySelector("[inert]")!.getAttribute("aria-hidden")).toBe(
+    "true",
+  );
+  expect(host.querySelector('[role="status"]')!.textContent).toContain(
+    "My contact form",
+  );
+  expect(host.textContent).toContain("Your current work will stay open.");
+  expect(host.textContent).toContain("This may take a few minutes.");
+  expect(host.querySelector("time")!.textContent).toMatch(/^\d{2}:\d{2}$/);
+  expect(button("Generate form")).toBeUndefined();
+  await act(async () => reject(new Error("Request failed")));
+  expect(host.querySelector("fieldset")!.disabled).toBe(false);
+  expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toBe(
+    "Contact form",
+  );
+  expect(button("Generate form")).toBeDefined();
+});
+
+it("does not navigate or resume polling when a closed dialog receives a late response", async () => {
+  input("prompt", "Contact form");
+  let resolve!: (value: unknown) => void;
+  vi.mocked(axios.post).mockReturnValue(
+    new Promise((done) => {
+      resolve = done;
+    }) as ReturnType<typeof axios.post>,
+  );
+  act(() => button("Generate form").click());
+  act(() => button("Close").click());
+  expect(fixture.close).toHaveBeenCalledOnce();
+  await act(async () => resolve({ data: { status: "running" } }));
+  expect(axios.post).toHaveBeenCalledOnce();
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  expect(localStorage.getItem(pendingGenerationKey)).toMatch(/^[a-f0-9]{32}$/);
+});
+
+it("never navigates when progress completes after the dialog is dismissed", async () => {
+  input("prompt", "Contact form");
+  let resolve!: (value: unknown) => void;
+  vi.mocked(axios.post)
+    .mockResolvedValueOnce({ data: { status: "running" } })
+    .mockImplementationOnce(
+      () =>
+        new Promise((done) => {
+          resolve = done;
+        }),
+    );
+  await act(async () => {
+    button("Generate form").click();
+  });
+  act(() => button("Close").click());
+  await act(async () => resolve({ data: { status: "complete", formId: 99 } }));
+  expect(fixture.navigate).not.toHaveBeenCalled();
+  expect(host.textContent).not.toContain("Your form is ready");
+});
+
+it("refreshes the list and lets the user close a completed generation without opening another form", async () => {
+  input("prompt", "Contact form");
+  await act(async () => button("Generate form").click());
+  expect(host.textContent).toContain("Your form is ready");
+  expect(button("Open form")).toBeDefined();
+  expect(fixture.refresh).toHaveBeenCalledOnce();
+  act(() => button("Close").click());
+  expect(fixture.close).toHaveBeenCalledOnce();
+  expect(fixture.navigate).not.toHaveBeenCalled();
+});
+
+it("fills an example for review without submitting or changing the form name", () => {
+  input("name", "My quote form");
+  act(() => button("Quote request").click());
+  expect(host.querySelector<HTMLInputElement>("#prompt")!.value).toContain(
+    "service type, project description",
+  );
+  expect(host.querySelector<HTMLInputElement>("#name")!.value).toBe(
+    "My quote form",
+  );
+  expect(document.activeElement).toBe(host.querySelector("#prompt"));
+  expect(axios.post).not.toHaveBeenCalled();
+});
+
+it("opens the reference picker and hides prompt examples after attaching a file", () => {
+  const picker = host.querySelector<HTMLInputElement>('[type="file"]')!;
+  const choose = vi.spyOn(picker, "click").mockImplementation(() => {});
+  act(() => button("Choose files").click());
+  expect(choose).toHaveBeenCalledOnce();
+  upload([pdf()]);
+  expect(host.querySelector('[aria-label="Prompt examples"]')).toBeNull();
+  expect(button("Add files")).toBeDefined();
+  expect(host.querySelector("li")!.textContent).toContain("PDF");
+  choose.mockRestore();
+});
+
+function remountWithDefault(uid: string) {
+  fixture.defaultIntegrationUid = uid;
+  act(() => root.unmount());
+  root = createRoot(host);
+  act(() => root.render(<CreateWithAiFormModal closeModal={fixture.close} />));
+}
+
+it("preselects the configured form-generation default instead of the first integration", () => {
+  remountWithDefault("text");
+  const select = host.querySelector<HTMLSelectElement>("#integrationUid")!;
+  expect(select.value).toBe("text");
+  expect(select.selectedOptions[0].textContent).toBe("Text only (Default)");
+  act(() => {
+    select.value = "vision";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  input("prompt", "Contact form");
+  expect(select.value).toBe("vision");
+  act(() => {
+    select.value = "";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+  expect(select.value).toBe("");
+});
+
+it.each(["", "removed-or-disabled"])(
+  "requires an explicit choice when the default is unavailable (%s)",
+  async (uid) => {
+    remountWithDefault(uid);
+    expect(
+      host.querySelector<HTMLSelectElement>("#integrationUid")!.value,
+    ).toBe("");
+    input("prompt", "Contact form");
+    expect(button("Generate form").disabled).toBe(true);
+    if (uid)
+      expect(host.textContent).toContain(
+        "The default AI integration is unavailable.",
+      );
+    await act(async () => button("Generate form").click());
+    expect(axios.post).not.toHaveBeenCalled();
+    const select = host.querySelector<HTMLSelectElement>("#integrationUid")!;
+    act(() => {
+      select.value = "text";
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    expect(button("Generate form").disabled).toBe(false);
+    expect(host.textContent).not.toContain(
+      "The default AI integration is unavailable.",
+    );
+  },
+);

@@ -1,5 +1,6 @@
 import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { HelpText } from "@components/elements/help-text";
+import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
 import type { UpdateValue } from "@components/form-controls";
 import {
   Button,
@@ -43,6 +44,11 @@ type Props = {
   deleteLabel?: string;
   emptyMessage?: string;
   showHelp?: boolean;
+  defaultSelection?: {
+    value: string;
+    onChange: (value: string) => void;
+    readOnly?: boolean;
+  };
 };
 
 export const TabularDataEditor: React.FC<Props> = ({
@@ -56,6 +62,7 @@ export const TabularDataEditor: React.FC<Props> = ({
   deleteLabel = "Delete",
   emptyMessage,
   showHelp = true,
+  defaultSelection,
 }) => {
   const { getTranslation, updateTranslation, willTranslate } = useTranslations(
     // biome-ignore lint/suspicious/noExplicitAny: This context is typed as unknown, but we know it will be the correct type for the translation functions.
@@ -66,6 +73,10 @@ export const TabularDataEditor: React.FC<Props> = ({
 
   const isTranslating = willTranslate(handle);
   const translation = getTranslation<Array<GenericValue>>(handle, values);
+  const selectedRow =
+    defaultSelection && defaultSelection.value !== ""
+      ? values.findIndex((row) => row[0] === defaultSelection?.value)
+      : -1;
 
   const addButtonRef = useRef<HTMLButtonElement>(null);
   const refs = useRef([]);
@@ -107,6 +118,11 @@ export const TabularDataEditor: React.FC<Props> = ({
           {compact && (
             <thead>
               <tr>
+                {defaultSelection && (
+                  <th scope="col" style={{ width: 76 }}>
+                    {translate("Default")}
+                  </th>
+                )}
                 {configuration.map((column) => (
                   <th
                     scope="col"
@@ -131,7 +147,10 @@ export const TabularDataEditor: React.FC<Props> = ({
           <tbody>
             {compact && !values.length && emptyMessage && (
               <tr>
-                <td className="empty-state" colSpan={configuration.length}>
+                <td
+                  className="empty-state"
+                  colSpan={configuration.length + (defaultSelection ? 1 : 0)}
+                >
                   {translate(emptyMessage)}
                 </td>
               </tr>
@@ -145,6 +164,20 @@ export const TabularDataEditor: React.FC<Props> = ({
                   updateValue(moveRow(fromIndex, toIndex, values))
                 }
               >
+                {defaultSelection && (
+                  <Cell $tiny style={{ padding: "0 9px" }}>
+                    <LightSwitch
+                      label={translate("Default for option {number}", {
+                        number: rowIndex + 1,
+                      })}
+                      enabled={selectedRow === rowIndex}
+                      readOnly={defaultSelection.readOnly || !value[0]}
+                      onClick={(enabled) =>
+                        defaultSelection.onChange(enabled ? value[0] : "")
+                      }
+                    />
+                  </Cell>
+                )}
                 {configuration.map((column, columnIndex) => (
                   <Cell key={columnIndex}>
                     <Input
@@ -193,6 +226,12 @@ export const TabularDataEditor: React.FC<Props> = ({
                           return;
                         }
 
+                        if (
+                          columnIndex === 0 &&
+                          selectedRow === rowIndex &&
+                          !defaultSelection?.readOnly
+                        )
+                          defaultSelection?.onChange(event.target.value);
                         updateValue(
                           updateRow(
                             rowIndex,
@@ -229,6 +268,11 @@ export const TabularDataEditor: React.FC<Props> = ({
                         aria-label={translate(deleteLabel)}
                         title={translate(deleteLabel)}
                         onClick={() => {
+                          if (
+                            selectedRow === rowIndex &&
+                            !defaultSelection?.readOnly
+                          )
+                            defaultSelection?.onChange("");
                           updateValue(deleteRow(rowIndex, values));
                           setActiveCell(Math.max(rowIndex - 1, 0), 0);
                           if (compact && values.length === 1)

@@ -6,6 +6,8 @@ import { FormPreview } from "./preview";
 const fixture = vi.hoisted(() => ({
   form: { id: 42 as number | undefined, isNew: false },
   admin: true,
+  canPreview: true,
+  redirect: vi.fn(),
   post: vi.fn(),
   templates: vi.fn(),
 }));
@@ -13,6 +15,10 @@ vi.mock("axios", () => ({ default: { post: fixture.post } }));
 vi.mock("react-redux", () => ({ useSelector: () => fixture.form }));
 vi.mock("react-router-dom", () => ({
   useResolvedPath: () => ({ pathname: "/forms/42/preview" }),
+  Navigate: (props: unknown) => {
+    fixture.redirect(props);
+    return null;
+  },
 }));
 vi.mock("@editor/store/slices/form/form.selectors", () => ({
   formSelectors: { current: vi.fn() },
@@ -31,6 +37,7 @@ vi.mock(
 );
 vi.mock("@config/freeform/freeform.config", () => ({
   default: {
+    limitations: { can: () => fixture.canPreview },
     metadata: {
       freeform: {
         get canManageHtmlEmbeds() {
@@ -79,6 +86,8 @@ beforeEach(() => {
   Element.prototype.scrollIntoView = vi.fn();
   fixture.form = { id: 42, isNew: false };
   fixture.admin = true;
+  fixture.canPreview = true;
+  fixture.redirect.mockClear();
   fixture.post.mockReset();
   fixture.templates.mockClear();
   fixture.post.mockResolvedValue({
@@ -99,6 +108,19 @@ afterEach(async () => {
   await act(async () => root.unmount());
   host.remove();
   Element.prototype.scrollIntoView = originalScrollIntoView;
+});
+
+it("redirects a restricted user without fetching templates or rendering a preview", async () => {
+  fixture.canPreview = false;
+  await act(async () => root.render(<FormPreview />));
+  expect(fixture.redirect).toHaveBeenCalledWith({
+    to: "..",
+    relative: "path",
+    replace: true,
+  });
+  expect(fixture.post).not.toHaveBeenCalled();
+  expect(fixture.templates).not.toHaveBeenCalled();
+  expect(host.querySelector("iframe")).toBeNull();
 });
 
 it("renders an opaque sandbox and posts only a page selector to the protected route", async () => {

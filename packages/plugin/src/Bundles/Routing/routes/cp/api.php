@@ -9,6 +9,7 @@ return [
     'freeform/api/fields/types' => 'freeform/api/fields/types',
     'freeform/api/fields/types/sections' => 'freeform/api/fields/types/sections',
     'freeform/api/fields/types/groups' => 'freeform/api/fields/groups',
+    'freeform/api/sample-data' => 'freeform/api/sample-data',
 
     // FORMS
     'freeform/api/forms' => 'freeform/api/forms',
@@ -31,9 +32,14 @@ return [
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+    'freeform/api/forms/creation-availability' => 'freeform/api/forms/creation-availability',
+    'freeform/api/forms/wizard' => 'freeform/api/forms/wizard/options',
+    'freeform/api/forms/wizard/create' => 'freeform/api/forms/wizard/create',
+    'freeform/api/forms/wizard/preview' => 'freeform/api/forms/wizard/preview',
     'freeform/api/forms/ai-options' => 'freeform/api/forms/ai-options',
     'freeform/api/forms/generate-from-ai' => 'freeform/api/forms/generate-from-ai',
     'freeform/api/forms/ai-generation-status/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-status',
+    'freeform/api/forms/ai-generation-progress/<requestId:[a-f0-9]{32}>' => 'freeform/api/forms/ai-generation-progress',
 
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',

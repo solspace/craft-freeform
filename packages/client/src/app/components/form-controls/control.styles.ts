@@ -186,4 +186,48 @@ export const LabelInstructionsWrapper = styled.div`
   min-width: 0;
 `;
 
+export const InstructionLabelRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const InstructionHelpButton = styled.button`
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #8a97a5;
+  cursor: pointer;
+  transition: color 120ms ease-out;
+
+  &:hover, &:focus { color: #3476b8; }
+  &:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+`;
+
+export const InstructionHelpText = styled.div<{ $open: boolean }>`
+  display: grid;
+  grid-template-rows: ${({ $open }) => ($open ? "1fr" : "0fr")};
+  opacity: ${({ $open }) => ($open ? 1 : 0)};
+  visibility: ${({ $open }) => ($open ? "visible" : "hidden")};
+  transition:
+    grid-template-rows 180ms ease-out,
+    opacity 180ms ease-out,
+    visibility 0s ${({ $open }) => ($open ? "0s" : "180ms")};
+
+  @media (prefers-reduced-motion: reduce) { transition: none; }
+`;
+
+export const InstructionHelpContent = styled.div`
+  min-height: 0;
+  overflow: hidden;
+  > ${Instructions} { margin-top: 6px; color: ${colors.gray500}; }
+`;
+
 export const ExtraContent = styled.div``;

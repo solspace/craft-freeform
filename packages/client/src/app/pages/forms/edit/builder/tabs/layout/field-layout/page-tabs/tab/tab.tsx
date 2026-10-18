@@ -135,13 +135,18 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
             {willTranslate("label") && (
               <TranslateIconWrapper
                 className={classes(hasTranslation("label") && "active")}
-                onClick={(): void => {
-                  if (
-                    hasTranslation("label") &&
-                    confirm("Are you sure you want to remove the translation?")
-                  ) {
-                    removeTranslation("label");
-                  }
+                onClick={(event): void => {
+                  if (!hasTranslation("label")) return;
+                  event.preventDefault();
+                  event.stopPropagation();
+                  confirmDelete({
+                    title: translate("Remove translation?"),
+                    message: translate(
+                      "Are you sure you want to remove the translation?",
+                    ),
+                    confirmLabel: translate("Remove translation"),
+                    onConfirm: () => removeTranslation("label"),
+                  });
                 }}
               >
                 <TranslateIcon />

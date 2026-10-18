@@ -1,4 +1,9 @@
-<input type="file" />
+<% if (typeof sampleFile !== 'undefined' && sampleFile) { %>
+    <div style="display: flex; align-items: center; gap: 10px; padding: 8px 32px 8px 10px; border: 1px solid #d4dce6; border-radius: 4px; background: #fbfcfe;">
+        <% if (sampleFile.kind === 'image') { %><img src="<%- sampleFile.url %>" alt="" style="width: 64px; height: 40px; object-fit: contain; border-radius: 3px;" /><% } %>
+        <span><%- sampleFile.name %></span>
+    </div>
+<% } else { %><input type="file" /><% } %>
 <% if (typeof showUploadRequirements !== 'undefined' && showUploadRequirements) { %>
     <div style="margin-top: 4px; font-size: 0.875em; opacity: 0.75;">
         <% if (typeof fileKinds !== 'undefined' && fileKinds.length) { %><%= fileKinds.map(kind => ({image: 'Images', pdf: 'PDFs', audio: 'Audio files', video: 'Videos'}[kind] || kind.charAt(0).toUpperCase() + kind.slice(1))).join(', ') %> · <% } %><% if (fileCount > 1) { %>Up to <%= fileCount %> files<% } else { %>1 file<% } %> · Up to <%= Number(maxFileSizeKB || 2048).toLocaleString() %> KB per file

@@ -1,5 +1,6 @@
 import { OpinionScaleProperty } from "@components/form-controls/opinion-scale";
 import config from "@config/freeform/freeform.config";
+import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-options";
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
@@ -37,6 +38,17 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   const sectionBlocks: React.ReactElement[] = useMemo(() => {
     const blocks: React.ReactElement[] = [];
+    const sampleProperty = type?.properties.find(
+      (property) => property.handle === "sampleData",
+    );
+    const sampleAction =
+      type?.type === "opinion-scale" && sampleProperty ? (
+        <FieldComponent
+          field={field}
+          property={sampleProperty}
+          control={SampleDataOptions}
+        />
+      ) : undefined;
     sections
       ?.sort((a, b) => a.order - b.order)
       ?.forEach(({ handle, label, icon }, sectionIndex) => {
@@ -56,6 +68,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
                 typeClass={field.typeClass}
                 property={property}
                 properties={properties}
+                labelAction={sampleAction}
                 renderProperty={(item, control) => (
                   <FieldComponent
                     autoFocus={sectionIndex === 0 && propertyIndex === 0}

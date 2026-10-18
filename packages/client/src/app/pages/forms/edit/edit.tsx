@@ -120,5 +120,5 @@ export const Edit: React.FC = () => {
     return <div>ERROR: {error.message as string}</div>;
   }
 
-  return <Builder />;
+  return <Builder formId={numericFormId} />;
 };

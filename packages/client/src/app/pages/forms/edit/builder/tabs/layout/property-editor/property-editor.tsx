@@ -13,6 +13,13 @@ import { FieldProperties } from "./editors/fields/field-properties";
 import { PageProperties } from "./editors/pages/page-properties";
 import { AnimatedBlock, PropertyEditorWrapper } from "./property-editor.styles";
 
+const routineFieldInstructions = [
+  "label",
+  "handle",
+  "instructions",
+  "placeholder",
+];
+
 export const PropertyEditor: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -41,7 +48,7 @@ export const PropertyEditor: React.FC = () => {
       "tagify__dropdown",
       "tox",
       "elementselectormodal",
-      // Native panels live under <body>, outside the property editor's DOM.
+      // Keep legacy and native slideouts outside the editor's click-away path.
       "freeform-slideout",
       "slideout-shade",
     ],
@@ -58,7 +65,12 @@ export const PropertyEditor: React.FC = () => {
   });
 
   return (
-    <RenderContextProvider size="small">
+    <RenderContextProvider
+      size="small"
+      collapsibleInstructions={
+        type === "field" ? routineFieldInstructions : undefined
+      }
+    >
       <PropertyEditorWrapper $active={active} ref={ref}>
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}

@@ -3,6 +3,7 @@ import { Sidebar } from "@components/layout/sidebar/sidebar";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useResolvedPath } from "react-router-dom";
+import { SampleDataProvider } from "../../sample-data/sample-data.context";
 import { DragContextProvider } from "./drag.context";
 import { FieldLayout } from "./field-layout/field-layout";
 import { FieldList } from "./field-list/field-list";
@@ -14,18 +15,20 @@ export const LayoutEditor: React.FC = () => {
 
   return (
     <DragContextProvider>
-      <Breadcrumb
-        id="layout"
-        label={translate("Layout")}
-        url={currentPath.pathname}
-      />
-      <Grid>
-        <Sidebar $noPadding>
-          <PropertyEditor />
-          <FieldList />
-        </Sidebar>
-        <FieldLayout />
-      </Grid>
+      <SampleDataProvider>
+        <Breadcrumb
+          id="layout"
+          label={translate("Layout")}
+          url={currentPath.pathname}
+        />
+        <Grid>
+          <Sidebar $noPadding>
+            <PropertyEditor />
+            <FieldList />
+          </Sidebar>
+          <FieldLayout />
+        </Grid>
+      </SampleDataProvider>
     </DragContextProvider>
   );
 };

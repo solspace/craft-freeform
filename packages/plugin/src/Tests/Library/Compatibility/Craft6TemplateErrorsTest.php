@@ -78,6 +78,24 @@ class Craft6TemplateErrorsTest extends TestCase
         self::assertSame(['firstName' => ['Enter your first name.']], $this->readErrors($html));
     }
 
+    public function testFormCreationSettingsReceiveOnlyTheirOwnNativeErrors(): void
+    {
+        $settings = new Settings();
+        $settings->addError('formCreationOptions', 'Choose at least one option.');
+        $settings->addError('defaultAiIntegration', 'Choose an available integration.');
+        $errors = $this->readErrors($this->twig()->render('settings/_general.twig', [
+            'settings' => $settings,
+            'readOnly' => false,
+            'aiIntegrations' => [],
+            'forms' => [],
+            'craft' => ['freeform' => ['name' => 'Freeform', 'pro' => true]],
+        ]));
+
+        self::assertSame(['Choose at least one option.'], $errors['settings[formCreationOptions]']);
+        self::assertSame(['Choose an available integration.'], $errors['settings[defaultAiIntegration]']);
+        self::assertSame([], $errors['settings[defaultView]']);
+    }
+
     private function renderSpamSettings(Settings $settings): array
     {
         return $this->readErrors($this->twig()->render('settings/_spam.twig', [
@@ -91,7 +109,7 @@ class Craft6TemplateErrorsTest extends TestCase
     {
         $field = '<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>';
         $macros = '';
-        foreach (['selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'field', 'text', 'select'] as $name) {
+        foreach (['checkboxSelectField', 'selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'field', 'text', 'select'] as $name) {
             $macros .= '{% macro '.$name.'(config, input) %}'.$field.'{% endmacro %}';
         }
 

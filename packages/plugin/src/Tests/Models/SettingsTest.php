@@ -2,13 +2,47 @@
 
 namespace Solspace\Freeform\Tests\Models;
 
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Translation\ArrayLoader;
+use Illuminate\Translation\Translator;
+use Illuminate\Validation\Factory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Tests\Helpers\UsesCraft6Container;
 
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    use UsesCraft6Container;
+
+    protected function setUp(): void
+    {
+        app()->instance('events', new Dispatcher(app()));
+        app()->instance(ValidationFactory::class, new Factory(new Translator(new ArrayLoader(), 'en'), app()));
+    }
+
+    public function testFormCreationOptionsDefaultToAllAndPreserveTheirDisplayOrder(): void
+    {
+        $settings = $this->normalize([]);
+        self::assertSame(['wizard', 'ai', 'blank'], $settings->getEnabledFormCreationOptions());
+        $settings->formCreationOptions = ['blank', 'wizard', 'wizard'];
+        self::assertSame(['wizard', 'blank'], $settings->getEnabledFormCreationOptions());
+        $settings->formCreationOptions = ['ai'];
+        self::assertSame(['ai'], $settings->getEnabledFormCreationOptions());
+    }
+
+    public function testFormCreationOptionsRejectEmptyAndUnknownChoices(): void
+    {
+        foreach (['', [], ['unknown'], ['wizard', 'unknown']] as $value) {
+            $settings = $this->normalize(['formCreationOptions' => $value]);
+            $settings->validate(['formCreationOptions']);
+            self::assertTrue($settings->errors()->has('formCreationOptions'));
+        }
+    }
+
     public function testDefaultBooleanStringsAreNormalized(): void
     {
         $settings = $this->normalize([]);
@@ -56,6 +90,7 @@ class SettingsTest extends TestCase
     {
         $reflection = new \ReflectionClass(Settings::class);
         $settings = $reflection->newInstanceWithoutConstructor();
+        $settings->defaults = new Defaults();
 
         foreach ($values as $property => $value) {
             $settings->{$property} = $value;

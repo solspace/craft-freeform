@@ -25,7 +25,11 @@ const templateMethod = config.templates.method;
 export const List: React.FC = () => {
   const limitations = config.limitations;
   const { formId, uid } = useParams();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
+  const tourSearch =
+    new URLSearchParams(search).get("wizardTour") === "1"
+      ? "?wizardTour=1"
+      : "";
   const navigate = useNavigate();
   const { lastTab, setLastTab } = useLastTab("notifications");
 
@@ -35,9 +39,9 @@ export const List: React.FC = () => {
 
   useEffect(() => {
     if (!uid && !pathname.endsWith("/manager") && lastTab) {
-      navigate(lastTab);
+      navigate(`${lastTab}${tourSearch}`);
     }
-  }, [uid, lastTab, navigate, pathname]);
+  }, [uid, lastTab, navigate, pathname, tourSearch]);
 
   useEffect(() => {
     if (pathname.endsWith("/manager")) {
@@ -48,7 +52,7 @@ export const List: React.FC = () => {
       const first = notifications.find(Boolean);
       if (first) {
         setLastTab(first.uid);
-        navigate(first.uid);
+        navigate(`${first.uid}${tourSearch}`);
       }
     }
   }, [
@@ -59,11 +63,12 @@ export const List: React.FC = () => {
     navigate,
     pathname,
     setLastTab,
+    tourSearch,
   ]);
 
   if (!notificationTypes && isFetching) {
     return (
-      <Sidebar>
+      <Sidebar data-wizard-tour="notifications">
         <CategorySkeleton />
       </Sidebar>
     );
@@ -74,7 +79,7 @@ export const List: React.FC = () => {
   }
 
   return (
-    <Sidebar $lean>
+    <Sidebar $lean data-wizard-tour="notifications">
       <ScrollableList>
         {notificationTypes
           .filter((type) =>

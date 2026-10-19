@@ -175,12 +175,11 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
         ;
 
         $hasMarginStyle = false;
-        foreach ($attributes as $attribute) {
-            [$key, $value] = $attribute;
-            if ('style' === strtolower($key)) {
-                if (str_contains($value, 'margin')) {
-                    $hasMarginStyle = true;
-                }
+        foreach ($attributes as $key => $value) {
+            if ('style' === strtolower($key) && \is_string($value) && str_contains($value, 'margin')) {
+                $hasMarginStyle = true;
+
+                break;
             }
         }
 

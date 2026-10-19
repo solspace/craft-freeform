@@ -72,9 +72,10 @@
 
     {% else %}
 
-        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
-        </div>
+        {% include "demo/_message" with {
+            messageTitle: 'Form not found',
+            messageText: 'No form was found with the handle “' ~ formHandle ~ '”. Choose another form to continue.'
+        } %}
 
     {% endif %}
 

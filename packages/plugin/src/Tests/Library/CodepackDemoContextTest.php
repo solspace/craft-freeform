@@ -14,6 +14,56 @@ use Twig\TwigFunction;
 #[CoversNothing]
 class CodepackDemoContextTest extends TestCase
 {
+    public function testUnavailableFormMessageEscapesTheHandleAndKeepsTheDemoPrefix(): void
+    {
+        $request = new class {
+            public function segment(int $index): ?string
+            {
+                return null;
+            }
+        };
+        $html = $this->twig()->render('demo/forms/form.twig', [
+            'form' => null,
+            'formHandle' => '<script>missing</script>',
+            'pageTemplate' => 'basic-light',
+            'baseUrlSegments' => 2,
+            'craft' => (object) ['app' => (object) ['request' => $request]],
+            'demoBaseUrl' => '/nested/demo',
+        ]);
+        self::assertStringContainsString('Form not found', $html);
+        self::assertStringContainsString('&lt;script&gt;missing&lt;/script&gt;', $html);
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('href="/nested/demo/forms"', $html);
+    }
+
+    public function testSubmissionMessageDoesNotQueryDataForGuestsOrNonAdmins(): void
+    {
+        $request = new class {
+            public function segment(int $index): string
+            {
+                return '1042';
+            }
+        };
+        $freeform = new class {
+            public function submissions(array $criteria): never
+            {
+                throw new \LogicException('Restricted pages must not query submissions.');
+            }
+        };
+        foreach ([null, (object) ['admin' => false]] as $user) {
+            $html = $this->twig()->render('demo/submissions/view.twig', [
+                'currentUser' => $user,
+                'freeform' => $freeform,
+                'baseUrlSegments' => 1,
+                'craft' => (object) ['app' => (object) ['request' => $request]],
+                'demoBaseUrl' => '/nested/demo',
+            ]);
+            self::assertStringContainsString('This page is for administrators', $html);
+            self::assertStringContainsString('you’ll need an administrator account', $html);
+            self::assertStringContainsString('href="/nested/demo/forms"', $html);
+        }
+    }
+
     public function testDeleteStillRequiresAnAdminAndAPost(): void
     {
         foreach ([[false, true, 0], [true, false, 0], [true, true, 1]] as [$admin, $post, $expectedDeletes]) {
@@ -51,7 +101,7 @@ class CodepackDemoContextTest extends TestCase
             ]);
             self::assertSame($expectedDeletes, $freeform->deletes);
             if (!$admin) {
-                self::assertStringContainsString('do not have permission', $html);
+                self::assertStringContainsString('This page is for administrators', $html);
                 self::assertStringNotContainsString('method="post"', $html);
             } elseif (!$post) {
                 self::assertStringContainsString('method="post"', $html);
@@ -175,7 +225,7 @@ class CodepackDemoContextTest extends TestCase
     private function twig(): Environment
     {
         $templates = ['demo/_layout' => '{% block content %}{% endblock %}'];
-        foreach (['submissions/delete.twig', 'submissions/_delete.twig', 'forms/_edit-heading.twig', 'extras/manual-multipage.twig', 'extras/_items.twig', 'extras/_example-header.twig', 'extras/_setup.twig', 'extras/_setup-notice.twig'] as $path) {
+        foreach (['_message.twig', 'submissions/view.twig', 'submissions/delete.twig', 'submissions/_delete.twig', 'forms/form.twig', 'forms/_edit-heading.twig', 'extras/manual-multipage.twig', 'extras/_items.twig', 'extras/_example-header.twig', 'extras/_setup.twig', 'extras/_setup-notice.twig'] as $path) {
             $templates['demo/'.preg_replace('/\.twig$/', '', $path)] = file_get_contents(__DIR__.'/../../codepack/templates/'.$path);
             $templates['demo/'.$path] = $templates['demo/'.preg_replace('/\.twig$/', '', $path)];
         }

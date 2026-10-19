@@ -4,15 +4,61 @@ namespace Solspace\Freeform\Tests\Fields;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Translations\TranslationTable;
+use Solspace\Freeform\Tests\Fixtures\SignatureImages;
+use Twig\Environment;
+use Twig\Loader\ArrayLoader;
 
 #[CoversClass(SignatureField::class)]
 class SignatureFieldTest extends TestCase
 {
+    #[DataProviderExternal(SignatureImages::class, 'validImages')]
+    public function testSavedSignaturesRemainAvailableToLegacyTemplates(string $value, string $mimeType): void
+    {
+        $value = trim($value);
+        $field = $this->getMockBuilder(SignatureField::class)
+            ->setConstructorArgs([$this->createMock(Form::class)])
+            ->onlyMethods(['getAttributes', 'getHandle', 'getIdAttribute', 'getRequiredAttribute', 'getTranslationTable', 'getLabel'])
+            ->getMock()
+        ;
+        $field->method('getAttributes')->willReturn(new FieldAttributesCollection());
+        $field->method('getHandle')->willReturn('signature');
+        $field->method('getIdAttribute')->willReturn('signature-pad');
+        $field->method('getRequiredAttribute')->willReturn('required');
+        $field->method('getTranslationTable')->willReturn(new TranslationTable());
+        $field->method('getLabel')->willReturn('Signature');
+        $field->setValue($value);
+        (new \ReflectionProperty(SignatureField::class, 'showClearButton'))->setValue($field, false);
+
+        $document = new \DOMDocument();
+        $previous = libxml_use_internal_errors(true);
+        $document->loadHTML((new \ReflectionMethod($field, 'getInputHtml'))->invoke($field));
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $input = $document->getElementsByTagName('input')->item(0);
+        self::assertSame('signature', $input->getAttribute('name'));
+        self::assertSame($value, $input->getAttribute('value'));
+        $canvas = $document->getElementsByTagName('canvas')->item(0);
+        self::assertTrue($canvas->hasAttribute('data-signature-field'));
+        self::assertSame('signature-pad', $canvas->getAttribute('id'));
+        self::assertSame('400', $canvas->getAttribute('width'));
+        self::assertSame('100', $canvas->getAttribute('height'));
+
+        $twig = new Environment(new ArrayLoader([
+            'legacy' => '<img src="{{ field.value }}" />{{ field.readableOutputValue }}',
+        ]), ['autoescape' => 'html']);
+        self::assertSame(
+            '<img src="'.$value.'" /><img src="'.$value.'" alt="Signature" />',
+            $twig->render('legacy', ['field' => $field]),
+        );
+        self::assertSame($value, $field->getValue());
+    }
+
     #[DataProvider('inputAttributes')]
     public function testRendersWithoutWarningsAndRespectsCustomMargins(array $input, string $expectedStyle): void
     {

@@ -11,6 +11,11 @@
 @use "../fields/rating";
 @use "../components/visual";
 
+// A visual writing surface; the signature bitmap remains transparent.
+canvas[data-signature-customize-appearance="false"] {
+  background-color: #fff;
+}
+
 [data-freeform-controls] {
   display: flex;
   justify-content: space-between;

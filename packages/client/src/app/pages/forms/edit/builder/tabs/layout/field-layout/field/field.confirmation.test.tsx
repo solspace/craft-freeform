@@ -8,6 +8,8 @@ import { Field } from "./field";
 
 const fixture = vi.hoisted(() => ({
   dispatch: vi.fn(),
+  drag: vi.fn(),
+  dragging: false,
   confirmDelete: vi.fn(),
   remove: vi.fn((field: { uid: string }) => ({
     type: "remove",
@@ -34,8 +36,8 @@ vi.mock("@ff-client/utils/translations", () => ({
 vi.mock("react-dnd", () => ({ DragPreviewImage: (): null => null }));
 vi.mock("./field.drag", () => ({
   useFieldDrag: () => ({
-    isDragging: false,
-    drag: () => {},
+    isDragging: fixture.dragging,
+    drag: fixture.drag,
     preview: () => {},
   }),
 }));
@@ -58,6 +60,7 @@ afterEach(() => {
   act(() => root?.unmount());
   host?.remove();
   vi.clearAllMocks();
+  fixture.dragging = false;
   vi.unstubAllGlobals();
 });
 it.each([Fields.Text, Fields.Group])(
@@ -100,3 +103,40 @@ it.each([Fields.Text, Fields.Group])(
     });
   },
 );
+
+it("keeps the native drag source attached when dragging rerenders the field", () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  host = document.createElement("div");
+  document.body.append(host);
+  root = createRoot(host);
+  const field = {
+    uid: "dragged-field",
+    typeClass: Fields.Text,
+    properties: { label: "First name" },
+  } as FieldType;
+  const row = { uid: "row" } as Row;
+  const render = (isOver: boolean) =>
+    act(() =>
+      root.render(
+        <Field
+          field={field}
+          row={row}
+          index={0}
+          isOver={isOver}
+          isCurrentRow={isOver}
+          isDraggingField={isOver}
+        />,
+      ),
+    );
+  render(false);
+  expect(fixture.drag).toHaveBeenCalledOnce();
+  const node = fixture.drag.mock.calls[0][0];
+  fixture.drag.mockClear();
+  fixture.dragging = true;
+  render(true);
+  expect(fixture.drag).not.toHaveBeenCalled();
+  expect(node.isConnected).toBe(true);
+  fixture.dragging = false;
+  render(false);
+  expect(fixture.drag).not.toHaveBeenCalled();
+});

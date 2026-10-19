@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 
@@ -13,12 +14,18 @@ class FavoritesProvider
 
         $favorites = [];
         foreach ($records as $record) {
+            $properties = JsonHelper::decode($record->metadata);
+            if (is_a($record->type, SignatureField::class, true) && \is_object($properties) && !isset($properties->customizeAppearance)) {
+                // Older favorites retain their configured colors when reused.
+                $properties->customizeAppearance = true;
+            }
+
             $favorites[] = [
                 'id' => $record->id,
                 'uid' => $record->uid,
                 'label' => $record->label,
                 'typeClass' => $record->type,
-                'properties' => JsonHelper::decode($record->metadata),
+                'properties' => $properties,
             ];
         }
 

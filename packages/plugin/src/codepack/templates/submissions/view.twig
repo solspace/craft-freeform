@@ -21,17 +21,20 @@
 
         {% else %}
 
-            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                Sorry, no submission was found.
-            </div>
+            {% include "demo/_message" with {
+                messageTitle: 'Submission not found',
+                messageText: 'This submission may have been removed, or the link is no longer valid.'
+            } %}
 
         {% endif %}
 
     {% else %}
 
-        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            Sorry, you do not have permission to access this page.
-        </div>
+        {% include "demo/_message" with {
+            messageType: 'permission',
+            messageTitle: 'This page is for administrators',
+            messageText: 'To keep submissions private, you’ll need an administrator account to view or manage them here. You can still explore the forms and examples.'
+        } %}
 
     {% endif %}
 

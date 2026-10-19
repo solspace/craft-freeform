@@ -1,7 +1,14 @@
 import type { Drag } from "@editor/builder/types/drag";
 import type React from "react";
 import type { PropsWithChildren } from "react";
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { useDragRecovery } from "./drag.recovery";
 
 type DragContextType = {
   isDragging: boolean;
@@ -22,31 +29,29 @@ const DragContext = createContext<DragContextType>({
 export const DragContextProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
+  useDragRecovery();
   const [isDragging, setIsDragging] = useState(false);
   const [dragType, setDragType] = useState<Drag>();
   const [position, setPosition] = useState<number>();
 
-  return (
-    <DragContext.Provider
-      value={{
-        isDragging,
-        dragType,
-        position,
-        dragOn: (type, newPosition) => {
-          setIsDragging(true);
-          setPosition(newPosition);
-          setDragType(type);
-        },
-        dragOff: () => {
-          setIsDragging(false);
-          setPosition(undefined);
-          setDragType(undefined);
-        },
-      }}
-    >
-      {children}
-    </DragContext.Provider>
+  const dragOn = useCallback((type: Drag, newPosition?: number) => {
+    setIsDragging(true);
+    setPosition(newPosition);
+    setDragType(type);
+  }, []);
+
+  const dragOff = useCallback(() => {
+    setIsDragging(false);
+    setPosition(undefined);
+    setDragType(undefined);
+  }, []);
+
+  const value = useMemo(
+    () => ({ isDragging, dragType, position, dragOn, dragOff }),
+    [isDragging, dragType, position, dragOn, dragOff],
   );
+
+  return <DragContext.Provider value={value}>{children}</DragContext.Provider>;
 };
 
 export const useDragContext = (): DragContextType => {

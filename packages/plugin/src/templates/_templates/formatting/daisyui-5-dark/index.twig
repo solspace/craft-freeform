@@ -1,9 +1,10 @@
 {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\DaisyUI5DarkBundle') %}
 {% import 'freeform/_templates/formatting/daisyui-5-dark/_row.twig' as rowMacro %}
 
+{# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {{ form.renderTag({
     attributes: {
-        form: { 'data-freeform-theme': 'dark', class: 'ff-daisy-form', 'data-theme': 'dark', 'data-freeform-daisyui': true },
+        form: { 'data-freeform-theme': 'dark', class: 'ff-daisy-form', 'data-theme': 'dark', 'data-freeform-daisyui': true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "daisyui-5-dark", "data-freeform-signature-max-scale": 1.25 },
         row: { class: 'ff-daisy-row' },
         success: { class: 'ff-daisy-banner alert alert-success', role: 'status' },
         errors: { class: 'ff-daisy-banner alert alert-error', role: 'alert' },
@@ -64,7 +65,7 @@
             attributes: { input: { '=class': 'ff-daisy-summary' } },
         },
         '@signature': {
-            attributes: { input: { '=class': 'btn btn-outline btn-sm' } },
+            attributes: { input: { "-class": "input", "+class": "btn btn-outline freeform-signature-clear" } },
         },
         '@stripe': {
             attributes: { input: { '-class': 'input' } },

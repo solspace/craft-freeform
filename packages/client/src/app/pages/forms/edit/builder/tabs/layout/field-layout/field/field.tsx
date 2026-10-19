@@ -10,7 +10,7 @@ import { fieldThunks } from "@editor/store/thunks/fields";
 import { Fields } from "@ff-client/types/field.classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
-import { memo, useMemo } from "react";
+import { memo, useCallback, useMemo } from "react";
 import { DragPreviewImage } from "react-dnd";
 
 import { FieldCell } from "./cell/cell";
@@ -47,6 +47,14 @@ export const Field: React.FC<Props> = memo(
     const dispatch = useAppDispatch();
     const { confirmDelete } = useModal();
     const { isDragging, drag, preview } = useFieldDrag(field, index);
+    // Ref changes disconnect the HTML5 source (and set draggable=false).
+    // Keep it attached while React rerenders the active drag.
+    const connectDrag = useCallback(
+      (element: HTMLDivElement | null) => {
+        drag(element);
+      },
+      [drag],
+    );
     const style = useFieldDragAnimation({
       width,
       isDragging,
@@ -85,9 +93,7 @@ export const Field: React.FC<Props> = memo(
               );
             }
           }}
-          ref={(el) => {
-            drag(el);
-          }}
+          ref={connectDrag}
           style={style}
         >
           <FieldTools>

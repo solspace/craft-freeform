@@ -21,13 +21,16 @@
             {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
             {% include "demo/submissions/_table" %}
         {% else %}
-            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
-            </div>
+            {% include "demo/_message" with {
+                messageTitle: 'Form not found',
+                messageText: 'No form was found with the handle “' ~ formHandle ~ '”. Choose another form to continue.'
+            } %}
         {% endif %}
     {% else %}
-        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            Sorry, you do not have permission to access this page.
-        </div>
+        {% include "demo/_message" with {
+            messageType: 'permission',
+            messageTitle: 'This page is for administrators',
+            messageText: 'To keep submissions private, you’ll need an administrator account to view or manage them here. You can still explore the forms and examples.'
+        } %}
     {% endif %}
 {% endblock %}

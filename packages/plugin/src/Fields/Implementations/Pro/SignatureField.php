@@ -9,6 +9,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Translatable;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -17,6 +18,7 @@ use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Helpers\SignatureHelper;
 use Twig\Markup;
 
 #[Type(
@@ -55,6 +57,20 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     )]
     protected bool $showClearButton = true;
 
+    #[Input\Boolean(
+        label: 'Customize Appearance',
+        instructions: 'Use custom signature colors and cursor settings instead of the formatting template defaults.',
+        value: false,
+    )]
+    // Existing records without this setting keep their original appearance.
+    // The field catalog explicitly supplies false for newly created fields.
+    protected bool $customizeAppearance = true;
+
+    #[VisibilityFilter('properties.customizeAppearance')]
+    #[Input\Boolean(label: 'Show Pen Cursor', value: true)]
+    protected bool $showPenCursor = true;
+
+    #[VisibilityFilter('properties.customizeAppearance')]
     #[Limitation('props.signature', 'borderColor')]
     #[DefaultValue('props.signature.borderColor')]
     #[Translatable]
@@ -63,6 +79,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     )]
     protected string $borderColor = '#999999';
 
+    #[VisibilityFilter('properties.customizeAppearance')]
     #[Limitation('props.signature', 'backgroundColor')]
     #[DefaultValue('props.signature.backgroundColor')]
     #[Translatable]
@@ -71,6 +88,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     )]
     protected string $backgroundColor = 'rgba(0,0,0,0)';
 
+    #[VisibilityFilter('properties.customizeAppearance')]
     #[Limitation('props.signature', 'penColor')]
     #[DefaultValue('props.signature.penColor')]
     #[Translatable]
@@ -114,22 +132,52 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
 
     public function getBorderColor(): string
     {
+        if (!$this->isCustomizeAppearance()) {
+            return '#999999';
+        }
+
         return $this->getTranslationTable()->get('borderColor', $this->borderColor);
     }
 
     public function getBackgroundColor(): string
     {
+        if (!$this->isCustomizeAppearance()) {
+            // The white writing surface is CSS only; saved ink stays transparent.
+            return 'rgba(0,0,0,0)';
+        }
+
         return $this->getTranslationTable()->get('backgroundColor', $this->backgroundColor);
     }
 
     public function getPenColor(): string
     {
+        if (!$this->isCustomizeAppearance()) {
+            return '#000000';
+        }
+
         return $this->getTranslationTable()->get('penColor', $this->penColor);
     }
 
     public function getPenDotSize(): float
     {
         return $this->getTranslationTable()->get('penDotSize', $this->penDotSize);
+    }
+
+    public function isCustomizeAppearance(): bool
+    {
+        return $this->customizeAppearance;
+    }
+
+    public function isShowPenCursor(): bool
+    {
+        return !$this->customizeAppearance || $this->showPenCursor;
+    }
+
+    public function getImageDataUrl(): ?string
+    {
+        $value = $this->getValue();
+
+        return null !== SignatureHelper::decodeImage($value) ? trim($value) : null;
     }
 
     public function getReadableOutputValue(): Markup|string
@@ -214,6 +262,8 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             ->set('data-border-color', $this->getBorderColor())
             ->set('data-background-color', $this->getBackgroundColor())
             ->set('data-signature-field')
+            ->set('data-signature-customize-appearance', $this->isCustomizeAppearance() ? 'true' : 'false')
+            ->set('data-signature-pen-cursor', $this->isShowPenCursor() ? 'true' : 'false')
         ;
 
         $output .= Html::tag(

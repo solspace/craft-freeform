@@ -29,11 +29,9 @@ export const useBaseFieldDrag = (fieldType: FieldType): FieldDrag => {
   }));
 
   useEffect(() => {
-    if (isDragging) {
-      dragOn(Drag.FieldType);
-    } else {
-      dragOff();
-    }
+    if (!isDragging) return;
+    dragOn(Drag.FieldType);
+    return dragOff;
   }, [isDragging, dragOn, dragOff]);
 
   return { ref };

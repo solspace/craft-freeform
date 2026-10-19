@@ -245,3 +245,61 @@ label.required:after {
     resize: vertical !important;
   }
 }
+
+.signature-wrapper {
+  .signature-preview {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(100%, 600px);
+    max-height: 180px;
+    object-fit: contain;
+    object-position: left center;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .download-signature-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .signature-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    box-sizing: border-box;
+    height: 30px;
+    min-height: 30px;
+    margin: 0;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: nowrap;
+
+    .signature-download-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 14px;
+      margin: 0;
+      margin-inline-end: 8px;
+      width: 14px;
+      height: 14px;
+      font-size: 14px;
+      line-height: 1;
+
+      &::before {
+        margin: 0;
+        line-height: 1;
+      }
+    }
+  }
+}

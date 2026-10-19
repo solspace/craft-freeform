@@ -106,24 +106,18 @@ h3.freeform-form-title {
     color: var(--nav-highlight);
 }
 .freeform-warning-notice {
-    font: 400 16px sans-serif;
-    text-align: center;
-    color: #fff3eb;
-    background: #f8741b;
-    border: 1px solid #f8741b;
+    font: 400 14px/1.6 sans-serif;
+    color: var(--page-text);
+    background: var(--page-bg);
+    border: 1px solid var(--nav-button-bg);
     border-radius: 10px;
-    padding: 40px 60px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+    padding: 24px;
+    max-width: 560px;
+    margin: 24px auto;
+    overflow-wrap: anywhere;
 }
 .freeform-warning-notice a {
-    color: #ffffff;
-}
-html:has(.freeform-warning-notice) {
-    background: #ffe8d8;
+    color: var(--nav-highlight);
 }
 
 .freeform-notice,
@@ -950,6 +944,23 @@ body.freeform-spam-mode .freeform-submissions-tabs a[aria-current] { color: #8b6
 .freeform-example-form-actions button { display: inline-flex; align-items: center; gap: 20px; padding: 9px 16px; font: 500 13px/1.5 sans-serif; color: var(--browser-surface); background: var(--browser-blue); border: 1px solid var(--browser-blue); border-radius: 7px; cursor: pointer; }
 .freeform-example-form-actions [name="form_previous_page_button"] { margin-right: auto; background: var(--browser-surface); color: var(--browser-title); border-color: var(--browser-border); }
 .freeform-example-form-actions button:focus-visible { outline: 2px solid var(--browser-blue); outline-offset: 3px; }
+
+/* Unavailable demo pages: keep navigation and the normal page background. */
+.freeform-message-page { max-width: 580px; margin: 32px auto 0; }
+.freeform-message-card { padding: 32px; background: #fffcf5; border-color: #ead9b7; border-top: 3px solid #d99b32; }
+.freeform-message-icon { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 20px; border: 1px solid #edd29d; border-radius: 12px; background: #fff1d4; color: #99610b; }
+.freeform-message-icon svg { display: block; width: 24px; height: 24px; }
+.freeform-message-card h1 { font: 650 24px/1.3 sans-serif; letter-spacing: -0.4px; margin: 0 0 10px; color: var(--browser-title); }
+.freeform-message-card p { font: 400 14px/1.7 sans-serif; color: var(--browser-muted); margin: 0 0 24px; overflow-wrap: anywhere; }
+.freeform-message-card .freeform-submissions-form-link { margin: 0; min-height: 40px; gap: 8px; }
+.freeform-message-card .freeform-submissions-form-link svg { display: block; flex: none; width: 16px; height: 16px; }
+.freeform-message-card a:focus-visible { outline: 2px solid var(--browser-blue); outline-offset: 3px; }
+:root[data-theme="dark"] .freeform-message-card { background: #302c25; border-color: #655034; border-top-color: #d9a34d; }
+:root[data-theme="dark"] .freeform-message-icon { background: #433621; border-color: #705631; color: #edc681; }
+@media (max-width: 600px) {
+    .freeform-message-page { margin-top: 8px; }
+    .freeform-message-card { padding: 24px; }
+}
 
 /* Submission deletion: confirmation and result states. */
 .freeform-delete-page { max-width: 620px; margin: 18px auto 0; }

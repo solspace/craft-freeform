@@ -37,11 +37,11 @@ export const useFieldDrag = (field: Field, index: number): FieldDrag => {
   const { dragOn, dragOff } = useDragContext();
 
   useEffect(() => {
-    if (isDragging) {
-      dragOn(Drag.Field);
-    } else {
-      dragOff();
-    }
+    if (!isDragging) return;
+    dragOn(Drag.Field);
+    // Idle sources must not stop another field's drag. The active source
+    // owns cleanup, including cancellation and removal during a page move.
+    return dragOff;
   }, [isDragging, dragOn, dragOff]);
 
   return { isDragging, drag, preview };

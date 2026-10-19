@@ -1,0 +1,19 @@
+<section class="freeform-form-browser freeform-message-page" aria-labelledby="demo-message-title">
+    <div class="freeform-submissions-panel freeform-message-card">
+        <span class="freeform-message-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                {% if messageType|default('missing') == 'permission' %}
+                    <rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/>
+                {% else %}
+                    <circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M8.5 10.5h4"/>
+                {% endif %}
+            </svg>
+        </span>
+        <h1 id="demo-message-title">{{ messageTitle }}</h1>
+        <p>{{ messageText }}</p>
+        <a class="freeform-submissions-form-link" href="{{ demoBaseUrl }}/forms">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 5-7 7 7 7M3 12h18"/></svg>
+            Back to forms
+        </a>
+    </div>
+</section>

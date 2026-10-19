@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Added
-- Added an optional **Form Icon** setting using Craft’s native icon picker on Craft 5 and 6. Icons appear in form cards and a dedicated first column in the Forms list view, matching each form’s color. Craft 4 ignores this setting.
+- Added an optional **Form Icon** setting using Craft’s native icon picker on Craft 5. Icons appear in form cards and a dedicated first column in the Forms list view, matching each form’s color. Craft 4 ignores this setting.
 - Added matching default icons for all 12 starting points when creating forms through Guided setup or selecting a starting point in Create from scratch.
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 

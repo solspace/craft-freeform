@@ -198,7 +198,13 @@ class AiFormsControllerTest extends TestCase
                 return $this->request;
             }
         };
-        $integrations = $this->createMock(IntegrationsService::class);
+        // Partial mock: actionAiOptions() calls getEnabledAiIntegrationOptions(),
+        // which walks getAllIntegrations() — keep the real options builder.
+        $integrations = $this->getMockBuilder(IntegrationsService::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAllIntegrations'])
+            ->getMock()
+        ;
         $controller = $this->getMockBuilder(FormsController::class)->disableOriginalConstructor()->onlyMethods(['getIntegrationsService'])->getMock();
         $controller->request = $request;
         $controller->method('getIntegrationsService')->willReturn($integrations);

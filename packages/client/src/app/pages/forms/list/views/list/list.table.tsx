@@ -11,9 +11,14 @@ import { Table, TableScrollWrapper } from "./list.table.styles";
 type Props = {
   forms: FormWithStats[] | undefined;
   isFetching?: boolean;
+  isSearching?: boolean;
 };
 
-export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
+export const ListTable: React.FC<Props> = ({
+  forms,
+  isFetching,
+  isSearching = false,
+}) => {
   const openAddForm = useAddFormModal();
   const { canCreate } = config.metadata.freeform;
 
@@ -55,7 +60,15 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
             </>
           )}
 
-          {!isFetching && !forms?.length && canCreate && (
+          {!isFetching && !forms?.length && isSearching && (
+            <tr>
+              <td colSpan={columnCount}>
+                <p role="status">{translate("No forms match your search.")}</p>
+              </td>
+            </tr>
+          )}
+
+          {!isFetching && !forms?.length && !isSearching && canCreate && (
             <tr>
               <td colSpan={columnCount}>
                 <p>
@@ -75,7 +88,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
             </tr>
           )}
 
-          {!isFetching && !forms?.length && !canCreate && (
+          {!isFetching && !forms?.length && !isSearching && !canCreate && (
             <tr>
               <td colSpan={columnCount}>
                 <p>{translate(`You don't have any forms yet.`)}</p>
@@ -84,7 +97,8 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
           )}
 
           {forms
-            ?.sort((a, b) => a.name.localeCompare(b.name))
+            ?.slice()
+            .sort((a, b) => a.name.localeCompare(b.name))
             ?.map((form) => (
               <ListTableRow
                 key={form.id}

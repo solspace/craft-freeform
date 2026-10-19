@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import Sortable from "sortablejs";
 import { type CardMove, keyboardMove, moveCard } from "./grid.order";
 
-export const useDashboardSorting = (data?: FormWithGroup) => {
+export const useDashboardSorting = (data?: FormWithGroup, enabled = true) => {
   const queryClient = useQueryClient();
   const { current, getCurrentHandleWithFallback } = useSiteContext();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -19,6 +19,7 @@ export const useDashboardSorting = (data?: FormWithGroup) => {
   const [isDragging, setDragging] = useState(false);
   const [isSaving, setSaving] = useState(false);
   const canMove =
+    enabled &&
     config.metadata.freeform.canOrganizeForms &&
     !config.editions.is(Edition.Express);
 

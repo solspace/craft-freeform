@@ -7,7 +7,7 @@ export const Header = styled.header`
   grid-template-columns: min-content 1fr max-content auto;
   justify-content: space-between;
   align-items: center;
-  gap: ${spacings.md};
+  gap: ${spacings.sm};
 
   @media (max-width: 1100px) {
     grid-template-areas: 'title button' 'views views';
@@ -42,11 +42,54 @@ export const Button = styled.button`
 `;
 
 export const ViewButtons = styled.section`
+  flex-shrink: 0;
+
+  .btn {
+    padding-inline: 10px;
+  }
+
+  .btn::before {
+    opacity: 0.8;
+  }
 `;
 
 export const ViewControls = styled.div`
   grid-area: views;
   display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
   align-items: center;
-  gap: ${spacings.md};
+  gap: ${spacings.sm};
+`;
+
+export const SearchWrapper = styled.div`
+  flex: 1 1 200px;
+  width: 240px;
+  min-width: 0;
+  max-width: 280px;
+
+  input[type='search'] {
+    box-sizing: border-box;
+    height: var(--ui-control-height, 34px);
+    min-height: var(--ui-control-height, 34px);
+    border-radius: var(--radius-lg, 5px);
+  }
+
+  input::placeholder {
+    color: var(--light-text-color, #596673);
+  }
+
+  .texticon-icon::before {
+    opacity: 0.8;
+  }
+
+  input[type='search']::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+
+  @media (max-width: 600px) {
+    flex-basis: 100%;
+    width: 100%;
+    max-width: none;
+  }
 `;

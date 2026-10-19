@@ -12,6 +12,9 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Search forms' => 'Cerca moduli',
+    'Clear search' => 'Cancella ricerca',
+    'No forms match your search.' => 'Nessun modulo corrisponde alla ricerca.',
     'Form Icon' => 'Icona del modulo',
     'Choose an icon for this form in the control panel.' => 'Scegli un’icona per questo modulo nel pannello di controllo.',
     'Choose a valid form icon.' => 'Scegli un’icona valida per il modulo.',

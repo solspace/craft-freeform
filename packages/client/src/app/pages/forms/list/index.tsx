@@ -11,7 +11,8 @@ import translate from "@ff-client/utils/translations";
 import EditIcon from "@ff-icons/actions/edit";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FormSearch } from "./form-search";
 import {
   Button,
   ButtonGroup,
@@ -36,6 +37,7 @@ export const ListProvider: React.FC = () => {
   const openEditGroupModal = useEditGroupModal();
   const openAddForm = useAddFormModal();
 
+  const [search, setSearch] = useState("");
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
   const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
@@ -61,6 +63,30 @@ export const ListProvider: React.FC = () => {
         <Title>{translate("Forms")}</Title>
 
         <ViewControls>
+          <FormSearch value={search} onChange={setSearch} />
+          <ViewButtons
+            className="btngroup btngroup--exclusive"
+            aria-label={translate("View")}
+          >
+            <button
+              type="button"
+              className={classes("btn", View.Grid === view && "active")}
+              data-icon={classes(isCraft5 ? "element-cards" : "grid")}
+              aria-label={translate("Display as cards")}
+              aria-pressed={View.Grid === view}
+              title={translate("Display as cards")}
+              onClick={() => setView(View.Grid)}
+            />
+            <button
+              type="button"
+              className={classes("btn", View.List === view && "active")}
+              data-icon="list"
+              aria-label={translate("Display in a table")}
+              aria-pressed={View.List === view}
+              title={translate("Display as list")}
+              onClick={() => setView(View.List)}
+            />
+          </ViewButtons>
           {config.editions.isAtLeast(Edition.Pro) &&
             config.metadata.freeform.canOrganizeForms && (
               <GroupsButton
@@ -72,24 +98,6 @@ export const ListProvider: React.FC = () => {
                 {translate("Form groups")}
               </GroupsButton>
             )}
-          <ViewButtons className="btngroup btngroup--exclusive">
-            <button
-              type="button"
-              className={classes("btn", View.Grid === view && "active")}
-              data-icon={classes(isCraft5 ? "element-cards" : "grid")}
-              aria-label={translate("Display as cards")}
-              title={translate("Display as cards")}
-              onClick={() => setView(View.Grid)}
-            />
-            <button
-              type="button"
-              className={classes("btn", View.List === view && "active")}
-              data-icon="list"
-              aria-label="Display in a table"
-              title={translate("Display as list")}
-              onClick={() => setView(View.List)}
-            />
-          </ViewButtons>
         </ViewControls>
 
         {canCreate && (
@@ -105,8 +113,8 @@ export const ListProvider: React.FC = () => {
         )}
       </Header>
 
-      {view === View.List && <FormList />}
-      {view === View.Grid && <FormGrid />}
+      {view === View.List && <FormList search={search} />}
+      {view === View.Grid && <FormGrid search={search} />}
     </>
   );
 };

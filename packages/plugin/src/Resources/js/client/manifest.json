@@ -83,7 +83,7 @@
     ]
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-CVMn418W.js",
+    "file": "assets/ai.usage-chart-DcOBDc3T.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -113,7 +113,7 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-DpzmoPBD.js",
+    "file": "assets/index-vlCGlq6l.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

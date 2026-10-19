@@ -151,6 +151,7 @@ const rendererProps = computed(() => ({
         :field="field"
         :class="classNames.label"
         :required-indicator="theme.defaults?.requiredIndicator"
+        :required-mark-class-name="classNames.requiredMark"
       />
       <component
         :is="components.Instructions"
@@ -205,6 +206,7 @@ const rendererProps = computed(() => ({
         :field="field"
         :class="classNames.label"
         :required-indicator="theme.defaults?.requiredIndicator"
+        :required-mark-class-name="classNames.requiredMark"
       />
       <component
         :is="components.Instructions"

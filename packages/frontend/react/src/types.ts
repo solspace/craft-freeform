@@ -21,6 +21,8 @@ export type FreeformThemeClassNames = {
   fieldHidden?: string;
   fieldHasErrors?: string;
   label?: string;
+  /** Class on the required asterisk span (e.g. text-red-600) */
+  requiredMark?: string;
   instructions?: string;
   characterCount?: string;
   characterCountError?: string;
@@ -135,6 +137,7 @@ export type FreeformLabelProps = {
   field: ManifestFieldDefinition;
   className?: string;
   requiredIndicator?: string;
+  requiredMarkClassName?: string;
 };
 
 export type FreeformInstructionsProps = {

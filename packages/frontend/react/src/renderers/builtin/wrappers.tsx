@@ -100,6 +100,7 @@ export function DefaultLabel({
   field,
   className,
   requiredIndicator = "*",
+  requiredMarkClassName,
 }: FreeformLabelProps) {
   if (!field.label) {
     return null;
@@ -109,7 +110,9 @@ export function DefaultLabel({
     <label className={className} htmlFor={`freeform-${field.handle}`}>
       {field.label}
       {field.required ? (
-        <span aria-hidden="true"> {requiredIndicator}</span>
+        <span aria-hidden="true" className={requiredMarkClassName}>
+          {requiredIndicator}
+        </span>
       ) : null}
     </label>
   );

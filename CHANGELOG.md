@@ -8,6 +8,8 @@
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 
 ### Changed
+- Refined **Form groups** with a compact list layout, inline renaming, form counts, keyboard reordering, and menus for moving forms between groups.
+- Group removal now asks for confirmation and moves forms to **Unassigned**. The manager tracks unsaved changes and enables **Save changes** only when needed.
 - Placed the Cards view button before the List view button on the Forms dashboard.
 - Google Tag Manager events now fire only once per completed, successful AJAX submission. Mapped values come from the submitted server response and survive form resets and multi-page navigation.
 - Removed submission tokens from the Google Tag Manager data-layer payload. Submission IDs and the customization hook remain available.

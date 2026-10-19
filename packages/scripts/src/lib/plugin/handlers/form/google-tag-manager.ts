@@ -1,15 +1,5 @@
 import type Freeform from "@components/front-end/plugin/freeform";
-import type { FreeformResponseEvent } from "types/events";
-
-import events from "../../constants/event-types";
-
-const EVENT_GTM_DATA_LAYER_PUSH = "freeform-gtm-data-layer-push";
-
-declare global {
-  interface Window {
-    dataLayer: Record<string, string | object>[];
-  }
-}
+import { mountGtmTracking } from "./gtm-tracking";
 
 class GoogleTagManager {
   freeform: Freeform;
@@ -25,31 +15,8 @@ class GoogleTagManager {
       return;
     }
 
-    const eventName = this.form.dataset.gtmEventName || "form-submission";
-    const handle = this.form.dataset.handle;
-
-    this.form.addEventListener(
-      events.form.ajaxSuccess,
-      (event: FreeformResponseEvent) => {
-        const response = event.response;
-
-        const pushEvent = freeform._dispatchEvent(EVENT_GTM_DATA_LAYER_PUSH, {
-          payload: {},
-          response,
-        });
-        const payload = {
-          event: eventName,
-          form: handle,
-          submission: {
-            id: response.submissionId,
-            token: response.submissionToken,
-          },
-          ...pushEvent.payload,
-        };
-
-        window.dataLayer.push(payload);
-      },
-    );
+    this.form.dataset.gtmEventName ||= "form-submission";
+    mountGtmTracking(this.form);
   }
 
   reload = () => {};

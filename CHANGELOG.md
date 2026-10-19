@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
+
+### Changed
+- Google Tag Manager events now fire only once per completed, successful AJAX submission. Mapped values come from the submitted server response and survive form resets and multi-page navigation.
+- Removed submission tokens from the Google Tag Manager data-layer payload. Submission IDs and the customization hook remain available.
+
+### Fixed
+- Fixed Google Tag Manager tracking firing for intermediate pages, duplicate submissions, and quiet spam rejections.
+- Avoided loading an already installed GTM container again and improved detection of dynamically inserted forms.
+
 ## 5.17.2 - 2026-10-18
 
 ### Added

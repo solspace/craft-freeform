@@ -31,6 +31,7 @@ export enum PropertyType {
   DateTime = "dateTime",
   DynamicCheckboxes = "dynamicCheckboxes",
   DynamicSelect = "dynamicSelect",
+  EventParameters = "eventParameters",
   Field = "field",
   FieldMapping = "fieldMapping",
   FieldSelection = "fieldSelection",
@@ -259,6 +260,13 @@ export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
   emptyOption?: string;
 };
 
+export type EventParametersProperty = BaseProperty<
+  [string, string][],
+  PropertyType.EventParameters
+> & {
+  availableFieldTypes: string[];
+};
+
 export type LabelProperty = BaseProperty<string, PropertyType.Label>;
 
 export type NotificationTemplateProperty = BaseProperty<
@@ -347,6 +355,7 @@ export type Property =
   | DateTimeProperty
   | DynamicCheckboxesProperty
   | DynamicSelectProperty
+  | EventParametersProperty
   | FieldMappingProperty
   | FieldProperty
   | FieldSelectionProperty

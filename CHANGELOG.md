@@ -16,6 +16,7 @@
 - Removed submission tokens from the Google Tag Manager data-layer payload. Submission IDs and the customization hook remain available.
 
 ### Fixed
+- Fixed sizing, spacing, and vertical alignment of choice controls in Table fields across bundled formatting templates.
 - Fixed international phone country selectors appearing misaligned or oversized and improved their colors in dark formatting templates.
 - Fixed date picker theming and the Preview background for the Conversational formatting template.
 - Fixed date and time pickers appearing white in dark formatting templates. Pickers now use a shared neutral dark theme while light forms retain their existing styling.

@@ -15,6 +15,7 @@
 - Removed submission tokens from the Google Tag Manager data-layer payload. Submission IDs and the customization hook remain available.
 
 ### Fixed
+- Fixed date and time pickers appearing white in dark formatting templates. Pickers now use a shared neutral dark theme while light forms retain their existing styling.
 - Fixed Signature fields failing to render on PHP 8.5, including in AJAX submission responses.
 - Fixed Google Tag Manager tracking firing for intermediate pages, duplicate submissions, and quiet spam rejections.
 - Avoided loading an already installed GTM container again and improved detection of dynamically inserted forms.

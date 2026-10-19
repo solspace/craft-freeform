@@ -1,4 +1,4 @@
-{# Keep the Extras menu and index tiles in the same order. #}
+{# Keep the Examples menu and browser in the same order. #}
 {% set examples = [
     {
         handle: "current-user-data",
@@ -97,13 +97,42 @@
     },
 ] %}
 
-{% for example in examples %}
-    {% if mode == "navigation" %}
+{% set categories = {
+    'current-user-data': 'Data & relations',
+    'craft-entry-data': 'Data & relations',
+    'date-pickers': 'JavaScript',
+    'suppress-edit-submissions': 'Submission behavior',
+    'js-override': 'JavaScript',
+    'submission-limit': 'Validation',
+    'submission-duplicate': 'Validation',
+    'twig-cache': 'Rendering',
+    'formatting-inside-template': 'Rendering',
+    'manual-form': 'Rendering',
+    'manual-multipage': 'Rendering',
+    'multiple-forms': 'Rendering',
+    'parsley': 'Validation',
+    'relating-submission': 'Data & relations',
+    'form-field-type': 'Data & relations',
+    'ajax-div-success': 'Submission behavior',
+    'ajax-template-success': 'Submission behavior',
+    'override-return-url': 'Submission behavior',
+    'success-same-page': 'Submission behavior',
+} %}
+{% set categoryStyles = {
+    'Data & relations': { color: '#8b5cc7', path: 'M8 4H5a2 2 0 0 0-2 2v3m13-5h3a2 2 0 0 1 2 2v3M8 20H5a2 2 0 0 1-2-2v-3m13 5h3a2 2 0 0 0 2-2v-3M8 12h8m-4-4v8' },
+    'JavaScript': { color: '#bc8433', path: 'm8 6-6 6 6 6m8-12 6 6-6 6M14 3l-4 18' },
+    'Submission behavior': { color: '#327fc1', path: 'M4 5h16v14H4zM4 5l8 7 8-7' },
+    'Validation': { color: '#368571', path: 'm12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6' },
+    'Rendering': { color: '#687cbb', path: 'M3 4h18v16H3zM3 9h18M9 9v11' },
+} %}
+
+{% if mode == 'header' %}
+    {% set example = examples|filter(item => item.handle == exampleHandle)|first %}
+    {% include "demo/extras/_example-header.twig" %}
+{% elseif mode == 'browser' %}
+    {% include "demo/extras/_browser.twig" %}
+{% elseif mode == 'navigation' %}
+    {% for example in examples %}
         <a href="{{ demoBaseUrl }}/extras/{{ example.handle }}"{% if craft.app.request.segment(baseUrlSegments + 2) == example.handle %} class="active" aria-current="page"{% endif %}>{{ example.title }}</a>
-    {% elseif mode == "tiles" %}
-        <a href="{{ demoBaseUrl }}/extras/{{ example.handle }}" class="freeform-form-tile-item">
-            <h3 class="freeform-form-title">{{ example.title }}</h3>
-            <p>{{ example.description }}</p>
-        </a>
-    {% endif %}
-{% endfor %}
+    {% endfor %}
+{% endif %}

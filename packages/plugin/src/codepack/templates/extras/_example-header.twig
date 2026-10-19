@@ -1,0 +1,13 @@
+{% set category = categories[example.handle]|default('Rendering') %}
+{% set style = categoryStyles[category] %}
+<a class="freeform-submissions-back" href="{{ demoBaseUrl }}/extras">← All examples</a>
+<header class="freeform-submissions-heading">
+    <div class="freeform-submissions-form">
+        <span class="freeform-browser-icon" style="--form-accent: {{ style.color }}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ style.path }}"/></svg></span>
+        <div>
+            <p class="freeform-detail-eyebrow">{{ category }} example</p>
+            <h2 id="example-title">{{ exampleTitle|default(example.title) }}</h2>
+            <p>{{ exampleDescription|default(example.description) }}</p>
+        </div>
+    </div>
+</header>

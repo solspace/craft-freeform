@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Adjustments to a Date Field Date/Time Picker | Extras" %}
+{% set pageTitle = "Adjustments to a Date Field Date/Time Picker | Examples" %}
 
 {# Replace 'freeformDatePicker' with your form handle #}
 {% set demoFormHandle = "freeformDatePicker" %}
@@ -9,12 +9,14 @@
 
     {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
-    <div class="freeform-page-heading">
-        <h2>Adjustments to a Date Field Date/Time Picker</h2>
-        <p>The following example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.</p>
-    </div>
+    <article class="freeform-form-browser freeform-example-detail" aria-labelledby="example-title">
+    {% set exampleDescription %}The following example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.{% endset %}
+    {% include "demo/extras/_items.twig" with { mode: 'header', exampleHandle: 'date-pickers' } %}
 
     {% if form %}
+        <section class="freeform-submissions-panel freeform-example-demo-panel" aria-labelledby="live-example-title">
+            <div class="freeform-submissions-toolbar"><h3 id="live-example-title">Try the example</h3></div>
+            <div class="freeform-example-demo-body">
 
         {{ form.render() }}
 
@@ -35,18 +37,19 @@
             })
         </script>
 
+            </div>
+        </section>
+
     {% else %}
 
-        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
-        </div>
+        {% set setupNoticeMessage %}<p>Use a form with the handle <code>{{ demoFormHandle }}</code> to run this example.</p>{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
 
     {% endif %}
 
     {# Instructions to get this page working correctly #}
-    <div class="extras-instructions">
-        <h4>This page will not display correctly until...</h4>
-        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+    {% embed "demo/extras/_setup.twig" %}
+        {% block instructions %}
         <ol>
             <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
             <li>
@@ -63,6 +66,9 @@
                 </ul>
             </li>
         </ol>
-    </div>
+        {% endblock %}
+    {% endembed %}
+    <p class="freeform-example-template-note">Template: <code>extras/date-pickers.twig</code></p>
+    </article>
 
 {% endblock %}

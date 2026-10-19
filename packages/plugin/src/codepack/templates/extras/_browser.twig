@@ -1,0 +1,40 @@
+<section class="freeform-form-browser freeform-examples-browser" data-form-browser data-browser-noun="examples" data-view="cards" aria-labelledby="examples-title">
+    <div class="freeform-browser-heading">
+        <div>
+            <div class="freeform-browser-title-row"><h2 id="examples-title">Examples</h2><span class="freeform-browser-total">{{ examples|length }} examples</span></div>
+            <p>Explore common form setups, rendering techniques, and developer integrations.</p>
+        </div>
+        <div class="freeform-browser-tools" data-browser-tools hidden>
+            <label class="freeform-browser-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+                <input type="search" data-browser-search aria-label="Search examples" placeholder="Search examples…" autocomplete="off">
+            </label>
+            <div class="freeform-browser-views" role="group" aria-label="Example view">
+                <button type="button" data-browser-view="cards" aria-pressed="true" aria-controls="freeform-example-items"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg>Cards</button>
+                <button type="button" data-browser-view="list" aria-pressed="false" aria-controls="freeform-example-items"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10M3 5h1M3 10h1M3 15h1"/></svg>List</button>
+            </div>
+        </div>
+    </div>
+    <p class="freeform-browser-result-count" data-browser-status role="status" hidden></p>
+    <div class="freeform-example-groups" id="freeform-example-items">
+        {% for category in ['Data & relations', 'Rendering', 'JavaScript', 'Validation', 'Submission behavior'] %}
+            {% set groupExamples = examples|filter(example => categories[example.handle]|default('Rendering') == category) %}
+            {% set style = categoryStyles[category] %}
+            <section class="freeform-example-group" data-browser-group aria-labelledby="example-group-{{ loop.index }}">
+                <div class="freeform-example-group-heading"><h3 id="example-group-{{ loop.index }}">{{ category }}</h3><span data-browser-group-count>{{ groupExamples|length }}</span></div>
+                <div class="freeform-browser-items">
+                {% for example in groupExamples %}
+                    <a class="freeform-browser-item" href="{{ demoBaseUrl }}/extras/{{ example.handle }}" style="--form-accent: {{ style.color }}" data-browser-item data-browser-search="{{ (example.title ~ ' ' ~ example.description ~ ' ' ~ category)|e('html_attr') }}">
+                        <span class="freeform-browser-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="{{ style.path }}"/></svg></span>
+                        <div class="freeform-browser-summary"><h4>{{ example.title }}</h4><p>{{ example.description }}</p></div>
+                        <div class="freeform-browser-footer">
+                            <span class="freeform-browser-open">View example <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        </div>
+                    </a>
+                {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </div>
+    <div class="freeform-browser-empty" data-browser-empty hidden><h3>No matching examples</h3><p>Try a different topic, name, or description.</p><button type="button" data-browser-clear>Clear search</button></div>
+</section>

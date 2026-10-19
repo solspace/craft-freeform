@@ -1,0 +1,37 @@
+{% set listUrl = demoBaseUrl ~ '/submissions' ~ (form ? '/' ~ form.handle : '') %}
+{% set detailUrl = submission ? listUrl ~ '/' ~ submission.id : listUrl %}
+
+<section class="freeform-form-browser freeform-delete-page" aria-labelledby="delete-title">
+    <a class="freeform-submissions-back" href="{{ deleted ? listUrl : detailUrl }}">← {{ deleted or not submission ? 'Back to submissions' : 'Back to submission' }}</a>
+    <div class="freeform-submissions-panel freeform-delete-card">
+        <div class="freeform-delete-body">
+            <span class="freeform-delete-icon{{ deleted ? ' freeform-delete-icon-success' }}" aria-hidden="true">
+                {% if deleted %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="m6 12 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="10"/></svg>{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M9 6V3h6v3M6 6l1 15h10l1-15M10 10v7m4-7v7" stroke-linecap="round" stroke-linejoin="round"/></svg>{% endif %}
+            </span>
+            <h2 id="delete-title">{{ deleted ? 'Submission deleted' : (deleteAttempted ? 'Couldn’t delete this submission' : (submission ? 'Delete this submission?' : 'Submission not found')) }}</h2>
+            {% if deleted %}
+                <p class="freeform-delete-description" role="status">Submission #{{ submission.id }} has been removed from {{ form.name }}.</p>
+            {% elseif deleteAttempted %}
+                <p class="freeform-delete-description" role="alert">The submission is still available. Return to the entry and try again.</p>
+            {% elseif submission %}
+                <p class="freeform-delete-description">You’re about to permanently remove this entry and its submitted values.</p>
+                <dl class="freeform-delete-summary">
+                    <div><dt>Submission</dt><dd>{{ submission.title|default('Submission #' ~ submission.id) }}<span>#{{ submission.id }}</span></dd></div>
+                    <div><dt>Form</dt><dd>{{ form.name }}</dd></div>
+                    <div><dt>Received</dt><dd><time datetime="{{ submission.dateCreated|date('c') }}">{{ submission.dateCreated|date('M j, Y · g:i a T') }}</time></dd></div>
+                </dl>
+                <p class="freeform-delete-warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="m12 3 10 18H2zM12 9v5m0 3v1" stroke-linejoin="round"/></svg>This can’t be undone.</p>
+            {% else %}
+                <p class="freeform-delete-description">This entry may have already been deleted, or the link is no longer valid.</p>
+            {% endif %}
+        </div>
+        <div class="freeform-delete-footer">
+            {% if submission and not deleteAttempted %}
+                <a class="freeform-submissions-form-link" href="{{ detailUrl }}">Cancel</a>
+                <form method="post">{{ csrfInput() }}<button type="submit" class="freeform-delete-confirm">Delete submission</button></form>
+            {% else %}
+                <a class="freeform-submissions-form-link" href="{{ deleteAttempted and not deleted ? detailUrl : listUrl }}">{{ deleteAttempted and not deleted ? 'Back to submission' : 'Back to submissions' }} <span aria-hidden="true">→</span></a>
+            {% endif %}
+        </div>
+    </div>
+</section>

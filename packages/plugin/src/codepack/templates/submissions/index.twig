@@ -3,171 +3,31 @@
 {% block title %}Freeform Demo | Submissions for {{ form.name|default('-Select a Form-') }}{% endblock %}
 
 {% block content %}
+    {# The shared Forms overview now provides links to submissions and spam. #}
+    {% if not craft.app.request.segment(baseUrlSegments + 2) %}
+        {% redirect demoBaseUrl ~ '/forms' %}
+    {% endif %}
 
-{% if currentUser and currentUser.admin %}
-
-    {% if craft.app.request.segment(baseUrlSegments + 2) %}
-
+    {% if currentUser and currentUser.admin %}
         {% if form %}
-        {% paginate freeform.submissions({
-            form: form.handle,
-            isSpam: spamMode|default(false),
-            limit: 50,
-            orderBy: 'dateCreated DESC'
-        }) as pageInfo, submissions %}
+            {% paginate freeform.submissions({
+                form: form.handle,
+                isSpam: spamMode|default(false),
+                limit: 50,
+                orderBy: 'dateCreated DESC'
+            }) as pageInfo, submissions %}
 
-        {% set submissionCount = freeform.submissions({formId: form.id}).count %}
-        {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
-
-        <div class="freeform-page-heading">
-            <h2{{ spamMode ? ' class="spam-mode-badge"' }}>{{ spamMode ? spamCount ~ " Spams" : submissionCount ~ " Submissions" }} for <a href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}">{{ form.name }}</a></h2>
-            <p>
-                Viewing all {{ spamMode ? " spammy submissions" : " submissions" }} for this form.
-                {% if spamMode %}
-                    Switch back to view <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}">{{ submissionCount }} regular submission{% if submissionCount != "1" %}s{% endif %}</a>.
-                {% else %}
-                    There {% if spamCount == "1" %}is{% else %}are{% endif %} also <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}/spam">{{ spamCount }} submission{% if spamCount != "1" %}s{% endif %} flagged as spam</a>.
-                {% endif %}
-            </p>
-        </div>
-
-        <div class="freeform-table-overflow">
-            <table class="freeform-table">
-                <thead>
-                    <tr>
-                        <th scope="col">ID#</th>
-                        <th scope="col" class="table-col-wide-120">Date</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Author</th>
-                        <th scope="col" class="table-col-wide-150">Title</th>
-                        {% for field in (submissions|first) %}
-                            <th scope="col">{{ field.label|truncate(20, '...') }}</th>
-                        {% endfor %}
-                        {% if freeform.pro %}
-                            {% if currentUser and currentUser.admin %}
-                                <th scope="col" class="table-col-wide-120">{{ "Actions"|t("freeform") }}</th>
-                            {% endif %}
-                        {% endif %}
-                    </tr>
-                </thead>
-                <tbody>
-            {% if submissions is empty %}
-                    <tr>
-                        <td colspan="{{ 5 + (freeform.pro ? 1 : 0) }}" class="table-no-results">There are currently no submissions for this form.</td>
-                    </tr>
-            {% else %}
-                {% for submission in submissions %}
-                    <tr>
-                        <th scope="row">{{ submission.id }}</th>
-                        <td>{{ submission.dateCreated|date('Y-m-d H:i') }}</td>
-                        <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
-                        <td>{{ submission.author ? submission.author.username : "Guest"|t("freeform") }}</td>
-                        <td>
-                            <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}/{{ submission.id }}{{ spamMode ? "/spam" : "" }}">
-                                {{ submission.title }}
-                            </a>
-                        </td>
-                    {% for field in submission %}
-                        {% if field.type == "signature" %}
-                            <td>
-                            {% if submission[field.handle].value %}
-                                <img src="{{ submission[field.handle].value }}" alt="Signature" />
-                            {% endif %}
-                            </td>
-                        {% else %}
-                            <td>
-                            {% if field.implements('options') %}
-                                {{ submission[field.handle].labelsAsString|truncate(40, '...') }}
-                            {% else %}
-                                {{ submission[field.handle].valueAsString|truncate(40, '...') }}
-                            {% endif %}
-                            </td>
-                        {% endif %}
-                    {% endfor %}
-                    {% if freeform.pro %}
-                        {% if currentUser and currentUser.admin %}
-                            <td>
-                            {% if spamMode %}
-                                N/A
-                            {% else %}
-                                <a class="freeform-button orange" href="{{ siteUrl }}demo/forms/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
-                                    {{- "Edit"|t("freeform") -}}
-                                </a>
-                                <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/delete/{{ form.handle }}/{{ submission.token }}">
-                                    {{- "Delete"|t("freeform") -}}
-                                </a>
-                            {% endif %}
-                            </td>
-                        {% endif %}
-                    {% endif %}
-                    </tr>
-                {% endfor %}
-            {% endif %}
-                </tbody>
-            </table>
-        </div>
-
-        {% if pageInfo.totalPages > 1 %}
-            <nav style="padding: 20px;text-align: center;" role="navigation" aria-label="Pagination">
-                {% if pageInfo.prevUrl %}
-                    <a href="{{ pageInfo.prevUrl }}">← Previous</a>&nbsp;&nbsp;
-                {% endif %}
-                {% for page, url in pageInfo.getPrevUrls(2) %}
-                    <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
-                {% endfor %}
-                <strong aria-current="page">{{ pageInfo.currentPage }}</strong>&nbsp;&nbsp;
-                {% for page, url in pageInfo.getNextUrls(2) %}
-                    <a href="{{ url }}">{{ page }}</a>&nbsp;&nbsp;
-                {% endfor %}
-                {% if pageInfo.nextUrl %}
-                    <a href="{{ pageInfo.nextUrl }}">Next →</a>
-                {% endif %}
-            </nav>
-        {% endif %}
+            {% set submissionCount = freeform.submissions({formId: form.id}).count %}
+            {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
+            {% include "demo/submissions/_table" %}
         {% else %}
             <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
             </div>
         {% endif %}
-
     {% else %}
-
-        <div class="freeform-page-heading">
-            <h2>Select a Form</h2>
-            <p>Choose a form from below that you'd like to see submission data for.</p>
+        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
+            Sorry, you do not have permission to access this page.
         </div>
-
-        {% if forms %}
-
-            <div class="freeform-form-tiles">
-            {% for form in forms %}
-                {% set submissionCount = freeform.submissions({formId: form.id}).count %}
-                {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
-                <style>.freeform-form-tile-item-{{ form.id }}{border-top:7px solid {{ form.color }}!important;}.freeform-form-tile-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
-                <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
-                    <h3 class="freeform-form-title">{{ form.name }}</h3>
-                    <p>{{ form.description|truncate(50, '...') }}</p>
-                    <p class="freeform-submission-count"><b>{{ submissionCount }} submission{% if submissionCount != "1" %}s{% endif %}</b>, {{ spamCount }} spam{% if spamCount != "1" %}s{% endif %}</p>
-                </a>
-            {% endfor %}
-            </div>
-
-        {% else %}
-
-            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                Sorry, no forms exist for this site yet.
-            </div>
-
-        {% endif %}
-
     {% endif %}
-
-{% else %}
-
-    <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-        Sorry, you do not have permission to access this page.
-    </div>
-
-{% endif %}
-
 {% endblock %}

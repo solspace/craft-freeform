@@ -8,6 +8,7 @@
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 
 ### Changed
+- Refreshed demo templates with improved navigation, searchable cards/list views, clearer form previews, and redesigned submission and example pages.
 - Refined **Form groups** with a compact list layout, inline renaming, form counts, keyboard reordering, and menus for moving forms between groups.
 - Group removal now asks for confirmation and moves forms to **Unassigned**. The manager tracks unsaved changes and enables **Save changes** only when needed.
 - Placed the Cards view button before the List view button on the Forms dashboard.

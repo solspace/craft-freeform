@@ -8,11 +8,91 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Settings\Settings as DefaultSettings;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Settings\SubCategories\General;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
+use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\SettingsService;
 
 #[CoversClass(FormsService::class)]
 class FormsServiceTest extends TestCase
 {
+    #[DataProvider('defaultFormattingTemplateProvider')]
+    public function testDefaultFormattingTemplateUsesBuilderDefaults(
+        string $configured,
+        bool $includeSamples,
+        array $samples,
+        array $custom,
+        string $expected,
+    ): void {
+        $general = (new \ReflectionClass(General::class))->newInstanceWithoutConstructor();
+        $general->formattingTemplate = new SelectItem(['value' => $configured]);
+        $defaultSettings = (new \ReflectionClass(DefaultSettings::class))->newInstanceWithoutConstructor();
+        $defaultSettings->general = $general;
+        $defaults = (new \ReflectionClass(Defaults::class))->newInstanceWithoutConstructor();
+        $defaults->settings = $defaultSettings;
+        $defaults->includeSampleTemplates = $includeSamples;
+        $model = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+        $model->formattingTemplate = 'basic-light/index.twig';
+        $model->defaults = $defaults;
+
+        $template = function (string $fileName): FormTemplate {
+            $template = $this->createMock(FormTemplate::class);
+            $template->method('getFileName')->willReturn($fileName);
+
+            return $template;
+        };
+        $settings = $this->createMock(SettingsService::class);
+        $settings->method('getSettingsModel')->willReturn($model);
+        $settings->method('getSolspaceFormTemplates')->willReturn(array_map($template, $samples));
+        $settings->method('getCustomFormTemplates')->willReturn(array_map($template, $custom));
+        $service = $this->getMockBuilder(FormsService::class)
+            ->setConstructorArgs([
+                null,
+                $this->createMock(PropertyProvider::class),
+                $this->createMock(TranslationProvider::class),
+            ])
+            ->onlyMethods(['getSettingsService'])
+            ->getMock()
+        ;
+        $service->method('getSettingsService')->willReturn($settings);
+
+        self::assertSame($expected, $service->getDefaultFormattingTemplate());
+    }
+
+    public static function defaultFormattingTemplateProvider(): array
+    {
+        return [
+            'configured sample overrides legacy Basic Light' => [
+                'tailwind-4-light/index.twig', true,
+                ['basic-light/index.twig', 'tailwind-4-light/index.twig'], [],
+                'tailwind-4-light/index.twig',
+            ],
+            'configured custom template overrides legacy Basic Light' => [
+                'insurance.twig', true, ['basic-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+            ],
+            'custom template with samples disabled' => [
+                'insurance.twig', false, ['basic-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+            ],
+            'explicitly no formatting template' => [
+                '', true, ['basic-light/index.twig'], [], '',
+            ],
+            'missing configured template uses available fallback' => [
+                'missing.twig', true, ['basic-light/index.twig'], ['insurance.twig'], 'basic-light/index.twig',
+            ],
+            'disabled samples are excluded from fallback' => [
+                'tailwind-4-light/index.twig', false,
+                ['basic-light/index.twig', 'tailwind-4-light/index.twig'], ['insurance.twig'], 'insurance.twig',
+            ],
+            'no available templates retains fallback' => [
+                'missing.twig', false, [], [], 'flexbox.html',
+            ],
+        ];
+    }
+
     public function testFormCacheKeysIncludeSiteAndUniqueId(): void
     {
         $service = new FormsService(

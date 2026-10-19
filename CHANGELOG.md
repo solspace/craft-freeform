@@ -3,9 +3,12 @@
 ## Unreleased
 
 ### Added
+- Added an optional **Form Icon** setting using Craft’s native icon picker on Craft 5 and 6. Icons appear in form cards and a dedicated first column in the Forms list view, matching each form’s color. Craft 4 ignores this setting.
+- Added matching default icons for all 12 starting points when creating forms through Guided setup or selecting a starting point in Create from scratch.
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 
 ### Changed
+- Placed the Cards view button before the List view button on the Forms dashboard.
 - Google Tag Manager events now fire only once per completed, successful AJAX submission. Mapped values come from the submitted server response and survive form resets and multi-page navigation.
 - Removed submission tokens from the Google Tag Manager data-layer payload. Submission IDs and the customization hook remain available.
 

@@ -12,6 +12,11 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Form Icon' => 'Formuliericoon',
+    'Choose an icon for this form in the control panel.' => 'Kies een icoon voor dit formulier in het configuratiescherm.',
+    'Choose a valid form icon.' => 'Kies een geldig formuliericoon.',
+    'Choose' => 'Kiezen',
+    'Change' => 'Wijzigen',
     'Delete field?' => 'Veld verwijderen?',
     'Delete page?' => 'Pagina verwijderen?',
     'Delete favorite field?' => 'Favoriet veld verwijderen?',

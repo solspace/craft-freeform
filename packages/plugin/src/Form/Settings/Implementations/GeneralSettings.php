@@ -147,11 +147,21 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[VisibilityFilter('Boolean(context.config.metadata.craft.is5)')]
+    #[Validators\IconName]
+    #[Input\IconPicker(
+        label: 'Form Icon',
+        instructions: 'Choose an icon for this form in the control panel.',
+        order: 10,
+    )]
+    public string $icon = '';
+
+    #[Section(self::SECTION_GENERAL)]
     #[VisibilityFilter('Boolean(context.config.metadata.freeform.canManageHtmlEmbeds)')]
     #[Input\Boolean(
         label: 'Allow HTML Embeds',
         instructions: 'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.',
-        order: 10,
+        order: 11,
     )]
     public bool $allowHtmlEmbeds = false;
 

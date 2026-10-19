@@ -75,19 +75,19 @@ export const ListProvider: React.FC = () => {
           <ViewButtons className="btngroup btngroup--exclusive">
             <button
               type="button"
-              className={classes("btn", View.List === view && "active")}
-              data-icon="list"
-              aria-label="Display in a table"
-              title={translate("Display as list")}
-              onClick={() => setView(View.List)}
-            />
-            <button
-              type="button"
               className={classes("btn", View.Grid === view && "active")}
               data-icon={classes(isCraft5 ? "element-cards" : "grid")}
               aria-label={translate("Display as cards")}
               title={translate("Display as cards")}
               onClick={() => setView(View.Grid)}
+            />
+            <button
+              type="button"
+              className={classes("btn", View.List === view && "active")}
+              data-icon="list"
+              aria-label="Display in a table"
+              title={translate("Display as list")}
+              onClick={() => setView(View.List)}
             />
           </ViewButtons>
         </ViewControls>

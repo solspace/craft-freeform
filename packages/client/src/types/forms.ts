@@ -41,6 +41,7 @@ export type Form = {
   name: string;
   handle: string;
   description?: string;
+  iconSvg?: string | null;
   isNew: boolean;
   settings: SettingCollection;
   ownership?: FormOwnership;

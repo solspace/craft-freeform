@@ -17,6 +17,7 @@ export { default as eventParameters } from "./event-parameters/event-parameters"
 export { default as field } from "./field/field";
 export { default as fieldType } from "./field-type/field-type";
 export { default as hidden } from "./hidden/hidden";
+export { default as iconPicker } from "./icon-picker/icon-picker";
 export { default as int } from "./int/int";
 export { default as label } from "./label/label";
 export { default as minMax } from "./min-max/min-max";

@@ -21,6 +21,20 @@ class PresetCatalog
         'rating' => Fields\Pro\RatingField::class,
         'file' => Fields\FileUploadField::class,
     ];
+    private const ICONS = [
+        'contact' => 'envelope',
+        'quote' => 'file-invoice-dollar',
+        'application' => 'briefcase',
+        'event' => 'calendar-days',
+        'feedback' => 'star',
+        'newsletter' => 'newspaper',
+        'support' => 'headset',
+        'appointment' => 'clock',
+        'volunteer' => 'heart',
+        'product' => 'box-open',
+        'testimonial' => 'comment-dots',
+        'other' => 'file-lines',
+    ];
 
     /** Resolve the complete presets against registered, permitted field types. */
     public function getPresets(array $available): array
@@ -169,7 +183,7 @@ class PresetCatalog
                     'adapted' => $original !== $type,
                 ];
             }
-            $result[] = ['id' => $id, 'label' => Freeform::t($label), 'description' => Freeform::t($description), 'formDescription' => Freeform::t($formDescriptions[$id]), 'fields' => $fields];
+            $result[] = ['id' => $id, 'icon' => self::ICONS[$id], 'label' => Freeform::t($label), 'description' => Freeform::t($description), 'formDescription' => Freeform::t($formDescriptions[$id]), 'fields' => $fields];
         }
 
         return $result;

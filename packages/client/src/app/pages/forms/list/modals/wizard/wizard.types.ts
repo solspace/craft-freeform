@@ -15,6 +15,7 @@ export type Choice = { value: string; label: string; color?: string };
 export type WizardOptions = {
   presets: {
     id: string;
+    icon?: string;
     label: string;
     description: string;
     formDescription?: string;

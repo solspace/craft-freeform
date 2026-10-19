@@ -160,6 +160,9 @@ class FormWizardService
             }
         }
         $general = ['name' => $name, 'handle' => $handle, 'type' => Regular::class, 'sites' => $siteIds];
+        if (version_compare(\Craft::$app->version, '5.0.0', '>=') && \in_array('icon', $options['editableSettings'], true)) {
+            $general['icon'] = $preset['icon'];
+        }
         $behavior = [];
         foreach ($options['defaults'] as $key => $default) {
             if (!\array_key_exists($key, $input) || !\in_array($key, $options['editableSettings'], true)) {

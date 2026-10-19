@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TranslationsService;
+use Solspace\Freeform\Services\FormIconService;
 use Solspace\Freeform\Services\FormMonitorService;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\base\Event;
@@ -18,6 +19,8 @@ use yii\base\Event;
 class FormTransformer
 {
     public const EVENT_ATTACH_LINKS = 'attach-links';
+
+    private ?FormIconService $formIcons = null;
 
     public function __construct(
         private FieldProvider $fieldProvider,
@@ -142,6 +145,7 @@ class FormTransformer
             'handle' => $form->getHandle(),
             'description' => $form->getDescription(),
             'settings' => $settings->toArray(),
+            'iconSvg' => ($this->formIcons ??= new FormIconService())->getSvg($settings->general->icon),
             'ownership' => $this->getOwnership($form),
             'isNew' => $isNew,
             'dateArchived' => $form->getDateArchived(),

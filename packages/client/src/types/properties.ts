@@ -37,6 +37,7 @@ export enum PropertyType {
   FieldSelection = "fieldSelection",
   FieldType = "fieldType",
   Hidden = "hidden",
+  Icon = "iconPicker",
   Integer = "int",
   Label = "label",
   MinMax = "minMax",
@@ -217,6 +218,7 @@ export type OptionPickerProperty = BaseProperty<
   string[],
   PropertyType.OptionPicker
 >;
+export type IconProperty = BaseProperty<string, PropertyType.Icon>;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type CalculationProperty = BaseProperty<
   string,
@@ -361,6 +363,7 @@ export type Property =
   | FieldSelectionProperty
   | FieldTypeProperty
   | HiddenProperty
+  | IconProperty
   | IntegerProperty
   | LabelProperty
   | MinMaxProperty

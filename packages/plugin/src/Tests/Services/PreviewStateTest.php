@@ -105,6 +105,7 @@ class PreviewStateTest extends TestCase
     #[TestWith(['tailwind-3-dark/index.twig'])]
     #[TestWith(['tailwind-4-dark/index.twig'])]
     #[TestWith(['daisyui-5-dark/index.twig'])]
+    #[TestWith(['conversational/index.twig'])]
     public function testOnlyKnownDarkSamplesGetDarkBackground(string $template): void
     {
         self::assertTrue(PreviewState::isDark($template, false));

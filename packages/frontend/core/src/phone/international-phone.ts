@@ -121,7 +121,10 @@ export function mountInternationalPhone(
   const inputStyle = getComputedStyle(input);
   const padding =
     inputStyle.paddingInlineStart || inputStyle.paddingLeft || "12px";
-  style(input, { "padding-inline-start": `calc(3.5rem + ${padding})` });
+  const selectorWidth = "var(--ff-phone-selector-width, 3.5rem)";
+  style(input, {
+    "padding-inline-start": `calc(${selectorWidth} + ${padding})`,
+  });
   let restoreLabel: (() => void) | undefined;
   if (
     next instanceof HTMLLabelElement &&
@@ -130,7 +133,7 @@ export function mountInternationalPhone(
   ) {
     restoreLabel = preserve(next, "padding-inline-start");
     style(next, {
-      "padding-inline-start": `calc(3.5rem + ${getComputedStyle(next).paddingInlineStart || padding})`,
+      "padding-inline-start": `calc(${selectorWidth} + ${getComputedStyle(next).paddingInlineStart || padding})`,
     });
   }
   style(root, {
@@ -150,20 +153,21 @@ export function mountInternationalPhone(
     display: "flex",
     "align-items": "center",
     "justify-content": "center",
-    gap: ".5rem",
+    gap: "var(--ff-phone-selector-spacing, .5rem)",
     "inset-inline-start": "1px",
     top: "1px",
-    width: "3.5rem",
+    width: selectorWidth,
     height: "calc(100% - 2px)",
     "min-height": "0",
     margin: "0",
-    padding: "0 .5rem",
+    padding: "0 var(--ff-phone-selector-spacing, .5rem)",
     border: "0",
     "border-inline-end": "1px solid var(--ff-phone-border, #b8c4d3)",
+    "border-radius": "0",
     "border-start-start-radius": "inherit",
     "border-end-start-radius": "inherit",
     background:
-      "linear-gradient(#7488a51a, #7488a51a), var(--ff-phone-selector-background, var(--ff-phone-background, #fff))",
+      "linear-gradient(var(--ff-phone-selector-overlay, #7488a51a), var(--ff-phone-selector-overlay, #7488a51a)), var(--ff-phone-selector-background, var(--ff-phone-background, #fff))",
     color: "var(--ff-phone-color, #334155)",
     font: "inherit",
     cursor: "pointer",
@@ -224,12 +228,41 @@ export function mountInternationalPhone(
   });
   style(empty, { padding: ".75rem" });
   const layout = () => {
+    const computed = getComputedStyle(input);
+    // offsetHeight/offsetTop round fractional pixels, which can put the
+    // selector below the input's bottom border. Keep its exact border box.
+    const borderBox = (dimension: "width" | "height", sides: string[]) => {
+      const size = Number.parseFloat(computed[dimension]);
+      if (!Number.isFinite(size))
+        return dimension === "width" ? input.offsetWidth : input.offsetHeight;
+      return computed.boxSizing === "border-box"
+        ? size
+        : size +
+            sides.reduce(
+              (total, side) =>
+                total +
+                (Number.parseFloat(
+                  computed.getPropertyValue(`padding-${side}`),
+                ) || 0) +
+                (Number.parseFloat(
+                  computed.getPropertyValue(`border-${side}-width`),
+                ) || 0),
+              0,
+            );
+    };
+    const width = borderBox("width", ["left", "right"]);
+    const height = borderBox("height", ["top", "bottom"]);
+    const bounds = input.getBoundingClientRect();
+    const parentBounds = parent.getBoundingClientRect();
+    // Convert viewport coordinates back to local pixels if an ancestor is scaled.
+    const scaleX = bounds.width / width || 1;
+    const scaleY = bounds.height / height || 1;
     style(root, {
-      left: `${input.offsetLeft}px`,
-      top: `${input.offsetTop}px`,
-      width: `${input.offsetWidth}px`,
-      height: `${input.offsetHeight}px`,
-      "border-radius": getComputedStyle(input).borderRadius,
+      left: `${(bounds.left - parentBounds.left) / scaleX - parent.clientLeft + parent.scrollLeft}px`,
+      top: `${(bounds.top - parentBounds.top) / scaleY - parent.clientTop + parent.scrollTop}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+      "border-radius": computed.borderRadius,
       display: input.getClientRects().length ? "block" : "none",
     });
   };

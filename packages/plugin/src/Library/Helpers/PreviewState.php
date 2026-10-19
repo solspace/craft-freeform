@@ -91,7 +91,7 @@ class PreviewState
         return !$custom && \in_array($template, [
             'basic-dark/index.twig', 'bootstrap-5-dark/index.twig',
             'tailwind-3-dark/index.twig', 'tailwind-4-dark/index.twig',
-            'daisyui-5-dark/index.twig',
+            'daisyui-5-dark/index.twig', 'conversational/index.twig',
         ], true);
     }
 

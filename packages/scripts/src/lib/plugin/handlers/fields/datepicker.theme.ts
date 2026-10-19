@@ -2,6 +2,7 @@ import type { FlatpickrInstance } from "@lib/vendors/flatpickr";
 
 const legacyDarkTemplates = [
   "[data-freeform-basic-dark]",
+  "[data-freeform-conversational]",
   "[data-freeform-bootstrap-dark]",
   "[data-freeform-tailwind-dark]",
   '[data-freeform-daisyui][data-theme="dark"]',

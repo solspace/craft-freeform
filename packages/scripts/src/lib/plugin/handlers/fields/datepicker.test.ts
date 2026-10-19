@@ -119,6 +119,7 @@ it("loads and initializes pickers that first appear after an AJAX page change", 
 it.each([
   'data-freeform-theme="dark"',
   "data-freeform-basic-dark",
+  "data-freeform-conversational",
   "data-freeform-bootstrap-dark",
   "data-freeform-tailwind-dark",
   'data-freeform-daisyui data-theme="dark"',

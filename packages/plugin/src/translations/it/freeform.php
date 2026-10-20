@@ -338,7 +338,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Space' => 'Spazio',
     'Minimum date' => 'Data minima',
     'Maximum date' => 'Data massima',
-    "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc." => "Puoi usare 'now', 'today', '5 days ago', '2025-01-01 20:00:00', ecc.",
+    "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language." => "Inserisci un'espressione di data in inglese, come 'now', 'today', '5 days ago' o '2025-01-01 20:00:00'. Mantieni questi valori in inglese indipendentemente dalla lingua del pannello di controllo.",
     'Time Settings' => 'Impostazioni ora',
     '24h clock' => 'Orologio 24h',
     'Clock Separator' => 'Separatore orario',

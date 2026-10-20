@@ -23,12 +23,11 @@ import type React from "react";
 import type { MouseEventHandler } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
-
+import { FormIcon } from "../../../form-icon";
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
 } from "../grid.mutations";
-
 import { FMLoading } from "./card.loading";
 import { FormMonitorStats } from "./card.monitor.stats";
 import {
@@ -40,6 +39,7 @@ import {
   FMContainer,
   FormBody,
   FormBodyContent,
+  FormIdentity,
   LinkList,
   PaddedChartFooter,
   Subtitle,
@@ -198,63 +198,66 @@ export const Card: React.FC<Props> = ({
 
       <CardBody>
         <FormBody>
-          <FormBodyContent>
-            {isTitleOverflowing ? (
-              <Tooltip title={name} {...tooltipProps}>
-                {hasTitleLink ? (
-                  <TitleLink
-                    ref={titleRef}
-                    onClick={onNavigate}
-                    onAuxClick={onNavigate}
-                  >
-                    {name}
-                  </TitleLink>
-                ) : (
-                  <Title ref={titleRef}>{name}</Title>
-                )}
-              </Tooltip>
-            ) : hasTitleLink ? (
-              <TitleLink
-                ref={titleRef}
-                onClick={onNavigate}
-                onAuxClick={onNavigate}
-              >
-                {name}
-              </TitleLink>
-            ) : (
-              <Title ref={titleRef}>{name}</Title>
-            )}
-            {!!description &&
-              (isDescriptionOverflowing ? (
-                <Tooltip
-                  title={description}
-                  {...tooltipProps}
-                  position="bottom"
-                  distance={10}
-                  style={{ display: "block" }}
-                >
-                  <Subtitle ref={descriptionRef}>{description}</Subtitle>
-                </Tooltip>
-              ) : (
-                <Subtitle ref={descriptionRef}>{description}</Subtitle>
-              ))}
-
-            {linkList.length > 0 && (
-              <LinkList>
-                {linkList.map((link, idx) =>
-                  link.internal ? (
-                    <NavLink key={idx} to={link.url}>
-                      {link.label}
-                    </NavLink>
+          <FormIdentity>
+            <FormIcon svg={form.iconSvg} color={color} />
+            <FormBodyContent>
+              {isTitleOverflowing ? (
+                <Tooltip title={name} {...tooltipProps}>
+                  {hasTitleLink ? (
+                    <TitleLink
+                      ref={titleRef}
+                      onClick={onNavigate}
+                      onAuxClick={onNavigate}
+                    >
+                      {name}
+                    </TitleLink>
                   ) : (
-                    <li key={idx}>
-                      <a href={link.url}>{link.label}</a>
-                    </li>
-                  ),
-                )}
-              </LinkList>
-            )}
-          </FormBodyContent>
+                    <Title ref={titleRef}>{name}</Title>
+                  )}
+                </Tooltip>
+              ) : hasTitleLink ? (
+                <TitleLink
+                  ref={titleRef}
+                  onClick={onNavigate}
+                  onAuxClick={onNavigate}
+                >
+                  {name}
+                </TitleLink>
+              ) : (
+                <Title ref={titleRef}>{name}</Title>
+              )}
+              {!!description &&
+                (isDescriptionOverflowing ? (
+                  <Tooltip
+                    title={description}
+                    {...tooltipProps}
+                    position="bottom"
+                    distance={10}
+                    style={{ display: "block" }}
+                  >
+                    <Subtitle ref={descriptionRef}>{description}</Subtitle>
+                  </Tooltip>
+                ) : (
+                  <Subtitle ref={descriptionRef}>{description}</Subtitle>
+                ))}
+
+              {linkList.length > 0 && (
+                <LinkList>
+                  {linkList.map((link, idx) =>
+                    link.internal ? (
+                      <NavLink key={idx} to={link.url}>
+                        {link.label}
+                      </NavLink>
+                    ) : (
+                      <li key={idx}>
+                        <a href={link.url}>{link.label}</a>
+                      </li>
+                    ),
+                  )}
+                </LinkList>
+              )}
+            </FormBodyContent>
+          </FormIdentity>
 
           {formMonitor?.enabled && formMonitorLink && (
             <FMContainer>

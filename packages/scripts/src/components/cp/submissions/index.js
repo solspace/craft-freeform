@@ -1,3 +1,8 @@
+import {
+  mountSignaturePreviews,
+  signatureDownloadFilename,
+} from "@lib/cp/signature-preview";
+
 const updateActionButtons = () => {
   const $actionButtonsContainer = $("#action-buttons");
 
@@ -111,30 +116,36 @@ $(() => {
     "a[data-asset-id]",
   );
 
+  mountSignaturePreviews(document.body);
+
+  // Keep custom CP field templates using the former canvas/link hooks working.
   $("canvas[data-image]").each(function () {
-    const canvas = $(this)[0];
-    const img = new window.Image();
-    img.addEventListener("load", () => {
-      canvas.getContext("2d").drawImage(img, 0, 0);
-    });
-    img.setAttribute("src", $(this).data("image"));
+    const source = this.dataset.image || "";
+    if (!/^data:image\/(png|jpeg);base64,[A-Za-z0-9+/]+={0,2}$/.test(source))
+      return;
+    const image = new Image();
+    image.onload = () => this.getContext("2d")?.drawImage(image, 0, 0);
+    image.src = source;
   });
-
-  const signatureLinksWrapper = $(".download-signature-links");
-  $("a[data-type]", signatureLinksWrapper).on("click", function () {
-    const canvas = $(this)
-      .parents(".signature-wrapper")
-      .find("canvas:first")[0];
-    const type = $(this).data("type");
-
+  $(".download-signature-links a[data-type]").on("click", function (event) {
+    event.preventDefault();
+    const canvas = $(this).closest(".signature-wrapper").find("canvas")[0];
+    if (!canvas) return;
+    const jpeg = $(this).data("type") === "jpg";
+    const output = document.createElement("canvas");
+    output.width = canvas.width;
+    output.height = canvas.height;
+    const context = output.getContext("2d");
+    if (!context) return;
+    if (jpeg) {
+      context.fillStyle = "#fff";
+      context.fillRect(0, 0, output.width, output.height);
+    }
+    context.drawImage(canvas, 0, 0);
     const link = document.createElement("a");
-    link.download = `signature.${type}`;
-    link.href = canvas
-      .toDataURL(`image/${type}`)
-      .replace(`image/${type}`, "image/octet-stream");
+    link.download = signatureDownloadFilename(this, jpeg ? "jpg" : "png");
+    link.href = output.toDataURL(jpeg ? "image/jpeg" : "image/png");
     link.click();
-
-    return false;
   });
 
   $("#export-btn").remove();

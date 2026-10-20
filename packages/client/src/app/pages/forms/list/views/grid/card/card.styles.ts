@@ -15,6 +15,14 @@ export const FormBody = styled.div`
   width: 100%;
 `;
 
+export const FormIdentity = styled.div`
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  min-width: 0;
+  gap: 12px;
+`;
+
 export const FormBodyContent = styled.div`
   flex: 1;
   min-width: 0;

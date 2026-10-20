@@ -903,7 +903,7 @@ class Submission extends Element
             $event = new RenderTableValueEvent($value, $this);
             $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
 
-            if ($event->getOutput()) {
+            if (null !== $event->getOutput()) {
                 return $event->getOutput();
             }
 
@@ -957,7 +957,7 @@ class Submission extends Element
             $event = new RenderTableValueEvent($value, $this);
             $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
 
-            if ($event->getOutput()) {
+            if (null !== $event->getOutput()) {
                 return $event->getOutput();
             }
 

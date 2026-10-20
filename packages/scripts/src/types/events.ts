@@ -38,6 +38,11 @@ export type FreeformResponse = {
   multipage: boolean;
   duplicate: boolean;
   freeform_payload: string;
+  gtm?: {
+    eligible: boolean;
+    eventName: string;
+    parameters: Record<string, string | number | boolean>;
+  };
 };
 
 export type FreeformResponseWithToken = FreeformResponse & {

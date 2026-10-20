@@ -1,0 +1,7 @@
+<header class="freeform-form-browser freeform-edit-heading">
+    <a class="freeform-submissions-back" href="{{ editingSubmission ? demoBaseUrl ~ '/submissions/' ~ form.handle ~ '/' ~ editingSubmission.id : demoBaseUrl ~ '/forms/' ~ pageTemplate ~ '/' ~ form.handle }}">← {{ editingSubmission ? 'Back to submission' : 'Back to form' }}</a>
+    <div class="freeform-submissions-heading">
+        <div><h2>{{ form.name }}</h2><p>Changes will update this existing submission.</p></div>
+        <span class="freeform-edit-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12.5 3.5 4 4M3 17l4.5-1 10-10a1.4 1.4 0 0 0 0-2l-1-1a1.4 1.4 0 0 0-2 0l-10 10L3 17z"/></svg>Editing {{ editingSubmission ? 'submission #' ~ editingSubmission.id : 'an existing submission' }}</span>
+    </div>
+</header>

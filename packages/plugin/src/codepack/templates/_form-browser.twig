@@ -1,0 +1,73 @@
+{% set browserId = 'freeform-browser-' ~ browserArea %}
+{% set formCount = forms|length %}
+
+<section class="freeform-form-browser" data-form-browser data-view="cards" aria-labelledby="{{ browserId }}-title">
+    <div class="freeform-browser-heading">
+        <div>
+            <div class="freeform-browser-title-row">
+                <h2 id="{{ browserId }}-title">{{ browserTitle }}</h2>
+                <span class="freeform-browser-total">{{ formCount }} {{ formCount == 1 ? 'form' : 'forms' }}</span>
+            </div>
+            <p>{{ browserDescription }}</p>
+        </div>
+        {% if formCount %}
+            <div class="freeform-browser-tools" data-browser-tools hidden>
+                <label class="freeform-browser-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+                    <input type="search" data-browser-search aria-label="Search forms" placeholder="Search forms…" autocomplete="off">
+                </label>
+                <div class="freeform-browser-views" role="group" aria-label="Form view">
+                    <button type="button" data-browser-view="cards" aria-pressed="true" aria-controls="{{ browserId }}-items">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="12" y="3" width="5" height="5" rx="1"/><rect x="3" y="12" width="5" height="5" rx="1"/><rect x="12" y="12" width="5" height="5" rx="1"/></svg>
+                        Cards
+                    </button>
+                    <button type="button" data-browser-view="list" aria-pressed="false" aria-controls="{{ browserId }}-items">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 5h10M7 10h10M7 15h10M3 5h1M3 10h1M3 15h1"/></svg>
+                        List
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if formCount %}
+        <p class="freeform-browser-result-count" data-browser-status role="status" hidden></p>
+        <div class="freeform-browser-items" id="{{ browserId }}-items">
+            {% for form in forms %}
+                {% set submissionCount = freeform.submissions({formId: form.id}).count %}
+                {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
+                {% set formIcon = freeform.formIcon(form.settings.general.icon) %}
+                <article class="freeform-browser-item freeform-form-card" style="--form-accent: {{ form.color|default('#3976db')|e('html_attr') }}" data-browser-item data-form-search="{{ (form.name ~ ' ' ~ form.description)|e('html_attr') }}">
+                    <span class="freeform-browser-icon{{ formIcon ? ' freeform-browser-icon-custom' }}" aria-hidden="true">
+                        {% if formIcon %}
+                            {{ formIcon }}
+                        {% else %}
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg>
+                        {% endif %}
+                    </span>
+                    <div class="freeform-browser-summary">
+                        <h3>{{ form.name }}</h3>
+                        {% if form.description %}<p>{{ form.description }}</p>{% endif %}
+                    </div>
+                    <div class="freeform-browser-footer">
+                        <a class="freeform-browser-open" href="{{ browserBaseUrl }}/{{ form.handle }}" aria-label="{{ browserAction }}: {{ form.name }}">{{ browserAction }} <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+                        <div class="freeform-browser-stats">
+                            <a href="{{ browserSubmissionsUrl }}/{{ form.handle }}" aria-label="View {{ submissionCount|number_format }} {{ submissionCount == 1 ? 'submission' : 'submissions' }} for {{ form.name }}"><strong>{{ submissionCount|number_format }}</strong> {{ submissionCount == 1 ? 'submission' : 'submissions' }}</a>
+                            <a class="freeform-browser-spam" href="{{ browserSubmissionsUrl }}/{{ form.handle }}/spam" aria-label="View {{ spamCount|number_format }} spam {{ spamCount == 1 ? 'entry' : 'entries' }} for {{ form.name }}"><strong>{{ spamCount|number_format }}</strong> spam</a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        <div class="freeform-browser-empty" data-browser-empty hidden>
+            <h3>No matching forms</h3>
+            <p>Try a different name or description.</p>
+            <button type="button" data-browser-clear>Clear search</button>
+        </div>
+    {% else %}
+        <div class="freeform-browser-empty">
+            <h3>No forms yet</h3>
+            <p>Create a form in the Freeform control panel to see it here.</p>
+        </div>
+    {% endif %}
+</section>

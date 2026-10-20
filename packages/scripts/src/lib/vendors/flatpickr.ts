@@ -7,6 +7,8 @@ type FlatpickrElement = {
 };
 
 export type FlatpickrInstance = {
+  calendarContainer?: HTMLElement;
+  config?: { onOpen?: (() => void)[] };
   set: (option: string, value: unknown) => void;
 };
 

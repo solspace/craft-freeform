@@ -154,6 +154,8 @@ export type FreeformButtonProps = {
 };
 
 export type FreeformRuntime = {
+  /** Changes on explicit reset, including when field values stay the same. */
+  resetVersion?: number;
   manifest: FreeformManifest;
   values: Record<string, FieldValue>;
   touched: Record<string, boolean>;

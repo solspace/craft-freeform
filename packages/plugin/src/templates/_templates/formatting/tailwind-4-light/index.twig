@@ -2,10 +2,11 @@
 
 {% import "freeform/_templates/formatting/tailwind-4-light/_row.twig" as rowMacro %}
 
+{# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {# Render the opening form tag #}
 {{ form.renderTag({
   attributes: {
-    form: { class: "freeform-form", "data-freeform-tailwind": true },
+    form: { class: "freeform-form", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-4-light", "data-freeform-signature-max-scale": 1.25 },
     row: { class: "flex gap-x-2 -mx-2 mb-4" },
     success: { class: "rounded-md bg-green-50 p-4 mb-10", role: "status" },
     errors: { class: "rounded-md bg-red-50 p-4 mb-10", role: "alert" },
@@ -164,7 +165,7 @@
     },
     "@signature": {
       attributes: {
-        input: { "=class": "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-gray-900 font-normal bg-white rounded-md cursor-pointer ring-1 ring-gray-300 ring-inset hover:bg-gray-50" },
+        input: { "-class": "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6", "+class": "freeform-signature-clear" },
       },
     },
     "@stripe": {

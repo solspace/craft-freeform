@@ -31,11 +31,13 @@ export enum PropertyType {
   DateTime = "dateTime",
   DynamicCheckboxes = "dynamicCheckboxes",
   DynamicSelect = "dynamicSelect",
+  EventParameters = "eventParameters",
   Field = "field",
   FieldMapping = "fieldMapping",
   FieldSelection = "fieldSelection",
   FieldType = "fieldType",
   Hidden = "hidden",
+  Icon = "iconPicker",
   Integer = "int",
   Label = "label",
   MinMax = "minMax",
@@ -216,6 +218,7 @@ export type OptionPickerProperty = BaseProperty<
   string[],
   PropertyType.OptionPicker
 >;
+export type IconProperty = BaseProperty<string, PropertyType.Icon>;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type CalculationProperty = BaseProperty<
   string,
@@ -257,6 +260,13 @@ export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
   availableFieldTypes?: string[];
   implements?: string[];
   emptyOption?: string;
+};
+
+export type EventParametersProperty = BaseProperty<
+  [string, string][],
+  PropertyType.EventParameters
+> & {
+  availableFieldTypes: string[];
 };
 
 export type LabelProperty = BaseProperty<string, PropertyType.Label>;
@@ -347,11 +357,13 @@ export type Property =
   | DateTimeProperty
   | DynamicCheckboxesProperty
   | DynamicSelectProperty
+  | EventParametersProperty
   | FieldMappingProperty
   | FieldProperty
   | FieldSelectionProperty
   | FieldTypeProperty
   | HiddenProperty
+  | IconProperty
   | IntegerProperty
   | LabelProperty
   | MinMaxProperty

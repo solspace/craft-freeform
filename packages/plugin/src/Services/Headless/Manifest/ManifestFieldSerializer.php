@@ -415,6 +415,8 @@ class ManifestFieldSerializer
 
         if ($field instanceof SignatureField) {
             return [
+                'customizeAppearance' => $field->isCustomizeAppearance(),
+                'showPenCursor' => $field->isShowPenCursor(),
                 'width' => $field->getWidth(),
                 'height' => $field->getHeight(),
                 'showClearButton' => $field->isShowClearButton(),

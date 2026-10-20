@@ -33,6 +33,7 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
+use Solspace\Freeform\Services\FormIconService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
@@ -44,6 +45,15 @@ use yii\web\NotFoundHttpException;
 class FreeformVariable
 {
     public array $siteTemplatesDirectories = [];
+
+    private ?FormIconService $formIcons = null;
+
+    public function formIcon(?string $name): ?Markup
+    {
+        $svg = ($this->formIcons ??= new FormIconService())->getSvg($name);
+
+        return $svg ? Template::raw($svg) : null;
+    }
 
     public function form(int|string $handleOrId, mixed $properties = null, ?string $uniqueId = null): ?Form
     {

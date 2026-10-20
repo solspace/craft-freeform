@@ -1,16 +1,7 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Extras" %}
+{% set pageTitle = "Examples" %}
 
 {% block content %}
-
-    <div class="freeform-page-heading">
-        <h2>Extras</h2>
-        <p>This section of the demo templates shows Freeform handling some real world / common implementations of forms.</p>
-    </div>
-
-    <div class="freeform-form-tiles">
-        {% include "demo/extras/_items.twig" with { mode: "tiles" } %}
-    </div>
-
+    {% include "demo/extras/_items.twig" with { mode: 'browser' } %}
 {% endblock %}

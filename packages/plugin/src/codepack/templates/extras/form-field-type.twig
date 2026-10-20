@@ -1,19 +1,21 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Freeform Form Element Field Type | Extras" %}
+{% set pageTitle = "Freeform Form Element Field Type | Examples" %}
 
 {# Replace 'freeform-test' with your Craft Entry slug #}
 {% set entry = craft.entries().slug('freeform-test').one %}
 
 {% block content %}
 
-    <div class="freeform-page-heading">
-        <h2>Freeform Form Element Field Type</h2>
-        <p>This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</p>
-    </div>
+    <article class="freeform-form-browser freeform-example-detail" aria-labelledby="example-title">
+    {% set exampleDescription %}This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.{% endset %}
+    {% include "demo/extras/_items.twig" with { mode: 'header', exampleHandle: 'form-field-type' } %}
 
     {# Make sure the test Craft entry exists #}
     {% if entry %}
+        <section class="freeform-submissions-panel freeform-example-demo-panel" aria-labelledby="live-example-title">
+            <div class="freeform-submissions-toolbar"><h3 id="live-example-title">Try the example</h3></div>
+            <div class="freeform-example-demo-body">
 
         <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>Craft Entry:</p>
@@ -35,28 +37,27 @@
                     }
                 }) }}
             {% else %}
-                <p class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                    You currently do not have a form assigned to this Craft Entry.
-                </p>
+                {% set setupNoticeMessage %}Assign a form to this Craft entry to run the example.{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
             {% endif %}
         {% else %}
-            <p class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                You currently do not have a Freeform Form field type with the handle of <code>freeformForm</code> added to this Craft Section.
-            </p>
+            {% set setupNoticeMessage %}Add a Freeform Form field with the handle <code>freeformForm</code> to this Craft section.{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
         {% endif %}
+
+            </div>
+        </section>
 
     {% else %}
 
-        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            <p>You must correctly load an existing Craft Entry with a slug of <code>freeform-test</code> for this part of the demo to work.</p>
-        </div>
+        {% set setupNoticeMessage %}<p>Load an existing Craft entry with a slug of <code>freeform-test</code> to run this example.</p>{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
 
     {% endif %}
 
     {# Instructions to get this page working correctly #}
-    <div class="extras-instructions">
-        <h4>This page will not display correctly until...</h4>
-        <p>In order to view this page live, you'll need to make some adjustments to this template or on your test from:</p>
+    {% embed "demo/extras/_setup.twig" %}
+        {% block instructions %}
         <ol>
             <li>
                 Make sure your test form includes the following Freeform fields at minimum, or adjust the overrides inside this template:
@@ -72,6 +73,9 @@
                 </ul>
             </li>
         </ol>
-    </div>
+        {% endblock %}
+    {% endembed %}
+    <p class="freeform-example-template-note">Template: <code>extras/form-field-type.twig</code></p>
+    </article>
 
 {% endblock %}

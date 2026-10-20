@@ -12,6 +12,14 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', [
+    'Search forms' => 'Formulare durchsuchen',
+    'Clear search' => 'Suche löschen',
+    'No forms match your search.' => 'Keine Formulare entsprechen Ihrer Suche.',
+    'Form Icon' => 'Formularsymbol',
+    'Choose an icon for this form in the control panel.' => 'Wählen Sie ein Symbol für dieses Formular im Kontrollpanel.',
+    'Choose a valid form icon.' => 'Wählen Sie ein gültiges Formularsymbol.',
+    'Choose' => 'Auswählen',
+    'Change' => 'Ändern',
     'Delete field?' => 'Feld löschen?',
     'Delete page?' => 'Seite löschen?',
     'Delete favorite field?' => 'Favoritenfeld löschen?',

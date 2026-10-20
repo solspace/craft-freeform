@@ -1,5 +1,41 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added **Customize Appearance** and **Show Pen Cursor** settings for Signature fields, with transparent background and border options. New fields use template defaults, while existing fields retain their configured appearance.
+- Added live search to the Forms dashboard across form names, handles, and descriptions in Cards and List views, including archived forms.
+- Added an optional **Form Icon** setting on Craft 5, with matching icons for all 12 form starting points. Icons appear in form cards and the Forms list in each form’s color.
+- Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
+
+### Changed
+- Improved Forms dashboard toolbar spacing and mobile layout.
+- Updated Signature pads and builder previews with matching styles, a pen cursor, and responsive sizing capped at 125% of the configured width by default. Pads shrink to fit smaller screens while preserving drawing alignment and saved image dimensions. Custom templates can opt in and adjust the growth limit. Flexbox and Grid templates are unchanged.
+- Dark formatting templates now display default Signature pads with light ink on a dark background. Custom display colors take precedence.
+- Newly drawn signatures now save as black ink on a transparent background, including fields with custom or legacy display colors. JPG downloads use a white background. Existing saved signatures keep their original colors and backgrounds.
+- Added compact Signature previews to submission lists and improved previews and PNG/JPG downloads on submission detail pages. Download filenames now use `signature-{formId}-{submissionId}`.
+- Refreshed demo templates with improved navigation, searchable Cards and List views, clearer form previews, and redesigned submission and example pages.
+- Improved **Form groups** with inline renaming, keyboard reordering, and menus for moving forms. Removing a group requires confirmation and moves its forms to **Unassigned**, with clearer handling of unsaved changes.
+- Table field radio options now display horizontally and wrap when needed in bundled formatting templates.
+- Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
+
+### Fixed
+- Fixed Signature initialization on pages with multiple forms and clearing and restoring signatures after resets, including resets during an active stroke.
+- Fixed React/Vue Signature validation accepting blank taps, retaining drawings after value resets, and preventing invalid preset values from being cleared.
+- Fixed Signature styles leaking between forms that use different formatting templates.
+- Fixed transparent Signature background and border colors appearing as black in the form builder.
+- Fixed form-builder fields becoming stuck in a dimmed dragging state after rerenders or interrupted drags.
+- Fixed Signature fields failing to render on PHP 8.5, including in AJAX submission responses.
+- Fixed choice-control styling across formatting templates, including Table field alignment, wrapped checkbox labels, and borders around daisyUI Rating stars.
+- Fixed international phone country selectors appearing misaligned or oversized, including in scaled previews, and improved their dark-mode colors.
+- Fixed date and time picker theming in dark formatting templates and the Preview background for the Conversational template.
+- Fixed duplicate Google Tag Manager container loading and improved tracking for dynamically inserted forms.
+
+### Security
+- Hardened Signature previews by validating inline PNG/JPEG images and escaping image markup.
+- Restricted Signature email attachments to validated image data, preventing submitted values from being treated as file paths or URLs.
+- Removed submission tokens from the Google Tag Manager data layer. Submission IDs and customization hooks remain available.
+
 ## 5.17.2 - 2026-10-18
 
 ### Added

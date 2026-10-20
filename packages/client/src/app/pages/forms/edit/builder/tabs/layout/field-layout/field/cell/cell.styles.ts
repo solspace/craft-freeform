@@ -1,5 +1,6 @@
 import { CardCell } from "@ff-client/styles/field-cells/cards";
 import { RatingCell } from "@ff-client/styles/field-cells/rating";
+import { SignatureCell } from "@ff-client/styles/field-cells/signature";
 import { SquareCell } from "@ff-client/styles/field-cells/square";
 import { StripeCell } from "@ff-client/styles/field-cells/stripe";
 import { TableCell } from "@ff-client/styles/field-cells/table";
@@ -134,7 +135,8 @@ export const FieldCellWrapper = styled.div`
     input,
     textarea,
     div.select,
-    select {
+    select,
+    .ff-signature-preview__pad {
       border-color: ${colors.error} !important;
     }
 
@@ -330,6 +332,7 @@ export const FieldCellWrapper = styled.div`
   ${SquareCell}
   ${CardCell}
   ${RatingCell}
+  ${SignatureCell}
   ${TableCell}
 `;
 

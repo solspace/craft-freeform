@@ -2,10 +2,11 @@
 
 {% import "freeform/_templates/formatting/basic-light/_row.twig" as rowMacro %}
 
+{# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
-        form: { class: "freeform-form", "data-freeform-basic-light": true },
+        form: { class: "freeform-form", "data-freeform-basic-light": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "basic-light", "data-freeform-signature-max-scale": 1.25 },
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success", role: "status" },
         errors: { class: "freeform-form-errors", role: "alert" },
@@ -39,7 +40,7 @@
         },
         "@signature": {
             attributes: {
-                input: { "-class": "freeform-input" },
+                input: { "-class": "freeform-input", "+class": "freeform-signature-clear" },
             },
         },
     },

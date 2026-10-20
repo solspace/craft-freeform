@@ -1,0 +1,9 @@
+<section class="freeform-submissions-panel freeform-example-setup" aria-labelledby="setup-title">
+    <div class="freeform-submissions-toolbar">
+        <h3 id="setup-title">Setup guide</h3>
+        {% if setupSummary|default('') %}<span class="freeform-example-step-count">{{ setupSummary }}</span>{% endif %}
+    </div>
+    <div class="freeform-example-setup-body freeform-example-prose">
+        {% block instructions %}{% endblock %}
+    </div>
+</section>

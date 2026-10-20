@@ -1,0 +1,104 @@
+    {% macro pageTemplateIcon(template, assetBaseUrl) %}
+        <span class="freeform-template-icon" aria-hidden="true">
+            {% if template == 'default' %}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5m-10 6 2 2 4-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            {% elseif template == 'grid' %}
+                <svg viewBox="0 0 24 24" fill="currentColor" focusable="false">
+                    {% for x in [3, 10, 17] %}
+                        {% for y in [3, 10, 17] %}
+                            <rect x="{{ x }}" y="{{ y }}" width="4" height="4" rx="1" />
+                        {% endfor %}
+                    {% endfor %}
+                </svg>
+            {% elseif template == 'flexbox' %}
+                <svg viewBox="0 0 24 24" focusable="false">
+                    <rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" />
+                    <rect x="5" y="7" width="3" height="10" rx="1" fill="currentColor" />
+                    <rect x="10" y="7" width="5" height="10" rx="1" fill="currentColor" />
+                    <rect x="17" y="7" width="2" height="10" rx="1" fill="currentColor" />
+                </svg>
+            {% else %}
+                {% set family = template|split('-')|first %}
+                {% set icon = family in ['bootstrap', 'daisyui', 'tailwind', 'foundation'] ? family : 'freeform' %}
+                <img src="{{ assetBaseUrl }}/images/formatting-templates/{{ icon }}.svg" width="16" height="16" alt="">
+            {% endif %}
+        </span>
+    {% endmacro %}
+
+
+
+    {% macro pageTemplateItem(template, form, demoBaseUrl, selectedTemplate, editSegment, editTokenSegment, assetBaseUrl) %}
+        {% if template == "divider" %}
+            <hr />
+        {% else %}
+            <a class="freeform-nav-template-option{% if selectedTemplate == template %} active{% endif %}"{% if selectedTemplate == template %} aria-current="page"{% endif %} href="{{ demoBaseUrl }}/forms/{{ template }}{% if form %}/{{ form }}{% endif %}{% if craft.app.request.segment(editSegment) == "edit" %}/edit/{{ craft.app.request.segment(editTokenSegment) }}{% endif %}">{{ _self.pageTemplateIcon(template, assetBaseUrl) }}<span>{{ template == 'default' ? 'Form default' : template|title|replace({'-':' ', 'Daisyui':'daisyUI'}) }}</span></a>
+        {% endif %}
+    {% endmacro %}
+
+{% set templateOptions = ["default", "divider", "basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "daisyui-5-light", "daisyui-5-dark", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"] %}
+
+<header class="freeform-nav" data-demo-navigation{% if demoArea == 'forms' %} data-demo-preview="{{ pageTemplate|e('html_attr') }}" data-demo-forms-url="{{ (demoBaseUrl ~ '/forms')|e('html_attr') }}"{% if demoRequestedArea|default('forms') == 'forms' and not craft.app.request.segment(baseUrlSegments + 2) %} data-demo-preview-implicit{% endif %}{% endif %}>
+    <div class="freeform-nav-main">
+        <a href="{{ demoBaseUrl }}/forms" class="freeform-logo">
+            <img src="{{ assetBaseUrl }}/images/freeform.svg" alt=""><h1>Freeform Demo</h1>
+        </a>
+        <button class="freeform-menu-toggle" type="button" data-demo-menu-toggle aria-expanded="false" aria-controls="freeform-primary-links">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path class="freeform-menu-lines" d="M3 5h14M3 10h14M3 15h14"/><path class="freeform-menu-close" d="m4 4 12 12M4 16 16 4"/></svg>
+            Menu
+        </button>
+        <nav class="freeform-primary-links" id="freeform-primary-links" aria-label="Demo sections">
+            {% for area, label in { forms: 'Forms', extras: 'Examples' } %}
+                <a href="{{ demoBaseUrl }}/{{ area }}"{% if demoArea == area or (area == 'forms' and demoArea == 'submissions') %} aria-current="page"{% endif %}>{{ label }}</a>
+            {% endfor %}
+        </nav>
+    </div>
+
+    <div class="freeform-nav-context">
+        <div class="freeform-nav-context-inner">
+            {% if demoArea == 'extras' %}
+                <div class="freeform-nav-control">
+                    <span id="freeform-example-label" class="freeform-nav-control-label">Example</span>
+                    <div class="freeform-nav-dropdown" data-dropdown-label="Examples">
+                        <button class="freeform-nav-button" type="button" aria-describedby="freeform-example-label">Choose an example…</button>
+                        <div class="freeform-nav-dropdown-content extras-dropdown">
+                            {% include "demo/extras/_items.twig" with { mode: 'navigation' } %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="freeform-nav-control">
+                    <span id="freeform-form-label" class="freeform-nav-control-label">Form</span>
+                    <div class="freeform-nav-dropdown" data-dropdown-label="Forms">
+                        <button class="freeform-nav-button" type="button" aria-describedby="freeform-form-label">
+                            <span class="freeform-form-circle"{% if form.color is defined %} style="background-color: {{ form.color|e('html_attr') }}"{% else %} hidden{% endif %}></span>{{ form.name is defined ? form.name : 'Choose a form…' }}
+                        </button>
+                        <div class="freeform-nav-dropdown-content">
+                            {% for candidate in forms %}
+                                {% set formUrl = demoArea == 'submissions' ? demoBaseUrl ~ '/submissions/' ~ candidate.handle : demoBaseUrl ~ '/forms/' ~ (pageTemplate ?: 'basic-light') ~ '/' ~ candidate.handle %}
+                                <a{% if formHandle == candidate.handle %} class="active" aria-current="page"{% endif %} href="{{ formUrl }}"><span class="freeform-form-circle" style="background-color: {{ candidate.color|e('html_attr') }}"></span>{{ candidate.name }}{% if demoArea == 'submissions' %} ({{ freeform.submissions({formId: candidate.id}).count }}){% endif %}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {% if demoArea == 'forms' or demoArea is empty %}
+                    <div class="freeform-nav-control">
+                        <span id="freeform-template-label" class="freeform-nav-control-label">Template</span>
+                        <div class="freeform-nav-dropdown" data-dropdown-label="Formatting templates">
+                            <button class="freeform-nav-button" type="button" aria-describedby="freeform-template-label">
+                                {{ _self.pageTemplateIcon(pageTemplate, assetBaseUrl) }}{{ pageTemplate == 'default' ? 'Form default' : pageTemplate|title|replace({'-':' ', 'Daisyui':'daisyUI'}) }}
+                            </button>
+                            <div class="freeform-nav-dropdown-content">
+                                {% for candidate in templateOptions %}
+                                    {{ _self.pageTemplateItem(candidate, formHandle, demoBaseUrl, pageTemplate, baseUrlSegments + 4, baseUrlSegments + 5, assetBaseUrl) }}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if pageTemplate == 'default' and not formHandle and (demoArea == 'forms' or demoArea is empty) %}<span class="freeform-nav-context-note">Uses the template assigned in the builder.</span>{% endif %}
+                {% if spamMode|default(false) %}<span class="freeform-spam-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M5 17V3m0 1c4-3 6 3 11 0v8c-5 3-7-3-11 0"/></svg>Spam folder</span>{% endif %}
+            {% endif %}
+        </div>
+    </div>
+</header>

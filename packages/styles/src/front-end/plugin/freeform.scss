@@ -1,5 +1,7 @@
 @use "../../../../frontend/core/src/select/searchable-select.css";
 @use "../fields/range";
+@use "../fields/datepicker";
+@use "../fields/phone";
 @use "../fields/character-count";
 @use "../fields/password-toggle";
 @use "../fields/cards";
@@ -8,6 +10,11 @@
 @use "../fields/processing-overlay";
 @use "../fields/rating";
 @use "../components/visual";
+
+// A visual writing surface; the signature bitmap remains transparent.
+canvas[data-signature-customize-appearance="false"] {
+  background-color: #fff;
+}
 
 [data-freeform-controls] {
   display: flex;

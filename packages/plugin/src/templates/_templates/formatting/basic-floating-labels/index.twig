@@ -2,10 +2,11 @@
 
 {% import "freeform/_templates/formatting/basic-floating-labels/_row.twig" as rowMacro %}
 
+{# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
-        form: { class: "freeform-form", "data-freeform-basic-floating-labels": true },
+        form: { class: "freeform-form", "data-freeform-basic-floating-labels": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "basic-floating-labels", "data-freeform-signature-max-scale": 1.25 },
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success", role: "status" },
         errors: { class: "freeform-form-errors", role: "alert" },
@@ -39,10 +40,10 @@
         },
         "@signature": {
             attributes: {
-                input: { "-class": "freeform-input" },
+                input: { "-class": "freeform-input", "+class": "freeform-signature-clear" },
             },
         },
-        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @file, @dropdown, @multiple-select, @number, @password, @signature": {
+        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @file, @dropdown, @multiple-select, @number, @password": {
             attributes: {
                 container: { "+class": "floating" },
             },

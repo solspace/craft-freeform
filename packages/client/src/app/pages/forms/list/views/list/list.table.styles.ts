@@ -1,3 +1,4 @@
+import { TruncateBox } from "@components/layout/blocks/truncate";
 import { scrollBar } from "@ff-client/styles/mixins";
 import styled from "styled-components";
 
@@ -16,25 +17,30 @@ export const Table = styled.table`
   border-collapse: collapse;
   width: 100%;
 
+  .form-icon-column { width: 24px; padding-inline-end: 8px; text-align: center; vertical-align: middle; }
+
+  tbody td ${TruncateBox} { vertical-align: middle; }
+  .form-icon-column > span { display: grid; margin-inline: auto; }
+
   /* Make the Description column shorter on medium & small screens */
-  tbody td:nth-child(3) span {
+  tbody td.form-description span {
     max-width: 400px !important;
   }
 
   @media (max-width: 1280px) {
-    tbody td:nth-child(3) span {
+    tbody td.form-description span {
       max-width: 320px !important;
     }
   }
 
   @media (max-width: 1023px) {
-    tbody td:nth-child(3) span {
+    tbody td.form-description span {
       max-width: 220px !important;
     }
   }
 
   @media (max-width: 699px) {
-    tbody td:nth-child(3) span {
+    tbody td.form-description span {
       max-width: 120px !important;
     }
   }

@@ -9,6 +9,7 @@
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 
 ### Changed
+- Improved Forms dashboard toolbar spacing and mobile layout.
 - Updated Signature pads and builder previews with matching styles, a pen cursor, and responsive sizing capped at 125% of the configured width by default. Pads shrink to fit smaller screens while preserving drawing alignment and saved image dimensions. Custom templates can opt in and adjust the growth limit. Flexbox and Grid templates are unchanged.
 - Dark formatting templates now display default Signature pads with light ink on a dark background. Custom display colors take precedence.
 - Newly drawn signatures now save as black ink on a transparent background, including fields with custom or legacy display colors. JPG downloads use a white background. Existing saved signatures keep their original colors and backgrounds.

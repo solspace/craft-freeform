@@ -1,21 +1,36 @@
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
+export const HeaderContainer = styled.div`
+  container-type: inline-size;
+`;
+
 export const Header = styled.header`
+  --forms-control-height: var(--ui-control-height, 34px);
+
   display: grid;
-  grid-template-areas: 'title sites views button';
-  grid-template-columns: min-content 1fr max-content auto;
+  grid-template-areas: 'title views button';
+  grid-template-columns: min-content minmax(0, 1fr) auto;
   justify-content: space-between;
   align-items: center;
-  gap: ${spacings.sm};
+  gap: ${spacings.md} ${spacings.sm};
+  margin-bottom: 12px;
 
-  @media (max-width: 1100px) {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--forms-control-height);
+  }
+
+  @container (max-width: 680px) {
     grid-template-areas: 'title button' 'views views';
     grid-template-columns: 1fr auto;
   }
-  @media (max-width: 600px) {
-    grid-template-areas: 'title' 'views' 'button';
-    grid-template-columns: minmax(0, 1fr);
+  @container (max-width: 600px) {
+    --forms-control-height: 44px;
+
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 `;
 
@@ -34,6 +49,7 @@ export const ButtonGroup = styled.div`
   grid-area: button;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: ${spacings.sm};
 `;
 
@@ -42,9 +58,11 @@ export const Button = styled.button`
 `;
 
 export const ViewButtons = styled.section`
+  display: inline-flex;
   flex-shrink: 0;
 
   .btn {
+    min-width: var(--forms-control-height);
     padding-inline: 10px;
   }
 
@@ -59,7 +77,12 @@ export const ViewControls = styled.div`
   flex-wrap: wrap;
   min-width: 0;
   align-items: center;
+  justify-content: flex-end;
   gap: ${spacings.sm};
+
+  @container (max-width: 680px) {
+    justify-content: flex-start;
+  }
 `;
 
 export const SearchWrapper = styled.div`
@@ -70,8 +93,8 @@ export const SearchWrapper = styled.div`
 
   input[type='search'] {
     box-sizing: border-box;
-    height: var(--ui-control-height, 34px);
-    min-height: var(--ui-control-height, 34px);
+    height: var(--forms-control-height);
+    min-height: var(--forms-control-height);
     border-radius: var(--radius-lg, 5px);
   }
 
@@ -83,13 +106,23 @@ export const SearchWrapper = styled.div`
     opacity: 0.8;
   }
 
+  .texticon-icon,
+  .clear-btn {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
   input[type='search']::-webkit-search-cancel-button {
     -webkit-appearance: none;
   }
 
-  @media (max-width: 600px) {
+  @container (max-width: 600px) {
     flex-basis: 100%;
     width: 100%;
     max-width: none;
+
+    input[type='search'] {
+      font-size: 16px;
+    }
   }
 `;

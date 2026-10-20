@@ -338,7 +338,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Space' => 'Leerstelle',
     'Minimum date' => 'Mindestdatum',
     'Maximum date' => 'Maximales Datum',
-    "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc." => "Sie können 'jetzt', 'heute', 'vor 5 Tagen', '2025-01-01 20:00:00' usw. verwenden.",
+    "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language." => "Geben Sie einen englischen Datumsausdruck wie 'now', 'today', '5 days ago' oder '2025-01-01 20:00:00' ein. Behalten Sie diese Werte unabhängig von der Sprache des Control Panels auf Englisch bei.",
     'Time Settings' => 'Uhrzeiteinstellungen',
     '24h clock' => '24-Stunden-Uhr',
     'Clock Separator' => 'Uhrzeiteinheit-Trennzeichen',

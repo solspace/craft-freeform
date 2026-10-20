@@ -217,8 +217,8 @@ class SubmissionLimitTest extends TestCase
         self::assertSame('2026-10-18', $end->format('Y-m-d'));
     }
 
-    #[TestWith(['2026-03-08T12:00:00-05:00', 23])]
-    #[TestWith(['2026-11-01T12:00:00-06:00', 25])]
+    #[TestWith(['2025-03-09T12:00:00-05:00', 23])]
+    #[TestWith(['2025-11-02T12:00:00-06:00', 25])]
     public function testDailyPeriodsRespectDaylightSaving(string $now, int $hours): void
     {
         [$start, $end] = SubmissionLimit::getPeriodRange('day', new \DateTimeImmutable($now), new \DateTimeZone('America/Winnipeg'));

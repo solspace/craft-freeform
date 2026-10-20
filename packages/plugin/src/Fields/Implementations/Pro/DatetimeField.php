@@ -64,7 +64,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[DefaultValue('props.date.initialValue')]
     #[Input\Text(
         label: 'Initial value',
-        instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
+        instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
     protected string $initialValue = '';
 
@@ -183,7 +183,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[DefaultValue('props.date.minDate')]
     #[Input\Text(
         label: 'Minimum date',
-        instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
+        instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
     protected ?string $minDate = null;
 
@@ -194,7 +194,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[DefaultValue('props.date.maxDate')]
     #[Input\Text(
         label: 'Maximum date',
-        instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
+        instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
     protected ?string $maxDate = null;
 
@@ -643,7 +643,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             $attributes->append('class', 'form-datepicker');
         }
 
-        if ($this->isUseNativeTypes()) {
+        if ($this->isUseNativeTypes() && $hasDate) {
             $attributes
                 ->set('min', $this->getGeneratedMinDate($this->getNativeFormat()))
                 ->set('max', $this->getGeneratedMaxDate($this->getNativeFormat()))

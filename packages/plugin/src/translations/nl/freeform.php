@@ -338,7 +338,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Space' => 'Spatie',
     'Minimum date' => 'Minimumdatum',
     'Maximum date' => 'Maximumdatum',
-    "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc." => "Je kunt 'nu', 'vandaag', '5 dagen geleden', '2025-01-01 20:00:00', enz. gebruiken.",
+    "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language." => "Voer een Engelse datumexpressie in, zoals 'now', 'today', '5 days ago' of '2025-01-01 20:00:00'. Houd deze waarden in het Engels, ongeacht de taal van het configuratiescherm.",
     'Time Settings' => 'Tijdinstellingen',
     '24h clock' => '24-uurs klok',
     'Clock Separator' => 'Klokscheidingsteken',

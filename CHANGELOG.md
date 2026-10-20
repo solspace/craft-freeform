@@ -21,6 +21,7 @@
 - Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
 
 ### Fixed
+- Fixed Date & Time field instructions suggesting translated date expressions that cannot be parsed. Examples remain in English in every control panel language. Native time-only inputs no longer receive stale date constraints.
 - Fixed Signature initialization on pages with multiple forms and clearing and restoring signatures after resets, including resets during an active stroke.
 - Fixed React/Vue Signature validation accepting blank taps, retaining drawings after value resets, and preventing invalid preset values from being cleared.
 - Fixed Signature styles leaking between forms that use different formatting templates.

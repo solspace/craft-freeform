@@ -17,7 +17,16 @@ class ClientAssetsServiceTest extends TestCase
         self::assertArrayHasKey('src/index.tsx', $manifest);
         $entry = $manifest['src/index.tsx'];
         $view = $this->getMockBuilder(View::class)->disableOriginalConstructor()->onlyMethods(['registerCssFile', 'registerJsFile', 'registerHtml'])->getMock();
-        $view->expects(self::exactly(\count($entry['css'] ?? [])))->method('registerCssFile');
+        $registeredCss = [];
+        $view->method('registerCssFile')->willReturnCallback(static function (string $url, array $options, string $key) use (&$registeredCss, $resources): void {
+            self::assertStringStartsWith('https://example.test/assets/js/client/', $url);
+            $file = substr($url, \strlen('https://example.test/assets/'));
+            self::assertFileExists($resources.'/'.$file);
+            self::assertSame([], $options);
+            self::assertSame('ff-client-css:'.substr($file, \strlen('js/client/')), $key);
+            self::assertNotContains($url, $registeredCss);
+            $registeredCss[] = $url;
+        });
         $view->expects(self::once())->method('registerJsFile')->with(
             'https://example.test/assets/js/client/'.$entry['file'],
             ['type' => 'module', 'position' => View::POS_HEAD, 'appendTimestamp' => false],
@@ -29,6 +38,9 @@ class ClientAssetsServiceTest extends TestCase
 
         try {
             (new ClientAssetsService())->registerAssets($view, 'https://example.test/assets', $resources);
+            foreach ($entry['css'] ?? [] as $file) {
+                self::assertContains('https://example.test/assets/js/client/'.$file, $registeredCss);
+            }
         } finally {
             if (null === $previous) {
                 unset($_SERVER['FF_CLIENT_DEV_ENABLED']);

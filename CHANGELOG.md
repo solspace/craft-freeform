@@ -11,6 +11,7 @@
 - Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
 
 ### Changed
+- Replaced **Usage in Elements** with **Usage & Stats** in the form builder, with selectable submission and spam charts, configuration summaries, and copyable support diagnostics. Element usage remains available on Craft 5.
 - Improved Forms dashboard toolbar spacing and mobile layout.
 - Improved **Form groups** with inline renaming, keyboard reordering, and menus for moving forms. Removing a group requires confirmation and moves its forms to **Unassigned**, with clearer handling of unsaved changes.
 - Updated searchable multi-select field previews in the **form builder layout** to show selection tags and a search control.

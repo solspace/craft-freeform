@@ -25,6 +25,8 @@ export const QKForms = {
   settings: () => [...QKForms.base, "settings"] as const,
   previewTemplates: (id: number, site?: string) =>
     [...QKForms.single(id), "preview-templates", site] as const,
+  stats: (id: number, days: number = 90) =>
+    [...QKForms.single(id), "stats", days] as const,
   usage: (id: number, siteId: number) =>
     [...QKForms.base, id, "usage", siteId] as const,
 };
@@ -128,15 +130,18 @@ type FormUsage = Array<{
   url: string;
 }>;
 
-export const useQueryFormUsage = (): UseQueryResult<FormUsage, AxiosError> => {
+export const useQueryFormUsage = (
+  enabled = true,
+): UseQueryResult<FormUsage, AxiosError> => {
   const { formId } = useParams();
   const { current } = useSiteContext();
 
   return useQuery({
-    queryKey: QKForms.usage(Number(formId), current.id),
+    queryKey: QKForms.usage(Number(formId), current?.id ?? 0),
+    enabled: enabled && !!Number(formId) && !!current?.id,
     queryFn: () =>
       axios
-        .get(`/api/forms/${formId}/elements?site=${current.id}`)
+        .get(`/api/forms/${formId}/elements?site=${current?.id}`)
         .then((res) => res.data),
   });
 };
@@ -154,3 +159,28 @@ export const useQueryFormColors = (): FormColors => {
 
   return formColors;
 };
+
+export type FormStatsDays = 7 | 30 | 90 | 365;
+
+export type FormStats = {
+  days: FormStatsDays;
+  daily: Array<{ date: string; submissions: number; spam: number }>;
+  totals: { submissions: number; spam: number };
+  lastSubmissionAt: string | null;
+  spamStored: boolean;
+  generatedAt: string;
+  phpVersion: string;
+};
+
+export const useQueryFormStats = (id?: number, days: FormStatsDays = 90) =>
+  useQuery<FormStats, AxiosError>({
+    queryKey: QKForms.stats(id ?? 0, days),
+    queryFn: () =>
+      axios
+        .get<FormStats>(`/api/forms/${id}/stats`, { params: { days } })
+        .then((res) => res.data),
+    placeholderData: (previous, query) =>
+      query?.queryKey[1] === id ? previous : undefined,
+    enabled: !!id,
+    staleTime: 0,
+  });

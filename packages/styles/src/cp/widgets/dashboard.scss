@@ -1,3 +1,5 @@
+@use "../../shared/chart.css";
+
 .freeform-dashboard-chart {
   --freeform-widget-height: 400px;
   --freeform-legend-height: 100px;
@@ -54,52 +56,6 @@
     &:empty { display: none; }
   }
 
-  .freeform-chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-    min-height: 28px;
-    margin: 0;
-    padding: 4px 6px;
-    border: 0;
-    border-radius: 4px;
-    background: transparent;
-    color: var(--text-color, #3f4d5a);
-    font: inherit;
-    font-size: 12px;
-    line-height: 20px;
-    text-align: start;
-    cursor: pointer;
-
-    &:hover { background: var(--gray-100, #f3f5f7); }
-    &:focus-visible { outline: 2px solid var(--primary-color, #0b69a3); }
-    &[aria-pressed="false"] {
-      .freeform-chart-label { text-decoration: line-through; }
-      .freeform-chart-swatch { opacity: 0.35; }
-    }
-  }
-
-  .freeform-chart-swatch {
-    flex: 0 0 8px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .freeform-chart-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .freeform-chart-count {
-    flex-shrink: 0;
-    margin-inline-start: auto;
-    font-variant-numeric: tabular-nums;
-    color: var(--light-text-color, #596673);
-  }
-
   .freeform-chart-empty {
     flex: 1;
     padding: 40px 12px;
@@ -107,68 +63,7 @@
     color: var(--light-text-color, #596673);
   }
 
-  .freeform-chart-tooltip {
-    position: absolute;
-    z-index: 2;
-    box-sizing: border-box;
-    width: max-content;
-    min-width: min(180px, calc(100% - 16px));
-    max-width: min(320px, calc(100% - 16px));
-    padding: 12px 14px;
-    border: 1px solid var(--hairline-color, #d5dce5);
-    border-radius: 8px;
-    background: var(--white, #fff);
-    box-shadow: 0 4px 16px rgba(20, 30, 45, 0.14);
-    color: var(--text-color, #3f4d5a);
-    font-size: 12px;
-    line-height: 18px;
-    pointer-events: none;
-    overflow-wrap: anywhere;
 
-    &[hidden] { display: none; }
-  }
-
-  .freeform-chart-tooltip-title {
-    margin-bottom: 10px;
-    padding-bottom: 9px;
-    border-bottom: 1px solid var(--hairline-color, #e5e9ef);
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 19px;
-  }
-
-  .freeform-chart-tooltip-body {
-    display: grid;
-    gap: 8px;
-  }
-
-  .freeform-chart-tooltip-row {
-    display: grid;
-    grid-template-columns: 8px minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 9px;
-
-    strong {
-      margin-inline-start: 12px;
-      font-size: 13px;
-      font-variant-numeric: tabular-nums;
-    }
-  }
-
-  .freeform-chart-tooltip-swatch {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .freeform-chart-tooltip-label { color: var(--text-color, #3f4d5a); }
-
-  .freeform-chart-tooltip-footer {
-    margin-top: 10px;
-    padding-top: 9px;
-    border-top: 1px solid var(--hairline-color, #e5e9ef);
-    color: var(--light-text-color, #596673);
-  }
 }
 
 .freeform-recent {

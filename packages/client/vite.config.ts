@@ -48,6 +48,11 @@ export default defineConfig(({ mode, command }) => {
         ),
         "@ff-icons": path.resolve(__dirname, "./src/assets/icons"),
         "@ff-client": path.resolve(__dirname, "./src"),
+        "@ff-widgets": path.resolve(__dirname, "../scripts/src/lib/cp/widgets"),
+        "@ff-chart-styles": path.resolve(
+          __dirname,
+          "../styles/src/shared/chart.css",
+        ),
       },
     },
     build: {

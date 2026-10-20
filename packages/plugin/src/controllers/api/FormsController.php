@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormPreviewService;
+use Solspace\Freeform\Services\FormStatsService;
 use Solspace\Freeform\Services\QueuedFormGenerationService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
@@ -57,6 +58,21 @@ class FormsController extends BaseApiController
         $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         return $this->asSerializedJson(\Craft::$container->get(BuilderDataProvider::class)->getData($form));
+    }
+
+    public function actionStats(int $id): Response
+    {
+        $this->requireCpRequest();
+        $this->requireFormPermission($id);
+        if (!$this->getFormsService()->getFormById($id)) {
+            throw new NotFoundHttpException("Form with ID {$id} not found");
+        }
+
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
+
+        $days = (int) $this->request->getQueryParam('days', 90);
+
+        return $this->asJson(\Craft::$container->get(FormStatsService::class)->getStats($id, $days));
     }
 
     public function actionCreationAvailability(): Response

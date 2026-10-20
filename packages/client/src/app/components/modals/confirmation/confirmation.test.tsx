@@ -103,7 +103,7 @@ describe("shared builder confirmations", () => {
       destructive: false,
     });
     expect(confirm.textContent).toBe("Continue");
-    expect(confirm.classList.contains("submit")).toBe(false);
+    expect(confirm.classList.contains("submit")).toBe(true);
     act(() => confirm.click());
     expect(onConfirm).toHaveBeenCalledOnce();
   });

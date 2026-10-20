@@ -19,16 +19,7 @@ export const Message = styled.div`
   overflow-wrap: anywhere;
   white-space: pre-line;
 `;
-export const ConfirmButton = styled.button.attrs<{ $destructive: boolean }>(
-  ({ $destructive }) => ({
-    type: "button",
-    className: $destructive ? "btn submit confirm" : "btn confirm",
-  }),
-)`
-  ${({ $destructive }) =>
-    !$destructive &&
-    `
-    && { background: ${colors.link}; color: #fff; }
-    &&:hover { background: #194ec1; }
-  `}
-`;
+export const ConfirmButton = styled.button.attrs<{ $destructive: boolean }>({
+  type: "button",
+  className: "btn submit confirm",
+})``;

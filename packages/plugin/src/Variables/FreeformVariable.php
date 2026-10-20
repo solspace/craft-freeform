@@ -13,7 +13,6 @@
 
 namespace Solspace\Freeform\Variables;
 
-use craft\helpers\Template;
 use Solspace\Freeform\Bundles\ABTesting\ABTestingBundle;
 use Solspace\Freeform\Bundles\ABTesting\Providers\ABTestVariantProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
@@ -33,7 +32,6 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
-use Solspace\Freeform\Services\FormIconService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
@@ -46,13 +44,9 @@ class FreeformVariable
 {
     public array $siteTemplatesDirectories = [];
 
-    private ?FormIconService $formIcons = null;
-
     public function formIcon(?string $name): ?Markup
     {
-        $svg = ($this->formIcons ??= new FormIconService())->getSvg($name);
-
-        return $svg ? Template::raw($svg) : null;
+        return $this->plugin()->formIcons->getMarkup($name);
     }
 
     public function form(int|string $handleOrId, mixed $properties = null, ?string $uniqueId = null): ?Form

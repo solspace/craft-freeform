@@ -36,7 +36,7 @@
             {% for form in forms %}
                 {% set submissionCount = freeform.submissions({formId: form.id}).count %}
                 {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
-                {% set formIcon = freeform.formIcon(form.settings.general.icon) %}
+                {% set formIcon = form.iconSvg %}
                 <article class="freeform-browser-item freeform-form-card" style="--form-accent: {{ form.color|default('#3976db')|e('html_attr') }}" data-browser-item data-form-search="{{ (form.name ~ ' ' ~ form.description)|e('html_attr') }}">
                     <span class="freeform-browser-icon{{ formIcon ? ' freeform-browser-icon-custom' }}" aria-hidden="true">
                         {% if formIcon %}

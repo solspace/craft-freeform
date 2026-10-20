@@ -3,11 +3,20 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\Cp;
+use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Property\Validators\IconName;
+use Twig\Markup;
 
 class FormIconService
 {
     private array $icons = [];
+
+    public function getMarkup(?string $name): ?Markup
+    {
+        $svg = $this->getSvg($name);
+
+        return null !== $svg ? Template::raw($svg) : null;
+    }
 
     public function getSvg(?string $name): ?string
     {

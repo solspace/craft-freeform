@@ -6,14 +6,25 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Services\FormIconService;
-use Solspace\Freeform\Variables\FreeformVariable;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
-use Twig\Markup;
 
-#[CoversClass(FreeformVariable::class)]
+#[CoversClass(FormIconService::class)]
 class CodepackFormBrowserTest extends TestCase
 {
+    private mixed $previousCraftApp;
+
+    protected function setUp(): void
+    {
+        $this->previousCraftApp = \Craft::$app;
+        \Craft::$app = (object) ['charset' => 'UTF-8'];
+    }
+
+    protected function tearDown(): void
+    {
+        \Craft::$app = $this->previousCraftApp;
+    }
+
     #[TestWith([true, 1])]
     #[TestWith([false, 0])]
     public function testSelectedIconsAndFallbacksRenderInTheSharedBrowser(bool $supported, int $expectedIcons): void
@@ -31,16 +42,7 @@ class CodepackFormBrowserTest extends TestCase
                 return 'envelope' === $name ? '<svg data-selected-icon="true" viewBox="0 0 24 24"><path d="M3 5h18v14H3z"/></svg>' : null;
             }
         };
-        $variable = new FreeformVariable();
-        (new \ReflectionProperty(FreeformVariable::class, 'formIcons'))->setValue($variable, $icons);
-        $freeform = new class($variable) {
-            public function __construct(private FreeformVariable $variable) {}
-
-            public function formIcon(?string $name): ?Markup
-            {
-                return $this->variable->formIcon($name);
-            }
-
+        $freeform = new class {
             public function submissions(array $criteria): object
             {
                 return (object) ['count' => 0];
@@ -54,7 +56,7 @@ class CodepackFormBrowserTest extends TestCase
                 'handle' => 'contact-'.$id,
                 'description' => '',
                 'color' => '#7352d6',
-                'settings' => ['general' => ['icon' => $icon]],
+                'iconSvg' => $icons->getMarkup($icon),
             ];
         }
         $template = file_get_contents(__DIR__.'/../../codepack/templates/_form-browser.twig');

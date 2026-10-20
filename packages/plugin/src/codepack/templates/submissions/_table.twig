@@ -1,7 +1,7 @@
 {% set canEdit = freeform.pro and not spamMode %}
 {% set fields = submissions|first %}
 {% set columnCount = 4 + (fields ? fields|length : 0) + (canEdit ? 1 : 0) %}
-{% set formIcon = freeform.formIcon(form.settings.general.icon) %}
+{% set formIcon = form.iconSvg %}
 
 <section class="freeform-form-browser freeform-submissions-page" data-submissions-browser aria-labelledby="submissions-title">
     <a class="freeform-submissions-back" href="{{ demoBaseUrl }}/forms">← All forms</a>

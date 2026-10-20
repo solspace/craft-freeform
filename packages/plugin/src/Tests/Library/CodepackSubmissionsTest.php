@@ -39,14 +39,9 @@ class CodepackSubmissionsTest extends TestCase
         return [
             'spamMode' => $spam,
             'demoBaseUrl' => '/freeform-demo',
-            'form' => ['name' => 'Contact <team>', 'handle' => 'contact', 'color' => '#7352d6', 'settings' => ['general' => ['icon' => '']]],
+            'form' => ['name' => 'Contact <team>', 'handle' => 'contact', 'color' => '#7352d6', 'iconSvg' => null],
             'freeform' => new class($pro) {
                 public function __construct(public bool $pro) {}
-
-                public function formIcon(?string $name): ?string
-                {
-                    return null;
-                }
             },
             'submissionCount' => 73,
             'spamCount' => 0,

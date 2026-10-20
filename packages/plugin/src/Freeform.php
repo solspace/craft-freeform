@@ -97,6 +97,7 @@ use Solspace\Freeform\Services\Form\TranslationsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormGenerationService;
 use Solspace\Freeform\Services\FormGroupsService;
+use Solspace\Freeform\Services\FormIconService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\Integrations\CrmService;
@@ -139,6 +140,7 @@ use yii\web\View;
  * @property CrmService                  $crm
  * @property FilesService                $files
  * @property FormsService                $forms
+ * @property FormIconService             $formIcons
  * @property FormGroupsService           $formGroups
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
@@ -675,6 +677,7 @@ class Freeform extends Plugin
                 'files' => FilesService::class,
                 'formLayouts' => LayoutsService::class,
                 'forms' => FormsService::class,
+                'formIcons' => FormIconService::class,
                 'formTypes' => TypesService::class,
                 'formGroups' => FormGroupsService::class,
                 'integrations' => IntegrationsService::class,

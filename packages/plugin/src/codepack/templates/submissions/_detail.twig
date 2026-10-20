@@ -1,5 +1,5 @@
 {% set folderUrl = demoBaseUrl ~ '/submissions/' ~ form.handle ~ (spamMode ? '/spam' : '') %}
-{% set formIcon = freeform.formIcon(form.settings.general.icon) %}
+{% set formIcon = form.iconSvg %}
 
 <article class="freeform-form-browser freeform-submission-detail" aria-labelledby="submission-title">
     <a class="freeform-submissions-back" href="{{ folderUrl }}">← Back to {{ spamMode ? 'spam' : 'submissions' }}</a>

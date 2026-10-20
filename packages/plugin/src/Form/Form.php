@@ -298,6 +298,16 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         return $this->getSettings()->getGeneral()->color;
     }
 
+    public function getIcon(): string
+    {
+        return $this->getSettings()->getGeneral()->icon;
+    }
+
+    public function getIconSvg(): ?Markup
+    {
+        return Freeform::getInstance()->formIcons->getMarkup($this->getIcon());
+    }
+
     public function getHash(): string
     {
         return $this->getProperties()->get(self::HASH_KEY, '');

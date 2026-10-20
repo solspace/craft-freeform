@@ -3,187 +3,162 @@
 {# fromName: {{ craft.app.projectConfig.get('email.fromName') }} #}
 {# includeAttachments: false #}
 
-{% extends 'freeform/_templates/email/layout/solspace' %}
-{% import 'freeform/_templates/email/layout/macros' as macros %}
+{% extends 'freeform/_templates/email/layout/digest' %}
 
-{% set iconUrl = 'https://api.solspace.com/assets/' %}
+{% set digestTitle = (daily ? 'Daily Digest' : 'Weekly Digest')|t('freeform') %}
+{% set totalSubmissions = 0 %}
+{% set totalSpam = 0 %}
+{% set criticalLevels = ['critical', 'error', 'alert', 'emergency'] %}
+{% set noticeColors = {
+    critical: {text: '#b42318', accent: '#d92d20'},
+    warning: {text: '#854a0e', accent: '#b66a06'},
+    info: {text: '#1d4ed8', accent: '#2563eb'},
+} %}
+{% for data in forms %}
+    {% set totalSubmissions = totalSubmissions + data.submissions %}
+    {% set totalSpam = totalSpam + data.spam %}
+{% endfor %}
 
 {% block content %}
+    {% if forms|length %}
+        <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="digest-soft digest-border" bgcolor="#f0f4fa" style="width: 100%; background-color: #f0f4fa; border: 1px solid #dce2ea; border-radius: 8px;">
+            <tr>
+                <td width="50%" valign="top" class="digest-stat" style="padding: 20px;">
+                    <p class="digest-text" style="margin: 0 0 4px; color: #1f2937; font-size: 30px; line-height: 36px; font-weight: bold;">{{ totalSubmissions|number_format }}</p>
+                    <p class="digest-muted" style="margin: 0; color: #526175; font-size: 14px; line-height: 22px;">{{ 'New submissions'|t('freeform') }}</p>
+                </td>
+                <td width="50%" valign="top" class="digest-stat digest-border" style="padding: 20px; border-left: 1px solid #dce2ea;">
+                    <p class="digest-text" style="margin: 0 0 4px; color: #1f2937; font-size: 30px; line-height: 36px; font-weight: bold;">{{ totalSpam|number_format }}</p>
+                    <p class="digest-muted" style="margin: 0; color: #526175; font-size: 14px; line-height: 22px;">{{ 'New spam'|t('freeform') }}</p>
+                </td>
+            </tr>
+        </table>
 
-    {{ macros.heading('{name} Digest' | t('freeform', { name: craft.freeform.name })) }}
-
-    {% if daily %}
-        {{ macros.headline(
-            'Daily Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
-            rangeStart|date("long")
-        ) }}
-    {% else %}
-        {{ macros.headline(
-            'Weekly Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
-            '{start} - {end}' | t('freeform', {
-                start: rangeStart|date("long"),
-                end: rangeEnd|date("long"),
-            })
-        ) }}
-    {% endif %}
-
-    {% if forms | length %}
-        <div style="margin-bottom: 40px;">
-            {{ macros.title('Form Performance' | t('freeform')) }}
-
-            <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
-                {{ macros.tableHeadings([
-                    { html: null },
-                    { html: "Form" | t('freeform') },
-                    { html: "New Submissions" | t('freeform'), align: 'center' },
-                    { html: "New Spam" | t('freeform'), align: 'center' },
-                ]) }}
-                <tbody>
+        <h2 class="digest-text" style="margin: 28px 0 16px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Form performance'|t('freeform') }}</h2>
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+            <thead>
+                <tr>
+                    <th scope="col" width="48%" align="left" class="digest-cell digest-data-head digest-soft digest-muted" bgcolor="#f0f4fa" style="padding: 12px; background-color: #f0f4fa; color: #526175; font-size: 13px; line-height: 20px; font-weight: bold;">{{ 'Form'|t('freeform') }}</th>
+                    <th scope="col" width="34%" align="right" class="digest-cell digest-data-head digest-soft digest-muted" bgcolor="#f0f4fa" style="padding: 12px; background-color: #f0f4fa; color: #526175; font-size: 13px; line-height: 20px; font-weight: bold; overflow-wrap: anywhere;">{{ 'Submissions'|t('freeform') }}</th>
+                    <th scope="col" width="18%" align="right" class="digest-cell digest-data-head digest-soft digest-muted" bgcolor="#f0f4fa" style="padding: 12px; background-color: #f0f4fa; color: #526175; font-size: 13px; line-height: 20px; font-weight: bold; overflow-wrap: anywhere;">{{ 'Spam'|t('freeform') }}</th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for data in forms %}
-                    {{ macros.tableRow([
-                        {
-                            html: '<span style="background: ' ~ data.form.color ~ '; width: 10px; height: 10px; display: block; border-radius: 50%; border: 1px solid transparent;"></span>',
-                            padding: '5px 0 5px 10px',
-                            width: '12px',
-                        },
-                        { html: '<a href="' ~ cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') ~ '">' ~ data.form.name ~ '</a>' },
-                        {
-                            html: '<a href="' ~ cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') ~ '">' ~ data.submissions ~ '</a>',
-                            align: "center",
-                        },
-                        {
-                            html: '<a href="' ~ cpUrl('freeform/spam/' ~ data.form.handle, null, 'https') ~ '">' ~ data.spam ~ '</a>',
-                            align: "center",
-                        },
-                    ]) }}
+                    {% set submissionsUrl = cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') %}
+                    {% set formColor = data.form.color matches '/^#[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/' ? data.form.color : '#64748b' %}
+                    <tr>
+                        <th scope="row" align="left" valign="middle" class="digest-cell digest-border" style="padding: 0 12px; border-bottom: 1px solid #dce2ea; font-weight: normal; font-size: 16px; line-height: 24px; overflow-wrap: anywhere; word-break: break-word;">
+                            <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td width="16" valign="middle" style="width: 16px; padding: 0 8px 0 0;"><span aria-hidden="true" style="display: block; width: 12px; height: 12px; border-radius: 50%; background-color: {{ formColor }}; font-size: 0; line-height: 12px;">&nbsp;</span></td>
+                                    <td valign="middle" style="padding: 0; overflow-wrap: anywhere; word-break: break-word;"><a class="digest-link" href="{{ submissionsUrl }}" style="display: block; padding: 12px 0; color: #1d4ed8; text-decoration: underline;">{{ data.form.name }}</a></td>
+                                </tr>
+                            </table>
+                        </th>
+                        <td align="right" valign="middle" class="digest-cell digest-border" style="padding: 0 12px; border-bottom: 1px solid #dce2ea; font-size: 16px; line-height: 24px;">
+                            <a class="digest-link" href="{{ submissionsUrl }}" aria-label="{{ '{count} new submissions for {form}'|t('freeform', {count: data.submissions, form: data.form.name}) }}" style="display: block; padding: 12px 0; overflow-wrap: anywhere; word-break: break-word; color: #1d4ed8; text-decoration: underline; font-weight: {{ data.submissions ? 'bold' : 'normal' }};">{{ data.submissions|number_format }}</a>
+                        </td>
+                        <td align="right" valign="middle" class="digest-cell digest-border" style="padding: 0 12px; border-bottom: 1px solid #dce2ea; font-size: 16px; line-height: 24px;">
+                            <a class="digest-link" href="{{ cpUrl('freeform/spam/' ~ data.form.handle, null, 'https') }}" aria-label="{{ '{count} new spam submissions for {form}'|t('freeform', {count: data.spam, form: data.form.name}) }}" style="display: block; padding: 12px 0; overflow-wrap: anywhere; word-break: break-word; color: #1d4ed8; text-decoration: underline; font-weight: {{ data.spam ? 'bold' : 'normal' }};">{{ data.spam|number_format }}</a>
+                        </td>
+                    </tr>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            </tbody>
+        </table>
+    {% else %}
+        <h2 class="digest-text" style="margin: 0 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Form performance'|t('freeform') }}</h2>
+        <p class="digest-muted" style="margin: 0; color: #526175;">{{ 'There are no forms to report on for this period.'|t('freeform') }}</p>
     {% endif %}
 
     {% if fullDigest %}
-        <div style="margin-bottom: 40px;">
-            {{ macros.title('Errors That May Require Attention' | t('freeform')) }}
+        <h2 class="digest-text" style="margin: 28px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Errors and warnings'|t('freeform') }}</h2>
+        {% for data in errors %}
+            {% set level = data.level|lower %}
+            {% set severity = level in criticalLevels ? 'critical' : (level == 'warning' ? 'warning' : 'info') %}
+            {% set colors = noticeColors[severity] %}
+            <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                <tr>
+                    <td class="digest-soft digest-alert-{{ severity }}" bgcolor="#f0f4fa" style="padding: 10px 12px; background-color: #f0f4fa; border-left: 3px solid {{ colors.accent }}; overflow-wrap: anywhere; word-break: break-word;">
+                        <p style="margin: 0 0 4px; font-size: 14px; line-height: 20px;"><span class="digest-label-{{ severity }}" style="color: {{ colors.text }}; font-weight: bold;">{{ data.level }} &middot; {{ data.channel }}</span><span class="digest-muted" style="color: #526175;"> &middot; {{ data.date|date }}</span></p>
+                        <p class="digest-text" style="margin: 0; color: #1f2937; font-size: 16px; line-height: 24px;">{{ data.message|truncater(50) }}</p>
+                    </td>
+                </tr>
+                <tr aria-hidden="true"><td height="8" style="height: 8px; font-size: 0; line-height: 8px;">&nbsp;</td></tr>
+            </table>
+        {% else %}
+            <p class="digest-muted" style="margin: 0; color: #526175;">{{ 'No errors to report for this period.'|t('freeform') }}</p>
+        {% endfor %}
 
-            {% if errors|length %}
-                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
-                    {{ macros.tableHeadings([
-                        { html: null },
-                        { html: "Type" | t('freeform') },
-                        { html: "Date" | t('freeform') },
-                        { html: "Details" | t('freeform') },
-                    ]) }}
-                    <tbody>
-                    {% for data in errors %}
-                        {% set color = '#FF0000' %}
-                        {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
-                        {% set icon = iconUrl~'alert-critical-1x.png' %}
-                        {% if data.level == 'WARNING' %}
-                            {% set color = '#ffc107' %}
-                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
-                            {% set icon = iconUrl~'alert-warning-1x.png' %}
-                        {% endif %}
-
-                        {{ macros.tableRow([
-                            {
-                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.level~'" />',
-                                padding: '5px 0 5px 10px',
-                                width: '12px',
-                                color: color,
-                                align: 'center',
-                            },
-                            { html: data.channel, color: color, nowrap: true },
-                            { html: data.date | date, color: color, nowrap: true },
-                            { html: data.message | truncater(50), color: color },
-                        ]) }}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-
-                {{ macros.paragraph('No errors to report for this period.' | t('freeform')) }}
-
-            {% endif %}
-        </div>
-
-        <div style="margin-bottom: 40px;">
-            {{ macros.title('Available Updates' | t('freeform')) }}
-
-            {% if updates|length %}
-                {{ macros.paragraph(
-                    'The following updates and notices are available for your site. Please review and take any action necessary.' | t('freeform')) }}
-
-
-                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
-                    {{ macros.tableHeadings([
-                        { html: null },
-                        { html: "Date Issued" | t('freeform') },
-                        { html: "Details" | t('freeform') },
-                    ]) }}
-                    <tbody>
-                    {% for data in updates %}
-                        {% set color = '#000000' %}
-                        {% if data.type == 'critical' %}
-                            {% set color = '#FF0000' %}
-                            {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
-                            {% set icon = iconUrl~'alert-critical-1x.png' %}
-                        {% elseif data.type == 'warning' %}
-                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
-                            {% set icon = iconUrl~'alert-warning-1x.png' %}
-                        {% elseif data.type == 'info' %}
-                            {% set srcSet = [iconUrl~'alert-info-1x.png', iconUrl~'alert-info-2x.png 2x'] %}
-                            {% set icon = iconUrl~'alert-info-1x.png' %}
-                        {% else %}
-                            {% set srcSet = [iconUrl~'update-1x.png', iconUrl~'update-2x.png 2x'] %}
-                            {% set icon = iconUrl~'update-1x.png' %}
-                        {% endif %}
-
-                        {{ macros.tableRow([
-                            {
-                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.type~'" />',
-                                padding: '5px 0 5px 10px',
-                                width: '12px',
-                                color: color,
-                                align: 'center',
-                            },
-                            { html: data.issueDate | date, color: color, nowrap: true },
-                            { html: data.message, color: color },
-                        ]) }}
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-
-                {{ macros.paragraph('There are currently no important updates or notices for your site.' | t('freeform')) }}
-
-            {% endif %}
-        </div>
+        <h2 class="digest-text" style="margin: 24px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Updates and notices'|t('freeform') }}</h2>
+        {% for data in updates %}
+            {% set type = data.type|lower %}
+            {% set severity = type in criticalLevels ? 'critical' : (type == 'warning' ? 'warning' : 'info') %}
+            {% set colors = noticeColors[severity] %}
+            <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                <tr>
+                    <td class="digest-soft digest-alert-{{ severity }}" bgcolor="#f0f4fa" style="padding: 10px 12px; background-color: #f0f4fa; border-left: 3px solid {{ colors.accent }}; overflow-wrap: anywhere; word-break: break-word;">
+                        <p style="margin: 0 0 4px; font-size: 14px; line-height: 20px;"><span class="digest-label-{{ severity }}" style="color: {{ colors.text }}; font-weight: bold;">{{ data.type|capitalize }}</span><span class="digest-muted" style="color: #526175;"> &middot; {{ data.issueDate|date }}</span></p>
+                        {# Feed messages intentionally contain formatted HTML, as in the other system emails. #}
+                        <div class="digest-rich digest-text" style="color: #1f2937; font-size: 16px; line-height: 24px;">{{ data.message|raw }}</div>
+                    </td>
+                </tr>
+                <tr aria-hidden="true"><td height="8" style="height: 8px; font-size: 0; line-height: 8px;">&nbsp;</td></tr>
+            </table>
+        {% else %}
+            <p class="digest-muted" style="margin: 0; color: #526175;">{{ 'There are currently no important updates or notices for your site.'|t('freeform') }}</p>
+        {% endfor %}
     {% endif %}
 
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin-top: 28px;">
+        <tr>
+            <td align="center" class="digest-button" bgcolor="#1d4ed8" style="background-color: #1d4ed8; border-radius: 6px; mso-padding-alt: 12px 20px;">
+                <a class="digest-button" href="{{ cpUrl('freeform') }}" style="display: inline-block; padding: 12px 20px; border: 1px solid #1d4ed8; border-radius: 6px; background-color: #1d4ed8; color: #ffffff; font-size: 16px; line-height: 24px; font-weight: bold; text-align: center; text-decoration: none; mso-padding-alt: 0;">{{ 'Open {name}'|t('freeform', {name: craft.freeform.name}) }}</a>
+            </td>
+        </tr>
+    </table>
 {% endblock %}
 
-{% block footerText %}
-    {{ "This email alert was generated automatically by <a href='{link}'>{name}</a> from your Craft website.
-        You are receiving this email because you or someone else has configured your email address to
-        receive a digest email informing you about your forms, submission data and any issues."
-    | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/', name: craft.freeform.name })
-    | raw }}
-{% endblock %}
+{# text #}
+{% autoescape false %}
+{{ craft.freeform.name }} — {{ (daily ? 'Daily Digest' : 'Weekly Digest')|t('freeform') }}
+{{ craft.app.systemName }}
+{{ rangeStart|date('long') }}{% if not daily %} — {{ rangeEnd|date('long') }}{% endif %}
 
-{% set links = [
-    { url: cpUrl('freeform'), text: 'Visit your {name} control panel' | t('freeform', { name: craft.freeform.name }) },
-    { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update your Digest settings' | t('freeform') },
-] %}
+{{ 'Form performance'|t('freeform') }}
+{% for data in forms %}
+{{ data.form.name }}
+{{ 'New submissions'|t('freeform') }}: {{ data.submissions|number_format }}
+{{ cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') }}
+{{ 'New spam'|t('freeform') }}: {{ data.spam|number_format }}
+{{ cpUrl('freeform/spam/' ~ data.form.handle, null, 'https') }}
 
-{% block styles %}
-    <style type="text/css">
-        ol li::before {
-            background: #f5f5f5;
-            color: #6a6a6a;
-            font-size: 1em;
-            line-height: 18px;
-            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-        }
-    </style>
-{% endblock %}
+{% else %}
+{{ 'There are no forms to report on for this period.'|t('freeform') }}
+{% endfor %}
+{% if fullDigest %}
+{{ 'Errors and warnings'|t('freeform') }}
+{% for data in errors %}
+{{ data.level }} — {{ data.channel }} — {{ data.date|date }}
+{{ data.message|truncater(50) }}
+
+{% else %}
+{{ 'No errors to report for this period.'|t('freeform') }}
+{% endfor %}
+
+{{ 'Updates and notices'|t('freeform') }}
+{% for data in updates %}
+{{ data.type|capitalize }} — {{ data.issueDate|date }}
+{{ data.message|striptags }}
+
+{% else %}
+{{ 'There are currently no important updates or notices for your site.'|t('freeform') }}
+{% endfor %}
+{% endif %}
+
+{{ 'Open {name}'|t('freeform', {name: craft.freeform.name}) }}: {{ cpUrl('freeform') }}
+{{ 'Manage digest settings'|t('freeform') }}: {{ cpUrl('freeform/settings/notices-and-alerts') }}
+
+{{ 'Sent automatically by {name} from your Craft website. You are receiving this digest because your email address is listed in the digest settings.'|t('freeform', {name: craft.freeform.name}) }}
+{% endautoescape %}
+{# /text #}

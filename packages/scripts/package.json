@@ -17,6 +17,7 @@
     "@friendlycaptcha/sdk": "^1.0.2",
     "@paypal/paypal-js": "^9.6.0",
     "@stripe/stripe-js": "^8.11.0",
+    "chart.js": "4.5.1",
     "expression-language": "^2.7.0"
   },
   "devDependencies": {

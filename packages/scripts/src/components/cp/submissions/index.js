@@ -2,6 +2,7 @@ import {
   mountSignaturePreviews,
   signatureDownloadFilename,
 } from "@lib/cp/signature-preview";
+import { mountSubmissionUploads } from "@lib/cp/submission-uploads";
 
 const updateActionButtons = () => {
   const $actionButtonsContainer = $("#action-buttons");
@@ -106,7 +107,8 @@ $(() => {
   const $assetDownloadForm = $("form#asset_download");
   $("#content").on(
     {
-      click: function () {
+      click: function (event) {
+        event.preventDefault();
         const { assetId } = $(this).data();
 
         $("input[name=assetId]", $assetDownloadForm).val(assetId);
@@ -116,6 +118,7 @@ $(() => {
     "a[data-asset-id]",
   );
 
+  mountSubmissionUploads(document.body);
   mountSignaturePreviews(document.body);
 
   // Keep custom CP field templates using the former canvas/link hooks working.

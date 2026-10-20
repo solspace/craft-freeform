@@ -184,11 +184,15 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $query->column();
     }
 
-    public function getAllFormNames(bool $indexById = true): array
+    public function getAllFormNames(bool $indexById = true, bool $orderByName = false): array
     {
         $query = $this->getFormQuery();
         $query->select(['forms.id', 'forms.name']);
         $forms = $query->pairs();
+
+        if ($orderByName) {
+            natcasesort($forms);
+        }
 
         if ($indexById) {
             return $forms;

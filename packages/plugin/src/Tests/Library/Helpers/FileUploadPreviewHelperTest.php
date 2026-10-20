@@ -112,7 +112,7 @@ class FileUploadPreviewHelperTest extends TestCase
             $this->assertStringContainsString('name="attachment[]" value="43"', $html);
             $this->assertStringContainsString('&lt;img', $html);
             $this->assertStringNotContainsString('<img', $html);
-            $this->assertStringNotContainsString('No files uploaded', $html);
+            $this->assertStringContainsString('data-upload-empty hidden', $html);
             $this->assertStringContainsString('type="file"', $html);
             $this->assertStringContainsString('Remove file reference', $html);
         }

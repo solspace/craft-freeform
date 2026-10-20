@@ -277,7 +277,7 @@ class FreeformVariable
             $output .= '<link rel="stylesheet" href="'.$style.'" />'.\PHP_EOL;
         }
 
-        return Template::raw($output);
+        return new Markup($output, 'utf-8');
     }
 
     public function loadFreeformPlugin(?string $scriptAttributes = null, ?string $styleAttributes = null): Markup
@@ -285,17 +285,17 @@ class FreeformVariable
         $output = $this->getFreeformPluginJs($scriptAttributes);
         $output .= $this->getFreeformPluginCss($styleAttributes);
 
-        return Template::raw($output);
+        return new Markup($output, 'utf-8');
     }
 
     public function loadFreeformPluginJs(?string $scriptAttributes = null): Markup
     {
-        return Template::raw($this->getFreeformPluginJs($scriptAttributes));
+        return new Markup($this->getFreeformPluginJs($scriptAttributes), 'utf-8');
     }
 
     public function loadFreeformPluginCss(?string $styleAttributes = null): Markup
     {
-        return Template::raw($this->getFreeformPluginCss($styleAttributes));
+        return new Markup($this->getFreeformPluginCss($styleAttributes), 'utf-8');
     }
 
     public function getLoggerService(): LoggerService

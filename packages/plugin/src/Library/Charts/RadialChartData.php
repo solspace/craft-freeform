@@ -126,22 +126,23 @@ class RadialChartData implements \JsonSerializable
                 ],
             ],
             'options' => [
-                'tooltips' => [
-                    'backgroundColor' => 'rgba(250, 250, 250, 0.9)',
-                    'titleFontColor' => '#000',
-                    'bodyFontColor' => '#000',
-                    'cornerRadius' => 3,
-                    'xPadding' => 10,
-                    'yPadding' => 7,
-                    'displayColors' => false,
-                ],
                 'responsive' => true,
                 'maintainAspectRatio' => false,
-                'legend' => [
-                    'display' => $this->isLegends(),
-                    'labels' => [
-                        'padding' => 15,
-                        'usePointStyle' => true,
+                'plugins' => [
+                    'legend' => [
+                        'display' => $this->isLegends(),
+                        'labels' => [
+                            'padding' => 15,
+                            'usePointStyle' => true,
+                        ],
+                    ],
+                    'tooltip' => [
+                        'backgroundColor' => 'rgba(250, 250, 250, 0.9)',
+                        'titleColor' => '#000',
+                        'bodyColor' => '#000',
+                        'cornerRadius' => 3,
+                        'padding' => 10,
+                        'displayColors' => false,
                     ],
                 ],
             ],

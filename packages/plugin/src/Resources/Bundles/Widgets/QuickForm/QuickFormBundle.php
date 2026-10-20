@@ -8,7 +8,7 @@ class QuickFormBundle extends AbstractFreeformAssetBundle
 {
     public function getScripts(): array
     {
-        return [];
+        return ['js/scripts/cp/widgets/quick-form.js'];
     }
 
     public function getStylesheets(): array

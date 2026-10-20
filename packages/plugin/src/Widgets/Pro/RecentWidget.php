@@ -22,12 +22,17 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 {
     public const DEFAULT_LIMIT = 5;
+    public const BROWSE_LIMIT = 100;
 
     public ?string $title = null;
 
     public array|string|null $formIds = null;
 
     public ?int $limit = null;
+
+    public bool $showFilters = true;
+
+    public bool $showPagination = true;
 
     public static function displayName(): string
     {
@@ -60,6 +65,8 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
     {
         return [
             [['formIds'], 'required'],
+            [['limit'], 'integer', 'min' => 1, 'max' => self::BROWSE_LIMIT],
+            [['showFilters', 'showPagination'], 'boolean'],
         ];
     }
 
@@ -72,16 +79,18 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
             );
         }
 
-        $forms = $this->getFormService()->getAllFormIds();
         $formIdList = $this->formIds;
         if ('*' === $formIdList) {
-            $formIdList = $forms;
+            $formIdList = $this->getFormService()->getAllFormIds();
         }
+
+        $pageSize = max(1, min(self::BROWSE_LIMIT, (int) $this->limit));
 
         $submissions = Submission::find()
             ->formId($formIdList)
             ->orderBy(['id' => \SORT_DESC])
-            ->limit((int) $this->limit)
+            ->limit($this->showFilters || $this->showPagination ? self::BROWSE_LIMIT : $pageSize)
+            ->all()
         ;
 
         return \Craft::$app->view->renderTemplate(
@@ -89,6 +98,9 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
             [
                 'submissions' => $submissions,
                 'settings' => $this,
+                'widgetId' => $this->id,
+                'pageSize' => $pageSize,
+                'formNames' => $this->getFormService()->getAllFormNames(),
             ]
         );
     }
@@ -99,8 +111,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
             'freeform/_widgets/recent/settings',
             [
                 'settings' => $this,
-                'formOptions' => $this->getFormService()->getAllFormNames(),
-                'dateRangeOptions' => $this->getWidgetsService()->getDateRanges(),
+                'formOptions' => $this->getFormService()->getAllFormNames(orderByName: true),
             ]
         );
     }

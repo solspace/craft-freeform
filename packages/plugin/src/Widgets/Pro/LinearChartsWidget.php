@@ -17,10 +17,10 @@ use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Charts\LinearChartData;
 use Solspace\Freeform\Services\Pro\WidgetsService;
-use Solspace\Freeform\Widgets\AbstractWidget;
+use Solspace\Freeform\Widgets\AbstractChartWidget;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
-class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
+class LinearChartsWidget extends AbstractChartWidget implements ExtraWidgetInterface
 {
     public ?string $title = null;
 
@@ -29,8 +29,6 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
     public ?bool $aggregate = null;
 
     public ?string $dateRange = null;
-
-    public ?int $chartHeight = null;
 
     public ?string $chartType = null;
 
@@ -66,10 +64,6 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             $this->dateRange = WidgetsService::RANGE_LAST_30_DAYS;
         }
 
-        if (null === $this->chartHeight) {
-            $this->chartHeight = 50;
-        }
-
         if (null === $this->chartType) {
             $this->chartType = WidgetsService::CHART_LINE;
         }
@@ -83,6 +77,9 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
     {
         return [
             [['formIds'], 'required'],
+            [['chartSize'], 'in', 'range' => self::CHART_SIZES],
+            [['dateRange'], 'in', 'range' => array_keys($this->getWidgetsService()->getDateRanges())],
+            [['chartType'], 'in', 'range' => [WidgetsService::CHART_LINE, WidgetsService::CHART_BAR]],
         ];
     }
 
@@ -97,19 +94,12 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $data = $this->getChartData();
 
-        $incrementSkip = match ($this->dateRange) {
-            WidgetsService::RANGE_LAST_30_DAYS => 3,
-            WidgetsService::RANGE_LAST_60_DAYS => 6,
-            WidgetsService::RANGE_LAST_90_DAYS => 10,
-            default => 1,
-        };
-
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/linear-charts/body',
             [
                 'chartData' => $data,
+                'dateRangeLabel' => $this->getWidgetsService()->getDateRanges()[$this->dateRange],
                 'settings' => $this,
-                'incrementSkip' => $incrementSkip,
             ]
         );
     }
@@ -120,11 +110,11 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             'freeform/_widgets/linear-charts/settings',
             [
                 'settings' => $this,
-                'formOptions' => $this->getFormService()->getAllFormNames(),
+                'formOptions' => $this->getFormService()->getAllFormNames(orderByName: true),
                 'dateRangeOptions' => Freeform::getInstance()->widgets->getDateRanges(),
                 'chartTypes' => [
-                    WidgetsService::CHART_LINE => 'Line',
-                    WidgetsService::CHART_BAR => 'Bar',
+                    WidgetsService::CHART_LINE => Freeform::t('Line'),
+                    WidgetsService::CHART_BAR => Freeform::t('Bar'),
                 ],
             ]
         );

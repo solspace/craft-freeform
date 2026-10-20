@@ -24,7 +24,9 @@
     {{ forms.selectField({
         label: "Form"|t('freeform'),
         instructions: "Select the form to be displayed."|t('freeform'),
+        id: 'formId',
         name: 'formId',
+        errors: settings.getErrors('formId'),
         options: formList,
         value: settings.formId,
     }) }}

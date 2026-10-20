@@ -1,0 +1,64 @@
+@mixin editable-table {
+  .freeform-cp-table-scroll {
+    overflow-x: auto;
+    padding: 1px;
+  }
+
+  table.editable {
+    display: table;
+    th { white-space: nowrap; }
+    th.freeform-required::after { content: "*"; margin-inline-start: 4px; color: var(--error-color, #cf1124); }
+    td { vertical-align: top; }
+    td.textual { padding: 0; }
+    td.table-cell-text { min-width: 160px; }
+    td.table-cell-number { min-width: 80px; }
+    td.table-cell-textarea { min-width: 200px; }
+    td.table-cell-radio { min-width: 120px; }
+    td.table-cell-select { min-width: 60px; padding-block: 2px; }
+    td.table-cell-select .select, td.table-cell-select select { min-width: 60px; }
+    td.table-cell-checkbox { padding-block: 0; }
+    td:focus-within { box-shadow: inset 0 0 0 1px var(--border-hairline, #e5e9ef); }
+    td.action { vertical-align: middle; }
+
+    input.text, textarea.text {
+      box-sizing: border-box;
+      display: block;
+      width: 100%;
+      margin: 0;
+      min-height: 34px;
+    }
+    textarea.text {
+      height: auto;
+      min-height: 54px;
+      overflow-y: auto;
+      resize: vertical;
+    }
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      > label { margin: 0; }
+    }
+    .freeform-cp-table-options {
+      display: grid;
+      gap: 4px;
+      padding-block: 3px;
+      > div { display: flex; align-items: center; min-height: 20px; }
+      label { margin: 0; font-weight: normal; line-height: 20px; }
+    }
+  }
+
+  .freeform-cp-table-buttons {
+    margin: -1px 1px 0;
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: var(--ui-control-height, 34px);
+      border-top: 0;
+      border-radius: 0 0 var(--radius-md, 5px) var(--radius-md, 5px);
+    }
+  }
+}

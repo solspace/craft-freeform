@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Widgets;
 
 use craft\base\Widget;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\Widgets\QuickForm\QuickFormBundle;
 
@@ -67,11 +68,20 @@ class QuickFormWidget extends Widget implements ExtraWidgetInterface
             );
         }
 
-        $form = $freeform->forms->getFormById($this->formId);
+        $form = $this->formId ? $freeform->forms->getFormById($this->formId, uniqueId: 'quick-form-widget-'.$this->id) : null;
 
-        $successMessage = 'Form submitted successfully';
-        if ($this->successMessage) {
-            $successMessage = $this->successMessage;
+        if ($form) {
+            $form->getAttributes()->getForm()
+                ->set('data-freeform-signature-responsive', true)
+                ->set('data-freeform-signature-max-scale', 1)
+            ;
+            // Keep dashboard submissions and their success state inside the widget.
+            $behavior = $form->getSettings()->getBehavior();
+            $behavior->ajax = true;
+            $behavior->successBehavior = BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD;
+            if ($this->successMessage) {
+                $behavior->successMessage = Freeform::t($this->successMessage);
+            }
         }
 
         \Craft::$app->view->registerAssetBundle(QuickFormBundle::class);
@@ -80,7 +90,7 @@ class QuickFormWidget extends Widget implements ExtraWidgetInterface
             'freeform/_widgets/quick-form/body',
             [
                 'form' => $form,
-                'successMessage' => Freeform::t($successMessage),
+                'widgetId' => $this->id,
             ]
         );
     }
@@ -93,7 +103,7 @@ class QuickFormWidget extends Widget implements ExtraWidgetInterface
             'freeform/_widgets/quick-form/settings',
             [
                 'settings' => $this,
-                'formList' => $freeform->forms->getAllFormNames(),
+                'formList' => $freeform->forms->getAllFormNames(orderByName: true),
             ]
         );
     }

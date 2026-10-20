@@ -1,0 +1,53 @@
+@mixin searchable-select {
+  .ff-searchable {
+    // Override the front-end theme sampled into inline custom properties.
+    --ff-searchable-color: var(--text-color, #3f4d5a) !important;
+    --ff-searchable-bg: var(--button-bg, #d7dce2) !important;
+    --ff-searchable-menu-bg: var(--white, #fff) !important;
+    --ff-searchable-border: var(--gray-200, #cdd8e4) !important;
+    --ff-searchable-radius: var(--radius-md, 5px) !important;
+    font-family: inherit !important;
+  }
+  .ff-searchable.ff-searchable .ff-searchable__input {
+    height: var(--ui-control-height, 34px);
+    min-height: var(--ui-control-height, 34px);
+    padding: 7px 34px 7px 10px;
+    padding-inline: 10px 34px;
+    border: 0;
+    font-size: 14px;
+    line-height: 20px;
+    box-shadow: none;
+    &:hover:not(:disabled) { background: var(--button-bg--hover, #cdd4de); }
+    &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    &[aria-invalid="true"], &.freeform-has-errors { box-shadow: inset 0 0 0 1px var(--error-color, #cf1124); }
+  }
+  .ff-searchable.ff-searchable button.ff-searchable__toggle {
+    width: var(--ui-control-height, 34px);
+    padding: 0;
+    font-size: 0;
+    &::after {
+      content: "";
+      display: block;
+      width: 7px;
+      height: 7px;
+      margin-top: -3px;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      opacity: 0.8;
+    }
+  }
+  .ff-searchable .ff-searchable__list { font-size: 14px; }
+  .ff-searchable:has([aria-multiselectable="true"]) {
+    --ff-searchable-bg: var(--input-bg, #fafbfd) !important;
+    .ff-searchable__input { padding-block: 6px; border: var(--input-border, 1px solid #cdd8e4); }
+  }
+  .ff-searchable .ff-searchable__option,
+  .ff-searchable .ff-searchable__empty,
+  .ff-searchable .ff-searchable__group { padding: 7px 10px; line-height: 20px; }
+  .ff-searchable .ff-searchable__option:not([aria-disabled="true"]):hover,
+  .ff-searchable .ff-searchable__option[data-active] {
+    color: var(--text-color, #3f4d5a);
+    background: var(--gray-100, #edf2f7);
+  }
+}

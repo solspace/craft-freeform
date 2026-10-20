@@ -9,7 +9,9 @@ export const registerAddButton = (instance: Freeform) => {
 
   const tables = instance.form.querySelectorAll("[data-freeform-table]");
   tables.forEach((table) => {
-    button = table.parentNode.querySelector<HTMLButtonElement>(
+    const container =
+      table.closest("[data-freeform-table-container]") || table.parentNode;
+    button = container.querySelector<HTMLButtonElement>(
       "[data-freeform-table-add-row]",
     );
     toggleAddButton(table, button);
@@ -57,8 +59,8 @@ export const registerAddButton = (instance: Freeform) => {
 
             if (item.id && ID_PATTERN.test(item.id)) {
               item.id = item.id.replace(ID_PATTERN, `$1-${maxIndex}-$3-$4`);
-              const label = item.nextSibling as HTMLLabelElement;
-              label.htmlFor = item.id;
+              const label = item.nextElementSibling;
+              if (label instanceof HTMLLabelElement) label.htmlFor = item.id;
             }
 
             if (item.tagName === "INPUT" && item.type === "radio") {

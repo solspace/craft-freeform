@@ -123,7 +123,7 @@ export function mountInternationalPhone(
     inputStyle.paddingInlineStart || inputStyle.paddingLeft || "12px";
   const selectorWidth = "var(--ff-phone-selector-width, 3.5rem)";
   style(input, {
-    "padding-inline-start": `calc(${selectorWidth} + ${padding})`,
+    "padding-inline-start": `calc(${selectorWidth} + var(--ff-phone-input-spacing, ${padding}))`,
   });
   let restoreLabel: (() => void) | undefined;
   if (

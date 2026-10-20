@@ -1,6 +1,8 @@
-@use "../../shared/variables";
 @use "../../shared/classes";
 @use "opinion-scale";
+@use "../../shared/cp-searchable-select";
+@use "../../shared/cp-editable-table";
+@use "../../shared/cp-summary";
 
 $spacing: 10px;
 $gutter: 10px;
@@ -30,12 +32,9 @@ $gutter: 10px;
   @extend .reset-headings;
 
   .fields-column {
-    overflow: hidden;
+    overflow: visible;
 
-    .field {
-      overflow-x: auto;
-      overflow-y: inherit;
-    }
+    .field { overflow: visible; }
   }
 
   .field-required {
@@ -109,9 +108,96 @@ $gutter: 10px;
   justify-content: flex-start;
 }
 
+.ff-submission-upload {
+  [hidden] { display: none !important; }
+
+  .file-preview {
+    gap: 8px;
+    margin: 0 0 8px;
+    padding: 0;
+  }
+
+  .ff-submission-upload-empty {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .ff-submission-upload-asset {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    margin: 0;
+    padding-inline-end: 4px;
+
+    .thumb { flex: 0 0 30px; }
+    .chip-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .chip-label {
+      display: block;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chip-content > [data-upload-remove] { margin: 0; }
+  }
+
+  [data-upload-remove] {
+    position: static;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .ff-submission-upload-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 16px;
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--ui-control-height, 34px);
+      margin: 0;
+    }
+  }
+
+  .ff-submission-upload-clear {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ui-control-height, 34px);
+    padding: 0;
+    color: var(--link-color, #2563eb);
+    cursor: pointer;
+    &:hover { text-decoration: underline; }
+  }
+
+  .ff-submission-upload-pending {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 20px;
+    ul { margin: 4px 0 0; padding: 0; list-style: none; }
+    li { overflow-wrap: anywhere; }
+  }
+}
+
 .ff-submission-upload-warning {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   width: 100%;
   box-sizing: border-box;
@@ -125,7 +211,7 @@ $gutter: 10px;
 
   > svg {
     flex: 0 0 16px;
-    margin-top: 2px;
+    margin: 0;
   }
 
   > span {
@@ -146,96 +232,15 @@ label.required:after {
 }
 
 #content {
-  border-radius: 0 5px 5px 5px;
+  border-radius: var(--radius-lg, 5px);
 }
 
 .freeform-submission-table {
-  > table {
-    > tbody > tr > td {
-      padding: 8px;
-      vertical-align: top;
-    }
-
-    > tbody > tr > td.textual {
-      min-width: 160px;
-    }
-  }
-
-  input.text,
-  textarea.text {
-    box-sizing: border-box;
-    display: block;
-    width: 100%;
-    margin: 0;
-  }
-
-  td.table-cell-textarea {
-    height: 1px;
-
-    textarea {
-      height: 100%;
-      min-height: 104px !important;
-      overflow-y: auto !important;
-      resize: vertical !important;
-    }
-  }
-
-  td.action {
-    vertical-align: middle;
-  }
+  @include cp-editable-table.editable-table;
 }
 
 .freeform-submission-summary {
-  [data-freeform-summary] {
-    container-name: freeform-cp-summary;
-    container-type: inline-size;
-    box-sizing: border-box;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    border: 1px solid #d8e2ec;
-    border-radius: 5px;
-    background: #fbfcfe;
-
-    > [data-summary-field] {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      align-items: baseline;
-      gap: 2px 20px;
-      padding: 8px 14px;
-
-      + [data-summary-field] {
-        border-top: 1px solid #e7edf4;
-      }
-
-      > dt,
-      > dd {
-        min-width: 0;
-        margin: 0;
-        padding: 0;
-        font-size: 13px;
-        line-height: 20px;
-        overflow-wrap: anywhere;
-      }
-
-      > dt {
-        color: #596673;
-        font-weight: 600;
-      }
-
-      > dd {
-        color: variables.$color-input-text;
-        font-weight: normal;
-      }
-    }
-  }
-}
-
-@container freeform-cp-summary (min-width: 420px) {
-  .freeform-submission-summary [data-freeform-summary] > [data-summary-field] {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  }
+  @include cp-summary.summary;
 }
 
 [data-field-type="table"] {
@@ -302,4 +307,9 @@ label.required:after {
       }
     }
   }
+}
+
+#fields {
+  @include cp-searchable-select.searchable-select;
+  .select:has(> select.ff-searchable-native)::after { display: none; }
 }

@@ -92,6 +92,29 @@ class DatetimeFieldTest extends TestCase
         $this->assertSame('2026-10-10'.('both' === $type ? 'T00:00' : ''), $input->getAttribute('max'));
     }
 
+    public function testNativeDateTodayBoundsHaveNoTimeComponent(): void
+    {
+        $field = $this->createField('date');
+        (new \ReflectionProperty(DatetimeField::class, 'minDate'))->setValue($field, 'today');
+        (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
+
+        $input = $this->getInput($field);
+        $this->assertSame(date('Y-m-d'), $input->getAttribute('min'));
+        $this->assertSame(date('Y-m-d'), $input->getAttribute('max'));
+        $this->assertDoesNotMatchRegularExpression('/T[0-9]{2}:[0-9]{2}/', $input->getAttribute('max'));
+    }
+
+    public function testNativeTimeInputDoesNotReceiveDateBounds(): void
+    {
+        $field = $this->createField('time');
+        (new \ReflectionProperty(DatetimeField::class, 'minDate'))->setValue($field, 'today');
+        (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
+
+        $input = $this->getInput($field);
+        $this->assertFalse($input->hasAttribute('min'));
+        $this->assertFalse($input->hasAttribute('max'));
+    }
+
     public static function nativeDateBounds(): array
     {
         return [

@@ -220,21 +220,34 @@ export function createFileDndExtension(): FreeformExtension {
         style.id = "ff-file-dnd-styles";
         style.textContent = `
           .ff-file-dnd {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            text-align: left;
-            border: 2px dashed color-mix(in srgb, var(--accent, #3a85ee) 55%, transparent);
-            border-radius: 8px;
-            padding: 1rem;
+            min-height: 8rem;
+            text-align: center;
+            border: 1px dashed color-mix(in srgb, currentColor 25%, transparent);
+            border-radius: 0.375rem;
+            padding: 2.5rem 1.5rem;
             background: transparent;
             color: inherit;
             cursor: pointer;
+            font: inherit;
           }
           .ff-file-dnd[data-dragging] {
             border-style: solid;
             background: color-mix(in srgb, var(--accent, #3a85ee) 12%, transparent);
           }
-          .ff-file-dnd__placeholder { margin-bottom: 0.75rem; opacity: 0.85; }
+          .ff-file-dnd__placeholder {
+            margin: 0;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            opacity: 0.85;
+          }
+          .ff-file-dnd:has(.ff-file-dnd__preview) .ff-file-dnd__placeholder {
+            margin-bottom: 0.75rem;
+          }
           .ff-file-dnd__preview-zone { display: grid; gap: 0.5rem; }
           .ff-file-dnd__preview {
             display: grid;
@@ -492,7 +505,10 @@ export function createFileDndExtension(): FreeformExtension {
         dropzone.removeEventListener("dragover", onDrag);
         dropzone.removeEventListener("dragleave", onDragLeave);
         dropzone.removeEventListener("drop", onDrop);
-        element.replaceChildren();
+        // Only clear if this mount still owns the host (avoids wiping a remount).
+        if (dropzone.parentElement === element) {
+          element.replaceChildren();
+        }
       };
     },
   };

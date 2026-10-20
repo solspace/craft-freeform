@@ -526,10 +526,9 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
             },
           });
 
+          // If this mount was superseded (React StrictMode / remount), do NOT
+          // run cleanup — it would wipe DOM from a newer mount on the same node.
           if (cancelled) {
-            if (typeof cleanup === "function") {
-              cleanup();
-            }
             return;
           }
 

@@ -510,10 +510,9 @@ export function useFreeform(
           },
         });
 
+        // If this mount was superseded, do NOT run cleanup — it would wipe
+        // DOM from a newer mount on the same node (file-dnd placeholder).
         if (cancelled) {
-          if (typeof cleanup === "function") {
-            cleanup();
-          }
           return;
         }
 

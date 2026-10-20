@@ -2,16 +2,16 @@ import type { FreeformThemeClassNames } from "@solspace/freeform-react";
 
 /** Text-like controls — Tailwind 4 utilities, scanned as full string literals. */
 export const lightTextInput =
-  "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6";
+  "block w-full rounded-md border-0 bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6";
 
 export const darkTextInput =
-  "block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6";
+  "block w-full rounded-md border-0 bg-white/5 px-3 py-1.5 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6";
 
 export const lightSelectInput =
-  "col-start-1 row-start-1 block w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6";
+  "col-start-1 row-start-1 block w-full appearance-none rounded-md border-0 bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6";
 
 export const darkSelectInput =
-  "col-start-1 row-start-1 block w-full appearance-none rounded-md bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6";
+  "col-start-1 row-start-1 block w-full appearance-none rounded-md border-0 bg-white/5 py-1.5 pr-8 pl-3 text-base text-white outline outline-1 -outline-offset-1 outline-white/10 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6";
 
 export const lightFileInput =
   "block w-full text-sm text-gray-900 file:mr-4 file:inline-flex file:cursor-pointer file:rounded-md file:border-0 file:bg-white file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-gray-900 file:outline file:outline-1 file:outline-gray-300 hover:file:bg-gray-50";
@@ -19,11 +19,9 @@ export const lightFileInput =
 export const darkFileInput =
   "block w-full text-sm text-white file:mr-4 file:inline-flex file:cursor-pointer file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white file:outline file:outline-1 file:outline-white/10 hover:file:bg-white/20";
 
-export const lightFileDndInput =
-  "flex min-h-32 w-full items-center justify-center rounded-md border border-dashed border-gray-900/25 bg-white px-6 py-10 text-sm text-gray-600";
+export const lightFileDndInput = "w-full";
 
-export const darkFileDndInput =
-  "flex min-h-32 w-full items-center justify-center rounded-md border border-dashed border-white/20 bg-white/5 px-6 py-10 text-sm text-gray-300";
+export const darkFileDndInput = "w-full";
 
 export const lightOptionLabel =
   "flex items-center gap-x-2 text-sm/6 font-medium text-gray-900";
@@ -32,31 +30,32 @@ export const darkOptionLabel =
   "flex items-center gap-x-2 text-sm/6 font-medium text-white";
 
 export const lightCheckboxInput =
-  "size-4 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
+  "size-4 shrink-0 appearance-none rounded-sm border border-gray-300 bg-white bg-center bg-no-repeat checked:border-indigo-600 checked:bg-indigo-600 checked:bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%270%200%2014%2014%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M3%208L6%2011L11%203.5%27%20stroke%3D%27white%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
 
 export const darkCheckboxInput =
-  "size-4 appearance-none rounded-sm border border-white/20 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+  "size-4 shrink-0 appearance-none rounded-sm border border-white/20 bg-white/5 bg-center bg-no-repeat checked:border-indigo-500 checked:bg-indigo-500 checked:bg-[url('data:image/svg+xml,%3Csvg%20viewBox%3D%270%200%2014%2014%27%20fill%3D%27none%27%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%3E%3Cpath%20d%3D%27M3%208L6%2011L11%203.5%27%20stroke%3D%27white%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%2F%3E%3C%2Fsvg%3E')] indeterminate:border-indigo-500 indeterminate:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
 
 export const lightRadioInput =
-  "size-4 appearance-none rounded-full border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
+  "relative size-4 shrink-0 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600";
 
 export const darkRadioInput =
-  "size-4 appearance-none rounded-full border border-white/20 bg-white/5 checked:border-indigo-500 checked:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
+  "relative size-4 shrink-0 appearance-none rounded-full border border-white/20 bg-white/5 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-500 checked:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500";
 
-export const lightChoiceGroup = "flex flex-col gap-2";
-export const darkChoiceGroup = "flex flex-col gap-2";
+export const lightChoiceGroup = "mt-1 flex flex-col gap-y-1";
+export const darkChoiceGroup = "mt-1 flex flex-col gap-y-1";
 
 export const lightPaymentHost = "block min-h-10 w-full";
 export const darkPaymentHost = "block min-h-10 w-full";
 
 export const lightClassNames: FreeformThemeClassNames = {
-  form: "[--ff-email-suggestion-color:#6b7280] [--ff-email-suggestion-action:#6366f1] [--ff-phone-background:#fff] [--ff-phone-color:#1f2937] [--ff-phone-border:#d1d5db] w-full",
+  form: "[--ff-email-suggestion-color:#6b7280] [--ff-email-suggestion-action:#6366f1] [--ff-phone-background:#fff] [--ff-phone-color:#1f2937] [--ff-phone-border:#d1d5db] w-full [&_a]:font-bold [&_a]:text-indigo-600 hover:[&_a]:text-indigo-500",
   page: "w-full",
-  row: "mb-4 flex flex-wrap gap-x-4",
-  field: "mb-1 min-w-0 flex-1 basis-0",
+  row: "mb-4 flex flex-wrap gap-x-2 -mx-2",
+  field: "mb-1 min-w-0 w-full flex-1 basis-0 px-2",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-gray-900",
-  instructions: "-mt-0.5 mb-1 text-sm text-gray-500",
+  requiredMark: "ml-0.5 text-red-600",
+  instructions: "-mt-1.5 mb-1 text-sm text-gray-500",
   characterCount: "text-gray-500",
   characterCountError: "text-red-600",
   input: lightTextInput,
@@ -65,29 +64,31 @@ export const lightClassNames: FreeformThemeClassNames = {
   optionInput: lightCheckboxInput,
   content: "text-sm text-gray-700",
   errors: "mt-1",
-  error: "text-sm text-red-600",
-  buttons: "mt-2 flex flex-wrap items-center gap-3",
+  error: "mt-1 text-sm text-red-600",
+  buttons: "mb-4 flex flex-wrap items-center gap-3",
   button:
-    "rounded-md px-5 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 px-5 py-2 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50",
   submitButton:
-    "rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-indigo-600 px-5 py-2 text-base font-semibold text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
   nextButton:
-    "rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-indigo-600 px-5 py-2 text-base font-semibold text-white hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
   backButton:
-    "rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-gray-200 px-5 py-2 text-base font-normal text-gray-900 hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50",
   saveButton:
-    "rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50",
-  success: "rounded-md bg-green-50 p-4 text-sm font-medium text-green-800",
+    "rounded-md border-0 bg-gray-300 px-5 py-2 text-base font-normal text-gray-900 hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50",
+  success:
+    "mb-10 rounded-md bg-green-50 p-4 text-sm font-medium text-green-800",
 };
 
 export const darkClassNames: FreeformThemeClassNames = {
-  form: "[--ff-phone-background:#292a2d] [--ff-phone-color:#f3f4f6] [--ff-phone-border:#4b5563] [--ff-email-suggestion-color:#9ca3af] [--ff-email-suggestion-action:#818cf8] w-full",
+  form: "[--ff-phone-background:#292a2d] [--ff-phone-color:#f3f4f6] [--ff-phone-border:#4b5563] [--ff-email-suggestion-color:#9ca3af] [--ff-email-suggestion-action:#818cf8] w-full [&_a]:font-bold [&_a]:text-indigo-400 hover:[&_a]:text-indigo-300",
   page: "w-full",
-  row: "mb-4 flex flex-wrap gap-x-4",
-  field: "mb-1 min-w-0 flex-1 basis-0",
+  row: "mb-4 flex flex-wrap gap-x-2 -mx-2",
+  field: "mb-1 min-w-0 w-full flex-1 basis-0 px-2",
   fieldHidden: "hidden",
   label: "mb-1 block text-sm/6 font-medium text-white",
-  instructions: "-mt-0.5 mb-1 text-sm text-gray-400",
+  requiredMark: "ml-0.5 text-red-500",
+  instructions: "-mt-1.5 mb-1 text-sm text-gray-400",
   characterCount: "text-gray-400",
   characterCountError: "text-red-400",
   input: darkTextInput,
@@ -96,19 +97,20 @@ export const darkClassNames: FreeformThemeClassNames = {
   optionInput: darkCheckboxInput,
   content: "text-sm text-gray-300",
   errors: "mt-1",
-  error: "text-sm text-red-400",
-  buttons: "mt-2 flex flex-wrap items-center gap-3",
+  error: "mt-1 text-sm text-red-400",
+  buttons: "mb-4 flex flex-wrap items-center gap-3",
   button:
-    "rounded-md px-5 py-2 text-sm font-semibold shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 px-5 py-2 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50",
   submitButton:
-    "rounded-md bg-indigo-500 px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-indigo-500 px-5 py-2 text-base font-semibold text-white hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50",
   nextButton:
-    "rounded-md bg-indigo-500 px-5 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-indigo-500 px-5 py-2 text-base font-semibold text-white hover:bg-indigo-400 disabled:cursor-not-allowed disabled:opacity-50",
   backButton:
-    "rounded-md bg-white/10 px-5 py-2 text-sm font-semibold text-white outline outline-1 -outline-offset-1 outline-white/10 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50",
+    "rounded-md border-0 bg-gray-700 px-5 py-2 text-base font-normal text-white hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50",
   saveButton:
-    "rounded-md bg-white/10 px-5 py-2 text-sm font-semibold text-white outline outline-1 -outline-offset-1 outline-white/10 hover:bg-white/20 disabled:cursor-not-allowed disabled:opacity-50",
-  success: "rounded-md bg-green-950 p-4 text-sm font-medium text-green-300",
+    "rounded-md border-0 bg-gray-800 px-5 py-2 text-base font-normal text-white hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50",
+  success:
+    "mb-10 rounded-md bg-green-900/20 p-4 text-sm font-medium text-green-300",
 };
 
 const textTypes = [
@@ -138,8 +140,7 @@ export function lightClassNamesByType(): Record<
   return {
     ...textTypeMap(lightTextInput),
     range: {
-      input:
-        "block w-full appearance-auto border-0 bg-transparent p-0 accent-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600",
+      input: "block w-full accent-indigo-500",
       inputError:
         "outline-2 outline-offset-2 outline-red-600 focus-visible:outline-red-600",
       content: "text-gray-900",
@@ -193,9 +194,9 @@ export function lightClassNamesByType(): Record<
     },
     table: { input: "w-full overflow-x-auto text-sm text-gray-900" },
     "opinion-scale": {
-      input: "flex flex-wrap gap-2",
+      input: "sm:flex sm:gap-x-3",
       optionLabel:
-        "relative flex cursor-pointer items-center justify-center rounded-md bg-gray-50 px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 hover:bg-gray-100 has-checked:outline-2 has-checked:outline-indigo-600",
+        "relative mb-2 flex flex-1 cursor-pointer items-center justify-center rounded-md bg-gray-50 px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 hover:bg-gray-100 has-checked:outline-2 has-checked:outline-indigo-600 sm:mb-0",
       optionInput: "sr-only",
     },
     rating: {
@@ -274,9 +275,9 @@ export function darkClassNamesByType(): Record<
     },
     table: { input: "w-full overflow-x-auto text-sm text-white" },
     "opinion-scale": {
-      input: "flex flex-wrap gap-2",
+      input: "sm:flex sm:gap-x-3",
       optionLabel:
-        "relative flex cursor-pointer items-center justify-center rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline outline-1 -outline-offset-1 outline-white/10 hover:bg-white/10 has-checked:outline-2 has-checked:outline-indigo-500",
+        "relative mb-2 flex flex-1 cursor-pointer items-center justify-center rounded-md bg-white/5 px-3 py-1.5 text-sm text-white outline outline-1 -outline-offset-1 outline-white/10 hover:bg-white/10 has-checked:outline-2 has-checked:outline-indigo-500 sm:mb-0",
       optionInput: "sr-only",
     },
     rating: {

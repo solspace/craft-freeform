@@ -36,6 +36,11 @@ export function CheckboxFieldRenderer(props: VueFieldRendererProps) {
   const checkedValue = resolveCheckedValue(props);
   const checked = isChecked(input.value ?? props.value, checkedValue);
   const label = props.field.label ?? "";
+  const requiredMark = props.field.required ? (
+    <span aria-hidden="true" class={props.classNames.requiredMark}>
+      *
+    </span>
+  ) : null;
 
   return (
     <label class={props.classNames.optionLabel ?? props.classNames.input}>
@@ -55,7 +60,10 @@ export function CheckboxFieldRenderer(props: VueFieldRendererProps) {
         }}
         onBlur={input.onBlur}
       />
-      {props.allowRawHtml ? <span innerHTML={label} /> : <span>{label}</span>}
+      <span>
+        {props.allowRawHtml ? <span innerHTML={label} /> : label}
+        {requiredMark}
+      </span>
     </label>
   );
 }

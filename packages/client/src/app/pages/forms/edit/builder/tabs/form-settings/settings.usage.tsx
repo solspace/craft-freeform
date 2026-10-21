@@ -65,6 +65,18 @@ export const FormUsage = () => {
   const [chartDays, setChartDays] = useState<FormStatsDays>(90);
   const stats = useQueryFormStats(form.id, chartDays);
   const usage = useQueryFormUsage(config.metadata.craft.is5);
+  const [showAllElements, setShowAllElements] = useState(false);
+  const elements = usage.data?.pages.flatMap((page) => page.items) ?? [];
+  const elementTotal = usage.data?.pages[0]?.total ?? 0;
+  const visibleElements = showAllElements ? elements : elements.slice(0, 5);
+  const enabledSiteIds = new Set(
+    (
+      form.settings.general?.sites ?? config.sites.list.map((site) => site.id)
+    ).map(String),
+  );
+  const sites = config.sites.list
+    .map((site) => ({ ...site, enabled: enabledSiteIds.has(String(site.id)) }))
+    .sort((a, b) => Number(b.enabled) - Number(a.enabled));
   const currentPath = useResolvedPath("");
   const submissionListUrl = (folder: "submissions" | "spam") =>
     form.id && form.canManageSubmissions
@@ -152,7 +164,6 @@ export const FormUsage = () => {
   const details: Array<[string, string | number]> = [
     [translate("Form ID"), form.id ?? translate("Unsaved")],
     [translate("Handle"), form.handle],
-    [translate("Site"), current ? `${current.name} (${current.id})` : "—"],
     [
       translate("Freeform"),
       `${config.metadata.freeform.version} (${config.editions.edition})`,
@@ -190,6 +201,7 @@ export const FormUsage = () => {
       `${translate("Usage & Stats")} — ${form.name}`,
       ...details.map(([label, value]) => `${label}: ${value}`),
       `${translate("Fields")}: ${fields.length} (${types.map(([name, total]) => `${translate(name)}: ${total}`).join(", ")})`,
+      `${translate("Sites")}: ${sites.map((site) => `${site.name} (${site.id}): ${enabled(site.enabled)}`).join(", ")}`,
       `${translate("Pages")}: ${pages.length}`,
       `${translate("Rules")}: ${enabledRuleCount} ${translate("enabled")}`,
       `${translate("Notifications")}: ${enabledNotifications.length}/${notifications.length} ${translate("enabled")}`,
@@ -201,10 +213,18 @@ export const FormUsage = () => {
       `${translate("Submissions")}: ${count(stats.data?.totals.submissions)}`,
       `${translate("Spam")} (${translate(spamDescription)}): ${count(stats.data?.totals.spam)}`,
       `${activityPeriodLabel(stats.data?.days ?? chartDays)} (UTC): ${translate("Submissions")}: ${count(recent?.submissions)}, ${translate("Stored spam")}: ${count(recent?.spam)}`,
-      `${translate("Usage in Elements")}: ${config.metadata.craft.is5 ? count(usage.data?.length) : translate("Requires Craft 5")}`,
-      ...(usage.data?.map(
+      `${translate("Usage in Elements")}: ${config.metadata.craft.is5 ? count(elementTotal) : translate("Requires Craft 5")}`,
+      ...(elementTotal > elements.length
+        ? [
+            translate("Showing {count} of {total}", {
+              count: elements.length,
+              total: elementTotal,
+            }),
+          ]
+        : []),
+      ...elements.map(
         (item) => `${item.title} (${item.type}, ${translate(item.status)})`,
-      ) ?? []),
+      ),
       `${translate("Snapshot")}: ${stats.data?.generatedAt ?? "—"}`,
       translate(
         "Reflects current builder settings and may include unsaved changes.",
@@ -437,7 +457,7 @@ export const FormUsage = () => {
         {config.metadata.craft.is5 && (
           <UsagePanel
             className="usage-elements-panel"
-            data-empty={usage.data?.length === 0}
+            data-empty={!!usage.data && elementTotal === 0}
             aria-labelledby="usage-elements-title"
           >
             <div className="section-heading">
@@ -446,10 +466,10 @@ export const FormUsage = () => {
                   {translate("Usage in Elements")}
                 </h2>
                 {usage.data && (
-                  <span className="count">{usage.data.length}</span>
+                  <span className="count">{elementTotal.toLocaleString()}</span>
                 )}
               </div>
-              {usage.data?.length === 0 && (
+              {usage.data && elementTotal === 0 && (
                 <p className="muted usage-empty">
                   {translate(
                     "This form is currently not attached to any elements.",
@@ -468,58 +488,103 @@ export const FormUsage = () => {
                 <button
                   type="button"
                   className="btn small"
-                  onClick={() => usage.refetch()}
+                  onClick={() =>
+                    usage.isFetchNextPageError
+                      ? usage.fetchNextPage()
+                      : usage.refetch()
+                  }
                 >
                   {translate("Retry")}
                 </button>
               </p>
             )}
-            {!!usage.data?.length && (
-              <div className="element-table">
-                <table
-                  className="usage-elements-table"
-                  aria-label={translate("Usage in Elements")}
-                >
-                  <thead>
-                    <tr>
-                      <th scope="col">{translate("Element")}</th>
-                      <th scope="col">{translate("Type")}</th>
-                      <th scope="col">{translate("Status")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {usage.data.map((item) => (
-                      <tr key={item.id} className="element-row">
-                        <th scope="row">
-                          <div
-                            className="chip small element usage-element"
-                            data-id={item.id}
-                          >
-                            <div className="chip-content">
-                              <a href={item.url} className="label-link">
-                                <span>{item.title}</span>
-                              </a>
-                            </div>
-                          </div>
-                        </th>
-                        <td>{item.type}</td>
-                        <td>
-                          <span className="usage-status">
-                            <span
-                              className={classes(
-                                "status",
-                                item.status.toLowerCase(),
-                              )}
-                              aria-hidden="true"
-                            />
-                            {translate(item.status)}
-                          </span>
-                        </td>
+            {!!elements.length && (
+              <>
+                <div className="element-table" id="usage-elements-list">
+                  <table
+                    className="usage-elements-table"
+                    aria-label={translate("Usage in Elements")}
+                  >
+                    <thead>
+                      <tr>
+                        <th scope="col">{translate("Element")}</th>
+                        <th scope="col">{translate("Type")}</th>
+                        <th scope="col">{translate("Status")}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {visibleElements.map((item) => (
+                        <tr key={item.id} className="element-row">
+                          <th scope="row">
+                            <div
+                              className="chip small element usage-element"
+                              data-id={item.id}
+                            >
+                              <div className="chip-content">
+                                <a href={item.url} className="label-link">
+                                  <span>{item.title}</span>
+                                </a>
+                              </div>
+                            </div>
+                          </th>
+                          <td>{item.type}</td>
+                          <td>
+                            <span className="usage-status">
+                              <span
+                                className={classes(
+                                  "status",
+                                  item.status.toLowerCase(),
+                                )}
+                                aria-hidden="true"
+                              />
+                              {translate(item.status)}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {elementTotal > 5 && (
+                  <div className="element-usage-controls">
+                    {(usage.hasNextPage || !showAllElements) && (
+                      <button
+                        type="button"
+                        className="btn small element-usage-toggle"
+                        aria-controls="usage-elements-list"
+                        disabled={usage.isFetchingNextPage}
+                        onClick={() => {
+                          setShowAllElements(true);
+                          if (showAllElements || elements.length <= 5) {
+                            void usage.fetchNextPage();
+                          }
+                        }}
+                      >
+                        {usage.isFetchingNextPage
+                          ? translate("Loading element usage…")
+                          : translate("Show more")}
+                      </button>
+                    )}
+                    {showAllElements && elements.length > 5 && (
+                      <button
+                        type="button"
+                        className="btn small element-usage-toggle"
+                        aria-expanded="true"
+                        aria-controls="usage-elements-list"
+                        onClick={() => setShowAllElements(false)}
+                      >
+                        {translate("Show fewer")}
+                      </button>
+                    )}
+                    <span className="muted" role="status">
+                      {translate("Showing {count} of {total}", {
+                        count: visibleElements.length.toLocaleString(),
+                        total: elementTotal.toLocaleString(),
+                      })}
+                    </span>
+                  </div>
+                )}
+              </>
             )}
           </UsagePanel>
         )}
@@ -551,7 +616,10 @@ export const FormUsage = () => {
               }))}
             />
             <div className="configuration-section">
-              <h3>{translate("Field types")}</h3>
+              <h3>
+                {translate("Field types")}
+                <span className="count">{types.length}</span>
+              </h3>
               <div className="field-type-list">
                 {types.length ? (
                   types.map(([name, total]) => (
@@ -579,6 +647,16 @@ export const FormUsage = () => {
                 </h3>
               )}
             </div>
+            <ConfigurationStatusChips
+              id="form-sites"
+              label={translate("Sites")}
+              items={sites.map((site) => ({
+                key: site.id,
+                name: site.name,
+                enabled: site.enabled,
+                badge: site.id,
+              }))}
+            />
             <p className="muted panel-footnote">
               {translate(
                 "Reflects current builder settings and may include unsaved changes.",

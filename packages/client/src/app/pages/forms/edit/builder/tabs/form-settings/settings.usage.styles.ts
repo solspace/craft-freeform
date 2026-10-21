@@ -127,6 +127,9 @@ export const UsagePanel = styled.section`
   &.usage-elements-panel[data-empty="true"] .section-heading { justify-content: flex-start; gap: 6px 16px; margin-bottom: 0; }
   .usage-empty.muted { margin: 0; font-size: 12px; line-height: 18px; }
   .element-table { overflow-x: auto; border: 1px solid ${colors.gray200}; border-radius: 5px; }
+  .element-usage-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .element-usage-controls .muted { font-size: 12px; line-height: 18px; }
+  .element-usage-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: 26px; }
   .usage-elements-table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
   .usage-elements-table th, .usage-elements-table td { padding: 6px 10px; vertical-align: middle; }
   .usage-elements-table thead { background: ${colors.gray050}; color: ${colors.gray500}; }
@@ -173,6 +176,7 @@ export const DiagnosticsGrid = styled.div`
   .configuration-status-list, .field-type-list { display: flex; flex-wrap: wrap; gap: 4px; }
   .configuration-status-dot.status { flex: 0 0 6px; width: 6px; height: 6px; margin: 0; }
   .configuration-status-chip { max-width: 100%; }
+  .configuration-status-badge { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 14px; height: 16px; padding: 0 4px; border-radius: 3px; background: ${colors.gray100}; font-size: 10px; line-height: 16px; }
   .configuration-status-name { min-width: 0; overflow-wrap: anywhere; }
   .configuration-status-type { flex-shrink: 0; font-weight: 600; white-space: nowrap; }
   .configuration-status-type + .configuration-status-name { padding-inline-start: 6px; border-inline-start: 1px solid ${colors.gray200}; color: ${colors.gray500}; font-size: 10px; line-height: 16px; }

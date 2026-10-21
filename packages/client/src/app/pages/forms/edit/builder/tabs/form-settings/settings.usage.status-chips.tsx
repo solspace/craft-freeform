@@ -7,6 +7,7 @@ type StatusItem = {
   name: string;
   enabled: boolean;
   type?: string;
+  badge?: string | number;
 };
 
 export const ConfigurationStatusChips = ({
@@ -63,6 +64,9 @@ export const ConfigurationStatusChips = ({
                 <span className="configuration-status-type">{item.type}</span>
               )}
               <span className="configuration-status-name">{item.name}</span>
+              {item.badge !== undefined && (
+                <b className="configuration-status-badge">{item.badge}</b>
+              )}
             </span>
           ))
         ) : (

@@ -110,3 +110,31 @@ it("handles an empty list and a list with only disabled notifications", () => {
     notifications.querySelector(".configuration-status-chip")!.textContent,
   ).toBe("Customer confirmation");
 });
+
+it("keeps site ID badges visible when showing enabled and disabled sites", () => {
+  act(() =>
+    root.render(
+      <ConfigurationStatusChips
+        id="sites"
+        label="Sites"
+        items={[
+          { key: 2, name: "French", enabled: false, badge: 2 },
+          { key: 1, name: "English", enabled: true, badge: 1 },
+        ]}
+      />,
+    ),
+  );
+  expect(
+    container.querySelector(".configuration-status-badge")?.textContent,
+  ).toBe("1");
+  expect(container.querySelector(".count")?.textContent).toBe("1");
+  act(() => container.querySelector("button")!.click());
+  expect(
+    Array.from(
+      container.querySelectorAll(".configuration-status-badge"),
+      (badge) => badge.textContent,
+    ),
+  ).toEqual(["1", "2"]);
+  expect(container.querySelector(".status.disabled")).not.toBeNull();
+  expect(container.querySelector(".count")?.textContent).toBe("2");
+});

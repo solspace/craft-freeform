@@ -29,6 +29,11 @@ class ElementsController extends BaseApiController
             $site = \Craft::$app->sites->getCurrentSite();
         }
 
+        // Keep the unpaginated response available for existing API clients.
+        $paginated = null !== $this->request->getQueryParam('limit');
+        $limit = max(1, min(50, (int) $this->request->getQueryParam('limit', 5)));
+        $offset = max(0, (int) $this->request->getQueryParam('offset', 0));
+
         $driver = \Craft::$app->getDb()->getDriverName();
         $service = \Craft::$app->getFields();
 
@@ -39,11 +44,11 @@ class ElementsController extends BaseApiController
         }
 
         if (empty($fieldUids)) {
-            return $this->asJson([]);
+            return $this->asJson($paginated ? ['items' => [], 'total' => 0, 'offset' => $offset, 'limit' => $limit] : []);
         }
 
         $conditions = ['or'];
-        foreach ($fieldUids as $uuid) {
+        foreach (array_unique($fieldUids) as $uuid) {
             if ('mysql' === $driver) {
                 $conditions[] = new Expression(
                     "JSON_UNQUOTE(JSON_EXTRACT([[es.content]], '$.\"{$uuid}\"')) = :formId",
@@ -59,7 +64,7 @@ class ElementsController extends BaseApiController
             }
         }
 
-        $elementIds = (new Query())
+        $query = (new Query())
             ->select(['[[es.elementId]]'])
             ->from(['es' => Table::ELEMENTS_SITES])
             ->innerJoin(['e' => Table::ELEMENTS], '[[e.id]] = [[es.elementId]]')
@@ -71,9 +76,14 @@ class ElementsController extends BaseApiController
                 '[[es.enabled]]' => true,
                 '[[es.siteId]]' => $site->id,
             ])
-            ->distinct('[[es.elementId]]')
-            ->column()
+            ->distinct()
         ;
+
+        $total = $paginated ? (int) (clone $query)->count() : 0;
+        if ($paginated) {
+            $query->limit($limit)->offset($offset);
+        }
+        $elementIds = $query->orderBy(['es.elementId' => \SORT_ASC])->column();
 
         $elements = [];
         foreach ($elementIds as $elementId) {
@@ -92,7 +102,12 @@ class ElementsController extends BaseApiController
             $elements,
         );
 
-        return $this->asJson($elements);
+        return $this->asJson($paginated ? [
+            'items' => array_values($elements),
+            'total' => $total,
+            'offset' => $offset,
+            'limit' => $limit,
+        ] : $elements);
     }
 
     private function _getCustomFieldElements(FieldLayout $layout, array &$fieldUids = []): void

@@ -28,6 +28,7 @@
     "format:verify": "biome check",
     "lint": "pnpm -r --if-present lint",
     "test": "pnpm -r --if-present test",
+    "test:builder-state": "pnpm --filter @ff/client test:builder-state",
     "frontend:bump": "node packages/frontend/scripts/bump-version.mjs",
     "prepare": "husky"
   },

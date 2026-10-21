@@ -28,6 +28,7 @@ import { type RootState, reducer } from "./store";
 import { save } from "./store/actions/form";
 import { statePersistMiddleware } from "./store/middleware/state-persist";
 import { State } from "./store/slices/context";
+import { formActions } from "./store/slices/form";
 import { fieldActions } from "./store/slices/layout/fields";
 
 const fixture = vi.hoisted(() => ({
@@ -52,6 +53,7 @@ vi.mock("./builder/builder", () => ({
     const maxLength = useSelector(
       (state: RootState) => state.layout.fields[0]?.properties.maxLength,
     );
+    const settings = useSelector((state: RootState) => state.form.settings);
     const rules = useQueryFormRules(id);
     const notificationRules = useQueryNotificationRules(id);
     const notifications = useQueryFormNotifications(id);
@@ -66,6 +68,8 @@ vi.mock("./builder/builder", () => ({
       <>
         <p>Ready {id}</p>
         <p>Max Length: {maxLength}</p>
+        <p>Description: {settings.general?.description}</p>
+        <p>AJAX: {String(settings.behavior?.ajax)}</p>
         <Link to="/forms/3">Other form</Link>
         <Link to="/forms">Forms overview</Link>
         <Link to={`/forms/${id}/settings`}>Settings tab</Link>
@@ -81,7 +85,10 @@ const payload = (id: number) => ({
     name: `Form ${id}`,
     handle: `form${id}`,
     type: "regular",
-    settings: {},
+    settings: {
+      general: { description: `Description ${id}` },
+      behavior: { ajax: true },
+    },
     translations: {},
     layout: {
       fields: [
@@ -291,6 +298,55 @@ it("reloads saved field settings when reopening through overview links", async (
     fixture.get.mock.calls.filter(([url]) => url === "/api/forms/2/builder"),
   ).toHaveLength(2);
 });
+
+it.each([
+  { namespace: "general", key: "description", value: "Updated description" },
+  { namespace: "general", key: "description", value: "" },
+  { namespace: "behavior", key: "ajax", value: false },
+])(
+  "reloads saved form settings after setting $namespace.$key to '$value'",
+  async ({ namespace, key, value }) => {
+    await mount();
+    const saved = payload(2);
+    fixture.post.mockImplementation(async (_url, data) => {
+      saved.form.settings = structuredClone(data.form.settings);
+      fixture.get.mockImplementation(async (url: string) => {
+        if (url === "/api/forms/settings") return { data: [] };
+        if (url === "/api/forms/2/builder") return { data: saved };
+        return { data: payload(3) };
+      });
+      return { data: { form: { id: 2 } } };
+    });
+    await act(async () => {
+      editorStore.dispatch(
+        formActions.modifySettings({ namespace, key, value }),
+      );
+      editorStore.dispatch(save());
+    });
+    expect(fixture.post).toHaveBeenCalledWith(
+      "/api/forms/2",
+      expect.objectContaining({
+        form: expect.objectContaining({
+          settings: expect.objectContaining({
+            [namespace]: expect.objectContaining({ [key]: value }),
+          }),
+        }),
+      }),
+    );
+    expect(editorStore.getState().context.state).toBe(State.Idle);
+
+    await clickLink("Forms overview");
+    await clickLink("Open form");
+
+    expect(editorStore.getState().form.settings[namespace][key]).toBe(value);
+    expect(host.textContent).toContain(
+      namespace === "general" ? `Description: ${value}` : `AJAX: ${value}`,
+    );
+    expect(
+      fixture.get.mock.calls.filter(([url]) => url === "/api/forms/2/builder"),
+    ).toHaveLength(2);
+  },
+);
 
 it("reloads saved settings on history navigation between cached form IDs", async () => {
   await mount();

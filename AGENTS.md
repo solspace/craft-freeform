@@ -1,5 +1,10 @@
 # Repository instructions
 
+## Generated client assets
+
+- After changing client source, run `pnpm --filter @ff/client build` before committing or pushing. This repository tracks the built JavaScript and manifest in `packages/plugin/src/Resources/js/client`; include the regenerated assets in the commit so normal Craft installs receive the change.
+- Verify that the build succeeds and the generated manifest references existing assets. Use an available supported Node.js/pnpm runtime if the default runtime does not meet the repository requirements.
+
 ## Visual quality
 
 - For every style change or feature involving UI styling, visually double-check the vertical alignment of icons and text before marking the work complete. Check icon centering within controls and ensure adjacent controls have matching heights where appropriate.

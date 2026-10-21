@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.17.3 - 2026-10-21
 
 ### Added
 - Added live search to the Forms dashboard across form names, handles, and descriptions in Cards and List views, including archived forms.

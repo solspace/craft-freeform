@@ -149,12 +149,14 @@ class FileUploadPreviewHelperTest extends TestCase
         }
         $asset = $this->getMockBuilder(Asset::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getVolume', 'getPath', 'getFilename', 'getUrl'])
+            ->onlyMethods(['getVolume', 'getPath', 'getFilename', 'getUrl', 'fieldByHandle'])
             ->getMock()
         ;
         $asset->method('getVolume')->willReturn($volume);
         $asset->method('getPath')->willReturn('uploads/receipt.pdf');
         $asset->method('getFilename')->willReturn($filename);
+        // These assets have no custom fields or generated Craft behaviors.
+        $asset->method('fieldByHandle')->willReturn(null);
         $asset->expects($this->never())->method('getUrl');
 
         return $asset;

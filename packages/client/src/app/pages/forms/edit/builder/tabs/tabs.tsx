@@ -100,7 +100,7 @@ export const Tabs: React.FC = () => {
   const canManageSubmissions = Boolean(form.canManageSubmissions);
   const showSubmissionsShortcut =
     Boolean(form.id) && storeDataEnabled && canManageSubmissions;
-  const submissionCount = form.submissionCount ?? 0;
+  const submissionCount = (form.submissionCount ?? 0).toLocaleString();
   const params = new URLSearchParams(window.location.search);
   const siteHandle = params.get("site");
   const submissionsUrl = `submissions?${siteHandle ? `site=${siteHandle}&` : ""}source=form:${form.id}`;

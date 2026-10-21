@@ -13,13 +13,18 @@ import { useQueryNotificationTypes } from "@ff-client/queries/notifications";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useResolvedPath } from "react-router-dom";
 import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 import {
   activityPeriodLabel,
   SubmissionActivityChart,
 } from "./settings.usage.chart";
+import {
+  compactMetricValue,
+  UsageMetricValue,
+} from "./settings.usage.metric-value";
+import { useMetricRulesLayout } from "./settings.usage.metrics-layout";
 import { ConfigurationStatusChips } from "./settings.usage.status-chips";
 import {
   DiagnosticsGrid,
@@ -28,6 +33,13 @@ import {
   UsageHeader,
   UsagePanel,
 } from "./settings.usage.styles";
+
+const submitBehaviorLabels: Record<string, string> = {
+  reload: "Reload form with banner",
+  "redirect-return-url": "Redirect to another URL",
+  "load-success-template": "Replace with success message",
+  "redirect-entry": "Redirect to an entry",
+};
 
 export const FormUsage = () => {
   const form = useAppSelector((state) => state.form);
@@ -99,8 +111,35 @@ export const FormUsage = () => {
     );
   const storage = enabled(form.settings.general?.storeData);
   const ajax = enabled(form.settings.behavior?.ajax);
+  const submitBehavior = form.settings.behavior?.successBehavior;
   const spamDescription =
     stats.data?.spamStored === false ? "Blocked attempts" : "Currently stored";
+  const submissionsCount = stats.isError
+    ? undefined
+    : stats.data?.totals.submissions;
+  const spamCount = stats.isError ? undefined : stats.data?.totals.spam;
+  const priorityMetrics = useMemo(
+    () => [
+      {
+        value: compactMetricValue(submissionsCount),
+        label: translate("Submissions"),
+        note: translate(submissionsUrl ? "View submissions" : "All time"),
+      },
+      {
+        value: compactMetricValue(spamCount),
+        label: translate("Spam"),
+        note: translate(spamReviewUrl ? "Review spam" : spamDescription),
+      },
+    ],
+    [
+      submissionsCount,
+      spamCount,
+      submissionsUrl,
+      spamReviewUrl,
+      spamDescription,
+    ],
+  );
+  const { ref: metricsRef, hideRules } = useMetricRulesLayout(priorityMetrics);
   const count = (value?: number) =>
     value === undefined ? "—" : value.toLocaleString();
   const recent = stats.data?.daily.reduce(
@@ -122,6 +161,18 @@ export const FormUsage = () => {
     [translate("PHP"), stats.data?.phpVersion ?? "—"],
     [translate("Store submitted data"), storage],
     [translate("AJAX submissions"), ajax],
+    [
+      translate("Submit behavior"),
+      translate(submitBehaviorLabels[submitBehavior] ?? "Unknown"),
+    ],
+    ...(submitBehavior === "redirect-return-url"
+      ? [
+          [
+            translate("Return URL"),
+            form.settings.behavior?.returnUrl || "—",
+          ] as [string, string],
+        ]
+      : []),
     [
       translate("Last submission"),
       stats.isError || !stats.data
@@ -152,11 +203,11 @@ export const FormUsage = () => {
       `${activityPeriodLabel(stats.data?.days ?? chartDays)} (UTC): ${translate("Submissions")}: ${count(recent?.submissions)}, ${translate("Stored spam")}: ${count(recent?.spam)}`,
       `${translate("Usage in Elements")}: ${config.metadata.craft.is5 ? count(usage.data?.length) : translate("Requires Craft 5")}`,
       ...(usage.data?.map(
-        (item) => `${item.title} (${item.type}, ${item.status})`,
+        (item) => `${item.title} (${item.type}, ${translate(item.status)})`,
       ) ?? []),
       `${translate("Snapshot")}: ${stats.data?.generatedAt ?? "—"}`,
       translate(
-        "Configuration reflects the current builder, including unsaved changes.",
+        "Reflects current builder settings and may include unsaved changes.",
       ),
       ...(stats.data?.spamStored === false
         ? [
@@ -244,13 +295,15 @@ export const FormUsage = () => {
           </p>
         )}
 
-        <Metrics aria-label={translate("Form totals")}>
+        <Metrics
+          ref={metricsRef}
+          data-rules-hidden={hideRules}
+          aria-label={translate("Form totals")}
+        >
           {[
             {
               label: "Submissions",
-              value: count(
-                stats.isError ? undefined : stats.data?.totals.submissions,
-              ),
+              value: submissionsCount,
               note: translate("All time"),
               reviewUrl: submissionsUrl,
               reviewLabel: "View submissions",
@@ -259,7 +312,7 @@ export const FormUsage = () => {
             },
             {
               label: "Spam",
-              value: count(stats.isError ? undefined : stats.data?.totals.spam),
+              value: spamCount,
               note: translate(spamDescription),
               reviewUrl: spamReviewUrl,
               reviewLabel: "Review spam",
@@ -268,7 +321,7 @@ export const FormUsage = () => {
             },
             {
               label: "Fields",
-              value: count(fields.length),
+              value: fields.length,
               note: translate("Types: {types}", {
                 types: types.length,
               }),
@@ -277,14 +330,14 @@ export const FormUsage = () => {
             },
             {
               label: "Rules",
-              value: count(enabledRuleCount),
+              value: enabledRuleCount,
               note: translate("Enabled"),
               icon: "fa-code-branch",
               tone: "slate",
             },
             {
               label: "Notifications",
-              value: count(notifications.length),
+              value: notifications.length,
               note: translate("{count} enabled", {
                 count: enabledNotifications.length,
               }),
@@ -293,7 +346,7 @@ export const FormUsage = () => {
             },
             {
               label: "Integrations",
-              value: count(enabledIntegrations.length),
+              value: enabledIntegrations.length,
               note: translate("Enabled"),
               icon: "fa-plug",
               tone: "rose",
@@ -302,9 +355,14 @@ export const FormUsage = () => {
             <div
               className="metric-card"
               data-tone={metric.tone}
+              data-priority={
+                metric.label === "Submissions" || metric.label === "Spam"
+              }
+              data-metric={metric.label.toLowerCase()}
+              hidden={metric.label === "Rules" && hideRules}
               key={metric.label}
             >
-              <strong className="metric-value">{metric.value}</strong>
+              <UsageMetricValue value={metric.value} />
               <div className="metric-details">
                 <span className="metric-label">{translate(metric.label)}</span>
                 <p className="muted">
@@ -454,7 +512,7 @@ export const FormUsage = () => {
                               )}
                               aria-hidden="true"
                             />
-                            {item.status}
+                            {translate(item.status)}
                           </span>
                         </td>
                       </tr>
@@ -507,14 +565,24 @@ export const FormUsage = () => {
                 )}
               </div>
             </div>
-            <div className="configuration-section pages-summary">
+            <div className="configuration-section pages-summary configuration-counts">
               <h3>
                 {translate("Pages")}
                 <span className="count">{pages.length}</span>
               </h3>
+              {hideRules && (
+                <h3 id="configuration-rules">
+                  {translate("Rules")}
+                  <span className="count" title={translate("Enabled")}>
+                    {enabledRuleCount}
+                  </span>
+                </h3>
+              )}
             </div>
             <p className="muted panel-footnote">
-              {translate("Includes unsaved changes.")}
+              {translate(
+                "Reflects current builder settings and may include unsaved changes.",
+              )}
             </p>
           </UsagePanel>
           <UsagePanel aria-labelledby="form-diagnostics-title">

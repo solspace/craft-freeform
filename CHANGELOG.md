@@ -31,7 +31,6 @@
 - Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
 
 ### Fixed
-- Updated Vite and transitive dependencies to address command injection, source-map denial of service, and redirect credential disclosure advisories.
 - Conditional email notifications now require at least one configured condition, with a validation error shown in the form builder when none is selected.
 - Fixed form-builder fields becoming stuck in a dimmed dragging state after rerenders or interrupted drags.
 - Fixed Date & Time field instructions suggesting translated date expressions that cannot be parsed. Examples remain in English in every control panel language. Native time-only inputs no longer receive stale date constraints.
@@ -47,6 +46,7 @@
 - Fixed duplicate Google Tag Manager container loading and improved tracking for dynamically inserted forms.
 
 ### Security
+- Updated Vite and transitive dependencies to address command injection, source-map denial of service, and redirect credential disclosure advisories.
 - Hardened Signature previews by validating inline PNG/JPEG images and escaping image markup.
 - Restricted Signature email attachments to validated image data, preventing submitted values from being treated as file paths or URLs.
 - Removed submission tokens from the Google Tag Manager data layer. Submission IDs and customization hooks remain available.

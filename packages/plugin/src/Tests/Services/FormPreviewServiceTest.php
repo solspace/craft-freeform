@@ -144,7 +144,8 @@ class FormPreviewServiceTest extends TestCase
         $csrf = (new \ReflectionClass(CsrfInput::class))->newInstanceWithoutConstructor();
         $csrf->attachInput($render);
         $csrf->attachToJson($json);
-        $payload = new PayloadStorage();
+        // Exercise the preview hooks without registering global form handlers.
+        $payload = (new \ReflectionClass(PayloadStorage::class))->newInstanceWithoutConstructor();
         $payload->attachInput($render);
         $payload->attachJson($json);
         (new \ReflectionClass(SessionContext::class))->newInstanceWithoutConstructor()->addHiddenInputs($render);

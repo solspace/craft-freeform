@@ -77,6 +77,7 @@ export const FormUsage = () => {
   const sites = config.sites.list
     .map((site) => ({ ...site, enabled: enabledSiteIds.has(String(site.id)) }))
     .sort((a, b) => Number(b.enabled) - Number(a.enabled));
+  const showSites = config.sites.enabled && sites.length > 1;
   const currentPath = useResolvedPath("");
   const submissionListUrl = (folder: "submissions" | "spam") =>
     form.id && form.canManageSubmissions
@@ -201,7 +202,11 @@ export const FormUsage = () => {
       `${translate("Usage & Stats")} — ${form.name}`,
       ...details.map(([label, value]) => `${label}: ${value}`),
       `${translate("Fields")}: ${fields.length} (${types.map(([name, total]) => `${translate(name)}: ${total}`).join(", ")})`,
-      `${translate("Sites")}: ${sites.map((site) => `${site.name} (${site.id}): ${enabled(site.enabled)}`).join(", ")}`,
+      ...(showSites
+        ? [
+            `${translate("Sites")}: ${sites.map((site) => `${site.name} (${site.id}): ${enabled(site.enabled)}`).join(", ")}`,
+          ]
+        : []),
       `${translate("Pages")}: ${pages.length}`,
       `${translate("Rules")}: ${enabledRuleCount} ${translate("enabled")}`,
       `${translate("Notifications")}: ${enabledNotifications.length}/${notifications.length} ${translate("enabled")}`,
@@ -647,16 +652,18 @@ export const FormUsage = () => {
                 </h3>
               )}
             </div>
-            <ConfigurationStatusChips
-              id="form-sites"
-              label={translate("Sites")}
-              items={sites.map((site) => ({
-                key: site.id,
-                name: site.name,
-                enabled: site.enabled,
-                badge: site.id,
-              }))}
-            />
+            {showSites && (
+              <ConfigurationStatusChips
+                id="form-sites"
+                label={translate("Sites")}
+                items={sites.map((site) => ({
+                  key: site.id,
+                  name: site.name,
+                  enabled: site.enabled,
+                  badge: site.id,
+                }))}
+              />
+            )}
             <p className="muted panel-footnote">
               {translate(
                 "Reflects current builder settings and may include unsaved changes.",

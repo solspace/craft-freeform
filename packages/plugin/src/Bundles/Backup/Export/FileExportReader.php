@@ -43,20 +43,41 @@ use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\PdfTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\WrapperTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Translation;
+use Solspace\Freeform\Bundles\Backup\Import\ImportFileStorage;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Models\Settings;
+use yii\helpers\FileHelper as WorkingFileHelper;
 use yii\web\NotFoundHttpException;
 
 class FileExportReader extends BaseExporter
 {
+    private ?string $path = null;
+
     public function __construct(
         private PropertyProvider $propertyProvider,
         private IntegrationTypeProvider $integrationTypeProvider,
     ) {}
+
+    public function release(): void
+    {
+        if (null !== $this->path) {
+            WorkingFileHelper::removeDirectory($this->path);
+            $this->path = null;
+        }
+    }
+
+    public function destruct(): void
+    {
+        $this->release();
+        $token = $this->getOption('fileToken');
+        if ($token) {
+            \Craft::$container->get(ImportFileStorage::class)->delete($token);
+        }
+    }
 
     public function collectDataPreview(): ImportPreview
     {
@@ -105,7 +126,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new FormCollection();
 
-        foreach ($this->readLineData('forms.jsonl') as $json) {
+        foreach ($this->readLineData('forms.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -210,7 +231,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new FavoritesCollection();
 
-        foreach ($this->readLineData('favorites.jsonl') as $json) {
+        foreach ($this->readLineData('favorites.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -231,7 +252,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new FormGroupsCollection();
 
-        foreach ($this->readLineData('form-groups.jsonl') as $json) {
+        foreach ($this->readLineData('form-groups.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -262,7 +283,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new LimitedUsersCollection();
 
-        foreach ($this->readLineData('limited-users.jsonl') as $json) {
+        foreach ($this->readLineData('limited-users.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -283,7 +304,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new IntegrationCollection();
 
-        foreach ($this->readLineData('integrations.jsonl') as $json) {
+        foreach ($this->readLineData('integrations.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -313,7 +334,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new NotificationTemplateCollection();
 
-        foreach ($this->readLineData('notifications.jsonl') as $json) {
+        foreach ($this->readLineData('notifications.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -330,7 +351,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new PdfTemplateCollection();
 
-        foreach ($this->readLineData('pdf-templates.jsonl') as $json) {
+        foreach ($this->readLineData('pdf-templates.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -354,7 +375,7 @@ class FileExportReader extends BaseExporter
     {
         $collection = new WrapperTemplateCollection();
 
-        foreach ($this->readLineData('wrapper-templates.jsonl') as $json) {
+        foreach ($this->readLineData('wrapper-templates.jsonl', !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
@@ -438,13 +459,17 @@ class FileExportReader extends BaseExporter
             return null;
         }
 
-        try {
-            $content = $this->getFileContents('settings.json');
-        } catch (\Exception) {
+        $path = $this->getPath().'/settings.json';
+        if (!file_exists($path)) {
+            if ($this->getOption('settings', false)) {
+                throw new \RuntimeException('Import file is missing: settings.json');
+            }
+
             return null;
         }
 
-        $json = json_decode($content, true);
+        $content = $this->getFileContents('settings.json');
+        $json = json_decode($content, true, 512, \JSON_THROW_ON_ERROR);
 
         $defaults = $json['defaults'];
         unset($json['defaults']);
@@ -496,10 +521,15 @@ class FileExportReader extends BaseExporter
 
         $filePath = $path.'/'.$name;
         if (!file_exists($filePath)) {
-            throw new \Exception('File not found');
+            throw new \RuntimeException('Import file is missing: '.$name);
         }
 
-        return fopen($filePath, 'r');
+        $handle = fopen($filePath, 'r');
+        if (false === $handle) {
+            throw new \RuntimeException('Could not read import file: '.$name);
+        }
+
+        return $handle;
     }
 
     private function getFileContents(string $name): string
@@ -508,10 +538,15 @@ class FileExportReader extends BaseExporter
 
         $filePath = $path.'/'.$name;
         if (!file_exists($filePath)) {
-            throw new \Exception('File not found');
+            throw new \RuntimeException('Import file is missing: '.$name);
         }
 
-        return file_get_contents($filePath);
+        $content = file_get_contents($filePath);
+        if (false === $content) {
+            throw new \RuntimeException('Could not read import file: '.$name);
+        }
+
+        return $content;
     }
 
     private function getPath(): string
@@ -521,32 +556,47 @@ class FileExportReader extends BaseExporter
             throw new \Exception('Token is not defined');
         }
 
-        return \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
+        if (null === $this->path) {
+            $this->path = \Craft::$container->get(ImportFileStorage::class)->restore($token);
+        }
+
+        if (!is_dir($this->path)) {
+            throw new NotFoundHttpException('Import file no longer exists. Please upload it again.');
+        }
+
+        return $this->path;
     }
 
-    private function readLineData(string $file): \Generator
+    private function readLineData(string $file, bool $required = false): \Generator
     {
-        try {
-            $handle = $this->getFile($file);
-        } catch (\Exception) {
+        // Collections can be absent from a valid partial export, but the upload itself must exist.
+        $path = $this->getPath();
+        if (!file_exists($path.'/'.$file)) {
+            if ($required) {
+                throw new \RuntimeException('Import file is missing: '.$file);
+            }
+
             return;
         }
 
-        while (($line = fgets($handle)) !== false) {
-            yield json_decode($line, true);
-        }
+        $handle = $this->getFile($file);
 
-        fclose($handle);
+        try {
+            while (($line = fgets($handle)) !== false) {
+                yield json_decode($line, true, 512, \JSON_THROW_ON_ERROR);
+            }
+        } finally {
+            fclose($handle);
+        }
     }
 
     private function getSubmissionFiles(): \Generator
     {
         $path = $this->getPath();
 
-        try {
-            $files = scandir($path);
-        } catch (\Exception) {
-            throw new NotFoundHttpException('Import File no longer exists.');
+        $files = scandir($path);
+        if (false === $files) {
+            throw new NotFoundHttpException('Import file no longer exists. Please upload it again.');
         }
 
         foreach ($files as $file) {
@@ -602,7 +652,7 @@ class FileExportReader extends BaseExporter
 
         $root = $this->getPath()."/templates/{$type}/";
 
-        foreach ($this->readLineData("{$type}-templates.jsonl") as $json) {
+        foreach ($this->readLineData("{$type}-templates.jsonl", !empty($ids)) as $json) {
             if (null !== $ids && !\in_array($json['fileName'], $ids)) {
                 continue;
             }

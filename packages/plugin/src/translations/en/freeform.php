@@ -3994,6 +3994,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'Show a sample file for testing. Sample files are ignored on submission.' => 'Show a sample file for testing. Sample files are ignored on submission.',
     'Sample files are ignored on submission.' => 'Sample files are ignored on submission.',
     'Default for option {number}' => 'Default for option {number}',
+    'Configure at least one condition for this notification.' => 'Configure at least one condition for this notification.',
     // Form Builder // Settings // Usage & Stats
     'Chart period' => 'Chart period',
     'Last 90 days' => 'Last 90 days',

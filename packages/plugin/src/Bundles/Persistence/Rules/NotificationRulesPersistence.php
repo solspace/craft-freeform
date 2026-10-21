@@ -30,6 +30,10 @@ class NotificationRulesPersistence extends FeatureBundle
 
     public function handleRuleSave(PersistFormEvent $event): void
     {
+        if ($event->hasErrors()) {
+            return;
+        }
+
         $form = $event->getForm();
         if (!$form) {
             return;

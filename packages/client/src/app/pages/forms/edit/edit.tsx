@@ -55,7 +55,7 @@ export const Edit: React.FC = () => {
     useQueryFormBuilder(numericFormId);
 
   useEffect(() => {
-    if (formId === undefined || !data) return;
+    if (formId === undefined || !data || isFetching || isError) return;
 
     const { form, rules, notificationRules, notifications, integrations } =
       data;
@@ -103,6 +103,8 @@ export const Edit: React.FC = () => {
     setHydrated(data);
   }, [
     data,
+    isFetching,
+    isError,
     formId,
     numericFormId,
     queryClient,

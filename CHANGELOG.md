@@ -31,6 +31,7 @@
 - Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
 
 ### Fixed
+- Fixed saved field settings displaying old values when reopening a form through control panel links or browser history.
 - Conditional email notifications now require at least one configured condition, with a validation error shown in the form builder when none is selected.
 - Fixed form-builder fields becoming stuck in a dimmed dragging state after rerenders or interrupted drags.
 - Fixed Date & Time field instructions suggesting translated date expressions that cannot be parsed. Examples remain in English in every control panel language. Native time-only inputs no longer receive stale date constraints.

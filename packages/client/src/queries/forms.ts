@@ -75,11 +75,15 @@ export const useQueryFormBuilder = (
 ): UseQueryResult<FormBuilderData, AxiosError> =>
   useQuery<FormBuilderData, AxiosError>({
     queryKey: QKForms.builder(id),
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
-        .get<FormBuilderData>(`/api/forms/${id}/builder`)
+        .get<FormBuilderData>(`/api/forms/${id}/builder`, { signal })
         .then((res) => res.data),
-    staleTime: Infinity,
+    // Re-entering a form must load saved data, but background refetches
+    // must not replace unsaved edits in the active builder.
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     enabled: !!id,
   });
 

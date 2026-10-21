@@ -5,16 +5,30 @@ import {
   useQueryNotificationRules,
 } from "@ff-client/queries/rules";
 import { configureStore } from "@reduxjs/toolkit";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  focusManager,
+  onlineManager,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
-import { Provider, useStore } from "react-redux";
-import { Link, MemoryRouter, Route, Routes, useParams } from "react-router-dom";
+import { Provider, useSelector, useStore } from "react-redux";
+import {
+  Link,
+  MemoryRouter,
+  Route,
+  Routes,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { Edit } from "./edit";
-import { reducer } from "./store";
+import { type RootState, reducer } from "./store";
 import { save } from "./store/actions/form";
 import { statePersistMiddleware } from "./store/middleware/state-persist";
+import { State } from "./store/slices/context";
+import { fieldActions } from "./store/slices/layout/fields";
 
 const fixture = vi.hoisted(() => ({
   get: vi.fn(),
@@ -25,6 +39,9 @@ vi.mock("axios", () => ({ default: { get: fixture.get, post: fixture.post } }));
 vi.mock("@ff-client/contexts/site/site.context", () => ({
   useSiteContext: () => ({ current: { handle: "default" } }),
 }));
+vi.mock("@ff-client/utils/notifications", () => ({
+  notifications: { success: vi.fn(), error: vi.fn() },
+}));
 vi.mock("./builder/builder.loader", () => ({
   LoaderBuilder: () => <p>Loading form</p>,
 }));
@@ -32,6 +49,9 @@ vi.mock("./builder/builder", () => ({
   Builder: () => {
     const id = Number(useParams().formId);
     const store = useStore();
+    const maxLength = useSelector(
+      (state: RootState) => state.layout.fields[0]?.properties.maxLength,
+    );
     const rules = useQueryFormRules(id);
     const notificationRules = useQueryNotificationRules(id);
     const notifications = useQueryFormNotifications(id);
@@ -45,7 +65,10 @@ vi.mock("./builder/builder", () => ({
     return (
       <>
         <p>Ready {id}</p>
+        <p>Max Length: {maxLength}</p>
         <Link to="/forms/3">Other form</Link>
+        <Link to="/forms">Forms overview</Link>
+        <Link to={`/forms/${id}/settings`}>Settings tab</Link>
       </>
     );
   },
@@ -61,8 +84,15 @@ const payload = (id: number) => ({
     settings: {},
     translations: {},
     layout: {
-      fields: [],
-      rows: [],
+      fields: [
+        {
+          uid: `field-${id}`,
+          rowUid: `row-${id}`,
+          typeClass: "Text",
+          properties: { label: "Text", handle: "text", maxLength: 100 },
+        },
+      ],
+      rows: [{ uid: `row-${id}`, layoutUid: `layout-${id}`, order: 0 }],
       layouts: [{ uid: `layout-${id}` }],
       pages: [
         {
@@ -108,6 +138,13 @@ let host: HTMLDivElement;
 let root: Root;
 let client: QueryClient;
 let editorStore: ReturnType<typeof configureStore>;
+let navigate: ReturnType<typeof useNavigate>;
+
+function Navigation() {
+  navigate = useNavigate();
+  return null;
+}
+
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   fixture.get.mockReset();
@@ -135,6 +172,8 @@ afterEach(async () => {
   await act(async () => root.unmount());
   host.remove();
   client.clear();
+  focusManager.setFocused(undefined);
+  onlineManager.setOnline(true);
   vi.unstubAllGlobals();
 });
 const mount = async () => {
@@ -143,7 +182,12 @@ const mount = async () => {
       <Provider store={editorStore}>
         <QueryClientProvider client={client}>
           <MemoryRouter initialEntries={["/forms/2"]}>
+            <Navigation />
             <Routes>
+              <Route
+                path="/forms"
+                element={<Link to="/forms/2">Open form</Link>}
+              />
               <Route path="/forms/:formId/*" element={<Edit />} />
             </Routes>
           </MemoryRouter>
@@ -190,6 +234,173 @@ it("hydrates all saved editor data before showing the builder and reuses it in t
       ],
     }),
   );
+});
+
+const clickLink = async (text: string) => {
+  const link = Array.from(host.querySelectorAll("a")).find(
+    (item) => item.textContent === text,
+  );
+  expect(link).toBeDefined();
+  await act(async () => link!.click());
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 20)));
+};
+
+const saveMaxLength = async (value: number) => {
+  fixture.post.mockImplementation(async (_url, data) => {
+    const saved = payload(2);
+    saved.form.layout.fields = structuredClone(data.layout.fields);
+    fixture.get.mockImplementation(async (url: string) => {
+      if (url === "/api/forms/settings") return { data: [] };
+      if (url === "/api/forms/2/builder") return { data: saved };
+      return { data: payload(3) };
+    });
+    return { data: { form: { id: 2 } } };
+  });
+  await act(async () => {
+    editorStore.dispatch(
+      fieldActions.edit({ uid: "field-2", handle: "maxLength", value }),
+    );
+    editorStore.dispatch(save());
+  });
+  expect(fixture.post).toHaveBeenCalledWith(
+    "/api/forms/2",
+    expect.objectContaining({
+      layout: expect.objectContaining({
+        fields: [
+          expect.objectContaining({
+            properties: expect.objectContaining({ maxLength: value }),
+          }),
+        ],
+      }),
+    }),
+  );
+  expect(editorStore.getState().context.state).toBe(State.Idle);
+};
+
+it("reloads saved field settings when reopening through overview links", async () => {
+  await mount();
+  await saveMaxLength(250);
+  await clickLink("Forms overview");
+  await clickLink("Open form");
+
+  expect(host.textContent).toContain("Max Length: 250");
+  expect(editorStore.getState().layout.fields[0].properties.maxLength).toBe(
+    250,
+  );
+  expect(
+    fixture.get.mock.calls.filter(([url]) => url === "/api/forms/2/builder"),
+  ).toHaveLength(2);
+});
+
+it("reloads saved settings on history navigation between cached form IDs", async () => {
+  await mount();
+  await saveMaxLength(250);
+  await clickLink("Other form");
+  await act(async () => navigate(-1));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 20)));
+  expect(host.textContent).toContain("Ready 2");
+  expect(host.textContent).toContain("Max Length: 250");
+  await act(async () => navigate(1));
+  await act(async () => new Promise((resolve) => setTimeout(resolve, 20)));
+  expect(host.textContent).toContain("Ready 3");
+  expect(
+    fixture.get.mock.calls.filter(([url]) => url === "/api/forms/3/builder"),
+  ).toHaveLength(2);
+});
+
+it("preserves unsaved settings across tab, window focus, and reconnect events", async () => {
+  await mount();
+  await act(async () =>
+    editorStore.dispatch(
+      fieldActions.edit({ uid: "field-2", handle: "maxLength", value: 300 }),
+    ),
+  );
+  await clickLink("Settings tab");
+  await act(async () => {
+    focusManager.setFocused(false);
+    onlineManager.setOnline(false);
+  });
+  await act(async () => {
+    focusManager.setFocused(true);
+    onlineManager.setOnline(true);
+  });
+  expect(host.textContent).toContain("Max Length: 300");
+  expect(
+    fixture.get.mock.calls.filter(([url]) => url === "/api/forms/2/builder"),
+  ).toHaveLength(1);
+});
+
+it("keeps stale cached settings unavailable if reopening fails", async () => {
+  await mount();
+  await saveMaxLength(250);
+  await clickLink("Forms overview");
+  fixture.renders.mockClear();
+  fixture.get.mockRejectedValue(new Error("Unable to reload form"));
+  await clickLink("Open form");
+  expect(host.textContent).toContain("Unable to reload form");
+  expect(fixture.renders).not.toHaveBeenCalled();
+});
+
+it("waits for fresh data before hydrating a cached form, even when the response is unchanged", async () => {
+  await mount();
+  await clickLink("Other form");
+  let resolve: (value: { data: ReturnType<typeof payload> }) => void;
+  fixture.get.mockImplementation(
+    () =>
+      new Promise((done) => {
+        resolve = done;
+      }),
+  );
+  fixture.renders.mockClear();
+
+  await act(async () => navigate(-1));
+  expect(host.textContent).toContain("Loading form");
+  expect(editorStore.getState().form.id).toBe(3);
+  expect(fixture.renders).not.toHaveBeenCalled();
+
+  await act(async () => resolve({ data: payload(2) }));
+  await act(async () => new Promise((done) => setTimeout(done, 20)));
+  expect(host.textContent).toContain("Ready 2");
+  expect(editorStore.getState().form.id).toBe(2);
+});
+
+it("cancels an unfinished builder request when navigating away", async () => {
+  fixture.get.mockImplementation(async (url: string) => {
+    if (url === "/api/forms/settings") return { data: [] };
+    return new Promise(() => {});
+  });
+  await mount();
+  const signal = fixture.get.mock.calls.find(
+    ([url]) => url === "/api/forms/2/builder",
+  )?.[1]?.signal;
+  expect(signal).toBeDefined();
+  expect(signal.aborted).toBe(false);
+  await act(async () => navigate("/forms"));
+  expect(signal.aborted).toBe(true);
+  expect(fixture.renders).not.toHaveBeenCalled();
+});
+
+it("preserves edited values and validation errors after a failed save", async () => {
+  await mount();
+  fixture.post.mockRejectedValue({
+    errors: { fields: { "field-2": { maxLength: ["Invalid length"] } } },
+  });
+  await act(async () => {
+    editorStore.dispatch(
+      fieldActions.edit({ uid: "field-2", handle: "maxLength", value: 300 }),
+    );
+    editorStore.dispatch(save());
+  });
+  expect(editorStore.getState().context.state).toBe(State.Idle);
+  expect(host.textContent).toContain("Max Length: 300");
+  expect(editorStore.getState().layout.fields[0].errors.maxLength).toEqual([
+    "Invalid length",
+  ]);
+  await clickLink("Settings tab");
+  expect(host.textContent).toContain("Max Length: 300");
+  expect(
+    fixture.get.mock.calls.filter(([url]) => url === "/api/forms/2/builder"),
+  ).toHaveLength(1);
 });
 it("replaces cached and Redux data when switching to another form", async () => {
   await mount();

@@ -31,6 +31,7 @@
 - Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
 
 ### Fixed
+- Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
 - Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
 - Fixed Freeform imports silently completing without importing data on hosting with multiple PHP instances. Uploaded bundles now use the Craft cache, and missing or expired import data reports an error.
 - Fixed saved field settings displaying old values when reopening a form through control panel links or browser history.

@@ -6,8 +6,6 @@ use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\User;
-use craft\fields\Matrix;
-use craft\models\FieldLayout;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
@@ -34,19 +32,25 @@ class ElementsController extends BaseApiController
         $limit = max(1, min(50, (int) $this->request->getQueryParam('limit', 5)));
         $offset = max(0, (int) $this->request->getQueryParam('offset', 0));
 
-        $driver = \Craft::$app->getDb()->getDriverName();
         $service = \Craft::$app->getFields();
-
         $fieldUids = [];
-        $layouts = $service->getAllLayouts();
-        foreach ($layouts as $layout) {
-            $this->_getCustomFieldElements($layout, $fieldUids);
+        if ($service->getFieldsByType(FormFieldType::class)) {
+            // All saved layouts include Matrix entry layouts. Following Matrix fields
+            // recursively repeats work and can loop on self-referencing entry types.
+            foreach ($service->getAllLayouts() as $layout) {
+                foreach ($layout->getCustomFieldElements() as $customField) {
+                    if ($customField->getField() instanceof FormFieldType) {
+                        $fieldUids[] = $customField->uid;
+                    }
+                }
+            }
         }
 
         if (empty($fieldUids)) {
             return $this->asJson($paginated ? ['items' => [], 'total' => 0, 'offset' => $offset, 'limit' => $limit] : []);
         }
 
+        $driver = \Craft::$app->getDb()->getDriverName();
         $conditions = ['or'];
         foreach (array_unique($fieldUids) as $uuid) {
             if ('mysql' === $driver) {
@@ -108,21 +112,6 @@ class ElementsController extends BaseApiController
             'offset' => $offset,
             'limit' => $limit,
         ] : $elements);
-    }
-
-    private function _getCustomFieldElements(FieldLayout $layout, array &$fieldUids = []): void
-    {
-        $customFields = $layout->getCustomFieldElements();
-        foreach ($customFields as $customField) {
-            $field = $customField->getField();
-            if ($field instanceof Matrix) {
-                foreach ($field->getEntryTypes() as $entryType) {
-                    $this->_getCustomFieldElements($entryType->getFieldLayout(), $fieldUids);
-                }
-            } elseif ($field instanceof FormFieldType) {
-                $fieldUids[] = $customField->uid;
-            }
-        }
     }
 
     private function _getElementTitle(ElementInterface $element): string

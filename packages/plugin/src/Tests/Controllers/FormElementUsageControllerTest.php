@@ -5,9 +5,11 @@ namespace Solspace\Freeform\Tests\Controllers;
 use craft\db\Connection;
 use craft\elements\Entry;
 use craft\fieldlayoutelements\CustomField;
+use craft\fields\Matrix;
 use craft\models\FieldLayout;
 use craft\models\Site;
 use craft\services\Elements;
+use craft\services\Fields;
 use craft\web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -57,7 +59,88 @@ class FormElementUsageControllerTest extends TestCase
         }
     }
 
-    private function fixture(array $params): array
+    #[TestWith([[]])]
+    #[TestWith([['limit' => 5, 'offset' => 10]])]
+    public function testSitesWithoutFreeformFieldsSkipLayoutsAndElementQueries(array $params): void
+    {
+        $previousApp = \Craft::$app;
+        $previousYiiApp = \Yii::$app;
+
+        try {
+            [$controller, $elements, $db] = $this->fixture($params, hasFields: false);
+            $db->expects(self::never())->method('createCommand');
+            $elements->expects(self::never())->method('getElementById');
+
+            self::assertSame(isset($params['limit']) ? [
+                'items' => [],
+                'total' => 0,
+                'offset' => 10,
+                'limit' => 5,
+            ] : [], $controller->actionGet(2)->data);
+        } finally {
+            \Craft::$app = $previousApp;
+            \Yii::$app = $previousYiiApp;
+        }
+    }
+
+    public function testUnusedFreeformFieldsReturnEmptyUsageWithoutElementQueries(): void
+    {
+        $previousApp = \Craft::$app;
+        $previousYiiApp = \Yii::$app;
+
+        try {
+            [$controller, $elements, $db] = $this->fixture(['limit' => 5], layouts: []);
+            $db->expects(self::never())->method('createCommand');
+            $elements->expects(self::never())->method('getElementById');
+
+            self::assertSame([
+                'items' => [],
+                'total' => 0,
+                'offset' => 0,
+                'limit' => 5,
+            ], $controller->actionGet(2)->data);
+        } finally {
+            \Craft::$app = $previousApp;
+            \Yii::$app = $previousYiiApp;
+        }
+    }
+
+    public function testMatrixLayoutsAreScannedWithoutFollowingRecursiveEntryTypes(): void
+    {
+        $previousApp = \Craft::$app;
+        $previousYiiApp = \Yii::$app;
+
+        try {
+            $matrix = $this->createMock(Matrix::class);
+            $matrix->expects(self::never())->method('getEntryTypes');
+            $matrixElement = $this->createMock(CustomField::class);
+            $matrixElement->method('getField')->willReturn($matrix);
+            $parentLayout = $this->createMock(FieldLayout::class);
+            $parentLayout->expects(self::once())->method('getCustomFieldElements')->willReturn([$matrixElement]);
+
+            $formElement = $this->createMock(CustomField::class);
+            $formElement->uid = 'nested-field-uid';
+            $formElement->method('getField')->willReturn($this->createMock(FormFieldType::class));
+            $nestedLayout = $this->createMock(FieldLayout::class);
+            $nestedLayout->expects(self::once())->method('getCustomFieldElements')->willReturn([$matrixElement, $formElement]);
+
+            [$controller, $elements, $db] = $this->fixture(['limit' => 5, 'offset' => 200], [$parentLayout, $nestedLayout]);
+            $db->expects(self::exactly(2))->method('createCommand')->with(self::callback(static fn ($sql) => str_contains($sql, 'nested-field-uid')));
+            $elements->expects(self::never())->method('getElementById');
+
+            self::assertSame([
+                'items' => [],
+                'total' => 200,
+                'offset' => 200,
+                'limit' => 5,
+            ], $controller->actionGet(2)->data);
+        } finally {
+            \Craft::$app = $previousApp;
+            \Yii::$app = $previousYiiApp;
+        }
+    }
+
+    private function fixture(array $params, ?array $layouts = null, bool $hasFields = true): array
     {
         $request = $this->createMock(Request::class);
         $request->method('getIsConsoleRequest')->willReturn(false);
@@ -78,14 +161,9 @@ class FormElementUsageControllerTest extends TestCase
         $custom->method('getField')->willReturn($field);
         $layout = $this->createMock(FieldLayout::class);
         $layout->method('getCustomFieldElements')->willReturn([$custom]);
-        $fields = new class($layout) {
-            public function __construct(private FieldLayout $layout) {}
-
-            public function getAllLayouts(): array
-            {
-                return [$this->layout];
-            }
-        };
+        $fields = $this->createMock(Fields::class);
+        $fields->expects(self::once())->method('getFieldsByType')->with(FormFieldType::class)->willReturn($hasFields ? [$field] : []);
+        $fields->expects($hasFields ? self::once() : self::never())->method('getAllLayouts')->willReturn($layouts ?? [$layout]);
         $db = $this->getMockBuilder(Connection::class)->setConstructorArgs([['dsn' => 'mysql:host=localhost;dbname=test']])->onlyMethods(['createCommand', 'getQueryBuilder'])->getMock();
         $db->method('getQueryBuilder')->willReturn(new QueryBuilder($db));
         $db->method('createCommand')->willReturnCallback(function ($sql) {
@@ -127,6 +205,6 @@ class FormElementUsageControllerTest extends TestCase
         $controller->method('getFormsService')->willReturn($forms);
         $controller->method('asJson')->willReturnCallback(static fn ($data) => new Response(['charset' => 'UTF-8', 'data' => $data]));
 
-        return [$controller, $elements];
+        return [$controller, $elements, $db];
     }
 }

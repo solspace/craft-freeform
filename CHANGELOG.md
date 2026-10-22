@@ -3,6 +3,7 @@
 ## 5.17.4 - Unreleased
 
 ### Fixed
+- Fixed status color changes failing on older MySQL and MariaDB installations that still used a restricted color column. Existing status colors are preserved.
 - Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
 - Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
 

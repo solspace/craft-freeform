@@ -54,6 +54,7 @@
 
   enctype="multipart/form-data"
   data-id="{{ form.anchor }}"
+  data-signature-filename="signature-{{ submission.formId }}-{{ submission.id }}"
   data-freeform
 
 {% endblock %}

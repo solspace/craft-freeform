@@ -14,7 +14,14 @@ const ColorPicker: React.FC<ControlType<ColorProperty>> = ({
 }) => {
   return (
     <Control property={property} errors={errors} context={context}>
-      <HexColorInput value={value} onChange={updateValue} />
+      <HexColorInput
+        value={value}
+        onChange={updateValue}
+        allowTransparent={
+          property.handle === "backgroundColor" ||
+          property.handle === "borderColor"
+        }
+      />
     </Control>
   );
 };

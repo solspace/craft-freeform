@@ -91,6 +91,7 @@ export function FieldRenderer({
         field={field}
         className={classNames.label}
         requiredIndicator={theme.defaults?.requiredIndicator}
+        requiredMarkClassName={classNames.requiredMark}
       />
     ) : null;
 

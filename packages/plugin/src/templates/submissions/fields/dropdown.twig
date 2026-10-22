@@ -2,6 +2,10 @@
 
 {{ forms.selectField({
     label: field.label,
+    class: 'fullwidth',
+    inputAttributes: field.enableSearch ? {
+        'data-freeform-searchable': field.searchableConfig|json_encode,
+    } : {},
     name: field.handle,
     id: field.handle,
     required: field.required,

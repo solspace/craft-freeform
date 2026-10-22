@@ -11,11 +11,13 @@ import translate from "@ff-client/utils/translations";
 import EditIcon from "@ff-icons/actions/edit";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { FormSearch } from "./form-search";
 import {
   Button,
   ButtonGroup,
   Header,
+  HeaderContainer,
   Title,
   ViewButtons,
   ViewControls,
@@ -36,6 +38,7 @@ export const ListProvider: React.FC = () => {
   const openEditGroupModal = useEditGroupModal();
   const openAddForm = useAddFormModal();
 
+  const [search, setSearch] = useState("");
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
   const { canCreate } = config.metadata.freeform;
 
@@ -56,56 +59,64 @@ export const ListProvider: React.FC = () => {
     <>
       <Breadcrumb id="form-list" label="Forms" url="/forms" />
 
-      <Header>
-        <Title>{translate("Forms")}</Title>
+      <HeaderContainer>
+        <Header>
+          <Title>{translate("Forms")}</Title>
 
-        <ViewControls>
-          {config.editions.isAtLeast(Edition.Pro) &&
-            config.metadata.freeform.canOrganizeForms && (
-              <GroupsButton
-                type="button"
-                className="btn"
-                onClick={openEditGroupModal}
-              >
-                <EditIcon />
-                {translate("Form Groups")}
-              </GroupsButton>
-            )}
-          <ViewButtons className="btngroup btngroup--exclusive">
-            <button
-              type="button"
-              className={classes("btn", View.List === view && "active")}
-              data-icon="list"
-              aria-label="Display in a table"
-              title={translate("Display as list")}
-              onClick={() => setView(View.List)}
-            />
-            <button
-              type="button"
-              className={classes("btn", View.Grid === view && "active")}
-              data-icon="element-cards"
-              aria-label={translate("Display as cards")}
-              title={translate("Display as cards")}
-              onClick={() => setView(View.Grid)}
-            />
-          </ViewButtons>
-        </ViewControls>
-
-        {canCreate && (
-          <ButtonGroup>
-            <Button
-              type="button"
-              className="btn submit add icon"
-              onClick={openAddForm}
+          <ViewControls>
+            <FormSearch value={search} onChange={setSearch} />
+            <ViewButtons
+              className="btngroup btngroup--exclusive"
+              aria-label={translate("View")}
             >
-              {translate("Add new form")}
-            </Button>
-          </ButtonGroup>
-        )}
-      </Header>
+              <button
+                type="button"
+                className={classes("btn", View.Grid === view && "active")}
+                data-icon="element-cards"
+                aria-label={translate("Display as cards")}
+                aria-pressed={View.Grid === view}
+                title={translate("Display as cards")}
+                onClick={() => setView(View.Grid)}
+              />
+              <button
+                type="button"
+                className={classes("btn", View.List === view && "active")}
+                data-icon="list"
+                aria-label={translate("Display in a table")}
+                aria-pressed={View.List === view}
+                title={translate("Display as list")}
+                onClick={() => setView(View.List)}
+              />
+            </ViewButtons>
+            {config.editions.isAtLeast(Edition.Pro) &&
+              config.metadata.freeform.canOrganizeForms && (
+                <GroupsButton
+                  type="button"
+                  className="btn"
+                  onClick={openEditGroupModal}
+                >
+                  <EditIcon />
+                  {translate("Form groups")}
+                </GroupsButton>
+              )}
+          </ViewControls>
 
-      {view === View.List && <FormList />}
-      {view === View.Grid && <FormGrid />}
+          {canCreate && (
+            <ButtonGroup>
+              <Button
+                type="button"
+                className="btn submit add icon"
+                onClick={openAddForm}
+              >
+                {translate("Add new form")}
+              </Button>
+            </ButtonGroup>
+          )}
+        </Header>
+      </HeaderContainer>
+
+      {view === View.List && <FormList search={search} />}
+      {view === View.Grid && <FormGrid search={search} />}
     </>
   );
 };

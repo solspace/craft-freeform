@@ -17,18 +17,16 @@ use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Charts\RadialChartData;
 use Solspace\Freeform\Services\Pro\WidgetsService;
-use Solspace\Freeform\Widgets\AbstractWidget;
+use Solspace\Freeform\Widgets\AbstractChartWidget;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
-class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
+class RadialChartsWidget extends AbstractChartWidget implements ExtraWidgetInterface
 {
     public ?string $title = null;
 
     public array|string|null $formIds = null;
 
     public ?string $dateRange = null;
-
-    public ?int $chartHeight = null;
 
     public ?string $chartType = null;
 
@@ -60,10 +58,6 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             $this->dateRange = WidgetsService::RANGE_LAST_30_DAYS;
         }
 
-        if (null === $this->chartHeight) {
-            $this->chartHeight = 100;
-        }
-
         if (null === $this->chartType) {
             $this->chartType = WidgetsService::CHART_DONUT;
         }
@@ -71,6 +65,16 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         if (null === $this->includeSpam) {
             $this->includeSpam = false;
         }
+    }
+
+    public function rules(): array
+    {
+        return [
+            [['formIds'], 'required'],
+            [['chartSize'], 'in', 'range' => self::CHART_SIZES],
+            [['dateRange'], 'in', 'range' => array_keys($this->getWidgetsService()->getDateRanges())],
+            [['chartType'], 'in', 'range' => [WidgetsService::CHART_PIE, WidgetsService::CHART_DONUT, WidgetsService::CHART_POLAR_AREA]],
+        ];
     }
 
     public function getBodyHtml(): string
@@ -88,6 +92,7 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             'freeform/_widgets/radial-charts/body',
             [
                 'chartData' => $data,
+                'dateRangeLabel' => $this->getWidgetsService()->getDateRanges()[$this->dateRange],
                 'settings' => $this,
             ]
         );
@@ -99,11 +104,11 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             'freeform/_widgets/radial-charts/settings',
             [
                 'settings' => $this,
-                'formOptions' => $this->getFormService()->getAllFormNames(),
+                'formOptions' => $this->getFormService()->getAllFormNames(orderByName: true),
                 'chartTypes' => [
-                    WidgetsService::CHART_PIE => 'Pie',
-                    WidgetsService::CHART_DONUT => 'Donut',
-                    WidgetsService::CHART_POLAR_AREA => 'Polar Area',
+                    WidgetsService::CHART_PIE => Freeform::t('Pie'),
+                    WidgetsService::CHART_DONUT => Freeform::t('Donut'),
+                    WidgetsService::CHART_POLAR_AREA => Freeform::t('Polar Area'),
                 ],
                 'dateRangeOptions' => $this->getWidgetsService()->getDateRanges(),
             ]

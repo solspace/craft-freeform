@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Bundles\Persistence;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use yii\base\Event;
 
@@ -33,6 +35,11 @@ class NotificationPersistence extends FeatureBundle
 
         $notifications = $event->getPayload()->notifications ?? null;
         if (null === $notifications) {
+            return;
+        }
+
+        $this->validateRules($event);
+        if ($event->hasErrors()) {
             return;
         }
 
@@ -80,6 +87,36 @@ class NotificationPersistence extends FeatureBundle
         foreach ($records as $record) {
             $record->save();
             $event->addNotificationRecord($record);
+        }
+    }
+
+    private function validateRules(PersistFormEvent $event): void
+    {
+        $rules = $event->getPayload()->rules->notifications ?? null;
+        if (null === $rules) {
+            return;
+        }
+
+        foreach ($event->getPayload()->notifications as $notification) {
+            if (!is_a($notification->className, Conditional::class, true)) {
+                continue;
+            }
+
+            foreach ($rules as $rule) {
+                if ($rule->uid !== ($notification->rule ?? null) || $rule->notification !== $notification->uid) {
+                    continue;
+                }
+
+                foreach ($rule->conditions ?? [] as $condition) {
+                    if ($event->getFieldRecord($condition->field ?? '')) {
+                        continue 3;
+                    }
+                }
+            }
+
+            $event->addErrorsToResponse('notifications', [
+                $notification->uid => ['rule' => [Freeform::t('Configure at least one condition for this notification.')]],
+            ]);
         }
     }
 

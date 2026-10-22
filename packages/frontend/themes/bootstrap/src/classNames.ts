@@ -11,10 +11,8 @@ export const darkSelectInput =
 export const lightFileInput = "form-control";
 export const darkFileInput = "form-control bg-dark-subtle text-white";
 
-export const lightFileDndInput =
-  "form-control d-flex align-items-center justify-content-center text-center";
-export const darkFileDndInput =
-  "form-control bg-dark-subtle text-white d-flex align-items-center justify-content-center text-center";
+export const lightFileDndInput = "w-100";
+export const darkFileDndInput = "w-100";
 
 export const lightOptionLabel = "form-check";
 export const darkOptionLabel = "form-check";
@@ -34,11 +32,12 @@ export const darkPaymentHost = "w-100";
 export const lightClassNames: FreeformThemeClassNames = {
   form: "freeform-form w-100",
   page: "w-100",
-  row: "row g-3",
+  row: "row",
   field: "col mb-3",
   fieldHidden: "d-none",
   fieldHasErrors: "",
   label: "form-label mb-1",
+  requiredMark: "ms-1 text-danger",
   instructions: "form-text text-muted mt-n1 mb-1",
   characterCount: "text-body-secondary",
   characterCountError: "text-danger",
@@ -47,7 +46,7 @@ export const lightClassNames: FreeformThemeClassNames = {
   optionLabel: lightOptionLabel,
   optionInput: lightCheckboxInput,
   content: "small text-body-secondary",
-  errors: "alert alert-danger",
+  errors: "mt-1",
   error: "list-unstyled m-0 fst-italic text-danger",
   buttons: "mt-2 d-flex flex-wrap gap-2",
   button: "btn",
@@ -61,11 +60,12 @@ export const lightClassNames: FreeformThemeClassNames = {
 export const darkClassNames: FreeformThemeClassNames = {
   form: "ff-email-suggestions-dark freeform-form ff-phone-dark w-100",
   page: "w-100",
-  row: "row g-3",
+  row: "row",
   field: "col mb-3",
   fieldHidden: "d-none",
   fieldHasErrors: "",
   label: "form-label mb-1 text-white",
+  requiredMark: "ms-1 text-danger",
   instructions: "form-text text-muted mt-n1 mb-1",
   characterCount: "text-white-50",
   characterCountError: "text-danger",
@@ -74,7 +74,7 @@ export const darkClassNames: FreeformThemeClassNames = {
   optionLabel: darkOptionLabel,
   optionInput: darkCheckboxInput,
   content: "small text-white-50",
-  errors: "alert alert-danger",
+  errors: "mt-1",
   error: "list-unstyled m-0 fst-italic text-danger",
   buttons: "mt-2 d-flex flex-wrap gap-2",
   button: "btn",
@@ -174,7 +174,7 @@ export function lightClassNamesByType(): Record<
       optionInput: "visually-hidden",
     },
     cards: {
-      input: "row g-3",
+      input: "row",
       optionLabel:
         "freeform-bootstrap-card col border rounded p-3 h-100 text-start",
       optionInput: "visually-hidden",
@@ -253,7 +253,7 @@ export function darkClassNamesByType(): Record<
       optionInput: "visually-hidden",
     },
     cards: {
-      input: "row g-3",
+      input: "row",
       optionLabel:
         "freeform-bootstrap-card col border border-secondary bg-dark text-white rounded p-3 h-100 text-start",
       optionInput: "visually-hidden",

@@ -136,7 +136,7 @@ class Submission extends Element
                 }
 
                 $event = new SetSubmissionFieldValueEvent($field, $this, $value);
-                $this->trigger(self::EVENT_SET_FIELD_VALUE, $event);
+                Event::trigger($this, self::EVENT_SET_FIELD_VALUE, $event);
 
                 $field->setValue($event->getValue());
                 $this->markFieldValueAsLoaded($field);
@@ -909,9 +909,9 @@ class Submission extends Element
 
         if ($value instanceof FieldInterface) {
             $event = new RenderTableValueEvent($value, $this);
-            $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
+            Event::trigger($this, self::EVENT_RENDER_TABLE_VALUE, $event);
 
-            if ($event->getOutput()) {
+            if (null !== $event->getOutput()) {
                 return $event->getOutput();
             }
 
@@ -963,9 +963,9 @@ class Submission extends Element
 
         if ($value instanceof FieldInterface) {
             $event = new RenderTableValueEvent($value, $this);
-            $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
+            Event::trigger($this, self::EVENT_RENDER_TABLE_VALUE, $event);
 
-            if ($event->getOutput()) {
+            if (null !== $event->getOutput()) {
                 return $event->getOutput();
             }
 

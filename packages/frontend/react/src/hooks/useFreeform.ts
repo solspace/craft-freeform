@@ -69,6 +69,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
   const captchaCleanupsRef = useRef(new Map<string, () => void>());
   const extensionsRef = useRef<FreeformExtension[]>(options.extensions ?? []);
   const visibilityVersionRef = useRef(0);
+  const resetVersionRef = useRef(0);
 
   extensionsRef.current = options.extensions ?? [];
 
@@ -438,6 +439,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
       return;
     }
 
+    resetVersionRef.current += 1;
     formStateRef.current = createFormState({
       manifest,
       initialValues: options.initialValues,
@@ -524,10 +526,9 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
             },
           });
 
+          // If this mount was superseded (React StrictMode / remount), do NOT
+          // run cleanup — it would wipe DOM from a newer mount on the same node.
           if (cancelled) {
-            if (typeof cleanup === "function") {
-              cleanup();
-            }
             return;
           }
 
@@ -598,6 +599,7 @@ export function useFreeform(options: UseFreeformOptions): UseFreeformResult {
 
     return {
       manifest,
+      resetVersion: resetVersionRef.current,
       values: snapshot.values,
       touched: snapshot.touched,
       fieldErrors: snapshot.fieldErrors,

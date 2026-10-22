@@ -11,7 +11,7 @@ import type { Notification } from "@ff-client/types/notifications";
 import type { Option } from "@ff-client/types/properties";
 import type { NotificationRule } from "@ff-client/types/rules";
 import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -25,6 +25,8 @@ export const QKForms = {
   settings: () => [...QKForms.base, "settings"] as const,
   previewTemplates: (id: number, site?: string) =>
     [...QKForms.single(id), "preview-templates", site] as const,
+  stats: (id: number, days: number = 90) =>
+    [...QKForms.single(id), "stats", days] as const,
   usage: (id: number, siteId: number) =>
     [...QKForms.base, id, "usage", siteId] as const,
 };
@@ -73,11 +75,15 @@ export const useQueryFormBuilder = (
 ): UseQueryResult<FormBuilderData, AxiosError> =>
   useQuery<FormBuilderData, AxiosError>({
     queryKey: QKForms.builder(id),
-    queryFn: () =>
+    queryFn: ({ signal }) =>
       axios
-        .get<FormBuilderData>(`/api/forms/${id}/builder`)
+        .get<FormBuilderData>(`/api/forms/${id}/builder`, { signal })
         .then((res) => res.data),
-    staleTime: Infinity,
+    // Re-entering a form must load saved data, but background refetches
+    // must not replace unsaved edits in the active builder.
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     enabled: !!id,
   });
 
@@ -120,24 +126,42 @@ export const useQueryPreviewTemplates = (
   });
 };
 
-type FormUsage = Array<{
+type FormUsageElement = {
   id: number;
   title: string;
   type: string;
   status: string;
   url: string;
-}>;
+};
 
-export const useQueryFormUsage = (): UseQueryResult<FormUsage, AxiosError> => {
+type FormUsagePage = {
+  items: FormUsageElement[];
+  total: number;
+  offset: number;
+  limit: number;
+};
+
+export const useQueryFormUsage = (enabled = true) => {
   const { formId } = useParams();
   const { current } = useSiteContext();
 
-  return useQuery({
-    queryKey: QKForms.usage(Number(formId), current.id),
-    queryFn: () =>
+  return useInfiniteQuery({
+    queryKey: [...QKForms.usage(Number(formId), current?.id ?? 0), "pages"],
+    enabled: enabled && !!Number(formId) && !!current?.id,
+    initialPageParam: { offset: 0, limit: 5 },
+    queryFn: ({ pageParam, signal }) =>
       axios
-        .get(`/api/forms/${formId}/elements?site=${current.id}`)
+        .get<FormUsagePage>(`/api/forms/${formId}/elements`, {
+          params: { site: current?.id, ...pageParam },
+          signal,
+        })
         .then((res) => res.data),
+    getNextPageParam: (lastPage) => {
+      const offset = lastPage.offset + lastPage.limit;
+      return offset < lastPage.total ? { offset, limit: 25 } : undefined;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -154,3 +178,29 @@ export const useQueryFormColors = (): FormColors => {
 
   return formColors;
 };
+
+export type FormStatsDays = 7 | 30 | 90 | 365;
+
+export type FormStats = {
+  days: FormStatsDays;
+  daily: Array<{ date: string; submissions: number; spam: number }>;
+  totals: { submissions: number; spam: number };
+  lastSubmissionAt: string | null;
+  spamStored: boolean;
+  generatedAt: string;
+  phpVersion: string;
+};
+
+export const useQueryFormStats = (id?: number, days: FormStatsDays = 90) =>
+  useQuery<FormStats, AxiosError>({
+    queryKey: QKForms.stats(id ?? 0, days),
+    queryFn: ({ signal }) =>
+      axios
+        .get<FormStats>(`/api/forms/${id}/stats`, { params: { days }, signal })
+        .then((res) => res.data),
+    placeholderData: (previous, query) =>
+      query?.queryKey[1] === id ? previous : undefined,
+    enabled: !!id,
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });

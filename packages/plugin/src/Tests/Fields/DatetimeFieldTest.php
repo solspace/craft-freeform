@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Tests\Fields;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Bundles\Fields\Validation\DateValidation;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
@@ -102,6 +103,94 @@ class DatetimeFieldTest extends TestCase
             'datetime before minimum' => ['both', '2026-10-07T16:35', true],
             'datetime after maximum' => ['both', '2026-10-11T16:35', true],
         ];
+    }
+
+    #[DataProvider('todayDateBounds')]
+    public function testNativeTodayBounds(string $type, string $format): void
+    {
+        $field = $this->createField($type);
+        (new \ReflectionProperty(DatetimeField::class, 'minDate'))->setValue($field, 'today');
+        (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
+        $today = new \DateTime('today');
+
+        $input = $this->getInput($field);
+        $this->assertSame($today->format($format), $input->getAttribute('min'));
+        $this->assertSame($today->format($format), $input->getAttribute('max'));
+
+        $field->setValue($today->format($format));
+        $event = new ValidateEvent($field->getForm(), $field);
+        $this->getValidation()->validateMinDate($event);
+        $this->getValidation()->validateMaxDate($event);
+        $this->assertSame([], $field->getErrors());
+
+        $field->setValue((clone $today)->modify('-1 day')->format($format));
+        $this->getValidation()->validateMinDate($event);
+        $this->assertCount(1, $field->getErrors());
+
+        $field->setValue((clone $today)->modify('+1 day')->format($format));
+        $this->getValidation()->validateMaxDate($event);
+        $this->assertCount(2, $field->getErrors());
+    }
+
+    public static function todayDateBounds(): array
+    {
+        return [
+            'date' => ['date', 'Y-m-d'],
+            'datetime' => ['both', 'Y-m-d\TH:i'],
+        ];
+    }
+
+    public function testBuiltInDatepickerKeepsRelativeTodayBounds(): void
+    {
+        $field = $this->createField('date', false);
+        (new \ReflectionProperty(DatetimeField::class, 'useDatepicker'))->setValue($field, true);
+        (new \ReflectionProperty(DatetimeField::class, 'minDate'))->setValue($field, 'today');
+        (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
+
+        $input = $this->getInput($field);
+        $this->assertSame('today', $input->getAttribute('data-datepicker-min-date'));
+        $this->assertSame('today', $input->getAttribute('data-datepicker-max-date'));
+        $this->assertFalse($input->hasAttribute('min'));
+        $this->assertFalse($input->hasAttribute('max'));
+    }
+
+    #[DataProvider('translatedDateInstructions')]
+    public function testTranslatedDateExamplesRemainParseable(string $property, string $locale): void
+    {
+        $reflection = new \ReflectionProperty(DatetimeField::class, $property);
+        $instructions = $reflection->getAttributes(Input\Text::class)[0]->newInstance()->instructions;
+        $translations = require __DIR__.'/../../translations/'.$locale.'/freeform.php';
+
+        $this->assertArrayHasKey($instructions, $translations);
+        preg_match_all("/'([^']+)'/", $instructions, $sourceExamples);
+        // Compare quoted literals only: surrounding prose should be localized.
+        foreach ($sourceExamples[1] as $example) {
+            $this->assertStringContainsString("'".$example."'", $translations[$instructions]);
+            $this->assertInstanceOf(\DateTime::class, new \DateTime($example));
+        }
+    }
+
+    public static function translatedDateInstructions(): array
+    {
+        $cases = [];
+        foreach (['initialValue', 'minDate', 'maxDate'] as $property) {
+            foreach (['en', 'nl', 'de', 'fr', 'it'] as $locale) {
+                $cases[$property.' '.$locale] = [$property, $locale];
+            }
+        }
+
+        return $cases;
+    }
+
+    public function testNativeTimeInputDoesNotReceiveDateBounds(): void
+    {
+        $field = $this->createField('time');
+        (new \ReflectionProperty(DatetimeField::class, 'minDate'))->setValue($field, 'today');
+        (new \ReflectionProperty(DatetimeField::class, 'maxDate'))->setValue($field, 'today');
+
+        $input = $this->getInput($field);
+        $this->assertFalse($input->hasAttribute('min'));
+        $this->assertFalse($input->hasAttribute('max'));
     }
 
     #[DataProvider('nativeValues')]

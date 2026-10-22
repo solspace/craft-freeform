@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
+use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Single\GTM\GTM;
@@ -40,6 +41,26 @@ class GTMTrigger extends FeatureBundle
             Form::EVENT_OUTPUT_AS_JSON,
             [$this, 'attachToJson']
         );
+
+        Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'attachToAjaxPayload']);
+    }
+
+    public function attachToAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void
+    {
+        $form = $event->getForm();
+        $integration = $this->integrationsProvider->getSingleton($form, GTM::class);
+        if (!$integration) {
+            return;
+        }
+
+        $payload = $event->getPayload();
+        $eligible = true === ($payload['success'] ?? false) && true === ($payload['finished'] ?? false)
+            && empty($payload['duplicate']) && empty($payload['actions']) && !($form->getSubmission()?->isSpam ?? false);
+        $event->add('gtm', [
+            'eligible' => $eligible,
+            'eventName' => $integration->getEventName() ?: 'form-submission',
+            'parameters' => $eligible ? $integration->getEventParameters($form, $payload['values'] ?? []) : new \stdClass(),
+        ]);
     }
 
     public function attachGtmAttribute(AttachFormAttributesEvent $event): void

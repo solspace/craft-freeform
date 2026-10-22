@@ -1,8 +1,18 @@
 {% import "_includes/forms" as forms %}
 
+{# Rich-text mode is inferred from the stored label's markup, as in the form builder. #}
+{% set checkboxLabel %}
+    {{- field.label|purify({
+        'HTML.Allowed': 'a[href|title|target|rel],strong,b,em,i,u,s,del,br,code,span',
+        'Attr.AllowedFrameTargets': ['_blank'],
+        'HTML.TargetNoopener': true,
+        'HTML.TargetNoreferrer': true,
+    }) -}}
+{% endset %}
+
 {% set checkboxInput %}
     {{ forms.checkboxField({
-        label: field.label,
+        label: checkboxLabel,
         name: field.handle,
         id: field.handle,
         checked: submission[field.handle] is not null ? submission[field.handle].value : false,

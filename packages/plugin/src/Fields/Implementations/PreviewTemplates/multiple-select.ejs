@@ -1,3 +1,38 @@
+<% if (typeof enableSearch !== 'undefined' && enableSearch) {
+    const options = [];
+    const collectOptions = function(items) {
+        items.forEach(function(option) {
+            if (option.children) {
+                collectOptions(option.children);
+            } else if (!option.optgroup && option.value !== '' && !option.disabled) {
+                options.push(option);
+            }
+        });
+    };
+    collectOptions(generatedOptions);
+    const defaults = Array.isArray(defaultValue) ? defaultValue : [];
+    const selected = options.filter(option => defaults.includes(option.value));
+    const tags = (selected.length ? selected : options).slice(0, 2);
+%>
+<div class="fullwidth ff-multi-select-preview">
+  <% if (tags.length) { %>
+  <div data-preview-tags style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
+    <% tags.forEach(function(option) { %>
+    <span style="display:inline-flex;align-items:center;gap:6px;max-width:100%;box-sizing:border-box;padding:2px 6px;border:1px solid rgba(96,125,159,.25);border-radius:4px;background:#fbfcfe;color:#596673;font-size:13px;line-height:20px;">
+      <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%- option.label %></span>
+      <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;flex:0 0 12px;width:12px;height:20px;font-size:16px;">×</span>
+    </span>
+    <% }); %>
+  </div>
+  <% } %>
+  <div style="position:relative;">
+    <input type="text" placeholder="Search options..." style="padding-inline-end:30px;" />
+    <span aria-hidden="true" style="position:absolute;inset-inline-end:10px;top:0;bottom:0;display:flex;align-items:center;pointer-events:none;">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="m1 3 4 4 4-4" stroke="currentColor" stroke-width="2" /></svg>
+    </span>
+  </div>
+</div>
+<% } else { %>
 <div class="fullwidth">
   <select class="fullwidth" multiple>
     <% const renderOptions = function(options) {
@@ -21,3 +56,4 @@
     }; renderOptions(generatedOptions); %>
   </select>
 </div>
+<% } %>

@@ -35,6 +35,11 @@ export function CheckboxFieldRenderer(props: ReactFieldRendererProps) {
   const checkedValue = resolveCheckedValue(props);
   const checked = isChecked(input.value ?? props.value, checkedValue);
   const label = props.field.label ?? "";
+  const requiredMark = props.field.required ? (
+    <span aria-hidden="true" className={props.classNames.requiredMark}>
+      *
+    </span>
+  ) : null;
 
   return (
     <label className={props.classNames.optionLabel ?? props.classNames.input}>
@@ -54,11 +59,15 @@ export function CheckboxFieldRenderer(props: ReactFieldRendererProps) {
         }}
         onBlur={input.onBlur}
       />
-      {props.allowRawHtml ? (
-        <span dangerouslySetInnerHTML={{ __html: label }} />
-      ) : (
-        <span>{label}</span>
-      )}
+      {/* Keep * inside the text node so optionLabel flex gap doesn't push it away */}
+      <span>
+        {props.allowRawHtml ? (
+          <span dangerouslySetInnerHTML={{ __html: label }} />
+        ) : (
+          label
+        )}
+        {requiredMark}
+      </span>
     </label>
   );
 }

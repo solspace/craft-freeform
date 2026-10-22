@@ -11,12 +11,33 @@
 }) }}
 
 {{ forms.textField({
-    label: "Limit"|t('freeform'),
-    instructions: "The maximum number of submissions to show."|t('freeform'),
+    label: "Submissions to Show"|t('freeform'),
+    instructions: "The number of submissions per page, or the total shown when pagination is disabled."|t('freeform'),
+    type: 'number',
+    min: 1,
+    max: 100,
     id: 'limit',
     name: 'limit',
     value: settings.limit,
     errors: settings.getErrors('limit')
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Show Search and Filters"|t('freeform'),
+    instructions: "Show search, form and status filters, and sorting controls above the submission list."|t('freeform'),
+    id: 'showFilters',
+    name: 'showFilters',
+    on: settings.showFilters,
+    errors: settings.getErrors('showFilters')
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Show Pagination"|t('freeform'),
+    instructions: "Show page navigation to browse the latest 100 submissions. When disabled, show only the configured number of matching submissions."|t('freeform'),
+    id: 'showPagination',
+    name: 'showPagination',
+    on: settings.showPagination,
+    errors: settings.getErrors('showPagination')
 }) }}
 
 {{ forms.checkboxSelectField({

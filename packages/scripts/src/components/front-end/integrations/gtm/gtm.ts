@@ -1,4 +1,4 @@
-import type { FreeformResponseEvent } from "types/events";
+import { mountGtmTracking } from "@lib/plugin/handlers/form/gtm-tracking";
 
 import { GTMManager } from "./manager";
 
@@ -14,44 +14,7 @@ import { GTMManager } from "./manager";
       }
     });
 
-  document.addEventListener(
-    "freeform-ajax-success",
-    (event: FreeformResponseEvent) => {
-      const form = event.form;
-      if (!form.dataset.gtmEvent) {
-        return;
-      }
-
-      const eventName = form.dataset.gtmEvent;
-
-      const response = event.response;
-      const pushEvent = form.freeform._dispatchEvent(
-        "freeform-gtm-data-layer-push",
-        { payload: {}, response },
-      );
-
-      const { finished, multipage, success, submissionId, submissionToken } =
-        response;
-
-      let payload = {
-        event: eventName,
-        form: {
-          handle: form.dataset.handle,
-          finished,
-          multipage,
-          success,
-        },
-        submission: {
-          id: submissionId,
-          token: submissionToken,
-        },
-      };
-
-      payload = Object.assign(payload, pushEvent.payload);
-
-      window.dataLayer.push(payload);
-    },
-  );
+  mountGtmTracking(document);
 
   manager.observeNewForms();
 })();

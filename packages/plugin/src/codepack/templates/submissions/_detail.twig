@@ -1,0 +1,89 @@
+{% set folderUrl = demoBaseUrl ~ '/submissions/' ~ form.handle ~ (spamMode ? '/spam' : '') %}
+{% set formIcon = form.iconSvg %}
+
+<article class="freeform-form-browser freeform-submission-detail" aria-labelledby="submission-title">
+    <a class="freeform-submissions-back" href="{{ folderUrl }}">← Back to {{ spamMode ? 'spam' : 'submissions' }}</a>
+    <header class="freeform-submissions-heading">
+        <div class="freeform-submissions-form">
+            <span class="freeform-browser-icon{{ formIcon ? ' freeform-browser-icon-custom' }}" style="--form-accent: {{ form.color|e('html_attr') }}" aria-hidden="true">
+                {% if formIcon %}{{ formIcon }}{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg>{% endif %}
+            </span>
+            <div>
+                <p class="freeform-detail-eyebrow">{{ spamMode ? 'Spam' : 'Submission' }} #{{ submission.id }} · <a href="{{ folderUrl }}">{{ form.name }}</a></p>
+                <h2 id="submission-title">{{ submission.title|default('Submission #' ~ submission.id) }}</h2>
+            </div>
+        </div>
+        {% if freeform.pro and not spamMode %}
+            <nav class="freeform-detail-actions" aria-label="Submission actions">
+                <a class="freeform-submissions-form-link" href="{{ demoBaseUrl }}/forms/default/{{ form.handle }}/edit/{{ submission.token }}"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12.5 3.5 4 4M3 17l4.5-1 10-10a1.4 1.4 0 0 0 0-2l-1-1a1.4 1.4 0 0 0-2 0l-10 10L3 17z"/></svg>Edit submission</a>
+                <a class="freeform-detail-delete" href="{{ demoBaseUrl }}/submissions/delete/{{ form.handle }}/{{ submission.token }}"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h14M7 5V3h6v2M5 5l1 12h8l1-12M8 8v6m4-6v6"/></svg>Delete</a>
+            </nav>
+        {% endif %}
+    </header>
+
+    <div class="freeform-detail-layout">
+        <section class="freeform-submissions-panel freeform-detail-fields" aria-labelledby="submission-fields-title">
+            <div class="freeform-submissions-toolbar"><h3 id="submission-fields-title">Submitted fields</h3></div>
+            <dl class="freeform-detail-values">
+                {% for field in submission %}
+                    <div class="freeform-detail-field">
+                        <dt>{{ field.label }}</dt>
+                        <dd>
+                            {% if field.type in ['file', 'file-dnd'] %}
+                                <div class="freeform-detail-files">
+                                    {% set availableFiles = 0 %}
+                                    {% for assetId in submission[field.handle].value %}
+                                        {% set asset = craft.assets.id(assetId).one() %}
+                                        {% if asset %}
+                                            {% set availableFiles = availableFiles + 1 %}
+                                            <a class="freeform-detail-file" href="{{ asset.url }}">
+                                                {% if asset.kind == 'image' %}<img src="{{ asset.url }}" alt="{{ asset.title ?: asset.filename }}" loading="lazy">{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8zM14 3v5h5M9 13h6M9 17h4"/></svg>{% endif %}
+                                                <span>{{ asset.filename }}</span><span aria-hidden="true">↗</span>
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                    {% if not availableFiles %}<span class="freeform-detail-empty">No files available</span>{% endif %}
+                                </div>
+                            {% elseif field.type == 'table' %}
+                                {% if submission[field.handle].value %}
+                                    <div class="freeform-detail-table-scroll" tabindex="0" role="region" aria-label="{{ field.label }} table">
+                                        <table class="freeform-detail-table">
+                                            <caption class="freeform-submissions-sr-only">{{ field.label }}</caption>
+                                            <thead><tr>{% for column in field.tableLayout %}<th scope="col">{{ column.label|default('—') }}</th>{% endfor %}</tr></thead>
+                                            <tbody>
+                                                {% for row in submission[field.handle].value %}
+                                                    <tr>{% for index, column in field.tableLayout %}{% set cell = row[index] ?? null %}<td>{{ cell is iterable ? cell|join(', ') : cell }}</td>{% endfor %}</tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}<span class="freeform-detail-empty">Not provided</span>{% endif %}
+                            {% elseif field.type == 'signature' %}
+                                {% if submission[field.handle].value %}<img class="freeform-detail-signature" src="{{ submission[field.handle].value }}" alt="{{ field.label }}" loading="lazy">{% else %}<span class="freeform-detail-empty">Not provided</span>{% endif %}
+                            {% else %}
+                                {% set value = field.implements('options') ? submission[field.handle].labelsAsString : submission[field.handle].valueAsString %}
+                                {% if value is not same as('') and value is not null %}<div class="freeform-detail-text">{{ value }}</div>{% else %}<span class="freeform-detail-empty">Not provided</span>{% endif %}
+                            {% endif %}
+                        </dd>
+                    </div>
+                {% else %}
+                    <div class="freeform-detail-field"><dt>No submitted fields</dt><dd class="freeform-detail-empty">This entry has no field values to display.</dd></div>
+                {% endfor %}
+            </dl>
+        </section>
+
+        <aside class="freeform-submissions-panel freeform-detail-meta" aria-labelledby="submission-details-title">
+            <div class="freeform-submissions-toolbar"><h3 id="submission-details-title">Details</h3></div>
+            <dl>
+                {% if spamMode %}
+                    <div><dt>Folder</dt><dd><span class="freeform-spam-indicator"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M5 17V3m0 0c4-3 6 3 11 0v8c-5 3-7-3-11 0"/></svg>Flagged as spam</span></dd></div>
+                {% endif %}
+                <div><dt>Status</dt><dd><span class="freeform-submission-status" style="--status-color: {{ submission.statusModel.color|e('html_attr') }}"><i aria-hidden="true"></i>{{ submission.statusModel.name }}</span></dd></div>
+                <div><dt>Received</dt><dd><time datetime="{{ submission.dateCreated|date('c') }}">{{ submission.dateCreated|date('M j, Y') }}<span>{{ submission.dateCreated|date('g:i a T') }}</span></time></dd></div>
+                <div><dt>Author</dt><dd>{{ submission.author ? submission.author.username : 'Guest' }}</dd></div>
+                <div><dt>Form</dt><dd><a href="{{ demoBaseUrl }}/forms/default/{{ form.handle }}">{{ form.name }} <span aria-hidden="true">↗</span></a></dd></div>
+                <div><dt>Submission ID</dt><dd>#{{ submission.id }}</dd></div>
+            </dl>
+        </aside>
+    </div>
+</article>

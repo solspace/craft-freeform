@@ -3,7 +3,7 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Added
-- Included the features and fixes from Freeform 5.17.1, including database orphan cleanup, form scheduling, submission limits, and the Preview tab.
+- Included the features and fixes from Freeform 5.17.1 through 5.17.3 and the unreleased 5.17.4 fixes, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Fixed
 - Restored Freeform console command discovery on Craft 6, including database orphan cleanup and foreign key repair.
@@ -56,6 +56,94 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.17.4 - Unreleased
+
+### Fixed
+- Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
+- Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
+
+## 5.17.3 - 2026-10-21
+
+### Added
+- Added live search to the Forms dashboard across form names, handles, and descriptions in Cards and List views, including archived forms.
+- Added an optional **Form Icon** setting on Craft 5, with matching icons for all 12 form starting points. Icons appear in form cards and the Forms list in each form’s color.
+- Added search, filtering, sorting, pagination, and refresh controls to the **Recent Submissions widget**, with settings to toggle search/filter controls and pagination.
+- Added inline success confirmation and a **Submit another** action to the **Quick Form widget**.
+- Added **Customize Appearance** and **Show Pen Cursor** settings for Signature fields, with transparent background and border options. New fields use template defaults, while existing fields retain their configured appearance.
+- Added per-form **Event Parameters** mappings to the Google Tag Manager integration, with automatic `form_name` and support for non-personal choice, numeric, and hidden field values.
+
+### Changed
+- Replaced **Usage in Elements** with **Usage & Stats** in the form builder, with selectable submission and spam charts, configuration summaries, and copyable support diagnostics. Element usage remains available on Craft 5.
+- Improved Forms dashboard toolbar spacing and mobile layout.
+- Improved **Form groups** with inline renaming, keyboard reordering, and menus for moving forms. Removing a group requires confirmation and moves its forms to **Unassigned**, with clearer handling of unsaved changes.
+- Updated searchable multi-select field previews in the **form builder layout** to show selection tags and a search control.
+- Modernized dashboard chart widgets with locally bundled **Chart.js 4.5.1**, cleaner scrollable legends, light tooltips, whole-number axes, submission totals, and empty states.
+- Replaced percentage-based chart widget heights with consistent **Compact**, **Normal**, and **Large** presets. Existing widgets default to **Normal**.
+- Redesigned the **Recent Submissions widget** with a responsive list layout, status indicators, and localized relative dates.
+- Refreshed the **Quick Form widget** to match native Craft styling, including searchable selects, tables, uploads, opinion scales, groups, summaries, and responsive signature pads.
+- Alphabetized form choices throughout dashboard widget settings.
+- Improved table, file upload, and dropdown fields on **control panel submission detail pages** with consistent Craft styling and searchable-select support. Single checkbox labels now render safe rich-text formatting.
+- Added compact Signature previews to submission lists and improved previews and PNG/JPG downloads on submission detail pages. Download filenames now use `signature-{formId}-{submissionId}`.
+- Updated Signature pads and builder previews with matching styles, a pen cursor, and responsive sizing capped at 125% of the configured width by default. Pads shrink to fit smaller screens while preserving drawing alignment and saved image dimensions. Custom templates can opt in and adjust the growth limit. Flexbox and Grid templates are unchanged.
+- Dark formatting templates now display default Signature pads with light ink on a dark background. Custom display colors take precedence.
+- Newly drawn signatures now save as black ink on a transparent background, including fields with custom or legacy display colors. JPG downloads use a white background. Existing saved signatures keep their original colors and backgrounds.
+- Table field radio options now display horizontally and wrap when needed in bundled formatting templates.
+- Refreshed demo templates with improved navigation, searchable Cards and List views, clearer form previews, and redesigned submission and example pages.
+- Redesigned **Daily and Weekly Digest** emails with a responsive layout, submission and spam totals, compact errors and notices, and clearer severity colors. Improved accessibility and light/dark-mode styling, and added dedicated plain-text versions.
+- Google Tag Manager events now fire once after a completed, successful AJAX submission. Mapped values come from the server response and survive resets and multi-page navigation.
+
+### Fixed
+- Fixed Freeform imports silently completing without importing data on hosting with multiple PHP instances. Uploaded bundles now use the Craft cache, and missing or expired import data reports an error.
+- Fixed saved field settings displaying old values when reopening a form through control panel links or browser history.
+- Conditional email notifications now require at least one configured condition, with a validation error shown in the form builder when none is selected.
+- Fixed form-builder fields becoming stuck in a dimmed dragging state after rerenders or interrupted drags.
+- Fixed Date & Time field instructions suggesting translated date expressions that cannot be parsed. Examples remain in English in every control panel language. Native time-only inputs no longer receive stale date constraints.
+- Fixed Signature initialization on pages with multiple forms and clearing and restoring signatures after resets, including resets during an active stroke.
+- Fixed React/Vue Signature validation accepting blank taps, retaining drawings after value resets, and preventing invalid preset values from being cleared.
+- Fixed Signature styles leaking between forms that use different formatting templates.
+- Fixed transparent Signature background and border colors appearing as black in the form builder.
+- Fixed Signature fields failing to render on PHP 8.5, including in AJAX submission responses.
+- Fixed choice-control styling across formatting templates, including Table field alignment, wrapped checkbox labels, and borders around daisyUI Rating stars.
+- Fixed international phone country selectors appearing misaligned or oversized, including in scaled previews, and improved their dark-mode colors.
+- Fixed date and time picker theming in dark formatting templates and the Preview background for the Conversational template.
+- Fixed control panel submission detail pages failing to load when opened from the **Recent Submissions widget**.
+- Fixed duplicate Google Tag Manager container loading and improved tracking for dynamically inserted forms.
+
+### Security
+- Updated Vite and transitive dependencies to address command injection, source-map denial of service, and redirect credential disclosure advisories.
+- Hardened Signature previews by validating inline PNG/JPEG images and escaping image markup.
+- Restricted Signature email attachments to validated image data, preventing submitted values from being treated as file paths or URLs.
+- Removed submission tokens from the Google Tag Manager data layer. Submission IDs and customization hooks remain available.
+
+## 5.17.2 - 2026-10-18
+
+### Added
+- Added **Guided setup** for creating forms from starter forms, with field customization, live previews, and notification setup.
+- Added settings to choose which form creation methods are available and preselect a default AI integration.
+- Added **Bulk edit labels** with capitalization, trailing colon, spacing, and find-and-replace tools. Supports page and field-type filters, translated labels, and change previews. Field handles remain unchanged, and each update can be undone in one step.
+- Added a searchable **Sample data** picker beside supported Default Value settings, with readable tokens, example values, and support for manually entered Twig expressions.
+- Added optional random sample selections for option fields, including multiple selections for multi-option fields.
+- Added sample PDF, image, and text files for testing upload fields. Samples respect upload restrictions and are ignored when processing submissions. Drag-and-drop fields can display up to three sample files.
+- Added a configurable **Reasoning Effort** setting to the OpenAI integration for supported models.
+
+### Changed
+- Refreshed **Create with AI** with prompt examples, improved reference uploads, clearer progress, an elapsed timer, and an **Open form** action after generation.
+- Updated supported OpenAI form generation to use resumable background requests, honor the configured token allowance, and guard against duplicate requests and form imports.
+- AI-generated forms now prefer **Rich Text** fields for headings, instructions, and other static content.
+- HTML and Rich Text fields now hide their labels in the builder layout when content is present.
+- Refined builder previews with consistent input heights, lighter default values, improved label and instruction spacing, and clearer required indicators.
+- Reduced visual clutter by showing field tools, association badges, and sample data indicators on hover or when a field is active.
+- Added expandable help beside common field settings and standardized token styling throughout the builder.
+- Moved Opinion Scale default selection into the option editor, with one selectable default and updated preview styling.
+- Replaced browser confirmation dialogs throughout the builder with consistent, accessible modals, including confirmations before deleting fields, groups, and table columns.
+- Improved Express edition form-limit messaging with clearer upgrade guidance.
+- Localized the confirmation word used when deleting forms.
+
+### Fixed
+- Fixed AI-generated forms not respecting the default **Formatting Template** setting.
+- Fixed empty **Other** form groups appearing unnecessarily while preserving drag-and-drop support.
+- Fixed the Preview tab not respecting limited-user permissions.
 
 ## 5.17.1 - 2026-10-16
 

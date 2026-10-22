@@ -19,7 +19,9 @@
       "@components/*": ["client/src/app/components/*"],
       "@form-controls/*": ["client/src/app/components/form-controls/*"],
       "@ff-icons/*": ["client/src/assets/icons/*"],
-      "@ff-client/*": ["client/src/*"]
+      "@ff-client/*": ["client/src/*"],
+      "@ff-widgets/*": ["scripts/src/lib/cp/widgets/*"],
+      "@ff-chart-styles": ["styles/src/shared/chart.css"]
     }
   },
   "exclude": ["node_modules"]

@@ -4,6 +4,8 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useEffect } from "react";
 
+import type { FormSearchProps } from "../../form-search";
+import { createFormSearch } from "../../form-search.utils";
 import { Notices } from "../../notices/notices";
 import { Archived } from "../grid/archived/archived";
 import { ArchivedAndGroupWrapper, ContentContainer } from "../grid/grid.styles";
@@ -11,12 +13,16 @@ import { ArchivedAndGroupWrapper, ContentContainer } from "../grid/grid.styles";
 import { Wrapper } from "./list.styles";
 import { ListTable } from "./list.table";
 
-export const FormList: React.FC = () => {
+export const FormList: React.FC<FormSearchProps> = ({ search = "" }) => {
   const { data, isFetching } = useQueryFormsWithStats();
   const isAtLeastLite = config.editions.isAtLeast(Edition.Lite);
 
-  const forms = data?.filter(({ dateArchived }) => dateArchived === null);
-  const archivedForms = data?.filter(
+  const matchesSearch = createFormSearch(search);
+  const filteredForms = data?.filter(matchesSearch);
+  const forms = filteredForms?.filter(
+    ({ dateArchived }) => dateArchived === null,
+  );
+  const archivedForms = filteredForms?.filter(
     ({ dateArchived }) => dateArchived !== null,
   );
 
@@ -30,7 +36,11 @@ export const FormList: React.FC = () => {
         <Notices />
 
         <Wrapper>
-          <ListTable forms={forms} isFetching={isFetching} />
+          <ListTable
+            forms={forms}
+            isFetching={isFetching}
+            isSearching={search.trim().length > 0}
+          />
 
           {isAtLeastLite && (
             <ArchivedAndGroupWrapper>

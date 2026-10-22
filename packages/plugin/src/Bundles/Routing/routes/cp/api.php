@@ -23,6 +23,8 @@ return [
     'freeform/api/forms/<id:\d+>/preview-templates' => 'freeform/api/forms/preview-templates',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
+    'freeform/api/forms/<id:\d+>/stats' => 'freeform/api/forms/stats',
+
     // FORM GROUPS
     'freeform/api/forms/groups' => 'freeform/api/form-groups',
     'freeform/api/forms/groups/move' => 'freeform/api/form-groups/move',

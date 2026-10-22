@@ -1,0 +1,20 @@
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Widgets\\Dashboard\\ChartsBundle') %}
+{% set ID = 'freeform-chart-' ~ random() %}
+<div id="{{ ID }}" class="freeform-dashboard-chart {{ radial ? 'is-radial' }}" data-chart-size="{{ settings.resolvedChartSize }}" data-chart-submissions-label="{{ 'Submissions'|t('freeform') }}" data-chart-more-forms-label="{{ '{count} more forms in the legend'|t('freeform') }}">
+    <div class="freeform-chart-summary">
+        <span>{{ dateRangeLabel }}{% if settings.includeSpam %} · {{ 'Including spam'|t('freeform') }}{% endif %}</span>
+        <span><strong data-chart-total>0</strong> {{ 'Submissions'|t('freeform') }}</span>
+    </div>
+    <div class="freeform-chart-plot" data-chart-plot>
+        <canvas role="img" aria-label="{{ settings.title ?: settings.displayName() }} — {{ dateRangeLabel }}">
+            {{ 'Submission totals are listed below the chart.'|t('freeform') }}
+        </canvas>
+    </div>
+    <p class="freeform-chart-empty" data-chart-empty hidden>{{ 'No submissions in this date range.'|t('freeform') }}</p>
+    <div class="freeform-chart-legend" data-chart-legend role="group" aria-label="{{ 'Toggle forms in the chart'|t('freeform') }}"></div>
+</div>
+{% js %}
+    $(function () {
+        window.FreeformDashboardChart(document.getElementById('{{ ID }}'), {{ chartData|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP') b-or constant('JSON_HEX_APOS') b-or constant('JSON_HEX_QUOT'))|raw }});
+    });
+{% endjs %}

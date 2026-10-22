@@ -1,6 +1,6 @@
 {
   "name": "@solspace/freeform-vue",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Vue components and composables for Solspace Freeform headless forms",
   "private": false,
   "type": "module",
@@ -35,7 +35,7 @@
     "@vue/test-utils": "^2.4.6",
     "jsdom": "30.1.1",
     "typescript": "^5.8.3",
-    "vite": "^8.1.0",
+    "vite": "^8.2.4",
     "vitest": "4.1.11",
     "vue": "^3.5.43",
     "vue-tsc": "^3.3.11"

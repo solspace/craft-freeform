@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, expect, it } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import {
   mountInternationalPhone,
   phoneValue,
@@ -12,6 +12,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup?.();
   cleanup = undefined;
+  vi.restoreAllMocks();
 });
 function setup(value = "") {
   const input = document.querySelector("input")!;
@@ -161,6 +162,45 @@ it("restores layout styles and handles multiple fields sharing a parent", () => 
     "important",
   );
 });
+it.each([1, 2])(
+  "keeps fractional input bounds aligned with the selector at scale %s",
+  (scale) => {
+    const input = document.querySelector("input")!;
+    const parent = input.parentElement!;
+    input.style.cssText =
+      "box-sizing: border-box; width: 300.25px; height: 40.5px";
+    Object.defineProperties(input, {
+      offsetWidth: { value: 300 },
+      offsetHeight: { value: 41 },
+    });
+    Object.defineProperties(parent, {
+      clientLeft: { value: 1 },
+      clientTop: { value: 1 },
+    });
+    parent.scrollLeft = 2;
+    parent.scrollTop = 3;
+    vi.spyOn(parent, "getBoundingClientRect").mockReturnValue(
+      new DOMRect(5.25, 10.5, 500 * scale, 200 * scale),
+    );
+    vi.spyOn(input, "getBoundingClientRect").mockImplementation(
+      () =>
+        new DOMRect(
+          5.25 + 15.25 * scale,
+          10.5 + 34.75 * scale,
+          Number.parseFloat(input.style.width) * scale,
+          Number.parseFloat(input.style.height) * scale,
+        ),
+    );
+    const { panel } = setup();
+    expect(panel.style.left).toBe("16.25px");
+    expect(panel.style.top).toBe("36.75px");
+    expect(panel.style.width).toBe("300.25px");
+    expect(panel.style.height).toBe("40.5px");
+    input.style.height = "42.25px";
+    window.dispatchEvent(new Event("resize"));
+    expect(panel.style.height).toBe("42.25px");
+  },
+);
 it("closes an open selector when the input becomes readonly", async () => {
   const { input, button } = setup();
   button.click();

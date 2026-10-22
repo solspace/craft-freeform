@@ -4,6 +4,7 @@ import type { FormSettingNamespace } from "@ff-client/types/forms";
 import type { Section } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
+import { lazy, Suspense } from "react";
 import { useParams, useResolvedPath } from "react-router-dom";
 
 import { FieldComponent } from "./field-component";
@@ -14,7 +15,10 @@ import {
   SectionHeader,
 } from "./settings.editor.styles";
 import { FormEmbed } from "./settings.embed";
-import { FormUsage } from "./settings.usage";
+
+const FormUsage = lazy(() =>
+  import("./settings.usage").then((module) => ({ default: module.FormUsage })),
+);
 
 export const SettingsEditor: React.FC = () => {
   const { sectionHandle } = useParams();
@@ -42,7 +46,13 @@ export const SettingsEditor: React.FC = () => {
     }
 
     if (sectionHandle === TAB_USAGE) {
-      return <FormUsage />;
+      return (
+        <Suspense
+          fallback={<p role="status">{translate("Loading statistics…")}</p>}
+        >
+          <FormUsage />
+        </Suspense>
+      );
     }
 
     return null;

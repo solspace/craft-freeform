@@ -1,31 +1,51 @@
-<div class="freeform-latest-submissions-container">
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Widgets\\Dashboard\\RecentBundle') %}
+{% set ID = 'freeform-recent-' ~ random() %}
+<div id="{{ ID }}" class="freeform-recent" data-widget-id="{{ widgetId }}" data-locale="{{ craft.app.language }}" data-time-zone="{{ craft.app.timeZone }}" data-refresh-error="{{ 'Could not refresh submissions. Please try again.'|t('freeform') }}" data-refreshed-label="{{ 'Submissions refreshed.'|t('freeform') }}" data-page-size="{{ pageSize }}" data-summary-label="{{ '{start}–{end} of {total} recent'|t('freeform') }}" data-newest-label="{{ 'Show newest first'|t('freeform') }}" data-oldest-label="{{ 'Show oldest first'|t('freeform') }}">
     {% if submissions|length %}
-        <table class="data fullwidth">
-            <thead>
-            <tr>
-                <th>{{ "Title"|t('app') }}</th>
-                <th>{{ "Form"|t('freeform') }}</th>
-                <th>{{ "Date"|t('freeform') }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for submission in submissions.all %}
-                <tr>
-                    <td>
-                        <div class="element small hasstatus">
-                            <span class="status {{ submission.statusModel.color }}"></span>
-                            <a href="{{ submission.getCpEditUrl() }}">{{ submission.title }}</a>
-                        </div>
-                    </td>
-                    <td>
-                        {{ submission.form.name }}
-                    </td>
-                    <td>{{ submission.dateCreated|date('short') }}</td>
-                </tr>
+        {% if settings.showFilters %}
+            <div class="freeform-recent-tools" data-recent-tools hidden>
+                <input type="search" class="text fullwidth" data-recent-search aria-label="{{ 'Search recent submissions'|t('freeform') }}" placeholder="{{ 'Search recent submissions…'|t('freeform') }}">
+                <div class="freeform-recent-filters">
+                    <div class="select"><select data-recent-form aria-label="{{ 'Filter by form'|t('freeform') }}"><option value="">{{ 'All forms'|t('freeform') }}</option></select></div>
+                    <div class="select"><select data-recent-status aria-label="{{ 'Filter by status'|t('freeform') }}"><option value="">{{ 'All statuses'|t('freeform') }}</option></select></div>
+                    <button type="button" class="btn freeform-recent-icon-button" data-recent-sort aria-pressed="false" aria-label="{{ 'Show oldest first'|t('freeform') }}" title="{{ 'Show oldest first'|t('freeform') }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2v12m-3-3 3 3 3-3M10 3h4m-4 4h3m-3 4h2"/></svg></button>
+                </div>
+            </div>
+        {% endif %}
+        <ol class="freeform-recent-list" data-recent-list>
+            {% for submission in submissions %}
+                {% set status = submission.statusModel %}
+                {% set formName = formNames[submission.formId] ?? 'Deleted form'|t('freeform') %}
+                <li class="freeform-recent-row" data-recent-row data-form-id="{{ submission.formId }}" data-form-name="{{ formName }}" data-status-id="{{ submission.statusId }}" data-status-name="{{ status.name }}" {{ loop.index > pageSize ? 'hidden' }}>
+                    <div class="freeform-recent-main">
+                        <a href="{{ submission.getCpEditUrl() }}" class="freeform-recent-title" title="{{ submission.title }}">{{ submission.title }}</a>
+                        <span class="freeform-recent-status" title="{{ status.name }}"><span class="status {{ status.color }}" aria-hidden="true"></span>{{ status.name }}</span>
+                    </div>
+                    <div class="freeform-recent-meta"><span title="{{ formName }}">{{ formName }}</span><span class="freeform-recent-id">#{{ submission.id }}</span><time datetime="{{ submission.dateCreated|date('c') }}" title="{{ submission.dateCreated|datetime('long') }}">{{ submission.dateCreated|date('short') }}</time></div>
+                </li>
             {% endfor %}
-            </tbody>
-        </table>
+        </ol>
+        {% if settings.showFilters %}
+            <div class="freeform-recent-empty" data-recent-empty hidden><p>{{ 'No matching submissions.'|t('freeform') }}</p><button type="button" class="btn" data-recent-clear>{{ 'Clear filters'|t('freeform') }}</button></div>
+        {% endif %}
+        {% if settings.showPagination %}
+            <div class="freeform-recent-pagination" data-recent-pagination hidden>
+                <span class="light" data-recent-summary aria-live="polite"></span>
+                <div class="freeform-recent-paging-buttons" data-recent-paging-buttons hidden>
+                    <button type="button" class="btn freeform-recent-icon-button" data-recent-previous aria-label="{{ 'Previous submissions'|t('freeform') }}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 3-5 5 5 5"/></svg></button>
+                    <button type="button" class="btn freeform-recent-icon-button" data-recent-next aria-label="{{ 'Next submissions'|t('freeform') }}"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 3 5 5-5 5"/></svg></button>
+                </div>
+            </div>
+        {% endif %}
     {% else %}
-        <p>{{ "No submissions."|t('freeform') }}</p>
+        <p class="light">{{ 'No submissions yet.'|t('freeform') }}</p>
     {% endif %}
+    <div class="freeform-recent-footer">
+    <a class="freeform-recent-view-all" href="{{ cpUrl('freeform/submissions') }}">{{ 'View all submissions'|t('freeform') }} <span aria-hidden="true">→</span></a>
+    <button type="button" class="freeform-recent-refresh" data-recent-refresh data-refreshing-label="{{ 'Refreshing…'|t('freeform') }}" aria-label="{{ 'Refresh submissions'|t('freeform') }}">{{ 'Refresh'|t('freeform') }}</button>
+    </div>
+    <p class="freeform-widget-feedback" data-widget-feedback role="status" hidden></p>
 </div>
+{% js %}
+    $(function () { window.FreeformRecent(document.getElementById('{{ ID }}')); });
+{% endjs %}

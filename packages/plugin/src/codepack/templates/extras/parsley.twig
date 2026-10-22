@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Form Validation with Parsley | Extras" %}
+{% set pageTitle = "Form Validation with Parsley | Examples" %}
 
 {# Replace 'freeformParsley' with your form handle #}
 {% set demoFormHandle = "freeformParsley" %}
@@ -14,12 +14,14 @@
 
     {% set form = freeform.form(demoFormHandle) %}
 
-    <div class="freeform-page-heading">
-        <h2>Form Validation with Parsley</h2>
-        <p>This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.</p>
-    </div>
+    <article class="freeform-form-browser freeform-example-detail" aria-labelledby="example-title">
+    {% set exampleDescription %}This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.{% endset %}
+    {% include "demo/extras/_items.twig" with { mode: 'header', exampleHandle: 'parsley' } %}
 
     {% if form %}
+        <section class="freeform-submissions-panel freeform-example-demo-panel freeform-example-live" aria-labelledby="live-example-title">
+            <div class="freeform-submissions-toolbar"><h3 id="live-example-title">Try the example</h3></div>
+            <div class="freeform-example-demo-body">
 
         {# Simpler approach without additional Parsley validation available too
             {{ form.render({
@@ -70,23 +72,27 @@
             {% endfor %}
         {{ form.renderClosingTag }}
 
+            </div>
+        </section>
+
     {% else %}
 
-        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
-        </div>
+        {% set setupNoticeMessage %}<p>Use a form with the handle <code>{{ demoFormHandle }}</code> to run this example.</p>{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
 
     {% endif %}
 
     {# Instructions to get this page working correctly #}
-    <div class="extras-instructions">
-        <h4>This page will not display correctly until...</h4>
-        <p>In order to view this page live, you'll need to make some adjustments to this template or your test form:</p>
+    {% embed "demo/extras/_setup.twig" %}
+        {% block instructions %}
         <ol>
             <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
             <li>Make sure your test form includes at least a few fields that are required and/or of Email field type and/or Phone field type (Pro only) to see Parsley in action.</li>
         </ol>
-    </div>
+        {% endblock %}
+    {% endembed %}
+    <p class="freeform-example-template-note">Template: <code>extras/parsley.twig</code></p>
+    </article>
 
 {% endblock %}
 

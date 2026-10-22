@@ -40,7 +40,7 @@ class FormWizardServiceTest extends TestCase
         $application->instance('config', new Repository(['app' => ['locale' => 'en']]));
         Container::setInstance($application);
         $this->previousApp = \Craft::$app;
-        \Craft::$app = (object) ['language' => 'en', 'sites' => new class {
+        \Craft::$app = (object) ['version' => '5.0.0', 'language' => 'en', 'sites' => new class {
             public function getEditableSites(): array
             {
                 return [(object) ['id' => 1], (object) ['id' => 2]];
@@ -109,6 +109,30 @@ class FormWizardServiceTest extends TestCase
         self::assertSame('1', $rating->properties->optionConfiguration['options'][0]['value']);
         self::assertObjectNotHasProperty('maxValue', $rating->properties);
         self::assertSame([], $payload->notifications);
+    }
+
+    public function testEveryStartingPointSetsItsMatchingIconInCreationAndPreview(): void
+    {
+        $service = $this->service(editable: ['icon']);
+        $presets = $service->options()['presets'];
+        self::assertCount(12, $presets);
+        foreach ($presets as $preset) {
+            self::assertMatchesRegularExpression('/^[a-z0-9-]+$/D', $preset['icon']);
+            foreach ([false, true] as $preview) {
+                $input = array_replace($this->input(), ['purpose' => $preset['id'], 'fields' => $preset['fields'], 'icon' => 'attempted-override']);
+                $payload = $service->payload($input, $preview);
+                self::assertSame($preset['icon'], $payload->form->settings->general->icon);
+            }
+        }
+        self::assertSame('envelope', array_column($presets, 'icon', 'id')['contact']);
+        self::assertSame('briefcase', array_column($presets, 'icon', 'id')['application']);
+    }
+
+    public function testStartingPointIconsRespectCraft4AndLockedSettings(): void
+    {
+        self::assertObjectNotHasProperty('icon', $this->service()->payload($this->input())->form->settings->general);
+        \Craft::$app->version = '4.16.0';
+        self::assertObjectNotHasProperty('icon', $this->service(editable: ['icon'])->payload($this->input())->form->settings->general);
     }
 
     #[TestWith([false])]

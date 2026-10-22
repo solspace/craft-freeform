@@ -20,7 +20,11 @@ async function setup(
   fields = `<input data-datepicker data-datepicker-enabled data-datepicker-locale="${locale}" data-datepicker-format="Y-m-d" data-datepicker-enabledate>
     <input data-datepicker data-datepicker-enabled="false">`,
 ) {
-  const instance = { set: vi.fn() };
+  const instance = {
+    set: vi.fn(),
+    calendarContainer: document.createElement("div"),
+    config: { onOpen: [] as (() => void)[] },
+  };
   const flatpickr = vi.fn((input: Element) => {
     Object.assign(input, { _flatpickr: instance });
     return instance;
@@ -110,4 +114,87 @@ it("loads and initializes pickers that first appear after an AJAX page change", 
   );
   handler.reload();
   expect(flatpickr).toHaveBeenCalledTimes(1);
+});
+
+it.each([
+  'data-freeform-theme="dark"',
+  "data-freeform-basic-dark",
+  "data-freeform-conversational",
+  "data-freeform-bootstrap-dark",
+  "data-freeform-tailwind-dark",
+  'data-freeform-daisyui data-theme="dark"',
+])(
+  "themes the detached calendar for a dark template: %s",
+  async (attributes) => {
+    const { form, previewWindow, flatpickr, instance } = await setup();
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = `<div ${attributes}></div>`;
+    form.replaceWith(wrapper.firstElementChild!);
+    const owner = document.body.firstElementChild!;
+    owner.appendChild(form);
+    document.body.appendChild(instance.calendarContainer);
+    previewWindow.flatpickr = flatpickr;
+    document.querySelector("script")!.dispatchEvent(new Event("load"));
+    expect(
+      instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+    ).toBe(true);
+    expect(form.contains(instance.calendarContainer)).toBe(false);
+  },
+);
+
+it("leaves a light calendar unchanged even with another dark form on the page", async () => {
+  const { previewWindow, flatpickr, instance } = await setup();
+  const dark = document.createElement("form");
+  dark.dataset.freeformTheme = "dark";
+  document.body.appendChild(dark);
+  previewWindow.flatpickr = flatpickr;
+  document.querySelector("script")!.dispatchEvent(new Event("load"));
+  expect(
+    instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+  ).toBe(false);
+});
+
+it("updates its theme on open, honors a light override, and retains existing hooks", async () => {
+  const { form, previewWindow, flatpickr, instance } = await setup();
+  const onOpen = vi.fn();
+  instance.config.onOpen.push(onOpen);
+  form.setAttribute("data-freeform-basic-dark", "");
+  form.dataset.freeformTheme = "light";
+  previewWindow.flatpickr = flatpickr;
+  document.querySelector("script")!.dispatchEvent(new Event("load"));
+  expect(
+    instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+  ).toBe(false);
+  form.dataset.freeformTheme = "dark";
+  instance.config.onOpen.forEach((hook) => {
+    hook();
+  });
+  expect(onOpen).toHaveBeenCalledOnce();
+  expect(
+    instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+  ).toBe(true);
+  form.dataset.freeformTheme = "light";
+  instance.config.onOpen.forEach((hook) => {
+    hook();
+  });
+  expect(
+    instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+  ).toBe(false);
+});
+
+it("themes time-only pickers too", async () => {
+  const { form, previewWindow, flatpickr, instance } = await setup(
+    "en",
+    "<input data-datepicker data-datepicker-enabled data-datepicker-enabletime>",
+  );
+  form.dataset.freeformTheme = "dark";
+  previewWindow.flatpickr = flatpickr;
+  document.querySelector("script")!.dispatchEvent(new Event("load"));
+  expect(flatpickr).toHaveBeenCalledWith(
+    form.querySelector("input"),
+    expect.objectContaining({ noCalendar: true, enableTime: true }),
+  );
+  expect(
+    instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
+  ).toBe(true);
 });

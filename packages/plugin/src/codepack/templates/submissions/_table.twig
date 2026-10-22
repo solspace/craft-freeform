@@ -1,0 +1,101 @@
+{% set canEdit = freeform.pro and not spamMode %}
+{% set fields = submissions|first %}
+{% set columnCount = 4 + (fields ? fields|length : 0) + (canEdit ? 1 : 0) %}
+{% set formIcon = form.iconSvg %}
+
+<section class="freeform-form-browser freeform-submissions-page" data-submissions-browser aria-labelledby="submissions-title">
+    <a class="freeform-submissions-back" href="{{ demoBaseUrl }}/forms">← All forms</a>
+    <div class="freeform-submissions-heading">
+        <div class="freeform-submissions-form">
+            <span class="freeform-browser-icon{{ formIcon ? ' freeform-browser-icon-custom' }}" style="--form-accent: {{ form.color|e('html_attr') }}" aria-hidden="true">
+                {% if formIcon %}{{ formIcon }}{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3" stroke-linecap="round"/></svg>{% endif %}
+            </span>
+            <div>
+                <h2 id="submissions-title">{{ form.name }}</h2>
+                <p>Browse submissions and review flagged entries.</p>
+            </div>
+        </div>
+        <a class="freeform-submissions-form-link" href="{{ demoBaseUrl }}/forms/default/{{ form.handle }}">Open form <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <nav class="freeform-submissions-tabs" aria-label="Submission folder">
+        <a href="{{ demoBaseUrl }}/submissions/{{ form.handle }}"{% if not spamMode %} aria-current="page"{% endif %}>Submissions <span>{{ submissionCount|number_format }}</span></a>
+        <a href="{{ demoBaseUrl }}/submissions/{{ form.handle }}/spam"{% if spamMode %} aria-current="page"{% endif %}>Spam <span>{{ spamCount|number_format }}</span></a>
+    </nav>
+
+    <div class="freeform-submissions-panel">
+        <div class="freeform-submissions-toolbar">
+            <div>
+                <h3>{{ spamMode ? 'Flagged as spam' : 'Latest submissions' }}</h3>
+                <p data-submissions-status role="status">{{ submissions|length }} on this page · Newest first</p>
+            </div>
+            {% if submissions|length %}
+                <label class="freeform-browser-search" data-submissions-tools hidden>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+                    <input type="search" data-submissions-search aria-label="Search submissions on this page" placeholder="Search this page…" autocomplete="off" aria-controls="freeform-submissions-table">
+                </label>
+            {% endif %}
+        </div>
+        <div class="freeform-submissions-scroll" role="region" aria-label="{{ spamMode ? 'Spam' : 'Submissions' }} table, scroll for more fields" tabindex="0">
+            <table class="freeform-submissions-table" id="freeform-submissions-table">
+                <caption class="freeform-submissions-sr-only">{{ spamMode ? 'Spam' : 'Submissions' }} for {{ form.name }}</caption>
+                <thead>
+                    <tr>
+                        <th scope="col" class="freeform-submissions-identity">Submission</th>
+                        <th scope="col">Received</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Author</th>
+                        {% for field in fields %}<th scope="col"><span class="freeform-submission-value" title="{{ field.label }}">{{ field.label }}</span></th>{% endfor %}
+                        {% if canEdit %}<th scope="col" class="freeform-submissions-actions">Actions</th>{% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                        <tr data-submission-row>
+                            <th scope="row" class="freeform-submissions-identity">
+                                <a class="freeform-submission-value" href="{{ demoBaseUrl }}/submissions/{{ form.handle }}/{{ submission.id }}{{ spamMode ? '/spam' : '' }}" title="{{ submission.title }}">{{ submission.title|default('Submission #' ~ submission.id) }}</a>
+                                <span class="freeform-submission-id">#{{ submission.id }}</span>
+                            </th>
+                            <td class="freeform-submissions-date"><time datetime="{{ submission.dateCreated|date('c') }}">{{ submission.dateCreated|date('M j, Y') }}<span>{{ submission.dateCreated|date('g:i a') }}</span></time></td>
+                            <td><span class="freeform-submission-status" style="--status-color: {{ submission.statusModel.color|e('html_attr') }}"><i aria-hidden="true"></i>{{ submission.statusModel.name }}</span></td>
+                            <td class="freeform-submissions-author">{{ submission.author ? submission.author.username : 'Guest' }}</td>
+                            {% for field in submission %}
+                                <td>
+                                    {% if field.type == 'signature' %}
+                                        {% if submission[field.handle].value %}<img class="freeform-submission-signature" src="{{ submission[field.handle].value }}" alt="Signature" loading="lazy">{% else %}<span class="freeform-submission-blank">—</span>{% endif %}
+                                    {% else %}
+                                        {% set value = field.implements('options') ? submission[field.handle].labelsAsString : submission[field.handle].valueAsString %}
+                                        {% if value is not same as('') and value is not null %}<span class="freeform-submission-value" title="{{ value }}">{{ value }}</span>{% else %}<span class="freeform-submission-blank">—</span>{% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                            {% if canEdit %}
+                                <td class="freeform-submissions-actions">
+                                    <div>
+                                        <a href="{{ demoBaseUrl }}/forms/default/{{ form.handle }}/edit/{{ submission.token }}" aria-label="Edit submission #{{ submission.id }}"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12.5 3.5 4 4M3 17l4.5-1 10-10a1.4 1.4 0 0 0 0-2l-1-1a1.4 1.4 0 0 0-2 0l-10 10L3 17z"/></svg>Edit</a>
+                                        <a class="freeform-submission-delete" href="{{ demoBaseUrl }}/submissions/delete/{{ form.handle }}/{{ submission.token }}" aria-label="Delete submission #{{ submission.id }}"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 5h14M7 5V3h6v2M5 5l1 12h8l1-12M8 8v6m4-6v6"/></svg>Delete</a>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr><td colspan="{{ columnCount }}" class="freeform-submissions-empty"><strong>{{ spamMode ? 'No spam to review' : 'No submissions yet' }}</strong><p>{{ spamMode ? 'Submissions flagged as spam will appear here.' : 'New entries will appear here when someone submits this form.' }}</p></td></tr>
+                    {% endfor %}
+                    <tr data-submissions-empty hidden><td colspan="{{ columnCount }}" class="freeform-submissions-empty"><strong>No matches on this page</strong><p>Try a different search or check another page.</p><button type="button" data-submissions-clear>Clear search</button></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="freeform-submissions-footer">
+            <p>{% if pageInfo.total %}Showing <strong>{{ pageInfo.first|number_format }}–{{ pageInfo.last|number_format }}</strong> of <strong>{{ pageInfo.total|number_format }}</strong>{% else %}0 submissions{% endif %}</p>
+            {% if pageInfo.totalPages > 1 %}
+                <nav class="freeform-submissions-pagination" aria-label="Submissions pagination">
+                    {% if pageInfo.prevUrl %}<a href="{{ pageInfo.prevUrl }}" aria-label="Previous page">← <span>Previous</span></a>{% endif %}
+                    {% for page, url in pageInfo.getPrevUrls(2) %}<a href="{{ url }}" aria-label="Page {{ page }}">{{ page }}</a>{% endfor %}
+                    <span aria-current="page" aria-label="Page {{ pageInfo.currentPage }}">{{ pageInfo.currentPage }}</span>
+                    {% for page, url in pageInfo.getNextUrls(2) %}<a href="{{ url }}" aria-label="Page {{ page }}">{{ page }}</a>{% endfor %}
+                    {% if pageInfo.nextUrl %}<a href="{{ pageInfo.nextUrl }}" aria-label="Next page"><span>Next</span> →</a>{% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</section>

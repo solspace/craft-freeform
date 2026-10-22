@@ -5,21 +5,39 @@ export function OpinionScaleFieldRenderer(props: VueFieldRendererProps) {
   const value = String(props.value ?? "");
   const legends = (props.field.frontend?.config?.legends as string[]) ?? [];
 
+  const useFallbackLayout = !props.classNames.optionLabel;
+
   return (
-    <div class={props.classNames.input}>
-      <div role="radiogroup" style={{ display: "flex", gap: "0.75rem" }}>
+    <div>
+      <div
+        role="radiogroup"
+        class={props.classNames.input}
+        style={
+          useFallbackLayout
+            ? {
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem",
+                width: "100%",
+              }
+            : undefined
+        }
+      >
         {(props.field.options ?? []).map((option) => (
           <label
             key={option.value}
             class={props.classNames.optionLabel}
             style={
-              props.classNames.optionLabel
-                ? undefined
-                : {
+              useFallbackLayout
+                ? {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
+                    justifyContent: "center",
+                    flex: "1 1 0%",
+                    minWidth: "2.75rem",
                   }
+                : undefined
             }
           >
             <input
@@ -42,7 +60,7 @@ export function OpinionScaleFieldRenderer(props: VueFieldRendererProps) {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            marginTop: "0.5rem",
+            marginTop: "0.25rem",
             fontSize: "0.875rem",
           }}
         >

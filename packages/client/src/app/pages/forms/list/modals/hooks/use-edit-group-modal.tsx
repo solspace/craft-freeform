@@ -9,6 +9,6 @@ export const useEditGroupModal: EditGroupModalType = () => {
   const { openSlideout } = useModal();
 
   return (): void => {
-    openSlideout(EditGroupModal, undefined, translate("Form Group Manager"));
+    openSlideout(EditGroupModal, undefined, translate("Form groups"));
   };
 };

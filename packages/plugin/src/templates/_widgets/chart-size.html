@@ -1,0 +1,11 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Chart Size"|t('freeform'),
+    instructions: "Choose a consistent size for the chart and its legend."|t('freeform'),
+    id: 'chartSize',
+    name: 'chartSize',
+    options: settings.chartSizeOptions,
+    value: settings.resolvedChartSize,
+    errors: settings.getErrors('chartSize')
+}) }}

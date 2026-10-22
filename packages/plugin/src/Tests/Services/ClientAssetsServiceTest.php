@@ -16,16 +16,18 @@ class ClientAssetsServiceTest extends TestCase
         $manifest = json_decode(file_get_contents($resources.'/js/client/manifest.json'), true, flags: \JSON_THROW_ON_ERROR);
         self::assertArrayHasKey('src/index.tsx', $manifest);
         $entry = $manifest['src/index.tsx'];
+        $stylesheets = $this->collectStylesheets($manifest, 'src/index.tsx');
         $view = $this->getMockBuilder(View::class)->disableOriginalConstructor()->onlyMethods(['registerCssFile', 'registerJsFile', 'registerHtml'])->getMock();
-        $stylesheets = [];
-        $view->expects(self::atLeastOnce())->method('registerCssFile')->willReturnCallback(
-            static function (string $url, array $options, string $key) use ($resources, &$stylesheets): void {
-                $file = substr($url, \strlen('https://example.test/assets/'));
-                self::assertFileExists($resources.'/'.$file);
-                self::assertArrayNotHasKey($key, $stylesheets, 'Stylesheets must only be registered once.');
-                $stylesheets[$key] = $url;
-            }
-        );
+        $registeredCss = [];
+        $view->expects(self::exactly(\count($stylesheets)))->method('registerCssFile')->willReturnCallback(static function (string $url, array $options, string $key) use (&$registeredCss, $resources): void {
+            self::assertStringStartsWith('https://example.test/assets/js/client/', $url);
+            $file = substr($url, \strlen('https://example.test/assets/'));
+            self::assertFileExists($resources.'/'.$file);
+            self::assertSame([], $options);
+            self::assertSame('ff-client-css:'.substr($file, \strlen('js/client/')), $key);
+            self::assertNotContains($url, $registeredCss);
+            $registeredCss[] = $url;
+        });
         $view->expects(self::once())->method('registerJsFile')->with(
             'https://example.test/assets/js/client/'.$entry['file'],
             ['type' => 'module', 'position' => View::POS_END, 'appendTimestamp' => false],
@@ -37,8 +39,8 @@ class ClientAssetsServiceTest extends TestCase
 
         try {
             (new ClientAssetsService())->registerAssets($view, 'https://example.test/assets', $resources);
-            foreach ($entry['css'] ?? [] as $file) {
-                self::assertContains('https://example.test/assets/js/client/'.$file, $stylesheets);
+            foreach ($stylesheets as $file) {
+                self::assertContains('https://example.test/assets/js/client/'.$file, $registeredCss);
             }
         } finally {
             if (null === $previous) {
@@ -61,5 +63,26 @@ class ClientAssetsServiceTest extends TestCase
                 self::assertArrayHasKey($import, $manifest, $key);
             }
         }
+    }
+
+    /** Mirrors ClientAssetsService::collectChunkGraph CSS collection. */
+    private function collectStylesheets(array $manifest, string $chunkKey, array &$visited = []): array
+    {
+        if (isset($visited[$chunkKey])) {
+            return [];
+        }
+
+        $visited[$chunkKey] = true;
+        $chunk = $manifest[$chunkKey] ?? [];
+        $stylesheets = $chunk['css'] ?? [];
+
+        foreach ($chunk['imports'] ?? [] as $importKey) {
+            $stylesheets = array_merge(
+                $stylesheets,
+                $this->collectStylesheets($manifest, $importKey, $visited)
+            );
+        }
+
+        return array_values(array_unique($stylesheets));
     }
 }

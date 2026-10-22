@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" lang="{{ craft.app.language|replace({'_': '-'}) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>{{ digestTitle }}</title>
+    <!--[if mso]><noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript><![endif]-->
+    <style type="text/css">
+        :root { color-scheme: light dark; supported-color-schemes: light dark; }
+        body, table, td, th, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        a:focus-visible { outline: 2px solid #2563eb; outline-offset: 3px; }
+        @media screen and (max-width: 600px) {
+            .digest-outer { padding: 16px 8px !important; }
+            .digest-padding { padding-left: 20px !important; padding-right: 20px !important; }
+            .digest-title { font-size: 28px !important; line-height: 36px !important; }
+            .digest-cell { padding-left: 8px !important; padding-right: 8px !important; }
+            .digest-data-head { padding-left: 6px !important; padding-right: 6px !important; font-size: 12px !important; }
+            .digest-stat { padding: 16px 12px !important; }
+        }
+        @media (prefers-color-scheme: dark) {
+            .digest-bg { background-color: #111827 !important; }
+            .digest-surface { background-color: #1f2937 !important; }
+            .digest-soft { background-color: #283548 !important; }
+            .digest-text { color: #f3f4f6 !important; }
+            .digest-muted { color: #c0cad8 !important; }
+            .digest-link, .digest-rich a { color: #93c5fd !important; }
+            .digest-border { border-color: #435166 !important; }
+            .digest-button { background-color: #bfdbfe !important; color: #172554 !important; border-color: #bfdbfe !important; }
+            .digest-label-critical { color: #fca5a5 !important; }
+            .digest-label-warning { color: #fcd9a5 !important; }
+            .digest-label-info { color: #93c5fd !important; }
+            .digest-alert-critical { border-left-color: #fb7185 !important; }
+            .digest-alert-warning { border-left-color: #fbbf24 !important; }
+            .digest-alert-info { border-left-color: #60a5fa !important; }
+        }
+        /* Outlook apps that expose dark mode through data attributes. */
+        [data-ogsc] .digest-bg { background-color: #111827 !important; }
+        [data-ogsc] .digest-surface { background-color: #1f2937 !important; }
+        [data-ogsc] .digest-soft { background-color: #283548 !important; }
+        [data-ogsc] .digest-text { color: #f3f4f6 !important; }
+        [data-ogsc] .digest-muted { color: #c0cad8 !important; }
+        [data-ogsc] .digest-link, [data-ogsc] .digest-rich a { color: #93c5fd !important; }
+        [data-ogsc] .digest-border { border-color: #435166 !important; }
+        [data-ogsc] .digest-button { background-color: #bfdbfe !important; color: #172554 !important; border-color: #bfdbfe !important; }
+        [data-ogsc] .digest-label-critical { color: #fca5a5 !important; }
+        [data-ogsc] .digest-label-warning { color: #fcd9a5 !important; }
+        [data-ogsc] .digest-label-info { color: #93c5fd !important; }
+        [data-ogsc] .digest-alert-critical { border-left-color: #fb7185 !important; }
+        [data-ogsc] .digest-alert-warning { border-left-color: #fbbf24 !important; }
+        [data-ogsc] .digest-alert-info { border-left-color: #60a5fa !important; }
+        .digest-rich a { color: #1d4ed8; text-decoration: underline; }
+        .digest-rich p { margin: 0 0 6px; }
+        .digest-rich p:last-child { margin-bottom: 0; }
+        .digest-rich img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body class="digest-bg digest-text" style="margin: 0; padding: 0; width: 100%; background-color: #f3f5f8; color: #1f2937;">
+<div aria-hidden="true" style="display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0; mso-hide: all;">{{ 'Your form activity for {siteName}.'|t('freeform', {siteName: craft.app.systemName}) }}</div>
+<table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0" class="digest-bg" bgcolor="#f3f5f8" style="width: 100%; background-color: #f3f5f8; font-family: Arial, Helvetica, sans-serif; font-size: 16px; line-height: 24px;">
+    <tr>
+        <td align="center" class="digest-outer" style="padding: 40px 16px;">
+            <!--[if mso]><table role="presentation" width="640" align="center" border="0" cellpadding="0" cellspacing="0"><tr><td><![endif]-->
+            <table role="presentation" align="center" width="100%" border="0" cellpadding="0" cellspacing="0" class="digest-surface digest-border" bgcolor="#ffffff" style="width: 100%; max-width: 640px; background-color: #ffffff; border: 1px solid #dce2ea; border-radius: 12px; border-spacing: 0;">
+                <tr>
+                    <td class="digest-padding digest-border" style="padding: 28px 32px; border-bottom: 1px solid #dce2ea;">
+                        <p class="digest-link" style="margin: 0 0 18px; color: #1d4ed8; font-size: 16px; line-height: 24px; font-weight: bold;">{{ craft.freeform.name }}</p>
+                        <h1 class="digest-title digest-text" style="margin: 0 0 8px; color: #1f2937; font-size: 32px; line-height: 40px; font-weight: bold;">{{ digestTitle }}</h1>
+                        <p class="digest-text" style="margin: 0 0 4px; color: #1f2937; font-size: 18px; line-height: 28px; overflow-wrap: anywhere; word-break: break-word;">{{ craft.app.systemName }}</p>
+                        <p class="digest-muted" style="margin: 0; color: #526175; font-size: 14px; line-height: 22px;">{{ rangeStart|date('long') }}{% if not daily %} &ndash; {{ rangeEnd|date('long') }}{% endif %}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="digest-padding digest-text" style="padding: 28px 32px 32px; color: #1f2937;">
+                        {% block content %}{% endblock %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="digest-padding digest-border" style="padding: 24px 32px; border-top: 1px solid #dce2ea;">
+                        <p class="digest-muted" style="margin: 0 0 12px; color: #526175; font-size: 13px; line-height: 20px;">{{ 'Sent automatically by {name} from your Craft website. You are receiving this digest because your email address is listed in the digest settings.'|t('freeform', {name: craft.freeform.name}) }}</p>
+                        <p style="margin: 0; font-size: 14px; line-height: 24px;">
+                            <a class="digest-link" href="{{ cpUrl('freeform/settings/notices-and-alerts') }}" style="display: inline-block; padding: 10px 0; color: #1d4ed8; text-decoration: underline;">{{ 'Manage digest settings'|t('freeform') }}</a><br>
+                            <a class="digest-link" href="https://docs.solspace.com/craft/freeform/" style="display: inline-block; padding: 10px 0; color: #1d4ed8; text-decoration: underline;">{{ '{name} documentation'|t('freeform', {name: craft.freeform.name}) }}</a>
+                        </p>
+                    </td>
+                </tr>
+            </table>
+            <!--[if mso]></td></tr></table><![endif]-->
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,5 +1,18 @@
-<div class="freeform-widget-quick-form">
+{% set ID = 'freeform-quick-form-' ~ random() %}
+<div id="{{ ID }}" class="freeform-widget-quick-form" data-widget-id="{{ widgetId }}" data-restart-error="{{ 'Could not load a fresh form. Please try again.'|t('freeform') }}">
     {% if form %}
-        {{ form.render({ formattingTemplate: 'grid/index.twig' }) }}
+        <div class="freeform-quick-form-success" data-quick-form-success role="status" tabindex="-1" hidden>
+            <div class="freeform-quick-form-success-heading"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="8"/><path d="m6 10 3 3 5-6"/></svg><h3>{{ 'Submission received'|t('freeform') }}</h3></div>
+            <p>{{ form.successMessage }}</p>
+            <button type="button" class="btn submit" data-quick-form-another>{{ 'Submit another'|t('freeform') }}</button>
+        </div>
+        <div data-quick-form-content>{{ form.render({ formattingTemplate: 'grid/index.twig' }) }}</div>
+        <p class="freeform-widget-feedback" data-widget-feedback role="alert" hidden></p>
+    {% else %}
+        <p class="light">{{ "The selected form is no longer available. Choose another form in the widget settings."|t('freeform') }}</p>
     {% endif %}
 </div>
+
+{% js %}
+    $(function () { window.FreeformQuickForm(document.getElementById('{{ ID }}')); });
+{% endjs %}

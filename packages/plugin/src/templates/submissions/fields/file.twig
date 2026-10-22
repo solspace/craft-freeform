@@ -1,6 +1,6 @@
-<div class="field">
+<div class="field ff-submission-upload" data-submission-upload data-remove-confirm="{{ 'Remove this file from the submission?'|t('freeform') }}">
     <div class="heading">
-        <label>{{ field.label }}</label>
+        <label for="submission-upload-{{ field.handle }}">{{ field.label }}</label>
     </div>
     <div class="file-preview elements chips chips-small">
         {% if uploadPreviews %}
@@ -13,7 +13,7 @@
                             <path d="M12 9v4m0 4h.01"></path>
                         </svg>
                         <span>{{ preview.warning|t('freeform', preview.parameters) }}</span>
-                        <button type="button" class="icon delete" onclick="removeAsset(this);" title="{{ 'Remove file reference'|t('freeform') }}" aria-label="{{ 'Remove file reference'|t('freeform') }}"></button>
+                        <button type="button" class="icon delete" data-upload-remove title="{{ 'Remove file reference'|t('freeform') }}" aria-label="{{ 'Remove file reference'|t('freeform') }}"></button>
                     </div>
                 {% else %}
                     {% set asset = preview.asset %}
@@ -31,26 +31,31 @@
                     {%- endif -%}
                     {% set srcset = srcset|trim(", ") %}
 
-                    <div class="element small removable hasthumb chip" style="padding-right: 20px;">
+                    <div class="element small hasthumb chip ff-submission-upload-asset">
                         <input type="hidden" name="{{ field.handle }}[]"
                                value="{{ asset.id }}">
-                        <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
                         <div class="elementthumb thumb">
                             <img sizes="30px" srcset="{{ srcset }}" alt="">
                         </div>
-                        <label class="chip-content">
-                            <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                        <div class="chip-content">
+                            <a href="#" class="chip-label" data-asset-id="{{ asset.id }}" title="{{ asset.filename }}">
                                 {{ asset.title }}
                             </a>
-                        </label>
+                            <button type="button" class="icon delete" data-upload-remove title="{{ 'Remove file reference'|t('freeform') }}" aria-label="{{ 'Remove file reference'|t('freeform') }}"></button>
+                        </div>
                     </div>
                 {% endif %}
             {% endfor %}
-        {% else %}
-            {{ "No files uploaded"|t('freeform') }}
         {% endif %}
+        <p class="light ff-submission-upload-empty" data-upload-empty{% if uploadPreviews %} hidden{% endif %}>{{ 'No files uploaded'|t('freeform') }}</p>
     </div>
-    <div class="field">
-        <input type="file" name="{{ field.handle }}[]" multiple />
+    <div class="ff-submission-upload-controls">
+        <input type="file" id="submission-upload-{{ field.handle }}" name="{{ field.handle }}[]" multiple data-upload-input />
+        <button type="button" class="btn add icon" data-upload-choose hidden>{{ 'Upload files'|t('freeform') }}</button>
+        <button type="button" class="ff-submission-upload-clear" data-upload-clear hidden>{{ 'Clear selection'|t('freeform') }}</button>
+    </div>
+    <div class="ff-submission-upload-pending light" data-upload-pending role="status" aria-live="polite" hidden>
+        <span>{{ 'Ready to upload when you save:'|t('freeform') }}</span>
+        <ul data-upload-filenames></ul>
     </div>
 </div>

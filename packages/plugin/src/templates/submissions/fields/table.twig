@@ -1,17 +1,18 @@
 {% set value = submission[field.handle] is not null ? submission[field.handle].value : [] %}
 <div class="field freeform-submission-table" data-freeform-table>
     <div class="heading">
-        <label>{{ field.label }}</label>
+        <label id="submission-table-{{ field.handle }}-label">{{ field.label }}</label>
     </div>
-    <table class="shadow-box editable fullwidth">
+    <div class="freeform-cp-table-scroll">
+    <table class="editable fullwidth" aria-labelledby="submission-table-{{ field.handle }}-label">
         <thead>
         <tr>
             {% for column in field.tableLayout %}
-                <th>
+                <th scope="col" id="submission-table-{{ field.handle }}-heading-{{ loop.index0 }}">
                     {{ column.label|default('') }}
                 </th>
             {% endfor %}
-            <th></th>
+            <th scope="col"><span class="visually-hidden">{{ "Row actions"|t('app') }}</span></th>
         </tr>
         </thead>
         <tbody>
@@ -24,13 +25,15 @@
                     {% if colType == "text" or colType == "textarea" or colType == "number" %}
                         {% set colClass = "textual table-cell-" ~ colType %}
                     {% elseif colType == "select" %}
-                        {% set colClass = "thin" %}
+                        {% set colClass = "thin table-cell-select" %}
+                    {% else %}
+                        {% set colClass = "table-cell-" ~ colType %}
                     {% endif %}
                     <td class="{{ colClass }}">
                         {% switch colType %}
                         {% case "select" %}
                             <div class="select small">
-                                <select name="{{ colName }}"
+                                <select name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                         data-default-value="{{ column.value|default("") }}"
                                 >
                                     {% for option in column.options %}
@@ -41,21 +44,25 @@
                                 </select>
                             </div>
                         {% case "radio" %}
-                            <div>
+                            <div class="freeform-cp-table-options" role="radiogroup" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}">
                                 {% for option in column.options %}
+                                    {% set choiceId = 'labeled-' ~ field.handle ~ '-' ~ 0 ~ '-' ~ index ~ '-' ~ loop.index0 %}
                                     <div>
-                                        <input type="radio" name="{{ colName }}"
-                                               value="{{ option }}" {{ column.value == option ? 'checked="checked"' }} />
-                                        <label>{{ option }}</label>
+                                        <input type="radio" class="radio" id="{{ choiceId }}" name="{{ colName }}" value="{{ option }}" {{ column.value == option ? 'checked="checked"' }} />
+                                        <label for="{{ choiceId }}">{{ option }}</label>
                                     </div>
                                 {% endfor %}
                             </div>
                         {% case "checkbox" %}
-                            <input type="checkbox"
-                                   data-default-value="{{ column.value|default("Yes") }}"
-                                   name="{{ colName }}"
-                                   value="{{ column.value|default("Yes") }}"
-                            />
+                            {% set choiceId = 'labeled-' ~ field.handle ~ '-' ~ 0 ~ '-' ~ index ~ '-0' %}
+                            <div class="checkbox-wrapper">
+                                <input type="checkbox" class="checkbox" id="{{ choiceId }}"
+                                       data-default-value="{{ column.value|default("Yes") }}"
+                                       name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
+                                       value="{{ column.value|default("Yes") }}"
+                                />
+                                <label for="{{ choiceId }}"><span class="visually-hidden">{{ column.label|default('') }}</span></label>
+                            </div>
                         {% case "file" %}
                             {% set metadata = column.metadata|default({}) %}
                             {% set fileCount = metadata.fileCount|default(1) %}
@@ -63,13 +70,13 @@
                             {% if fileCount > 1 %}
                                 {% set fileInputName = colName ~ "[]" %}
                             {% endif %}
-                            <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
+                            <input type="file" name="{{ fileInputName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"{% if fileCount > 1 %} multiple{% endif %} />
                         {% case "number" %}
                             {% set metadata = column.metadata|default({}) %}
                             {% set minMaxValues = metadata.minMaxValues|default([null, null]) %}
                             <input type="number"
                                    class="text fullwidth"
-                                   name="{{ colName }}"
+                                   name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                    value="{{ column.value|default("") }}"
                                    data-default-value="{{ column.value|default("") }}"
                                    placeholder="{{ column.placeholder|default("") }}"
@@ -79,16 +86,16 @@
                             />
                         {% case "textarea" %}
                             <textarea class="text fullwidth"
-                                      name="{{ colName }}"
+                                      name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                       data-default-value="{{ column.value|default("") }}"
-                                      rows="4"
+                                      rows="2"
                             >
                                 {{- column.value|default("") -}}
                             </textarea>
                         {% default %}
                             <input type="text"
                                    class="text fullwidth"
-                                   name="{{ colName }}"
+                                   name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                    value="{{ column.value|default("") }}"
                                    data-default-value="{{ column.value|default("") }}"
                                    placeholder="{{ column.placeholder|default("") }}"
@@ -97,9 +104,9 @@
                     </td>
                 {% endfor %}
                 <td class="thin action">
-                    <a class="delete icon"
+                    <button type="button" class="delete icon"
                        data-freeform-table-remove-row
-                       title="Delete"></a>
+                       title="{{ 'Remove row'|t('freeform') }}" aria-label="{{ 'Remove row'|t('freeform') }}"></button>
                 </td>
             </tr>
         {% else %}
@@ -113,13 +120,15 @@
                         {% if colType == "text" or colType == "textarea" or colType == "number" %}
                             {% set colClass = "textual table-cell-" ~ colType %}
                         {% elseif colType == "select" %}
-                            {% set colClass = "thin" %}
+                            {% set colClass = "thin table-cell-select" %}
+                        {% else %}
+                            {% set colClass = "table-cell-" ~ colType %}
                         {% endif %}
                         <td class="{{ colClass }}">
                             {% switch colType %}
                             {% case "select" %}
                                 <div class="select small">
-                                    <select name="{{ colName }}"
+                                    <select name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                             data-default-value="{{ column.value|default("") }}"
                                     >
                                         {% for option in column.options %}
@@ -130,22 +139,26 @@
                                     </select>
                                 </div>
                             {% case "radio" %}
-                                <div>
+                                <div class="freeform-cp-table-options" role="radiogroup" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}">
                                     {% for option in column.options %}
+                                        {% set choiceId = 'labeled-' ~ field.handle ~ '-' ~ rowIndex ~ '-' ~ index ~ '-' ~ loop.index0 %}
                                         <div>
-                                            <input type="radio" name="{{ colName }}"
-                                                   value="{{ option }}" {{ colValue == option ? 'checked="checked"' }} />
-                                            <label>{{ option }}</label>
+                                            <input type="radio" class="radio" id="{{ choiceId }}" name="{{ colName }}" value="{{ option }}" {{ colValue == option ? 'checked="checked"' }} />
+                                            <label for="{{ choiceId }}">{{ option }}</label>
                                         </div>
                                     {% endfor %}
                                 </div>
                             {% case "checkbox" %}
-                                <input type="checkbox"
-                                       name="{{ colName }}"
-                                       data-default-value="{{ column.value|default("Yes") }}"
-                                       value="{{ column.value|default("Yes") }}"
-                                        {{ colValue ? "checked" }}
-                                />
+                                {% set choiceId = 'labeled-' ~ field.handle ~ '-' ~ rowIndex ~ '-' ~ index ~ '-0' %}
+                                <div class="checkbox-wrapper">
+                                    <input type="checkbox" class="checkbox" id="{{ choiceId }}"
+                                           name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
+                                           data-default-value="{{ column.value|default("Yes") }}"
+                                           value="{{ column.value|default("Yes") }}"
+                                            {{ colValue ? "checked" }}
+                                    />
+                                    <label for="{{ choiceId }}"><span class="visually-hidden">{{ column.label|default('') }}</span></label>
+                                </div>
                             {% case "file" %}
                                 {% set metadata = column.metadata|default({}) %}
                                 {% set fileCount = metadata.fileCount|default(1) %}
@@ -200,13 +213,13 @@
                                     </div>
                                 {% endif %}
 
-                                <input type="file" name="{{ fileInputName }}"{% if fileCount > 1 %} multiple{% endif %} />
+                                <input type="file" name="{{ fileInputName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"{% if fileCount > 1 %} multiple{% endif %} />
                             {% case "number" %}
                                 {% set metadata = column.metadata|default({}) %}
                                 {% set minMaxValues = metadata.minMaxValues|default([null, null]) %}
                                 <input type="number"
                                        class="text fullwidth"
-                                       name="{{ colName }}"
+                                       name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                        value="{{ colValue }}"
                                        data-default-value="{{ column.value|default("") }}"
                                        placeholder="{{ column.placeholder|default("") }}"
@@ -216,16 +229,16 @@
                                 />
                             {% case "textarea" %}
                                 <textarea class="text fullwidth"
-                                          name="{{ colName }}"
+                                          name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                           data-default-value="{{ column.value|default("") }}"
-                                          rows="4"
+                                          rows="2"
                                 >
                                     {{- colValue -}}
                                 </textarea>
                             {% default %}
                                 <input type="text"
                                        class="text fullwidth"
-                                       name="{{ colName }}"
+                                       name="{{ colName }}" aria-labelledby="submission-table-{{ field.handle }}-heading-{{ index }}"
                                        value="{{ colValue }}"
                                        data-default-value="{{ column.value|default("") }}"
                                        placeholder="{{ column.placeholder|default("") }}"
@@ -234,18 +247,17 @@
                         </td>
                     {% endfor %}
                     <td class="thin action">
-                        <a class="delete icon"
+                        <button type="button" class="delete icon"
                            data-freeform-table-remove-row
-                           title="Delete"></a>
+                           title="{{ 'Remove row'|t('freeform') }}" aria-label="{{ 'Remove row'|t('freeform') }}"></button>
                     </td>
                 </tr>
             {% endfor %}
         {% endif %}
         </tbody>
     </table>
-    <div class="btn add icon"
-         data-freeform-table-add-row
-         tabindex="0">
-        {{ "Add a row"|t('freeform') }}
+    </div>
+    <div class="buttons freeform-cp-table-buttons">
+        <button type="button" class="btn add icon dashed" data-freeform-table-add-row>{{ "Add a row"|t('freeform') }}</button>
     </div>
 </div>

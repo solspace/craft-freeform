@@ -52,7 +52,7 @@ class WidgetsService extends Component
             }
         );
 
-        return self::$dateRanges;
+        return $dateRanges;
     }
 
     /**

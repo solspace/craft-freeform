@@ -20,7 +20,7 @@ import { v4 } from "uuid";
 
 const ConditionalNotificationRules: React.FC<
   ControlType<ConditionalRulesProperty, Notification>
-> = ({ property, updateValue, value, context }) => {
+> = ({ property, updateValue, value, context, errors }) => {
   const dispatch = useAppDispatch();
   const generatedValues = useRef<string[]>([]);
 
@@ -64,7 +64,7 @@ const ConditionalNotificationRules: React.FC<
   ]);
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <ConfigurationDescription>
         <DisplayTriggerDropdown
           value={rule?.send ?? true}

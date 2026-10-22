@@ -21,6 +21,7 @@ import type React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Area, AreaChart, ResponsiveContainer } from "recharts";
 
+import { FormIcon } from "../../form-icon";
 import { useDeleteFormModal } from "../../modals/hooks/use-delete-form-modal";
 import {
   FormMonitorStats,
@@ -44,9 +45,14 @@ const tooltipProps: Omit<TooltipProps, "children"> = {
 type Props = {
   form: FormWithStats;
   hasFormMonitor: boolean;
+  showIcons: boolean;
 };
 
-export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
+export const ListTableRow: React.FC<Props> = ({
+  form,
+  hasFormMonitor,
+  showIcons,
+}) => {
   const isLiteAndUp = config.editions.isAtLeast(Edition.Lite);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
@@ -75,6 +81,11 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
 
   return (
     <tr>
+      {showIcons && (
+        <td className="form-icon-column">
+          <FormIcon svg={form.iconSvg} color={color} compact />
+        </td>
+      )}
       <td>
         {hasTitleLink && (
           <Link to={`${id}`}>
@@ -88,7 +99,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
           <Truncate size={150}>{handle}</Truncate>
         </code>
       </td>
-      <td>
+      <td className="form-description">
         <Truncate size={400}>{description}</Truncate>
       </td>
       <td>

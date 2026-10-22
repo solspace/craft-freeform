@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Suppress Notifications when Editing Submissions | Extras" %}
+{% set pageTitle = "Suppress Notifications when Editing Submissions | Examples" %}
 
 {# Replace 'freeformSuppressEdit' with your form handle #}
 {% set demoFormHandle = "freeformSuppressEdit" %}
@@ -9,12 +9,14 @@
 
     {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
-    <div class="freeform-page-heading">
-        <h2>Suppress Notifications when Editing Submissions</h2>
-        <p>The following example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.</p>
-    </div>
+    <article class="freeform-form-browser freeform-example-detail" aria-labelledby="example-title">
+    {% set exampleDescription %}The following example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.{% endset %}
+    {% include "demo/extras/_items.twig" with { mode: 'header', exampleHandle: 'suppress-edit-submissions' } %}
 
     {% if form and currentUser %}
+        <section class="freeform-submissions-panel freeform-example-demo-panel" aria-labelledby="live-example-title">
+            <div class="freeform-submissions-toolbar"><h3 id="live-example-title">Try the example</h3></div>
+            <div class="freeform-example-demo-body">
 
         <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>Most Recent Submission from this Form:</p>
@@ -28,12 +30,15 @@
                 {% if currentUser and currentUser.admin %}
                     <a href="{{ siteUrl }}demo/extras/suppress-edit-submissions/edit/{{ submission.token }}" class="freeform-button orange">{{ "Edit this Submission"|t("freeform") }}</a>
                 {% else %}
-                    <p class="extras-instructions-warning">
+                    <p class="freeform-example-instruction-note">
                         You must be logged in as an Admin to edit this submission.
                     </p>
                 {% endif %}
-            {% else %}
-                <p class="extras-instructions-warning">
+                        </div>
+        </section>
+
+    {% else %}
+                <p class="freeform-example-instruction-note">
                     You must have at least 1 submission for this form to experience the editing of a submission in this demo.
                 </p>
             {% endfor %}
@@ -56,15 +61,13 @@
 
     {% else %}
 
-        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and be logged in for this part of the demo to work.</p>
-        </div>
+        {% set setupNoticeMessage %}<p>Use a form with the handle <code>{{ demoFormHandle }}</code> and be logged in to run this example.</p>{% endset %}
+        {% include "demo/extras/_setup-notice.twig" %}
 
     {% endif %}
 
-    <div class="extras-instructions">
-        <h4>This page will not display correctly until...</h4>
-        <p>In order to view this page live, you'll need to make some adjustments to this template or on your test from:</p>
+    {% embed "demo/extras/_setup.twig" %}
+        {% block instructions %}
         <ol>
             <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
             <li>Make sure your test form includes a few fields or more.</li>
@@ -72,6 +75,9 @@
             <li>Make sure you have at least 1 Freeform submission for this <code>{{ demoFormHandle }}</code> form.</li>
             <li>The person viewing this form is an admin and logged into their Craft account to see this working.</li>
         </ol>
-    </div>
+        {% endblock %}
+    {% endembed %}
+    <p class="freeform-example-template-note">Template: <code>extras/suppress-edit-submissions.twig</code></p>
+    </article>
 
 {% endblock %}

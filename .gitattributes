@@ -2,6 +2,7 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 .github/ export-ignore
+AGENTS.md export-ignore
 
 .nvmrc export-ignore
 .php-cs-fixer* export-ignore

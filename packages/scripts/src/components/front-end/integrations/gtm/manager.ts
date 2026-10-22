@@ -19,12 +19,29 @@ export class GTMManager {
   }
 
   public loadContainer(id: string): void {
-    if (this.containerIds.has(id)) {
+    if (!/^GTM-[A-Z0-9]+$/i.test(id) || this.containerIds.has(id)) {
       return;
     }
-
-    if (this.containerIds.size === 0) {
-      this.loadScript(id);
+    this.containerIds.add(id);
+    const existing = Array.from(document.scripts).some((script) => {
+      try {
+        const url = new URL(script.src, window.location.href);
+        return (
+          url.hostname === "www.googletagmanager.com" &&
+          url.pathname === "/gtm.js" &&
+          url.searchParams.get("id") === id
+        );
+      } catch {
+        return false;
+      }
+    });
+    const containers = (
+      window as Window & {
+        google_tag_manager?: Record<string, unknown>;
+      }
+    ).google_tag_manager;
+    if (existing || containers?.[id]) {
+      return;
     }
 
     this.dataLayer.push({
@@ -33,7 +50,7 @@ export class GTMManager {
       "gtm.container": id,
     });
 
-    this.containerIds.add(id);
+    this.loadScript(id);
   }
 
   private loadScript(id: string): void {
@@ -42,18 +59,25 @@ export class GTMManager {
     script.src = `https://www.googletagmanager.com/gtm.js?id=${id}`;
 
     const firstScript = document.getElementsByTagName("script")[0];
-    firstScript.parentNode.insertBefore(script, firstScript);
+    if (firstScript?.parentNode) {
+      firstScript.parentNode.insertBefore(script, firstScript);
+    } else {
+      document.head.appendChild(script);
+    }
   }
 
   public observeNewForms(): void {
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         mutation.addedNodes.forEach((node) => {
-          if (node instanceof HTMLFormElement) {
-            const gtmId = node.dataset.gtmId;
-            if (gtmId) {
-              this.loadContainer(gtmId);
-            }
+          if (!(node instanceof HTMLElement)) return;
+          const forms =
+            node instanceof HTMLFormElement
+              ? [node]
+              : node.querySelectorAll<HTMLFormElement>("form[data-gtm-id]");
+          for (const form of forms) {
+            const id = form.dataset.gtmId;
+            if (id) this.loadContainer(id);
           }
         });
       });

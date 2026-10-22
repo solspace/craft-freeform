@@ -6,6 +6,7 @@ import {
   hasFlatpickrInstance,
 } from "@lib/vendors/flatpickr";
 import type { FreeformHandler } from "types/form";
+import { applyDatepickerTheme } from "./datepicker.theme";
 
 class DatePicker implements FreeformHandler {
   static flatpickrLoading = false;
@@ -108,6 +109,12 @@ class DatePicker implements FreeformHandler {
       };
 
       const instance = flatpickr(picker, assembledOptions);
+      applyDatepickerTheme(picker, instance);
+      // Recheck when opened so custom templates can switch themes at runtime.
+      // Append to the existing hooks without replacing integrators' callbacks.
+      instance.config?.onOpen?.push(() =>
+        applyDatepickerTheme(picker, instance),
+      );
       picker.setAttribute("autocomplete", "off");
 
       this.freeform._dispatchEvent("flatpickr-ready", {

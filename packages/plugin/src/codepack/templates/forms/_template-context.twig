@@ -1,0 +1,24 @@
+{% set templateLabel = sampleTemplate ? sampleTemplate.name : (customTemplate ? customTemplate.fileName : assignedTemplate|replace({'\\': '/'})|split('/')|last) %}
+
+<div class="freeform-form-browser freeform-template-context">
+    <div class="freeform-example-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v1"/></svg>
+        <div class="freeform-template-context-message">
+            {% if assignedTemplate %}
+                <strong class="freeform-template-context-title">Using the form’s assigned template</strong>
+                <p>This preview uses {% if sampleTemplate %}<strong>{{ templateLabel }}</strong>{% else %}<code>{{ templateLabel }}</code>{% endif %}, as selected in the form builder.</p>
+                {% if sampleTemplate %}
+                    <p>The template’s styles and required framework assets are loaded automatically for this preview.</p>
+                {% else %}
+                    <p>This demo doesn’t automatically load your site’s CSS or JavaScript. Custom templates may look unstyled without those assets.</p>
+                {% endif %}
+            {% else %}
+                <strong class="freeform-template-context-title">No formatting template assigned.</strong>
+                <p>Choose one in the form builder, or try the Basic Light preview below.</p>
+            {% endif %}
+            {% if not sampleTemplate %}
+                <a class="freeform-template-context-action" href="{{ demoBaseUrl }}/forms/basic-light/{{ form.handle }}{% if craft.app.request.segment(baseUrlSegments + 4) == 'edit' %}/edit/{{ craft.app.request.segment(baseUrlSegments + 5) }}{% endif %}">Preview with Basic Light →</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

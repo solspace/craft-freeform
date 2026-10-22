@@ -2,53 +2,91 @@ import type { FormGroupsListRefs } from "@ff-client/types/form-groups";
 import type { RefObject } from "react";
 import Sortable from "sortablejs";
 
-type SortableOptions = { [key: string]: Sortable.Options };
+export type FormGroupSortHandlers = {
+  moveForm: (id: number, targetUid: string | null, index: number) => void;
+  moveGroup: (uid: string, index: number) => void;
+};
 
-const putCondition = (_to: Sortable, from: Sortable): boolean =>
-  from.options.handle !== ".handle";
+// Sortable moves the DOM first. Restore it before React renders the new state,
+// so moving between React-owned lists does not leave stale or duplicate nodes.
+const restoreItem = (event: Sortable.SortableEvent): void => {
+  event.item.remove();
+  event.from.insertBefore(
+    event.item,
+    event.from.children[event.oldIndex] || null,
+  );
+};
+
+const clearDropTargets = (element: HTMLElement): void => {
+  element
+    .closest("[data-group-manager]")
+    ?.querySelectorAll(".is-drop-target")
+    .forEach((target) => {
+      target.classList.remove("is-drop-target");
+    });
+};
+
+const formOptions = (
+  handlers: FormGroupSortHandlers,
+  disabled: boolean,
+): Sortable.Options => ({
+  group: "form-group-manager-forms",
+  draggable: ".form-group-item",
+  filter: "button, input, select, a",
+  preventOnFilter: false,
+  animation: window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+    ? 0
+    : 150,
+  ghostClass: "is-drag-placeholder",
+  chosenClass: "is-drag-chosen",
+  disabled,
+  emptyInsertThreshold: 24,
+  onMove: (event) => {
+    clearDropTargets(event.to);
+    event.to.classList.add("is-drop-target");
+  },
+  onEnd: (event) => {
+    const targetUid = event.to.dataset.groupUid || null;
+    clearDropTargets(event.from);
+    restoreItem(event);
+    handlers.moveForm(
+      Number(event.item.dataset.id),
+      targetUid,
+      event.newDraggableIndex ?? event.newIndex,
+    );
+  },
+});
 
 export const initializeSortable = (
-  formListRefs: RefObject<FormGroupsListRefs>,
+  refs: RefObject<FormGroupsListRefs>,
+  handlers: FormGroupSortHandlers,
+  disabled: boolean,
 ): (() => void) => {
   const instances: Sortable[] = [];
-  const initialize = (
-    selector: keyof FormGroupsListRefs,
-    options?: Sortable.Options,
-  ): void => {
-    const createSortable = formListRefs.current[selector];
-    if (createSortable) {
-      instances.push(Sortable.create(createSortable as HTMLElement, options));
-    }
-  };
-
-  const handleSortableInit = (): void => {
-    const options: SortableOptions = {
-      unassigned: {
-        group: { name: "shared", put: putCondition },
-        animation: 150,
-        sort: true,
-      },
-      groupWrapper: {
-        handle: ".handle",
-        filter: ".group-remove",
-        sort: true,
-        animation: 150,
-        onFilter: (evt) => {
-          const groupItems = Array.from(
-            formListRefs.current[evt.item.dataset.id].children,
+  if (refs.current.unassigned)
+    instances.push(
+      Sortable.create(refs.current.unassigned, formOptions(handlers, disabled)),
+    );
+  if (refs.current.groupWrapper)
+    instances.push(
+      Sortable.create(refs.current.groupWrapper, {
+        handle: ".group-handle",
+        draggable: ".form-group",
+        animation: window.matchMedia?.("(prefers-reduced-motion: reduce)")
+          .matches
+          ? 0
+          : 150,
+        ghostClass: "is-drag-placeholder",
+        disabled,
+        onEnd: (event) => {
+          restoreItem(event);
+          handlers.moveGroup(
+            event.item.dataset.id,
+            event.newDraggableIndex ?? event.newIndex,
           );
-          formListRefs.current.unassigned.append(...groupItems);
-          evt.item.remove();
         },
-      },
-    };
-
-    Object.entries(options).forEach(([selector, option]) => {
-      initialize(selector as keyof FormGroupsListRefs, option);
-    });
-  };
-
-  handleSortableInit();
+      }),
+    );
   return () => {
     instances.forEach((instance) => {
       instance.destroy();
@@ -57,29 +95,20 @@ export const initializeSortable = (
 };
 
 export const initializeGroupedSortable = (
-  el: HTMLDivElement | null,
+  element: HTMLDivElement | null,
   uid: string,
-  formGroupsListRefs: RefObject<FormGroupsListRefs>,
+  refs: RefObject<FormGroupsListRefs>,
+  handlers: FormGroupSortHandlers,
+  disabled: boolean,
 ): void => {
-  const previousElement = formGroupsListRefs.current[uid];
-  if (!el) {
-    if (previousElement) Sortable.get(previousElement)?.destroy();
-    delete formGroupsListRefs.current[uid];
+  const previous = refs.current[uid];
+  if (previous && previous !== element) Sortable.get(previous)?.destroy();
+  if (!element) {
+    delete refs.current[uid];
     return;
   }
-
-  if (!Sortable.get(el)) {
-    Sortable.create(el, {
-      animation: 150,
-      group: {
-        name: `group-${uid}`,
-        put: (_to, from) => from.options.handle !== ".handle",
-      },
-      sort: true,
-      filter: ".form-item-remove",
-      onFilter: (evt) =>
-        formGroupsListRefs.current.unassigned.appendChild(evt.item),
-    });
-  }
-  formGroupsListRefs.current[uid] = el;
+  if (!Sortable.get(element))
+    Sortable.create(element, formOptions(handlers, disabled));
+  else Sortable.get(element).option("disabled", disabled);
+  refs.current[uid] = element;
 };

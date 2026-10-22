@@ -99,7 +99,7 @@ export const SettingsSidebar: React.FC = () => {
           <SectionIcon>
             <NewsIcon />
           </SectionIcon>
-          {translate("Usage in Elements")}
+          {translate("Usage & Stats")}
         </SectionLink>
       </SectionWrapper>
       <SettingsOwnership />

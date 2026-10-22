@@ -33,6 +33,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Library\Helpers\SignatureHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
@@ -315,13 +316,8 @@ class MailerService extends BaseService implements MailHandlerInterface
         if ($notification->isIncludeAttachments() && $form) {
             $fields = $form->getLayout()->getFields();
             foreach ($fields as $field) {
-                if ($field instanceof SignatureField && $field->getValueAsString()) {
-                    $message->attach($field->getValueAsString(), [
-                        'fileName' => 'signature.png',
-                        'contentType' => 'image/png',
-                    ]);
-
-                    $logger?->debug('Attached signature to email', ['fileName' => 'signature.png']);
+                if ($field instanceof SignatureField) {
+                    $this->attachSignature($message, $field, $logger);
 
                     continue;
                 }
@@ -531,6 +527,22 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         \Craft::$app->mailer->send($message);
         \Craft::$app->view->setTemplateMode($templateMode);
+    }
+
+    private function attachSignature(Message $message, SignatureField $field, ?LoggerInterface $logger): void
+    {
+        $image = SignatureHelper::decodeImage($field->getValue());
+        if (null === $image) {
+            return;
+        }
+
+        $fileName = 'image/jpeg' === $image['mimeType'] ? 'signature.jpg' : 'signature.png';
+        $message->attachContent($image['data'], [
+            'fileName' => $fileName,
+            'contentType' => $image['mimeType'],
+        ]);
+
+        $logger?->debug('Attached signature to email', ['fileName' => $fileName]);
     }
 
     private function getSystemDefault(string $key, string $address, array $twigVariables): string

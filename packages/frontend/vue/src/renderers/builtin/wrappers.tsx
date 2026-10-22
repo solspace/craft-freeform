@@ -142,6 +142,7 @@ export const DefaultLabel = defineComponent({
     },
     class: { type: String, default: undefined },
     requiredIndicator: { type: String, default: "*" },
+    requiredMarkClassName: { type: String, default: undefined },
   },
   setup(props) {
     return () => {
@@ -153,7 +154,9 @@ export const DefaultLabel = defineComponent({
         <label class={props.class} for={`freeform-${props.field.handle}`}>
           {props.field.label}
           {props.field.required ? (
-            <span aria-hidden="true"> {props.requiredIndicator}</span>
+            <span aria-hidden="true" class={props.requiredMarkClassName}>
+              {props.requiredIndicator}
+            </span>
           ) : null}
         </label>
       );

@@ -5,6 +5,8 @@ import DOMPurify from "dompurify";
 import type React from "react";
 import { useEffect } from "react";
 
+import type { FormSearchProps } from "../../form-search";
+import { createFormSearch } from "../../form-search.utils";
 import { useFormLimitModal } from "../../modals/hooks/use-add-form-modal";
 import { Notices } from "../../notices/notices";
 
@@ -24,15 +26,21 @@ import {
   Wrapper,
 } from "./grid.styles";
 
-export const FormGrid: React.FC = () => {
+export const FormGrid: React.FC<FormSearchProps> = ({ search = "" }) => {
   const openFormLimit = useFormLimitModal();
   const { data, isFetching } = useFetchFormGroups();
-  const sorting = useDashboardSorting(data);
+  const isSearching = search.trim().length > 0;
+  const sorting = useDashboardSorting(data, !isSearching);
+  const matchesSearch = createFormSearch(search);
+  const forms = data?.forms?.filter(matchesSearch);
+  const groups = data?.formGroups?.groups.map((group) => ({
+    ...group,
+    forms: group.forms?.filter(matchesSearch),
+  }));
+  const archivedForms = data?.archivedForms?.filter(matchesSearch);
 
-  const isForms = (data?.forms?.length ?? 0) > 0;
-  const isGroups = data?.formGroups?.groups.some(
-    (group) => (group?.forms?.length ?? 0) > 0,
-  );
+  const isForms = (forms?.length ?? 0) > 0;
+  const isGroups = groups?.some((group) => (group?.forms?.length ?? 0) > 0);
   const isEmpty = !isFetching && !isForms && !isGroups;
 
   const isExpressEdition = config.editions.is(Edition.Express);
@@ -48,7 +56,10 @@ export const FormGrid: React.FC = () => {
         <Notices />
 
         <Wrapper>
-          {isEmpty && <GridEmpty />}
+          {isEmpty && !isSearching && <GridEmpty />}
+          {isEmpty && isSearching && !archivedForms?.length && (
+            <p role="status">{translate("No forms match your search.")}</p>
+          )}
           {!isEmpty && (
             <CardWrapper
               ref={sorting.wrapperRef}
@@ -56,7 +67,7 @@ export const FormGrid: React.FC = () => {
               aria-busy={sorting.isSaving}
             >
               {isProEdition &&
-                data?.formGroups?.groups.map((group) =>
+                groups?.map((group) =>
                   (group?.forms?.length ?? 0) || sorting.canMove ? (
                     <GroupWrap key={group.uid}>
                       <GroupTitle>{group.label}</GroupTitle>
@@ -91,7 +102,7 @@ export const FormGrid: React.FC = () => {
                     aria-label={translate("Other")}
                     $empty={translate("Drag forms here.")}
                   >
-                    {data?.forms?.map((form) => (
+                    {forms?.map((form) => (
                       <Card
                         isDraggingInProgress={sorting.isDragging}
                         canMove={sorting.canMove}
@@ -101,7 +112,7 @@ export const FormGrid: React.FC = () => {
                         form={form}
                       />
                     ))}
-                    {isExpressEdition && (
+                    {isExpressEdition && !isSearching && (
                       <>
                         <CardPreview />
                         <CardPreview />
@@ -143,8 +154,8 @@ export const FormGrid: React.FC = () => {
           )}
 
           <ArchivedAndGroupWrapper>
-            {!isExpressEdition && data?.archivedForms && (
-              <Archived data={data.archivedForms} />
+            {!isExpressEdition && archivedForms && (
+              <Archived data={archivedForms} />
             )}
           </ArchivedAndGroupWrapper>
         </Wrapper>

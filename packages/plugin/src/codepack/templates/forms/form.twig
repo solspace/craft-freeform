@@ -1,16 +1,22 @@
 {% extends "demo/_layout" %}
 
-{% block title %}Freeform Demo | {{ form ? form.name : formHandle }} form with {{ pageTemplate|title|replace({'-':' '}) }} template{% endblock %}
+{% block title %}Freeform Demo | {{ form ? form.name : formHandle }} form with {{ pageTemplate == 'default' ? 'the assigned formatting' : pageTemplate|title|replace({'-':' '}) }} template{% endblock %}
 
 {% block content %}
 
     {% set submissionToken = craft.app.request.segment(baseUrlSegments + 4) == "edit" ? craft.app.request.segment(baseUrlSegments + 5) : null %}
 
     {% if form %}
+        {% if pageTemplate == 'default' %}
+            {% include "demo/forms/_template-context" %}
+        {% endif %}
     
-        <div class="freeform-page-heading">
-            <h2{{ craft.app.request.segment(baseUrlSegments + 4) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
-        </div>
+        {% if submissionToken %}
+            {% set editingSubmission = currentUser and currentUser.admin ? freeform.submissions({formId: form.id, token: submissionToken}).one : null %}
+            {% include "demo/forms/_edit-heading" %}
+        {% else %}
+            <div class="freeform-page-heading"><h2>{{ form.name }}</h2></div>
+        {% endif %}
 
         {# Describe the duplicate check if one is enabled. #}
         {% set duplicateCheck = form.settings.duplicateCheck %}
@@ -66,18 +72,11 @@
 
     {% else %}
 
-        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
-        </div>
+        {% include "demo/_message" with {
+            messageTitle: 'Form not found',
+            messageText: 'No form was found with the handle “' ~ formHandle ~ '”. Choose another form to continue.'
+        } %}
 
     {% endif %}
 
-{% endblock %}
-
-{% block footerJs %}
-<script>
-    document.addEventListener('freeform-ready', (event) => {
-        event.options.scrollOffset = -200;
-    });
-</script>
 {% endblock %}

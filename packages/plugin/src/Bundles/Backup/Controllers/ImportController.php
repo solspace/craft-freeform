@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
 use craft\helpers\App;
-use craft\helpers\FileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
 use Solspace\Freeform\Bundles\Backup\Export\FileExportReader;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3Exporter;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
+use Solspace\Freeform\Bundles\Backup\Import\ImportFileStorage;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
@@ -90,44 +90,31 @@ class ImportController extends BaseApiController
         $token = CryptoHelper::getUniqueToken(14);
         $password = $this->request->post('password');
 
-        $zipPath = $file['tmp_name'];
-        $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
-        if (!is_dir($unzipPath)) {
-            FileHelper::createDirectory($unzipPath, 0777, true);
-        }
-
-        $zip = new \ZipArchive();
-        $zip->open($zipPath);
-
-        if ($password) {
-            $zip->setPassword($password);
-        }
-
-        try {
-            $zip->extractTo($unzipPath);
-        } catch (\ValueError) {
-            $errors = new ErrorCollection();
-            $errors->add('import', 'file', ['Failed to extract ZIP file']);
-
-            throw new ApiException(400, $errors);
-        }
-
-        if (\ZipArchive::ER_OK !== $zip->status) {
-            $errors = new ErrorCollection();
-            $errors->add('import', 'file', [$zip->getStatusString()]);
-
-            throw new ApiException(403, $errors);
-        }
-
-        $zip->close();
-
+        $storage = \Craft::$container->get(ImportFileStorage::class);
         $exporter = \Craft::$container->get(FileExportReader::class);
         $exporter->setOptions(['fileToken' => $token]);
+
+        try {
+            if (\UPLOAD_ERR_OK !== ($file['error'] ?? \UPLOAD_ERR_OK)) {
+                throw new \RuntimeException('Failed to upload import file.');
+            }
+
+            $storage->store($token, $file['tmp_name'], $password);
+            $preview = $exporter->collectDataPreview();
+        } catch (\Throwable $e) {
+            $storage->delete($token);
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', [$e->getMessage()]);
+
+            throw new ApiException(403 === $e->getCode() ? 403 : 400, $errors);
+        } finally {
+            $exporter->release();
+        }
 
         return $this->asSerializedJson(
             [
                 'token' => $token,
-                'options' => $exporter->collectDataPreview(),
+                'options' => $preview,
             ],
             201,
             ['preserve_empty_objects' => false]
@@ -151,30 +138,27 @@ class ImportController extends BaseApiController
 
         ['exporter' => $exporterClass, 'options' => $options] = $config;
 
-        /** @var ExporterInterface $exporter */
-        $exporter = \Craft::$container->get($exporterClass);
-        $exporter->setOptions($options);
+        $exporter = null;
 
         try {
+            /** @var ExporterInterface $exporter */
+            $exporter = \Craft::$container->get($exporterClass);
+            $exporter->setOptions($options);
             $dataset = $exporter->collect();
-        } catch (\Throwable $e) {
-            $sse->message('err', $e->getMessage());
-            $sse->message('exit', 'done');
 
-            return;
-        }
+            $sse->message('info', 'Starting import');
 
-        $sse->message('info', 'Starting import');
-
-        try {
             $importer = \Craft::$container->get(FreeformImporter::class);
             $importer->import($dataset, $sse);
         } catch (\Throwable $e) {
             $sse->message('err', $e->getMessage());
             $sse->message('exit', 'done');
-        }
 
-        $exporter->destruct();
+            return;
+        } finally {
+            $exporter?->destruct();
+            \Craft::$app->cache->delete("freeform-import-{$serverToken}");
+        }
 
         $sse->message('info', 'Done');
         $sse->message('exit', 'done');

@@ -1,0 +1,23 @@
+{% import '_includes/forms' as forms %}
+{% set value = submission[field.handle].value ?? {} %}
+{% if field.addressFields == 'mapped' %}
+    {% for key in ['search']|merge(field.componentLabels|keys) %}
+        <input type="hidden" name="{{ field.handle }}[{{ key }}]" value="{{ value[key] ?? '' }}">
+    {% endfor %}
+{% else %}
+<fieldset class="group freeform-submission-location">
+    <legend>{{ field.label }}</legend>
+    <input type="hidden" name="{{ field.handle }}[search]" value="{{ value.search ?? '' }}">
+    <div class="freeform-submission-location-components">
+    {% for key, label in field.componentLabels %}
+        {{ forms.textField({
+            label: label,
+            id: field.handle ~ '-' ~ key,
+            name: field.handle ~ '[' ~ key ~ ']',
+            value: value[key] ?? '',
+            required: key in field.requiredComponents,
+        }) }}
+    {% endfor %}
+    </div>
+</fieldset>
+{% endif %}

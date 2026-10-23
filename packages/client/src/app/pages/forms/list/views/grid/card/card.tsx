@@ -51,6 +51,7 @@ import {
 type Props = {
   form: FormWithStats;
   size?: FormCardSize;
+  canCustomize?: boolean;
   days?: FormCardDays;
   stats?: CardStats;
   content?: FormCardContent;
@@ -76,6 +77,7 @@ const defaultFormIcon =
 export const Card: React.FC<Props> = ({
   form,
   size = "1x1",
+  canCustomize = true,
   days = 30,
   stats,
   content = "overview",
@@ -162,6 +164,7 @@ export const Card: React.FC<Props> = ({
         {onResize && (
           <CardSizeMenu
             name={name}
+            canCustomize={canCustomize}
             size={size}
             formId={id}
             content={content}
@@ -357,7 +360,7 @@ export const Card: React.FC<Props> = ({
           color={color}
           days={days}
           stats={stats}
-          previewData={id === 0 ? form.chartData : undefined}
+          previewData={id === 0 || !canCustomize ? form.chartData : undefined}
           hasPeriodSummary={
             isTall && (content === "overview" || content === "statistics")
           }

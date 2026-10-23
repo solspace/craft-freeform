@@ -81,6 +81,7 @@ export const mergeWidgetCards = (
 export const useDashboardWidgets = () => {
   const { current } = useSiteContext();
   const siteId = current?.id;
+  const isPro = config.editions.isAtLeast(Edition.Pro);
   const client = useQueryClient();
   const [isSaving, setSaving] = useState(false);
   const busy = useRef(false);
@@ -93,13 +94,13 @@ export const useDashboardWidgets = () => {
           types: { type: string; name: string }[];
         }>("/api/forms/widgets", { params: { siteId }, signal })
         .then((r) => r.data),
-    enabled: !!siteId && config.editions.isAtLeast(Edition.Pro),
+    enabled: !!siteId && isPro,
     retry: false,
   });
   const reload = () =>
     client.invalidateQueries({ queryKey: widgetKey(siteId) });
   const mutate = async (path: string, values: object) => {
-    if (busy.current) return;
+    if (!isPro || busy.current) return;
     busy.current = true;
     setSaving(true);
     const key = widgetKey(siteId);
@@ -122,7 +123,7 @@ export const useDashboardWidgets = () => {
   return {
     ...query,
     siteId,
-    items: query.data?.items ?? emptyWidgets,
+    items: isPro ? (query.data?.items ?? emptyWidgets) : emptyWidgets,
     isSaving,
     reload,
     save,

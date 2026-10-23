@@ -41,19 +41,33 @@ export const FormGrid: React.FC<
   FormSearchProps & { periodHost?: HTMLElement | null }
 > = ({ search = "", periodHost }) => {
   const openFormLimit = useFormLimitModal();
+  const isProEdition = config.editions.isAtLeast(Edition.Pro);
   const { data, isFetching } = useFetchFormGroups();
   const isSearching = search.trim().length > 0;
   const sizing = useCardSizing();
   const range = useCardRange(data?.cardRange);
   const widgets = useDashboardWidgets();
-  const stats = useCardStats(range.days, !!data);
+  const stats = useCardStats(range.days, isProEdition && !!data);
   const sorting = useDashboardSorting(
     data,
-    !isSearching && !sizing.isSaving && !range.isSaving && !widgets.isSaving,
+    isProEdition &&
+      !isSearching &&
+      !sizing.isSaving &&
+      !range.isSaving &&
+      !widgets.isSaving,
     { items: widgets.items, save: widgets.save, reload: widgets.reload },
   );
   const matchesSearch = createFormSearch(search);
-  const forms = data?.forms?.filter(matchesSearch);
+  // A downgraded session may still have grouped Pro cards in the query cache.
+  const forms = (
+    isProEdition
+      ? data?.forms
+      : data && [
+          ...(data.forms ?? []),
+          ...(data.formGroups?.groups.flatMap((group) => group.forms ?? []) ??
+            []),
+        ]
+  )?.filter(matchesSearch);
   const groups = data?.formGroups?.groups.map((group) => ({
     ...group,
     forms: group.forms?.filter(matchesSearch),
@@ -61,7 +75,7 @@ export const FormGrid: React.FC<
   const archivedForms = data?.archivedForms?.filter(matchesSearch);
 
   const groupWidgets = (uid: string | null) =>
-    isSearching
+    isSearching || !isProEdition
       ? []
       : widgets.items.filter((widget) => {
           const group = groups?.some((group) => group.uid === widget.groupUid)
@@ -77,11 +91,9 @@ export const FormGrid: React.FC<
     !isFetching &&
     !isForms &&
     !isGroups &&
-    !(widgets.items.length && !isSearching);
+    !(isProEdition && widgets.items.length && !isSearching);
 
   const isExpressEdition = config.editions.is(Edition.Express);
-  const isProEdition = config.editions.isAtLeast(Edition.Pro);
-
   const renderItem = (item: FormWithStats | DashboardWidget) => {
     if ("beforeId" in item)
       return (
@@ -110,11 +122,12 @@ export const FormGrid: React.FC<
         isExpressEdition={isExpressEdition}
         key={form.id}
         form={form}
-        size={sizing.getSize(form)}
-        days={range.days}
-        stats={stats.data?.forms[form.id]}
-        content={sizing.getContent(form)}
-        fieldId={sizing.getFieldId(form)}
+        size={isProEdition ? sizing.getSize(form) : "1x1"}
+        canCustomize={isProEdition}
+        days={isProEdition ? range.days : 30}
+        stats={isProEdition ? stats.data?.forms[form.id] : undefined}
+        content={isProEdition ? sizing.getContent(form) : "overview"}
+        fieldId={isProEdition ? sizing.getFieldId(form) : null}
         onContentChange={(content, fieldId) =>
           void sizing.setContent(form, content, fieldId)
         }
@@ -145,7 +158,8 @@ export const FormGrid: React.FC<
               "Hold an empty area of a card to drag. Focus a card and use Alt + up/down arrows to reorder, or Alt + left/right to change group.",
             )}
           </span>
-          {periodHost &&
+          {isProEdition &&
+            periodHost &&
             data &&
             createPortal(
               <ViewButtons
@@ -173,7 +187,7 @@ export const FormGrid: React.FC<
               </ViewButtons>,
               periodHost,
             )}
-          {widgets.isError && (
+          {isProEdition && widgets.isError && (
             <p role="status">
               {translate("Could not load widgets.")}{" "}
               <button
@@ -185,7 +199,7 @@ export const FormGrid: React.FC<
               </button>
             </p>
           )}
-          {!isEmpty && stats.isError && (
+          {isProEdition && !isEmpty && stats.isError && (
             <p role="status">
               {translate("Could not load charts.")}{" "}
               <button
@@ -237,7 +251,7 @@ export const FormGrid: React.FC<
                       !sorting.isDragging
                     }
                   >
-                    {data?.formGroups?.groups.length > 0 && (
+                    {isProEdition && data?.formGroups?.groups.length > 0 && (
                       <GroupTitle>{translate("Other")}</GroupTitle>
                     )}
 

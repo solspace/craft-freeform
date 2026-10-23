@@ -13,6 +13,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\FormCardHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -161,7 +162,26 @@ class FormCardsControllerTest extends TestCase
         PermissionHelper::asAuthenticatedUser(static fn () => $controller->actionFieldSummary(1), [strtolower(Freeform::PERMISSION_FORMS_ACCESS)]);
     }
 
-    private function fixture(array $params = [], bool $post = true, bool $allowed = true): array
+    #[TestWith([Freeform::EDITION_LITE])]
+    #[TestWith([Freeform::EDITION_EXPRESS])]
+    public function testDowngradeBlocksEveryCustomizationEndpointWithoutChangingPreferences(string $edition): void
+    {
+        foreach (['actionStats', 'actionSaveRange', 'actionSavePreferences', 'actionFields', 'actionFieldSummary', 'actionSaveSize', 'actionActivity'] as $action) {
+            [$controller, $preferences] = $this->fixture(edition: $edition);
+            $preferences->values = ['freeform.cardSize.2.form-uid' => '2x2'];
+            $saved = $preferences->values;
+
+            try {
+                $controller->{$action}(1);
+                self::fail('Expected Pro restriction for '.$action);
+            } catch (ForbiddenHttpException $exception) {
+                self::assertSame('Dashboard customization requires Freeform Pro.', $exception->getMessage());
+                self::assertSame($saved, $preferences->values);
+            }
+        }
+    }
+
+    private function fixture(array $params = [], bool $post = true, bool $allowed = true, string $edition = Freeform::EDITION_PRO): array
     {
         $request = $this->createMock(Request::class);
         $params = array_replace(['formId' => 1, 'siteId' => 2, 'size' => '2x2'], $params);
@@ -211,8 +231,12 @@ class FormCardsControllerTest extends TestCase
                 $this->values = $values;
             }
         };
-        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['edition'])->getMock();
-        $plugin->method('edition')->willReturn(new EditionHelper(Freeform::EDITION_LITE, [Freeform::EDITION_EXPRESS, Freeform::EDITION_LITE, Freeform::EDITION_PRO]));
+        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['edition', 'getSettings'])->getMock();
+        $plugin->edition = $edition;
+        $settings = $this->getMockBuilder(Settings::class)->disableOriginalConstructor()->onlyMethods(['__call'])->getMock();
+        $settings->method('__call')->willReturn(false);
+        $plugin->method('getSettings')->willReturn($settings);
+        $plugin->method('edition')->willReturn(new EditionHelper($edition, [Freeform::EDITION_EXPRESS, Freeform::EDITION_LITE, Freeform::EDITION_PRO]));
         \Craft::$app = \Yii::$app = new class($request, $sites, $user, $preferences, $plugin) {
             public array $loadedModules;
 

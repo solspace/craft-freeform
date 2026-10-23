@@ -18,7 +18,7 @@ export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
   const usedBy = useSelector(fieldRuleSelectors.usedByFields(uid));
   const options = useFieldOptionCollection(
     [...usedBy, uid],
-    ["html", "rich-text", "file", "file-dnd", "signature"],
+    ["html", "rich-text", "file", "file-dnd", "signature", "location"],
   );
 
   return (

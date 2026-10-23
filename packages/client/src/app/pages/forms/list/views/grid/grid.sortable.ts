@@ -36,8 +36,11 @@ export const useDashboardSorting = (
   const canMoveForms =
     enabled &&
     config.metadata.freeform.canOrganizeForms &&
-    !config.editions.is(Edition.Express);
-  const canMove = enabled && (canMoveForms || !!widgets?.items.length);
+    config.editions.isAtLeast(Edition.Pro);
+  const canMove =
+    enabled &&
+    config.editions.isAtLeast(Edition.Pro) &&
+    (canMoveForms || !!widgets?.items.length);
 
   const save = async (
     move: CardMove,

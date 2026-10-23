@@ -3,6 +3,9 @@
 
     <div class="fields-row">
         {%- for field in row.allFields -%}
+            {% if field.type == 'location' and field.addressFields == 'mapped' %}
+                {{ craft.freeformSubmissions.renderSubmissionField(field, submission) }}
+            {% else %}
             {% set useCustomAttributes = field.parameters.useCustomAttributes ?? null %}
             {{ field.renderContainerOpeningTag({
                 useCustomAttributes: false,
@@ -20,6 +23,7 @@
 
             {{ field.renderContainerClosingTag }}
             {% do field.setParameters({ useCustomAttributes: useCustomAttributes }) %}
+            {% endif %}
         {% endfor %}
     </div>
 {% endmacro %}

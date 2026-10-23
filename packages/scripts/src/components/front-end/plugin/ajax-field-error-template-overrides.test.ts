@@ -18,6 +18,114 @@ afterEach(() => {
 });
 
 describe("AJAX field error template overrides", () => {
+  it("keeps search-only address fields hidden and puts errors on the visible lookup until the required components are filled", () => {
+    const { form, freeform } = setup(
+      '<form data-freeform><div data-field-container="location" data-field-error-id="location-error"><div data-freeform-location="{}"><input name="location[search]" data-freeform-location-search><div data-freeform-location-components hidden><input name="location[line1]" data-location-required><input name="location[city]" data-location-required></div></div></div></form>',
+    );
+    const search = form.querySelector<HTMLInputElement>(
+      '[name="location[search]"]',
+    )!;
+    const group = form.querySelector<HTMLElement>(
+      "[data-freeform-location-components]",
+    )!;
+    freeform._renderFieldErrors(
+      { location: ["Please enter an address"] },
+      '<form><div data-field-container="location"><div data-freeform-location="{}"><input name="location[search]" data-freeform-location-search class="input-error"><div data-freeform-location-components hidden><input name="location[line1]" data-location-required><input name="location[city]" data-location-required></div></div><ul id="location-error" class="text-danger"><li>Please enter an address</li></ul></div></form>',
+    );
+    expect(group.hidden).toBe(true);
+    expect(form.querySelectorAll("[aria-invalid=true]")).toHaveLength(1);
+    expect(search.getAttribute("aria-invalid")).toBe("true");
+    expect(search.classList.contains("freeform-has-errors")).toBe(true);
+    expect(search.classList.contains("input-error")).toBe(true);
+    expect(form.querySelector("[data-field-errors]")?.className).toBe(
+      "text-danger",
+    );
+    expect(search.getAttribute("aria-describedby")).toBe("location-error");
+    search.value = "123 Main";
+    search.dispatchEvent(new Event("change"));
+    expect(search.getAttribute("aria-invalid")).toBe("true");
+    for (const input of group.querySelectorAll<HTMLInputElement>("input"))
+      input.value = "Filled by selection";
+    search.dispatchEvent(new Event("change"));
+    expect(search.hasAttribute("aria-invalid")).toBe(false);
+    expect(search.classList.contains("freeform-has-errors")).toBe(false);
+    expect(search.classList.contains("input-error")).toBe(false);
+    expect(form.querySelector("[data-field-errors]")).toBeNull();
+    expect(group.hidden).toBe(true);
+  });
+  it("keeps errors on remaining missing components and clears them all before another submit", () => {
+    const { form, freeform } = setup(
+      '<form data-freeform><div data-field-container="location" data-field-error-id="location-error"><div data-freeform-location="{}"><input name="location[line1]" data-location-required><input name="location[city]" data-location-required></div></div></form>',
+    );
+    freeform._renderFieldErrors({ location: ["Complete the address"] });
+    const street = form.querySelector<HTMLInputElement>(
+      '[name="location[line1]"]',
+    )!;
+    const city = form.querySelector<HTMLInputElement>(
+      '[name="location[city]"]',
+    )!;
+    street.value = "123 Main";
+    street.dispatchEvent(new Event("change"));
+    expect(street.hasAttribute("aria-invalid")).toBe(false);
+    expect(city.getAttribute("aria-invalid")).toBe("true");
+    expect(form.querySelector("[data-field-errors]")).not.toBeNull();
+    freeform._removeMessages();
+    expect(form.querySelectorAll("[aria-invalid]")).toHaveLength(0);
+    expect(form.querySelectorAll(".freeform-has-errors")).toHaveLength(0);
+    expect(form.querySelector("[data-field-errors]")).toBeNull();
+  });
+  it("highlights the visible inputs of an empty Location and clears their errors together", () => {
+    const { form, freeform } = setup(
+      '<form data-freeform><div data-field-container="location" data-field-error-id="location-error"><div data-freeform-location="{}"><input name="location[search]"><div><input name="location[line1]"></div><div><input name="location[city]"></div><input type="hidden" name="location[state]"></div></div><div data-field-container="other"><input name="other"></div></form>',
+    );
+    freeform._renderFieldErrors({
+      location: ["Required"],
+      other: ["Required"],
+    });
+    expect(
+      form.querySelectorAll("[data-freeform-location] [aria-invalid=true]"),
+    ).toHaveLength(3);
+    expect(
+      form.querySelector("[type=hidden]")?.hasAttribute("aria-invalid"),
+    ).toBe(false);
+    const city = form.querySelector<HTMLInputElement>(
+      '[name="location[city]"]',
+    )!;
+    city.value = "Winnipeg";
+    city.dispatchEvent(new Event("change"));
+    expect(
+      form.querySelectorAll("[data-freeform-location] [aria-invalid]"),
+    ).toHaveLength(0);
+    expect(
+      form.querySelector("[data-field-container=location] [data-field-errors]"),
+    ).toBeNull();
+    expect(
+      form.querySelector("[name=other]")?.getAttribute("aria-invalid"),
+    ).toBe("true");
+  });
+
+  it("uses template error styles only on missing selected Location components", () => {
+    const html = (error: boolean) =>
+      `<form data-freeform><div data-field-container="location" data-field-error-id="location-error"><div data-freeform-location="{}"><input name="location[search]" class="input"><input name="location[line1]" data-location-required value="123 Main" class="input"><div><input name="location[city]" data-location-required class="input${error ? " input-error" : ""}"></div><input name="location[line2]" class="input"></div>${error ? '<ul id="location-error" class="errors"><li>City required</li></ul>' : ""}</div></form>`;
+    const { form, freeform } = setup(html(false));
+    freeform._renderFieldErrors({ location: ["City required"] }, html(true));
+    const city = form.querySelector<HTMLInputElement>(
+      '[name="location[city]"]',
+    )!;
+    expect(city.classList.contains("input-error")).toBe(true);
+    expect(city.getAttribute("aria-describedby")).toBe("location-error");
+    expect(form.querySelectorAll("[aria-invalid=true]")).toHaveLength(1);
+    expect(
+      form
+        .querySelector('[name="location[line1]"]')
+        ?.hasAttribute("aria-invalid"),
+    ).toBe(false);
+    city.value = "Winnipeg";
+    city.dispatchEvent(new Event("change"));
+    expect(city.classList.contains("input-error")).toBe(false);
+    expect(form.querySelectorAll("[aria-invalid]")).toHaveLength(0);
+  });
+
   it("uses the server-rendered field error styling without replacing the input", () => {
     const { form, freeform } = setup(
       '<form data-freeform><div data-field-container="email" data-field-error-id="email-error" class="base"><label class="base-label"><input name="email" value="typed@example.com" class="base-input rounded" aria-describedby="email-instructions"></label><span id="email-instructions">Instructions</span></div></form>',

@@ -87,6 +87,27 @@ export const FieldCellWrapper = styled.div`
     border-color 0.2s ease-out,
     background-color 0.2s ease-out;
 
+  .location-component-required {
+    color: ${colors.error};
+    font-weight: 600;
+    vertical-align: baseline;
+  }
+
+  .location-preview-search {
+    position: relative;
+    > input:not([type='checkbox']):not([type='radio']) { padding-inline-start: 36px; }
+    > svg {
+      position: absolute;
+      inset-inline-start: 12px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateY(-50%);
+      opacity: .65;
+      pointer-events: none;
+    }
+  }
+
   &.input-only {
     flex-direction: row !important;
     gap: ${spacings.sm};

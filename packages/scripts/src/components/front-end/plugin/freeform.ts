@@ -767,7 +767,7 @@ export default class Freeform {
     if (errorClassField) {
       Array.from(form.getElementsByClassName(errorClassField)).forEach(
         (field) => {
-          this._removeMessageFrom(field as HTMLInputElement);
+          this._removeMessageFrom(field as HTMLInputElement, true);
         },
       );
     }
@@ -871,7 +871,7 @@ export default class Freeform {
     }
   };
 
-  _removeMessageFrom = (field: HTMLInputElement): void => {
+  _removeMessageFrom = (field: HTMLInputElement, force = false): void => {
     const event = this._dispatchEvent(events.form.fieldRemoveMessages, {
       field,
     });
@@ -892,6 +892,32 @@ export default class Freeform {
       ) {
         errorContainerNode = field.parentNode.parentNode;
       }
+    }
+    const locationRoot = field.closest<HTMLElement>("[data-freeform-location]");
+    if (locationRoot) {
+      const required = Array.from(
+        locationRoot.querySelectorAll<HTMLInputElement>(
+          "[data-location-required]",
+        ),
+      );
+      if (!force && required.some((input) => !input.value.trim())) {
+        if (
+          field.hasAttribute("data-freeform-location-search") &&
+          locationRoot.querySelector<HTMLElement>(
+            "[data-freeform-location-components]",
+          )?.hidden
+        )
+          return;
+        if (field.value.trim()) {
+          if (options.errorClassField)
+            removeClass(field, options.errorClassField);
+          field.removeAttribute("aria-invalid");
+          if (errorId) this._removeAriaDescribedBy(field, errorId);
+          this._restoreErrorClasses(field);
+        }
+        return;
+      }
+      errorContainerNode = locationRoot;
     }
 
     const fieldError = errorId
@@ -1088,7 +1114,10 @@ export default class Freeform {
           (element) =>
             element.getAttribute("name") === key ||
             element.getAttribute("name") === `${key}[]` ||
-            element.getAttribute("data-freeform-file-upload") === key,
+            element.getAttribute("data-freeform-file-upload") === key ||
+            (element.closest("[data-freeform-location]") &&
+              element.getAttribute("type") !== "hidden" &&
+              element.getAttribute("name")?.startsWith(`${key}[`)),
         );
       const inputList = fieldInputs(container);
       const responseInputs = responseContainer
@@ -1097,7 +1126,32 @@ export default class Freeform {
 
       for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
         const input = inputList[inputIndex];
-        const responseInput = responseInputs[inputIndex];
+        const isLocation = Boolean(input.closest("[data-freeform-location]"));
+        const responseInput = isLocation
+          ? responseInputs.find(
+              (element) =>
+                element.getAttribute("name") === input.getAttribute("name"),
+            )
+          : responseInputs[inputIndex];
+        const locationRoot = input.closest("[data-freeform-location]");
+        const hiddenComponents = locationRoot?.querySelector<HTMLElement>(
+          "[data-freeform-location-components]",
+        )?.hidden;
+        if (
+          hiddenComponents &&
+          !input.hasAttribute("data-freeform-location-search")
+        )
+          continue;
+        if (
+          !hiddenComponents &&
+          locationRoot?.querySelector("[data-location-required]")
+        ) {
+          if (
+            !input.hasAttribute("data-location-required") ||
+            (input as HTMLInputElement).value.trim()
+          )
+            continue;
+        }
         if (
           responseInput &&
           input.tagName === responseInput.tagName &&

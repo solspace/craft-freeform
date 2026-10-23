@@ -1,0 +1,19 @@
+<% const t = text => (typeof Craft !== 'undefined' && Craft.t) ? Craft.t('freeform', text) : text; %>
+<% const showSearch = (typeof addressFields !== "undefined" && addressFields === "mapped") || (typeof integration !== "undefined" && !!integration); %>
+<% const display = showSearch && typeof addressDisplay !== 'undefined' ? addressDisplay : 'always'; %>
+<% if (showSearch) { %>
+<div class="location-preview-search"><input type="text" placeholder="<%= placeholder || t('Start typing your address...') %>" /><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m16 16 5 5"/></svg></div>
+<% } %>
+<% if ((typeof addressFields === 'undefined' || addressFields !== 'mapped') && display === 'always') { %>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:<%= showSearch ? 10 : 0 %>px;">
+<% const labels = {line1:'Address Line 1',line2:'Address Line 2 / Apartment',city:'City',state:'State / Province',postalCode:'Postal Code',country:'Country'}; %>
+<% const included = typeof includedComponents === 'undefined' ? Object.keys(labels) : includedComponents; %>
+<% if (included.includes('line1') && !included.includes('line2')) labels.line1 = 'Address'; %>
+<% Object.keys(labels).filter(key => included.includes(key)).forEach(key => { %>
+<div style="min-width:0;"><div style="font-size:11px;line-height:16px;margin-bottom:3px;"><%= t(labels[key]) %><% if (typeof required !== 'undefined' && required && typeof requiredComponents !== 'undefined' && requiredComponents.includes(key)) { %><span class="field-required location-component-required" aria-hidden="true"> *</span><% } %></div><input type="text" /></div>
+<% }); %>
+</div>
+<% } %>
+<% if (showSearch && display === 'selected' && addressFields !== 'mapped') { %>
+<div style="font-size:11px;line-height:16px;margin-top:6px;color:#7b8793;"><%= t('Address fields appear after selecting a location.') %></div>
+<% } %>

@@ -62,6 +62,7 @@ interface FieldInterface
     public const TYPE_NUMBER = 'number';
     public const TYPE_RANGE = 'range';
     public const TYPE_PHONE = 'phone';
+    public const TYPE_LOCATION = 'location';
     public const TYPE_WEBSITE = 'website';
     public const TYPE_RATING = 'rating';
     public const TYPE_REGEX = 'regex';

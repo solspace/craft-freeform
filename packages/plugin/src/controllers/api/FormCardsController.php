@@ -25,6 +25,7 @@ class FormCardsController extends BaseApiController
 {
     public function actionStats(): Response
     {
+        $this->requirePro();
         $this->requireCpRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
         $siteId = $this->getSiteId($this->request->getQueryParam('siteId'));
@@ -39,6 +40,7 @@ class FormCardsController extends BaseApiController
 
     public function actionSaveRange(): Response
     {
+        $this->requirePro();
         $this->requireCpRequest();
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -54,6 +56,7 @@ class FormCardsController extends BaseApiController
 
     public function actionSavePreferences(): Response
     {
+        $this->requirePro();
         $this->requireCpRequest();
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -90,6 +93,7 @@ class FormCardsController extends BaseApiController
 
     public function actionFields(int $id): Response
     {
+        $this->requirePro();
         $form = $this->requireSubmissionForm($id);
 
         return $this->asJson(\Craft::$container->get(FormCardAnalyticsService::class)->getFields($form));
@@ -97,6 +101,7 @@ class FormCardsController extends BaseApiController
 
     public function actionFieldSummary(int $id): Response
     {
+        $this->requirePro();
         $form = $this->requireSubmissionForm($id);
         $fieldId = filter_var($this->request->getQueryParam('fieldId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         if (!$fieldId) {
@@ -108,6 +113,7 @@ class FormCardsController extends BaseApiController
 
     public function actionSaveSize(): Response
     {
+        $this->requirePro();
         $this->requireCpRequest();
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -138,6 +144,7 @@ class FormCardsController extends BaseApiController
 
     public function actionActivity(int $id): Response
     {
+        $this->requirePro();
         $this->requireCpRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
         if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)
@@ -168,6 +175,13 @@ class FormCardsController extends BaseApiController
         $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         return $this->asJson(['submissions' => array_map(static fn ($row) => ['id' => (int) $row['id'], 'title' => $row['title'] ?: Freeform::t('Submission #{id}', ['id' => $row['id']]), 'createdAt' => Carbon::parse($row['dateCreated'], 'UTC')->toIso8601String(), 'url' => UrlHelper::cpUrl('freeform/submissions/'.$row['id']), 'status' => ['name' => $row['statusName'] ?: Freeform::t('Unknown status'), 'color' => \in_array($row['statusColor'], StatusRecord::getAllowedColors(), true) ? $row['statusColor'] : 'gray']], $rows)]);
+    }
+
+    private function requirePro(): void
+    {
+        if (!Freeform::getInstance()->isPro()) {
+            throw new ForbiddenHttpException('Dashboard customization requires Freeform Pro.');
+        }
     }
 
     private function requireSubmissionForm(int $id): Form

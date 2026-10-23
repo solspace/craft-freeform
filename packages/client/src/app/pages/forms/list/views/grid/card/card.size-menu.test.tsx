@@ -20,6 +20,7 @@ const render = async (
   disabled = false,
   withActions = false,
   widgetType?: string,
+  canCustomize = true,
 ) => {
   await act(async () =>
     root.render(
@@ -27,6 +28,7 @@ const render = async (
         <EscapeStackProvider>
           <CardSizeMenu
             name="Contact"
+            canCustomize={canCustomize}
             size="1x1"
             disabled={disabled}
             onChange={change}
@@ -148,3 +150,18 @@ it.each([
     expect(document.activeElement).toBe(trigger());
   },
 );
+
+it("keeps form actions available without offering Pro customization", async () => {
+  await render(false, true, undefined, false);
+  await act(async () => trigger().click());
+  const dialog = document.querySelector('[role="dialog"]')!;
+  expect(dialog.textContent).not.toContain("Card size");
+  expect(
+    [...dialog.querySelectorAll("button")].map((button) => button.textContent),
+  ).toEqual(["Duplicate", "Archive", "Delete"]);
+  await act(async () =>
+    dialog.querySelector<HTMLButtonElement>("button")!.click(),
+  );
+  expect(actions.onDuplicate).toHaveBeenCalled();
+  expect(change).not.toHaveBeenCalled();
+});

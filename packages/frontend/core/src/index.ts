@@ -135,6 +135,7 @@ export type {
   EmailSuggestionConfig,
   EmailSuggestionLabels,
 } from "./email/types.js";
+export * from "./location/location.js";
 export {
   type InternationalPhoneConfig,
   mountInternationalPhone,

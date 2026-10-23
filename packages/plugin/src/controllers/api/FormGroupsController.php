@@ -41,7 +41,7 @@ class FormGroupsController extends BaseApiController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
         $freeform = Freeform::getInstance();
-        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
+        if (!$freeform->isPro()) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
@@ -143,6 +143,10 @@ class FormGroupsController extends BaseApiController
     protected function post(int|string|null $id = null): array|object|null
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+
+        if (!Freeform::getInstance()->isPro()) {
+            throw new ForbiddenHttpException('Form groups require Pro');
+        }
 
         $groups = $this->request->post('groups');
         $siteId = $this->request->post('siteId');
@@ -262,8 +266,8 @@ class FormGroupsController extends BaseApiController
 
         $user = \Craft::$app->getUser()->getIdentity();
         foreach ($allForms as $form) {
-            $form->cardSize = FormCardHelper::normalizeSize($user->getPreference(FormCardHelper::preferenceKey((int) $siteId, $form->uid)));
-            $content = FormCardHelper::normalizeContent($user->getPreference(FormCardHelper::contentKey((int) $siteId, $form->uid)));
+            $form->cardSize = FormCardHelper::normalizeSize($freeform->isPro() ? $user->getPreference(FormCardHelper::preferenceKey((int) $siteId, $form->uid)) : null);
+            $content = FormCardHelper::normalizeContent($freeform->isPro() ? $user->getPreference(FormCardHelper::contentKey((int) $siteId, $form->uid)) : null);
             $form->cardContent = $content['content'];
             $form->cardFieldId = $content['fieldId'];
         }
@@ -283,7 +287,7 @@ class FormGroupsController extends BaseApiController
         );
 
         $response = (object) [
-            'cardRange' => ($days = $user->getPreference(FormCardHelper::rangeKey((int) $siteId))) && \in_array($days, FormCardHelper::RANGES, true) ? $days : 30,
+            'cardRange' => ($days = $freeform->isPro() ? $user->getPreference(FormCardHelper::rangeKey((int) $siteId)) : null) && \in_array($days, FormCardHelper::RANGES, true) ? $days : 30,
             'forms' => $forms,
             'formGroups' => null,
             'archivedForms' => $archivedForms,

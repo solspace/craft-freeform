@@ -313,3 +313,15 @@ label.required:after {
   @include cp-searchable-select.searchable-select;
   .select:has(> select.ff-searchable-native)::after { display: none; }
 }
+// Keep address components aligned while allowing narrow editor panels to stack.
+.freeform-submission-location-components {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, max(220px, calc(50% - 12px))), 1fr));
+  gap: 16px 24px;
+  padding: 10px 0;
+
+  > .field {
+    min-width: 0;
+    margin: 0;
+  }
+}

@@ -14,6 +14,7 @@ import { type DashboardWidget, mergeWidgetCards } from "./grid.widgets";
 
 const fixture = vi.hoisted(() => ({
   canMove: true,
+  isPro: true,
   widgets: [] as DashboardWidget[],
   saveWidgets: vi.fn(),
   reloadWidgets: vi.fn(),
@@ -22,7 +23,7 @@ const fixture = vi.hoisted(() => ({
   error: vi.fn(),
 }));
 vi.mock("@config/freeform/freeform.config", () => ({
-  Edition: { Express: "express" },
+  Edition: { Pro: "pro" },
   default: {
     metadata: {
       freeform: {
@@ -31,7 +32,7 @@ vi.mock("@config/freeform/freeform.config", () => ({
         },
       },
     },
-    editions: { is: () => false },
+    editions: { isAtLeast: () => fixture.isPro },
   },
 }));
 vi.mock("@ff-client/contexts/site/site.context", () => ({
@@ -163,6 +164,7 @@ beforeEach(() => {
     globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
   ).IS_REACT_ACT_ENVIRONMENT = true;
   fixture.canMove = true;
+  fixture.isPro = true;
   fixture.widgets = [];
   fixture.saveWidgets.mockReset().mockResolvedValue(undefined);
   fixture.reloadWidgets.mockReset().mockResolvedValue(undefined);
@@ -415,4 +417,25 @@ it("saves interleaved widget positions together with a moved form", async () => 
     widgets: [{ uid: "w", size: "2x2", groupUid: "a", beforeId: 1 }],
   });
   expect(fixture.reloadWidgets).toHaveBeenCalled();
+});
+
+it("disables dragging and keyboard moves after a downgrade even with cached widgets", async () => {
+  fixture.isPro = false;
+  fixture.widgets = [
+    {
+      uid: "cached",
+      type: "linear",
+      title: "Chart",
+      size: "3x3",
+      groupUid: "a",
+      beforeId: null,
+    },
+  ];
+  await render();
+  expect(Sortable.get(list("a"))).toBeUndefined();
+  expect(
+    host.querySelector('[data-id="1"]')?.getAttribute("tabindex"),
+  ).not.toBe("0");
+  expect(fixture.post).not.toHaveBeenCalled();
+  expect(fixture.saveWidgets).not.toHaveBeenCalled();
 });

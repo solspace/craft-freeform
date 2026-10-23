@@ -13,6 +13,11 @@ import { type Property, PropertyType } from "@ff-client/types/properties";
 import type React from "react";
 import { useSelector } from "react-redux";
 
+import {
+  LocationIntegration,
+  LocationRequiredComponents,
+} from "./location-integration";
+
 type Props = {
   control?: React.ComponentProps<typeof FormComponent>["control"];
   property: Property;
@@ -81,7 +86,15 @@ export const FieldComponent: React.FC<Props> = ({
 
   const component = (
     <FormComponent
-      control={control}
+      control={
+        control ||
+        (type?.type === "location" && property.handle === "integration"
+          ? LocationIntegration
+          : type?.type === "location" &&
+              property.handle === "requiredComponents"
+            ? LocationRequiredComponents
+            : undefined)
+      }
       autoFocus={autoFocus}
       value={canUseTranslationValue(property) ? translationEnabledValue : value}
       property={property}

@@ -5,6 +5,8 @@ namespace Solspace\Freeform\Tests\Services;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\FormDashboardWidgetsService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -37,6 +39,8 @@ class FormDashboardWidgetsServiceTest extends TestCase
             }
         };
         $user = new class($this->preferences) {
+            public bool $allowAccess = false;
+
             public function __construct(private object $preferences) {}
 
             public function getPreference($key): mixed
@@ -56,7 +60,7 @@ class FormDashboardWidgetsServiceTest extends TestCase
 
             public function checkPermission($name): bool
             {
-                return false;
+                return $this->allowAccess && strtolower(Freeform::PERMISSION_FORMS_ACCESS) === $name;
             }
 
             public function getId(): int
@@ -73,6 +77,7 @@ class FormDashboardWidgetsServiceTest extends TestCase
             public function release($name): void {}
         };
         \Craft::$app = \Yii::$app = new class($user, $mutex, $this->preferences) {
+            public array $loadedModules = [];
             public object $request;
 
             public function __construct(private object $user, private object $mutex, private object $preferences)
@@ -203,6 +208,25 @@ class FormDashboardWidgetsServiceTest extends TestCase
     {
         $this->expectException(ForbiddenHttpException::class);
         $this->service->requireAccess(2);
+    }
+
+    #[TestWith(['lite'])]
+    #[TestWith(['express'])]
+    public function testDowngradeDeniesWidgetAccessAndRetainsSavedWidgetSettings(string $edition): void
+    {
+        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
+        $plugin->edition = $edition;
+        \Yii::$app->loadedModules = [Freeform::class => $plugin];
+        $saved = $this->preferences->values;
+        \Craft::$app->getUser()->allowAccess = true;
+
+        try {
+            PermissionHelper::asAuthenticatedUser(fn () => $this->service->requireAccess(2), [strtolower(Freeform::PERMISSION_FORMS_ACCESS)]);
+            self::fail('Expected widgets to require Pro.');
+        } catch (ForbiddenHttpException) {
+            self::assertSame($saved, $this->preferences->values);
+            self::assertSame($saved['freeform.dashboardWidgets.2'], $this->service->getItems(2));
+        }
     }
 
     public function testRejectsUnregisteredWidgetClasses(): void

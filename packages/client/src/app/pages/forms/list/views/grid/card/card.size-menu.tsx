@@ -35,6 +35,7 @@ const sizes: { size: FormCardSize; label: string; dimensions: string }[] = [
 
 export const CardSizeMenu = ({
   name,
+  canCustomize = true,
   size,
   disabled,
   onChange,
@@ -52,6 +53,7 @@ export const CardSizeMenu = ({
   onRemoveWidget,
 }: {
   name: string;
+  canCustomize?: boolean;
   size: DashboardWidgetSize;
   disabled: boolean;
   onChange: (size: FormCardSize) => void;
@@ -81,7 +83,7 @@ export const CardSizeMenu = ({
     })),
     ...extraSizes,
   ];
-  const supportsContent = size !== "1x1";
+  const supportsContent = canCustomize && size !== "1x1";
   const fields = useCardFields(
     formId,
     open && supportsContent && canReadSubmissions && !!onContentChange,
@@ -125,21 +127,22 @@ export const CardSizeMenu = ({
               style={floatingStyles}
               {...getFloatingProps({ "aria-label": translate("Card options") })}
             >
-              <span>{translate("Card size")}</span>
-              {sizeChoices.map((choice) => (
-                <SizeChoice
-                  key={choice.size}
-                  type="button"
-                  aria-pressed={choice.size === size}
-                  onClick={() => {
-                    setOpen(false);
-                    choice.onSelect();
-                  }}
-                >
-                  <span>{translate(choice.label)}</span>
-                  <span>{choice.dimensions}</span>
-                </SizeChoice>
-              ))}
+              {canCustomize && <span>{translate("Card size")}</span>}
+              {canCustomize &&
+                sizeChoices.map((choice) => (
+                  <SizeChoice
+                    key={choice.size}
+                    type="button"
+                    aria-pressed={choice.size === size}
+                    onClick={() => {
+                      setOpen(false);
+                      choice.onSelect();
+                    }}
+                  >
+                    <span>{translate(choice.label)}</span>
+                    <span>{choice.dimensions}</span>
+                  </SizeChoice>
+                ))}
               {supportsContent && onContentChange && (
                 <div className="content-options">
                   <label>

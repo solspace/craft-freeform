@@ -92,7 +92,9 @@ export const ListProvider: React.FC = () => {
                 onClick={() => setView(View.List)}
               />
             </ViewButtons>
-            {view === View.Grid && <PeriodControlHost ref={setPeriodHost} />}
+            {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
+              <PeriodControlHost ref={setPeriodHost} />
+            )}
             {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
               <InsertWidgetMenu />
             )}

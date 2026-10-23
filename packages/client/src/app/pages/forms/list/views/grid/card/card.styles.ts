@@ -303,6 +303,7 @@ export const SizeMenu = styled.div`
   color: #3f4d5a;
   box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
   .content-options, .card-actions { border-top: 1px solid #dfe6ee; margin-top: 5px; padding-top: 5px; }
+  .card-actions:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
   .content-options { padding: 8px 9px; }
   label { display: block; font-size: 12px; margin-bottom: 8px; }
   .card-select { position: relative; margin-top: 5px; }

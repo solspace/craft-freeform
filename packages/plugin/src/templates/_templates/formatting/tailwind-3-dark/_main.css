@@ -113,3 +113,18 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
 .freeform-form.freeform-tailwind-3 .ff-searchable.ff-searchable .ff-searchable__input:focus {
   border-color: #2563eb;
 }
+
+/* Reserve a drop area instead of inheriting the compact text-input padding. */
+.freeform-form[data-freeform-tailwind-dark] button.freeform-file-dnd__input {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 160px;
+  padding: 2rem 1rem;
+}
+.freeform-form[data-freeform-tailwind-dark] button.freeform-file-dnd__input[data-contains-files] {
+  min-height: 0;
+  padding: 1rem;
+}

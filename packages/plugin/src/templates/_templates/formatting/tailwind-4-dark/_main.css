@@ -122,3 +122,7 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
   width: 2rem;
   padding: 0;
 }
+
+.freeform-form[data-freeform-theme="dark"] .freeform-file-dnd__input[data-theme="dark"] [data-placeholder] {
+  color: var(--color-gray-400, #9ca3af);
+}

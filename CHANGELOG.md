@@ -12,6 +12,8 @@
 - Fixed searchable dropdown sizing and styling to match neighboring inputs in Tailwind sample formatting templates.
 - Fixed searchable dropdown heights and floating-label placement in Basic and Bootstrap Floating Labels sample templates.
 - Fixed international phone input labels overlapping the country selector in Floating Labels templates.
+- Fixed File Drag & Drop fields using the light theme in dark sample formatting templates, including file previews and removal controls.
+- Improved non-searchable Multiselect previews in the form builder with consistent typography, option spacing, and selection colors.
 - Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
 - Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
 

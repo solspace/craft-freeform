@@ -213,6 +213,31 @@ export const FieldCellWrapper = styled.div`
     select:not([multiple]) { padding-inline-end: 30px; }
   }
 
+  &[data-field-type='multiple-select'] select[multiple] {
+    box-sizing: border-box;
+    min-height: 114px;
+    padding: 4px;
+    font: inherit;
+    line-height: 20px;
+
+    option {
+      padding: 4px 6px;
+      border-radius: 3px;
+      color: ${colors.gray500};
+    }
+
+    option:checked {
+      color: ${colors.gray600};
+      background: linear-gradient(#eaf1fb, #eaf1fb);
+    }
+
+    optgroup {
+      padding: 4px 6px;
+      color: ${colors.gray600};
+      font-weight: 500;
+    }
+  }
+
   &[data-field-type='html'],
   &[data-field-type='rich-text'] {
     ul,

@@ -99,3 +99,20 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
 form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freeform-signature-theme="conversational"] .freeform-signature-wrapper:has(.is-invalid, .freeform-has-errors, .has-error, .input-error, .outline-red-600, .border-red-500, .border-red-600, .outline-red-700, .border-red-700) {
   --ff-signature-pad-border: var(--ff-signature-error);
 }
+
+/* Keep the upload area and its contents separate from navigation button sizing. */
+.freeform-form[data-freeform-conversational] button.freeform-file-dnd__input {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  width: 100%;
+  min-height: 160px;
+  padding: 2rem 1rem;
+  margin: 0;
+}
+.freeform-form[data-freeform-conversational] button.freeform-file-dnd__input[data-contains-files] {
+  min-height: 0;
+  padding: 1rem;
+}

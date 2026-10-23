@@ -149,6 +149,27 @@ export const FieldCellWrapper = styled.div`
     }
   }
 
+  &[data-field-type='checkbox'] {
+    input.checkbox + label > p {
+      margin-block: 0;
+
+      &:last-child { display: inline; }
+    }
+
+    input.checkbox + label.required::after {
+      content: '*';
+      position: relative;
+      top: -2px;
+      margin-inline-start: 3px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      color: ${colors.error};
+      vertical-align: baseline;
+    }
+  }
+
   input:not([type='checkbox']):not([type='radio']),
   textarea,
   select {

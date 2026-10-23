@@ -9,6 +9,7 @@
 - Fixed text-selection drags closing field editors when released outside the editor.
 - Fixed the required indicator's size and alignment on single-checkbox field previews with rich-text labels in the form builder.
 - Fixed missing borders around Opinion Scale choices in Bootstrap formatting templates.
+- Fixed searchable dropdown sizing and styling to match neighboring inputs in Tailwind sample formatting templates.
 - Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
 - Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
 

@@ -70,6 +70,10 @@ export type ExtendedFormType = Form & {
 };
 
 export type FormWithStats = Form & {
+  id: number;
+  cardSize?: FormCardSize;
+  cardContent?: FormCardContent;
+  cardFieldId?: number | null;
   links: Array<{
     label: string;
     handle: string;
@@ -84,6 +88,16 @@ export type FormWithStats = Form & {
     spam: number;
   };
 };
+
+export type FormCardSize = "1x1" | "2x1" | "1x2" | "2x2";
+export type DashboardWidgetSize = FormCardSize | "3x2" | "2x3" | "3x3";
+export type FormCardContent =
+  | "overview"
+  | "activity"
+  | "statistics"
+  | "monitor"
+  | "field";
+export type FormCardDays = 7 | 30 | 90;
 
 export type FormSettingNamespace = {
   label: string;

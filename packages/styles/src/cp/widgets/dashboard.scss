@@ -1,4 +1,6 @@
 @use "../../shared/chart.css";
+@use "../../../../frontend/core/src/select/searchable-select.css";
+@use "../../shared/cp-searchable-select";
 
 .freeform-dashboard-chart {
   --freeform-widget-height: 400px;
@@ -17,6 +19,8 @@
     --freeform-widget-height: 520px;
     --freeform-legend-height: 132px;
   }
+
+  &[data-chart-legend="none"] .freeform-chart-legend { display: none !important; }
 
   .freeform-chart-summary {
     flex: 0 0 auto;
@@ -67,6 +71,38 @@
 }
 
 .freeform-recent {
+  @include cp-searchable-select.searchable-select;
+  .freeform-recent-form-filter { flex: 1.4 1 0; min-width: 0; }
+  .ff-searchable__input { text-overflow: ellipsis; }
+  .freeform-recent-form-label {
+    position: absolute;
+    inset-inline: 10px 34px;
+    top: 50%;
+    transform: translateY(-50%);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+    line-height: 20px;
+    pointer-events: none;
+  }
+  .ff-searchable:focus-within .freeform-recent-form-label { display: none; }
+  .ff-searchable:not(:focus-within) .ff-searchable__input { color: transparent; }
+  .ff-searchable__input:disabled + .freeform-recent-form-label { opacity: 0.6; }
+  .ff-searchable .ff-searchable__option {
+    position: relative;
+    padding-inline-end: 32px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &[aria-selected="true"]::after {
+      position: absolute;
+      inset-inline-end: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+  .ff-searchable__list { max-height: min(240px, calc(100vh - 110px)); }
   min-width: 0;
   container-name: freeform-recent;
   container-type: inline-size;
@@ -155,7 +191,18 @@
     font-size: 11px;
     font-variant-numeric: tabular-nums;
   }
-  .freeform-recent-paging-buttons { display: flex; align-items: center; gap: 6px; }
+  .freeform-recent-paging-buttons {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    .freeform-recent-icon-button {
+      flex-basis: 26px;
+      width: 26px;
+      min-height: 26px;
+      height: 26px;
+      svg { width: 12px; height: 12px; }
+    }
+  }
   .freeform-recent-empty { padding: 24px 8px; text-align: center; }
   .freeform-recent-view-all { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; }
 }

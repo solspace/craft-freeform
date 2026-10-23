@@ -1,5 +1,6 @@
 import { refreshWidget } from "@lib/cp/widgets/refresh-widget";
 import { formatRelativeDate } from "@lib/cp/widgets/relative-date";
+import { SearchableSelect } from "../../../../../frontend/core/src/select/searchable-select";
 
 type RecentState = {
   search: string;
@@ -25,43 +26,6 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     "[data-recent-refresh]",
   );
   const feedback = root.querySelector<HTMLElement>("[data-widget-feedback]");
-  refresh?.addEventListener("click", async () => {
-    const label = refresh.textContent;
-    refresh.disabled = true;
-    refresh.textContent = refresh.dataset.refreshingLabel || "Refreshing…";
-    root.setAttribute("aria-busy", "true");
-    if (feedback) feedback.hidden = true;
-    try {
-      const next = await refreshWidget(root, (next) =>
-        initRecent(next, {
-          search: search?.value || "",
-          form: forms?.value || "",
-          status: statuses?.value || "",
-          oldestFirst,
-          page,
-        }),
-      );
-      const updated = next.querySelector<HTMLElement>("[data-widget-feedback]");
-      if (updated) {
-        updated.textContent =
-          next.dataset.refreshedLabel || "Submissions refreshed.";
-        updated.hidden = false;
-      }
-      next.querySelector<HTMLElement>("[data-recent-refresh]")?.focus();
-    } catch {
-      if (feedback) {
-        feedback.textContent =
-          root.dataset.refreshError ||
-          "Could not refresh submissions. Please try again.";
-        feedback.hidden = false;
-        feedback.classList.add("error");
-      }
-    } finally {
-      refresh.disabled = false;
-      refresh.textContent = label;
-      root.removeAttribute("aria-busy");
-    }
-  });
   const pageSize = Math.max(1, Number(root.dataset.pageSize) || 5);
   const search = root.querySelector<HTMLInputElement>("[data-recent-search]");
   const forms = root.querySelector<HTMLSelectElement>("[data-recent-form]");
@@ -85,7 +49,8 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     [forms, "formId", "formName"],
     [statuses, "statusId", "statusName"],
   ] as const) {
-    if (!select) continue;
+    if (!select || (select === forms && root.hasAttribute("data-form-filter")))
+      continue;
     const options = new Map(
       rows.map((row) => [row.dataset[key]!, row.dataset[labelKey]!]),
     );
@@ -97,8 +62,101 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
   }
 
   if (search && state) search.value = state.search;
-  if (forms && state) forms.value = state.form;
+  if (forms && state && !root.hasAttribute("data-form-filter"))
+    forms.value = state.form;
   if (statuses && state) statuses.value = state.status;
+  const serverFilter = root.hasAttribute("data-form-filter");
+  const picker =
+    forms && serverFilter
+      ? new SearchableSelect(forms, {
+          placeholder: forms.dataset.searchLabel || "Search forms",
+          noResults: forms.dataset.noResults || "No results found.",
+          toggleLabel: forms.dataset.toggleLabel || "Show options",
+          resultsLabel:
+            forms.dataset.resultsLabel || "{count} results available.",
+        })
+      : null;
+  // A separate label keeps the closed control's ellipsis consistent across browsers.
+  const selectedLabel = picker ? document.createElement("span") : null;
+  if (selectedLabel && picker) {
+    selectedLabel.className = "freeform-recent-form-label";
+    selectedLabel.setAttribute("aria-hidden", "true");
+    picker.input.after(selectedLabel);
+  }
+  const syncPicker = () => {
+    picker?.sync();
+    if (selectedLabel && forms) {
+      selectedLabel.textContent = forms.selectedOptions[0]?.label || "";
+    }
+  };
+  syncPicker();
+  let request = 0;
+  const refreshLabel = refresh?.textContent;
+  async function reload(formId: string, focusPicker = false) {
+    const current = ++request;
+    const previousForm = root!.dataset.formFilter || "";
+    if (refresh) {
+      refresh.disabled = true;
+      refresh.textContent = refresh.dataset.refreshingLabel || "Refreshing…";
+    }
+    if (forms) forms.disabled = true;
+    syncPicker();
+    root!.setAttribute("aria-busy", "true");
+    if (feedback) feedback.hidden = true;
+    try {
+      const nextRoot = await refreshWidget(
+        root!,
+        (next) => {
+          picker?.destroy();
+          initRecent(next, {
+            search: search?.value || "",
+            form: formId,
+            status: statuses?.value || "",
+            oldestFirst,
+            page: focusPicker ? 0 : page,
+          });
+        },
+        {
+          ...(serverFilter ? { formId } : {}),
+          isCurrent: () => current === request,
+        },
+      );
+      const updated = nextRoot.querySelector<HTMLElement>(
+        "[data-widget-feedback]",
+      );
+      if (updated && !focusPicker) {
+        updated.textContent =
+          nextRoot.dataset.refreshedLabel || "Submissions refreshed.";
+        updated.hidden = false;
+      }
+      nextRoot
+        .querySelector<HTMLElement>(
+          focusPicker ? "[data-recent-search]" : "[data-recent-refresh]",
+        )
+        ?.focus();
+    } catch {
+      if (current !== request) return;
+      if (forms && serverFilter) forms.value = previousForm;
+      if (feedback) {
+        feedback.textContent =
+          root!.dataset.refreshError ||
+          "Could not refresh submissions. Please try again.";
+        feedback.hidden = false;
+        feedback.classList.add("error");
+      }
+    } finally {
+      if (current === request) {
+        if (refresh) {
+          refresh.disabled = false;
+          refresh.textContent = refreshLabel || "";
+        }
+        if (forms) forms.disabled = false;
+        syncPicker();
+        root!.removeAttribute("aria-busy");
+      }
+    }
+  }
+  refresh?.addEventListener("click", () => void reload(forms?.value || ""));
   const setSortLabel = () => {
     if (!sort) return;
     sort.setAttribute("aria-pressed", String(oldestFirst));
@@ -112,9 +170,10 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
 
   function render() {
     const query = search?.value.trim().toLocaleLowerCase() || "";
+    const selectedForm = serverFilter ? root!.dataset.formFilter : forms?.value;
     const filtered = rows.filter(
       (row) =>
-        (!forms?.value || row.dataset.formId === forms.value) &&
+        (!selectedForm || row.dataset.formId === selectedForm) &&
         (!statuses?.value || row.dataset.statusId === statuses.value) &&
         (!query || row.textContent!.toLocaleLowerCase().includes(query)),
     );
@@ -127,8 +186,8 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     const selected = new Set(visible);
     for (const row of rows) row.hidden = !selected.has(row);
     // Only visible nodes need to move; the backing data stays in date order.
-    root!.querySelector("[data-recent-list]")!.append(...visible);
-    if (empty) empty.hidden = !rows.length || filtered.length > 0;
+    root!.querySelector("[data-recent-list]")?.append(...visible);
+    if (empty) empty.hidden = filtered.length > 0;
     if (previous) previous.disabled = page === 0;
     if (next) next.disabled = (page + 1) * pageSize >= filtered.length;
     if (pagingButtons) pagingButtons.hidden = filtered.length <= pageSize;
@@ -149,7 +208,10 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     render();
   };
   search?.addEventListener("input", filter);
-  forms?.addEventListener("change", filter);
+  forms?.addEventListener("change", () => {
+    if (serverFilter) void reload(forms.value, true);
+    else filter();
+  });
   statuses?.addEventListener("change", filter);
   sort?.addEventListener("click", () => {
     oldestFirst = !oldestFirst;
@@ -170,9 +232,12 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
   });
   root.querySelector("[data-recent-clear]")?.addEventListener("click", () => {
     if (search) search.value = "";
+    const reloadAll = serverFilter && !!root.dataset.formFilter;
     if (forms) forms.value = "";
+    syncPicker();
     if (statuses) statuses.value = "";
-    filter();
+    if (reloadAll) void reload("", true);
+    else filter();
     search?.focus();
   });
   for (const control of root.querySelectorAll<HTMLElement>(
@@ -197,7 +262,7 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
       else updateDates();
     }, 60000);
   }
-  if (rows.length) render();
+  render();
 }
 
 window.FreeformRecent = initRecent;

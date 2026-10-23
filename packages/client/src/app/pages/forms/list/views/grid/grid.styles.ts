@@ -16,12 +16,16 @@ export const CardWrapper = styled.div<{ $dragging?: boolean }>`
     $dragging &&
     `
     [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: #f6faff; }
+    iframe { pointer-events: none; }
   `}
 `;
 
 export const Cards = styled.ul<{ $empty?: string }>`
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  grid-auto-rows: 164px;
+  grid-auto-flow: row;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -52,6 +56,7 @@ export const Cards = styled.ul<{ $empty?: string }>`
 `;
 
 export const GroupWrap = styled.div`
+  container: form-card-grid / inline-size;
   & + & {
     border-top: 1px solid #e7edf3;
     padding-top: 20px;

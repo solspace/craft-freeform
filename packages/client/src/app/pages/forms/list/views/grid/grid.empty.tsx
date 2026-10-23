@@ -16,6 +16,7 @@ const generateFormData = (
   submissions: number,
   spam: number,
 ): FormWithStats => ({
+  id: 0,
   uid: "",
   type: "",
   name,

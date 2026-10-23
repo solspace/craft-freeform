@@ -28,6 +28,20 @@ return [
     // FORM GROUPS
     'freeform/api/forms/groups' => 'freeform/api/form-groups',
     'freeform/api/forms/groups/move' => 'freeform/api/form-groups/move',
+    'freeform/api/forms/cards/size' => 'freeform/api/form-cards/save-size',
+    'freeform/api/forms/cards/stats' => 'freeform/api/form-cards/stats',
+    'freeform/api/forms/cards/range' => 'freeform/api/form-cards/save-range',
+    'freeform/api/forms/cards/preferences' => 'freeform/api/form-cards/save-preferences',
+    'freeform/api/forms/<id:\d+>/card-fields' => 'freeform/api/form-cards/fields',
+    'freeform/api/forms/<id:\d+>/card-field-summary' => 'freeform/api/form-cards/field-summary',
+    'freeform/api/forms/<id:\d+>/card-activity' => 'freeform/api/form-cards/activity',
+
+    // PERSONAL DASHBOARD WIDGETS
+    'freeform/api/forms/widgets' => 'freeform/api/form-dashboard-widgets/list',
+    'freeform/api/forms/widgets/layout' => 'freeform/api/form-dashboard-widgets/layout',
+    'freeform/api/forms/widgets/remove' => 'freeform/api/form-dashboard-widgets/remove',
+    'freeform/api/forms/widgets/editor' => 'freeform/api/form-dashboard-widgets/editor',
+    'freeform/api/forms/widgets/<uid:[a-f0-9-]+>/body' => 'freeform/api/form-dashboard-widgets/body',
 
     // FORM ELEMENTS
     'freeform/api/forms/<id:\d+>/elements' => 'freeform/api/forms/elements/get',

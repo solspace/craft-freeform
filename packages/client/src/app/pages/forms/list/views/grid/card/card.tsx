@@ -4,54 +4,60 @@ import {
 } from "@components/elements/tooltip/tooltip";
 import config from "@config/freeform/freeform.config";
 import { useDeleteFormModal } from "@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal";
-import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { useCheckOverflow } from "@ff-client/hooks/use-check-overflow";
-import { QKGroups } from "@ff-client/queries/form-groups";
 import { useFMFormStatsQuery } from "@ff-client/queries/form-monitor";
 import { QKForms } from "@ff-client/queries/forms";
-import type { FormWithStats } from "@ff-client/types/forms";
+import type {
+  FormCardContent,
+  FormCardDays,
+  FormCardSize,
+  FormWithStats,
+} from "@ff-client/types/forms";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
-import ArchiveIcon from "@ff-icons/actions/archive";
-import CloneIcon from "@ff-icons/actions/clone";
-import CrossIcon from "@ff-icons/actions/delete";
-import MoveIcon from "@ff-icons/actions/move";
 import { useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import type React from "react";
 import type { MouseEventHandler } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
 import { FormIcon } from "../../../form-icon";
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
 } from "../grid.mutations";
+import { CardActivity, CardStatusSummary } from "./card.activity";
+import { CardChart, StatChange } from "./card.chart";
+import { CardFieldSummary } from "./card.field-summary";
 import { FMLoading } from "./card.loading";
 import { FormMonitorStats } from "./card.monitor.stats";
+import type { CardStats } from "./card.queries";
+import { CardSizeMenu } from "./card.size-menu";
 import {
+  Activity,
   CardBody,
   CardWrapper,
-  ChartWrapper,
-  ControlButton,
   Controls,
+  ExpandedStats,
   FMContainer,
   FormBody,
   FormBodyContent,
   FormIdentity,
   LinkList,
-  PaddedChartFooter,
   Subtitle,
   Title,
   TitleLink,
 } from "./card.styles";
 
-const randomSubmissions = (min: number, max: number): number =>
-  Math.floor(Math.random() * (max - min + 1)) + min;
-
 type Props = {
   form: FormWithStats;
+  size?: FormCardSize;
+  days?: FormCardDays;
+  stats?: CardStats;
+  content?: FormCardContent;
+  fieldId?: number | null;
+  onContentChange?: (content: FormCardContent, fieldId?: number | null) => void;
+  onResize?: (size: FormCardSize) => void;
+  isLayoutBusy?: boolean;
   isDraggingInProgress?: boolean;
   isExpressEdition?: boolean;
   canMove?: boolean;
@@ -64,8 +70,19 @@ const tooltipProps: Omit<TooltipProps, "children"> = {
   delay: [100, 0] as unknown as number,
 };
 
+const defaultFormIcon =
+  '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h4"/></g></svg>';
+
 export const Card: React.FC<Props> = ({
   form,
+  size = "1x1",
+  days = 30,
+  stats,
+  content = "overview",
+  fieldId,
+  onContentChange,
+  onResize,
+  isLayoutBusy = false,
   isDraggingInProgress,
   isExpressEdition,
   canMove,
@@ -75,7 +92,6 @@ export const Card: React.FC<Props> = ({
   const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
-  const { getCurrentHandleWithFallback } = useSiteContext();
   const queryClient = useQueryClient();
 
   const { canDelete } = config.metadata.freeform;
@@ -84,12 +100,11 @@ export const Card: React.FC<Props> = ({
   const [descriptionRef, isDescriptionOverflowing] =
     useCheckOverflow<HTMLSpanElement>();
 
-  const randomData = Array.from({ length: 31 }, () => ({
-    uv: randomSubmissions(0, Math.random() > 0.9 ? 50 : 20), // 15% chance for peak day
-  }));
-
+  const isWide = size.startsWith("2");
+  const isTall = size.endsWith("2");
   const { id, name, description, dateArchived, settings, formMonitor } = form;
   const { color } = settings.general;
+  const hasBadge = config.metadata.craft.is5;
 
   const isArchiving =
     archiveMutation.isPending && archiveMutation.context === id;
@@ -120,6 +135,23 @@ export const Card: React.FC<Props> = ({
   return (
     <CardWrapper
       data-id={form.id}
+      data-card-size={size}
+      tabIndex={canMove ? 0 : undefined}
+      aria-label={name}
+      aria-describedby={canMove ? "form-card-move-help" : undefined}
+      onKeyDown={(event) => {
+        if (
+          event.target === event.currentTarget &&
+          event.altKey &&
+          ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
+            event.key,
+          ) &&
+          !isLayoutBusy
+        ) {
+          event.preventDefault();
+          onKeyboardMove?.(id, event.key);
+        }
+      }}
       className={classes(
         isDisabled && "disabled",
         isSuccess && "archived",
@@ -127,84 +159,45 @@ export const Card: React.FC<Props> = ({
       )}
     >
       <Controls>
-        {canMove && (
-          <Tooltip title={translate("Move this Form Card")} {...tooltipProps}>
-            <ControlButton
-              type="button"
-              className="handle"
-              aria-label={translate("Move this Form Card")}
-              title={translate(
-                "Drag to move. Use up/down arrows to reorder, left/right to change group.",
-              )}
-              onKeyDown={(event) => {
-                if (
-                  ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(
-                    event.key,
-                  )
-                ) {
-                  event.preventDefault();
-                  onKeyboardMove?.(id, event.key);
-                }
-              }}
-            >
-              <MoveIcon />
-            </ControlButton>
-          </Tooltip>
+        {onResize && (
+          <CardSizeMenu
+            name={name}
+            size={size}
+            formId={id}
+            content={content}
+            fieldId={fieldId}
+            canReadSubmissions={form.canManageSubmissions}
+            monitorAvailable={!!formMonitor?.enabled && !!formMonitorLink}
+            disabled={isLayoutBusy || isDisabled}
+            onChange={onResize}
+            onContentChange={onContentChange}
+            onDuplicate={
+              !isExpressEdition ? () => cloneMutation.mutate(id) : undefined
+            }
+            onArchive={
+              !isExpressEdition && !dateArchived
+                ? () => archiveMutation.mutate(id)
+                : undefined
+            }
+            onDelete={canDelete ? () => openDeleteFormModal() : undefined}
+          />
         )}
-        {!isExpressEdition && (
-          <Tooltip title={translate("Duplicate this Form")} {...tooltipProps}>
-            <ControlButton
-              onClick={() => {
-                cloneMutation.mutate(id);
-              }}
-            >
-              <CloneIcon />
-            </ControlButton>
-          </Tooltip>
-        )}
-        {!isExpressEdition && !dateArchived && (
-          <Tooltip title={translate("Archive this Form")} {...tooltipProps}>
-            <ControlButton
-              onClick={() => {
-                archiveMutation.mutate(id);
-              }}
-            >
-              <ArchiveIcon />
-            </ControlButton>
-          </Tooltip>
-        )}
-        {canDelete && (
-          <Tooltip title={translate("Delete this Form")} {...tooltipProps}>
-            <ControlButton
-              onClick={async (event) => {
-                if (event.metaKey && event.shiftKey) {
-                  await axios.post(`/api/forms/delete`, { id });
-                  queryClient.invalidateQueries({
-                    queryKey: QKGroups.all(getCurrentHandleWithFallback()),
-                  });
-                  queryClient.invalidateQueries({
-                    queryKey: QKForms.all(getCurrentHandleWithFallback()),
-                  });
-                } else {
-                  openDeleteFormModal();
-                }
-              }}
-            >
-              <CrossIcon />
-            </ControlButton>
-          </Tooltip>
-        )}
+        <FormIcon svg={form.iconSvg || defaultFormIcon} color={color} />
       </Controls>
 
       <CardBody>
         <FormBody>
-          <FormIdentity>
-            <FormIcon svg={form.iconSvg} color={color} />
+          <FormIdentity
+            $hasBadge={hasBadge}
+            $hasMenu={!!onResize}
+            $hasMonitor={!!formMonitor?.enabled && !!formMonitorLink}
+          >
             <FormBodyContent>
               {isTitleOverflowing ? (
                 <Tooltip title={name} {...tooltipProps}>
                   {hasTitleLink ? (
                     <TitleLink
+                      data-no-drag
                       ref={titleRef}
                       onClick={onNavigate}
                       onAuxClick={onNavigate}
@@ -217,6 +210,7 @@ export const Card: React.FC<Props> = ({
                 </Tooltip>
               ) : hasTitleLink ? (
                 <TitleLink
+                  data-no-drag
                   ref={titleRef}
                   onClick={onNavigate}
                   onAuxClick={onNavigate}
@@ -235,32 +229,36 @@ export const Card: React.FC<Props> = ({
                     distance={10}
                     style={{ display: "block" }}
                   >
-                    <Subtitle ref={descriptionRef}>{description}</Subtitle>
+                    <Subtitle data-card-description ref={descriptionRef}>
+                      {description}
+                    </Subtitle>
                   </Tooltip>
                 ) : (
-                  <Subtitle ref={descriptionRef}>{description}</Subtitle>
+                  <Subtitle data-card-description ref={descriptionRef}>
+                    {description}
+                  </Subtitle>
                 ))}
 
               {linkList.length > 0 && (
                 <LinkList>
-                  {linkList.map((link, idx) =>
-                    link.internal ? (
-                      <NavLink key={idx} to={link.url}>
-                        {link.label}
-                      </NavLink>
-                    ) : (
-                      <li key={idx}>
+                  {linkList.map((link, idx) => (
+                    <li key={idx}>
+                      {!link.url ? (
+                        <span>{link.label}</span>
+                      ) : link.internal ? (
+                        <NavLink to={link.url}>{link.label}</NavLink>
+                      ) : (
                         <a href={link.url}>{link.label}</a>
-                      </li>
-                    ),
-                  )}
+                      )}
+                    </li>
+                  ))}
                 </LinkList>
               )}
             </FormBodyContent>
           </FormIdentity>
 
           {formMonitor?.enabled && formMonitorLink && (
-            <FMContainer>
+            <FMContainer className="corner-monitor">
               <NavLink to={formMonitorLink.url}>
                 {isStatsLoading ? (
                   <FMLoading />
@@ -282,38 +280,91 @@ export const Card: React.FC<Props> = ({
         </FormBody>
       </CardBody>
 
-      <ChartWrapper>
-        <ResponsiveContainer width="100%" height={40}>
-          <AreaChart
-            data={form.chartData || randomData}
-            margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
-          >
-            <defs>
-              <linearGradient
-                id={`color${form.id}`}
-                x1={0}
-                y1={0}
-                x2={0}
-                y2={1}
-              >
-                <stop offset="5%" stopColor={color} stopOpacity={0.4} />
-                <stop offset="95%" stopColor={color} stopOpacity={0.3} />
-              </linearGradient>
-            </defs>
-            <Area
-              type="monotone"
-              dataKey={"uv"}
-              stroke={color}
-              strokeWidth={1}
-              strokeOpacity={1}
-              fillOpacity={1}
-              fill={`url(#color${form.id})`}
-              isAnimationActive={false}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-        <PaddedChartFooter $color={color} />
-      </ChartWrapper>
+      {isTall && (content === "overview" || content === "statistics") && (
+        <ExpandedStats>
+          <div>
+            <dt>{translate("Last {days} days", { days })}</dt>
+            <dd>{stats?.total.toLocaleString() ?? "—"}</dd>
+          </div>
+          <div>
+            <dt>{translate("vs. previous {days} days", { days })}</dt>
+            <dd>
+              <StatChange stats={stats} />
+            </dd>
+          </div>
+        </ExpandedStats>
+      )}
+      {(isTall || isWide) &&
+        form.canManageSubmissions &&
+        (content === "field" ? (
+          <CardFieldSummary
+            id={id}
+            fieldId={fieldId}
+            days={days}
+            compact={!isTall}
+          />
+        ) : content === "statistics" ? (
+          <Activity className={!isTall ? "compact-details" : undefined}>
+            {!isTall && (
+              <p>
+                <StatChange stats={stats} /> ·{" "}
+                {translate("vs. previous {days} days", { days })}
+              </p>
+            )}
+            <CardStatusSummary statuses={stats?.statuses} compact={!isTall} />
+          </Activity>
+        ) : content === "activity" || (content === "overview" && isTall) ? (
+          <CardActivity id={id} days={days} compact={!isTall} />
+        ) : null)}
+      {isTall &&
+        content === "monitor" &&
+        formMonitor?.enabled &&
+        formMonitorLink && (
+          <Activity data-no-drag>
+            <h3>{translate("Form Monitor")}</h3>
+            <NavLink to={formMonitorLink.url}>
+              {isStatsLoading ? (
+                <FMLoading />
+              ) : (
+                <FormMonitorStats
+                  formMonitor={{ ...formMonitorStats, enabled: true }}
+                  align="left"
+                  width="100%"
+                  showLastTest
+                  size="lg"
+                />
+              )}
+            </NavLink>
+          </Activity>
+        )}
+      {isTall && !form.canManageSubmissions && content !== "monitor" && (
+        <Activity>
+          <h3>{translate("Form details")}</h3>
+          <dl>
+            <dt>{translate("Handle")}</dt>
+            <dd>{form.handle}</dd>
+          </dl>
+        </Activity>
+      )}
+      {(!isWide ||
+        isTall ||
+        content === "overview" ||
+        (content === "statistics" && isTall) ||
+        content === "monitor") && (
+        <CardChart
+          id={id}
+          name={name}
+          color={color}
+          days={days}
+          stats={stats}
+          previewData={id === 0 ? form.chartData : undefined}
+          hasPeriodSummary={
+            isTall && (content === "overview" || content === "statistics")
+          }
+          expanded={isWide || isTall}
+          tall={isTall}
+        />
+      )}
     </CardWrapper>
   );
 };

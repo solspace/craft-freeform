@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.18.0 - Unreleased
+
+### Added
+- Added customizable **Forms dashboard cards** with resizable layouts, drag-and-drop and keyboard reordering, per-user preferences, 7-, 30-, and 90-day trends and comparisons, and configurable activity, statistics, Form Monitor, and field summaries.
+- Added **Linear Chart**, **Radial Chart**, **Recent Submissions**, and **Quick Form** widgets to the Forms dashboard, with form-group placement, responsive sizes and chart layouts, searchable form filtering, and matching loading states.
+
 ## 5.17.4 - Unreleased
 
 ### Fixed

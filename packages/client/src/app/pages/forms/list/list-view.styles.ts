@@ -126,3 +126,10 @@ export const SearchWrapper = styled.div`
     }
   }
 `;
+
+export const PeriodControlHost = styled.div`
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  &:empty { display: none; }
+`;

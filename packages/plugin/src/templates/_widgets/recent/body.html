@@ -1,12 +1,11 @@
 {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Widgets\\Dashboard\\RecentBundle') %}
 {% set ID = 'freeform-recent-' ~ random() %}
-<div id="{{ ID }}" class="freeform-recent" data-widget-id="{{ widgetId }}" data-locale="{{ craft.app.language }}" data-time-zone="{{ craft.app.timeZone }}" data-refresh-error="{{ 'Could not refresh submissions. Please try again.'|t('freeform') }}" data-refreshed-label="{{ 'Submissions refreshed.'|t('freeform') }}" data-page-size="{{ pageSize }}" data-summary-label="{{ '{start}–{end} of {total} recent'|t('freeform') }}" data-newest-label="{{ 'Show newest first'|t('freeform') }}" data-oldest-label="{{ 'Show oldest first'|t('freeform') }}">
-    {% if submissions|length %}
+<div id="{{ ID }}" class="freeform-recent" data-widget-id="{{ widgetId }}" data-form-filter="{{ selectedFormId ?? '' }}" data-locale="{{ craft.app.language }}" data-time-zone="{{ craft.app.timeZone }}" data-refresh-error="{{ 'Could not refresh submissions. Please try again.'|t('freeform') }}" data-refreshed-label="{{ 'Submissions refreshed.'|t('freeform') }}" data-page-size="{{ pageSize }}" data-summary-label="{{ '{start}–{end} of {total} recent'|t('freeform') }}" data-newest-label="{{ 'Show newest first'|t('freeform') }}" data-oldest-label="{{ 'Show oldest first'|t('freeform') }}">
         {% if settings.showFilters %}
             <div class="freeform-recent-tools" data-recent-tools hidden>
                 <input type="search" class="text fullwidth" data-recent-search aria-label="{{ 'Search recent submissions'|t('freeform') }}" placeholder="{{ 'Search recent submissions…'|t('freeform') }}">
                 <div class="freeform-recent-filters">
-                    <div class="select"><select data-recent-form aria-label="{{ 'Filter by form'|t('freeform') }}"><option value="">{{ 'All forms'|t('freeform') }}</option></select></div>
+                    <div class="freeform-recent-form-filter"><select data-recent-form data-search-label="{{ 'Search forms'|t('freeform') }}" data-no-results="{{ 'No results found.'|t('freeform') }}" data-toggle-label="{{ 'Show options'|t('freeform') }}" data-results-label="{{ '{count} results available.'|t('freeform') }}" aria-label="{{ 'Filter by form'|t('freeform') }}"><option value="">{{ 'All forms'|t('freeform') }}</option>{% for formId, name in formFilterOptions %}<option value="{{ formId }}" {{ selectedFormId == formId ? 'selected' }}>{{ name }}</option>{% endfor %}</select></div>
                     <div class="select"><select data-recent-status aria-label="{{ 'Filter by status'|t('freeform') }}"><option value="">{{ 'All statuses'|t('freeform') }}</option></select></div>
                     <button type="button" class="btn freeform-recent-icon-button" data-recent-sort aria-pressed="false" aria-label="{{ 'Show oldest first'|t('freeform') }}" title="{{ 'Show oldest first'|t('freeform') }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2v12m-3-3 3 3 3-3M10 3h4m-4 4h3m-3 4h2"/></svg></button>
                 </div>
@@ -26,7 +25,10 @@
             {% endfor %}
         </ol>
         {% if settings.showFilters %}
-            <div class="freeform-recent-empty" data-recent-empty hidden><p>{{ 'No matching submissions.'|t('freeform') }}</p><button type="button" class="btn" data-recent-clear>{{ 'Clear filters'|t('freeform') }}</button></div>
+            <div class="freeform-recent-empty" data-recent-empty hidden><p>{{ (submissions|length ? 'No matching submissions.' : 'No submissions yet.')|t('freeform') }}</p><button type="button" class="btn" data-recent-clear>{{ 'Clear filters'|t('freeform') }}</button></div>
+        {% endif %}
+        {% if not settings.showFilters and not submissions|length %}
+            <p class="light">{{ 'No submissions yet.'|t('freeform') }}</p>
         {% endif %}
         {% if settings.showPagination %}
             <div class="freeform-recent-pagination" data-recent-pagination hidden>
@@ -37,9 +39,6 @@
                 </div>
             </div>
         {% endif %}
-    {% else %}
-        <p class="light">{{ 'No submissions yet.'|t('freeform') }}</p>
-    {% endif %}
     <div class="freeform-recent-footer">
     <a class="freeform-recent-view-all" href="{{ cpUrl('freeform/submissions') }}">{{ 'View all submissions'|t('freeform') }} <span aria-hidden="true">→</span></a>
     <button type="button" class="freeform-recent-refresh" data-recent-refresh data-refreshing-label="{{ 'Refreshing…'|t('freeform') }}" aria-label="{{ 'Refresh submissions'|t('freeform') }}">{{ 'Refresh'|t('freeform') }}</button>

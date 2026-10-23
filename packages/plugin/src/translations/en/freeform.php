@@ -4048,4 +4048,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     // Form Builder // Usage & Stats and related builder messages
     'Live' => 'Live',
     'Expired' => 'Expired',
+    'Extra wide' => 'Extra wide',
+    'Extra tall' => 'Extra tall',
+    'Extra large' => 'Extra large',
 ]);

@@ -39,13 +39,14 @@ window.FreeformDashboardChart = (root, config) => {
     .matches
     ? false
     : { duration: 250 };
+  const tooltip = createChartTooltip(root, radial);
   options.plugins = {
     ...options.plugins,
     legend: { display: false },
     tooltip: {
       enabled: false,
       filter: (item) => Number(item.raw) > 0,
-      external: createChartTooltip(root, radial),
+      external: tooltip,
     },
   };
   const submissionTicks = {
@@ -83,8 +84,11 @@ window.FreeformDashboardChart = (root, config) => {
     options.interaction = { mode: "index", intersect: false };
   }
   config.options = options;
-  const chart = new Chart<WidgetChartType, number[], string>(canvas, config);
   const items = radial ? config.data.labels : config.data.datasets;
+  const showLegend = items.length > 1;
+  root.dataset.chartLegend = showLegend ? "visible" : "none";
+  (legend as HTMLElement).hidden = !showLegend;
+  const chart = new Chart<WidgetChartType, number[], string>(canvas, config);
   items.forEach((item, index) => {
     const dataset = config.data.datasets[radial ? 0 : index];
     const label = radial ? String(item) : dataset.label || "";
@@ -132,6 +136,7 @@ window.FreeformDashboardChart = (root, config) => {
   const observer = new MutationObserver(() => {
     if (!root.isConnected) {
       chart.destroy();
+      tooltip.destroy();
       observer.disconnect();
     }
   });

@@ -14,6 +14,7 @@ export type FormGroup = {
 };
 
 export type FormWithGroup = {
+  cardRange?: 7 | 30 | 90;
   forms?: FormWithStats[];
   formGroups?: FormGroup;
   archivedForms?: FormWithStats[];

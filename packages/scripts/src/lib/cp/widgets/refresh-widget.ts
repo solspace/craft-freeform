@@ -3,7 +3,7 @@ type CraftApi = {
   sendActionRequest(
     method: string,
     action: string,
-    options: { data: { widgetId: number } },
+    options: { data: { widgetId: number; formId?: string } },
   ): Promise<{ data: RenderedWidget }>;
   appendHeadHtml(html: string): Promise<void>;
   appendBodyHtml(html: string): Promise<void>;
@@ -18,6 +18,7 @@ declare global {
 export async function refreshWidget(
   root: HTMLElement,
   initialize: (root: HTMLElement) => void,
+  options: { formId?: string; isCurrent?: () => boolean } = {},
 ) {
   const widgetId = Number(root.dataset.widgetId);
   if (!widgetId) throw new Error("A saved widget is required.");
@@ -25,7 +26,12 @@ export async function refreshWidget(
   const { data } = await craft.sendActionRequest(
     "POST",
     "freeform/widgets/refresh",
-    { data: { widgetId } },
+    {
+      data: {
+        widgetId,
+        ...(options.formId !== undefined ? { formId: options.formId } : {}),
+      },
+    },
   );
   const template = document.createElement("template");
   template.innerHTML = data.html;
@@ -33,7 +39,8 @@ export async function refreshWidget(
   if (
     !(next instanceof HTMLElement) ||
     next.dataset.widgetId !== String(widgetId) ||
-    !root.isConnected
+    !root.isConnected ||
+    (options.isCurrent && !options.isCurrent())
   ) {
     throw new Error("The widget could not be refreshed.");
   }

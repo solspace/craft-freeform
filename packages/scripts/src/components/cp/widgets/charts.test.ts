@@ -63,10 +63,16 @@ describe("dashboard charts", () => {
       type: "line",
       data: {
         labels: ["Oct 20"],
-        datasets: [{ label: "<b>Contact</b>", data: [3], borderColor: "red" }],
+        datasets: [
+          { label: "<b>Contact</b>", data: [3], borderColor: "red" },
+          { label: "Orders", data: [2], borderColor: "blue" },
+        ],
       },
     });
     expect(el.querySelector("b")).toBeNull();
+    expect(el.querySelector<HTMLElement>("[data-chart-legend]")!.hidden).toBe(
+      false,
+    );
     const button = el.querySelector("button")!;
     expect(button.textContent).toBe("<b>Contact</b>3");
     chart.isDatasetVisible.mockReturnValueOnce(true).mockReturnValueOnce(false);
@@ -79,6 +85,31 @@ describe("dashboard charts", () => {
     await Promise.resolve();
     expect(chart.destroy).toHaveBeenCalledOnce();
   });
+
+  it.each([
+    { type: "line" as const, label: "Contact" },
+    { type: "line" as const, label: "Submissions" },
+    { type: "bar" as const, label: "Contact" },
+    { type: "doughnut" as const, label: "Contact" },
+  ])(
+    "reclaims the legend area for a single $type series ($label)",
+    ({ type, label }) => {
+      const el = root();
+      window.FreeformDashboardChart(el, {
+        type,
+        data: {
+          labels: [label],
+          datasets: [{ label, data: [3] }],
+        },
+      });
+      expect(el.querySelector<HTMLElement>("[data-chart-legend]")!.hidden).toBe(
+        true,
+      );
+      expect(el.dataset.chartLegend).toBe("none");
+      expect(construct).toHaveBeenCalledOnce();
+      expect(el.querySelector("[data-chart-total]")!.textContent).toBe("3");
+    },
+  );
 
   it("toggles radial slices independently and prevents duplicate initialization", () => {
     const el = root();

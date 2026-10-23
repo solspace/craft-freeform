@@ -4010,4 +4010,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'OpenAI could not complete form generation. Check the selected model, reasoning level, and account limits. No form was saved.' => 'OpenAI kon de formuliergeneratie niet voltooien. Controleer het geselecteerde model, het redeneerniveau en de accountlimieten. Er is geen formulier opgeslagen.',
     'Model default leaves the reasoning level to OpenAI. Higher levels can take longer and use more tokens. Overrides require a model that supports the selected level.' => 'Met de modelstandaard bepaalt OpenAI het redeneerniveau. Hogere niveaus kunnen langer duren en meer tokens gebruiken. Aangepaste instellingen vereisen een model dat het geselecteerde niveau ondersteunt.',
     'Maximum tokens for the response, including reasoning and the generated content. Large forms and higher reasoning levels may need a larger allowance.' => 'Maximaal aantal tokens voor het antwoord, inclusief redenering en gegenereerde inhoud. Grote formulieren en hogere redeneerniveaus kunnen een ruimere limiet vereisen.',
+    'Extra wide' => 'Extra breed',
+    'Extra tall' => 'Extra hoog',
+    'Extra large' => 'Extra groot',
 ]);

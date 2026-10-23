@@ -1,0 +1,20 @@
+{% extends 'freeform/_widgets/form-card/layout' %}
+{% import '_includes/forms' as forms %}
+{% block body %}
+<form method="post" class="widget-editor">
+    {{ csrfInput() }}
+    {{ hiddenInput('siteId', siteId) }}
+    {{ hiddenInput('uid', uid) }}
+    {{ hiddenInput('type', type) }}
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    {{ forms.selectField({label: 'Group'|t('freeform'), name: 'groupUid', options: groups, value: groupUid}) }}
+    {{ settingsHtml|raw }}
+    <div class="buttons"><button type="submit" class="btn submit">{{ (uid ? 'Save' : 'Insert widget')|t('freeform') }}</button></div>
+</form>
+{% endblock %}
+{% css %}
+html, body { height: auto; min-height: 0; background: #fff; }
+.widget-editor { padding: 24px; }
+/* Card size controls the chart footprint inside the Forms grid. */
+#settings-chartSize-field { display: none; }
+{% endcss %}

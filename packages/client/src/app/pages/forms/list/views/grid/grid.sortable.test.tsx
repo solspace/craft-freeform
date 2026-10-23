@@ -10,9 +10,13 @@ import { createRoot, type Root } from "react-dom/client";
 import Sortable, { type SortableEvent } from "sortablejs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useDashboardSorting } from "./grid.sortable";
+import { type DashboardWidget, mergeWidgetCards } from "./grid.widgets";
 
 const fixture = vi.hoisted(() => ({
   canMove: true,
+  widgets: [] as DashboardWidget[],
+  saveWidgets: vi.fn(),
+  reloadWidgets: vi.fn(),
   post: vi.fn(),
   success: vi.fn(),
   error: vi.fn(),
@@ -64,9 +68,13 @@ const Harness = () => {
     queryFn: () => Promise.resolve(data),
     enabled: false,
   });
-  const sorting = useDashboardSorting(query.data);
+  const sorting = useDashboardSorting(query.data, true, {
+    items: fixture.widgets,
+    save: fixture.saveWidgets,
+    reload: fixture.reloadWidgets,
+  });
   return (
-    <div ref={sorting.wrapperRef}>
+    <div ref={sorting.wrapperRef} data-dragging={sorting.isDragging}>
       {query.data &&
         [
           ...query.data.formGroups.groups.map((group) => ({
@@ -76,19 +84,29 @@ const Harness = () => {
           { uid: "", forms: query.data.forms },
         ].map((list) => (
           <ul key={list.uid} data-form-group={list.uid}>
-            {list.forms.map((form) => (
-              <li key={form.id} data-id={form.id}>
-                <button
-                  type="button"
-                  className="handle"
-                  onKeyDown={(event) =>
-                    sorting.onKeyboardMove(form.id, event.key)
-                  }
-                >
-                  {form.id}
-                </button>
-              </li>
-            ))}
+            {mergeWidgetCards(
+              list.forms,
+              fixture.widgets.filter(
+                (widget) => (widget.groupUid || "") === list.uid,
+              ),
+            ).map((item) => {
+              const form = {
+                id: "beforeId" in item ? `widget-${item.uid}` : item.id,
+              };
+              return (
+                <li key={form.id} data-id={form.id}>
+                  <button
+                    type="button"
+                    className="handle"
+                    onKeyDown={(event) =>
+                      sorting.onKeyboardMove(form.id, event.key)
+                    }
+                  >
+                    {form.id}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         ))}
     </div>
@@ -114,7 +132,7 @@ const ids = (uid: string) =>
     Number((element as HTMLElement).dataset.id),
   );
 const drag = async (
-  formId: number,
+  formId: number | string,
   source: string,
   target: string,
   index: number,
@@ -133,7 +151,8 @@ const drag = async (
   } as SortableEvent;
   await act(async () => {
     sortable.option("onStart")(event);
-    to.insertBefore(item, to.children[index] ?? null);
+    const siblings = Array.from(to.children).filter((child) => child !== item);
+    to.insertBefore(item, siblings[index] ?? null);
     sortable.option("onEnd")(event);
     await new Promise((resolve) => setTimeout(resolve, 10));
   });
@@ -144,6 +163,9 @@ beforeEach(() => {
     globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
   ).IS_REACT_ACT_ENVIRONMENT = true;
   fixture.canMove = true;
+  fixture.widgets = [];
+  fixture.saveWidgets.mockReset().mockResolvedValue(undefined);
+  fixture.reloadWidgets.mockReset().mockResolvedValue(undefined);
   fixture.post.mockReset();
   fixture.success.mockReset();
   fixture.error.mockReset();
@@ -239,4 +261,158 @@ describe("dashboard sorting lifecycle", () => {
     });
     expect(fixture.post).not.toHaveBeenCalled();
   });
+});
+
+it("starts a held blank card, tolerates small pointer movement, and ignores interactive controls", async () => {
+  await render();
+  await act(async () => {
+    client.setQueryData(key, data);
+  });
+  const pointer = "PointerEvent" in window;
+  const card = list("a").querySelector<HTMLElement>("[data-id]");
+  const button = card.querySelector("button");
+  const down = (target: HTMLElement) =>
+    target.dispatchEvent(
+      new MouseEvent(pointer ? "pointerdown" : "mousedown", {
+        bubbles: true,
+        cancelable: true,
+        button: 0,
+        clientX: 40,
+        clientY: 40,
+      }),
+    );
+  const release = () =>
+    document.dispatchEvent(
+      new MouseEvent(pointer ? "pointerup" : "mouseup", {
+        bubbles: true,
+        cancelable: true,
+      }),
+    );
+  await act(async () => {
+    down(button);
+    await new Promise((resolve) => setTimeout(resolve, 260));
+  });
+  expect(card.classList.contains("card-chosen")).toBe(false);
+  await act(async () => release());
+  await act(async () => {
+    down(card);
+    document.dispatchEvent(
+      new MouseEvent(pointer ? "pointermove" : "mousemove", {
+        bubbles: true,
+        cancelable: true,
+        clientX: 44,
+        clientY: 42,
+      }),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 260));
+  });
+  expect(card.classList.contains("card-chosen")).toBe(true);
+  await act(async () => {
+    document.dispatchEvent(
+      new MouseEvent(pointer ? "pointermove" : "mousemove", {
+        bubbles: true,
+        cancelable: true,
+        clientX: 80,
+        clientY: 60,
+      }),
+    );
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  });
+  expect(host.firstElementChild.getAttribute("data-dragging")).toBe("true");
+  await act(async () => release());
+  expect(host.firstElementChild.getAttribute("data-dragging")).toBe("false");
+  expect(card.classList.contains("card-chosen")).toBe(false);
+  expect(fixture.post).not.toHaveBeenCalled();
+});
+
+it("moves a widget across groups without changing shared form order", async () => {
+  fixture.widgets = [
+    {
+      uid: "w",
+      type: "linear",
+      title: "Chart",
+      size: "2x2",
+      groupUid: "a",
+      beforeId: 2,
+    },
+  ];
+  await render();
+  await drag("widget-w", "a", "b", 0);
+  expect(fixture.saveWidgets).toHaveBeenCalledWith([
+    { uid: "w", size: "2x2", groupUid: "b", beforeId: null },
+  ]);
+  expect(fixture.post).not.toHaveBeenCalled();
+});
+
+it("saves a widget dropped in a wrapping gap and excludes temporary targets from its order", async () => {
+  fixture.widgets = [
+    {
+      uid: "w",
+      type: "recent",
+      title: "Recent",
+      size: "1x2",
+      groupUid: "a",
+      beforeId: null,
+    },
+  ];
+  await render();
+  const from = list("a");
+  from.style.cssText =
+    "display:grid;grid-template-columns:80px 80px 80px 80px;grid-auto-rows:50px;gap:10px";
+  const wide = from.querySelector<HTMLElement>('[data-id="1"]');
+  const wrapped = from.querySelector<HTMLElement>('[data-id="2"]');
+  const item = from.querySelector<HTMLElement>('[data-id="widget-w"]');
+  wide.style.cssText = "grid-column-start:span 3;grid-row-start:span 2";
+  wrapped.style.cssText = "grid-column-start:span 2;grid-row-start:span 2";
+  item.style.cssText = "grid-column-start:span 1;grid-row-start:span 2";
+  const sortable = Sortable.get(from);
+  const event = {
+    item,
+    from,
+    to: from,
+    oldDraggableIndex: 2,
+    newDraggableIndex: 2,
+  } as SortableEvent;
+  await act(async () => {
+    sortable.option("onStart")(event);
+    const gap = from.querySelector<HTMLElement>("[data-grid-gap]");
+    expect(gap).not.toBeNull();
+    expect(
+      sortable.option("onMove")(
+        { related: gap } as Sortable.MoveEvent,
+        new Event("move"),
+      ),
+    ).toBe(-1);
+    from.insertBefore(item, gap);
+    sortable.option("onEnd")(event);
+  });
+  expect(fixture.saveWidgets).toHaveBeenCalledExactlyOnceWith([
+    { uid: "w", size: "1x2", groupUid: "a", beforeId: 2 },
+  ]);
+  expect(host.querySelector("[data-grid-gap]")).toBeNull();
+  expect(fixture.post).not.toHaveBeenCalled();
+});
+
+it("saves interleaved widget positions together with a moved form", async () => {
+  fixture.widgets = [
+    {
+      uid: "w",
+      type: "linear",
+      title: "Chart",
+      size: "2x2",
+      groupUid: "a",
+      beforeId: 2,
+    },
+  ];
+  fixture.post.mockResolvedValue({});
+  await render();
+  await drag(1, "a", "a", 1);
+  expect(fixture.post).toHaveBeenCalledWith("/api/forms/groups/move", {
+    formId: 1,
+    groupUid: "a",
+    beforeId: 2,
+    siteId: 2,
+    widgets: [{ uid: "w", size: "2x2", groupUid: "a", beforeId: 1 }],
+  });
+  expect(fixture.reloadWidgets).toHaveBeenCalled();
 });

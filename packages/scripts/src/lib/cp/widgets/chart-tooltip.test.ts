@@ -124,3 +124,101 @@ describe("dashboard tooltips", () => {
     ).toBe("16 more forms in the legend");
   });
 });
+
+function hostFixture() {
+  const parentDoc = document.implementation.createHTMLDocument();
+  const host = Object.assign(new EventTarget(), {
+    location: { origin: window.location.origin },
+    document: parentDoc,
+    innerWidth: 800,
+    innerHeight: 600,
+    Craft: { cp: {} },
+  });
+  const frame = document.createElement("iframe");
+  frame.setAttribute("data-freeform-widget-frame", "true");
+  document.body.append(frame);
+  vi.spyOn(frame, "getBoundingClientRect").mockReturnValue({
+    left: 100,
+    top: 200,
+    width: 300,
+    height: 100,
+  } as DOMRect);
+  vi.spyOn(frame, "clientWidth", "get").mockReturnValue(300);
+  vi.spyOn(frame, "clientHeight", "get").mockReturnValue(100);
+  vi.spyOn(window, "parent", "get").mockReturnValue(host as unknown as Window);
+  vi.spyOn(window, "frameElement", "get").mockReturnValue(frame);
+  const root = document.createElement("div");
+  root.innerHTML = "<div data-chart-plot><canvas></canvas></div>";
+  document.body.append(root);
+  const plot = root.firstElementChild!;
+  const canvas = plot.firstElementChild!;
+  vi.spyOn(plot, "getBoundingClientRect").mockReturnValue({
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 90,
+  } as DOMRect);
+  vi.spyOn(canvas, "getBoundingClientRect").mockReturnValue({
+    left: 0,
+    top: 0,
+    width: 100,
+    height: 90,
+  } as DOMRect);
+  const render = createChartTooltip(root, true);
+  const element = parentDoc.querySelector<HTMLElement>('[role="tooltip"]')!;
+  vi.spyOn(element, "offsetWidth", "get").mockReturnValue(240);
+  vi.spyOn(element, "offsetHeight", "get").mockReturnValue(180);
+  const show = () =>
+    render({
+      tooltip: {
+        opacity: 1,
+        dataPoints: [point("Project enquiry", 56)],
+        title: [],
+        caretX: 80,
+        caretY: 60,
+      },
+    });
+  return { host, parentDoc, frame, root, canvas, element, render, show };
+}
+
+it("renders iframe tooltips in the host page beyond the widget bounds", () => {
+  const { parentDoc, root, element, show, render } = hostFixture();
+  show();
+  expect(root.querySelector('[role="tooltip"]')).toBeNull();
+  expect(parentDoc.body.contains(element)).toBe(true);
+  expect(element.style.position).toBe("fixed");
+  expect(element.style.left).toBe("194px");
+  expect(element.style.top).toBe("170px");
+  expect(element.textContent).toBe("Project enquirySubmissions56");
+  expect(element.hidden).toBe(false);
+  render.destroy();
+  expect(parentDoc.querySelector('[role="tooltip"]')).toBeNull();
+});
+
+it("hides portaled tooltips on host scroll, resize, and pointer exit", () => {
+  const { host, canvas, element, show, render } = hostFixture();
+  for (const event of ["scroll", "resize"]) {
+    show();
+    host.dispatchEvent(new Event(event));
+    expect(element.hidden).toBe(true);
+  }
+  show();
+  canvas.dispatchEvent(new Event("pointerleave"));
+  expect(element.hidden).toBe(true);
+  render.destroy();
+});
+
+it("bounds iframe tooltips to the host viewport and cleans up on iframe unload", () => {
+  const { frame, parentDoc, element, show } = hostFixture();
+  vi.spyOn(frame, "getBoundingClientRect").mockReturnValue({
+    left: 760,
+    top: 580,
+    width: 300,
+    height: 100,
+  } as DOMRect);
+  show();
+  expect(Number.parseFloat(element.style.left) + 240).toBeLessThanOrEqual(792);
+  expect(Number.parseFloat(element.style.top) + 180).toBeLessThanOrEqual(592);
+  window.dispatchEvent(new Event("pagehide"));
+  expect(parentDoc.querySelector('[role="tooltip"]')).toBeNull();
+});

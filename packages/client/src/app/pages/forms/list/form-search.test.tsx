@@ -53,6 +53,17 @@ vi.mock("./modals/hooks/use-add-form-modal", () => ({
 vi.mock("./modals/hooks/use-edit-group-modal", () => ({
   useEditGroupModal: () => vi.fn(),
 }));
+vi.mock("./views/grid/grid.widgets", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./views/grid/grid.widgets")>()),
+  useDashboardWidgets: () => ({
+    items: [],
+    isSaving: false,
+    isError: false,
+    siteId: 1,
+    save: vi.fn(),
+    reload: vi.fn(),
+  }),
+}));
 vi.mock("./notices/notices", () => ({ Notices: () => null }));
 vi.mock("./views/grid/grid.empty", () => ({
   GridEmpty: () => <p>Create your first form</p>,
@@ -172,14 +183,22 @@ const listView = async () => {
   );
 };
 
-it("places search, view buttons, and Form groups in toolbar order", () => {
+it("places search, view, chart period, and Form groups in toolbar order", () => {
   expect(input().getAttribute("aria-label")).toBe("Search forms");
   expect(input().placeholder).toBe("Search");
   expect(input().parentElement!.classList.contains("texticon")).toBe(true);
   const controls = input().parentElement!.parentElement!;
   expect(controls.firstElementChild!.contains(input())).toBe(true);
   expect(controls.children[1].getAttribute("aria-label")).toBe("View");
-  expect(controls.children[2].textContent).toBe("Form groups");
+  expect(
+    controls.children[2].querySelector('[aria-label="Chart period"]'),
+  ).not.toBeNull();
+  expect(
+    controls.children[3].querySelector('[aria-label="Insert widget"]'),
+  ).not.toBeNull();
+  expect(controls.children[4].textContent).toBe("Form groups");
+  expect(host.textContent).not.toContain("Submission history");
+  expect(host.textContent).not.toContain("UTC · today so far");
 });
 
 it("exposes the selected view using Craft's native pressed button state", async () => {
@@ -190,6 +209,18 @@ it("exposes the selected view using Craft's native pressed button state", async 
   await listView();
   expect(cards.getAttribute("aria-pressed")).toBe("false");
   expect(table.getAttribute("aria-pressed")).toBe("true");
+  expect(host.querySelector('[aria-label="Chart period"]')).toBeNull();
+  await act(async () =>
+    host
+      .querySelector<HTMLButtonElement>('[aria-label="Display as cards"]')!
+      .click(),
+  );
+  const period = host.querySelector('[aria-label="Chart period"]');
+  expect(period).not.toBeNull();
+  const selected = period.querySelector('[aria-pressed="true"]');
+  expect(selected.textContent).toContain("30");
+  expect(selected.classList.contains("btn")).toBe(true);
+  expect(selected.classList.contains("active")).toBe(true);
 });
 
 it("filters grouped and unassigned forms live and hides empty groups", async () => {

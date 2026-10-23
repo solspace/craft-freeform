@@ -230,3 +230,141 @@ describe("recent submissions browser", () => {
     expect(visible(other)).toEqual(["Alice", "Bob"]);
   });
 });
+
+function serverMarkup(form = "", names: string[] = ["Loaded submission"]) {
+  const options = Array.from(
+    { length: 200 },
+    (_, i) =>
+      `<option value="${i + 1}" ${form === String(i + 1) ? "selected" : ""}>Form ${String(i + 1).padStart(3, "0")}</option>`,
+  ).join("");
+  return `<div data-widget-id="8" data-form-filter="${form}" data-page-size="2"><div data-recent-tools><input data-recent-search><select data-recent-form aria-label="Filter by form"><option value="">All forms</option>${options}</select><select data-recent-status><option value="">All statuses</option></select></div><ol data-recent-list>${names.map((name) => `<li data-recent-row data-form-id="${form || "1"}" data-status-id="1" data-status-name="Unread">${name}</li>`).join("")}</ol><div data-recent-empty hidden><button data-recent-clear>Clear</button></div><span data-recent-summary></span><button data-recent-refresh>Refresh</button><p data-widget-feedback hidden></p></div>`;
+}
+function serverFixture() {
+  document.body.innerHTML = serverMarkup();
+  const root = document.body.firstElementChild as HTMLElement;
+  initRecent(root);
+  return root;
+}
+function response(html: string) {
+  return { data: { html, headHtml: "", bodyHtml: "" } };
+}
+function api(sendActionRequest = vi.fn()) {
+  window.Craft = {
+    sendActionRequest,
+    appendHeadHtml: vi.fn().mockResolvedValue(undefined),
+    appendBodyHtml: vi.fn().mockResolvedValue(undefined),
+  };
+  return sendActionRequest;
+}
+
+it("searches 200 forms with the keyboard and loads a form outside the initial results", async () => {
+  const send = api(
+    vi
+      .fn()
+      .mockResolvedValue(
+        response(serverMarkup("200", ["Older form submission"])),
+      ),
+  );
+  const root = serverFixture();
+  const input = root.querySelector<HTMLInputElement>('[role="combobox"]')!;
+  input.focus();
+  input.value = "Form 200";
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  expect(root.querySelectorAll('[role="option"]')).toHaveLength(1);
+  input.dispatchEvent(
+    new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+  );
+  input.dispatchEvent(
+    new KeyboardEvent("keydown", { key: "Enter", bubbles: true }),
+  );
+  await vi.waitFor(() => expect(root.isConnected).toBe(false));
+  expect(send).toHaveBeenCalledWith("POST", "freeform/widgets/refresh", {
+    data: { widgetId: 8, formId: "200" },
+  });
+  const next = document.body.firstElementChild as HTMLElement;
+  expect(visible(next)).toEqual(["Older form submission"]);
+  expect(next.querySelector(".freeform-recent-form-label")!.textContent).toBe(
+    "Form 200",
+  );
+  expect(
+    next.querySelector<HTMLSelectElement>("[data-recent-form]")!.value,
+  ).toBe("200");
+  click(next, "refresh");
+  await vi.waitFor(() => expect(send).toHaveBeenCalledTimes(2));
+  expect(send.mock.calls[1][2].data.formId).toBe("200");
+});
+
+it("restores the selected form and existing rows after a failed request, allowing retry", async () => {
+  const send = api(vi.fn().mockRejectedValue(new Error("offline")));
+  const root = serverFixture();
+  const select = root.querySelector<HTMLSelectElement>("[data-recent-form]")!;
+  select.value = "200";
+  select.dispatchEvent(new Event("change"));
+  await vi.waitFor(() => expect(select.disabled).toBe(false));
+  expect(select.value).toBe("");
+  expect(root.querySelector(".freeform-recent-form-label")!.textContent).toBe(
+    "All forms",
+  );
+  expect(visible(root)).toEqual(["Loaded submission"]);
+  expect(
+    root.querySelector<HTMLElement>("[data-widget-feedback]")!.hidden,
+  ).toBe(false);
+  send.mockResolvedValue(response(serverMarkup("200")));
+  select.value = "200";
+  select.dispatchEvent(new Event("change"));
+  await vi.waitFor(() => expect(root.isConnected).toBe(false));
+});
+
+it("keeps empty forms selectable and clears back to all forms", async () => {
+  const send = api(
+    vi
+      .fn()
+      .mockResolvedValueOnce(response(serverMarkup("200", [])))
+      .mockResolvedValueOnce(response(serverMarkup())),
+  );
+  const root = serverFixture();
+  const select = root.querySelector<HTMLSelectElement>("[data-recent-form]")!;
+  select.value = "200";
+  select.dispatchEvent(new Event("change"));
+  await vi.waitFor(() => expect(root.isConnected).toBe(false));
+  const next = document.body.firstElementChild as HTMLElement;
+  expect(next.querySelector('[role="combobox"]')).not.toBeNull();
+  expect(next.querySelector<HTMLElement>("[data-recent-empty]")!.hidden).toBe(
+    false,
+  );
+  click(next, "clear");
+  await vi.waitFor(() => expect(next.isConnected).toBe(false));
+  expect(send.mock.calls[1][2].data.formId).toBe("");
+  expect(visible(document.body.firstElementChild as HTMLElement)).toEqual([
+    "Loaded submission",
+  ]);
+});
+
+it("ignores a delayed response when a newer form selection has been requested", async () => {
+  let finishFirst!: (value: ReturnType<typeof response>) => void;
+  const send = api(
+    vi
+      .fn()
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            finishFirst = resolve;
+          }),
+      )
+      .mockResolvedValueOnce(
+        response(serverMarkup("200", ["Newest selection"])),
+      ),
+  );
+  const root = serverFixture();
+  const select = root.querySelector<HTMLSelectElement>("[data-recent-form]")!;
+  select.value = "100";
+  select.dispatchEvent(new Event("change"));
+  select.value = "200";
+  select.dispatchEvent(new Event("change"));
+  finishFirst(response(serverMarkup("100", ["Stale selection"])));
+  await vi.waitFor(() => expect(root.isConnected).toBe(false));
+  expect(visible(document.body.firstElementChild as HTMLElement)).toEqual([
+    "Newest selection",
+  ]);
+  expect(send).toHaveBeenCalledTimes(2);
+});

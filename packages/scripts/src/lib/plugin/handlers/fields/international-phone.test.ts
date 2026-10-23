@@ -50,6 +50,34 @@ it("preserves floating labels and formats valid numbers without losing country c
   expect(input.value).toBe("+44 20 7946 0018");
   expect(controller.getValue()).toBe("+442079460018");
 });
+it("offsets floating labels by the full selector width and restores custom margins", () => {
+  const label = document.querySelector("label")!;
+  label.style.cssText =
+    "position: absolute; padding-inline-start: 12px; transform: scale(.85)";
+  label.style.setProperty("margin-inline-start", "3px", "important");
+  const computedStyle = window.getComputedStyle.bind(window);
+  vi.spyOn(window, "getComputedStyle").mockImplementation((element) => {
+    const computed = computedStyle(element);
+    if (element.classList.contains("freeform-phone-trigger")) {
+      return new Proxy(computed, {
+        get(target, property) {
+          return property === "width" ? "48px" : Reflect.get(target, property);
+        },
+      });
+    }
+    return computed;
+  });
+  const { input, controller } = setup();
+  expect(input.nextElementSibling).toBe(label);
+  expect(label.style.marginInlineStart).toBe("calc(51px)");
+  expect(label.style.paddingInlineStart).toBe("12px");
+  expect(label.style.transform).toBe("scale(.85)");
+  controller.destroy();
+  expect(label.style.marginInlineStart).toBe("3px");
+  expect(label.style.getPropertyPriority("margin-inline-start")).toBe(
+    "important",
+  );
+});
 it("searches only allowed countries by name, code or dial code, supports Escape and changes country", () => {
   const { input, button, controller } = setup();
   button.click();

@@ -70,3 +70,14 @@ form[data-freeform-signature-responsive][data-freeform-signature-theme="bootstra
 form[data-freeform-signature-responsive][data-freeform-signature-theme="bootstrap-5-floating-labels"] .freeform-signature-wrapper:has(.is-invalid, .freeform-has-errors, .has-error, .input-error, .outline-red-600, .border-red-500, .border-red-600, .outline-red-700, .border-red-700) canvas {
   border-color: var(--ff-signature-error) !important;
 }
+
+/* Searchable single selects use the same raised label as native selects. */
+form[data-freeform-bootstrap-floating-labels] .form-floating.ff-searchable-field:not(:has(select[multiple])) > label {
+  z-index: 1;
+  pointer-events: none;
+}
+form[data-freeform-bootstrap-floating-labels] .form-floating.ff-searchable-field:not(:has(select[multiple])) .ff-searchable.ff-searchable .ff-searchable__input {
+  height: calc(3.5rem + var(--bs-border-width, 1px) * 2);
+  min-height: calc(3.5rem + var(--bs-border-width, 1px) * 2);
+  padding: 1.625rem 2.5em .625rem .75rem;
+}

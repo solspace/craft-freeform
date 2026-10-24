@@ -88,7 +88,7 @@ export const Field: React.FC<Props> = ({ field }) => {
         }
       }}
       className={classes(
-        type?.type === "group" && "group",
+        ["group", "layout", "layout-column"].includes(type?.type) && "group",
         currentField && "active",
         hasRule && "has-rule",
         isInCondition && "is-in-condition",
@@ -113,7 +113,7 @@ export const Field: React.FC<Props> = ({ field }) => {
         />
       </FieldInfo>
 
-      {type?.type === "group" && (
+      {["group", "layout", "layout-column"].includes(type?.type) && (
         <GroupWrapper>
           <Layout layoutUid={field.properties.layout} />
         </GroupWrapper>

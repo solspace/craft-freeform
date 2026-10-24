@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ManifestFieldDefinition } from "@solspace/freeform-core";
+import { layoutCss, type ManifestFieldDefinition } from "@solspace/freeform-core";
 import { computed } from "vue";
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { resolveFieldRenderer } from "../renderers/resolve.js";
@@ -47,6 +47,7 @@ const uploadRequirements = computed(() => {
 });
 const isPresentational = computed(
   () =>
+    ["heading", "divider", "spacer", "callout", "content", "button-link", "video", "icon"].includes(props.field.type) ||
     props.field.type === "html" ||
     props.field.type === "rich-text" ||
     props.field.type === "image",
@@ -61,6 +62,7 @@ const isVisuallyHidden = computed(
 
 const showLabel = computed(
   () =>
+    !["layout", "layout-column"].includes(props.field.type) &&
     !isCheckbox.value &&
     !isPresentational.value &&
     !isVisuallyHidden.value &&
@@ -140,7 +142,7 @@ const rendererProps = computed(() => ({
 
     <component
       :is="components.FieldWrapper"
-      v-else-if="field.type === 'group'"
+      v-else-if="['group', 'layout', 'layout-column'].includes(field.type)"
       :field="field"
       :form="form"
       :class="fieldClassName"
@@ -160,18 +162,24 @@ const rendererProps = computed(() => ({
         :class="classNames.instructions"
       />
       <div :class="classNames.input" :data-freeform-group="field.handle">
+        <component :is="'style'" v-if="field.type === 'layout'">{{ layoutCss }}</component>
         <component
-          :is="components.Row"
+          :is="field.type === 'layout' ? 'div' : components.Row"
           v-for="row in field.layout?.rows ?? []"
           :key="row.uid"
           :class="
             joinClassNames(
+              field.type === 'layout' ? 'ff-layout-columns' : undefined,
               classNames.row,
               strategy === 'merge'
                 ? `ff-row--${row.fields.length}-fields`
                 : undefined,
             )
           "
+          :data-stack="field.type === 'layout' ? String(field.layout?.stack !== false) : undefined"
+          :data-appearance="field.type === 'layout' ? String(!!field.layout?.appearance && Object.keys(field.layout.appearance).length > 0) : undefined"
+          :data-cards="field.type === 'layout' ? String(!!field.layout?.cardStyle && Object.keys(field.layout.cardStyle).length > 0) : undefined"
+          :style="field.type === 'layout' ? { ...field.layout?.appearance, ...field.layout?.cardStyle, '--freeform-columns': field.layout?.columns ?? '1fr 1fr', '--freeform-vertical-alignment': field.layout?.verticalAlignment ?? 'flex-start', '--freeform-gap': `${field.layout?.gap ?? 16}px` } : undefined"
         >
           <FieldRenderer
             v-for="handle in row.fields"

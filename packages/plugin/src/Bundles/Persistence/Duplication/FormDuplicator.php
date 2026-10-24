@@ -195,7 +195,7 @@ class FormDuplicator
             $clone->formId = $form->id;
             $clone->rowId = $this->rows[$field->rowId]->id;
 
-            if (GroupField::class === $clone->type) {
+            if (is_a($clone->type, GroupField::class, true)) {
                 $metadata = JsonHelper::decode($clone->metadata);
                 $metadata->layout = $this->layoutsUids[$metadata->layout]->uid;
                 $clone->metadata = json_encode($metadata);

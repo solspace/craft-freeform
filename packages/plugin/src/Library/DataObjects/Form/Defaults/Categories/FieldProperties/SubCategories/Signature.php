@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldPr
 
 use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
+use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\BoolItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\ColorItem;
@@ -13,10 +14,12 @@ class Signature extends BaseCategory
 {
     #[Label('Width of Pad')]
     #[SetDefaultValue('400')]
+    #[Unit('px')]
     public TextItem $width;
 
     #[Label('Height of Pad')]
     #[SetDefaultValue('100')]
+    #[Unit('px')]
     public TextItem $height;
 
     #[Label("Show 'Clear' button")]
@@ -37,6 +40,7 @@ class Signature extends BaseCategory
 
     #[Label('Pen dot size')]
     #[SetDefaultValue('2.5')]
+    #[Unit('px')]
     public TextItem $penDotSize;
 
     public function getLabel(): string

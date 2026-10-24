@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/measurement" as measurement %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -163,7 +164,8 @@
                                             disabled: readOnly,
                                         }) }}
                                     {% else %}
-                                        {{ forms.text({
+                                        {{ measurement.input({
+                                            unit: item.unit ? item.unit|t("freeform") : null,
                                             name: path~"[value]",
                                             value: item.value,
                                             placeholder: item.placeholder,

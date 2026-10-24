@@ -42,9 +42,10 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     #[DefaultValue('props.cards.max')]
     #[Input\Integer(
         label: 'Max Selected Values',
-        instructions: 'Limit how many values a user can select. Leave blank or set to 0 for no limit.',
+        instructions: 'Leave blank or set to 0 for no limit.',
         min: 0,
         unsigned: true,
+        unit: 'cards',
     )]
     protected ?int $maxSelectedValues = null;
 
@@ -52,9 +53,9 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     #[DefaultValue('props.cards.perRow')]
     #[Input\Integer(
         label: 'Cards Per Row',
-        instructions: 'Set how many cards should display in each row.',
         min: 1,
         unsigned: true,
+        unit: 'cards',
     )]
     protected int $cardsPerRow = 5;
 

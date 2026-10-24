@@ -25,10 +25,12 @@ export const CraftIconPicker = ({
   value: storedValue,
   disabled,
   onChange,
+  label = translate("Form Icon"),
 }: {
   value: string;
   disabled?: boolean;
   onChange: (value: string) => void;
+  label?: string;
 }) => {
   const value = /^[a-z0-9-]{1,100}$/.test(storedValue) ? storedValue : "";
   const labelId = useId();
@@ -58,10 +60,10 @@ export const CraftIconPicker = ({
         if (native) {
           const element = document.createElement("craft-icon-picker");
           element.setAttribute("value", next);
-          const label = document.createElement("span");
-          label.id = labelId;
-          label.textContent = translate("Form Icon");
-          Object.assign(label.style, {
+          const labelElement = document.createElement("span");
+          labelElement.id = labelId;
+          labelElement.textContent = label;
+          Object.assign(labelElement.style, {
             position: "absolute",
             width: "1px",
             height: "1px",
@@ -76,12 +78,12 @@ export const CraftIconPicker = ({
               change(detail.value);
           };
           element.addEventListener("change", changed);
-          container.replaceChildren(label, element);
+          container.replaceChildren(labelElement, element);
           cleanup = () => {
             active = false;
             element.removeEventListener("change", changed);
             element.remove();
-            label.remove();
+            labelElement.remove();
           };
           return;
         }
@@ -137,7 +139,7 @@ export const CraftIconPicker = ({
       api.destroy();
       manager.current = null;
     };
-  }, [native, disabled, labelId]);
+  }, [native, disabled, labelId, label]);
 
   useLayoutEffect(() => {
     // A selection is already displayed by Craft; only rebuild for external
@@ -160,6 +162,7 @@ const IconPicker: React.FC<ControlType<IconProperty>> = ({
   return (
     <Control property={property} errors={errors} context={context}>
       <CraftIconPicker
+        label={translate(property.label || "Icon")}
         value={value || ""}
         disabled={property.disabled}
         onChange={updateValue}

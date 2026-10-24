@@ -553,7 +553,7 @@ class FreeformImporter
                     $field->metadata,
                 );
 
-                if (GroupField::class === $field->type) {
+                if (is_a($field->type, GroupField::class, true) && $field->layout) {
                     [$subLayout, $fieldRecordList] = $this->importLayout($field->layout, $formRecord);
                     $metadata['layout'] = $subLayout->uid;
                     $fieldRecords = array_merge($fieldRecords, $fieldRecordList);

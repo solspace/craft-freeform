@@ -12,7 +12,12 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function fixture(initial: string, allowTransparent = true) {
+function fixture(
+  initial: string,
+  allowTransparent = true,
+  allowInherited = false,
+  transparentLabel = "Transparent",
+) {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   const changed = vi.fn();
   function Fixture() {
@@ -21,6 +26,8 @@ function fixture(initial: string, allowTransparent = true) {
       <HexColorInput
         value={value}
         allowTransparent={allowTransparent}
+        allowInherited={allowInherited}
+        transparentLabel={transparentLabel}
         onChange={(next) => {
           changed(next);
           setValue(next);
@@ -73,6 +80,20 @@ it("distinguishes opaque black from the transparent default", () => {
   expect(view.changed).not.toHaveBeenCalled();
 });
 
+it("preserves inherited color until edited and can restore inheritance or the last solid color", () => {
+  const view = fixture("currentColor", false, true);
+  expect(view.text.value).toBe("Inherited");
+  expect(view.toggle().checked).toBe(true);
+  expect(view.changed).not.toHaveBeenCalled();
+  input(view.color, "#2563eb");
+  expect(view.changed).toHaveBeenLastCalledWith("#2563eb");
+  expect(view.toggle().checked).toBe(false);
+  act(() => view.toggle().click());
+  expect(view.changed).toHaveBeenLastCalledWith("currentColor");
+  act(() => view.toggle().click());
+  expect(view.changed).toHaveBeenLastCalledWith("#2563eb");
+});
+
 it("lets opaque black take effect immediately without moving the color picker around", () => {
   const view = fixture("rgba(0,0,0,0)");
   act(() => view.toggle().click());
@@ -123,4 +144,17 @@ it("retains existing hex editing behavior for controls without transparency", ()
   expect(view.changed).not.toHaveBeenCalled();
   input(view.text, "A1B2C3");
   expect(view.changed).toHaveBeenCalledExactlyOnceWith("#a1b2c3");
+});
+
+it("can label transparency as None and restore the last solid color", () => {
+  const view = fixture("#2563eb", true, false, "None");
+  expect(host.textContent).toContain("None");
+  act(() => view.toggle().click());
+  expect(view.text.value).toBe("None");
+  expect(view.changed).toHaveBeenLastCalledWith("rgba(0,0,0,0)");
+  act(() => view.toggle().click());
+  expect(view.text.value).toBe("#2563eb");
+  input(view.text, "None");
+  expect(view.toggle().checked).toBe(true);
+  expect(view.text.value).toBe("None");
 });

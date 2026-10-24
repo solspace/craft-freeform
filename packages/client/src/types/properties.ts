@@ -135,6 +135,8 @@ export type AssetPickerProperty = BaseProperty<
 };
 
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
+  unit?: string;
+  unitProperty?: string;
   min?: number;
   max?: number;
   step?: number;

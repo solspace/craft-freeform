@@ -1,4 +1,5 @@
 import type { Field } from "@editor/store/slices/layout/fields";
+import { isContainer } from "@editor/store/thunks/fields/containers";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
 import { useFieldType } from "@ff-client/queries/field-types";
@@ -72,7 +73,7 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
     setHover(false);
   }, active);
 
-  if (!field?.uid || type.type === "group") {
+  if (!field?.uid || isContainer(field) || type.type === "content") {
     return null;
   }
 

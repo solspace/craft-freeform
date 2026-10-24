@@ -12,9 +12,14 @@ const drag = vi.hoisted(() => ({ active: "", connect: vi.fn() }));
 vi.mock("./drag.recovery", () => ({ useDragRecovery: () => {} }));
 vi.mock("react-dnd", () => ({
   useDrag: (
-    create: () => { item: { data: { uid?: string; typeClass?: string } } },
+    create: () => {
+      item:
+        | { data: { uid?: string; typeClass?: string } }
+        | (() => { data: { uid?: string; typeClass?: string } });
+    },
   ) => {
-    const { data } = create().item;
+    const spec = create();
+    const { data } = typeof spec.item === "function" ? spec.item() : spec.item;
     return [
       { isDragging: drag.active === (data.uid || data.typeClass) },
       drag.connect,

@@ -1,14 +1,20 @@
 import type { DragItem } from "@editor/builder/types/drag";
 import { Drag } from "@editor/builder/types/drag";
 import type { Row } from "@editor/builder/types/layout";
-import { useAppDispatch } from "@editor/store";
+import { useAppDispatch, useAppStore } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
+import { canPlaceField } from "@editor/store/thunks/fields/containers";
 import type { RefObject } from "react";
 import { useEffect, useState } from "react";
 import type { ConnectDropTarget } from "react-dnd";
 import { useDrop } from "react-dnd";
+import { sectionDragPresentation } from "../field/section-drag";
+import { isInsideContainer, rowInsertionIndex } from "./row-placement";
 
 type FieldDrop = {
+  sectionHeight: number;
+  sectionLabel: string;
+  sectionPreview: string;
   isOver: boolean;
   isCurrentRow: boolean;
   isDraggingField: boolean;
@@ -17,6 +23,9 @@ type FieldDrop = {
 };
 
 type FieldDropHook = {
+  sectionHeight: number;
+  sectionLabel: string;
+  sectionPreview: string;
   ref: ConnectDropTarget;
   isOver: boolean;
   canDrop: boolean;
@@ -34,11 +43,21 @@ export const useRowFieldDrop = (
   width: number,
 ): FieldDropHook => {
   const dispatch = useAppDispatch();
+  const store = useAppStore();
   const [fieldWidth, setFieldWidth] = useState<number>();
   const [hoverPosition, setHoverPosition] = useState<number>();
 
   const [
-    { isOver, isCurrentRow, dragFieldIndex, isDraggingField, canDrop },
+    {
+      isOver,
+      isCurrentRow,
+      dragFieldIndex,
+      isDraggingField,
+      canDrop,
+      sectionHeight,
+      sectionLabel,
+      sectionPreview,
+    },
     ref,
   ] = useDrop<DragItem, void, FieldDrop>(
     {
@@ -51,14 +70,32 @@ export const useRowFieldDrop = (
           item?.type === Drag.Field && item.data.rowUid === row.uid;
 
         return {
-          isOver: monitor.isOver({ shallow: true }),
+          isOver: monitor.isOver({ shallow: true }) && monitor.canDrop(),
           canDrop: monitor.canDrop(),
           dragFieldIndex: item?.type === Drag.Field ? item.index : undefined,
           isCurrentRow,
           isDraggingField: isDraggingField,
+          ...sectionDragPresentation(item),
         };
       },
-      canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
+      canDrop: (item, monitor) => {
+        if (
+          !monitor.isOver({ shallow: true }) ||
+          !row.layoutUid ||
+          (item.type !== Drag.Field && item.type !== Drag.FieldType)
+        )
+          return false;
+        // Keep a container's columns stationary while entering it. Otherwise
+        // the parent row reserves a sibling slot and moves the intended target.
+        const point = monitor.getClientOffset();
+        if (
+          point &&
+          wrapperRef.current &&
+          isInsideContainer(wrapperRef.current, point)
+        )
+          return false;
+        return canPlaceField(store.getState(), item.data, row.layoutUid);
+      },
       hover: (item, monitor) => {
         if (width === undefined || !wrapperRef.current) {
           return;
@@ -77,20 +114,30 @@ export const useRowFieldDrop = (
         // scroll or resize and feed back into the ResizeObserver loop.
         const offsetX = wrapperRef.current.getBoundingClientRect().x;
         const offset = monitor.getClientOffset();
-        const x = offset.x - offsetX;
-
-        const position = Math.floor(x / (width / count));
+        if (!offset) return;
+        const position = rowInsertionIndex(offset.x, offsetX, width, count);
         if (hoverPosition !== position) {
           setHoverPosition(position);
         }
       },
-      drop: (item) => {
+      drop: (item, monitor) => {
+        // A fast drop can precede the React render that updates hoverPosition.
+        // Resolve the final pointer position here instead of using stale state.
+        const point = monitor.getClientOffset();
+        const bounds = wrapperRef.current?.getBoundingClientRect();
+        const count =
+          fieldCount +
+          (item.type === Drag.Field && item.data.rowUid === row.uid ? 0 : 1);
+        const position =
+          point && bounds
+            ? rowInsertionIndex(point.x, bounds.left, bounds.width, count)
+            : (hoverPosition ?? Math.max(0, count - 1));
         if (item.type === Drag.Field) {
           dispatch(
             fieldThunks.move.existingField.existingRow(
               item.data,
               row,
-              hoverPosition,
+              position,
             ),
           );
         } else if (item.type === Drag.FieldType) {
@@ -98,7 +145,7 @@ export const useRowFieldDrop = (
             fieldThunks.move.newField.existingRow({
               fieldType: item.data,
               row,
-              order: hoverPosition,
+              order: position,
             }),
           );
         }
@@ -128,5 +175,8 @@ export const useRowFieldDrop = (
     hoverPosition,
     fieldWidth,
     dragFieldIndex,
+    sectionHeight,
+    sectionLabel,
+    sectionPreview,
   };
 };

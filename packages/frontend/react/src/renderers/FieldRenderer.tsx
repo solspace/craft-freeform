@@ -1,6 +1,9 @@
 "use client";
 
-import type { ManifestFieldDefinition } from "@solspace/freeform-core";
+import {
+  layoutCss,
+  type ManifestFieldDefinition,
+} from "@solspace/freeform-core";
 import { joinClassNames } from "../theme/mergeClassNames.js";
 import { resolveThemeClassNames } from "../theme/resolveThemeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
@@ -40,6 +43,16 @@ export function FieldRenderer({
           ?.uploadRequirements ?? "")
       : "";
   const isPresentational =
+    [
+      "heading",
+      "divider",
+      "spacer",
+      "callout",
+      "content",
+      "button-link",
+      "video",
+      "icon",
+    ].includes(field.type) ||
     field.type === "html" ||
     field.type === "rich-text" ||
     field.type === "image";
@@ -83,6 +96,7 @@ export function FieldRenderer({
   );
 
   const renderLabel = () =>
+    !["layout", "layout-column"].includes(field.type) &&
     !isCheckbox &&
     !isPresentational &&
     !isVisuallyHidden &&
@@ -137,7 +151,9 @@ export function FieldRenderer({
     );
   }
 
-  if (field.type === "group") {
+  if (["group", "layout", "layout-column"].includes(field.type)) {
+    const GroupRow: React.ElementType =
+      field.type === "layout" ? "div" : components.Row;
     return (
       <components.FieldWrapper
         field={field}
@@ -147,15 +163,50 @@ export function FieldRenderer({
         {renderLabel()}
         {renderInstructions()}
         <div className={classNames.input} data-freeform-group={field.handle}>
+          {field.type === "layout" && <style>{layoutCss}</style>}
           {(field.layout?.rows ?? []).map((row) => (
-            <components.Row
+            <GroupRow
               key={row.uid}
               className={joinClassNames(
+                field.type === "layout" ? "ff-layout-columns" : undefined,
                 classNames.row,
                 strategy === "merge"
                   ? `ff-row--${row.fields.length}-fields`
                   : undefined,
               )}
+              data-stack={
+                field.type === "layout"
+                  ? String(field.layout?.stack !== false)
+                  : undefined
+              }
+              data-appearance={
+                field.type === "layout"
+                  ? String(
+                      !!field.layout?.appearance &&
+                        Object.keys(field.layout.appearance).length > 0,
+                    )
+                  : undefined
+              }
+              data-cards={
+                field.type === "layout"
+                  ? String(
+                      !!field.layout?.cardStyle &&
+                        Object.keys(field.layout.cardStyle).length > 0,
+                    )
+                  : undefined
+              }
+              style={
+                field.type === "layout"
+                  ? ({
+                      ...field.layout?.appearance,
+                      ...field.layout?.cardStyle,
+                      "--freeform-columns": field.layout?.columns ?? "1fr 1fr",
+                      "--freeform-vertical-alignment":
+                        field.layout?.verticalAlignment ?? "flex-start",
+                      "--freeform-gap": `${field.layout?.gap ?? 16}px`,
+                    } as React.CSSProperties)
+                  : undefined
+              }
             >
               {row.fields.map((handle) => {
                 const child = form.manifest.fields[handle];
@@ -174,7 +225,7 @@ export function FieldRenderer({
                   />
                 );
               })}
-            </components.Row>
+            </GroupRow>
           ))}
         </div>
         {renderErrors()}

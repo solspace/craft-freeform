@@ -20,6 +20,8 @@ export const Wrapper = styled.div`
   font-size: 12px;
 
   transition: all 0.2s ease-in-out;
+  .field-item-remove { display: none; align-items: center; justify-content: center; }
+  &:hover .field-item-remove { display: flex; }
 
   &:hover {
     transform: scale(1.05);

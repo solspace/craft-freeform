@@ -108,7 +108,10 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   return (
     <FieldPropertiesWrapper>
-      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+      <CloseLink
+        aria-label={translate("Close field settings")}
+        onClick={() => dispatch(contextActions.unfocus())}
+      >
         <CloseIcon />
       </CloseLink>
       {config.limitations.can("layout.favorite") && (

@@ -31,6 +31,7 @@ class BlockGibberish extends SpamBlockingIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Integer(
         label: 'Gibberish Word Minimum Length',
+        unit: 'chars',
         instructions: 'Minimum word length used to detect gibberish. Lower values increase sensitivity but may flag valid words.',
         min: 0
     )]

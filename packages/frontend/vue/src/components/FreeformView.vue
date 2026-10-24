@@ -89,6 +89,7 @@ function onSubmit(event: Event) {
     v-else
     :form="form"
     :class="formClassName"
+    :style="form.manifest.settings.backgroundColor ? { backgroundColor: form.manifest.settings.backgroundColor } : undefined"
     :on-submit="onSubmit"
   >
     <component

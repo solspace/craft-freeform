@@ -66,7 +66,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[VisibilityFilter('properties.limit === "'.self::LIMIT_MINIMUM.'"')]
     #[Input\Integer(
         label: 'Minimum',
-        instructions: 'Defines the minimum number of selectable options.',
+        unit: 'options',
     )]
     protected ?int $limitMin = null;
 
@@ -74,7 +74,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[VisibilityFilter('properties.limit === "'.self::LIMIT_MAXIMUM.'"')]
     #[Input\Integer(
         label: 'Maximum',
-        instructions: 'Defines the maximum number of selectable options.',
+        unit: 'options',
     )]
     protected ?int $limitMax = null;
 

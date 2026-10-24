@@ -50,11 +50,12 @@ import { TableFieldRenderer } from "./TableField.js";
 
 export function DefaultForm({
   className,
+  style,
   children,
   onSubmit,
 }: FreeformComponentProps) {
   return (
-    <form className={className} onSubmit={onSubmit} noValidate>
+    <form className={className} style={style} onSubmit={onSubmit} noValidate>
       {children}
     </form>
   );

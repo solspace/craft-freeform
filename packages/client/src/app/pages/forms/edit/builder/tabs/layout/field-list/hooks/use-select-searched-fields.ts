@@ -35,6 +35,7 @@ export const useSelectSearchedGroups: SelectSearchedGroupFields<Group> = () => {
         .filter((group) => group.types.length > 0);
 
       return {
+        ...data,
         types: filterTypes || [],
         groups: {
           ...data.groups,

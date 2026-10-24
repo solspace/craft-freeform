@@ -890,7 +890,13 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         $event = new AttachFormAttributesEvent($this);
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
-        $output .= '<form'.$this->getAttributes().$this->getAttributes()->getForm().'>'.\PHP_EOL;
+        $formAttributes = $this->getAttributes()->getForm()->clone();
+        if (null !== ($background = $this->getSettings()->getGeneral()->getBackgroundColor())) {
+            $style = rtrim((string) $formAttributes->get('style', ''), "; \t\n\r");
+            $formAttributes->replace('style', ($style ? $style.'; ' : '').'background-color: '.$background);
+        }
+
+        $output .= '<form'.$this->getAttributes().$formAttributes.'>'.\PHP_EOL;
 
         $afterTag = new RenderTagEvent($this);
         if (!$this->preview) {

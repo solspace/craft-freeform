@@ -33,9 +33,9 @@ class NumberField extends TextField implements NumericInterface, MinLengthInterf
     protected ?array $minMaxValues = [null, null];
 
     #[Input\Integer(
-        instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
         min: 0,
+        unit: 'places',
     )]
     protected ?int $decimalCount = 0;
 

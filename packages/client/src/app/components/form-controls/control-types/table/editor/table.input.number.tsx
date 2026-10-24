@@ -1,3 +1,4 @@
+import { NumberInput } from "@components/elements/number-input/number-input";
 import { Control } from "@components/form-controls/control";
 import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
 import { spacings } from "@ff-client/styles/variables";
@@ -84,8 +85,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
 
       <FlexRow $gap={spacings.md}>
         <Control width={50} label={translate("Min Length")} handle="minLength">
-          <input
-            type="number"
+          <NumberInput
+            id="minLength"
+            unit="chars"
             min={0}
             className="text fullwidth"
             value={metadata.minLength ?? ""}
@@ -98,8 +100,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         </Control>
 
         <Control width={50} label={translate("Max Length")} handle="maxLength">
-          <input
-            type="number"
+          <NumberInput
+            id="maxLength"
+            unit="chars"
             min={0}
             className="text fullwidth"
             value={metadata.maxLength ?? ""}
@@ -154,8 +157,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
           label={translate("Decimal Count")}
           handle="decimalCount"
         >
-          <input
-            type="number"
+          <NumberInput
+            id="decimalCount"
+            unit="places"
             min={0}
             className="text fullwidth"
             value={metadata.decimalCount ?? ""}

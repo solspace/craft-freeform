@@ -17,11 +17,19 @@ import type { Field } from "@editor/store/slices/layout/fields";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import type { AssetUrlRecords } from "@ff-client/queries/assets";
 import { useAssetQuery } from "@ff-client/queries/assets";
+import { useContentIconQuery } from "@ff-client/queries/content-icons";
 import type {
   FieldType,
   PropertyValueCollection,
 } from "@ff-client/types/fields";
 import { PropertyType } from "@ff-client/types/properties";
+import {
+  buttonLinkPresentation,
+  contentIconMarkup,
+  contentVideoStyles,
+  contentVideoUrl,
+} from "@ff-client/utils/content-presentation";
+import translate from "@ff-client/utils/translations";
 import template from "lodash/template";
 import { useMemo } from "react";
 
@@ -45,8 +53,11 @@ export const useFieldPreview = (
   type?: FieldType,
 ): [string, boolean, SampleGenerator?] => {
   const [generatedOptions, isFetching] = useFieldOptions(field, type);
-  const { getTranslation } = useTranslations(field);
+  const { getTranslation, hasTranslation } = useTranslations(field);
   const fetchedAssets = useAssets(field, type);
+  const { data: iconSvg, isFetching: isFetchingIcon } = useContentIconQuery(
+    type?.type === "icon" ? String(field?.properties.icon ?? "") : "",
+  );
 
   const data: PropertyValueCollection = useMemo(() => {
     const collection: PropertyValueCollection = {};
@@ -60,11 +71,43 @@ export const useFieldPreview = (
       }
     });
 
+    // Keep old plain-text translations until that locale is edited as rich text.
+    if (
+      type?.type === "callout" &&
+      hasTranslation("content") &&
+      !hasTranslation("richContent")
+    ) {
+      collection.richContent = null;
+    }
+
     collection.generatedOptions = generatedOptions;
     collection.fetchedAssets = fetchedAssets;
+    if (type?.type === "button-link")
+      Object.assign(collection, buttonLinkPresentation(collection));
+    if (type?.type === "icon")
+      collection.iconMarkup = contentIconMarkup(
+        iconSvg ?? undefined,
+        collection,
+      );
+    if (type?.type === "video") {
+      collection.videoStyles = contentVideoStyles(collection);
+      collection.videoMessage = translate(
+        contentVideoUrl(collection.url)
+          ? "Video player loads on the published form."
+          : "Add a YouTube or Vimeo video URL.",
+      );
+    }
 
     return collection;
-  }, [field, type, generatedOptions, fetchedAssets, getTranslation]);
+  }, [
+    field,
+    type,
+    generatedOptions,
+    fetchedAssets,
+    iconSvg,
+    getTranslation,
+    hasTranslation,
+  ]);
 
   const sample = useSamplePreview(data.defaultValue);
   const { optionRevision } = useSampleData();
@@ -156,7 +199,11 @@ export const useFieldPreview = (
     }
   }, [field?.properties, type, previewData]);
 
-  return [compiledTemplate, isFetching, fileMarker ?? optionMarker ?? sample];
+  return [
+    compiledTemplate,
+    isFetching || isFetchingIcon,
+    fileMarker ?? optionMarker ?? sample,
+  ];
 };
 
 const useAssets = (field: Field, type: FieldType): AssetUrlRecords => {

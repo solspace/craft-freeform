@@ -1,4 +1,14 @@
 export enum Fields {
+  Content = "Solspace\\Freeform\\Fields\\Implementations\\ContentField",
+  ButtonLink = "Solspace\\Freeform\\Fields\\Implementations\\ButtonLinkField",
+  Video = "Solspace\\Freeform\\Fields\\Implementations\\VideoField",
+  Icon = "Solspace\\Freeform\\Fields\\Implementations\\IconField",
+  Heading = "Solspace\\Freeform\\Fields\\Implementations\\HeadingField",
+  Divider = "Solspace\\Freeform\\Fields\\Implementations\\DividerField",
+  Spacer = "Solspace\\Freeform\\Fields\\Implementations\\SpacerField",
+  Callout = "Solspace\\Freeform\\Fields\\Implementations\\CalloutField",
+  Layout = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LayoutField",
+  LayoutColumn = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LayoutColumnField",
   // Base
   Checkboxes = "Solspace\\Freeform\\Fields\\Implementations\\CheckboxesField",
   Checkbox = "Solspace\\Freeform\\Fields\\Implementations\\CheckboxField",

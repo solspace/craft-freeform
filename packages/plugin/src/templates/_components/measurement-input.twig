@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{% set id = id ?? "measurement#{random()}" %}
+{% set unit = unit ?? null %}
+{% set unitId = "#{id}-unit" %}
+{% set describedBy = ((describedBy ?? '') ~ (unit ? ' ' ~ unitId : ''))|trim %}
+
+{% if unit %}
+    <div class="freeform-measurement-input" style="--unit-space: {{ max(38, unit|length * 8 + 24) }}px">
+{% endif %}
+
+{% if suggestEnvVars ?? false %}
+    {% include "_includes/forms/autosuggest" %}
+{% else %}
+    {{ forms.text(_context|merge({unit: null, suffix: false})) }}
+{% endif %}
+
+{% if unit %}
+        <span id="{{ unitId }}" class="freeform-measurement-unit">{{ unit }}</span>
+    </div>
+{% endif %}

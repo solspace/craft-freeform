@@ -130,7 +130,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.minRows')]
     #[Input\Integer(
         label: 'Minimum number of rows',
-        instructions: 'Set the minimum number of rows. At least this many rows will be shown by default; rows cannot be removed below this count.',
+        instructions: 'At least this many rows will be shown by default; rows cannot be removed below this count.',
+        unit: 'rows',
     )]
     protected ?int $minRows = null;
 
@@ -140,7 +141,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(
         label: 'Maximum number of rows',
-        instructions: 'Set the maximum number of rows that can be added to the table.',
+        unit: 'rows',
     )]
     protected ?int $maxRows = null;
 
@@ -150,7 +151,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.exactRows')]
     #[Input\Integer(
         label: 'Exact number of rows',
-        instructions: 'Set the exact number of rows. This many rows will be shown with no option to add or remove.',
+        instructions: 'This many rows will be shown with no option to add or remove.',
+        unit: 'rows',
     )]
     protected ?int $exactRows = null;
 

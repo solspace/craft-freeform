@@ -7,7 +7,7 @@ import type {
   SubmitIntent,
   SubmitResponse,
 } from "@solspace/freeform-core";
-import type { Component, VNode } from "vue";
+import type { Component, CSSProperties, VNode } from "vue";
 
 export { PACKAGE_VERSION } from "./version.js";
 export const CLIENT_NAME = "@solspace/freeform-vue";
@@ -104,6 +104,7 @@ export type FreeformThemeComponents = {
 export type FreeformComponentProps = {
   form: FreeformRuntime;
   class?: string;
+  style?: CSSProperties;
   onSubmit: (event: Event) => void;
 };
 

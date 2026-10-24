@@ -7,10 +7,10 @@ import { useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import type { Field as FieldPropType } from "@editor/store/slices/layout/fields";
 import { fieldThunks } from "@editor/store/thunks/fields";
-import { Fields } from "@ff-client/types/field.classes";
+import { isContainer } from "@editor/store/thunks/fields/containers";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
-import { memo, useCallback, useMemo } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { DragPreviewImage } from "react-dnd";
 
 import { FieldCell } from "./cell/cell";
@@ -46,11 +46,14 @@ export const Field: React.FC<Props> = memo(
   }) => {
     const dispatch = useAppDispatch();
     const { confirmDelete } = useModal();
-    const { isDragging, drag, preview } = useFieldDrag(field, index);
+    const sourceRef = useRef<HTMLDivElement>(null);
+    const { isDragging, drag, preview } = useFieldDrag(field, index, sourceRef);
+    const [sectionPreview, setSectionPreview] = useState<string>();
     // Ref changes disconnect the HTML5 source (and set draggable=false).
     // Keep it attached while React rerenders the active drag.
     const connectDrag = useCallback(
       (element: HTMLDivElement | null) => {
+        sourceRef.current = element;
         drag(element);
       },
       [drag],
@@ -74,11 +77,20 @@ export const Field: React.FC<Props> = memo(
 
     return (
       <>
-        <DragPreviewImage connect={preview} src={dragPreview} />
+        <DragPreviewImage
+          connect={preview}
+          src={sectionPreview || dragPreview}
+        />
         <FieldWrapper
           role="group"
           aria-label={field.properties?.label}
           tabIndex={0}
+          onPointerEnter={() => {
+            if (isContainer(field) && sourceRef.current)
+              setSectionPreview(
+                createPreview(field.properties.label, sourceRef.current),
+              );
+          }}
           onKeyDown={(event) => {
             if (
               event.target === event.currentTarget &&
@@ -113,7 +125,7 @@ export const Field: React.FC<Props> = memo(
                 confirmDelete({
                   title: translate("Delete field?"),
                   message: translate(
-                    field.typeClass === Fields.Group
+                    isContainer(field)
                       ? 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.'
                       : 'Are you sure you want to delete "{name}" from this form?',
                     {

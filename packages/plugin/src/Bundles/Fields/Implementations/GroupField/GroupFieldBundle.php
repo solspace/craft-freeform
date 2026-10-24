@@ -25,7 +25,7 @@ class GroupFieldBundle extends FeatureBundle
     public function removeField(RemoveFieldRecordEvent $event): void
     {
         $record = $event->getRecord();
-        if (GroupField::class !== $record->type) {
+        if (!is_a($record->type, GroupField::class, true)) {
             return;
         }
 
@@ -36,7 +36,7 @@ class GroupFieldBundle extends FeatureBundle
 
     private function removeNestedFields(FormFieldRecord $record): void
     {
-        if (GroupField::class === $record->type) {
+        if (is_a($record->type, GroupField::class, true)) {
             $metadata = json_decode($record->metadata, true);
             $layoutUid = $metadata['layout'] ?? null;
             if ($layoutUid) {

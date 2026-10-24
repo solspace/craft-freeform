@@ -13,6 +13,8 @@ type Props = {
   value?: string | null;
   onChange: (value: string) => void;
   allowTransparent?: boolean;
+  allowInherited?: boolean;
+  transparentLabel?: string;
 };
 
 const FALLBACK_HEX = "#000000";
@@ -21,16 +23,22 @@ export const HexColorInput: React.FC<Props> = ({
   value,
   onChange,
   allowTransparent = false,
+  allowInherited = false,
+  transparentLabel = "Transparent",
 }) => {
-  const [draft, setDraft] = useState(() => getDisplayValue(value));
+  const [draft, setDraft] = useState(() =>
+    getDisplayValue(value, allowInherited, transparentLabel),
+  );
   const solidColor = useRef(normalizeHex(value) || FALLBACK_HEX);
   const transparent = isTransparent(value);
+  const inherited =
+    allowInherited && (!value || value.toLowerCase() === "currentcolor");
 
   useEffect(() => {
-    setDraft(getDisplayValue(value));
+    setDraft(getDisplayValue(value, allowInherited, transparentLabel));
     const hex = normalizeHex(value);
     if (hex) solidColor.current = hex;
-  }, [value]);
+  }, [value, allowInherited, transparentLabel]);
 
   const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.currentTarget.value.toLowerCase();
@@ -41,12 +49,22 @@ export const HexColorInput: React.FC<Props> = ({
   const handleTextChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.currentTarget.value;
     const normalizedValue =
-      allowTransparent && nextValue.trim().toLowerCase() === "transparent"
-        ? "rgba(0,0,0,0)"
-        : normalizeHex(nextValue);
+      allowInherited &&
+      ["inherit", "inherited", "currentcolor"].includes(
+        nextValue.trim().toLowerCase(),
+      )
+        ? "currentColor"
+        : allowTransparent &&
+            ["transparent", transparentLabel.toLowerCase()].includes(
+              nextValue.trim().toLowerCase(),
+            )
+          ? "rgba(0,0,0,0)"
+          : normalizeHex(nextValue);
 
     if (normalizedValue) {
-      setDraft(getDisplayValue(normalizedValue));
+      setDraft(
+        getDisplayValue(normalizedValue, allowInherited, transparentLabel),
+      );
       onChange(normalizedValue);
 
       return;
@@ -56,7 +74,7 @@ export const HexColorInput: React.FC<Props> = ({
   };
 
   const handleBlur = () => {
-    setDraft(getDisplayValue(value));
+    setDraft(getDisplayValue(value, allowInherited, transparentLabel));
   };
 
   return (
@@ -87,11 +105,29 @@ export const HexColorInput: React.FC<Props> = ({
               const nextValue = event.currentTarget.checked
                 ? "rgba(0,0,0,0)"
                 : solidColor.current;
-              setDraft(getDisplayValue(nextValue));
+              setDraft(
+                getDisplayValue(nextValue, allowInherited, transparentLabel),
+              );
               onChange(nextValue);
             }}
           />
-          <span>{translate("Transparent")}</span>
+          <span>{translate(transparentLabel)}</span>
+        </TransparencyToggle>
+      )}
+      {allowInherited && (
+        <TransparencyToggle>
+          <input
+            type="checkbox"
+            checked={inherited}
+            onChange={(event) => {
+              const nextValue = event.currentTarget.checked
+                ? "currentColor"
+                : solidColor.current;
+              setDraft(getDisplayValue(nextValue, true, transparentLabel));
+              onChange(nextValue);
+            }}
+          />
+          <span>{translate("Inherit")}</span>
         </TransparencyToggle>
       )}
     </InputRow>
@@ -132,7 +168,13 @@ const isTransparent = (value?: string | null): boolean => {
   );
 };
 
-const getDisplayValue = (value?: string | null): string =>
-  isTransparent(value)
-    ? translate("Transparent")
-    : normalizeHex(value) || value?.trim() || "";
+const getDisplayValue = (
+  value?: string | null,
+  allowInherited = false,
+  transparentLabel = "Transparent",
+): string =>
+  allowInherited && (!value || value.toLowerCase() === "currentcolor")
+    ? translate("Inherited")
+    : isTransparent(value)
+      ? translate(transparentLabel)
+      : normalizeHex(value) || value?.trim() || "";

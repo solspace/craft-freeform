@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/measurement" as measurement %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -149,11 +150,12 @@
     {% endif %}
 
     <div id="session-time" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ forms.autosuggestField({
+        {{ measurement.field({
             class: "code",
-            label: "Session length in minutes"|t('freeform'),
+            label: "Session Length"|t('freeform'),
             instructions: "Specify when the sessions should expire. Set to 0 for unlimited."|t('freeform'),
             name: "settings[sessionContextTimeToLiveMinutes]",
+            unit: "minutes"|t('freeform'),
             value: settings.sessionContextTimeToLiveMinutes,
             errors: settings.getErrors("sessionContextTimeToLiveMinutes"),
             disabled: readOnly,
@@ -162,11 +164,11 @@
     </div>
 
     <div id="session-count" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ forms.autosuggestField({
+        {{ measurement.field({
             class: "code",
             label: "Amount of active forms per user"|t('freeform'),
-            instructions: "Specify the amount of active forms a user can have."|t('freeform'),
             name: "settings[sessionContextCount]",
+            unit: "forms"|t('freeform'),
             value: settings.sessionContextCount,
             errors: settings.getErrors("sessionContextCount"),
             disabled: readOnly,
@@ -220,10 +222,11 @@
             }
         }) }}
 
-        {{ forms.textField({
+        {{ measurement.field({
             label: "Maximum Number of Saved Forms Per Session"|t('freeform'),
             instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number. Once the maximum has been reached, Freeform will begin overwriting existing older entries to create new ones."|t('freeform'),
             name: "settings[saveFormSessionLimit]",
+            unit: "forms"|t('freeform'),
             value: settings.saveFormSessionLimit,
             errors: settings.errors("saveFormSessionLimit"),
             disabled: readOnly,

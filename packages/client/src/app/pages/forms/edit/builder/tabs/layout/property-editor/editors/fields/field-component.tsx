@@ -7,9 +7,12 @@ import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-genera
 import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
+import { changeLayoutPreset } from "@editor/store/thunks/fields/containers";
 import { useFieldType } from "@ff-client/queries/field-types";
+import { Fields } from "@ff-client/types/field.classes";
 import { Implementation } from "@ff-client/types/fields";
 import { type Property, PropertyType } from "@ff-client/types/properties";
+import escapeHtml from "lodash/escape";
 import type React from "react";
 import { useSelector } from "react-redux";
 
@@ -25,6 +28,9 @@ type Props = {
   autoFocus?: boolean;
 };
 
+const legacyCalloutHtml = (content: unknown): string =>
+  escapeHtml(String(content ?? "")).replace(/\r\n?|\n/g, "<br>");
+
 export const FieldComponent: React.FC<Props> = ({
   property,
   control,
@@ -33,8 +39,12 @@ export const FieldComponent: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
-  const { getTranslation, updateTranslation, canUseTranslationValue } =
-    useTranslations(field);
+  const {
+    getTranslation,
+    hasTranslation,
+    updateTranslation,
+    canUseTranslationValue,
+  } = useTranslations(field);
 
   const fieldState = useSelector(fieldSelectors.one(field.uid));
   const context = {
@@ -46,6 +56,19 @@ export const FieldComponent: React.FC<Props> = ({
     type.properties,
     context,
     (handle, value) => {
+      if (
+        field.typeClass === Fields.Callout &&
+        handle === "richContent" &&
+        value ===
+          legacyCalloutHtml(getTranslation("content", field.properties.content))
+      ) {
+        // Preserve the original plain-text value when cancelling its first edit.
+        value = null;
+      }
+      if (field.typeClass === Fields.Layout && handle === "preset") {
+        dispatch(changeLayoutPreset(field.uid, String(value)));
+        return;
+      }
       if (!updateTranslation(handle, value)) {
         dispatch(
           fieldActions.edit({
@@ -58,8 +81,19 @@ export const FieldComponent: React.FC<Props> = ({
     },
   );
 
-  const value = field.properties?.[property.handle];
-  const translationEnabledValue = getTranslation(property.handle, value);
+  const isCalloutRichText =
+    field.typeClass === Fields.Callout && property.handle === "richContent";
+  const storedValue = field.properties?.[property.handle];
+  const value =
+    isCalloutRichText && storedValue == null
+      ? legacyCalloutHtml(field.properties.content)
+      : storedValue;
+  const translationEnabledValue =
+    isCalloutRichText &&
+    hasTranslation("content") &&
+    !hasTranslation("richContent")
+      ? legacyCalloutHtml(getTranslation("content", field.properties.content))
+      : getTranslation(property.handle, value);
 
   if (property.handle === "sampleData" && !control) return null;
 

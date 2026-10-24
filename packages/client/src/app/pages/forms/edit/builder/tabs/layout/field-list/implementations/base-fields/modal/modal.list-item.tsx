@@ -1,4 +1,3 @@
-import { useHover } from "@ff-client/hooks/use-hover";
 import { useFieldType } from "@ff-client/queries/field-types";
 import CrossIcon from "@ff-icons/actions/delete";
 import DOMPurify from "dompurify";
@@ -15,7 +14,6 @@ export const FieldItem: React.FC<Props> = ({ typeClass }) => {
   const fieldType = useFieldType(typeClass);
 
   const fieldItemRef = useRef<HTMLDivElement>(null);
-  const hovering = useHover(fieldItemRef);
 
   if (!fieldType) {
     return null;
@@ -28,11 +26,9 @@ export const FieldItem: React.FC<Props> = ({ typeClass }) => {
       <Icon dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(icon) }} />
       <Name>{name}</Name>
 
-      {hovering && (
-        <Remove className="remove field-item-remove">
-          <CrossIcon />
-        </Remove>
-      )}
+      <Remove className="remove field-item-remove">
+        <CrossIcon />
+      </Remove>
     </Wrapper>
   );
 };

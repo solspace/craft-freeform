@@ -133,6 +133,12 @@ class FormPreviewService
         // from the markup scanned below. Allow only the files its inputs need.
         [$scripts, $styles] = $this->getDatepickerSources($xpath);
         $images = [];
+        foreach ($xpath->query('//*[@data-freeform-background-image]') as $node) {
+            $url = $node->getAttribute('data-freeform-background-image');
+            if (PreviewAssetHelper::isAllowed($url)) {
+                $images[] = $url;
+            }
+        }
         $fonts = [];
         foreach ($xpath->query('//script | //link | //img') as $node) {
             $attribute = 'link' === $node->nodeName ? 'href' : 'src';
@@ -170,7 +176,13 @@ class FormPreviewService
             }
 
             $node->setAttribute($attribute, $url);
-            $node->setAttribute('crossorigin', 'anonymous');
+            if ('img' === $node->nodeName) {
+                // Public asset volumes need not send CORS headers. These images
+                // remain limited to their exact URLs by the frame's CSP.
+                $node->removeAttribute('crossorigin');
+            } else {
+                $node->setAttribute('crossorigin', 'anonymous');
+            }
             $node->setAttribute('referrerpolicy', 'no-referrer');
             if ('script' === $node->nodeName) {
                 $scripts[] = $url;

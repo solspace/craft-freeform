@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/measurement" as measurement %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -142,27 +143,31 @@
         <h2>{{ "Form Throttling"|t('freeform') }}</h2>
 
         {% set input %}
-            {{ forms.text({
-                id: "throttling-count",
-                name: "settings[submissionThrottlingCount]",
-                value: settings.submissionThrottlingCount,
-                placeholder: "unlimited"|t('freeform'),
-                disabled: readOnly,
-            }) }}
+            <div class="freeform-throttling-inputs">
+                {{ measurement.input({
+                    id: "throttling-count",
+                    name: "settings[submissionThrottlingCount]",
+                    unit: "submissions"|t('freeform'),
+                    value: settings.submissionThrottlingCount,
+                    placeholder: "unlimited"|t('freeform'),
+                    disabled: readOnly,
+                }) }}
 
-            {{ forms.select({
-                id: "throttling-time-frame",
-                name: "settings[submissionThrottlingTimeFrame]",
-                value: settings.submissionThrottlingTimeFrame,
-                disabled: readOnly,
-                options: {
-                    m: "per minute"|t("freeform"),
-                    s: "per second"|t("freeform"),
-                }
-            }) }}
+                {{ forms.select({
+                    id: "throttling-time-frame",
+                    name: "settings[submissionThrottlingTimeFrame]",
+                    value: settings.submissionThrottlingTimeFrame,
+                    disabled: readOnly,
+                    options: {
+                        m: "per minute"|t("freeform"),
+                        s: "per second"|t("freeform"),
+                    }
+                }) }}
+            </div>
         {% endset %}
 
         {{ forms.field({
+            id: "throttling-count",
             label: "Form Submission Throttling"|t("freeform"),
             instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
             errors: settings.errors("submissionThrottlingCount"),
@@ -170,19 +175,21 @@
             warning: "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. For example, if you set it to '1 per minute', once one user submits any form, any other user will not be able to submit a form within that timeframe. A more realistic value for smaller websites is something like 50 per minute. Use extreme caution for larger and more active sites."|t('freeform'),
         }, input) }}
 
-        {{ forms.textField({
+        {{ measurement.field({
             label: "Minimum Submit Time"|t('freeform'),
-            instructions: "The minimum amount of time (in seconds) that has to go by since loading the form for the user to be able to submit the form successfully. Otherwise the submission will be flagged as spam and the Spam Protection Behavior setting will take effect."|t('freeform'),
+            instructions: "The minimum amount of time that has to go by since loading the form for the user to be able to submit the form successfully. Otherwise the submission will be flagged as spam and the Spam Protection Behavior setting will take effect."|t('freeform'),
             name: "settings[minimumSubmitTime]",
+            unit: "seconds"|t('freeform'),
             value: settings.minimumSubmitTime,
             errors: settings.errors("minimumSubmitTime"),
             disabled: readOnly,
         }) }}
 
-        {{ forms.textField({
+        {{ measurement.field({
             label: "Form Submit Expiration"|t('freeform'),
-            instructions: "The maximum amount of time (in minutes) a user has to submit the form before the form expires and the Spam Protection Behavior setting will take effect. This still has to be less than the Craft CSRF token expiry and PHP Session limit set for your server."|t('freeform'),
+            instructions: "The maximum amount of time a user has to submit the form before the form expires and the Spam Protection Behavior setting will take effect. This still has to be less than the Craft CSRF token expiry and PHP Session limit set for your server."|t('freeform'),
             name: "settings[formSubmitExpiration]",
+            unit: "minutes"|t('freeform'),
             value: settings.formSubmitExpiration,
             errors: settings.errors("formSubmitExpiration"),
             disabled: readOnly,

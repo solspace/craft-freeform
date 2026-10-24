@@ -1,11 +1,12 @@
 import type { DragItem } from "@editor/builder/types/drag";
 import { Drag } from "@editor/builder/types/drag";
 import type { Field } from "@editor/store/slices/layout/fields";
-import { useEffect } from "react";
+import { isContainer } from "@editor/store/thunks/fields/containers";
+import { type RefObject, useEffect } from "react";
 import type { ConnectDragPreview, ConnectDragSource } from "react-dnd";
 import { useDrag } from "react-dnd";
-
 import { useDragContext } from "../../drag.context";
+import { createSectionPreview } from "./field.drag.preview";
 
 type DropResult = {
   isDragging: boolean;
@@ -16,7 +17,11 @@ type FieldDrag = DropResult & {
   preview: ConnectDragPreview;
 };
 
-export const useFieldDrag = (field: Field, index: number): FieldDrag => {
+export const useFieldDrag = (
+  field: Field,
+  index: number,
+  source?: RefObject<HTMLDivElement>,
+): FieldDrag => {
   const [{ isDragging }, drag, preview] = useDrag<
     DragItem,
     unknown,
@@ -25,13 +30,22 @@ export const useFieldDrag = (field: Field, index: number): FieldDrag => {
     () => ({
       type: Drag.Field,
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-      item: {
+      item: () => ({
         type: Drag.Field,
         data: field,
         index,
-      },
+        ...(isContainer(field) && source?.current
+          ? {
+              height: source.current.getBoundingClientRect().height,
+              preview: createSectionPreview(
+                field.properties.label,
+                source.current,
+              ),
+            }
+          : {}),
+      }),
     }),
-    [field],
+    [field, index, source],
   );
 
   const { dragOn, dragOff } = useDragContext();

@@ -46,7 +46,6 @@ use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
-use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
@@ -54,8 +53,6 @@ use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
-use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
@@ -64,9 +61,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
 use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
-use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
-use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
@@ -417,24 +412,12 @@ class Freeform extends Plugin
         $group->label = 'Special';
         $group->color = '#5d9901';
         $group->types = [
-            GroupField::class,
             TableField::class,
             ConfirmationField::class,
             PasswordField::class,
             CalculationField::class,
             SignatureField::class,
-            SummaryField::class,
             LocationField::class,
-        ];
-        $group->save();
-
-        $group = new FieldTypeGroupRecord();
-        $group->label = 'Content';
-        $group->color = '#000000';
-        $group->types = [
-            HtmlField::class,
-            RichTextField::class,
-            ImageField::class,
         ];
         $group->save();
 

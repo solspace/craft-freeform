@@ -1,0 +1,6 @@
+<%
+const color = typeof lineColor === 'string' && /^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i.test(lineColor) ? lineColor : 'currentColor';
+const presetWeight = typeof thicknessPreset !== 'undefined' ? ({one:1,two:2,three:3,five:5})[thicknessPreset] : undefined;
+const weight = presetWeight || (typeof thickness !== 'undefined' ? Math.max(1, Math.min(20, Number(thickness) || 1)) : 1);
+%>
+<hr class="freeform-divider" style="--freeform-divider-spacing: <%- ({small: 8, medium: 16, large: 32})[spacing] || 16 %>px; color: inherit; border: 0; border-top: <%- weight %>px <%- ['solid', 'dashed', 'dotted'].includes(lineStyle) ? lineStyle : 'solid' %> <%- color %>; opacity: <%- color === 'currentColor' ? '.25' : '1' %>; margin: <%- ({small: 8, medium: 16, large: 32})[spacing] || 16 %>px 0">

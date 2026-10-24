@@ -55,8 +55,8 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
     protected ?string $defaultValue = '';
 
     #[Input\Integer(
-        instructions: 'The number of rows in height for this field.',
         min: 1,
+        unit: 'rows',
     )]
     protected int $rows = 2;
 
@@ -69,8 +69,9 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
     #[VisibilityFilter('Boolean(properties.autoGrow)')]
     #[Input\Integer(
         label: 'Maximum Height',
-        instructions: 'The maximum height in pixels before scrolling. Leave blank for no limit.',
+        instructions: 'The maximum height before scrolling. Leave blank for no limit.',
         min: 1,
+        unit: 'px',
     )]
     protected ?int $autoGrowMaxHeight = null;
 

@@ -134,3 +134,23 @@ it.each(["Cancel", "shade"])(
     expect(dispatch).toHaveBeenCalledOnce();
   },
 );
+
+it("keeps the property editor open when choosing a Craft icon outside its DOM", () => {
+  vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  vi.stubGlobal("Craft", { Slideout: CraftSlideout });
+  container = document.createElement("div");
+  document.body.append(container);
+  root = createRoot(container);
+  act(() => root.render(<PropertyEditor />));
+  const modal = document.createElement("div");
+  modal.className = "icon-picker-modal";
+  const choice = document.createElement("button");
+  choice.textContent = "Rocket";
+  modal.append(choice);
+  document.body.append(modal);
+  act(() => choice.click());
+  expect(dispatch).not.toHaveBeenCalled();
+  modal.remove();
+  act(() => document.body.click());
+  expect(dispatch).toHaveBeenCalledOnce();
+});

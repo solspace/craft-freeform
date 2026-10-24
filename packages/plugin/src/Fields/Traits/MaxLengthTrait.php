@@ -7,7 +7,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 trait MaxLengthTrait
 {
     #[Input\Integer(
-        instructions: 'The maximum number of characters allowed in the field.',
+        unit: 'chars',
         order: 50,
     )]
     protected ?int $maxLength = null;

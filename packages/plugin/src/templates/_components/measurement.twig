@@ -1,0 +1,19 @@
+{% macro input(config) %}
+    {% include "freeform/_components/measurement-input" with config only %}
+{% endmacro %}
+
+{% macro field(config) %}
+    {% import "_includes/forms" as forms %}
+    {% set config = config|merge({
+        id: config.id ?? "measurement#{random()}",
+        fieldClass: ((config.fieldClass ?? '') ~ ' freeform-measurement-field')|trim,
+    }) %}
+    {% if (config.suggestEnvVars ?? false) and config.tip is not defined and (config.value ?? '')[0:1] not in ['$', '@'] %}
+        {% set config = config|merge({tip: "This can begin with an environment variable."|t('app') ~ ' ' ~ tag('a', {
+            href: 'https://craftcms.com/docs/5.x/configure.html#control-panel-settings',
+            class: 'go',
+            text: 'Learn more'|t('app'),
+        })}) %}
+    {% endif %}
+    {{ forms.field(config, 'template:freeform/_components/measurement-input') }}
+{% endmacro %}

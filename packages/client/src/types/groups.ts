@@ -11,11 +11,14 @@ export type GroupItem = {
 };
 
 export type Group = {
+  catalogs?: { content: string[]; layout: string[] };
   types?: string[];
   groups?: GroupItem;
 };
 
 export interface FieldListRefs {
+  content?: HTMLDivElement | null;
+  layoutCatalog?: HTMLDivElement | null;
   unassigned?: HTMLDivElement | null;
   hidden?: HTMLDivElement | null;
   [key: string]: HTMLDivElement | undefined;

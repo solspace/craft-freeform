@@ -48,9 +48,14 @@ class GroupsController extends BaseApiController
         $freeform = Freeform::getInstance();
         $groups = FieldTypeGroupRecord::find()->all();
         $types = $this->fieldTypesProvider->getRegisteredTypes();
+        $catalogTypes = [...FieldTypesProvider::CONTENT_TYPES, ...FieldTypesProvider::LAYOUT_TYPES, ...FieldTypesProvider::INTERNAL_TYPES];
 
         $response = (object) [
             'types' => [],
+            'catalogs' => [
+                'content' => array_values(array_intersect(FieldTypesProvider::CONTENT_TYPES, $types)),
+                'layout' => array_values(array_intersect(FieldTypesProvider::LAYOUT_TYPES, $types)),
+            ],
             'groups' => [
                 'hidden' => [],
                 'grouped' => [],
@@ -83,7 +88,8 @@ class GroupsController extends BaseApiController
             $unassignedTypes = array_diff(
                 $types,
                 $flattenedAssignedTypes,
-                $hiddenFieldTypes
+                $hiddenFieldTypes,
+                $catalogTypes
             );
 
             $response->types = array_values([...$unassignedTypes]);
@@ -117,6 +123,7 @@ class GroupsController extends BaseApiController
         $unassignedTypes = array_diff(
             $types,
             $flattenedAssignedTypes,
+            $catalogTypes,
         );
 
         $response->types = array_values([...$unassignedTypes]);

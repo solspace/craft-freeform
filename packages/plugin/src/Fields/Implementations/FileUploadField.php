@@ -74,8 +74,8 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     #[DefaultValue('props.file.maxFileSizeKB')]
     #[Input\Integer(
         label: 'Maximum File Size',
-        instructions: 'Specify the maximum file size, in KB.',
         order: 4,
+        unit: 'KB',
     )]
     protected int $maxFileSizeKB = self::DEFAULT_MAX_FILESIZE_KB;
 
@@ -83,7 +83,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     #[DefaultValue('props.file.count')]
     #[Input\Integer(
         label: 'Max Files',
-        instructions: 'Specify the maximum uploadable file count.',
+        unit: 'files',
     )]
     protected int $fileCount = self::DEFAULT_FILE_COUNT;
 

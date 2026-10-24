@@ -36,7 +36,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     #[Translatable]
     #[Input\Integer(
         label: 'Width of Pad',
-        instructions: 'Specify a value in pixels.',
+        unit: 'px',
     )]
     protected int $width = 400;
 
@@ -45,7 +45,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     #[Translatable]
     #[Input\Integer(
         label: 'Height of Pad',
-        instructions: 'Specify a value in pixels.',
+        unit: 'px',
     )]
     protected int $height = 100;
 
@@ -104,6 +104,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
         label: 'Pen dot size',
         instructions: 'The size of the dot when drawing on the pad.',
         step: 0.1,
+        unit: 'px',
     )]
     protected float $penDotSize = 2.5;
 

@@ -1,0 +1,13 @@
+{% do view.registerCss(field.layoutCss, {}, 'freeform-layout') %}
+{% import rowTemplate as rowMacro %}
+{{ field.renderContainerOpeningTag }}
+    <div class="freeform-layout-columns" data-cards="{{ field.cardStyle ? 'true' : 'false' }}" data-stack="{{ field.stackedOnMobile ? 'true' : 'false' }}" data-freeform-background-image="{{ field.backgroundImageUrl|e('html_attr') }}" data-appearance="{{ field.appearanceStyle ? 'true' : 'false' }}" style="{{ field.layoutStyle|e('html_attr') }}">
+        {% for row in field.layout %}
+            {% for column in row %}
+                {{ column.renderContainerOpeningTag }}
+                    {{ rowMacro.render(column.layout, form) }}
+                {{ column.renderContainerClosingTag }}
+            {% endfor %}
+        {% endfor %}
+    </div>
+{{ field.renderContainerClosingTag }}

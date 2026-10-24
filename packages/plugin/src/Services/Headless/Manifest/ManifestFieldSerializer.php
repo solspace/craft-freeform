@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services\Headless\Manifest;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\ContentField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -16,6 +17,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
+use Solspace\Freeform\Fields\Implementations\Pro\LayoutField;
 use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
@@ -110,6 +112,18 @@ class ManifestFieldSerializer
             $data['layout'] = [
                 'rows' => $this->layoutSerializer->serializeGroupLayout($field->getLayout()),
             ];
+            if ($field instanceof LayoutField) {
+                $data['layout']['columns'] = $field->getColumnWidths();
+                $data['layout']['gap'] = $field->getGap();
+                $data['layout']['stack'] = $field->isStackedOnMobile();
+                $data['layout']['verticalAlignment'] = $field->getVerticalAlignment();
+                $data['layout']['appearance'] = $field->getAppearanceStyle();
+                $data['layout']['cardStyle'] = $field->getCardStyle();
+            }
+        }
+
+        if ($field instanceof ContentField) {
+            $data['content'] = ['rendered' => ['html' => (string) $field->renderInput()]];
         }
 
         if ($field instanceof HtmlField || $field instanceof RichTextField) {
@@ -127,6 +141,7 @@ class ManifestFieldSerializer
             $asset = $assetId ? $field->getAsset((int) $assetId) : null;
             $data['content'] = [
                 'image' => [
+                    'style' => $field->getDisplayStyles(),
                     'src' => $asset ? $field->getSrc($asset) : null,
                     'srcset' => $asset ? $field->getSrcset($asset) : null,
                     'alt' => $asset ? $asset->title : ($field->getLabel() ?: ''),
@@ -464,6 +479,7 @@ class ManifestFieldSerializer
             $asset = $assetId ? $field->getAsset((int) $assetId) : null;
 
             return [
+                'style' => $field->getDisplayStyles(),
                 'src' => $asset ? $field->getSrc($asset) : null,
                 'srcset' => $asset ? $field->getSrcset($asset) : null,
                 'alt' => $asset ? $asset->title : ($field->getLabel() ?: ''),

@@ -36,6 +36,14 @@ class FormFieldRecord extends ActiveRecord
 
     public ?string $handle = null;
 
+    /** Handles in the complete incoming layout, keyed by field UID. */
+    private ?array $layoutHandles = null;
+
+    public function setLayoutHandles(array $handles): void
+    {
+        $this->layoutHandles = $handles;
+    }
+
     public static function tableName(): string
     {
         return self::TABLE;
@@ -72,6 +80,20 @@ class FormFieldRecord extends ActiveRecord
 
         // Get the handle from the metadata
         $handle = $metadata->handle;
+
+        if (null !== $this->layoutHandles) {
+            // Validate the submitted layout rather than stale database rows:
+            // deleted fields and handles renamed in this save no longer collide.
+            foreach ($this->layoutHandles as $uid => $otherHandle) {
+                if ($uid !== $this->uid && 0 === strcasecmp((string) $handle, (string) $otherHandle)) {
+                    $this->addError('handle', 'Handle used more than once.');
+
+                    break;
+                }
+            }
+
+            return;
+        }
 
         // Check the database for existing records with the same formId and handle
         $exists = self::find()

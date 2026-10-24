@@ -42,6 +42,7 @@ abstract class BaseAnthropicIntegration extends APIIntegration implements AiInte
         instructions: 'Maximum number of tokens to generate.',
         min: 1,
         max: 200000,
+        unit: 'tokens',
     )]
     protected int $maxTokens = 15000;
 

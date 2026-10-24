@@ -4,6 +4,7 @@ import { useFetchFieldPropertySections } from "@ff-client/queries/field-types";
 import classes from "@ff-client/utils/classes";
 import type React from "react";
 import { useSelector } from "react-redux";
+import { ContentCatalogs } from "./catalog/catalog";
 import { FieldListWrapper } from "./field-list.styles";
 import { BaseFields } from "./implementations/base-fields/base-fields";
 import { FavoriteFields } from "./implementations/favorite-fields/favorite-fields";
@@ -25,6 +26,7 @@ export const FieldList: React.FC = () => {
       <Search />
       <FavoriteFields />
       <BaseFields />
+      <ContentCatalogs />
       {config.limitations.can("layout.formsFields") && <FormsFields />}
     </FieldListWrapper>
   );

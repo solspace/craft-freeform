@@ -5,6 +5,7 @@ export function ImageFieldRenderer(props: VueFieldRendererProps) {
   const contentClass =
     props.classNames.content ?? props.classNames.input ?? "ff-field__content";
   const config = (props.field.frontend?.config ?? {}) as {
+    style?: Record<string, string>;
     src?: string | null;
     srcset?: string | null;
     alt?: string | null;
@@ -13,6 +14,7 @@ export function ImageFieldRenderer(props: VueFieldRendererProps) {
     props.field.content as
       | {
           image?: {
+            style?: Record<string, string>;
             src?: string | null;
             srcset?: string | null;
             alt?: string | null;
@@ -33,6 +35,7 @@ export function ImageFieldRenderer(props: VueFieldRendererProps) {
       class={contentClass}
       src={src}
       srcset={srcset || undefined}
+      style={image?.style ?? config.style ?? {}}
       alt={alt}
     />
   );

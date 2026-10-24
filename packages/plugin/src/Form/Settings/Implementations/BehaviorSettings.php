@@ -269,6 +269,7 @@ class BehaviorSettings extends SettingsNamespace
     #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
     #[Input\Integer(
         label: 'Number of Submissions',
+        unit: 'submissions',
         instructions: 'The maximum number of submissions to accept. Requires Store Submitted Data to be enabled. Spam and deleted submissions are excluded.',
         order: 9,
         min: 1,

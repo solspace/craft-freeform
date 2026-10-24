@@ -80,6 +80,8 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
     fill: ${({ color }) => color || colors.black};
   }
 
+  svg[data-outline="true"] { fill: none; stroke: ${({ color }) => color || colors.black}; }
+
   .remove {
     svg {
       fill: ${colors.black} !important;
@@ -107,6 +109,7 @@ export const FieldListWrapper = styled.div`
 `;
 
 export const FieldTypes = styled.div<EmptyProps>`
+  &.catalog-source .field-item-remove { display: none; }
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
@@ -140,6 +143,8 @@ export const UHField = styled.div`
   flex-direction: column;
   gap: ${spacings.md};
   padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
+  > h3, > p { margin: 0; }
+  > p { font-size: 12px; color: ${colors.gray500}; }
 `;
 
 export const ColorCircle = styled.button`

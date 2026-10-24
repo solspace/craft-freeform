@@ -173,6 +173,10 @@ export const LabelGroup = styled.div`
   gap: ${spacings.sm};
 
   width: 100%;
+
+  &:has(${Label}) {
+    margin-bottom: 3px;
+  }
 `;
 
 export const LabelInstructionsWrapper = styled.div`

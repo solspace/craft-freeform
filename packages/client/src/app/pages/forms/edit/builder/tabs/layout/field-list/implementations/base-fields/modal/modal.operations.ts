@@ -75,7 +75,12 @@ export const useGroupOperations = (
 
     return {
       hidden,
-      grouped,
+      grouped: grouped.map((group) => ({
+        ...group,
+        types: [...new Set(group.types)].filter(
+          (type) => !hidden.includes(type),
+        ),
+      })),
     };
   }, [fieldListRefs, initialState]);
 

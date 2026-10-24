@@ -74,6 +74,32 @@ const manifest: FreeformManifest = {
 };
 
 describe("Freeform", () => {
+  it("applies an optional form background without changing input styles", async () => {
+    const view = render(
+      <Freeform
+        baseUrl="https://example.com"
+        manifest={{
+          ...manifest,
+          settings: { ...manifest.settings, backgroundColor: "#eaf0f6" },
+        }}
+      />,
+    );
+    const input = await screen.findByLabelText(/Name/);
+    expect(view.container.querySelector("form")?.style.backgroundColor).toBe(
+      "rgb(234, 240, 246)",
+    );
+    expect(input.getAttribute("style")).toBeNull();
+    view.unmount();
+    const legacy = render(
+      <Freeform baseUrl="https://example.com" manifest={manifest} />,
+    );
+    await screen.findByLabelText(/Name/);
+    expect(legacy.container.querySelector("form")?.style.backgroundColor).toBe(
+      "",
+    );
+    legacy.unmount();
+  });
+
   it("renders fields from a preloaded manifest", async () => {
     const fetchMock = vi.fn();
     render(

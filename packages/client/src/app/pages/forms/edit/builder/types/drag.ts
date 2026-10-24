@@ -20,7 +20,11 @@ type BaseDragItem<T extends Drag, D> = {
 export type PageDragItem = BaseDragItem<Drag.Page, Page> & { index: number };
 export type FieldTypeDragItem = BaseDragItem<Drag.FieldType, FieldType>;
 export type FavoriteDragItem = BaseDragItem<Drag.FavoriteField, FieldFavorite>;
-export type FieldDragItem = BaseDragItem<Drag.Field, Field> & { index: number };
+export type FieldDragItem = BaseDragItem<Drag.Field, Field> & {
+  index: number;
+  height?: number;
+  preview?: string;
+};
 export type OptionRowDragItem = BaseDragItem<Drag.OptionRow, OptionRow> & {
   index: number;
 };

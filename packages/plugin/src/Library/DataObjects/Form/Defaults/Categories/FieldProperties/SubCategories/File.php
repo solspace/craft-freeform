@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
 use Solspace\Freeform\Attributes\Defaults\SetPlaceholder;
+use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
@@ -21,6 +22,7 @@ class File extends BaseCategory
 {
     #[Label('Max Files')]
     #[SetDefaultValue(1)]
+    #[Unit('files')]
     public TextItem $count;
 
     #[Label('Asset Source')]
@@ -37,8 +39,9 @@ class File extends BaseCategory
     #[OptionsGenerator(FileKindsOptionsGenerator::class)]
     public CheckboxesItem $fileKinds;
 
-    #[Label('Maximum File Size (KB)')]
+    #[Label('Maximum File Size')]
     #[SetDefaultValue('2048')]
+    #[Unit('KB')]
     public TextItem $maxFileSizeKB;
 
     #[Label('Show Upload Requirements')]

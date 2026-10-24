@@ -137,6 +137,7 @@ return [
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
     'freeform/api/assets/urls' => 'freeform/api/assets/asset-urls',
+    'freeform/api/assets/icon' => 'freeform/api/assets/icon-svg',
     'freeform/api/assets/thumb/card/<assetId:\d+>' => 'freeform/api/assets/card-thumbnail',
 
     // ENTRIES

@@ -79,6 +79,31 @@ export const rowsSlice = createSlice({
       current.order = target.order;
       target.order = tempOrder;
     },
+    moveToLayout: (
+      state,
+      { payload }: PayloadAction<{ uid: string; layoutUid: string }>,
+    ) => {
+      const row = state.find((row) => row.uid === payload.uid);
+      if (!row) return;
+      const previousLayout = row.layoutUid;
+      row.layoutUid = payload.layoutUid;
+      row.order =
+        Math.max(
+          -1,
+          ...state
+            .filter(
+              (item) =>
+                item.uid !== row.uid && item.layoutUid === payload.layoutUid,
+            )
+            .map((item) => item.order),
+        ) + 1;
+      state
+        .filter((item) => item.layoutUid === previousLayout)
+        .sort((a, b) => a.order - b.order)
+        .forEach((item, order) => {
+          item.order = order;
+        });
+    },
   },
 });
 

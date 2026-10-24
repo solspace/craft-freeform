@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FormAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -128,12 +129,30 @@ class GeneralSettings extends SettingsNamespace
     )]
     public ?string $formattingTemplate = null;
 
+    #[Section(self::SECTION_GENERAL)]
+    #[Edition(Edition::PRO)]
+    #[Input\Boolean(
+        label: 'Customize Form Background',
+        instructions: 'Set a background color for the rendered form and Preview. The Layout canvas and input styles stay unchanged.',
+        order: 8,
+    )]
+    public bool $customizeBackground = false;
+
+    #[Section(self::SECTION_GENERAL)]
+    #[Edition(Edition::PRO)]
+    #[VisibilityFilter('Boolean(customizeBackground)')]
+    #[Input\ColorPicker(
+        label: 'Form Background Color',
+        order: 9,
+    )]
+    public string $backgroundColor = '#ffffff';
+
     #[Translatable]
     #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(
         label: 'Form Description',
         instructions: 'Enter a description or notes for this form.',
-        order: 8,
+        order: 10,
     )]
     public string $description = '';
 
@@ -142,7 +161,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\ColorPicker(
         label: 'Form Color',
         instructions: 'Choose a color for this form (generally used in the control panel).',
-        order: 9,
+        order: 11,
     )]
     public string $color = '';
 
@@ -152,7 +171,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\IconPicker(
         label: 'Form Icon',
         instructions: 'Choose an icon for this form in the control panel.',
-        order: 10,
+        order: 12,
     )]
     public string $icon = '';
 
@@ -161,7 +180,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\Boolean(
         label: 'Allow HTML Embeds',
         instructions: 'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.',
-        order: 11,
+        order: 13,
     )]
     public bool $allowHtmlEmbeds = false;
 
@@ -266,5 +285,16 @@ class GeneralSettings extends SettingsNamespace
     public function __construct()
     {
         $this->attributes = new FormAttributesCollection();
+    }
+
+    public function getBackgroundColor(): ?string
+    {
+        if (!$this->customizeBackground) {
+            return null;
+        }
+
+        $color = trim($this->backgroundColor);
+
+        return 'transparent' === $color || preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i', $color) ? $color : null;
     }
 }

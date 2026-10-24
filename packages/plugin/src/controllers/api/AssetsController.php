@@ -6,11 +6,19 @@ use craft\elements\Asset;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Services\FormIconService;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class AssetsController extends BaseApiController
 {
+    public function actionIconSvg(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        return $this->asJson(['svg' => (new FormIconService())->getSvg((string) $this->request->get('name', ''))]);
+    }
+
     public function actionAssetUrls(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);

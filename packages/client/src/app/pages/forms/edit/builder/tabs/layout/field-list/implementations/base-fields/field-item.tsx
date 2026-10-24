@@ -10,9 +10,10 @@ import { useBaseFieldDrag } from "./field-item.drag";
 
 type Props = {
   fieldType: FieldType;
+  onAdd?: () => void;
 };
 
-export const FieldItem: React.FC<Props> = ({ fieldType }) => {
+export const FieldItem: React.FC<Props> = ({ fieldType, onAdd }) => {
   const { icon, name } = fieldType;
 
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ export const FieldItem: React.FC<Props> = ({ fieldType }) => {
 
   const onClick = (): void => {
     dispatch(fieldThunks.move.newField.newRow({ fieldType }));
+    onAdd?.();
   };
 
   return (

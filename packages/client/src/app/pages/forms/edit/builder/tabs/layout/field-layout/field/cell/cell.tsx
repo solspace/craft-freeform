@@ -15,7 +15,9 @@ import DOMPurify from "dompurify";
 import type React from "react";
 import { memo, useMemo } from "react";
 import { useSelector } from "react-redux";
-
+import { ContentChooser } from "../../../field-list/catalog/catalog";
+import { InlineChooser } from "../../../field-list/catalog/catalog.styles";
+import { ColumnsLayout } from "../../layout/columns-layout/columns-layout";
 import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
 
 import { useLoaderAnimation } from "./cell.animations";
@@ -82,6 +84,20 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
   }, [isContentField, content, previewMarkup]);
   const hasContentPreview = contentPreview.hasContent;
   const hideLabel = noLabel || hasContentPreview;
+  const quietLabel =
+    !hideLabel &&
+    [
+      Type.Group,
+      "layout",
+      "content",
+      "heading",
+      "html",
+      "rich-text",
+      "image",
+      "divider",
+      "spacer",
+      "callout",
+    ].includes(type?.type);
   const iconMarkup = useMemo(
     () => ({ __html: DOMPurify.sanitize(type?.icon || "") }),
     [type?.icon],
@@ -126,6 +142,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
         hasContentPreview && "content-only",
         contentPreview.hasHeading && "section-heading",
         isActive && "active",
+        quietLabel && "quiet-label",
         "field",
       )}
       onClick={(event): void => {
@@ -159,13 +176,22 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       {type.type === Type.Group && (
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}
+      {type.type === "layout" && (
+        <ColumnsLayout field={field} active={isActive} />
+      )}
+      {type.type === "content" && (
+        <InlineChooser>
+          <h3>{translate("What would you like to add?")}</h3>
+          <ContentChooser uid={field.uid} />
+        </InlineChooser>
+      )}
 
-      {type.type !== Type.Group &&
+      {![Type.Group, "layout", "content"].includes(type.type) &&
         (hideLabel ? (
           <Row className={sample ? "sample-preview" : undefined}>
             <HtmlPreviewElement
               className={hasContentPreview ? "content-preview" : undefined}
-              $fullWidth={hasContentPreview}
+              $fullWidth={hideLabel}
               dangerouslySetInnerHTML={previewMarkup}
             />
             {sampleMarker}

@@ -80,6 +80,11 @@ export function FreeformView({ form, className }: FreeformViewProps) {
     <components.Form
       form={runtime}
       className={formClassName}
+      style={
+        manifest.settings.backgroundColor
+          ? { backgroundColor: manifest.settings.backgroundColor }
+          : undefined
+      }
       onSubmit={form.handleSubmit}
     >
       {form.formErrors.length > 0 ? (

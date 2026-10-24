@@ -76,6 +76,7 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     #[VisibilityFilter('Boolean(values.googleSheetsId)')]
     #[Input\Integer(
         label: 'Row Offset (optional)',
+        unit: 'rows',
         instructions: "Enter the number of rows to skip from the beginning of the sheet. Input '0' to start from the first row, or '3' to skip the first 3 rows, and so on.",
         order: 5,
         placeholder: '0',

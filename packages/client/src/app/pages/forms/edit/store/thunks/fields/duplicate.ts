@@ -3,8 +3,8 @@ import type { AppDispatch, AppThunk, RootState } from "@editor/store";
 import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
 import { layoutActions } from "@editor/store/slices/layout/layouts";
 import { rowActions } from "@editor/store/slices/layout/rows";
-import { Fields } from "@ff-client/types/field.classes";
 import { v4 } from "uuid";
+import { isContainer } from "./containers";
 
 export default (field: Field, row: Row): AppThunk =>
   (dispatch, getState) => {
@@ -17,93 +17,50 @@ export const duplicateField = (
   field: Field,
   row: Row,
 ): void => {
-  const layoutUid = row.layoutUid;
-  const rowUid = v4();
-
-  if (field.typeClass === Fields.Group) {
-    const groupLayoutUid = field.properties.layout as string;
-    const newLayoutUid = v4();
-
-    // Create a new layout entry for the duplicate group
-    const originalLayout = state.layout.layouts.find(
-      (layout) => layout.uid === groupLayoutUid,
-    );
-
-    if (originalLayout) {
-      dispatch(
-        layoutActions.add({
-          ...originalLayout,
-          uid: newLayoutUid,
-        }),
-      );
-    }
-
-    // Grab all rows and fields and add them to the new layout UID
-    const groupRows = state.layout.rows
-      .filter((row) => row.layoutUid === groupLayoutUid)
-      .sort((a, b) => a.order - b.order);
-
-    for (const groupRow of groupRows) {
-      const newGroupRowUid = v4();
-      dispatch(
-        rowActions.add({
-          layoutUid: newLayoutUid,
-          uid: newGroupRowUid,
-        }),
-      );
-
-      state.layout.fields
-        .filter((field) => field.rowUid === groupRow.uid)
-        .forEach((groupField) => {
-          dispatch(
-            fieldActions.duplicate({
-              uid: v4(),
-              rowUid: newGroupRowUid,
-              field: groupField,
-            }),
-          );
+  const clone = (
+    source: Field,
+    rowUid: string,
+    ancestors = new Set<string>(),
+  ): void => {
+    const properties = { ...source.properties };
+    if (
+      isContainer(source) &&
+      properties.layout &&
+      !ancestors.has(source.uid)
+    ) {
+      const nextAncestors = new Set(ancestors).add(source.uid);
+      const layoutUid = v4();
+      dispatch(layoutActions.add({ uid: layoutUid }));
+      state.layout.rows
+        .filter((row) => row.layoutUid === source.properties.layout)
+        .sort((a, b) => a.order - b.order)
+        .forEach((row) => {
+          const newRowUid = v4();
+          dispatch(rowActions.add({ uid: newRowUid, layoutUid }));
+          state.layout.fields
+            .filter((field) => field.rowUid === row.uid)
+            .sort((a, b) => a.order - b.order)
+            .forEach((child) => {
+              clone(child, newRowUid, nextAncestors);
+            });
         });
+      properties.layout = layoutUid;
     }
-
-    // Duplicate the group field, but add it to the new layout we created above
-    dispatch(
-      rowActions.add({
-        layoutUid,
-        uid: rowUid,
-        order: row?.order + 1,
-      }),
-    );
-
     dispatch(
       fieldActions.duplicate({
         uid: v4(),
         rowUid,
-        field: {
-          ...field,
-          properties: {
-            ...field.properties,
-            layout: newLayoutUid,
-          },
-        },
+        field: { ...source, properties },
       }),
     );
-
-    return;
-  }
-
+  };
+  const rowUid = v4();
   dispatch(
     rowActions.add({
-      layoutUid,
       uid: rowUid,
-      order: row?.order + 1,
+      layoutUid: row.layoutUid,
+      order: row.order + 1,
     }),
   );
-
-  dispatch(
-    fieldActions.duplicate({
-      uid: v4(),
-      rowUid,
-      field: field,
-    }),
-  );
+  clone(field, rowUid);
 };

@@ -1,0 +1,5 @@
+{% import 'freeform/submissions/macros/row' as rowMacros %}
+
+{% for columnRow in field.layout %}
+    {{ rowMacros.render(columnRow, submission) }}
+{% endfor %}

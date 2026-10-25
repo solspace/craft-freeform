@@ -16,6 +16,7 @@ import { contentTypes, layoutPresets, withLayoutPreset } from "./catalog.types";
 import { CatalogPopover } from "./catalog-popover";
 import { ComponentCatalog } from "./components/components";
 import { LayoutOption } from "./layout-option";
+import { TemplateCatalog } from "./templates/templates";
 
 export const useContentOptions = (): FieldType[] => {
   const { data: types } = useFetchFieldTypes();
@@ -132,6 +133,7 @@ export const ContentCatalogs: React.FC = () => {
           </CatalogPopover>
         )}
       <ComponentCatalog query={query} />
+      <TemplateCatalog query={query} />
       {!!query &&
         matching.map((option) => (
           <FieldItem key={option.typeClass} fieldType={option} />

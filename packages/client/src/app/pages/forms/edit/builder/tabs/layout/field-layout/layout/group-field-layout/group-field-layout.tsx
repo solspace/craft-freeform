@@ -4,6 +4,7 @@ import { fieldActions } from "@editor/store/slices/layout/fields";
 import { layoutActions } from "@editor/store/slices/layout/layouts";
 import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
 import { rowSelectors } from "@editor/store/slices/layout/rows/rows.selectors";
+import { Fields } from "@ff-client/types/field.classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { useEffect } from "react";
@@ -47,6 +48,7 @@ export const GroupFieldLayout: React.FC<Props> = ({ field, layoutUid }) => {
 
   return (
     <GroupFieldLayoutWrapper
+      data-form-section={field.typeClass === Fields.FormSection}
       ref={(el) => {
         dropRef(el);
       }}

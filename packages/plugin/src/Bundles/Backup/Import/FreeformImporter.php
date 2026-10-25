@@ -145,7 +145,15 @@ class FreeformImporter
 
             $formRecord->name = $form->name;
             $formRecord->handle = $form->handle;
-            $formRecord->type = Regular::class;
+            $requestedType = $form->settings->getGeneral()->type;
+            $registeredTypes = array_map(
+                static fn ($type) => $type->class,
+                Freeform::getInstance()->formTypes->getTypes()
+            );
+            $formRecord->type = \in_array($requestedType, $registeredTypes, true)
+                ? $requestedType
+                : Regular::class;
+            $form->settings->getGeneral()->type = $formRecord->type;
 
             $formRecord->createdByUserId = \Craft::$app->getUser()->getIdentity()->id;
             $formRecord->updatedByUserId = $formRecord->createdByUserId;

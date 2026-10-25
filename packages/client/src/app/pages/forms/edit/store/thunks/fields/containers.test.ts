@@ -221,7 +221,7 @@ describe("layout containers", () => {
     expect(store.getState().layout.rows).toHaveLength(0);
     expect(store.getState().layout.layouts).toEqual([{ uid: "page-layout" }]);
   });
-  it("prevents dropping containers into their descendants and nesting column layouts", () => {
+  it("allows a layout inside another column but prevents dropping into its own descendants", () => {
     const store = createStore();
     const layout = addLayout(store);
     const column = store
@@ -243,6 +243,30 @@ describe("layout containers", () => {
         layoutUid: String(column.properties.layout),
       }),
     );
-    expect(store.getState().layout).toEqual(before);
+    expect(store.getState().layout).not.toEqual(before);
+    const nested = store
+      .getState()
+      .layout.fields.filter((field) => field.typeClass === Fields.Layout)
+      .at(-1)!;
+    expect(nested.uid).not.toBe(layout.uid);
+    expect(
+      store.getState().layout.rows.find((row) => row.uid === nested.rowUid)
+        ?.layoutUid,
+    ).toBe(column.properties.layout);
+    const nestedColumn = store
+      .getState()
+      .layout.fields.find(
+        (field) =>
+          field.typeClass === Fields.LayoutColumn &&
+          store.getState().layout.rows.find((row) => row.uid === field.rowUid)
+            ?.layoutUid === nested.properties.layout,
+      )!;
+    expect(
+      canPlaceField(
+        store.getState(),
+        layout,
+        String(nestedColumn.properties.layout),
+      ),
+    ).toBe(false);
   });
 });

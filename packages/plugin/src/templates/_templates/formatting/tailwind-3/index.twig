@@ -4,7 +4,7 @@
 
 {# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {# Render the opening form tag #}
-{{ form.renderTag({
+{% set formTagProperties = {
     attributes: {
         form: { class: "freeform-form", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-3", "data-freeform-signature-max-scale": 1.25 },
         row: { class: "flex flex-wrap -mx-2 mb-4" },
@@ -84,32 +84,20 @@
             },
         },
     },
-}) }}
+} %}
+{% if form.type == 'Page' %}
+    {% do form.registerContext(formTagProperties) %}
+    <div class="{{ formTagProperties.attributes.form.class }} freeform-page"{% for name, value in formTagProperties.attributes.form %}{% if name starts with 'data-' %} {{ name }}="{{ value is same as(true) ? 'true' : value }}"{% endif %}{% endfor %}{% if form.pageBackgroundColor %} style="background-color: {{ form.pageBackgroundColor }}"{% endif %}>
+{% else %}
+    {{ form.renderTag(formTagProperties) }}
+{% endif %}
 
-{# Success and error message handling for non-AJAX forms #}
-{% if not form.settings.ajax %}
-    {% if form.submittedSuccessfully %}
-        <div{{ form.attributes.success|raw }}>
-            <p>{{ form.successMessage | t('freeform') }}</p>
-        </div>
-    {% endif %}
-    {% if form.hasErrors %}
-        <div{{ form.attributes.errors|raw }}>
-            <p>{{ form.errorMessage | t('freeform') }}</p>
-
-            {% if form.errors|length %}
-                <ul class="mb-0">
-                    {% for error in form.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    {% endif %}
+{% if form.type != 'Page' %}
+    {% include "freeform/_templates/formatting/tailwind-3/_messages.twig" %}
 {% endif %}
 
 {# Render page tabs if multi-page #}
-{% if form.pages|length > 1 %}
+{% if form.type != 'Page' and form.pages|length > 1 %}
     <ul class="flex border-b-2 border-slate-300 mb-6">
         {% for page in form.pages %}
             <li class="mr-1"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
@@ -120,7 +108,7 @@
 {% endif %}
 
 {# Display form field rows and columns #}
-{{ rowMacro.render(form.rows, form) }}
+{{ rowMacro.render(form.canvasRows, form) }}
 
 {# Render the closing form tag #}
-{{ form.renderClosingTag }}
+{% if form.type == 'Page' %}</div>{% else %}{{ form.renderClosingTag }}{% endif %}

@@ -21,11 +21,14 @@ export const catalogTypes: string[] = [
   Fields.Group,
   Fields.Layout,
   Fields.LayoutColumn,
+  Fields.FormSection,
+  Fields.BuilderTemplate,
 ];
 export const containerTypes: string[] = [
   Fields.Group,
   Fields.Layout,
   Fields.LayoutColumn,
+  Fields.FormSection,
 ];
 export const layoutPresets = [
   {

@@ -9,6 +9,8 @@ export enum Fields {
   Callout = "Solspace\\Freeform\\Fields\\Implementations\\CalloutField",
   Layout = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LayoutField",
   LayoutColumn = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LayoutColumnField",
+  FormSection = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\FormSectionField",
+  BuilderTemplate = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\BuilderTemplateField",
   // Base
   Checkboxes = "Solspace\\Freeform\\Fields\\Implementations\\CheckboxesField",
   Checkbox = "Solspace\\Freeform\\Fields\\Implementations\\CheckboxField",

@@ -1,4 +1,5 @@
 import {
+  catalogTypes,
   containerTypes,
   layoutPresets,
 } from "@editor/builder/tabs/layout/field-list/catalog/catalog.types";
@@ -12,11 +13,88 @@ import { v4 } from "uuid";
 export const isContainer = (field: Pick<Field, "typeClass">): boolean =>
   containerTypes.includes(field.typeClass);
 
+export const isPageForm = (state: RootState): boolean =>
+  (state.form.settings?.general?.type ?? state.form.type) ===
+  "Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page";
+
+export const isInputField = (source: Pick<Field, "typeClass">): boolean =>
+  !catalogTypes.includes(source.typeClass);
+
+const isFirstPageCanvasLayout = (state: RootState, target: string): boolean => {
+  const canvas = state.layout.pages[0]?.layoutUid;
+  const seen = new Set<string>();
+  let layoutUid: string | undefined = target;
+  while (layoutUid && !seen.has(layoutUid)) {
+    if (layoutUid === canvas) return true;
+    seen.add(layoutUid);
+    const owner = state.layout.fields.find(
+      (field) => field.properties.layout === layoutUid,
+    );
+    if (!owner || owner.typeClass === Fields.FormSection) return false;
+    layoutUid = state.layout.rows.find(
+      (row) => row.uid === owner.rowUid,
+    )?.layoutUid;
+  }
+  return false;
+};
+
+const containsInputFields = (state: RootState, sourceUid?: string): boolean => {
+  const source = state.layout.fields.find((field) => field.uid === sourceUid);
+  if (!source) return false;
+  if (isInputField(source)) return true;
+  const layoutUid = source.properties.layout;
+  if (!layoutUid) return false;
+  const rowUids = state.layout.rows
+    .filter((row) => row.layoutUid === layoutUid)
+    .map((row) => row.uid);
+  return state.layout.fields
+    .filter((field) => rowUids.includes(field.rowUid))
+    .some((field) => containsInputFields(state, field.uid));
+};
+
 export const canPlaceField = (
   state: RootState,
   source: Pick<Field, "typeClass"> & { uid?: string },
   target: string,
 ): boolean => {
+  if (isPageForm(state)) {
+    const pageLayout = state.layout.pages[0]?.layoutUid;
+    if (source.typeClass === Fields.FormSection) {
+      if (!pageLayout || !isFirstPageCanvasLayout(state, target)) return false;
+      if (
+        state.layout.fields.some(
+          (field) =>
+            field.typeClass === Fields.FormSection && field.uid !== source.uid,
+        )
+      )
+        return false;
+    } else if (isInputField(source) || containsInputFields(state, source.uid)) {
+      let ancestorLayout = target;
+      let insideForm = false;
+      const seen = new Set<string>();
+      while (ancestorLayout && !seen.has(ancestorLayout)) {
+        seen.add(ancestorLayout);
+        const owner = state.layout.fields.find(
+          (field) => field.properties.layout === ancestorLayout,
+        );
+        if (owner?.typeClass === Fields.FormSection) {
+          insideForm = true;
+          break;
+        }
+        ancestorLayout = state.layout.rows.find(
+          (row) => row.uid === owner?.rowUid,
+        )?.layoutUid;
+      }
+      // Other builder pages are the steps displayed inside the Form section.
+      if (
+        !insideForm &&
+        !state.layout.pages.slice(1).some((page) => page.layoutUid === target)
+      )
+        return false;
+    }
+  } else if (source.typeClass === Fields.FormSection) {
+    return false;
+  }
   const visited = new Set<string>();
   let layoutUid = target;
   while (layoutUid) {
@@ -26,11 +104,7 @@ export const canPlaceField = (
       (field) => field.properties.layout === layoutUid,
     );
     if (!owner) return true;
-    if (
-      owner.uid === source.uid ||
-      (source.typeClass === Fields.Layout && owner.typeClass === Fields.Layout)
-    )
-      return false;
+    if (owner.uid === source.uid) return false;
     layoutUid = state.layout.rows.find(
       (row) => row.uid === owner.rowUid,
     )?.layoutUid;

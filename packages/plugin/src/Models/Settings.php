@@ -81,6 +81,7 @@ class Settings extends Model
 
     public ?string $pluginName = null;
     public ?string $formTemplateDirectory = null;
+    public ?string $builderTemplateDirectory = null;
     public bool $allowFileTemplateEdit = true;
     public ?string $emailTemplateDirectory = null;
     public string $emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
@@ -264,6 +265,7 @@ class Settings extends Model
     {
         return [
             ['formTemplateDirectory', 'folderExists'],
+            ['builderTemplateDirectory', 'validateBuilderTemplateDirectory'],
             ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
             ['defaultAiIntegration', 'string', 'max' => 64],
         ];
@@ -298,6 +300,79 @@ class Settings extends Model
                 )
             );
         }
+    }
+
+    public function validateBuilderTemplateDirectory(string $attribute): void
+    {
+        if ($this->{$attribute} && null === $this->getAbsoluteBuilderTemplateDirectory()) {
+            $this->addError($attribute, Freeform::t('Choose an existing directory inside the Craft templates folder.'));
+        }
+    }
+
+    public function getAbsoluteBuilderTemplateDirectory(): ?string
+    {
+        $relative = trim((string) $this->builderTemplateDirectory, '/');
+        if ('' === $relative || str_contains($relative, '..') || str_contains($relative, '\\') || str_starts_with((string) $this->builderTemplateDirectory, '/')) {
+            return null;
+        }
+
+        $root = realpath(\Craft::$app->path->getSiteTemplatesPath());
+        $directory = $root ? realpath($root.'/'.$relative) : false;
+
+        return $root && $directory && is_dir($directory) && str_starts_with($directory, $root.'/') ? $directory : null;
+    }
+
+    /** @return array<string, string> Relative Twig file paths and display names. */
+    public function listBuilderTemplates(): array
+    {
+        return array_map(static fn (array $details) => $details['name'], $this->getBuilderTemplateDetails());
+    }
+
+    /** @return array<string, array{name: string, description: string, preview: string}> */
+    public function getBuilderTemplateDetails(): array
+    {
+        $directory = $this->getAbsoluteBuilderTemplateDirectory();
+        if (!$directory) {
+            return [];
+        }
+
+        $templates = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if (!$file->isFile() || $file->isLink() || 'twig' !== strtolower($file->getExtension())) {
+                continue;
+            }
+            $path = $file->getRealPath();
+            if (!$path || !str_starts_with($path, $directory.'/')) {
+                continue;
+            }
+            $relative = substr($path, \strlen($directory) + 1);
+            $templates[$relative] = ['name' => $relative, 'description' => '', 'preview' => 'text'];
+
+            // Match Freeform email templates: optional metadata lives in Twig comments at the top.
+            $header = file_get_contents($path, false, null, 0, 4096);
+            if (false === $header || !preg_match('/\A(?:\s*\{#.*?#\})*/s', $header, $top)) {
+                continue;
+            }
+            $templates[$relative]['preview'] = match (true) {
+                (bool) preg_match('/<(?:img|picture|video)\b/i', $header) => 'media',
+                (bool) preg_match('/<(?:form|input|textarea|select)\b/i', $header) => 'form',
+                (bool) preg_match('/<h[1-6]\b/i', $header) => 'heading',
+                default => 'text',
+            };
+            preg_match_all('/\{#\s*(name|templateName|description)\s*:\s*(.*?)\s*#\}/is', $top[0], $matches, \PREG_SET_ORDER);
+            foreach ($matches as $match) {
+                $value = trim($match[2]);
+                if ('' === $value) {
+                    continue;
+                }
+                $key = 'description' === strtolower($match[1]) ? 'description' : 'name';
+                $templates[$relative][$key] = $value;
+            }
+        }
+        ksort($templates, \SORT_NATURAL | \SORT_FLAG_CASE);
+
+        return $templates;
     }
 
     /**

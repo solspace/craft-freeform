@@ -11,6 +11,7 @@ import type {
   FreeformVueTheme,
   RendererOverrides,
 } from "../types.js";
+import CaptchaHost from "./CaptchaHost.vue";
 
 defineOptions({ name: "FieldRenderer" });
 
@@ -20,6 +21,7 @@ const props = defineProps<{
   theme: FreeformVueTheme;
   renderers: RendererOverrides;
   allowRawHtml?: boolean;
+  pageFormClassName?: string;
 }>();
 
 const strategy = computed(() => props.theme.classNameStrategy ?? "merge");
@@ -35,6 +37,18 @@ const Renderer = computed(() =>
   resolveFieldRenderer(props.field, props.renderers, props.theme),
 );
 const value = computed(() => props.form.values[props.field.handle]);
+const stepPage = computed(() => props.form.manifest.layout?.pages?.[props.form.currentPageIndex]);
+const stepRows = computed(() =>
+  props.field.type === "form-section" && props.form.currentPageIndex > 0
+    ? stepPage.value?.rows ?? []
+    : props.field.layout?.rows ?? [],
+);
+const isLastPage = computed(() => props.form.currentPageIndex >= (props.form.manifest.layout?.pages?.length ?? 0) - 1);
+function onSubmit(event: Event) {
+  if (props.field.type === "form-section") {
+    void props.form.handleSubmit(event);
+  }
+}
 
 const isCheckbox = computed(() => props.field.type === "checkbox");
 const uploadRequirements = computed(() => {
@@ -47,7 +61,7 @@ const uploadRequirements = computed(() => {
 });
 const isPresentational = computed(
   () =>
-    ["heading", "divider", "spacer", "callout", "content", "button-link", "video", "icon"].includes(props.field.type) ||
+    ["heading", "divider", "spacer", "callout", "content", "button-link", "video", "icon", "builder-template"].includes(props.field.type) ||
     props.field.type === "html" ||
     props.field.type === "rich-text" ||
     props.field.type === "image",
@@ -62,7 +76,7 @@ const isVisuallyHidden = computed(
 
 const showLabel = computed(
   () =>
-    !["layout", "layout-column"].includes(props.field.type) &&
+    !["layout", "layout-column", "form-section"].includes(props.field.type) &&
     !isCheckbox.value &&
     !isPresentational.value &&
     !isVisuallyHidden.value &&
@@ -142,7 +156,7 @@ const rendererProps = computed(() => ({
 
     <component
       :is="components.FieldWrapper"
-      v-else-if="['group', 'layout', 'layout-column'].includes(field.type)"
+      v-else-if="['group', 'layout', 'layout-column', 'form-section'].includes(field.type)"
       :field="field"
       :form="form"
       :class="fieldClassName"
@@ -161,11 +175,24 @@ const rendererProps = computed(() => ({
         :field="field"
         :class="classNames.instructions"
       />
-      <div :class="classNames.input" :data-freeform-group="field.handle">
+      <component
+        :is="field.type === 'form-section' ? components.Form : 'div'"
+        v-bind="field.type === 'form-section' ? { form } : {}"
+        :class="joinClassNames(classNames.input, field.type === 'form-section' ? pageFormClassName : undefined)"
+        :data-freeform-group="field.handle"
+        :on-submit="onSubmit"
+      >
+        <component
+          :is="components.Errors"
+          v-if="field.type === 'form-section' && form.formErrors.length > 0"
+          :errors="form.formErrors"
+          :class="theme.classNames?.errors"
+          :error-class="theme.classNames?.error"
+        />
         <component :is="'style'" v-if="field.type === 'layout'">{{ layoutCss }}</component>
         <component
           :is="field.type === 'layout' ? 'div' : components.Row"
-          v-for="row in field.layout?.rows ?? []"
+          v-for="row in stepRows"
           :key="row.uid"
           :class="
             joinClassNames(
@@ -189,9 +216,22 @@ const rendererProps = computed(() => ({
             :theme="theme"
             :renderers="renderers"
             :allow-raw-html="allowRawHtml"
+            :page-form-class-name="pageFormClassName"
           />
         </component>
-      </div>
+        <component v-if="field.type === 'form-section' && stepPage" :is="components.ButtonRow" :class="theme.classNames?.buttons">
+        <component v-if="form.currentPageIndex > 0 && stepPage.buttons?.back" :is="components.BackButton" :label="stepPage.buttons.back.label" :class="theme.classNames?.backButton" :disabled="form.isSubmitting" :on-click="() => void form.goBack()" />
+        <component v-if="!isLastPage && stepPage.buttons?.submit" :is="components.NextButton" :label="stepPage.buttons.submit.label" :class="theme.classNames?.nextButton" :disabled="form.isSubmitting" :on-click="() => void form.goNext()" />
+        <component v-if="isLastPage && stepPage.buttons?.submit" :is="components.SubmitButton" :label="stepPage.buttons.submit.label" :class="theme.classNames?.submitButton" :disabled="form.isSubmitting" />
+        <component v-if="stepPage.buttons?.save" :is="components.SaveButton" :label="stepPage.buttons.save.label" :class="theme.classNames?.saveButton" :disabled="form.isSubmitting" :on-click="() => void form.saveDraft()" />
+        </component>
+        <CaptchaHost
+          v-for="captcha in field.type === 'form-section' ? form.manifest.security.captchas ?? [] : []"
+          :key="captcha.name"
+          :form="form"
+          :captcha="captcha"
+        />
+      </component>
       <component
         :is="components.Errors"
         v-if="showErrors"

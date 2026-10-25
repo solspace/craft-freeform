@@ -19,11 +19,13 @@ use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\IconField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
+use Solspace\Freeform\Fields\Implementations\Pro\BuilderTemplateField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\FormSectionField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
@@ -78,6 +80,7 @@ class FieldsBundle extends FeatureBundle
             IconField::class,
             LayoutField::class,
             LayoutColumnField::class,
+            FormSectionField::class,
             // Standard fields
             TextField::class,
             TextareaField::class,
@@ -111,6 +114,7 @@ class FieldsBundle extends FeatureBundle
             GroupField::class,
             CalculationField::class,
             CardsField::class,
+            BuilderTemplateField::class,
             ImageField::class,
             LocationField::class,
         );

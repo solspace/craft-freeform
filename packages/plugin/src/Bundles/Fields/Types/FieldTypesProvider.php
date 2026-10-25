@@ -16,6 +16,8 @@ use Solspace\Freeform\Fields\Implementations\DividerField;
 use Solspace\Freeform\Fields\Implementations\HeadingField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\IconField;
+use Solspace\Freeform\Fields\Implementations\Pro\BuilderTemplateField;
+use Solspace\Freeform\Fields\Implementations\Pro\FormSectionField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\LayoutColumnField;
@@ -46,7 +48,9 @@ class FieldTypesProvider
         HtmlField::class,
     ];
 
-    public const LAYOUT_TYPES = [GroupField::class, LayoutField::class];
+    public const LAYOUT_TYPES = [GroupField::class, LayoutField::class, FormSectionField::class];
+
+    public const TEMPLATE_TYPES = [BuilderTemplateField::class];
 
     public const INTERNAL_TYPES = [
         ContentField::class,

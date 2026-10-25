@@ -169,6 +169,12 @@ export const FieldCellWrapper = styled.div`
     padding-bottom: 8px;
   }
 
+  &.form-section {
+    height: auto;
+    border-color: #e1e5ea;
+    background-color: #fcfdfe;
+  }
+
   &.content-only .content-preview {
     > :first-child { margin-block-start: 0; }
     > :last-child { margin-block-end: 0; }

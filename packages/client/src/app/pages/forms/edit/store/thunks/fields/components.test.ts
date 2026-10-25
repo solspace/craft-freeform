@@ -202,6 +202,13 @@ describe("component sections", () => {
       "background",
     );
     const cards = components.find((item) => item.id === "cards")!;
+    expect(cards.variants.map((variant) => variant.label)).toEqual([
+      "2 cards",
+      "3 cards",
+      "4 cards",
+      "5 cards",
+      "6 cards",
+    ]);
     expect(
       cards.variants.map((variant) => variant.root.columns?.length).sort(),
     ).toEqual([2, 3, 4, 5, 6]);
@@ -210,6 +217,46 @@ describe("component sections", () => {
         (variant) => variant.root.properties?.columnStyle === "cards",
       ),
     ).toBe(true);
+  });
+  it("inserts a three-card component into an existing layout column", () => {
+    const store = createStore();
+    store.dispatch(
+      fieldThunks.move.newField.newRow({
+        fieldType: types.find((field) => field.typeClass === Fields.Layout)!,
+      }),
+    );
+    const outer = store
+      .getState()
+      .layout.fields.find((field) => field.typeClass === Fields.Layout)!;
+    const column = store
+      .getState()
+      .layout.fields.find((field) => field.typeClass === Fields.LayoutColumn)!;
+    store.dispatch(
+      fieldThunks.move.newField.newRow({
+        fieldType: preset("cards", 1),
+        layoutUid: String(column.properties.layout),
+      }),
+    );
+    const inner = store
+      .getState()
+      .layout.fields.filter((field) => field.typeClass === Fields.Layout)
+      .find((field) => field.uid !== outer.uid)!;
+    expect(inner).toBeDefined();
+    expect(
+      store.getState().layout.rows.find((row) => row.uid === inner.rowUid)
+        ?.layoutUid,
+    ).toBe(column.properties.layout);
+    expect(inner.properties.columnStyle).toBe("cards");
+    expect(
+      store
+        .getState()
+        .layout.fields.filter(
+          (field) =>
+            field.typeClass === Fields.LayoutColumn &&
+            store.getState().layout.rows.find((row) => row.uid === field.rowUid)
+              ?.layoutUid === inner.properties.layout,
+        ),
+    ).toHaveLength(3);
   });
   it("rejects unavailable types before creating any rows or fields", () => {
     const store = createStore();

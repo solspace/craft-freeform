@@ -11,7 +11,15 @@ export type GroupItem = {
 };
 
 export type Group = {
-  catalogs?: { content: string[]; layout: string[] };
+  catalogs?: {
+    content: string[];
+    layout: string[];
+    templates?: string[];
+    templateDetails?: Record<
+      string,
+      { name: string; description: string; preview: string }
+    >;
+  };
   types?: string[];
   groups?: GroupItem;
 };

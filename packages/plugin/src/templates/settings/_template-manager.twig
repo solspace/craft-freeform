@@ -95,6 +95,35 @@
 
     <hr />
 
+    <h2>{{ "Builder Templates"|t('freeform') }}</h2>
+
+    {% set suggestionsData = [] %}
+    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+        {% set suggestionsData = suggestionsData|merge([{ "name": directory }]) %}
+    {% endfor %}
+
+    {{ forms.autosuggestField({
+        label: "Directory Path"|t('freeform'),
+        id: "builderTemplateDirectory",
+        class: "code",
+        disabled: readOnly,
+        suggestEnvVars: false,
+        suggestAliases: false,
+        suggestions: [{ "label": "Existing Directories", "data": suggestionsData }],
+        limit: 10,
+        name: "settings[builderTemplateDirectory]",
+        value: settings.builderTemplateDirectory,
+        errors: settings.getErrors("builderTemplateDirectory"),
+        instructions: "Choose an existing directory inside Craft's templates folder. Twig files appear under Templates in Regular and Page form builders. Use reusable fragments rather than full HTML documents. Optionally start each file with {# name: Hero banner #} and {# description: A short introduction. #} to label it in the builder."|t('freeform'),
+        placeholder: "e.g. _freeform/builder",
+    }) }}
+
+    {% if settings.absoluteBuilderTemplateDirectory %}
+        {{ _self.listFiles(settings.builderTemplateDirectory, settings.listBuilderTemplates()|map((name, path) => { name: name, fileName: path })) }}
+    {% endif %}
+
+    <hr />
+
     <h2>{{ "Success Templates"|t('freeform') }}</h2>
 
     {% set suggestionsData = [] %}

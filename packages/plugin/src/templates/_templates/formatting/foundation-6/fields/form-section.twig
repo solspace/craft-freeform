@@ -1,0 +1,19 @@
+{% import "freeform/_templates/formatting/foundation-6/_row.twig" as rowMacro %}
+
+{{ field.renderContainerOpeningTag }}
+{{ form.renderTag(null, false) }}
+{% include "freeform/_templates/formatting/foundation-6/_messages.twig" %}
+{% if form.pages|length > 1 %}
+    <nav aria-label="Form steps">
+        <ol class="freeform-pages">
+            {% for page in form.pages %}
+                <li{% if form.currentPage.index == page.index %} class="active" aria-current="step"{% endif %}>{{ page.label }}</li>
+            {% endfor %}
+        </ol>
+    </nav>
+{% endif %}
+
+{{ rowMacro.render(field.stepLayout, form) }}
+{{ form.renderPageButtons }}
+{{ form.renderClosingTag }}
+{{ field.renderContainerClosingTag }}

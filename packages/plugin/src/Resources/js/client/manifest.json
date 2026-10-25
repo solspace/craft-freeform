@@ -1,6 +1,6 @@
 {
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-DY2ofvKR.js",
+    "file": "assets/de-DTLIwDJi.js",
     "name": "de",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-Bdt0hAuh.js",
+    "file": "assets/fr-B3fuqt_x.js",
     "name": "fr",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-DhaIz18j.js",
+    "file": "assets/it-3woBFdsn.js",
     "name": "it",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-BQLmEvCR.js",
+    "file": "assets/nl-D9GjDZat.js",
     "name": "nl",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -35,8 +35,8 @@
       "src/index.tsx"
     ]
   },
-  "_confirm-submissions.modal-OwPIMdB9.js": {
-    "file": "assets/confirm-submissions.modal-OwPIMdB9.js",
+  "_confirm-submissions.modal-taOlp2Gz.js": {
+    "file": "assets/confirm-submissions.modal-taOlp2Gz.js",
     "name": "confirm-submissions.modal",
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
@@ -55,7 +55,7 @@
     "name": "rolldown-runtime"
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-BGpaoBgf.js",
+    "file": "assets/ai.usage-chart-BUlZFxFz.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -66,26 +66,26 @@
     ]
   },
   "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx": {
-    "file": "assets/settings.usage-hQO9eD-Y.js",
+    "file": "assets/settings.usage-7_hqggOp.js",
     "name": "settings.usage",
     "src": "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
       "_react-redux-BPG1kbQb.js",
-      "_confirm-submissions.modal-OwPIMdB9.js",
+      "_confirm-submissions.modal-taOlp2Gz.js",
       "src/index.tsx"
     ]
   },
   "src/app/pages/forms/list/modals/wizard/wizard.tsx": {
-    "file": "assets/wizard-BqURhnB9.js",
+    "file": "assets/wizard-f0whb-g5.js",
     "name": "wizard",
     "src": "src/app/pages/forms/list/modals/wizard/wizard.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
       "_react-redux-BPG1kbQb.js",
-      "_confirm-submissions.modal-OwPIMdB9.js",
+      "_confirm-submissions.modal-taOlp2Gz.js",
       "src/index.tsx"
     ]
   },
@@ -98,14 +98,14 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-DSEJV8zl.js",
+    "file": "assets/index-mHDqNa35.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
       "_react-redux-BPG1kbQb.js",
-      "_confirm-submissions.modal-OwPIMdB9.js"
+      "_confirm-submissions.modal-taOlp2Gz.js"
     ],
     "dynamicImports": [
       "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",

@@ -112,3 +112,43 @@ it("renders independently stacked columns and includes their responsive styles w
   ).toEqual(["answer"]);
   app.unmount();
 });
+
+it("places a Form section's controls inside its form when nested in a column", async () => {
+  const answer = field("answer", "text");
+  const section = {
+    ...field("formSection", "form-section"),
+    layout: { rows: [{ uid: "form-row", fields: ["answer"] }] },
+  };
+  const column = {
+    ...field("column", "layout-column"),
+    layout: { rows: [{ uid: "column-row", fields: ["formSection"] }] },
+  };
+  const form = {
+    fieldErrors: {},
+    formErrors: [],
+    values: {},
+    currentPageIndex: 0,
+    manifest: {
+      fields: { answer, section, formSection: section, column },
+      layout: {
+        pages: [{ rows: [], buttons: { submit: { label: "Submit" } } }],
+      },
+      security: {},
+    },
+    isFieldVisible: () => true,
+    getFieldProps: () => ({}),
+    handleSubmit: () => {},
+  } as unknown as FreeformRuntime;
+  const host = document.createElement("div");
+  const app = createApp({
+    render: () =>
+      h(FieldRenderer, { field: column, form, theme: {}, renderers: {} }),
+  });
+  app.mount(host);
+  await nextTick();
+  const formTag = host.querySelector("form");
+  expect(host.querySelectorAll("form")).toHaveLength(1);
+  expect(formTag?.querySelector("input")).not.toBeNull();
+  expect(formTag?.querySelector('button[type="submit"]')).not.toBeNull();
+  app.unmount();
+});

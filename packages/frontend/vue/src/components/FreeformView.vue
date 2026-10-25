@@ -43,6 +43,16 @@ const currentPage = computed(
     props.form.manifest.layout.pages[props.form.currentPageIndex] ??
     props.form.manifest.layout.pages[0] ?? { rows: [], buttons: {} },
 );
+const canvasPage = computed(() =>
+  props.form.manifest.form.type === "Page"
+    ? props.form.manifest.layout.pages[0] ?? currentPage.value
+    : currentPage.value,
+);
+const hasFormSection = computed(() =>
+  Object.values(props.form.manifest.fields).some((field) => field.type === "form-section"),
+);
+const pageHasFormSection = computed(() => props.form.manifest.form.type === "Page" && hasFormSection.value);
+const outerCaptchas = computed(() => pageHasFormSection.value ? [] : props.form.manifest.security.captchas ?? []);
 
 const isLastPage = computed(
   () =>
@@ -72,7 +82,9 @@ function hasPresentationalContent(
 }
 
 function onSubmit(event: Event) {
-  void props.form.handleSubmit(event);
+  if (!pageHasFormSection.value) {
+    void props.form.handleSubmit(event);
+  }
 }
 </script>
 
@@ -85,16 +97,16 @@ function onSubmit(event: Event) {
   />
 
   <component
-    :is="components.Form"
+    :is="pageHasFormSection ? 'div' : components.Form"
     v-else
     :form="form"
-    :class="formClassName"
+    :class="joinClassNames(formClassName, pageHasFormSection ? 'ff-page-canvas' : undefined)"
     :style="form.manifest.settings.backgroundColor ? { backgroundColor: form.manifest.settings.backgroundColor } : undefined"
     :on-submit="onSubmit"
   >
     <component
       :is="components.Errors"
-      v-if="form.formErrors.length > 0"
+      v-if="!pageHasFormSection && form.formErrors.length > 0"
       :errors="form.formErrors"
       :class="form.theme.classNames?.errors"
       :error-class="form.theme.classNames?.error"
@@ -111,7 +123,7 @@ function onSubmit(event: Event) {
         )
       "
     >
-      <template v-for="row in currentPage.rows" :key="row.uid">
+      <template v-for="row in canvasPage.rows" :key="row.uid">
         <component
           :is="components.Row"
           v-if="
@@ -145,19 +157,20 @@ function onSubmit(event: Event) {
             :theme="form.theme"
             :renderers="form.renderers"
             :allow-raw-html="form.allowRawHtml"
+            :page-form-class-name="pageHasFormSection ? formClassName : undefined"
           />
         </component>
       </template>
     </component>
 
     <CaptchaHost
-      v-for="captcha in form.manifest.security.captchas ?? []"
+      v-for="captcha in outerCaptchas"
       :key="captcha.name"
       :form="form"
       :captcha="captcha"
     />
 
-    <component :is="components.ButtonRow" :class="form.theme.classNames?.buttons">
+    <component v-if="!hasFormSection" :is="components.ButtonRow" :class="form.theme.classNames?.buttons">
       <component
         :is="components.BackButton"
         v-if="!isFirstPage && currentPage.buttons?.back"

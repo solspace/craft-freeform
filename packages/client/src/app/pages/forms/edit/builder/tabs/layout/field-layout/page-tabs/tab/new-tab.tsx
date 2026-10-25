@@ -1,5 +1,6 @@
 import { useAppDispatch } from "@editor/store";
 import { addNewPage } from "@editor/store/thunks/pages";
+import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import AddIcon from "./add-icon";
@@ -11,6 +12,7 @@ export const NewTab: React.FC = () => {
   return (
     <NewTabWrapper
       className="new-page-tab"
+      aria-label={translate("Add page")}
       onClick={(): void => {
         dispatch(addNewPage());
       }}

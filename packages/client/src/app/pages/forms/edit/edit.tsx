@@ -33,6 +33,7 @@ import { notificationRuleActions } from "./store/slices/rules/notifications";
 import { pageRuleActions } from "./store/slices/rules/pages";
 import { submitFormRuleActions } from "./store/slices/rules/submit-form";
 import { translationActions } from "./store/slices/translations";
+import { addFormSection, PAGE_FORM_TYPE } from "./store/thunks/form-section";
 import { addNewPage } from "./store/thunks/pages";
 
 type RouteParams = {
@@ -99,6 +100,9 @@ export const Edit: React.FC = () => {
       dispatch(addNewPage());
     } else {
       dispatch(contextActions.setPage(pages.find(Boolean)?.uid));
+    }
+    if ((form.settings?.general?.type ?? form.type) === PAGE_FORM_TYPE) {
+      dispatch(addFormSection());
     }
     setHydrated(data);
   }, [

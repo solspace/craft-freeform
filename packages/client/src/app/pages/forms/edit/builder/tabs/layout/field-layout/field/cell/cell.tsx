@@ -1,7 +1,7 @@
 import { Tooltip } from "@components/elements/tooltip/tooltip";
 import SpinnerIcon from "@components/loaders/spinner";
 import { DiceIcon } from "@editor/builder/sample-data/dice-icon";
-import { type RootState, useAppDispatch } from "@editor/store";
+import { type RootState, useAppDispatch, useAppSelector } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import type { Field } from "@editor/store/slices/layout/fields";
@@ -19,6 +19,8 @@ import { ContentChooser } from "../../../field-list/catalog/catalog";
 import { InlineChooser } from "../../../field-list/catalog/catalog.styles";
 import { ColumnsLayout } from "../../layout/columns-layout/columns-layout";
 import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
+import { PageButtons } from "../../page/page-buttons/page-buttons";
+import { PageTabs } from "../../page-tabs/page-tabs";
 
 import { useLoaderAnimation } from "./cell.animations";
 import {
@@ -42,6 +44,14 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field?.typeClass);
   const { uid } = field;
+  const currentPage = useAppSelector((state) =>
+    state.layout.pages.find((page) => page.uid === state.context.page),
+  );
+  const firstPageUid = useAppSelector((state) => state.layout.pages[0]?.uid);
+  const stepLayoutUid =
+    currentPage && currentPage.uid !== firstPageUid
+      ? currentPage.layoutUid
+      : field.properties?.layout;
 
   const isActive = useSelector((state: RootState) => {
     const focus = contextSelectors.focus(state);
@@ -97,6 +107,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       "divider",
       "spacer",
       "callout",
+      "form-section",
     ].includes(type?.type);
   const iconMarkup = useMemo(
     () => ({ __html: DOMPurify.sanitize(type?.icon || "") }),
@@ -138,7 +149,8 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       data-field-type={type.type}
       className={classes(
         hasErrors(field.errors) && "errors",
-        type.type === Type.Group && "group",
+        (type.type === Type.Group || type.type === "form-section") && "group",
+        type.type === "form-section" && "form-section",
         hasContentPreview && "content-only",
         contentPreview.hasHeading && "section-heading",
         isActive && "active",
@@ -176,6 +188,15 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       {type.type === Type.Group && (
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}
+      {type.type === "form-section" && (
+        <>
+          <div onClick={(event) => event.stopPropagation()}>
+            <PageTabs />
+          </div>
+          <GroupFieldLayout field={field} layoutUid={stepLayoutUid} />
+          {currentPage && <PageButtons page={currentPage} contained />}
+        </>
+      )}
       {type.type === "layout" && (
         <ColumnsLayout field={field} active={isActive} />
       )}
@@ -186,7 +207,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
         </InlineChooser>
       )}
 
-      {![Type.Group, "layout", "content"].includes(type.type) &&
+      {![Type.Group, "layout", "content", "form-section"].includes(type.type) &&
         (hideLabel ? (
           <Row className={sample ? "sample-preview" : undefined}>
             <HtmlPreviewElement

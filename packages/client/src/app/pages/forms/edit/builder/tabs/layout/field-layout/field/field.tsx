@@ -8,11 +8,11 @@ import { contextActions, FocusType } from "@editor/store/slices/context";
 import type { Field as FieldPropType } from "@editor/store/slices/layout/fields";
 import { fieldThunks } from "@editor/store/thunks/fields";
 import { isContainer } from "@editor/store/thunks/fields/containers";
+import { Fields } from "@ff-client/types/field.classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { memo, useCallback, useMemo, useRef, useState } from "react";
 import { DragPreviewImage } from "react-dnd";
-
 import { FieldCell } from "./cell/cell";
 import { FieldAssociationsBadges } from "./cell/cell-badges";
 import { useFieldDragAnimation } from "./field.animations";
@@ -69,7 +69,9 @@ export const Field: React.FC<Props> = memo(
       hoverPosition,
     });
 
-    const canDuplicate = config.limitations.can("layout.fields.clone");
+    const isFormSection = field.typeClass === Fields.FormSection;
+    const canDuplicate =
+      !isFormSection && config.limitations.can("layout.fields.clone");
     const dragPreview = useMemo(
       () => createPreview(field.properties?.label),
       [field.properties?.label],
@@ -119,29 +121,31 @@ export const Field: React.FC<Props> = memo(
                 }}
               />
             )}
-            <RemoveButton
-              active
-              onClick={() => {
-                confirmDelete({
-                  title: translate("Delete field?"),
-                  message: translate(
-                    isContainer(field)
-                      ? 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.'
-                      : 'Are you sure you want to delete "{name}" from this form?',
-                    {
-                      name:
-                        field.properties?.label ||
-                        field.properties?.handle ||
-                        translate("Field"),
+            {!isFormSection && (
+              <RemoveButton
+                active
+                onClick={() => {
+                  confirmDelete({
+                    title: translate("Delete field?"),
+                    message: translate(
+                      isContainer(field)
+                        ? 'Are you sure you want to delete "{name}" from this form? All fields inside this group will also be removed.'
+                        : 'Are you sure you want to delete "{name}" from this form?',
+                      {
+                        name:
+                          field.properties?.label ||
+                          field.properties?.handle ||
+                          translate("Field"),
+                      },
+                    ),
+                    onConfirm: () => {
+                      dispatch(contextActions.unfocus());
+                      dispatch(fieldThunks.remove(field));
                     },
-                  ),
-                  onConfirm: () => {
-                    dispatch(contextActions.unfocus());
-                    dispatch(fieldThunks.remove(field));
-                  },
-                });
-              }}
-            />
+                  });
+                }}
+              />
+            )}
           </FieldTools>
           <FieldCell field={field} />
         </FieldWrapper>

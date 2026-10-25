@@ -28,12 +28,15 @@ const Columns = styled.div<{ $widths: string; $gap: number }>`
     ${FieldCellWrapper}:hover { background: rgb(128 128 128 / 12%); }
     :is(h1,h2,h3,h4,h5,h6,p) { color: inherit; }
   }
-  > section { position: relative; display: flex; flex-direction: column; min-width: 0; border: 1px solid transparent; border-radius: 4px; background: ${colors.white}; }
+  > section { position: relative; display: flex; flex-direction: column; min-width: 0; container: freeform-column / inline-size; border: 1px solid transparent; border-radius: 4px; background: ${colors.white}; }
   > section > ${GroupFieldLayoutWrapper} { flex: 1 0 auto; height: auto; min-width: 0; border-color: transparent; display: flex; flex-direction: column; justify-content: var(--freeform-vertical-alignment, flex-start); }
   &[data-cards='true'] { grid-auto-rows: 1fr; }
   &[data-cards='true'] > section { box-sizing: border-box; background: var(--freeform-card-background); color: var(--freeform-card-color); border: var(--freeform-card-border-width) solid var(--freeform-card-border-color); border-radius: var(--freeform-card-radius); padding: var(--freeform-card-padding); }
   &[data-cards='true'] > section > ${GroupFieldLayoutWrapper} { background: transparent; padding: 0; }
   &[data-cards='true'] > section :is(h1,h2,h3,h4,h5,h6,p) { color: var(--freeform-card-color); }
+  @container freeform-column (max-width: 480px) {
+    &[data-cards='true'][data-stack='true'] { grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; }
+  }
   > section:hover { outline: 1px dashed #8aa2b8; outline-offset: -1px; }
   > section > header { position: absolute; top: 1px; left: 6px; z-index: 3; display: flex; align-items: center; height: 18px; padding: 2px 5px; border-radius: 3px; background: #f3f7fd; color: ${colors.gray500}; font-size: 10px; line-height: 14px; opacity: 0; visibility: hidden; pointer-events: none; }
   &[data-active='true'] > section > header,

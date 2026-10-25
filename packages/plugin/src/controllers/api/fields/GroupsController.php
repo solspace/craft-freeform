@@ -48,13 +48,15 @@ class GroupsController extends BaseApiController
         $freeform = Freeform::getInstance();
         $groups = FieldTypeGroupRecord::find()->all();
         $types = $this->fieldTypesProvider->getRegisteredTypes();
-        $catalogTypes = [...FieldTypesProvider::CONTENT_TYPES, ...FieldTypesProvider::LAYOUT_TYPES, ...FieldTypesProvider::INTERNAL_TYPES];
+        $catalogTypes = [...FieldTypesProvider::CONTENT_TYPES, ...FieldTypesProvider::LAYOUT_TYPES, ...FieldTypesProvider::TEMPLATE_TYPES, ...FieldTypesProvider::INTERNAL_TYPES];
 
         $response = (object) [
             'types' => [],
             'catalogs' => [
                 'content' => array_values(array_intersect(FieldTypesProvider::CONTENT_TYPES, $types)),
                 'layout' => array_values(array_intersect(FieldTypesProvider::LAYOUT_TYPES, $types)),
+                'templates' => array_values(array_intersect(FieldTypesProvider::TEMPLATE_TYPES, $types)),
+                'templateDetails' => $freeform->settings->getSettingsModel()->getBuilderTemplateDetails(),
             ],
             'groups' => [
                 'hidden' => [],

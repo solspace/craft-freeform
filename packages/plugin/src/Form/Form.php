@@ -88,6 +88,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
     public const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
     public const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
+    public const EVENT_RENDER_PAGE_BUTTONS = 'render-page-buttons';
     public const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     public const EVENT_RENDER_CAPTCHAS = 'render-captchas';
     public const EVENT_COLLECT_SCRIPTS = 'collect-scripts';
@@ -343,6 +344,11 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
     public function getRows(): RowCollection
     {
         return $this->getCurrentPage()->getRows();
+    }
+
+    public function getCanvasRows(): RowCollection
+    {
+        return $this->getRows();
     }
 
     public function getStopSubmissionsAfter(): ?\DateTime
@@ -875,9 +881,11 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         return $this->translationProvider->getTranslation($this, 'behavior', $key, $behavior->{$key});
     }
 
-    public function renderTag(?array $renderProperties = null): Markup
+    public function renderTag(?array $renderProperties = null, bool $registerContext = true): Markup
     {
-        $this->registerContext($renderProperties);
+        if ($registerContext) {
+            $this->registerContext($renderProperties);
+        }
 
         $output = '';
 
@@ -891,7 +899,7 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
         $formAttributes = $this->getAttributes()->getForm()->clone();
-        if (null !== ($background = $this->getSettings()->getGeneral()->getBackgroundColor())) {
+        if (!$this instanceof \Solspace\Freeform\Bundles\Form\Types\Pages\Page && null !== ($background = $this->getSettings()->getGeneral()->getBackgroundColor())) {
             $style = rtrim((string) $formAttributes->get('style', ''), "; \t\n\r");
             $formAttributes->replace('style', ($style ? $style.'; ' : '').'background-color: '.$background);
         }
@@ -922,6 +930,14 @@ abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregat
         $output .= $afterTag->getChunksAsString();
 
         return Template::raw($output);
+    }
+
+    public function renderPageButtons(): Markup
+    {
+        $event = new RenderTagEvent($this);
+        Event::trigger(self::class, self::EVENT_RENDER_PAGE_BUTTONS, $event);
+
+        return Template::raw($event->getChunksAsString());
     }
 
     public function renderCaptchas(): Markup

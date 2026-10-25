@@ -2,9 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\Form\SubmitButtons;
 
+use Solspace\Freeform\Bundles\Form\Types\Pages\Page as PageForm;
 use Solspace\Freeform\Events\Fields\CompileButtonAttributesEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
+use Solspace\Freeform\Fields\Implementations\Pro\FormSectionField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -34,6 +36,12 @@ class SubmitButtons extends FeatureBundle
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'renderButtons']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_RENDER_PAGE_BUTTONS,
+            [$this, 'renderPageButtons']
         );
     }
 
@@ -90,6 +98,17 @@ class SubmitButtons extends FeatureBundle
     }
 
     public function renderButtons(RenderTagEvent $event): void
+    {
+        $form = $event->getForm();
+        if ($form instanceof PageForm
+            && $form->getPages()->getByIndex(0)->getFields(FormSectionField::class)->count()) {
+            return;
+        }
+
+        $this->renderPageButtons($event);
+    }
+
+    public function renderPageButtons(RenderTagEvent $event): void
     {
         if (!$event->isGenerateTag()) {
             return;

@@ -12,6 +12,14 @@ export const GroupFieldLayoutWrapper = styled.div`
   border: 1px solid #f2f4f7;
   border-radius: ${borderRadius.lg};
   background-color: #fcfdfe;
+
+  &[data-form-section='true'] {
+    height: auto;
+    min-height: 64px;
+    flex-grow: 0;
+    border-color: transparent;
+    background-color: transparent;
+  }
 `;
 
 export const GroupDropZone = styled(animated.div)`

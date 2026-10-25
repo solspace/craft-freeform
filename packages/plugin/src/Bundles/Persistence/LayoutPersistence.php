@@ -125,9 +125,9 @@ class LayoutPersistence extends FeatureBundle
                 $record = new FormRowRecord();
                 $record->uid = $uid;
                 $record->formId = $form->getId();
-                $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->layoutUid);
             }
 
+            $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->layoutUid);
             $record->order = $item->order;
             $record->save();
 

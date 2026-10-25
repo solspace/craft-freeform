@@ -29,7 +29,7 @@ class ContentEditionTest extends TestCase
             $bundle->registerFieldTypes($event);
             $types = $event->getTypes();
             self::assertContains(HtmlField::class, $types);
-            foreach ([...FieldTypesProvider::CONTENT_TYPES, ...FieldTypesProvider::LAYOUT_TYPES, ...FieldTypesProvider::INTERNAL_TYPES] as $type) {
+            foreach ([...FieldTypesProvider::CONTENT_TYPES, ...FieldTypesProvider::LAYOUT_TYPES, ...FieldTypesProvider::TEMPLATE_TYPES, ...FieldTypesProvider::INTERNAL_TYPES] as $type) {
                 if (HtmlField::class === $type) {
                     continue;
                 }

@@ -9,6 +9,45 @@ use Solspace\Freeform\Models\Settings;
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    public function testBuilderTemplatesStayWithinTheConfiguredSiteDirectory(): void
+    {
+        $root = sys_get_temp_dir().'/freeform-builder-'.bin2hex(random_bytes(5));
+        mkdir($root.'/sections/nested', 0777, true);
+        file_put_contents($root.'/sections/hero.twig', "{# name: Landing hero #}\n{# description: A welcoming headline. #}\n<h1>Hero</h1>");
+        file_put_contents($root.'/sections/nested/card.twig', '<p>Card</p>');
+        file_put_contents($root.'/sections/note.txt', 'Not a template');
+        $previousApp = \Yii::$app;
+        \Yii::$app = (object) ['path' => new class($root) {
+            public function __construct(private string $root) {}
+
+            public function getSiteTemplatesPath(): string
+            {
+                return $this->root;
+            }
+        }];
+
+        try {
+            $settings = $this->normalize(['builderTemplateDirectory' => 'sections']);
+            self::assertSame(['hero.twig' => 'Landing hero', 'nested/card.twig' => 'nested/card.twig'], $settings->listBuilderTemplates());
+            self::assertSame(
+                ['name' => 'Landing hero', 'description' => 'A welcoming headline.', 'preview' => 'heading'],
+                $settings->getBuilderTemplateDetails()['hero.twig'],
+            );
+            $settings->builderTemplateDirectory = '../outside';
+            self::assertSame([], $settings->listBuilderTemplates());
+            $settings->builderTemplateDirectory = '/tmp';
+            self::assertSame([], $settings->listBuilderTemplates());
+        } finally {
+            \Yii::$app = $previousApp;
+            unlink($root.'/sections/hero.twig');
+            unlink($root.'/sections/nested/card.twig');
+            unlink($root.'/sections/note.txt');
+            rmdir($root.'/sections/nested');
+            rmdir($root.'/sections');
+            rmdir($root);
+        }
+    }
+
     public function testFormCreationOptionsDefaultToAllAndPreserveTheirDisplayOrder(): void
     {
         $settings = $this->normalize([]);

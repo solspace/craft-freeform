@@ -6,10 +6,16 @@ import { contextActions, FocusType } from "@editor/store/slices/context";
 import { fieldActions } from "@editor/store/slices/layout/fields";
 import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
 import { rowActions } from "@editor/store/slices/layout/rows";
+import { Fields } from "@ff-client/types/field.classes";
 import type { FieldType } from "@ff-client/types/fields";
 import { v4 } from "uuid";
 import { populateComponent, validComponent } from "../components";
-import { canPlaceField, initializeContainer } from "../containers";
+import {
+  canPlaceField,
+  initializeContainer,
+  isInputField,
+  isPageForm,
+} from "../containers";
 
 const newRow =
   (options: {
@@ -33,6 +39,15 @@ const newRow =
         layoutUid = row.layoutUid;
       } else {
         layoutUid = layoutSelectors.currentPageLayout(state)?.uid;
+        if (
+          isPageForm(state) &&
+          isInputField(fieldType) &&
+          layoutUid === state.layout.pages[0]?.layoutUid
+        ) {
+          layoutUid = state.layout.fields.find(
+            (field) => field.typeClass === Fields.FormSection,
+          )?.properties.layout as string | undefined;
+        }
       }
     }
 

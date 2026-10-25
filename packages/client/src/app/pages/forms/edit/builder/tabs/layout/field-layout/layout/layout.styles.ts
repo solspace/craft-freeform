@@ -9,6 +9,10 @@ export const PageFieldLayoutWrapper = styled.div`
   flex-direction: column;
 
   margin: 0 -18px;
+
+  &[data-contained='true'] {
+    margin: 0;
+  }
 `;
 
 export const DropZone = styled(animated.div)`

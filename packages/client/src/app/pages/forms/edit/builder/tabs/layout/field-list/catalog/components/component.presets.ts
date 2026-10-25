@@ -147,7 +147,7 @@ export const getComponentPresets = (): ComponentPreset[] => {
       name: "Information cards",
       description:
         "Styled cards for useful details, benefits, or next steps. Customize their colors, borders, and spacing.",
-      variants: [3, 2, 4, 5, 6].map((count) => {
+      variants: [2, 3, 4, 5, 6].map((count) => {
         const id = (
           { 2: "two", 3: "three", 4: "four", 5: "five", 6: "six" } as Record<
             number,

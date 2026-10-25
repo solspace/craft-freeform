@@ -74,6 +74,71 @@ const manifest: FreeformManifest = {
 };
 
 describe("Freeform", () => {
+  it("keeps Page content outside the Form section's submit boundary", async () => {
+    const pageManifest: FreeformManifest = {
+      ...manifest,
+      form: { ...manifest.form, type: "Page" },
+      layout: {
+        pages: [
+          {
+            ...manifest.layout.pages[0]!,
+            rows: [{ uid: "canvas", fields: ["intro", "column"] }],
+          },
+        ],
+      },
+      fields: {
+        ...manifest.fields,
+        intro: {
+          id: 3,
+          uid: "intro",
+          handle: "intro",
+          type: "heading",
+          label: "Intro",
+          required: false,
+          frontend: { renderer: "html", extension: null },
+          content: { rendered: { html: "<h2>Outside the form</h2>" } },
+        },
+        column: {
+          id: 4,
+          uid: "column",
+          handle: "column",
+          type: "layout-column",
+          label: "Column",
+          required: false,
+          layout: { rows: [{ uid: "column-row", fields: ["formSection"] }] },
+        },
+        formSection: {
+          id: 5,
+          uid: "formSection",
+          handle: "formSection",
+          type: "form-section",
+          label: "Form",
+          required: false,
+          layout: { rows: [{ uid: "form-row", fields: ["name"] }] },
+        },
+      },
+    };
+    const view = render(
+      <Freeform
+        baseUrl="https://example.com"
+        manifest={pageManifest}
+        allowRawHtml
+      />,
+    );
+    const input = await screen.findByLabelText(/Name/);
+    const formTag = view.container.querySelector("form");
+    expect(view.container.querySelectorAll("form")).toHaveLength(1);
+    expect(formTag?.contains(input)).toBe(true);
+    expect(
+      formTag?.contains(screen.getByRole("button", { name: "Submit" })),
+    ).toBe(true);
+    expect(formTag?.contains(view.container.querySelector("h2"))).toBe(false);
+    expect(
+      view.container.querySelector(".ff-page-canvas")?.contains(formTag),
+    ).toBe(true);
+    view.unmount();
+  });
+
   it("applies an optional form background without changing input styles", async () => {
     const view = render(
       <Freeform

@@ -63,6 +63,12 @@ export function FreeformView({ form, className }: FreeformViewProps) {
   const pages = manifest.layout.pages;
   const currentPage = pages[form.currentPageIndex] ??
     pages[0] ?? { rows: [], buttons: {} };
+  const canvasPage =
+    manifest.form.type === "Page" ? (pages[0] ?? currentPage) : currentPage;
+  const hasFormSection = Object.values(manifest.fields).some(
+    (field) => field.type === "form-section",
+  );
+  const pageHasFormSection = manifest.form.type === "Page" && hasFormSection;
   const isLastPage =
     pages.length === 0 || form.currentPageIndex >= pages.length - 1;
   const isFirstPage = form.currentPageIndex === 0;
@@ -76,25 +82,8 @@ export function FreeformView({ form, className }: FreeformViewProps) {
     );
   }
 
-  return (
-    <components.Form
-      form={runtime}
-      className={formClassName}
-      style={
-        manifest.settings.backgroundColor
-          ? { backgroundColor: manifest.settings.backgroundColor }
-          : undefined
-      }
-      onSubmit={form.handleSubmit}
-    >
-      {form.formErrors.length > 0 ? (
-        <components.Errors
-          errors={form.formErrors}
-          className={theme.classNames?.errors}
-          errorClassName={theme.classNames?.error}
-        />
-      ) : null}
-
+  const pageContent = (
+    <>
       <components.Page
         form={runtime}
         pageIndex={form.currentPageIndex}
@@ -105,7 +94,7 @@ export function FreeformView({ form, className }: FreeformViewProps) {
             : undefined,
         )}
       >
-        {currentPage.rows.map((row) => {
+        {canvasPage.rows.map((row) => {
           const visibleHandles = row.fields.filter((handle) => {
             const field = manifest.fields[handle];
             return field
@@ -141,6 +130,9 @@ export function FreeformView({ form, className }: FreeformViewProps) {
                     theme={theme}
                     renderers={renderers}
                     allowRawHtml={allowRawHtml}
+                    pageFormClassName={
+                      pageHasFormSection ? formClassName : undefined
+                    }
                   />
                 );
               })}
@@ -148,50 +140,84 @@ export function FreeformView({ form, className }: FreeformViewProps) {
           );
         })}
       </components.Page>
+      {!pageHasFormSection &&
+        (manifest.security.captchas ?? []).map((captcha) => (
+          <CaptchaHost key={captcha.name} form={runtime} captcha={captcha} />
+        ))}
+      {!hasFormSection && (
+        <components.ButtonRow className={theme.classNames?.buttons}>
+          {!isFirstPage && currentPage.buttons?.back ? (
+            <components.BackButton
+              label={currentPage.buttons.back.label}
+              className={theme.classNames?.backButton}
+              disabled={form.isSubmitting}
+              onClick={() => void form.goBack()}
+            />
+          ) : null}
 
-      {(manifest.security.captchas ?? []).map((captcha) => (
-        <CaptchaHost key={captcha.name} form={runtime} captcha={captcha} />
-      ))}
+          {manifest.settings.multiPage &&
+          !isLastPage &&
+          currentPage.buttons?.submit ? (
+            <components.NextButton
+              label={currentPage.buttons.submit.label}
+              className={theme.classNames?.nextButton}
+              disabled={form.isSubmitting}
+              onClick={() => void form.goNext()}
+            />
+          ) : null}
 
-      <components.ButtonRow className={theme.classNames?.buttons}>
-        {!isFirstPage && currentPage.buttons?.back ? (
-          <components.BackButton
-            label={currentPage.buttons.back.label}
-            className={theme.classNames?.backButton}
-            disabled={form.isSubmitting}
-            onClick={() => void form.goBack()}
-          />
-        ) : null}
+          {(!manifest.settings.multiPage || isLastPage) &&
+          currentPage.buttons?.submit ? (
+            <components.SubmitButton
+              label={currentPage.buttons.submit.label}
+              className={theme.classNames?.submitButton}
+              disabled={form.isSubmitting}
+            />
+          ) : null}
 
-        {manifest.settings.multiPage &&
-        !isLastPage &&
-        currentPage.buttons?.submit ? (
-          <components.NextButton
-            label={currentPage.buttons.submit.label}
-            className={theme.classNames?.nextButton}
-            disabled={form.isSubmitting}
-            onClick={() => void form.goNext()}
-          />
-        ) : null}
+          {currentPage.buttons?.save ? (
+            <components.SaveButton
+              label={currentPage.buttons.save.label}
+              className={theme.classNames?.saveButton}
+              disabled={form.isSubmitting}
+              onClick={() => void form.saveDraft()}
+            />
+          ) : null}
+        </components.ButtonRow>
+      )}
+    </>
+  );
 
-        {(!manifest.settings.multiPage || isLastPage) &&
-        currentPage.buttons?.submit ? (
-          <components.SubmitButton
-            label={currentPage.buttons.submit.label}
-            className={theme.classNames?.submitButton}
-            disabled={form.isSubmitting}
-          />
-        ) : null}
+  const backgroundStyle = manifest.settings.backgroundColor
+    ? { backgroundColor: manifest.settings.backgroundColor }
+    : undefined;
 
-        {currentPage.buttons?.save ? (
-          <components.SaveButton
-            label={currentPage.buttons.save.label}
-            className={theme.classNames?.saveButton}
-            disabled={form.isSubmitting}
-            onClick={() => void form.saveDraft()}
-          />
-        ) : null}
-      </components.ButtonRow>
+  if (pageHasFormSection) {
+    return (
+      <div
+        className={joinClassNames(formClassName, "ff-page-canvas")}
+        style={backgroundStyle}
+      >
+        {pageContent}
+      </div>
+    );
+  }
+
+  return (
+    <components.Form
+      form={runtime}
+      className={formClassName}
+      style={backgroundStyle}
+      onSubmit={form.handleSubmit}
+    >
+      {form.formErrors.length > 0 && (
+        <components.Errors
+          errors={form.formErrors}
+          className={theme.classNames?.errors}
+          errorClassName={theme.classNames?.error}
+        />
+      )}
+      {pageContent}
     </components.Form>
   );
 }

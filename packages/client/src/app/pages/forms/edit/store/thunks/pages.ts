@@ -1,15 +1,15 @@
 import type { Page } from "@editor/builder/types/layout";
 import type { AppDispatch, AppThunk } from "@editor/store";
+import { Fields } from "@ff-client/types/field.classes";
 import translate from "@ff-client/utils/translations";
 import { v4 } from "uuid";
-
 import { contextActions } from "../slices/context";
 import type { Field } from "../slices/layout/fields";
 import { fieldActions } from "../slices/layout/fields";
 import { layoutActions } from "../slices/layout/layouts";
 import { pageActions } from "../slices/layout/pages";
 import { rowActions } from "../slices/layout/rows";
-
+import { isInputField, isPageForm } from "./fields/containers";
 import { removeEmptyRows } from "./rows";
 
 export const addNewPage = (): AppThunk => (dispatch, getState) => {
@@ -58,7 +58,18 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
 export const moveFieldToPage =
   (field: Field, page: Page): AppThunk =>
   (dispatch, getState) => {
-    const { layoutUid } = page;
+    let { layoutUid } = page;
+    const state = getState();
+    if (
+      isPageForm(state) &&
+      page.uid === state.layout.pages[0]?.uid &&
+      isInputField(field)
+    ) {
+      layoutUid = state.layout.fields.find(
+        (item) => item.typeClass === Fields.FormSection,
+      )?.properties.layout as string;
+      if (!layoutUid) return;
+    }
 
     const rowUid = v4();
 

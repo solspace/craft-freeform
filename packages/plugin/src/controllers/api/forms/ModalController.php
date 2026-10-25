@@ -41,6 +41,11 @@ class ModalController extends BaseApiController
         if (!isset($data->type)) {
             $data->type = Regular::class;
         }
+        if (!\is_string($data->type) || !\in_array($data->type, array_column(Freeform::getInstance()->formTypes->getTypes(), 'class'), true)) {
+            $this->response->statusCode = 400;
+
+            return ['message' => Freeform::t('Choose an available form type.')];
+        }
 
         if (!isset($data->formattingTemplate)) {
             $data->formattingTemplate = '';

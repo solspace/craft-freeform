@@ -13,24 +13,24 @@ class TemplateReplacer
         string $filePath,
         string $solspaceTemplateDir,
         string $customTemplateDir,
+        ?string $targetName = null,
     ) {
         $this->sourceDir = \dirname($solspaceTemplateDir.\DIRECTORY_SEPARATOR.$filePath);
         $this->sourceDirName = basename($this->sourceDir);
-        $this->targetDirName = basename($this->sourceDir);
+        $this->targetDirName = $targetName ?? basename($this->sourceDir);
         $this->targetDir = $customTemplateDir;
     }
 
-    public function replace(): void
+    public function replace(): string
     {
-        $count = 1;
-        do {
-            $newName = $this->targetDirName.'-'.$count++;
-        } while (file_exists($this->targetDir.\DIRECTORY_SEPARATOR.$newName));
-
-        $this->targetDirName = $newName;
-        $newPath = $this->targetDir.\DIRECTORY_SEPARATOR.$newName;
+        $newPath = $this->targetDir.\DIRECTORY_SEPARATOR.$this->targetDirName;
+        if (file_exists($newPath)) {
+            throw new \InvalidArgumentException('A formatting template with that name already exists.');
+        }
 
         $this->copy($this->sourceDir, $newPath);
+
+        return $this->targetDirName;
     }
 
     private function copy(string $source, string $destination): void
@@ -42,7 +42,7 @@ class TemplateReplacer
         $dir = opendir($source);
 
         while (($file = readdir($dir)) !== false) {
-            if ('.' === $file || '..' === $file) {
+            if (str_starts_with($file, '.')) {
                 continue;
             }
 

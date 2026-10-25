@@ -20,6 +20,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\ManagedPingerDeleteJob;
 use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
 use Solspace\Freeform\Jobs\ManagedPingerRegisterJob;
+use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -110,12 +111,16 @@ class SettingsController extends BaseController
         $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
-        $templateName = \Craft::$app->request->post('templateName');
+        $sampleId = (string) \Craft::$app->request->post('sample', '');
+        $sample = $sampleId ? MessageTemplateSamples::get('email', $sampleId) : null;
+        $templateName = $sample['fileName'] ?? \Craft::$app->request->post('templateName');
 
-        if (!$templateDirectory) {
+        if ($sampleId && !$sample) {
+            $errors[] = Freeform::t('Choose a valid sample template');
+        } elseif (!$templateDirectory) {
             $errors[] = Freeform::t('No custom template directory specified in settings');
         } else {
-            if ($templateName) {
+            if ($templateName && preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 _-]{0,79}$/D', (string) $templateName)) {
                 $templateName = CraftStringHelper::toSnakeCase($templateName);
 
                 $templatePath = $templateDirectory.'/'.$templateName.$extension;
@@ -123,13 +128,13 @@ class SettingsController extends BaseController
                     $errors[] = Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension]);
                 } else {
                     try {
-                        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
+                        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent($sampleId ?: null));
                     } catch (FreeformException $exception) {
                         $errors[] = $exception->getMessage();
                     }
                 }
             } else {
-                $errors[] = Freeform::t('No template name specified');
+                $errors[] = Freeform::t('Enter a valid template name');
             }
         }
 
@@ -150,12 +155,16 @@ class SettingsController extends BaseController
         $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteSuccessTemplateDirectory();
-        $templateName = \Craft::$app->request->post('templateName');
+        $sampleId = (string) \Craft::$app->request->post('sample', '');
+        $sample = $sampleId ? MessageTemplateSamples::get('success', $sampleId) : null;
+        $templateName = $sample['fileName'] ?? \Craft::$app->request->post('templateName');
 
-        if (!$templateDirectory) {
+        if ($sampleId && !$sample) {
+            $errors[] = Freeform::t('Choose a valid sample template');
+        } elseif (!$templateDirectory) {
             $errors[] = Freeform::t('No success template directory specified in settings');
         } else {
-            if ($templateName) {
+            if ($templateName && preg_match('/^[a-zA-Z0-9][a-zA-Z0-9 _-]{0,79}$/D', (string) $templateName)) {
                 $templateName = CraftStringHelper::toSnakeCase($templateName);
 
                 $templatePath = $templateDirectory.'/'.$templateName.$extension;
@@ -163,13 +172,13 @@ class SettingsController extends BaseController
                     $errors[] = Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension]);
                 } else {
                     try {
-                        FileHelper::writeToFile($templatePath, $settings->getSuccessTemplateContent());
+                        FileHelper::writeToFile($templatePath, $settings->getSuccessTemplateContent($sampleId ?: null));
                     } catch (FreeformException $exception) {
                         $errors[] = $exception->getMessage();
                     }
                 }
             } else {
-                $errors[] = Freeform::t('No template name specified');
+                $errors[] = Freeform::t('Enter a valid template name');
             }
         }
 
@@ -335,6 +344,8 @@ class SettingsController extends BaseController
                 'settings' => $this->getSettingsModel(),
                 'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,
+                'successTemplateSamples' => MessageTemplateSamples::options('success'),
+                'emailTemplateSamples' => MessageTemplateSamples::options('email'),
                 'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
             ]

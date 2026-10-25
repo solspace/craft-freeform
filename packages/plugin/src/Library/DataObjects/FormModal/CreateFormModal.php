@@ -6,12 +6,17 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
+use Solspace\Freeform\Form\Types\Regular;
 
 class CreateFormModal
 {
     #[Required]
     #[Input\Text('Form Name')]
     private string $name = '';
+
+    #[Input\Select(label: 'Form Type', options: FormTypeOptions::class)]
+    private string $type = Regular::class;
 
     #[DefaultValue('settings.general.formattingTemplate')]
     #[Input\Select(
@@ -29,6 +34,11 @@ class CreateFormModal
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     public function getFormattingTemplate(): ?string

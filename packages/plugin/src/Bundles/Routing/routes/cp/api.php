@@ -17,6 +17,8 @@ return [
     'freeform/api/forms/sort' => 'freeform/api/forms/sort',
     'freeform/api/forms/delete' => 'freeform/api/forms/delete',
     'freeform/api/forms/<id:\d+>/builder' => 'freeform/api/forms/builder',
+    'freeform/api/forms/<id:\d+>/starters' => 'freeform/api/forms/starters',
+    'freeform/api/forms/<id:\d+>/builder-template-preview' => 'freeform/api/forms/builder-template-preview',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
     'freeform/api/forms/<id:\d+>/preview' => 'freeform/api/forms/preview',

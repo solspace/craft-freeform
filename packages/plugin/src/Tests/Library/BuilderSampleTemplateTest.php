@@ -26,7 +26,7 @@ class BuilderSampleTemplateTest extends TestCase
             self::assertSame($firstContent, file_get_contents($directory.'/'.$first));
             self::assertStringContainsString('{# name: Hero #}', $firstContent);
             self::assertStringContainsString('{# description:', $firstContent);
-            self::assertStringContainsString("{{ now|date('l') }}", $firstContent);
+            self::assertStringContainsString('id="about"', $firstContent);
             self::assertStringNotContainsString('<html', $firstContent);
 
             foreach (array_keys(BuilderSampleTemplate::SAMPLES) as $sample) {
@@ -43,7 +43,7 @@ class BuilderSampleTemplateTest extends TestCase
                 ]);
                 self::assertStringContainsString('</', $html);
             }
-            self::assertCount(5, BuilderSampleTemplate::SAMPLES);
+            self::assertCount(6, BuilderSampleTemplate::SAMPLES);
         } finally {
             foreach (glob($directory.'/*.twig') ?: [] as $file) {
                 unlink($file);

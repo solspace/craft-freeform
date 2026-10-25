@@ -10,6 +10,7 @@ class BuilderSampleTemplate
         'feature-cards' => 'Feature Cards',
         'faq' => 'FAQ',
         'footer' => 'Footer',
+        'sidebar' => 'Sidebar',
     ];
 
     public static function createIn(string $directory, string $sample): string

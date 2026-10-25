@@ -43,11 +43,17 @@ class BuilderTemplateField extends ContentField
 
         $directory = trim((string) $settings->builderTemplateDirectory, '/');
 
-        return \Craft::$app->view->renderTemplate($directory.'/'.$this->template, [
-            'form' => $this->getForm(),
-            'field' => $this,
-            'fields' => $this->getForm()->getLayout()->getFields()->getStorableFields(),
-            'allFields' => $this->getForm()->getLayout()->getFields(),
-        ], View::TEMPLATE_MODE_SITE);
+        try {
+            return \Craft::$app->view->renderTemplate($directory.'/'.$this->template, [
+                'form' => $this->getForm(),
+                'field' => $this,
+                'fields' => $this->getForm()->getLayout()->getFields()->getStorableFields(),
+                'allFields' => $this->getForm()->getLayout()->getFields(),
+            ], View::TEMPLATE_MODE_SITE);
+        } catch (\Throwable $exception) {
+            \Craft::warning('Builder Template rendering failed: '.$exception->getMessage(), __METHOD__);
+
+            return '';
+        }
     }
 }

@@ -4,7 +4,9 @@
 
 ### Added
 - Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
-- Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated previews, and five starter templates.
+- Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated choices, live builder previews, and starter templates.
+- Added **Form Starters** to insert guided-setup field sets into existing forms, including the Form section on Page forms.
+- Added ready-to-use success and email notification template samples for common follow-up workflows.
 - Added a **Content** picker for headings, rich text, dividers, spacers, callouts, buttons, videos, icons, summaries, and images, with draggable field-group shortcuts. Content features require Pro, except HTML.
 - Added Pro-only **Components** with ready-made Hero, cards, FAQ, gallery, pricing, and other editable section presets.
 - Added Pro-only **Layout** presets with responsive columns, backgrounds, spacing, and content alignment, including React/Vue support. Groups are also available from Layout.
@@ -18,6 +20,7 @@
 - Updated builder settings with visual button groups and added fixed measurement and count units across Freeform settings.
 - Added optional image sizing and cropping controls while preserving existing image rendering.
 - Improved builder previews and dragging for content and sections, with contextual labels and padding guides.
+- Formatting template samples can be cloned under a chosen name, with internal template paths updated automatically.
 - Organized content elements and Groups into the Content and Layout pickers for new installs, while preserving existing field-group shortcuts on upgrades.
 - Forms dashboards gracefully return to standard cards when switching from Pro to Lite or Express, preserving Pro layout and widget preferences for later use.
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.

@@ -39,17 +39,154 @@ const TemplatePreview = styled.div`
   height: 70px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 12px;
+  justify-content: center;
+  padding: 10px 14px;
   background: #f2f6fa;
-  .media { width: 46px; height: 42px; flex: 0 0 46px; border-radius: 3px; background: #d6e3ef; }
-  .lines { display: grid; flex: 1; min-width: 0; gap: 5px; }
-  .line { height: 5px; border-radius: 3px; background: #c2d0df; }
-  .line:first-child { height: 7px; width: 70%; background: #71879e; }
-  .line:last-child { width: 62%; }
-  &[data-kind="form"] .line:nth-child(2) { height: 15px; border: 1px solid #b3c5d7; background: white; }
-  &[data-kind="text"] .line:first-child { width: 82%; height: 5px; background: #a6b8ca; }
+  .art { display: flex; flex-direction: column; width: 100%; height: 100%; gap: 5px; }
+  .line { display: block; height: 5px; border-radius: 3px; background: #b7c8d9; }
+  .line.strong { height: 7px; width: 64%; background: #58728d; }
+  .line.short { width: 40%; }
+  .bar { display: block; height: 10px; border-radius: 3px; background: #a5b9cc; }
+  .box { display: block; border: 1px solid #b7c8d9; border-radius: 3px; background: #fff; }
+  .nav-art { flex-direction: row; align-items: center; gap: 8px; padding: 10px; border-radius: 4px; background: #506e89; }
+  .nav-art .bar { width: 24%; height: 8px; margin-right: auto; background: white; }
+  .nav-art .line { width: 13%; height: 5px; background: #dce6ef; }
+  .hero-art { justify-content: center; padding: 8px 13px; border-radius: 4px; background: #8ba2b7; }
+  .hero-art .line { background: #dce6ef; }
+  .hero-art .line.strong { background: white; }
+  .hero-art .bar { width: 23%; height: 9px; background: #385873; }
+  .cards-art { flex-direction: row; gap: 7px; }
+  .cards-art .box { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 8px 6px; }
+  .cards-art .box::before, .cards-art .box::after { content: ''; display: block; height: 5px; border-radius: 3px; background: #b7c8d9; }
+  .cards-art .box::before { width: 70%; background: #58728d; }
+  .faq-art .box { display: flex; align-items: center; justify-content: space-between; height: 13px; padding: 3px 7px; }
+  .faq-art .box::before { content: ''; width: 60%; height: 4px; border-radius: 2px; background: #8ba2b7; }
+  .faq-art .box::after { content: '+'; color: #58728d; font-size: 12px; line-height: 10px; }
+  .footer-art { flex-direction: row; align-items: flex-start; gap: 12px; padding: 12px; border-radius: 4px; background: #435b73; }
+  .footer-art .column { display: flex; flex: 1; flex-direction: column; gap: 5px; }
+  .footer-art .line { width: 90%; background: #b7c8d9; }
+  .footer-art .line:first-child { width: 65%; background: white; }
+  .sidebar-art { flex-direction: row; gap: 12px; justify-content: center; }
+  .sidebar-art .sidebar { display: flex; flex-direction: column; width: 45%; max-width: 110px; gap: 5px; padding: 6px; border: 1px solid #b7c8d9; border-radius: 4px; background: white; }
+  .sidebar-art .sidebar .bar { height: 6px; }
+  .sidebar-art .sidebar .line { height: 4px; }
+  .sidebar-art .sidebar .box { height: 8px; background: #dce6ef; }
+  .sidebar-art > .line { width: 24%; height: 5px; margin-top: 8px; }
+  .media-art { flex-direction: row; gap: 10px; }
+  .media-art .box { flex: 0 0 36%; background: #cbd9e6; }
+  .media-art .lines { display: flex; flex: 1; flex-direction: column; gap: 6px; padding-top: 5px; }
+  .form-art .box { height: 17px; }
+  .code-art { flex-direction: row; align-items: center; gap: 12px; }
+  .code-art .code { color: #58728d; font: 700 22px/1 monospace; }
+  .code-art .lines { display: flex; flex: 1; flex-direction: column; gap: 6px; }
 `;
+
+const TemplateIllustration: React.FC<{ kind: string }> = ({ kind }) => {
+  switch (kind) {
+    case "navigation":
+      return (
+        <span className="art nav-art">
+          <span className="bar" />
+          <span className="line" />
+          <span className="line" />
+          <span className="line" />
+        </span>
+      );
+    case "hero":
+      return (
+        <span className="art hero-art">
+          <span className="line strong" />
+          <span className="line" />
+          <span className="line short" />
+          <span className="bar" />
+        </span>
+      );
+    case "cards":
+      return (
+        <span className="art cards-art">
+          <span className="box" />
+          <span className="box" />
+          <span className="box" />
+        </span>
+      );
+    case "faq":
+      return (
+        <span className="art faq-art">
+          <span className="box" />
+          <span className="box" />
+          <span className="box" />
+        </span>
+      );
+    case "footer":
+      return (
+        <span className="art footer-art">
+          <span className="column">
+            <span className="line" />
+            <span className="line" />
+            <span className="line" />
+          </span>
+          <span className="column">
+            <span className="line" />
+            <span className="line" />
+          </span>
+          <span className="column">
+            <span className="line" />
+            <span className="line" />
+          </span>
+        </span>
+      );
+    case "sidebar":
+      return (
+        <span className="art sidebar-art">
+          <span className="sidebar">
+            <span className="bar" />
+            <span className="line" />
+            <span className="box" />
+            <span className="box" />
+          </span>
+          <span className="line" />
+        </span>
+      );
+    case "media":
+      return (
+        <span className="art media-art">
+          <span className="box" />
+          <span className="lines">
+            <span className="line strong" />
+            <span className="line" />
+            <span className="line short" />
+          </span>
+        </span>
+      );
+    case "form":
+      return (
+        <span className="art form-art">
+          <span className="line strong" />
+          <span className="box" />
+          <span className="box" />
+        </span>
+      );
+    case "heading":
+      return (
+        <span className="art">
+          <span className="line strong" />
+          <span className="line" />
+          <span className="line short" />
+        </span>
+      );
+    default:
+      return (
+        <span className="art code-art">
+          <span className="code">{"</>"}</span>
+          <span className="lines">
+            <span className="line strong" />
+            <span className="line" />
+            <span className="line short" />
+          </span>
+        </span>
+      );
+  }
+};
 
 const TemplateDetails = styled.div`
   padding: 10px 12px 12px;
@@ -112,12 +249,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
       }}
     >
       <TemplatePreview data-kind={preview} aria-hidden="true">
-        {preview === "media" && <span className="media" />}
-        <span className="lines">
-          <span className="line" />
-          <span className="line" />
-          <span className="line" />
-        </span>
+        <TemplateIllustration kind={preview} />
       </TemplatePreview>
       <TemplateDetails>
         <div className="title">

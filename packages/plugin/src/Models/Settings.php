@@ -17,6 +17,7 @@ use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -354,12 +355,6 @@ class Settings extends Model
             if (false === $header || !preg_match('/\A(?:\s*\{#.*?#\})*/s', $header, $top)) {
                 continue;
             }
-            $templates[$relative]['preview'] = match (true) {
-                (bool) preg_match('/<(?:img|picture|video)\b/i', $header) => 'media',
-                (bool) preg_match('/<(?:form|input|textarea|select)\b/i', $header) => 'form',
-                (bool) preg_match('/<h[1-6]\b/i', $header) => 'heading',
-                default => 'text',
-            };
             preg_match_all('/\{#\s*(name|templateName|description)\s*:\s*(.*?)\s*#\}/is', $top[0], $matches, \PREG_SET_ORDER);
             foreach ($matches as $match) {
                 $value = trim($match[2]);
@@ -369,6 +364,23 @@ class Settings extends Model
                 $key = 'description' === strtolower($match[1]) ? 'description' : 'name';
                 $templates[$relative][$key] = $value;
             }
+            $hint = $relative.' '.$templates[$relative]['name'];
+            $templates[$relative]['preview'] = match (true) {
+                (bool) preg_match('/\bsidebar\b/i', $hint) => 'sidebar',
+                (bool) preg_match('/\bhero\b/i', $hint) => 'hero',
+                (bool) preg_match('/\bcards?\b/i', $hint) => 'cards',
+                (bool) preg_match('/\bfaq\b/i', $hint) => 'faq',
+                (bool) preg_match('/\bfooter\b/i', $hint) => 'footer',
+                (bool) preg_match('/\bnavigation\b/i', $hint) => 'navigation',
+                (bool) preg_match('/<aside\b/i', $header) => 'sidebar',
+                (bool) preg_match('/<footer\b/i', $header) => 'footer',
+                (bool) preg_match('/<details\b/i', $header) => 'faq',
+                (bool) preg_match('/<nav\b/i', $header) => 'navigation',
+                (bool) preg_match('/<(?:img|picture|video)\b/i', $header) => 'media',
+                (bool) preg_match('/<(?:form|input|textarea|select)\b/i', $header) => 'form',
+                (bool) preg_match('/<h[1-6]\b/i', $header) => 'heading',
+                default => 'text',
+            };
         }
         ksort($templates, \SORT_NATURAL | \SORT_FLAG_CASE);
 
@@ -460,10 +472,11 @@ class Settings extends Model
      *
      * @throws FreeformException
      */
-    public function getEmailTemplateContent(): string
+    public function getEmailTemplateContent(?string $sampleId = null): string
     {
         $path = __DIR__.'/../templates/_templates/email/default.twig';
-        if (!file_exists($path)) {
+        $content = null === $sampleId ? (file_exists($path) ? file_get_contents($path) : false) : (MessageTemplateSamples::get('email', $sampleId)['content'] ?? false);
+        if (false === $content) {
             throw new FreeformException(
                 Freeform::t(
                     'Could not get email template content. Please contact Solspace.'
@@ -477,14 +490,15 @@ class Settings extends Model
         return str_replace(
             ['__placeholderFromEmail__', '__placeholderFromName__'],
             [$email, $name],
-            file_get_contents($path)
+            $content
         );
     }
 
-    public function getSuccessTemplateContent(): string
+    public function getSuccessTemplateContent(?string $sampleId = null): string
     {
         $path = __DIR__.'/../templates/_templates/success/default.twig';
-        if (!file_exists($path)) {
+        $content = null === $sampleId ? (file_exists($path) ? file_get_contents($path) : false) : (MessageTemplateSamples::get('success', $sampleId)['content'] ?? false);
+        if (false === $content) {
             throw new FreeformException(
                 Freeform::t(
                     'Could not get success template content. Please contact Solspace.'
@@ -492,7 +506,7 @@ class Settings extends Model
             );
         }
 
-        return file_get_contents($path);
+        return $content;
     }
 
     /**

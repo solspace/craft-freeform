@@ -62,9 +62,13 @@ class FormWizardService
         $editable = [];
         $statuses = [];
         $successBehaviors = [];
+        $formTypes = [];
         foreach ($this->settings->getSettingNamespaces() as $namespace) {
             foreach ($namespace->properties as $property) {
                 $defaults[$namespace->handle][$property->handle] = $property->value;
+                if ('general' === $namespace->handle && 'type' === $property->handle) {
+                    $formTypes = $property->options?->toArray() ?? [];
+                }
                 if ('general' === $namespace->handle && 'defaultStatus' === $property->handle) {
                     $statuses = $property->options?->toArray() ?? [];
                 }
@@ -94,6 +98,7 @@ class FormWizardService
             'fieldLimit' => Freeform::getInstance()->edition()->is(Freeform::EDITION_EXPRESS) ? 20 : 100,
             'editableSettings' => $editable,
             'statuses' => $statuses,
+            'formTypes' => $formTypes,
             'successBehaviors' => $successBehaviors,
             'allowDashesInHandles' => Freeform::getInstance()->settings->isAllowDashesInFieldHandles(),
             'defaults' => [
@@ -159,7 +164,12 @@ class FormWizardService
                 throw new \InvalidArgumentException(Freeform::t('Enter a valid form handle using letters, numbers, and underscores.'));
             }
         }
-        $general = ['name' => $name, 'handle' => $handle, 'type' => Regular::class, 'sites' => $siteIds];
+        $formType = $input['type'] ?? Regular::class;
+        if (!\is_string($formType) || !\in_array($formType, array_column($options['formTypes'] ?? [['value' => Regular::class]], 'value'), true)
+            || (Regular::class !== $formType && !\in_array('type', $options['editableSettings'], true))) {
+            throw new \InvalidArgumentException(Freeform::t('Choose an available form type.'));
+        }
+        $general = ['name' => $name, 'handle' => $handle, 'type' => $formType, 'sites' => $siteIds];
         if (version_compare(\Craft::$app->version, '5.0.0', '>=') && \in_array('icon', $options['editableSettings'], true)) {
             $general['icon'] = $preset['icon'];
         }
@@ -309,7 +319,7 @@ class FormWizardService
             $persistFields[] = (object) ['uid' => StringHelper::UUID(), 'rowUid' => end($rows)->uid, 'typeClass' => $class, 'order' => $index, 'properties' => (object) $props];
         }
         $payload = (object) [
-            'form' => (object) ['uid' => StringHelper::UUID(), 'type' => Regular::class, 'settings' => (object) ['general' => (object) $general, 'behavior' => (object) $behavior]],
+            'form' => (object) ['uid' => StringHelper::UUID(), 'type' => $formType, 'settings' => (object) ['general' => (object) $general, 'behavior' => (object) $behavior]],
             'layout' => (object) [
                 'layouts' => [(object) ['uid' => $layoutUid]],
                 'pages' => [(object) ['uid' => StringHelper::UUID(), 'layoutUid' => $layoutUid, 'order' => 0, 'label' => Freeform::t('Page 1'), 'buttons' => (object) ['layout' => 'submit', 'submitLabel' => Freeform::t('Submit'), 'back' => false, 'save' => false]]],

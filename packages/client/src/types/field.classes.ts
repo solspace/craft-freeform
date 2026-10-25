@@ -29,7 +29,7 @@ export enum Fields {
   Location = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LocationField",
   Calculation = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\CalculationField",
   Confirmation = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\ConfirmationField",
-  Datetime = "Solspace\\Freeform\\Fields\\Implementations\\DatetimeField",
+  Datetime = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\DatetimeField",
   FileDragAndDrop = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\FileDragAndDropField",
   Image = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\ImageField",
   Cards = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\CardsField",

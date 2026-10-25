@@ -1,5 +1,6 @@
 .freeform-layout-columns { display: grid; grid-template-columns: var(--freeform-columns, 1fr 1fr); gap: var(--freeform-gap, 16px); align-items: stretch; }
 .freeform-layout-columns > * { min-width: 0; width: auto; margin: 0; display: flex; flex-direction: column; justify-content: var(--freeform-vertical-alignment, flex-start); container: freeform-column / inline-size; }
+.freeform-layout-columns[data-cards="false"] > * { padding-inline: 0; }
 @media (max-width: 640px) { .freeform-layout-columns[data-stack="true"] { grid-template-columns: minmax(0, 1fr); } }
 
 .freeform-layout-columns[data-appearance="true"]{box-sizing:border-box;background-color:var(--freeform-background-color);background-image:var(--freeform-background-image);background-size:cover;background-position:center;color:var(--freeform-text-color);padding:var(--freeform-padding);min-height:var(--freeform-min-height);align-content:stretch}

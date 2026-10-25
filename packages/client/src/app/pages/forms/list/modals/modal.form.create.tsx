@@ -152,6 +152,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
           ...startingPoints.defaults,
           purpose: selectedPreset.id,
           name: String(state.name).trim(),
+          type: typeof state.type === "string" ? state.type : undefined,
           siteIds:
             Array.isArray(state.sites) && state.sites.length
               ? state.sites.map(Number)

@@ -21,7 +21,7 @@ import { ColumnsLayout } from "../../layout/columns-layout/columns-layout";
 import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
 import { PageButtons } from "../../page/page-buttons/page-buttons";
 import { PageTabs } from "../../page-tabs/page-tabs";
-
+import { BuilderTemplatePreview } from "./builder-template-preview";
 import { useLoaderAnimation } from "./cell.animations";
 import {
   FieldCellWrapper,
@@ -206,8 +206,20 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
           <ContentChooser uid={field.uid} />
         </InlineChooser>
       )}
+      {type.type === "builder-template" && (
+        <BuilderTemplatePreview
+          fieldUid={uid}
+          template={String(field.properties.template ?? "")}
+        />
+      )}
 
-      {![Type.Group, "layout", "content", "form-section"].includes(type.type) &&
+      {![
+        Type.Group,
+        "layout",
+        "content",
+        "form-section",
+        "builder-template",
+      ].includes(type.type) &&
         (hideLabel ? (
           <Row className={sample ? "sample-preview" : undefined}>
             <HtmlPreviewElement

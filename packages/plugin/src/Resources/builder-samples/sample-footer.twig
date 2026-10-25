@@ -1,0 +1,10 @@
+{# name: Footer #}
+{# description: A simple footer with a dynamic year and Craft site name. #}
+<footer style="padding: 2rem; border-radius: 1rem; background: #1e1b4b; color: #eef2ff;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem;">
+        <strong>🛸 {{ currentSite.name }} Lost &amp; Found</strong>
+        <a href="{{ siteUrl }}" style="color: inherit;">Back to Earth</a>
+    </div>
+    <p style="margin: 1rem 0 0;">Missing a moon? Ask the desk before the next wormhole closes.</p>
+    <small>© {{ now|date('Y') }} {{ currentSite.name }}. No planets were harmed.</small>
+</footer>

@@ -1,0 +1,19 @@
+{# name: Feature Cards #}
+{# description: A responsive row of features generated from Twig data. #}
+{% set features = [
+    { icon: '🔥', title: 'Express delivery', detail: 'By dragon. Insurance recommended.' },
+    { icon: '🛡️', title: 'Mostly safe', detail: 'Our fire blankets are freshly washed.' },
+    { icon: '✨', title: 'Extra sparkle', detail: 'Every order includes one mysterious glitter.' }
+] %}
+<section id="features" style="padding: 2rem; border-radius: 1rem; background: #f5f3ff; color: #3b0764;">
+    <h2 style="margin: 0 0 1rem;">Why ride with tiny dragons?</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1rem;">
+        {% for feature in features %}
+            <article style="padding: 1.25rem; border: 1px solid #ddd6fe; border-radius: .75rem; background: white;">
+                <div aria-hidden="true" style="font-size: 2rem;">{{ feature.icon }}</div>
+                <h3 style="margin: .5rem 0;">{{ feature.title }}</h3>
+                <p style="margin: 0;">{{ feature.detail }}</p>
+            </article>
+        {% endfor %}
+    </div>
+</section>

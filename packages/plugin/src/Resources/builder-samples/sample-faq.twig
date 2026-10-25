@@ -1,0 +1,15 @@
+{# name: FAQ #}
+{# description: A practical FAQ section powered by a Twig list. #}
+{% set questions = [
+    { question: 'Does this plant need sunlight?', answer: 'Yes. Compliments are also appreciated.' },
+    { question: 'How often should I water it?', answer: 'When it looks at you disappointedly.' }
+] %}
+<section id="faq" style="padding: 2rem; border-radius: 1rem; background: #f0fdf4; color: #1b4332;">
+    <h2 style="margin: 0 0 1rem;">🪴 Office Plant FAQ</h2>
+    {% for item in questions %}
+        <div style="margin-top: 1rem;">
+            <strong>{{ item.question }}</strong>
+            <p style="margin: .25rem 0 0;">{{ item.answer }}</p>
+        </div>
+    {% endfor %}
+</section>

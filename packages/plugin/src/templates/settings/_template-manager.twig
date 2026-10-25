@@ -114,12 +114,30 @@
         name: "settings[builderTemplateDirectory]",
         value: settings.builderTemplateDirectory,
         errors: settings.getErrors("builderTemplateDirectory"),
-        instructions: "Choose an existing directory inside Craft's templates folder. Twig files appear under Templates in Regular and Page form builders. Use reusable fragments rather than full HTML documents. Optionally start each file with {# name: Hero banner #} and {# description: A short introduction. #} to label it in the builder."|t('freeform'),
+        instructions: "Choose an existing directory inside Craft's templates folder. Twig files appear under Templates in Regular and Page form builders. Use reusable fragments rather than full HTML documents. Optionally start each file with <code>{# name: Hero banner #}</code> and <code>{# description: A short introduction. #}</code> to label it in the builder."|t('freeform'),
         placeholder: "e.g. _freeform/builder",
     }) }}
 
     {% if settings.absoluteBuilderTemplateDirectory %}
-        {{ _self.listFiles(settings.builderTemplateDirectory, settings.listBuilderTemplates()|map((name, path) => { name: name, fileName: path })) }}
+        <div class="builder-template-directory">
+            {% if not readOnly and freeform.edition.isAtLeast('pro') %}
+                <div class="btn-group">
+                    <button type="button" class="btn submit small icon add menubtn" id="add-builder-sample-template">
+                        {{ "Add Sample"|t('freeform') }}
+                    </button>
+                    <div class="menu" id="builder-sample-template-list">
+                        <ul>
+                            <li><a data-sample="navigation">{{ "Navigation"|t('freeform') }}</a></li>
+                            <li><a data-sample="hero">{{ "Hero"|t('freeform') }}</a></li>
+                            <li><a data-sample="feature-cards">{{ "Feature Cards"|t('freeform') }}</a></li>
+                            <li><a data-sample="faq">{{ "FAQ"|t('freeform') }}</a></li>
+                            <li><a data-sample="footer">{{ "Footer"|t('freeform') }}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+            {{ _self.listFiles(settings.builderTemplateDirectory, settings.listBuilderTemplates()|map((name, path) => { name: name, fileName: path })) }}
+        </div>
     {% endif %}
 
     <hr />

@@ -127,6 +127,7 @@ return [
 
     // TEMPLATES
     'freeform/api/templates/demo' => 'freeform/api/templates/demo',
+    'freeform/api/templates/builder-sample' => 'freeform/api/templates/builder-sample',
     'freeform/api/templates/pdf' => 'freeform/api/templates/pdf',
     'freeform/api/templates/notifications/suggestions' => 'freeform/api/templates/notifications',
     'freeform/api/templates/notifications/delete' => 'freeform/api/templates/notifications/delete',

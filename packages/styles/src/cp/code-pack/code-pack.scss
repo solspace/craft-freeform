@@ -25,6 +25,16 @@
   }
 }
 
+.builder-template-directory {
+  position: relative;
+
+  .btn-group {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+  }
+}
+
 ul.directory-structure {
   @extend %gradient-bg;
 

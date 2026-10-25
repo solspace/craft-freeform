@@ -4,7 +4,7 @@
 
 ### Added
 - Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
-- Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with an optional name, description, and illustrated picker preview.
+- Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated previews, and five starter templates.
 - Added a **Content** picker for headings, rich text, dividers, spacers, callouts, buttons, videos, icons, summaries, and images, with draggable field-group shortcuts. Content features require Pro, except HTML.
 - Added Pro-only **Components** with ready-made Hero, cards, FAQ, gallery, pricing, and other editable section presets.
 - Added Pro-only **Layout** presets with responsive columns, backgrounds, spacing, and content alignment, including React/Vue support. Groups are also available from Layout.

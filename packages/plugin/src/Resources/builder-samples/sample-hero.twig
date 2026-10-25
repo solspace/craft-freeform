@@ -1,0 +1,10 @@
+{# name: Hero #}
+{# description: A welcoming hero with a headline, copy, and a playful call to action. #}
+{# Builder templates are reusable Twig fragments. The current form is available as "form". #}
+<section id="about" style="padding: clamp(2rem, 6vw, 5rem); border-radius: 1rem; background: #f1f5f9; color: #263445;">
+    <div aria-hidden="true" style="font-size: 2.5rem; line-height: 1;">🦝 ☕</div>
+    <h2 style="margin: .75rem 0 .5rem;">Welcome to the Raccoon Café</h2>
+    <p style="margin: 0 0 1rem;">Pull up a chair. We saved you the good napkins.</p>
+    <small>Today's special: {{ now|date('l') }}-flavored curiosity.</small>
+    <p style="margin: 1.25rem 0 0;"><a href="#contact" style="color: inherit; font-weight: 700;">Reserve a trash-can-side table →</a></p>
+</section>

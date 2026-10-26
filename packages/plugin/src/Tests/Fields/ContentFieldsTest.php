@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Tests\Fields;
 
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Implementations\CalloutField;
 use Solspace\Freeform\Fields\Implementations\ContentField;
 use Solspace\Freeform\Fields\Implementations\DividerField;
@@ -12,6 +13,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\LayoutField;
 use Solspace\Freeform\Fields\Implementations\SpacerField;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
+use Solspace\Freeform\Form\Settings\Settings;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 /**
@@ -19,6 +22,70 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
  */
 class ContentFieldsTest extends TestCase
 {
+    public function testNewLayoutsOfferAutoFirstWithoutChangingLegacyAppearance(): void
+    {
+        $property = new \ReflectionProperty(LayoutField::class, 'designStyle');
+        $setting = $property->getAttributes(Select::class)[0]->getArguments();
+        self::assertSame('form', $setting['value']);
+        self::assertSame(['form' => 'Auto', 'custom' => 'Custom'], $setting['options']);
+
+        $legacy = new LayoutField($this->createMock(Form::class));
+        self::assertSame('manual', $property->getValue($legacy));
+        self::assertSame([], $legacy->getComponentDesignStyle());
+    }
+
+    public function testSelectiveDesignOverridesKeepFollowingFormChangesAndCanBeReset(): void
+    {
+        $general = new GeneralSettings();
+        $general->componentSurfaceColor = '#eeeeee';
+        $general->componentSpacing = 'compact';
+        $settings = $this->createMock(Settings::class);
+        $settings->method('getGeneral')->willReturn($general);
+        $form = $this->createMock(Form::class);
+        $form->method('getSettings')->willReturn($settings);
+        $field = new LayoutField($form);
+        foreach (['designStyle' => 'custom', 'designOverrides' => ['designAccentColor', 'cardRadiusPreset'], 'designAccentColor' => '#15803d', 'cardRadiusPreset' => 'twenty', 'columnStyle' => 'cards'] as $key => $value) {
+            (new \ReflectionProperty(LayoutField::class, $key))->setValue($field, $value);
+        }
+        self::assertSame('#15803d', $field->getComponentDesignStyle()['--freeform-accent-color']);
+        self::assertSame('#eeeeee', $field->getAppearanceStyle()['--freeform-background-color']);
+        self::assertSame('16px', $field->getAppearanceStyle()['--freeform-padding']);
+        self::assertSame('20px', $field->getCardStyle()['--freeform-card-radius']);
+        $general->componentSurfaceColor = '#abcdef';
+        $general->componentSpacing = 'spacious';
+        self::assertSame('#15803d', $field->getComponentDesignStyle()['--freeform-accent-color']);
+        self::assertSame('#abcdef', $field->getAppearanceStyle()['--freeform-background-color']);
+        self::assertSame('56px', $field->getAppearanceStyle()['--freeform-padding']);
+        (new \ReflectionProperty(LayoutField::class, 'designOverrides'))->setValue($field, []);
+        self::assertSame('#6d28d9', $field->getComponentDesignStyle()['--freeform-accent-color']);
+        self::assertSame('12px', $field->getCardStyle()['--freeform-card-radius']);
+    }
+
+    public function testConcreteOverridesKeepSectionAndCardAppearanceIndependent(): void
+    {
+        $general = new GeneralSettings();
+        $general->componentCorners = 'rounded';
+        $general->componentSpacing = 'spacious';
+        $settings = $this->createMock(Settings::class);
+        $settings->method('getGeneral')->willReturn($general);
+        $form = $this->createMock(Form::class);
+        $form->method('getSettings')->willReturn($settings);
+        $field = new LayoutField($form);
+        foreach (['designStyle' => 'custom', 'designOverrides' => ['textColor', 'sectionRadiusPreset', 'padding', 'gap', 'cardPadding'], 'textColor' => '#ffffff', 'sectionRadiusPreset' => 'custom', 'sectionRadius' => 5, 'padding' => 'custom', 'customPadding' => 32, 'gap' => 'custom', 'customGap' => 20, 'cardPadding' => 'custom', 'customCardPadding' => 12, 'columnStyle' => 'cards'] as $key => $value) {
+            (new \ReflectionProperty(LayoutField::class, $key))->setValue($field, $value);
+        }
+        self::assertSame('#ffffff', $field->getAppearanceStyle()['--freeform-text-color']);
+        self::assertSame('5px', $field->getAppearanceStyle()['--freeform-component-radius']);
+        self::assertSame('32px', $field->getAppearanceStyle()['--freeform-padding']);
+        self::assertSame('20px', $field->getAppearanceStyle()['--freeform-component-gap']);
+        self::assertSame('12px', $field->getCardStyle()['--freeform-card-padding']);
+        self::assertSame('24px', $field->getCardStyle()['--freeform-card-radius']);
+        self::assertSame('#2e1065', $field->getCardStyle()['--freeform-card-color']);
+        (new \ReflectionProperty(LayoutField::class, 'designOverrides'))->setValue($field, []);
+        self::assertSame('56px', $field->getAppearanceStyle()['--freeform-padding']);
+        self::assertSame('36px', $field->getCardStyle()['--freeform-card-padding']);
+    }
+
     public function testCardAppearanceIsOptInAndSupportsLargerSets(): void
     {
         $field = new LayoutField($this->createMock(Form::class));
@@ -34,6 +101,31 @@ class ContentFieldsTest extends TestCase
             (new \ReflectionProperty(LayoutField::class, 'preset'))->setValue($field, $preset);
             self::assertSame("repeat({$count}, minmax(0, 1fr))", $field->getColumnWidths());
         }
+    }
+
+    public function testDesignedLayoutCanOverrideSharedAppearanceWithoutChangingLegacyLayouts(): void
+    {
+        $field = new LayoutField($this->createMock(Form::class));
+        self::assertSame([], $field->getComponentDesignStyle());
+        self::assertFalse($field->isDesigned());
+        self::assertSame('soft', $field->getDesignTreatment());
+        foreach (['designStyle' => 'custom', 'designTreatment' => 'bold', 'designAccentColor' => '#123456', 'designAccentTextColor' => '#ffffcc', 'designSurfaceColor' => '#f0f0f0', 'designTextColor' => '#222222', 'designSpacing' => 'compact', 'designCorners' => 'square', 'columnStyle' => 'cards'] as $key => $value) {
+            (new \ReflectionProperty(LayoutField::class, $key))->setValue($field, $value);
+        }
+        self::assertSame('#f0f0f0', $field->getAppearanceStyle()['--freeform-background-color']);
+        self::assertTrue($field->isDesigned());
+        self::assertSame('soft', $field->getDesignTreatment());
+        self::assertSame('#222222', $field->getAppearanceStyle()['--freeform-text-color']);
+        self::assertSame('#123456', $field->getAppearanceStyle()['--freeform-button-accent-color']);
+        self::assertSame('#ffffcc', $field->getAppearanceStyle()['--freeform-button-accent-text-color']);
+        self::assertSame('16px', $field->getAppearanceStyle()['--freeform-padding']);
+        self::assertSame('0px', $field->getCardStyle()['--freeform-card-radius']);
+        self::assertSame('#222222', $field->getCardStyle()['--freeform-card-color']);
+        (new \ReflectionProperty(LayoutField::class, 'designAccentColor'))->setValue($field, 'red;position:fixed');
+        self::assertSame('#6d28d9', $field->getAppearanceStyle()['--freeform-button-accent-color']);
+        self::assertSame('#f0f0f0', $field->getAppearanceStyle()['--freeform-background-color']);
+        (new \ReflectionProperty(LayoutField::class, 'designStyle'))->setValue($field, 'form');
+        self::assertSame('bold', $field->getDesignTreatment());
     }
 
     public function testCardDimensionPresetsPreserveCustomAndLegacyValues(): void

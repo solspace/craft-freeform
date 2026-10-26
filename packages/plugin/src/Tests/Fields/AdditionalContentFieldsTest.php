@@ -50,6 +50,14 @@ class AdditionalContentFieldsTest extends TestCase
         self::assertStringNotContainsString('<button', $html);
     }
 
+    public function testButtonCanInheritAComponentAccentWithoutChangingExistingButtons(): void
+    {
+        $inherited = $this->html($this->field(ButtonLinkField::class, ['useComponentAccent' => true, 'url' => '/contact']));
+        self::assertStringContainsString('var(--freeform-button-accent-color, #1d4ed8)', $inherited);
+        self::assertStringContainsString('var(--freeform-component-radius, 6px)', $inherited);
+        self::assertStringNotContainsString('--freeform-button-accent-color', $this->html($this->field(ButtonLinkField::class, ['url' => '/contact'])));
+    }
+
     #[TestWith(['https://youtu.be/dQw4w9WgXcQ', 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'])]
     #[TestWith(['https://youtube.com/watch?v=dQw4w9WgXcQ', 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'])]
     #[TestWith(['https://youtube.com/shorts/dQw4w9WgXcQ', 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ'])]

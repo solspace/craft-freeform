@@ -9,6 +9,7 @@
 - Added ready-to-use success and email notification template samples for common follow-up workflows.
 - Added a **Content** picker for headings, rich text, dividers, spacers, callouts, buttons, videos, icons, summaries, and images, with draggable field-group shortcuts. Content features require Pro, except HTML.
 - Added Pro-only **Components** with ready-made Hero, cards, FAQ, gallery, pricing, and other editable section presets.
+- Added shared design controls with selective local overrides for editable components, including a styled Sidebar preset.
 - Added Pro-only **Layout** presets with responsive columns, backgrounds, spacing, and content alignment, including React/Vue support. Groups are also available from Layout.
 - Added an optional Pro-only form background color for front-end rendering and Preview.
 - Added Pro-only customizable **Forms dashboard cards** with resizable layouts, drag-and-drop and keyboard reordering, per-user preferences, 7-, 30-, and 90-day trends and comparisons, and configurable activity, statistics, Form Monitor, and field summaries.

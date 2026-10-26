@@ -12,9 +12,16 @@ import { useFieldType } from "@ff-client/queries/field-types";
 import { Fields } from "@ff-client/types/field.classes";
 import { Implementation } from "@ff-client/types/fields";
 import { type Property, PropertyType } from "@ff-client/types/properties";
+import {
+  appearanceDesignHandles,
+  editableComponentDesign,
+  isDesignSetting,
+  themeDesignHandles,
+} from "@ff-client/utils/component-design-settings";
 import escapeHtml from "lodash/escape";
 import type React from "react";
 import { useSelector } from "react-redux";
+import { LayoutDesignProperty } from "./layout-design-property";
 
 import {
   LocationIntegration,
@@ -47,6 +54,10 @@ export const FieldComponent: React.FC<Props> = ({
   } = useTranslations(field);
 
   const fieldState = useSelector(fieldSelectors.one(field.uid));
+  const editorField =
+    field.typeClass === Fields.Layout
+      ? { ...field, properties: editableComponentDesign(field.properties) }
+      : field;
   const context = {
     id: fieldState.id,
     ...(fieldState?.properties || {}),
@@ -69,6 +80,10 @@ export const FieldComponent: React.FC<Props> = ({
         dispatch(changeLayoutPreset(field.uid, String(value)));
         return;
       }
+      if (field.typeClass === Fields.Layout && isDesignSetting(handle)) {
+        dispatch(fieldActions.editDesign({ uid: field.uid, handle, value }));
+        return;
+      }
       if (!updateTranslation(handle, value)) {
         dispatch(
           fieldActions.edit({
@@ -83,7 +98,7 @@ export const FieldComponent: React.FC<Props> = ({
 
   const isCalloutRichText =
     field.typeClass === Fields.Callout && property.handle === "richContent";
-  const storedValue = field.properties?.[property.handle];
+  const storedValue = editorField.properties?.[property.handle];
   const value =
     isCalloutRichText && storedValue == null
       ? legacyCalloutHtml(field.properties.content)
@@ -134,7 +149,7 @@ export const FieldComponent: React.FC<Props> = ({
       property={property}
       updateValue={generateUpdateHandler(property)}
       errors={field.errors?.[property.handle]}
-      context={field}
+      context={editorField}
     />
   );
   const sampleProperty = type?.properties.find(
@@ -158,5 +173,16 @@ export const FieldComponent: React.FC<Props> = ({
       </OptionSampleArea>
     );
   }
+  if (
+    field.typeClass === Fields.Layout &&
+    [...themeDesignHandles, ...appearanceDesignHandles, "gap"].includes(
+      property.handle,
+    )
+  )
+    return (
+      <LayoutDesignProperty field={field} property={property}>
+        {component}
+      </LayoutDesignProperty>
+    );
   return component;
 };

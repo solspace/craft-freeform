@@ -34,7 +34,7 @@ export const cardAppearance = (
         ),
         "--freeform-card-border-width": `${({ none: 0, one: 1, two: 2, three: 3 } as Record<string, number>)[String(properties.cardBorderWidthPreset)] ?? clamp(properties.cardBorderWidth, 1, 8)}px`,
         "--freeform-card-radius": `${({ three: 3, five: 5, ten: 10, fifteen: 15, twenty: 20, square: 0, small: 4, medium: 8, rounded: 12, large: 24 } as Record<string, number>)[String(properties.cardRadiusPreset)] ?? clamp(properties.cardRadius, 12, 64)}px`,
-        "--freeform-card-padding": `${{ none: 0, small: 16, medium: 24, large: 32 }[String(properties.cardPadding)] ?? 24}px`,
+        "--freeform-card-padding": `${{ none: 0, small: 16, medium: 24, large: 32 }[String(properties.cardPadding)] ?? (properties.cardPadding === "custom" ? clamp(properties.customCardPadding, 24, 200) : 24)}px`,
       }
     : {};
 
@@ -45,7 +45,9 @@ export const sectionAppearance = (
   if (!["color", "image"].includes(String(properties.background))) return {};
   const padding =
     { none: 0, small: 24, medium: 40, large: 64 }[String(properties.padding)] ??
-    40;
+    (properties.padding === "custom"
+      ? clamp(properties.customPadding, 32, 200)
+      : 40);
   let image = "none";
   if (properties.background === "image" && imageUrl) {
     const overlayColor = color(properties.overlayColor, "#000000", true);

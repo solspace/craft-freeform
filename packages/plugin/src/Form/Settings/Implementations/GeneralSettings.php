@@ -35,6 +35,7 @@ class GeneralSettings extends SettingsNamespace
 {
     private const SECTION_GENERAL = 'general';
     private const SECTION_DATA_STORAGE = 'data-storage';
+    private const SECTION_DESIGN = 'design';
 
     #[Translatable]
     #[Section(
@@ -147,6 +148,35 @@ class GeneralSettings extends SettingsNamespace
     )]
     public string $backgroundColor = '#ffffff';
 
+    #[Section(
+        self::SECTION_DESIGN,
+        label: 'Component Design',
+        icon: __DIR__.'/Icons/design.svg',
+        order: 2,
+    )]
+    #[Input\ColorPicker(label: 'Accent Color', instructions: 'Shared accent for styled components. Individual components can override it.', order: 1)]
+    public string $componentAccentColor = '#6d28d9';
+
+    #[Section(self::SECTION_DESIGN)]
+    #[Input\ColorPicker(label: 'Text on Accent', instructions: 'Text color on bold component backgrounds and accent buttons.', order: 2)]
+    public string $componentAccentTextColor = '#ffffff';
+
+    #[Section(self::SECTION_DESIGN)]
+    #[Input\ColorPicker(label: 'Surface Color', instructions: 'Background of styled components.', order: 2)]
+    public string $componentSurfaceColor = '#f5f3ff';
+
+    #[Section(self::SECTION_DESIGN)]
+    #[Input\ColorPicker(label: 'Text Color', order: 3)]
+    public string $componentTextColor = '#2e1065';
+
+    #[Section(self::SECTION_DESIGN)]
+    #[Input\Select(label: 'Spacing', order: 4, options: ['compact' => 'Compact', 'comfortable' => 'Comfortable', 'spacious' => 'Spacious'])]
+    public string $componentSpacing = 'comfortable';
+
+    #[Section(self::SECTION_DESIGN)]
+    #[Input\Select(label: 'Corners', order: 5, options: ['square' => 'Square', 'soft' => 'Soft', 'rounded' => 'Rounded'])]
+    public string $componentCorners = 'soft';
+
     #[Translatable]
     #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(
@@ -234,7 +264,7 @@ class GeneralSettings extends SettingsNamespace
         self::SECTION_DATA_STORAGE,
         label: 'Data Storage',
         icon: __DIR__.'/Icons/'.self::SECTION_DATA_STORAGE.'.svg',
-        order: 2,
+        order: 3,
     )]
     #[DefaultValue('settings.dataStorage.storeData')]
     #[Input\Boolean(
@@ -296,5 +326,20 @@ class GeneralSettings extends SettingsNamespace
         $color = trim($this->backgroundColor);
 
         return 'transparent' === $color || preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i', $color) ? $color : null;
+    }
+
+    /** @return array{accent: string, accentText: string, surface: string, text: string, spacing: string, corners: string} */
+    public function getComponentDesign(): array
+    {
+        $color = static fn (string $value, string $fallback): string => preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD', $value) ? $value : $fallback;
+
+        return [
+            'accent' => $color($this->componentAccentColor, '#6d28d9'),
+            'accentText' => $color($this->componentAccentTextColor, '#ffffff'),
+            'surface' => $color($this->componentSurfaceColor, '#f5f3ff'),
+            'text' => $color($this->componentTextColor, '#2e1065'),
+            'spacing' => \in_array($this->componentSpacing, ['compact', 'comfortable', 'spacious'], true) ? $this->componentSpacing : 'comfortable',
+            'corners' => \in_array($this->componentCorners, ['square', 'soft', 'rounded'], true) ? $this->componentCorners : 'soft',
+        ];
     }
 }

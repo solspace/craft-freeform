@@ -9,7 +9,15 @@ import {
   useFetchFieldPropertySections,
   useFieldType,
 } from "@ff-client/queries/field-types";
+import { Fields } from "@ff-client/types/field.classes";
 import type { Property } from "@ff-client/types/properties";
+import {
+  appearanceDesignHandles,
+  cardDesignHandles,
+  editableComponentDesign,
+  sectionDesignHandles,
+  themeDesignHandles,
+} from "@ff-client/utils/component-design-settings";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
@@ -24,6 +32,7 @@ import { SectionWrapper } from "../../section-block.styles";
 import { FavoriteButton } from "./favorite/favorite.button";
 import { FieldComponent } from "./field-component";
 import { FieldPropertiesWrapper } from "./field-properties.styles";
+import { LayoutDesignGroups } from "./layout-design-groups";
 
 const sectionFilter = (handle: string) => (property: Property) =>
   property.section === handle;
@@ -60,25 +69,90 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
           return;
         }
 
+        const isLayout = field.typeClass === Fields.Layout;
+        const custom =
+          isLayout &&
+          editableComponentDesign(field.properties).designStyle === "custom";
+        const layoutHandles = [
+          "preset",
+          "columnProportions",
+          "gap",
+          "customGap",
+          "mobile",
+          "verticalAlignment",
+          "columnStyle",
+        ];
+        const grouped = [
+          ...appearanceDesignHandles,
+          ...themeDesignHandles,
+          ...layoutHandles,
+        ];
+        const groups = [
+          { label: "Layout", handles: layoutHandles },
+          ...(custom
+            ? [
+                { label: "Section", handles: sectionDesignHandles },
+                ...(field.properties.columnStyle === "cards"
+                  ? [{ label: "Cards", handles: cardDesignHandles }]
+                  : []),
+                {
+                  label: "Links & Buttons",
+                  handles: ["designAccentColor", "designAccentTextColor"],
+                },
+              ]
+            : []),
+        ];
         blocks.push(
           <SectionBlock label={translate(label)} icon={icon} key={handle}>
-            {properties.map((property, propertyIndex) => (
-              <OpinionScaleProperty
-                key={property.handle}
-                typeClass={field.typeClass}
-                property={property}
-                properties={properties}
-                labelAction={sampleAction}
-                renderProperty={(item, control) => (
-                  <FieldComponent
-                    autoFocus={sectionIndex === 0 && propertyIndex === 0}
-                    field={field}
-                    property={item}
-                    control={control}
-                  />
-                )}
-              />
-            ))}
+            {properties
+              .filter(
+                (property) => !isLayout || !grouped.includes(property.handle),
+              )
+              .map((property, propertyIndex) => (
+                <OpinionScaleProperty
+                  key={property.handle}
+                  typeClass={field.typeClass}
+                  property={property}
+                  properties={properties}
+                  labelAction={sampleAction}
+                  renderProperty={(item, control) => (
+                    <FieldComponent
+                      autoFocus={sectionIndex === 0 && propertyIndex === 0}
+                      field={field}
+                      property={item}
+                      control={control}
+                    />
+                  )}
+                />
+              ))}
+            {isLayout &&
+              properties.some((property) =>
+                grouped.includes(property.handle),
+              ) && (
+                <LayoutDesignGroups
+                  key={`${field.uid}:${custom}`}
+                  defaultGroup={custom ? "Section" : "Layout"}
+                  groups={groups.flatMap((group) => {
+                    const items = properties.filter((property) =>
+                      group.handles.includes(property.handle),
+                    );
+                    return items.length
+                      ? [
+                          {
+                            label: group.label,
+                            content: items.map((property) => (
+                              <FieldComponent
+                                key={property.handle}
+                                field={field}
+                                property={property}
+                              />
+                            )),
+                          },
+                        ]
+                      : [];
+                  })}
+                />
+              )}
           </SectionBlock>,
         );
       });

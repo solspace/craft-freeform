@@ -87,6 +87,17 @@ export const ComponentPreview = styled.div<{ $columns: string }>`
   .preview-image:not(:only-child) svg { width: 18px; height: 18px; }
   .preview-divider { height: 1px; background: #bccbd9; margin-top: 3px; }
   &[data-cards='true'] > div { background: #fff; border: 1px solid #dbe3ec; border-radius: 4px; padding: 7px 5px; }
+  &[data-designed='true'] {
+    background: var(--freeform-background-color);
+    color: var(--freeform-text-color);
+    .preview-heading, .preview-number { background: var(--freeform-text-color); }
+    .preview-button { background: var(--freeform-button-accent-color); }
+    .preview-text i { background: color-mix(in srgb, var(--freeform-text-color) 35%, transparent); }
+    &[data-cards='true'] > div {
+      border-color: color-mix(in srgb, var(--freeform-accent-color) 20%, #fff);
+      border-radius: var(--freeform-component-radius);
+    }
+  }
   &[data-background='true'] {
     background: linear-gradient(145deg, #647d99, #334155);
     > div { align-items: center; }

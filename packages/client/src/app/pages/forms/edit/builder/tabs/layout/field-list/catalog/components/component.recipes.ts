@@ -51,7 +51,12 @@ export const section = (
 ): ComponentNode => ({
   typeClass: Fields.Layout,
   label,
-  properties: { preset: "one", gap: "medium", mobile: "stack" },
+  properties: {
+    preset: "one",
+    gap: "medium",
+    mobile: "stack",
+    designStyle: "form",
+  },
   columns: [children],
 });
 export const columns = (
@@ -61,6 +66,6 @@ export const columns = (
 ): ComponentNode => ({
   typeClass: Fields.Layout,
   label,
-  properties: { preset, gap: "large", mobile: "stack" },
+  properties: { preset, gap: "large", mobile: "stack", designStyle: "form" },
   columns: items,
 });

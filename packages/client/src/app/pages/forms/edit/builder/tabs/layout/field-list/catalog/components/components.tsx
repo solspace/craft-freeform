@@ -1,5 +1,9 @@
 import config, { Edition } from "@config/freeform/freeform.config";
-import { useAppDispatch } from "@editor/store";
+import {
+  componentDesignAppearance,
+  componentDesignTreatment,
+} from "@editor/builder/tabs/layout/field-layout/layout/columns-layout/component-design";
+import { useAppDispatch, useAppSelector } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
 import { useFetchFieldTypes } from "@ff-client/queries/field-types";
 import { useFetchGroups } from "@ff-client/queries/groups";
@@ -31,6 +35,10 @@ const componentsIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="2" y="2" width="7" height="7" rx="1"/><rect x="11" y="2" width="7" height="4" rx="1"/><rect x="2" y="11" width="7" height="7" rx="1"/><rect x="11" y="8" width="7" height="10" rx="1"/></svg>';
 
 const Preview: React.FC<{ root: ComponentNode }> = ({ root }) => {
+  const formDesign = useAppSelector(
+    (state) => state.form.settings.general ?? {},
+  );
+  const design = componentDesignAppearance(root.properties ?? {}, formDesign);
   const columns = root.columns ?? [root.children ?? []];
   const widths = root.columns
     ? (layoutPresets.find((preset) => preset.value === root.properties?.preset)
@@ -41,6 +49,9 @@ const Preview: React.FC<{ root: ComponentNode }> = ({ root }) => {
       $columns={widths}
       data-cards={root.properties?.columnStyle === "cards"}
       data-background={root.properties?.background === "image"}
+      data-designed={Object.keys(design).length > 0}
+      data-treatment={componentDesignTreatment(root.properties ?? {})}
+      style={design as React.CSSProperties}
       aria-hidden="true"
     >
       {columns.map((nodes, column) => (

@@ -29,6 +29,11 @@ class TemplateReplacer
         }
 
         $this->copy($this->sourceDir, $newPath);
+        foreach (glob(\dirname($this->sourceDir).\DIRECTORY_SEPARATOR.'_*.twig') ?: [] as $sharedTemplate) {
+            $destination = $newPath.\DIRECTORY_SEPARATOR.basename($sharedTemplate);
+            copy($sharedTemplate, $destination);
+            $this->replaceFilePaths($destination);
+        }
 
         return $this->targetDirName;
     }
@@ -42,7 +47,7 @@ class TemplateReplacer
         $dir = opendir($source);
 
         while (($file = readdir($dir)) !== false) {
-            if (str_starts_with($file, '.')) {
+            if (str_starts_with($file, '.') || '_tailwind.css' === $file) {
                 continue;
             }
 
@@ -67,10 +72,17 @@ class TemplateReplacer
 
         $content = file_get_contents($filePath);
 
+        $targetTemplatePath = str_replace('\\', '/', $slimTargetDir).'/'.$this->targetDirName;
         $modifiedContent = str_replace(
-            'freeform/_templates/formatting/'.$this->sourceDirName,
-            $slimTargetDir.\DIRECTORY_SEPARATOR.$this->targetDirName,
-            $content
+            [
+                'freeform/_templates/formatting/'.$this->sourceDirName,
+                'freeform/_templates/formatting/_layout.twig',
+            ],
+            [
+                $targetTemplatePath,
+                $targetTemplatePath.'/_layout.twig',
+            ],
+            $content,
         );
 
         $modifiedContent = preg_replace(

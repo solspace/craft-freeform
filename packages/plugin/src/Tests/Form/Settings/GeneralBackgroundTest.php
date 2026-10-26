@@ -27,4 +27,18 @@ class GeneralBackgroundTest extends TestCase
         $settings->customizeBackground = false;
         self::assertNull($settings->getBackgroundColor());
     }
+
+    public function testComponentDesignValuesAreConstrained(): void
+    {
+        $settings = new GeneralSettings();
+        self::assertSame('#6d28d9', $settings->getComponentDesign()['accent']);
+        $settings->componentAccentColor = 'red;position:fixed';
+        $settings->componentSurfaceColor = '#abc';
+        $settings->componentSpacing = 'giant';
+        $settings->componentCorners = 'round; color:red';
+        self::assertSame('#6d28d9', $settings->getComponentDesign()['accent']);
+        self::assertSame('#abc', $settings->getComponentDesign()['surface']);
+        self::assertSame('comfortable', $settings->getComponentDesign()['spacing']);
+        self::assertSame('soft', $settings->getComponentDesign()['corners']);
+    }
 }

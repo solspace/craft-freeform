@@ -30,6 +30,26 @@ export const getComponentPresets = (): ComponentPreset[] => {
       `<p>${translate("Tell visitors what this page is about and what they can expect.")}</p>`,
     ),
   ];
+  const styledHero = section("Hero", [
+    heading("Hero heading", "Your next adventure starts here", "h1"),
+    text(
+      "Hero introduction",
+      `<p>${translate("Give visitors a memorable introduction and a clear reason to take the next step.")}</p>`,
+    ),
+    {
+      typeClass: Fields.ButtonLink,
+      label: "Hero action",
+      properties: {
+        linkText: translate("Get started"),
+        useComponentAccent: true,
+      },
+    },
+  ]);
+  styledHero.properties = {
+    ...styledHero.properties,
+    designStyle: "form",
+    designTreatment: "bold",
+  };
   const imageText = [
     heading("Section heading", "A little more about us"),
     text(
@@ -75,6 +95,7 @@ export const getComponentPresets = (): ComponentPreset[] => {
             ),
             properties: {
               preset: "one",
+              designStyle: "manual",
               background: "image",
               verticalAlignment: "middle",
               backgroundColor: "#374151",
@@ -86,6 +107,11 @@ export const getComponentPresets = (): ComponentPreset[] => {
               minHeight: 320,
             },
           },
+        },
+        {
+          id: "styled",
+          label: "Styled hero",
+          root: styledHero,
         },
         { id: "text", label: "Text only", root: section("Hero", heroText) },
         {
@@ -159,7 +185,11 @@ export const getComponentPresets = (): ComponentPreset[] => {
           id,
           Array.from({ length: count }, (_, index) => card(index + 1)),
         );
-        root.properties = { ...root.properties, columnStyle: "cards" };
+        root.properties = {
+          ...root.properties,
+          columnStyle: "cards",
+          designStyle: "form",
+        };
         return {
           id,
           label: translate("{number} cards", { number: count }),

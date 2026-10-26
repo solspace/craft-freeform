@@ -5,6 +5,12 @@
 
 .freeform-layout-columns[data-appearance="true"]{box-sizing:border-box;background-color:var(--freeform-background-color);background-image:var(--freeform-background-image);background-size:cover;background-position:center;color:var(--freeform-text-color);padding:var(--freeform-padding);min-height:var(--freeform-min-height);align-content:stretch}
 .freeform-layout-columns[data-appearance="true"] :is(h1,h2,h3,h4,h5,h6,p){color:var(--freeform-text-color)}
+.freeform-layout-columns[data-design="true"]{border-radius:var(--freeform-component-radius);min-width:0}
+.freeform-layout-columns[data-design="true"] a:not(.freeform-button-link){color:var(--freeform-accent-color)}
+.freeform-layout-columns[data-design="true"][data-design-treatment="bold"] a:not(.freeform-button-link){color:var(--freeform-accent-text-color)}
+.freeform-layout-columns[data-design="true"][data-design-treatment="bold"][data-cards="false"] label{color:var(--freeform-text-color)}
+.freeform-layout-columns[data-design="true"][data-design-treatment="bold"][data-cards="false"] .freeform-callout{color:var(--freeform-text-color)}
+.freeform-layout-columns[data-design="true"][data-cards="true"] label{color:var(--freeform-card-color)}
 
 @media(max-width:640px){.freeform-layout-columns[data-appearance="true"]{padding:min(24px,var(--freeform-padding))}}
 

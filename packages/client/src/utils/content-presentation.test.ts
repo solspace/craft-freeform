@@ -43,6 +43,18 @@ describe("content destinations", () => {
     expect(presentation.buttonStyles).toContain("font-size:18px");
     expect(presentation.buttonStyles).not.toContain("position:fixed");
   });
+  it("inherits a component accent only when enabled", () => {
+    const inherited = buttonLinkPresentation({ useComponentAccent: true });
+    expect(inherited.buttonStyles).toContain(
+      "var(--freeform-button-accent-color, #1d4ed8)",
+    );
+    expect(inherited.buttonStyles).toContain(
+      "var(--freeform-component-radius, 6px)",
+    );
+    expect(buttonLinkPresentation({}).buttonStyles).not.toContain(
+      "--freeform-button-accent-color",
+    );
+  });
 });
 describe("video destinations", () => {
   it.each([

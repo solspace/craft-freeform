@@ -1,3 +1,4 @@
+import { Fields } from "@ff-client/types/field.classes";
 import { configureStore } from "@reduxjs/toolkit";
 import { describe, expect, it } from "vitest";
 
@@ -20,6 +21,46 @@ const settle = async (): Promise<void> => {
 };
 
 describe("builder history", () => {
+  it("restores both design values and their inheritance when undoing an override reset", async () => {
+    const store = makeStore();
+    store.dispatch(
+      fieldActions.set([
+        {
+          uid: "layout",
+          typeClass: Fields.Layout,
+          properties: { designStyle: "custom", designOverrides: [] },
+        },
+      ]),
+    );
+    const initial = store.getState().layout.fields[0].properties;
+    store.dispatch(
+      fieldActions.editDesign({
+        uid: "layout",
+        handle: "designAccentColor",
+        value: "#15803d",
+      }),
+    );
+    await settle();
+    const overridden = store.getState().layout.fields[0].properties;
+    store.dispatch(
+      fieldActions.editDesign({
+        uid: "layout",
+        handle: "designAccentColor",
+        value: null,
+        reset: true,
+      }),
+    );
+    await settle();
+    expect(
+      store.getState().layout.fields[0].properties.designOverrides,
+    ).toEqual([]);
+    store.dispatch(historyActions.undo());
+    expect(store.getState().layout.fields[0].properties).toEqual(overridden);
+    store.dispatch(historyActions.undo());
+    expect(store.getState().layout.fields[0].properties).toEqual(initial);
+    store.dispatch(historyActions.redo());
+    expect(store.getState().layout.fields[0].properties).toEqual(overridden);
+  });
   it("restores a deleted page, its rows and nested fields as one step", async () => {
     const store = makeStore();
     store.dispatch(layoutActions.set([{ uid: "layout-1" }]));

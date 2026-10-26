@@ -7,10 +7,19 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 import { shallowEqual } from "react-redux";
 import styled from "styled-components";
-import { FieldCellWrapper } from "../../field/cell/cell.styles";
+import {
+  FieldCellWrapper,
+  Instructions,
+  Label,
+} from "../../field/cell/cell.styles";
 import { GroupFieldLayout } from "../group-field-layout/group-field-layout";
 import { GroupFieldLayoutWrapper } from "../group-field-layout/group-field-layout.styles";
 import { cardAppearance, sectionAppearance } from "./appearance";
+import {
+  componentDesignAppearance,
+  componentDesignTreatment,
+  designedCardAppearance,
+} from "./component-design";
 
 const Columns = styled.div<{ $widths: string; $gap: number }>`
   position: relative;
@@ -28,6 +37,11 @@ const Columns = styled.div<{ $widths: string; $gap: number }>`
     ${FieldCellWrapper}:hover { background: rgb(128 128 128 / 12%); }
     :is(h1,h2,h3,h4,h5,h6,p) { color: inherit; }
   }
+  &[data-design='true'] { border-radius: var(--freeform-component-radius); }
+  &[data-design='true'] a:not(.freeform-button-link) { color: var(--freeform-accent-color); }
+  &[data-design='true'][data-design-treatment='bold'] a:not(.freeform-button-link) { color: var(--freeform-accent-text-color); }
+  &[data-design='true'][data-design-treatment='bold'][data-cards='false'] ${FieldCellWrapper}:not(.quiet-label) > ${Label},
+  &[data-design='true'][data-design-treatment='bold'][data-cards='false'] ${FieldCellWrapper} > ${Instructions} { color: var(--freeform-text-color); }
   > section { position: relative; display: flex; flex-direction: column; min-width: 0; container: freeform-column / inline-size; border: 1px solid transparent; border-radius: 4px; background: ${colors.white}; }
   > section > ${GroupFieldLayoutWrapper} { flex: 1 0 auto; height: auto; min-width: 0; border-color: transparent; display: flex; flex-direction: column; justify-content: var(--freeform-vertical-alignment, flex-start); }
   &[data-cards='true'] { grid-auto-rows: 1fr; }
@@ -57,10 +71,17 @@ export const ColumnsLayout: React.FC<{ field: Field; active?: boolean }> = ({
   const { data: images } = useAssetQuery(
     field.properties.background === "image" ? imageIds : [],
   );
-  const appearance = sectionAppearance(
+  const formDesign = useAppSelector(
+    (state) => state.form.settings.general ?? {},
+  );
+  const design = componentDesignAppearance(
     field.properties,
+    formDesign,
     images?.[imageIds[0]]?.src,
   );
+  const appearance = Object.keys(design).length
+    ? design
+    : sectionAppearance(field.properties, images?.[imageIds[0]]?.src);
   const columns = useAppSelector((state) => {
     const rows = state.layout.rows.filter(
       (row) => row.layoutUid === field.properties.layout,
@@ -69,8 +90,9 @@ export const ColumnsLayout: React.FC<{ field: Field; active?: boolean }> = ({
       .filter((item) => rows.some((row) => row.uid === item.rowUid))
       .sort((a, b) => a.order - b.order);
   }, shallowEqual);
-  const gap =
-    { small: 5, medium: 9, large: 16 }[String(field.properties.gap)] ?? 9;
+  const gap = design["--freeform-component-gap"]
+    ? parseInt(design["--freeform-component-gap"], 10)
+    : ({ small: 5, medium: 9, large: 16 }[String(field.properties.gap)] ?? 9);
   return (
     <Columns
       $widths={layoutColumnWidths(
@@ -82,6 +104,8 @@ export const ColumnsLayout: React.FC<{ field: Field; active?: boolean }> = ({
       data-active={active}
       data-stack={field.properties.mobile !== "keep"}
       data-cards={field.properties.columnStyle === "cards"}
+      data-design={Object.keys(design).length > 0}
+      data-design-treatment={componentDesignTreatment(field.properties)}
       data-appearance={Object.keys(appearance).length > 0}
       data-padding={translate("{size} padding", {
         size: appearance["--freeform-padding"] ?? "0px",
@@ -89,7 +113,9 @@ export const ColumnsLayout: React.FC<{ field: Field; active?: boolean }> = ({
       style={
         {
           ...appearance,
-          ...cardAppearance(field.properties),
+          ...(Object.keys(design).length
+            ? designedCardAppearance(field.properties, design)
+            : cardAppearance(field.properties)),
           "--freeform-vertical-alignment":
             { top: "flex-start", middle: "center", bottom: "flex-end" }[
               String(field.properties.verticalAlignment)

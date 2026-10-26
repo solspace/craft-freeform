@@ -61,7 +61,8 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   align,
   justify,
 }) => {
-  const { size, collapsibleInstructions } = useRenderContext();
+  const { size, collapsibleInstructions, controlActions } = useRenderContext();
+  extraContent ??= handle ? controlActions?.[handle] : undefined;
   const hasHelp =
     !!label &&
     !!handle &&

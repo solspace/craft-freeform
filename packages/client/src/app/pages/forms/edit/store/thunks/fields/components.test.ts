@@ -109,6 +109,9 @@ describe("component sections", () => {
           inserted.rows.find((row) => row.uid === field.rowUid)?.layoutUid ===
           "page-layout",
       )!;
+      expect(root.properties.designStyle).toBe(
+        type.component.root.properties?.designStyle,
+      );
       store.dispatch(fieldThunks.remove(root));
       expect(store.getState().layout).toEqual(before);
     },
@@ -201,6 +204,16 @@ describe("component sections", () => {
     expect(components.find((item) => item.id === "hero")?.variants[0].id).toBe(
       "background",
     );
+    expect(
+      components.find((item) => item.id === "hero")?.variants[0].root
+        .properties,
+    ).toMatchObject({ designStyle: "manual", background: "image" });
+    for (const component of components) {
+      for (const variant of component.variants) {
+        if (component.id === "hero" && variant.id === "background") continue;
+        expect(variant.root.properties?.designStyle).toBe("form");
+      }
+    }
     const cards = components.find((item) => item.id === "cards")!;
     expect(cards.variants.map((variant) => variant.label)).toEqual([
       "2 cards",
@@ -386,7 +399,7 @@ describe("component sections", () => {
       withoutImages
         .find((preset) => preset.id === "hero")
         ?.variants.map((variant) => variant.id),
-    ).toEqual(["background", "text"]);
+    ).toEqual(["background", "styled", "text"]);
     expect(
       withoutImages.find((preset) => preset.id === "image-text"),
     ).toBeUndefined();

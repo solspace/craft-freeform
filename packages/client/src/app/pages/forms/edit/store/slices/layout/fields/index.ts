@@ -5,6 +5,7 @@ import type {
   PropertyValueCollection,
 } from "@ff-client/types/fields";
 import type { GenericValue } from "@ff-client/types/properties";
+import { updateComponentDesign } from "@ff-client/utils/component-design-settings";
 import {
   iconAccessibleName,
   initializeDividerProperties,
@@ -63,6 +64,20 @@ export const fieldsSlice = createSlice({
   name: "layout/fields",
   initialState,
   reducers: {
+    editDesign: (
+      state,
+      action: PayloadAction<EditType & { reset?: boolean }>,
+    ) => {
+      const { uid, handle, value, reset } = action.payload;
+      const field = state.find((item) => item.uid === uid);
+      if (!field || field.typeClass !== Fields.Layout) return;
+      field.properties = updateComponentDesign(
+        field.properties,
+        handle,
+        value,
+        reset,
+      );
+    },
     set: (state, action: PayloadAction<FieldStore>) => {
       state.splice(
         0,

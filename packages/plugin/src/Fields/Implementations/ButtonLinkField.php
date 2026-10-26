@@ -28,10 +28,14 @@ class ButtonLinkField extends ContentField
     #[Input\Select(label: 'Alignment', order: 10, options: ['left' => 'Left', 'center' => 'Center', 'right' => 'Right'])]
     protected string $alignment = 'left';
 
+    #[VisibilityFilter('properties.useComponentAccent != true')]
     #[Input\ColorPicker(label: 'Button / Link Color', order: 11)]
     protected string $color = '#1d4ed8';
 
-    #[VisibilityFilter('properties.appearance == "filled"')]
+    #[Input\Boolean(label: 'Use Component Accent', instructions: 'Use the accent color of a styled component. Turn off to use the colors below.', order: 10)]
+    protected bool $useComponentAccent = false;
+
+    #[VisibilityFilter('properties.appearance == "filled" && properties.useComponentAccent != true')]
     #[Input\ColorPicker(label: 'Text Color', order: 12)]
     protected string $textColor = '#ffffff';
 
@@ -69,9 +73,14 @@ class ButtonLinkField extends ContentField
     {
         $color = preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD', $this->color) ? $this->color : '#1d4ed8';
         $textColor = preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD', $this->textColor) ? $this->textColor : '#ffffff';
+        if ($this->useComponentAccent) {
+            $color = 'var(--freeform-button-accent-color, '.$color.')';
+            $textColor = 'var(--freeform-button-accent-text-color, '.$textColor.')';
+        }
         $appearance = \in_array($this->appearance, ['filled', 'outline', 'link'], true) ? $this->appearance : 'filled';
         [$padding, $fontSize] = ['small' => ['8px 16px', 14], 'medium' => ['12px 24px', 16], 'large' => ['16px 32px', 18]][$this->size] ?? ['12px 24px', 16];
-        $style = 'display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere;white-space:normal;line-height:1.3;font-weight:600;border-radius:6px;font-size:'.$fontSize.'px;';
+        $radius = $this->useComponentAccent ? 'var(--freeform-component-radius, 6px)' : '6px';
+        $style = 'display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere;white-space:normal;line-height:1.3;font-weight:600;border-radius:'.$radius.';font-size:'.$fontSize.'px;';
         $style .= 'padding:'.('link' === $appearance ? '0' : $padding).';border:1px solid '.('link' === $appearance ? 'transparent' : $color).';';
         $style .= 'background:'.('filled' === $appearance ? $color : 'transparent').';color:'.('filled' === $appearance ? $textColor : $color).';text-decoration:'.('link' === $appearance ? 'underline' : 'none');
         $link = Html::a(Html::encode($this->getTranslationTable()->get('linkText', $this->linkText)), $this->getUrl(), [

@@ -21,7 +21,11 @@ const centered = (node: ComponentNode): ComponentNode => ({
 const action = (label: string, caption: string): ComponentNode => ({
   typeClass: Fields.ButtonLink,
   label,
-  properties: { linkText: translate(caption), alignment: "center" },
+  properties: {
+    linkText: translate(caption),
+    alignment: "center",
+    useComponentAccent: true,
+  },
 });
 const columnPreset = (count: number): string =>
   (({ 2: "two", 3: "three", 4: "four" }) as Record<number, string>)[count];
@@ -40,6 +44,7 @@ const repeated = (
     preset: columnPreset(count),
     gap: "large",
     mobile: "stack",
+    designStyle: "form",
     ...(cards ? { columnStyle: "cards" } : {}),
   },
 });
@@ -64,6 +69,16 @@ const countVariants = (
   }));
 
 export const additionalComponentPresets = (): ComponentPreset[] => {
+  const sidebarLink = (label: string, caption: string): ComponentNode => ({
+    typeClass: Fields.ButtonLink,
+    label,
+    properties: {
+      linkText: translate(caption),
+      appearance: "link",
+      alignment: "left",
+      useComponentAccent: true,
+    },
+  });
   const question = (number: number): ComponentNode[] => [
     heading(
       `FAQ ${number} question`,
@@ -89,6 +104,48 @@ export const additionalComponentPresets = (): ComponentPreset[] => {
     text(`Testimonial ${number} attribution`, paragraph("Role, organization")),
   ];
   return [
+    {
+      id: "sidebar",
+      name: "Sidebar",
+      description:
+        "An editable guide with a title, supporting copy, links, and a call to action. Fits a narrow column.",
+      variants: [
+        {
+          id: "guide",
+          label: "Guide",
+          root: {
+            ...section("Sidebar", [
+              heading("Sidebar heading", "Your quick guide", "h2"),
+              text(
+                "Sidebar introduction",
+                paragraph("Give visitors a few helpful places to go next."),
+              ),
+              sidebarLink("Sidebar link 1", "Explore the details →"),
+              sidebarLink("Sidebar link 2", "Frequently asked questions →"),
+              sidebarLink("Sidebar link 3", "Contact us →"),
+              text(
+                "Sidebar note",
+                paragraph("Add one useful tip or reminder here."),
+              ),
+              {
+                typeClass: Fields.ButtonLink,
+                label: "Sidebar action",
+                properties: {
+                  linkText: translate("Get started"),
+                  useComponentAccent: true,
+                },
+              },
+            ]),
+            properties: {
+              preset: "one",
+              gap: "medium",
+              mobile: "stack",
+              designStyle: "form",
+            },
+          },
+        },
+      ],
+    },
     {
       id: "cta",
       name: "Call to action",
@@ -119,6 +176,7 @@ export const additionalComponentPresets = (): ComponentPreset[] => {
               background: "color",
               backgroundColor: "#f1f5f9",
               padding: "medium",
+              designStyle: "form",
             },
           },
         },
@@ -144,6 +202,7 @@ export const additionalComponentPresets = (): ComponentPreset[] => {
               mobile: "stack",
               verticalAlignment: "middle",
               padding: "medium",
+              designStyle: "form",
             },
           },
         },
@@ -158,15 +217,31 @@ export const additionalComponentPresets = (): ComponentPreset[] => {
         {
           id: "one",
           label: "One column",
-          root: section("FAQ", [1, 2, 3].flatMap(question)),
+          root: {
+            ...section("FAQ", [1, 2, 3].flatMap(question)),
+            properties: {
+              preset: "one",
+              gap: "medium",
+              mobile: "stack",
+              designStyle: "form",
+            },
+          },
         },
         {
           id: "two",
           label: "Two columns",
-          root: columns("FAQ", "two", [
-            [1, 2].flatMap(question),
-            [3, 4].flatMap(question),
-          ]),
+          root: {
+            ...columns("FAQ", "two", [
+              [1, 2].flatMap(question),
+              [3, 4].flatMap(question),
+            ]),
+            properties: {
+              preset: "two",
+              gap: "large",
+              mobile: "stack",
+              designStyle: "form",
+            },
+          },
         },
       ],
     },

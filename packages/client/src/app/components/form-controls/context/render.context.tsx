@@ -7,6 +7,7 @@ export type RenderSize = "small" | "normal";
 type RenderContext = {
   size: RenderSize;
   collapsibleInstructions?: readonly string[];
+  controlActions?: Record<string, React.ReactNode>;
 };
 
 const RenderContext = createContext<RenderContext>({
@@ -15,12 +16,13 @@ const RenderContext = createContext<RenderContext>({
 
 export const RenderContextProvider: React.FC<
   PropsWithChildren<RenderContext>
-> = ({ size, collapsibleInstructions, children }) => {
+> = ({ size, collapsibleInstructions, controlActions, children }) => {
   return (
     <RenderContext.Provider
       value={{
         size: size ?? "normal",
         collapsibleInstructions,
+        controlActions,
       }}
     >
       {children}

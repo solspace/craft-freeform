@@ -132,8 +132,14 @@ export const buttonLinkPresentation = (data: Record<string, unknown>) => {
     /^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i.test(String(value))
       ? String(value)
       : fallback;
-  const color = safeColor(data.color, "#1d4ed8");
-  const textColor = safeColor(data.textColor, "#ffffff");
+  const localColor = safeColor(data.color, "#1d4ed8");
+  const localTextColor = safeColor(data.textColor, "#ffffff");
+  const color = data.useComponentAccent
+    ? `var(--freeform-button-accent-color, ${localColor})`
+    : localColor;
+  const textColor = data.useComponentAccent
+    ? `var(--freeform-button-accent-text-color, ${localTextColor})`
+    : localTextColor;
   const appearance = ["filled", "outline", "link"].includes(
     String(data.appearance),
   )
@@ -151,6 +157,6 @@ export const buttonLinkPresentation = (data: Record<string, unknown>) => {
     linkAlignment: ["left", "center", "right"].includes(String(data.alignment))
       ? String(data.alignment)
       : "left",
-    buttonStyles: `display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere;white-space:normal;line-height:1.3;font-weight:600;border-radius:6px;font-size:${fontSize}px;padding:${appearance === "link" ? "0" : padding};border:1px solid ${appearance === "link" ? "transparent" : color};background:${appearance === "filled" ? color : "transparent"};color:${appearance === "filled" ? textColor : color};text-decoration:${appearance === "link" ? "underline" : "none"}`,
+    buttonStyles: `display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere;white-space:normal;line-height:1.3;font-weight:600;border-radius:${data.useComponentAccent ? "var(--freeform-component-radius, 6px)" : "6px"};font-size:${fontSize}px;padding:${appearance === "link" ? "0" : padding};border:1px solid ${appearance === "link" ? "transparent" : color};background:${appearance === "filled" ? color : "transparent"};color:${appearance === "filled" ? textColor : color};text-decoration:${appearance === "link" ? "underline" : "none"}`,
   };
 };

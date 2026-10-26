@@ -17,6 +17,14 @@ export const loadFormattingTemplatesScript = () => {
       $('<p style="margin: 0 0 18px;"></p>')
         .text(`${Craft.t("freeform", "Sample")}: ${sampleName}`)
         .appendTo(body);
+      $('<p class="light" style="margin: 0 0 18px;"></p>')
+        .text(
+          Craft.t(
+            "freeform",
+            "Framework libraries are not cloned. Load the framework in your site layout if this sample uses one.",
+          ),
+        )
+        .appendTo(body);
       const field = $(
         '<div class="field"><div class="heading"><label for="ff-clone-template-name"></label></div><div class="input"><input class="text fullwidth" id="ff-clone-template-name" maxlength="80"></div></div>',
       ).appendTo(body);

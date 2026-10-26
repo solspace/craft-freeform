@@ -51,7 +51,7 @@ const editable = (action: UnknownAction): boolean => {
 
 const editKey = (action: UnknownAction): string | undefined => {
   if (
-    !/(\/edit|\/modify|\/modifySettings|\/update|\/updateLabel|\/editButtons|\/remember)$/.test(
+    !/(\/edit|\/editDesign|\/modify|\/modifySettings|\/update|\/updateLabel|\/editButtons|\/remember)$/.test(
       action.type,
     )
   ) {
@@ -73,7 +73,7 @@ const editKey = (action: UnknownAction): string | undefined => {
     (property === "label" || property === "handle")
       ? "identity"
       : property;
-  return `${action.type}:${String(entity ?? payload?.namespace)}:${String(payload?.namespace ?? "")}:${String(group)}`;
+  return `${action.type}:${String(entity ?? payload?.namespace)}:${String(payload?.namespace ?? "")}:${String(group)}:${payload?.reset ? "reset" : "edit"}`;
 };
 
 export const createHistoryMiddleware = (): Middleware<object, RootState> => {

@@ -9,18 +9,12 @@
 ] %}
 {% set title = "Diagnostics"|t("freeform") %}
 
-{% set tabs = {
-    'freeform-diagnostics-overview': {label: 'Overview'|t('freeform'), url: '#freeform-diagnostics-overview'},
-    'freeform-diagnostics-health-checks': {label: 'Health Checks'|t('freeform'), url: '#freeform-diagnostics-health-checks'}
-} %}
-{% set tablistLabel = 'Diagnostics'|t('freeform') %}
-
 {% block actionButton %}
     <button type="button" class="btn" id="freeform-copy-diagnostics" data-copied-label="{{ 'Copied!'|t('freeform')|e('html_attr') }}">{{ 'Copy Support Report'|t('freeform') }}</button>
 {% endblock %}
 
 {% macro status(status, label) %}
-    <span class="ff-diag-dot is-{{ status }}" role="img" aria-label="{{ label|e('html_attr') }}" title="{{ label|e('html_attr') }}"></span>
+    <craft-indicator variant="{{ {pass: 'success', disabled: 'empty', warning: 'warning', error: 'danger'}[status] }}" role="img" aria-label="{{ label }}" title="{{ label }}"></craft-indicator>
 {% endmacro %}
 
 {% macro scanFeedback(id, label) %}
@@ -69,11 +63,17 @@
 {% block content %}
     {{ parent() }}
     {% set databaseGuideLink %}<a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'database integrity guide'|t('freeform') }}</a>{% endset %}
+    {{ ui('tabs', {
+        attributes: {class: 'freeform-diagnostic-tabs', 'data-freeform-page-tabs': true},
+        tabs: [
+            {label: 'Overview'|t('freeform'), controls: 'freeform-diagnostics-overview'},
+            {label: 'Health Checks'|t('freeform'), controls: 'freeform-diagnostics-health-checks'},
+        ],
+    }) }}
     <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
-        <div id="freeform-diagnostics-overview" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-overview">
-            <div class="pane ff-diag-banner {{ warnings|length ? 'is-error' : (suggestions|length ? 'is-warning' : 'is-success') }}" role="status">
-                <p>
-                    <span class="{{ warnings|length or suggestions|length ? 'alert-icon' : 'checkmark-icon' }}" aria-hidden="true"></span>
+        <div id="freeform-diagnostics-overview">
+            {% set diagnosticSummary %}
+                <p class="ff-diag-summary">
                     {% if warnings|length %}
                         <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
                     {% elseif suggestions|length %}
@@ -83,7 +83,12 @@
                     {% endif %}
                     {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
                 </p>
-            </div>
+            {% endset %}
+            {{ ui('callout', {
+                variant: warnings|length ? 'danger' : (suggestions|length ? 'warning' : 'success'),
+                content: diagnosticSummary,
+                attributes: {role: 'status'},
+            }) }}
             <div class="ff-diag-legend">
                 {% for status, label in {
                     pass: 'Enabled / Valid'|t('freeform'),
@@ -128,7 +133,7 @@
                 {% endfor %}
             </div>
         </div>
-        <div id="freeform-diagnostics-health-checks" class="hidden" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-health-checks">
+        <div id="freeform-diagnostics-health-checks" class="hidden">
             <p class="light ff-diag-health-intro">{{ 'Run checks to find problems with your database, submissions, uploads, notifications, integrations, and queue. Checks run only when requested and do not change your data.'|t('freeform') }}</p>
             {% set readinessScans = [
                 {

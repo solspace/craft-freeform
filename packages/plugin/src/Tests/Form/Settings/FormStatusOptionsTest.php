@@ -78,6 +78,7 @@ class FormStatusOptionsTest extends TestCase
     private function assertPalette(array $palette): void
     {
         self::assertSame(array_keys($palette), StatusRecord::getAllowedColors());
+        self::assertSame($palette, (new StatusModel())->getColorPalette());
         $statuses = [];
         $expected = [];
         foreach ($palette as $color => $hex) {

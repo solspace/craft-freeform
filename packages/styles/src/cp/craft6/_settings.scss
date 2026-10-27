@@ -16,7 +16,7 @@
     }
 
     #header {
-      padding-block: var(--c-spacing-lg);
+      padding-block: var(--c-spacing-lg) var(--c-spacing-md);
       align-items: center;
     }
 
@@ -29,7 +29,11 @@
     }
 
     #content.content-pane {
-      padding-block-start: 0;
+      padding-block-start: calc(var(--c-spacing-md) + var(--c-spacing-sm));
+
+      &:has(> table, > .tablepane, > craft-empty) {
+        padding-block-start: 0;
+      }
     }
   }
 
@@ -75,7 +79,7 @@
     }
 
     hr {
-      margin-block: var(--c-spacing-xl, 32px);
+      margin-block: calc(var(--c-spacing-md) + var(--c-spacing-sm));
     }
 
     > form > p,
@@ -94,5 +98,54 @@
       align-items: start;
       gap: var(--c-spacing-lg, 16px);
     }
+  }
+}
+
+.freeform-cp {
+  #content table.freeform-settings-table {
+    border-collapse: collapse;
+
+    thead {
+      background: transparent;
+    }
+
+    :is(th, td) {
+      padding: 12px 8px;
+      font-size: 14px;
+      line-height: 1.42;
+      vertical-align: middle;
+      background: transparent;
+      border-radius: 0;
+    }
+
+    thead th {
+      border-block-end: 2px solid var(--c-color-border-quiet);
+      font-weight: 700;
+    }
+
+    tbody :is(th, td) {
+      border-block-end: 1px solid var(--c-color-border-quiet);
+      font-weight: 400;
+    }
+
+    tbody th a {
+      color: var(--c-text-link);
+      font-weight: 500;
+    }
+
+    .color-indicator.status {
+      inline-size: 10px;
+      block-size: 10px;
+      margin-inline-end: 4px;
+      vertical-align: -1px;
+    }
+  }
+
+  #content craft-select-color.form-control {
+    --c-spacing-sm: 8px;
+    display: block;
+    flex: 0 1 15rem;
+    inline-size: 15rem;
+    max-inline-size: min(100%, 15rem);
   }
 }

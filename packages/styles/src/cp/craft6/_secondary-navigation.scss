@@ -103,6 +103,23 @@
       padding: 0;
     }
 
+    #freeform-client-app:has(.freeform-settings-surface) {
+      padding: var(--c-spacing-md) var(--c-spacing-md) var(--c-spacing-md) 0;
+    }
+
+    .freeform-settings-surface > .freeform-secondary-layout {
+      min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
+
+      #page-title {
+        min-height: 0;
+      }
+
+      #header {
+        padding-block: var(--c-spacing-lg) var(--c-spacing-md);
+        align-items: center;
+      }
+    }
+
     .freeform-secondary-layout #content-container {
       min-width: 0;
       width: auto;

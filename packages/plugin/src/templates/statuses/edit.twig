@@ -59,40 +59,21 @@
 
     <hr>
 
-    {{ forms.hidden({
-        id: "color",
-        name: "color",
-        value: status.color,
-        errors: status.getErrors("color"),
-        required: true
-    }) }}
-
+    <input type="hidden" id="color-value" name="color" value="{{ status.color }}">
+    {% set palette = status.colorPalette %}
+    {% set paletteStyles = [] %}
+    {% for color, hex in palette %}
+        {% set paletteStyles = paletteStyles|merge(['--c-color-' ~ color ~ '-fill-loud:' ~ hex]) %}
+    {% endfor %}
     {% set colorField %}
-        <div>
-            <a id="color-menu-btn" class="btn menubtn" href="#">
-                <span class="status {{ status.color }}"></span>
-                {{ status.color|t('freeform')|title }}
-            </a>
-            <div class="menu">
-                <ul class="padded">
-                    {% set colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
-                    {% if craft.app.version < '5.0.0' %}
-                        {% set colors = ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
-                    {% endif %}
-                    {% for color in colors %}
-                        <li>
-                            <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
-                                <span class="status {{ color }}"></span>
-                                {{ color|t('freeform')|title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+        <craft-select-color id="color" model-value="{{ status.color }}"
+            required
+            style="{{ paletteStyles|join(';') }}"
+            colors="{{ palette|keys|json_encode }}"></craft-select-color>
     {% endset %}
 
     {{ forms.field({
+        id: 'color',
         label: 'Color'|t('freeform'),
         instructions: 'The color of the status circle when viewing inside CP.'|t('freeform')
     },colorField) }}
@@ -103,15 +84,8 @@
 {% js %}
     {% if not status.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
 
-    $(function () {
-        $colorSelect = $('#color-menu-btn');
-        new Garnish.MenuBtn($colorSelect, {
-            onOptionSelect: function(data) {
-                var val = $(data).data('val');
-                $('#color').val(val);
-                var html = "<span class='status "+val+"'></span>"+Craft.uppercaseFirst(val);
-                $colorSelect.html(html);
-            }
-        });
+    document.getElementById('color').addEventListener('model-value-changed', function () {
+        document.getElementById('color-value').value = this.modelValue;
+        document.getElementById('color-value').dispatchEvent(new Event('change', {bubbles: true}));
     });
 {% endjs %}

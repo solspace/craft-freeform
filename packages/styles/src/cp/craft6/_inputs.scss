@@ -1,7 +1,7 @@
 // Legacy CP resets live in the light DOM and override native components'
 // ::slotted borders. Restore their own Craft tokens on the control slot only.
 .freeform-cp {
-  :is(craft-input, craft-input-handle, craft-input-password, craft-input-date, craft-input-time, craft-textarea, craft-select, craft-combobox) {
+  :is(craft-input, craft-input-handle, craft-input-password, craft-input-date, craft-input-time, craft-input-color, craft-textarea, craft-select, craft-combobox) {
     > .form-control:not([type='checkbox'], [type='radio']) {
       border-width: var(--c-input-border-width, var(--c-form-control-border-width));
       border-style: var(--c-input-border-style, var(--c-form-control-border-style));
@@ -19,4 +19,9 @@
       border-color: var(--c-color-danger-border-loud);
     }
   }
+}
+
+.freeform-cp craft-input-color > .form-control {
+  // Keep supported values such as "transparent" readable beside the swatch.
+  inline-size: calc(11ch + 2 * var(--c-spacing-lg));
 }

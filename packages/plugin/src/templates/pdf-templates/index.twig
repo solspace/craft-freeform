@@ -28,14 +28,14 @@
         {% if templates|length %}
 
             <div class="vue-admin-tablepane tablepane">
-                <table id="templates" data-file-templates class="data fullwidth collapsible">
-                    <thead>
+                <table id="templates" data-file-templates class="data fullwidth collapsible cp-table cp-table--spacious freeform-settings-table">
+                    <thead><tr>
                     <th scope="col">{{ "Name"|t('freeform') }}</th>
                     <th scope="col">{{ "ID"|t('freeform') }}</th>
                     <th scope="col">{{ "File Name"|t('freeform') }}</th>
                     <th scope="col">{{ "Description"|t('freeform') }}</th>
                     <td class="thin"></td>
-                    </thead>
+                    </tr></thead>
                     <tbody>
                     {# File based templates #}
                     {% for id, template in templates %}
@@ -56,7 +56,7 @@
                                 <code>{{ template.fileName }}</code>
                             </td>
                             <td style="width: 50%;">
-                                {{ template.description }}
+                                {{ template.getAttribute('description') }}
                             </td>
                             <td class="thin">
                                 <div class='action-buttons'>
@@ -75,17 +75,13 @@
 
         {% else %}
 
-            <div class="zilch">
-                {{ "No PDF templates exist yet."|t("freeform") }}
-            </div>
+            {{ ui('empty', {label: 'No PDF templates exist yet.'|t('freeform')}) }}
 
         {% endif %}
 
     {% else %}
 
-        <div class="zilch">
-            {{ "Upgrade to Freeform Pro to access PDF Templates."|t('freeform') }}
-        </div>
+        {{ ui('empty', {label: "Upgrade to Freeform Pro to access PDF Templates."|t('freeform')}) }}
 
     {% endif %}
 

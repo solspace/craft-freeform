@@ -24,14 +24,14 @@
     {% if list|length %}
 
         <div class="vue-admin-tablepane tablepane">
-            <table data-file-templates class="data fullwidth collapsible">
-                <thead>
+            <table data-file-templates class="data fullwidth collapsible cp-table cp-table--spacious freeform-settings-table">
+                <thead><tr>
                 <th scope="col">{{ "ID"|t('freeform') }}</th>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
                 <th scope="col">{{ "Handle"|t('freeform') }}</th>
                 <th scope="col">{{ "Description"|t('freeform') }}</th>
                 <th class="thin"></th>
-                </thead>
+                </tr></thead>
                 <tbody>
                 {# File based templates #}
                 {% for wrapper in list %}
@@ -50,7 +50,7 @@
                             <span class="handle code">{{ wrapper.handle }}</span>
                         </td>
                         <td>
-                            {{ wrapper.description }}
+                            {{ wrapper.getAttribute('description') }}
                         </td>
                         <td class="thin">
                             <div class='action-buttons'>
@@ -69,9 +69,7 @@
 
     {% else %}
 
-        <div class="zilch">
-            {{ "No email notification template wrappers exist yet."|t('freeform') }}
-        </div>
+        {{ ui('empty', {label: "No email notification template wrappers exist yet."|t('freeform')}) }}
 
     {% endif %}
 

@@ -1,11 +1,17 @@
 {% extends "freeform/_layouts/main" %}
 {% hook "freeform.prepareCpTemplate" %}
 
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-settings') %}
+
 {% set selectedSubnavItem = "notifications" %}
 
-{% set title = "Email Notifications"|t('freeform') %}
+{% set title = title ?? "Email Notifications"|t('freeform') %}
 
 {% block sidebar %}
+    {{ ui('pane', {
+        padding: 0,
+        attributes: {id: 'freeform-settings-pane', hidden: true},
+    }) }}
     {% set segment = craft.app.request.segment(3) %}
     {% set settings = freeform.settings %}
     {% set items = [{ heading: 'Templates'|t('freeform') }] %}

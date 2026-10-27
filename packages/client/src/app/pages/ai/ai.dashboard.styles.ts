@@ -2,7 +2,7 @@ import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const DashboardWrapper = styled.div`
-  padding: 0;
+  padding: 12px 16px 16px;
 `;
 
 export const AiEmptyStatePanel = styled.div.attrs(() => ({
@@ -108,8 +108,9 @@ export const SectionDescription = styled.p`
 `;
 
 export const SectionTitle = styled.h2`
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
   margin: 0 0 ${spacings.xs};
   padding: 0;
 `;
@@ -130,18 +131,18 @@ export const MetricsTable = styled.table`
   background: ${colors.white};
   border-radius: ${borderRadius.md};
   overflow: hidden;
-  font-size: 12px;
+  font-size: 14px;
 `;
 
 export const MetricsTableHead = styled.thead`
-  background: #cfd8e3;
+  background: var(--c-surface-default);
 `;
 
 export const MetricsTableHeaderCell = styled.th`
   text-align: left;
   padding: ${spacings.sm};
   font-weight: 600;
-  border-bottom: 0;
+  border-bottom: 1px solid var(--c-color-border-quiet);
 `;
 
 export const MetricsTableRow = styled.tr`
@@ -152,7 +153,7 @@ export const MetricsTableRow = styled.tr`
 
 export const MetricsTableCell = styled.td`
   padding: ${spacings.sm};
-  border-bottom: 0;
+  border-bottom: 1px solid var(--c-color-border-quiet);
   white-space: nowrap;
 `;
 

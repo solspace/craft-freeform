@@ -7,7 +7,7 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
-    { label: title, url: url("freeform/settings/pdf-templates/" ~ (template.id ?: 'new') ) },
+    { label: title, url: url("freeform/settings/pdf-templates/" ~ (template.getAttribute('id') ?: 'new') ) },
 ] %}
 
 {% set fullPageForm = true %}
@@ -28,7 +28,7 @@
 {% block content %}
 
     <input type="hidden" name="action" value="freeform/pdf/pdf-templates/save">
-    <input type="hidden" name="id" value="{{ template.id }}" />
+    <input type="hidden" name="id" value="{{ template.getAttribute('id') }}" />
     {{ redirectInput('freeform/settings/pdf-templates') }}
     {{ csrfInput() }}
 
@@ -38,7 +38,7 @@
         instructions: "What this template will be called in the control panel."|t('freeform'),
         id: 'name',
         name: 'name',
-        value: template.name,
+        value: template.getAttribute('name'),
         errors: template.getErrors('name'),
         autofocus: true,
         required: true
@@ -49,7 +49,7 @@
         instructions: "Description of this template."|t('freeform'),
         id: 'description',
         name: 'description',
-        value: template.description,
+        value: template.getAttribute('description'),
         errors: template.getErrors('description'),
         required: false
     }) }}
@@ -63,7 +63,7 @@
         id: 'fileName',
         name: 'fileName',
         placeholder: "e.g. tickets-{{ form.handle }}-event-{{ firstName }}-{{ lastName }}",
-        value: template.fileName,
+        value: template.getAttribute('fileName'),
         errors: template.getErrors('fileName'),
         required: true
     }) }}
@@ -73,7 +73,7 @@
         instructions: "The HTML content of the PDF file. See documentation for availability of variables."|t('freeform'),
         id: "body",
         name: "body",
-        value: template.body,
+        value: template.getAttribute('body'),
         errors: template.getErrors("body"),
         required: false,
     }) }}
@@ -103,7 +103,7 @@
             display: none;
         }
     </style>
-    <div id="editor">{{ template.body }}</div>
+    <div id="editor">{{ template.getAttribute('body') }}</div>
 
 {% endblock %}
 

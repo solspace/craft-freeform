@@ -97,6 +97,17 @@ class StatusModel extends Model implements \Stringable, \JsonSerializable
         return self::$hexMap[$this->color] ?? '#FFFFFF';
     }
 
+    /** @return array<string, string> */
+    public function getColorPalette(): array
+    {
+        $palette = [];
+        foreach (StatusRecord::getAllowedColors() as $color) {
+            $palette[$color] = (new self(['color' => $color]))->getColorHex();
+        }
+
+        return $palette;
+    }
+
     public function safeAttributes(): array
     {
         return [

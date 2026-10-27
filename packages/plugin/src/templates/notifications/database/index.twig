@@ -24,13 +24,13 @@
     {% if notifications|length and settings.emailTemplateMethod != 'form' %}
 
         <div class="vue-admin-tablepane tablepane">
-            <table data-file-templates class="data fullwidth collapsible">
-                <thead>
+            <table data-file-templates class="data fullwidth collapsible cp-table cp-table--spacious freeform-settings-table">
+                <thead><tr>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
                 <th scope="col">{{ "Handle"|t('freeform') }}</th>
                 <th scope="col">{{ "Description"|t('freeform') }}</th>
                 <td class="thin"></td>
-                </thead>
+                </tr></thead>
                 <tbody>
                 {# File based templates #}
                 {% for id, notification in notifications %}
@@ -67,15 +67,11 @@
 
     {% elseif settings.emailTemplateMethod == 'form' %}
 
-        <div class="zilch">
-            {{ "Freeform is currently set to use only form-specific email notifications. You can create and manage them in each form's Notifications tab."|t('freeform') }}
-        </div>
+        {{ ui('empty', {label: "Freeform is currently set to use only form-specific email notifications. You can create and manage them in each form's Notifications tab."|t('freeform')}) }}
 
     {% else %}
 
-        <div class="zilch">
-            {{ "No database-based email notification templates exist yet."|t('freeform') }}
-        </div>
+        {{ ui('empty', {label: "No database-based email notification templates exist yet."|t('freeform')}) }}
 
     {% endif %}
 

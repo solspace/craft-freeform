@@ -1,4 +1,4 @@
-{% extends "freeform/_layouts/main" %}
+{% extends "freeform/notifications/_layout" %}
 {% import "_includes/forms" as forms %}
 
 {% set selectedSubnavItem = "notifications" %}
@@ -14,30 +14,11 @@
 
 {% set fullPageForm = true %}
 
-{% block actionButton %}
-    <div class="buttons">
-        <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
-
-            <div class="btn submit menubtn"></div>
-            <div class="menu">
-                <ul>
-                    <li>
-                        <a class="formsubmit" data-redirect="{{ ('freeform/notifications/wrappers/{id}')|hash }}">
-                            {{ "Save and continue editing"|t('freeform') }}
-                            <span class="shortcut">⌘S</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="formsubmit" data-redirect="{{ url('freeform/notifications/wrappers/new')|hash }}">
-                            {{ "Save and add another"|t('freeform') }}
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-{% endblock %}
+{% set retainScrollOnSaveShortcut = true %}
+{% set formActions = [
+    {label: 'Save and continue editing'|t('app'), redirect: saveShortcutRedirect|hash, shortcut: true, retainScroll: true},
+    {label: 'Save and add another'|t('app'), redirect: cpUrl('freeform/notifications/wrappers/new')|hash},
+] %}
 
 {% block content %}
 
@@ -45,7 +26,7 @@
 
         <input type="hidden" name="action" value="freeform/notifications/wrappers/save">
         {{ redirectInput('freeform/notifications/wrappers') }}
-        {% if wrapper.id %}<input type="hidden" name="id" value="{{ wrapper.id }}">{% endif %}
+        {% if wrapper.getAttribute('id') %}<input type="hidden" name="id" value="{{ wrapper.getAttribute('id') }}">{% endif %}
         {{ csrfInput() }}
 
         {{ forms.textField({
@@ -54,7 +35,7 @@
             instructions: "What this template will be called in the control panel."|t('freeform'),
             id: 'name',
             name: 'name',
-            value: wrapper.name,
+            value: wrapper.getAttribute('name'),
             errors: wrapper.getErrors('name'),
             autofocus: true,
             required: true,
@@ -66,7 +47,7 @@
             instructions: "Unique identifier for this template."|t('freeform'),
             id: 'handle',
             name: 'handle',
-            value: wrapper.handle,
+            value: wrapper.getAttribute('handle'),
             errors: wrapper.getErrors('handle'),
             required: true,
         }) }}
@@ -76,7 +57,7 @@
             instructions: "Description of this template."|t('freeform'),
             id: "description",
             name: "description",
-            value: wrapper.description,
+            value: wrapper.getAttribute('description'),
             errors: wrapper.getErrors("description"),
         }) }}
 
@@ -87,7 +68,7 @@
             instructions: "The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear."|t('freeform'),
             id: "content",
             name: "content",
-            value: wrapper.content,
+            value: wrapper.getAttribute('content'),
             errors: wrapper.getErrors("content"),
             required: true,
         }) }}
@@ -121,14 +102,14 @@
                 display: none;
             }
         </style>
-        <div id="editor">{{ wrapper.content }}</div>
+        <div id="editor">{{ wrapper.getAttribute('content') }}</div>
 
     </div>
 
 {% endblock %}
 
 {% js %}
-    {% if not wrapper.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+    {% if not wrapper.getAttribute('handle') %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
 
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate");

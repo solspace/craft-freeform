@@ -19,6 +19,14 @@ export function enhanceCraft6Settings(root: ParentNode = document): void {
   )) {
     layout.append(footer);
   }
+  // Craft alpha's tab strip removes its handlers on disconnect and does not
+  // bind them again after reparenting. Reinitialize the page strip after this
+  // initial layout move; its external panels and live controls stay intact.
+  for (const tabs of layout.querySelectorAll<HTMLElement>(
+    "craft-tabs[data-freeform-page-tabs]",
+  )) {
+    tabs.replaceWith(tabs.cloneNode(true));
+  }
   pane.hidden = false;
   pane.dataset.enhanced = "true";
 }

@@ -562,6 +562,7 @@
     > span {
       display: inline-flex;
       align-items: center;
+      gap: 7px;
     }
 
     .ff-diag-dot {
@@ -947,5 +948,22 @@
 
   to {
     background-position: -100% 0;
+  }
+}
+
+// Native Craft tabs and callouts supply their own chrome; keep the surrounding
+// diagnostics content aligned with the settings page gutter.
+.freeform-cp {
+  .freeform-diagnostic-tabs {
+    display: block;
+    margin-block-end: 16px;
+  }
+
+  .ff-diag-summary {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0;
   }
 }

@@ -9,8 +9,11 @@ use Illuminate\Session\Store;
 use Illuminate\Support\MessageBag;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
+use Solspace\Freeform\Records\PdfTemplateRecord;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
@@ -96,6 +99,73 @@ class Craft6TemplateErrorsTest extends TestCase
         self::assertSame([], $errors['settings[defaultView]']);
     }
 
+    public function testSurveySwitchReceivesOnlyItsOwnErrors(): void
+    {
+        $settings = new SurveySettings();
+        $loader = $this->twig();
+        $source = file_get_contents(\dirname(__DIR__, 3).'/Bundles/Form/Types/Surveys/Templates/settings.twig');
+        $loader->getLoader()->addLoader(new ArrayLoader(['survey-settings.twig' => explode('{% css %}', $source)[0]]));
+        $context = [
+            'settings' => $settings,
+            'readOnly' => false,
+            'fieldTypes' => [],
+            'options' => [],
+            'craft' => ['freeform' => ['name' => 'Freeform']],
+        ];
+        $settings->chartTypes = [];
+        $errors = $this->readErrors($loader->render('survey-settings.twig', $context));
+        self::assertSame([], $errors['highlightHighest']);
+
+        $settings->addError('highlightHighest', 'Choose a valid highlight setting.');
+        $errors = $this->readErrors($loader->render('survey-settings.twig', $context));
+        self::assertSame(['Choose a valid highlight setting.'], $errors['highlightHighest']);
+    }
+
+    public function testNewWrapperRendersNullAttributesWithoutCallingThemAsMethods(): void
+    {
+        $wrapper = $this->createMock(NotificationWrapperRecord::class);
+        $wrapper->method('getAttribute')->willReturnCallback(static fn (string $name) => 'content' === $name ? '{{ emailBody }}' : null);
+        $wrapper->method('getErrors')->willReturn([]);
+        $twig = $this->twig();
+        $source = file_get_contents(\dirname(__DIR__, 3).'/templates/notifications/wrappers/edit.twig');
+        $source = str_replace(['{% js %}', '{% endjs %}'], ['{% block script %}', '{% endblock %}'], $source);
+        $twig->getLoader()->addLoader(new ArrayLoader([
+            'wrapper-edit.twig' => $source,
+            'freeform/notifications/_layout' => '{% block content %}{% endblock %}{% block script %}{% endblock %}',
+        ]));
+        $twig->addFilter(new TwigFilter('hash', static fn ($value) => $value));
+        $html = $twig->render('wrapper-edit.twig', [
+            'wrapper' => $wrapper,
+            'title' => 'New Wrapper',
+            'craft' => ['freeform' => ['name' => 'Freeform'], 'app' => ['request' => ['getSegment' => null]]],
+        ]);
+
+        self::assertStringContainsString('new Craft.HandleGenerator', $html);
+        self::assertStringContainsString('freeform/notifications/wrappers/save', $html);
+        self::assertStringContainsString('emailBody', $html);
+    }
+
+    public function testNewPdfTemplateRendersEmptyAttributes(): void
+    {
+        $template = $this->createMock(PdfTemplateRecord::class);
+        $template->method('getAttribute')->willReturn(null);
+        $template->method('getErrors')->willReturn([]);
+        $twig = $this->twig();
+        $source = file_get_contents(\dirname(__DIR__, 3).'/templates/pdf-templates/edit.twig');
+        $source = str_replace(['{% js %}', '{% endjs %}'], ['{% block script %}', '{% endblock %}'], $source);
+        $twig->getLoader()->addLoader(new ArrayLoader(['pdf-edit.twig' => $source]));
+        $twig->addFilter(new TwigFilter('hash', static fn ($value) => $value));
+        $html = $twig->render('pdf-edit.twig', [
+            'template' => $template,
+            'title' => 'New PDF Template',
+            'craft' => ['freeform' => ['name' => 'Freeform']],
+        ]);
+
+        self::assertStringContainsString('freeform/pdf/pdf-templates/save', $html);
+        self::assertStringContainsString('name="id" value=""', $html);
+        self::assertSame([], $this->readErrors($html)['fileName']);
+    }
+
     private function renderSpamSettings(Settings $settings): array
     {
         return $this->readErrors($this->twig()->render('settings/_spam.twig', [
@@ -109,7 +179,7 @@ class Craft6TemplateErrorsTest extends TestCase
     {
         $field = '<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>';
         $macros = '';
-        foreach (['checkboxSelectField', 'selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'field', 'text', 'select'] as $name) {
+        foreach (['checkboxSelectField', 'selectField', 'booleanMenuField', 'lightswitchField', 'textField', 'textareaField', 'autosuggestField', 'field', 'text', 'select'] as $name) {
             $macros .= '{% macro '.$name.'(config, input) %}'.$field.'{% endmacro %}';
         }
 

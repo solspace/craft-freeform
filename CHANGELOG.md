@@ -7,9 +7,14 @@
 - Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Removed
+- Removed the introductory integration links from the Spam Protection settings page.
 - Removed the Beta Feedback widget and its feedback submission functionality from Freeform 6.
 
 ### Fixed
+- Updated Diagnostics to native Craft 6 tabs, summary callouts, and legend indicators.
+- Matched Craft 6 typography, native panes, tables, and empty states across settings, Limited Users, SolspaceAI, and Notifications, including blue permission switches and wider chart-type controls positioned beside their labels.
+- Replaced the status color menu with Craft 6’s native palette control, kept its swatches consistent with Freeform status colors, and restored color input borders.
+- Fixed creating notification wrappers and PDF templates with empty attributes and stray error output in Surveys & Polls settings.
 - Restored native Craft 6 borders and focus states for settings inputs and environment-aware boolean dropdowns, and limited standard settings control widths on large screens.
 - Fixed the site name overlapping breadcrumbs when the Craft 6 sidebar is collapsed, and matched Submissions filter row sizing to native secondary navigation.
 - Restyled Craft's licensing footer as a small, padded notice without the legacy banner surface.

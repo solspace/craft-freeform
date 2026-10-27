@@ -17,13 +17,13 @@ export const ProfileFields = styled.div`
   }
 
   .heading label {
-    font-weight: 600;
+    font-weight: var(--font-weight-bold, 700);
   }
 
   .instructions {
     margin-block: 6px 8px;
     color: var(--c-text-quiet);
-    font-size: var(--c-text-sm);
+    font-size: var(--c-text-base);
     font-style: normal;
   }
 
@@ -31,6 +31,7 @@ export const ProfileFields = styled.div`
     ${dropdownControl}
     width: 100%;
     padding: 6px 10px;
+    max-width: 40rem;
   }
 
   textarea.cp-form-control {
@@ -90,8 +91,9 @@ export const Heading = styled.h2`
   margin: 0 !important;
   padding: 0;
   color: var(--c-text-default);
-  font-size: var(--c-text-lg);
-  font-weight: 600;
+  font-size: var(--text-lg, 1.125rem);
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--text-lg--line-height, 1.55556);
 `;
 
 export const Control = styled.div`
@@ -131,12 +133,13 @@ export const PermissionSwitch = styled.button`
   }
 
   &[aria-checked='true'] {
-    background: var(--c-color-static-success-fill);
+    background: var(--c-color-accent-fill-loud);
+    border-color: var(--c-color-accent-fill-loud);
 
     &::before {
       inset-inline-start: auto;
       inset-inline-end: 2px;
-      border-color: var(--c-color-success-border-loud);
+      border-color: var(--c-color-accent-border-loud);
     }
   }
 
@@ -152,7 +155,7 @@ export const PermissionSwitch = styled.button`
     transform: translateY(-50%);
     width: 12px;
     height: 12px;
-    color: var(--c-color-success-on-normal);
+    color: var(--c-color-accent-on-quiet);
     pointer-events: none;
   }
 

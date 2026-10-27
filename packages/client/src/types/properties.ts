@@ -29,6 +29,7 @@ export enum PropertyType {
   Color = "color",
   ConditionalRules = "conditionalRules",
   DateTime = "dateTime",
+  DateExpression = "dateExpression",
   DynamicCheckboxes = "dynamicCheckboxes",
   DynamicSelect = "dynamicSelect",
   EventParameters = "eventParameters",
@@ -246,6 +247,12 @@ export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   minDate?: string;
   maxDate?: string;
 };
+export type DateExpressionProperty = BaseProperty<
+  string,
+  PropertyType.DateExpression
+> & {
+  includeTime?: boolean;
+};
 export type MinMaxProperty = BaseProperty<
   [number, number],
   PropertyType.MinMax
@@ -357,6 +364,7 @@ export type Property =
   | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
+  | DateExpressionProperty
   | DynamicCheckboxesProperty
   | DynamicSelectProperty
   | EventParametersProperty

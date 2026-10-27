@@ -198,3 +198,64 @@ it("themes time-only pickers too", async () => {
     instance.calendarContainer.classList.contains("freeform-datepicker-dark"),
   ).toBe(true);
 });
+
+it("initializes the Freeform picker without downloading Flatpickr or React", async () => {
+  const { form, handler } = await setup(
+    "default",
+    '<input value="2026-10-26" data-datepicker data-datepicker-kind="freeform" data-datepicker-enabled data-datepicker-php-format="Y-m-d" data-datepicker-enabledate data-datepicker-min-value="2026-10-20" data-datepicker-max-value="2026-11-10">',
+  );
+  expect(document.querySelector("script")).toBeNull();
+  expect(document.querySelector("link")).toBeNull();
+  form.querySelector("input")!.focus();
+  expect(
+    document.querySelector<HTMLElement>(".ff-datetime-picker")?.dataset
+      .appearance,
+  ).toBe("frontend");
+  expect(
+    document.querySelector<HTMLElement>(".ff-datetime-picker")?.hidden,
+  ).toBe(false);
+  expect(
+    document.querySelector<HTMLButtonElement>('[data-day="2026-10-19"]')
+      ?.disabled,
+  ).toBe(true);
+  handler.reload();
+  expect(document.querySelectorAll(".ff-datetime-picker")).toHaveLength(1);
+});
+it("honors an explicitly disabled Freeform picker", async () => {
+  await setup(
+    "default",
+    '<input data-datepicker data-datepicker-kind="freeform" data-datepicker-enabled="false">',
+  );
+  expect(document.querySelector(".ff-datetime-picker")).toBeNull();
+  expect(document.querySelector("script")).toBeNull();
+});
+
+it("passes precise relative time limits and the server clock to the Freeform picker", async () => {
+  vi.setSystemTime(new Date(2026, 9, 26, 19));
+  const { form } = await setup(
+    "default",
+    `<input value="2026-10-26 7:30 AM" data-datepicker data-datepicker-kind="freeform" data-datepicker-enabled data-datepicker-enabledate data-datepicker-enabletime data-datepicker-php-format="Y-m-d g:i A" data-datepicker-min-value="2026-10-26T07:00:00" data-datepicker-min-offset="-43200" data-datepicker-reference-date="2026-10-26T19:00:00" data-datepicker-reference-timestamp="${Date.now() / 1000}">`,
+  );
+  form.querySelector("input")!.focus();
+  expect(
+    document.querySelector<HTMLButtonElement>('[data-time="120"]')?.disabled,
+  ).toBe(true);
+  expect(
+    document.querySelector<HTMLButtonElement>('[data-time="450"]')?.disabled,
+  ).toBe(false);
+});
+
+it("does not turn empty serialized offsets into a now limit", async () => {
+  vi.setSystemTime(new Date(2026, 9, 26, 19));
+  const { form } = await setup(
+    "default",
+    '<input value="2026-10-26 7:30 AM" data-datepicker data-datepicker-kind="freeform" data-datepicker-enabled data-datepicker-enabledate data-datepicker-enabletime data-datepicker-php-format="Y-m-d g:i A" data-datepicker-min-value="" data-datepicker-max-value="" data-datepicker-min-offset="" data-datepicker-max-offset="">',
+  );
+  form.querySelector("input")!.focus();
+  expect(
+    document.querySelector<HTMLButtonElement>('[data-time="120"]')?.disabled,
+  ).toBe(false);
+  expect(
+    document.querySelector<HTMLButtonElement>('[data-time="1410"]')?.disabled,
+  ).toBe(false);
+});

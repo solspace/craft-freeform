@@ -1,6 +1,6 @@
 import { colors } from "@ff-client/styles/variables";
 import translate from "@ff-client/utils/translations";
-import { type InputHTMLAttributes, useId } from "react";
+import { type InputHTMLAttributes, useId, type WheelEvent } from "react";
 import styled from "styled-components";
 
 const MeasurementInput = styled.div<{ $unitSpace: number }>`
@@ -36,13 +36,34 @@ type Props = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & {
   unit?: string;
 };
 
-export const NumberInput = ({ unit, ...props }: Props) => {
+// Blurring before the browser's wheel action keeps page scrolling available
+// without accidentally stepping a focused numeric setting.
+export const blurNumberInputOnWheel = (
+  event: WheelEvent<HTMLInputElement>,
+): void => {
+  const input = event.currentTarget;
+  if (
+    !event.ctrlKey &&
+    !event.metaKey &&
+    event.deltaY !== 0 &&
+    !input.readOnly &&
+    input.ownerDocument.activeElement === input
+  ) {
+    input.blur();
+  }
+};
+
+export const NumberInput = ({ unit, onWheelCapture, ...props }: Props) => {
   const unitId = useId();
   const text = unit ? translate(unit) : "";
   const input = (
     <input
       {...props}
       type="number"
+      onWheelCapture={(event) => {
+        blurNumberInputOnWheel(event);
+        onWheelCapture?.(event);
+      }}
       aria-describedby={
         [props["aria-describedby"], text ? unitId : undefined]
           .filter(Boolean)

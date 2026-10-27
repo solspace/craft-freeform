@@ -130,6 +130,7 @@ class FormPreviewServiceTest extends TestCase
     #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="0"></form>'])]
     #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="false"></form>'])]
     #[TestWith(['<form data-freeform data-scripts-datepicker><input type="date"></form>'])]
+    #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled data-datepicker-kind="freeform"></form>'])]
     public function testPreviewDoesNotAllowDatepickerAssetsForFormsWithoutEnabledPickers(string $markup): void
     {
         $html = (new FormPreviewService())->isolate('<html><head></head><body>'.$markup.'</body></html>', 'CSRF');

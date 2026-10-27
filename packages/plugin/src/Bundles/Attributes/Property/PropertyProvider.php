@@ -36,6 +36,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
@@ -215,6 +216,9 @@ class PropertyProvider
         ?callable $valueUpdateCallback,
         ?Form $form,
     ): void {
+        if ($object instanceof DatetimeField) {
+            $properties = DatetimeField::normalizePickerProperties($properties);
+        }
         $propertyValueStack = $properties;
         foreach ($editableProperties as $property) {
             if (!\array_key_exists($property->handle, $propertyValueStack)) {

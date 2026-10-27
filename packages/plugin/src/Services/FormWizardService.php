@@ -255,7 +255,6 @@ class FormWizardService
             }
             if ('datetime' === $type) {
                 $props['dateTimeType'] = 'date';
-                $props['useDatepicker'] = true;
                 $props['initialValue'] = '';
             }
             if ('rating' === $type) {

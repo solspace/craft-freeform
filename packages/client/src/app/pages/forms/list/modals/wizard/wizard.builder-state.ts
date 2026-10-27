@@ -76,7 +76,6 @@ export function wizardBuilderState(
       if (field.type === "datetime")
         Object.assign(changes, {
           dateTimeType: "date",
-          useDatepicker: true,
           initialValue: "",
         });
       if (field.type === "rating")

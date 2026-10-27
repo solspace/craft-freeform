@@ -1,3 +1,7 @@
+import {
+  RenderContextProvider,
+  useRenderContext,
+} from "@components/form-controls/context/render.context";
 import { OpinionScaleProperty } from "@components/form-controls/opinion-scale";
 import config from "@config/freeform/freeform.config";
 import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-options";
@@ -39,6 +43,7 @@ const sectionFilter = (handle: string) => (property: Property) =>
 
 export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const dispatch = useAppDispatch();
+  const renderContext = useRenderContext();
 
   const { data: sections, isFetching } = useFetchFieldPropertySections();
 
@@ -197,7 +202,18 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         />
         <span>{translate(type.name)}</span>
       </Title>
-      <SectionWrapper>{sectionBlocks}</SectionWrapper>
+      <RenderContextProvider
+        {...renderContext}
+        collapsibleInstructions={
+          type.type === "datetime"
+            ? type.properties
+                .filter((property) => property.instructions)
+                .map((property) => property.handle)
+            : renderContext.collapsibleInstructions
+        }
+      >
+        <SectionWrapper>{sectionBlocks}</SectionWrapper>
+      </RenderContextProvider>
     </FieldPropertiesWrapper>
   );
 };

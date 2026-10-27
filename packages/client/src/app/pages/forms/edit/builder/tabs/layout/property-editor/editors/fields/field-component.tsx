@@ -1,4 +1,6 @@
 import { FormComponent } from "@components/form-controls";
+import ClockFormatControl from "@components/form-controls/control-types/clock-format/clock-format";
+import DateOrderControl from "@components/form-controls/control-types/date-order/date-order";
 import { OptionSampleArea } from "@editor/builder/sample-data/sample-data.styles";
 import { SampleDataDefault } from "@editor/builder/sample-data/sample-data-default";
 import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-options";
@@ -137,12 +139,16 @@ export const FieldComponent: React.FC<Props> = ({
     <FormComponent
       control={
         control ||
-        (type?.type === "location" && property.handle === "integration"
-          ? LocationIntegration
-          : type?.type === "location" &&
-              property.handle === "requiredComponents"
-            ? LocationRequiredComponents
-            : undefined)
+        (type?.type === "datetime" && property.handle === "clock24h"
+          ? ClockFormatControl
+          : type?.type === "datetime" && property.handle === "dateOrder"
+            ? DateOrderControl
+            : type?.type === "location" && property.handle === "integration"
+              ? LocationIntegration
+              : type?.type === "location" &&
+                  property.handle === "requiredComponents"
+                ? LocationRequiredComponents
+                : undefined)
       }
       autoFocus={autoFocus}
       value={canUseTranslationValue(property) ? translationEnabledValue : value}

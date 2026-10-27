@@ -1,3 +1,4 @@
+import { blurNumberInputOnWheel } from "@components/elements/number-input/number-input";
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import type { Field } from "@editor/store/slices/layout/fields";
@@ -24,6 +25,7 @@ const MinMax: React.FC<ControlType<MinMaxProperty, Field>> = ({
             id="min"
             value={min === null ? "" : min}
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             min={minValue}
             className="text"
             placeholder="Min"
@@ -39,6 +41,7 @@ const MinMax: React.FC<ControlType<MinMaxProperty, Field>> = ({
             id="max"
             value={max === null ? "" : max}
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             min={minValue}
             className="text"
             placeholder="Max"

@@ -8,13 +8,15 @@ const ButtonGroupField: React.FC<ControlType<ButtonGroupProperty>> = ({
   value,
   property,
   errors,
+  context,
   updateValue,
 }) => {
   const { options } = property;
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <ButtonGroup
+        label={property.label}
         value={value}
         options={options}
         onClick={(value) => updateValue(value)}

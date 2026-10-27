@@ -214,7 +214,7 @@ class FormPreviewService
 
     private function getDatepickerSources(\DOMXPath $xpath): array
     {
-        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false")]');
+        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false") and not(@data-datepicker-kind="freeform")]');
         if (!$pickers->length) {
             return [[], []];
         }

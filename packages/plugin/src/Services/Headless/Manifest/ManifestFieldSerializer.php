@@ -219,16 +219,25 @@ class ManifestFieldSerializer
 
         if ($field instanceof DatetimeField) {
             return [
+                'picker' => $field->getPicker(),
+                'pickerMinDate' => $field->getPickerMinDate(),
+                'pickerMaxDate' => $field->getPickerMaxDate(),
+                'referenceDate' => $field->getPickerReferenceDate(),
+                'referenceTimestamp' => $field->getPickerReferenceTimestamp(),
+                'minDateOffset' => $field->getMinDateOffset(),
+                'maxDateOffset' => $field->getMaxDateOffset(),
+                'labels' => $field->getPickerLabels(),
+                'minuteStep' => $field->getMinuteStep(),
                 'dateTimeType' => $field->getDateTimeType(),
                 'useNativeTypes' => $field->isUseNativeTypes(),
                 'useDatepicker' => $field->isUseDatepicker(),
-                'locale' => $field->getLocale(),
+                'locale' => $field->getLocale() ?: \Craft::$app->locale->id,
                 'format' => $field->getFormat(),
                 'datepickerFormat' => $field->getDatepickerFormat(),
                 'nativeInputType' => $field->getInputType(),
                 'clock24h' => $field->isClock24h(),
-                'minDate' => $field->getGeneratedMinDate(),
-                'maxDate' => $field->getGeneratedMaxDate(),
+                'minDate' => $field->getMinDateInputValue($field->isUseNativeTypes() ? $field->getNativeFormat() : ($field->isShowTime() ? 'Y-m-d\TH:i:s' : 'Y-m-d')),
+                'maxDate' => $field->getMaxDateInputValue($field->isUseNativeTypes() ? $field->getNativeFormat() : ($field->isShowTime() ? 'Y-m-d\TH:i:s' : 'Y-m-d')),
                 'enableTime' => $field->isShowTime(),
                 'enableDate' => $field->isShowDate(),
             ];

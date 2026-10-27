@@ -3,10 +3,14 @@ import type {
   FreeformExtension,
   ManifestFieldDefinition,
 } from "@solspace/freeform-core";
+import { mountDateTimePicker, parseDateTime } from "@solspace/freeform-core";
 import { loadScriptOnce } from "../captchas/shared.js";
 import { PACKAGE_VERSION } from "../version.js";
 
 type DatetimeConfig = {
+  picker?: "freeform" | "flatpickr" | "browser" | "none";
+  minuteStep?: number;
+  labels?: NonNullable<Parameters<typeof mountDateTimePicker>[1]>["labels"];
   dateTimeType?: string;
   useNativeTypes?: boolean;
   useDatepicker?: boolean;
@@ -15,8 +19,14 @@ type DatetimeConfig = {
   datepickerFormat?: string;
   nativeInputType?: string;
   clock24h?: boolean;
+  pickerMinDate?: string | null;
+  pickerMaxDate?: string | null;
   minDate?: string | null;
   maxDate?: string | null;
+  referenceDate?: string | null;
+  referenceTimestamp?: number | null;
+  minDateOffset?: number | null;
+  maxDateOffset?: number | null;
   enableTime?: boolean;
   enableDate?: boolean;
 };
@@ -97,7 +107,10 @@ export function createDatetimeExtension(): FreeformExtension {
         return;
       }
 
-      if (config.useNativeTypes) {
+      if (
+        config.picker === "browser" ||
+        (!config.picker && config.useNativeTypes)
+      ) {
         input.type = config.nativeInputType || "datetime-local";
         if (config.minDate) {
           input.min = config.minDate;
@@ -108,7 +121,34 @@ export function createDatetimeExtension(): FreeformExtension {
         return;
       }
 
-      if (!config.useDatepicker) {
+      if (config.picker === "freeform") {
+        const controller = mountDateTimePicker(
+          input,
+          {
+            format: config.format,
+            locale: config.locale,
+            enableDate:
+              config.enableDate !== false && config.dateTimeType !== "time",
+            enableTime:
+              config.enableTime !== false && config.dateTimeType !== "date",
+            clock24h: config.clock24h,
+            minDate: config.pickerMinDate ?? config.minDate,
+            maxDate: config.pickerMaxDate ?? config.maxDate,
+            referenceDate: config.referenceDate,
+            referenceTimestamp: config.referenceTimestamp,
+            minDateOffset: config.minDateOffset,
+            maxDateOffset: config.maxDateOffset,
+            minuteStep: config.minuteStep,
+            labels: config.labels,
+          },
+          setValue,
+        );
+        return () => controller.destroy();
+      }
+      if (
+        config.picker === "none" ||
+        (!config.picker && !config.useDatepicker)
+      ) {
         return;
       }
 
@@ -126,8 +166,16 @@ export function createDatetimeExtension(): FreeformExtension {
         noCalendar:
           config.enableDate === false || config.dateTimeType === "time",
         time_24hr: Boolean(config.clock24h),
-        minDate: config.minDate || undefined,
-        maxDate: config.maxDate || undefined,
+        minDate: config.minDate
+          ? parseDateTime(config.minDate, "Y-m-d\\TH:i:s") ||
+            parseDateTime(config.minDate, "Y-m-d") ||
+            config.minDate
+          : undefined,
+        maxDate: config.maxDate
+          ? parseDateTime(config.maxDate, "Y-m-d\\TH:i:s") ||
+            parseDateTime(config.maxDate, "Y-m-d") ||
+            config.maxDate
+          : undefined,
         ...(locale ? { locale } : {}),
         defaultDate: typeof value === "string" && value ? value : undefined,
         onChange: (_selected: Date[], dateStr: string) => {

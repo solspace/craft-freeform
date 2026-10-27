@@ -27,6 +27,16 @@ class LimitedUserSettingsProvider
             $this->cache[$id] = json_decode($record->settings, true);
         }
 
-        return $this->cache[$id];
+        $settings = $this->cache[$id];
+        $date = $settings['props.date'] ?? null;
+        if (\is_array($date) && !\in_array('picker', $date, true)
+            && \in_array('datepicker', $date, true) && \in_array('nativeTypes', $date, true)) {
+            // The new picker selector replaces both legacy controls. Require both
+            // permissions so upgrading never grants access to a restricted mode.
+            $settings['props.date'][] = 'picker';
+            $settings['props.date'][] = 'minuteStep';
+        }
+
+        return $settings;
     }
 }

@@ -352,7 +352,19 @@ class FieldGenerator extends AbstractGenerator
             $fieldDefinitions['useDatepicker'] = [
                 'name' => 'useDatepicker',
                 'type' => Type::boolean(),
-                'description' => 'Should the built-in datepicker be used',
+                'description' => 'Should a JavaScript datepicker be used',
+            ];
+
+            $fieldDefinitions['picker'] = [
+                'name' => 'picker',
+                'type' => Type::string(),
+                'description' => 'Date picker mode: freeform, flatpickr, browser, or none',
+            ];
+
+            $fieldDefinitions['minuteStep'] = [
+                'name' => 'minuteStep',
+                'type' => Type::int(),
+                'description' => 'Interval between Freeform picker time options in minutes',
             ];
 
             $fieldDefinitions['minDate'] = [

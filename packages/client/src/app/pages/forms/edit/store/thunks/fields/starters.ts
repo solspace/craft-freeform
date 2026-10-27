@@ -61,7 +61,6 @@ const starterFieldType = (type: FieldType, field: WizardField): FieldType => {
   if (field.type === "radios") values.oneLine = true;
   if (field.type === "datetime") {
     values.dateTimeType = "date";
-    values.useDatepicker = true;
   }
   if (field.type === "rating") values.maxValue = 5;
 

@@ -30,19 +30,27 @@ it("keeps field settings open for native slideout, shade, and confirmation click
   const cancel = document.createElement("button");
   confirmation.append(cancel);
   const outside = document.createElement("button");
-  document.body.append(container, panel, shade, confirmation, outside);
+  const picker = document.createElement("div");
+  picker.className = "ff-datetime-picker";
+  const day = document.createElement("button");
+  picker.append(day);
+  document.body.append(container, panel, shade, confirmation, outside, picker);
   const root = createRoot(container);
   try {
     act(() => root.render(<PropertyEditor />));
     act(() => toolbar.click());
     act(() => shade.click());
     act(() => cancel.click());
+    act(() => {
+      day.focus();
+      day.click();
+    });
     expect(dispatch).not.toHaveBeenCalled();
     act(() => outside.click());
     expect(dispatch).toHaveBeenCalledOnce();
   } finally {
     act(() => root.unmount());
-    for (const node of [container, panel, shade, confirmation, outside])
+    for (const node of [container, panel, shade, confirmation, outside, picker])
       node.remove();
     dispatch.mockClear();
   }

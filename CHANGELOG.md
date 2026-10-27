@@ -3,6 +3,7 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
 - Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
 - Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated choices, live builder previews, and starter templates.
 - Added **Form Starters** to insert guided-setup field sets into existing forms, including the Form section on Page forms.
@@ -17,6 +18,8 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Gave the Freeform front-end date/time picker a cleaner appearance while preserving the control-panel picker styling.
+- Date/time field settings use compact button groups for type, clock format, date order, and separators, with live date-format previews and collapsible help. Initial and minimum/maximum values offer a calendar picker while retaining typed English expressions such as `now`, `today`, and `3 days ago`.
 - Expanded content styling with heading sizes, rich-text callouts, and additional appearance controls.
 - Updated builder settings with visual button groups and added fixed measurement and count units across Freeform settings.
 - Added optional image sizing and cropping controls while preserving existing image rendering.
@@ -27,6 +30,8 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Fixed date/time minimum and maximum limits ignoring the time in expressions such as `12 hours ago`, in both the picker and submission validation. Limits without a time include the entire day and show date-only validation messages.
+- Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.
 - Fixed duplicate field and column handles when adding, changing, or duplicating layouts and components.
 - Fixed field and Spacer placement when dragging into existing rows and nested layouts.
 - Fixed Settings tab navigation disrupting browser history.

@@ -36,6 +36,16 @@ afterEach(() => {
 });
 
 describe("Craft 6 Freeform shell", () => {
+  it("keeps list and utility actions beside the title instead of in the Save footer", () => {
+    shell();
+    const actions = document.querySelector<HTMLElement>("#action-buttons")!;
+    actions.innerHTML =
+      '<a href="/settings/statuses/new">New Status</a><button type="button">Copy report</button>';
+    enhanceCraft6Shell();
+    expect(document.querySelector("#header #action-buttons")).toBe(actions);
+    expect(document.querySelector("#main-form #footer")).toBeNull();
+  });
+
   it("uses a native Collapse/Expand control and retains the live disclosure", async () => {
     shell();
     const disclosure = document.querySelector("#sidebar-trigger")!;

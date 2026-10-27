@@ -1,6 +1,37 @@
 // Keep the settings sidebar inside the page gutter rather than letting the
 // legacy desktop layout pull it back across the global navigation divider.
 .freeform-cp.freeform-settings {
+  #main {
+    padding: var(--c-spacing-md);
+  }
+
+  #freeform-settings-pane {
+    --cp-container-padding: var(--c-spacing-lg);
+    min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
+    margin: 0;
+
+    > .freeform-secondary-layout {
+      min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
+    }
+
+    #header {
+      padding-block: var(--c-spacing-lg);
+      align-items: center;
+    }
+
+    #page-title {
+      flex: 1 1 auto;
+    }
+
+    #header #action-buttons .buttons {
+      margin: 0;
+    }
+
+    #content.content-pane {
+      padding-block-start: 0;
+    }
+  }
+
   #sidebar-container {
     margin-inline: 0;
   }

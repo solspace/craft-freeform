@@ -767,10 +767,10 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
         $attribute = '';
 
         if ($this->isRequired()) {
-            $attribute = ' data-required';
+            $attribute = 'data-required';
 
             if ($this->parameters->useRequiredAttribute) {
-                $attribute = ' required';
+                $attribute = 'required';
             }
         }
 

@@ -255,6 +255,25 @@
   // Global header buttons default to a full touch target in the legacy layout.
   // A breadcrumb's site selector uses Craft's compact inline control size.
   #global-header #crumb-list {
+    button.menubtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: var(--c-size-control-xs);
+      height: var(--c-size-control-xs);
+      min-height: 0;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--c-text-quiet);
+
+      &::after {
+        display: none;
+      }
+    }
+
     #site-crumb {
       display: inline-flex;
       align-items: center;

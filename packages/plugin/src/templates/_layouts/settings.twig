@@ -11,6 +11,24 @@
 {% set segment3 = craft.app.request.getSegment(3) %}
 {% set segment4 = craft.app.request.getSegment(4) %}
 
+{% set settingsCrumbItems = [] %}
+{% for id, item in navItems %}
+    {% if item.heading is not defined %}
+        {% set settingsCrumbItems = settingsCrumbItems|merge([{
+            label: item.title|striptags,
+            url: cpUrl('freeform/settings/'~id),
+            selected: id == segment3~(segment4 ? '/'~segment4),
+        }]) %}
+    {% endif %}
+{% endfor %}
+{% set crumbs = (crumbs ?? [
+    {label: craft.freeform.name, url: cpUrl('freeform')},
+    {label: 'Settings'|t('freeform'), url: cpUrl('freeform/settings')},
+])|merge([{label: title, current: true, menu: {
+    label: 'Select settings page'|t('freeform'),
+    items: settingsCrumbItems,
+}}]) %}
+
 {% block actionButton %}
 
     {% if not readOnly %}
@@ -26,6 +44,10 @@
 {% endblock %}
 
 {% block sidebar %}
+    {{ ui('pane', {
+        padding: 0,
+        attributes: {id: 'freeform-settings-pane', hidden: true},
+    }) }}
     {% set segment = segment3~(segment4 ? '/'~segment4) %}
     {% set segment = segment|freeformRegexReplace('/\\/\\d+$/') %}
     {% set items = [] %}

@@ -22,7 +22,7 @@
     <div class="zilch">
         {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t('freeform', stats)|raw }}
         <br /><br />
-        <small>{{ "<a href='{link}'>View the Demo area now!</a>"|t('freeform', {link: (siteUrl ~ prefix ~ '/')})|raw }}</small>
+        <small><a href="{{ siteUrl ~ prefix ~ '/' }}">{{ 'View the Demo area now!'|t('freeform') }}</a></small>
     </div>
 
 {% endblock %}

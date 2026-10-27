@@ -1,3 +1,6 @@
+import { enhanceCraft6ElementIndex } from "./shell.element-index";
+import { enhanceCraft6Settings } from "./shell.settings";
+
 /** Match Craft 6's page chrome while preserving the legacy CP's live controls. */
 export function enhanceCraft6Shell(root: ParentNode = document): void {
   const container = root.querySelector<HTMLElement>("#global-container");
@@ -8,6 +11,17 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
   header.setAttribute("role", "banner");
   header.removeAttribute("aria-label");
   container.prepend(header);
+  enhanceCraft6ElementIndex(root);
+
+  for (const trigger of header.querySelectorAll<HTMLElement>(
+    "#crumb-list button.menubtn",
+  )) {
+    if (trigger.querySelector("craft-icon")) continue;
+    const icon = document.createElement("craft-icon");
+    icon.setAttribute("name", "chevron-down");
+    icon.setAttribute("aria-hidden", "true");
+    trigger.append(icon);
+  }
 
   const start = header.querySelector<HTMLElement>(":scope > .flex");
   const system = root.querySelector<HTMLElement>("#system-info");
@@ -26,7 +40,12 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
   // Keep save controls inside their original form, in Craft's sticky footer row.
   const form = root.querySelector<HTMLFormElement>("form#main-form");
   const actions = form?.querySelector<HTMLElement>("#header #action-buttons");
-  if (form && actions) {
+  if (
+    form &&
+    actions?.querySelector(
+      'input[type="submit"], button[type="submit"], button:not([type]), button.submit, craft-button[type="submit"]',
+    )
+  ) {
     let footer = form.querySelector<HTMLElement>("#footer");
     if (!footer) {
       footer = document.createElement("footer");
@@ -41,6 +60,8 @@ export function enhanceCraft6Shell(root: ParentNode = document): void {
       footer.before(pageFooter);
     }
   }
+
+  enhanceCraft6Settings(root);
 
   // Use Craft's native nav item while keeping the existing disclosure (and
   // its live listeners, cookies, and expanded state) as the toggle's owner.

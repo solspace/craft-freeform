@@ -69,7 +69,7 @@ class AssetsFileComponent extends AbstractFileComponent
 
     protected function getInstallDirectory(): string
     {
-        return $_SERVER['DOCUMENT_ROOT'].'/assets';
+        return public_path('assets');
     }
 
     protected function getTargetFilesDirectory(): string

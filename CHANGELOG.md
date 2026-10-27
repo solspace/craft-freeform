@@ -6,6 +6,10 @@
 - Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Fixed
+- Updated Settings to use Craft 6's native pane and breadcrumb menu, with the submenu beside the page title and content.
+- Updated Submissions and Spam index layouts to use Craft 6's native pane and search input slots, with a full-width toolbar and matching control alignment while preserving Freeform filters, charts, and exports.
+- Fixed demo installation and dynamic demo URLs on Craft 6 using the configured public directory and native route objects with named parameters. Reinstallation repairs legacy routes without duplicates.
+- Fixed required fields failing to render with Craft 6's stricter HTML attribute validation.
 - Included the latest Freeform 5 security updates and fixes for field editing, sample data, rich-text required indicators, Multiselect previews, and floating-label and dark-mode sample templates.
 - Ported the legacy status-color repair to Craft 6’s migration directory and compatibility migrator.
 - Restored Freeform console command discovery on Craft 6, including database orphan cleanup and foreign key repair.

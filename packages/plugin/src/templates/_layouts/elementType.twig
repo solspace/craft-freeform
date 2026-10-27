@@ -15,6 +15,14 @@
 
 {% endset %}
 
+{% block content %}
+    {{ ui('pane', {
+        padding: 'lg',
+        attributes: {id: 'freeform-index-pane', hidden: true},
+    }) }}
+    {{ parent() }}
+{% endblock %}
+
 {% block body %}
     {{ parent() }}
     {% include 'freeform/_components/shell-indicators' %}

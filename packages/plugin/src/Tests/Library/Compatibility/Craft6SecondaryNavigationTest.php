@@ -93,6 +93,7 @@ class Craft6SecondaryNavigationTest extends TestCase
         $twig->addFilter(new TwigFilter('t', static fn (string $text): string => $text));
         $twig->addFunction(new TwigFunction('cpUrl', static fn (string $path): string => '/admin/'.$path));
         $twig->addFunction(new TwigFunction('attr', Html::renderTagAttributes(...), ['is_safe' => ['html']]));
+        $twig->addFunction(new TwigFunction('ui', \CraftCms\Cms\ui(...), ['is_safe' => ['html']]));
 
         $dom = new \DOMDocument();
         $dom->loadHTML($twig->render('sidebar', $context), \LIBXML_NOERROR | \LIBXML_NOWARNING);

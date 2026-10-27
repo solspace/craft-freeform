@@ -9,6 +9,76 @@
 }
 
 .freeform-element-index {
+  #main {
+    padding: var(--c-spacing-md);
+  }
+
+  #freeform-index-pane {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
+
+    #header-container {
+      height: auto !important;
+      margin: 0 0 var(--c-spacing-md);
+    }
+
+    #header {
+      position: relative !important;
+      inset: auto;
+      width: auto !important;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+      margin: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+
+    #page-title.has-toolbar {
+      flex: none;
+      min-width: 0 !important;
+    }
+
+    #content-container {
+      width: auto;
+      min-height: 0 !important;
+      padding: 0;
+    }
+
+    .search-container {
+      display: flex;
+      margin: 0;
+
+      input {
+        padding-inline: var(--c-form-control-spacing-inline);
+      }
+    }
+
+    .freeform-index-search-actions {
+      display: flex;
+      align-items: center;
+
+      .clear-btn,
+      .filter-btn {
+        position: static;
+        flex: none;
+        width: var(--c-size-control-md);
+        height: var(--c-size-control-sm);
+        padding: 0;
+        margin: 0;
+        border-radius: 0;
+        inset: auto;
+        transform: none;
+      }
+
+      .filter-btn {
+        border-inline-start: 1px solid var(--c-form-control-border-color);
+      }
+    }
+  }
+
   #header {
     width: auto;
     align-items: center;
@@ -17,7 +87,9 @@
 
   #main-content.has-sidebar {
     width: auto;
-    padding-inline: var(--cp-container-padding);
+    padding: 0;
+    gap: var(--c-spacing-md);
+    align-items: stretch;
   }
 
   #toolbar {
@@ -297,7 +369,7 @@
 
   #sidebar {
     width: 100%;
-    padding-inline: 0 var(--c-spacing-md);
+    padding: var(--c-spacing-lg) var(--c-spacing-md) 0 0;
 
     nav {
       margin-inline: 0;

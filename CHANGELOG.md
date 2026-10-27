@@ -1,61 +1,15 @@
 # Solspace Freeform Changelog
 
-## 6.0.0-beta.5 - Unreleased
-
-### Added
-- Added Craft's split Save menu with Save and continue editing and its keyboard shortcut to settings pages.
-- Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
-
-### Removed
-- Removed the introductory integration links from the Spam Protection settings page.
-- Removed the Beta Feedback widget and its feedback submission functionality from Freeform 6.
+## 6.0.0-beta.5 - 2026-10-27
 
 ### Fixed
-- Fixed creating export notifications with empty attributes and updated export editor Save menus.
-- Updated the Forms overview to a native Craft 6 pane, matching group headings, and styled search controls.
-- Updated submission editing with a native pane, collapsible Info rail, native page tabs and Save actions, and corrected submission index status badges, title indicators, sort icons, search joins, card layout, View menus, and date control padding.
-- Matched the A/B Tests page and its empty state to Craft 6’s full-height pane and heading spacing.
-- Updated Import / Export pages to Craft 6 panes, native empty states, and matching table spacing.
-- Corrected populated PDF template and notification table gutters to align with their page headers.
-- Refined Integrations with a native Craft 6 pane, white sidebar, blue selection styles, narrower controls, aligned title actions, underlined instance tabs, and an aligned setup guide.
-- Updated Diagnostics to native Craft 6 tabs, summary callouts, and legend indicators.
-- Matched Craft 6 typography, native panes, tables, and empty states across settings, Limited Users, SolspaceAI, and Notifications, including blue permission switches and wider chart-type controls positioned beside their labels.
-- Replaced the status color menu with Craft 6’s native palette control, kept its swatches consistent with Freeform status colors, and restored color input borders.
-- Fixed creating notification wrappers and PDF templates with empty attributes and stray error output in Surveys & Polls settings.
-- Restored native Craft 6 borders and focus states for settings inputs and environment-aware boolean dropdowns, and limited standard settings control widths on large screens.
-- Fixed the site name overlapping breadcrumbs when the Craft 6 sidebar is collapsed, and matched Submissions filter row sizing to native secondary navigation.
-- Restyled Craft's licensing footer as a small, padded notice without the legacy banner surface.
-- Matched Craft 6's header surface, neutral breadcrumb colors, outer panel corners and shadows, and secondary navigation spacing.
-- Moved Submissions and Spam form filters into the shared white content pane, matching the Settings sidebar layout.
-- Updated Settings to use Craft 6's native pane and breadcrumb menu, with the submenu beside the page title and content.
-- Updated Submissions and Spam index layouts to use Craft 6's native pane and search input slots, with a full-width toolbar and matching control alignment while preserving Freeform filters, charts, and exports.
-- Fixed demo installation and dynamic demo URLs on Craft 6 using the configured public directory and native route objects with named parameters. Reinstallation repairs legacy routes without duplicates.
-- Fixed required fields failing to render with Craft 6's stricter HTML attribute validation.
-- Included the latest Freeform 5 security updates and fixes for field editing, sample data, rich-text required indicators, Multiselect previews, and floating-label and dark-mode sample templates.
-- Ported the legacy status-color repair to Craft 6’s migration directory and compatibility migrator.
-- Restored Freeform console command discovery on Craft 6, including database orphan cleanup and foreign key repair.
-- Adapted queued AI form generation and uploaded-file checks to Craft 6's Laravel queue and filesystem APIs.
-- Kept Craft 6 controls and confirmation dialogs while adding responsive builder navigation and editor cancellation from Freeform 5.
-- Moved **Manage Form Groups** into a native Craft slideout with a fixed footer, responsive layout, and translated helper text.
-- Replaced boolean settings dropdowns with Craft 6’s native combobox, using Enabled/Disabled labels and retaining selected status indicators and environment-variable support.
-- Fixed saving settings through Craft 6’s native plugin settings model and corrected primary button hover and pressed colors.
-- Fixed settings headings sticking and secondary navigation jumping down when scrolling Craft 6 pages.
-- Matched diagnostics status indicators to Craft 6 colors and refined status banner alignment and column sizing.
-- Added the missing Limited Users table header divider to match Craft 6 settings tables.
-- Fixed sticky Save footer placement and sizing across Craft 6 settings and editors, and matched the primary sidebar Collapse control to Craft’s native navigation.
-- Matched Freeform secondary navigation and the Limited Users list table to Craft 6, and fixed duplicated or misaligned autosuggest inputs across control panel pages.
-- Improved Craft 6 Limited Users profile layout, form controls, responsive permission choices, and keyboard accessibility.
-- Fixed flashes of unstyled pages and oversized navigation icons while loading Freeform control panel pages on Craft 6.
-- Fixed duplicate borders on Craft 6 dropdowns that support environment variables.
-- Matched Craft 6 dropdown styling throughout Freeform, including settings selects, searchable and boolean menus, and React form builder dropdowns.
-- Corrected Craft 6 settings sidebar gutters, field and section spacing, nested switch alignment, tip spacing, and boolean menu status labels.
-- Matched Craft 6 Entries styling for submission list buttons, status menus, View settings, and table colors.
-- Cleaned up Craft 6 submission and spam list layouts, including toolbar spacing, form navigation, chart date filters, and keyboard skip links.
-- Fixed notification and export controllers failing to load on case-sensitive servers.
-- Fixed Craft 6 purge switches, template controls, and settings warnings, and corrected submission and spam action footer sizing and placement.
-- Fixed Freeform navigation selection after React page changes and improved breadcrumb site switcher sizing, theme colors, and keyboard behavior on Craft 6.
-- Updated plugin compatibility with Craft 6.0.0-alpha.19.
-- Various visual improvements and fixes.
+- Updated compatibility with Craft 6.0.0-alpha.20.
+- Refined control panel layouts, navigation, controls, and styling to better match Craft 6.
+- Fixed various Craft 6 compatibility issues across templates, submissions, settings, integrations, and demo templates.
+- Various other fixes and cleanup.
+
+### Removed
+- Removed the Beta Feedback widget.
 
 ## 6.0.0-beta.4 - 2026-07-27
 

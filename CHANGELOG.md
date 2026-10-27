@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.17.5 - Unreleased
+## 5.17.5 - 2026-10-27
 
 ### Security
 - Updated DOMPurify to address sanitization bypasses, including its bundled copy in the code editor.

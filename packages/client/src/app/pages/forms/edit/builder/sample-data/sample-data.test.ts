@@ -11,6 +11,11 @@ it.each([
   ["{{ faker.firstName }}", "firstName"],
   ["{{faker.company|raw}}", "company"],
   [" {{ faker.email() | raw }} ", "email"],
+  ["{{ faker.sentences(3, true) }}", "sentences"],
+  [" {{ faker.sentences( 3 , true ) | raw }} ", "sentences"],
+  ["{{ faker.sentences(6, true) }}", undefined],
+  ["{{ faker.sentences(3, false) }}", undefined],
+  ["{{ faker.sentences }}", undefined],
   ["{{ faker.numberBetween(1, 10) }}", undefined],
   ["Hello {{ faker.name }}", undefined],
   ["{{ faker.email|upper }}", undefined],
@@ -23,6 +28,26 @@ it.each([
 
 it("inserts a complete raw expression", () => {
   expect(sampleExpression("company")).toBe("{{ faker.company|raw }}");
+  expect(sampleExpression("sentences")).toBe(
+    "{{ faker.sentences(3, true)|raw }}",
+  );
+});
+
+it("prioritizes three sentences for textareas and previews the fixed preset", () => {
+  const sentences = {
+    id: "sentences",
+    label: "Sentences",
+    value: "One sentence. Another sentence. A third sentence.",
+  };
+  const catalog = [sentences];
+  expect(groupGenerators(catalog, "textarea", "").common).toEqual(catalog);
+  expect(groupGenerators(catalog, "text", "sentences").others).toEqual(catalog);
+  expect(
+    resolveSamplePreview(
+      sampleExpression("sentences"),
+      new Map([["sentences", sentences]]),
+    )?.value,
+  ).toBe(sentences.value);
 });
 
 it("combines cached samples with text and preserves unsupported Twig verbatim", () => {

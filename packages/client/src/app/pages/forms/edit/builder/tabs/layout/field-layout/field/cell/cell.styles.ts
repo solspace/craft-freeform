@@ -210,6 +210,27 @@ export const FieldCellWrapper = styled.div`
     }
   }
 
+  &[data-field-type='checkbox'] {
+    input.checkbox + label > p {
+      margin-block: 0;
+
+      &:last-child { display: inline; }
+    }
+
+    input.checkbox + label.required::after {
+      content: '*';
+      position: relative;
+      top: -2px;
+      margin-inline-start: 3px;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      line-height: 1;
+      color: ${colors.error};
+      vertical-align: baseline;
+    }
+  }
+
   input:not([type='checkbox']):not([type='radio']),
   textarea,
   select {
@@ -251,6 +272,31 @@ export const FieldCellWrapper = styled.div`
       color: ${colors.gray500};
     }
     select:not([multiple]) { padding-inline-end: 30px; }
+  }
+
+  &[data-field-type='multiple-select'] select[multiple] {
+    box-sizing: border-box;
+    min-height: 114px;
+    padding: 4px;
+    font: inherit;
+    line-height: 20px;
+
+    option {
+      padding: 4px 6px;
+      border-radius: 3px;
+      color: ${colors.gray500};
+    }
+
+    option:checked {
+      color: ${colors.gray600};
+      background: linear-gradient(#eaf1fb, #eaf1fb);
+    }
+
+    optgroup {
+      padding: 4px 6px;
+      color: ${colors.gray600};
+      font-weight: 500;
+    }
   }
 
   &[data-field-type='html'],

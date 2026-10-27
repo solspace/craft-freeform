@@ -138,9 +138,13 @@ select.ff-searchable-native {
 .ff-searchable [hidden] {
   display: none !important;
 }
-/* A searchable select has a normal heading in floating-label templates. */
-.freeform-form .floating.ff-searchable-field.ff-searchable-field > label,
-.freeform-form .form-floating.ff-searchable-field > label {
+/* Multi-select tags need a heading above the control rather than over the pills. */
+.freeform-form
+  .floating.ff-searchable-field.ff-searchable-field:has(select[multiple])
+  > label,
+.freeform-form
+  .form-floating.ff-searchable-field:has(select[multiple])
+  > label {
   position: static;
   display: block;
   width: auto;
@@ -150,17 +154,23 @@ select.ff-searchable-native {
   opacity: 1;
   transform: none;
 }
-.freeform-form .form-floating.ff-searchable-field > label::after {
+.freeform-form
+  .form-floating.ff-searchable-field:has(select[multiple])
+  > label::after {
   display: none;
 }
 
-.freeform-form .floating.ff-searchable-field,
-.freeform-form .form-floating.ff-searchable-field {
+.freeform-form .floating.ff-searchable-field:has(select[multiple]),
+.freeform-form .form-floating.ff-searchable-field:has(select[multiple]) {
   display: flex;
   flex-direction: column;
 }
-.freeform-form .floating.ff-searchable-field.ff-searchable-field > label,
-.freeform-form .form-floating.ff-searchable-field > label {
+.freeform-form
+  .floating.ff-searchable-field.ff-searchable-field:has(select[multiple])
+  > label,
+.freeform-form
+  .form-floating.ff-searchable-field:has(select[multiple])
+  > label {
   order: -1;
 }
 /* Sample Tailwind templates already supply a decorative select arrow. */

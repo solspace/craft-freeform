@@ -6,7 +6,7 @@ use Faker\Factory;
 
 class SampleDataService
 {
-    // Only scalar, local generators with no required arguments belong in the picker.
+    // Only scalar, local generators with no required arguments or fixed presets belong in the picker.
     // Never expose provider reflection or evaluate user-supplied Twig to build previews.
     private const GENERATORS = [
         'firstName' => 'First name',
@@ -19,6 +19,7 @@ class SampleDataService
         'city' => 'City',
         'postcode' => 'Postal code',
         'sentence' => 'Sentence',
+        'sentences' => 'Sentences',
         'address' => 'Full address',
         'amPm' => 'AM / PM',
         'buildingNumber' => 'Building number',
@@ -82,13 +83,17 @@ class SampleDataService
         'year' => 'Year',
     ];
 
+    private const GENERATOR_ARGUMENTS = [
+        'sentences' => [3, true],
+    ];
+
     public function getCatalog(string $locale): array
     {
         $faker = Factory::create(str_replace('-', '_', $locale));
         $catalog = [];
         foreach (self::GENERATORS as $id => $label) {
             try {
-                $value = $faker->format($id);
+                $value = $faker->format($id, self::GENERATOR_ARGUMENTS[$id] ?? []);
             } catch (\Throwable) {
                 // A locale may not implement every generator. Leave unsupported ones out.
                 continue;

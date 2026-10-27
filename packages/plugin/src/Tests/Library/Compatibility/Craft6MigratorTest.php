@@ -34,6 +34,14 @@ class Craft6MigratorTest extends TestCase
 
             self::assertInstanceOf(MigrationWrapper::class, $resolvePath->invoke($migrator, $path));
             self::assertInstanceOf(MigrationWrapper::class, $migrator->resolve(basename($path, '.php')));
+
+            $statusPath = \dirname(__DIR__, 4).'/migrations/m261022_055826_FixLegacyStatusColorColumn.php';
+
+            require_once $statusPath;
+            $statusClass = 'Solspace\Freeform\migrations\m261022_055826_FixLegacyStatusColorColumn';
+            app()->instance($statusClass, new \ReflectionClass($statusClass)->newInstanceWithoutConstructor());
+            self::assertInstanceOf(MigrationWrapper::class, $resolvePath->invoke($migrator, $statusPath));
+            self::assertInstanceOf(MigrationWrapper::class, $migrator->resolve(basename($statusPath, '.php')));
         } finally {
             Container::setInstance($previousContainer);
         }

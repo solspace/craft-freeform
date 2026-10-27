@@ -3,9 +3,11 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Added
-- Included the features and fixes from Freeform 5.17.1 through 5.17.3 and the unreleased 5.17.4 fixes, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
+- Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Fixed
+- Included the latest Freeform 5 security updates and fixes for field editing, sample data, rich-text required indicators, Multiselect previews, and floating-label and dark-mode sample templates.
+- Ported the legacy status-color repair to Craft 6’s migration directory and compatibility migrator.
 - Restored Freeform console command discovery on Craft 6, including database orphan cleanup and foreign key repair.
 - Adapted queued AI form generation and uploaded-file checks to Craft 6's Laravel queue and filesystem APIs.
 - Kept Craft 6 controls and confirmation dialogs while adding responsive builder navigation and editor cancellation from Freeform 5.
@@ -57,11 +59,31 @@
 ### Added
 - Added compatibility for Craft 6.x.
 
-## 5.17.4 - Unreleased
+## 5.17.5 - 2026-10-27
+
+### Security
+- Updated DOMPurify to address sanitization bypasses, including its bundled copy in the code editor.
+- Updated Vitest and Undici development dependencies to address code injection, path traversal, denial-of-service, and integrity-check bypass advisories.
+
+## 5.17.4 - 2026-10-26
+
+### Added
+- Added a **Sentences** sample-data option that generates three sentences.
+
+### Changed
+- Improved non-searchable Multiselect previews in the form builder with consistent typography, option spacing, and selection colors.
 
 ### Fixed
+- Fixed status color changes failing on older MySQL and MariaDB installations that still used a restricted color column. Existing status colors are preserved.
+- Fixed field editors closing when a text selection starts inside the editor and ends outside it.
+- Fixed the required indicator's size and alignment on single-checkbox field previews with rich-text labels in the form builder.
+- Fixed missing borders around Opinion Scale choices in Bootstrap formatting templates.
+- Fixed searchable dropdown sizing and styling to match neighboring inputs in Tailwind sample formatting templates.
+- Fixed searchable dropdown heights and floating-label placement in Basic and Bootstrap Floating Labels sample templates.
+- Fixed international phone input labels overlapping the country selector in Floating Labels templates.
+- Fixed File Drag & Drop fields using the light theme in dark sample formatting templates, including file previews and removal controls.
 - Fixed **Usage in Elements** remaining stuck loading on sites without Freeform fields or with recursive Matrix entry layouts.
-- Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. The Sites summary and copied diagnostics now appear only when multisite is enabled and multiple sites exist.
+- Fixed **Usage & Stats** showing misleading site statuses when multisite is disabled or only one site exists. Site details now appear in the summary and copied diagnostics only when multisite is enabled and multiple sites exist.
 
 ## 5.17.3 - 2026-10-21
 

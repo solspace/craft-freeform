@@ -35,4 +35,13 @@ class SampleDataServiceTest extends TestCase
             self::assertNotEmpty($byId['company']['value']);
         }
     }
+
+    public function testSentencesPresetReturnsThreeSentencesAsOneString(): void
+    {
+        $byId = array_column((new SampleDataService())->getCatalog('en-US'), null, 'id');
+
+        self::assertArrayHasKey('sentences', $byId);
+        self::assertSame('Sentences', $byId['sentences']['label']);
+        self::assertSame(3, preg_match_all('/[.!?](?:\s|$)/u', $byId['sentences']['value']));
+    }
 }

@@ -6,6 +6,8 @@
 - Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Fixed
+- Matched Craft 6's header surface, neutral breadcrumb colors, outer panel corners and shadows, and secondary navigation spacing.
+- Moved Submissions and Spam form filters into the shared white content pane, matching the Settings sidebar layout.
 - Updated Settings to use Craft 6's native pane and breadcrumb menu, with the submenu beside the page title and content.
 - Updated Submissions and Spam index layouts to use Craft 6's native pane and search input slots, with a full-width toolbar and matching control alignment while preserving Freeform filters, charts, and exports.
 - Fixed demo installation and dynamic demo URLs on Craft 6 using the configured public directory and native route objects with named parameters. Reinstallation repairs legacy routes without duplicates.

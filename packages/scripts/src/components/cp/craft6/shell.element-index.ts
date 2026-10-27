@@ -6,8 +6,16 @@ export function enhanceCraft6ElementIndex(root: ParentNode = document): void {
   const header = root.querySelector<HTMLElement>("#header-container");
   if (!pane || !main || !content || !header || pane.dataset.enhanced) return;
 
+  const sidebar = main.querySelector<HTMLElement>(
+    ":scope > #sidebar-container",
+  );
   main.insertBefore(pane, content);
-  pane.append(header, content);
+  const layout = document.createElement("div");
+  layout.className = "freeform-secondary-layout freeform-index-layout";
+  layout.slot = "body";
+  pane.append(layout);
+  if (sidebar) layout.append(sidebar);
+  layout.append(header, content);
   pane.hidden = false;
   pane.dataset.enhanced = "true";
 

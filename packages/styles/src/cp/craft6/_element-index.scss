@@ -11,6 +11,7 @@
 .freeform-element-index {
   #main {
     padding: var(--c-spacing-md);
+    padding-inline-start: 0;
   }
 
   #freeform-index-pane {
@@ -18,9 +19,23 @@
     min-width: 0;
     min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
 
+    > .freeform-index-layout {
+      min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
+    }
+
     #header-container {
       height: auto !important;
-      margin: 0 0 var(--c-spacing-md);
+      margin: 0;
+      padding: var(--c-spacing-lg) var(--c-spacing-lg) var(--c-spacing-md);
+    }
+
+    #sidebar-container {
+      width: auto;
+      flex-basis: auto;
+    }
+
+    #sidebar {
+      font-size: var(--c-text-base);
     }
 
     #header {
@@ -44,7 +59,7 @@
     #content-container {
       width: auto;
       min-height: 0 !important;
-      padding: 0;
+      padding: 0 var(--c-spacing-lg) var(--c-spacing-lg);
     }
 
     .search-container {
@@ -86,6 +101,7 @@
   }
 
   #main-content.has-sidebar {
+    display: block;
     width: auto;
     padding: 0;
     gap: var(--c-spacing-md);

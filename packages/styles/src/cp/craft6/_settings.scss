@@ -3,6 +3,7 @@
 .freeform-cp.freeform-settings {
   #main {
     padding: var(--c-spacing-md);
+    padding-inline-start: 0;
   }
 
   #freeform-settings-pane {
@@ -37,7 +38,7 @@
   }
 
   #sidebar:has(.freeform-secondary-nav) {
-    padding-inline: 0 var(--c-spacing-md, 8px);
+    padding: 0;
   }
 
   #content.content-pane {

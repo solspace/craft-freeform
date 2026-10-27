@@ -12,15 +12,18 @@ it("retains live search, filters, sources, pagination, and export bindings in th
         <button class="clear-btn">Clear</button><button class="filter-btn">Filter</button>
       </div>
     </div></header></div>
-    <div id="main-content"><nav id="sources">Forms</nav>
+    <div id="main-content"><aside id="sidebar-container"><nav id="sources"><button>Test form</button></nav></aside>
       <div id="content-container"><div id="content">
-        <craft-pane id="freeform-index-pane" padding="lg" hidden></craft-pane>
+        <craft-pane id="freeform-index-pane" padding="0" hidden></craft-pane>
         <div id="elements">Rows</div><footer id="footer">Pagination</footer>
       </div></div>
     </div></main>`;
   const input = document.querySelector("input")!;
   const filter = document.querySelector<HTMLButtonElement>(".filter-btn")!;
   const exportWrapper = document.querySelector("[data-export-wrapper]")!;
+  const source = document.querySelector<HTMLButtonElement>("#sources button")!;
+  const selectSource = vi.fn();
+  source.addEventListener("click", selectSource);
   const click = vi.fn();
   filter.addEventListener("click", click);
 
@@ -33,7 +36,10 @@ it("retains live search, filters, sources, pagination, and export bindings in th
   expect(pane.querySelector('[slot="suffix"] .filter-btn')).toBe(filter);
   expect(pane.querySelectorAll('craft-icon[slot="prefix"]')).toHaveLength(1);
   expect(pane.querySelector("#footer")?.textContent).toBe("Pagination");
-  expect(pane.contains(document.querySelector("#sources"))).toBe(false);
+  expect(pane.contains(document.querySelector("#sources"))).toBe(true);
+  expect(pane.querySelector("#sidebar-container button")).toBe(source);
+  source.click();
+  expect(selectSource).toHaveBeenCalledOnce();
   filter.click();
   expect(click).toHaveBeenCalledOnce();
 

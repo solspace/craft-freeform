@@ -112,12 +112,23 @@
   --padding: var(--cp-container-padding, var(--c-spacing-lg));
   --header-height: var(--cp-header-height);
 
+  // Craft's outer CP panel uses a larger surface treatment than the default
+  // card pane. Use its public radius token and base part for that same surface.
+  :is(#freeform-settings-pane, #freeform-index-pane) {
+    --c-pane-radius: var(--c-radius-xl);
+    --c-pane-background: var(--c-surface-default);
+
+    &::part(base) {
+      box-shadow: var(--shadow-xs), var(--shadow-lg);
+    }
+  }
+
   #global-container {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     grid-template-rows: auto minmax(0, 1fr);
     grid-template-areas: 'topbar topbar' 'navigation page';
-    background: var(--c-surface-header);
+    background: var(--c-surface-sunken);
   }
 
   #global-header {
@@ -125,13 +136,18 @@
     grid-template-columns: minmax(0, 1fr) auto auto auto;
     gap: var(--c-spacing-md);
     min-height: var(--cp-header-height);
-    padding: var(--c-spacing-sm) var(--c-spacing-md);
+    padding: calc(var(--c-spacing-sm) - 1px) var(--c-spacing-md) var(--c-spacing-sm);
     margin: 0;
     border: 0;
-    background: var(--c-surface-header);
+    border-block-start: 1px solid #00000040;
+    border-block-end: 1px solid var(--c-color-neutral-border-quiet);
+    background: var(--c-surface-sunken);
+    box-shadow: var(--shadow-xs), var(--shadow-lg);
+    z-index: var(--c-layer-header);
     color: var(--c-text-default);
 
     > .flex {
+      --c-text-link: var(--c-text-default);
       height: auto;
       gap: var(--c-spacing-md);
     }
@@ -171,6 +187,7 @@
     #system-name {
       opacity: 1;
       color: inherit;
+      font-weight: var(--font-weight-semibold, 600);
     }
 
     #user-info {
@@ -204,7 +221,7 @@
   #global-header #crumb-list {
     height: auto;
     align-items: center;
-    gap: var(--c-spacing-md);
+    gap: calc(var(--c-spacing-md) + var(--c-spacing-sm));
     // Native Breadcrumbs.vue uses Tailwind's text-xs (12px), rather than the
     // UI component token c-text-xs (9px).
     font-size: var(--text-xs, 0.75rem);
@@ -228,7 +245,7 @@
         transform: none;
         inset: auto;
         color: var(--c-text-quiet);
-        margin-inline-end: var(--c-spacing-sm);
+        margin-inline-end: calc(var(--c-spacing-md) + var(--c-spacing-sm));
       }
 
       &::after {
@@ -239,17 +256,38 @@
       > a,
       .crumb-link {
         padding: 0;
-        color: var(--c-text-link);
+        min-height: 0;
+        height: auto;
+        color: var(--c-text-default);
+        font-weight: 500;
+        line-height: inherit;
+      }
+
+      &:last-child {
+        color: var(--color-slate-700);
+
+        > a,
+        .crumb-link {
+          color: inherit;
+          font-weight: 400;
+        }
       }
     }
+  }
+
+  // The legacy toggle reserves a 16px offset even when it is hidden.
+  #global-header #crumbs #crumb-list > li.crumb:first-child {
+    margin-inline-start: var(--c-spacing-sm);
   }
 
   #page-container {
     grid-area: page;
     min-width: 0;
-    background: var(--c-surface-default);
-    border-start-end-radius: var(--c-radius-xl);
-    overflow: clip;
+    background: var(--c-surface-sunken);
+    border-start-end-radius: 0;
+    // Native CP panels cast their shadow over the neighboring navigation.
+    // Their content handles its own clipping; this wrapper must not cut it off.
+    overflow: visible;
   }
 
   // Global header buttons default to a full touch target in the legacy layout.
@@ -294,16 +332,18 @@
   cp-global-sidebar {
     grid-area: navigation;
     background: var(--c-surface-sunken);
-    border-start-start-radius: var(--c-radius-xl);
+    border-start-start-radius: 0;
   }
 
   .global-sidebar {
     height: calc(100dvh - var(--cp-header-height));
     grid-template-rows: minmax(0, 1fr) auto;
-    background: var(--c-surface-sunken);
+    // The host paints the surface. An opaque sticky child would cover the
+    // neighboring panel's shadow, unlike Craft's transparent native sidebar.
+    background: transparent;
     border-color: var(--c-color-border-quiet);
-    // This element paints the surface inside the custom-element host.
-    border-start-start-radius: var(--c-radius-xl);
+    border-inline-end: 0;
+    border-start-start-radius: 0;
   }
 
   .global-sidebar__header,
@@ -317,8 +357,8 @@
 
   .global-sidebar__footer {
     padding: var(--c-spacing-md);
-    background: var(--c-surface-sunken);
-    border-color: var(--c-color-border-quiet);
+    background: transparent;
+    border-color: transparent;
   }
 
   #header-container {

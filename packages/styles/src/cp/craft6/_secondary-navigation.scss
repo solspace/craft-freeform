@@ -37,6 +37,7 @@
       }
 
       > #main-content:not(:has(> #sidebar-container)),
+      > #content-container,
       > #main-content > #content-container {
         grid-area: content;
         min-width: 0;
@@ -94,7 +95,8 @@
 
     #sidebar .freeform-secondary-nav {
       margin: 0;
-      padding: var(--c-spacing-md);
+      padding: 0;
+      font-size: var(--c-text-base);
     }
 
     #freeform-client-app:has(.freeform-secondary-layout) {

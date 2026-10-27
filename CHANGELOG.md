@@ -5,7 +5,11 @@
 ### Added
 - Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
+### Removed
+- Removed the Beta Feedback widget and its feedback submission functionality from Freeform 6.
+
 ### Fixed
+- Restyled Craft's licensing footer as a small, padded notice without the legacy banner surface.
 - Matched Craft 6's header surface, neutral breadcrumb colors, outer panel corners and shadows, and secondary navigation spacing.
 - Moved Submissions and Spam form filters into the shared white content pane, matching the Settings sidebar layout.
 - Updated Settings to use Craft 6's native pane and breadcrumb menu, with the submenu beside the page title and content.

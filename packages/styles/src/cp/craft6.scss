@@ -404,8 +404,24 @@
 
 
   #global-footer {
-    padding: 0;
-    background: var(--c-surface-default);
+    padding: var(--c-spacing-md) var(--cp-container-padding) var(--c-spacing-lg);
+    background: transparent;
+    color: var(--c-text-quiet);
+    font-size: var(--text-xs, 0.75rem);
+    line-height: 1.5;
+
+    #trial-info {
+      max-width: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &:not(:has(#trial-info)) {
+      display: none;
+    }
 
     #app-info {
       display: none;

@@ -18,7 +18,6 @@ use craft\events\IndexKeywordsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
-use craft\helpers\App;
 use craft\services\Fields;
 use craft\services\ProjectConfig;
 use craft\services\Search;
@@ -92,7 +91,6 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Conditional\NotificationRuleTransformer;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
-use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\ChartsService;
@@ -142,7 +140,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
-use yii\web\View;
 
 /**
  * Class Plugin.
@@ -611,7 +608,6 @@ class Freeform extends Plugin
         $this->initTwigVariables();
         $this->initFieldTypes();
         $this->initEventListeners();
-        $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initContainerItems();
         $this->initBundles();
@@ -992,31 +988,6 @@ class Freeform extends Plugin
                 if ($event->element instanceof Submission) {
                     SearchHelper::alignSearchableAttributes($event);
                 }
-            }
-        );
-    }
-
-    // TODO: move into a feature bundle
-    private function initBetaAssets(): void
-    {
-        $disableFeedback = App::parseEnv('$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET');
-        if ($disableFeedback && '$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET' !== $disableFeedback) {
-            return;
-        }
-
-        $version = $this->version;
-        if (!preg_match('/alpha|beta/', $version)) {
-            return;
-        }
-
-        $view = \Craft::$app->view;
-
-        \Craft::$app->view->hook(
-            'freeform-beta-widget',
-            static function (array $context) use ($view) {
-                $view->registerAssetBundle(BetaBundle::class, View::POS_END);
-
-                return $view->renderTemplate('freeform/_beta/feedback-widget');
             }
         );
     }

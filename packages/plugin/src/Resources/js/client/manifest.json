@@ -1,6 +1,6 @@
 {
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-BHd8L1u8.js",
+    "file": "assets/de-B_NW72DJ.js",
     "name": "de",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-CpZc_AQq.js",
+    "file": "assets/fr-DlX7fyMb.js",
     "name": "fr",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-aOCxOc-K.js",
+    "file": "assets/it-A4fymMG-.js",
     "name": "it",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-Cc13Tim8.js",
+    "file": "assets/nl-CWbhYmNi.js",
     "name": "nl",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -55,7 +55,7 @@
     "name": "rolldown-runtime"
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-BB2yPqvc.js",
+    "file": "assets/ai.usage-chart-BH9dmYD7.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
@@ -66,7 +66,7 @@
     ]
   },
   "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx": {
-    "file": "assets/settings.usage-B8CMRPW8.js",
+    "file": "assets/settings.usage-D9MgKzjC.js",
     "name": "settings.usage",
     "src": "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx",
     "isDynamicEntry": true,
@@ -81,7 +81,7 @@
     ]
   },
   "src/app/pages/forms/list/modals/wizard/wizard.tsx": {
-    "file": "assets/wizard-DagsNTGi.js",
+    "file": "assets/wizard-Bz4v5VGg.js",
     "name": "wizard",
     "src": "src/app/pages/forms/list/modals/wizard/wizard.tsx",
     "isDynamicEntry": true,
@@ -101,7 +101,7 @@
     "src": "src/assets/icons/formatting-templates/foundation.svg"
   },
   "src/index.tsx": {
-    "file": "assets/index-DNPu9gt8.js",
+    "file": "assets/index-CdYK8Nav.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,

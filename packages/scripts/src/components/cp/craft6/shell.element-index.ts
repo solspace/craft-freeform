@@ -31,6 +31,13 @@ export function enhanceCraft6ElementIndex(root: ParentNode = document): void {
     icon.setAttribute("slot", "prefix");
     icon.setAttribute("aria-hidden", "true");
     input.prepend(icon);
+    search.classList.remove("texticon", "has-filter-btn");
+    const textInput = input.querySelector<HTMLInputElement>("input");
+    if (textInput) {
+      textInput.classList.remove("text", "fullwidth", "clearable");
+      textInput.setAttribute("placeholder", "");
+    }
+    input.setAttribute("placeholder", "");
 
     const suffix = document.createElement("div");
     suffix.className = "freeform-index-search-actions";
@@ -38,6 +45,12 @@ export function enhanceCraft6ElementIndex(root: ParentNode = document): void {
     for (const control of search.querySelectorAll<HTMLElement>(
       ":scope > .clear-btn, :scope > .filter-btn",
     )) {
+      if (control.matches(".filter-btn")) {
+        const filterIcon = document.createElement("craft-icon");
+        filterIcon.setAttribute("name", "filter");
+        filterIcon.setAttribute("aria-hidden", "true");
+        control.replaceChildren(filterIcon);
+      }
       suffix.append(control);
     }
     input.append(suffix);
@@ -45,6 +58,8 @@ export function enhanceCraft6ElementIndex(root: ParentNode = document): void {
     // to an already upgraded component without replacing the live input.
     input.requestUpdate?.();
   }
+
+  enhanceCraft6IndexRows(pane);
 
   // The legacy index adds view controls after its first response. Keep Export
   // after them, like Entries, retaining the existing button and menu bindings.
@@ -60,4 +75,65 @@ export function enhanceCraft6ElementIndex(root: ParentNode = document): void {
     order();
     new MutationObserver(order).observe(toolbar, { childList: true });
   }
+}
+
+/** Decorate Ajax rows with native icons while retaining the live index bindings. */
+export function enhanceCraft6IndexRows(pane: HTMLElement): void {
+  const statuses: { handle: string; color: string; label: string }[] =
+    Object.values(JSON.parse(pane.dataset.statuses || "[]"));
+  const update = () => {
+    for (const header of pane.querySelectorAll<HTMLElement>(
+      "#elements th.orderable",
+    )) {
+      const button = header.querySelector("button");
+      if (!button) continue;
+      let icon = button.querySelector("craft-icon[data-freeform-sort]");
+      if (!icon) {
+        icon = document.createElement("craft-icon");
+        icon.setAttribute("data-freeform-sort", "");
+        icon.setAttribute("aria-hidden", "true");
+        button.append(icon);
+      }
+      const sort = header.getAttribute("aria-sort");
+      const name =
+        sort === "ascending"
+          ? "asc"
+          : sort === "descending"
+            ? "desc"
+            : "arrow-up-arrow-down";
+      if (icon.getAttribute("name") !== name) icon.setAttribute("name", name);
+    }
+    for (const button of pane.querySelectorAll<HTMLElement>(
+      "craft-card .edit-btn",
+    )) {
+      button.setAttribute("icon", "pen");
+      button.setAttribute("aria-label", "Edit submission");
+    }
+    for (const chip of pane.querySelectorAll<HTMLElement>(
+      "#elements craft-chip[data-status]",
+    )) {
+      if (chip.querySelector('[slot="status"]')) continue;
+      const status = statuses.find(
+        (item) => item.handle === chip.dataset.status,
+      );
+      if (!status) continue;
+      const slot = document.createElement("div");
+      slot.slot = "status";
+      const indicator = document.createElement("craft-indicator");
+      indicator.setAttribute("fill", status.color);
+      indicator.setAttribute("label", status.label);
+      slot.append(indicator);
+      chip.prepend(slot);
+      chip.setAttribute("show-status", "");
+    }
+  };
+  update();
+  const elements = pane.querySelector("#elements");
+  if (elements)
+    new MutationObserver(update).observe(elements, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["aria-sort"],
+    });
 }

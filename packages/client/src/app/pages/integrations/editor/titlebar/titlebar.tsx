@@ -127,13 +127,20 @@ export const Titlebar: FC<Props> = ({ integration }) => {
             </Indicator>
             <Actions>
               {showRefresh.includes(state) && (
-                <Action className="btn small" onClick={() => refetch()}>
+                <Action
+                  as="button"
+                  type="button"
+                  className="btn small"
+                  onClick={() => refetch()}
+                >
                   <IconRefresh />
                 </Action>
               )}
 
               {showAuth.includes(state) && (
                 <Action
+                  as="button"
+                  type="button"
                   className="btn small"
                   onClick={() => showAuthWindow(integration.id, refetch)}
                 >
@@ -148,6 +155,8 @@ export const Titlebar: FC<Props> = ({ integration }) => {
         {hasReadme && (
           <Actions>
             <Action
+              as="button"
+              type="button"
               className="btn small info-button"
               onClick={() => setActiveReadme(!activeReadme)}
             >

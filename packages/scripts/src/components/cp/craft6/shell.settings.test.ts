@@ -72,3 +72,30 @@ it("keeps native page tabs interactive after moving the page into its pane", () 
   expect(panel.querySelector("input")).toBe(input);
   expect(input.value).toBe("Unsaved");
 });
+
+it("keeps submission values and Save in their form when moving the native Info rail", () => {
+  document.body.innerHTML = `<main id="main"><form id="main-form">
+    <div id="header-container"><h1>Submission</h1></div>
+    <div id="main-content"><div id="content-container">
+      <craft-pane id="freeform-submission-pane" hidden></craft-pane><input name="email" value="unsaved@example.test">
+    </div><aside id="details-container"><button type="button" id="freeform-info-close">Close Info</button>
+      <craft-tabs id="freeform-info-tabs"><craft-tab controls="details-container">Info</craft-tab></craft-tabs>
+      <input name="title" value="Original title"><textarea name="freeform-submission-note">Unsaved note</textarea>
+    </aside></div><footer id="footer"><button type="submit">Save</button></footer>
+  </form></main>`;
+  const form = document.querySelector<HTMLFormElement>("form")!;
+  const values = [...new FormData(form)];
+  const email = form.querySelector('[name="email"]');
+  enhanceCraft6Settings();
+  expect([...new FormData(form)]).toEqual(values);
+  expect(form.querySelector('[name="email"]')).toBe(email);
+  const rail = form.querySelector<HTMLElement & { close?: () => void }>(
+    "#freeform-info-tabs",
+  )!;
+  expect(rail.parentElement).toBe(form);
+  const close = vi.fn();
+  rail.close = close;
+  form.querySelector<HTMLButtonElement>("#freeform-info-close")!.click();
+  expect(close).toHaveBeenCalledOnce();
+  expect([...new FormData(form)]).toEqual(values);
+});

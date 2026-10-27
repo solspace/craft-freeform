@@ -11,13 +11,14 @@ import translate from "@ff-client/utils/translations";
 import EditIcon from "@ff-icons/actions/edit";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useState } from "react";
 import { FormSearch } from "./form-search";
 import {
   Button,
   ButtonGroup,
   Header,
   HeaderContainer,
+  PageLayout,
   Title,
   ViewButtons,
   ViewControls,
@@ -55,8 +56,13 @@ export const ListProvider: React.FC = () => {
     });
   }, [queryClient]);
 
-  return (
-    <>
+  return createElement(
+    "craft-pane",
+    {
+      className: "freeform-settings-surface freeform-forms-surface",
+      padding: "0",
+    },
+    <PageLayout slot="body">
       <Breadcrumb id="form-list" label="Forms" url="/forms" />
 
       <HeaderContainer>
@@ -117,6 +123,6 @@ export const ListProvider: React.FC = () => {
 
       {view === View.List && <FormList search={search} />}
       {view === View.Grid && <FormGrid search={search} />}
-    </>
+    </PageLayout>,
   );
 };

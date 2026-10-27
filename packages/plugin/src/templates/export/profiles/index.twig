@@ -42,14 +42,14 @@
 {% set content %}
 
     {% if exportProfiles|length %}
-        <table id="export-profiles" class="data fullwidth collapsible">
-            <thead>
+        <table id="export-profiles" class="data fullwidth collapsible cp-table cp-table--spacious freeform-settings-table">
+            <thead><tr>
             <th scope="col">{{ "Name"|t('app') }}</th>
             <th scope="col">{{ "Form"|t('freeform') }}</th>
             <th scope="col">{{ "Submissions"|t('freeform') }}</th>
             <th>{{ "Actions"|t('app') }}</th>
-            <td class="thin"></td>
-            </thead>
+            <th scope="col" class="thin"><span class="visually-hidden">{{ 'Actions'|t('app') }}</span></th>
+            </tr></thead>
             <tbody>
             {% for profile in exportProfiles %}
                 <tr data-id="{{ profile.id }}" data-name="{{ profile.name|t }}">
@@ -105,18 +105,11 @@
             </tbody>
         </table>
     {% else %}
-        <div class="zilch">
-            {% if freeform.edition.atLeast('lite') %}
-                {{ "No export profiles exist yet."|t("freeform") }}
-            {% else %}
-                {{ "Upgrade to the Lite or Pro edition of Freeform to get access to Export Profiles."|t('freeform') }}
-            {% endif %}
-        </div>
+        {{ ui('empty', {label: freeform.edition.atLeast('lite') ? 'No export profiles exist yet.'|t('freeform') : 'Upgrade to the Lite or Pro edition of Freeform to get access to Export Profiles.'|t('freeform')}) }}
     {% endif %}
 {% endset %}
 
 {% css %}
-    #content { padding: 0; }
 {% endcss %}
 
 {% js %}

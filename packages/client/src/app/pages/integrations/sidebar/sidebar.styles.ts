@@ -1,177 +1,165 @@
+import { SearchBar } from "@components/search/search.style";
 import { scrollBar } from "@ff-client/styles/mixins";
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const SidebarNavigation = styled.nav`
+  grid-area: sidebar;
+  position: sticky;
+  inset-block-start: 0;
+  align-self: start;
   display: flex;
   flex-direction: column;
-  gap: 0;
-
-  flex-basis: 250px;
-  flex-shrink: 0;
-  width: 300px;
+  width: 250px;
+  max-height: calc(100dvh - var(--cp-header-height) - 16px);
+  min-height: 0;
   padding: 0;
   box-sizing: border-box;
+  background: var(--c-surface-default);
+  border-inline-end: 1px solid var(--c-color-border-quiet);
 
-  border-radius: ${borderRadius.lg} 0 0 ${borderRadius.lg};
-  background: ${colors.gray050};
-  box-shadow: inset -1px 0 0 0 rgb(154 165 177 / 25%);
+  @media (max-width: 1023px) {
+    position: static;
+    width: 100%;
+    max-height: 18rem;
+    border-inline-end: 0;
+    border-block-end: 1px solid var(--c-color-border-quiet);
+  }
 `;
 
 export const SearchWrapper = styled.div`
-  padding: 22px ${spacings.md};
-  border-bottom: 1px solid ${colors.hairline};
+  padding: 8px;
+  border-bottom: 1px solid var(--c-color-border-quiet);
+
+  ${SearchBar} {
+    min-height: 34px;
+    border: 1px solid var(--c-form-control-border-color);
+    background: var(--c-surface-default);
+
+    &::placeholder {
+      font-style: normal;
+      color: var(--c-text-quiet);
+    }
+  }
 `;
 
 export const CategoryList = styled.ul`
   list-style: none;
-  padding: ${spacings.lg} ${spacings.sm} 0;
+  padding: 8px;
   margin: 0;
-
+  min-height: 0;
   overflow-y: auto;
   ${scrollBar};
 `;
 
 export const Category = styled.li`
-  margin: 0 0 ${spacings.xl};
+  margin: 0 0 16px;
 `;
 
 export const CategoryTitle = styled.h3`
-  font-weight: bold;
-  padding: 0 ${spacings.lg} 0;
-  margin: 0 0 ${spacings.sm};
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  padding: 8px;
+  margin: 0;
+  color: var(--c-text-default);
 `;
 
 export const IntegrationList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 5px;
-
+  gap: 2px;
   list-style: none;
-  padding: 0 8px;
+  padding: 0;
   margin: 0;
 `;
 
 export const StatusIndicator = styled.span`
-  display: block;
-
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 12px;
   width: 12px;
   height: 12px;
-
+  box-sizing: border-box;
   border-radius: 50%;
-  border: 2px solid ${colors.gray300};
-
-  color: ${colors.gray300};
-  font-size: 10px;
-  font-weight: bold;
-  line-height: 8px;
-  text-align: center;
+  border: 1px solid var(--c-color-neutral-border-loud);
+  color: var(--c-text-quiet);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
 
   &.active {
     border-color: transparent;
-    background-color: ${colors.teal500};
-    color: ${colors.white};
+    background: var(--c-color-success-fill-loud);
+    color: var(--c-color-success-on-loud);
   }
 
   &.unsupported {
     border-style: dashed;
-    border-width: 2px;
-    border-color: ${colors.gray200};
-    color: ${colors.gray300};
   }
 `;
 
 export const Integration = styled.li`
   > a {
     display: flex;
-    gap: 5px;
+    gap: 6px;
     align-items: center;
-
-    padding: 3px 10px;
+    min-height: 30px;
+    box-sizing: border-box;
+    padding: 4px 8px;
     margin: 0;
-
-    color: ${colors.gray700};
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--c-text-default);
     text-decoration: none;
-    border-radius: 4px;
+    border: 1px solid transparent;
+    border-radius: var(--c-radius-sm);
 
     &.unsupported {
-      opacity: 0.5;
-    }
-
-    &:hover,
-    &.active {
-      cursor: pointer;
-      color: ${colors.white};
-
-      svg,
-      i {
-        path:not([fill='none']) {
-          fill: ${colors.gray100} !important;
-          color: ${colors.gray100};
-
-          &.inverted {
-            fill: ${colors.gray700} !important;
-            color: ${colors.gray700};
-          }
-        }
-      }
+      color: var(--c-text-quiet);
     }
 
     &:hover {
-      background: ${colors.gray300};
-
-      ${StatusIndicator} {
-        &:not(.active) {
-          border-color: ${colors.gray500};
-        }
-
-        &.active {
-          background-color: ${colors.teal600};
-        }
-      }
+      background: var(--c-color-neutral-fill-quiet);
     }
 
     &.active {
-      background: ${colors.gray500};
+      background: var(--c-color-accent-fill-quiet);
+      border-color: var(--c-color-accent-fill-loud);
+      color: var(--c-color-accent-on-quiet);
+    }
 
-      &:hover {
-        ${StatusIndicator} {
-          &:not(.active) {
-            border-color: ${colors.gray100};
-          }
-
-          &.active {
-            background-color: ${colors.teal300};
-          }
-        }
-      }
-
-      ${StatusIndicator} {
-        &.active {
-          background-color: ${colors.teal500};
-          color: ${colors.gray700};
-        }
-      }
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
     }
   }
 `;
 
-export const IntegrationTitle = styled.span``;
+export const IntegrationTitle = styled.span`
+  min-width: 0;
+  overflow-wrap: anywhere;
+`;
 
 export const Icon = styled.span`
-  svg,
-  i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+
+  svg, i {
     width: 16px;
     height: 16px;
     font-size: 16px;
-    line-height: 16px;
-
-    vertical-align: middle;
+    line-height: 1;
   }
 `;
 
 export const Version = styled.span`
+  flex-shrink: 0;
   font-size: 10px;
-  color: ${colors.gray300};
-  margin-left: auto;
+  color: var(--c-text-quiet);
+  margin-inline-start: auto;
 `;

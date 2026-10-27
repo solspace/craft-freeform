@@ -4,17 +4,19 @@ import styled from "styled-components";
 export const Title = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 
   > span {
     font-size: 20px;
-    font-weight: bold;
-    color: #414141;
+    font-weight: 700;
+    line-height: 28px;
+    color: var(--c-text-default);
   }
 `;
 
 export const VersionString = styled.small`
-  margin-top: 6px;
+  margin-top: 0;
 
   font-size: 12px;
   font-weight: normal;
@@ -29,7 +31,11 @@ export const FavoriteButton = styled.button`
   align-items: center;
   justify-content: center;
 
-  padding: 0;
+  padding: 6px;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--c-radius-sm);
+  color: var(--c-text-quiet);
 
   svg {
     width: 20px;
@@ -54,6 +60,13 @@ export const FavoriteButton = styled.button`
 `;
 
 export const Icon = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 34px;
+  flex-shrink: 0;
+
   svg {
     width: 30px;
     height: 30px;
@@ -143,10 +156,17 @@ export const Indicator = styled.div`
 export const RemoveButtonWrapper = styled.div`
   margin-left: auto;
 
-  > button,
+  > button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+  }
+
   svg {
-    width: 30px;
-    height: 30px;
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -159,13 +179,19 @@ export const Action = styled.a`
   align-items: center;
   gap: 5px;
 
-  font-size: 12px;
+  display: inline-flex;
+
+  &&.btn {
+    min-height: 34px;
+    padding: 6px 10px;
+    font-size: 14px;
+  }
 
   &.info-button {
-    background-color: ${colors.blue100};
+    background-color: var(--c-color-neutral-fill-normal);
 
     &:hover {
-      background-color: ${colors.blue200};
+      background-color: var(--c-color-neutral-fill-loud);
     }
   }
 

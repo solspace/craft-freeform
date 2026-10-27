@@ -1,23 +1,37 @@
-import { borderRadius, colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const IntegrationsLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: calc(100dvh - var(--cp-header-height) - var(--c-spacing-lg));
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: 'sidebar header' 'sidebar content';
+  min-height: calc(100dvh - var(--cp-header-height) - 16px);
+
+  > #header-container {
+    grid-area: header;
+    padding-inline: 16px;
+
+    #header {
+      padding: 16px 0 8px;
+      align-items: center;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'sidebar' 'header' 'content';
+  }
 `;
 
 export const IntegrationsWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: stretch;
+  display: contents;
 `;
 
 export const IntegrationsEditorPanel = styled.div`
-  flex: 1;
+  grid-area: content;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  background-color: ${colors.white};
-  border-radius: 0 ${borderRadius.lg} ${borderRadius.lg} 0;
+  background: var(--c-surface-default);
 `;

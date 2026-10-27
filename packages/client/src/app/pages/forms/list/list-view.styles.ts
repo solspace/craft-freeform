@@ -1,6 +1,11 @@
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
+export const PageLayout = styled.div`
+  min-height: calc(100dvh - var(--cp-header-height) - 16px);
+  padding: 16px;
+`;
+
 export const HeaderContainer = styled.div`
   container-type: inline-size;
 `;
@@ -40,7 +45,7 @@ export const Title = styled.h1`
   padding: ${spacings.sm} 0;
   margin: 0;
 
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 34px;
 `;
@@ -95,7 +100,13 @@ export const SearchWrapper = styled.div`
     box-sizing: border-box;
     height: var(--forms-control-height);
     min-height: var(--forms-control-height);
-    border-radius: var(--radius-lg, 5px);
+    border: 1px solid var(--c-form-control-border-color);
+    border-radius: var(--c-form-control-radius);
+    background: var(--c-form-control-fill);
+    box-shadow: var(--c-input-shadow);
+    color: var(--c-text-default);
+    font: inherit;
+    padding: 0 32px;
   }
 
   input::placeholder {

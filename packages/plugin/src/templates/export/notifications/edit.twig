@@ -10,28 +10,11 @@
     { label: "Notifications"|t("freeform"), url: url("freeform/export/notifications") },
 ] %}
 
+{% set retainScrollOnSaveShortcut = true %}
+{% set formActions = [{label: 'Save and continue editing'|t('app'), redirect: saveShortcutRedirect|hash, shortcut: true, retainScroll: true}] %}
+
 {% block actionButton %}
-
-    {% if craft.freeform.pro %}
-        <div class="buttons">
-            <div class="btngroup submit">
-                <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
-
-                <div class="btn submit menubtn"></div>
-                <div class="menu">
-                    <ul>
-                        <li>
-                            <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                                {{ "Save and continue editing"|t('freeform') }}
-                                <span class="shortcut">⌘S</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
+    {% if craft.freeform.pro %}{{ parent() }}{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -40,7 +23,7 @@
 
         <input type="hidden" name="action" value="freeform/export/notifications/save">
         {{ redirectInput('freeform/export/notifications') }}
-        {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
+        {% if notification.getAttribute('id') %}<input type="hidden" name="notificationId" value="{{ notification.getAttribute('id') }}">{% endif %}
         {{ csrfInput() }}
 
         {{ forms.lightswitchField({
@@ -49,7 +32,7 @@
             instructions: "Controls whether this notification is currently active."|t('freeform'),
             id: 'enabled',
             name: 'enabled',
-            on: (notification.id ? notification.enabled : true),
+            on: (notification.getAttribute('id') ? notification.getAttribute('enabled') : true),
             errors: notification.getErrors('enabled'),
         }) }}
 
@@ -58,7 +41,7 @@
             instructions: "What this export notification will be called in the control panel."|t('freeform'),
             id: 'name',
             name: 'name',
-            value: notification.name,
+            value: notification.getAttribute('name'),
             errors: notification.getErrors('name'),
             autofocus: true,
             required: true
@@ -68,7 +51,7 @@
             label: "Export Profile"|t('freeform'),
             instructions: "Choose the Export Profile to use for this notification."|t('freeform'),
             name: "profileId",
-            value: notification.profileId,
+            value: notification.getAttribute('profileId'),
             errors: notification.getErrors("profileId"),
             required: true,
             options: craft.freeformServices.exportProfiles.allNamesById,
@@ -78,7 +61,7 @@
             label: "File Type"|t('freeform'),
             instructions: "Choose the export file type to use for this notification."|t('freeform'),
             name: "fileType",
-            value: notification.fileType,
+            value: notification.getAttribute('fileType'),
             errors: notification.getErrors("fileType"),
             required: true,
             options: craft.freeformServices.exportProfiles.exporterTypes,
@@ -89,7 +72,7 @@
             instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. Custom schedules are evaluated in the site timezone."|t('freeform'),
             id: 'frequency',
             name: "frequency",
-            value: notification.frequency,
+            value: notification.getAttribute('frequency'),
             errors: notification.getErrors("frequency"),
             required: true,
             options: {
@@ -105,13 +88,13 @@
             },
         })}}
 
-        <div id="cron-expression-field"{% if notification.frequency != 'custom' %} class="hidden"{% endif %}>
+        <div id="cron-expression-field"{% if notification.getAttribute('frequency') != 'custom' %} class="hidden"{% endif %}>
             {{ forms.textField({
                 label: "Cron Expression"|t('freeform'),
                 instructions: "Enter a standard five-part cron expression (minute, hour, day of month, month, day of week). For example, `0 0 1 * *` runs monthly on the 1st, `0 0 15 * *` runs monthly on the 15th, and `0 0 1,15 * *` runs on both."|t('freeform'),
                 id: 'cronExpression',
                 name: 'cronExpression',
-                value: notification.cronExpression,
+                value: notification.getAttribute('cronExpression'),
                 errors: notification.getErrors('cronExpression'),
                 required: true,
                 tip: "For reliable delivery, configure your server to run `php craft freeform/export-notifications/run` every minute. Use <a href='https://crontab.guru/' target='_blank' rel='noopener'>Crontab.guru</a> to build and check an expression."|t('freeform')|raw,
@@ -135,7 +118,7 @@
             instructions: "The file name to be generated for the export. You can use the `form`, `profile` and `date` objects as a Twig template here to name your file. (e.g. `{{ form.handle }}-{{ date.toDateString }}` which would generate a filename of `some-form-handle-2025-01-01.csv`). The extension will be added automatically."|t('freeform'),
             name: 'fileName',
             placeholder: '{{ form.handle }}-{{ date.toDateString }}',
-            value: notification.fileName ?? '{{ form.handle }}-{{ date.toDateString }}',
+            value: notification.getAttribute('fileName') ?? '{{ form.handle }}-{{ date.toDateString }}',
             errors: notification.getErrors('fileName'),
         }) }}
 
@@ -145,7 +128,7 @@
             label: "Email Subject"|t('freeform'),
             instructions: "The subject line for the email notification."|t('freeform'),
             name: 'subject',
-            value: notification.subject,
+            value: notification.getAttribute('subject'),
             errors: notification.getErrors('subject'),
         }) }}
 
@@ -153,7 +136,7 @@
             label: "Email Message"|t('freeform'),
             instructions: "The text content of the email notification."|t('freeform'),
             name: "message",
-            value: notification.message,
+            value: notification.getAttribute('message'),
             errors: notification.getErrors("message"),
             rows: 4,
         })}}

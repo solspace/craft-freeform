@@ -130,7 +130,7 @@
 
   // Craft's outer CP panel uses a larger surface treatment than the default
   // card pane. Use its public radius token and base part for that same surface.
-  :is(#freeform-settings-pane, #freeform-index-pane, .freeform-settings-surface) {
+  :is(#freeform-settings-pane, #freeform-submission-pane, #freeform-index-pane, .freeform-settings-surface) {
     --c-pane-radius: var(--c-radius-xl);
     --c-pane-background: var(--c-surface-default);
 

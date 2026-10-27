@@ -1,26 +1,25 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const MarkdownWrapper = styled.div`
-  margin: 0 -24px;
-  padding: 0 24px;
+  margin: 0 -16px;
+  padding: 0;
 
-  background-color: #f3f7fc;
+  background-color: var(--c-color-neutral-fill-quiet);
 
-  border-top: 1px solid ${colors.hr};
+  border-top: 1px solid var(--c-color-border-quiet);
 `;
 
 export const Instructions = styled.div`
   position: relative;
 
-  margin: 0 -24px;
+  margin: 0;
   padding: 0;
 
   max-height: 0;
   margin-top: 0;
 
-  background-color: #f3f7fc;
+  background-color: var(--c-color-neutral-fill-quiet);
 
   overflow-y: hidden;
   overflow-x: hidden;
@@ -32,7 +31,7 @@ export const Instructions = styled.div`
   &.active {
     max-height: 500px;
 
-    border-bottom: 1px solid ${colors.hr};
+    border-bottom: 1px solid var(--c-color-border-quiet);
 
     opacity: 1;
     overflow-y: auto;
@@ -44,9 +43,23 @@ export const Instructions = styled.div`
 `;
 
 export const Content = styled.div`
-  padding: 12px 24px;
+  padding: 16px;
 
   font-size: 14px;
+  line-height: 1.5;
+  color: var(--c-text-default);
+
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+  }
 
   pre {
     background: #d1ddea;

@@ -11,6 +11,13 @@
 - Removed the Beta Feedback widget and its feedback submission functionality from Freeform 6.
 
 ### Fixed
+- Fixed creating export notifications with empty attributes and updated export editor Save menus.
+- Updated the Forms overview to a native Craft 6 pane, matching group headings, and styled search controls.
+- Updated submission editing with a native pane, collapsible Info rail, native page tabs and Save actions, and corrected submission index status badges, title indicators, sort icons, search joins, card layout, View menus, and date control padding.
+- Matched the A/B Tests page and its empty state to Craft 6’s full-height pane and heading spacing.
+- Updated Import / Export pages to Craft 6 panes, native empty states, and matching table spacing.
+- Corrected populated PDF template and notification table gutters to align with their page headers.
+- Refined Integrations with a native Craft 6 pane, white sidebar, blue selection styles, narrower controls, aligned title actions, underlined instance tabs, and an aligned setup guide.
 - Updated Diagnostics to native Craft 6 tabs, summary callouts, and legend indicators.
 - Matched Craft 6 typography, native panes, tables, and empty states across settings, Limited Users, SolspaceAI, and Notifications, including blue permission switches and wider chart-type controls positioned beside their labels.
 - Replaced the status color menu with Craft 6’s native palette control, kept its swatches consistent with Freeform status colors, and restored color input borders.

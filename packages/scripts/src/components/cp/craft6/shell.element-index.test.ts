@@ -55,3 +55,30 @@ it("leaves other CP pages unchanged", () => {
   enhanceCraft6ElementIndex();
   expect(document.body.innerHTML).toBe("<main><h1>Settings</h1></main>");
 });
+
+it("keeps sorting buttons live and updates native status and sort indicators after Ajax rows", async () => {
+  document.body.innerHTML = `<div id="rows" data-statuses='{"2":{"handle":"open","color":"teal","label":"Open"}}'>
+    <div id="elements"><table><thead><tr><th class="orderable" aria-sort="none"><button>Submission</button></th></tr></thead>
+    <tbody><tr><td><craft-chip data-status="open"><a>Title</a></craft-chip></td></tr></tbody></table></div></div>`;
+  const { enhanceCraft6IndexRows } = await import("./shell.element-index");
+  const root = document.querySelector<HTMLElement>("#rows")!;
+  const button = root.querySelector<HTMLButtonElement>("th button")!;
+  const sort = vi.fn();
+  button.addEventListener("click", sort);
+  enhanceCraft6IndexRows(root);
+  expect(root.querySelector('craft-indicator[fill="teal"]')).not.toBeNull();
+  expect(button.querySelector("craft-icon")?.getAttribute("name")).toBe(
+    "arrow-up-arrow-down",
+  );
+  root.querySelector("th")!.setAttribute("aria-sort", "descending");
+  await Promise.resolve();
+  expect(button.querySelector("craft-icon")?.getAttribute("name")).toBe("desc");
+  button.click();
+  expect(sort).toHaveBeenCalledOnce();
+  const chip = document.createElement("craft-chip");
+  chip.dataset.status = "open";
+  root.querySelector("td")!.append(chip);
+  await Promise.resolve();
+  expect(chip.querySelectorAll("craft-indicator")).toHaveLength(1);
+  expect(root.querySelectorAll("craft-indicator")).toHaveLength(2);
+});

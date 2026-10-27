@@ -14,6 +14,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
+use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
@@ -164,6 +165,33 @@ class Craft6TemplateErrorsTest extends TestCase
         self::assertStringContainsString('freeform/pdf/pdf-templates/save', $html);
         self::assertStringContainsString('name="id" value=""', $html);
         self::assertSame([], $this->readErrors($html)['fileName']);
+    }
+
+    public function testNewExportNotificationRendersEmptyAttributes(): void
+    {
+        $notification = $this->createMock(ExportNotificationRecord::class);
+        $notification->method('getAttribute')->willReturn(null);
+        $notification->method('getRecipientArray')->willReturn([]);
+        $notification->method('getErrors')->willReturn([]);
+        $twig = $this->twig();
+        $source = file_get_contents(\dirname(__DIR__, 3).'/templates/export/notifications/edit.twig');
+        $source = str_replace(['{% js %}', '{% endjs %}'], ['{% block script %}', '{% endblock %}'], $source);
+        $twig->getLoader()->addLoader(new ArrayLoader([
+            'export-notification-edit.twig' => $source,
+            'freeform/export/_layout' => '{% block content %}{% endblock %}{% block script %}{% endblock %}',
+        ]));
+        $twig->addFilter(new TwigFilter('hash', static fn ($value) => $value));
+        $html = $twig->render('export-notification-edit.twig', [
+            'notification' => $notification,
+            'craft' => [
+                'freeform' => ['name' => 'Freeform', 'pro' => true],
+                'freeformServices' => ['exportProfiles' => ['allNamesById' => [], 'exporterTypes' => []]],
+            ],
+        ]);
+
+        self::assertStringContainsString('freeform/export/notifications/save', $html);
+        self::assertStringNotContainsString('name="notificationId"', $html);
+        self::assertSame([], $this->readErrors($html)['profileId']);
     }
 
     private function renderSpamSettings(Settings $settings): array

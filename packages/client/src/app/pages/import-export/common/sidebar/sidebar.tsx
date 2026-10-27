@@ -1,11 +1,10 @@
 import { SidebarContainer } from "@components/layout/blocks/sidebar-container";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import type React from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { createElement, type FC, type MouseEvent } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type Link = {
   title: string;
@@ -20,8 +19,9 @@ type Response = Array<Link & Heading>;
 
 const localLinks = ["forms", "express-forms", "formie"];
 
-export const Sidebar: React.FC = () => {
+export const Sidebar: FC = () => {
   const { pathname: currentUrl } = useLocation();
+  const navigate = useNavigate();
   const { data, isFetching } = useQuery<Response>({
     queryKey: ["import-export", "navigation"],
     queryFn: () =>
@@ -40,36 +40,50 @@ export const Sidebar: React.FC = () => {
 
   return (
     <SidebarContainer>
-      <nav>
-        <ul>
-          {data.map((item, i) => {
-            if (item?.heading) {
-              return (
-                <li className="heading" key={i}>
-                  <span>{translate(item.heading)}</span>
-                </li>
+      <nav
+        className="freeform-secondary-nav"
+        aria-label={translate("Import / Export")}
+      >
+        {createElement(
+          "craft-nav-list",
+          null,
+          (data ?? []).map((item, i) => {
+            if (item.heading)
+              return createElement(
+                "craft-nav-item",
+                { key: i, group: true },
+                translate(item.heading),
               );
-            }
-
             const url = item.url.replace(/^freeform/, "");
             const isLocal = localLinks.some((keyword) => url.includes(keyword));
-            const label = translate(item.title);
-
-            return (
-              <li key={i}>
-                {isLocal && (
-                  <NavLink
-                    to={url}
-                    className={classes(url === currentUrl && "sel")}
-                  >
-                    {label}
-                  </NavLink>
-                )}
-                {!isLocal && <a href={generateUrl(url)}>{label}</a>}
-              </li>
+            const selected = url === currentUrl;
+            return createElement(
+              "craft-nav-item",
+              {
+                key: i,
+                href: generateUrl(url),
+                active: selected || undefined,
+                current: selected || undefined,
+                "aria-current": selected ? "page" : undefined,
+                onClick: (event: MouseEvent<HTMLElement>) => {
+                  if (
+                    !isLocal ||
+                    event.defaultPrevented ||
+                    event.button !== 0 ||
+                    event.metaKey ||
+                    event.ctrlKey ||
+                    event.shiftKey ||
+                    event.altKey
+                  )
+                    return;
+                  event.preventDefault();
+                  navigate(url);
+                },
+              },
+              translate(item.title),
             );
-          })}
-        </ul>
+          }),
+        )}
       </nav>
     </SidebarContainer>
   );

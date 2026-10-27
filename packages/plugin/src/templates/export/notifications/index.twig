@@ -39,8 +39,8 @@
     <div>
 
         {% if exportNotifications|length %}
-            <table id="export-notifications" class="data fullwidth collapsible">
-                <thead>
+            <table id="export-notifications" class="data fullwidth collapsible cp-table cp-table--spacious freeform-settings-table">
+                <thead><tr>
                 <th scope="col">{{ "Name"|t('app') }}</th>
                 <th scope="col">{{ "Profile"|t('freeform') }}</th>
                 <th scope="col">{{ "Form"|t('freeform') }}</th>
@@ -48,7 +48,7 @@
                 <th scope="col">{{ "Frequency"|t('freeform') }}</th>
                 <th scope="col">{{ "Recipients"|t('freeform') }}</th>
                 <th></th>
-                </thead>
+                </tr></thead>
                 <tbody>
                 {% for notification in exportNotifications %}
                     <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
@@ -104,20 +104,13 @@
             </table>
 
         {% else %}
-            <div class="zilch">
-                {% if craft.freeform.pro %}
-                    {{ "No export notifications exist yet."|t("freeform") }}
-                {% else %}
-                    {{ "Upgrade to the Pro edition of Freeform to get access to Export Notifications."|t('freeform') }}
-                {% endif %}
-            </div>
+            {{ ui('empty', {label: craft.freeform.pro ? 'No export notifications exist yet.'|t('freeform') : 'Upgrade to the Pro edition of Freeform to get access to Export Notifications.'|t('freeform')}) }}
         {% endif %}
 
     </div>
 {% endset %}
 
 {% css %}
-    #content { padding: 0; }
     .status { margin-bottom: -1px; margin-right: 5px; }
 {% endcss %}
 

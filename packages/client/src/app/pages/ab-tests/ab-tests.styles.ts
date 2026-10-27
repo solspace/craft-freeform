@@ -8,17 +8,32 @@ import styled from "styled-components";
 
 import type { ABStatus } from "./ab-tests.types";
 
+export const PageLayout = styled.div`
+  min-height: calc(100dvh - var(--cp-header-height) - 16px);
+  padding: 16px;
+`;
+
 export const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.lg};
-  margin-bottom: 50px;
+  margin-bottom: 0;
 `;
 
 export const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  #header-container {
+    flex: 1;
+  }
+
+  #header {
+    padding: 0;
+  }
 `;
 
 export const Cards = styled.div`
@@ -49,8 +64,9 @@ export const CardHeader = styled.header`
 
   h2 {
     margin: 0;
-    font-size: 32px;
-    font-weight: 600;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
   }
 
   p {

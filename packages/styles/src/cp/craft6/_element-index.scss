@@ -194,12 +194,11 @@
   :is(#toolbar, .menu:has([data-status])) .status {
     width: 10px;
     height: 10px;
-    border: 1px solid rgb(0 0 0 / 0.5);
+    border: 0;
     margin: 0;
 
     &.all {
-      background-image: none;
-      background-color: var(--c-color-neutral-fill-loud);
+      background: linear-gradient(90deg, var(--c-color-blue-fill-loud), var(--c-color-red-fill-loud));
     }
   }
 
@@ -538,4 +537,183 @@
       }
     }
   }
+}
+
+.freeform-cp #freeform-index-pane .search-container {
+  craft-input:has(> [slot='prefix']) > input.form-control {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-inline-start-width: 1px;
+  }
+
+  craft-input:has(> [slot='suffix']) > input.form-control {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    border-inline-end-width: 1px;
+  }
+}
+
+.freeform-element-index {
+  #elements table.data tbody :is(td, th) {
+    height: 50px;
+    font-weight: 400;
+
+    .element .label a, .element .label, .element .label span {
+      font-weight: 400;
+    }
+  }
+
+  .date-range craft-input > input.form-control {
+    padding-inline: var(--c-form-control-spacing-inline);
+  }
+}
+
+.freeform-cp.freeform-element-index {
+  #freeform-index-pane .search-container {
+    craft-input > input.form-control {
+      padding-inline: var(--c-form-control-spacing-inline);
+      box-shadow: var(--c-input-shadow);
+    }
+
+    .freeform-index-search-actions .filter-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: static;
+      width: 32px;
+      height: 32px;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: var(--c-radius-sm);
+      background: transparent;
+      color: var(--c-text-default);
+      transform: none;
+      &::before { content: none; }
+      craft-icon { font-size: 16px; }
+      &:hover { background: var(--c-color-neutral-fill-normal); }
+    }
+  }
+
+  .element-index-view-menu {
+    width: 220px;
+    .sort-field .input .flex { gap: 8px; }
+    .cp-checkbox-select__item {
+      position: relative;
+      gap: 8px;
+      min-height: 28px;
+      padding-block: 0;
+      // Keep the legacy mouse drag target over Craft's accessible reorder
+      // control, so only one icon appears and keyboard reordering still works.
+      .move.draggable-handle {
+        position: absolute;
+        inset-inline-start: 0;
+        width: 24px;
+        height: 24px;
+        opacity: 0;
+      }
+    }
+    .menu-footer > .flex-grow { display: none; }
+  }
+
+  #elements table.data th.orderable {
+    &::after, > button::after { display: none; }
+    > button {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      font: inherit;
+      craft-icon { font-size: 14px; }
+    }
+  }
+
+  #elements > .header {
+    position: static;
+    inset: auto;
+    margin: 0 0 16px;
+    padding: 8px 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  #elements .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    > li { min-width: 0; }
+    craft-card.card {
+      display: block;
+      margin: 0;
+      padding: 0;
+      border: 1px solid var(--c-color-neutral-border-quiet);
+      border-radius: var(--c-radius-md);
+      background: var(--c-surface-default);
+      box-shadow: var(--c-shadow-sm);
+    }
+    .card-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 40px;
+      padding: 4px 8px;
+      margin: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .card-actions-container { position: static; margin-inline-start: auto; }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .edit-btn { border: 0; }
+      .checkbox { position: relative; inset: auto; }
+    }
+    .card-main { padding: 0 16px 16px; }
+    .card-heading { font-size: 14px; font-weight: 400; }
+  }
+}
+
+.freeform-cp.freeform-element-index .element-filter-hud {
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-radius-md);
+  background: var(--c-surface-overlay);
+  box-shadow: var(--c-shadow-lg);
+  .body { padding: 16px; }
+  .condition-group__operator craft-select {
+    min-width: 5rem;
+    width: auto;
+    select.form-control { min-width: 5rem; padding-inline: 8px 28px; }
+  }
+  .main-container > .main > .flex {
+    gap: 8px;
+    margin-block-start: 16px;
+  }
+}
+
+.freeform-cp #freeform-index-pane #elements {
+  .selectallcontainer {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    > .checkbox {
+      position: relative;
+      inset: auto;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--c-form-control-border-color);
+      border-radius: 3px;
+      background: var(--c-form-control-fill);
+    }
+  }
+  .card-grid .edit-btn {
+    width: 32px;
+    height: 32px;
+    &::before, &::after { content: none; }
+  }
+  .card-grid .label :is(a, span) { font-weight: 400; }
 }

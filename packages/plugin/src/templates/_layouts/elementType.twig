@@ -18,7 +18,7 @@
 {% block content %}
     {{ ui('pane', {
         padding: 0,
-        attributes: {id: 'freeform-index-pane', hidden: true},
+        attributes: {id: 'freeform-index-pane', hidden: true, 'data-statuses': statuses|default([])|map(s => {handle: s.handle, color: s.color, label: s.name})|json_encode},
     }) }}
     {{ parent() }}
 {% endblock %}

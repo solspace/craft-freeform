@@ -1,6 +1,8 @@
 /** Reuse Craft's pane and secondary navigation around the existing settings form. */
 export function enhanceCraft6Settings(root: ParentNode = document): void {
-  const pane = root.querySelector<HTMLElement>("#freeform-settings-pane");
+  const pane = root.querySelector<HTMLElement>(
+    "#freeform-settings-pane, #freeform-submission-pane",
+  );
   const main =
     root.querySelector<HTMLElement>("#main-form") ??
     root.querySelector<HTMLElement>("#main");
@@ -10,7 +12,10 @@ export function enhanceCraft6Settings(root: ParentNode = document): void {
 
   main.insertBefore(pane, header);
   const layout = document.createElement("div");
-  layout.className = "freeform-secondary-layout";
+  layout.className =
+    pane.id === "freeform-submission-pane"
+      ? "freeform-secondary-layout freeform-submission-layout"
+      : "freeform-secondary-layout";
   layout.slot = "body";
   pane.append(layout);
   layout.append(header, content);
@@ -26,6 +31,22 @@ export function enhanceCraft6Settings(root: ParentNode = document): void {
     "craft-tabs[data-freeform-page-tabs]",
   )) {
     tabs.replaceWith(tabs.cloneNode(true));
+  }
+  if (pane.id === "freeform-submission-pane") {
+    const rail = pane.querySelector<HTMLElement & { close?: () => void }>(
+      "#freeform-info-tabs",
+    );
+    if (rail) {
+      const liveRail = rail.cloneNode(true) as HTMLElement & {
+        close?: () => void;
+      };
+      rail.remove();
+      liveRail.classList.add("freeform-info-rail");
+      main.append(liveRail);
+      pane
+        .querySelector("#freeform-info-close")
+        ?.addEventListener("click", () => liveRail.close?.());
+    }
   }
   pane.hidden = false;
   pane.dataset.enhanced = "true";

@@ -5,7 +5,7 @@ import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
 import { isFuture, isPast } from "date-fns";
 import type React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { createElement, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import { ABTestActions } from "./ab-tests.actions";
@@ -20,9 +20,9 @@ import {
   CardHeader,
   Cards,
   Dot,
-  EmptyState,
   HeaderRow,
   Meta,
+  PageLayout,
   PageWrapper,
   Variants,
 } from "./ab-tests.styles";
@@ -64,8 +64,13 @@ export const AbTests: React.FC = () => {
     openEditor(test);
   }, [searchParams, data, openEditor]);
 
-  return (
-    <>
+  return createElement(
+    "craft-pane",
+    {
+      className: "freeform-settings-surface freeform-ab-tests-surface",
+      padding: "0",
+    },
+    <PageLayout slot="body">
       <Breadcrumb id="ab-tests-list" label="A/B Tests" url="/ab-tests" />
       <HeaderRow>
         <HeaderContainer>{translate("A/B Tests")}</HeaderContainer>
@@ -79,11 +84,10 @@ export const AbTests: React.FC = () => {
       </HeaderRow>
 
       <PageWrapper>
-        {!data?.length && (
-          <EmptyState>
-            {translate("No A/B Tests found. Create your first test.")}
-          </EmptyState>
-        )}
+        {!data?.length &&
+          createElement("craft-empty", {
+            label: translate("No A/B Tests found. Create your first test."),
+          })}
 
         <Cards>
           {data?.map((test) => {
@@ -172,6 +176,6 @@ export const AbTests: React.FC = () => {
           })}
         </Cards>
       </PageWrapper>
-    </>
+    </PageLayout>,
   );
 };

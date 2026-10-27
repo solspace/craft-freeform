@@ -60,9 +60,10 @@ export const GroupWrap = styled.div`
 
 export const GroupTitle = styled.h2`
   margin: 0 0 16px;
-  color: #596673;
-  font-size: 14px;
-  font-weight: 600;
+  color: var(--c-text-default);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 28px;
 `;
 
 export const ArchivedAndGroupWrapper = styled.div`

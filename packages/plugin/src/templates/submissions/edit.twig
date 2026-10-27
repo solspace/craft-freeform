@@ -2,6 +2,9 @@
 {% import "_includes/forms" as forms %}
 {% import "freeform/submissions/macros/row" as rowMacro %}
 
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-submission-edit') %}
+{% set tabs = {} %}
+
 {% set title = title|default("{title}"|t('freeform', {title: title})) %}
 {% set selectedSubnavItem = selectedSubnavItem|default("submissions") %}
 {% set saveShortcutRedirect = saveShortcutRedirect|default('freeform/submissions/{id}') %}
@@ -25,29 +28,18 @@
 {% if crumbs is not defined %}
   {% set crumbs = [
     rootCrumb,
-    { label: craft.freeform.name, url: url('freeform') },
     { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
     { label: form.name, url: url('freeform/submissions', { source: 'form:' ~ form.id }) }
   ] %}
 {% endif %}
 
-{% block actionButton %}
-  <div class="btngroup submit">
-    <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
-
-    <div class="btn submit menubtn"></div>
-    <div class="menu">
-      <ul>
-        <li>
-          <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-            {{ "Save and continue editing"|t('app') }}
-            <span class="shortcut">⌘S</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </div>
-{% endblock %}
+{% set retainScrollOnSaveShortcut = true %}
+{% set formActions = [{
+  label: 'Save and continue editing'|t('app'),
+  redirect: saveShortcutRedirect|hash,
+  shortcut: true,
+  retainScroll: true,
+}] %}
 
 {% block mainFormAttributes %}
   {{ parent() }}
@@ -72,6 +64,15 @@
 {% endblock %}
 
 {% block content %}
+
+  {{ ui('pane', {padding: 0, attributes: {id: 'freeform-submission-pane', hidden: true}}) }}
+  {% if layout.pages|length > 1 %}
+    {% set pageTabs = [] %}
+    {% for page in layout.pages %}
+      {% set pageTabs = pageTabs|merge([{label: page.label, controls: 'tab-' ~ page.index}]) %}
+    {% endfor %}
+    {{ ui('tabs', {tabs: pageTabs, attributes: {'data-freeform-page-tabs': true}}) }}
+  {% endif %}
 
   <input type="hidden" name="action" value="{{ actionUrl }}">
   <input type="hidden" name="submissionId" value="{{ submission.id }}">
@@ -103,6 +104,11 @@
 {% endblock %}
 
 {% block details %}
+  <div class="freeform-info-header">
+    <h3>{{ 'Info'|t('app') }}</h3>
+    {{ ui('button', {id: 'freeform-info-close', variant: 'plain', size: 'small', accessibleName: 'Close Info'|t('app'), label: ui('icon', {name: 'remove'})}) }}
+  </div>
+  {{ ui('tabs', {placement: 'inline-end', collapsible: true, tabs: [{label: ui('icon', {name: 'circle-info', label: 'Info'|t('app')}), controls: 'details-container'}], attributes: {id: 'freeform-info-tabs'}}) }}
 
   <div id="settings" class="meta">
 
@@ -165,31 +171,22 @@
       required: true
     }) }}
 
-    <div class="field">
-      <div class="heading">
-        <label>{{ 'Form'|t('freeform') }}</label>
-      </div>
-      <div class="input ltr">
-        <span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/forms/' ~ form.id) }}">{{ form.name }}</a>
-      </div>
-    </div>
-
+    {% set formField %}
+      <a class="freeform-submission-form" href="{{ url('freeform/forms/' ~ form.id) }}">
+        <span class="status" style="background: {{ form.color }};"></span>{{ form.name }}
+      </a>
+    {% endset %}
+    {{ forms.field({label: 'Form'|t('freeform')}, formField) }}
   </div>
 
-  <div class="field">
-    <div class="heading">
-      <label for="freeform-submission-note" class="h6">{{ 'Notes about your changes'|t('app') }}</label>
-    </div>
-    <div class="input">
-      <textarea
-          class="text nicetext notes fullwidth freeform-submission-note"
-          id="freeform-submission-note"
-          name="freeform-submission-note"
-          spellcheck="false"
-          style="min-height: 100px;"
-      >{% if note %}{{ note }}{% endif %}</textarea>
-    </div>
-  </div>
+  {{ forms.textareaField({
+    label: 'Notes about your changes'|t('app'),
+    id: 'freeform-submission-note',
+    name: 'freeform-submission-note',
+    value: note|default(''),
+    rows: 1,
+    class: 'freeform-submission-note',
+  }) }}
 
   {% if submission.id and sidebarHtml %}
     {{ sidebarHtml|raw }}

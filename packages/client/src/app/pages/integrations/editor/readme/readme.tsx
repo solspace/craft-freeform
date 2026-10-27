@@ -21,7 +21,11 @@ export const Readme: FC<Props> = ({ active, content }) => {
 
   return (
     <MarkdownWrapper>
-      <Instructions className={classes("markdown-body", active && "active")}>
+      <Instructions
+        className={classes("markdown-body", active && "active")}
+        aria-hidden={!active}
+        inert={!active}
+      >
         <Content
           dangerouslySetInnerHTML={{
             __html: DOMPurify.sanitize(parsedContent),

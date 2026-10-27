@@ -30,6 +30,7 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Fixed Layout fields failing to render in Quick Form dashboard widgets and front-end forms because their stylesheet was missing from the styles build.
 - Fixed date/time minimum and maximum limits ignoring the time in expressions such as `12 hours ago`, in both the picker and submission validation. Limits without a time include the entire day and show date-only validation messages.
 - Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.
 - Fixed duplicate field and column handles when adding, changing, or duplicating layouts and components.

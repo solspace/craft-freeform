@@ -22,6 +22,16 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
  */
 class ContentFieldsTest extends TestCase
 {
+    public function testLayoutStylesArePackagedForTemplateRendering(): void
+    {
+        $field = new LayoutField($this->createMock(Form::class));
+        $css = $field->getLayoutCss();
+
+        self::assertStringContainsString('.freeform-layout-columns', $css);
+        self::assertStringContainsString('grid-template-columns:var(--freeform-columns)', $css);
+        self::assertStringContainsString('--freeform-vertical-alignment', $css);
+    }
+
     public function testNewLayoutsOfferAutoFirstWithoutChangingLegacyAppearance(): void
     {
         $property = new \ReflectionProperty(LayoutField::class, 'designStyle');

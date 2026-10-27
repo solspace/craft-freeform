@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.17.5 - Unreleased
+
+### Security
+- Updated DOMPurify to address sanitization bypasses, including its bundled copy in the code editor.
+- Updated Vitest and Undici development dependencies to address code injection, path traversal, denial-of-service, and integrity-check bypass advisories.
+
 ## 5.17.4 - 2026-10-26
 
 ### Added

@@ -12,36 +12,18 @@
 
 {% set fullPageForm = true %}
 
-{% block actionButton %}
-
-    {% if not readOnly %}
-
-        <div class="buttons">
-            <div class="btngroup submit">
-                <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
-
-                <div class="btn submit menubtn"></div>
-                <div class="menu">
-                    <ul>
-                        <li>
-                            <a class="formsubmit" data-redirect="{{ ('freeform/settings/pdf-templates/{id}')|hash }}">
-                                {{ "Save and continue editing"|t('freeform') }}
-                                <span class="shortcut">⌘S</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="formsubmit" data-redirect="{{ url('freeform/settings/pdf-templates/new')|hash }}">
-                                {{ "Save and add another"|t('freeform') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
-
-{% endblock %}
+{% set formActions = [
+    {
+        label: 'Save and continue editing'|t('app'),
+        redirect: saveShortcutRedirect|hash,
+        shortcut: true,
+        retainScroll: true,
+    },
+    {
+        label: 'Save and add another'|t('app'),
+        redirect: cpUrl('freeform/settings/pdf-templates/new')|hash,
+    },
+] %}
 
 {% block content %}
 

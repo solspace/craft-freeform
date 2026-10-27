@@ -1,5 +1,6 @@
 @use 'craft6/element-index';
 @use 'craft6/settings';
+@use 'craft6/inputs';
 @use 'craft6/dropdowns';
 @use 'craft6/autosuggest';
 @use 'craft6/secondary-navigation';
@@ -184,10 +185,18 @@
       }
     }
 
-    #system-name {
+    #system-info #system-name {
       opacity: 1;
       color: inherit;
       font-weight: var(--font-weight-semibold, 600);
+      position: static;
+      inset: auto;
+      transform: none;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      pointer-events: auto;
     }
 
     #user-info {
@@ -476,7 +485,7 @@
       transform: none;
     }
 
-    #global-header #system-name {
+    #global-header #system-info #system-name {
       display: none;
     }
   }

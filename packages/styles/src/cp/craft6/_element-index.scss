@@ -392,7 +392,8 @@
       padding-inline: 0;
 
       [data-source-item] {
-        min-height: var(--c-size-control-md);
+        min-height: 0;
+        line-height: var(--c-leading-normal, 1.42);
         padding: var(--c-spacing-sm) var(--c-spacing-md);
         margin-block-end: var(--c-spacing-xs);
         border: 1px solid transparent;

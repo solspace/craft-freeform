@@ -1,0 +1,22 @@
+// Legacy CP resets live in the light DOM and override native components'
+// ::slotted borders. Restore their own Craft tokens on the control slot only.
+.freeform-cp {
+  :is(craft-input, craft-input-handle, craft-input-password, craft-input-date, craft-input-time, craft-textarea, craft-select, craft-combobox) {
+    > .form-control:not([type='checkbox'], [type='radio']) {
+      border-width: var(--c-input-border-width, var(--c-form-control-border-width));
+      border-style: var(--c-input-border-style, var(--c-form-control-border-style));
+      border-color: var(--c-input-border-color, var(--c-form-control-border-color));
+
+      &:focus-visible,
+      &[role='combobox']:focus-within {
+        outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+        outline-offset: var(--c-focus-outline-offset);
+      }
+    }
+
+    &[has-feedback-for~='error'] > .form-control,
+    > .form-control[aria-invalid='true'] {
+      border-color: var(--c-color-danger-border-loud);
+    }
+  }
+}

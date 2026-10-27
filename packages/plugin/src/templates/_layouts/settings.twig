@@ -4,6 +4,14 @@
 
 {% set selectedSubnavItem = 'settings' %}
 {% set fullPageForm = true %}
+{% set saveShortcutRedirect = saveShortcutRedirect ?? craft.app.request.absoluteUrl %}
+{% set retainScrollOnSaveShortcut = true %}
+{% set formActions = formActions ?? [{
+    label: 'Save and continue editing'|t('app'),
+    redirect: saveShortcutRedirect|hash,
+    shortcut: true,
+    retainScroll: true,
+}] %}
 
 {% set navItems = craft.freeform.settingsNavigation %}
 
@@ -30,17 +38,9 @@
 }}]) %}
 
 {% block actionButton %}
-
     {% if not readOnly %}
-
-        <div class="buttons">
-            <div class="btngroup submit">
-                <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
-            </div>
-        </div>
-
+        {{ parent() }}
     {% endif %}
-
 {% endblock %}
 
 {% block sidebar %}

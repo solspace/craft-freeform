@@ -72,6 +72,11 @@
         margin: 0;
         height: auto;
       }
+
+      .btngroup > .submit.menubtn {
+        min-width: var(--c-size-control-md);
+        width: var(--c-size-control-md);
+      }
     }
 
     .global-sidebar__footer {

@@ -3,12 +3,15 @@
 ## 6.0.0-beta.5 - Unreleased
 
 ### Added
+- Added Craft's split Save menu with Save and continue editing and its keyboard shortcut to settings pages.
 - Included the features and fixes from Freeform 5.17.1 through 5.17.5, including Usage & Stats, form icons, dashboard and widget improvements, Signature updates, and builder persistence fixes.
 
 ### Removed
 - Removed the Beta Feedback widget and its feedback submission functionality from Freeform 6.
 
 ### Fixed
+- Restored native Craft 6 borders and focus states for settings inputs and environment-aware boolean dropdowns, and limited standard settings control widths on large screens.
+- Fixed the site name overlapping breadcrumbs when the Craft 6 sidebar is collapsed, and matched Submissions filter row sizing to native secondary navigation.
 - Restyled Craft's licensing footer as a small, padded notice without the legacy banner surface.
 - Matched Craft 6's header surface, neutral breadcrumb colors, outer panel corners and shadows, and secondary navigation spacing.
 - Moved Submissions and Spam form filters into the shared white content pane, matching the Settings sidebar layout.

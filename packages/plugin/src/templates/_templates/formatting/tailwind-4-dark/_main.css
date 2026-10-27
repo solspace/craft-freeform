@@ -100,3 +100,29 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
 form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freeform-signature-theme="tailwind-4-dark"] .freeform-signature-wrapper:has(.is-invalid, .freeform-has-errors, .has-error, .input-error, .outline-red-600, .border-red-500, .border-red-600, .outline-red-700, .border-red-700) {
   --ff-signature-pad-border: var(--ff-signature-error);
 }
+
+/* Match searchable dropdowns to the template's outline-based inputs. */
+.freeform-form.freeform-tailwind-4 .ff-searchable {
+  font-size: 1rem !important;
+  line-height: 1.5rem !important;
+}
+@media (min-width: 640px) {
+  .freeform-form.freeform-tailwind-4 .ff-searchable { font-size: .875rem !important; }
+}
+.freeform-form.freeform-tailwind-4 .ff-searchable.ff-searchable .ff-searchable__input {
+  min-height: 0;
+  padding-block: .375rem;
+  padding-inline-start: .75rem;
+  padding-inline-end: 2rem;
+}
+.freeform-form.freeform-tailwind-4 .ff-searchable.ff-searchable .ff-searchable__input:not(.border-1) {
+  border-width: 0;
+}
+.freeform-form.freeform-tailwind-4 .ff-searchable.ff-searchable button.ff-searchable__toggle {
+  width: 2rem;
+  padding: 0;
+}
+
+.freeform-form[data-freeform-theme="dark"] .freeform-file-dnd__input[data-theme="dark"] [data-placeholder] {
+  color: var(--color-gray-400, #9ca3af);
+}

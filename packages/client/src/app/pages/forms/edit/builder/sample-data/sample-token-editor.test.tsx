@@ -19,6 +19,7 @@ const catalog = [
   { id: "firstName", label: "First name", value: "Alex" },
   { id: "lastName", label: "Last name", value: "Smith" },
   { id: "city", label: "City", value: "Winnipeg" },
+  { id: "sentences", label: "Sentences", value: "One. Two. Three." },
 ];
 let host: HTMLDivElement;
 let root: Root;
@@ -148,6 +149,22 @@ it("preserves plain text, literal tag delimiters, and advanced Twig without crea
   expect(tagify.getTagElms()).toHaveLength(0);
   expect(tagify.DOM.input.querySelector("b")).toBeNull();
   expect(editor.current!.flush()).toBe(original);
+});
+
+it("inserts the three-sentence preset and preserves its expression when reopened", async () => {
+  const tagify = render("");
+  act(() => editor.current!.insert(catalog[3]));
+  await settle();
+  expect(host.querySelector("output")!.textContent).toBe(
+    "{{ faker.sentences(3, true)|raw }}",
+  );
+  expect(tagify.getTagElms()[0].textContent).toContain("Sentences");
+
+  const expression = "{{ faker.sentences(3, true) }}";
+  act(() => setValue(expression));
+  await settle();
+  expect(tagify.value.map((tag) => tag.value)).toEqual(["sentences"]);
+  expect(editor.current!.flush()).toBe(expression);
 });
 
 it("turns a manually entered simple Twig expression into a pill on blur", async () => {

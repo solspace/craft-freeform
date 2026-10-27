@@ -178,8 +178,14 @@ $color-fill: #077bff;
           align-items: center;
           justify-content: center;
 
+          box-sizing: border-box;
           width: 20px;
           height: 20px;
+          min-width: 0;
+          min-height: 0;
+          padding: 0;
+          margin: 0;
+          line-height: 1;
           color: #878787;
           cursor: pointer;
 
@@ -189,6 +195,10 @@ $color-fill: #077bff;
           border-radius: 50%;
 
           transition: all 0.2s ease-out;
+
+          svg {
+            flex: 0 0 auto;
+          }
 
           &:hover {
             color: #ffffff;
@@ -258,8 +268,12 @@ $color-fill: #077bff;
   }
 
   &[data-theme="dark"] {
-    color: #656666;
+    color: #e5e7eb;
     background: #222222;
+
+    [data-placeholder] {
+      color: inherit;
+    }
 
     &[data-dragging] {
       background-color: #171717;
@@ -269,17 +283,17 @@ $color-fill: #077bff;
       [data-file-preview] {
         [data-filename],
         [data-placeholder] {
-          color: #bababa;
+          color: #cbd5e1;
         }
 
         [data-remove-button] {
-          color: #bababa;
+          color: #cbd5e1;
           background-color: #666666;
           border-color: #666666;
         }
 
         [data-filesize] {
-          color: #787878;
+          color: #9ca3af;
         }
 
         [data-errors]:after {

@@ -1,5 +1,9 @@
 # Repository instructions
 
+## Commit messages
+
+- Always use Conventional Commit prefixes, such as `fix:`, `feat:`, `chore:`, `docs:`, `refactor:`, or `test:`. Choose the prefix that describes the change.
+
 ## Generated client assets
 
 - After changing client source, run `pnpm --filter @ff/client build` before committing or pushing. This repository tracks the built JavaScript and manifest in `packages/plugin/src/Resources/js/client`; include the regenerated assets in the commit so normal Craft installs receive the change.

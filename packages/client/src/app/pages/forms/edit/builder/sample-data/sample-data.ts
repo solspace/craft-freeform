@@ -1,14 +1,26 @@
 export type SampleGenerator = { id: string; label: string; value: string };
 
-// Preview only the simple expressions the picker inserts. Other Twig stays editable.
-export const parseSampleExpression = (value: unknown): string | undefined =>
-  typeof value === "string"
-    ? /^\s*\{\{\s*faker\.([a-zA-Z]\w*)\s*(?:\(\s*\))?\s*(?:\|\s*raw\s*)?\}\}\s*$/.exec(
-        value,
-      )?.[1]
-    : undefined;
+// Preview only the expressions the picker inserts. Other Twig stays editable.
+export const parseSampleExpression = (value: unknown): string | undefined => {
+  if (typeof value !== "string") return undefined;
+  if (
+    /^\s*\{\{\s*faker\.sentences\s*\(\s*3\s*,\s*true\s*\)\s*(?:\|\s*raw\s*)?\}\}\s*$/.test(
+      value,
+    )
+  )
+    return "sentences";
+  const id =
+    /^\s*\{\{\s*faker\.([a-zA-Z]\w*)\s*(?:\(\s*\))?\s*(?:\|\s*raw\s*)?\}\}\s*$/.exec(
+      value,
+    )?.[1];
+  // Faker returns an array unless the Sentences preset supplies its arguments.
+  return id === "sentences" ? undefined : id;
+};
 
-export const sampleExpression = (id: string): string => `{{ faker.${id}|raw }}`;
+export const sampleExpression = (id: string): string =>
+  id === "sentences"
+    ? "{{ faker.sentences(3, true)|raw }}"
+    : `{{ faker.${id}|raw }}`;
 
 export type SamplePart =
   | { type: "text"; value: string }
@@ -84,7 +96,7 @@ export const groupGenerators = (
     email: ["email", "safeEmail", "companyEmail"],
     phone: ["phoneNumber", "e164PhoneNumber"],
     website: ["url", "domainName", "slug"],
-    textarea: ["paragraph", "text", "sentence"],
+    textarea: ["paragraph", "sentences", "text", "sentence"],
     password: ["password"],
     number: ["numberBetween", "randomNumber", "randomFloat"],
   };

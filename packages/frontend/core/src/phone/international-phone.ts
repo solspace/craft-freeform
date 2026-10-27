@@ -126,15 +126,17 @@ export function mountInternationalPhone(
     "padding-inline-start": `calc(${selectorWidth} + var(--ff-phone-input-spacing, ${padding}))`,
   });
   let restoreLabel: (() => void) | undefined;
+  let floatingLabel: HTMLLabelElement | undefined;
+  let labelMargin = "0px";
   if (
     next instanceof HTMLLabelElement &&
     next.htmlFor === input.id &&
     getComputedStyle(next).position === "absolute"
   ) {
-    restoreLabel = preserve(next, "padding-inline-start");
-    style(next, {
-      "padding-inline-start": `calc(${selectorWidth} + ${getComputedStyle(next).paddingInlineStart || padding})`,
-    });
+    // Offset the label box itself: transformed floating labels scale their padding.
+    restoreLabel = preserve(next, "margin-inline-start");
+    floatingLabel = next;
+    labelMargin = getComputedStyle(next).marginInlineStart || "0px";
   }
   style(root, {
     position: "absolute",
@@ -228,6 +230,12 @@ export function mountInternationalPhone(
   });
   style(empty, { padding: ".75rem" });
   const layout = () => {
+    if (floatingLabel) {
+      // Resolve em-based selector widths against the control, not the smaller label.
+      style(floatingLabel, {
+        "margin-inline-start": `calc(${getComputedStyle(button).width} + ${labelMargin})`,
+      });
+    }
     const computed = getComputedStyle(input);
     // offsetHeight/offsetTop round fractional pixels, which can put the
     // selector below the input's bottom border. Keep its exact border box.

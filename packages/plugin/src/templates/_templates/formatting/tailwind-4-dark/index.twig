@@ -6,7 +6,7 @@
 {# Render the opening form tag #}
 {{ form.renderTag({
   attributes: {
-    form: { "data-freeform-theme": "dark", class: "freeform-form", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-4-dark", "data-freeform-signature-max-scale": 1.25 },
+    form: { "data-freeform-theme": "dark", class: "freeform-form freeform-tailwind-4", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-4-dark", "data-freeform-signature-max-scale": 1.25 },
     row: { class: "flex gap-x-2 -mx-2 mb-4" },
     success: { class: "rounded-md bg-green-900/20 p-4 mb-10", role: "status" },
     errors: { class: "rounded-md bg-red-900/20 p-4 mb-10", role: "alert" },
@@ -136,6 +136,7 @@
     "@file-dnd": {
       attributes: {
         input: {
+          "data-theme": "dark",
           "-class": "block w-full outline outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500",
           "+class": "justify-center rounded-md !bg-white/1 !border border-dashed !border-white/15",
         },

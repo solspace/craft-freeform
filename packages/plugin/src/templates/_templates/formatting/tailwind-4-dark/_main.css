@@ -126,3 +126,17 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
 .freeform-form[data-freeform-theme="dark"] .freeform-file-dnd__input[data-theme="dark"] [data-placeholder] {
   color: var(--color-gray-400, #9ca3af);
 }
+
+/* Keep upload guidance and controls consistent with neighboring Tailwind fields. */
+.freeform-form.freeform-tailwind-4 .freeform-file-dnd__input:not([data-contains-files]) {
+  padding: 2rem 1rem;
+}
+.freeform-form.freeform-tailwind-4 .freeform-file-dnd__input [data-placeholder] {
+  font-size: 1rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.freeform-form.freeform-tailwind-4 .freeform-upload-requirements {
+  margin-top: .5rem;
+  margin-bottom: 0;
+}

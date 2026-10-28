@@ -178,3 +178,10 @@ select.ff-searchable-native ~ svg[data-slot="icon"],
 select.ff-searchable-native ~ .pointer-events-none:has(> svg) {
   display: none;
 }
+
+.ff-searchable.ff-searchable .ff-searchable__chevron {
+  display: block;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+}

@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.17.6 - Unreleased
+
+### Added
+- Added an optional **Optimize Photos** setting to File Upload and File Drag & Drop fields to convert supported photos to JPEG, apply orientation, remove metadata, and limit dimensions, quality and file size. HEIC/HEIF conversion requires Imagick with HEIC support; JPEG orientation with GD requires PHP EXIF. Upload limits still apply to the original file.
+- Added German, French, Italian and Dutch translations for photo optimization settings and upload errors.
+
+### Changed
+- Improved Tailwind 4 light and dark upload spacing, placeholder sizing and stacked field layouts.
+- Replaced font-dependent searchable dropdown arrows with consistently sized, centered SVG chevrons.
+- Improved upload previews to wrap within their field, with readable filenames, file sizes and larger removal controls.
+
+### Fixed
+- Fixed File Drag & Drop browser size checks using a different KB unit than server validation.
+- Fixed file upload errors being ignored when another file in the same batch uploaded successfully.
+- Fixed GraphQL uploads leaving temporary files behind after unsuccessful asset saves.
+- Fixed upload requirement text overriding template instruction styling.
+- Fixed duplicate searchable dropdown arrows in control-panel submission details and Quick Form widgets.
+- Fixed optimized drag-and-drop previews showing the original filename, size or thumbnail instead of the saved photo.
+
 ## 5.17.5 - 2026-10-27
 
 ### Security

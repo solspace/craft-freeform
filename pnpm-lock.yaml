@@ -52,7 +52,7 @@ importers:
         version: 5.101.4(react@19.2.8)
       '@tinymce/tinymce-react':
         specifier: 6.3.0
-        version: 6.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tinymce@8.8.2)
+        version: 6.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tinymce@8.9.3)
       '@yaireo/tagify':
         specifier: 4.37.1
         version: 4.37.1(prop-types@15.8.1)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -117,8 +117,8 @@ importers:
         specifier: 6.5.2
         version: 6.5.2(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       tinymce:
-        specifier: 8.8.2
-        version: 8.8.2
+        specifier: 8.9.3
+        version: 8.9.3
       uuid:
         specifier: 14.0.1
         version: 14.0.1
@@ -2403,8 +2403,8 @@ packages:
     resolution: {integrity: sha512-wXR/dYpcqKmfWpEdZjiKJOwCNFndD0DMnrW/cYjVGttEkBfVgcLFHoNrlj47mjOVic9yyNu65alsgF4NQyTa2g==}
     engines: {node: '>=12.0.0'}
 
-  tinymce@8.8.2:
-    resolution: {integrity: sha512-wcUGaaAf4XFrQtbZtClbDN/QCqklXLlPt3+7UWliEoosuhnTOJUkXwf7Fzlq7agPnwkKKp1e4JGOhx3O1gWH3g==}
+  tinymce@8.9.3:
+    resolution: {integrity: sha512-T6Z541dm8R34/rgotB40/j2lwrE3eKARbaoet37/I4d3jq+S7Ul3Q7bNZUQY2WtXOvD9P5aTVbgcYI1nKQoGqg==}
 
   tinyrainbow@3.1.0:
     resolution: {integrity: sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==}
@@ -3245,13 +3245,13 @@ snapshots:
       '@types/react': 19.2.17
       '@types/react-dom': 19.2.3(@types/react@19.2.17)
 
-  '@tinymce/tinymce-react@6.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tinymce@8.8.2)':
+  '@tinymce/tinymce-react@6.3.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(tinymce@8.9.3)':
     dependencies:
       prop-types: 15.8.1
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
     optionalDependencies:
-      tinymce: 8.8.2
+      tinymce: 8.9.3
 
   '@types/aria-query@5.0.4': {}
 
@@ -4452,7 +4452,7 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.5)
       picomatch: 4.0.5
 
-  tinymce@8.8.2: {}
+  tinymce@8.9.3: {}
 
   tinyrainbow@3.1.0: {}
 

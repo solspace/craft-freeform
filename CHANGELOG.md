@@ -7,6 +7,7 @@
 - Added German, French, Italian and Dutch translations for photo optimization settings and upload errors.
 
 ### Changed
+- Updated TinyMCE to address a stored cross-site scripting vulnerability in rich-text and email-template editors.
 - Improved Tailwind 4 light and dark upload spacing, placeholder sizing and stacked field layouts.
 - Replaced font-dependent searchable dropdown arrows with consistently sized, centered SVG chevrons.
 - Improved upload previews to wrap within their field, with readable filenames, file sizes and larger removal controls.

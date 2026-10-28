@@ -36,6 +36,7 @@ use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -84,17 +85,8 @@ class SubmissionsController extends BaseController
         $this->requirePostRequest();
         $exportProfilesService = $this->getExportProfileService();
 
-        $submissionIds = \Craft::$app->request->post('submissionIds');
-        $submissionIds = explode(',', $submissionIds);
-
-        /** @var SubmissionQuery $query */
-        $query = Submission::find()->id($submissionIds);
-        if (!$query->count()) {
-            throw new FreeformException(Freeform::t('No submissions found'));
-        }
-
-        /** @var Submission $submission */
-        $submission = $query->one();
+        $query = $this->getExportQuery();
+        $submission = $exportProfilesService->getSubmissionForExport($query);
         $form = $submission->getForm();
 
         $this->checkPermissions($form);
@@ -116,6 +108,21 @@ class SubmissionsController extends BaseController
         $exporter = new ExportCsv($form, $query, $fieldDescriptors, $exportProfilesService->getExportSettings());
 
         $exportProfilesService->export($exporter, $form);
+    }
+
+    public function actionValidateExport(): Response
+    {
+        $this->requirePostRequest();
+
+        try {
+            $submission = $this->getExportProfileService()->getSubmissionForExport($this->getExportQuery());
+        } catch (BadRequestHttpException|FreeformException $exception) {
+            return $this->asJson(['success' => false, 'message' => $exception->getMessage()]);
+        }
+
+        $this->checkPermissions($submission->getForm());
+
+        return $this->asJson(['success' => true]);
     }
 
     public function actionEdit(int $id): Response
@@ -351,6 +358,13 @@ class SubmissionsController extends BaseController
     protected function getEditTemplateVariables(Submission $submission): array
     {
         return [];
+    }
+
+    private function getExportQuery(): SubmissionQuery
+    {
+        $submissionIds = explode(',', \Craft::$app->request->post('submissionIds'));
+
+        return Submission::find()->id($submissionIds);
     }
 
     private function checkPermissions(Form $form): void

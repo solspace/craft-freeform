@@ -12,6 +12,7 @@
 - Improved upload previews to wrap within their field, with readable filenames, file sizes and larger removal controls.
 
 ### Fixed
+- Fixed CSV exports silently omitting submissions when selecting submissions from multiple forms. Mixed-form selections now display an error toast asking users to select a single form, without opening a new tab.
 - Fixed File Drag & Drop browser size checks using a different KB unit than server validation.
 - Fixed file upload errors being ignored when another file in the same batch uploaded successfully.
 - Fixed GraphQL uploads leaving temporary files behind after unsuccessful asset saves.

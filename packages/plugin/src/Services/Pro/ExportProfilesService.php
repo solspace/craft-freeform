@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\Export\Implementations\Text\ExportText;
 use Solspace\Freeform\Bundles\Export\Implementations\Xml\ExportXml;
 use Solspace\Freeform\Bundles\Export\SubmissionExportInterface;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Export\Profiles\DeleteEvent;
 use Solspace\Freeform\Events\Export\Profiles\RegisterExporterEvent;
 use Solspace\Freeform\Events\Export\Profiles\SaveEvent;
@@ -22,6 +23,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
 use yii\base\Component;
+use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 
 class ExportProfilesService extends Component
@@ -232,6 +234,31 @@ class ExportProfilesService extends Component
             $settings->isExportHandlesAsNames(),
             $settings->isExportTrackedUrlParameters(),
         );
+    }
+
+    public function getSubmissionForExport(SubmissionQuery $query): Submission
+    {
+        // Inspect every selected form before loading content, which can infer a single form from the IDs.
+        $formIds = (clone $query)
+            ->skipContent(true)
+            ->select([Submission::TABLE_STD.'.[[formId]]'])
+            ->column()
+        ;
+
+        if (\count(array_unique($formIds)) > 1) {
+            throw new BadRequestHttpException(Freeform::t('Submissions from multiple forms cannot be exported together. Please select submissions from a single form and try again.'));
+        }
+
+        if (!$formIds) {
+            throw new FreeformException(Freeform::t('No submissions found'));
+        }
+
+        $submission = $query->skipContent(false)->one();
+        if (!$submission instanceof Submission) {
+            throw new FreeformException(Freeform::t('No submissions found'));
+        }
+
+        return $submission;
     }
 
     public function createExporter(

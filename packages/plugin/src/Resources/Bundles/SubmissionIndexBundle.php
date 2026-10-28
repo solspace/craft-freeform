@@ -10,6 +10,7 @@ class SubmissionIndexBundle extends AbstractFreeformAssetBundle
             'js/scripts/cp/submissions/index.js',
             'js/scripts/cp/submissions/element-index.js',
             'js/scripts/cp/submissions/actions/send-notification.js',
+            'js/scripts/cp/submissions/actions/export-csv.js',
         ];
     }
 

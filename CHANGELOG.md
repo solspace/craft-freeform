@@ -38,6 +38,28 @@
 - Fixed Settings tab navigation disrupting browser history.
 - Fixed **Quick Form** dashboard widgets not displaying field-specific validation errors and input error styles.
 
+## 5.17.6 - 2026-10-28
+
+### Added
+- Added an optional **Optimize Photos** setting to File Upload and File Drag & Drop fields to convert supported photos to JPEG, apply orientation, remove metadata, and limit dimensions, quality and file size. HEIC/HEIF conversion requires Imagick with HEIC support. JPEG orientation with GD requires PHP EXIF. Upload limits still apply to the original file.
+
+### Changed
+- Improved Tailwind 4 light and dark upload spacing, placeholder sizing and stacked field layouts.
+- Replaced font-dependent searchable dropdown arrows with consistently sized, centered SVG chevrons.
+- Improved upload previews to wrap within their field, with readable filenames, file sizes and larger removal controls.
+
+### Fixed
+- Fixed allowed spam submissions not becoming searchable by their field values until search indexes were rebuilt.
+- Fixed log clearing on Craft 4 and routed email and integration errors exclusively to the Error log, so clearing it also clears dashboard error counts.
+- Fixed CSV exports silently omitting submissions when selecting submissions from multiple forms. Mixed-form selections now display an error toast asking users to select a single form, without opening a new tab.
+- Fixed File Drag & Drop browser size checks using a different KB unit than server validation.
+- Fixed file upload errors being ignored when another file in the same batch uploaded successfully.
+- Fixed GraphQL uploads leaving temporary files behind after unsuccessful asset saves.
+- Fixed upload requirement text overriding template instruction styling.
+
+### Security
+- Updated TinyMCE to address a stored cross-site scripting vulnerability in rich-text and email-template editors.
+
 ## 5.17.5 - 2026-10-27
 
 ### Security

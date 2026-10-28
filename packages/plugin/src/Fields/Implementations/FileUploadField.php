@@ -24,6 +24,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -96,6 +97,33 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     )]
     protected bool $showUploadRequirements = false;
 
+    #[Limitation('props.file', 'optimizeImages')]
+    #[DefaultValue('props.file.optimizeImages')]
+    #[Input\Boolean(
+        label: 'Optimize Photos',
+        instructions: 'Convert JPG, PNG, WebP and HEIC/HEIF photos to smaller JPEGs before storing them. Transparency is replaced with white and photo metadata is removed. HEIC/HEIF requires Imagick with HEIC support. The upload size limit still applies to the original file. GD requires the EXIF extension for JPEG orientation.',
+        order: 50,
+    )]
+    protected bool $optimizeImages = false;
+
+    #[VisibilityFilter('Boolean(properties.optimizeImages)')]
+    #[Limitation('props.file', 'imageMaxDimension')]
+    #[DefaultValue('props.file.imageMaxDimension')]
+    #[Input\Integer(label: 'Maximum Photo Dimension', instructions: 'Maximum width or height in pixels, from 320 to 8000. Photos are never enlarged.', order: 51)]
+    protected int $imageMaxDimension = 2000;
+
+    #[VisibilityFilter('Boolean(properties.optimizeImages)')]
+    #[Limitation('props.file', 'imageQuality')]
+    #[DefaultValue('props.file.imageQuality')]
+    #[Input\Integer(label: 'JPEG Quality', instructions: 'JPEG quality from 40 to 95. Lower values produce smaller files.', order: 52)]
+    protected int $imageQuality = 85;
+
+    #[VisibilityFilter('Boolean(properties.optimizeImages)')]
+    #[Limitation('props.file', 'imageMaxSizeKB')]
+    #[DefaultValue('props.file.imageMaxSizeKB')]
+    #[Input\Integer(label: 'Maximum Optimized Photo Size', instructions: 'Maximum size of each saved JPEG in KB, from 64 to 16384. Quality and dimensions are reduced further when needed.', order: 53)]
+    protected int $imageMaxSizeKB = 2048;
+
     /**
      * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
      * Stores the assetID once as value for handle key.
@@ -106,6 +134,26 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
      * Contains any errors for a given upload field.
      */
     private static array $filesUploadedErrors = [];
+
+    public function isOptimizeImages(): bool
+    {
+        return $this->optimizeImages;
+    }
+
+    public function getImageMaxDimension(): int
+    {
+        return max(320, min(8000, $this->imageMaxDimension));
+    }
+
+    public function getImageQuality(): int
+    {
+        return max(40, min(95, $this->imageQuality));
+    }
+
+    public function getImageMaxSizeKB(): int
+    {
+        return max(64, min(16384, $this->imageMaxSizeKB));
+    }
 
     public function isSampleDataEnabled(): bool
     {
@@ -166,7 +214,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
     public function getMaxFileSizeBytes(): int
     {
-        return $this->getMaxFileSizeKB() * 1000;
+        return $this->getMaxFileSizeKB() * 1024;
     }
 
     public function getFileCount(): int
@@ -314,7 +362,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         return Html::tag('div', Html::encode($this->getUploadRequirementsText()), [
             'id' => $this->getIdAttribute().'-upload-requirements',
             'class' => trim('freeform-upload-requirements '.$instructionClass),
-            'style' => 'margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4;',
+            'style' => $instructionClass ? null : 'margin-top: 0.375em; margin-bottom: 0; font-size: 0.875em; line-height: 1.4;',
         ]);
     }
 }

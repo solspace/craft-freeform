@@ -21,6 +21,7 @@ use craft\errors\UploadFailedException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
+use craft\helpers\ConfigHelper;
 use craft\helpers\Db;
 use craft\helpers\FileHelper;
 use craft\models\Volume;
@@ -37,6 +38,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
+use Solspace\Freeform\Library\FileUploads\ImageUploadProcessor;
 use Solspace\Freeform\Library\Security\RemoteFileDownloader;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\ErrorException;
@@ -111,7 +113,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 continue;
             }
 
-            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors);
+            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors, $field);
             if ($asset) {
                 $assetId = $asset->id;
                 $this->markAssetUnfinalized($assetId);
@@ -124,11 +126,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
 
-        if ($uploadedAssetIds) {
-            return new FileUploadResponse($uploadedAssetIds);
-        }
-
-        return new FileUploadResponse(null, $errors);
+        return new FileUploadResponse($uploadedAssetIds, $errors);
     }
 
     public function getTableCellUploadedFiles(string $tableHandle, int $rowIndex, int $columnIndex): array
@@ -279,6 +277,16 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                     );
                 }
 
+                $originalPath = $tempPath;
+
+                try {
+                    [$tempPath, $filename] = $this->preparePhoto($tempPath, $filename, $field);
+                } finally {
+                    if ($originalPath !== $tempPath && is_file($originalPath)) {
+                        @unlink($originalPath);
+                    }
+                }
+
                 $asset = new Asset();
                 $asset->kind = AssetsHelper::getFileKindByExtension($filename);
                 $asset->tempFilePath = $tempPath;
@@ -292,7 +300,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 $response = \Craft::$app->getElements()->saveElement($asset);
             } catch (\Throwable $e) {
                 $errors[] = $e->getMessage();
-
+            } finally {
                 if ($tempPath && is_file($tempPath)) {
                     @unlink($tempPath);
                 }
@@ -312,11 +320,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
 
-        if ($uploadedAssetIds) {
-            return new FileUploadResponse($uploadedAssetIds);
-        }
-
-        return new FileUploadResponse(null, $errors);
+        return new FileUploadResponse($uploadedAssetIds, $errors);
     }
 
     public function extractBase64String(array $fileUpload): ?array
@@ -428,7 +432,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $uploadedSuccessfully = false;
 
         try {
-            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors);
+            $asset = $this->saveUploadedFileToFolder($uploadedFile, $folder, $errors, $field);
             $uploadedSuccessfully = null !== $asset;
         } catch (\Throwable $e) {
             $errors[] = $e->getMessage();
@@ -651,15 +655,51 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             $allowedExtensions = \Craft::$app->getConfig()->getGeneral()->allowedFileExtensions;
         }
 
-        return $allowedExtensions;
+        // HEIC is accepted only as input for conversion to an already allowed JPEG output.
+        // It is never added to Craft's global allowed extensions or stored as an original.
+        $allowedExtensions = array_map('strtolower', $allowedExtensions);
+        if ($field->isOptimizeImages() && array_intersect(['jpg', 'jpeg'], $allowedExtensions)
+            && (!$selectedFileKinds || \in_array('image', $selectedFileKinds, true))) {
+            $allowedExtensions = array_merge($allowedExtensions, ['heic', 'heif']);
+        }
+
+        return array_values(array_unique($allowedExtensions));
+    }
+
+    /** Immediate preview for the newly uploaded optimized photo, including private volumes. */
+    public function getOptimizedPhotoPreview(Asset $asset, FileUploadField $field): ?string
+    {
+        if (!$field->isOptimizeImages() || !\in_array(strtolower($asset->getExtension()), ['jpg', 'jpeg'], true)) {
+            return null;
+        }
+        $source = $preview = null;
+
+        try {
+            $source = $asset->getCopyOfFile();
+            [$preview] = (new ImageUploadProcessor())->process($source, $asset->getFilename(), 320, 75, 65536);
+
+            return 'data:image/jpeg;base64,'.base64_encode(file_get_contents($preview));
+        } catch (\Throwable) {
+            // A preview failure must not turn an already saved upload into an error.
+            return null;
+        } finally {
+            foreach (array_unique(array_filter([$source, $preview])) as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                }
+            }
+        }
     }
 
     private function saveUploadedFileToFolder(
         UploadedFile $uploadedFile,
         VolumeFolder $folder,
-        array &$errors
+        array &$errors,
+        ?FileUploadField $field = null,
     ): ?Asset {
         $asset = null;
+        $tempPath = null;
+        $processedPath = null;
 
         try {
             $filename = Assets::prepareAssetName($uploadedFile->name);
@@ -671,8 +711,9 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 throw new UploadFailedException(0, null, $e);
             }
 
-            $asset->kind = AssetsHelper::getFileKindByExtension($uploadedFile->name);
-            $asset->tempFilePath = $tempPath;
+            [$processedPath, $filename] = $this->preparePhoto($tempPath, $filename, $field);
+            $asset->kind = AssetsHelper::getFileKindByExtension($filename);
+            $asset->tempFilePath = $processedPath;
             $asset->filename = $filename;
             $asset->setScenario(Asset::SCENARIO_CREATE);
             $asset->setVolumeId($folder->volumeId);
@@ -686,6 +727,12 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             }
         } catch (Exception|\Throwable $e) {
             $errors[] = $e->getMessage();
+        } finally {
+            foreach (array_unique(array_filter([$tempPath, $processedPath])) as $path) {
+                if (is_file($path)) {
+                    @unlink($path);
+                }
+            }
         }
 
         if ($asset) {
@@ -693,6 +740,40 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return null;
+    }
+
+    private function preparePhoto(string $path, string $filename, ?FileUploadField $field): array
+    {
+        if (!$field || !$field->isOptimizeImages() || !ImageUploadProcessor::handles($filename)) {
+            return [$path, $filename];
+        }
+
+        $allowed = $this->getValidExtensions($field);
+        if (!array_intersect(['jpg', 'jpeg'], $allowed)) {
+            throw new \RuntimeException(Freeform::t('Photo optimization requires JPEG uploads to be allowed.'));
+        }
+        $sourceBytes = filesize($path);
+        $craftLimit = ConfigHelper::sizeInBytes(\Craft::$app->getConfig()->getGeneral()->maxUploadFileSize);
+        if (!$sourceBytes || $sourceBytes > min($field->getMaxFileSizeBytes(), $craftLimit)) {
+            throw new \RuntimeException(Freeform::t('The original file exceeds the maximum upload size.'));
+        }
+
+        try {
+            [$processedPath, $processedName] = (new ImageUploadProcessor())->process(
+                $path,
+                $filename,
+                $field->getImageMaxDimension(),
+                $field->getImageQuality(),
+                min($field->getImageMaxSizeKB() * 1024, $field->getMaxFileSizeBytes(), $craftLimit),
+            );
+            if (!\in_array('jpg', $allowed, true)) {
+                $processedName = pathinfo($processedName, \PATHINFO_FILENAME).'.jpeg';
+            }
+
+            return [$processedPath, $processedName];
+        } catch (\RuntimeException $exception) {
+            throw new \RuntimeException(Freeform::t($exception->getMessage()), 0, $exception);
+        }
     }
 
     private function getFolder($volumeId, string $subpath, Form $form): ?VolumeFolder

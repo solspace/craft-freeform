@@ -6,6 +6,7 @@ export type FileMetadata = {
   extension: string;
   size: string;
   url?: string;
+  preview?: string;
 };
 
 export enum ErrorTypes {

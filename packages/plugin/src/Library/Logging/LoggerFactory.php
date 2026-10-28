@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Library\Logging;
 
+use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
@@ -36,14 +37,24 @@ class LoggerFactory
             $requestId = CryptoHelper::getUniqueToken(6);
         }
 
-        $hash = sha1($category.$logfilePath);
+        $hash = sha1($category.':'.$logfilePath.':'.$level);
 
         if (!isset(self::$instance[$hash])) {
             $logger = new Logger($category);
 
             $plugin = Freeform::getInstance();
             $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
-            $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
+            $errorLogfilePath = FreeformLogger::getLogfilePath(null);
+            if ($logfilePath === $errorLogfilePath) {
+                $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
+            } else {
+                $logger->pushHandler(new StreamHandler($errorLogfilePath, self::defaultErrorLevel()));
+                $logger->pushHandler(new FilterHandler(
+                    new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()),
+                    Logger::DEBUG,
+                    Logger::WARNING,
+                ));
+            }
             $logger->pushProcessor(new RedactSensitiveInfoProcessor());
             $logger->pushProcessor(static function ($record) use ($requestId) {
                 $record['extra']['requestId'] = $requestId;

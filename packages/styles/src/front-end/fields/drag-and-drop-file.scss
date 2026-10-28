@@ -1,5 +1,3 @@
-@use "../../shared/media-queries";
-
 $gap: 20px;
 $border-radius: 7px;
 
@@ -95,22 +93,12 @@ $color-fill: #077bff;
 
   [data-preview-zone] {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--freeform-upload-preview-size, 7rem)), 1fr));
     gap: $gap;
 
-    @include media-queries.sm {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    @include media-queries.md {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    @include media-queries.lg {
-      grid-template-columns: repeat(8, 1fr);
-    }
-
     [data-file-preview] {
+      min-width: 0;
+      max-width: 100%;
       cursor: initial;
 
       opacity: 1;
@@ -171,16 +159,16 @@ $color-fill: #077bff;
 
         [data-remove-button] {
           position: absolute;
-          top: -9px;
-          right: -9px;
+          top: -10px;
+          right: -10px;
 
           display: flex;
           align-items: center;
           justify-content: center;
 
           box-sizing: border-box;
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           min-width: 0;
           min-height: 0;
           padding: 0;
@@ -241,18 +229,22 @@ $color-fill: #077bff;
         padding: 0;
         margin: 0;
 
+        overflow: hidden;
+        line-height: 1.5;
         text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       [data-filename] {
         font-size: 0.875rem;
         color: #5c5c5c;
-        word-break: break-all;
+        margin-top: .375rem;
       }
 
       [data-filesize] {
         font-size: 0.8125rem;
-        color: #b1b1b1;
+        color: #6b7280;
       }
 
       &[data-completed] {

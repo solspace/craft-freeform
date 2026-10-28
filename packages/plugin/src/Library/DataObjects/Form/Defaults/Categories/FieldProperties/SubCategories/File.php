@@ -48,6 +48,22 @@ class File extends BaseCategory
     #[SetDefaultValue(false)]
     public BoolItem $showUploadRequirements;
 
+    #[Label('Optimize Photos')]
+    #[SetDefaultValue(false)]
+    public BoolItem $optimizeImages;
+
+    #[Label('Maximum Photo Dimension')]
+    #[SetDefaultValue('2000')]
+    public TextItem $imageMaxDimension;
+
+    #[Label('JPEG Quality')]
+    #[SetDefaultValue('85')]
+    public TextItem $imageQuality;
+
+    #[Label('Maximum Optimized Photo Size (KB)')]
+    #[SetDefaultValue('2048')]
+    public TextItem $imageMaxSizeKB;
+
     #[Label('Accent Color')]
     #[SetDefaultValue(FileDragAndDropField::DEFAULT_ACCENT)]
     public ColorItem $accentColor;

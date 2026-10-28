@@ -71,7 +71,8 @@ export class SearchableSelect {
     this.toggle.type = "button";
     this.toggle.className = "ff-searchable__toggle";
     this.toggle.tabIndex = -1;
-    this.toggle.textContent = "▾";
+    this.toggle.innerHTML =
+      '<svg class="ff-searchable__chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m6 9 6 6 6-6" /></svg>';
     this.list = doc.createElement("div");
     this.list.id = `${id}-list`;
     this.list.className = "ff-searchable__list";

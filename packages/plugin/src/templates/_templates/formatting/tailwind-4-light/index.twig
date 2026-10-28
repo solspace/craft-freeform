@@ -7,7 +7,7 @@
 {% set formTagProperties = {
   attributes: {
     form: { class: "freeform-form freeform-tailwind-4", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-4-light", "data-freeform-signature-max-scale": 1.25 },
-    row: { class: "flex gap-x-2 -mx-2 mb-4" },
+    row: { class: "flex flex-wrap gap-y-4 -mx-2 mb-4" },
     success: { class: "rounded-md bg-green-50 p-4 mb-10", role: "status" },
     errors: { class: "rounded-md bg-red-50 p-4 mb-10", role: "alert" },
     novalidate: true,
@@ -30,7 +30,7 @@
         input: {
           class: "block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6",
         },
-        instructions: { class: "text-sm text-gray-500 -mt-1.5 mb-1" },
+        instructions: { class: "text-sm text-gray-500 mt-1 mb-2" },
         error: { class: "mt-1 text-sm text-red-600" },
       },
     },

@@ -1,0 +1,1 @@
+Synthetic 640x480 solid green image created for Freeform upload tests using GD and macOS HEIC encoding. No customer content or metadata.

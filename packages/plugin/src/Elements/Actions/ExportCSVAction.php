@@ -8,10 +8,11 @@ use craft\helpers\Json;
 use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
 use Solspace\Freeform\Bundles\Export\Implementations\Csv\ExportCsv;
 use Solspace\Freeform\Bundles\Export\Objects\FieldDescriptor;
-use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
+use yii\web\BadRequestHttpException;
 
 class ExportCSVAction extends ElementAction
 {
@@ -23,6 +24,8 @@ class ExportCSVAction extends ElementAction
     public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
+        \Craft::$app->view->registerAssetBundle(SubmissionIndexBundle::class);
+        \Craft::$app->view->registerTranslations('freeform', ['Could not export submissions. Please try again.']);
 
         $js = <<<EOT
             (function()
@@ -38,26 +41,11 @@ class ExportCSVAction extends ElementAction
             		        ids.push($(this).data("id"));
             		    });
 
-            			var form = $('<form method="post" target="_blank" action="">' +
-            			'<input type="hidden" name="action" value="freeform/submissions/export" />' +
-            			'<input type="hidden" name="submissionIds" value="' + ids.join(",") + '" />' +
-            			'<input type="hidden" name="{csrfName}" value="{csrfValue}" />' +
-            			'<input type="submit" value="Submit" />' +
-            			'</form>');
-
-            			form.appendTo('body');
-            			form.submit();
-            			form.remove();
+                        window.freeform_export_csv(ids);
             		}
             	});
             })();
             EOT;
-
-        $js = str_replace(
-            ['{csrfName}', '{csrfValue}'],
-            [\Craft::$app->config->general->csrfTokenName, \Craft::$app->request->getCsrfToken()],
-            $js
-        );
 
         \Craft::$app->view->registerJs($js);
 
@@ -66,11 +54,17 @@ class ExportCSVAction extends ElementAction
 
     public function performAction(ElementQueryInterface $query): bool
     {
-        $descriptors = new FieldDescriptorCollection();
-        $submission = $query->one();
-        if (!$submission instanceof Submission) {
-            throw new FreeformException(Freeform::t('No submissions found'));
+        $exportProfilesService = Freeform::getInstance()->exportProfiles;
+
+        try {
+            $submission = $exportProfilesService->getSubmissionForExport($query);
+        } catch (BadRequestHttpException|FreeformException $exception) {
+            $this->setMessage($exception->getMessage());
+
+            return false;
         }
+
+        $descriptors = new FieldDescriptorCollection();
 
         $form = $submission->getForm();
         foreach ($submission as $key => $value) {
@@ -87,7 +81,7 @@ class ExportCSVAction extends ElementAction
             $form,
             $query,
             $descriptors,
-            Freeform::getInstance()->exportProfiles->getExportSettings(),
+            $exportProfilesService->getExportSettings(),
         );
 
         $fileName = \sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));

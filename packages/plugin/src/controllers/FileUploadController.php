@@ -86,7 +86,13 @@ class FileUploadController extends BaseController
             return $this->createErrorResponse($field->getErrors());
         }
 
-        return $this->asJson(['id' => $asset->uid]);
+        return $this->asJson([
+            'id' => $asset->uid,
+            'name' => $asset->getFilename(),
+            'extension' => $asset->getExtension(),
+            'size' => $asset->getFormattedSize(1),
+            'preview' => $this->getFilesService()->getOptimizedPhotoPreview($asset, $field),
+        ]);
     }
 
     public function actionDelete(): Response

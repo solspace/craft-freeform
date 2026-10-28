@@ -24,17 +24,16 @@
   .ff-searchable.ff-searchable button.ff-searchable__toggle {
     width: var(--ui-control-height, 34px);
     padding: 0;
-    font-size: 0;
+    // The shared control renders an SVG chevron. Do not add a second CSS arrow.
     &::after {
-      content: "";
+      content: none;
+      display: none;
+    }
+    .ff-searchable__chevron {
       display: block;
-      width: 7px;
-      height: 7px;
-      margin-top: -3px;
-      border: solid currentColor;
-      border-width: 0 2px 2px 0;
-      transform: rotate(45deg);
-      opacity: 0.8;
+      flex: none;
+      width: 16px;
+      height: 16px;
     }
   }
   .ff-searchable .ff-searchable__list { font-size: 14px; }

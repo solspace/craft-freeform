@@ -457,7 +457,7 @@ class SettingsService extends BaseService
         }
 
         if ('all' === $type || 'errors' === $type) {
-            $total += $freeform->logger->getCombinedLogLineCount(['error']);
+            $total += $freeform->logger->getErrorLogLineCount();
         }
 
         return $total;

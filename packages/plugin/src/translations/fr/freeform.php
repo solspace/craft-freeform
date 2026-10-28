@@ -2492,6 +2492,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'Ce tableau doit comporter au moins {minRows} lignes.',
     'At least the first {minRows} rows must be filled out.' => 'Au moins les {minRows} premières lignes doivent être remplies.',
     'Website not valid' => 'Site web non valide',
+    'Enter a website address, like example.com.' => 'Saisissez une adresse de site web, par exemple example.com.',
 
     // Predefined Options // Currencies
     'US Dollar' => 'Dollar américain',

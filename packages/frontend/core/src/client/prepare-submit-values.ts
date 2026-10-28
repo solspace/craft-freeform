@@ -1,5 +1,6 @@
 import type { ManifestFieldDefinition } from "../types/manifest.js";
 import type { SubmitFileMap } from "../types/submit.js";
+import { normalizeWebsite } from "../website/website.js";
 
 export type PreparedSubmitValues = {
   values: Record<string, unknown>;
@@ -101,7 +102,10 @@ export function prepareSubmitValues(
       continue;
     }
 
-    values[handle] = value;
+    values[handle] =
+      field?.type === "website" && typeof value === "string"
+        ? normalizeWebsite(value)
+        : value;
   }
 
   return { values, files };

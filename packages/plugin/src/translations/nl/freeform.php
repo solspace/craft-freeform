@@ -2492,6 +2492,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'Deze tabel moet minimaal {minRows} rijen hebben.',
     'At least the first {minRows} rows must be filled out.' => 'Minstens de eerste {minRows} rijen moeten worden ingevuld.',
     'Website not valid' => 'Website niet geldig',
+    'Enter a website address, like example.com.' => 'Voer een websiteadres in, zoals example.com.',
 
     // Predefined Options // Currencies
     'US Dollar' => 'Amerikaanse dollar',

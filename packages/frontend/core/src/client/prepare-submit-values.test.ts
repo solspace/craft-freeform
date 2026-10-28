@@ -6,6 +6,22 @@ import {
 } from "./prepare-submit-values.js";
 
 describe("prepareSubmitValues", () => {
+  it("completes website values submitted without a blur, leaving text values and source state unchanged", () => {
+    const field = {
+      handle: "website",
+      type: "website",
+    } as ManifestFieldDefinition;
+    const raw = {
+      website: " example.com/Contact?ref=AbC#Team ",
+      notes: "example.com",
+    };
+    expect(prepareSubmitValues(raw, { website: field }).values).toEqual({
+      website: "https://example.com/Contact?ref=AbC#Team",
+      notes: "example.com",
+    });
+    expect(raw.website).toBe(" example.com/Contact?ref=AbC#Team ");
+  });
+
   it("extracts top-level files", () => {
     const file = new File(["x"], "a.pdf", { type: "application/pdf" });
     const result = prepareSubmitValues({ name: "Ada", resume: file });

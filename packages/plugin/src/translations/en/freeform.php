@@ -2509,6 +2509,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'This table must have at least {minRows} rows.',
     'At least the first {minRows} rows must be filled out.' => 'At least the first {minRows} rows must be filled out.',
     'Website not valid' => 'Website not valid',
+    'Enter a website address, like example.com.' => 'Enter a website address, like example.com.',
 
     // Predefined Options // Currencies
     'US Dollar' => 'US Dollar',

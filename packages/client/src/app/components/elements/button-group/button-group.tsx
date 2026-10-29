@@ -11,6 +11,7 @@ type Props = {
   value: string;
   options: OptionCollection;
   onClick: (value: string) => void;
+  renderIcon?: (value: string) => ReactNode;
 };
 
 export const ButtonGroup: React.FC<Props> = ({
@@ -19,6 +20,7 @@ export const ButtonGroup: React.FC<Props> = ({
   onClick,
   label,
   small,
+  renderIcon,
 }) => {
   const elements: ReactNode[] = [];
 
@@ -32,6 +34,11 @@ export const ButtonGroup: React.FC<Props> = ({
           className={classes(option.value === value && "active")}
           onClick={() => onClick(option.value)}
         >
+          {renderIcon && (
+            <span className="button-group-icon" aria-hidden="true">
+              {renderIcon(option.value)}
+            </span>
+          )}
           <span>{option.label}</span>
         </Button>,
       );

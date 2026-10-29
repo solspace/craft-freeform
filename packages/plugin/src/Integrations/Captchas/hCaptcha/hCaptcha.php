@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
+use GuzzleHttp\ClientInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -10,6 +11,8 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerificationResult;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerifier;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
@@ -33,9 +36,10 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
 
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Captcha Type',
-        instructions: 'Choose which hCaptcha type you want to use.',
+        order: 1,
+        instructions: 'Choose whether visitors see a checkbox before submitting.',
         options: [
             self::VERSION_INVISIBLE => 'Invisible',
             self::VERSION_CHECKBOX => 'Checkbox',
@@ -49,6 +53,8 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
+        order: 10,
+        instructions: 'Copy the site key from the provider’s dashboard.',
         placeholder: 'Enter your site key',
     )]
     private ?string $siteKey = null;
@@ -59,20 +65,31 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Secret Key',
+        order: 11,
+        instructions: 'Copy the secret key from the provider’s dashboard. This stays on your server.',
         placeholder: 'Enter your secret key',
     )]
     private ?string $secretKey = null;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Appearance and language options.', order: 90)]
+    private bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
         label: 'Only load Captcha scripts once the user interacts with the form',
-        instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
+        order: 20,
+        instructions: 'Enable to wait until the visitor starts filling out the form. Disable to load when the page opens.',
     )]
     private string $triggerOnInteract = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "checkbox"')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
+        label: 'Widget theme',
+        instructions: 'Choose Light or Dark to match your form.',
+        order: 100,
         options: [
             'light' => 'Light',
             'dark' => 'Dark',
@@ -80,9 +97,13 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $theme = 'light';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "checkbox"')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
+        label: 'Widget size',
+        instructions: 'Compact fits narrow forms. Normal uses the standard checkbox size.',
+        order: 101,
         options: [
             'normal' => 'Normal',
             'compact' => 'Compact',
@@ -91,12 +112,12 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private string $size = 'normal';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[VisibilityFilter('values.version !== "checkbox"')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Failure Behavior',
+        order: 30,
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
             self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
@@ -106,28 +127,31 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
-        instructions: 'The error message to display when the Captcha validation fails.',
+        order: 31,
+        instructions: 'Shown when verification fails or cannot be completed. Visitors can try again.',
         placeholder: 'Please verify that you are not a robot.',
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Locale',
-        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
-        placeholder: 'en',
+        label: 'hCaptcha language',
+        instructions: 'Leave blank for automatic selection. To choose a language, enter a code such as `en`, `fr`, or `de`.',
+        placeholder: 'Automatic',
+        order: 105,
     )]
     private string $locale = '';
 
     public function getSiteKey(): ?string
     {
-        return $this->getProcessedValue($this->siteKey);
+        return trim((string) $this->getProcessedValue($this->siteKey)) ?: null;
     }
 
     public function getSecretKey(): ?string
     {
-        return $this->getProcessedValue($this->secretKey);
+        return trim((string) $this->getProcessedValue($this->secretKey)) ?: null;
     }
 
     public function isTriggerOnInteract(): bool
@@ -157,12 +181,12 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getErrorMessage(): string
     {
-        return $this->errorMessage;
+        return $this->errorMessage ?: 'Please verify that you are not a robot.';
     }
 
     public function getLocale(): string
     {
-        return strtolower($this->locale);
+        return strtolower(trim((string) $this->getProcessedValue($this->locale)));
     }
 
     public function validate(Form $form): void
@@ -187,7 +211,14 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             return;
         }
 
-        $errors = $this->getValidationErrors($form);
+        $result = $this->verifyToken($form);
+        if ($result->serviceError) {
+            $form->addError($this->getErrorMessage());
+            $this->logger->error('hCaptcha verification unavailable', ['form' => $formHandle, 'errors' => $result->errors]);
+
+            return;
+        }
+        $errors = $result->errors;
         if (empty($errors)) {
             $this->logger->debug('hCaptcha validation passed', ['form' => $formHandle]);
 
@@ -240,65 +271,20 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         return 'h-captcha-response';
     }
 
-    private function getValidationErrors(Form $form): array
+    protected function createClient(): ClientInterface
     {
-        $client = \Craft::createGuzzleClient();
-        $secret = $this->getSecretKey();
-        $captchaResponse = $this->getCaptchaResponse($form);
+        return \Craft::createGuzzleClient();
+    }
 
-        $response = $client->post('https://hcaptcha.com/siteverify', [
-            'form_params' => [
-                'secret' => $secret,
-                'response' => $captchaResponse,
-                'remoteip' => \Craft::$app->request->getUserIP(),
-            ],
-        ]);
-
-        $result = json_decode((string) $response->getBody(), true);
-
-        if ($result['success']) {
-            return [];
-        }
-
-        $errors = [];
-        $errorCodes = $result['error-codes'] ?? [];
-        if (\in_array('missing-input-secret', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha secret parameter is missing.';
-        }
-
-        if (\in_array('invalid-keys', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha key parameter is invalid or malformed.';
-        }
-
-        if (\in_array('invalid-input-secret', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha secret parameter is invalid or malformed.';
-        }
-
-        if (\in_array('missing-input-response', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha response token was not submitted.';
-        }
-
-        if (\in_array('invalid-input-response', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha response parameter is invalid or malformed.';
-        }
-
-        if (\in_array('bad-request', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha request is invalid or malformed.';
-        }
-
-        if (\in_array('timeout-or-duplicate', $errorCodes, true)) {
-            $errors[] = 'The hCaptcha response is no longer valid: either is too old or has been used previously.';
-        }
-
-        if (\in_array('internal-error', $errorCodes, true)) {
-            $errors[] = 'A hCaptcha internal error occurred.';
-        }
-
-        if (empty($errors)) {
-            $errors = $errorCodes;
-        }
-
-        return $errors;
+    private function verifyToken(Form $form): CaptchaVerificationResult
+    {
+        return (new CaptchaVerifier($this->createClient()))->verify(
+            'hcaptcha',
+            (string) $this->getSiteKey(),
+            (string) $this->getSecretKey(),
+            (string) $this->getCaptchaResponse($form),
+            \Craft::$app->request->getUserIP(),
+        );
     }
 
     private function getCaptchaResponse(Form $form): ?string
@@ -311,7 +297,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             }
 
             $property = $arguments['captcha'];
-            if (empty($property['name']) || empty($property['value']) || 'h-captcha-response' !== $property['name']) {
+            if (!\is_array($property) || !\is_string($property['value'] ?? null) || empty($property['value']) || 'h-captcha-response' !== ($property['name'] ?? null)) {
                 return null;
             }
 
@@ -322,6 +308,8 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             return HeadlessPayloadHelper::getCaptchaResponse($form, 'h-captcha-response');
         }
 
-        return \Craft::$app->request->post('h-captcha-response');
+        $token = \Craft::$app->request->post('h-captcha-response');
+
+        return \is_string($token) ? $token : null;
     }
 }

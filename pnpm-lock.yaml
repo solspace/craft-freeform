@@ -191,8 +191,8 @@ importers:
   packages/frontend/extensions:
     dependencies:
       '@friendlycaptcha/sdk':
-        specifier: ^0.1.37
-        version: 0.1.37
+        specifier: ^1.0.2
+        version: 1.0.2
       '@paypal/paypal-js':
         specifier: ^9.6.0
         version: 9.6.0
@@ -781,9 +781,6 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
-
-  '@friendlycaptcha/sdk@0.1.37':
-    resolution: {integrity: sha512-A3XPZgNTWC2WioxbhAGeXKtwZZorwQutMeuNVxgdxT7eMWqxOZiu8xDUoOqRBoR8O2bXuIJR+MBffhVpp4zTjQ==}
 
   '@friendlycaptcha/sdk@1.0.2':
     resolution: {integrity: sha512-NW1mXrqRjQdg53fWKz369PqkxoNPqNIgBRW5vYIMvPHjIqHieinya1Nr9TjSVD5yoLzZ5AoWx2MfryWMm+dGOg==}
@@ -3010,8 +3007,6 @@ snapshots:
       tabbable: 6.4.0
 
   '@floating-ui/utils@0.2.12': {}
-
-  '@friendlycaptcha/sdk@0.1.37': {}
 
   '@friendlycaptcha/sdk@1.0.2': {}
 

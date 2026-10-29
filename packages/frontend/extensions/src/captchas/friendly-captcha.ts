@@ -53,7 +53,8 @@ function readToken(
   const input = element.querySelector(
     `input[name="${name}"]`,
   ) as HTMLInputElement | null;
-  return input?.value || undefined;
+  const value = input?.value;
+  return value && !value.startsWith(".") ? value : undefined;
 }
 
 function destroyInstance(instance: FriendlyInstance | undefined): void {
@@ -71,8 +72,8 @@ function destroyInstance(instance: FriendlyInstance | undefined): void {
 }
 
 export function createFriendlyCaptchaExtension(): FreeformExtension {
-  const instances = new Map<string, FriendlyInstance>();
-  const tokens = new Map<string, string>();
+  const instances = new Map<ManifestCaptchaSecurity, FriendlyInstance>();
+  const tokens = new Map<ManifestCaptchaSecurity, string>();
 
   return {
     name: "captcha.friendly-captcha",
@@ -89,7 +90,7 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
         );
       }
 
-      const existing = instances.get(captcha.name);
+      const existing = instances.get(captcha);
       if (
         existing &&
         !existing.handle.isDestroyed &&
@@ -97,15 +98,15 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
         element.contains(existing.mount)
       ) {
         return () => {
-          destroyInstance(instances.get(captcha.name));
-          instances.delete(captcha.name);
-          tokens.delete(captcha.name);
+          destroyInstance(instances.get(captcha));
+          instances.delete(captcha);
+          tokens.delete(captcha);
           element.replaceChildren();
         };
       }
 
       destroyInstance(existing);
-      instances.delete(captcha.name);
+      instances.delete(captcha);
 
       element.replaceChildren();
       const mount = document.createElement("div");
@@ -127,12 +128,12 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
       const onComplete = () => {
         const value = readToken(element, captcha);
         if (value) {
-          tokens.set(captcha.name, value);
+          tokens.set(captcha, value);
         }
       };
 
       const onExpire = () => {
-        tokens.delete(captcha.name);
+        tokens.delete(captcha);
         try {
           if (!handle.isDestroyed) {
             handle.reset();
@@ -145,14 +146,14 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
       mount.addEventListener(FRCWidgetCompleteEventName, onComplete);
       mount.addEventListener(FRCWidgetExpireEventName, onExpire);
 
-      instances.set(captcha.name, { element, mount, handle, captcha });
+      instances.set(captcha, { element, mount, handle, captcha });
 
       return () => {
         mount.removeEventListener(FRCWidgetCompleteEventName, onComplete);
         mount.removeEventListener(FRCWidgetExpireEventName, onExpire);
-        destroyInstance(instances.get(captcha.name));
-        instances.delete(captcha.name);
-        tokens.delete(captcha.name);
+        destroyInstance(instances.get(captcha));
+        instances.delete(captcha);
+        tokens.delete(captcha);
         if (element.isConnected) {
           element.replaceChildren();
         }
@@ -165,15 +166,15 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
       }
 
       for (const captcha of getCaptchas(manifest.security.captchas)) {
-        const instance = instances.get(captcha.name);
+        const instance = instances.get(captcha);
         if (!instance || instance.handle.isDestroyed) {
           continue;
         }
 
         const existing =
-          readToken(instance.element, captcha) || tokens.get(captcha.name);
+          readToken(instance.element, captcha) || tokens.get(captcha);
         if (existing) {
-          tokens.set(captcha.name, existing);
+          tokens.set(captcha, existing);
           continue;
         }
 
@@ -185,11 +186,10 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
 
         try {
           const value = await waitForValue(
-            () =>
-              readToken(instance.element, captcha) || tokens.get(captcha.name),
+            () => readToken(instance.element, captcha) || tokens.get(captcha),
             12000,
           );
-          tokens.set(captcha.name, value);
+          tokens.set(captcha, value);
         } catch {
           throw new Error(
             "Friendly Captcha is not ready. Complete the captcha widget, then submit again.",
@@ -200,9 +200,9 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
 
     async buildPayload({ setCaptchaToken, manifest }) {
       for (const captcha of getCaptchas(manifest.security.captchas)) {
-        const instance = instances.get(captcha.name);
+        const instance = instances.get(captcha);
         const value =
-          tokens.get(captcha.name) ||
+          tokens.get(captcha) ||
           (instance ? readToken(instance.element, captcha) : undefined);
         if (value) {
           setCaptchaToken(captcha.name, value);
@@ -210,8 +210,11 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
       }
     },
 
-    async afterSubmit() {
-      for (const instance of instances.values()) {
+    async afterSubmit({ manifest }) {
+      for (const captcha of getCaptchas(manifest.security.captchas)) {
+        tokens.delete(captcha);
+        const instance = instances.get(captcha);
+        if (!instance) continue;
         try {
           if (!instance.handle.isDestroyed) {
             instance.handle.reset();
@@ -220,7 +223,6 @@ export function createFriendlyCaptchaExtension(): FreeformExtension {
           /* ignore */
         }
       }
-      tokens.clear();
     },
 
     async destroy() {

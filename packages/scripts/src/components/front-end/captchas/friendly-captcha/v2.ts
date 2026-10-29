@@ -97,18 +97,25 @@ async function ensureCaptchaToken(event: FreeformEvent): Promise<void> {
     return;
   }
 
+  try {
+    handle.start();
+  } catch {
+    /* The widget may already be solving. */
+  }
+
   await waitForToken(event.form, FIELD_NAME);
 
   const input = event.form.querySelector<HTMLInputElement>(
     `[name="${FIELD_NAME}"]`,
   );
 
-  if (input?.value) {
+  if (input?.value && !input.value.startsWith(".")) {
     return;
   }
 
   try {
     handle.reset();
+    handle.start();
   } catch {
     /* ignore */
   }

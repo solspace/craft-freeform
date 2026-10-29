@@ -35,44 +35,50 @@ if (!window.freeform?.captchas) {
   };
 }
 
-const loadScript: ScriptLoader = (url) => {
-  return new Promise<void>((resolve, reject) => {
+const loadScript: ScriptLoader = (url) =>
+  new Promise<void>((resolve, reject) => {
     const id = String(url);
-
-    const existing = document.getElementById(id) as HTMLScriptElement | null;
-    if (existing) {
-      // Another form render already created this script tag. We need to resolve asap but only if it has actually finished loading otherwise we need to wait for its load event.
-      if (existing.dataset.loaded === "true") {
-        return resolve();
-      }
-
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () =>
-        reject(new Error(`Error loading script ${url}`)),
-      );
-
+    let script = document.getElementById(id) as HTMLScriptElement | null;
+    if (script?.dataset.loaded === "true") {
+      resolve();
       return;
     }
-
-    const script = document.createElement("script");
-
-    script.src = captchaScriptUrl(String(url));
-
-    script.async = true;
-    script.defer = true;
-    script.id = id;
-    script.addEventListener("load", () => {
-      script.dataset.loaded = "true";
-
+    const existing = Boolean(script);
+    script ??= document.createElement("script");
+    const node = script;
+    const cleanup = () => {
+      clearTimeout(timeout);
+      node.removeEventListener("load", loaded);
+      node.removeEventListener("error", failed);
+    };
+    const loaded = () => {
+      cleanup();
+      node.dataset.loaded = "true";
       resolve();
-    });
-    script.addEventListener("error", () =>
-      reject(new Error(`Error loading script ${url}`)),
-    );
-
-    document.body.appendChild(script);
+    };
+    const failed = () => {
+      cleanup();
+      node.remove();
+      reject(new Error("The captcha script could not be loaded."));
+    };
+    const timeout = setTimeout(failed, 10000);
+    node.addEventListener("load", loaded);
+    node.addEventListener("error", failed);
+    if (!existing) {
+      try {
+        node.src = captchaScriptUrl(id);
+        node.id = id;
+        node.async = true;
+        node.defer = true;
+        const nonce =
+          document.querySelector<HTMLScriptElement>("script[nonce]")?.nonce;
+        if (nonce) node.nonce = nonce;
+        document.body.appendChild(node);
+      } catch {
+        failed();
+      }
+    }
   });
-};
 
 export const loadCaptchaScript = (
   url: URL,
@@ -104,6 +110,12 @@ export const loadCaptchaScript = (
     });
 
     loaderPromises.set(loaderHash, sharedPromise);
+    void sharedPromise.catch(() => {
+      if (loaderPromises.get(loaderHash) === sharedPromise) {
+        loaderPromises.delete(loaderHash);
+        loaders.delete(loaderHash);
+      }
+    });
   } else {
     sharedPromise = loaderPromises.get(loaderHash);
   }
@@ -111,30 +123,13 @@ export const loadCaptchaScript = (
   const triggerLoadScript = loaders.get(loaderHash);
 
   if (isLazy) {
-    // The lazy promise will not call loadScript on page load. It only renders when the user interacts with the form.
-    return new Promise<void>((resolve, reject) => {
-      if (listeners.has(form)) {
-        return;
-      }
-
-      addListeners(
-        form,
-        ["input"],
-        () => {
-          triggerLoadScript();
-
-          sharedPromise.then(resolve).catch(reject);
-        },
-        { once: true },
-      );
-
-      // Prevent adding listeners multiple times to this form
+    if (!listeners.has(form)) {
+      addListeners(form, ["input"], triggerLoadScript, { once: true });
       listeners.add(form);
-    });
+    }
+  } else {
+    triggerLoadScript();
   }
-
-  triggerLoadScript();
-
   return sharedPromise;
 };
 
@@ -169,7 +164,11 @@ export const waitForToken = (
         `[name="${fieldName}"]`,
       );
 
-      if (tokenInput?.value) {
+      if (
+        tokenInput?.value &&
+        (fieldName !== "frc-captcha-response" ||
+          !tokenInput.value.startsWith("."))
+      ) {
         clearInterval(poll);
 
         resolve();

@@ -12,6 +12,9 @@ import translate from "@ff-client/utils/translations";
 import type React from "react";
 
 import type { Integration } from "../integration.types";
+import { CaptchaButtons } from "./editor.captcha-buttons";
+import { CaptchaChoices } from "./editor.captcha-choices";
+import { captchaProvider } from "./editor.captchas";
 import { ModelInput } from "./editor.model-input";
 import { RecaptchaChoices } from "./editor.recaptcha-choices";
 import { RecaptchaScore } from "./editor.recaptcha-score";
@@ -36,6 +39,7 @@ export const EditorInput: React.FC<EditorInputProps> = ({
   onUpdate,
   children,
 }) => {
+  const provider = captchaProvider(integration.type.class);
   const isRecaptcha =
     integration.type.class ===
     "Solspace\\Freeform\\Integrations\\Captchas\\ReCaptcha\\ReCaptcha";
@@ -92,7 +96,7 @@ export const EditorInput: React.FC<EditorInputProps> = ({
   const context = {
     ...integration,
     disclosureStorageKey:
-      isRecaptcha && handle === "showAdvanced"
+      provider && handle === "showAdvanced"
         ? `freeform:integration:${integration.type.class}:${integration.id ?? "new"}:${handle}:expanded`
         : undefined,
     values: {
@@ -128,7 +132,7 @@ export const EditorInput: React.FC<EditorInputProps> = ({
       errors={errors?.metadata?.[handle]}
       context={context}
       control={
-        isRecaptcha && handle === "showAdvanced"
+        provider && handle === "showAdvanced"
           ? DisclosureControl
           : isRecaptcha && handle === "scoreThreshold"
             ? RecaptchaScore
@@ -136,7 +140,20 @@ export const EditorInput: React.FC<EditorInputProps> = ({
                 updatedProperty.type === PropertyType.ButtonGroup &&
                 ["verificationMode", "version"].includes(handle)
               ? RecaptchaChoices
-              : undefined
+              : provider &&
+                  updatedProperty.type === PropertyType.ButtonGroup &&
+                  [
+                    "theme",
+                    "size",
+                    "failureBehavior",
+                    "frontendMode",
+                    "scriptDomain",
+                  ].includes(handle)
+                ? CaptchaButtons
+                : (provider === "hcaptcha" && handle === "version") ||
+                    (provider === "friendly-captcha" && handle === "startMode")
+                  ? CaptchaChoices
+                  : undefined
       }
     >
       {children}

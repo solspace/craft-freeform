@@ -1,10 +1,9 @@
+import { loadHcaptcha } from "../../../../../../../frontend/extensions/src/captchas/hcaptcha-loader";
 import {
   getCaptchaContainer,
-  loadCaptchaScript,
   readCaptchaConfig,
 } from "../../common.script-loader";
 
-const scriptUrl = "https://js.hcaptcha.com/1/api.js?render=explicit";
 const TYPE = "hcaptcha";
 
 export enum Version {
@@ -12,23 +11,13 @@ export enum Version {
   INVISIBLE = "invisible",
 }
 
-export const loadHCaptcha = (
-  form: HTMLFormElement,
-  forceLoad?: boolean,
-): Promise<void> => {
+export const loadHCaptcha = (form: HTMLFormElement): Promise<void> => {
   const container = getContainer(form);
   if (!container) {
     return Promise.resolve();
   }
 
-  const url = new URL(scriptUrl);
-
-  const { locale } = readConfig(container);
-  if (locale) {
-    url.searchParams.append("hl", locale);
-  }
-
-  return loadCaptchaScript(url, TYPE, form, forceLoad);
+  return loadHcaptcha().then(() => {});
 };
 
 export const getContainer = (form: HTMLFormElement) =>

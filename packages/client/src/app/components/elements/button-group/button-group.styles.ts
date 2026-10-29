@@ -28,7 +28,7 @@ export const ButtonGroupWrapper = styled.div<{
     $small &&
     `
     > button { min-width: 0; padding-inline: 4px; font-size: 12px; white-space: nowrap; }
-    > button > span { display: inline-block; transform: scaleX(0.88); }
+    > button > span:not(.button-group-icon) { display: inline-block; transform: scaleX(0.88); }
   `}
 `;
 
@@ -36,6 +36,7 @@ export const Button = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   flex: 0 1 auto;
   min-width: 28px;
 
@@ -46,6 +47,15 @@ export const Button = styled.button`
   box-sizing: border-box;
 
   > span { flex: 0 0 auto; }
+  > .button-group-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    line-height: 1;
+    svg { display: block; width: 14px; height: 14px; }
+  }
 
   &.active {
     color: ${colors.white};

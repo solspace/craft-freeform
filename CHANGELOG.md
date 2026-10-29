@@ -20,6 +20,8 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Updated hCaptcha, Turnstile, and Friendly Captcha settings with clearer setup guides, compact choice cards, and advanced panels that remember whether they were open or closed. Added icons to CAPTCHA button groups and clarified when Friendly Captcha starts verification. Existing selections are preserved.
+- Updated the Friendly Captcha SDK used by headless forms to match regular forms.
 - Improved integration instructions with animated expandable sections, copy buttons, and code highlighting for HTML, CSS, JavaScript, Twig, JSON, and PHP.
 - Simplified reCAPTCHA settings with compact guided choices, button groups, a labelled score slider, and an animated advanced-settings panel that remembers its open or closed state for each integration in the browser. Existing selections are preserved.
 - Made Yes/No environment-variable menus half width on wide settings and integration pages, while keeping compact layouts full width.
@@ -37,6 +39,8 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Fixed hCaptcha, Turnstile, and Friendly Captcha verification errors and outages being treated as spam. Invalid or incomplete provider responses now fail validation safely.
+- Fixed CAPTCHA widgets and headless tokens interfering with other forms, stalled script loading, and missing widget language settings. Friendly Captcha now waits for a token before submitting.
 - Hardened reCAPTCHA action and score validation, quota and service-error handling, token expiration and retries, and initialization of multiple forms, including Invisible v2.
 - Fixed Layout fields failing to render in Quick Form dashboard widgets and front-end forms because their stylesheet was missing from the styles build.
 - Fixed date/time minimum and maximum limits ignoring the time in expressions such as `12 hours ago`, in both the picker and submission validation. Limits without a time include the entire day and show date-only validation messages.

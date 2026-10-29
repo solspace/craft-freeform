@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\Turnstile;
 
+use GuzzleHttp\ClientInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -9,7 +10,10 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerificationResult;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerifier;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
@@ -35,6 +39,8 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
+        order: 10,
+        instructions: 'Copy the site key from the provider’s dashboard.',
         placeholder: 'Enter your site key',
     )]
     private ?string $siteKey = null;
@@ -45,23 +51,31 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Secret Key',
+        order: 11,
+        instructions: 'Copy the secret key from the provider’s dashboard. This stays on your server.',
         placeholder: 'Enter your secret key',
     )]
     private ?string $secretKey = null;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Appearance and language options.', order: 90)]
+    private bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
         label: 'Only load Captcha scripts once the user interacts with the form',
-        instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
+        order: 20,
+        instructions: 'Enable to wait until the visitor starts filling out the form. Disable to load when the page opens.',
     )]
     private string $triggerOnInteract = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Failure Behavior',
+        order: 30,
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
             self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
@@ -71,13 +85,18 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
-        instructions: 'The error message to display when the Captcha validation fails.',
+        order: 31,
+        instructions: 'Shown when verification fails or cannot be completed. Visitors can try again.',
         placeholder: 'Please verify that you are not a robot.',
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
+        label: 'Widget theme',
+        instructions: 'Auto follows the visitor’s light or dark appearance preference.',
+        order: 100,
         options: [
             'auto' => 'Auto',
             'light' => 'Light',
@@ -86,42 +105,51 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $theme = 'auto';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
+        label: 'Widget size',
+        instructions: 'Normal is 300 × 65 px. Flexible fills the available width, with a 300 px minimum. Compact is 150 × 140 px. Invisible widgets ignore this setting.',
+        order: 101,
         options: [
-            'normal' => 'Normal (300x65px)',
-            'flexible' => 'Flexible (100%x65px)',
-            'compact' => 'Compact (150x140px)',
+            'normal' => 'Normal',
+            'flexible' => 'Flexible',
+            'compact' => 'Compact',
         ],
     )]
     private string $size = 'normal';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
     #[Input\Text(
-        instructions: 'The action to use when validating the Captcha.',
+        label: 'Turnstile action name',
+        instructions: 'Use `submit` for most forms. This name identifies submissions in Cloudflare analytics.',
+        order: 104,
         placeholder: 'submit',
     )]
     private string $action = 'submit';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Locale',
-        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
-        placeholder: 'en',
+        label: 'Turnstile language',
+        instructions: 'Leave blank for automatic selection. To choose a language, enter a code such as `en`, `fr`, or `de`.',
+        placeholder: 'Automatic',
+        order: 105,
     )]
     private string $locale = '';
 
     public function getSiteKey(): ?string
     {
-        return $this->getProcessedValue($this->siteKey);
+        return trim((string) $this->getProcessedValue($this->siteKey)) ?: null;
     }
 
     public function getSecretKey(): ?string
     {
-        return $this->getProcessedValue($this->secretKey);
+        return trim((string) $this->getProcessedValue($this->secretKey)) ?: null;
     }
 
     public function isTriggerOnInteract(): bool
@@ -151,16 +179,24 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getAction(): string
     {
-        return $this->action;
+        return trim((string) $this->getProcessedValue($this->action)) ?: 'submit';
     }
 
     public function getLocale(): string
     {
-        return strtolower($this->locale);
+        return strtolower(trim((string) $this->getProcessedValue($this->locale)));
     }
 
     public function validate(Form $form): void
     {
+        $settings = Freeform::getInstance()->settings;
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
+            return;
+        }
+        if (!$form->isCaptchaEnabled()) {
+            return;
+        }
+
         // If no token was submitted, Turnstile Captcha never loaded on the client side. Always show an error so the user knows their submission did not go through, regardless of the configured failure behavior.
         $formHandle = $form->getHandle();
 
@@ -172,7 +208,14 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
             return;
         }
 
-        $errors = $this->getValidationErrors($form);
+        $result = $this->verifyToken($form);
+        if ($result->serviceError) {
+            $form->addError($this->getErrorMessage());
+            $this->logger->error('Turnstile verification unavailable', ['form' => $formHandle, 'errors' => $result->errors]);
+
+            return;
+        }
+        $errors = $result->errors;
         if (empty($errors)) {
             $this->logger->debug('Turnstile Captcha validation passed', ['form' => $formHandle]);
 
@@ -221,62 +264,20 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
         return 'cf-turnstile-response';
     }
 
-    private function getValidationErrors(Form $form): array
+    protected function createClient(): ClientInterface
     {
-        $client = \Craft::createGuzzleClient();
-        $secret = $this->getSecretKey();
-        $captchaResponse = $this->getCaptchaResponse($form);
+        return \Craft::createGuzzleClient();
+    }
 
-        $response = $client->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'form_params' => [
-                'secret' => $secret,
-                'response' => $captchaResponse,
-                'remoteip' => \Craft::$app->request->getUserIP(),
-            ],
-        ]);
-
-        $result = json_decode((string) $response->getBody(), true);
-
-        $errors = [];
-
-        if ($result['success']) {
-            return [];
-        }
-
-        $errorCodes = $result['error-codes'];
-        if (\in_array('missing-input-secret', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha secret parameter is missing.';
-        }
-
-        if (\in_array('invalid-input-secret', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha secret parameter is invalid or malformed.';
-        }
-
-        if (\in_array('missing-input-response', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha response token was not submitted.';
-        }
-
-        if (\in_array('invalid-input-response', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha response parameter is invalid or malformed.';
-        }
-
-        if (\in_array('bad-request', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha request is invalid or malformed.';
-        }
-
-        if (\in_array('timeout-or-duplicate', $errorCodes, true)) {
-            $errors[] = 'The Turnstile Captcha response is no longer valid: either is too old or has been used previously.';
-        }
-
-        if (\in_array('internal-error', $errorCodes, true)) {
-            $errors[] = 'A Turnstile Captcha internal error occurred.';
-        }
-
-        if (empty($errors)) {
-            $errors = $errorCodes;
-        }
-
-        return $errors;
+    private function verifyToken(Form $form): CaptchaVerificationResult
+    {
+        return (new CaptchaVerifier($this->createClient()))->verify(
+            'turnstile',
+            (string) $this->getSiteKey(),
+            (string) $this->getSecretKey(),
+            (string) $this->getCaptchaResponse($form),
+            \Craft::$app->request->getUserIP(),
+        );
     }
 
     private function getCaptchaResponse(Form $form): ?string
@@ -289,7 +290,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
             }
 
             $property = $arguments['captcha'];
-            if (empty($property['name']) || empty($property['value']) || 'cf-turnstile-response' !== $property['name']) {
+            if (!\is_array($property) || !\is_string($property['value'] ?? null) || empty($property['value']) || 'cf-turnstile-response' !== ($property['name'] ?? null)) {
                 return null;
             }
 
@@ -300,6 +301,8 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
             return HeadlessPayloadHelper::getCaptchaResponse($form, 'cf-turnstile-response');
         }
 
-        return \Craft::$app->request->post('cf-turnstile-response');
+        $token = \Craft::$app->request->post('cf-turnstile-response');
+
+        return \is_string($token) ? $token : null;
     }
 }

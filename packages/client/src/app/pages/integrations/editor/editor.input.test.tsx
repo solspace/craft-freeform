@@ -148,20 +148,24 @@ function mount(
   grouped = false,
   id?: number,
   failureBehavior = "display-error",
+  providerClass?: string,
+  customProperties?: Property[],
 ) {
   container = document.createElement("div");
   document.body.appendChild(container);
   root = createRoot(container);
-  const inputs: Property[] = buttonGroups
-    ? (properties.map((property) =>
-        property.type === PropertyType.Select
-          ? {
-              ...property,
-              type: PropertyType.ButtonGroup,
-            }
-          : property,
-      ) as Property[])
-    : properties;
+  const inputs: Property[] =
+    customProperties ??
+    (buttonGroups
+      ? (properties.map((property) =>
+          property.type === PropertyType.Select
+            ? {
+                ...property,
+                type: PropertyType.ButtonGroup,
+              }
+            : property,
+        ) as Property[])
+      : properties);
   const integration: Integration = {
     id,
     name: "QA",
@@ -170,9 +174,11 @@ function mount(
     implements: [],
     properties: inputs,
     type: {
-      class: recaptcha
-        ? "Solspace\\Freeform\\Integrations\\Captchas\\ReCaptcha\\ReCaptcha"
-        : "OtherIntegration",
+      class:
+        providerClass ??
+        (recaptcha
+          ? "Solspace\\Freeform\\Integrations\\Captchas\\ReCaptcha\\ReCaptcha"
+          : "OtherIntegration"),
       shortName: "ReCaptcha",
       name: "reCAPTCHA",
       type: IntegrationType.Captchas,
@@ -455,5 +461,187 @@ describe("reCAPTCHA setup choices", () => {
     expect(
       select("version").querySelector('[value="v2-invisible"]'),
     ).not.toBeNull();
+  });
+});
+
+describe("other captcha settings", () => {
+  it("keeps theme and size labels and selections usable alongside their icons", () => {
+    const display: Property[] = [
+      {
+        handle: "theme",
+        label: "Widget theme",
+        type: PropertyType.ButtonGroup,
+        value: "auto",
+        options: [
+          { value: "auto", label: "Auto" },
+          { value: "light", label: "Light" },
+          { value: "dark", label: "Dark" },
+        ],
+      },
+      {
+        handle: "size",
+        label: "Widget size",
+        type: PropertyType.ButtonGroup,
+        value: "normal",
+        options: [
+          { value: "normal", label: "Normal" },
+          { value: "flexible", label: "Flexible" },
+          { value: "compact", label: "Compact" },
+        ],
+      },
+    ];
+    mount(
+      "",
+      "",
+      false,
+      false,
+      true,
+      12,
+      "display-error",
+      "Solspace\\Freeform\\Integrations\\Captchas\\Turnstile\\Turnstile",
+      display,
+    );
+    const theme = container.querySelector(
+      '[role="group"][aria-label="Widget theme"]',
+    )!;
+    expect(theme.querySelectorAll('span[aria-hidden="true"] svg')).toHaveLength(
+      3,
+    );
+    const dark = Array.from(theme.querySelectorAll("button")).find(
+      (button) => button.textContent === "Dark",
+    )!;
+    act(() => dark.click());
+    expect(dark.getAttribute("aria-pressed")).toBe("true");
+    const size = container.querySelector(
+      '[role="group"][aria-label="Widget size"]',
+    )!;
+    const compact = Array.from(size.querySelectorAll("button")).find(
+      (button) => button.textContent === "Compact",
+    )!;
+    act(() => compact.click());
+    expect(compact.getAttribute("aria-pressed")).toBe("true");
+  });
+  const className = (name: string) =>
+    `Solspace\\Freeform\\Integrations\\Captchas\\${name}\\${name}`;
+  it.each(["hCaptcha", "Turnstile", "FriendlyCaptcha"])(
+    "remembers %s's panel without changing saved failure settings",
+    (name) => {
+      mount(
+        "",
+        "invisible",
+        false,
+        false,
+        true,
+        12,
+        "send-to-spam",
+        className(name),
+      );
+      const button = container.querySelector<HTMLButtonElement>(
+        "button[aria-expanded]",
+      )!;
+      expect(button.getAttribute("aria-expanded")).toBe("false");
+      act(() => button.click());
+      expect(button.getAttribute("aria-expanded")).toBe("true");
+      expect(select("failureBehavior").value).toBe("send-to-spam");
+      act(() => root.unmount());
+      container.remove();
+      mount(
+        "",
+        "invisible",
+        false,
+        false,
+        true,
+        12,
+        "send-to-spam",
+        className(name),
+      );
+      expect(
+        container
+          .querySelector("button[aria-expanded]")
+          ?.getAttribute("aria-expanded"),
+      ).toBe("true");
+      expect(select("failureBehavior").value).toBe("send-to-spam");
+    },
+  );
+  it("describes hCaptcha's two types and preserves the saved selection", () => {
+    const choices: Property = {
+      handle: "version",
+      label: "Captcha Type",
+      type: PropertyType.ButtonGroup,
+      value: "invisible",
+      options: [
+        { value: "invisible", label: "Invisible" },
+        { value: "checkbox", label: "Checkbox" },
+      ],
+    };
+    mount(
+      "",
+      "invisible",
+      false,
+      false,
+      true,
+      12,
+      "send-to-spam",
+      className("hCaptcha"),
+      [choices, properties[2], properties[3]],
+    );
+    const checkbox = container.querySelector<HTMLInputElement>(
+      'input[value="checkbox"]',
+    )!;
+    expect(container.textContent).toContain("hCaptcha may show a puzzle");
+    expect(
+      container.querySelector('input[value="invisible"]')?.closest("label")
+        ?.textContent,
+    ).toContain("Recommended");
+    expect(
+      container.querySelector('input[value="checkbox"]')?.closest("label")
+        ?.textContent,
+    ).not.toContain("Recommended");
+    expect(
+      container.querySelector<HTMLInputElement>('input[value="invisible"]')
+        ?.checked,
+    ).toBe(true);
+    act(() => checkbox.click());
+    expect(checkbox.checked).toBe(true);
+    expect(select("failureBehavior").value).toBe("send-to-spam");
+  });
+  it("explains Friendly Captcha start modes without changing the default", () => {
+    const start: Property = {
+      handle: "startMode",
+      label: "Start Mode",
+      type: PropertyType.ButtonGroup,
+      value: "focus",
+      options: [
+        { value: "focus", label: "On form focus" },
+        { value: "auto", label: "On page load" },
+        { value: "none", label: "On request" },
+      ],
+    };
+    mount(
+      "",
+      "",
+      false,
+      false,
+      true,
+      12,
+      "display-error",
+      className("FriendlyCaptcha"),
+      [start, properties[2], properties[3]],
+    );
+    expect(
+      container.querySelector<HTMLInputElement>('input[value="focus"]')
+        ?.checked,
+    ).toBe(true);
+    expect(container.textContent).toContain("Recommended");
+    expect(container.textContent).toContain(
+      "Freeform also starts it when the form is submitted.",
+    );
+    act(() =>
+      container.querySelector<HTMLInputElement>('input[value="none"]')!.click(),
+    );
+    expect(
+      container.querySelector<HTMLInputElement>('input[value="none"]')?.checked,
+    ).toBe(true);
+    expect(select("failureBehavior").value).toBe("display-error");
   });
 });

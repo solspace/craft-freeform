@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Services\Headless;
 
-use craft\db\Query;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
+use Solspace\Freeform\Bundles\Form\SaveForm\SavedFormCleanup;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveFormsHelper;
 use Solspace\Freeform\Fields\Implementations\EmailField;
@@ -232,21 +232,6 @@ class HeadlessDraftService
             return;
         }
 
-        $ids = (new Query())
-            ->select(['id'])
-            ->from(SavedFormRecord::TABLE)
-            ->where(['sessionId' => $sessionId])
-            ->orderBy(['dateUpdated' => \SORT_DESC])
-            ->column()
-        ;
-
-        if (\count($ids) <= $limit) {
-            return;
-        }
-
-        $deletableIds = \array_slice($ids, $limit);
-        if ($deletableIds) {
-            SavedFormRecord::deleteAll(['id' => $deletableIds]);
-        }
+        (new SavedFormCleanup(\Craft::$app->db))->purgeForSession($sessionId, (int) $limit);
     }
 }

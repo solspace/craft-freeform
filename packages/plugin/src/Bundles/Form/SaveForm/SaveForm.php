@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\Bundles\Form\SaveForm;
 
 use Carbon\Carbon;
-use craft\db\Query;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\SaveForm\Actions\SaveFormAction;
+use Solspace\Freeform\Bundles\Form\SaveForm\Events\SavedFormsPurgedEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -26,6 +26,9 @@ class SaveForm extends FeatureBundle
 
     public const EVENT_SAVE_FORM = 'save-form';
 
+    /** @event SavedFormsPurgedEvent Fired after a batch of saved forms is purged by TTL or session-limit cleanup. */
+    public const EVENT_AFTER_PURGE_SAVED_FORMS = 'after-purge-saved-forms';
+
     public const CLEANUP_CACHE_KEY = 'save-and-continue-cleanup';
     public const CLEANUP_CACHE_TTL = 60 * 60; // 1 hour
 
@@ -34,7 +37,8 @@ class SaveForm extends FeatureBundle
     ) {
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleSave']);
 
-        $this->cleanup();
+        // Let custom modules/plugins register cleanup listeners before the first purge.
+        \Craft::$app->onInit(fn () => $this->cleanup());
     }
 
     public static function getPriority(): int
@@ -228,25 +232,7 @@ class SaveForm extends FeatureBundle
             return;
         }
 
-        $ids = (new Query())
-            ->select(['id'])
-            ->from(SavedFormRecord::TABLE)
-            ->where(['sessionId' => $sessionId])
-            ->orderBy(['dateUpdated' => \SORT_DESC])
-            ->column()
-        ;
-
-        if ($ids <= $limit) {
-            return;
-        }
-
-        $deletableIds = \array_slice($ids, $limit);
-        if ($deletableIds) {
-            \Craft::$app->db->createCommand()
-                ->delete(SavedFormRecord::TABLE, ['id' => $deletableIds])
-                ->execute()
-            ;
-        }
+        (new SavedFormCleanup(\Craft::$app->db))->purgeForSession($sessionId, (int) $limit);
     }
 
     private function cleanup(): void
@@ -266,9 +252,6 @@ class SaveForm extends FeatureBundle
 
         $expirationTime = new Carbon("now -{$ttl} day", 'UTC');
 
-        \Craft::$app->db->createCommand()
-            ->delete(SavedFormRecord::TABLE, ['<', 'dateUpdated', $expirationTime])
-            ->execute()
-        ;
+        (new SavedFormCleanup(\Craft::$app->db))->purgeExpired($expirationTime, $ttl);
     }
 }

@@ -1,6 +1,9 @@
 # Solspace Freeform Changelog
 
-## 5.17.7 - 2026-10-29
+## 5.17.7 - Unreleased
+
+### Added
+- Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
 
 ### Fixed
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.

@@ -28,18 +28,26 @@ class BlockKeywords extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Field error messages for troubleshooting.', order: 90)]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
-        label: 'Display Errors about Blocked Keywords under each Field',
-        instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
+        order: 100,
+        label: 'Show Field Errors',
+        instructions: 'Show a message beside fields with blocked values. Helpful when troubleshooting submissions.',
     )]
     protected string $errorsBelowFields = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
+        order: 110,
         label: 'Error Message',
-        instructions: 'The message shown to users when blocked keywords are submitted. Can use `{value}` and `{keyword}` variables.',
+        instructions: 'Shown beside a field with a blocked keyword. You can use `{value}` and `{keyword}`.',
         placeholder: 'Invalid Entry Data',
     )]
     protected string $errorMessage = '';
@@ -48,22 +56,24 @@ class BlockKeywords extends SpamBlockingIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 11,
         label: 'Blocked Keywords for this Form',
-        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. `"generate new leads"`), asterisks for wildcards (e.g. `lead*`), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
+        instructions: 'One word or pattern per line. Use quotes for phrases and `*` for partial matches, such as `lead*`.',
         rows: 8,
     )]
-    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
+    #[Message('Added to the default block list for this form only.')]
     protected array $keywords = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 10,
         label: 'Default Blocked Keywords',
-        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. `"generate new leads"`), asterisks for wildcards (e.g. `lead*`), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
+        instructions: 'One word or pattern per line. Use quotes for phrases and `*` for partial matches, such as `lead*`.',
         rows: 8,
     )]
-    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
+    #[Message('Used by every form with this integration. Add form-specific entries in the form builder.')]
     protected array $defaultKeywords = [];
 
     public function isErrorsBelowFields(): bool

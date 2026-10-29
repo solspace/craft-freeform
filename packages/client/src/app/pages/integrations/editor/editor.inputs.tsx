@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { captchaProvider } from "./editor.captchas";
+import { hasIntegrationDisclosure } from "./editor.disclosures";
 import { EditorInput, type EditorInputProps } from "./editor.input";
 
 type Props = Omit<EditorInputProps, "property" | "children">;
@@ -26,7 +26,7 @@ export function EditorInputs({ integration, ...props }: Props) {
     }
     props.onUpdate?.(key, value);
   };
-  const disclosure = captchaProvider(integration.type.class)
+  const disclosure = hasIntegrationDisclosure(integration.type.class)
     ? integration.properties.find(
         (property) => property.handle === "showAdvanced",
       )

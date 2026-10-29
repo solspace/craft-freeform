@@ -18,7 +18,7 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
 
 ### 1. Prepare your site's end for Integration
 
-- Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
+- Copy the URL in the **OAuth Callback URL** field to your clipboard.
 - Leave this page open.
 
 ### 2. Set up Google Account for Integration
@@ -39,7 +39,7 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
     - For **Application type**, select _Web Application_.
     - For **Name**, enter a value, e.g. `Freeform`
     - Under **Authorized redirect URIs**, click on the _Add URI_ button.
-    - Paste the value you copied from Freeform's **OAuth 2.0 Return URI** field here
+    - Paste the value you copied from Freeform's **OAuth Callback URL** field here
     - Click _Next_ button.
     - You will then be presented with your Client ID. You can ignore this for now.
 - Click on the **Credentials** navigation tab.
@@ -55,10 +55,10 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
 - Paste the Google Sheets **Client ID** value into the **Client ID** field in Freeform.
 - Paste the Google Sheets **Client Secret** value into the **Client Secret** field in Freeform.
 - Additional settings to set the defaults for forms:
-    - **Process User-inputted Formulas and Formats**
-        - Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.
+    - **Allow Submitted Formulas**
+        - Enable to allow submitted formulas. Leave disabled to treat formula-like values as text.
     - **Row Insert Behavior**
-        - Choose how new data rows should be inserted into the Google Sheet. **Insert New Row** will add a new row to the spreadsheet directly before the first empty row. **Replace Next Empty Row** will find the first empty row and write the new content into it. Neither option will overwrite existing data.
+        - **Insert New Row** inserts a spreadsheet row after the detected data table, shifting rows below it down. **Use Next Row** writes directly after the detected table without inserting a row. Existing cells in that destination can be replaced.
 - Click the **Save** button.
 
 ### 4. Finish & Verify the Integration
@@ -84,10 +84,10 @@ To use this integration on your form(s), you'll need to configure each form indi
         - Choose the sheet the data should be pushed to. If you leave this field empty, the data will automatically be pushed to the first sheet.
     - Set the **Row Offset** (optional)
         - Enter the number of rows to skip from the beginning of the sheet. Input `0` to start from the first row, or `3` to skip the first 3 rows, and so on.
-    - **Process User-inputted Formulas and Formats**
-        - Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.
+    - **Allow Submitted Formulas**
+        - Enable to allow submitted formulas. Leave disabled to treat formula-like values as text.
     - **Row Insert Behavior**
-        - Choose how new data rows should be inserted into the Google Sheet. **Insert New Row** will add a new row to the spreadsheet directly before the first empty row. **Replace Next Empty Row** will find the first empty row and write the new content into it. Neither option will overwrite existing data.
+        - **Insert New Row** inserts a spreadsheet row after the detected data table, shifting rows below it down. **Use Next Row** writes directly after the detected table without inserting a row. Existing cells in that destination can be replaced.
     - Select the Freeform fields to be mapped to the applicable Google Sheet columns.
 
 <span class="note warning"><b>Important:</b> Please note that if you set this up initially on a development environment, you will need to update your callback URL and reauthorize the connection on your production environment. However, your settings and field mappings will remain intact.</span>

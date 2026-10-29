@@ -1,75 +1,70 @@
-# Setup Guide
+# Stripe setup
 
-This guide assumes you have a [Stripe](https://stripe.com) account already.
+Connect Freeform to Stripe with API keys and a webhook. Freeform uses Stripe's Payment Element for payments. This connection does not use OAuth.
 
-<span class="note warning">Please refer to the [Freeform Stripe integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for a complete setup guide.</span>
+## Connect your account
 
-## Compatibility
+1. Open [Stripe API keys](https://dashboard.stripe.com/apikeys) for the account and mode you want to use.
+2. Copy the publishable key into **Publishable Key** and the matching secret key into **Secret Key**.
+3. Copy Freeform's **Webhook URL** and configure a webhook in Stripe. See **Set up the webhook** below.
+4. Paste that endpoint's signing secret into **Webhook Signing Secret**.
+5. Save the integration and use **Authorize** to check the connection.
 
-Uses OAuth flow on `v4` of the REST API.
+The publishable key starts with `pk_`. The webhook signing secret starts with `whsec_` and is different from the API secret key. See [Stripe's key guide](https://docs.stripe.com/keys) if you need help finding them.
 
-### Endpoints
-Maps data to Stripe via the **Payment Element API**.
+<details>
+<summary>Set up the webhook</summary>
 
-### Fields
-Maps Freeform fields to Stripe fields to populate more customer information for the transaction/customer profile in Stripe.
+In Stripe's **Workbench**, open **Webhooks** and create an event destination for your account. Choose a webhook endpoint with **Snapshot** payloads, then enter Freeform's **Webhook URL**.
 
-## Setup Instructions
+Select the three events this integration handles:
 
-### 1. Prepare Freeform
+- `payment_intent.succeeded`
+- `payment_intent.payment_failed`
+- `payment_intent.canceled`
 
-- Copy the URL in the **Webhook URL** field to your clipboard.
-- Leave this page open.
+After creating the endpoint, reveal its signing secret and copy it into Freeform's **Webhook Signing Secret** field. Use the secret for this endpoint and the same account and mode as your API keys.
 
-### 2. Prepare Stripe
+Stripe must be able to reach the endpoint over HTTPS. See [Stripe's webhook guide](https://docs.stripe.com/webhooks) for current Workbench instructions and local testing options.
 
-Open up another browser tab and go to your Stripe account:
+</details>
 
-- On the top menu, click on the **Developers** button. On the next page click **API Keys**.
-- Copy the token for **Publishable key** (e.g. `pk_test_fs7f6f8g8dfg68g68d76dgd8`) and paste into the **Public Key** field inside Freeform.
-- Copy the token (click *Reveal test key* button to reveal) for **Secret key** (e.g. `sk_test_af7fa7gfdo78g6ddfg6d8d87`) and paste into the **Secret Key** field inside Freeform.
+<details>
+<summary>Test mode and live mode</summary>
 
-<span class="note tip">Stripe can be run in **Live** mode or **Test** mode. To toggle between Live and Test mode, click the **Test mode** toggle at the top of the page. When doing this, the _Publishable key_ and _Secret key_ will switch between live and test as well. We strongly recommend switching Stripe to **Test** mode first, and testing your site with those keys instead.
+Use test keys while setting up your form. Test publishable keys begin with `pk_test_`, and live publishable keys begin with `pk_live_`.
 
-Consider using an **Environment Variable** for these settings instead. Then, store _Live_ keys on production and _Test_ keys on local dev environments.</span>
+Keep the publishable key, secret key, and webhook signing secret matched to the same Stripe account and mode. Environment variables can hold different keys for development and production.
 
-### 3. Configure the Stripe Webhook
+</details>
 
-- Click on the **Webhooks** tab inside the Stripe **Developers** page.
-- On the next page, click the **+ Add endpoint** button.
-- Configure the webhook:
-    - Copy the **Webhook URL** field value in Freeform (e.g. `http://my-precio.us/freeform/payment-webhooks/stripe?id=1`) and paste it into the **Endpoint URL** setting.
-    - For the **Listen to** setting, choose **Events on your account**.
-    - Click on the **Select events** button under the **Select events to listen to** setting. Add the following 3 events Freeform requires:
-        - `payment_intent.succeeded`
-        - `payment_intent.payment_failed`
-        - `payment_intent.canceled`
-    - Click the **Add endpoint** button to save it.
-- On the next page inside Stripe account, click on the newly created endpoint URL.
-- At the top of the next page, you'll see an item called **Signing secret**.
-- Click on the **Reveal** button below it, and then copy the token (e.g. `whsec_dsf87d876sdf7g876fd8fasd9f7dsasd`).
+## Configure your form
 
-### 4. Complete the Connection
+1. Open the form and select **Integrations**, then **Stripe**.
+2. Enable the integration and map the customer fields. Map an email field if you want Stripe receipts.
+3. Map the customer address fields if needed.
+4. Add a **Stripe** field to the form layout and configure the amount, payment type, and appearance.
+5. Save the form.
 
-- Switch back to the Payment integration inside Freeform, and paste the Stripe **Signing secret** token into the **Webhook Secret** setting.
-- Click the **Save** button.
-- After the integration is saved, you should see an **Authorize** button at the top of the page.
-- Click the **Authorize** button.
-- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
+See the [complete Freeform Stripe guide](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for payment-field options and subscription setup.
 
-### 5. Configure the Form
+<details>
+<summary>Payment method overrides</summary>
 
-To use this integration on your form(s), you'll need to configure each form individually.
+Open **Advanced settings** to override the payment methods configured in Stripe. Leave both fields blank to use your Stripe defaults.
 
-- Visit the form inside the form builder.
-- Click on the **Integrations** tab.
-- Click on **Stripe** in the list of available integrations.
-- Toggle the _Enable_ setting ON.
-- Map your Freeform fields to Stripe's fields as necessary.
-- Add a **Stripe** field to your form layout and configure as necessary.
+- **One-time Payment Configuration:** enter a Stripe payment method configuration ID beginning with `pmc_`. This applies to one-time payments.
+- **Subscription Payment Methods:** enter comma-separated payment method types for subscriptions, such as `card, us_bank_account`. Supported methods depend on your Stripe account and subscription setup.
 
-<span class="note warning">Please refer to the [Freeform Stripe integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for a complete setup guide.</span>
+</details>
 
----
+<details>
+<summary>Receipts and failed-payment actions</summary>
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+These options are in **Advanced settings**. Opening or closing that panel does not change them.
+
+**Send Stripe Receipts** passes the mapped customer email address to Stripe for successful-payment receipts. These are separate from Freeform's email notifications. Stripe does not automatically send receipts for test payments. See [Stripe's receipt guide](https://docs.stripe.com/receipts) for testing and receipt settings.
+
+**Skip Actions When Payment Fails** keeps the submission but skips Freeform email notifications and other integrations when payment is unsuccessful. Leave disabled to keep the existing default behavior.
+
+</details>

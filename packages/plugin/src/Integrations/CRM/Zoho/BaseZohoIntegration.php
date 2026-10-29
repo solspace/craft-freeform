@@ -16,6 +16,7 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -54,16 +55,26 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     protected string $apiDomain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Boolean(
+        label: 'Advanced settings',
+        instructions: 'Sandbox and developer environment settings.',
+        order: 90,
+    )]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\BooleanEnv(
         instructions: 'Enable this if your Zoho account is in Sandbox mode (connects to `sandbox.zohoapis.{domain}` instead of `www.zohoapis.com` or `www.zohoapis.{domain}`).',
-        order: 1,
+        order: 100,
     )]
     protected string $sandboxMode = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\BooleanEnv(
         instructions: 'Enable this if your Zoho account is in Developer mode (connects to `developer.zohoapis.{domain}` instead of `www.zohoapis.com`, `www.zohoapis.{domain}` or `sandbox.zohoapis.{domain}`).',
-        order: 2,
+        order: 110,
     )]
     protected string $developerMode = 'false';
 

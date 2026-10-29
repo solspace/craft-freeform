@@ -1,83 +1,62 @@
-# Setup Guide
+# Jira setup
 
-This guide assumes you have a [Jira / Atlassian](https://www.atlassian.com/software/jira) account already.
+Create Jira Cloud issues from Freeform submissions using OAuth and Jira REST API version 3. Each Freeform Jira integration connects to one site and project. Create another integration if you need to send data to another project.
 
-## Compatibility
+## Connect your account
 
-Uses OAuth flow on `v3` of the REST API.
+1. Copy **OAuth Callback URL** from Freeform.
+2. Configure the Atlassian OAuth app used for this connection with that exact callback URL. See **OAuth app settings** below.
+3. Copy the app's **Client ID** and **Secret** into Freeform's **Client ID** and **Client Secret** fields.
+4. Enter your **Jira Site URL**, such as `https://your-team.atlassian.net`.
+5. Enter the **Project Key**, such as `SUPPORT`.
+6. Save the integration, then click **Authorize**. Sign in with the Atlassian account that should create the issues and approve the requested access.
 
-### Endpoints
-Maps data to Jira **Cards**. Works for _Software_ and _Business_ project types.
+When the connection succeeds, Freeform shows the integration as authorized. Existing credentials, authorization, and mappings are preserved.
 
-<span class="note warning"><b>Important:</b> Please note that because of the complexity of the Jira integration, you need to create a separate Jira integration for each additional Jira project you want to map.</span>
+<details>
+<summary>OAuth app settings</summary>
 
-### Fields
-Maps Freeform submission data to standard Jira Card field types.
+Use an OAuth 2.0 app approved for your organization. Your Atlassian administrator or integration maintainer can provide its credentials and configure access.
 
-## Setup Instructions
+In the [Atlassian developer console](https://developer.atlassian.com/console), the app needs Jira API access with these classic scopes:
 
-### 1. Prepare your site's end for Integration
+- `write:jira-work`
+- `read:jira-work`
+- `read:jira-user`
 
-- In the **Instance URL** setting, enter your Jira account's URL, e.g. `https://mycompany.atlassian.net`.
-- In the **Project Key** setting, enter the project key of the Jira project you want to interact with, e.g. `TST`.
-- Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
-- Leave this page open.
+Freeform also requests `offline_access` to keep the connection authorized.
 
-### 2. Set up Jira app for Integration
+In the app's OAuth 2.0 authorization settings, set the callback URL to Freeform's **OAuth Callback URL**. Find the **Client ID** and **Secret** in the app's settings.
 
-- Open up a new browser tab and go to the [Jira Developer Console](https://developer.atlassian.com/console) and log into your account.
-- It should automatically bring you to a list of your current apps.
-- Click on the **Create** button and choose **OAuth 2.0 integration**.
-    - Give your app a **Name**, agree to the terms and click _Create_.
-- On the next page, click on the **Permissions** menu item on the left.
-    - For the **Jira API** row, click on the **Add** button.
-    - Then click the **Configure** button.
-    - Stay on the **Classic Scopes** tab.
-    - On the **Jira platform REST API** section, click the **Edit Scopes** button on the right.
-    - On the modal that loads, search for and enable the following permissions:
-        - `write:jira-work`
-        - `read:jira-work`
-        - `read:jira-user`
-    - Click the **Save** button.
-- Click on the **Authorization** menu item on the left.
-    - For the **OAuth 2.0 (3LO)** row, click the **Add** button.
-    - Paste the URL you saved from the Freeform **OAuth 2.0 Return URI** into the app's **Callback URL** setting.
-    - Click the **Save changes** button.
-- Click on the **Settings** menu item on the left.
-    - Copy the following newly created credentials:
-        - **Client ID**
-        - **Secret**
+See [Atlassian's OAuth app guide](https://developer.atlassian.com/cloud/jira/platform/oauth-2-3lo-apps/) for current app setup, access, and distribution requirements.
 
-### 3. Prepare the Connection
+</details>
 
-- Switch back to this integration tab.
-- Paste the Jira app's **Client ID** value into the **Client ID** field in Freeform.
-- Paste the Jira app's **Secret** value into the **Client Secret** field in Freeform.
-- Click the **Save** button.
+<details>
+<summary>Choose a site and project</summary>
 
-### 4. Finish & Verify the Integration
+**Jira Site URL** identifies the site to use when the Atlassian account can access more than one. If left blank, Freeform uses the first available site.
 
-- After the integration is saved, you should see an **Authorize** button at the top of the page.
-- Click the **Authorize** button.
-- A popup will load a Jira OAuth page to allow permissions.
-    - If not currently logged in, fill in your credentials.
-    - Click **Accept** when asked for permissions.
-- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
+**Project Key** identifies the destination project. If left blank, Freeform selects the first available project when authorizing. Enter it explicitly when you have multiple projects so the destination is clear.
 
-### 5. Configure the Form
+The authorizing user must have access to the site and project and permission to create issues there.
 
-To use this integration on your form(s), you'll need to configure each form individually.
+</details>
 
-- Visit the form inside the form builder.
-- Click on the **Integrations** tab.
-- Click on **Jira** in the list of available integrations.
-- On the right side of the page:
-    - Enable the integration.
-    - Set the **Google Sheets Spreadsheet ID**, e.g. `4hzvcabRd6yZwux7vK80-NK02zSDD7U-X8MePslAiHvc`
-    - Select the Freeform fields to be mapped to the applicable Jira Card columns.
+## Map your form
 
-<span class="note warning"><b>Important:</b> Please note that if you set this up initially on a development environment, you will need to update your callback URL and reauthorize the connection on your production environment. However, your settings and field mappings will remain intact.</span>
+1. Open your form in Freeform and select **Integrations**, then **Jira**.
+2. Enable the integration.
+3. Map your fields to Jira issue fields. Supply **Issue Type** and **Summary**, along with any other fields required by your Jira project.
+4. Save the form.
 
----
+<details>
+<summary>Troubleshoot authorization and mapping</summary>
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+- Check that the callback URL matches Freeform's displayed value exactly.
+- Use the OAuth app's client ID and secret, rather than your Atlassian password or an API token.
+- Check that the site URL and project key match the destination you want to use.
+- Confirm that the app's scopes and the authorizing user's permissions allow access to the project and fields you need.
+- If you move from development to production, update the app's callback URL and authorize the production connection.
+
+</details>

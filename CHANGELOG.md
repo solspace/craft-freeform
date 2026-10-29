@@ -3,6 +3,7 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added editable starter lists for blocked emails, 100 keyword patterns, allowed gibberish terms, and URL tracking parameters, with duplicate skipping and Undo.
 - Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
 - Added **Activity Log** with privacy-focused event history, submission timelines, filters, exports, and configurable recording and storage limits. New installs use Standard mode and upgrades use Minimal.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
@@ -20,6 +21,9 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Simplified settings and setup guides for Salesforce CRM, Account Engagement, Zoho, Stripe, Google Sheets, Jira, and spam blocking with clearer ordering, choice cards, and remembered Advanced panels where applicable.
+- Renamed Pardot to Salesforce Account Engagement (Pardot), preserving existing connections and custom names.
+- Added Dotdigital opt-in cards and email format buttons. New integrations default to Verified Double and HTML.
 - Updated hCaptcha, Turnstile, and Friendly Captcha settings with clearer setup guides, compact choice cards, and advanced panels that remember whether they were open or closed. Added icons to CAPTCHA button groups and clarified when Friendly Captcha starts verification. Existing selections are preserved.
 - Updated the Friendly Captcha SDK used by headless forms to match regular forms.
 - Improved integration instructions with animated expandable sections, copy buttons, and code highlighting for HTML, CSS, JavaScript, Twig, JSON, and PHP.
@@ -39,6 +43,9 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
+- Fixed boolean environment indicators and dependent setting visibility without clearing saved values.
+- Fixed Salesforce and Account Engagement custom login URLs not resolving environment variables, and legacy product labels in headings and tabs.
 - Fixed hCaptcha, Turnstile, and Friendly Captcha verification errors and outages being treated as spam. Invalid or incomplete provider responses now fail validation safely.
 - Fixed CAPTCHA widgets and headless tokens interfering with other forms, stalled script loading, and missing widget language settings. Friendly Captcha now waits for a token before submitting.
 - Hardened reCAPTCHA action and score validation, quota and service-error handling, token expiration and retries, and initialization of multiple forms, including Invisible v2.

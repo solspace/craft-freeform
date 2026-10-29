@@ -15,6 +15,18 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string) => text,
 }));
 vi.mock("./editor.model-input", () => ({ ModelInput: () => null }));
+vi.mock("@ff-client/queries/autosuggest", () => ({
+  useResolvedBoolean: (value: unknown) => {
+    if (value === "$QA_TRUE") return true;
+    if (value === "$QA_FALSE") return false;
+    if (typeof value === "string" && value.startsWith("$")) return undefined;
+    return (
+      value === true ||
+      value === 1 ||
+      ["true", "yes", "on", "1"].includes(String(value).toLowerCase())
+    );
+  },
+}));
 vi.mock("@editor/store/hooks/value-update-generator", () => ({
   useValueUpdateGenerator:
     (
@@ -27,7 +39,18 @@ vi.mock("@editor/store/hooks/value-update-generator", () => ({
       update(property.handle, value),
 }));
 vi.mock("@components/form-controls/control", () => ({
-  Control: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+  Control: ({
+    children,
+    extraContent,
+  }: {
+    children: ReactNode;
+    extraContent?: ReactNode;
+  }) => (
+    <div>
+      {extraContent}
+      {children}
+    </div>
+  ),
 }));
 vi.mock("@components/form-controls", () => ({
   FormComponent: ({
@@ -49,6 +72,14 @@ vi.mock("@components/form-controls", () => ({
       >
         {children}
       </Custom>
+    ) : property.type === PropertyType.String ||
+      property.type === PropertyType.Textarea ||
+      property.type === PropertyType.BooleanEnv ? (
+      <input
+        aria-label={property.handle}
+        value={value as string}
+        onChange={(event) => updateValue(event.target.value)}
+      />
     ) : property.type === PropertyType.ButtonGroup ? (
       <ButtonGroup
         label={property.handle}
@@ -235,6 +266,526 @@ afterEach(() => {
   container.remove();
   vi.restoreAllMocks();
   localStorage.clear();
+});
+
+describe("Dotdigital email choices", () => {
+  it.each(["V2", "V3"])(
+    "preserves %s preferences and updates each choice independently",
+    (version) => {
+      mount(
+        "",
+        "",
+        false,
+        false,
+        false,
+        12,
+        "",
+        `Solspace\\Freeform\\Integrations\\EmailMarketing\\Dotdigital\\Versions\\Dotdigital${version}`,
+        [
+          {
+            handle: "optInType",
+            label: "Email Opt In Type",
+            type: PropertyType.ButtonGroup,
+            value: "Double",
+            options: [
+              { value: "Single", label: "Single" },
+              { value: "Double", label: "Double" },
+              { value: "VerifiedDouble", label: "Verified Double" },
+            ],
+          },
+          {
+            handle: "emailType",
+            label: "Email Type",
+            type: PropertyType.ButtonGroup,
+            value: "Html",
+            options: [
+              { value: "PlainText", label: "Plain Text" },
+              { value: "Html", label: "HTML" },
+            ],
+          },
+        ],
+      );
+      const radios = container.querySelectorAll<HTMLInputElement>(
+        '[role="radiogroup"][aria-label="Email Opt In Type"] input',
+      );
+      const buttons = container.querySelectorAll<HTMLButtonElement>(
+        '[role="group"][aria-label="Email Type"] button',
+      );
+      expect(radios).toHaveLength(3);
+      expect(radios[1].checked).toBe(true);
+      expect(buttons[1].getAttribute("aria-pressed")).toBe("true");
+      expect(container.textContent).toContain("Confirmation handled by you");
+      expect(container.textContent).toContain(
+        "The contact stays pending until they click the link.",
+      );
+      for (const button of buttons) {
+        expect(button.querySelector('[aria-hidden="true"] svg')).not.toBeNull();
+      }
+      act(() => radios[2].click());
+      expect(radios[2].checked).toBe(true);
+      expect(buttons[1].getAttribute("aria-pressed")).toBe("true");
+      act(() => buttons[0].click());
+      expect(buttons[0].getAttribute("aria-pressed")).toBe("true");
+      expect(radios[2].checked).toBe(true);
+    },
+  );
+});
+
+describe("Salesforce login options", () => {
+  it.each([
+    "Solspace\\Freeform\\Integrations\\CRM\\Pardot\\Versions\\PardotV4",
+    "Solspace\\Freeform\\Integrations\\CRM\\Salesforce\\Versions\\SalesforceV58",
+  ])(
+    "groups and remembers %s login settings without changing their saved values",
+    (className) => {
+      const loginProperties: Property[] = [
+        {
+          handle: "clientId",
+          label: "Client ID",
+          type: PropertyType.String,
+          value: "saved-client",
+        },
+        {
+          handle: "showAdvanced",
+          label: "Salesforce login options",
+          type: PropertyType.Boolean,
+          value: false,
+        },
+        {
+          handle: "useCustomUrl",
+          label: "Use custom Salesforce login URL",
+          type: PropertyType.BooleanEnv,
+          value: "true",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+        {
+          handle: "customUrl",
+          label: "Salesforce login URL",
+          type: PropertyType.String,
+          value: "https://example.my.salesforce.com",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+      ];
+      const open = () =>
+        mount("", "", false, false, true, 44, "", className, loginProperties);
+      open();
+      let panel = container.querySelector('[role="region"]')!;
+      expect(panel.getAttribute("aria-hidden")).toBe("true");
+      expect(panel.querySelector('[aria-label="customUrl"]')).not.toBeNull();
+      let toggle = container.querySelector<HTMLButtonElement>(
+        "button[aria-expanded]",
+      )!;
+      act(() => toggle.click());
+      expect(toggle.getAttribute("aria-expanded")).toBe("true");
+      act(() => root.unmount());
+      container.remove();
+      open();
+      toggle = container.querySelector<HTMLButtonElement>(
+        "button[aria-expanded]",
+      )!;
+      panel = container.querySelector('[role="region"]')!;
+      expect(toggle.getAttribute("aria-expanded")).toBe("true");
+      expect(
+        container.querySelector<HTMLInputElement>('[aria-label="clientId"]')
+          ?.value,
+      ).toBe("saved-client");
+      expect(
+        panel.querySelector<HTMLInputElement>('[aria-label="customUrl"]')
+          ?.value,
+      ).toBe("https://example.my.salesforce.com");
+      act(() => toggle.click());
+      expect(panel.getAttribute("aria-hidden")).toBe("true");
+      expect(
+        panel.querySelector<HTMLInputElement>('[aria-label="customUrl"]')
+          ?.value,
+      ).toBe("https://example.my.salesforce.com");
+    },
+  );
+});
+
+describe("Zoho environment options", () => {
+  it("keeps saved environment variable values while opening and closing Advanced settings", () => {
+    mount(
+      "",
+      "",
+      false,
+      false,
+      true,
+      17,
+      "",
+      "Solspace\\Freeform\\Integrations\\CRM\\Zoho\\Versions\\ZohoV2",
+      [
+        {
+          handle: "showAdvanced",
+          label: "Advanced settings",
+          type: PropertyType.Boolean,
+          value: false,
+        },
+        {
+          handle: "sandboxMode",
+          label: "Sandbox Mode",
+          type: PropertyType.BooleanEnv,
+          value: "$QA_ZOHO_SANDBOX",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+        {
+          handle: "developerMode",
+          label: "Developer Mode",
+          type: PropertyType.BooleanEnv,
+          value: "false",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+      ],
+    );
+    const panel = container.querySelector('[role="region"]')!;
+    const toggle = container.querySelector<HTMLButtonElement>(
+      "button[aria-expanded]",
+    )!;
+    expect(panel.getAttribute("aria-hidden")).toBe("true");
+    act(() => toggle.click());
+    expect(panel.getAttribute("aria-hidden")).toBe("false");
+    expect(
+      panel.querySelector<HTMLInputElement>('[aria-label="sandboxMode"]')
+        ?.value,
+    ).toBe("$QA_ZOHO_SANDBOX");
+    act(() => toggle.click());
+    expect(
+      panel.querySelector<HTMLInputElement>('[aria-label="sandboxMode"]')
+        ?.value,
+    ).toBe("$QA_ZOHO_SANDBOX");
+    expect(
+      panel.querySelector<HTMLInputElement>('[aria-label="developerMode"]')
+        ?.value,
+    ).toBe("false");
+  });
+});
+
+describe("Salesforce custom URL visibility", () => {
+  it("restores the saved URL after toggling custom login off and on", () => {
+    mount(
+      "",
+      "",
+      false,
+      false,
+      false,
+      18,
+      "",
+      "Solspace\\Freeform\\Integrations\\CRM\\Pardot\\Versions\\PardotV4",
+      [
+        {
+          handle: "useCustomUrl",
+          type: PropertyType.BooleanEnv,
+          value: "true",
+        },
+        {
+          handle: "customUrl",
+          type: PropertyType.String,
+          value: "https://saved.my.salesforce.com",
+        },
+      ],
+    );
+    const toggle = container.querySelector<HTMLInputElement>(
+      '[aria-label="useCustomUrl"]',
+    )!;
+    const setValue = Object.getOwnPropertyDescriptor(
+      HTMLInputElement.prototype,
+      "value",
+    )!.set!;
+    act(() => {
+      setValue.call(toggle, "false");
+      toggle.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    expect(container.querySelector('[aria-label="customUrl"]')).toBeNull();
+    act(() => {
+      setValue.call(toggle, "true");
+      toggle.dispatchEvent(new Event("input", { bubbles: true }));
+    });
+    expect(
+      container.querySelector<HTMLInputElement>('[aria-label="customUrl"]')
+        ?.value,
+    ).toBe("https://saved.my.salesforce.com");
+  });
+  it.each([
+    ["false", false],
+    ["no", false],
+    ["true", true],
+    ["$QA_TRUE", true],
+    ["$QA_FALSE", false],
+    ["$QA_UNAVAILABLE", true],
+  ])("shows the saved URL appropriately for %s", (value, visible) => {
+    mount(
+      "",
+      "",
+      false,
+      false,
+      false,
+      18,
+      "",
+      "Solspace\\Freeform\\Integrations\\CRM\\Salesforce\\Versions\\SalesforceV58",
+      [
+        { handle: "useCustomUrl", type: PropertyType.BooleanEnv, value },
+        {
+          handle: "customUrl",
+          type: PropertyType.String,
+          value: "https://saved.my.salesforce.com",
+        },
+      ],
+    );
+    const field = container.querySelector<HTMLInputElement>(
+      '[aria-label="customUrl"]',
+    );
+    expect(Boolean(field)).toBe(visible);
+    if (field) expect(field.value).toBe("https://saved.my.salesforce.com");
+  });
+});
+
+describe("starter list controls", () => {
+  it.each([
+    [
+      "Solspace\\Freeform\\Integrations\\SpamBlocking\\Emails\\BlockEmailAddresses",
+      "defaultEmails",
+    ],
+    [
+      "Solspace\\Freeform\\Integrations\\SpamBlocking\\Keywords\\BlockKeywords",
+      "defaultKeywords",
+    ],
+    [
+      "Solspace\\Freeform\\Integrations\\SpamBlocking\\Gibberish\\BlockGibberish",
+      "defaultAllowedTerms",
+    ],
+    [
+      "Solspace\\Freeform\\Integrations\\Single\\UrlParameterTracking\\UrlParameterTracking",
+      "defaultParameters",
+    ],
+  ])(
+    "adds and undoes %s suggestions without replacing existing entries",
+    (className, handle) => {
+      const before = "My existing entry\n";
+      mount("", "", false, false, false, 18, "", className, [
+        {
+          handle,
+          label: "Starter field",
+          type: PropertyType.Textarea,
+          rows: 8,
+          value: before,
+        },
+      ]);
+      const field = container.querySelector<HTMLTextAreaElement>("textarea")!;
+      const add = Array.from(
+        container.querySelectorAll<HTMLButtonElement>("button"),
+      ).find((button) => button.textContent === "Add Starter List")!;
+      act(() => add.click());
+      expect(field.value.startsWith(before)).toBe(true);
+      expect(field.value.length).toBeGreaterThan(before.length);
+      expect(add.disabled).toBe(true);
+      const undo = Array.from(
+        container.querySelectorAll<HTMLButtonElement>("button"),
+      ).find((button) => button.textContent === "Undo")!;
+      act(() => undo.click());
+      expect(field.value).toBe(before);
+      expect(add.disabled).toBe(false);
+      act(() => add.click());
+      const setter = Object.getOwnPropertyDescriptor(
+        HTMLTextAreaElement.prototype,
+        "value",
+      )!.set!;
+      act(() => {
+        setter.call(field, "Manually edited list");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      expect(field.value).toBe("Manually edited list");
+      expect(
+        Array.from(container.querySelectorAll("button")).some(
+          (button) => button.textContent === "Undo",
+        ),
+      ).toBe(false);
+    },
+  );
+});
+
+describe("block list advanced settings", () => {
+  it.each([
+    [
+      "Emails\\BlockEmailAddresses",
+      "defaultEmails",
+      "errorsBelowFields",
+      "errorMessage",
+    ],
+    [
+      "Keywords\\BlockKeywords",
+      "defaultKeywords",
+      "errorsBelowFields",
+      "errorMessage",
+    ],
+    [
+      "IpAddresses\\BlockIpAddresses",
+      "defaultIps",
+      "checkDnsBlockLists",
+      "defaultDnsBlockLists",
+    ],
+  ])(
+    "keeps %s lists first and retains optional values when collapsing",
+    (name, list, toggle, optional) => {
+      mount(
+        "",
+        "",
+        false,
+        false,
+        true,
+        22,
+        "",
+        `Solspace\\Freeform\\Integrations\\SpamBlocking\\${name}`,
+        [
+          {
+            handle: list,
+            label: "Default block list",
+            type: PropertyType.Textarea,
+            value: "saved-list-entry",
+          },
+          {
+            handle: "showAdvanced",
+            label: "Advanced settings",
+            type: PropertyType.Boolean,
+            value: false,
+          },
+          {
+            handle: toggle,
+            type: PropertyType.BooleanEnv,
+            value: "true",
+            visibilityFilters: ["Boolean(values.showAdvanced)"],
+          },
+          {
+            handle: optional,
+            type: PropertyType.String,
+            value: "saved-optional-value",
+            visibilityFilters: ["Boolean(values.showAdvanced)"],
+          },
+        ],
+      );
+      const listField = container.querySelector<
+        HTMLInputElement | HTMLTextAreaElement
+      >(`#${list}, [aria-label="${list}"]`)!;
+      expect(listField.closest('[role="region"]')).toBeNull();
+      const panel = container.querySelector('[role="region"]')!;
+      const button = container.querySelector<HTMLButtonElement>(
+        "button[aria-expanded]",
+      )!;
+      act(() => button.click());
+      expect(panel.getAttribute("aria-hidden")).toBe("false");
+      expect(
+        panel.querySelector<HTMLInputElement>(`[aria-label="${optional}"]`)
+          ?.value,
+      ).toBe("saved-optional-value");
+      act(() => button.click());
+      expect(listField.value).toBe("saved-list-entry");
+      expect(
+        panel.querySelector<HTMLInputElement>(`[aria-label="${optional}"]`)
+          ?.value,
+      ).toBe("saved-optional-value");
+    },
+  );
+});
+
+describe("Google Sheets row choices", () => {
+  it("keeps a saved row mode and formula setting when selecting a different card", () => {
+    mount(
+      "",
+      "",
+      false,
+      false,
+      false,
+      8,
+      "",
+      "Solspace\\Freeform\\Integrations\\Other\\Google\\GoogleSheets\\Versions\\GoogleSheetsV4",
+      [
+        {
+          handle: "insertOption",
+          label: "Row Insert Behavior",
+          type: PropertyType.ButtonGroup,
+          value: "OVERWRITE",
+          options: [
+            { value: "INSERT_ROWS", label: "Insert New Row" },
+            { value: "OVERWRITE", label: "Use Next Row" },
+          ],
+        },
+        {
+          handle: "processValues",
+          label: "Allow Submitted Formulas",
+          type: PropertyType.BooleanEnv,
+          value: "false",
+        },
+      ],
+    );
+    const saved = container.querySelector<HTMLInputElement>(
+      'input[value="OVERWRITE"]',
+    )!;
+    expect(saved.checked).toBe(true);
+    expect(container.textContent).toContain(
+      "Existing cells in that destination can be replaced.",
+    );
+    const insert = container.querySelector<HTMLInputElement>(
+      'input[value="INSERT_ROWS"]',
+    )!;
+    act(() => insert.click());
+    expect(insert.checked).toBe(true);
+    expect(
+      container.querySelector<HTMLInputElement>('[aria-label="processValues"]')
+        ?.value,
+    ).toBe("false");
+  });
+});
+
+describe("Stripe advanced options", () => {
+  it("keeps saved payment overrides and receipt choices when collapsing the panel", () => {
+    mount(
+      "",
+      "",
+      false,
+      false,
+      true,
+      20,
+      "",
+      "Solspace\\Freeform\\Integrations\\PaymentGateways\\Stripe\\Stripe",
+      [
+        {
+          handle: "showAdvanced",
+          label: "Advanced settings",
+          type: PropertyType.Boolean,
+          value: false,
+        },
+        {
+          handle: "paymentConfigurationId",
+          label: "One-time Payment Configuration",
+          type: PropertyType.String,
+          value: "pmc_saved",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+        {
+          handle: "sendSuccessMail",
+          label: "Send Stripe Receipts",
+          type: PropertyType.BooleanEnv,
+          value: "true",
+          visibilityFilters: ["Boolean(values.showAdvanced)"],
+        },
+      ],
+    );
+    const toggle = container.querySelector<HTMLButtonElement>(
+      "button[aria-expanded]",
+    )!;
+    act(() => toggle.click());
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    act(() => toggle.click());
+    expect(
+      container.querySelector<HTMLInputElement>(
+        '[aria-label="paymentConfigurationId"]',
+      )?.value,
+    ).toBe("pmc_saved");
+    expect(
+      container.querySelector<HTMLInputElement>(
+        '[aria-label="sendSuccessMail"]',
+      )?.value,
+    ).toBe("true");
+  });
 });
 
 describe("reCAPTCHA setup choices", () => {

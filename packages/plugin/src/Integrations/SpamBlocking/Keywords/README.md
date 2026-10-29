@@ -1,29 +1,56 @@
-# Setup Guide
+# Blocked keywords
 
-Spam Blocking is handled as an integration to give you more control. Spam Blocking can be updated even when setting changes are disabled for the site. It also offers the ability to create multiple sets of blocks as well as form-specific blocks (entered directly inside each form).
+Check text and textarea fields for blocked words, phrases, and patterns. Keep a shared list here and add extra entries to individual forms.
 
-## Setup Instructions
+## Set up the default list
 
-### 1. Configure the Integration
+1. Choose whether the integration is **Enabled by default**.
+2. Enter one word, phrase, or pattern per line in **Default Blocked Keywords**.
+3. Save the integration.
 
-- Enable the **Enabled by default** setting if you'd like this integration to be enabled by default for any existing and new forms. Otherwise, you will need to manually opt-in for each form inside the builder.
-- Enable the **Display Errors about Blocked Keywords under each Field** setting if you'd like field-based errors to display under the field(s) for which the user has entered blocked keywords. This isn't recommended for regular use but is helpful if you're trying to troubleshoot submission issues.
-    - If enabled, enter an error message to show users when blocked keywords are submitted. You can use `{value}` and `{keyword}` variables.
-    - This can be overrided on a per form level inside the form builder.
+<details>
+<summary>Words, phrases, and wildcard examples</summary>
 
-### 2. Set the Defaults
+```text
+spam
+"generate new leads"
+lead*
+*offer*
+```
 
-- In the **Default Blocked Keywords** textarea below, enter keywords you would like blocked from being used in all text and textarea fields for any form that enables this integration.
-- Use quotes for phrases (e.g. ``"generate new leads"``), asterisks for wildcards (e.g. ``lead*``), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, make good use of the wildcard character by placing one before and after.
-- If you ever need to add, remove or change blocked keywords, you can come back to this integration settings page and do so.
-- Click the **Save** button.
+- A word matches at word boundaries.
+- Put a phrase in double quotes.
+- Use `*` for partial matches. `lead*` can match a word beginning with `lead`, while `*offer*` can match text containing `offer`.
 
-### 3. Configure the Form
+Use wildcards around a character or partial string when you want it matched inside longer text.
 
-- If you enabled the **Enabled by default** setting, this will already be enabled on all of your existing forms, and you likely shouldn't need to touch anything else after that.
-- If you did not enable the **Enabled by default** setting, you will need to enable this spam block manually for each form that you wish for it to apply to.
-- If you want to add form-specific blocks, you can enter them inside this integration in the form builder. Anything added there will be in addition to the global blocks set here and will apply only to that form.
+</details>
 
----
+<details>
+<summary>Show field errors while troubleshooting</summary>
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+In **Advanced settings**, enable **Show Field Errors** to display a message beside fields containing blocked values. This is usually left off.
+
+Enable it to edit **Error Message**. You can use `{value}` for the submitted value and `{keyword}` for the matching blocked entry.
+
+Opening or closing Advanced settings does not change the field-error setting.
+
+</details>
+
+## Use the list on a form
+
+1. Open the form and select **Integrations**.
+2. Enable this integration if it is not already enabled.
+3. Add form-specific entries if needed. These are combined with the default list rather than replacing it.
+4. Save the form.
+
+Matches mark the submission as spam. Freeform's spam settings determine how the submission is handled.
+
+<details>
+<summary>Use the starter list</summary>
+
+Click **Add Starter List** beside the default list to add suggested entries. Existing entries are kept and duplicates are skipped. Review the entries and remove any you do not need before saving. **Undo** restores the previous list until you edit it manually.
+
+The starter list contains 100 English words, phrases, and wildcard patterns covering SEO pitches, investment offers, pharmaceuticals, adult content, gambling, and other promotional messages. Some entries can also appear in legitimate submissions. Remove any that do not suit your site. For example, a pharmacy or financial services site may need to remove several of these rules.
+
+</details>

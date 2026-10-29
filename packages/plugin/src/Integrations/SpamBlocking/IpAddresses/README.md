@@ -1,25 +1,43 @@
-# Setup Guide
+# Blocked IP addresses
 
-Spam Blocking is handled as an integration to give you more control. Spam Blocking can be updated even when setting changes are disabled for the site. It also offers the ability to create multiple sets of blocks as well as form-specific blocks (entered directly inside each form).
+Block submissions from the visitor IP addresses or network ranges you specify. Keep a shared list here and add extra entries to individual forms.
 
-## Setup Instructions
+## Set up the default list
 
-### 1. Configure the Integration
+1. Choose whether the integration is **Enabled by default**.
+2. Enter one IP address or CIDR network range per line in **Default Blocked IP Addresses**.
+3. Save the integration.
 
-- Enable the **Enabled by default** setting if you'd like this integration to be enabled by default for any existing and new forms. Otherwise, you will need to manually opt-in for each form inside the builder.
+<details>
+<summary>Address and network examples</summary>
 
-### 2. Set the Defaults
+```text
+192.0.2.10
+192.0.2.0/24
+2001:db8::1
+2001:db8::/32
+```
 
-- In the **Default IP Addresses** textarea below, enter IP addresses you would like blocked for any form that enables this integration.
-- If you ever need to add, remove or change blocked IP addresses, you can come back to this integration settings page and do so.
-- Click the **Save** button.
+A single address matches that visitor IP. CIDR notation matches a network range. IPv4 and IPv6 are supported.
 
-### 3. Configure the Form
+</details>
 
-- If you enabled the **Enabled by default** setting, this will already be enabled on all of your existing forms, and you likely shouldn't need to touch anything else after that.
-- If you did not enable the **Enabled by default** setting, you will need to enable this spam block manually for each form that you wish for it to apply to.
-- If you want to add form-specific blocks, you can enter them inside this integration in the form builder. Anything added there will be in addition to the global blocks set here and will apply only to that form.
+<details>
+<summary>DNS block list checks</summary>
 
----
+In **Advanced settings**, enable **Check DNS Block Lists** to query external DNS block lists in addition to your own IP list.
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+Enter one DNS block list hostname per line in **Default DNS Block Lists**. Use hostnames, not website URLs. The list is shown when checking is enabled. Turning checking off does not delete the saved hostnames.
+
+You can add extra DNS block lists for a particular form in the form builder. They are combined with the default DNS list.
+
+</details>
+
+## Use the list on a form
+
+1. Open the form and select **Integrations**.
+2. Enable this integration if it is not already enabled.
+3. Add form-specific entries if needed. These are combined with the default list rather than replacing it.
+4. Save the form.
+
+Matches mark the submission as spam. Freeform's spam settings determine how the submission is handled.

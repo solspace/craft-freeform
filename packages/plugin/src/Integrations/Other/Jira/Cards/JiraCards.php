@@ -40,8 +40,9 @@ class JiraCards extends BaseJiraIntegration
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Project Key',
-        instructions: 'Enter the project key for the Jira project you want to interact with. If left empty, it will be auto-populated with the first available project key of your account.',
-        order: 2,
+        instructions: 'Enter the project key, such as `SUPPORT`. Leave blank to use the first available project.',
+        placeholder: 'SUPPORT',
+        order: 50,
     )]
     protected string $projectKey = '';
 

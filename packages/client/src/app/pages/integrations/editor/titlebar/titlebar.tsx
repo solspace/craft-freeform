@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import type { AuthState, Integration } from "../../integration.types";
+import { integrationLabel } from "../../integration-label";
 import { useTitlebarFavorites } from "../../titlebar-favorites";
 import { Readme } from "../readme/readme";
 
@@ -104,7 +105,12 @@ export const Titlebar: FC<Props> = ({ integration }) => {
             __html: DOMPurify.sanitize(integration.type.iconSvg),
           }}
         />
-        <span>{integration.name || integration.type.name}</span>
+        <span>
+          {integrationLabel(
+            integration.name || integration.type.name,
+            integration.type.shortName,
+          )}
+        </span>
 
         {integration.type.version && (
           <VersionString>{integration.type.version}</VersionString>

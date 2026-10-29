@@ -55,9 +55,9 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     protected string $apiUserPassword = '';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Email Opt In Type',
-        instructions: "Setting this to 'Verified Double' will result in a double opt-in confirmation email sent to the contact. The result will state that the contact's Opt-In Type is 'Double' and the Status is 'Pending Opt-In'. These will only update to 'Verified Double' and 'Subscribed', respectively, once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
+        instructions: 'Choose how email opt-in is recorded and confirmed.',
         order: 4,
         options: [
             'Single' => 'Single',
@@ -65,10 +65,10 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
             'VerifiedDouble' => 'Verified Double',
         ],
     )]
-    protected string $optInType = '';
+    protected string $optInType = 'VerifiedDouble';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Email Type',
         order: 5,
         options: [
@@ -76,7 +76,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
             'Html' => 'HTML',
         ],
     )]
-    protected string $emailType = '';
+    protected string $emailType = 'Html';
 
     public function checkConnection(Client $client): bool
     {

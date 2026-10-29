@@ -19,6 +19,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapp
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Utilities\SheetsHelper;
@@ -29,6 +30,7 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\OAuth\ReturnURLValueGenerator;
 use Solspace\Freeform\Library\Integrations\PushableInterface;
 use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
 use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
@@ -44,6 +46,38 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
 
     protected const INSERT_OPTION_OVERWRITE = 'OVERWRITE';
     protected const INSERT_OPTION_INSERT_ROWS = 'INSERT_ROWS';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_READONLY)]
+    #[ValueGenerator(ReturnURLValueGenerator::class)]
+    #[Input\Text(
+        label: 'OAuth Callback URL',
+        instructions: 'Copy this URL into the Callback URL field in your Google Cloud app. It must match exactly.',
+        order: 10,
+    )]
+    protected string $redirectUri = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Required]
+    #[Input\Text(
+        label: 'Client ID',
+        instructions: 'Copy the client ID from your Google Cloud app.',
+        order: 20,
+    )]
+    protected string $clientId = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Required]
+    #[Input\Text(
+        label: 'Client Secret',
+        instructions: 'Copy the client secret from your Google Cloud app. This stays on your server.',
+        order: 30,
+    )]
+    protected string $clientSecret = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Required]
@@ -84,19 +118,19 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     protected ?int $offset = null;
 
     #[Input\BooleanEnv(
-        label: 'Process User-inputted Formulas and Formats',
-        instructions: 'Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.',
-        order: 6,
+        label: 'Allow Submitted Formulas',
+        instructions: 'Enable to let submitted values run as spreadsheet formulas. Leave disabled to treat formula-like values as text.',
+        order: 110,
     )]
     protected string $processValues = 'false';
 
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Row Insert Behavior',
-        instructions: "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data.",
-        order: 7,
+        instructions: 'Choose how new submissions are added after the sheet’s data table.',
+        order: 100,
         options: [
             self::INSERT_OPTION_INSERT_ROWS => 'Insert New Row',
-            self::INSERT_OPTION_OVERWRITE => 'Replace Next Empty Row',
+            self::INSERT_OPTION_OVERWRITE => 'Use Next Row',
         ],
     )]
     protected string $insertOption = self::INSERT_OPTION_INSERT_ROWS;

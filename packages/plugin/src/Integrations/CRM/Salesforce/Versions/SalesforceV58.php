@@ -35,7 +35,7 @@ use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'Salesforce',
+    name: 'Salesforce CRM',
     type: Type::TYPE_CRM,
     version: 'v58',
     readme: __DIR__.'/../README.md',
@@ -227,7 +227,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Contact fields.',
+        instructions: 'Map Freeform fields to Salesforce Account fields.',
         order: 19,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],

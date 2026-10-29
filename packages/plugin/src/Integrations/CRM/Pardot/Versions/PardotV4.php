@@ -16,7 +16,7 @@ use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'Pardot',
+    name: 'Salesforce Account Engagement (Pardot)',
     type: Type::TYPE_CRM,
     version: 'v4',
     readme: __DIR__.'/../README.md',
@@ -44,7 +44,7 @@ class PardotV4 extends BasePardotIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapProspect)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Prospect fields',
+        instructions: 'Map Freeform fields to Account Engagement prospect fields.',
         order: 6,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_PROSPECT,
         parameterFields: ['id' => 'id'],
@@ -69,7 +69,7 @@ class PardotV4 extends BasePardotIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapCustom)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Custom fields',
+        instructions: 'Map Freeform fields to Account Engagement custom fields.',
         order: 8,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CUSTOM,
         parameterFields: ['id' => 'id'],

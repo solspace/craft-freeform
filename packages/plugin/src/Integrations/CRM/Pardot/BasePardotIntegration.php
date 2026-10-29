@@ -17,6 +17,8 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -25,6 +27,7 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2PKCEInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\OAuth\ReturnURLValueGenerator;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, OAuth2PKCEInterface, PardotIntegrationInterface
@@ -43,37 +46,81 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     protected string $instanceUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_READONLY)]
+    #[ValueGenerator(ReturnURLValueGenerator::class)]
+    #[Input\Text(
+        label: 'OAuth Callback URL',
+        instructions: 'Copy this URL into the Callback URL field in your Salesforce app. It must match exactly.',
+        order: 10,
+    )]
+    protected string $redirectUri = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Client ID',
+        instructions: 'Copy the consumer key from your Salesforce app.',
+        order: 20,
+    )]
+    protected string $clientId = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Client Secret',
+        instructions: 'Copy the consumer secret from your Salesforce app. This stays on your server.',
+        order: 30,
+    )]
+    protected string $clientSecret = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Business Unit ID',
-        instructions: 'Enter your Pardot business unit ID here',
-        order: 1,
+        instructions: 'In Salesforce Setup, open Business Unit Setup. Copy the 18-character ID that starts with `0Uv`.',
+        order: 40,
     )]
     protected string $businessUnitId = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Boolean(
+        label: 'Salesforce login options',
+        instructions: 'Sandbox and custom domain settings. Most connections use the defaults.',
+        order: 90,
+    )]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\BooleanEnv(
-        label: 'Use Custom URL?',
-        instructions: 'Enable this if you connect to your Salesforce account with a custom company URL.',
-        order: 2,
+        label: 'Use custom Salesforce login URL',
+        instructions: 'Enable if your Salesforce organization requires its own My Domain login URL.',
+        order: 110,
     )]
     protected string $useCustomUrl = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Custom URL',
-        instructions: 'Enter the custom URL, e.g. `https://mycompany.develop.my.salesforce.com`',
-        order: 3,
+        label: 'Salesforce login URL',
+        instructions: 'Only used when custom login is enabled. Enter the full URL, such as `https://mycompany.my.salesforce.com`. This takes priority over sandbox login.',
+        order: 120,
     )]
     protected ?string $customUrl = null;
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\BooleanEnv(
-        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to `test.salesforce.com` instead of `login.salesforce.com` or `mycompany.my.salesforce.com`).',
-        order: 4,
+        label: 'Use Salesforce sandbox login',
+        instructions: 'Use `test.salesforce.com` for Salesforce authorization. This changes the login server only.',
+        order: 100,
     )]
     protected string $sandboxMode = 'false';
 
@@ -137,7 +184,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     protected function getCustomUrl(): ?string
     {
-        return $this->customUrl;
+        return rtrim(trim((string) $this->getProcessedValue($this->customUrl)), '/') ?: null;
     }
 
     protected function isSandboxMode(): bool

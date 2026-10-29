@@ -10,7 +10,6 @@ use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapI
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
-use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
@@ -47,8 +46,10 @@ class Stripe extends PaymentGatewayIntegration
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
-        label: 'Public Key',
-        instructions: 'Enter your Stripe public key here.',
+        label: 'Publishable Key',
+        instructions: 'Copy the publishable key from Stripe. Use the same account and mode as the secret key.',
+        placeholder: 'pk_…',
+        order: 10,
     )]
     protected string $publicKey = '';
 
@@ -58,24 +59,36 @@ class Stripe extends PaymentGatewayIntegration
     #[Validators\Required]
     #[Input\Text(
         label: 'Secret Key',
-        instructions: 'Enter your Stripe secret key here.',
+        instructions: 'Copy the matching secret key from Stripe. This stays on your server.',
+        order: 20,
     )]
     protected string $secretKey = '';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Text(
-        label: 'Payment Configuration ID',
-        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
-        placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
+    #[Input\Boolean(
+        label: 'Advanced settings',
+        instructions: 'Payment methods, receipts, and failed-payment actions.',
+        order: 90,
     )]
-    #[Message('Payment configurations apply to one-time payments only. To limit methods on subscriptions, use the Subscription Payment Methods setting below.')]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Text(
+        label: 'One-time Payment Configuration',
+        instructions: 'Optional Stripe payment method configuration ID for one-time payments. Leave blank to use your Stripe defaults.',
+        placeholder: 'pmc_…',
+        order: 100,
+    )]
     protected string $paymentConfigurationId = '';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Subscription Payment Methods',
-        instructions: 'Comma-separated Stripe payment method types allowed on subscriptions (e.g. `card, paypal, bacs_debit, us_bank_account`). Leave blank to use your Stripe account default.',
-        placeholder: 'e.g. "card, paypal, bacs_debit, us_bank_account"',
+        instructions: 'Optional comma-separated payment method types for subscriptions. Leave blank to use your Stripe defaults.',
+        placeholder: 'card, us_bank_account',
+        order: 110,
     )]
     protected string $subscriptionPaymentMethods = '';
 
@@ -83,22 +96,28 @@ class Stripe extends PaymentGatewayIntegration
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Webhook Secret',
-        instructions: 'Enter your Stripe webhook secret here.',
+        label: 'Webhook Signing Secret',
+        instructions: 'Copy the signing secret for your Stripe webhook endpoint. This is different from your API secret key.',
+        placeholder: 'whsec_…',
+        order: 40,
     )]
     protected string $webhookSecret = '';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
-        label: 'Suppress Email Notifications & Integrations when Payments Fail',
-        instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
+        label: 'Skip Actions When Payment Fails',
+        instructions: 'Keep the submission, but skip Freeform email notifications and other integrations when payment is unsuccessful.',
+        order: 120,
     )]
     protected string $suppressOnFail = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
-        label: 'Send Success Email from Stripe to Submitter',
-        instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, automatically triggering Stripe to send a successful email notification.",
+        label: 'Send Stripe Receipts',
+        instructions: 'Ask Stripe to email a receipt to the mapped customer email address after a successful payment. Separate from Freeform notifications.',
+        order: 130,
     )]
     protected string $sendSuccessMail = 'false';
 
@@ -129,7 +148,8 @@ class Stripe extends PaymentGatewayIntegration
     #[ValueGenerator(WebhookUrlGenerator::class)]
     #[Input\Text(
         label: 'Webhook URL',
-        instructions: 'Use this URL when making a Stripe webhook.',
+        instructions: 'Copy this into the endpoint URL when creating your Stripe webhook.',
+        order: 30,
     )]
     protected string $webhookUrl = '';
 

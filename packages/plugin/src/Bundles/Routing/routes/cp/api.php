@@ -148,4 +148,5 @@ return [
 
     // AUTOSUGGEST
     'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',
+    'freeform/api/autosuggest/boolean-env' => 'freeform/api/autosuggest/boolean-env',
 ];

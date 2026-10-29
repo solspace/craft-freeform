@@ -2492,6 +2492,14 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'Deze tabel moet minimaal {minRows} rijen hebben.',
     'At least the first {minRows} rows must be filled out.' => 'Minstens de eerste {minRows} rijen moeten worden ingevuld.',
     'Website not valid' => 'Website niet geldig',
+    'Enter a number.' => 'Voer een getal in.',
+    'Enter a whole number.' => 'Voer een geheel getal in.',
+    'Use no more than {limit} decimal places.' => 'Gebruik maximaal {limit} decimalen.',
+    'Enter zero or a positive number.' => 'Voer nul of een positief getal in.',
+    'Enter a number greater than or equal to {min}.' => 'Voer een getal groter dan of gelijk aan {min} in.',
+    'Enter a number less than or equal to {max}.' => 'Voer een getal kleiner dan of gelijk aan {max} in.',
+    'Enter a number between {min} and {max}.' => 'Voer een getal tussen {min} en {max} in.',
+    'Enter a number in increments of {step}.' => 'Voer een getal in stappen van {step} in.',
     'Enter a website address, like example.com.' => 'Voer een websiteadres in, zoals example.com.',
 
     // Predefined Options // Currencies

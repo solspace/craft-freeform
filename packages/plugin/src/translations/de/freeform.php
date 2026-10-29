@@ -2492,6 +2492,14 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'Diese Tabelle muss mindestens {minRows} Zeilen haben.',
     'At least the first {minRows} rows must be filled out.' => 'Mindestens die ersten {minRows} Zeilen müssen ausgefüllt werden.',
     'Website not valid' => 'Ungültige Website',
+    'Enter a number.' => 'Geben Sie eine Zahl ein.',
+    'Enter a whole number.' => 'Geben Sie eine ganze Zahl ein.',
+    'Use no more than {limit} decimal places.' => 'Verwenden Sie höchstens {limit} Nachkommastellen.',
+    'Enter zero or a positive number.' => 'Geben Sie null oder eine positive Zahl ein.',
+    'Enter a number greater than or equal to {min}.' => 'Geben Sie eine Zahl größer oder gleich {min} ein.',
+    'Enter a number less than or equal to {max}.' => 'Geben Sie eine Zahl kleiner oder gleich {max} ein.',
+    'Enter a number between {min} and {max}.' => 'Geben Sie eine Zahl zwischen {min} und {max} ein.',
+    'Enter a number in increments of {step}.' => 'Geben Sie eine Zahl in Schritten von {step} ein.',
     'Enter a website address, like example.com.' => 'Geben Sie eine Website-Adresse ein, zum Beispiel example.com.',
 
     // Predefined Options // Currencies

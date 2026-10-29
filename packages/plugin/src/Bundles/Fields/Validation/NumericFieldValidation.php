@@ -5,13 +5,12 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\NumberField;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
 class NumericFieldValidation extends FeatureBundle
 {
-    private const PATTERN = '/^-?\d*((?:\.|,)\d+)?$/';
+    private const PATTERN = '/^([+-]?)(\d*)(?:[.,](\d*))?(?:[eE]([+-]?\d+))?$/';
 
     public function __construct()
     {
@@ -29,83 +28,43 @@ class NumericFieldValidation extends FeatureBundle
             return;
         }
 
-        $value = $field->getValue();
-
-        $min = $field->getMinValue();
-        $max = $field->getMaxValue();
-        $decimalCount = $field->getDecimalCount();
-        $allowNegativeNumbers = $field->isAllowNegative();
-
-        if (!preg_match(self::PATTERN, $value, $matches)) {
-            $field->addError(Freeform::t('Value must be numeric'));
+        $raw = $field->getRawValue();
+        // RequiredFieldValidation handles genuinely empty values, including zero correctly.
+        if (null === $raw || '' === $raw) {
+            return;
+        }
+        $value = \is_string($raw) ? trim($raw) : $raw;
+        if ('' === $value) {
+            return;
+        }
+        $config = $field->getNumberConfig();
+        $messages = $config['messages'];
+        if ((!\is_string($raw) && !\is_int($raw) && !\is_float($raw))
+            || !preg_match(self::PATTERN, (string) $value, $matches)
+            || '' === ($matches[2].($matches[3] ?? ''))
+            || !is_finite((float) str_replace(',', '.', (string) $raw))
+        ) {
+            $field->addError($messages['numeric']);
 
             return;
         }
 
-        // If there are decimals specified
-        if (isset($matches[2])) {
-            if (null !== $decimalCount) {
-                $decimals = substr($matches[2], 1);
+        // Inspect the submitted digits before getValue() converts them to a PHP number.
+        $places = max(0, \strlen($matches[3] ?? '') - (int) ($matches[4] ?? 0));
+        if ($places > $config['decimalCount']) {
+            $field->addError(0 === $config['decimalCount'] ? $messages['whole'] : str_replace('{limit}', $config['decimalCount'], $messages['decimals']));
 
-                if (\strlen($decimals) > $decimalCount) {
-                    $message = str_replace(
-                        '{{dec}}',
-                        $decimalCount,
-                        Freeform::t('{{dec}} decimal places allowed')
-                    );
-
-                    $field->addError($message);
-                }
-            } else {
-                $message = str_replace(
-                    '{{dec}}',
-                    0,
-                    Freeform::t('{{dec}} decimal places allowed')
-                );
-
-                $field->addError($message);
-            }
-        }
-
-        $numericValue = str_replace(',', '.', $value);
-        $numericValue = preg_replace('/[^0-9\-\.]/', '', $numericValue);
-        if ('' === $numericValue) {
             return;
         }
 
-        $numericValue = (float) $numericValue;
-
-        if (!$allowNegativeNumbers && $numericValue < 0) {
-            $field->addError(Freeform::t('Only positive numbers allowed'));
-        }
-
-        $minEnabled = null !== $min;
-        $maxEnabled = null !== $max;
-
-        if ($minEnabled && !$maxEnabled && $numericValue < $min) {
-            $message = str_replace(
-                '{{min}}',
-                $min,
-                Freeform::t('The value must be no less than {{min}}')
-            );
-
-            $field->addError($message);
-        } elseif ($maxEnabled && !$minEnabled && $numericValue > $max) {
-            $message = str_replace(
-                '{{max}}',
-                $max,
-                Freeform::t('The value must be no more than {{max}}')
-            );
-
-            $field->addError($message);
-        } elseif ($minEnabled && $maxEnabled && ($numericValue < $min || $numericValue > $max)) {
-            $message = str_replace(
-                ['{{min}}', '{{max}}'],
-                [$min, $max],
-                Freeform::t('The value must be between {{min}} and {{max}}')
-            );
-
-            $field->addError($message);
+        $number = (float) str_replace(',', '.', (string) $raw);
+        $min = $config['min'];
+        $max = $config['max'];
+        if (!$config['allowNegative'] && $number < 0) {
+            $field->addError($messages['negative']);
+        } elseif ((null !== $min && $number < $min) || (null !== $max && $number > $max)) {
+            $message = $messages[null !== $min && null !== $max ? 'range' : (null !== $min ? 'min' : 'max')];
+            $field->addError(str_replace(['{min}', '{max}'], [(string) $min, (string) $max], $message));
         }
     }
 }

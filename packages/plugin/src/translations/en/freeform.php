@@ -2509,6 +2509,14 @@ return array_merge(require __DIR__.'/wizard.php', [
     'This table must have at least {minRows} rows.' => 'This table must have at least {minRows} rows.',
     'At least the first {minRows} rows must be filled out.' => 'At least the first {minRows} rows must be filled out.',
     'Website not valid' => 'Website not valid',
+    'Enter a number.' => 'Enter a number.',
+    'Enter a whole number.' => 'Enter a whole number.',
+    'Use no more than {limit} decimal places.' => 'Use no more than {limit} decimal places.',
+    'Enter zero or a positive number.' => 'Enter zero or a positive number.',
+    'Enter a number greater than or equal to {min}.' => 'Enter a number greater than or equal to {min}.',
+    'Enter a number less than or equal to {max}.' => 'Enter a number less than or equal to {max}.',
+    'Enter a number between {min} and {max}.' => 'Enter a number between {min} and {max}.',
+    'Enter a number in increments of {step}.' => 'Enter a number in increments of {step}.',
     'Enter a website address, like example.com.' => 'Enter a website address, like example.com.',
 
     // Predefined Options // Currencies

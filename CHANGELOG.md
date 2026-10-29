@@ -18,6 +18,7 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Number fields now choose a mobile keyboard from existing settings, show supplemental feedback on blur using regular error styles, preserve invalid values for correction, and apply decimal precision consistently across standard forms and React/Vue. Submit continues through regular form validation. The default step follows decimal places; custom increments are preserved.
 - Website fields now complete bare domains with `https://`, trim surrounding whitespace, and show a clearer validation message, with React/Vue support and no additional settings.
 - Gave the Freeform front-end date/time picker a cleaner appearance while preserving the control-panel picker styling.
 - Date/time field settings use compact button groups for type, clock format, date order, and separators, with live date-format previews and collapsible help. Initial and minimum/maximum values offer a calendar picker while retaining typed English expressions such as `now`, `today`, and `3 days ago`.

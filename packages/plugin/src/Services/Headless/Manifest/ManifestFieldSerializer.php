@@ -10,6 +10,7 @@ use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
+use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -175,6 +176,10 @@ class ManifestFieldSerializer
 
         if ($field instanceof RangeField) {
             return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
+        if ($field instanceof NumberField) {
+            return $field->getNumberConfig();
         }
 
         if ($field instanceof SummaryField) {

@@ -3,6 +3,7 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
 - Added **Activity Log** with privacy-focused event history, submission timelines, filters, exports, and configurable recording and storage limits. New installs use Standard mode and upgrades use Minimal.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
 - Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
@@ -19,6 +20,9 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Improved integration instructions with animated expandable sections, copy buttons, and code highlighting for HTML, CSS, JavaScript, Twig, JSON, and PHP.
+- Simplified reCAPTCHA settings with compact guided choices, button groups, a labelled score slider, and an animated advanced-settings panel that remembers its open or closed state for each integration in the browser. Existing selections are preserved.
+- Made Yes/No environment-variable menus half width on wide settings and integration pages, while keeping compact layouts full width.
 - Number fields now choose a mobile keyboard from existing settings, show supplemental feedback on blur using regular error styles, preserve invalid values for correction, and apply decimal precision consistently across standard forms and React/Vue. Submit continues through regular form validation. The default step follows decimal places; custom increments are preserved.
 - Website fields now complete bare domains with `https://`, trim surrounding whitespace, and show a clearer validation message, with React/Vue support and no additional settings.
 - Gave the Freeform front-end date/time picker a cleaner appearance while preserving the control-panel picker styling.
@@ -33,6 +37,7 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Hardened reCAPTCHA action and score validation, quota and service-error handling, token expiration and retries, and initialization of multiple forms, including Invisible v2.
 - Fixed Layout fields failing to render in Quick Form dashboard widgets and front-end forms because their stylesheet was missing from the styles build.
 - Fixed date/time minimum and maximum limits ignoring the time in expressions such as `12 hours ago`, in both the picker and submission validation. Limits without a time include the entire day and show date-only validation messages.
 - Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.

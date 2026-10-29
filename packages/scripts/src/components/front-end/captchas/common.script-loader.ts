@@ -1,4 +1,5 @@
 import { addListeners } from "@lib/plugin/helpers/event-handling";
+import { captchaScriptUrl } from "../../../../../frontend/extensions/src/captchas/script-url";
 
 export enum Theme {
   DARK = "dark",
@@ -21,30 +22,6 @@ export type CaptchaConfig<V = string> = {
 };
 
 type ScriptLoader = (url: URL) => Promise<void>;
-
-/**
- * https://developer.mozilla.org/en-US/docs/Web/API/TrustedScriptURL
- *
- * Trusted Types policy for loading external captcha scripts in Safari.
- * Created lazily the first time it is needed and reused on subsequent calls.
- * When the browser does not support Trusted Types the policy stays null and the plain string assignment path is used instead.
- */
-type TrustedTypes = Window & {
-  trustedTypes?: {
-    createPolicy(
-      name: string,
-      rules: {
-        createScriptURL(input: string): string;
-      },
-    ): {
-      createScriptURL(input: string): unknown;
-    };
-  };
-};
-
-let scriptPolicy: {
-  createScriptURL(input: string): unknown;
-} | null = null;
 
 if (!window.freeform) {
   window.freeform = {};
@@ -79,30 +56,7 @@ const loadScript: ScriptLoader = (url) => {
 
     const script = document.createElement("script");
 
-    /**
-     * Browsers enforcing `require-trusted-types-for 'script'` throws a TypeError when a plain string is assigned to script.src in Safari.
-     * So we create a named Trusted Types policy. Falls back to a direct string assignment when the Trusted Types API is unavailable or not Safari.
-     */
-    const { trustedTypes } = window as TrustedTypes;
-
-    if (trustedTypes?.createPolicy) {
-      if (!scriptPolicy) {
-        try {
-          scriptPolicy = trustedTypes.createPolicy("freeform#captcha-loader", {
-            createScriptURL: (input: string) => input,
-          });
-        } catch {
-          // A policy with this name already exists (created by another Freeform script on the same page).
-        }
-      }
-
-      // @ts-expect-error - TrustedScriptURL is valid for script.src
-      script.src = scriptPolicy
-        ? scriptPolicy.createScriptURL(String(url))
-        : String(url);
-    } else {
-      script.src = String(url);
-    }
+    script.src = captchaScriptUrl(String(url));
 
     script.async = true;
     script.defer = true;

@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import { useIntegrationNavigation } from "../sidebar/sidebar.queries";
-import { EditorInput } from "./editor.input";
+import { EditorInputs } from "./editor.inputs";
 import { EditorLoader } from "./editor.loader";
 import { VersionUpgradeOverlay } from "./editor.overlay";
 import {
@@ -289,24 +289,21 @@ export const IntegrationsEditor: FC = () => {
 
         <hr />
 
-        {data.properties.map((property) => (
-          <EditorInput
-            key={`${data.type.class}-${data.id ?? "new"}-${property.handle}`}
-            integration={data}
-            property={property}
-            values={values}
-            errors={errors}
-            onUpdate={(key, value) => {
-              setValues((prev) => ({
-                ...prev,
-                metadata: {
-                  ...prev.metadata,
-                  [key]: value,
-                },
-              }));
-            }}
-          />
-        ))}
+        <EditorInputs
+          key={`${data.type.class}-${data.id ?? "new"}`}
+          integration={data}
+          values={values}
+          errors={errors}
+          onUpdate={(key, value) => {
+            setValues((prev) => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                [key]: value,
+              },
+            }));
+          }}
+        />
       </EditorWrapper>
     </EditorContainer>
   );

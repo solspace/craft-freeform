@@ -4,27 +4,11 @@ import type {
 } from "@solspace/freeform-core";
 import { PACKAGE_VERSION } from "../version.js";
 import {
-  inferCaptchaProvider,
-  loadScriptOnce,
-  waitForValue,
-} from "./shared.js";
-
-type RecaptchaApi = {
-  render: (element: HTMLElement, options: Record<string, unknown>) => number;
-  reset: (widgetId?: number) => void;
-  getResponse: (widgetId?: number) => string;
-  execute: (
-    siteKeyOrWidgetId?: string | number,
-    options?: { action?: string },
-  ) => Promise<string> | undefined;
-  ready: (callback: () => void) => void;
-};
-
-declare global {
-  interface Window {
-    grecaptcha?: RecaptchaApi;
-  }
-}
+  loadRecaptcha,
+  type RecaptchaApi,
+  withRecaptchaTimeout,
+} from "./recaptcha-loader.js";
+import { inferCaptchaProvider, waitForValue } from "./shared.js";
 
 type RecaptchaVersion = "v2-checkbox" | "v2-invisible" | "v3";
 
@@ -37,7 +21,9 @@ type RecaptchaInstance = {
 
 function getCaptchas(manifestCaptchas: ManifestCaptchaSecurity[] | undefined) {
   return (manifestCaptchas ?? []).filter(
-    (captcha) => inferCaptchaProvider(captcha) === "recaptcha",
+    (captcha) =>
+      inferCaptchaProvider(captcha) === "recaptcha" &&
+      captcha.frontendMode !== "external",
   );
 }
 
@@ -53,59 +39,31 @@ function resolveVersion(captcha: ManifestCaptchaSecurity): RecaptchaVersion {
   return "v2-checkbox";
 }
 
-/**
- * v3 must load with `render=<siteKey>`. Checkbox / invisible use `render=explicit`.
- * Loading the wrong variant is a common cause of Google's "Invalid key type".
- */
 async function ensureRecaptcha(
   captcha: ManifestCaptchaSecurity,
 ): Promise<RecaptchaApi> {
-  const version = resolveVersion(captcha);
-  const locale = captcha.locale
-    ? `&hl=${encodeURIComponent(captcha.locale)}`
-    : "";
-
-  const renderParam =
-    version === "v3" && captcha.siteKey
-      ? encodeURIComponent(captcha.siteKey)
-      : "explicit";
-
-  // Separate script tags so v2 and v3 don't share a stale load.
-  const scriptId =
-    version === "v3"
-      ? `ff-recaptcha-script-v3-${captcha.siteKey}`
-      : "ff-recaptcha-script-explicit";
-
-  await loadScriptOnce(
-    `https://www.google.com/recaptcha/api.js?render=${renderParam}${locale}`,
-    scriptId,
-  );
-
-  await new Promise<void>((resolve) => {
-    if (window.grecaptcha?.ready) {
-      window.grecaptcha.ready(() => resolve());
-      return;
-    }
-    resolve();
+  return loadRecaptcha({
+    siteKey: captcha.siteKey || "",
+    version: resolveVersion(captcha),
+    verificationMode: captcha.verificationMode,
+    scriptDomain: captcha.scriptDomain,
+    locale: captcha.locale,
   });
-
-  if (!window.grecaptcha) {
-    throw new Error("Google reCAPTCHA failed to initialize.");
-  }
-
-  return window.grecaptcha;
 }
 
 export function createRecaptchaExtension(): FreeformExtension {
-  const instances = new Map<string, RecaptchaInstance>();
-  const tokens = new Map<string, string>();
+  const instances = new Map<ManifestCaptchaSecurity, RecaptchaInstance>();
+  const tokens = new Map<ManifestCaptchaSecurity, string>();
 
   return {
     name: "captcha.recaptcha",
     version: PACKAGE_VERSION,
 
     async mountCaptcha({ captcha, element }) {
-      if (inferCaptchaProvider(captcha) !== "recaptcha") {
+      if (
+        inferCaptchaProvider(captcha) !== "recaptcha" ||
+        captcha.frontendMode === "external"
+      ) {
         return;
       }
 
@@ -124,10 +82,10 @@ export function createRecaptchaExtension(): FreeformExtension {
       // Score-based v3 has no visible widget — token is fetched on submit.
       if (version === "v3") {
         await ensureRecaptcha(captcha);
-        instances.set(captcha.name, { element, captcha, version });
+        instances.set(captcha, { element, captcha, version });
         return () => {
-          instances.delete(captcha.name);
-          tokens.delete(captcha.name);
+          instances.delete(captcha);
+          tokens.delete(captcha);
           element.replaceChildren();
         };
       }
@@ -143,18 +101,21 @@ export function createRecaptchaExtension(): FreeformExtension {
         size:
           version === "v2-invisible" ? "invisible" : (captcha.size ?? "normal"),
         callback: (value: string) => {
-          tokens.set(captcha.name, value);
+          tokens.set(captcha, value);
         },
         "expired-callback": () => {
-          tokens.delete(captcha.name);
+          tokens.delete(captcha);
+        },
+        "error-callback": () => {
+          tokens.delete(captcha);
         },
       });
 
-      instances.set(captcha.name, { widgetId, element, captcha, version });
+      instances.set(captcha, { widgetId, element, captcha, version });
 
       return () => {
-        instances.delete(captcha.name);
-        tokens.delete(captcha.name);
+        instances.delete(captcha);
+        tokens.delete(captcha);
         element.replaceChildren();
       };
     },
@@ -165,9 +126,10 @@ export function createRecaptchaExtension(): FreeformExtension {
       }
 
       for (const captcha of getCaptchas(manifest.security.captchas)) {
+        tokens.delete(captcha);
         const version = resolveVersion(captcha);
         const api = await ensureRecaptcha(captcha);
-        const instance = instances.get(captcha.name);
+        const instance = instances.get(captcha);
 
         if (version === "v3") {
           if (!captcha.siteKey) {
@@ -176,18 +138,20 @@ export function createRecaptchaExtension(): FreeformExtension {
             );
           }
 
-          const result = await new Promise<string>((resolve, reject) => {
-            api.ready(async () => {
-              try {
-                const token = await api.execute(captcha.siteKey!, {
-                  action: captcha.action || "submit",
-                });
-                resolve(typeof token === "string" ? token : "");
-              } catch (error) {
-                reject(error);
-              }
-            });
-          });
+          const result = await withRecaptchaTimeout(
+            new Promise<string>((resolve, reject) => {
+              api.ready(async () => {
+                try {
+                  const token = await api.execute(captcha.siteKey!, {
+                    action: captcha.action || "submit",
+                  });
+                  resolve(typeof token === "string" ? token : "");
+                } catch (error) {
+                  reject(error);
+                }
+              });
+            }),
+          );
 
           if (!result) {
             throw new Error(
@@ -195,7 +159,7 @@ export function createRecaptchaExtension(): FreeformExtension {
             );
           }
 
-          tokens.set(captcha.name, result);
+          tokens.set(captcha, result);
           continue;
         }
 
@@ -206,10 +170,10 @@ export function createRecaptchaExtension(): FreeformExtension {
         if (version === "v2-invisible") {
           await new Promise<void>((resolve, reject) => {
             try {
-              api.execute(instance.widgetId);
+              Promise.resolve(api.execute(instance.widgetId!)).catch(reject);
               void waitForValue(() => api.getResponse(instance.widgetId)).then(
                 (value) => {
-                  tokens.set(captcha.name, value);
+                  tokens.set(captcha, value);
                   resolve();
                 },
                 reject,
@@ -222,27 +186,30 @@ export function createRecaptchaExtension(): FreeformExtension {
         }
 
         const value =
-          tokens.get(captcha.name) ||
+          tokens.get(captcha) ||
           api.getResponse(instance.widgetId) ||
           (await waitForValue(() => api.getResponse(instance.widgetId)));
-        tokens.set(captcha.name, value);
+        tokens.set(captcha, value);
       }
     },
 
     async buildPayload({ setCaptchaToken, manifest }) {
       for (const captcha of getCaptchas(manifest.security.captchas)) {
-        const value = tokens.get(captcha.name);
+        const value = tokens.get(captcha);
         if (value) {
           setCaptchaToken(captcha.name, value);
         }
       }
     },
 
-    async afterSubmit() {
-      tokens.clear();
-      for (const instance of instances.values()) {
+    async afterSubmit({ manifest }) {
+      for (const captcha of getCaptchas(manifest.security.captchas)) {
+        tokens.delete(captcha);
+        const instance = instances.get(captcha);
+        if (!instance) continue;
         if (instance.widgetId !== undefined) {
-          window.grecaptcha?.reset(instance.widgetId);
+          const api = await ensureRecaptcha(instance.captcha);
+          api.reset(instance.widgetId);
         }
       }
     },

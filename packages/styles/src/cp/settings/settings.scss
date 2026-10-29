@@ -2,6 +2,17 @@
 
 @use "../measurement";
 
+// Match the compact boolean/environment menus in the React integration editor.
+#content .select:has(> select[data-boolean-menu]) {
+  width: 50%;
+  min-width: min(100%, 280px);
+  max-width: 100%;
+
+  @media (max-width: 900px) {
+    width: 100%;
+  }
+}
+
 .freeform-throttling-inputs {
   display: flex;
   flex-wrap: wrap;

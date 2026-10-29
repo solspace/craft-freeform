@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
 
+use GuzzleHttp\ClientInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
@@ -31,17 +33,32 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     public const VERSION_V2_INVISIBLE = 'v2-invisible';
     public const VERSION_V2_CHECKBOX = 'v2-checkbox';
 
+    public const MODE_LEGACY = 'legacy';
+    public const MODE_ENTERPRISE = 'enterprise';
+    public const FRONTEND_MANAGED = 'managed';
+    public const FRONTEND_EXTERNAL = 'external';
+
     public const BEHAVIOR_DISPLAY_ERROR = 'display-error';
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
 
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
-    #[Input\Select(
+    #[Input\ButtonGroup(
+        label: 'Setup',
+        instructions: 'Choose the setup that matches your Google credentials.',
+        options: [self::MODE_ENTERPRISE => 'Google Cloud (Enterprise)', self::MODE_LEGACY => 'Legacy (Site Key + Secret Key)'],
+        order: 1,
+    )]
+    private string $verificationMode = self::MODE_LEGACY;
+
+    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
+    #[Input\ButtonGroup(
         label: 'Captcha Type',
-        instructions: 'Choose the reCAPTCHA type to use. The options below are compatible with the Enterprise API and the Classic legacy keys.',
+        instructions: 'Choose the type of website key you created in Google.',
         options: [
-            self::VERSION_V2_CHECKBOX => 'Challenge - Checkbox (v2)',
-            self::VERSION_V2_INVISIBLE => 'Challenge - Invisible (v2)',
             self::VERSION_V3 => 'Score Based (v3)',
+            self::VERSION_V2_INVISIBLE => 'Challenge - Invisible (v2)',
+            self::VERSION_V2_CHECKBOX => 'Challenge - Checkbox (v2)',
         ],
     )]
     private string $version = self::VERSION_V2_CHECKBOX;
@@ -52,21 +69,81 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
+        instructions: 'Copy the site key from your reCAPTCHA key details in Google.',
         placeholder: 'Enter your site key',
     )]
     private ?string $siteKey = null;
 
     #[Required]
+    #[VisibilityFilter('!values.verificationMode || values.verificationMode === "legacy"')]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Secret Key',
+        instructions: 'For Google Cloud keys, open the key’s Integration tab and copy its legacy secret key.',
         placeholder: 'Enter your secret key',
     )]
     private ?string $secretKey = null;
 
+    #[Required]
+    #[VisibilityFilter('values.verificationMode === "enterprise"')]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Input\Text(
+        label: 'Google Cloud Project ID',
+        instructions: 'Copy the project ID from the Google Cloud project selector, not the project name.',
+        placeholder: 'my-project-id',
+    )]
+    private string $projectId = '';
+
+    #[Required]
+    #[VisibilityFilter('values.verificationMode === "enterprise"')]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Input\Text(
+        label: 'Google Cloud API Key',
+        instructions: 'Create a server API key in the same Google Cloud project and restrict it to the reCAPTCHA Enterprise API. This key stays on your server.',
+    )]
+    private string $apiKey = '';
+
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Appearance, verification, and developer options.', order: 90)]
+    private bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Input\ButtonGroup(
+        label: 'JavaScript setup',
+        instructions: 'Freeform adds reCAPTCHA to your forms. Choose Custom JavaScript if your site already loads it. Freeform still verifies submissions.',
+        options: [self::FRONTEND_MANAGED => 'Managed by Freeform', self::FRONTEND_EXTERNAL => 'Custom JavaScript'],
+        order: 100,
+    )]
+    private string $frontendMode = self::FRONTEND_MANAGED;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Input\ButtonGroup(
+        label: 'reCAPTCHA domain',
+        instructions: 'Use google.com unless it is blocked for your visitors. Use recaptcha.net in that case.',
+        options: ['google.com' => 'google.com', 'recaptcha.net' => 'recaptcha.net'],
+        order: 101,
+    )]
+    private string $scriptDomain = 'google.com';
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Input\TextArea(
+        label: 'Allowed website domains',
+        instructions: 'Enter one exact domain per line. Leave blank to use Google’s domain checks. This is required if domain checks are turned off in Google.',
+        placeholder: "example.com\nwww.example.com",
+        order: 102,
+    )]
+    private string $allowedHostnames = '';
+
+    #[VisibilityFilter('Boolean(enabled) && values.frontendMode !== "external"')]
     #[Input\BooleanEnv(
         label: 'Only load Captcha scripts once the user interacts with the form',
         instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
@@ -74,11 +151,11 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private string $triggerOnInteract = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Failure Behavior',
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
             self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
@@ -95,21 +172,29 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "v2-checkbox"')]
-    #[Input\Select(
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Input\ButtonGroup(
+        label: 'Checkbox theme',
+        instructions: 'Use the light or dark style for the checkbox.',
         options: [
             'light' => 'Light',
             'dark' => 'Dark',
         ],
+        order: 103,
     )]
     private string $theme = 'light';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "v2-checkbox"')]
-    #[Input\Select(
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[Input\ButtonGroup(
+        label: 'Checkbox size',
+        instructions: 'Choose Compact when the checkbox needs to fit a narrow form.',
         options: [
             'normal' => 'Normal',
             'compact' => 'Compact',
         ],
+        order: 104,
     )]
     private string $size = 'normal';
 
@@ -117,7 +202,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[VisibilityFilter('values.version === "v3"')]
     #[Input\Select(
         label: 'Score Threshold',
-        instructions: 'The minimum score required for the Captcha to pass validation. The score is a number between 0 and 1. A score of 0.5 is generally recommended.',
+        instructions: 'Scores below this value fail verification. Higher values are stricter and may reject more real visitors. 0.5 is recommended.',
         options: [
             '0.0' => '0.0',
             '0.1' => '0.1',
@@ -130,37 +215,108 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             '0.8' => '0.8',
             '0.9' => '0.9',
             '1.0' => '1.0',
-        ]
+        ],
+        order: 80,
     )]
     private string $scoreThreshold = '0.5';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "v3"')]
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
-    #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
+    #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_/]'])]
     #[Input\Text(
-        instructions: 'The action to use when validating the Captcha.',
+        label: 'Google action name',
+        instructions: 'Use `submit` for most forms. If you use Custom JavaScript, enter the action name used by that code.',
         placeholder: 'submit',
+        order: 106,
     )]
     private string $action = 'submit';
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Locale',
-        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
-        placeholder: 'en',
+        label: 'reCAPTCHA language',
+        instructions: 'Leave blank to choose the language automatically. To set a language, enter a Google language code such as `en`, `fr`, or `de`.',
+        placeholder: 'Automatic',
+        order: 107,
     )]
     private string $locale = '';
 
     public function getSiteKey(): ?string
     {
-        return $this->getProcessedValue($this->siteKey);
+        return trim((string) $this->getProcessedValue($this->siteKey)) ?: null;
+    }
+
+    public function getVerificationMode(): string
+    {
+        return $this->verificationMode;
+    }
+
+    public function getProjectId(): string
+    {
+        return trim((string) $this->getProcessedValue($this->projectId));
+    }
+
+    public function getApiKey(): string
+    {
+        return trim((string) $this->getProcessedValue($this->apiKey));
+    }
+
+    public function getFrontendMode(): string
+    {
+        return $this->frontendMode;
+    }
+
+    public function getScriptDomain(): string
+    {
+        return $this->scriptDomain;
+    }
+
+    public function getAllowedHostnames(): array
+    {
+        $hostnames = preg_split('/[\s,]+/', strtolower(trim((string) $this->getProcessedValue($this->allowedHostnames))), -1, \PREG_SPLIT_NO_EMPTY);
+
+        return array_values(array_unique(array_map(static fn (string $host): string => rtrim($host, '.'), $hostnames)));
+    }
+
+    public function onBeforeSave(): void
+    {
+        if ('' === trim((string) $this->siteKey)) {
+            throw new IntegrationException('A reCAPTCHA Site Key is required.');
+        }
+        if (!\in_array($this->verificationMode, [self::MODE_LEGACY, self::MODE_ENTERPRISE], true)
+            || !\in_array($this->version, [self::VERSION_V2_CHECKBOX, self::VERSION_V2_INVISIBLE, self::VERSION_V3], true)
+            || !\in_array($this->frontendMode, [self::FRONTEND_MANAGED, self::FRONTEND_EXTERNAL], true)
+            || !\in_array($this->scriptDomain, ['google.com', 'recaptcha.net'], true)
+        ) {
+            throw new IntegrationException('Choose a supported reCAPTCHA API, key type, frontend, and script domain.');
+        }
+
+        if (self::MODE_ENTERPRISE === $this->verificationMode) {
+            if (self::VERSION_V2_INVISIBLE === $this->version) {
+                throw new IntegrationException('Enterprise supports Checkbox and Score Based keys. Use Legacy for Invisible v2.');
+            }
+            if ('' === trim($this->projectId) || '' === trim($this->apiKey)) {
+                throw new IntegrationException('Enterprise requires a Google Cloud Project ID and Google Cloud API Key.');
+            }
+        } elseif ('' === trim((string) $this->secretKey)) {
+            throw new IntegrationException('Legacy verification requires a Secret Key. Google Cloud keys use their legacy secret key.');
+        }
+
+        if (!str_starts_with($this->allowedHostnames, '$')) {
+            foreach ($this->getAllowedHostnames() as $hostname) {
+                if (!preg_match('/^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/D', $hostname)) {
+                    throw new IntegrationException('Enter website domains without https://, paths, ports, or wildcards.');
+                }
+            }
+        }
     }
 
     public function getSecretKey(): ?string
     {
-        return $this->getProcessedValue($this->secretKey);
+        return trim((string) $this->getProcessedValue($this->secretKey)) ?: null;
     }
 
     public function isTriggerOnInteract(): bool
@@ -195,7 +351,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getAction(): string
     {
-        return $this->action;
+        return trim((string) $this->getProcessedValue($this->action)) ?: 'submit';
     }
 
     public function getErrorMessage(): string
@@ -205,7 +361,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getLocale(): string
     {
-        return strtolower($this->locale);
+        return strtolower(trim((string) $this->getProcessedValue($this->locale)));
     }
 
     public function validate(Form $form): void
@@ -230,7 +386,19 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             return;
         }
 
-        $errors = $this->getValidationErrors($form);
+        $result = (new ReCaptchaVerifier($this->createClient()))->verify(
+            $this,
+            $this->getCaptchaResponse($form),
+            \Craft::$app->request->getUserIP(),
+            (string) \Craft::$app->request->getUserAgent(),
+        );
+        $errors = $result->errors;
+        if ($result->serviceError) {
+            $form->addError($this->getErrorMessage());
+            $this->logger->error('reCAPTCHA verification unavailable', ['form' => $formHandle, 'errors' => $errors]);
+
+            return;
+        }
         if (empty($errors)) {
             $this->logger->debug('reCAPTCHA validation passed', ['form' => $formHandle]);
 
@@ -249,6 +417,10 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getHtmlTag(Form $form): string
     {
+        if (self::FRONTEND_EXTERNAL === $this->frontendMode) {
+            return '';
+        }
+
         $locale = $this->getLocale();
         if (empty($locale)) {
             $locale = \Craft::$app->locale->getLanguageID();
@@ -263,6 +435,8 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             ->setIfEmpty('data-size', $this->getSize())
             ->setIfEmpty('data-lazy-load', $this->isTriggerOnInteract())
             ->setIfEmpty('data-version', $this->getVersion())
+            ->setIfEmpty('data-verification-mode', $this->getVerificationMode())
+            ->setIfEmpty('data-script-domain', $this->getScriptDomain())
             ->setIfEmpty('data-action', $this->getAction())
             ->setIfEmpty('data-locale', $locale)
         ;
@@ -272,6 +446,10 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function getScriptPaths(): array
     {
+        if (self::FRONTEND_EXTERNAL === $this->frontendMode) {
+            return [];
+        }
+
         $version = $this->getVersion();
 
         return [
@@ -284,77 +462,9 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         return 'g-recaptcha-response';
     }
 
-    private function getValidationErrors(Form $form): array
+    protected function createClient(): ClientInterface
     {
-        $client = \Craft::createGuzzleClient();
-        $secret = $this->getSecretKey();
-        $captchaResponse = $this->getCaptchaResponse($form);
-
-        $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
-            'form_params' => [
-                'secret' => $secret,
-                'response' => $captchaResponse,
-                'remoteip' => \Craft::$app->request->getUserIP(),
-            ],
-        ]);
-
-        $result = json_decode((string) $response->getBody(), true);
-
-        $errors = [];
-        if (isset($result['score'])) {
-            $minScore = $this->getScoreThreshold();
-            $minScore = min(1, $minScore);
-            $minScore = max(0, $minScore);
-
-            if ($result['score'] < $minScore) {
-                $errors[] = 'Score check failed with ['.$result['score'].']';
-
-                return $errors;
-            }
-        }
-
-        if ($result['success']) {
-            return [];
-        }
-
-        $errorCodes = $result['error-codes'];
-        if (\in_array('missing-input-secret', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA secret parameter is missing.';
-        }
-
-        if (\in_array('invalid-keys', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA key parameter is invalid or malformed.';
-        }
-
-        if (\in_array('invalid-input-secret', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA ecret parameter is invalid or malformed.';
-        }
-
-        if (\in_array('missing-input-response', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA response token was not submitted.';
-        }
-
-        if (\in_array('invalid-input-response', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA response parameter is invalid or malformed.';
-        }
-
-        if (\in_array('bad-request', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA request is invalid or malformed.';
-        }
-
-        if (\in_array('timeout-or-duplicate', $errorCodes, true)) {
-            $errors[] = 'The reCAPTCHA response is no longer valid: either is too old or has been used previously.';
-        }
-
-        if (\in_array('internal-error', $errorCodes, true)) {
-            $errors[] = 'A reCAPTCHA internal error occurred.';
-        }
-
-        if (empty($errors)) {
-            $errors = $errorCodes;
-        }
-
-        return $errors;
+        return \Craft::createGuzzleClient();
     }
 
     private function getCaptchaResponse(Form $form): ?string
@@ -367,7 +477,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             }
 
             $property = $arguments['captcha'];
-            if (empty($property['name']) || empty($property['value']) || 'g-recaptcha-response' !== $property['name']) {
+            if (!\is_array($property) || !\is_string($property['value'] ?? null) || empty($property['value']) || 'g-recaptcha-response' !== ($property['name'] ?? null)) {
                 return null;
             }
 
@@ -378,6 +488,8 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             return HeadlessPayloadHelper::getCaptchaResponse($form, 'g-recaptcha-response');
         }
 
-        return \Craft::$app->request->post('g-recaptcha-response');
+        $token = \Craft::$app->request->post('g-recaptcha-response');
+
+        return \is_string($token) ? $token : null;
     }
 }

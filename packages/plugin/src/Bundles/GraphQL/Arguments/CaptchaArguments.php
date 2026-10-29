@@ -10,6 +10,21 @@ class CaptchaArguments extends Arguments
     public static function getArguments(): array
     {
         return [
+            'verificationMode' => [
+                'name' => 'verificationMode',
+                'type' => Type::string(),
+                'description' => 'reCAPTCHA verification API: legacy or enterprise',
+            ],
+            'frontendMode' => [
+                'name' => 'frontendMode',
+                'type' => Type::string(),
+                'description' => 'reCAPTCHA frontend: managed by Freeform or external JavaScript',
+            ],
+            'scriptDomain' => [
+                'name' => 'scriptDomain',
+                'type' => Type::string(),
+                'description' => 'reCAPTCHA script domain: google.com or recaptcha.net',
+            ],
             'version' => [
                 'name' => 'version',
                 'type' => Type::string(),

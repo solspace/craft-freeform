@@ -21,6 +21,7 @@ export enum PropertyType {
   Attributes = "attributes",
   Boolean = "bool",
   BooleanEnv = "boolEnv",
+  ButtonGroup = "buttonGroup",
   FormMonitorTools = "formMonitorTools",
   Calculation = "calculation",
   Cards = "cards",
@@ -160,7 +161,10 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
 };
-export type ButtonGroupProperty = BaseProperty<string, PropertyType.Select> & {
+export type ButtonGroupProperty = BaseProperty<
+  string,
+  PropertyType.ButtonGroup
+> & {
   options: OptionCollection;
 };
 export type DynamicCheckboxesProperty = BaseProperty<
@@ -356,6 +360,7 @@ export type Property =
   | AttributeProperty
   | BooleanProperty
   | BooleanEnvProperty
+  | ButtonGroupProperty
   | FormMonitorToolsProperty
   | CalculationProperty
   | CardsProperty

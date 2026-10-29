@@ -72,6 +72,10 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
+        if ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS)) {
+            $event->addSubnavItem('activity', Freeform::t('Activity Log'), 'freeform/activity');
+        }
+
         $showImportExport = (
             $canAccessExportProfiles
             || $canAccessExportNotifications

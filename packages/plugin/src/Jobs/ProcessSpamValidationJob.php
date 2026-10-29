@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\SpamChecks;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use yii\base\Event;
 
@@ -54,6 +55,7 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
         }
 
         if ($form->isMarkedAsSpam()) {
+            $freeform->get('activity')->recordForForm('spam', $form, SpamChecks::metadata($form->getSpamReasons()));
             $submission->isSpam = true;
             $spamEvent = new SubmitEvent($form, $submission);
             $spamControl->persistSpamReasons($spamEvent);

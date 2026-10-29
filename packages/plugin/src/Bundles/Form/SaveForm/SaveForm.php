@@ -13,6 +13,7 @@ use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -154,7 +155,7 @@ class SaveForm extends FeatureBundle
 
         $recipients = $mailer->processRecipients($emailField->getRecipients(), $form);
         if (empty($recipients)) {
-            $logger->warning('No recipients found', ['form' => $form->getHandle(), 'context' => 'Saving Form on front-end']);
+            $logger->warning('No recipients found', ['form' => $form->getHandle(), 'context' => 'Saving Form on front-end', 'activityReason' => ActivityContext::MAIL_NO_RECIPIENTS, 'activityFormId' => $form->getId()]);
 
             return;
         }

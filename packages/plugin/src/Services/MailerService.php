@@ -31,6 +31,7 @@ use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\SignatureHelper;
@@ -78,13 +79,19 @@ class MailerService extends BaseService implements MailHandlerInterface
         $sentMailCount = 0;
 
         if (null === $notificationTemplate) {
-            $logger?->warning('No notification template specified.');
+            $this->recordActivity('email-error', $form->getId(), $submission?->id, ['reasonCode' => ActivityContext::MAIL_TEMPLATE_MISSING, 'notificationId' => $notification?->getId()]);
+            $logger?->warning('No notification template specified.', ['activityRecorded' => true]);
 
             return 0;
         }
 
         $form = $this->resolveNotificationForm($form, $submission);
         $recipients = $this->processRecipients($recipients, $form);
+        if (!$recipients) {
+            $this->recordActivity('email-error', $form->getId(), $submission?->id, ['reasonCode' => ActivityContext::MAIL_NO_RECIPIENTS, 'notificationId' => $notification?->getId()]);
+
+            return 0;
+        }
         $twigVariables = $this->compileTwigVariables($form, $notificationTemplate, $submission);
 
         $templateMode = \Craft::$app->view->getTemplateMode();
@@ -94,6 +101,9 @@ class MailerService extends BaseService implements MailHandlerInterface
             if (filter_var($recipientName, \FILTER_VALIDATE_EMAIL)) {
                 $emailAddress = $recipientName;
             }
+
+            $started = microtime(true);
+            $stage = ActivityContext::MAIL_RENDER_FAILED;
 
             try {
                 $logger?->info('Sending email', [
@@ -119,6 +129,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     $notification,
                 );
 
+                $stage = ActivityContext::MAIL_PREPARATION_FAILED;
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {
@@ -127,23 +138,34 @@ class MailerService extends BaseService implements MailHandlerInterface
                     continue;
                 }
 
+                $stage = ActivityContext::MAIL_SEND_EXCEPTION;
                 $emailSent = \Craft::$app->mailer->send($email);
 
+                $this->recordActivity(
+                    $emailSent ? 'email-sent' : 'email-error',
+                    $form->getId(),
+                    $submission?->id,
+                    ['notificationId' => $notification?->getId(), 'siteId' => $submission?->siteId, 'reasonCode' => $emailSent ? null : ActivityContext::MAIL_REJECTED, 'durationMs' => ActivityContext::elapsed($started)],
+                );
+
+                $stage = ActivityContext::MAIL_AFTER_SEND_FAILED;
                 $this->trigger(self::EVENT_AFTER_SEND, $sendEmailEvent);
 
                 if ($emailSent) {
                     ++$sentMailCount;
                 } else {
-                    $logger?->warning('Email sending failed');
+                    $logger?->warning('Email sending failed', ['activityRecorded' => true]);
                 }
             } catch (\Exception $exception) {
+                $this->recordActivity('email-error', $form->getId(), $submission?->id, ['notificationId' => $notification?->getId(), 'reasonCode' => $stage, 'durationMs' => ActivityContext::elapsed($started)]);
                 $message = $exception->getMessage();
                 $context = [
+                    'activityRecorded' => true,
                     'template' => $notificationTemplate->getHandle(),
                     'form' => $form->getHandle(),
                 ];
 
-                $logger->error($message, $context);
+                $logger?->error($message, $context);
                 $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form, $logger);
             }
         }
@@ -426,6 +448,15 @@ class MailerService extends BaseService implements MailHandlerInterface
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
 
         return $renderEvent->getTwigVariables();
+    }
+
+    protected function recordActivity(string $event, ?int $formId, ?int $submissionId, array $metadata): void
+    {
+        try {
+            Freeform::getInstance()->get('activity')->record($event, $formId, $submissionId, $metadata);
+        } catch (\Throwable) {
+            // Optional diagnostics must not change email delivery or its original error handling.
+        }
     }
 
     private function resolveNotificationForm(Form $form, ?Submission $submission = null): Form

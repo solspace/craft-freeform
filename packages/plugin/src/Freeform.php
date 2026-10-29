@@ -80,6 +80,7 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ClientAssetsService;
@@ -208,6 +209,8 @@ class Freeform extends Plugin
     public const PERMISSION_PDF_TEMPLATES_MANAGE = 'freeform-pdfTemplatesManage';
     public const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
     public const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
+    public const PERMISSION_ACTIVITY_ACCESS = 'freeform-activityAccess';
+    public const PERMISSION_ACTIVITY_MANAGE = 'freeform-activityManage';
     public const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
     public const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
     public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
@@ -669,6 +672,7 @@ class Freeform extends Plugin
                 'integrationsQueue' => IntegrationsQueueService::class,
                 'lock' => LockService::class,
                 'logger' => LoggerService::class,
+                'activity' => ActivityService::class,
                 'mailer' => MailerService::class,
                 'notes' => NotesService::class,
                 'notifications' => NotificationsService::class,

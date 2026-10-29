@@ -3,6 +3,7 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added **Activity Log** with privacy-focused event history, submission timelines, filters, exports, and configurable recording and storage limits. New installs use Standard mode and upgrades use Minimal.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
 - Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
 - Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated choices, live builder previews, and starter templates.

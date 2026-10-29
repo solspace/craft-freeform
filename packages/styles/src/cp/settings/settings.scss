@@ -1,35 +1,6 @@
 @use "../main";
 
-.freeform-measurement-input {
-  position: relative;
-  width: 100%;
-  min-width: 0;
-
-  input.text {
-    box-sizing: border-box;
-    width: 100%;
-    padding-inline-end: var(--unit-space);
-  }
-
-  .freeform-measurement-unit {
-    position: absolute;
-    inset-inline-end: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #7b8793;
-    font-size: 12px;
-    line-height: 1;
-    pointer-events: none;
-  }
-}
-
-.freeform-measurement-field > .input > .freeform-measurement-input {
-  width: 50%;
-
-  @media (max-width: 768px) {
-    width: 100%;
-  }
-}
+@use "../measurement";
 
 .freeform-throttling-inputs {
   display: flex;

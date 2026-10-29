@@ -143,9 +143,17 @@
         placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
 
+    {{ forms.booleanMenuField({
+        label: 'Write Technical Log Files'|t('freeform'),
+        instructions: 'Optional diagnostic files can contain more detail than Activity, including sensitive information. File logging is off by default. Existing nonempty files remain accessible under Legacy Logs, and Activity storage limits do not apply to these files.'|t('freeform'),
+        name: 'settings[technicalFileLogging]',
+        value: settings.technicalFileLogging,
+        includeEnvVars: true,
+        disabled: readOnly,
+    }) }}
 	{{ forms.selectField({
-        label: "Logging Level"|t('freeform'),
-        instructions: "Set the logging level for Freeform. 'Errors' logs only errors, 'Info' logs information about what's been processed, and 'Debug' logs all processes occurring, which is useful for setup and debugging."|t('freeform'),
+        label: "Technical File Logging Level"|t('freeform'),
+        instructions: "Controls the separate technical log files, which may contain more detail than Activity and follow their own retention. Configure Activity Logging separately to choose which structured events are recorded."|t('freeform'),
         name: "settings[loggingLevel]",
         value: settings.loggingLevel,
         errors: settings.errors("loggingLevel"),

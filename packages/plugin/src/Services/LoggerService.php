@@ -9,6 +9,21 @@ use Solspace\Freeform\Library\Logging\Readers\FileLogReader;
 
 class LoggerService extends BaseService
 {
+    /** Constant-time checks only: never read or count legacy files to build navigation. */
+    public function getExistingLogs(): array
+    {
+        $logs = [];
+        foreach (['error-log' => [null, 'Errors'], 'integrations-log' => ['freeform-integrations.log', 'Integrations'], 'email-log' => ['freeform-email.log', 'Emails']] as $route => [$file, $label]) {
+            $path = FreeformLogger::getLogfilePath($file);
+            clearstatcache(true, $path);
+            if (is_file($path) && filesize($path) > 0) {
+                $logs[$route] = $label;
+            }
+        }
+
+        return $logs;
+    }
+
     public function getLogger(string $category, ?string $fileName = null, ?int $level = null): LoggerInterface
     {
         return FreeformLogger::getInstance($category, $fileName, $level);

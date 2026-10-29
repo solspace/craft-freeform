@@ -35,6 +35,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\FileUploadPreviewHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
@@ -369,12 +370,22 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         $updateSearchIndex = $this->getSettingsService()->isUpdateSearchIndexes();
-        if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
+
+        try {
+            $saved = \Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex);
+        } catch (\Throwable $exception) {
+            $this->recordStorageFailure($form, $submission, ActivityContext::SUBMISSION_SAVE_EXCEPTION);
+
+            throw $exception;
+        }
+        if ($saved) {
             $this->clearSubmissionCountCache();
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
             return true;
         }
+
+        $this->recordStorageFailure($form, $submission, ActivityContext::SUBMISSION_SAVE_REJECTED);
 
         return false;
     }
@@ -620,6 +631,15 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    private function recordStorageFailure(Form $form, Submission $submission, int $reason): void
+    {
+        try {
+            Freeform::getInstance()->get('activity')->record('error', $form->getId(), $submission->id, ['reasonCode' => $reason, 'errorCount' => \count($submission->getErrors())]);
+        } catch (\Throwable) {
+            // Optional diagnostics must preserve the original save result or exception.
+        }
     }
 
     private function clearSubmissionCountCache(): void

@@ -1,0 +1,63 @@
+{#
+    Shared CP primitives. Each macro registers its stylesheet once through Craft.
+    Strings are escaped; illustration/control/example/details slots accept captured Twig markup.
+    choice: id, name, value, label, description; optional selected, disabled, subtitle,
+      illustration, footer, symbol, tone (slate/blue/purple/teal), attributes.
+    helper: id, label, description; optional icon, control, example, details,
+      controlHidden, layout (stack/split), tone (slate/blue/red/orange/green), attributes.
+    Motion hooks for supplied SVG artwork: ff-settings-art-sheet/row/node/slider.
+#}
+{% macro choice(config) %}
+    {% import '_includes/forms' as forms %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SettingsCardsBundle') %}
+    {% set content %}
+        <span class="ff-settings-choice-title" id="{{ config.id }}-title">{{ config.label }}</span>
+        {% if config.illustration ?? null %}<span class="ff-settings-choice-art" aria-hidden="true">{{ config.illustration }}</span>{% endif %}
+        {% if config.subtitle ?? null %}<span class="ff-settings-choice-subtitle">{{ config.subtitle }}</span>{% endif %}
+        <span class="instructions" id="{{ config.id }}-description">{{ config.description }}</span>
+        {% if config.footer ?? null %}<span class="ff-settings-choice-footer"><span>{{ config.footer }}</span><span aria-hidden="true">{{ config.symbol ?? '→' }}</span></span>{% endif %}
+    {% endset %}
+    {% tag 'div' with {class:'ff-settings-choice', data:{tone:config.tone ?? 'slate'}}|merge(config.attributes ?? {}, recursive=true) %}
+        {{ forms.radio({id:config.id, name:config.name, value:config.value, checked:config.selected ?? false, disabled:config.disabled ?? false, label:content, describedBy:config.id ~ '-description', inputAttributes:{aria:{labelledby:config.id ~ '-title'}}}) }}
+    {% endtag %}
+{% endmacro %}
+
+{% macro icon(config) %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SettingsCardsBundle') %}
+    {% tag 'span' with {class:'ff-settings-helper-icon ' ~ (config.class ?? ''), aria:{hidden:'true'}}|merge(config.attributes ?? {}, recursive=true) %}
+        <span class="ff-settings-helper-icon-symbol">{{ config.icon }}</span>
+    {% endtag %}
+{% endmacro %}
+
+{% macro helper(config) %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SettingsCardsBundle') %}
+    {% tag 'div' with {class:'ff-settings-helper', data:{tone:config.tone ?? 'slate', layout:config.layout ?? 'stack'}}|merge(config.attributes ?? {}, recursive=true) %}
+        <div class="ff-settings-helper-copy">
+        <div class="ff-settings-helper-heading">
+            {% if config.icon ?? null %}{{ _self.icon({icon:config.icon}) }}{% endif %}
+            {% if config.control ?? null %}<label id="{{ config.id }}-label" for="{{ config.id }}">{{ config.label }}</label>{% else %}<h3 id="{{ config.id }}-label">{{ config.label }}</h3>{% endif %}
+            {% if config.control ?? null %}<span class="ff-settings-helper-control" {{ (config.controlHidden ?? false) ? 'hidden' }}>{{ config.control }}</span>{% endif %}
+        </div>
+        <p class="instructions" id="{{ config.id }}-description">{{ config.description }}</p>
+        {% if config.details ?? null %}<div class="ff-settings-helper-details">{{ config.details }}</div>{% endif %}
+        </div>
+        {% if config.example ?? null %}<div class="ff-settings-helper-example">{{ config.example }}</div>{% endif %}
+    {% endtag %}
+{% endmacro %}
+
+{% macro example(config) %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SettingsCardsBundle') %}
+    <div class="ff-settings-example" aria-label="{{ 'Illustrative example'|t('freeform') }}">
+        <span class="ff-settings-example-caption">{{ config.caption ?? 'Example'|t('freeform') }}</span>
+        <div class="ff-settings-example-entry">
+            <div class="ff-settings-example-content">
+                <div class="ff-settings-example-heading"><span class="status {{ config.status ?? 'blue' }}" aria-hidden="true"></span><strong>{{ config.title }}</strong>{% if config.statusLabel ?? null %}<span class="ff-settings-example-outcome">{{ config.statusLabel }}</span>{% endif %}</div>
+                {% if config.description ?? null %}<p>{{ config.description }}</p>{% endif %}
+                <div class="ff-settings-example-footer">
+                    {% if config.facts ?? null %}<div class="ff-settings-example-facts">{% for fact in config.facts %}<span>{{ fact }}</span>{% endfor %}</div>{% endif %}
+                    {% if config.time ?? null %}<span class="ff-settings-example-time">{{ config.time }}</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}

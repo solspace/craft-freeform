@@ -12,6 +12,8 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Logging\FreeformLogRecord;
 use Solspace\Freeform\Library\Logging\LoggerFactory;
+use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\LoggerService;
 use yii\web\Response;
@@ -27,6 +29,8 @@ class LoggerRoutingTest extends TestCase
     private mixed $previousYiiApp;
     private ErrorNotificationsService $notifications;
     private LoggerService $service;
+    private Settings $settings;
+    private ActivityService $activity;
 
     protected function setUp(): void
     {
@@ -36,7 +40,13 @@ class LoggerRoutingTest extends TestCase
         mkdir($this->logPath);
 
         $this->notifications = $this->createMock(ErrorNotificationsService::class);
-        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get'])->getMock();
+        $this->settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+        $this->settings->technicalFileLogging = '1';
+        $this->settings->errorNotificationRecipients = 'qa@example.test';
+        $this->activity = $this->createMock(ActivityService::class);
+        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get', 'getSettings', 'get'])->getMock();
+        $plugin->method('get')->with('activity')->willReturn($this->activity);
+        $plugin->method('getSettings')->willReturn($this->settings);
         $plugin->method('__get')->with('errorNotifications')->willReturn($this->notifications);
         \Yii::$app = (object) ['loadedModules' => [Freeform::class => $plugin]];
         \Craft::$app = (object) ['path' => new class($this->logPath) {
@@ -105,6 +115,44 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(1, $this->service->getErrorLogLineCount());
     }
 
+    public function testTechnicalFilesAreNotRecreatedWhenFileLoggingIsDisabled(): void
+    {
+        $this->settings->technicalFileLogging = '0';
+        $this->notifications->expects(self::once())->method('handle');
+        $logger = $this->service->getLogger('files-disabled', 'freeform-email.log', Logger::DEBUG);
+        $logger->debug('Detailed content');
+        $logger->error('An error that still triggers configured error notifications');
+        self::assertSame([], glob($this->logPath.'/*'));
+        self::assertSame([], $this->service->getExistingLogs());
+    }
+
+    public function testActivityOnlyLoggingNeverSerializesPayloadsOrCreatesTechnicalFiles(): void
+    {
+        $this->settings->technicalFileLogging = '0';
+        $this->settings->errorNotificationRecipients = null;
+        $this->notifications->expects(self::never())->method('handle');
+        $this->activity->expects(self::once())->method('record')->with('email-error');
+        $payload = new class implements \JsonSerializable {
+            public function jsonSerialize(): mixed
+            {
+                throw new \RuntimeException('Private payload must never be serialized.');
+            }
+        };
+        $logger = $this->service->getLogger('activity-only', 'freeform-email.log');
+        $logger->error('Arbitrary private error message', ['response' => $payload, 'email' => 'private@example.test']);
+        self::assertSame([], glob($this->logPath.'/*'));
+    }
+
+    public function testTypedMarkersAddOnlyCataloguedContextToActivity(): void
+    {
+        $this->settings->technicalFileLogging = '0';
+        $this->settings->errorNotificationRecipients = null;
+        $this->activity->expects(self::once())->method('record')->with('warning', 12, null, ['reasonCode' => 11]);
+        $logger = $this->service->getLogger('typed-warning');
+        $logger->warning('SECRET warning text', ['activityReason' => 11, 'activityFormId' => 12, 'activitySubmissionId' => 'SECRET', 'recipient' => 'SECRET']);
+        self::assertSame([], glob($this->logPath.'/*'));
+    }
+
     public function testSameCategoryCanUseDifferentFilesAndThresholds(): void
     {
         $email = $this->service->getLogger('shared-category', 'freeform-email.log', Logger::INFO);
@@ -166,5 +214,16 @@ class LoggerRoutingTest extends TestCase
         foreach ($files as $file) {
             self::assertSame($file !== $expectedFile, file_exists($this->logPath.'/'.$file));
         }
+    }
+
+    public function testLegacyLinksExistOnlyForNonemptyFilesAndDisappearAfterClearing(): void
+    {
+        self::assertSame([], $this->service->getExistingLogs());
+        file_put_contents($this->logPath.'/freeform.log', '');
+        self::assertSame([], $this->service->getExistingLogs());
+        file_put_contents($this->logPath.'/freeform-email.log', 'An old entry');
+        self::assertSame(['email-log' => 'Emails'], $this->service->getExistingLogs());
+        $this->service->clearLogs('freeform-email.log');
+        self::assertSame([], $this->service->getExistingLogs());
     }
 }

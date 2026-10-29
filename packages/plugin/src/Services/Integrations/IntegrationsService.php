@@ -755,7 +755,7 @@ class IntegrationsService extends BaseService
 
             try {
                 $logger->info('Pushing data to '.$type->shortName, ['form' => $form->getHandle()]);
-                $integration->push($form, $client);
+                $freeform->get('activity')->observeIntegration($form, static fn () => $integration->push($form, $client), $integration->getId());
             } catch (\Exception $exception) {
                 $event = new FailedRequestEvent($form, $integration, $exception);
                 Event::trigger(
@@ -772,8 +772,9 @@ class IntegrationsService extends BaseService
                     $client = $this->clientProvider->getAuthorizedClient($integration);
 
                     try {
-                        $integration->push($form, $client);
+                        $freeform->get('activity')->observeIntegration($form, static fn () => $integration->push($form, $client), $integration->getId(), 2);
                     } catch (\Exception) {
+                        // The Activity observer recorded the failed retry without retaining its message.
                     }
                 }
             }

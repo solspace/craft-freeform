@@ -17,6 +17,7 @@ use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -205,6 +206,12 @@ class Settings extends Model
     public string $useQueueForIntegrations = 'false';
     public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
+    public string $technicalFileLogging = 'false';
+    public string $activityEnabled = 'true';
+    public string $activityMode = 'standard';
+    public array $activityEvents = [];
+    public int $activityRetentionDays = 30;
+    public int $activityMaxRows = 100000;
     public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
     public string $useIdempotencyKey = 'false';
 
@@ -269,7 +276,22 @@ class Settings extends Model
             ['builderTemplateDirectory', 'validateBuilderTemplateDirectory'],
             ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
             ['defaultAiIntegration', 'string', 'max' => 64],
+            ['activityMode', 'in', 'range' => ActivityPolicy::MODES, 'skipOnEmpty' => false],
+            ['activityRetentionDays', 'integer', 'min' => 1, 'max' => 365],
+            ['activityMaxRows', 'integer', 'min' => 1000, 'max' => 1000000],
+            ['activityEvents', 'validateActivityEvents'],
         ];
+    }
+
+    public function validateActivityEvents(string $attribute): void
+    {
+        foreach ($this->{$attribute} as $event => $enabled) {
+            if (!isset(ActivityPolicy::EVENTS[$event]) || !\in_array($enabled, [true, false, 0, 1, '0', '1', '', 'true', 'false'], true)) {
+                $this->addError($attribute, Freeform::t('Choose valid activity event settings.'));
+
+                break;
+            }
+        }
     }
 
     public function getEnabledFormCreationOptions(): array

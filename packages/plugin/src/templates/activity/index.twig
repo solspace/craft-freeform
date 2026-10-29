@@ -1,0 +1,83 @@
+{% extends 'freeform/_layouts/main' %}
+{% import '_includes/forms' as formsUi %}
+{% set title = 'Activity Log'|t('freeform') %}
+{% set selectedSubnavItem = 'activity' %}
+{% set fullPageForm = false %}
+{% set crumbs = [{label:craft.freeform.name, url:cpUrl('freeform')}, {label:'Activity Log'|t('freeform'), url:cpUrl('freeform/activity')}] %}
+{% set categoryIcons = {system:'gear', submissions:'inbox', spam:'shield', email:'envelope', integrations:'link', forms:'sliders'} %}
+{% set outcomeColors = {error:'red', warning:'orange', success:'green', info:'blue'} %}
+{% set outcomeFilters = activityView == 'submissions' ? {error:'Contains errors', warning:'Contains warnings', success:'Contains successful events', info:'Contains informational events'} : levels %}
+
+
+
+{% block actionButton %}
+    <div class="buttons ff-activity-actions">
+        {% if canConfigure %}<a class="btn" href="{{ cpUrl('freeform/settings/activity') }}"><span class="inline-flex"><span class="cp-icon" aria-hidden="true">{{ iconSvg('gear') }}</span><span class="label">{{ 'Configure Activity'|t('freeform') }}</span></span></a>{% endif %}
+        <a class="btn" href="{{ craft.app.request.url }}"><span class="inline-flex"><span class="cp-icon" aria-hidden="true">{{ iconSvg('refresh') }}</span><span class="label">{{ 'Refresh'|t('freeform') }}</span></span></a>
+        {% if canManage and throughId and not unavailable %}<form method="post" action="{{ actionUrl('freeform/activity/clear') }}" class="ff-activity-clear">{{ csrfInput() }}{{ hiddenInput('throughId', throughId) }}<button class="btn submit" type="submit" aria-haspopup="dialog" aria-controls="activity-clear-confirmation"><span class="inline-flex"><span class="cp-icon" aria-hidden="true">{{ iconSvg('trash') }}</span><span class="label">{{ 'Clear activity history'|t('freeform') }}</span></span></button></form>{% endif %}
+    </div>
+{% endblock %}
+
+{% block content %}
+<div class="ff-activity" data-activity-log>
+    {% if not activityEnabled %}<p class="warning with-icon">{{ 'Activity recording is paused. Existing events remain available until they expire or are cleared.'|t('freeform') }}</p>{% endif %}
+    {% if unavailable %}
+        <p class="error">{{ 'Activity could not be loaded. Make sure Freeform database migrations have completed, then refresh.'|t('freeform') }}</p>
+    {% else %}
+    <div class="ff-activity-toolbar-heading">
+    <form method="get" action="{{ cpUrl('freeform/activity') }}" class="ff-activity-view-form">
+        {% for param,value in filters %}{% if param != 'view' %}{{ hiddenInput(param, value, {data:{'activity-view-filter':true}}) }}{% endif %}{% endfor %}
+        {{ formsUi.buttonGroup({id:'activity-view', value:activityView, containerAttributes:{aria:{label:'Activity view'|t('freeform')}}, options:[
+            {label:'By submission'|t('freeform'), value:'submissions', attributes:{type:'submit', name:'view', value:'submissions'}},
+            {label:'Individual events'|t('freeform'), value:'events', attributes:{type:'submit', name:'view', value:'events'}}
+        ]}) }}
+        <span class="spinner hidden" data-activity-loading aria-hidden="true"></span>
+    </form>
+        <p class="ff-activity-recording-summary"><span class="ff-activity-recording-dot {{ not activityEnabled ? 'is-paused' }}" aria-hidden="true"></span><span>{{ activityEnabled ? '{mode} recording'|t('freeform', {mode:settings.activityMode|capitalize|t('freeform')}) : 'Recording paused'|t('freeform') }}</span><span class="ff-activity-retention">{{ 'Kept for {days} days'|t('freeform', {days:settings.activityRetentionDays}) }}</span><span class="ff-activity-privacy-summary" title="{{ 'Form answers, email addresses, and message bodies are excluded from Activity.'|t('freeform') }}"><span class="cp-icon" aria-hidden="true">{{ iconSvg('lock') }}</span><span>{{ 'Form answers aren’t recorded'|t('freeform') }}</span></span></p>
+    </div>
+    <form method="get" action="{{ cpUrl('freeform/activity') }}" class="toolbar ff-activity-filters">
+        <div class="ff-activity-search texticon search icon"><input class="text fullwidth" type="search" name="q" value="{{ filters.q }}" aria-label="{{ 'Search activity'|t('freeform') }}" placeholder="{{ 'Search event type or submission ID…'|t('freeform') }}"></div>
+        <div class="ff-activity-filter ff-activity-filter-form">{{ formsUi.selectize({
+            id:'activity-filter-form', name:'formId', value:filters.formId,
+            options:[{label:'All forms'|t('freeform'), value:0, data:{status:'all'}}]|merge(forms|map((name,id) => {label:name, value:id, data:{color:formColors[id] ?? '#64748b'}})),
+            inputAttributes:{aria:{label:'Filter by form'|t('freeform')}}, selectizeOptions:{extraPlugins:false, maxOptions:100, create:false, dropdownClass:'selectize-dropdown ff-activity-filter-menu'}
+        }) }}</div>
+        <div class="ff-activity-filter ff-activity-filter-category">{{ formsUi.selectize({
+            id:'activity-filter-category', name:'category', value:filters.category ?: 'all',
+            options:[{label:'All activity'|t('freeform'), value:'all', data:{icon:'list'}}]|merge(names|map((name,id) => {label:name|t('freeform'), value:id, data:{icon:categoryIcons[id]}})),
+            inputAttributes:{aria:{label:'Filter by category'|t('freeform')}}, selectizeOptions:{extraPlugins:false, allowEmptyOption:false, create:false, dropdownClass:'selectize-dropdown ff-activity-filter-menu'}
+        }) }}</div>
+        <div class="ff-activity-filter ff-activity-filter-outcome">{{ formsUi.selectize({
+            id:'activity-filter-outcome', name:'level', value:filters.level ?: 'all',
+            options:[{label:'All outcomes'|t('freeform'), value:'all', data:{status:'all'}}]|merge(outcomeFilters|map((name,id) => {label:name|t('freeform'), value:id, data:{status:outcomeColors[id]}})),
+            inputAttributes:{aria:{label:'Filter by outcome'|t('freeform')}}, selectizeOptions:{extraPlugins:false, allowEmptyOption:false, create:false, dropdownClass:'selectize-dropdown ff-activity-filter-menu'}
+        }) }}</div>
+        {{ hiddenInput('view', activityView) }}
+        {% if filters.submissionId %}{{ hiddenInput('submissionId', filters.submissionId) }}{% endif %}
+        <div class="ff-activity-filter-actions"><button type="submit" class="btn" data-activity-apply>{{ 'Apply'|t('freeform') }}</button>
+        <a href="{{ cpUrl('freeform/activity', {view:activityView}) }}" data-activity-reset class="btn {{ not (filters.q or filters.category or filters.level or filters.formId or filters.submissionId) ? 'disabled' }}" aria-disabled="{{ (filters.q or filters.category or filters.level or filters.formId or filters.submissionId) ? 'false' : 'true' }}" tabindex="{{ (filters.q or filters.category or filters.level or filters.formId or filters.submissionId) ? '0' : '-1' }}">{{ 'Reset'|t('freeform') }}</a></div>
+    </form>
+    <p class="visually-hidden" data-activity-filter-status role="status" data-loading="{{ 'Updating activity…'|t('freeform') }}" data-complete="{{ 'Activity updated.'|t('freeform') }}" data-error="{{ 'The log could not be updated. Try again using Apply.'|t('freeform') }}"></p>
+    {% include 'freeform/activity/_results' %}
+    {% if canManage and throughId %}{% include 'freeform/_components/confirmation-dialog' with {
+        id:'activity-clear-confirmation',
+        title:'Clear activity history?'|t('freeform'),
+        message:'All recorded activity will be cleared in the background, including events hidden by your filters. Submissions, technical log files, and new events will be kept.'|t('freeform'),
+        confirmLabel:'Clear history'|t('freeform')
+    } only %}{% endif %}
+    <dialog id="activity-export-dialog" class="ff-confirmation-dialog ff-activity-export-dialog" aria-modal="true" aria-labelledby="activity-export-title" aria-describedby="activity-export-description">
+        <header><h2 id="activity-export-title">{{ 'Export activity'|t('freeform') }}</h2></header>
+        <form method="get" action="{{ cpUrl('freeform/activity/export') }}">
+            <div class="ff-confirmation-message">
+                <p id="activity-export-description">{{ 'Download individual events that match your current filters, up to the latest {limit} events. Dates use UTC. Form answers and message content are excluded.'|t('freeform', {limit:exportLimit|number}) }}</p>
+                <div data-export-filters></div>
+                {{ formsUi.selectField({label:'File format'|t('freeform'), id:'activity-export-format', name:'exportFormat', value:'csv', options:[{label:'CSV', value:'csv'}, {label:'JSON', value:'json'}]}) }}
+            </div>
+            <footer><button type="button" class="btn cancel" data-export-cancel autofocus>{{ 'Cancel'|t('freeform') }}</button><button type="submit" class="btn submit">{{ 'Download'|t('freeform') }}</button></footer>
+        </form>
+    </dialog>
+
+    {% endif %}
+
+</div>
+{% endblock %}

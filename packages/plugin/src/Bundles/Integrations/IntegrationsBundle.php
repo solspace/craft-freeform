@@ -146,6 +146,7 @@ class IntegrationsBundle extends FeatureBundle
         }
 
         $context = [
+            'activityRecorded' => true,
             'integration' => $integration->getHandle(),
             'exception' => $exception,
         ];

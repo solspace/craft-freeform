@@ -14,8 +14,6 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
-use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -311,9 +309,7 @@ class SettingsService extends BaseService
 
     public function getSettingsNavigation(): array
     {
-        $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
-        $integrationsCount = Freeform::getInstance()->logger->getLogReader(IntegrationLoggerProvider::LOG_FILE)->count();
-        $emailCount = Freeform::getInstance()->logger->getLogReader(NotificationLoggerProvider::LOG_FILE)->count();
+        $legacyLogs = Freeform::getInstance()->logger->getExistingLogs();
         $solspaceAiNavItem = null;
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS)) {
             $plugin = Freeform::getInstance();
@@ -335,11 +331,15 @@ class SettingsService extends BaseService
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'diagnostics' => ['title' => Freeform::t('Diagnostics')],
-            'hdlogs' => ['heading' => Freeform::t('Logs')],
-            'error-log' => ['title' => Freeform::t('Errors <span class="badge">{count}</span>', ['count' => $errorCount])],
-            'integrations-log' => ['title' => Freeform::t('Integrations <span class="badge">{count}</span>', ['count' => $integrationsCount])],
-            'email-log' => ['title' => Freeform::t('Emails <span class="badge">{count}</span>', ['count' => $emailCount])],
+            'activity' => ['title' => Freeform::t('Activity Logging')],
         ];
+
+        if ($legacyLogs) {
+            $nav['hdlogs'] = ['heading' => Freeform::t('Legacy Logs')];
+            foreach ($legacyLogs as $route => $label) {
+                $nav[$route] = ['title' => Freeform::t($label)];
+            }
+        }
 
         $nav = array_filter($nav);
 
@@ -457,7 +457,9 @@ class SettingsService extends BaseService
         }
 
         if ('all' === $type || 'errors' === $type) {
-            $total += $freeform->logger->getErrorLogLineCount();
+            if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS)) {
+                $total += $freeform->get('activity')->getErrorCount();
+            }
         }
 
         return $total;

@@ -81,3 +81,10 @@ form[data-freeform-bootstrap-floating-labels] .form-floating.ff-searchable-field
   min-height: calc(3.5rem + var(--bs-border-width, 1px) * 2);
   padding: 1.625rem 2.5em .625rem .75rem;
 }
+
+/* Match neighboring Bootstrap controls; floating single selects retain their taller override. */
+form[data-freeform-bootstrap-floating-labels] .ff-searchable.ff-searchable .ff-searchable__input {
+  min-height: 0;
+  padding-block: .375rem;
+  line-height: 1.5;
+}

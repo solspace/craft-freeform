@@ -99,3 +99,10 @@ form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freefo
 form[data-freeform-theme="dark"][data-freeform-signature-responsive][data-freeform-signature-theme="bootstrap-5-dark"] .freeform-signature-wrapper:has(.is-invalid, .freeform-has-errors, .has-error, .input-error, .outline-red-600, .border-red-500, .border-red-600, .outline-red-700, .border-red-700) {
   --ff-signature-pad-border: var(--ff-signature-error);
 }
+
+/* Match neighboring Bootstrap controls; floating single selects retain their taller override. */
+form[data-freeform-bootstrap-dark] .ff-searchable.ff-searchable .ff-searchable__input {
+  min-height: 0;
+  padding-block: .375rem;
+  line-height: 1.5;
+}

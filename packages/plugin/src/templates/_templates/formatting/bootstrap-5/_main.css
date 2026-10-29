@@ -70,3 +70,10 @@ form[data-freeform-signature-responsive][data-freeform-signature-theme="bootstra
 form[data-freeform-signature-responsive][data-freeform-signature-theme="bootstrap-5"] .freeform-signature-wrapper:has(.is-invalid, .freeform-has-errors, .has-error, .input-error, .outline-red-600, .border-red-500, .border-red-600, .outline-red-700, .border-red-700) canvas {
   border-color: var(--ff-signature-error) !important;
 }
+
+/* Match neighboring Bootstrap controls; floating single selects retain their taller override. */
+form[data-freeform-bootstrap] .ff-searchable.ff-searchable .ff-searchable__input {
+  min-height: 0;
+  padding-block: .375rem;
+  line-height: 1.5;
+}

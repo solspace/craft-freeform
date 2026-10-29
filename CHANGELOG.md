@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.17.7 - 2026-10-29
+
+### Fixed
+- Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
+- Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.
+- Fixed searchable field heights in Bootstrap 5 templates and missing or low-contrast search hints in floating-label and dark templates.
+
 ## 5.17.6 - 2026-10-28
 
 ### Added

@@ -119,9 +119,12 @@ class FormPreviewServiceTest extends TestCase
         $form->setPreview();
         $bundled = new RenderTagEvent($form);
         $bundled->addScript('js/scripts/front-end/plugin/freeform.js');
+        $bundled->addStylesheet('css/front-end/plugin/freeform.css');
         $bundled->addScript('/etc/passwd');
         self::assertFalse($bundled->isScriptsDisabled());
         self::assertStringContainsString('<script>', $bundled->getChunksAsString());
+        self::assertStringContainsString('<style>select.ff-searchable-native', $bundled->getChunksAsString());
+        self::assertStringNotContainsString("\xEF\xBB\xBF", $bundled->getChunksAsString());
         self::assertStringNotContainsString('root:', $bundled->getChunksAsString());
         self::assertTrue($form->isPreview());
         self::assertTrue($form->isAvailable());
@@ -217,8 +220,8 @@ class FormPreviewServiceTest extends TestCase
     public function testKnownBundledTemplateAssetsAreInlinedAndHashed(): void
     {
         $html = (new FormPreviewService())->isolate('<html><head><link rel="stylesheet" href="/cpresources/example/_main.css?v=1"></head><body><script src="/cpresources/example/_main.js?v=1"></script></body></html>', 'CSRF', [
-            '/cpresources/example/_main.css' => 'body{padding:24px}',
-            '/cpresources/example/_main.js' => 'window.sampleLoaded=true;',
+            '/cpresources/example/_main.css' => "\xEF\xBB\xBFbody{padding:24px}",
+            '/cpresources/example/_main.js' => "\xEF\xBB\xBFwindow.sampleLoaded=true;",
         ]);
         self::assertStringNotContainsString('src=', $html);
         self::assertStringContainsString('<style>body{padding:24px}</style>', $html);

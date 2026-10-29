@@ -80,3 +80,8 @@ form[data-freeform-basic-floating-labels] .floating.ff-searchable-field:not(:has
   min-height: 0;
   padding: 25px 2.5em 10px 10px;
 }
+
+/* Searchable fields keep a raised label, so their search hint can stay visible. */
+form[data-freeform-basic-floating-labels] .floating.ff-searchable-field .ff-searchable.ff-searchable .ff-searchable__input:placeholder-shown:not(:focus)::placeholder {
+  opacity: .6;
+}

@@ -138,6 +138,10 @@ class FormPreviewService
             $attribute = 'link' === $node->nodeName ? 'href' : 'src';
             $url = $node->getAttribute($attribute);
             $asset = $bundledAssets[explode('?', $url, 2)[0]] ?? null;
+            if (null !== $asset) {
+                // A file BOM is an encoding marker, not inline CSS/JS content.
+                $asset = preg_replace('/^\xEF\xBB\xBF/', '', $asset);
+            }
             if (null !== $asset && 'script' === $node->nodeName) {
                 $node->removeAttribute('src');
                 $node->removeAttribute('integrity');

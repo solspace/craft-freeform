@@ -131,7 +131,8 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             $path = realpath(FileHelper::isAbsolute($filePath) ? $filePath : __DIR__.'/../../Resources/'.$filePath);
             $root = realpath(__DIR__.'/../../Resources');
             if ($path && str_starts_with($path, $root.\DIRECTORY_SEPARATOR)) {
-                $content = file_get_contents($path);
+                // A file BOM becomes part of the first CSS selector when inlined.
+                $content = preg_replace('/^\xEF\xBB\xBF/', '', file_get_contents($path));
                 if (self::ELEMENT_SCRIPT === $type) {
                     $this->addChunk('<script>'.str_ireplace('</script', '<\/script', $content).'</script>');
                 } else {

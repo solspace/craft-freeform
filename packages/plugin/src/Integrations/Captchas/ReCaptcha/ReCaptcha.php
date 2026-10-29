@@ -37,7 +37,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
     #[Input\Select(
         label: 'Captcha Type',
-        instructions: 'Choose the reCAPTCHA type to use. The options below are compatible with the Enterprise API and the Classic legacy keys.',
+        instructions: 'Choose the reCAPTCHA type matching your Google site key. Google Cloud keys require their legacy secret key.',
         options: [
             self::VERSION_V2_CHECKBOX => 'Challenge - Checkbox (v2)',
             self::VERSION_V2_INVISIBLE => 'Challenge - Invisible (v2)',

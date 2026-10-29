@@ -1,9 +1,13 @@
 # Setup Guide
 
-This guide assumes you have a basic understanding of [reCAPTCHA](https://www.google.com/recaptcha/). This integration is compatible with the Enterprise API and the Classic legacy keys.
+This guide assumes you have a basic understanding of [reCAPTCHA](https://www.google.com/recaptcha/). Freeform supports reCAPTCHA v2 and v3 through Google's legacy `siteverify` API, using a **Site Key** and **Secret Key**. Compatible keys managed in Google Cloud, including migrated Classic keys, can be used with their **legacy secret key**.
+
+Freeform does not currently use the native reCAPTCHA Enterprise `CreateAssessment` API, service-account authentication, or `enterprise.js`. Moving a key to Google Cloud does not require changing an existing v2/v3 integration to the native Enterprise API. See Google's [migration guidance](https://docs.cloud.google.com/recaptcha/docs/migration-overview).
 
 ## Overview
-All **reCAPTCHA** offerings will be automatically loaded and handled by Freeform (when enabled for the form). The **Challenge - Checkbox (v2)** field will be automatically inserted above the Submit button(s).
+The supported **reCAPTCHA** types below will be automatically loaded and handled by Freeform (when enabled for the form). The **Challenge - Checkbox (v2)** field will be automatically inserted above the Submit button(s).
+
+The **Only load Captcha scripts once the user interacts with the form** setting delays loading; it does not disable Freeform's CAPTCHA JavaScript. There is currently no dedicated option to manage the CAPTCHA frontend independently while retaining Freeform's token verification. Disabling the CAPTCHA integration for a form also disables its server-side verification.
 
 If you're not already familiar, here's an overview of how each Captcha works:
 
@@ -18,26 +22,20 @@ Users are never presented any puzzle to solve, etc. Instead, users are automatic
 
 ## Setup Instructions
 
-### 1. Set up App on Captcha site
+### 1. Create or select a reCAPTCHA key
 
-- Go to the [reCAPTCHA admin site](https://www.google.com/recaptcha/admin) and log into your account.
-- If you don't already have an app created, click on the **+** icon button at the top right.
-    - Enter a name for it in the **Label** setting.
-    - Choose a type in the **reCAPTCHA Type** setting.
-    - In the **Domains** section, enter in any domain(s) you plan on using the captcha for, e.g. `mysite.net`.
-    - Click the **Submit** button.
-    - On the next page, you'll be presented a **Site Key** and **Secret Key**. Copy both of these.
-- If you have already created an app, select it from the dropdown at the top left and click on the **cog** settings icon at the top right.
-    - In the **Domains** section, enter in any domain(s) you plan on using the captcha for, e.g. `mysite.net`.
-    - Click on the **reCAPTCHA Keys** area above and copy the **Site Key** and **Secret Key** values.
-    - If you have made any changes to this app, scroll to the bottom and click **Save** button.
-- Leave this page open and open a new tab...
+- Create or select a web key in the [Google Cloud console](https://console.cloud.google.com/security/recaptcha), following Google's [key setup guide](https://docs.cloud.google.com/recaptcha/docs/create-key-website).
+- Use a key type matching the **Captcha Type** you will select in Freeform: checkbox for **Challenge - Checkbox (v2)**, or score-based for **Score Based (v3)**. Existing **Challenge - Invisible (v2)** keys must use that matching Freeform option.
+- Configure the domains where the form will appear, e.g. `mysite.net`.
+- Copy the **Site Key** (also called the key ID).
+- Open the key's details and its **Integration** tab. Choose **Use legacy key** or **Integrate with a third-party service or plugin**, then copy the **legacy secret key**. Enter this in Freeform's **Secret Key** field. See Google's [legacy-secret instructions](https://docs.cloud.google.com/recaptcha/docs/create-key-website#find-key).
+- Keep the legacy secret key on the server. An API key or service-account JSON file cannot be used in its place in this integration.
 
 ### 2. Set up Integration on your site
 
 - Switch back to this integration tab.
 - Choose a reCAPTCHA version and type from the **Captcha Type** select dropdown.
-- In the **Site Key** and **Secret Key** settings, paste in the **Site Key** and **Secret Key** values from the reCAPTCHA site.
+- In the **Site Key** and **Secret Key** settings, paste in your **Site Key** and its **legacy secret key**.
 
 ### 3. Additional Configuration
 

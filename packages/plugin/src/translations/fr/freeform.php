@@ -2057,7 +2057,7 @@ return array_merge(require __DIR__.'/wizard.php', [
     // Integrations // Captchas
     'Captchas' => 'Captchas',
     'Captcha Type' => 'Type de Captcha',
-    'Choose the reCAPTCHA type to use. The options below are compatible with the Enterprise API and the Classic legacy keys.' => 'Choisissez le type de reCAPTCHA à utiliser. Les options ci-dessous sont compatibles avec l’API Enterprise et les anciennes clés Classic.',
+    'Choose the reCAPTCHA type matching your Google site key. Google Cloud keys require their legacy secret key.' => 'Choisissez le type de reCAPTCHA correspondant à votre clé de site Google. Les clés Google Cloud nécessitent leur ancienne clé secrète.',
     'Score Based (v3)' => 'Basé sur le score (v3)',
     'Challenge - Invisible (v2)' => 'Défi - Invisible (v2)',
     'Challenge - Checkbox (v2)' => 'Défi - Case à cocher (v2)',

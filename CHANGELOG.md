@@ -5,6 +5,9 @@
 ### Added
 - Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
 
+### Changed
+- Clarified reCAPTCHA setup instructions and integration help text to distinguish Google Cloud keys using legacy verification from native Enterprise API support.
+
 ### Fixed
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
 - Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.

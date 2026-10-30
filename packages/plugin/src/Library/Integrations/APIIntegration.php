@@ -67,7 +67,7 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
                 continue;
             }
 
-            $freeformField = $form->get($item->getValue());
+            $freeformField = FieldMapItem::TYPE_RELATION === $item->getType() ? $item->getField($form) : null;
 
             $key = $item->getSource();
             $value = $item->extractValue($form, $mappingContext);

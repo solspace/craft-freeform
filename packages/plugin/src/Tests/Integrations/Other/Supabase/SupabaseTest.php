@@ -25,6 +25,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Other\Supabase\Supabase;
 use Solspace\Freeform\Integrations\Other\Supabase\SupabaseBundle;
@@ -234,6 +235,24 @@ class SupabaseTest extends TestCase
         self::assertSame('public', $request->getHeaderLine('Content-Profile'));
         self::assertSame('return=minimal', $request->getHeaderLine('Prefer'));
         self::assertSame(['name' => 'Test', 'score' => 0, 'amount' => '-12.1234567890123456789', 'active' => false, 'birthday' => '2024-02-29', 'tags' => ['one', 'two'], 'answers' => [['answer' => 0]], 'status' => 'new'], json_decode((string) $request->getBody(), true));
+    }
+
+    public function testLocationComponentsPassThroughTheSharedApiMappingPipeline(): void
+    {
+        $mapping = (new FieldMapping())
+            ->add('street', FieldMapItem::TYPE_RELATION, 'location-uid.line1')
+            ->add('city', FieldMapItem::TYPE_RELATION, 'location-uid.city')
+            ->add('country', FieldMapItem::TYPE_RELATION, 'location-uid.countryCode')
+            ->add('province', FieldMapItem::TYPE_RELATION, 'location-uid.stateCode')
+        ;
+        $fields = array_map(static fn ($key) => new FieldObject($key, $key, 'string', 'public.leads'), ['street', 'city', 'country', 'province']);
+        $integration = $this->integration(['table' => 'leads', 'fieldMapping' => $mapping], $fields);
+        $form = $this->createMock(Form::class);
+        $location = new LocationField($form);
+        $location->setValue(['line1' => '123 Main Street', 'city' => 'Winnipeg', 'state' => 'Manitoba', 'country' => 'Canada']);
+        $form->method('get')->with('location-uid')->willReturn($location);
+        $integration->push($form, $this->client([new Response(201)], $integration));
+        self::assertSame(['street' => '123 Main Street', 'city' => 'Winnipeg', 'country' => 'CA', 'province' => 'MB'], json_decode((string) $this->history[0]['request']->getBody(), true));
     }
 
     public function testOptionalDuplicatePreventionUsesSavedSubmissionUidWithoutUpdatingRows(): void

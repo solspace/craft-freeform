@@ -210,7 +210,14 @@ class Stripe extends PaymentGatewayIntegration
         );
 
         foreach ($items as $item) {
-            $field = $form->get($item->getValue());
+            // Component and Twig mappings require recomputing from the complete form.
+            if (FieldMapItem::TYPE_RELATION === $item->getType() && null !== $item->getComponent()) {
+                $map[] = ['source' => $item->getSource()];
+
+                continue;
+            }
+
+            $field = $item->getField($form);
 
             $map[] = match ($item->getType()) {
                 FieldMapItem::TYPE_RELATION => [

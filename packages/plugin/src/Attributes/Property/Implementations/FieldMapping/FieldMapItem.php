@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Attributes\Property\Implementations\FieldMapping;
 
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -34,10 +36,58 @@ class FieldMapItem
         return $this->source;
     }
 
+    #[Ignore]
+    public function getFieldUid(): string
+    {
+        return explode('.', $this->value, 2)[0];
+    }
+
+    #[Ignore]
+    public function getComponent(): ?string
+    {
+        return explode('.', $this->value, 2)[1] ?? null;
+    }
+
+    public static function remapReference(string $reference, array $uidMap): string
+    {
+        [$uid, $component] = array_pad(explode('.', $reference, 2), 2, null);
+
+        return ($uidMap[$uid] ?? $uid).(null !== $component ? '.'.$component : '');
+    }
+
+    #[Ignore]
+    public function getField(Form $form): ?FieldInterface
+    {
+        $field = $form->get($this->getFieldUid());
+        if (null !== $this->getComponent() && (!$field instanceof LocationField || !isset(LocationField::MAPPING_COMPONENTS[$this->getComponent()]))) {
+            return null;
+        }
+
+        return $field;
+    }
+
+    public function populateFieldValue(Form $form, mixed $value): void
+    {
+        $field = $this->getField($form);
+        if (!$field) {
+            return;
+        }
+
+        if (null !== $this->getComponent() && $field instanceof LocationField) {
+            $field->setMappingValue($this->getComponent(), $value);
+        } else {
+            $field->setValue($value);
+        }
+    }
+
     public function extractValue(Form $form, array $context = []): mixed
     {
         if (self::TYPE_RELATION === $this->getType()) {
-            $field = $form->get($this->getValue());
+            $field = $this->getField($form);
+
+            if (null !== $this->getComponent() && $field instanceof LocationField) {
+                return $field->getMappingValue($this->getComponent());
+            }
 
             return $field?->getValue();
         }

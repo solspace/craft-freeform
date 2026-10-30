@@ -10,10 +10,12 @@ import { useSelector } from "react-redux";
 import { layoutSelectors } from "../layouts/layouts.selectors";
 import { pageSelecors } from "../pages/pages.selectors";
 import type { Field } from ".";
+import { locationMappingOptions } from "./fields.mapping";
 
 export const useFieldOptionCollection = (
   excludedUids?: string[],
   excludedTypes?: string[],
+  includeLocationComponents = false,
 ): OptionCollection => {
   const { getState } = useAppStore();
   const findType = useFieldTypeSearch();
@@ -48,6 +50,20 @@ export const useFieldOptionCollection = (
             .filter(Boolean),
         };
       }
+      if (
+        includeLocationComponents &&
+        type?.type === "location" &&
+        field.properties.addressFields !== "mapped"
+      ) {
+        return {
+          label,
+          children: locationMappingOptions(
+            field.uid,
+            label,
+            field.properties.includedComponents,
+          ),
+        };
+      }
       return { value: field.uid, label };
     };
     return cartographed.map((mapped) => ({
@@ -63,5 +79,6 @@ export const useFieldOptionCollection = (
     findType,
     getState,
     fieldTranslations,
+    includeLocationComponents,
   ]);
 };

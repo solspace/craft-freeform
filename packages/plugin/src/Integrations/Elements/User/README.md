@@ -32,6 +32,16 @@ This integration allows you to map Freeform submission data to [Craft User](http
 
 See [Mapping Guidelines](https://docs.solspace.com/craft/freeform/v5/integrations/elements/#mapping-guidelines) for more info.
 
+### Craft 5 Addresses Fields
+
+Native Craft 5 **Addresses** custom fields appear as individual components in **Field Mapping**, such as **Mailing Address — Address Line 1**, **Mailing Address — City / Locality**, and **Mailing Address — Country Code**. Map components to Freeform fields, fixed values, or Twig expressions. Use two-letter country codes such as `CA` or `US`, and the state/province codes expected by Craft for that country, such as `MB` or `NY`.
+
+Each mapped Addresses field creates one address when empty, or updates its first address when editing an existing user. New addresses use the Craft field's name as their label unless **Label** is mapped. Additional addresses, unmapped components, and custom address fields are preserved. Mapped blank values clear existing components; an entirely blank optional address does not create an address. Element editing prefills mapped fields from the first address. Craft validates and saves addresses along with the user.
+
+This supports Addresses custom fields attached to users. Craft's separate user address book is not a mapping target.
+
+Freeform **Location** fields using **Include fields** expose their included components in the integration field picker. Select **Location — Country Code** and **Location — State / Province Code** for Craft's coded components, or map the street, city, and postal code individually. These choices work across integration mapping tables. Recognized names and codes resolve using Craft's address data; unknown names produce an empty code. **Location — Full Address** provides formatted text, and the original **Location** option retains its structured value. With **Map fields**, select the regular destination form fields instead.
+
 ---
 
 <small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>

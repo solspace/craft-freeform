@@ -52,7 +52,7 @@ class FieldMapping implements CustomNormalizerInterface, \IteratorAggregate
     {
         foreach ($this->mapping as $item) {
             if (FieldMapItem::TYPE_RELATION === $item->getType()) {
-                yield $item->getSource() => $item->getValue();
+                yield $item->getSource() => $item->getFieldUid();
             }
         }
     }

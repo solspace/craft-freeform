@@ -10,6 +10,17 @@ const { fieldOptions } = vi.hoisted(() => ({
       label: "Page 1",
       children: [
         { label: "Group", children: [{ value: "phone", label: "Phone" }] },
+        {
+          label: "Location",
+          children: [
+            { value: "location-uid", label: "Location" },
+            { value: "location-uid.city", label: "Location — City" },
+            {
+              value: "location-uid.countryCode",
+              label: "Location — Country Code",
+            },
+          ],
+        },
       ],
     },
   ] as OptionCollection,
@@ -103,6 +114,21 @@ describe("missing mapped fields", () => {
     expect(onChange).toHaveBeenCalledExactlyOnceWith("");
     expect(container.textContent).toBe("Do not map this field");
     expect(container.querySelector(".missing")).toBeNull();
+  });
+
+  it("recognizes a saved Location component", () => {
+    mount("location-uid.city");
+    expect(container.textContent).toBe("Location — City");
+    expect(container.querySelector(".missing")).toBeNull();
+  });
+
+  it("can replace an old reference with a Location code component", () => {
+    const onChange = mount("deleted-field-uid");
+    choose("location-uid.countryCode");
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
+      "location-uid.countryCode",
+    );
+    expect(container.textContent).toBe("Location — Country Code");
   });
 
   it("lets the user replace a stale reference with an existing field", () => {

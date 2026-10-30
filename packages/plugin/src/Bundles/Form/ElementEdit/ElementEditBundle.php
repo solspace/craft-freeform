@@ -7,6 +7,7 @@ use craft\fields\data\MultiOptionsFieldData;
 use craft\fields\data\SingleOptionFieldData;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
+use Solspace\Freeform\Bundles\Integrations\Elements\AddressFieldMapping;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -80,17 +81,18 @@ class ElementEditBundle extends FeatureBundle
                 }
 
                 $value = $element->{$item->getSource()};
-                $field = $form->get($item->getValue());
+                $field = $item->getField($form);
                 if (!$field) {
                     continue;
                 }
 
-                $field->setValue($value);
+                $item->populateFieldValue($form, $value);
             }
         }
 
         if (null !== $fieldMapping) {
             $customFields = $element->getFieldLayout()->getCustomFields();
+            $addressValues = [];
             foreach ($fieldMapping as $item) {
                 if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
                     continue;
@@ -98,7 +100,7 @@ class ElementEditBundle extends FeatureBundle
 
                 $craftField = null;
                 foreach ($customFields as $field) {
-                    if ($field->handle === $item->getSource()) {
+                    if ($field->handle === $item->getSource() || null !== AddressFieldMapping::getAttribute($field, $item->getSource())) {
                         $craftField = $field;
 
                         break;
@@ -110,7 +112,12 @@ class ElementEditBundle extends FeatureBundle
                 }
 
                 $value = $element->getFieldValue($craftField->handle);
-                $field = $form->get($item->getValue());
+                $addressAttribute = AddressFieldMapping::getAttribute($craftField, $item->getSource());
+                if (null !== $addressAttribute) {
+                    $addresses = $addressValues[$craftField->handle] ??= AddressFieldMapping::getAddresses($element, $craftField);
+                    $value = isset($addresses[0]) ? $addresses[0]->{$addressAttribute} : null;
+                }
+                $field = $item->getField($form);
                 if (!$field) {
                     continue;
                 }
@@ -154,7 +161,7 @@ class ElementEditBundle extends FeatureBundle
                     }
                 }
 
-                $field->setValue($value);
+                $item->populateFieldValue($form, $value);
             }
         }
     }

@@ -27,7 +27,7 @@ class GoogleSheetsValueTransformers extends FeatureBundle
         }
 
         $field = $event->getFreeformField();
-        if (!$field instanceof MultiValueInterface) {
+        if (!$field instanceof MultiValueInterface || !\is_array($event->getValue())) {
             return;
         }
 

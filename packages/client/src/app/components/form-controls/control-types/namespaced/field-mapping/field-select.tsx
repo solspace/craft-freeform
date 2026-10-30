@@ -10,7 +10,7 @@ type Props = {
 };
 
 export const FieldSelect: React.FC<Props> = ({ value, onChange }) => {
-  const options = useFieldOptionCollection();
+  const options = useFieldOptionCollection(undefined, undefined, true);
 
   return (
     <Dropdown

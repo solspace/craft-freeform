@@ -27,6 +27,7 @@ use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Other\Google\GooglePlaces\GooglePlaces;
 use Solspace\Freeform\Library\Attributes\LocationAttributesCollection;
+use Solspace\Freeform\Library\Helpers\LocationMappingHelper;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use yii\base\Event;
 
@@ -48,6 +49,11 @@ class LocationField extends AbstractField implements MultiValueInterface, Placeh
         'state' => 'State / Province',
         'postalCode' => 'Postal Code',
         'country' => 'Country',
+    ];
+
+    public const MAPPING_COMPONENTS = ['fullAddress' => 'Full Address'] + self::COMPONENTS + [
+        'stateCode' => 'State / Province Code',
+        'countryCode' => 'Country Code',
     ];
 
     #[ValueTransformer(IntegrationTransformer::class)]
@@ -312,6 +318,33 @@ class LocationField extends AbstractField implements MultiValueInterface, Placeh
         $parts = array_filter(array_intersect_key($value, self::COMPONENTS), static fn ($part) => '' !== $part);
 
         return $parts ? implode(', ', $parts) : ($value['search'] ?? '');
+    }
+
+    public function getMappingValue(string $component): ?string
+    {
+        $value = $this->getValue();
+
+        return match ($component) {
+            'fullAddress' => $this->getValueAsString(),
+            'countryCode' => LocationMappingHelper::countryCode($value['country'] ?? ''),
+            'stateCode' => LocationMappingHelper::stateCode($value['state'] ?? '', $value['country'] ?? ''),
+            default => isset(self::COMPONENTS[$component]) ? ($value[$component] ?? '') : null,
+        };
+    }
+
+    public function setMappingValue(string $component, mixed $value): void
+    {
+        $key = match ($component) {
+            'fullAddress' => 'search',
+            'countryCode' => 'country',
+            'stateCode' => 'state',
+            default => $component,
+        };
+        if ('search' !== $key && !isset(self::COMPONENTS[$key])) {
+            return;
+        }
+
+        $this->setValue(array_replace($this->getValue(), [$key => $value ?? '']));
     }
 
     public function getContentGqlType(): array|GQLType

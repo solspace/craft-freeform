@@ -48,6 +48,7 @@
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
+- Fixed submission detail pages failing to render Form sections nested inside Page form layouts.
 - Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
 - Fixed boolean environment indicators and dependent setting visibility without clearing saved values.
 - Fixed Salesforce and Account Engagement custom login URLs not resolving environment variables, and legacy product labels in headings and tabs.

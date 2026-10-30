@@ -97,6 +97,9 @@ class Settings extends Model
     public array|string $formCreationOptions = self::FORM_CREATION_OPTIONS;
     public string $defaultAiIntegration = '';
 
+    /** '*' allows all volumes, 'none' allows none, and arrays contain volume handles. */
+    public array|string $allowedUploadVolumes = '*';
+
     public string $removeNewlines = 'false';
     public string $exportLabels = 'false';
     public string $exportHandlesAsNames = 'false';
@@ -224,6 +227,9 @@ class Settings extends Model
 
     public function __construct(array $config = [])
     {
+        if (isset($config['allowedUploadVolumes']) && \in_array($config['allowedUploadVolumes'], ['', []], true)) {
+            $config['allowedUploadVolumes'] = 'none';
+        }
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);
 
@@ -260,6 +266,10 @@ class Settings extends Model
 
     public function setAttributes($values, $safeOnly = true): void
     {
+        // Craft project config removes empty arrays, so persist an explicit none value.
+        if (isset($values['allowedUploadVolumes']) && \in_array($values['allowedUploadVolumes'], ['', []], true)) {
+            $values['allowedUploadVolumes'] = 'none';
+        }
         if (\array_key_exists('defaults', $values)) {
             $values['defaults'] = new Defaults($values['defaults']);
         }
@@ -276,6 +286,7 @@ class Settings extends Model
             ['builderTemplateDirectory', 'validateBuilderTemplateDirectory'],
             ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
             ['defaultAiIntegration', 'string', 'max' => 64],
+            ['allowedUploadVolumes', 'validateAllowedUploadVolumes', 'skipOnEmpty' => false],
             ['activityMode', 'in', 'range' => ActivityPolicy::MODES, 'skipOnEmpty' => false],
             ['activityRetentionDays', 'integer', 'min' => 1, 'max' => 365],
             ['activityMaxRows', 'integer', 'min' => 1000, 'max' => 1000000],
@@ -291,6 +302,14 @@ class Settings extends Model
 
                 break;
             }
+        }
+    }
+
+    public function validateAllowedUploadVolumes(string $attribute): void
+    {
+        $value = $this->{$attribute};
+        if (!\in_array($value, ['*', 'none'], true) && (!\is_array($value) || array_filter($value, static fn ($handle) => !\is_string($handle) || !preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/D', $handle)))) {
+            $this->addError($attribute, Freeform::t('Choose valid upload volumes.'));
         }
     }
 

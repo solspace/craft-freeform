@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 use Carbon\Carbon;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\DefaultValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Delimiter;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -375,6 +376,9 @@ class PropertyProvider
         $value = $attribute->value ?? ($property->hasDefaultValue() ? $property->getDefaultValue() : null);
         if (!$hasDefaultValue && null === $referenceObject && $attribute->valueGenerator) {
             $value = $attribute->valueGenerator->generateValue($referenceObject, $context);
+        }
+        if (null === $referenceObject && $attribute->valueGenerator instanceof DefaultValueGeneratorInterface) {
+            $value = $attribute->valueGenerator->generateDefaultValue($value);
         }
 
         if ($referenceObject && $property->isInitialized($referenceObject)) {

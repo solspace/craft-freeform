@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\Bundles\Persistence\FormPersistence;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\FileUploads\UploadVolumePolicy;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 
@@ -77,6 +78,20 @@ class FormPersistenceTest extends TestCase
         self::assertSame($form, $event->getForm());
     }
 
+    public function testDisallowedUploadDestinationDoesNotWriteFormOrLoadPersistedValues(): void
+    {
+        [$bundle, $forms, $record, $event] = $this->fixture();
+        $policy = $this->createMock(UploadVolumePolicy::class);
+        $errors = ['upload' => ['assetSourceId' => ['Choose an allowed upload volume.']]];
+        $policy->method('validatePayload')->with($event->getPayload())->willReturn($errors);
+        (new \ReflectionProperty(FormPersistence::class, 'uploadVolumePolicy'))->setValue($bundle, $policy);
+        $record->expects(self::never())->method('save');
+        $forms->expects(self::never())->method('getFormById');
+        $this->update($bundle, $event, $record);
+        self::assertSame(400, $event->getStatus());
+        self::assertSame($errors, $event->getErrorsFor('fields'));
+    }
+
     public function testSettingsValidationFailureDoesNotSaveOrLoadForm(): void
     {
         [$bundle, $forms, $record, $event] = $this->fixture();
@@ -98,6 +113,7 @@ class FormPersistenceTest extends TestCase
         $bundle = (new \ReflectionClass(FormPersistence::class))->newInstanceWithoutConstructor();
         (new \ReflectionProperty(FormPersistence::class, 'formsService'))->setValue($bundle, $forms);
         (new \ReflectionProperty(FormPersistence::class, 'settingsProvider'))->setValue($bundle, $settings);
+        (new \ReflectionProperty(FormPersistence::class, 'uploadVolumePolicy'))->setValue($bundle, $this->createMock(UploadVolumePolicy::class));
 
         $record = $this->getMockBuilder(FormRecord::class)
             ->disableOriginalConstructor()

@@ -9,6 +9,24 @@ use Solspace\Freeform\Models\Settings;
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    public function testUploadVolumeSettingAcceptsAllNoneOrHandlesAndNormalizesClearedCheckboxes(): void
+    {
+        foreach (['*', 'none', [], ['forms'], ['forms', 'privateUploads']] as $value) {
+            $settings = $this->normalize(['allowedUploadVolumes' => $value]);
+            self::assertTrue($settings->validate(['allowedUploadVolumes']));
+        }
+        foreach (['forms', ['*'], [''], [1], [['forms']]] as $value) {
+            $settings = $this->normalize(['allowedUploadVolumes' => $value]);
+            self::assertFalse($settings->validate(['allowedUploadVolumes']));
+        }
+        $settings = $this->normalize([]);
+        foreach (['', []] as $value) {
+            $settings->setAttributes(['allowedUploadVolumes' => $value], false);
+            self::assertSame('none', $settings->allowedUploadVolumes);
+            self::assertTrue($settings->validate(['allowedUploadVolumes']));
+        }
+    }
+
     public function testBuilderTemplatesStayWithinTheConfiguredSiteDirectory(): void
     {
         $root = sys_get_temp_dir().'/freeform-builder-'.bin2hex(random_bytes(5));

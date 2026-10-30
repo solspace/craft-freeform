@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
 use Solspace\Freeform\Attributes\Defaults\SetPlaceholder;
 use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
-use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
+use Solspace\Freeform\Fields\Implementations\Options\UploadSourceOptions;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\BoolItem;
@@ -27,7 +27,7 @@ class File extends BaseCategory
 
     #[Label('Asset Source')]
     #[EmptyValue('')]
-    #[OptionsGenerator(AssetSourceOptions::class)]
+    #[OptionsGenerator(UploadSourceOptions::class)]
     #[SetDefaultValue('')]
     public SelectItem $source;
 

@@ -167,6 +167,35 @@
 
 	<hr>
 
+    <h2>{{ "File Uploads"|t('freeform') }}</h2>
+
+    {% set uploadVolumeOptions = [] %}
+    {% set uploadVolumeHandles = [] %}
+    {% for volume in craft.app.volumes.allVolumes %}
+        {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: volume.handle, label: volume.name}]) %}
+        {% set uploadVolumeHandles = uploadVolumeHandles|merge([volume.handle]) %}
+    {% endfor %}
+    {% if settings.allowedUploadVolumes is iterable %}
+        {% for handle in settings.allowedUploadVolumes %}
+            {% if handle not in uploadVolumeHandles %}
+                {% set uploadVolumeOptions = uploadVolumeOptions|merge([{value: handle, label: "Unavailable volume: {handle}"|t('freeform', {handle: handle})}]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {{ forms.checkboxSelectField({
+        label: "Allowed Upload Volumes"|t('freeform'),
+        instructions: "Choose which volumes can be selected as upload destinations in the form builder, including File Upload columns in Table fields. Users must also have permission to view the volume. Select All to allow current and future volumes, or clear every option to allow none. Existing forms keep their saved destinations; saving a form requires an allowed destination."|t('freeform'),
+        id: 'allowedUploadVolumes',
+        name: 'settings[allowedUploadVolumes]',
+        values: settings.allowedUploadVolumes == 'none' ? [] : settings.allowedUploadVolumes,
+        options: uploadVolumeOptions,
+        showAllOption: true,
+        errors: settings.errors('allowedUploadVolumes'),
+        disabled: readOnly,
+    }) }}
+
+    <hr>
+
 	<h2>{{ "Element Field Type"|t('freeform') }}</h2>
 
 	{{ forms.booleanMenuField({

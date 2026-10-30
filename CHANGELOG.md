@@ -3,6 +3,7 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added **Allowed Upload Volumes** in General Settings to restrict file upload destinations, including table upload columns, new-field defaults, and translated settings. All volumes remain allowed by default, and existing live forms retain their saved destinations.
 - Added direct mapping of included Location address components across integrations, including full address and country/state codes, without requiring separate form fields.
 - Added support for native Craft 5 Addresses fields in Entry and User element integrations, with component mapping, edit prefilling, and nested address validation.
 - Added Salesforce CRM Case creation with standard and custom field mapping, assignment rules, file attachments, and links to Accounts and Contacts created or matched by the same submission.

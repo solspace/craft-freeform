@@ -17,7 +17,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
+use Solspace\Freeform\Fields\Implementations\Options\UploadSourceOptions;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -98,7 +98,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 'label' => 'File Upload',
             ],
         ],
-        assetSourceOptions: AssetSourceOptions::class,
+        assetSourceOptions: UploadSourceOptions::class,
         fileKindsOptions: FileKindsOptionsGenerator::class,
     )]
     protected TableLayout $tableLayout;

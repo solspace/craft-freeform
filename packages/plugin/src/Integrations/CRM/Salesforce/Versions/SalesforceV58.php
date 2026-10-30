@@ -32,6 +32,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -290,7 +291,54 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $contactMapping = null;
 
+    // ==========================================
+    //                   Cases
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Delimiter('Cases')]
+    #[Input\Boolean(
+        label: 'Map to Cases',
+        instructions: 'Map submission data to create a new support Case in Salesforce for each submission.',
+        order: 25,
+    )]
+    protected bool $mapCases = false;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Boolean(
+        label: 'Apply Case Assignment Rules',
+        instructions: 'Let Salesforce apply its active Case assignment rules. Disable this when mapping an Owner ID directly.',
+        order: 26,
+    )]
+    protected bool $assignCaseOwner = true;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Boolean(
+        label: 'Attach Uploaded Files to Cases',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Case.',
+        order: 27,
+    )]
+    protected bool $filesForCases = false;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Special\Properties\FieldMapping(
+        instructions: 'Map Freeform fields to Salesforce Case fields. Account and Contact records created or matched by this integration are linked automatically unless their IDs are mapped here.',
+        order: 28,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CASE,
+        parameterFields: ['id' => 'id'],
+    )]
+    protected ?FieldMapping $caseMapping = null;
+
     private ?string $accountId = null;
+    private ?string $contactId = null;
     private ?array $linkedContentDocumentIds = null;
 
     public function getApiRootUrl(): string
@@ -320,10 +368,15 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     public function push(Form $form, Client $client): void
     {
+        $this->accountId = null;
+        $this->contactId = null;
+        $this->linkedContentDocumentIds = null;
+
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
         $this->processContacts($form, $client);
         $this->processOpportunities($form, $client);
+        $this->processCases($form, $client);
     }
 
     private function isCreateTasksForDuplicates(): bool
@@ -635,6 +688,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             $this->logger->debug('With Mapping', $mapping);
         }
 
+        $this->contactId = $contactId;
+
         if ($this->filesForContacts && $contactId) {
             $this->linkFilesTo($contactId, $form, $client);
         }
@@ -683,6 +738,55 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         }
 
         $this->triggerAfterResponseEvent(self::CATEGORY_OPPORTUNITY, $response);
+    }
+
+    private function processCases(Form $form, Client $client): void
+    {
+        if (!$this->mapCases) {
+            $this->logger->debug('No Cases mapped, skipping.');
+
+            return;
+        }
+
+        $mapping = $this->processMapping($form, $this->caseMapping, self::CATEGORY_CASE);
+        if (!$mapping) {
+            return;
+        }
+
+        if ($this->accountId && !\array_key_exists('AccountId', $mapping)) {
+            $mapping['AccountId'] = $this->accountId;
+        }
+
+        if ($this->contactId && !\array_key_exists('ContactId', $mapping)) {
+            $mapping['ContactId'] = $this->contactId;
+        }
+
+        $mapping = $this->triggerPushEvent(self::CATEGORY_CASE, $mapping);
+
+        [$response, $json] = $this->getJsonResponse(
+            $client->post(
+                $this->getEndpoint('/sobjects/Case'),
+                [
+                    'headers' => [
+                        'Sforce-Auto-Assign' => $this->assignCaseOwner ? 'TRUE' : 'FALSE',
+                    ],
+                    'json' => $mapping,
+                ],
+            )
+        );
+
+        if (true !== ($json->success ?? false) || !\is_string($json->id ?? null) || '' === $json->id) {
+            throw new IntegrationException('Salesforce did not return a successful Case creation response.');
+        }
+
+        $this->logger->info('New Case created', ['id' => $json->id]);
+        $this->logger->debug('With Mapping', $mapping);
+
+        if ($this->filesForCases) {
+            $this->linkFilesTo($json->id, $form, $client);
+        }
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CASE, $response);
     }
 
     private function createTasksForDuplicates(Form $form, Client $client, array $keyValueList): bool

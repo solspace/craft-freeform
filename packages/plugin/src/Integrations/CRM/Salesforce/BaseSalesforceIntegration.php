@@ -41,6 +41,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected const CATEGORY_OPPORTUNITY = 'Opportunity';
     protected const CATEGORY_ACCOUNT = 'Account';
     protected const CATEGORY_CONTACT = 'Contact';
+    protected const CATEGORY_CASE = 'Case';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
@@ -157,19 +158,22 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
         $fieldList = [];
 
+        $isCase = self::CATEGORY_CASE === $category;
         foreach ($json->fields as $field) {
-            if (!$field->updateable) {
+            if (!($isCase ? $field->createable : $field->updateable)) {
                 continue;
             }
 
             $options = null;
-            if (\count($field->picklistValues)) {
-                foreach ($field->picklistValues as $picklistValue) {
-                    $options[] = [
-                        'key' => $picklistValue->value,
-                        'label' => $picklistValue->label,
-                    ];
+            foreach ($field->picklistValues ?? [] as $picklistValue) {
+                if ($isCase && !($picklistValue->active ?? true)) {
+                    continue;
                 }
+
+                $options[] = [
+                    'key' => $picklistValue->value,
+                    'label' => $picklistValue->label,
+                ];
             }
 
             $type = match ($field->type) {
@@ -192,7 +196,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
                 $field->label,
                 $type,
                 $category,
-                !$field->nillable,
+                !$field->nillable && (!$isCase || !($field->defaultedOnCreate ?? false)),
                 $options,
             );
         }

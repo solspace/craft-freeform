@@ -1,6 +1,6 @@
 # Salesforce CRM setup
 
-Send Freeform submissions to Salesforce **Leads**, **Accounts**, **Contacts**, and **Opportunities**. This integration uses Salesforce OAuth and REST API version 58. It is separate from **Salesforce Account Engagement (Pardot)**, which creates marketing prospects.
+Send Freeform submissions to Salesforce **Leads**, **Accounts**, **Contacts**, **Opportunities**, and **Cases**. This integration uses Salesforce OAuth and REST API version 58. It is separate from **Salesforce Account Engagement (Pardot)**, which creates marketing prospects.
 
 Your Salesforce organization must support API access, and the authorizing user needs permission to access the records and fields you map. Check [Salesforce's API access requirements](https://developer.salesforce.com/docs/platform/api-rest/guide/intro-rest-compatible-editions.html) if you are unsure.
 
@@ -85,6 +85,21 @@ Only enabled objects receive submission data. You can use more than one object o
 </details>
 
 <details>
+<summary>Cases and support requests</summary>
+
+**Map to Cases** creates a new Case for each submission. Cases can be enabled on their own; you do not need to create a Lead, Account, or Contact.
+
+- Map **Subject**, **Description**, and the supplied name, email, phone, and company fields for the support request. Use **SuppliedEmail** for a visitor's email address.
+- Map **Status**, **Origin**, **Priority**, and custom fields as needed. Use values configured in your Salesforce organization; for example, a preset Origin of `Web`. Fields with Salesforce defaults can be left unmapped. Record types, validation rules, and required custom fields may impose additional requirements.
+- **Apply Case Assignment Rules** is enabled by default and lets Salesforce route the Case through its active assignment rules. Disable it when mapping an **Owner ID** directly.
+- **Attach Uploaded Files to Cases** links the submission's uploaded files to the new Case.
+- Accounts and Contacts created or matched by the same integration during the submission are linked automatically. Explicitly mapped **Account ID** and **Contact ID** values take precedence and must be Salesforce record IDs. Supplying an email address alone does not look up or create a Contact.
+
+Cases are always created as new records. A second submission from the same email address creates a separate Case; this integration does not update existing Cases or synchronize replies.
+
+</details>
+
+<details>
 <summary>Duplicate matching and checkbox values</summary>
 
 By default, Account matching uses the Account name. Contact matching checks email first, then name.
@@ -93,7 +108,7 @@ The **Check Contact email address and Account website when checking for Duplicat
 
 The **Append Checkboxes field values** options for Accounts and Contacts add new mapped checkbox selections to the existing values instead of replacing them.
 
-These settings do not prevent new Opportunities from being created.
+These settings do not prevent new Opportunities or Cases from being created.
 
 </details>
 

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Tests\Services;
 
+use craft\behaviors\CustomFieldBehavior;
 use craft\web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -13,6 +14,8 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
+use yii\base\Behavior;
+use yii\di\Container;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
@@ -21,6 +24,23 @@ use yii\web\Response;
 #[CoversClass(SubmissionsController::class)]
 class SubmissionExportSelectionTest extends TestCase
 {
+    private Container $previousContainer;
+
+    protected function setUp(): void
+    {
+        $this->previousContainer = \Yii::$container;
+        // Craft generates this behavior during application bootstrap. These unit
+        // tests only use native query properties and do not bootstrap a site.
+        \Yii::$container = new Container([
+            'definitions' => [CustomFieldBehavior::class => SubmissionExportSelectionBehavior::class],
+        ]);
+    }
+
+    protected function tearDown(): void
+    {
+        \Yii::$container = $this->previousContainer;
+    }
+
     public function testMixedFormSelectionIsRejectedBeforeContentCanDropSubmissions(): void
     {
         $query = $this->queryWithFormIds(['12', '34', '12']);
@@ -178,4 +198,9 @@ class SubmissionExportSelectionQuery extends SubmissionQuery
         // Reproduce the query's single-form inference when content is loaded.
         return $this->skipContent ? $this->selectedFormIds : \array_slice($this->selectedFormIds, 0, 1);
     }
+}
+
+class SubmissionExportSelectionBehavior extends Behavior
+{
+    public bool $hasMethods = false;
 }

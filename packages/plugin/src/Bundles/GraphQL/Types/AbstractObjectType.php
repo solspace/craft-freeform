@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
 use craft\gql\base\ObjectType;
+use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -21,7 +22,7 @@ abstract class AbstractObjectType extends ObjectType
 
     public static function resolveType($context = null): string
     {
-        return static::getName();
+        return GqlEntityRegistry::prefixTypeName(static::getName());
     }
 
     abstract public static function getName(): string;

@@ -49,12 +49,11 @@ class SubmissionGenerator extends Generator implements GeneratorInterface, Singl
     public static function generateType(mixed $context): mixed
     {
         $typeName = Submission::gqlTypeNameByContext($context);
+        self::setFields($context);
 
         if ($type = GqlEntityRegistry::getEntity($typeName)) {
             return $type;
         }
-
-        self::setFields($context);
 
         $fields = array_merge(self::getResolverFields(), SubmissionInterface::getFieldDefinitions());
         $fields = \Craft::$app->getGql()->prepareFieldDefinitions($fields, $typeName);

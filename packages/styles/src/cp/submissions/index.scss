@@ -44,6 +44,412 @@
   }
 }
 
+.ff-submission-status-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+
+  &.menubtn::after {
+    position: static;
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  &--pill.menubtn:not(.btn, .icon) {
+    position: relative;
+    border-radius: var(--radius-full, 999px);
+    gap: 0;
+    height: 1.375rem;
+    // Reserve reveal space so the expanding pill does not shift table columns.
+    padding-inline-end: 14px;
+
+    .ff-status-label {
+      padding-inline-end: calc(var(--s) + 14px);
+      margin-inline-end: -14px;
+      transition:
+        padding-inline-end 220ms cubic-bezier(0.16, 1, 0.3, 1),
+        margin-inline-end 220ms cubic-bezier(0.16, 1, 0.3, 1);
+
+      &::before {
+        transition: opacity 180ms ease;
+      }
+    }
+
+    &::after {
+      position: absolute;
+      inset-inline-end: var(--s);
+      inset-block-start: calc(50% - 2px);
+      inset-block-end: auto;
+      transform: translateY(-50%) rotate(45deg);
+      width: 6px;
+      height: 6px;
+      border-width: 0 1.5px 1.5px 0;
+      opacity: 0.45;
+      transition:
+        opacity 160ms ease,
+        transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    &:hover,
+    &:focus-visible,
+    &[aria-expanded="true"] {
+      .ff-status-label::before {
+        opacity: 0.22;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .ff-status-label {
+        padding-inline-end: var(--s);
+        margin-inline-end: 0;
+        transition-delay: 100ms;
+      }
+
+      &::after {
+        opacity: 0;
+        transform: translateY(calc(-50% - 3px)) rotate(45deg) scale(0.75);
+      }
+
+      &:hover,
+      &:focus-visible,
+      &[aria-expanded="true"] {
+        .ff-status-label {
+          padding-inline-end: calc(var(--s) + 14px);
+          margin-inline-end: -14px;
+          transition-delay: 0ms;
+        }
+
+        &::after {
+          opacity: 0.45;
+          transform: translateY(-50%) rotate(45deg) scale(1);
+          transition-delay: 220ms;
+        }
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::after,
+      .ff-status-label,
+      .ff-status-label::before {
+        transition: none;
+      }
+    }
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.5;
+  }
+}
+
+.menu.ff-submission-status-menu ul li a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .status {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+}
+
+.ff-spam-reason-filter.btn,
+.menu.ff-spam-reason-menu ul li a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ff-spam-reason-filter.menubtn::after {
+  margin-inline-start: 0;
+}
+
+.ff-spam-reason-filter .ff-spam-reason-icon,
+.ff-spam-reason-menu .ff-spam-reason-icon {
+  color: var(--ui-control-color, currentColor);
+}
+
+.menu.ff-spam-reason-menu ul li a:hover .ff-spam-reason-icon,
+.menu.ff-spam-reason-menu:not(:hover) ul li a.hover .ff-spam-reason-icon {
+  color: inherit;
+}
+
+.ff-spam-reason-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+// Keep Craft's menu hover rules from painting transparent SVG paths white.
+.ff-spam-reason-menu .ff-spam-reason-icon svg * {
+  fill: revert-layer !important;
+  stroke-width: revert-layer !important;
+}
+
+.ff-submission-undo-slot {
+  flex: 0 0 auto;
+  width: 0;
+  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 3px;
+  margin-inline-end: calc(-1 * var(--s, 8px));
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    width 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin-inline-end 300ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 180ms ease;
+
+  &.has-undo {
+    width: var(--ff-undo-width);
+    margin-inline-end: 0;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.ff-submission-undo-slot-inner {
+  width: max-content;
+}
+
+.ff-submission-undo-btn.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ff-submission-undo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  color: var(--ui-control-color, currentColor);
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+.ff-spam-review-actions {
+  display: flex;
+  align-items: center;
+  min-width: 152px;
+}
+
+.ff-spam-review-group {
+  position: relative;
+}
+
+.ff-spam-review-layer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  &--color {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 180ms ease;
+
+    tr:hover & {
+      opacity: 1;
+      transition-duration: 800ms;
+      transition-delay: 350ms;
+    }
+
+    tr:focus-within & {
+      opacity: 1;
+      transition-duration: 800ms;
+      transition-delay: 0ms;
+    }
+
+    .ff-spam-review-group:has(button:hover) & {
+      transition-duration: 250ms;
+      transition-delay: 100ms;
+    }
+
+    .ff-spam-review-group:has(button:focus-visible) & {
+      transition-duration: 250ms;
+      transition-delay: 0ms;
+    }
+
+    .ff-spam-review-group:has(button:disabled) & {
+      opacity: 0;
+
+      tr:hover &,
+      tr:focus-within & {
+        opacity: 0.45;
+      }
+    }
+
+    @media (hover: none) {
+      opacity: 1;
+      transition: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+}
+
+.ff-spam-review-action {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 1.375rem;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 0.6875rem;
+  background: transparent;
+  color: var(--ui-control-color, #596673);
+  font: inherit;
+  cursor: pointer;
+  transition: padding-inline-end 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: var(--ff-review-label-delay, 0ms);
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ui-control-color, #596673);
+    content: "";
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  &--approve {
+    --ff-review-accent: var(--green-600, #16a34a);
+  }
+
+  &--delete {
+    --ff-review-accent: var(--red-600, #dc2626);
+  }
+
+  .ff-spam-review-layer--color & {
+    color: var(--ff-review-accent);
+
+    &::before {
+      // The colored surface blends over the persistent gray layer.
+      background: color-mix(in srgb, var(--ff-review-accent) var(--ff-review-tint, 12%), var(--white, #fff));
+      opacity: 1;
+    }
+  }
+
+  .ff-spam-review-action-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 14px;
+    width: 14px;
+    height: 14px;
+    font-size: 12px;
+    line-height: 1;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    [data-icon]::before {
+      margin: 0;
+    }
+  }
+
+  .ff-spam-review-action-label {
+    position: relative;
+    min-width: 0;
+    max-width: 5rem;
+    margin-inline-start: 6px;
+    overflow: hidden;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition:
+      max-width 260ms cubic-bezier(0.4, 0, 0.2, 1),
+      margin-inline-start 260ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 160ms ease;
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.45;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    padding: 0 4px;
+
+    .ff-spam-review-action-label {
+      max-width: 0;
+      margin-inline-start: 0;
+      opacity: 0;
+    }
+
+    @each $operation in approve, delete {
+      .ff-spam-review-group:has(button[data-spam-operation="#{$operation}"]:hover) &--#{$operation},
+      .ff-spam-review-group:has(button[data-spam-operation="#{$operation}"]:focus-visible) &--#{$operation} {
+        --ff-review-label-delay: 120ms;
+        --ff-review-label-fade-delay: 200ms;
+        --ff-review-tint: 20%;
+        padding-inline-end: 10px;
+
+        .ff-spam-review-action-label {
+          max-width: 5rem;
+          margin-inline-start: 6px;
+          opacity: 1;
+          transition-delay:
+            var(--ff-review-label-delay),
+            var(--ff-review-label-delay),
+            var(--ff-review-label-fade-delay);
+        }
+      }
+
+      .ff-spam-review-group:has(button[data-spam-operation="#{$operation}"]:focus-visible) &--#{$operation} {
+        --ff-review-label-delay: 0ms;
+        --ff-review-label-fade-delay: 80ms;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    .ff-spam-review-action-label {
+      transition: none;
+    }
+  }
+}
+
 .ff-status-label {
   position: relative;
   display: inline-flex;

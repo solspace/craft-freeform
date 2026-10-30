@@ -398,50 +398,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
-        $allowedFormIds = $this->getFormsService()->getAllowedWriteFormIds();
-        if (!$query->count()) {
-            return false;
-        }
+        return $this->deleteSubmissions($query, $bypassPermissionCheck, $hardDelete, false);
+    }
 
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-        $deleted = 0;
-
-        try {
-            foreach ($query->batch() as $submissions) {
-                foreach ($submissions as $submission) {
-                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
-                        continue;
-                    }
-
-                    $submission->enableDeletingByToken();
-
-                    $deleteEvent = new DeleteEvent($submission);
-                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
-
-                    if ($deleteEvent->isValid) {
-                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
-
-                        if ($isSuccessful) {
-                            ++$deleted;
-                        }
-
-                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
-                    }
-                }
-            }
-
-            $transaction?->commit();
-        } catch (\Exception $e) {
-            $transaction?->rollBack();
-
-            throw $e;
-        }
-
-        if ($deleted > 0) {
-            $this->clearSubmissionCountCache();
-        }
-
-        return $deleted > 0;
+    public function deleteWithUndo(ElementQueryInterface $query): bool
+    {
+        return $this->deleteSubmissions($query, false, false, true);
     }
 
     /**
@@ -631,6 +593,61 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    private function deleteSubmissions(ElementQueryInterface $query, bool $bypassPermissionCheck, bool $hardDelete, bool $recordUndo): bool
+    {
+        $allowedFormIds = $this->getFormsService()->getAllowedWriteFormIds();
+        if (!$query->count()) {
+            return false;
+        }
+
+        $transaction = \Craft::$app->getDb()->beginTransaction();
+        $deleted = 0;
+        $undoItems = [];
+        $undo = $recordUndo ? Freeform::getInstance()->submissionUndo : null;
+
+        try {
+            foreach ($query->batch() as $submissions) {
+                foreach ($submissions as $submission) {
+                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
+                        continue;
+                    }
+
+                    $submission->enableDeletingByToken();
+
+                    $deleteEvent = new DeleteEvent($submission);
+                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
+
+                    if ($deleteEvent->isValid) {
+                        $canUndo = $undo && !$submission->trashed;
+                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
+
+                        if ($isSuccessful) {
+                            ++$deleted;
+                            if ($canUndo) {
+                                $undoItems[] = $undo->snapshot($submission, 'delete');
+                            }
+                        }
+
+                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    }
+                }
+            }
+
+            $transaction?->commit();
+        } catch (\Exception $e) {
+            $transaction?->rollBack();
+
+            throw $e;
+        }
+
+        if ($deleted > 0) {
+            $this->clearSubmissionCountCache();
+            $undo?->recordBatch($undoItems);
+        }
+
+        return $deleted > 0;
     }
 
     private function recordStorageFailure(Form $form, Submission $submission, int $reason): void

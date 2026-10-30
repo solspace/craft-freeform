@@ -7,6 +7,9 @@
 - Added direct mapping of included Location address components across integrations, including full address and country/state codes, without requiring separate form fields.
 - Added support for native Craft 5 Addresses fields in Entry and User element integrations, with component mapping, edit prefilling, and nested address validation.
 - Added Salesforce CRM Case creation with standard and custom field mapping, assignment rules, file attachments, and links to Accounts and Contacts created or matched by the same submission.
+- Added clickable status dropdowns in the submissions and Spam lists for quick status changes, respecting form submission permissions.
+- Added an **Actions** column near the start of the Spam list with animated Approve and Delete controls.
+- Added a shared **Undo** button on Submissions and Spam for status changes, spam approvals, and soft deletions, including bulk actions. The current session keeps the latest 20 actions for 30 minutes each, with each batch counting as one Undo step. Undoing approval returns submissions to Spam without reversing notification or integration processing.
 - Added **Send Notifications** with selectable form recipients, configured or shared templates, and additional addresses. Renamed the immediate resend action to **Quick Resend**.
 - Added editable starter lists for blocked emails, 100 keyword patterns, allowed gibberish terms, and URL tracking parameters, with duplicate skipping and Undo.
 - Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
@@ -26,6 +29,9 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- The bulk Delete action now reads **Delete selected...** for one or more selected submissions.
+- The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
+- Updated Spam reason and spam-blocking integration icons, added a native Craft icon to **Quick Export**, and rounded status dropdown focus rings to match their pills.
 - Simplified settings and setup guides for Salesforce CRM, Account Engagement, Zoho, Stripe, Google Sheets, Jira, and spam blocking with clearer ordering, choice cards, and remembered Advanced panels where applicable.
 - Renamed Pardot to Salesforce Account Engagement (Pardot), preserving existing connections and custom names.
 - Added Dotdigital opt-in cards and email format buttons. New integrations default to Verified Double and HTML.

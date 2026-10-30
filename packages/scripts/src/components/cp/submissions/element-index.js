@@ -1,4 +1,9 @@
 /** biome-ignore-all lint/suspicious/noDoubleEquals: We need to use == for type coercion */
+
+import { bindSpamReviewActions } from "@lib/cp/spam-review";
+import { mountSubmissionStatuses } from "@lib/cp/submission-status";
+import { bindSubmissionUndo } from "@lib/cp/submission-undo";
+
 if (typeof Craft.Freeform === typeof undefined) {
   Craft.Freeform = {};
 }
@@ -39,13 +44,133 @@ const updateButton = function () {
   }
 };
 
+const initStatusMenus = function () {
+  const undoTemplate = document.getElementById("freeform-submission-undo");
+  if (this.settings.context === "index" && undoTemplate) {
+    const slot = undoTemplate.content.firstElementChild.cloneNode(true);
+    const button = slot.querySelector("button");
+    this.$statusMenuContainer.before(slot);
+    this.submissionUndo = bindSubmissionUndo(button, {
+      initialHistory: window.freeformSubmissionUndoHistory || [],
+      requestUndo: async (token) => {
+        const response = await Craft.sendActionRequest(
+          "POST",
+          "freeform/submissions/undo",
+          { data: { token } },
+        );
+        return response.data;
+      },
+      loadHistory: async () => {
+        const response = await Craft.sendActionRequest(
+          "GET",
+          "freeform/submissions/undo-history",
+        );
+        return response.data.undoHistory;
+      },
+      refresh: () => this.updateElements(true),
+      focusFallback: () =>
+        this.$statusMenuContainer.find("[role=combobox]")[0]?.focus(),
+      notify: (type, message) =>
+        type === "success"
+          ? Craft.cp.displayNotice(message)
+          : Craft.cp.displayError(message),
+      translate: (message) => Craft.t("freeform", message),
+    });
+  }
+  this.on("afterAction", () => {
+    void this.submissionUndo?.sync();
+  });
+  this.on("beforeUpdateElements", () => {
+    this.$elements.find(".ff-submission-status-button").each((_, button) => {
+      $(button).data("menubtn")?.hideMenu();
+    });
+  });
+  this.on("updateElements", () => {
+    this.destroyStatusMenus?.();
+    this.destroySpamReviewActions?.();
+    if (this.settings.context !== "index") return;
+    this.destroyStatusMenus = mountSubmissionStatuses(this.$elements[0], {
+      statuses: window.freeformSubmissionStatuses || [],
+      createMenu: (button, onOptionSelect) =>
+        new Garnish.MenuBtn($(button), { onOptionSelect }),
+      saveStatus: async (submissionId, statusId) => {
+        const response = await Craft.sendActionRequest(
+          "POST",
+          this.statusAction,
+          { data: { submissionId, statusId } },
+        );
+        if (!response.data.success) throw new Error("Status update failed");
+        this.submissionUndo?.setHistory(response.data.undoHistory);
+      },
+      refresh: (focusId) => {
+        this.statusFocusId = focusId;
+        return this.updateElements(true);
+      },
+      notify: (type, message) =>
+        type === "success"
+          ? Craft.cp.displayNotice(message)
+          : Craft.cp.displayError(message),
+      translate: (message) => Craft.t("freeform", message),
+    });
+    if (this.statusFocusId) {
+      const button = this.$elements[0].querySelector(
+        `[data-submission-id="${this.statusFocusId}"] button`,
+      );
+      (button || this.$statusMenuContainer.find("[role=combobox]")[0])?.focus();
+      this.statusFocusId = null;
+    }
+    if (this.spamReview) {
+      this.destroySpamReviewActions = bindSpamReviewActions(this.$elements[0], {
+        request: async (submissionId, operation) => {
+          const response = await Craft.sendActionRequest(
+            "POST",
+            "freeform/spam-submissions/review",
+            { data: { submissionId, operation } },
+          );
+          if (!response.data.success) throw new Error("Spam review failed");
+          this.submissionUndo?.setHistory(response.data.undoHistory);
+        },
+        refresh: ({ focus, nextId }) => {
+          if (focus) this.spamReviewFocus = { nextId };
+          return this.updateElements(true);
+        },
+        notify: (type, message) =>
+          type === "success"
+            ? Craft.cp.displayNotice(message)
+            : Craft.cp.displayError(message),
+        translate: (message) => Craft.t("freeform", message),
+      });
+      if (this.spamReviewFocus) {
+        const nextId = this.spamReviewFocus.nextId;
+        const button =
+          (nextId &&
+            this.$elements[0].querySelector(
+              `[data-spam-review-id="${nextId}"] button`,
+            )) ||
+          this.$elements[0].querySelector("[data-spam-review-id] button") ||
+          this.$statusMenuContainer.find("[role=combobox]")[0];
+        button?.focus();
+        this.spamReviewFocus = null;
+      }
+    }
+  });
+};
+
 Craft.Freeform.SubmissionsIndex = Craft.BaseElementIndex.extend({
   baseUrl: "freeform/submissions",
+  statusAction: "freeform/submissions/set-status",
 
   afterInit: function () {
     this.on("selectSource", $.proxy(this, "updateButton"));
     this.on("selectSite", $.proxy(this, "updateButton"));
+    initStatusMenus.call(this);
 
+    this.base();
+  },
+  destroy: function () {
+    this.submissionUndo?.destroy();
+    this.destroyStatusMenus?.();
+    this.destroySpamReviewActions?.();
     this.base();
   },
   getViewClass: function (mode) {
@@ -63,6 +188,8 @@ Craft.Freeform.SubmissionsIndex = Craft.BaseElementIndex.extend({
 
 Craft.Freeform.SpamSubmissionsIndex = Craft.BaseElementIndex.extend({
   baseUrl: "freeform/spam",
+  statusAction: "freeform/spam-submissions/set-status",
+  spamReview: true,
   reasonContainer: null,
   reasonMenuBtn: null,
   selectedReason: null,
@@ -77,9 +204,8 @@ Craft.Freeform.SpamSubmissionsIndex = Craft.BaseElementIndex.extend({
 
     $("*[data-reason]", this.reasonContainer).on({
       click: (event) => {
-        const { target } = event;
+        const target = event.currentTarget;
         const reason = $(target).data("reason");
-        const label = $(target).text();
 
         $(target)
           .addClass("sel")
@@ -88,7 +214,13 @@ Craft.Freeform.SpamSubmissionsIndex = Craft.BaseElementIndex.extend({
           .find("a")
           .removeClass("sel");
 
-        this.reasonMenuBtn.text(label);
+        this.reasonMenuBtn
+          .empty()
+          .append(
+            $(target)
+              .children(".ff-spam-reason-icon, .ff-spam-reason-label")
+              .clone(),
+          );
         this.selectedReason = reason;
 
         this.settings.criteria = {
@@ -102,7 +234,14 @@ Craft.Freeform.SpamSubmissionsIndex = Craft.BaseElementIndex.extend({
 
     this.on("selectSource", $.proxy(this, "updateButton"));
     this.on("selectSite", $.proxy(this, "updateButton"));
+    initStatusMenus.call(this);
 
+    this.base();
+  },
+  destroy: function () {
+    this.submissionUndo?.destroy();
+    this.destroyStatusMenus?.();
+    this.destroySpamReviewActions?.();
     this.base();
   },
   updateButton,

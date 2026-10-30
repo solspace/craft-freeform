@@ -36,6 +36,7 @@ use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
+use Solspace\Freeform\Services\SubmissionUndoService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -55,6 +56,29 @@ class SubmissionsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
         \Craft::$app->view->registerAssetBundle(SubmissionIndexBundle::class);
+        \Craft::$app->view->registerJsVar('freeformSubmissionStatuses', array_values($this->getStatusesService()->getAllStatuses()));
+        \Craft::$app->view->registerJsVar('freeformSubmissionUndoHistory', $this->getSubmissionUndoService()->getHistory());
+        \Craft::$app->view->registerTranslations('freeform', [
+            'Change status',
+            'Undo',
+            'Nothing to undo',
+            'Undo status change',
+            'Undo spam approval',
+            'Undo deletion',
+            'Returns submissions to Spam. Sent notifications and completed integrations are not reversed.',
+            'Action undone.',
+            'Spam approval undone. Sent notifications and completed integrations are not reversed.',
+            'Could not undo this action. Please try again.',
+            'Action undone, but the list could not be refreshed. Reload the page to see the latest submissions.',
+            'Status updated.',
+            'Could not update status.',
+            'Status updated, but the list could not be refreshed. Reload the page to see the latest submissions.',
+            'Submission approved.',
+            'Submission deleted.',
+            'Could not approve submission.',
+            'Could not delete submission.',
+            'Submission updated, but the list could not be refreshed. Reload the page to see the latest submissions.',
+        ]);
 
         $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);
         $this->trigger(self::EVENT_REGISTER_INDEX_ASSETS, $registerAssetsEvent);
@@ -309,6 +333,75 @@ class SubmissionsController extends BaseController
         );
     }
 
+    public function actionSetStatus(): Response
+    {
+        $this->requireCpRequest();
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $submissionId = filter_var($this->request->getRequiredBodyParam('submissionId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $statusId = filter_var($this->request->getRequiredBodyParam('statusId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if (false === $submissionId || false === $statusId) {
+            throw new BadRequestHttpException('Invalid submission or status ID.');
+        }
+
+        $submission = $this->getSubmissionsService()->getSubmissionById($submissionId);
+        if (!$submission || $submission->isHidden || $submission->trashed) {
+            throw new HttpException(404, Freeform::t('Submission not found'));
+        }
+
+        if (!$submission->getIsEditable()) {
+            throw new ForbiddenHttpException('User is not permitted to change this submission’s status.');
+        }
+
+        if (!$this->getStatusesService()->getStatusById($statusId)) {
+            throw new BadRequestHttpException('Invalid status ID.');
+        }
+
+        if ($submission->statusId !== $statusId) {
+            $previousStatusId = $submission->statusId;
+            $submission->statusId = $statusId;
+            if (!\Craft::$app->getElements()->saveElement($submission)) {
+                $this->response->setStatusCode(422);
+
+                return $this->asJson(['success' => false, 'message' => Freeform::t('Could not update status.')]);
+            }
+            $this->getSubmissionUndoService()->record($submission, 'status', $previousStatusId);
+        }
+
+        return $this->asJson(['success' => true, 'undoHistory' => $this->getSubmissionUndoService()->getHistory()]);
+    }
+
+    public function actionUndoHistory(): Response
+    {
+        $this->requireCpRequest();
+        $this->requireAcceptsJson();
+
+        return $this->asJson(['success' => true, 'undoHistory' => $this->getSubmissionUndoService()->getHistory()]);
+    }
+
+    public function actionUndo(): Response
+    {
+        $this->requireCpRequest();
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+        $token = $this->request->getRequiredBodyParam('token');
+        if (!\is_string($token) || !preg_match('/^[a-f0-9]{32}$/D', $token)) {
+            throw new BadRequestHttpException('Invalid undo token.');
+        }
+        $undo = $this->getSubmissionUndoService();
+
+        try {
+            $operation = $undo->undo($token);
+        } catch (HttpException $exception) {
+            $this->response->setStatusCode($exception->statusCode);
+
+            return $this->asJson(['success' => false, 'message' => $exception->getMessage(), 'undoHistory' => $undo->getHistory()]);
+        }
+
+        return $this->asJson(['success' => true, 'operation' => $operation, 'undoHistory' => $undo->getHistory()]);
+    }
+
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -348,6 +441,11 @@ class SubmissionsController extends BaseController
         \Craft::$app->session->setSuccess($message);
 
         return $this->asJson(['success' => true, 'message' => $message]);
+    }
+
+    protected function getSubmissionUndoService(): SubmissionUndoService
+    {
+        return Freeform::getInstance()->submissionUndo;
     }
 
     protected function getTemplateBasePath(): string

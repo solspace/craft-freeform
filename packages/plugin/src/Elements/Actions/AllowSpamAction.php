@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Elements\Actions;
 
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Freeform;
 
 class AllowSpamAction extends ElementAction
@@ -30,12 +31,29 @@ class AllowSpamAction extends ElementAction
     public function performAction(ElementQueryInterface $query): bool
     {
         $submissions = $query->all();
-        foreach ($submissions as $submission) {
-            Freeform::getInstance()->spamSubmissions->allowSpamSubmission($submission);
+        $undo = Freeform::getInstance()->submissionUndo;
+        $undoItems = [];
+        $failed = 0;
+
+        try {
+            foreach ($submissions as $submission) {
+                if (!$submission instanceof SpamSubmission || !$submission->isSpam || $submission->isHidden || $submission->trashed || !$submission->getIsEditable()) {
+                    ++$failed;
+
+                    continue;
+                }
+                if (Freeform::getInstance()->spamSubmissions->allowSpamSubmission($submission)) {
+                    $undoItems[] = $undo->snapshot($submission, 'approve');
+                } else {
+                    ++$failed;
+                }
+            }
+        } finally {
+            $undo->recordBatch($undoItems);
         }
 
-        $this->setMessage($this->successMessage);
+        $this->setMessage($failed ? Freeform::t('Some spam submissions could not be approved.') : $this->successMessage);
 
-        return true;
+        return (bool) $undoItems;
     }
 }

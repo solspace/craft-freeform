@@ -1,0 +1,16 @@
+<template id="freeform-submission-undo">
+    <div class="ff-submission-undo-slot" aria-hidden="true">
+        <div class="ff-submission-undo-slot-inner">
+            <button type="button" class="btn ff-submission-undo-btn" disabled>
+                <span class="ff-submission-undo-icon" aria-hidden="true">
+                    {% if craft.app.version >= '5.0.0' %}
+                        {{ svg('@appicons/arrow-rotate-left.svg') }}
+                    {% else %}
+                        <span data-icon="refresh"></span>
+                    {% endif %}
+                </span>
+                <span>{{ 'Undo'|t('freeform') }}</span>
+            </button>
+        </div>
+    </div>
+</template>

@@ -1,0 +1,35 @@
+{% macro actionIcon(operation) %}
+    {% if craft.app.version >= '5.0.0' %}
+        {{ svg('@appicons/' ~ (operation == 'approve' ? 'check' : 'xmark') ~ '.svg') }}
+    {% else %}
+        <span data-icon="{{ operation == 'approve' ? 'check' : 'remove' }}"></span>
+    {% endif %}
+{% endmacro %}
+{% macro actionContent(operation, label) %}
+    {% import _self as reviewUi %}
+    <span class="ff-spam-review-action-icon" aria-hidden="true">{{ reviewUi.actionIcon(operation) }}</span>
+    <span class="ff-spam-review-action-label">{{ label|t('freeform') }}</span>
+{% endmacro %}
+{% import _self as reviewUi %}
+
+<div class="ff-spam-review-actions" data-spam-review-id="{{ submission.id }}">
+    <div class="ff-spam-review-group">
+        <div class="ff-spam-review-layer">
+            {% for operation, label in {approve: 'Approve', delete: 'Delete'} %}
+                <button type="button" class="ff-spam-review-action ff-spam-review-action--{{ operation }}"
+                        data-spam-operation="{{ operation }}"
+                        aria-label="{{ (operation == 'approve' ? 'Approve submission' : 'Delete submission')|t('freeform') }}"
+                        title="{{ (operation == 'approve' ? 'Approve submission' : 'Delete submission')|t('freeform') }}">
+                    {{ reviewUi.actionContent(operation, label) }}
+                </button>
+            {% endfor %}
+        </div>
+        <div class="ff-spam-review-layer ff-spam-review-layer--color" aria-hidden="true">
+            {% for operation, label in {approve: 'Approve', delete: 'Delete'} %}
+                <span class="ff-spam-review-action ff-spam-review-action--{{ operation }}">
+                    {{ reviewUi.actionContent(operation, label) }}
+                </span>
+            {% endfor %}
+        </div>
+    </div>
+</div>

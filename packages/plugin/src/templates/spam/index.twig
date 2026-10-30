@@ -1,4 +1,45 @@
 {% extends "freeform/_layouts/elementType" %}
+{% import _self as spamUi %}
+
+{% macro reasonIcon(reason) %}
+    {% set icons = {
+        honeypot: '@Solspace/Freeform/Integrations/Single/Honeypot/icon.svg',
+        js_test: '@Solspace/Freeform/Integrations/Single/JavascriptTest/icon.svg',
+        blocked_keywords: '@Solspace/Freeform/Integrations/SpamBlocking/Keywords/icon.svg',
+        blocked_email_address: '@Solspace/Freeform/Integrations/SpamBlocking/Emails/icon.svg',
+        blocked_ip: '@Solspace/Freeform/Integrations/SpamBlocking/IpAddresses/icon.svg',
+        gibberish: '@Solspace/Freeform/Integrations/SpamBlocking/Gibberish/icon.svg',
+        ai_spam: '@Solspace/Freeform/Integrations/SpamBlocking/AI/icon.svg',
+    } %}
+    {% set glyphs = {
+        '': 'filter',
+        generic: 'circle-question',
+        captcha: 'shield-check',
+        honeypot: 'honey-pot',
+        js_test: 'robot',
+        blocked_keywords: 'text-slash',
+        blocked_email_address: 'envelope',
+        blocked_ip: 'location-dot-slash',
+        ai_spam: 'sparkles',
+        minimum_submit_time: 'stopwatch',
+        maximum_submit_time: 'clock',
+    } %}
+    <span class="ff-spam-reason-icon" aria-hidden="true">
+        {% if craft.app.version >= '5.0.0' %}
+            {% if reason == 'blocked_email_address' %}
+                {{ svg('@Solspace/Freeform/Resources/icons/spam/envelope-slash.svg', namespace: true) }}
+            {% elseif reason == 'gibberish' %}
+                {{ svg('@Solspace/Freeform/Resources/icons/spam/scribble-slash.svg', namespace: true) }}
+            {% else %}
+                {{ svg('@appicons/' ~ (glyphs[reason] ?? 'circle-question') ~ '.svg') }}
+            {% endif %}
+        {% elseif icons[reason] is defined %}
+            {{ svg(icons[reason]) }}
+        {% else %}
+            <span data-icon="{{ reason in ['minimum_submit_time', 'maximum_submit_time'] ? 'time' : 'help' }}"></span>
+        {% endif %}
+    </span>
+{% endmacro %}
 
 {% set title = "Spam"|t('freeform') %}
 {% set selectedSubnavItem = 'spam' %}
@@ -14,19 +55,24 @@
         {{ csrfInput() }}
     </form>
     <template id="spam-reasons">
-        <div class="btn menubtn">{{ "Reason"|t('freeform') }}</div>
-        <div class="menu">
+        <div class="btn menubtn ff-spam-reason-filter">
+            {{ spamUi.reasonIcon('') }}
+            <span class="ff-spam-reason-label">{{ "Reason"|t('freeform') }}</span>
+        </div>
+        <div class="menu ff-spam-reason-menu">
             <ul class="padded">
                 <li>
                     <a data-reason="" class="sel">
-                        {{ "Reason"|t('freeform') }}
+                        {{ spamUi.reasonIcon('') }}
+                        <span class="ff-spam-reason-label">{{ "Reason"|t('freeform') }}</span>
                     </a>
                 </li>
 
                 {% for reason in spamReasons %}
                     <li>
                         <a data-reason="{{ reason }}">
-                            {{ reason|t('freeform') }}
+                            {{ spamUi.reasonIcon(reason) }}
+                            <span class="ff-spam-reason-label">{{ reason|t('freeform') }}</span>
                         </a>
                     </li>
                 {% endfor %}

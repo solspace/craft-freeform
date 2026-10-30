@@ -33,10 +33,10 @@ class DeleteSubmissionAction extends ElementAction implements DeleteActionInterf
     public function getTriggerLabel(): string
     {
         if ($this->hard) {
-            return Freeform::t('Delete permanently');
+            return Freeform::t('Delete selected permanently');
         }
 
-        return Freeform::t('Delete...');
+        return Freeform::t('Delete selected...');
     }
 
     public function getConfirmationMessage(): string
@@ -46,10 +46,11 @@ class DeleteSubmissionAction extends ElementAction implements DeleteActionInterf
 
     public function performAction(ElementQueryInterface $query): bool
     {
-        Freeform::getInstance()->submissions->delete($query, false, $this->hard);
+        $service = Freeform::getInstance()->submissions;
+        $success = $this->hard ? $service->delete($query, false, true) : $service->deleteWithUndo($query);
 
         $this->setMessage($this->successMessage);
 
-        return true;
+        return $success;
     }
 }

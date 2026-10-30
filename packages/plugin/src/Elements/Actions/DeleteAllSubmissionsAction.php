@@ -31,10 +31,10 @@ class DeleteAllSubmissionsAction extends ElementAction
     {
         $query->id(null);
 
-        Freeform::getInstance()->submissions->delete($query);
+        $success = Freeform::getInstance()->submissions->deleteWithUndo($query);
 
         $this->setMessage($this->successMessage);
 
-        return true;
+        return $success;
     }
 }

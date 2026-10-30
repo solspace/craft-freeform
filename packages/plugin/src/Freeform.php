@@ -117,6 +117,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
+use Solspace\Freeform\Services\SubmissionUndoService;
 use Solspace\Freeform\Services\SummaryService;
 use Solspace\Freeform\Twig\Extensions\FreeformGlobalsExtension;
 use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
@@ -148,6 +149,7 @@ use yii\web\View;
  * @property SettingsService             $settings
  * @property StatusesService             $statuses
  * @property SubmissionsService          $submissions
+ * @property SubmissionUndoService       $submissionUndo
  * @property SubmitService               $submit
  * @property SpamSubmissionsService      $spamSubmissions
  * @property LoggerService               $logger
@@ -683,6 +685,7 @@ class Freeform extends Plugin
                 'spamSubmissions' => SpamSubmissionsService::class,
                 'statuses' => StatusesService::class,
                 'submissions' => SubmissionsService::class,
+                'submissionUndo' => SubmissionUndoService::class,
                 'submit' => SubmitService::class,
                 'summary' => SummaryService::class,
                 'translations' => TranslationsService::class,

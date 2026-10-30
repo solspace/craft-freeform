@@ -48,28 +48,39 @@ class SetSubmissionStatusAction extends SetStatus
         /** @var Submission[] $submissions */
         $submissions = $query->all();
         $failCount = 0;
+        $undo = Freeform::getInstance()->submissionUndo;
+        $undoItems = [];
 
         static $allowedFormIds;
         if (null === $allowedFormIds) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedWriteFormIds();
         }
 
-        foreach ($submissions as $submission) {
-            // Skip if there's nothing to change
-            if ((int) $submission->statusId === (int) $this->statusId) {
-                continue;
-            }
+        try {
+            foreach ($submissions as $submission) {
+                // Skip if there's nothing to change
+                if ((int) $submission->statusId === (int) $this->statusId) {
+                    continue;
+                }
 
-            if (!\in_array($submission->formId, $allowedFormIds, false)) {
-                continue;
-            }
+                if (!\in_array($submission->formId, $allowedFormIds, false)) {
+                    ++$failCount;
 
-            $submission->statusId = $this->statusId;
+                    continue;
+                }
 
-            if (false === $elementsService->saveElement($submission)) {
-                // Validation error
-                ++$failCount;
+                $previousStatusId = $submission->statusId;
+                $submission->statusId = $this->statusId;
+
+                if (false === $elementsService->saveElement($submission)) {
+                    // Validation error
+                    ++$failCount;
+                } else {
+                    $undoItems[] = $undo->snapshot($submission, 'status', $previousStatusId);
+                }
             }
+        } finally {
+            $undo->recordBatch($undoItems);
         }
 
         // Did all of them fail?

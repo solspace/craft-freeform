@@ -9,6 +9,8 @@
 - Clarified reCAPTCHA setup instructions and integration help text to distinguish Google Cloud keys using legacy verification from native Enterprise API support.
 
 ### Fixed
+- Fixed Freeform GraphQL interface resolution when a GraphQL type prefix is configured.
+- Fixed GraphQL submission scopes using an empty form identifier, stale form-read permissions after switching schemas, and mutation arguments leaking between forms when rebuilding a schema.
 - Fixed unnecessary field metadata processing slowing down GraphQL requests, including queries that do not use Freeform.
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
 - Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.

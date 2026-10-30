@@ -2,15 +2,26 @@
 
 namespace Solspace\Freeform\Tests\Bundles\GraphQL;
 
+use craft\config\GeneralConfig;
 use craft\gql\GqlEntityRegistry;
 use craft\gql\TypeLoader;
+use craft\services\Config;
 use craft\services\Gql;
+use GraphQL\GraphQL;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Schema;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input\Attributes;
+use Solspace\Freeform\Bundles\Fields\FieldsBundle;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
+use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
 use Solspace\Freeform\Bundles\GraphQL\FieldTypeMetadata;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
+use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AttributesGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FieldGenerator;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
@@ -49,12 +60,19 @@ class FieldSchemaGenerationTest extends TestCase
 
         $gql = $this->createMock(Gql::class);
         $gql->method('prepareFieldDefinitions')->willReturnCallback(static fn ($fields) => $fields);
-        \Craft::$app = new class($gql) {
-            public function __construct(public Gql $gql) {}
+        $config = $this->createMock(Config::class);
+        $config->method('getGeneral')->willReturn(new GeneralConfig());
+        \Craft::$app = new class($gql, $config) {
+            public function __construct(public Gql $gql, private Config $config) {}
 
             public function getGql(): Gql
             {
                 return $this->gql;
+            }
+
+            public function getConfig(): Config
+            {
+                return $this->config;
             }
         };
 
@@ -65,6 +83,7 @@ class FieldSchemaGenerationTest extends TestCase
 
     protected function tearDown(): void
     {
+        GqlEntityRegistry::setPrefix('');
         GqlEntityRegistry::flush();
         TypeLoader::flush();
         \Craft::$app = $this->originalApp;
@@ -109,6 +128,53 @@ class FieldSchemaGenerationTest extends TestCase
 
         $repeatedTypes = FieldGenerator::generateTypes();
         self::assertSame($types['FreeformField_CustomGraphql'], $repeatedTypes['FreeformField_CustomGraphql']);
+    }
+
+    #[TestWith([''])]
+    #[TestWith(['QA_'])]
+    public function testEveryBuiltInFieldGeneratesAValidSchema(string $prefix): void
+    {
+        $classes = [];
+        $registration = $this->createMock(RegisterFieldTypesEvent::class);
+        $registration->method('addBuiltInType')->willReturnCallback(static function (...$registered) use (&$classes): void {
+            $classes = $registered;
+        });
+        $bundle = (new \ReflectionClass(FieldsBundle::class))->newInstanceWithoutConstructor();
+        $bundle->registerFieldTypes($registration);
+        $this->provider->method('getRegisteredTypes')->willReturn($classes);
+        GqlEntityRegistry::setPrefix($prefix);
+
+        $types = FieldGenerator::generateTypes();
+        $field = $this->createMock(\Solspace\Freeform\Fields\FieldInterface::class);
+        $field->method('getType')->willReturn('opinion-scale');
+        $field->method('getHandle')->willReturn('example');
+        $field->method('getLabel')->willReturn('Example');
+        $queryType = new ObjectType(['name' => 'Query', 'fields' => [
+            'field' => ['type' => FieldInterface::getType(), 'resolve' => static fn () => $field],
+            'freeform' => ['type' => FreeformInterface::getType(), 'resolve' => static fn () => (object) ['version' => '5.17.6']],
+        ]]);
+        TypeLoader::registerType('Query', static fn () => $queryType);
+        $schema = new Schema([
+            'query' => $queryType,
+            'types' => array_values($types),
+            'typeLoader' => TypeLoader::class.'::loadType',
+        ]);
+        $schema->assertValid();
+        $result = GraphQL::executeQuery($schema, '{field {__typename handle label} freeform {version}}')->toArray();
+        self::assertArrayNotHasKey('errors', $result);
+        self::assertSame([
+            'field' => ['__typename' => $prefix.'FreeformField_OpinionScale', 'handle' => 'example', 'label' => 'Example'],
+            'freeform' => ['version' => '5.17.6'],
+        ], $result['data']);
+
+        foreach (FieldTypeMetadata::getClasses() as $shorthand => $class) {
+            $typeName = FieldType::getTypeFromString($shorthand);
+            self::assertSame($prefix.$typeName, $types[$typeName]->name);
+            $attributes = $types[$typeName]->getField('attributes')->getType();
+            foreach (['container', 'input', 'label', 'instructions', 'error'] as $group) {
+                self::assertArrayHasKey($group, $attributes->getFields(), $class);
+            }
+        }
     }
 
     public function testUnknownFieldRetainsDefaultAttributeGroups(): void

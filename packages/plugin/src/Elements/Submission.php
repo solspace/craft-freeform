@@ -200,7 +200,9 @@ class Submission extends Element
 
     public static function gqlScopesByContext(mixed $context): array
     {
-        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$context->uid];
+        $uid = $context instanceof Form ? $context->getUid() : $context->uid;
+
+        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$uid];
     }
 
     public static function gqlMutationNameByContext(mixed $context): string

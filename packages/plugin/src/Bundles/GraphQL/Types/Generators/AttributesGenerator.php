@@ -6,8 +6,8 @@ use craft\gql\GqlEntityRegistry;
 use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Attributes\Property\Input\Attributes;
-use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\AttributesArguments;
+use Solspace\Freeform\Bundles\GraphQL\FieldTypeMetadata;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AttributesType;
@@ -79,64 +79,30 @@ class AttributesGenerator extends AbstractGenerator
     private static function detectHandlesForFieldType(string $fieldTypeShorthand): array
     {
         try {
-            $fieldTypeDto = null;
-
-            /** @var FieldTypesProvider $provider */
-            $provider = \Craft::$container->get(FieldTypesProvider::class);
-            foreach ($provider->getTypes() as $type) {
-                $shorthand = method_exists($type, 'getType')
-                    ? $type->getType()
-                    : ($type->type ?? null);
-
-                if ($shorthand === $fieldTypeShorthand) {
-                    $fieldTypeDto = $type;
-
-                    break;
-                }
+            $class = FieldTypeMetadata::getClasses()[$fieldTypeShorthand] ?? null;
+            if (!$class) {
+                return [];
             }
 
-            if ($fieldTypeDto) {
-                $class = $fieldTypeDto->typeClass ?? (method_exists($fieldTypeDto, 'getTypeClass') ? $fieldTypeDto->getTypeClass() : null);
-                if ($class && class_exists($class)) {
-                    $reflection = new \ReflectionClass($class);
-
-                    // Look for the protected property that holds the FieldAttributesCollection
-                    if ($reflection->hasProperty('attributes')) {
-                        $property = $reflection->getProperty('attributes');
-
-                        /*
-                         * #[Input\Attributes(... tabs: [...])] metadata like:
-                         * [
-                         *   ['handle' => 'container', ...],
-                         *   ['handle' => 'input', ...],
-                         *   ['handle' => 'optionLabel', ...],
-                         *   ...
-                         * ]
-                         */
-                        $attributes = $property->getAttributes(Attributes::class);
-                        if (!empty($attributes)) {
-                            /** @var Attributes $instance */
-                            $instance = $attributes[0]->newInstance();
-
-                            $handles = array_map(
-                                static fn ($tab) => $tab['handle'] ?? null,
-                                $instance->tabs ?? []
-                            );
-
-                            return array_values(array_filter($handles));
-                        }
-                    }
-                }
+            $reflection = new \ReflectionClass($class);
+            if (!$reflection->hasProperty('attributes')) {
+                return [];
             }
+
+            $attributes = $reflection->getProperty('attributes')->getAttributes(Attributes::class);
+            if (!$attributes) {
+                return [];
+            }
+
+            /** @var Attributes $metadata */
+            $metadata = $attributes[0]->newInstance();
+
+            return array_values(array_filter(array_map(
+                static fn ($tab) => $tab['handle'] ?? null,
+                $metadata->tabs ?? [],
+            )));
         } catch (\Throwable) {
-            // swallow; fallback below
+            return [];
         }
-
-        // Fallback mapping for any tricky types.
-        static $fallback = [
-            // e.g 'opinion-scale' => ['container', 'input', 'optionLabel', 'option', 'label', 'instructions', 'error'],
-        ];
-
-        return $fallback[$fieldTypeShorthand] ?? [];
     }
 }

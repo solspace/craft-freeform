@@ -9,6 +9,7 @@
 - Clarified reCAPTCHA setup instructions and integration help text to distinguish Google Cloud keys using legacy verification from native Enterprise API support.
 
 ### Fixed
+- Fixed unnecessary field metadata processing slowing down GraphQL requests, including queries that do not use Freeform.
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
 - Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.
 - Fixed searchable field heights in Bootstrap 5 templates and missing or low-contrast search hints in floating-label and dark templates.

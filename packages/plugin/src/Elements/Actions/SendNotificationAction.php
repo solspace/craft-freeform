@@ -11,7 +11,7 @@ class SendNotificationAction extends ElementAction
 {
     public function getTriggerLabel(): string
     {
-        return Freeform::t('Send Additional Notification');
+        return Freeform::t('Send Notifications...');
     }
 
     public function getTriggerHtml(): ?string

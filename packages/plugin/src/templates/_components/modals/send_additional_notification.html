@@ -1,10 +1,266 @@
 {% import "_includes/forms" as formFields %}
 
+{% macro recipientPill(name, type) %}
+    <span class="recipient-detail-pill" title="{{ name }}">
+        <svg class="recipient-pill-icon recipient-{{ type }}-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            {% if type == 'field' %}
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <path d="M6 9v6m-1-6h2m-2 6h2m3-3h8"/>
+            {% else %}
+                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                <path d="m4 7 8 6 8-6"/>
+            {% endif %}
+        </svg>
+        <span class="recipient-pill-name">{{ name }}</span>
+    </span>
+{% endmacro %}
+
 <style>
-    #send-additional-notification-modal .body{
+    #notification-modal-wrapper {
+        overflow: hidden;
+        border-radius: 10px;
+    }
+    #send-additional-notification-modal [hidden] {
+        display: none !important;
+    }
+    #send-additional-notification-modal .notification-mode-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+    }
+    #send-additional-notification-modal .notification-mode-option {
+        display: flex;
+        align-items: flex-start;
+        gap: 9px;
+        padding: 12px;
+        border: 1px solid var(--hairline-color, #d8e2ec);
+        border-radius: 8px;
+        cursor: pointer;
+        line-height: 20px;
+    }
+    #send-additional-notification-modal .notification-mode-option.is-selected {
+        border-color: var(--gray-500, #718096);
+        background: var(--gray-050, #f3f7fc);
+    }
+    #send-additional-notification-modal .notification-mode-option input {
+        flex-shrink: 0;
+        width: 14px;
+        height: 14px;
+        margin: 3px 0 0;
+    }
+    #send-additional-notification-modal .notification-mode-option small {
+        display: block;
+        margin-top: 2px;
+        color: var(--light-text-color, #596673);
+        font-size: 12px;
+        line-height: 18px;
+    }
+    @media (max-width: 520px) {
+        #send-additional-notification-modal .notification-mode-options {
+            grid-template-columns: 1fr;
+        }
+    }
+    #send-additional-notification-modal .header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 24px;
+        background: var(--white, #fff);
+    }
+    #send-additional-notification-modal .notification-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: var(--gray-100, #edf2f7);
+        color: var(--gray-600, #596673);
+    }
+    #send-additional-notification-modal .notification-icon svg {
+        display: block;
+        width: 22px;
+        height: 22px;
+    }
+    #send-additional-notification-modal .header h1 {
+        margin: 0;
+        font-size: 18px;
+        line-height: 24px;
+        outline: none;
+        box-shadow: none;
+    }
+    #send-additional-notification-modal .notification-context {
+        margin: 3px 0 0;
+        color: var(--light-text-color, #596673);
+        font-size: 13px;
+        line-height: 20px;
+    }
+    #send-additional-notification-modal .body {
         overflow-y: auto;
-        height: 260px;
-        width: 350px;
+        max-height: calc(100vh - 240px);
+        width: min(600px, calc(100vw - 40px));
+        padding: 24px;
+    }
+    #send-additional-notification-modal .body > .field:first-child {
+        margin-top: 0;
+    }
+    #send-additional-notification-modal .select,
+    #send-additional-notification-modal .select select {
+        width: 100%;
+    }
+    #send-additional-notification-modal .recipient-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 12px 0 10px;
+    }
+    #send-additional-notification-modal legend {
+        font-weight: 700;
+    }
+    #send-additional-notification-modal .recipient-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    #send-additional-notification-modal .recipient-select-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 28px;
+        height: auto;
+        margin: 0;
+        padding: 4px 0;
+        line-height: 18px;
+        color: var(--link-color, #0b69a3);
+        background: none;
+        border: 0;
+        cursor: pointer;
+    }
+    #send-additional-notification-modal .recipient-select-toggle:hover {
+        text-decoration: underline;
+    }
+    #send-additional-notification-modal .recipient-count {
+        color: var(--light-text-color, #596673);
+        font-size: 12px;
+    }
+    #send-additional-notification-modal .recipient-list {
+        display: grid;
+        gap: 1px;
+        max-height: 280px;
+        overflow-y: auto;
+        border: 1px solid var(--hairline-color, #d8e2ec);
+        border-radius: 8px;
+        background: var(--hairline-color, #d8e2ec);
+    }
+    #send-additional-notification-modal .recipient-option {
+        background: var(--white, #fff);
+    }
+    #send-additional-notification-modal .recipient-option label {
+        display: block;
+        position: relative;
+        margin: 0;
+        padding: 12px 14px 12px 42px;
+        cursor: pointer;
+        line-height: 20px;
+    }
+    #send-additional-notification-modal .recipient-option label::before {
+        inset-inline-start: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    #send-additional-notification-modal .recipient-option label:hover,
+    #send-additional-notification-modal .recipient-option input:checked + label {
+        background: var(--gray-050, #f3f7fc);
+    }
+    #send-additional-notification-modal .recipient-summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 4px 12px;
+    }
+    #send-additional-notification-modal .recipient-address {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-weight: 600;
+    }
+    #send-additional-notification-modal .recipient-email-count {
+        flex-shrink: 0;
+        padding: 1px 8px;
+        border-radius: 10px;
+        background: var(--gray-100, #edf2f7);
+        font-size: 12px;
+        line-height: 20px;
+        white-space: nowrap;
+    }
+    #send-additional-notification-modal .recipient-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 5px;
+        font-size: 12px;
+        line-height: 18px;
+    }
+    #send-additional-notification-modal .recipient-detail-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+        max-width: min(100%, 220px);
+        box-sizing: border-box;
+        padding: 0 6px;
+        border: 1px solid var(--hairline-color, #d8e2ec);
+        border-radius: 12px;
+        background: var(--white, #fff);
+    }
+    #send-additional-notification-modal .recipient-pill-icon {
+        display: block;
+        flex: 0 0 12px;
+        width: 12px;
+        height: 12px;
+    }
+    #send-additional-notification-modal .recipient-pill-name {
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    #send-additional-notification-modal .recipient-note {
+        margin-top: 10px;
+    }
+    #send-additional-notification-modal .footer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        height: auto;
+        min-height: 72px;
+        padding: 16px 24px;
+        box-sizing: border-box;
+        background: var(--gray-050, #f3f7fc);
+    }
+    #send-additional-notification-modal .footer .buttons {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        float: none;
+        gap: 8px;
+        height: auto;
+        min-height: 38px;
+        margin: 0;
+    }
+    #send-additional-notification-modal .footer .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 38px;
+        min-height: 38px;
+        margin: 0;
+        padding: 0 16px;
+        line-height: 20px;
+        box-sizing: border-box;
     }
 </style>
 
@@ -12,33 +268,108 @@
     {{ csrfInput() }}
 
     <div class="header">
-        <h1>{{ "Send Additional Notification"|t('freeform') }}</h1>
+        <span class="notification-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="2"/>
+                <path d="m4 7 8 6 8-6"/>
+            </svg>
+        </span>
+        <div>
+            <h1 tabindex="-1" data-notification-title>{{ "Send Notifications"|t('freeform') }}</h1>
+            <p class="notification-context">{{ "{count, plural, one{1 submission selected} other{# submissions selected}}"|t('freeform', {count: submissionCount}) }}</p>
+        </div>
     </div>
     <div class="body">
 
+        <fieldset class="field">
+            <legend class="heading">{{ "Templates"|t('freeform') }}</legend>
+            <div class="notification-mode-options">
+                <label class="notification-mode-option is-selected">
+                    <input type="radio" name="templateMode" value="custom" checked aria-label="{{ 'Choose one template'|t('freeform') }}">
+                    <span><strong>{{ "Choose one template"|t('freeform') }}</strong><small>{{ "Use it for every recipient."|t('freeform') }}</small></span>
+                </label>
+                <label class="notification-mode-option">
+                    <input type="radio" name="templateMode" value="configured" aria-label="{{ 'Use configured templates'|t('freeform') }}">
+                    <span><strong>{{ "Use configured templates"|t('freeform') }}</strong><small>{{ "Follow each form’s notifications."|t('freeform') }}</small></span>
+                </label>
+            </div>
+        </fieldset>
+
+        {% set templateLabel %}
+            <span data-template-label data-custom-label="{{ 'Template for All Recipients'|t('freeform') }}" data-configured-label="{{ 'Template for Additional Emails'|t('freeform') }}">{{ 'Template for All Recipients'|t('freeform') }}</span>
+        {% endset %}
+        <span hidden data-custom-template-anchor></span>
+        <div data-template-field>
         {{ formFields.selectField({
-            label: "Notification Template"|t('freeform'),
+            label: templateLabel,
             name: "template",
             options: templates,
             value: "",
             required: true,
         }) }}
+        </div>
+
+        {% if recipients %}
+            <fieldset class="field">
+                <legend class="heading">{{ "Available Recipients"|t('freeform') }}</legend>
+                <div class="recipient-toolbar" data-recipient-controls>
+                    <span class="recipient-count" data-recipient-count data-count-label="{{ '{count} selected'|t('freeform') }}" aria-live="polite">{{ '{count} selected'|t('freeform', {count: 0}) }}</span>
+                    <div class="recipient-actions">
+                        <button type="button" class="recipient-select-toggle" data-select-recipients="all" data-select-label="{{ 'Select All'|t('freeform') }}" data-deselect-label="{{ 'Deselect All'|t('freeform') }}">{{ "Select All"|t('freeform') }}</button>
+                    </div>
+                </div>
+                <div class="recipient-list" data-recipient-controls>
+                    {% for recipient in recipients %}
+                        {% set recipientLabel %}
+                            <span class="recipient-summary">
+                                <span class="recipient-address">{{ recipient.email }}</span>
+                                <span class="recipient-email-count"><span data-custom-mode>{{ "{count, plural, one{1 email} other{# emails}}"|t('freeform', {count: recipient.count}) }}</span><span data-configured-mode hidden>{{ "{count, plural, one{1 email} other{# emails}}"|t('freeform', {count: recipient.configuredCount}) }}</span></span>
+                            </span>
+                            <span class="recipient-details" data-custom-mode>
+                                {% for source in recipient.sources %}{{ _self.recipientPill(source.label, source.type) }}{% endfor %}
+                            </span>
+                            {% if recipient.configuredCount %}
+                                <span class="recipient-details" data-configured-mode hidden>
+                                    {% for template in recipient.templates %}{{ _self.recipientPill(template, 'notification') }}{% endfor %}
+                                </span>
+                            {% endif %}
+                        {% endset %}
+                        <div class="recipient-option" data-configured-count="{{ recipient.configuredCount }}">
+                            {{ formFields.checkbox({
+                                id: 'additional-recipient-' ~ loop.index,
+                                name: 'selectedEmails[]',
+                                value: recipient.email,
+                                label: recipientLabel,
+                                aria: {label: recipient.email},
+                                checked: false,
+                            }) }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <p class="instructions recipient-note" data-recipient-empty hidden role="status">{{ "No configured notifications are available for these submissions."|t('freeform') }}</p>
+                <div class="instructions recipient-note" data-recipient-controls><p data-custom-mode>{{ "One email per matching submission, using the selected template."|t('freeform') }}</p><p data-configured-mode hidden>{{ "Only recipients with configured notifications are shown. Uses each form’s templates and rules."|t('freeform') }}</p></div>
+            </fieldset>
+        {% endif %}
 
         {{ formFields.textareaField({
-            label: "Email Address(es)"|t('freeform'),
+            label: recipients ? "Additional Email Addresses"|t('freeform') : "Email Addresses"|t('freeform'),
+            instructions: recipients
+                ? "Optional. These addresses receive a notification for every selected submission."|t('freeform')
+                : "Enter one or more email addresses. Each address receives a notification for every selected submission."|t('freeform'),
             name: "emails",
             value: "",
-            rows: 5,
-            required: true,
+            rows: 3,
+            placeholder: "name@example.com, another@example.com",
+            required: false,
         }) }}
+        <span hidden data-additional-template-anchor></span>
 
     </div>
     <div class="footer">
         <div class="buttons right last">
-            <input type="button" class="btn cancel" value="{{ "Cancel"|t('freeform') }}"/>
-            <input type="submit" class="btn submit" value="{{ "Send"|t('freeform') }}"/>
-
-            <div class="spinner" style="display: none;"></div>
+            <div class="spinner" style="display: none;" aria-hidden="true"></div>
+            <button type="button" class="btn cancel">{{ "Cancel"|t('freeform') }}</button>
+            <button type="submit" class="btn submit">{{ "Send Notifications"|t('freeform') }}</button>
         </div>
     </div>
 </form>

@@ -17,7 +17,6 @@ import { Button, ButtonGroup, ButtonGroupWrapper } from "./page-buttons.styles";
 
 type Props = {
   page: Page;
-  contained?: boolean;
 };
 
 const buttonClasses: Record<string, string> = {
@@ -26,7 +25,7 @@ const buttonClasses: Record<string, string> = {
   submit: "btn btn-submit",
 };
 
-export const PageButtons: React.FC<Props> = ({ page, contained = false }) => {
+export const PageButtons: React.FC<Props> = ({ page }) => {
   const dispatch = useAppDispatch();
   const { getTranslation } = useTranslations(page);
 
@@ -62,11 +61,10 @@ export const PageButtons: React.FC<Props> = ({ page, contained = false }) => {
   );
 
   return (
-    <PageFieldLayoutWrapper data-contained={contained}>
+    <PageFieldLayoutWrapper>
       <ButtonGroupWrapper
         className={classes(isActive && "active")}
-        onClick={(event) => {
-          event.stopPropagation();
+        onClick={() => {
           dispatch(
             contextActions.setFocusedItem({
               type: FocusType.Page,

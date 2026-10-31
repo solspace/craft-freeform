@@ -16,10 +16,6 @@ type ChoiceKind =
   | "columns"
   | "background"
   | "column-style"
-  | "component-design"
-  | "component-treatment"
-  | "component-spacing"
-  | "component-corners"
   | "callout"
   | "line"
   | "thickness"
@@ -116,12 +112,6 @@ const Group = styled.div`
   &[data-kind='fit'] .btn { width: auto; flex: 0 1 auto; padding: 0 10px; gap: 6px; }
   &[data-kind='responsive'] .btn { width: auto; flex: 0 1 auto; padding: 0 10px; gap: 6px; }
   &[data-kind='background'] .btn, &[data-kind='column-style'] .btn { width: auto; flex: 0 1 auto; padding: 0 10px; gap: 6px; }
-  &[data-kind='component-design'], &[data-kind='component-treatment'] { width: fit-content; }
-  &[data-kind='component-design'] .btn, &[data-kind='component-treatment'] .btn { flex: 0 0 auto; width: auto; min-width: 0; padding: 0 9px; gap: 5px; white-space: nowrap; }
-  &[data-kind='component-design'] svg, &[data-kind='component-treatment'] svg { width: 16px; height: 16px; flex-basis: 16px; }
-  &[data-kind='component-spacing'], &[data-kind='component-corners'] { width: fit-content; }
-  &[data-kind='component-spacing'] .btn, &[data-kind='component-corners'] .btn { flex: 0 0 40px; width: 40px; min-width: 40px; height: 34px; }
-  &[data-kind='component-spacing'] svg, &[data-kind='component-corners'] svg { width: 20px; height: 18px; flex-basis: 20px; }
   &[data-kind='columns'] {
     display: grid; width: 100%; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px;
     .btn { width: 100%; min-width: 0; height: 38px; padding: 6px; }
@@ -149,34 +139,6 @@ export const choiceButtonKind = (
   handle: string,
   options: Choice[],
 ): ChoiceKind | undefined => {
-  if (
-    handle === "designStyle" &&
-    options.length === 2 &&
-    options.every((option) => ["form", "custom"].includes(option.value))
-  )
-    return "component-design";
-  if (
-    handle === "designTreatment" &&
-    options.length === 2 &&
-    options.every((option) => ["soft", "bold"].includes(option.value))
-  )
-    return "component-treatment";
-  if (
-    ["designSpacing", "componentSpacing"].includes(handle) &&
-    options.length === 3 &&
-    options.every((option) =>
-      ["compact", "comfortable", "spacious"].includes(option.value),
-    )
-  )
-    return "component-spacing";
-  if (
-    ["designCorners", "componentCorners"].includes(handle) &&
-    options.length === 3 &&
-    options.every((option) =>
-      ["square", "soft", "rounded"].includes(option.value),
-    )
-  )
-    return "component-corners";
   if (
     ["cardRadiusPreset", "sectionRadiusPreset"].includes(handle) &&
     options.length >= 6 &&
@@ -777,97 +739,6 @@ export const ChoiceButtons = ({
                 (sizeLabel ?? text)
               );
             })()
-          ) : kind === "component-design" || kind === "component-treatment" ? (
-            <>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                {kind === "component-treatment" ? (
-                  <rect
-                    x="3"
-                    y="4"
-                    width="18"
-                    height="16"
-                    rx="3"
-                    fill="currentColor"
-                    fillOpacity={option.value === "bold" ? 0.8 : 0.15}
-                  />
-                ) : option.value === "manual" ? (
-                  <>
-                    <path d="M5 6h14M5 12h14M5 18h14" />
-                    <circle cx="9" cy="6" r="2" fill="currentColor" />
-                    <circle cx="16" cy="12" r="2" fill="currentColor" />
-                    <circle cx="11" cy="18" r="2" fill="currentColor" />
-                  </>
-                ) : option.value === "form" ? (
-                  <>
-                    <rect x="3" y="4" width="13" height="13" rx="2" />
-                    <rect x="8" y="8" width="13" height="13" rx="2" />
-                  </>
-                ) : (
-                  <>
-                    <path d="m5 19 4-.8L19 8l-3-3L5.8 15.2 5 19Z" />
-                    <path d="m14 7 3 3" />
-                  </>
-                )}
-              </svg>
-              <span>{translate(option.label)}</span>
-            </>
-          ) : kind === "component-spacing" ? (
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 28 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <rect
-                x="2"
-                y="2"
-                width="24"
-                height="20"
-                rx="2"
-                fill="currentColor"
-                fillOpacity="0.12"
-                strokeOpacity="0.4"
-              />
-              <rect
-                x={{ compact: 5, comfortable: 8, spacious: 11 }[option.value]}
-                y={{ compact: 5, comfortable: 7, spacious: 9 }[option.value]}
-                width={
-                  { compact: 18, comfortable: 12, spacious: 6 }[option.value]
-                }
-                height={
-                  { compact: 14, comfortable: 10, spacious: 6 }[option.value]
-                }
-                rx="1"
-                fill="currentColor"
-                stroke="none"
-              />
-            </svg>
-          ) : kind === "component-corners" ? (
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 28 24"
-              fill="currentColor"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <rect
-                x="3"
-                y="3"
-                width="22"
-                height="18"
-                rx={{ square: 0, soft: 5, rounded: 9 }[option.value]}
-                fillOpacity="0.12"
-              />
-            </svg>
           ) : kind === "heading" ? (
             option.label
           ) : (

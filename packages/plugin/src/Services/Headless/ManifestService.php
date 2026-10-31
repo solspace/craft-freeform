@@ -122,7 +122,6 @@ class ManifestService
                 'mode' => $endpointMeta['mode'],
                 'successBehavior' => $behavior->successBehavior,
                 'successMessage' => $behavior->getSuccessMessage(),
-                'backgroundColor' => $form->getSettings()->getGeneral()->getBackgroundColor(),
             ],
             'layout' => $this->layoutSerializer->serialize($form),
             'fields' => (object) $serializedFields,

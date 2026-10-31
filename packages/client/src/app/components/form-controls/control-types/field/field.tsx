@@ -25,7 +25,6 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
   const options = fields
     .filter((field) => {
       const type = findType(field.typeClass);
-      if (type?.type === "layout-column") return false;
       if (
         property.availableFieldTypes &&
         !property.availableFieldTypes.includes(type?.type)

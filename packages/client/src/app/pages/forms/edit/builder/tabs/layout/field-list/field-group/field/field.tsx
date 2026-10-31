@@ -19,19 +19,7 @@ export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
     [dragRef],
   );
   return (
-    <Wrapper
-      ref={connectDrag}
-      onClick={onClick}
-      title={label}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          onClick?.();
-        }
-      }}
-    >
+    <Wrapper ref={connectDrag} onClick={onClick} title={label}>
       <Icon dangerouslySetInnerHTML={{ __html: icon }} />
       <Name dangerouslySetInnerHTML={{ __html: label }} />
     </Wrapper>

@@ -187,34 +187,6 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             {translate("Add Group")}
           </button>
           <UHFieldWrapper>
-            {(["content", "layout"] as const).map((catalog) => (
-              <UHField key={catalog}>
-                <h3>
-                  {translate(catalog === "content" ? "Content" : "Layout")}
-                </h3>
-                <p>
-                  {translate(
-                    "Drag an option into a group to add a shortcut. It remains available here.",
-                  )}
-                </p>
-                <FieldTypes
-                  className="catalog-source"
-                  $empty=""
-                  ref={(element) => {
-                    initializeGroupedSortable(
-                      element,
-                      catalog === "content" ? "content" : "layoutCatalog",
-                      fieldListRefs,
-                      true,
-                    );
-                  }}
-                >
-                  {state.catalogs?.[catalog]?.map((typeClass) => (
-                    <FieldItem key={typeClass} typeClass={typeClass} />
-                  ))}
-                </FieldTypes>
-              </UHField>
-            ))}
             <UHField className="unassigned">
               <h3>{translate("Unassigned")}</h3>
 

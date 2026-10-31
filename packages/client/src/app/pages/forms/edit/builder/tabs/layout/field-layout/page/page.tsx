@@ -1,7 +1,6 @@
 import type { Page as PageType } from "@editor/builder/types/layout";
 import { useAppSelector } from "@editor/store";
 import { layoutSelectors } from "@editor/store/slices/layout/layouts/layouts.selectors";
-import { isPageForm } from "@editor/store/thunks/fields/containers";
 import type React from "react";
 
 import { Layout } from "../layout/layout";
@@ -14,18 +13,14 @@ type Props = {
 };
 
 export const Page: React.FC<Props> = ({ page }) => {
-  const pageForm = useAppSelector(isPageForm);
-  const canvasLayoutUid = useAppSelector((state) =>
-    pageForm ? state.layout.pages[0]?.layoutUid : page?.layoutUid,
-  );
   const layout = useAppSelector((state) =>
-    layoutSelectors.pageLayout(state, canvasLayoutUid),
+    layoutSelectors.pageLayout(state, page?.layoutUid),
   );
 
   return (
     <PageWrapper>
       {layout && <Layout layout={layout} />}
-      {!pageForm && <PageButtons page={page} />}
+      <PageButtons page={page} />
     </PageWrapper>
   );
 };

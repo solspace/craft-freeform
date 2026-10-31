@@ -18,13 +18,7 @@ export const Layout: React.FC<Props> = ({ layout }) => {
     rowSelectors.inLayout(state, layout?.uid),
   );
 
-  const {
-    dropRef,
-    placeholderAnimation,
-    sectionHeight,
-    sectionLabel,
-    sectionPreview,
-  } = useLayoutDrop(layout);
+  const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (
     <PageFieldLayoutWrapper
@@ -41,28 +35,8 @@ export const Layout: React.FC<Props> = ({ layout }) => {
       {rows.map((row) => (
         <Row row={row} key={row.uid} />
       ))}
-      <DropZone
-        style={{
-          ...placeholderAnimation,
-          ...(sectionHeight ? { height: sectionHeight } : {}),
-        }}
-      >
-        {sectionHeight && sectionPreview ? (
-          <img
-            src={sectionPreview}
-            alt=""
-            style={{
-              width: 240,
-              maxWidth: "85%",
-              maxHeight: "85%",
-              objectFit: "contain",
-            }}
-          />
-        ) : sectionHeight ? (
-          sectionLabel
-        ) : (
-          translate("+ insert row")
-        )}
+      <DropZone style={placeholderAnimation}>
+        {translate("+ insert row")}
       </DropZone>
     </PageFieldLayoutWrapper>
   );

@@ -96,61 +96,6 @@
 
     <hr />
 
-    <h2>{{ "Builder Templates"|t('freeform') }}</h2>
-
-    {% set suggestionsData = [] %}
-    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
-        {% set suggestionsData = suggestionsData|merge([{ "name": directory }]) %}
-    {% endfor %}
-
-    {{ forms.autosuggestField({
-        label: "Directory Path"|t('freeform'),
-        id: "builderTemplateDirectory",
-        class: "code",
-        disabled: readOnly,
-        suggestEnvVars: false,
-        suggestAliases: false,
-        suggestions: [{ "label": "Existing Directories", "data": suggestionsData }],
-        limit: 10,
-        name: "settings[builderTemplateDirectory]",
-        value: settings.builderTemplateDirectory,
-        errors: settings.getErrors("builderTemplateDirectory"),
-        instructions: "Choose an existing directory inside Craft's templates folder. Twig fragments appear in Regular and Page form builders. Add <code>{# name: Hero banner #}</code> and <code>{# description: A short introduction. #}</code> headers to label them."|t('freeform'),
-        placeholder: "e.g. _freeform/builder",
-    }) }}
-
-    {% if settings.absoluteBuilderTemplateDirectory %}
-        {% set builderFiles = settings.listBuilderTemplates()|map((name, path) => { name: name, fileName: path }) %}
-        <div class="ff-template-directory-preview">
-            <div class="ff-template-directory-header">
-                <div class="ff-template-directory-title">
-                    <strong>{{ settings.builderTemplateDirectory }}</strong>
-                    <span class="ff-template-file-count">{{ builderFiles|length }} {{ "files"|t('freeform') }}</span>
-                </div>
-                {% if not readOnly and freeform.edition.isAtLeast('pro') %}
-                <div class="btn-group">
-                    <button type="button" class="btn small icon add menubtn" id="add-builder-sample-template">
-                        {{ "Add Sample"|t('freeform') }}
-                    </button>
-                    <div class="menu" id="builder-sample-template-list">
-                        <ul>
-                            <li><a data-sample="navigation">{{ "Navigation"|t('freeform') }}</a></li>
-                            <li><a data-sample="hero">{{ "Hero"|t('freeform') }}</a></li>
-                            <li><a data-sample="feature-cards">{{ "Feature Cards"|t('freeform') }}</a></li>
-                            <li><a data-sample="faq">{{ "FAQ"|t('freeform') }}</a></li>
-                            <li><a data-sample="footer">{{ "Footer"|t('freeform') }}</a></li>
-                            <li><a data-sample="sidebar">{{ "Sidebar"|t('freeform') }}</a></li>
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-            {{ _self.listFiles(builderFiles) }}
-        </div>
-    {% endif %}
-
-    <hr />
-
     <h2>{{ "Success Templates"|t('freeform') }}</h2>
 
     {% set suggestionsData = [] %}
@@ -424,7 +369,6 @@
 
 {% css %}
     .ff-template-manager #formTemplateDirectory,
-    .ff-template-manager #builderTemplateDirectory,
     .ff-template-manager #successTemplateDirectory,
     .ff-template-manager #emailTemplateDirectory { max-width: 900px; }
 

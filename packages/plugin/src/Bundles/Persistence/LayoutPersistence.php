@@ -8,7 +8,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Fields\RemoveFieldRecordEvent;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
-use Solspace\Freeform\Fields\Implementations\Pro\LayoutColumnField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -143,7 +142,6 @@ class LayoutPersistence extends FeatureBundle
 
     private function saveFields(Form $form, array $data, $event): void
     {
-        $this->normalizeColumnHandles($data);
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormFieldRecord::class);
 
         $handles = [];
@@ -199,30 +197,6 @@ class LayoutPersistence extends FeatureBundle
             }
 
             $record->delete();
-        }
-    }
-
-    /** Repair generated internal handles without changing user-facing field handles. */
-    private function normalizeColumnHandles(array $data): void
-    {
-        $used = [];
-        foreach ($data as $item) {
-            if (LayoutColumnField::class !== ($item->typeClass ?? null) && isset($item->properties->handle)) {
-                $used[strtolower((string) $item->properties->handle)] = true;
-            }
-        }
-        foreach ($data as $item) {
-            if (LayoutColumnField::class !== ($item->typeClass ?? null)) {
-                continue;
-            }
-            $stem = ($item->properties->handle ?? '') ?: 'column';
-            $handle = $stem;
-            $suffix = 1;
-            while (isset($used[strtolower($handle)])) {
-                $handle = $stem.'_'.$suffix++;
-            }
-            $item->properties->handle = $handle;
-            $used[strtolower($handle)] = true;
         }
     }
 

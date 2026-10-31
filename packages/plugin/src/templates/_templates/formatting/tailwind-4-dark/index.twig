@@ -4,7 +4,7 @@
 
 {# Signature pads may grow to 125% of their configured width; use 1 to prevent enlargement. #}
 {# Render the opening form tag #}
-{% set formTagProperties = {
+{{ form.renderTag({
   attributes: {
     form: { "data-freeform-theme": "dark", class: "freeform-form freeform-tailwind-4", "data-freeform-tailwind": true, "data-freeform-signature-responsive": true, "data-freeform-signature-theme": "tailwind-4-dark", "data-freeform-signature-max-scale": 1.25 },
     row: { class: "flex flex-wrap gap-y-4 -mx-2 mb-4" },
@@ -175,21 +175,54 @@
       },
     },
   },
-} %}
-{% if form.type == 'Page' %}
-    {% do form.registerContext(formTagProperties) %}
-    <div class="{{ formTagProperties.attributes.form.class }} freeform-page"{% for name, value in formTagProperties.attributes.form %}{% if name starts with 'data-' %} {{ name }}="{{ value is same as(true) ? 'true' : value }}"{% endif %}{% endfor %}{% if form.pageBackgroundColor %} style="background-color: {{ form.pageBackgroundColor }}"{% endif %}>
-{% else %}
-    {{ form.renderTag(formTagProperties) }}
-{% endif %}
+}) }}
 
 {# Reuse the same icon banners for standard and AJAX submissions #}
-{% if form.type != 'Page' %}
-    {% include "freeform/_templates/formatting/tailwind-4-dark/_messages.twig" %}
+{% set successBanner %}
+    <div{{ form.attributes.success|raw }}>
+      <div class="flex">
+        <div class="shrink-0">
+          <svg class="size-6 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <div class="ml-2">
+          <h3 class="text-md font-medium text-green-100">{{ form.successMessage | t('freeform') }}</h3>
+        </div>
+      </div>
+    </div>
+{% endset %}
+{% set errorBanner %}
+    <div{{ form.attributes.errors|raw }}>
+      <div class="flex">
+        <div class="shrink-0">
+        <svg class="size-6 text-red-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
+        </svg>
+        </div>
+        <div class="ml-2">
+          <h3 class="text-md font-medium text-red-100">{{ form.errorMessage | t('freeform') }}</h3>
+            <div class="mt-2 text-sm text-red-200"{% if not form.errors|length %} hidden{% endif %}>
+              <ul role="list" class="list-disc space-y-1 pl-5" data-freeform-banner-errors>
+                {% for error in form.errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+{% endset %}
+{% if form.settings.ajax %}
+  <template data-freeform-success-template>{{ successBanner }}</template>
+  <template data-freeform-error-template>{{ errorBanner }}</template>
+{% else %}
+  {% if form.submittedSuccessfully %}{{ successBanner }}{% endif %}
+  {% if form.hasErrors %}{{ errorBanner }}{% endif %}
 {% endif %}
 
 {# Render page tabs if multi-page #}
-{% if form.type != 'Page' and form.pages|length > 1 %}
+{% if form.pages|length > 1 %}
 
 <nav class="mb-10" aria-label="Progress">
   <ol role="list" class="divide-y divide-white/15 rounded-md border bg-black/10 border-white/15 sm:flex sm:divide-y-0">
@@ -223,7 +256,7 @@
 {% endif %}
 
 {# Display form field rows and columns #}
-{{ rowMacro.render(form.canvasRows, form) }}
+{{ rowMacro.render(form.rows, form) }}
 
 {# Render the closing form tag #}
-{% if form.type == 'Page' %}</div>{% else %}{{ form.renderClosingTag }}{% endif %}
+{{ form.renderClosingTag }}

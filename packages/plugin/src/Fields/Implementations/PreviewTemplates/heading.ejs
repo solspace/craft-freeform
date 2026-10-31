@@ -1,7 +1,0 @@
-<%
-  const tag = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(level) ? level : 'h2';
-  const choice = typeof textSize === 'undefined' ? 'default' : textSize;
-  const size = choice === 'custom' ? Math.max(8, Math.min(200, Number(fontSize) || 72)) : ({ small: 24, medium: 32, large: 48, display: 64 }[choice] || 0);
-  const sizing = size ? ';font-size:clamp(' + Math.min(24, size) + 'px,8vw,' + size + 'px);line-height:1.15;overflow-wrap:anywhere' : '';
-%>
-<<%= tag %> style="text-align: <%- ['left', 'center', 'right'].includes(alignment) ? alignment : 'left' %><%- sizing %>"><%- content || 'Heading' %></<%= tag %>>

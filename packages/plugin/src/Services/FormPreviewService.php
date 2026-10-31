@@ -133,12 +133,6 @@ class FormPreviewService
         // from the markup scanned below. Allow only the files its inputs need.
         [$scripts, $styles] = $this->getDatepickerSources($xpath);
         $images = [];
-        foreach ($xpath->query('//*[@data-freeform-background-image]') as $node) {
-            $url = $node->getAttribute('data-freeform-background-image');
-            if (PreviewAssetHelper::isAllowed($url)) {
-                $images[] = $url;
-            }
-        }
         $fonts = [];
         foreach ($xpath->query('//script | //link | //img') as $node) {
             $attribute = 'link' === $node->nodeName ? 'href' : 'src';

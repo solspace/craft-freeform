@@ -15,15 +15,7 @@
 - Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
 - Added **Activity Log** with privacy-focused event history, submission timelines, filters, exports, and configurable recording and storage limits. New installs use Standard mode and upgrades use Minimal.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
-- Added a Pro-only **Page** form type for landing pages and other page-based forms. Content, layouts, and components remain available across form types.
-- Added a Pro-only **Templates** picker for reusable Twig fragments in both Regular and Page forms, with optional metadata, illustrated choices, live builder previews, and starter templates.
-- Added **Form Starters** to insert guided-setup field sets into existing forms, including the Form section on Page forms.
 - Added ready-to-use success and email notification template samples for common follow-up workflows.
-- Added a **Content** picker for headings, rich text, dividers, spacers, callouts, buttons, videos, icons, summaries, and images, with draggable field-group shortcuts. Content features require Pro, except HTML.
-- Added Pro-only **Components** with ready-made Hero, cards, FAQ, gallery, pricing, and other editable section presets.
-- Added shared design controls with selective local overrides for editable components, including a styled Sidebar preset.
-- Added Pro-only **Layout** presets with responsive columns, backgrounds, spacing, and content alignment, including React/Vue support. Groups are also available from Layout.
-- Added an optional Pro-only form background color for front-end rendering and Preview.
 - Added Pro-only customizable **Forms dashboard cards** with resizable layouts, drag-and-drop and keyboard reordering, per-user preferences, 7-, 30-, and 90-day trends and comparisons, and configurable activity, statistics, Form Monitor, and field summaries.
 - Added Pro-only **Linear Chart**, **Radial Chart**, **Recent Submissions**, and **Quick Form** widgets to the Forms dashboard, with form-group placement, responsive sizes and chart layouts, searchable form filtering, and matching loading states.
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
@@ -44,28 +36,22 @@
 - Website fields now complete bare domains with `https://`, trim surrounding whitespace, and show a clearer validation message, with React/Vue support and no additional settings.
 - Gave the Freeform front-end date/time picker a cleaner appearance while preserving the control-panel picker styling.
 - Date/time field settings use compact button groups for type, clock format, date order, and separators, with live date-format previews and collapsible help. Initial and minimum/maximum values offer a calendar picker while retaining typed English expressions such as `now`, `today`, and `3 days ago`.
-- Expanded content styling with heading sizes, rich-text callouts, and additional appearance controls.
 - Updated builder settings with visual button groups and added fixed measurement and count units across Freeform settings.
 - Added optional image sizing and cropping controls while preserving existing image rendering.
-- Improved builder previews and dragging for content and sections, with contextual labels and padding guides.
 - Formatting template samples can be cloned under a chosen name, with internal template paths updated automatically.
-- Organized content elements and Groups into the Content and Layout pickers for new installs, while preserving existing field-group shortcuts on upgrades.
 - Forms dashboards gracefully return to standard cards when switching from Pro to Lite or Express, preserving Pro layout and widget preferences for later use.
 - Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
 
 ### Fixed
-- Fixed submission detail pages failing to render Form sections nested inside Page form layouts.
 - Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
 - Fixed boolean environment indicators and dependent setting visibility without clearing saved values.
 - Fixed Salesforce and Account Engagement custom login URLs not resolving environment variables, and legacy product labels in headings and tabs.
 - Fixed hCaptcha, Turnstile, and Friendly Captcha verification errors and outages being treated as spam. Invalid or incomplete provider responses now fail validation safely.
 - Fixed CAPTCHA widgets and headless tokens interfering with other forms, stalled script loading, and missing widget language settings. Friendly Captcha now waits for a token before submitting.
 - Hardened reCAPTCHA action and score validation, quota and service-error handling, token expiration and retries, and initialization of multiple forms, including Invisible v2.
-- Fixed Layout fields failing to render in Quick Form dashboard widgets and front-end forms because their stylesheet was missing from the styles build.
 - Fixed date/time minimum and maximum limits ignoring the time in expressions such as `12 hours ago`, in both the picker and submission validation. Limits without a time include the entire day and show date-only validation messages.
 - Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.
-- Fixed duplicate field and column handles when adding, changing, or duplicating layouts and components.
-- Fixed field and Spacer placement when dragging into existing rows and nested layouts.
+- Fixed duplicate field handles when adding or duplicating fields and Groups.
 - Fixed Settings tab navigation disrupting browser history.
 - Fixed **Quick Form** dashboard widgets not displaying field-specific validation errors and input error styles.
 

@@ -1,5 +1,0 @@
-<%
-const calloutColor = ({neutral:'#64748b', info:'#2563eb', success:'#15803d', warning:'#d97706', danger:'#b91c1c'})[appearance] || '#2563eb';
-const hasRichContent = typeof richContent !== 'undefined' && richContent !== null;
-%>
-<div class="freeform-callout" style="padding: 1rem; border-inline-start: 3px solid <%- calloutColor %>; background: color-mix(in srgb, <%- calloutColor %> 8%, transparent);<% if (!hasRichContent) { %> white-space: pre-wrap;<% } %>"><% if (hasRichContent) { %><%= richContent %><% } else { %><%- content || 'Add a note or important information' %><% } %></div>

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  layoutCss,
-  type ManifestFieldDefinition,
-} from "@solspace/freeform-core";
-import type { CSSProperties } from "react";
-import { CaptchaHost } from "../components/CaptchaHost.js";
+import type { ManifestFieldDefinition } from "@solspace/freeform-core";
 import { joinClassNames } from "../theme/mergeClassNames.js";
 import { resolveThemeClassNames } from "../theme/resolveThemeClassNames.js";
 import { toBemModifier } from "../theme/toBemModifier.js";
@@ -23,8 +18,6 @@ type FieldRendererProps = {
   theme: FreeformReactTheme;
   renderers: RendererOverrides;
   allowRawHtml?: boolean;
-  pageFormClassName?: string;
-  pageFormStyle?: CSSProperties;
 };
 
 export function FieldRenderer({
@@ -33,8 +26,6 @@ export function FieldRenderer({
   theme,
   renderers,
   allowRawHtml,
-  pageFormClassName,
-  pageFormStyle,
 }: FieldRendererProps) {
   const strategy = theme.classNameStrategy ?? "merge";
   const errors = form.fieldErrors[field.handle] ?? [];
@@ -49,17 +40,6 @@ export function FieldRenderer({
           ?.uploadRequirements ?? "")
       : "";
   const isPresentational =
-    [
-      "heading",
-      "divider",
-      "spacer",
-      "callout",
-      "content",
-      "button-link",
-      "video",
-      "icon",
-      "builder-template",
-    ].includes(field.type) ||
     field.type === "html" ||
     field.type === "rich-text" ||
     field.type === "image";
@@ -103,7 +83,6 @@ export function FieldRenderer({
   );
 
   const renderLabel = () =>
-    !["layout", "layout-column", "form-section"].includes(field.type) &&
     !isCheckbox &&
     !isPresentational &&
     !isVisuallyHidden &&
@@ -158,119 +137,7 @@ export function FieldRenderer({
     );
   }
 
-  if (
-    ["group", "layout", "layout-column", "form-section"].includes(field.type)
-  ) {
-    const GroupRow: React.ElementType =
-      field.type === "layout" ? "div" : components.Row;
-    const pages = form.manifest.layout?.pages ?? [];
-    const page = pages[form.currentPageIndex];
-    const stepRows =
-      field.type === "form-section" && form.currentPageIndex > 0
-        ? (page?.rows ?? [])
-        : (field.layout?.rows ?? []);
-    const isLastPage = form.currentPageIndex >= pages.length - 1;
-    const groupContent = (
-      <>
-        {field.type === "layout" && <style>{layoutCss}</style>}
-        {stepRows.map((row) => (
-          <GroupRow
-            key={row.uid}
-            className={joinClassNames(
-              field.type === "layout" ? "ff-layout-columns" : undefined,
-              classNames.row,
-              strategy === "merge"
-                ? `ff-row--${row.fields.length}-fields`
-                : undefined,
-            )}
-            data-stack={
-              field.type === "layout"
-                ? String(field.layout?.stack !== false)
-                : undefined
-            }
-            data-appearance={
-              field.type === "layout"
-                ? String(
-                    !!field.layout?.appearance &&
-                      Object.keys(field.layout.appearance).length > 0,
-                  )
-                : undefined
-            }
-            data-cards={
-              field.type === "layout"
-                ? String(
-                    !!field.layout?.cardStyle &&
-                      Object.keys(field.layout.cardStyle).length > 0,
-                  )
-                : undefined
-            }
-            style={
-              field.type === "layout"
-                ? ({
-                    ...field.layout?.appearance,
-                    ...field.layout?.cardStyle,
-                    "--freeform-columns": field.layout?.columns ?? "1fr 1fr",
-                    "--freeform-vertical-alignment":
-                      field.layout?.verticalAlignment ?? "flex-start",
-                    "--freeform-gap": `${field.layout?.gap ?? 16}px`,
-                  } as CSSProperties)
-                : undefined
-            }
-          >
-            {row.fields.map((handle) => {
-              const child = form.manifest.fields[handle];
-              return child ? (
-                <FieldRenderer
-                  key={child.uid}
-                  field={child}
-                  form={form}
-                  theme={theme}
-                  renderers={renderers}
-                  allowRawHtml={allowRawHtml}
-                  pageFormClassName={pageFormClassName}
-                  pageFormStyle={pageFormStyle}
-                />
-              ) : null;
-            })}
-          </GroupRow>
-        ))}
-        {field.type === "form-section" && page && (
-          <components.ButtonRow className={theme.classNames?.buttons}>
-            {form.currentPageIndex > 0 && page.buttons?.back && (
-              <components.BackButton
-                label={page.buttons.back.label}
-                className={theme.classNames?.backButton}
-                disabled={form.isSubmitting}
-                onClick={() => void form.goBack()}
-              />
-            )}
-            {!isLastPage && page.buttons?.submit && (
-              <components.NextButton
-                label={page.buttons.submit.label}
-                className={theme.classNames?.nextButton}
-                disabled={form.isSubmitting}
-                onClick={() => void form.goNext()}
-              />
-            )}
-            {isLastPage && page.buttons?.submit && (
-              <components.SubmitButton
-                label={page.buttons.submit.label}
-                className={theme.classNames?.submitButton}
-                disabled={form.isSubmitting}
-              />
-            )}
-            {page.buttons?.save && (
-              <components.SaveButton
-                label={page.buttons.save.label}
-                className={theme.classNames?.saveButton}
-                disabled={form.isSubmitting}
-                onClick={() => void form.saveDraft()}
-              />
-            )}
-          </components.ButtonRow>
-        )}
-      </>
-    );
+  if (field.type === "group") {
     return (
       <components.FieldWrapper
         field={field}
@@ -280,28 +147,35 @@ export function FieldRenderer({
         {renderLabel()}
         {renderInstructions()}
         <div className={classNames.input} data-freeform-group={field.handle}>
-          {field.type === "form-section" ? (
-            <components.Form
-              form={form}
-              className={pageFormClassName}
-              style={pageFormStyle}
-              onSubmit={form.handleSubmit}
-            >
-              {form.formErrors.length > 0 && (
-                <components.Errors
-                  errors={form.formErrors}
-                  className={theme.classNames?.errors}
-                  errorClassName={theme.classNames?.error}
-                />
+          {(field.layout?.rows ?? []).map((row) => (
+            <components.Row
+              key={row.uid}
+              className={joinClassNames(
+                classNames.row,
+                strategy === "merge"
+                  ? `ff-row--${row.fields.length}-fields`
+                  : undefined,
               )}
-              {groupContent}
-              {(form.manifest.security.captchas ?? []).map((captcha) => (
-                <CaptchaHost key={captcha.name} form={form} captcha={captcha} />
-              ))}
-            </components.Form>
-          ) : (
-            groupContent
-          )}
+            >
+              {row.fields.map((handle) => {
+                const child = form.manifest.fields[handle];
+                if (!child) {
+                  return null;
+                }
+
+                return (
+                  <FieldRenderer
+                    key={child.uid}
+                    field={child}
+                    form={form}
+                    theme={theme}
+                    renderers={renderers}
+                    allowRawHtml={allowRawHtml}
+                  />
+                );
+              })}
+            </components.Row>
+          ))}
         </div>
         {renderErrors()}
       </components.FieldWrapper>

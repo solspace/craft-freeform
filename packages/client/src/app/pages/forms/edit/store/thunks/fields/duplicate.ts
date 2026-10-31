@@ -3,8 +3,10 @@ import type { AppDispatch, AppThunk, RootState } from "@editor/store";
 import { type Field, fieldActions } from "@editor/store/slices/layout/fields";
 import { layoutActions } from "@editor/store/slices/layout/layouts";
 import { rowActions } from "@editor/store/slices/layout/rows";
+import { Fields } from "@ff-client/types/field.classes";
 import { v4 } from "uuid";
-import { isContainer } from "./containers";
+
+const isContainer = (field: Field) => field.typeClass === Fields.Group;
 
 export default (field: Field, row: Row): AppThunk =>
   (dispatch, getState) => {

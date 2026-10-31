@@ -7,7 +7,7 @@ import type {
   SubmitIntent,
   SubmitResponse,
 } from "@solspace/freeform-core";
-import type { ComponentType, CSSProperties, FormEvent, ReactNode } from "react";
+import type { ComponentType, FormEvent, ReactNode } from "react";
 
 export { PACKAGE_VERSION } from "./version.js";
 export const CLIENT_NAME = "@solspace/freeform-react";
@@ -110,7 +110,6 @@ export type FreeformThemeComponents = {
 export type FreeformComponentProps = {
   form: FreeformRuntime;
   className?: string;
-  style?: CSSProperties;
   children: ReactNode;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };

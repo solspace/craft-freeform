@@ -6,7 +6,6 @@ export const cloneFieldTypeFromFavorite = (
   fieldType: FieldType,
 ): FieldType => {
   const clone = cloneDeep(fieldType);
-  clone.fromFavorite = true;
 
   Object.entries(favorite.properties).forEach(([name, value]) => {
     const property = clone?.properties?.find(

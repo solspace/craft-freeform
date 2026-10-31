@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Tests\Library;
 
-use craft\helpers\FileHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Codepack\TemplateReplacer;
+use yii\helpers\FileHelper;
 
 #[CoversClass(TemplateReplacer::class)]
 class TemplateReplacerTest extends TestCase
@@ -33,7 +33,7 @@ class TemplateReplacerTest extends TestCase
                 (new TemplateReplacer($sourceName.'/index.twig', $sourceRoot, $destination, $cloneName))->replace();
                 $clone = $destination.'/'.$cloneName;
 
-                self::assertFileExists($clone.'/_layout.twig', $sourceName);
+                self::assertFileExists($clone.'/index.twig', $sourceName);
                 self::assertFileExists($clone.'/_main.css', $sourceName);
                 self::assertFileExists($clone.'/_main.js', $sourceName);
                 self::assertFileDoesNotExist($clone.'/_tailwind.css', $sourceName);

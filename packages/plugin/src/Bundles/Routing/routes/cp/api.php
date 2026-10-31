@@ -17,8 +17,6 @@ return [
     'freeform/api/forms/sort' => 'freeform/api/forms/sort',
     'freeform/api/forms/delete' => 'freeform/api/forms/delete',
     'freeform/api/forms/<id:\d+>/builder' => 'freeform/api/forms/builder',
-    'freeform/api/forms/<id:\d+>/starters' => 'freeform/api/forms/starters',
-    'freeform/api/forms/<id:\d+>/builder-template-preview' => 'freeform/api/forms/builder-template-preview',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
     'freeform/api/forms/<id:\d+>/preview' => 'freeform/api/forms/preview',
@@ -129,7 +127,6 @@ return [
 
     // TEMPLATES
     'freeform/api/templates/demo' => 'freeform/api/templates/demo',
-    'freeform/api/templates/builder-sample' => 'freeform/api/templates/builder-sample',
     'freeform/api/templates/pdf' => 'freeform/api/templates/pdf',
     'freeform/api/templates/notifications/suggestions' => 'freeform/api/templates/notifications',
     'freeform/api/templates/notifications/delete' => 'freeform/api/templates/notifications/delete',
@@ -140,7 +137,6 @@ return [
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
     'freeform/api/assets/urls' => 'freeform/api/assets/asset-urls',
-    'freeform/api/assets/icon' => 'freeform/api/assets/icon-svg',
     'freeform/api/assets/thumb/card/<assetId:\d+>' => 'freeform/api/assets/card-thumbnail',
 
     // ENTRIES

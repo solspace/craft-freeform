@@ -147,7 +147,6 @@ export {
 } from "./phone/international-phone.js";
 export * from "./select/searchable-select.js";
 export { getCharacterCount } from "./utils/character-count.js";
-export { layoutCss } from "./utils/layout.js";
 export {
   mountTextareaAutoGrow,
   type TextareaAutoGrowConfig,

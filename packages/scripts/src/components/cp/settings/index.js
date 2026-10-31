@@ -1,10 +1,8 @@
-import { loadBuilderTemplatesScript } from "./templates.builder";
 import { loadFormattingTemplatesScript } from "./templates.formatting";
 import { loadTemplatesModeScript } from "./templates.mode";
 
 // eslint-disable no-undef
 $(() => {
-  loadBuilderTemplatesScript();
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
 

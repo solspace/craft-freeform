@@ -18,7 +18,6 @@ const routineFieldInstructions = [
   "handle",
   "instructions",
   "placeholder",
-  "textSize",
 ];
 
 export const PropertyEditor: React.FC = () => {

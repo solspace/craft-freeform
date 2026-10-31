@@ -44,17 +44,6 @@ class FormPreviewServiceTest extends TestCase
         self::assertStringContainsString("connect-src 'none'", $policy);
     }
 
-    public function testSectionBackgroundsAllowOnlyTheirExplicitSafeImageUrls(): void
-    {
-        $html = (new FormPreviewService())->isolate('<html><head></head><body><div data-freeform-background-image="https://example.test/hero.jpg"></div><div data-freeform-background-image="javascript:alert(1)"></div></body></html>', 'CSRF');
-        $document = new \DOMDocument();
-        @$document->loadHTML($html);
-        $policy = (new \DOMXPath($document))->query('//meta[@http-equiv="Content-Security-Policy"]')->item(0)->getAttribute('content');
-        self::assertStringContainsString('img-src data: blob: https://example.test/hero.jpg;', $policy);
-        self::assertStringNotContainsString('javascript:', $policy);
-        self::assertStringContainsString("connect-src 'none'", $policy);
-    }
-
     #[TestWith(['javascript:alert(1)'])]
     #[TestWith(['0'])]
     #[TestWith(['http://example.test/styles.css'])]

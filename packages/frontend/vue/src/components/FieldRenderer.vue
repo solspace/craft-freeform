@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { layoutCss, type ManifestFieldDefinition } from "@solspace/freeform-core";
+import type { ManifestFieldDefinition } from "@solspace/freeform-core";
 import { computed } from "vue";
 import { builtinComponents } from "../renderers/builtin/index.js";
 import { resolveFieldRenderer } from "../renderers/resolve.js";
@@ -11,7 +11,6 @@ import type {
   FreeformVueTheme,
   RendererOverrides,
 } from "../types.js";
-import CaptchaHost from "./CaptchaHost.vue";
 
 defineOptions({ name: "FieldRenderer" });
 
@@ -21,7 +20,6 @@ const props = defineProps<{
   theme: FreeformVueTheme;
   renderers: RendererOverrides;
   allowRawHtml?: boolean;
-  pageFormClassName?: string;
 }>();
 
 const strategy = computed(() => props.theme.classNameStrategy ?? "merge");
@@ -37,18 +35,6 @@ const Renderer = computed(() =>
   resolveFieldRenderer(props.field, props.renderers, props.theme),
 );
 const value = computed(() => props.form.values[props.field.handle]);
-const stepPage = computed(() => props.form.manifest.layout?.pages?.[props.form.currentPageIndex]);
-const stepRows = computed(() =>
-  props.field.type === "form-section" && props.form.currentPageIndex > 0
-    ? stepPage.value?.rows ?? []
-    : props.field.layout?.rows ?? [],
-);
-const isLastPage = computed(() => props.form.currentPageIndex >= (props.form.manifest.layout?.pages?.length ?? 0) - 1);
-function onSubmit(event: Event) {
-  if (props.field.type === "form-section") {
-    void props.form.handleSubmit(event);
-  }
-}
 
 const isCheckbox = computed(() => props.field.type === "checkbox");
 const uploadRequirements = computed(() => {
@@ -61,7 +47,6 @@ const uploadRequirements = computed(() => {
 });
 const isPresentational = computed(
   () =>
-    ["heading", "divider", "spacer", "callout", "content", "button-link", "video", "icon", "builder-template"].includes(props.field.type) ||
     props.field.type === "html" ||
     props.field.type === "rich-text" ||
     props.field.type === "image",
@@ -76,7 +61,6 @@ const isVisuallyHidden = computed(
 
 const showLabel = computed(
   () =>
-    !["layout", "layout-column", "form-section"].includes(props.field.type) &&
     !isCheckbox.value &&
     !isPresentational.value &&
     !isVisuallyHidden.value &&
@@ -156,7 +140,7 @@ const rendererProps = computed(() => ({
 
     <component
       :is="components.FieldWrapper"
-      v-else-if="['group', 'layout', 'layout-column', 'form-section'].includes(field.type)"
+      v-else-if="field.type === 'group'"
       :field="field"
       :form="form"
       :class="fieldClassName"
@@ -175,38 +159,19 @@ const rendererProps = computed(() => ({
         :field="field"
         :class="classNames.instructions"
       />
-      <component
-        :is="field.type === 'form-section' ? components.Form : 'div'"
-        v-bind="field.type === 'form-section' ? { form } : {}"
-        :class="joinClassNames(classNames.input, field.type === 'form-section' ? pageFormClassName : undefined)"
-        :data-freeform-group="field.handle"
-        :on-submit="onSubmit"
-      >
+      <div :class="classNames.input" :data-freeform-group="field.handle">
         <component
-          :is="components.Errors"
-          v-if="field.type === 'form-section' && form.formErrors.length > 0"
-          :errors="form.formErrors"
-          :class="theme.classNames?.errors"
-          :error-class="theme.classNames?.error"
-        />
-        <component :is="'style'" v-if="field.type === 'layout'">{{ layoutCss }}</component>
-        <component
-          :is="field.type === 'layout' ? 'div' : components.Row"
-          v-for="row in stepRows"
+          :is="components.Row"
+          v-for="row in field.layout?.rows ?? []"
           :key="row.uid"
           :class="
             joinClassNames(
-              field.type === 'layout' ? 'ff-layout-columns' : undefined,
               classNames.row,
               strategy === 'merge'
                 ? `ff-row--${row.fields.length}-fields`
                 : undefined,
             )
           "
-          :data-stack="field.type === 'layout' ? String(field.layout?.stack !== false) : undefined"
-          :data-appearance="field.type === 'layout' ? String(!!field.layout?.appearance && Object.keys(field.layout.appearance).length > 0) : undefined"
-          :data-cards="field.type === 'layout' ? String(!!field.layout?.cardStyle && Object.keys(field.layout.cardStyle).length > 0) : undefined"
-          :style="field.type === 'layout' ? { ...field.layout?.appearance, ...field.layout?.cardStyle, '--freeform-columns': field.layout?.columns ?? '1fr 1fr', '--freeform-vertical-alignment': field.layout?.verticalAlignment ?? 'flex-start', '--freeform-gap': `${field.layout?.gap ?? 16}px` } : undefined"
         >
           <FieldRenderer
             v-for="handle in row.fields"
@@ -216,22 +181,9 @@ const rendererProps = computed(() => ({
             :theme="theme"
             :renderers="renderers"
             :allow-raw-html="allowRawHtml"
-            :page-form-class-name="pageFormClassName"
           />
         </component>
-        <component v-if="field.type === 'form-section' && stepPage" :is="components.ButtonRow" :class="theme.classNames?.buttons">
-        <component v-if="form.currentPageIndex > 0 && stepPage.buttons?.back" :is="components.BackButton" :label="stepPage.buttons.back.label" :class="theme.classNames?.backButton" :disabled="form.isSubmitting" :on-click="() => void form.goBack()" />
-        <component v-if="!isLastPage && stepPage.buttons?.submit" :is="components.NextButton" :label="stepPage.buttons.submit.label" :class="theme.classNames?.nextButton" :disabled="form.isSubmitting" :on-click="() => void form.goNext()" />
-        <component v-if="isLastPage && stepPage.buttons?.submit" :is="components.SubmitButton" :label="stepPage.buttons.submit.label" :class="theme.classNames?.submitButton" :disabled="form.isSubmitting" />
-        <component v-if="stepPage.buttons?.save" :is="components.SaveButton" :label="stepPage.buttons.save.label" :class="theme.classNames?.saveButton" :disabled="form.isSubmitting" :on-click="() => void form.saveDraft()" />
-        </component>
-        <CaptchaHost
-          v-for="captcha in field.type === 'form-section' ? form.manifest.security.captchas ?? [] : []"
-          :key="captcha.name"
-          :form="form"
-          :captcha="captcha"
-        />
-      </component>
+      </div>
       <component
         :is="components.Errors"
         v-if="showErrors"

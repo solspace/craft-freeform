@@ -79,65 +79,6 @@ export const rowsSlice = createSlice({
       current.order = target.order;
       target.order = tempOrder;
     },
-    moveToLayout: (
-      state,
-      { payload }: PayloadAction<{ uid: string; layoutUid: string }>,
-    ) => {
-      const row = state.find((row) => row.uid === payload.uid);
-      if (!row) return;
-      const previousLayout = row.layoutUid;
-      row.layoutUid = payload.layoutUid;
-      row.order =
-        Math.max(
-          -1,
-          ...state
-            .filter(
-              (item) =>
-                item.uid !== row.uid && item.layoutUid === payload.layoutUid,
-            )
-            .map((item) => item.order),
-        ) + 1;
-      state
-        .filter((item) => item.layoutUid === previousLayout)
-        .sort((a, b) => a.order - b.order)
-        .forEach((item, order) => {
-          item.order = order;
-        });
-    },
-    moveToLayoutAt: (
-      state,
-      {
-        payload,
-      }: PayloadAction<{ uid: string; layoutUid: string; order: number }>,
-    ) => {
-      const row = state.find((item) => item.uid === payload.uid);
-      if (!row) return;
-      const previousLayout = row.layoutUid;
-      const previousRows = state
-        .filter(
-          (item) => item.layoutUid === previousLayout && item.uid !== row.uid,
-        )
-        .sort((a, b) => a.order - b.order);
-      const destinationRows = state
-        .filter(
-          (item) =>
-            item.layoutUid === payload.layoutUid && item.uid !== row.uid,
-        )
-        .sort((a, b) => a.order - b.order);
-      row.layoutUid = payload.layoutUid;
-      destinationRows.splice(
-        Math.max(0, Math.min(payload.order, destinationRows.length)),
-        0,
-        row,
-      );
-      destinationRows.forEach((item, index) => {
-        item.order = index;
-      });
-      if (previousLayout !== payload.layoutUid)
-        previousRows.forEach((item, index) => {
-          item.order = index;
-        });
-    },
   },
 });
 

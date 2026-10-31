@@ -4,7 +4,6 @@ import { useValueUpdateGenerator } from "@editor/store/hooks/value-update-genera
 import { formActions } from "@editor/store/slices/form";
 import { formSelectors } from "@editor/store/slices/form/form.selectors";
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
-import { changeFormType } from "@editor/store/thunks/form-section";
 import { useQueryFormSettings } from "@ff-client/queries/forms";
 import type { SettingsNamespace } from "@ff-client/types/forms";
 import type { Property } from "@ff-client/types/properties";
@@ -44,10 +43,6 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
     context,
     (handle, value) => {
       if (!updateTranslation(handle, value)) {
-        if (namespace === "general" && handle === "type") {
-          dispatch(changeFormType(String(value)));
-          return;
-        }
         dispatch(
           formActions.modifySettings({
             namespace,

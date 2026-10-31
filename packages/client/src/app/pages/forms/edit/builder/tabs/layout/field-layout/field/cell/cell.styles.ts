@@ -73,7 +73,6 @@ export const Instructions = styled.div`
 `;
 
 export const FieldCellWrapper = styled.div`
-  position: relative;
   display: flex;
   flex-direction: column;
 
@@ -87,38 +86,6 @@ export const FieldCellWrapper = styled.div`
   transition:
     border-color 0.2s ease-out,
     background-color 0.2s ease-out;
-
-  &.quiet-label > ${Label} {
-    position: absolute;
-    top: -9px;
-    left: 8px;
-    z-index: 3;
-    align-items: center;
-    max-width: calc(100% - 64px);
-    min-height: 18px;
-    margin: 0;
-    padding: 2px 6px;
-    border-radius: 3px;
-    background: #f3f7fd;
-    font-size: 11px;
-    line-height: 14px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: opacity 120ms ease-out, visibility 120ms ease-out;
-    ${LabelText} { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-    ${LabelIcon} { top: 0; flex: 0 0 12px; width: 12px; height: 12px; }
-    ${LabelIcon} ${Icon}, ${LabelIcon} svg { width: 12px; height: 12px; font-size: 12px; }
-  }
-  &.quiet-label:hover > ${Label},
-  &.quiet-label.active > ${Label},
-  &.quiet-label.errors > ${Label},
-  &.quiet-label:focus-within > ${Label},
-  &.quiet-label:has([data-field-uid].active) > ${Label},
-  [role='group']:focus-visible > &.quiet-label > ${Label} {
-    opacity: 1; visibility: visible; pointer-events: auto;
-  }
-  @media (prefers-reduced-motion: reduce) { &.quiet-label > ${Label} { transition: none; } }
 
   .location-component-required {
     color: ${colors.error};
@@ -169,17 +136,10 @@ export const FieldCellWrapper = styled.div`
     padding-bottom: 8px;
   }
 
-  &.form-section {
-    height: auto;
-    border-color: #e1e5ea;
-    background-color: #fcfdfe;
-  }
-
   &.content-only .content-preview {
     > :first-child { margin-block-start: 0; }
     > :last-child { margin-block-end: 0; }
   }
-  hr.freeform-divider { margin-block: var(--freeform-divider-spacing, 16px) !important; }
 
   .sample-preview {
     position: relative;

@@ -186,14 +186,7 @@ export const collectLabels = ({
           editable &&
           // Checkbox labels render beside the input instead of in the field wrapper.
           (!type.implements.includes("noLabel") || type.type === "checkbox") &&
-          ![
-            "html",
-            "rich-text",
-            "hidden",
-            "invisible",
-            "layout",
-            "layout-column",
-          ].includes(type.type)
+          !["html", "rich-text", "hidden", "invisible"].includes(type.type)
         ) {
           // Match normal property editing: non-translatable labels belong to the base form.
           const targetSite = property.translatable ? siteId : undefined;
@@ -221,7 +214,7 @@ export const collectLabels = ({
           }
         }
         if (
-          ["group", "layout", "layout-column"].includes(type?.type) &&
+          type?.type === "group" &&
           typeof field.properties.layout === "string"
         )
           visit(field.properties.layout, page);

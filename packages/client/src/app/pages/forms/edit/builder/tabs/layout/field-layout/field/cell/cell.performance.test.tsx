@@ -21,7 +21,6 @@ const fixture = vi.hoisted(() => ({
 }));
 vi.mock("@editor/store", () => ({
   useAppDispatch: () => fixture.dispatch,
-  useAppSelector: () => undefined,
 }));
 vi.mock("@ff-client/queries/field-types", () => ({
   useFieldType: () => ({

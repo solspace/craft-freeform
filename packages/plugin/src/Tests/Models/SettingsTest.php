@@ -27,55 +27,6 @@ class SettingsTest extends TestCase
         }
     }
 
-    public function testBuilderTemplatesStayWithinTheConfiguredSiteDirectory(): void
-    {
-        $root = sys_get_temp_dir().'/freeform-builder-'.bin2hex(random_bytes(5));
-        mkdir($root.'/sections/nested', 0777, true);
-        file_put_contents($root.'/sections/hero.twig', "{# name: Landing hero #}\n{# description: A welcoming headline. #}\n<h1>Hero</h1>");
-        file_put_contents($root.'/sections/nested/card.twig', '<p>Card</p>');
-        file_put_contents($root.'/sections/note.txt', 'Not a template');
-        foreach (['navigation', 'hero', 'feature-cards', 'faq', 'footer', 'sidebar'] as $sample) {
-            copy(__DIR__.'/../../Resources/builder-samples/sample-'.$sample.'.twig', $root.'/sections/sample-'.$sample.'.twig');
-        }
-        $previousApp = \Yii::$app;
-        \Yii::$app = (object) ['path' => new class($root) {
-            public function __construct(private string $root) {}
-
-            public function getSiteTemplatesPath(): string
-            {
-                return $this->root;
-            }
-        }];
-
-        try {
-            $settings = $this->normalize(['builderTemplateDirectory' => 'sections']);
-            self::assertSame('Landing hero', $settings->listBuilderTemplates()['hero.twig']);
-            self::assertSame('nested/card.twig', $settings->listBuilderTemplates()['nested/card.twig']);
-            self::assertSame(
-                ['name' => 'Landing hero', 'description' => 'A welcoming headline.', 'preview' => 'hero'],
-                $settings->getBuilderTemplateDetails()['hero.twig'],
-            );
-            foreach (['navigation' => 'navigation', 'hero' => 'hero', 'feature-cards' => 'cards', 'faq' => 'faq', 'footer' => 'footer', 'sidebar' => 'sidebar'] as $sample => $preview) {
-                self::assertSame($preview, $settings->getBuilderTemplateDetails()['sample-'.$sample.'.twig']['preview']);
-            }
-            $settings->builderTemplateDirectory = '../outside';
-            self::assertSame([], $settings->listBuilderTemplates());
-            $settings->builderTemplateDirectory = '/tmp';
-            self::assertSame([], $settings->listBuilderTemplates());
-        } finally {
-            \Yii::$app = $previousApp;
-            unlink($root.'/sections/hero.twig');
-            unlink($root.'/sections/nested/card.twig');
-            unlink($root.'/sections/note.txt');
-            foreach (glob($root.'/sections/sample-*.twig') ?: [] as $sample) {
-                unlink($sample);
-            }
-            rmdir($root.'/sections/nested');
-            rmdir($root.'/sections');
-            rmdir($root);
-        }
-    }
-
     public function testFormCreationOptionsDefaultToAllAndPreserveTheirDisplayOrder(): void
     {
         $settings = $this->normalize([]);

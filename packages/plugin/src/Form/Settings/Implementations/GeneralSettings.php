@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
-use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FormAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -35,7 +34,6 @@ class GeneralSettings extends SettingsNamespace
 {
     private const SECTION_GENERAL = 'general';
     private const SECTION_DATA_STORAGE = 'data-storage';
-    private const SECTION_DESIGN = 'design';
 
     #[Translatable]
     #[Section(
@@ -130,59 +128,12 @@ class GeneralSettings extends SettingsNamespace
     )]
     public ?string $formattingTemplate = null;
 
-    #[Section(self::SECTION_GENERAL)]
-    #[Edition(Edition::PRO)]
-    #[Input\Boolean(
-        label: 'Customize Form Background',
-        instructions: 'Set a background color for the rendered form and Preview. The Layout canvas and input styles stay unchanged.',
-        order: 8,
-    )]
-    public bool $customizeBackground = false;
-
-    #[Section(self::SECTION_GENERAL)]
-    #[Edition(Edition::PRO)]
-    #[VisibilityFilter('Boolean(customizeBackground)')]
-    #[Input\ColorPicker(
-        label: 'Form Background Color',
-        order: 9,
-    )]
-    public string $backgroundColor = '#ffffff';
-
-    #[Section(
-        self::SECTION_DESIGN,
-        label: 'Component Design',
-        icon: __DIR__.'/Icons/design.svg',
-        order: 2,
-    )]
-    #[Input\ColorPicker(label: 'Accent Color', instructions: 'Shared accent for styled components. Individual components can override it.', order: 1)]
-    public string $componentAccentColor = '#6d28d9';
-
-    #[Section(self::SECTION_DESIGN)]
-    #[Input\ColorPicker(label: 'Text on Accent', instructions: 'Text color on bold component backgrounds and accent buttons.', order: 2)]
-    public string $componentAccentTextColor = '#ffffff';
-
-    #[Section(self::SECTION_DESIGN)]
-    #[Input\ColorPicker(label: 'Surface Color', instructions: 'Background of styled components.', order: 2)]
-    public string $componentSurfaceColor = '#f5f3ff';
-
-    #[Section(self::SECTION_DESIGN)]
-    #[Input\ColorPicker(label: 'Text Color', order: 3)]
-    public string $componentTextColor = '#2e1065';
-
-    #[Section(self::SECTION_DESIGN)]
-    #[Input\Select(label: 'Spacing', order: 4, options: ['compact' => 'Compact', 'comfortable' => 'Comfortable', 'spacious' => 'Spacious'])]
-    public string $componentSpacing = 'comfortable';
-
-    #[Section(self::SECTION_DESIGN)]
-    #[Input\Select(label: 'Corners', order: 5, options: ['square' => 'Square', 'soft' => 'Soft', 'rounded' => 'Rounded'])]
-    public string $componentCorners = 'soft';
-
     #[Translatable]
     #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(
         label: 'Form Description',
         instructions: 'Enter a description or notes for this form.',
-        order: 10,
+        order: 8,
     )]
     public string $description = '';
 
@@ -191,7 +142,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\ColorPicker(
         label: 'Form Color',
         instructions: 'Choose a color for this form (generally used in the control panel).',
-        order: 11,
+        order: 9,
     )]
     public string $color = '';
 
@@ -201,7 +152,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\IconPicker(
         label: 'Form Icon',
         instructions: 'Choose an icon for this form in the control panel.',
-        order: 12,
+        order: 10,
     )]
     public string $icon = '';
 
@@ -210,7 +161,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\Boolean(
         label: 'Allow HTML Embeds',
         instructions: 'Allow this form to be loaded from a public embed URL. Save the form to apply changes. Enable only for forms intended to be publicly accessible.',
-        order: 13,
+        order: 11,
     )]
     public bool $allowHtmlEmbeds = false;
 
@@ -264,7 +215,7 @@ class GeneralSettings extends SettingsNamespace
         self::SECTION_DATA_STORAGE,
         label: 'Data Storage',
         icon: __DIR__.'/Icons/'.self::SECTION_DATA_STORAGE.'.svg',
-        order: 3,
+        order: 2,
     )]
     #[DefaultValue('settings.dataStorage.storeData')]
     #[Input\Boolean(
@@ -315,31 +266,5 @@ class GeneralSettings extends SettingsNamespace
     public function __construct()
     {
         $this->attributes = new FormAttributesCollection();
-    }
-
-    public function getBackgroundColor(): ?string
-    {
-        if (!$this->customizeBackground) {
-            return null;
-        }
-
-        $color = trim($this->backgroundColor);
-
-        return 'transparent' === $color || preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/i', $color) ? $color : null;
-    }
-
-    /** @return array{accent: string, accentText: string, surface: string, text: string, spacing: string, corners: string} */
-    public function getComponentDesign(): array
-    {
-        $color = static fn (string $value, string $fallback): string => preg_match('/^#(?:[a-f0-9]{3}|[a-f0-9]{6})$/iD', $value) ? $value : $fallback;
-
-        return [
-            'accent' => $color($this->componentAccentColor, '#6d28d9'),
-            'accentText' => $color($this->componentAccentTextColor, '#ffffff'),
-            'surface' => $color($this->componentSurfaceColor, '#f5f3ff'),
-            'text' => $color($this->componentTextColor, '#2e1065'),
-            'spacing' => \in_array($this->componentSpacing, ['compact', 'comfortable', 'spacious'], true) ? $this->componentSpacing : 'comfortable',
-            'corners' => \in_array($this->componentCorners, ['square', 'soft', 'rounded'], true) ? $this->componentCorners : 'soft',
-        ];
     }
 }

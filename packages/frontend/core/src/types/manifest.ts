@@ -80,15 +80,7 @@ export type ManifestFieldDefinition = {
       alt?: string | null;
     };
   };
-  layout?: {
-    rows?: Array<{ uid: string; fields: string[] }>;
-    columns?: string;
-    gap?: number;
-    stack?: boolean;
-    verticalAlignment?: string;
-    appearance?: Record<string, string>;
-    cardStyle?: Record<string, string>;
-  };
+  layout?: { rows?: Array<{ uid: string; fields: string[] }> };
 };
 
 export type ConditionalOperator =
@@ -160,7 +152,6 @@ export type FreeformManifest = {
     mode: string;
     successBehavior?: string;
     successMessage?: string | null;
-    backgroundColor?: string | null;
   };
   layout: {
     pages: Array<{

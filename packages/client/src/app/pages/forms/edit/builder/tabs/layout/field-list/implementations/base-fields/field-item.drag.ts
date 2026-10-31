@@ -17,19 +17,16 @@ type DragCollect = {
 
 export const useBaseFieldDrag = (fieldType: FieldType): FieldDrag => {
   const { dragOn, dragOff } = useDragContext();
-  const [{ isDragging }, ref] = useDrag<DragItem, unknown, DragCollect>(
-    () => ({
-      type: Drag.FieldType,
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      item: {
-        type: Drag.FieldType,
-        data: fieldType,
-      },
+  const [{ isDragging }, ref] = useDrag<DragItem, unknown, DragCollect>(() => ({
+    type: Drag.FieldType,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
     }),
-    [fieldType],
-  );
+    item: {
+      type: Drag.FieldType,
+      data: fieldType,
+    },
+  }));
 
   useEffect(() => {
     if (!isDragging) return;

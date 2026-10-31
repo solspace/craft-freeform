@@ -1,7 +1,7 @@
 import { Tooltip } from "@components/elements/tooltip/tooltip";
 import SpinnerIcon from "@components/loaders/spinner";
 import { DiceIcon } from "@editor/builder/sample-data/dice-icon";
-import { type RootState, useAppDispatch, useAppSelector } from "@editor/store";
+import { type RootState, useAppDispatch } from "@editor/store";
 import { contextActions, FocusType } from "@editor/store/slices/context";
 import { contextSelectors } from "@editor/store/slices/context/context.selectors";
 import type { Field } from "@editor/store/slices/layout/fields";
@@ -15,13 +15,9 @@ import DOMPurify from "dompurify";
 import type React from "react";
 import { memo, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { ContentChooser } from "../../../field-list/catalog/catalog";
-import { InlineChooser } from "../../../field-list/catalog/catalog.styles";
-import { ColumnsLayout } from "../../layout/columns-layout/columns-layout";
+
 import { GroupFieldLayout } from "../../layout/group-field-layout/group-field-layout";
-import { PageButtons } from "../../page/page-buttons/page-buttons";
-import { PageTabs } from "../../page-tabs/page-tabs";
-import { BuilderTemplatePreview } from "./builder-template-preview";
+
 import { useLoaderAnimation } from "./cell.animations";
 import {
   FieldCellWrapper,
@@ -44,14 +40,6 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field?.typeClass);
   const { uid } = field;
-  const currentPage = useAppSelector((state) =>
-    state.layout.pages.find((page) => page.uid === state.context.page),
-  );
-  const firstPageUid = useAppSelector((state) => state.layout.pages[0]?.uid);
-  const stepLayoutUid =
-    currentPage && currentPage.uid !== firstPageUid
-      ? currentPage.layoutUid
-      : field.properties?.layout;
 
   const isActive = useSelector((state: RootState) => {
     const focus = contextSelectors.focus(state);
@@ -94,21 +82,6 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
   }, [isContentField, content, previewMarkup]);
   const hasContentPreview = contentPreview.hasContent;
   const hideLabel = noLabel || hasContentPreview;
-  const quietLabel =
-    !hideLabel &&
-    [
-      Type.Group,
-      "layout",
-      "content",
-      "heading",
-      "html",
-      "rich-text",
-      "image",
-      "divider",
-      "spacer",
-      "callout",
-      "form-section",
-    ].includes(type?.type);
   const iconMarkup = useMemo(
     () => ({ __html: DOMPurify.sanitize(type?.icon || "") }),
     [type?.icon],
@@ -149,12 +122,10 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       data-field-type={type.type}
       className={classes(
         hasErrors(field.errors) && "errors",
-        (type.type === Type.Group || type.type === "form-section") && "group",
-        type.type === "form-section" && "form-section",
+        type.type === Type.Group && "group",
         hasContentPreview && "content-only",
         contentPreview.hasHeading && "section-heading",
         isActive && "active",
-        quietLabel && "quiet-label",
         "field",
       )}
       onClick={(event): void => {
@@ -188,43 +159,13 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
       {type.type === Type.Group && (
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}
-      {type.type === "form-section" && (
-        <>
-          <div onClick={(event) => event.stopPropagation()}>
-            <PageTabs />
-          </div>
-          <GroupFieldLayout field={field} layoutUid={stepLayoutUid} />
-          {currentPage && <PageButtons page={currentPage} contained />}
-        </>
-      )}
-      {type.type === "layout" && (
-        <ColumnsLayout field={field} active={isActive} />
-      )}
-      {type.type === "content" && (
-        <InlineChooser>
-          <h3>{translate("What would you like to add?")}</h3>
-          <ContentChooser uid={field.uid} />
-        </InlineChooser>
-      )}
-      {type.type === "builder-template" && (
-        <BuilderTemplatePreview
-          fieldUid={uid}
-          template={String(field.properties.template ?? "")}
-        />
-      )}
 
-      {![
-        Type.Group,
-        "layout",
-        "content",
-        "form-section",
-        "builder-template",
-      ].includes(type.type) &&
+      {type.type !== Type.Group &&
         (hideLabel ? (
           <Row className={sample ? "sample-preview" : undefined}>
             <HtmlPreviewElement
               className={hasContentPreview ? "content-preview" : undefined}
-              $fullWidth={hideLabel}
+              $fullWidth={hasContentPreview}
               dangerouslySetInnerHTML={previewMarkup}
             />
             {sampleMarker}

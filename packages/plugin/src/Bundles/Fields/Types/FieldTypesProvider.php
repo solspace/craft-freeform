@@ -9,23 +9,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\SectionProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\ButtonLinkField;
-use Solspace\Freeform\Fields\Implementations\CalloutField;
-use Solspace\Freeform\Fields\Implementations\ContentField;
-use Solspace\Freeform\Fields\Implementations\DividerField;
-use Solspace\Freeform\Fields\Implementations\HeadingField;
-use Solspace\Freeform\Fields\Implementations\HtmlField;
-use Solspace\Freeform\Fields\Implementations\IconField;
-use Solspace\Freeform\Fields\Implementations\Pro\BuilderTemplateField;
-use Solspace\Freeform\Fields\Implementations\Pro\FormSectionField;
-use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
-use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
-use Solspace\Freeform\Fields\Implementations\Pro\LayoutColumnField;
-use Solspace\Freeform\Fields\Implementations\Pro\LayoutField;
-use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
-use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
-use Solspace\Freeform\Fields\Implementations\SpacerField;
-use Solspace\Freeform\Fields\Implementations\VideoField;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
@@ -34,28 +17,6 @@ use yii\base\Event;
 
 class FieldTypesProvider
 {
-    public const CONTENT_TYPES = [
-        HeadingField::class,
-        RichTextField::class,
-        DividerField::class,
-        SpacerField::class,
-        CalloutField::class,
-        ButtonLinkField::class,
-        VideoField::class,
-        IconField::class,
-        SummaryField::class,
-        ImageField::class,
-        HtmlField::class,
-    ];
-
-    public const LAYOUT_TYPES = [GroupField::class, LayoutField::class, FormSectionField::class];
-
-    public const TEMPLATE_TYPES = [BuilderTemplateField::class];
-
-    public const INTERNAL_TYPES = [
-        ContentField::class,
-        LayoutColumnField::class,
-    ];
     public const EVENT_REGISTER_FIELD_TYPES = 'register-field-types';
 
     /** @var FieldType[] */
@@ -172,9 +133,6 @@ class FieldTypesProvider
         $fieldType->implements = $this->implementationProvider->getImplementations($typeClass);
         $fieldType->properties = $this->propertyProvider->getEditableProperties($typeClass);
         $fieldType->visible = $this->checker->can('layout.fieldTypes', $fieldType->typeClass);
-        if (LayoutColumnField::class === $typeClass || (IconField::class === $typeClass && version_compare(\Craft::$app->version, '5.0.0', '<'))) {
-            $fieldType->visible = false;
-        }
 
         return $fieldType;
     }

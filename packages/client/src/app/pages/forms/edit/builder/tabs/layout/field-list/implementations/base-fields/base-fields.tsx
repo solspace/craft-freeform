@@ -19,11 +19,10 @@ const title = translate("Field Types");
 
 const Group: React.FC<{ group: GroupData }> = ({ group }) => {
   const findType = useFieldTypeSearch();
-  const { data: groupData } = useFetchGroups();
   const fields = group.types
     .map((type) => {
       const fieldType = findType(type);
-      if (!fieldType?.visible || groupData?.groups?.hidden?.includes(type)) {
+      if (!fieldType?.visible) {
         return null;
       }
 

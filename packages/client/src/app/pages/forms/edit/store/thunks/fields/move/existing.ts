@@ -7,7 +7,6 @@ import { rowActions } from "@editor/store/slices/layout/rows";
 import { v4 } from "uuid";
 
 import { removeEmptyRows } from "../../rows";
-import { canPlaceField } from "../containers";
 
 const newRow =
   (options: { field: Field; order?: number; layoutUid?: string }): AppThunk =>
@@ -20,7 +19,6 @@ const newRow =
     if (!layoutUid) {
       layoutUid = layoutSelectors.currentPageLayout(getState())?.uid;
     }
-    if (!layoutUid || !canPlaceField(getState(), field, layoutUid)) return;
 
     dispatch(
       rowActions.add({
@@ -43,7 +41,6 @@ const newRow =
 const existingRow =
   (field: Field, row: Row, order: number): AppThunk =>
   (dispatch, getState) => {
-    if (!canPlaceField(getState(), field, row.layoutUid)) return;
     dispatch(
       fieldActions.moveTo({
         uid: field.uid,

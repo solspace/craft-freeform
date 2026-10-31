@@ -4,33 +4,23 @@ namespace Solspace\Freeform\Bundles\Fields;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
-use Solspace\Freeform\Fields\Implementations\ButtonLinkField;
-use Solspace\Freeform\Fields\Implementations\CalloutField;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Fields\Implementations\ContentField;
-use Solspace\Freeform\Fields\Implementations\DividerField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
-use Solspace\Freeform\Fields\Implementations\HeadingField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
-use Solspace\Freeform\Fields\Implementations\IconField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
-use Solspace\Freeform\Fields\Implementations\Pro\BuilderTemplateField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Implementations\Pro\FormSectionField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
-use Solspace\Freeform\Fields\Implementations\Pro\LayoutColumnField;
-use Solspace\Freeform\Fields\Implementations\Pro\LayoutField;
 use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
@@ -44,10 +34,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\SummaryField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
-use Solspace\Freeform\Fields\Implementations\SpacerField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
-use Solspace\Freeform\Fields\Implementations\VideoField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -70,17 +58,6 @@ class FieldsBundle extends FeatureBundle
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
         $event->addBuiltInType(
-            ContentField::class,
-            HeadingField::class,
-            DividerField::class,
-            SpacerField::class,
-            CalloutField::class,
-            ButtonLinkField::class,
-            VideoField::class,
-            IconField::class,
-            LayoutField::class,
-            LayoutColumnField::class,
-            FormSectionField::class,
             // Standard fields
             TextField::class,
             TextareaField::class,
@@ -114,7 +91,6 @@ class FieldsBundle extends FeatureBundle
             GroupField::class,
             CalculationField::class,
             CardsField::class,
-            BuilderTemplateField::class,
             ImageField::class,
             LocationField::class,
         );

@@ -2,14 +2,12 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use craft\web\View;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\BuilderDataProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
-use Solspace\Freeform\Fields\Implementations\Pro\BuilderTemplateField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\AI\ReferenceFile;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -20,7 +18,6 @@ use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormPreviewService;
 use Solspace\Freeform\Services\FormStatsService;
-use Solspace\Freeform\Services\FormWizardService;
 use Solspace\Freeform\Services\QueuedFormGenerationService;
 use yii\base\Event;
 use yii\web\BadRequestHttpException;
@@ -61,72 +58,6 @@ class FormsController extends BaseApiController
         $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         return $this->asSerializedJson(\Craft::$container->get(BuilderDataProvider::class)->getData($form));
-    }
-
-    public function actionStarters(int $id): Response
-    {
-        $this->requireCpRequest();
-        $this->requireFormPermission($id);
-
-        $form = $this->getFormsService()->getFormById($id);
-        if (!$form || $form->getDateArchived()) {
-            throw new NotFoundHttpException('Form not found');
-        }
-
-        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
-
-        $options = \Craft::$container->get(FormWizardService::class)->options();
-
-        return $this->asJson(['presets' => $options['presets']]);
-    }
-
-    public function actionBuilderTemplatePreview(int $id): Response
-    {
-        $this->requirePostRequest();
-        $this->requireCpRequest();
-        $this->requireFormPermission($id);
-
-        $form = $this->getFormsService()->getFormById($id, SitesHelper::getCurrentCpPageSiteHandle());
-        if (!$form || $form->getDateArchived()) {
-            throw new NotFoundHttpException('Form not found');
-        }
-
-        $template = $this->request->getBodyParam('template');
-        $settings = Freeform::getInstance()->settings->getSettingsModel();
-        $fieldUid = $this->request->getBodyParam('fieldUid');
-        $field = \is_string($fieldUid) ? $form->getLayout()->getField($fieldUid) : null;
-        if (!\is_string($template) || !\array_key_exists($template, $settings->getBuilderTemplateDetails())) {
-            if ($field instanceof BuilderTemplateField && $field->getTemplate() === $template) {
-                $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
-
-                return $this->asJson(['html' => '', 'errorCode' => 'missing-template']);
-            }
-
-            throw new BadRequestHttpException('Choose a valid Builder Template.');
-        }
-
-        $directory = trim((string) $settings->builderTemplateDirectory, '/');
-        $fields = $form->getLayout()->getFields();
-
-        try {
-            $html = \Craft::$app->view->renderTemplate($directory.'/'.$template, [
-                'form' => $form,
-                'field' => $field,
-                'fields' => $fields->getStorableFields(),
-                'allFields' => $fields,
-            ], View::TEMPLATE_MODE_SITE);
-            if (\strlen($html) > 1_000_000) {
-                throw new \RuntimeException('Builder Template preview is too large.');
-            }
-            $result = ['html' => $html];
-        } catch (\Throwable $exception) {
-            \Craft::warning('Builder Template preview failed: '.$exception->getMessage(), __METHOD__);
-            $result = ['html' => '', 'error' => 'Template preview unavailable. Check the Twig file or try again.'];
-        }
-
-        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
-
-        return $this->asJson($result);
     }
 
     public function actionStats(int $id): Response

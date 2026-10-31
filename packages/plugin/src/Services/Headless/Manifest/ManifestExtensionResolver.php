@@ -31,7 +31,6 @@ class ManifestExtensionResolver
             FieldInterface::TYPE_FILE_DRAG_AND_DROP => 'file-dnd',
             FieldInterface::TYPE_RICH_TEXT => 'rich-text',
             FieldInterface::TYPE_HTML => 'html',
-            'heading', 'divider', 'spacer', 'callout', 'content', 'button-link', 'video', 'icon', 'builder-template' => 'html',
             'stripe' => 'payment.stripe',
             'square' => 'payment.square',
             'paypal' => 'payment.paypal',

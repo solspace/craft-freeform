@@ -7,6 +7,7 @@ import { useFieldTypeSearch } from "@ff-client/queries/field-types";
 import type { OptionCollection } from "@ff-client/types/properties";
 import { useMemo } from "react";
 import { useSelector } from "react-redux";
+
 import { layoutSelectors } from "../layouts/layouts.selectors";
 import { pageSelecors } from "../pages/pages.selectors";
 import type { Field } from ".";
@@ -39,7 +40,7 @@ export const useFieldOptionCollection = (
       const label =
         (fieldTranslations?.[field.uid]?.label as string | undefined) ??
         field.properties.label;
-      if (["group", "layout", "layout-column"].includes(type?.type)) {
+      if (type?.type === "group") {
         const visited = new Set(ancestors).add(field.uid);
         return {
           label,

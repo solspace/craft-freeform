@@ -18,7 +18,10 @@ export type CardSubmission = {
 export const relativeTime = (date: string, now: number, locale?: string) => {
   const seconds = (new Date(date).getTime() - now) / 1000;
   if (Math.abs(seconds) < 60) return translate("Just now");
-  const formatter = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const formatter = new Intl.RelativeTimeFormat(locale, {
+    numeric: "always",
+    style: "narrow",
+  });
   if (Math.abs(seconds) < 3600)
     return formatter.format(Math.round(seconds / 60), "minute");
   if (Math.abs(seconds) < 86400)

@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Tests\Library;
 
-use craft\helpers\FileHelper;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Codepack\TemplateReplacer;
+use yii\helpers\FileHelper;
 
 #[CoversClass(TemplateReplacer::class)]
 class TemplateReplacerTest extends TestCase

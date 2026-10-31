@@ -1,9 +1,12 @@
 # Repository instructions
 
-## Freeform 5.18 development
+## Freeform release branches and QA sites
 
 - Use `feat/v5.18` for feature planning and implementation requests explicitly targeting Freeform 5.18. Work on that branch, or base a dedicated feature branch on it and target it for pull requests, unless the user specifies otherwise.
-- Use `craft5install.test` for Freeform 5.18 database changes and local workflow checks. Reserve `craft5upgrade.test` for 5.17 fixes.
+- Use `feat/v5.19` for the page builder: Page forms, Content/Layout/Components pickers, Component Design, Builder Templates, and inserting Form Starters. These features are intentionally excluded from `feat/v5.18`.
+- Use `craft5.test` for Freeform 5.18 database changes and workflow checks, and `craft5install.test` for 5.19/page-builder checks.
+- Reserve `craft5upgrade.test` for released 5.17 fixes. It uses the released Composer package, not a development checkout.
+- Maintain only two temporary development checkouts during the 5.18 release split. After 5.18 ships, prefer the released package on `craft5.test` and keep the 5.19 checkout for ongoing work.
 
 ## Commit messages
 

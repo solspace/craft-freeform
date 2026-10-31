@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
-import { CardActivity } from "./card.activity";
+import { CardActivity, relativeTime } from "./card.activity";
 
 const fixture = vi.hoisted(() => ({ get: vi.fn() }));
 vi.mock("@config/freeform/freeform.config", () => ({
@@ -99,4 +99,14 @@ it("does not show another form's activity while its request is delayed or after 
   await flush();
   expect(host.querySelector("time")).toBeNull();
   expect(host.textContent).toContain("Could not load activity.");
+});
+
+it("uses compact elapsed-time labels on activity cards", () => {
+  const now = Date.parse("2026-10-20T14:00:00Z");
+  expect(relativeTime("2026-10-20T13:50:00Z", now, "en-US")).toBe("10m ago");
+  expect(relativeTime("2026-10-20T12:00:00Z", now, "en-US")).toBe("2h ago");
+  expect(relativeTime("2026-10-17T14:00:00Z", now, "en-US")).toBe("3d ago");
+  expect(relativeTime("2026-10-20T14:00:00Z", now, "en-US")).toBe("Just now");
+  expect(relativeTime("2026-10-20T16:00:00Z", now, "en-US")).toBe("in 2h");
+  expect(relativeTime("2026-10-20T13:50:00Z", now, "fr-CA")).toBe("-10 min");
 });

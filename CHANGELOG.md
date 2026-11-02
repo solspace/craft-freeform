@@ -21,6 +21,7 @@
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Improved the **Demo Templates** installer and removed unused demo assets.
 - The bulk Delete action now reads **Delete selected...** for one or more selected submissions.
 - The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
 - Updated Spam reason and spam-blocking integration icons, added a native Craft icon to **Quick Export**, and rounded status dropdown focus rings to match their pills.

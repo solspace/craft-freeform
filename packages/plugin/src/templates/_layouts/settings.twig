@@ -1,7 +1,7 @@
 {% extends "freeform/_layouts/main" %}
 
 {% set selectedSubnavItem = 'settings' %}
-{% set fullPageForm = true %}
+{% set fullPageForm = fullPageForm ?? true %}
 
 {% set navItems = craft.freeform.settingsNavigation %}
 

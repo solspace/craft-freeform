@@ -1,0 +1,18 @@
+{% set projectRoot = alias('@root')|replace({'\\': '/'})|trim('/', 'right') %}
+<section class="freeform-demo-locations" aria-labelledby="demo-locations-heading">
+    <h3 id="demo-locations-heading">{{ "Installation Locations"|t('freeform') }}</h3>
+    <dl class="freeform-demo-destination">
+        {% for label, component in {'Templates': codePack.templates, 'Assets': codePack.assets} %}
+            {% set directory = component.installDirectoryPath %}
+            {% set fallback = label == 'Assets' ? 'webroot/assets' : 'templates' %}
+            {% set displayDirectory = projectRoot and directory starts with (projectRoot ~ '/') ? directory|slice(projectRoot|length + 1) : fallback %}
+            <div>
+                <dt>
+                    <strong>{{ label|t('app') }}</strong>
+                    <span class="light">{{ (label == 'Assets' ? 'Public web directory' : 'Craft templates directory')|t('freeform') }}</span>
+                </dt>
+                <dd><p><code>{{ displayDirectory }}/<span data-prefix>{{ prefix }}</span>/</code></p></dd>
+            </div>
+        {% endfor %}
+    </dl>
+</section>

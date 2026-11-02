@@ -10,19 +10,12 @@
 {% set selectedSubnavItem = "settings" %}
 {% set title = "Demo Templates"|t('freeform') %}
 
+{% set fullPageForm = false %}
+
 {% block actionButton %}{% endblock %}
 
 {% block content %}
-
-    {% set stats = {
-        templates: codePack.templates.contents.fileCount,
-        assets: codePack.assets.contents.fileCount
-    } %}
-
-    <div class="zilch">
-        {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t('freeform', stats)|raw }}
-        <br /><br />
-        <small>{{ "<a href='{link}'>View the Demo area now!</a>"|t('freeform', {link: (siteUrl ~ prefix ~ '/')})|raw }}</small>
+    <div class="freeform-demo-installer">
+        {% include 'freeform/codepack/_success' %}
     </div>
-
 {% endblock %}

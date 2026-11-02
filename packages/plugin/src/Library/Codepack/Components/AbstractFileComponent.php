@@ -47,8 +47,7 @@ abstract class AbstractFileComponent implements ComponentInterface
      */
     public function install(?string $prefix = null): void
     {
-        $installDirectory = $this->getInstallDirectory();
-        $installDirectory = rtrim($installDirectory, '/');
+        $installDirectory = $this->getInstallDirectoryPath();
         $installDirectory .= '/'.$prefix.'/';
         $installDirectory .= ltrim($this->getSubInstallDirectory($prefix), '/');
 
@@ -62,6 +61,12 @@ abstract class AbstractFileComponent implements ComponentInterface
      * This method does it.
      */
     public function postFileCopyAction(string $newFilePath, ?string $prefix = null): void {}
+
+    /** The base directory used by both the installer and its destination preview. */
+    public function getInstallDirectoryPath(): string
+    {
+        return rtrim(str_replace('\\', '/', $this->getInstallDirectory()), '/');
+    }
 
     public function getContents(): FileObject
     {

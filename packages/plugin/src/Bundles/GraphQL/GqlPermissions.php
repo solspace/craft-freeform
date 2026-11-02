@@ -13,8 +13,6 @@ class GqlPermissions extends Gql
 
     private const MUTATE_ACTIONS = ['save', 'create'];
 
-    private static ?array $readScopeCache = null;
-
     /**
      * Allow if either 'save' (current) or 'create' (legacy) is granted.
      *
@@ -65,7 +63,7 @@ class GqlPermissions extends Gql
      */
     public static function allowedFormUids(): ?array
     {
-        $scope = self::readScope();
+        $scope = self::extractAllowedEntitiesFromSchema('read');
         $formsScope = $scope[self::CATEGORY_FORMS] ?? [];
 
         if (\in_array('all', $formsScope, true)) {
@@ -91,15 +89,6 @@ class GqlPermissions extends Gql
         }
 
         return array_values($submissionsScope);
-    }
-
-    private static function readScope(): array
-    {
-        if (null === self::$readScopeCache) {
-            self::$readScopeCache = self::extractAllowedEntitiesFromSchema('read');
-        }
-
-        return self::$readScopeCache;
     }
 
     /**

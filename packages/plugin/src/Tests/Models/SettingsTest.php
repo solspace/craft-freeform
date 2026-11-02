@@ -38,7 +38,8 @@ class SettingsTest extends TestCase
             copy(__DIR__.'/../../Resources/builder-samples/sample-'.$sample.'.twig', $root.'/sections/sample-'.$sample.'.twig');
         }
         $previousApp = \Yii::$app;
-        \Yii::$app = (object) ['path' => new class($root) {
+        $previousCraftApp = \Craft::$app;
+        \Craft::$app = \Yii::$app = (object) ['path' => new class($root) {
             public function __construct(private string $root) {}
 
             public function getSiteTemplatesPath(): string
@@ -64,6 +65,7 @@ class SettingsTest extends TestCase
             self::assertSame([], $settings->listBuilderTemplates());
         } finally {
             \Yii::$app = $previousApp;
+            \Craft::$app = $previousCraftApp;
             unlink($root.'/sections/hero.twig');
             unlink($root.'/sections/nested/card.twig');
             unlink($root.'/sections/note.txt');

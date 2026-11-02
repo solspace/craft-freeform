@@ -50,6 +50,10 @@ select.ff-searchable-native {
   border: 0;
   box-shadow: none;
 }
+.ff-searchable.ff-searchable .ff-searchable__input::placeholder {
+  color: inherit;
+  opacity: 0.6;
+}
 .ff-searchable.ff-searchable button.ff-searchable__toggle {
   position: absolute;
   inset-inline-end: 0;

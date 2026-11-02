@@ -54,7 +54,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
     #[Input\ButtonGroup(
         label: 'Captcha Type',
-        instructions: 'Choose the type of website key you created in Google.',
+        instructions: 'Choose the type of website key you created in Google. For Legacy setup, Google Cloud keys require their legacy secret key.',
         options: [
             self::VERSION_V3 => 'Score Based (v3)',
             self::VERSION_V2_INVISIBLE => 'Challenge - Invisible (v2)',

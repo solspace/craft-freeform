@@ -200,7 +200,9 @@ class Submission extends Element
 
     public static function gqlScopesByContext(mixed $context): array
     {
-        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$context->uid];
+        $uid = $context instanceof Form ? $context->getUid() : $context->uid;
+
+        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$uid];
     }
 
     public static function gqlMutationNameByContext(mixed $context): string
@@ -492,7 +494,13 @@ class Submission extends Element
 
     public function canView(User $user): bool
     {
-        return true;
+        foreach ([Freeform::PERMISSION_SUBMISSIONS_READ, Freeform::PERMISSION_SUBMISSIONS_MANAGE] as $permission) {
+            if ($user->can($permission) || ($this->formId && $user->can(PermissionHelper::prepareNestedPermission($permission, $this->formId)))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getCpEditUrl(): ?string

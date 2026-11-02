@@ -4,6 +4,7 @@ Freeform can load reCAPTCHA on your forms and check submissions with Google.
 
 Already using reCAPTCHA in Freeform? Keep **Setup → Legacy** and your existing
 keys. Moving a key to Google Cloud does not require you to change this setting.
+See Google's [migration guidance](https://docs.cloud.google.com/recaptcha/docs/migration-overview).
 
 ## Set up the integration
 
@@ -84,6 +85,9 @@ for help finding the legacy secret.
 
 Legacy supports Score-based v3, Invisible v2, and Checkbox v2. Keep the secret key
 private. Freeform uses it on the server and does not send it to visitors.
+This setup uses Google's legacy `siteverify` API, including for compatible keys
+managed in Google Cloud or migrated from Classic. See Google's
+[legacy-secret instructions](https://docs.cloud.google.com/recaptcha/docs/create-key-website#find-key).
 
 </details>
 
@@ -125,6 +129,9 @@ Most sites can leave these settings at their defaults.
 loading until the visitor starts filling out the form. Submitting directly also
 starts reCAPTCHA. Disable this setting to load it when the page opens. Your site's
 consent settings still apply.
+
+Delaying scripts does not disable server-side verification. Disabling the
+reCAPTCHA integration for a form also disables its server-side verification.
 
 Open **Advanced settings** for the options below. Closing the panel does not
 reset its values. Freeform remembers whether it was open or closed for each

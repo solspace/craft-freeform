@@ -5,8 +5,8 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators;
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
+use Solspace\Freeform\Bundles\GraphQL\FieldTypeMetadata;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
@@ -41,7 +41,7 @@ class FieldGenerator extends AbstractGenerator
     {
         $types = parent::generateTypes($context);
 
-        $fieldTypes = \Craft::$container->get(FieldTypesProvider::class)->getTypeShorthands();
+        $fieldTypes = array_keys(FieldTypeMetadata::getClasses());
         $fieldTypes[FreeformFieldInterface::TYPE_HTML] = FreeformFieldInterface::TYPE_HTML;
         $fieldTypes[FreeformFieldInterface::TYPE_RICH_TEXT] = FreeformFieldInterface::TYPE_RICH_TEXT;
         $fieldTypes[FreeformFieldInterface::TYPE_CONFIRMATION] = FreeformFieldInterface::TYPE_CONFIRMATION;
@@ -58,6 +58,10 @@ class FieldGenerator extends AbstractGenerator
 
     private static function generateType(string $typeName, string $fieldType): Type
     {
+        if ($type = GqlEntityRegistry::getEntity($typeName)) {
+            return $type;
+        }
+
         static $allFields;
 
         if (null === $allFields) {
@@ -66,7 +70,7 @@ class FieldGenerator extends AbstractGenerator
 
         $fields = array_merge($allFields, self::getFieldDefinitionsForType($fieldType));
 
-        return GqlEntityRegistry::getEntity($typeName) ?: GqlEntityRegistry::createEntity(
+        return GqlEntityRegistry::createEntity(
             $typeName,
             new FieldType(
                 [

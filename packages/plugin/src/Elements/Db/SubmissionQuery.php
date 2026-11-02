@@ -399,9 +399,9 @@ class SubmissionQuery extends ElementQuery
 
         $this->query->select($select);
 
-        $isEmptyFormId = empty($this->formId);
-        $isIndex = !$request->getIsConsoleRequest() && 'index' === $request->post('context');
-        if ($isEmptyFormId && $isCpRequest && $isIndex) {
+        // CP criteria and element-index context are client-controlled. Always
+        // intersect requested forms with the current user's readable forms.
+        if ($isCpRequest && !$isConsoleRequest) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();
             $this->subQuery->andWhere([$table.'.[[formId]]' => $allowedFormIds]);
         }

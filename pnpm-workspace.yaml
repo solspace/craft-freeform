@@ -9,7 +9,9 @@ overrides:
   "immutable": "5.1.9"
   "shell-quote": "1.11.0"
   "source-map-js": "1.2.2"
-  "follow-redirects": "1.16.1"
+  "follow-redirects": "1.16.2"
+  "glob": "14.0.2"
+  "minimatch": "11.0.1"
   "undici": "8.12.2"
 
 onlyBuiltDependencies:

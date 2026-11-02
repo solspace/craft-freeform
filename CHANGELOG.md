@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.17.7 - Unreleased
+## 5.17.7 - 2026-11-02
 
 ### Added
 - Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
@@ -10,7 +10,9 @@
 
 ### Fixed
 - Fixed Freeform GraphQL interface resolution when a GraphQL type prefix is configured.
-- Fixed GraphQL submission scopes using an empty form identifier, stale form-read permissions after switching schemas, and mutation arguments leaking between forms when rebuilding a schema.
+- Fixed GraphQL schemas including submission types for forms outside the schema's submission permissions.
+- Fixed stale GraphQL form-read permissions after switching schemas.
+- Fixed GraphQL mutation arguments using another form's fields when rebuilding a schema with cached submission types.
 - Fixed unnecessary field metadata processing slowing down GraphQL requests, including queries that do not use Freeform.
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
 - Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.

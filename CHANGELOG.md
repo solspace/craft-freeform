@@ -2,6 +2,9 @@
 
 ## 5.17.7 - 2026-11-02
 
+### Security
+- Fixed a submission read-permission bypass that could allow control panel users to access submissions from unauthorized forms, including through element indexes and exports. Credit to kta1kri for reporting.
+
 ### Added
 - Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
 

@@ -9,22 +9,44 @@
 {% set title = "Demo Templates"|t('freeform') %}
 {% set fullPageForm = false %}
 
-{% macro listFiles(file) %}
-    {% import _self as dir %}
+{% import 'freeform/codepack/_files' as files %}
 
-    {% set isFolder = file.isFolder %}
-    <li class="{{ isFolder ? 'dir' : 'file' }}">
-        <span>{{ file.name }}</span>
-        {% if isFolder %}
-            <ul>
-                {% for childFile in file.files %}
-                    {{ dir.listFiles(childFile) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </li>
-{% endmacro %}
-{% import _self as dir %}
+{% set components = [
+    {
+        id: 'templates',
+        label: 'Templates'|t('app'),
+        icon: 'templates',
+        count: codePack.templates.contents.fileCount,
+        summary: '{count} files'|t('freeform', {count: codePack.templates.contents.fileCount}),
+        contents: codePack.templates.contents,
+    },
+    {
+        id: 'assets',
+        label: 'Assets'|t('app'),
+        icon: 'folder',
+        count: codePack.assets.contents.fileCount,
+        summary: '{count} files'|t('freeform', {count: codePack.assets.contents.fileCount}),
+        contents: codePack.assets.contents,
+    },
+    {
+        id: 'routes',
+        label: 'Routes'|t('app'),
+        icon: 'routes',
+        count: codePack.routes.data|length,
+        summary: '{count} routes'|t('freeform', {count: codePack.routes.data|length}),
+        contents: codePack.routes.data,
+    },
+] %}
+
+{% do view.registerTranslations('freeform', [
+    'View all files',
+    'Show fewer files',
+    'Enter a folder name using letters, numbers, hyphens, underscores, or dots. Start with a letter or number.',
+    'Checking folder…',
+    'Couldn’t check this folder. Retry the check before installing.',
+    'Installation could not be completed. Check your folder permissions and try again.',
+    'Installation could not be confirmed. Check the demo folder before trying again.',
+]) %}
 
 {% block actionButton %}{% endblock %}
 
@@ -37,18 +59,12 @@
             <p class="light">{{ "Try your forms on the front end with ready-to-use examples you can explore and customize."|t('freeform') }}</p>
 
             <ul class="freeform-demo-summary">
-                <li>
-                    <span data-icon="templates" aria-hidden="true"></span>
-                    <span><strong>{{ "Templates"|t('app') }}</strong><span class="light">{{ "{count} files"|t('freeform', {count: codePack.templates.contents.fileCount}) }}</span></span>
-                </li>
-                <li>
-                    <span data-icon="folder" aria-hidden="true"></span>
-                    <span><strong>{{ "Assets"|t('app') }}</strong><span class="light">{{ "{count} files"|t('freeform', {count: codePack.assets.contents.fileCount}) }}</span></span>
-                </li>
-                <li>
-                    <span data-icon="routes" aria-hidden="true"></span>
-                    <span><strong>{{ "Routes"|t('app') }}</strong><span class="light">{{ "{count} routes"|t('freeform', {count: codePack.routes.data|length}) }}</span></span>
-                </li>
+                {% for component in components %}
+                    <li>
+                        <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                        <span><strong>{{ component.label }}</strong><span class="light">{{ component.summary }}</span></span>
+                    </li>
+                {% endfor %}
             </ul>
 
             <form method="post" id="demo-install-form" data-read-only="{{ readOnly ? 'true' : 'false' }}" data-checked-prefix="{{ prefix }}">
@@ -87,47 +103,31 @@
             <details class="freeform-demo-details">
                 <summary>{{ "View files and routes"|t('freeform') }}</summary>
                 <div id="components-wrapper">
-                    <div>
-                        <h3 class="freeform-demo-section-heading">
-                            <span data-icon="templates" aria-hidden="true"></span>
-                            <span>{{ "Templates"|t('app') }}</span>
-                            <span class="freeform-demo-count">{{ codePack.templates.contents.fileCount }}</span>
-                        </h3>
-                        <div class="freeform-demo-file-preview" data-file-preview>
-                            <div id="demo-template-files" class="freeform-demo-file-list">
-                                <ul class="directory-structure">
-                                    <li class="dir"><span data-name="/">{{ prefix }}/</span>
-                                        <ul>{% for file in codePack.templates.contents %}{{ dir.listFiles(file) }}{% endfor %}</ul>
-                                    </li>
+                    {% for component in components %}
+                        <div{% if component.id == 'routes' %} class="freeform-demo-routes"{% endif %}>
+                            <h3 class="freeform-demo-section-heading">
+                                <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                                <span>{{ component.label }}</span>
+                                <span class="freeform-demo-count">{{ component.count }}</span>
+                            </h3>
+                            {% if component.id == 'routes' %}
+                                <ul class="directory-structure routes">
+                                    {% for route in component.contents %}
+                                        <li><span class="route" data-name="/{{ route.urlPattern }}">{{ prefix }}/{{ route.urlPattern }}</span><div class="template">{{ route.template }}</div></li>
+                                    {% endfor %}
                                 </ul>
-                            </div>
-                            <button type="button" class="freeform-demo-view-files" data-view-files aria-controls="demo-template-files" aria-expanded="false" hidden>{{ "View all files"|t('freeform') }}</button>
+                            {% elseif component.id == 'templates' %}
+                                <div class="freeform-demo-file-preview" data-file-preview>
+                                    <div id="demo-template-files" class="freeform-demo-file-list">
+                                        {{ files.tree(component.contents, prefix) }}
+                                    </div>
+                                    <button type="button" class="freeform-demo-view-files" data-view-files aria-controls="demo-template-files" aria-expanded="false" hidden>{{ "View all files"|t('freeform') }}</button>
+                                </div>
+                            {% else %}
+                                {{ files.tree(component.contents, prefix) }}
+                            {% endif %}
                         </div>
-                    </div>
-                    <div>
-                        <h3 class="freeform-demo-section-heading">
-                            <span data-icon="folder" aria-hidden="true"></span>
-                            <span>{{ "Assets"|t('app') }}</span>
-                            <span class="freeform-demo-count">{{ codePack.assets.contents.fileCount }}</span>
-                        </h3>
-                        <ul class="directory-structure">
-                            <li class="dir"><span data-name="/">{{ prefix }}/</span>
-                                <ul>{% for file in codePack.assets.contents %}{{ dir.listFiles(file) }}{% endfor %}</ul>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="freeform-demo-routes">
-                        <h3 class="freeform-demo-section-heading">
-                            <span data-icon="routes" aria-hidden="true"></span>
-                            <span>{{ "Routes"|t('app') }}</span>
-                            <span class="freeform-demo-count">{{ codePack.routes.data|length }}</span>
-                        </h3>
-                        <ul class="directory-structure routes">
-                            {% for route in codePack.routes.data %}
-                                <li><span class="route" data-name="/{{ route.urlPattern }}">{{ prefix }}/{{ route.urlPattern }}</span><div class="template">{{ route.template }}</div></li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                    {% endfor %}
                 </div>
             </details>
         </div>

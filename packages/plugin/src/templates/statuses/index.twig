@@ -34,15 +34,14 @@
 ] %}
 
 {% set selectedSubnavItem = "statuses" %}
+{% set fullPageForm = false %}
 
 {% block actionButton %}
 
     {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
-        <div class="buttons">
-            <a class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
-                {{ "New Status"|t('freeform') }}
-            </a>
-        </div>
+        <a id="newstatuscontainer" class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
+            {{ "New Status"|t('freeform') }}
+        </a>
     {% endif %}
 
 {% endblock %}
@@ -54,57 +53,61 @@
     {{ parent() }}
 
     {% if statuses|length %}
-        <table id="statuses" class="data fullwidth collapsible">
-            <thead>
-            <th scope="col">{{ "Name"|t('freeform') }}</th>
-            <th scope="col">{{ "Handle"|t('freeform') }}</th>
-            <th scope="col">{{ "Default"|t('freeform') }}</th>
-            {% if not readOnly %}
-                <th class="thin"></th>
-                <th class="thin"></th>
-            {% endif %}
-            </thead>
-            <tbody>
-            {% for status in statuses %}
-                <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
-                    <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        {% if craft.app.version < '5.0.0' %}
-                            <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
-                        {% else %}
-                            <span class="color-indicator status {{ status.color }}"></span>
+        <div class="tablepane">
+            <table id="statuses" class="data fullwidth collapsible">
+                <thead>
+                    <tr>
+                        <th scope="col">{{ "Name"|t('freeform') }}</th>
+                        <th scope="col">{{ "Handle"|t('freeform') }}</th>
+                        <th scope="col" class="thin centeralign">{{ "Default"|t('freeform') }}</th>
+                        {% if not readOnly %}
+                            <th scope="col" class="thin"><span class="visually-hidden">{{ "Reorder"|t('freeform') }}</span></th>
+                            <th scope="col" class="thin"><span class="visually-hidden">{{ "Delete"|t('freeform') }}</span></th>
                         {% endif %}
-                        {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
-                            <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
+                    </tr>
+                </thead>
+                <tbody>
+                {% for status in statuses %}
+                    <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
+                        <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                            {% if craft.app.version < '5.0.0' %}
+                                <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
+                            {% else %}
+                                <span class="color-indicator status {{ status.color }}"></span>
+                            {% endif %}
+                            {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
+                                <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
+                                    {{ status.name }}
+                                </a>
+                            {% else %}
                                 {{ status.name }}
-                            </a>
-                        {% else %}
-                            {{ status.name }}
+                            {% endif %}
+                        </th>
+                        <td data-title="{{ 'Handle'|t('freeform') }}">
+                            <code>
+                                {{ status.handle }}
+                            </code>
+                        </td>
+                        <td class="thin centeralign" data-title="{{ 'Default'|t('freeform') }}">{% if status.id == defaultStatusId %}<span data-icon="check" aria-label="{{ 'Yes'|t('app') }}"></span>{% endif %}</td>
+                        {% if not readOnly %}
+                            <td class="thin">
+                                {% if currentUser.can("freeform-settingsAccess") and (statuses|length) > 1 %}
+                                    <a class="move icon" title="{{ 'Reorder'|t('freeform') }}" aria-label="{{ 'Reorder'|t('freeform') }}" role="button"></a>
+                                {% endif %}
+                            </td>
+                            <td class="thin">
+                                {% if currentUser.can("freeform-settingsAccess") and status.id != defaultStatusId and (statuses|length) > 1 %}
+                                    <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}" role="button" tabindex="0"></a>
+                                {% endif %}
+                            </td>
                         {% endif %}
-                    </th>
-                    <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ status.handle }}
-                        </code>
-                    </td>
-                    <td>{% if status.id == defaultStatusId %}<span data-icon="check"></span>{% endif %}</td>
-                    {% if not readOnly %}
-                        <td class="thin">
-                            {% if currentUser.can("freeform-settingsAccess") and (statuses|length) > 1 %}
-                                <a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a>
-                            {% endif %}
-                        </td>
-                        <td class="thin">
-                            {% if currentUser.can("freeform-settingsAccess") and status.id != defaultStatusId and (statuses|length) > 1 %}
-                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
-                            {% endif %}
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <div class="zilch">
+        <div id="nostatuses" class="zilch">
             {{ "No statuses exist yet."|t('freeform') }}
         </div>
     {% endif %}

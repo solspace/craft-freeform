@@ -1,5 +1,4 @@
 {% extends "freeform/_layouts/settings" %}
-{% import "_includes/forms" as forms %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -7,7 +6,6 @@
     { label: "Demo Templates"|t("freeform"), url: url("freeform/settings/demo-templates") },
 ] %}
 
-{% set selectedSubnavItem = "settings" %}
 {% set title = "Demo Templates"|t('freeform') %}
 
 {% set fullPageForm = false %}

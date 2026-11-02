@@ -1,10 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.17.7 - Unreleased
-
-### Security
-- Fixed a submission read-permission bypass that could allow control panel users to access submissions from unauthorized forms, including through element indexes and exports. Credit to kta1kri for reporting.
-- Updated dependencies to address credential disclosure and denial-of-service vulnerabilities.
+## 5.17.7 - 2026-11-02
 
 ### Added
 - Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
@@ -21,6 +17,10 @@
 - Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
 - Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.
 - Fixed searchable field heights in Bootstrap 5 templates and missing or low-contrast search hints in floating-label and dark templates.
+
+### Security
+- Fixed a submission read-permission bypass that could allow control panel users to access submissions from unauthorized forms, including through element indexes and exports. Credit to [kta1kri](https://github.com/kta1kri) for reporting.
+- Updated dependencies to address credential disclosure and denial-of-service vulnerabilities.
 
 ## 5.17.6 - 2026-10-28
 

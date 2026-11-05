@@ -36,6 +36,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\FileUploadPreviewHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
@@ -374,7 +375,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         try {
             $saved = \Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex);
         } catch (\Throwable $exception) {
-            $this->recordStorageFailure($form, $submission, ActivityContext::SUBMISSION_SAVE_EXCEPTION);
+            $this->recordStorageFailure($form, $submission, ActivityContext::exceptionReason($exception, ActivityContext::SUBMISSION_SAVE_EXCEPTION), $exception);
 
             throw $exception;
         }
@@ -650,10 +651,14 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $deleted > 0;
     }
 
-    private function recordStorageFailure(Form $form, Submission $submission, int $reason): void
+    private function recordStorageFailure(Form $form, Submission $submission, int $reason, ?\Throwable $exception = null): void
     {
         try {
-            Freeform::getInstance()->get('activity')->record('error', $form->getId(), $submission->id, ['reasonCode' => $reason, 'errorCount' => \count($submission->getErrors())]);
+            $metadata = ['reasonCode' => $reason, 'errorCount' => \count($submission->getErrors())];
+            if ($exception) {
+                $metadata['diagnostics'] = ActivityDiagnostics::fromException($exception);
+            }
+            Freeform::getInstance()->get('activity')->record('error', $form->getId(), $submission->id, $metadata);
         } catch (\Throwable) {
             // Optional diagnostics must preserve the original save result or exception.
         }

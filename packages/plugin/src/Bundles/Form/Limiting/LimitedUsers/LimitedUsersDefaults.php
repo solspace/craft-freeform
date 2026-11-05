@@ -327,7 +327,10 @@ class LimitedUsersDefaults
                                 ]),
                             new Boolean('data-storage', 'Data Storage'),
                             new Boolean('processing', 'Processing'),
-                            new Boolean('success-and-errors', 'Success & Errors'),
+                            (new Boolean('success-and-errors', 'Success & Errors'))
+                                ->setChildren([
+                                    new Boolean('customMessageColors', 'Custom Success and Error Colors', true),
+                                ]),
                             new Boolean('limits', 'Limits'),
                         ]),
                 ]),

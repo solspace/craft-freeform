@@ -16,13 +16,25 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { SettingsSidebar } from "../settings/settings.sidebar";
 
+import { PermissionPresets } from "./limited-users.preset-picker";
+import {
+  applyPermissionPreset,
+  type PermissionPresetId,
+  permissionPresets,
+} from "./limited-users.presets";
 import {
   useLimitedUsersMutation,
   useLimitedUsersSingleQuery,
 } from "./limited-users.queries";
-import { ContentContainer, GroupWrapper, List } from "./limited-users.styles";
+import {
+  ContentContainer,
+  GroupWrapper,
+  List,
+  MainContainer,
+} from "./limited-users.styles";
 import { ItemBlock } from "./limited-users.sub-components";
 import type { Item, RecursiveUpdate } from "./limited-users.types";
+import { getHiddenPropertyGroups } from "./limited-users.visibility";
 
 export const LimitedUsersDetail: React.FC = () => {
   const { id } = useParams();
@@ -31,7 +43,9 @@ export const LimitedUsersDetail: React.FC = () => {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [state, setState] = useState([]);
+  const [state, setState] = useState<Item[]>([]);
+  const [presetUndo, setPresetUndo] = useState<Item[] | null>(null);
+  const [presetMessage, setPresetMessage] = useState("");
   const mutation = useLimitedUsersMutation(id);
   const isCraft5 = config.metadata.craft.is5;
 
@@ -42,8 +56,28 @@ export const LimitedUsersDetail: React.FC = () => {
       setName(data.name);
       setDescription(data.description);
       setState(data.items);
+      setPresetUndo(null);
+      setPresetMessage("");
     }
   }, [data]);
+
+  const applyPreset = (presetId: PermissionPresetId): void => {
+    setPresetUndo(state);
+    setState(applyPermissionPreset(state, presetId));
+    const preset = permissionPresets.find(({ id }) => id === presetId);
+    setPresetMessage(
+      translate("{preset} applied. Review the options below, then Save.", {
+        preset: translate(preset.label),
+      }),
+    );
+  };
+
+  const undoPreset = (): void => {
+    if (!presetUndo) return;
+    setState(presetUndo);
+    setPresetUndo(null);
+    setPresetMessage(translate("Previous options restored."));
+  };
 
   const updateValue: RecursiveUpdate = (id, updates): void => {
     const updateItem = (items: Item[], path?: string): Item[] => {
@@ -74,6 +108,8 @@ export const LimitedUsersDetail: React.FC = () => {
         { name, description, items: state },
         {
           onSuccess: () => {
+            setPresetUndo(null);
+            setPresetMessage("");
             if (goBack) {
               navigate(`/settings/limited-users`);
             }
@@ -85,6 +121,13 @@ export const LimitedUsersDetail: React.FC = () => {
     };
 
   useSaveShortcut(triggerSave(false));
+
+  const hiddenPropertyGroups = getHiddenPropertyGroups(state);
+  const visibleSections = state.filter(
+    (item) =>
+      item.id !== "props" ||
+      item.children?.some((child) => !hiddenPropertyGroups.has(child.id)),
+  );
 
   if (!data && isFetching) {
     return <div>{translate("Loading...")}</div>;
@@ -125,7 +168,7 @@ export const LimitedUsersDetail: React.FC = () => {
         {translate("Limited Users")}
       </HeaderContainer>
 
-      <div id="main-content" className="has-sidebar">
+      <MainContainer id="main-content" className="has-sidebar">
         <SettingsSidebar activeKey="limited-users" />
 
         <ContentContainer
@@ -134,6 +177,17 @@ export const LimitedUsersDetail: React.FC = () => {
         >
           <div id="content" className="content-pane" style={{ padding: 0 }}>
             <GroupWrapper>
+              <PermissionPresets
+                items={state}
+                disabled={!data || isFetching || mutation.isPending}
+                canUndo={presetUndo !== null}
+                onApply={applyPreset}
+                onUndo={undoPreset}
+              />
+              <div className="visually-hidden" role="status" aria-live="polite">
+                {presetMessage}
+              </div>
+
               <StringInput
                 property={{
                   handle: "name",
@@ -167,18 +221,19 @@ export const LimitedUsersDetail: React.FC = () => {
               <hr />
 
               <List>
-                {state.map((item) => (
+                {visibleSections.map((item) => (
                   <ItemBlock
                     key={item.id}
                     item={item}
                     updateValue={updateValue}
+                    hiddenPropertyGroups={hiddenPropertyGroups}
                   />
                 ))}
               </List>
             </GroupWrapper>
           </div>
         </ContentContainer>
-      </div>
+      </MainContainer>
     </div>
   );
 };

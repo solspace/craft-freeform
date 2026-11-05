@@ -47,6 +47,28 @@ class ActivityInput
         return \in_array($value, [true, 1, '1', 'true'], true) ? '1' : '0';
     }
 
+    public static function technicalLogging(array $params): array
+    {
+        $settings = [];
+        if (\array_key_exists('loggingLevel', $params)) {
+            if (!\in_array($params['loggingLevel'], ['error', 'info', 'debug'], true)) {
+                throw new \InvalidArgumentException('Invalid technical file logging level.');
+            }
+            $settings['loggingLevel'] = $params['loggingLevel'];
+        }
+
+        return $settings;
+    }
+
+    public static function loggingStyle(mixed $value): string
+    {
+        if (!\in_array($value, ['activity', 'classic', 'none'], true)) {
+            throw new \InvalidArgumentException('Invalid logging style.');
+        }
+
+        return $value;
+    }
+
     private static function text(mixed $value): string
     {
         if (!\is_string($value)) {

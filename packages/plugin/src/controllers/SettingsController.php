@@ -22,6 +22,7 @@ use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
 use Solspace\Freeform\Jobs\ManagedPingerRegisterJob;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\DefaultViewHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Models\Settings;
@@ -32,14 +33,6 @@ use yii\web\Response;
 
 class SettingsController extends BaseController
 {
-    private const AVAILABLE_VIEWS = [
-        Freeform::VIEW_FORMS,
-        Freeform::VIEW_SUBMISSIONS,
-        Freeform::VIEW_NOTIFICATIONS,
-        Freeform::VIEW_SETTINGS,
-        Freeform::VIEW_EXPORT_PROFILES,
-    ];
-
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -58,44 +51,34 @@ class SettingsController extends BaseController
         return $this->redirect(UrlHelper::cpUrl('freeform/settings/statuses'));
     }
 
+    public function actionFormMonitor(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        if ($this->getSettingsService()->isFormMonitorEnabledAndAuthorized()) {
+            return $this->redirect(UrlHelper::cpUrl('freeform/integrations/single/FormMonitor'));
+        }
+
+        $this->view->registerAssetBundle(SettingsBundle::class);
+
+        return $this->renderTemplate('freeform/settings/form-monitor', [
+            'readOnly' => false,
+        ]);
+    }
+
     public function actionDefaultView(): Response
     {
-        $defaultView = $this->getSettingsModel()->defaultView;
-        if (!\in_array($defaultView, self::AVAILABLE_VIEWS, true)) {
-            $defaultView = Freeform::VIEW_FORMS;
-        }
-
-        $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
+        $plugin = Freeform::getInstance();
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
-        $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
-        $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-
-        $isFormView = Freeform::VIEW_FORMS === $defaultView;
-        $isSubmissionView = Freeform::VIEW_SUBMISSIONS === $defaultView;
-
-        $cantAccessFormView = $isFormView && !$canAccessForms;
-        $cantAccessSubmissionView = $isSubmissionView && !$canAccessSubmissions;
-        if ($cantAccessFormView || $cantAccessSubmissionView) {
-            if ($canAccessForms) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_FORMS));
-            }
-
-            if ($canAccessSubmissions) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_SUBMISSIONS));
-            }
-
-            if ($canAccessNotifications) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_NOTIFICATIONS));
-            }
-
-            if ($canAccessSettings) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_SETTINGS));
-            }
-
-            if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_EXPORT_PROFILES));
-            }
-        }
+        $defaultView = DefaultViewHelper::resolve($this->getSettingsModel()->defaultView, [
+            Freeform::VIEW_FORMS => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS),
+            Freeform::VIEW_SUBMISSIONS => $canAccessSubmissions,
+            Freeform::VIEW_NOTIFICATIONS => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS),
+            Freeform::VIEW_SETTINGS => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
+            Freeform::VIEW_EXPORT_PROFILES => $plugin->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS),
+            'spam' => $canAccessSubmissions && $plugin->settings->isSpamFolderEnabled(),
+            'ab-tests' => $plugin->isPro() && $plugin->settings->isAbTestsEnabled() && PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS),
+        ]);
 
         return $this->redirect(UrlHelper::cpUrl("freeform/{$defaultView}"));
     }

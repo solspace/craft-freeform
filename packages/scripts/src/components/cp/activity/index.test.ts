@@ -44,6 +44,7 @@ const mount = async (
   mode = "minimal",
   readonly = false,
   custom: Record<string, boolean> | null = null,
+  style = "activity",
 ): Promise<void> => {
   const initial =
     mode === "custom"
@@ -51,15 +52,21 @@ const mount = async (
       : preset[mode as keyof typeof preset] || preset.minimal;
   document.head.innerHTML = `<style>${settingsCardCss}</style>`;
   document.body.innerHTML = `<form><div data-activity-settings ${readonly ? "data-readonly" : ""}>
-    <button type="button" role="switch" id="activity-enabled" aria-checked="true"><input type="hidden" name="settings[activityEnabled]" value="1"></button>
+    <label><input type="radio" name="settings[loggingStyle]" value="activity" ${style === "activity" ? "checked" : ""} ${readonly ? "disabled" : ""}></label>
+    <label><input type="radio" name="settings[loggingStyle]" value="classic" ${style === "classic" ? "checked" : ""} ${readonly ? "disabled" : ""}></label>
+    <label><input type="radio" name="settings[loggingStyle]" value="none" ${style === "none" ? "checked" : ""} ${readonly ? "disabled" : ""}></label>
+    <div data-logging-panel="activity">
     <div data-recording-options>
       <label><input type="radio" name="settings[activityMode]" value="minimal" ${mode === "minimal" ? "checked" : ""}></label>
       <label><input type="radio" name="settings[activityMode]" value="standard" ${mode === "standard" ? "checked" : ""}></label>
       <label><input type="radio" name="settings[activityMode]" value="custom" ${mode === "custom" ? "checked" : ""}></label>
       <div data-event-row class="ff-settings-helper" data-layout="split"><span class="ff-settings-helper-control"><button class="lightswitch" type="button" role="switch" data-event-option="error" aria-checked="${initial.error}"><input type="hidden" name="settings[activityEvents][error]" value="${initial.error ? "1" : ""}"></button></span></div>
       <div data-event-row class="ff-settings-helper" data-layout="split"><span class="ff-settings-helper-control"><button class="lightswitch" type="button" role="switch" data-event-option="submission" aria-labelledby="submission-label" aria-checked="${initial.submission}"><input type="hidden" name="settings[activityEvents][submission]" value="${initial.submission ? "1" : ""}"></button></span><label id="submission-label">Saved submissions</label></div>
-      <p data-options-hint data-custom="Custom" data-preset="Preset"></p>
+      <p data-options-hint><span data-mode-hint="preset">Choose <strong>Custom</strong> to change them.</span><span data-mode-hint="custom" hidden>Choose each event type independently.</span></p>
     </div>
+    </div>
+    <div data-logging-panel="classic"><label><input type="radio" name="settings[loggingLevel]" value="debug" checked></label></div>
+    <div data-logging-panel="none">Logging is off.</div>
     <script type="application/json" data-activity-presets>${JSON.stringify(preset)}</script>
     <script type="application/json" data-activity-custom>${JSON.stringify(custom)}</script>
   </div></form>`;
@@ -69,9 +76,6 @@ const mount = async (
     on: (event: string, listener: EventListener) =>
       element.addEventListener(event, listener),
   }));
-  new NativeSwitch(
-    document.querySelector<HTMLButtonElement>("#activity-enabled")!,
-  );
   await import("../settings-cards/index");
   await import("./index");
 };
@@ -92,6 +96,65 @@ const values = (): FormData => new FormData(document.querySelector("form")!);
 
 describe("Activity recording settings", () => {
   beforeEach(() => vi.resetModules());
+
+  it("preserves option emphasis when switching recording mode instructions", async () => {
+    await mount();
+    const presetHint = document.querySelector<HTMLElement>(
+      '[data-mode-hint="preset"]',
+    )!;
+    const customHint = document.querySelector<HTMLElement>(
+      '[data-mode-hint="custom"]',
+    )!;
+    expect(presetHint.hidden).toBe(false);
+    expect(customHint.hidden).toBe(true);
+    expect(presetHint.querySelector("strong")?.textContent).toBe("Custom");
+    choose("custom");
+    expect(presetHint.hidden).toBe(true);
+    expect(customHint.hidden).toBe(false);
+    choose("standard");
+    expect(presetHint.hidden).toBe(false);
+    expect(customHint.hidden).toBe(true);
+    expect(presetHint.querySelector("strong")?.textContent).toBe("Custom");
+  });
+
+  it("shows only the chosen logging style and preserves the other style's preferences", async () => {
+    await mount("custom", false, { error: true, submission: false });
+    const activity = document.querySelector<HTMLElement>(
+      '[data-logging-panel="activity"]',
+    )!;
+    const classic = document.querySelector<HTMLElement>(
+      '[data-logging-panel="classic"]',
+    )!;
+    expect(activity.hidden).toBe(false);
+    expect(classic.hidden).toBe(true);
+    choose("classic");
+    expect(activity.hidden).toBe(true);
+    expect(classic.hidden).toBe(false);
+    expect(values().get("settings[activityMode]")).toBe("custom");
+    expect(values().get("settings[activityEvents][submission]")).toBe("");
+    expect(values().get("settings[loggingLevel]")).toBe("debug");
+    choose("activity");
+    expect(activity.hidden).toBe(false);
+    expect(classic.hidden).toBe(true);
+    expect(isOn("submission")).toBe(false);
+  });
+
+  it("opens directly in Classic when saved, including read-only style controls", async () => {
+    await mount("minimal", true, null, "classic");
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="activity"]')!
+        .hidden,
+    ).toBe(true);
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="classic"]')!
+        .hidden,
+    ).toBe(false);
+    expect(
+      document.querySelector<HTMLInputElement>(
+        'input[name="settings[loggingStyle]"][value="classic"]',
+      )!.disabled,
+    ).toBe(true);
+  });
 
   it("shows the effective preset and prevents edits until Custom is selected", async () => {
     await mount();
@@ -184,22 +247,41 @@ describe("Activity recording settings", () => {
     ).toBe(true);
   });
 
-  it("locks paused recording options without dropping their values when saved", async () => {
+  it("hides both sets of controls for None while preserving preferences", async () => {
     await mount("custom", false, { error: true, submission: false });
-    const recording =
-      document.querySelector<HTMLButtonElement>("#activity-enabled")!;
-    const area = document.querySelector<HTMLElement>(
-      "[data-recording-options]",
-    )!;
-    recording.click();
-    expect(area.inert).toBe(true);
-    expect(area.classList.contains("is-paused")).toBe(true);
+    choose("none");
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="activity"]')!
+        .hidden,
+    ).toBe(true);
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="classic"]')!
+        .hidden,
+    ).toBe(true);
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="none"]')!
+        .hidden,
+    ).toBe(false);
     expect(values().get("settings[activityMode]")).toBe("custom");
-    expect(values().get("settings[activityEvents][error]")).toBe("1");
     expect(values().get("settings[activityEvents][submission]")).toBe("");
-    recording.click();
-    expect(area.inert).toBe(false);
+    expect(values().get("settings[loggingLevel]")).toBe("debug");
+    choose("activity");
     expect(isOn("error")).toBe(true);
     expect(isOn("submission")).toBe(false);
+  });
+
+  it("restores None with all style cards disabled in read-only environments", async () => {
+    await mount("minimal", true, null, "none");
+    expect(
+      document.querySelector<HTMLElement>('[data-logging-panel="none"]')!
+        .hidden,
+    ).toBe(false);
+    expect(
+      [
+        ...document.querySelectorAll<HTMLInputElement>(
+          'input[name="settings[loggingStyle]"]',
+        ),
+      ].every((input) => input.disabled),
+    ).toBe(true);
   });
 });

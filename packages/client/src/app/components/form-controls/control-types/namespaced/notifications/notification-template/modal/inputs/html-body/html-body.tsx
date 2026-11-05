@@ -1,3 +1,6 @@
+import { editorColorMap } from "@ff-client/utils/color-palette";
+import "@components/form-controls/control-types/wysiwyg/tinymce-chrome.css";
+
 import { ControlBlock } from "@components/form-controls/control.block";
 import config from "@config/freeform/freeform.config";
 import { useAppStore } from "@editor/store";
@@ -43,22 +46,25 @@ export const HtmlBodyInput: FC<InputControl> = (props) => {
 
   return (
     <ControlBlock {...props}>
-      <Editor
-        init={{
-          branding: false,
-          menubar: false,
-          statusbar: true,
-          promotion: false,
-          content_css: stylesPath,
-          store,
-          queryClient,
-        }}
-        value={value}
-        onEditorChange={onChange}
-        plugins={plugins}
-        toolbar={toolbar}
-        licenseKey="gpl"
-      />
+      <div className="ff-tinymce-editor">
+        <Editor
+          init={{
+            color_map: editorColorMap(),
+            branding: false,
+            menubar: false,
+            statusbar: true,
+            promotion: false,
+            content_css: stylesPath,
+            store,
+            queryClient,
+          }}
+          value={value}
+          onEditorChange={onChange}
+          plugins={plugins}
+          toolbar={toolbar}
+          licenseKey="gpl"
+        />
+      </div>
     </ControlBlock>
   );
 };

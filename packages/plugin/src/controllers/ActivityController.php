@@ -14,7 +14,6 @@ use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityPresentation;
 use Solspace\Freeform\Library\Activity\ActivityQuery;
 use Solspace\Freeform\Library\Activity\ActivityTable;
-use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -191,7 +190,7 @@ class ActivityController extends BaseController
             'exportLimit' => ActivityExport::LIMIT,
             'filters' => $filters,
             'unavailable' => $unavailable,
-            'activityEnabled' => BooleanHelper::normalize($settings->activityEnabled),
+            'activityEnabled' => $settings->isActivityLoggingEnabled(),
             'settings' => $settings,
             'forms' => $formNames,
             'formColors' => $formColors,
@@ -224,16 +223,20 @@ class ActivityController extends BaseController
         }
 
         try {
-            $enabled = ActivityInput::enabled($body['activityEnabled'] ?? '0');
+            $technicalLogging = ActivityInput::technicalLogging($body);
+            $loggingStyle = ActivityInput::loggingStyle($body['loggingStyle'] ?? $this->getSettingsService()->getSettingsModel()->loggingStyle);
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }
         $data = [
+            'loggingStyle' => $loggingStyle,
             'activityMode' => $body['activityMode'],
-            'activityEnabled' => $enabled,
+            // The style cards are the only on/off control in the CP.
+            'activityEnabled' => '1',
+            'technicalFileLogging' => '1',
             'activityRetentionDays' => filter_var($body['activityRetentionDays'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
             'activityMaxRows' => filter_var($body['activityMaxRows'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
-        ];
+        ] + $technicalLogging;
         if ('custom' === $data['activityMode']) {
             if (!\is_array($body['activityEvents'] ?? null)) {
                 throw new BadRequestHttpException('Invalid activity event settings.');
@@ -367,7 +370,7 @@ class ActivityController extends BaseController
     {
         return $this->renderTemplate('freeform/settings/activity', [
             'settings' => $settings,
-            'activityEnabled' => BooleanHelper::normalize($settings->activityEnabled),
+            'loggingStyle' => $settings->getEffectiveLoggingStyle(),
             'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
             'catalog' => ActivityPolicy::EVENTS,
             'examples' => ActivityExamples::all(),

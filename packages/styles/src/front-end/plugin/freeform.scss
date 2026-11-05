@@ -9,6 +9,7 @@
 @use "../fields/drag-and-drop-file";
 @use "../fields/processing-overlay";
 @use "../fields/rating";
+@use "../fields/error-colors";
 @use "../components/visual";
 
 // A visual writing surface; the signature bitmap remains transparent.

@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -111,7 +112,7 @@ class PardotV4 extends BasePardotIntegration
 
         $mapping = array_merge($prospectMapping, $customMapping);
         if (!$mapping) {
-            $this->logger->debug('No data mapped, skipping.');
+            $this->logger->debug('No data mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -124,7 +125,7 @@ class PardotV4 extends BasePardotIntegration
             ['query' => $mapping],
         ));
 
-        $this->logger->info('New Prospect created', ['id' => $json?->id ?? $json?->Id ?? null]);
+        $this->logger->info('New Prospect created', ['id' => $json?->id ?? $json?->Id ?? null, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_PROSPECT, $response);
     }

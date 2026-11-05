@@ -9,6 +9,8 @@ import styled from "styled-components";
 export const ButtonGroupWrapper = styled.div<{
   $compact?: boolean;
   $small?: boolean;
+  $stacked?: boolean;
+  $flush?: boolean;
 }>`
   display: inline-flex;
   flex-direction: row;
@@ -17,7 +19,7 @@ export const ButtonGroupWrapper = styled.div<{
 
   width: fit-content;
   max-width: 100%;
-  padding-top: ${spacings.sm};
+  padding-top: ${({ $flush }) => ($flush ? "0" : spacings.sm)};
 
   ${({ $compact }) =>
     $compact &&
@@ -29,6 +31,27 @@ export const ButtonGroupWrapper = styled.div<{
     `
     > button { min-width: 0; padding-inline: 4px; font-size: 12px; white-space: nowrap; }
     > button > span:not(.button-group-icon) { display: inline-block; transform: scaleX(0.88); }
+  `}
+
+  ${({ $stacked }) =>
+    $stacked &&
+    `
+    width: 100%;
+    && > button {
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      min-height: 68px;
+      padding: 10px 8px;
+      line-height: 18px;
+    }
+    && > button > span:not(.button-group-icon) { white-space: nowrap; }
+    && > button > .button-group-icon {
+      width: 22px;
+      height: 22px;
+      svg { width: 22px; height: 22px; }
+    }
   `}
 `;
 

@@ -3,6 +3,8 @@
     Strings are escaped; illustration/control/example/details slots accept captured Twig markup.
     choice: id, name, value, label, description; optional selected, disabled, subtitle,
       illustration, footer, symbol, tone (slate/blue/purple/teal), attributes.
+    compactChoice: id, name, value, label, description; optional selected, disabled,
+      recommended, icon, subtitle, illustration, footer, tone, attributes.
     helper: id, label, description; optional icon, control, example, details,
       controlHidden, layout (stack/split), tone (slate/blue/red/orange/green), attributes.
     Motion hooks for supplied SVG artwork: ff-settings-art-sheet/row/node/slider.
@@ -19,6 +21,26 @@
     {% endset %}
     {% tag 'div' with {class:'ff-settings-choice', data:{tone:config.tone ?? 'slate'}}|merge(config.attributes ?? {}, recursive=true) %}
         {{ forms.radio({id:config.id, name:config.name, value:config.value, checked:config.selected ?? false, disabled:config.disabled ?? false, label:content, describedBy:config.id ~ '-description', inputAttributes:{aria:{labelledby:config.id ~ '-title'}}}) }}
+    {% endtag %}
+{% endmacro %}
+
+{# Uses the same compact choice-card stylesheet as the React integration editor. #}
+{% macro compactChoice(config) %}
+    {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SettingsCardsBundle') %}
+    {% set illustrated = config.illustration ?? null %}
+    {% tag 'label' with {class:'ff-choice-card' ~ (illustrated ? ' ff-choice-card-illustrated' : ''), data:{tone:config.tone ?? 'slate'}}|merge(config.attributes ?? {}, recursive=true) %}
+        <input type="radio" id="{{ config.id }}" name="{{ config.name }}" value="{{ config.value }}" {{ (config.selected ?? false) ? 'checked' }} {{ (config.disabled ?? false) ? 'disabled' }} aria-labelledby="{{ config.id }}-title" aria-describedby="{{ config.id }}-description">
+        <span class="choice-heading">
+            {% if config.icon ?? null %}<span class="choice-icon" aria-hidden="true">{{ config.icon }}</span>{% endif %}
+            <span id="{{ config.id }}-title">{{ config.label }}</span>
+        </span>
+        {% if illustrated %}<span class="ff-settings-choice-art" aria-hidden="true">{{ config.illustration }}</span>{% endif %}
+        <span id="{{ config.id }}-description">
+            {% if config.recommended ?? false %}<span class="choice-detail-heading"><span class="ff-recommended-badge">{{ 'Recommended'|t('freeform') }}</span></span>{% endif %}
+            {% if config.subtitle ?? null %}<span class="choice-descriptor">{{ config.subtitle }}</span>{% endif %}
+            <span class="choice-instructions">{{ config.description }}</span>
+        </span>
+        {% if config.footer ?? null %}<span class="choice-footer">{{ config.footer }}</span>{% endif %}
     {% endtag %}
 {% endmacro %}
 

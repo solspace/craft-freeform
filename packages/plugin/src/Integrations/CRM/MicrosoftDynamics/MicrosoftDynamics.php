@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -268,7 +269,7 @@ class MicrosoftDynamics extends CRMIntegration
             }
 
             $this->triggerAfterResponseEvent($category, $response);
-            $this->logger->info('Microsoft Dynamics '.$category.' created.');
+            $this->logger->info('Microsoft Dynamics '.$category.' created.', ['activityReason' => ActivityContext::INTEGRATION_CREATED]);
         }
     }
 

@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import 'freeform/_components/settings-cards' as cards %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -156,36 +157,48 @@
 
     <h2>{{ "Email Notification Templates"|t('freeform') }}</h2>
 
-    {{ forms.selectField({
+    {% set templateMethods = {
+        form: {label: 'Form-specific only', description: 'Create email templates for individual forms.', path: 'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h4'},
+        global: {label: 'Global only', description: 'Use shared email templates across forms.', path: 'M4 4h6v6H4ZM14 4h6v6h-6ZM4 14h6v6H4ZM14 14h6v6h-6Z'},
+        all: {label: 'Form-specific & Global', description: 'Allow both form-specific and shared email templates.', path: 'M3 3h11v14H3ZM7 7h11v14H7M10 11h5M10 15h5'},
+    } %}
+    {% set templateMethodInput %}
+        <div class="ff-choice-cards">
+            {% for value, option in templateMethods %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({id:'template-method-' ~ value, name:'settings[emailTemplateMethod]', value:value, selected:settings.emailTemplateMethod == value, disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
         label: "Template Method"|t('freeform'),
         id: 'template-method',
+        fieldset: true,
         instructions: "Choose whether you want to use form-specific templates, global templates, or both."|t('freeform'),
-        name: "settings[emailTemplateMethod]",
-        value: settings.emailTemplateMethod,
         errors: settings.errors("emailTemplateMethod"),
-        disabled: readOnly,
-        options: {
-            "form": "Form-specific only" | t('freeform'),
-            "global": "Global only" | t('freeform'),
-            "all": "Form-specific & Global" | t('freeform'),
-        },
-    }) }}
+    }, templateMethodInput) }}
 
     <div id="global-email-block" class="{{ settings.emailTemplateMethod == 'form' ? 'hidden' }}">
-        {{ forms.selectField({
+        {% set storageTypes = {
+            files: {label:'File', description:'Store Twig templates in your project files.', path:'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h4'},
+            database: {label:'Database', description:'Store templates in Craft and edit them in the control panel.', path:'M20 6c0 2-16 2-16 0s16-2 16 0ZM4 6v12c0 2 16 2 16 0V6M4 12c0 2 16 2 16 0'},
+            files_database: {label:'File & Database', description:'Make both file and database templates available.', path:'M3 3h10v14H3ZM13 8c0-2 8-2 8 0v11c0 2-8 2-8 0ZM13 8c0 2 8 2 8 0M13 14c0 2 8 2 8 0'},
+        } %}
+        {% set storageTypeInput %}
+            <div class="ff-choice-cards">
+                {% for value, option in storageTypes %}
+                    {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                    {{ cards.compactChoice({id:'storage-type-' ~ value, name:'settings[emailTemplateStorageType]', value:value, selected:settings.emailTemplateStorageType == value, disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+                {% endfor %}
+            </div>
+        {% endset %}
+        {{ forms.field({
             label: "Template Storage Type"|t('freeform'),
             id: 'storage-type',
+            fieldset: true,
             instructions: "Choose whether you want to enable email notification templates stored as files, in the database, or have both options available."|t('freeform'),
-            name: "settings[emailTemplateStorageType]",
-            value: settings.emailTemplateStorageType,
             errors: settings.errors("emailTemplateStorageType"),
-            disabled: readOnly,
-            options: {
-                "files": "File" | t('freeform'),
-                "database": "Database" | t('freeform'),
-                "files_database": "File & Database" | t('freeform'),
-            },
-        }) }}
+        }, storageTypeInput) }}
 
         <div class="hidden">
             {{ forms.lightswitchField({
@@ -368,6 +381,8 @@
 {% endblock %}
 
 {% css %}
+    .ff-template-manager > hr { margin-inline: calc(var(--padding, var(--pane-padding, 24px)) * -1); }
+
     .ff-template-manager #formTemplateDirectory,
     .ff-template-manager #successTemplateDirectory,
     .ff-template-manager #emailTemplateDirectory { max-width: 900px; }

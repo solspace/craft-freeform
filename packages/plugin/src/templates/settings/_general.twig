@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import "freeform/_components/settings-cards" as cards %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -35,18 +36,29 @@
 
 	{% endif %}
 
-	{{ forms.selectField({
+    {% set defaultViews = {
+        forms: {label:'Forms', description:'Open your forms overview.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_FORMS_ACCESS')), path:'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5'},
+        submissions: {label:'Submissions', description:'Review submissions across your forms.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')), path:'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
+        spam: {label:'Spam', description:'Review submissions flagged as spam.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')) and craft.freeformServices.settings.isSpamFolderEnabled(), path:'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM9 10l6 6M15 10l-6 6'},
+        'ab-tests': {label:'A/B Tests', description:'Compare form variants and their performance.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_AB_ACCESS')) and craft.freeform.pro and craft.freeformServices.settings.isAbTestsEnabled(), path:'M12 3v5M6 8h12M6 8v5M18 8v5M3 14h6v7H3ZM15 14h6v7h-6Z'},
+    } %}
+    {% set defaultViewInput %}
+        <div class="ff-choice-cards">
+            {% for value, option in defaultViews %}
+                {% if option.available %}
+                    {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                    {{ cards.compactChoice({id:'default-view-' ~ value, name:'settings[defaultView]', value:value, selected:settings.defaultView == value, disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
+        id:'default-view',
+        fieldset:true,
         label: "Default View"|t('freeform'),
         instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
-        name: "settings[defaultView]",
-        value: settings.defaultView,
         errors: settings.errors("defaultView"),
-        disabled: readOnly,
-        options: {
-            forms: "Forms"|t('freeform'),
-            submissions: "Submissions"|t('freeform'),
-        },
-    }) }}
+    }, defaultViewInput) }}
 
 	{{ forms.checkboxSelectField({
         label: "Form Creation Options"|t('freeform'),
@@ -91,22 +103,39 @@
         }) }}
     {% endif %}
 
-	{{ forms.selectField({
+    {% set badgeOptions = {
+        all: {label: 'Notices & Errors', description: 'Counts unread update notices and errors recorded by the selected logging style.', path: 'M4 4h16v12H4ZM8 20h8M9 8h6M9 12h3'},
+        notices: {label: 'Update Notices', description: 'Counts unread update notices.', path: 'M4 5h16v14H4ZM8 9h8M8 13h5'},
+        errors: {label: 'Logged Errors', description: 'Counts errors recorded by the selected logging style.', path: 'M12 3 2 21h20ZM12 9v5M12 17h.01'},
+        submissions: {label: 'Submissions', description: 'Counts saved submissions, excluding spam.', path: 'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
+        spam: {label: 'Spam Folder', description: 'Counts submissions stored in the Spam folder.', path: 'M12 3 20 6v6c0 5-8 9-8 9s-8-4-8-9V6ZM9 9l6 6m0-6-6 6'},
+        '': {label: 'None', description: 'Hides the count beside Freeform in the control panel navigation.', path: 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM6 6l12 12'},
+    } %}
+    {% set badgeInput %}
+        <div class="ff-choice-cards" data-columns="3">
+            {% for value, option in badgeOptions %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({
+                    id: 'plugin-badge-' ~ (value ?: 'off'),
+                    name: 'settings[badgeType]',
+                    value: value,
+                    selected: settings.badgeType == value,
+                    recommended: value == 'all',
+                    disabled: readOnly,
+                    label: option.label|t('freeform'),
+                    description: option.description|t('freeform'),
+                    icon: icon,
+                }) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
+        id: 'plugin-badge',
+        fieldset: true,
         label: "Plugin Badge"|t('freeform'),
-        instructions: "Select the options you'd like to be included in the plugin badge count (when applicable)."|t('freeform'),
-        name: "settings[badgeType]",
-        value: settings.badgeType,
+        instructions: "Choose what the badge beside Freeform in the control panel counts."|t('freeform'),
         errors: settings.errors("badgeType"),
-        disabled: readOnly,
-        options: {
-            '': "Don't Show"|t('freeform'),
-            all: "Update Notices & Logged Errors"|t('freeform'),
-            notices: "Update Notices only"|t('freeform'),
-            errors: "Logged Errors only"|t('freeform'),
-            submissions: "Submission Count"|t('freeform'),
-            spam: "Spam Folder Count"|t('freeform'),
-        },
-    }) }}
+    }, badgeInput) }}
 
 	{% if craft.freeform.pro %}
 
@@ -143,27 +172,6 @@
         placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
 
-    {{ forms.booleanMenuField({
-        label: 'Write Technical Log Files'|t('freeform'),
-        instructions: 'Optional diagnostic files can contain more detail than Activity, including sensitive information. File logging is off by default. Existing nonempty files remain accessible under Legacy Logs, and Activity storage limits do not apply to these files.'|t('freeform'),
-        name: 'settings[technicalFileLogging]',
-        value: settings.technicalFileLogging,
-        includeEnvVars: true,
-        disabled: readOnly,
-    }) }}
-	{{ forms.selectField({
-        label: "Technical File Logging Level"|t('freeform'),
-        instructions: "Controls the separate technical log files, which may contain more detail than Activity and follow their own retention. Configure Activity Logging separately to choose which structured events are recorded."|t('freeform'),
-        name: "settings[loggingLevel]",
-        value: settings.loggingLevel,
-        errors: settings.errors("loggingLevel"),
-        disabled: readOnly,
-        options: {
-            error: "Errors (recommended)"|t('freeform'),
-            info: "Info"|t('freeform'),
-            debug: "Debug"|t('freeform'),
-        },
-    }) }}
 
 	<hr>
 
@@ -385,8 +393,5 @@
         }) }}
 	</div>
 
-	<div id="logging-level-warning" class="hidden">
-		{{- "A logging level of 'Info' or 'Debug' should not be used in production regularly as logs may contain sensitive data."|t('freeform') -}}
-	</div>
 
 {% endblock %}

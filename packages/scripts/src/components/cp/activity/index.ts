@@ -10,6 +10,7 @@ type ActivitySwitch = {
 const craftUi = window as typeof window & {
   Craft: { LightSwitch: new (element: HTMLElement) => ActivitySwitch };
   jQuery: JQueryStatic;
+  hljs?: { highlightElement(element: HTMLElement): void };
 };
 
 const settingsRoot = document.querySelector<HTMLElement>(
@@ -17,6 +18,23 @@ const settingsRoot = document.querySelector<HTMLElement>(
 );
 
 if (settingsRoot) {
+  const styles = Array.from(
+    settingsRoot.querySelectorAll<HTMLInputElement>(
+      'input[name="settings[loggingStyle]"]',
+    ),
+  );
+  const updateStyle = (): void => {
+    const selected = styles.find((radio) => radio.checked)?.value || "activity";
+    settingsRoot
+      .querySelectorAll<HTMLElement>("[data-logging-panel]")
+      .forEach((panel) => {
+        panel.hidden = panel.dataset.loggingPanel !== selected;
+      });
+  };
+  styles.forEach((radio) => {
+    radio.addEventListener("change", updateStyle);
+  });
+  updateStyle();
   const radios = Array.from(
     settingsRoot.querySelectorAll<HTMLInputElement>(
       'input[name="settings[activityMode]"]',
@@ -39,7 +57,9 @@ if (settingsRoot) {
     settingsRoot.querySelector("[data-activity-presets]")?.textContent || "{}",
   ) as Record<string, Record<string, boolean>>;
   const readonly = settingsRoot.hasAttribute("data-readonly");
-  const hint = settingsRoot.querySelector<HTMLElement>("[data-options-hint]");
+  const hints = settingsRoot.querySelectorAll<HTMLElement>(
+    "[data-options-hint] [data-mode-hint]",
+  );
   let previous = radios.find((radio) => radio.checked)?.value || "minimal";
   const readOptions = (): Record<string, boolean> =>
     Object.fromEntries(
@@ -81,10 +101,10 @@ if (settingsRoot) {
         radio.closest("[data-mode-card]") || radio.closest("label")
       )?.classList.toggle("is-selected", radio.checked);
     });
-    if (hint) {
-      hint.textContent =
-        hint.dataset[mode === "custom" ? "custom" : "preset"] || "";
-    }
+    hints.forEach((hint) => {
+      hint.hidden =
+        hint.dataset.modeHint !== (mode === "custom" ? "custom" : "preset");
+    });
     previous = mode;
   };
   radios.forEach((radio) => {
@@ -103,25 +123,17 @@ if (settingsRoot) {
         );
     });
   });
-  const recording =
-    settingsRoot.querySelector<HTMLButtonElement>("#activity-enabled");
-  const recordingOptions = settingsRoot.querySelector<HTMLElement>(
-    "[data-recording-options]",
-  );
-  const updateRecording = (): void => {
-    if (!recording || !recordingOptions) return;
-    const paused = recording.getAttribute("aria-checked") !== "true";
-    // Inert blocks pointer/keyboard edits while preserving values in the submitted form.
-    recordingOptions.inert = paused;
-    recordingOptions.classList.toggle("is-paused", paused);
-    recordingOptions.setAttribute("aria-disabled", String(paused));
-  };
-  if (recording) craftUi.jQuery(recording).on("change", updateRecording);
   update();
-  updateRecording();
 }
 
 function bindActivityActions(root: ParentNode = document): void {
+  root
+    .querySelectorAll<HTMLElement>(
+      "code[data-activity-json]:not([data-highlighted])",
+    )
+    .forEach((code) => {
+      craftUi.hljs?.highlightElement(code);
+    });
   root
     .querySelectorAll<HTMLButtonElement>("[data-activity-copy]")
     .forEach((button) => {

@@ -2,6 +2,7 @@ import type { OptionCollection } from "@ff-client/types/properties";
 import classes from "@ff-client/utils/classes";
 import DOMPurify from "dompurify";
 import { type FC, useEffect, useRef } from "react";
+import { RecommendedBadge } from "../badges/recommended-badge";
 import CheckIcon from "./check";
 import type { DropdownProps } from "./dropdown";
 import {
@@ -28,6 +29,7 @@ export const Options: FC<Props> = ({
   focusIndex,
   showValues,
   showHints,
+  recommendedValue,
   onChange,
 }) => {
   const optionRefs = useRef<HTMLLIElement[]>([]);
@@ -105,6 +107,9 @@ export const Options: FC<Props> = ({
                     }}
                   />
                 </div>
+                {!children &&
+                  recommendedValue !== undefined &&
+                  value === recommendedValue && <RecommendedBadge />}
               </LabelContainer>
 
               {!showValues && showHints && hint && (
@@ -129,6 +134,7 @@ export const Options: FC<Props> = ({
                 onChange={onChange}
                 showHints={showHints}
                 showValues={showValues}
+                recommendedValue={recommendedValue}
               />
             )}
           </Item>

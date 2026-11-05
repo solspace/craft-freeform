@@ -86,12 +86,14 @@ export const ViewControls = styled.div`
 `;
 
 export const SearchWrapper = styled.div`
+  position: relative;
   flex: 1 1 200px;
   width: 240px;
   min-width: 0;
   max-width: 280px;
 
-  input[type='search'] {
+  input.text[type='search'] {
+    padding-inline: 32px;
     box-sizing: border-box;
     height: var(--forms-control-height);
     min-height: var(--forms-control-height);
@@ -100,6 +102,13 @@ export const SearchWrapper = styled.div`
 
   input::placeholder {
     color: var(--light-text-color, #596673);
+  }
+
+  .texticon-icon {
+    position: absolute;
+    inset-inline-start: 10px;
+    margin: 0;
+    pointer-events: none;
   }
 
   .texticon-icon::before {

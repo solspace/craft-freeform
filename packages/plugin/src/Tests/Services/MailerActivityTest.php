@@ -23,6 +23,7 @@ class MailerActivityTest extends TestCase
     #[TestWith(['rejected', ActivityContext::MAIL_REJECTED])]
     #[TestWith(['render', ActivityContext::MAIL_RENDER_FAILED])]
     #[TestWith(['before', ActivityContext::MAIL_PREPARATION_FAILED])]
+    #[TestWith(['cancelled', ActivityContext::MAIL_CANCELLED])]
     #[TestWith(['transport', ActivityContext::MAIL_SEND_EXCEPTION])]
     #[TestWith(['after', ActivityContext::MAIL_AFTER_SEND_FAILED])]
     #[TestWith(['missing', ActivityContext::MAIL_TEMPLATE_MISSING])]
@@ -68,7 +69,7 @@ class MailerActivityTest extends TestCase
             {
                 ++$this->calls;
                 if ('transport' === $this->scenario) {
-                    throw new \RuntimeException('SECRET transport response');
+                    throw new \RuntimeException('Transport failed: password=SECRET');
                 }
 
                 return 'rejected' !== $this->scenario;
@@ -83,14 +84,17 @@ class MailerActivityTest extends TestCase
             $message = $this->createStub(Message::class);
             $message->method('setTo')->willReturnSelf();
             if ('render' === $scenario) {
-                $mailer->method('compileMessage')->willThrowException(new \RuntimeException('SECRET template'));
+                $mailer->method('compileMessage')->willThrowException(new \RuntimeException('Template failed: password=SECRET'));
             } else {
                 $mailer->method('compileMessage')->willReturn($message);
             }
             foreach (['before' => MailerService::EVENT_BEFORE_SEND, 'after' => MailerService::EVENT_AFTER_SEND] as $stage => $event) {
                 if ($scenario === $stage) {
-                    $mailer->on($event, static fn () => throw new \RuntimeException('SECRET handler'));
+                    $mailer->on($event, static fn () => throw new \RuntimeException('Handler failed: password=SECRET'));
                 }
+            }
+            if ('cancelled' === $scenario) {
+                $mailer->on(MailerService::EVENT_BEFORE_SEND, static function ($event) { $event->isValid = false; });
             }
             $form = $this->createStub(Form::class);
             $form->method('getId')->willReturn(12);
@@ -106,7 +110,7 @@ class MailerActivityTest extends TestCase
             }
             self::assertCount('after' === $scenario ? 2 : 1, $events);
             $last = $events[array_key_last($events)];
-            self::assertSame(null === $reason ? 'email-sent' : 'email-error', $last[0]);
+            self::assertSame('cancelled' === $scenario ? 'email-skipped' : (null === $reason ? 'email-sent' : 'email-error'), $last[0]);
             self::assertSame($reason, $last[3]['reasonCode'] ?? null);
             self::assertStringNotContainsString('SECRET', json_encode($events));
             self::assertStringNotContainsString('private@example.test', json_encode($events));

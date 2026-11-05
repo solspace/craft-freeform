@@ -2,6 +2,7 @@
 
 {% import "_includes/forms" as forms %}
 {% import "freeform/_components/measurement" as measurement %}
+{% import 'freeform/_components/settings-cards' as cards %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -21,18 +22,25 @@
 
         <h2 class="first">{{ "Spam Behavior"|t('freeform') }}</h2>
 
-        {{ forms.selectField({
+        {% set spamBehaviors = {
+            simulate_success: {label:'Simulate Success', description:'Show the usual success response without revealing that spam was detected.', path:'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM8 12l3 3 5-6'},
+            display_errors: {label:'Display Errors', description:'Show spam errors to help troubleshoot protection settings. Use temporarily.', path:'M21 21l-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM10 6v5M10 14h.01'},
+        } %}
+        {% set spamBehaviorInput %}
+            <div class="ff-choice-cards">
+                {% for value, option in spamBehaviors %}
+                    {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                    {{ cards.compactChoice({id:'spam-protection-behavior-' ~ value, name:'settings[spamProtectionBehavior]', value:value, selected:settings.spamProtectionBehavior == value, recommended:value == 'simulate_success', disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+                {% endfor %}
+            </div>
+        {% endset %}
+        {{ forms.field({
             id: "spam-protection-behavior",
+            fieldset: true,
             label: "Spam Protection Behavior"|t('freeform'),
             instructions: "Select the behavior you'd like Freeform to take when it detects a submission as being spam."|t('freeform'),
-            name: "settings[spamProtectionBehavior]",
-            value: settings.spamProtectionBehavior,
-            disabled: readOnly,
-            options: {
-                "simulate_success": "Simulate Success (recommended)"|t('freeform'),
-                "display_errors": "Display Errors (for debugging)"|t('freeform'),
-            }
-        }) }}
+            errors: settings.errors('spamProtectionBehavior'),
+        }, spamBehaviorInput) }}
 
         {{ forms.booleanMenuField({
             includeEnvVars: true,

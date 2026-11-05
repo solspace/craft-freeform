@@ -23,6 +23,7 @@ use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\NotificationInterface;
@@ -95,13 +96,13 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             $logger = $this->getLogger($notification, $form);
 
             if (!$this->recipients) {
-                $logger->warning('No recipients found for the notification', ['form' => $form->getHandle()]);
+                $logger->warning('No recipients found for the notification', ['form' => $form->getHandle(), 'activityReason' => ActivityContext::MAIL_NO_RECIPIENTS, 'activityFormId' => $form->getId(), 'activitySubmissionId' => $this->submissionId, 'activityNotificationId' => $this->notificationId]);
 
                 return;
             }
 
             if (!$this->template) {
-                $logger->warning('No template found for the notification', ['form' => $form->getHandle()]);
+                $logger->warning('No template found for the notification', ['form' => $form->getHandle(), 'activityReason' => ActivityContext::MAIL_TEMPLATE_MISSING, 'activityFormId' => $form->getId(), 'activitySubmissionId' => $this->submissionId, 'activityNotificationId' => $this->notificationId]);
 
                 return;
             }

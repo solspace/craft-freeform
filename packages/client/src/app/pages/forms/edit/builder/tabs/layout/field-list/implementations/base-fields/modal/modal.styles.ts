@@ -160,6 +160,8 @@ export const ColorPickerWrapper = styled.div`
 `;
 
 export const ColorPopover = styled.div`
+  width: 252px;
+  max-width: calc(100vw - 32px);
   position: absolute;
   top: -6px;
   left: calc(100% + ${spacings.sm});

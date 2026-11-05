@@ -7,11 +7,18 @@ use craft\enums\Color;
 class ColorHelper
 {
     /**
-     * Generates a random HEX color code.
+     * Chooses a distinct form color from the shared Craft palette.
      */
     public static function randomColor(): string
     {
-        return \sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+        $colors = array_column(array_filter(self::getPalette(), static fn (array $color) => $color['random']), 'value');
+
+        return $colors[array_rand($colors)];
+    }
+
+    public static function getPalette(): array
+    {
+        return json_decode(file_get_contents(__DIR__.'/color-palette.json'), true, 512, \JSON_THROW_ON_ERROR);
     }
 
     /**

@@ -3,6 +3,7 @@ import type { FormWithStats } from "@ff-client/types/forms";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { MemoryRouter } from "react-router-dom";
 import Sortable from "sortablejs";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ListProvider } from "./index";
@@ -203,7 +204,9 @@ beforeEach(async () => {
   await act(async () =>
     root.render(
       <QueryClientProvider client={client}>
-        <ListProvider />
+        <MemoryRouter>
+          <ListProvider />
+        </MemoryRouter>
       </QueryClientProvider>,
     ),
   );
@@ -245,9 +248,10 @@ it("places search, view, chart period, and Form groups in toolbar order", () => 
   expect(
     controls.children[2].querySelector('[aria-label="Chart period"]'),
   ).not.toBeNull();
-  expect(
-    controls.children[3].querySelector('[aria-label="Insert widget"]'),
-  ).not.toBeNull();
+  expect(controls.children[3].matches('button[aria-haspopup="dialog"]')).toBe(
+    true,
+  );
+  expect(controls.children[3].textContent).toBe("Insert widget…");
   expect(controls.children[4].textContent).toBe("Form groups");
   expect(host.textContent).not.toContain("Submission history");
   expect(host.textContent).not.toContain("UTC · today so far");
@@ -385,7 +389,9 @@ it.each(["lite", "express"])(
     await act(async () =>
       root.render(
         <QueryClientProvider client={client}>
-          <ListProvider />
+          <MemoryRouter>
+            <ListProvider />
+          </MemoryRouter>
         </QueryClientProvider>,
       ),
     );
@@ -403,7 +409,9 @@ it.each(["lite", "express"])(
     await act(async () =>
       root.render(
         <QueryClientProvider client={client}>
-          <ListProvider />
+          <MemoryRouter>
+            <ListProvider />
+          </MemoryRouter>
         </QueryClientProvider>,
       ),
     );

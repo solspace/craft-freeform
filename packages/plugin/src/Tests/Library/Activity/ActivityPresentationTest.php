@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Activity\ActivityExamples;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityPresentation;
@@ -66,5 +67,67 @@ class ActivityPresentationTest extends TestCase
         $record['event'] = 'warning';
         $record['metadata'] = '{}';
         self::assertSame('Operational warning', ActivityPresentation::present($record)['title']);
+    }
+
+    public function testExamplesDistinguishWarningsFromEmailFailuresAndLinkIntegrationSteps(): void
+    {
+        $examples = ActivityExamples::all();
+        self::assertSame('Operational warning', $examples['warning']['title']);
+        self::assertArrayNotHasKey('reasonCode', $examples['warning']['metadata']);
+        self::assertStringContainsString('Integration connection check', $examples['warning']['metadata']['diagnostics']['message']);
+
+        $failure = $examples['email-error'];
+        self::assertSame('Mail transport authorization failed', $failure['title']);
+        self::assertSame('Digest email', $failure['context']['Email type']);
+        self::assertNull($failure['formId']);
+        self::assertNull($failure['submissionId']);
+        self::assertArrayNotHasKey('notificationId', $failure['metadata']);
+
+        foreach (['error', 'response', 'started', 'finished', 'skipped', 'action'] as $step) {
+            self::assertSame(123456, $examples['integration-'.$step]['context']['Processing ID']);
+        }
+    }
+
+    public function testScheduledEmailDescriptionsDoNotAssumeAFormNotification(): void
+    {
+        foreach (['email-error', 'email-sent'] as $event) {
+            $record = ActivityPresentation::present([
+                'event' => $event, 'metadata' => ['emailType' => 3], 'dateCreated' => '2026-11-03 12:00:00',
+            ]);
+            self::assertSame('Export notification', $record['context']['Email type']);
+            self::assertStringContainsString('Email', $record['title']);
+            self::assertStringNotContainsString('notification', $record['description']);
+        }
+    }
+
+    public function testDiagnosticExamplesUseProductionMaskingAndOnlyAppearForRelevantEvents(): void
+    {
+        $examples = ActivityExamples::all();
+        $withDetails = array_keys(array_filter($examples, static fn ($example) => isset($example['metadata']['diagnostics'])));
+        self::assertSame(['error', 'warning', 'email-error', 'integration-error'], $withDetails);
+        $email = $examples['email-error']['metadata']['diagnostics'];
+        self::assertStringContainsString('d***@example.com', $email['message']);
+        self::assertStringNotContainsString('demo@example.com', json_encode($examples));
+        foreach ($withDetails as $key) {
+            $details = $examples[$key]['metadata']['diagnostics'];
+            self::assertSame($details, ActivityDiagnostics::clean($details));
+            foreach ($details['trace'] ?? [] as $frame) {
+                self::assertArrayNotHasKey('args', $frame);
+                self::assertStringNotContainsString('/', $frame['file']);
+            }
+        }
+    }
+
+    public function testExamplesShowPartialApiKeyMaskingAndFullyHiddenMailCredentials(): void
+    {
+        $examples = ActivityExamples::all();
+        $key = $examples['warning']['metadata']['diagnostics']['context']['apiKey'];
+        self::assertStringContainsString('demo_test_****c3d4', $key);
+        self::assertSame('Example CRM', $examples['warning']['metadata']['diagnostics']['context']['service']);
+        $mail = $examples['email-error']['metadata']['diagnostics']['message'];
+        self::assertStringContainsString('smtp://*********@mail.example.com:587', $mail);
+        foreach (['demo-user', 'demo-password', 'demo_test_7f8a9b0c1d2e3f4a5b6c7d8ea1b2c3d4'] as $secret) {
+            self::assertStringNotContainsString($secret, json_encode($examples));
+        }
     }
 }

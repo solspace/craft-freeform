@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Dotdigital\BaseDotdigitalIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -47,14 +48,14 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
     public function push(Form $form, Client $client): void
     {
         if (!$this->mailingList || !$this->emailField) {
-            $this->logger->debug('Mailing list or email field not set. Skipping.');
+            $this->logger->debug('Mailing list or email field not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NOT_CONFIGURED]);
 
             return;
         }
 
         $listId = $this->mailingList->getResourceId();
         if (!$listId) {
-            $this->logger->debug('Mailing list ID not set. Skipping.');
+            $this->logger->debug('Mailing list ID not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_LIST]);
 
             return;
         }
@@ -62,7 +63,7 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
         if ($this->optInField) {
             $optInValue = $form->get($this->optInField->getUid())->getValue();
             if (!$optInValue) {
-                $this->logger->debug('Opt-in field used but not chosen. Skipping.');
+                $this->logger->debug('Opt-in field used but not chosen. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_OPT_IN]);
 
                 return;
             }
@@ -70,7 +71,7 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
 
         $email = $form->get($this->emailField->getUid())->getValue();
         if (!$email) {
-            $this->logger->debug('Email field empty. Skipping.');
+            $this->logger->debug('Email field empty. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_EMAIL]);
 
             return;
         }
@@ -97,7 +98,7 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
             ['json' => $contactData],
         );
 
-        $this->logger->info('New Contact created', ['email' => $email]);
+        $this->logger->info('New Contact created', ['email' => $email, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $contactDataMapping);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_DATA, $response);

@@ -9,14 +9,19 @@ use Solspace\Freeform\Library\Logging\Readers\FileLogReader;
 
 class LoggerService extends BaseService
 {
-    /** Constant-time checks only: never read or count legacy files to build navigation. */
     public function getExistingLogs(): array
+    {
+        return $this->getLogNavigation();
+    }
+
+    /** Constant-time checks only. Active Classic logging also exposes empty logs. */
+    public function getLogNavigation(bool $includeEmpty = false): array
     {
         $logs = [];
         foreach (['error-log' => [null, 'Errors'], 'integrations-log' => ['freeform-integrations.log', 'Integrations'], 'email-log' => ['freeform-email.log', 'Emails']] as $route => [$file, $label]) {
             $path = FreeformLogger::getLogfilePath($file);
             clearstatcache(true, $path);
-            if (is_file($path) && filesize($path) > 0) {
+            if ($includeEmpty || (is_file($path) && filesize($path) > 0)) {
                 $logs[$route] = $label;
             }
         }

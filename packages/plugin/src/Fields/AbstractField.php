@@ -745,6 +745,7 @@ abstract class AbstractField implements \Stringable, FieldInterface, Identificat
             ->getError()
             ->clone()
             ->setIfEmpty('class', 'errors')
+            ->replace('data-field-errors', true)
         ;
 
         $listItems = [];

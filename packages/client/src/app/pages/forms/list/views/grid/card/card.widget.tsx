@@ -10,13 +10,14 @@ import type { DashboardWidgetSize } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import CrossIcon from "@ff-icons/actions/delete";
 import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import type { DashboardWidget } from "../grid.widgets";
 import { getExtraWidgetSizes, widgetKey } from "../grid.widgets";
 import { CardSizeMenu } from "./card.size-menu";
 import { CardWrapper, Title } from "./card.styles";
 import { WidgetFrame } from "./card.widget-frame";
+import { WidgetTypeMenu } from "./card.widget-menu";
 
 const EditorFrame = styled.iframe`width: 100%; flex: 1; min-height: 0; border: 0; display: block;`;
 const WidgetHeader = styled.div`
@@ -104,30 +105,16 @@ export const WidgetEditor = ({
 export const InsertWidgetMenu = () => {
   const { openSlideout } = useModal();
   const { current } = useSiteContext();
-  const [value, setValue] = useState("");
   return (
-    <div className="select">
-      <select
-        aria-label={translate("Insert widget")}
-        value={value}
-        onChange={(event) => {
-          const type = event.target.value;
-          setValue("");
-          openSlideout(
-            WidgetEditor,
-            { type, siteId: current.id },
-            translate("Insert widget"),
-          );
-        }}
-        style={{ height: "var(--forms-control-height)", maxWidth: 180 }}
-      >
-        <option value="">{translate("Insert widget…")}</option>
-        <option value="linear">{translate("Linear Chart")}</option>
-        <option value="radial">{translate("Radial Chart")}</option>
-        <option value="recent">{translate("Recent Submissions")}</option>
-        <option value="quick-form">{translate("Quick Form")}</option>
-      </select>
-    </div>
+    <WidgetTypeMenu
+      onSelect={(type) =>
+        openSlideout(
+          WidgetEditor,
+          { type, siteId: current.id },
+          translate("Insert widget"),
+        )
+      }
+    />
   );
 };
 

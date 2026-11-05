@@ -39,7 +39,19 @@ class SubmissionActivityTest extends TestCase
         }
         $activity = $this->createMock(ActivityService::class);
         $activity->expects($diagnosticsUnavailable ? self::never() : self::once())->method('record')
-            ->with('error', 12, null, ['reasonCode' => $throws ? ActivityContext::SUBMISSION_SAVE_EXCEPTION : ActivityContext::SUBMISSION_SAVE_REJECTED, 'errorCount' => 1])
+            ->with('error', 12, null, self::callback(static function ($metadata) use ($throws) {
+                self::assertSame($throws ? ActivityContext::SUBMISSION_SAVE_EXCEPTION : ActivityContext::SUBMISSION_SAVE_REJECTED, $metadata['reasonCode']);
+                self::assertSame(1, $metadata['errorCount']);
+                self::assertStringNotContainsString('SECRET submitted value', json_encode($metadata));
+                if ($throws) {
+                    self::assertSame('Original save failure', $metadata['diagnostics']['message']);
+                    self::assertSame(\RuntimeException::class, $metadata['diagnostics']['exception']);
+                } else {
+                    self::assertArrayNotHasKey('diagnostics', $metadata);
+                }
+
+                return true;
+            }))
         ;
         $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['get'])->getMock();
         $get = $plugin->method('get')->with('activity');

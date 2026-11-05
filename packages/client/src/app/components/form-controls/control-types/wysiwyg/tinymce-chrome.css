@@ -1,0 +1,97 @@
+/* Shared editor chrome for rich text fields and notification templates. */
+.ff-tinymce-editor .tox.tox-tinymce {
+  padding: 0;
+  border: 1px solid var(--gray-200, #cdd8e4);
+  border-radius: 6px;
+}
+.ff-tinymce-editor .tox .tox-editor-header {
+  padding: 4px 6px !important;
+  background: var(--gray-050, #f3f7fc);
+  border-bottom: 1px solid var(--gray-150, #dae4ef);
+  box-shadow: none !important;
+}
+.ff-tinymce-editor .tox .tox-toolbar-overlord,
+.ff-tinymce-editor .tox .tox-toolbar,
+.ff-tinymce-editor .tox .tox-toolbar__primary,
+.ff-tinymce-editor .tox .tox-toolbar__overflow {
+  padding: 0;
+  background: transparent;
+}
+.ff-tinymce-editor .tox .tox-toolbar__group {
+  padding: 0 6px;
+  margin: 3px 0;
+  border-color: var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-tbtn {
+  width: 30px;
+  height: 30px;
+  margin: 0 2px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--gray-700, #3f4d5a);
+  background: transparent;
+  border-radius: 4px;
+}
+.ff-tinymce-editor .tox .tox-tbtn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+.ff-tinymce-editor .tox .tox-tbtn:not(.tox-tbtn--disabled):hover {
+  background: var(--gray-150, #dae4ef);
+}
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--enabled,
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--enabled:hover {
+  color: var(--blue-700, #245f96);
+  background: var(--blue-100, #dbeafe);
+}
+.ff-tinymce-editor .tox .tox-tbtn--select {
+  width: auto;
+  min-width: 0;
+  padding: 0 6px;
+}
+.ff-tinymce-editor .tox .tox-tbtn--select:has(.tox-tbtn__select-label) {
+  min-width: 110px;
+  padding: 0 8px;
+  background: var(--gray-100, #e4edf6);
+}
+.ff-tinymce-editor .tox .tox-tbtn__select-label {
+  margin: 0 8px 0 0;
+}
+.ff-tinymce-editor .tox .tox-tbtn__select-chevron svg {
+  width: 10px;
+  height: 10px;
+}
+.ff-tinymce-editor .tox .tox-split-button {
+  height: 30px;
+  margin: 0 2px;
+  border-color: transparent;
+  border-radius: 4px;
+}
+.ff-tinymce-editor .tox .tox-split-button:hover {
+  border-color: var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-split-button .tox-tbtn {
+  margin: 0;
+}
+.ff-tinymce-editor .tox .tox-split-button__chevron {
+  width: 18px;
+}
+.ff-tinymce-editor .tox .tox-split-button__chevron svg {
+  width: 10px;
+  height: 10px;
+}
+.ff-tinymce-editor .tox .tox-statusbar {
+  font-size: 11px;
+  color: var(--gray-500, #657585);
+  border-color: var(--gray-150, #dae4ef);
+}
+
+.ff-tinymce-editor .tox.tox-tinymce .tox-toolbar__group:not(:last-of-type) {
+  border-inline-end: 1px solid var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--disabled {
+  color: var(--gray-500, #657585);
+  background: transparent;
+  opacity: 0.45;
+}

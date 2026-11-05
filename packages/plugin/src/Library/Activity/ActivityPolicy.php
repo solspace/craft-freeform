@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Activity;
 
-/** The catalog is also the storage allowlist: never persist arbitrary log messages. */
+/** The catalog and bounded diagnostic envelope define the storage allowlist. */
 class ActivityPolicy
 {
     public const MODES = ['minimal', 'standard', 'detailed', 'custom'];
@@ -11,15 +11,20 @@ class ActivityPolicy
     public const LEVEL_LABELS = ['error' => 'Error', 'warning' => 'Warning', 'success' => 'Success', 'info' => 'Information'];
 
     public const EVENTS = [
-        'error' => ['Errors', 'System error', 'Freeform reported an error. Activity does not store the original error text. Technical logs may have more detail if enabled.', 'error', 'system'],
-        'warning' => ['Warnings', 'Operational warning', 'Freeform reported a warning. Activity does not store the original warning text. Technical logs may have more detail if enabled.', 'warning', 'system'],
+        'error' => ['Errors', 'System error', 'Freeform reported an error. Review related events, the affected configuration, and any sanitized technical details.', 'error', 'system'],
+        'warning' => ['Warnings', 'Operational warning', 'Freeform reported a warning. Review related events, the affected configuration, and any sanitized technical details.', 'warning', 'system'],
         'submission' => ['Saved submissions', 'Submission saved', 'The submission was saved in Freeform.', 'success', 'submissions'],
         'validation' => ['Failed validation', 'Validation failed', 'A form submission attempt did not pass validation. Field values and validation messages are not recorded.', 'warning', 'submissions'],
         'spam' => ['Spam outcomes', 'Submission flagged as spam', 'Spam protection flagged this submission or submission attempt.', 'warning', 'spam'],
-        'email-error' => ['Email failures', 'Notification failed', 'Notification processing reported a failure. Review any handoff events, the mail settings, and optional technical email log.', 'error', 'email'],
-        'email-sent' => ['Email handoffs', 'Notification accepted by mail transport', 'The mail transport accepted the notification. Inbox delivery has not been confirmed.', 'success', 'email'],
-        'integration-error' => ['Integration failures', 'Integration failed', 'An integration reported a failure. Check its connection settings. Technical logs may have more detail if enabled.', 'error', 'integrations'],
+        'email-error' => ['Email failures', 'Email failed', 'Email processing reported a failure. Review related email events, email configuration, and mail transport settings.', 'error', 'email'],
+        'email-sent' => ['Email handoffs', 'Email accepted by mail transport', 'The mail transport accepted the email. Inbox delivery has not been confirmed.', 'success', 'email'],
+        'email-skipped' => ['Cancelled emails', 'Notification cancelled', 'A notification was cancelled before reaching the mail transport.', 'info', 'email'],
+        'integration-error' => ['Integration failures', 'Integration failed', 'An integration reported a failure. Review its connection settings, field mapping, and related processing events.', 'error', 'integrations'],
         'integration-response' => ['Integration responses', 'Integration responded', 'An integration returned a non-error HTTP response. A successful HTTP response does not necessarily confirm that the external action completed.', 'info', 'integrations'],
+        'integration-started' => ['Integration attempts', 'Integration processing started', 'Freeform started processing this integration attempt.', 'info', 'integrations'],
+        'integration-finished' => ['Completed integration processing', 'Integration processing finished', 'The integration returned without an uncaught exception. Review related steps and responses. This does not confirm that the external action completed.', 'info', 'integrations'],
+        'integration-skipped' => ['Skipped integration steps', 'Integration step skipped', 'An integration step did not run. Other configured steps may still run.', 'info', 'integrations'],
+        'integration-action' => ['Reported integration actions', 'Integration action reported', 'The integration reported a record or subscription action. Each action type is recorded once per processing attempt.', 'info', 'integrations'],
         'form-change' => ['Form saves', 'Form saved', 'The form settings were saved. Change counts are shown when available. Setting values and user details are excluded.', 'info', 'forms'],
     ];
 
@@ -33,7 +38,11 @@ class ActivityPolicy
 
     public static function options(string $mode, array $custom = []): array
     {
-        $standard = ['error', 'warning', 'submission', 'spam', 'email-error', 'integration-error'];
+        $standard = [
+            'error', 'warning', 'submission', 'spam',
+            'email-error', 'email-sent', 'email-skipped',
+            'integration-error', 'integration-skipped', 'integration-action',
+        ];
         $enabled = match ($mode) {
             'standard' => $standard,
             'detailed' => array_keys(self::EVENTS),
@@ -51,7 +60,7 @@ class ActivityPolicy
     {
         $clean = [];
         // Only numeric operational facts are accepted, even in Detailed mode.
-        foreach (['httpStatus', 'notificationId', 'integrationId', 'siteId', 'errorCount', 'attempt', 'summaryIncomplete', 'reasonCode', 'spamChecks', 'durationMs', 'elapsedMs', ...array_keys(self::FORM_CHANGE_LABELS)] as $key) {
+        foreach (['httpStatus', 'notificationId', 'integrationId', 'siteId', 'errorCount', 'attempt', 'operationId', 'emailType', 'summaryIncomplete', 'reasonCode', 'spamChecks', 'durationMs', 'elapsedMs', ...array_keys(self::FORM_CHANGE_LABELS)] as $key) {
             $value = $metadata[$key] ?? null;
             if (\is_int($value) && $value > 0 && $value <= 2147483647) {
                 $clean[$key] = $value;
@@ -64,6 +73,12 @@ class ActivityPolicy
 
         if (isset($clean['spamChecks']) && ($clean['spamChecks'] & ~SpamChecks::ALL)) {
             unset($clean['spamChecks']);
+        }
+        if (isset($clean['emailType']) && !\in_array($clean['emailType'], [1, 2, 3], true)) {
+            unset($clean['emailType']);
+        }
+        if ($diagnostics = ActivityDiagnostics::clean($metadata['diagnostics'] ?? null)) {
+            $clean['diagnostics'] = $diagnostics;
         }
 
         return $clean;

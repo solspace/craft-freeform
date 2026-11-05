@@ -16,16 +16,21 @@ class ActivityPolicyTest extends TestCase
         self::assertSame(['error', 'email-error', 'integration-error'], array_keys(array_filter(ActivityPolicy::options('minimal'))));
         self::assertSame([], array_filter(ActivityPolicy::options('custom', array_fill_keys(array_keys(ActivityPolicy::EVENTS), false))));
         self::assertSame(ActivityPolicy::options('standard'), ActivityPolicy::options('custom'));
-        self::assertCount(10, ActivityPolicy::EVENTS);
+        self::assertCount(15, ActivityPolicy::EVENTS);
     }
 
     public function testStandardAndDetailedHaveExplicitBoundaries(): void
     {
         $standard = ActivityPolicy::options('standard');
         self::assertTrue($standard['submission']);
-        self::assertFalse($standard['email-sent']);
+        self::assertTrue($standard['email-sent']);
+        self::assertTrue($standard['email-skipped']);
+        self::assertTrue($standard['integration-skipped']);
+        self::assertTrue($standard['integration-action']);
         self::assertFalse($standard['integration-response']);
-        self::assertCount(6, array_filter($standard));
+        self::assertFalse($standard['integration-started']);
+        self::assertFalse($standard['integration-finished']);
+        self::assertCount(10, array_filter($standard));
         self::assertFalse($standard['validation']);
         self::assertFalse($standard['form-change']);
         self::assertNotContains(false, ActivityPolicy::options('detailed'));

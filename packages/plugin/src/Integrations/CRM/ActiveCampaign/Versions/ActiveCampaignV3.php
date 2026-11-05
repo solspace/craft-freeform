@@ -25,6 +25,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\ActiveCampaign\BaseActiveCampaignIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -215,7 +216,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         if (!$this->account) {
-            $this->logger->debug('No Account mapping found');
+            $this->logger->debug('No Account mapping found', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -232,7 +233,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
             if (isset($json->account)) {
                 $this->accountId = $json->account->id;
-                $this->logger->info('New Account created', ['id' => $this->accountId]);
+                $this->logger->info('New Account created', ['id' => $this->accountId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
                 $this->logger->debug('With Mapping', $this->account);
             }
         } catch (\Exception $exception) {
@@ -273,7 +274,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         if (!$this->contact) {
-            $this->logger->debug('No Contact mapping found');
+            $this->logger->debug('No Contact mapping found', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -294,7 +295,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         if (isset($json->contact)) {
             $this->contactId = $json->contact->id;
-            $this->logger->info('New Contact created', ['id' => $this->contactId]);
+            $this->logger->info('New Contact created', ['id' => $this->contactId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         }
 
         if ($this->accountId) {
@@ -329,6 +330,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                     );
 
                     $this->logger->info('Contact linked to Account', [
+                        'activityReason' => ActivityContext::INTEGRATION_LINKED,
                         'contact' => $this->contactId,
                         'account' => $this->accountId,
                     ]);
@@ -371,7 +373,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             ]
         );
 
-        $this->logger->info('Contact added to List', ['contact' => $this->contactId, 'list' => $listId]);
+        $this->logger->info('Contact added to List', ['contact' => $this->contactId, 'list' => $listId, 'activityReason' => ActivityContext::INTEGRATION_SUBSCRIBED]);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
     }
@@ -383,7 +385,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         if (!$this->deal) {
-            $this->logger->debug('No Deal mapping found');
+            $this->logger->debug('No Deal mapping found', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -415,7 +417,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         $json = json_decode((string) $response->getBody(), false);
 
         if (isset($json->deal)) {
-            $this->logger->info('New Deal created', ['id' => $json->deal->id]);
+            $this->logger->info('New Deal created', ['id' => $json->deal->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
             $dealId = $json->deal->id;
 

@@ -42,7 +42,7 @@ function fixture(
   return {
     changed,
     text: host.querySelector<HTMLInputElement>('[type="text"]')!,
-    color: host.querySelector<HTMLInputElement>('[type="color"]')!,
+    color: host.querySelector<HTMLButtonElement>("[data-color-preview]")!,
     toggle: () => host.querySelector<HTMLInputElement>('[type="checkbox"]')!,
   };
 }
@@ -85,7 +85,9 @@ it("preserves inherited color until edited and can restore inheritance or the la
   expect(view.text.value).toBe("Inherited");
   expect(view.toggle().checked).toBe(true);
   expect(view.changed).not.toHaveBeenCalled();
-  input(view.color, "#2563eb");
+  expect(view.color.dataset.inherited).toBe("true");
+  expect(view.color.style.backgroundColor).toBe("transparent");
+  input(view.text, "#2563eb");
   expect(view.changed).toHaveBeenLastCalledWith("#2563eb");
   expect(view.toggle().checked).toBe(false);
   act(() => view.toggle().click());
@@ -124,9 +126,16 @@ it("accepts an explicit black hex value and typing transparent", () => {
 
 it("chooses an opaque color from a transparent value", () => {
   const view = fixture("rgba(0,0,0,0)");
-  input(view.color, "#ff5500");
-  expect(view.changed).toHaveBeenCalledExactlyOnceWith("#ff5500");
-  expect(view.text.value).toBe("#ff5500");
+  act(() =>
+    view.color.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }),
+    ),
+  );
+  act(() =>
+    document.querySelector<HTMLButtonElement>('[aria-label="Orange"]')!.click(),
+  );
+  expect(view.changed).toHaveBeenCalledExactlyOnceWith("#fb923c");
+  expect(view.text.value).toBe("#fb923c");
   expect(view.toggle().checked).toBe(false);
 });
 

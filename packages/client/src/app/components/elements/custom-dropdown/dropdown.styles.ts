@@ -61,6 +61,8 @@ export const CurrentValue = styled.div`
     min-height: 20px;
   }
 
+  > .ff-recommended-badge { min-height: 0; margin-inline-start: auto; }
+
   &:hover {
     box-shadow: var(--focus-ring);
     outline-color: transparent;

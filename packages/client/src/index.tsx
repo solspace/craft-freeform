@@ -87,6 +87,10 @@ root.render(
                             element={<SurveyResults />}
                           />
                           <Route path="welcome" element={<Welcome />} />
+                          <Route
+                            path="settings/setup"
+                            element={<Welcome setup />}
+                          />
                           <Route path="integrations" element={<Integrations />}>
                             <Route index element={<IntegrationsEmptyView />} />
                             <Route

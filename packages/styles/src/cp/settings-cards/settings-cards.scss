@@ -1,3 +1,5 @@
+@use "../choice-cards/choice-cards.css";
+@use "../choice-cards/recommended-badge.css";
 // Shared CP cards. Native Craft radios provide full-card selection and keyboard behavior.
 // SVG artwork can opt into the ff-settings-art-* motion hooks below.
 .ff-settings-choice, .ff-settings-helper, .ff-settings-example {
@@ -9,10 +11,14 @@
   color: var(--card-ink);
 }
 
-.ff-settings-choice {
+.ff-settings-choice,
+.ff-choice-card-illustrated {
   --choice-color: #617488;
   --choice-wash: #f1f5f9;
   --choice-border: #cbd8e4;
+}
+
+.ff-settings-choice {
   position: relative;
   min-width: 0;
   border: 1px solid var(--card-border);
@@ -21,19 +27,19 @@
   transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
 }
 
-.ff-settings-choice[data-tone=blue] {
+:is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=blue] {
   --choice-color: #3476b8;
   --choice-wash: #edf5fd;
   --choice-border: #b5cfe9;
 }
 
-.ff-settings-choice[data-tone=purple] {
+:is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=purple] {
   --choice-color: #8657c5;
   --choice-wash: #f5effc;
   --choice-border: #cfb9e8;
 }
 
-.ff-settings-choice[data-tone=teal] {
+:is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=teal] {
   --choice-color: #2e8b81;
   --choice-wash: #edf8f5;
   --choice-border: #a9d4cb;
@@ -119,7 +125,7 @@
   height: 100%;
 }
 
-.ff-settings-choice[data-tone=teal] .ff-settings-choice-art {
+:is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=teal] .ff-settings-choice-art {
   border-style: dashed;
 }
 
@@ -127,7 +133,21 @@
   transition: translate 0.2s ease;
 }
 
-.ff-settings-choice:has(.radio:not(:disabled)):hover .ff-settings-art-sheet {
+.ff-choice-card-illustrated .ff-settings-choice-art {
+  height: 64px;
+  margin: 4px 0 0;
+  border-color: var(--gray-200, #cdd8e4);
+}
+
+.ff-choice-card .choice-footer {
+  margin-block-start: auto;
+  padding-block-start: 4px;
+  color: var(--gray-600, #515f6c);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+:is(.ff-settings-choice, .ff-choice-card-illustrated):has(input:not(:disabled)):hover .ff-settings-art-sheet {
   translate: 0 -2px;
 }
 
@@ -171,23 +191,23 @@
   line-height: 1;
 }
 
-.ff-settings-choice:not([inert] *):has(.radio:not(:disabled)):is(:hover, :has(.radio:focus-visible)) .ff-settings-art-sheet {
+:is(.ff-settings-choice, .ff-choice-card-illustrated):not([inert] *):has(input:not(:disabled)):is(:hover, :has(input:focus-visible)) .ff-settings-art-sheet {
   animation: settings-card-sheet-float 2.4s ease-in-out infinite;
   transform-box: fill-box;
   transform-origin: center;
 }
-.ff-settings-choice:not([inert] *):has(.radio:not(:disabled)):is(:hover, :has(.radio:focus-visible)) .ff-settings-art-row {
+:is(.ff-settings-choice, .ff-choice-card-illustrated):not([inert] *):has(input:not(:disabled)):is(:hover, :has(input:focus-visible)) .ff-settings-art-row {
   animation: settings-card-row-flow 1.8s ease-in-out calc(var(--art-row, 0) * 90ms) infinite;
 }
-.ff-settings-choice:not([inert] *):has(.radio:not(:disabled)):is(:hover, :has(.radio:focus-visible)) .ff-settings-art-node {
+:is(.ff-settings-choice, .ff-choice-card-illustrated):not([inert] *):has(input:not(:disabled)):is(:hover, :has(input:focus-visible)) .ff-settings-art-node {
   animation: settings-card-node-pulse 1.8s ease-in-out infinite;
   transform-box: fill-box;
   transform-origin: center;
 }
-.ff-settings-choice:not([inert] *):has(.radio:not(:disabled)):is(:hover, :has(.radio:focus-visible)) .ff-settings-art-node-end {
+:is(.ff-settings-choice, .ff-choice-card-illustrated):not([inert] *):has(input:not(:disabled)):is(:hover, :has(input:focus-visible)) .ff-settings-art-node-end {
   animation-delay: 0.65s;
 }
-.ff-settings-choice:not([inert] *):has(.radio:not(:disabled)):is(:hover, :has(.radio:focus-visible)) .ff-settings-art-slider {
+:is(.ff-settings-choice, .ff-choice-card-illustrated):not([inert] *):has(input:not(:disabled)):is(:hover, :has(input:focus-visible)) .ff-settings-art-slider {
   animation: settings-card-slider-slide 2.3s ease-in-out var(--slider-delay, 0s) infinite;
 }
 
@@ -235,13 +255,13 @@
   .ff-settings-choice, .ff-settings-art-sheet {
     transition: none;
   }
-  .ff-settings-choice .ff-settings-choice-art * {
+  :is(.ff-settings-choice, .ff-choice-card-illustrated) .ff-settings-choice-art * {
     animation: none !important;
   }
   .ff-settings-choice:has(.radio:not(:disabled)):hover {
     transform: none;
   }
-  .ff-settings-choice:has(.radio:not(:disabled)):hover .ff-settings-art-sheet {
+  :is(.ff-settings-choice, .ff-choice-card-illustrated):has(input:not(:disabled)):hover .ff-settings-art-sheet {
     translate: none;
   }
 }

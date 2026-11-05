@@ -4,9 +4,11 @@ namespace Solspace\Freeform\Tests\Library;
 
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
+use Twig\Markup;
 
 #[CoversClass(MessageTemplateSamples::class)]
 class MessageTemplateSamplesTest extends TestCase
@@ -35,5 +37,34 @@ class MessageTemplateSamplesTest extends TestCase
         }
 
         self::assertNull(MessageTemplateSamples::get('email', '../default'));
+    }
+
+    public function testFormSamplesSeparateMetadataAndUseEditorSafeFieldTokens(): void
+    {
+        $parser = new HtmlTemplateParser();
+        $twig = new Environment(new ArrayLoader(), ['strict_variables' => true]);
+        foreach (MessageTemplateSamples::options('email') as $id => $option) {
+            $sample = MessageTemplateSamples::formEmail($id);
+            self::assertSame($option['name'], $sample['name']);
+            self::assertSame($option['fileName'], $sample['handle']);
+            self::assertStringContainsString('{{ form.name }}', $sample['subject']);
+            self::assertStringNotContainsString('{#', $sample['body']);
+            self::assertStringNotContainsString('{%', $sample['body']);
+            self::assertStringNotContainsString('__placeholder', json_encode($sample));
+            self::assertSame($sample['body'], $parser->toTwig($parser->fromTwig($sample['body'])));
+            $body = $twig->createTemplate($sample['body'])->render([
+                'form' => (object) ['name' => 'Contact'],
+                'dateCreated' => new \DateTimeImmutable('2026-11-03'),
+                'loops' => ['fields' => ['all' => new Markup('<ul><li>Email: demo@example.test</li></ul>', 'UTF-8')]],
+            ]);
+            self::assertStringContainsString('<div', $body);
+            if ('visitor-confirmation' !== $id) {
+                self::assertStringContainsString('{{ loops.fields.all }}', $sample['body']);
+                self::assertStringContainsString('Email: demo@example.test', $body);
+            }
+            self::assertSame(['name', 'handle', 'description', 'subject', 'body'], array_keys($sample));
+        }
+        self::assertNull(MessageTemplateSamples::formEmail('../team-notification'));
+        self::assertNull(MessageTemplateSamples::formEmail('unknown'));
     }
 }

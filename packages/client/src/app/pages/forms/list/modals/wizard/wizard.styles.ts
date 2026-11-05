@@ -93,12 +93,9 @@ export const WizardBody = styled.div`
   .wizard-status-picker:focus-visible { outline: 2px solid #5298da; outline-offset: 2px; }
   .wizard-status-picker[aria-invalid=true] > div { outline: 1px solid #cf1124; border-radius: 5px; }
   .wizard-advanced .wizard-sites { margin-bottom: 0; }
-  .wizard-color-control { display: flex; gap: 6px; }
   .wizard-advanced input:disabled, .wizard-advanced textarea:disabled, .wizard-advanced select:disabled { opacity: .6; cursor: not-allowed; }
   @media (max-width: 600px) { .wizard-details-row { grid-template-columns: 1fr; gap: 0; } }
-  input:not([type=checkbox]):not([type=radio]), select, textarea { box-sizing: border-box; width: 100%; font: inherit; font-size: 13px; color: #3f4d5a; border: 1px solid #c8d4e1; border-radius: 5px; background: #fbfcfe; padding: 9px 10px; }
-  .wizard-color-control input[type=color] { flex: none; width: 35px; min-width: 35px; height: 36px; padding: 3px; cursor: pointer; }
-  .wizard-color-control input:not([type=color]) { min-width: 0; font-size: 12px; padding-inline: 7px; }
+  input:not([type=checkbox]):not([type=radio]):not(.ff-color-hex), select, textarea { box-sizing: border-box; width: 100%; font: inherit; font-size: 13px; color: #3f4d5a; border: 1px solid #c8d4e1; border-radius: 5px; background: #fbfcfe; padding: 9px 10px; }
   textarea { resize: vertical; }
   .wizard-select { display: block; width: 100%; }
   .wizard-select select { appearance: none; padding-inline-end: 34px; background-color: #dfe5ec; border-color: transparent; }

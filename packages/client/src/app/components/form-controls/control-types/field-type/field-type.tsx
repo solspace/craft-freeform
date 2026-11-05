@@ -11,6 +11,7 @@ import {
 import type { FieldTypeProperty } from "@ff-client/types/properties";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
+import DOMPurify from "dompurify";
 import type React from "react";
 
 const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
@@ -40,6 +41,19 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
           .map((type) => ({
             label: translate(type.name),
             value: type.typeClass,
+            icon: type.icon ? (
+              <span
+                aria-hidden="true"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(type.icon),
+                }}
+              />
+            ) : undefined,
           })),
       }}
       updateValue={(value) => {

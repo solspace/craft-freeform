@@ -30,27 +30,31 @@
     <hr>
 
     {% set chartTypes %}
-        <table id="chart-types">
-            {% for fieldClass, chartType in settings.chartTypes %}
-                {% set type = fieldTypes[fieldClass] %}
-                <tr>
-                    <th>
-                        <div>
-                            <div class="icon">{{ type.icon|raw }}</div>
-                            <div class="name">{{ type.name }}</div>
-                        </div>
-                    </th>
-                    <td>
-                        {{ forms.select({
-                            name: "chartTypes["~fieldClass~"]",
-                            value: settings.chartTypes[fieldClass],
-                            options: options,
-                            disabled: readOnly,
-                        }) }}
-                    </td>
-                </tr>
+        {% set choiceFields = ['CheckboxesField', 'RadiosField', 'DropdownField', 'MultipleSelectField', 'OpinionScaleField', 'RatingField'] %}
+        <div class="ff-survey-chart-groups">
+            {% for group, title in {choices:'Choice & rating fields', other:'Text & other fields'} %}
+                <section class="ff-survey-chart-group" aria-labelledby="chart-group-{{ group }}">
+                    <h3 id="chart-group-{{ group }}">{{ title|t('freeform') }}</h3>
+                    {% for fieldClass, chartType in settings.chartTypes %}
+                        {% set isChoice = fieldClass|split('\\')|last in choiceFields %}
+                        {% if fieldTypes[fieldClass] is defined and ((group == 'choices' and isChoice) or (group == 'other' and not isChoice)) %}
+                            {% set type = fieldTypes[fieldClass] %}
+                            {% set inputId = 'chart-type-' ~ group ~ '-' ~ loop.index %}
+                            <div class="ff-survey-chart-row">
+                                <label for="{{ inputId }}"><span class="ff-survey-field-icon" aria-hidden="true">{{ type.icon|raw }}</span><span>{{ type.name }}</span></label>
+                                {{ forms.select({
+                                    id:inputId,
+                                    name: "chartTypes["~fieldClass~"]",
+                                    value: chartType,
+                                    options: options,
+                                    disabled: readOnly,
+                                }) }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </section>
             {% endfor %}
-        </table>
+        </div>
     {% endset %}
 
 
@@ -64,25 +68,17 @@
 
 {% css %}
 
-    table#chart-types {
-        margin-top: 15px;
-
-        td, th {
-            padding: 0 0 8px;
-            margin: 0;
-        }
-
-        th > div {
-            display: flex;
-            gap: 5px;
-
-            padding-right: 40px;
-        }
-
-        & .icon svg {
-            width: 20px;
-            height: 20px;
-        }
-    }
+    .ff-survey-chart-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; align-items:start; max-width:1100px; margin-top:16px; }
+    .ff-survey-chart-group { border:1px solid var(--gray-200,#cdd8e4); border-radius:8px; overflow:hidden; }
+    .ff-survey-chart-group > h3 { margin:0; padding:14px 16px; background:var(--gray-050,#f3f7fc); border-bottom:1px solid var(--hairline-color,#e5e7eb); }
+    .ff-survey-chart-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 16px; }
+    .ff-survey-chart-row + .ff-survey-chart-row { border-top:1px solid var(--hairline-color,#e5e7eb); }
+    .ff-survey-chart-row > label { display:flex; align-items:center; gap:10px; min-width:0; font-weight:600; }
+    .ff-survey-field-icon { display:flex; align-items:center; justify-content:center; flex:0 0 28px; width:28px; height:28px; border-radius:4px; background:var(--gray-050,#f3f7fc); color:var(--gray-600,#596673); }
+    .ff-survey-field-icon svg { display:block; width:18px; height:18px; }
+    .ff-survey-chart-row > .select { flex:0 0 auto; }
+    .ff-survey-chart-row select { min-width:130px; }
+    @media(max-width:900px) { .ff-survey-chart-groups { grid-template-columns:minmax(0,1fr); } }
+    @media(max-width:500px) { .ff-survey-chart-row { flex-wrap:wrap; gap:8px; } .ff-survey-chart-row > .select { margin-inline-start:38px; } }
 
 {% endcss %}

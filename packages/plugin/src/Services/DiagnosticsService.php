@@ -512,7 +512,7 @@ class DiagnosticsService extends BaseService
                     Freeform::t(
                         match ($rawScriptInsertLocation) {
                             Settings::SCRIPT_INSERT_LOCATION_FOOTER => Freeform::t('Page Footer'),
-                            Settings::SCRIPT_INSERT_LOCATION_HEADER => Freeform::t('Page Header'),
+                            Settings::SCRIPT_INSERT_LOCATION_HEADER => Freeform::t('Start of Page'),
                             Settings::SCRIPT_INSERT_LOCATION_FORM => Freeform::t('Inside Form'),
                             Settings::SCRIPT_INSERT_LOCATION_MANUAL => Freeform::t('None (add manually)'),
                         }
@@ -791,7 +791,13 @@ class DiagnosticsService extends BaseService
                     $settings->isDisplayFeed()
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Level').': <b>{{ value }}</b></span>',
+                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Style').': <b>{{ value }}</b></span>',
+                    Freeform::t(match ($settingsModel->getEffectiveLoggingStyle()) {
+                        'classic' => 'Classic Logging', 'activity' => 'Activity Logging', default => 'None'
+                    }),
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Classic Logging').' — '.Freeform::t('Log Detail').': <b>{{ value }}</b></span>',
                     Freeform::t(
                         match (Freeform::getInstance()->settings->getSettingsModel()->loggingLevel) {
                             Settings::LOGGING_LEVEL_INFO => Freeform::t('Info'),

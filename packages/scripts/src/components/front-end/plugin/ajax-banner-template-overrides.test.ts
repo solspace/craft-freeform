@@ -28,7 +28,7 @@ describe("AJAX banner template overrides", () => {
         role: "status",
         "aria-live": "polite",
         "data-theme": "custom",
-        style: "border: 1px solid green",
+        style: "background-color:#e8f6ed;border-color:#16a34a;color:#09411e",
         hidden: false,
         tag: "aside",
       }),
@@ -38,6 +38,7 @@ describe("AJAX banner template overrides", () => {
       JSON.stringify({
         class: "rounded-md bg-red-50",
         role: "alert",
+        style: "background-color:#fce9e9;border-color:#dc2626;color:#580f0f",
         "data-important": true,
       }),
     );
@@ -53,7 +54,9 @@ describe("AJAX banner template overrides", () => {
     expect(success.getAttribute("role")).toBe("status");
     expect(success.getAttribute("aria-live")).toBe("polite");
     expect(success.getAttribute("data-theme")).toBe("custom");
-    expect(success.getAttribute("style")).toBe("border: 1px solid green");
+    expect(success.style.borderColor).toBe("rgb(22, 163, 74)");
+    expect(success.style.backgroundColor).toBe("rgb(232, 246, 237)");
+    expect(success.style.color).toBe("rgb(9, 65, 30)");
     expect(success.hasAttribute("hidden")).toBe(false);
     expect(success.textContent).toBe("Merci !");
 
@@ -64,6 +67,9 @@ describe("AJAX banner template overrides", () => {
     )!;
     expect(error.className).toBe("rounded-md bg-red-50");
     expect(error.getAttribute("role")).toBe("alert");
+    expect(error.style.borderColor).toBe("rgb(220, 38, 38)");
+    expect(error.style.backgroundColor).toBe("rgb(252, 233, 233)");
+    expect(error.style.color).toBe("rgb(88, 15, 15)");
     expect(error.hasAttribute("data-important")).toBe(true);
     expect(error.textContent).toBe("Réessayez.Required field");
     freeform._removeMessages();

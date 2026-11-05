@@ -9,9 +9,9 @@ use craft\helpers\StringHelper;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityTable;
-use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Models\Settings;
 
 class ActivityService extends BaseService
@@ -22,6 +22,7 @@ class ActivityService extends BaseService
     private bool $unavailable = false;
     private array $integrationContext = [];
     private ?\WeakMap $reportedIntegrationFailures = null;
+    private ?\WeakMap $reportedEmailFailures = null;
     private array $pending = [];
     private bool $cleanupBudgetExhausted = false;
 
@@ -34,11 +35,19 @@ class ActivityService extends BaseService
             }
 
             $settings = $this->getSettingsService()->getSettingsModel();
-            if (!BooleanHelper::normalize($settings->activityEnabled) || !ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event]) {
+            if (!$settings->isActivityLoggingEnabled() || !ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event]) {
                 return;
             }
 
+            $formId ??= $this->integrationContext['formId'] ?? null;
+            $submissionId ??= $this->integrationContext['submissionId'] ?? null;
+            $metadata = array_filter($metadata, static fn ($value) => null !== $value)
+                + array_intersect_key($this->integrationContext, array_flip(['integrationId', 'attempt', 'operationId']));
+
             $definition = ActivityPolicy::EVENTS[$event];
+            if (!\in_array($definition[3], ['error', 'warning'], true)) {
+                unset($metadata['diagnostics']);
+            }
             $now = Db::prepareDateForDb(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
             $row = [
                 'event' => $event,
@@ -70,7 +79,7 @@ class ActivityService extends BaseService
         try {
             $settings = $this->getSettingsService()->getSettingsModel();
 
-            return BooleanHelper::normalize($settings->activityEnabled) && (ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event] ?? false);
+            return $settings->isActivityLoggingEnabled() && (ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event] ?? false);
         } catch (\Throwable) {
             return false;
         }
@@ -93,6 +102,7 @@ class ActivityService extends BaseService
         $this->unavailable = false;
         $this->integrationContext = [];
         $this->reportedIntegrationFailures = null;
+        $this->reportedEmailFailures = null;
     }
 
     /** One bounded database write at the end of a web request or queue job. */
@@ -118,13 +128,17 @@ class ActivityService extends BaseService
         $started = microtime(true);
 
         try {
-            $this->integrationContext = ['formId' => $form->getId(), 'submissionId' => $form->getSubmission()?->id, 'started' => $started, 'attempt' => $attempt];
+            $this->integrationContext = ['formId' => $form->getId(), 'submissionId' => $form->getSubmission()?->id, 'started' => $started, 'attempt' => $attempt, 'integrationId' => $integrationId, 'operationId' => random_int(1, 2147483647)];
         } catch (\Throwable) {
             $this->integrationContext = [];
         }
 
         try {
-            return $operation();
+            $this->recordForForm('integration-started', $form);
+            $result = $operation();
+            $this->recordForForm('integration-finished', $form, ['durationMs' => ActivityContext::elapsed($started)]);
+
+            return $result;
         } catch (\Throwable $exception) {
             try {
                 $alreadyReported = $exception instanceof RequestException && $exception->getResponse()
@@ -132,6 +146,7 @@ class ActivityService extends BaseService
                 if (!$alreadyReported && !$this->hasRecordedIntegrationFailure($exception)) {
                     $this->recordForForm('integration-error', $form, ActivityContext::integrationFailure($exception) + [
                         'integrationId' => $integrationId, 'attempt' => $attempt, 'durationMs' => ActivityContext::elapsed($started),
+                        'diagnostics' => ActivityDiagnostics::fromException($exception),
                     ]);
                 }
                 $this->reportedIntegrationFailures ??= new \WeakMap();
@@ -149,6 +164,39 @@ class ActivityService extends BaseService
     public function hasRecordedIntegrationFailure(\Throwable $exception): bool
     {
         return isset($this->reportedIntegrationFailures[$exception]);
+    }
+
+    /** Typed integration markers are meaningful only while processing a submitted form. */
+    public function recordIntegrationDiagnostic(int $reason): void
+    {
+        if (!empty($this->integrationContext['formId']) && empty($this->integrationContext['diagnostics'][$reason]) && ($event = ActivityContext::diagnosticEvent($reason))) {
+            $this->integrationContext['diagnostics'][$reason] = true;
+            $this->record($event, metadata: ['reasonCode' => $reason]);
+        }
+    }
+
+    /** Capture scheduled email outcomes without retaining message content or recipients. */
+    public function observeEmail(callable $operation, int $emailType): mixed
+    {
+        $started = microtime(true);
+
+        try {
+            $sent = $operation();
+        } catch (\Throwable $exception) {
+            $this->record('email-error', metadata: ['emailType' => $emailType, 'reasonCode' => ActivityContext::exceptionReason($exception, ActivityContext::MAIL_SEND_EXCEPTION), 'durationMs' => ActivityContext::elapsed($started), 'diagnostics' => ActivityDiagnostics::fromException($exception)]);
+            $this->reportedEmailFailures ??= new \WeakMap();
+            $this->reportedEmailFailures[$exception] = true;
+
+            throw $exception;
+        }
+        $this->record($sent ? 'email-sent' : 'email-error', metadata: ['emailType' => $emailType, 'reasonCode' => $sent ? null : ActivityContext::MAIL_REJECTED, 'durationMs' => ActivityContext::elapsed($started)]);
+
+        return $sent;
+    }
+
+    public function hasRecordedEmailFailure(\Throwable $exception): bool
+    {
+        return isset($this->reportedEmailFailures[$exception]);
     }
 
     public function recordIntegrationResponse(int $status, ?int $integrationId): void

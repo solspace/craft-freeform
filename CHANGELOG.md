@@ -3,45 +3,40 @@
 ## 5.18.0 - Unreleased
 
 ### Added
+- Added optional colors for banners and field errors, with Soft/Bold banner styles, Form Builder defaults, and Limited Users controls. Existing forms retain template colors.
 - Added **Allowed Upload Volumes** in General Settings to restrict file upload destinations, including table upload columns, new-field defaults, and translated settings. All volumes remain allowed by default, and existing live forms retain their saved destinations.
 - Added direct mapping of included Location address components across integrations, including full address and country/state codes, without requiring separate form fields.
 - Added support for native Craft 5 Addresses fields in Entry and User element integrations, with component mapping, edit prefilling, and nested address validation.
 - Added Salesforce CRM Case creation with standard and custom field mapping, assignment rules, file attachments, and links to Accounts and Contacts created or matched by the same submission.
-- Added clickable status dropdowns in the submissions and Spam lists for quick status changes, respecting form submission permissions.
-- Added an **Actions** column near the start of the Spam list with animated Approve and Delete controls.
-- Added a shared **Undo** button on Submissions and Spam for status changes, spam approvals, and soft deletions, including bulk actions. The current session keeps the latest 20 actions for 30 minutes each, with each batch counting as one Undo step. Undoing approval returns submissions to Spam without reversing notification or integration processing.
+- Added quick status changes in Submissions and Spam, plus inline Spam approval and deletion controls, respecting submission permissions.
+- Added session **Undo** for submission status changes, spam approvals, and soft deletions, including bulk actions. Undoing approval does not reverse notification or integration processing.
 - Added **Send Notifications** with selectable form recipients, configured or shared templates, and additional addresses. Renamed the immediate resend action to **Quick Resend**.
 - Added editable starter lists for blocked emails, 100 keyword patterns, allowed gibberish terms, and URL tracking parameters, with duplicate skipping and Undo.
 - Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
-- Added **Activity Log** with privacy-focused event history, submission timelines, filters, exports, and configurable recording and storage limits. New installs use Standard mode and upgrades use Minimal.
+- Added **Activity Log** with submission timelines, filters, exports, configurable retention, and sanitized email and integration diagnostics. New installs use Standard mode and upgrades use Minimal. Logging settings offer Activity, Classic file logging, or None.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
-- Added ready-to-use success and email notification template samples for common follow-up workflows.
-- Added Pro-only customizable **Forms dashboard cards** with resizable layouts, drag-and-drop and keyboard reordering, per-user preferences, 7-, 30-, and 90-day trends and comparisons, and configurable activity, statistics, Form Monitor, and field summaries.
-- Added Pro-only **Linear Chart**, **Radial Chart**, **Recent Submissions**, and **Quick Form** widgets to the Forms dashboard, with form-group placement, responsive sizes and chart layouts, searchable form filtering, and matching loading states.
+- Added ready-to-use success and email notification template samples, including starting points in the form-specific email editor.
+- Added a **Setup Guide** with recommendations for site defaults, shared email templates, and Limited Users profiles, with a review before applying changes.
+- Added **Limited Users permission presets** with editable options and Undo.
+- Added Pro-only customizable **Forms dashboard cards** and **Linear Chart**, **Radial Chart**, **Recent Submissions**, and **Quick Form** widgets, with resizable layouts, keyboard reordering, per-user preferences, form-group placement, and 7-, 30-, and 90-day trends and comparisons.
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
-- Improved the **Demo Templates** installer and removed unused demo assets.
-- The bulk Delete action now reads **Delete selected...** for one or more selected submissions.
+- Refreshed the **Welcome** page with setup resources and edition comparisons, and simplified the **Demo Templates** installer.
 - The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
-- Updated Spam reason and spam-blocking integration icons, added a native Craft icon to **Quick Export**, and rounded status dropdown focus rings to match their pills.
-- Simplified settings and setup guides for Salesforce CRM, Account Engagement, Zoho, Stripe, Google Sheets, Jira, and spam blocking with clearer ordering, choice cards, and remembered Advanced panels where applicable.
+- Streamlined integration and CAPTCHA setup with guided choices, clearer instructions, and Advanced panels that remember their state. Existing connections and selections are preserved.
 - Renamed Pardot to Salesforce Account Engagement (Pardot), preserving existing connections and custom names.
-- Added Dotdigital opt-in cards and email format buttons. New integrations default to Verified Double and HTML.
-- Updated hCaptcha, Turnstile, and Friendly Captcha settings with clearer setup guides, compact choice cards, and advanced panels that remember whether they were open or closed. Added icons to CAPTCHA button groups and clarified when Friendly Captcha starts verification. Existing selections are preserved.
+- New Dotdigital integrations default to Verified Double opt-in and HTML emails; existing selections are preserved.
 - Updated the Friendly Captcha SDK used by headless forms to match regular forms.
-- Improved integration instructions with animated expandable sections, copy buttons, and code highlighting for HTML, CSS, JavaScript, Twig, JSON, and PHP.
-- Simplified reCAPTCHA settings with compact guided choices, button groups, a labelled score slider, and an animated advanced-settings panel that remembers its open or closed state for each integration in the browser. Existing selections are preserved.
-- Made Yes/No environment-variable menus half width on wide settings and integration pages, while keeping compact layouts full width.
-- Number fields now choose a mobile keyboard from existing settings, show supplemental feedback on blur using regular error styles, preserve invalid values for correction, and apply decimal precision consistently across standard forms and React/Vue. Submit continues through regular form validation. The default step follows decimal places; custom increments are preserved.
+- Number fields now use appropriate mobile keyboards, preserve invalid values for correction, and apply decimal precision consistently across standard and React/Vue forms. Existing custom increments are preserved.
 - Website fields now complete bare domains with `https://`, trim surrounding whitespace, and show a clearer validation message, with React/Vue support and no additional settings.
-- Gave the Freeform front-end date/time picker a cleaner appearance while preserving the control-panel picker styling.
 - Date/time field settings use compact button groups for type, clock format, date order, and separators, with live date-format previews and collapsible help. Initial and minimum/maximum values offer a calendar picker while retaining typed English expressions such as `now`, `today`, and `3 days ago`.
-- Updated builder settings with visual button groups and added fixed measurement and count units across Freeform settings.
-- Added optional image sizing and cropping controls while preserving existing image rendering.
+- Improved settings and builder controls with visual choices, simpler page-button layouts, and a visual toolbar editor for rich text fields and email templates.
+- Unified color controls with Craft palette swatches and custom pickers. New forms choose a preset color automatically.
+- Added optional image sizing and cropping controls.
 - Formatting template samples can be cloned under a chosen name, with internal template paths updated automatically.
 - Forms dashboards gracefully return to standard cards when switching from Pro to Lite or Express, preserving Pro layout and widget preferences for later use.
-- Added Location styling to the sample formatting templates, including floating labels, and minified sample template CSS. Location markup and styles can be customized through configurable attributes, like Table fields.
+- Added Location support to sample formatting templates, with configurable markup and styling attributes.
 
 ### Fixed
 - Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
@@ -54,6 +49,8 @@
 - Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.
 - Fixed duplicate field handles when adding or duplicating fields and Groups.
 - Fixed Settings tab navigation disrupting browser history.
+- Fixed initial submit-button layout selection and alignment, including new and wizard-created forms.
+- Fixed Activity Log compatibility and unavailable-database handling on Craft 4.
 - Fixed **Quick Form** dashboard widgets not displaying field-specific validation errors and input error styles.
 
 ## 5.17.7 - 2026-11-02

@@ -1,72 +1,89 @@
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const ButtonLayoutWrapper = styled.ul`
+export const AlignmentControl = styled.div`
+  width: 100%;
+  > [role="group"] { padding-top: 0; }
+`;
+
+export const OrderControl = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 16px;
+  width: 100%;
+`;
+
+export const OrderLabel = styled.div`
+  color: ${colors.gray550};
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+export const ButtonLayoutWrapper = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${spacings.sm};
-
-  margin-top: ${spacings.sm};
+  gap: 7px;
 `;
 
-export const ButtonGroup = styled.div`
+export const ButtonGroup = styled.span`
   display: flex;
-  gap: 2px;
+  gap: 3px;
+  min-width: 0;
 `;
 
-export const Button = styled.button`
-  display: block;
-  padding: 3px 5px;
-
-  border-radius: ${borderRadius.md};
-  font-size: 16px;
-
-  &:not(.enabled) {
-    opacity: 0.2;
-  }
-
-  &.submit {
-    background-color: ${colors.gray600} !important;
-    fill: ${colors.white} !important;
-  }
-`;
-
-export const LayoutBlock = styled.li`
-  cursor: pointer;
-
-  display: flex;
-  justify-content: space-between;
+// These are miniature previews, rather than interactive buttons inside a control.
+export const Button = styled.span`
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 25px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  border: 1px solid ${colors.gray300};
+  border-radius: 4px;
+  color: ${colors.gray600};
+  background: ${colors.white};
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 14px;
 
-  padding: 3px;
-
-  border: 1px solid ${colors.gray100};
-  border-radius: ${borderRadius.md};
-  background-color: ${colors.gray100};
-
-  transition: background-color 0.2s ease-in-out;
-
-  ${Button} {
-    fill: ${colors.white};
-    background: ${colors.gray300};
+  svg { width: 12px; height: 12px; flex: 0 0 12px; }
+  > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  &.submit {
+    border-color: ${colors.gray600};
+    background: ${colors.gray600};
+    color: ${colors.white};
   }
+`;
 
-  &.active {
-    border-color: ${colors.gray500};
-    background-color: ${colors.gray500};
+export const LayoutBlock = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid ${colors.gray200};
+  border-radius: 6px;
+  background: ${colors.white};
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
 
-    ${Button} {
-      background: ${colors.white};
-      fill: ${colors.gray500};
-
-      &.submit {
-        background-color: ${colors.gray200} !important;
-        fill: ${colors.gray600} !important;
-      }
-    }
+  .layout-preview {
+    display: flex;
+    flex: 1 1 auto;
+    min-width: 0;
+    align-items: center;
+    justify-content: space-between;
   }
-
-  &:not(.active):hover {
-    background-color: ${colors.gray200};
+  input { position: static; flex: 0 0 12px; width: 12px; height: 12px; margin: 0; accent-color: #397fbe; }
+  &:hover { border-color: ${colors.gray400}; }
+  &:has(input:checked) {
+    border-color: #397fbe;
+    background: #edf5fc;
+    box-shadow: inset 0 0 0 1px #397fbe;
   }
+  &:has(input:focus-visible) { outline: 2px solid #397fbe; outline-offset: 2px; }
 `;

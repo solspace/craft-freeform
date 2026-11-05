@@ -15,6 +15,7 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Services\FormPreviewService;
@@ -310,6 +311,40 @@ class FormPreviewServiceTest extends TestCase
 
         try {
             self::assertSame('<p>Sample</p>', (string) $service->renderFormTemplate($form, $sample->getFilePath()));
+        } finally {
+            \Craft::$app = $previousApp;
+        }
+    }
+
+    #[TestWith(['daisyui-5-dark', false, true])]
+    #[TestWith(['bootstrap-5-dark', false, true])]
+    #[TestWith(['tailwind-4-dark', false, true])]
+    #[TestWith(['basic-dark', false, true])]
+    #[TestWith(['conversational', false, true])]
+    #[TestWith(['daisyui-5-light', false, false])]
+    #[TestWith(['daisyui-5-dark', true, false])]
+    public function testBannerThemeFollowsTheResolvedSampleAndDoesNotGuessFromCustomFilenames(string $name, bool $custom, bool $dark): void
+    {
+        $path = realpath(__DIR__.'/../../templates/_templates/formatting/'.$name.'/index.twig');
+        $template = $this->createMock(FormTemplate::class);
+        $template->method('getFileName')->willReturn($name.'/index.twig');
+        $template->method('getFilePath')->willReturn($path);
+        $settings = $this->createMock(SettingsService::class);
+        $settings->method('getCustomFormTemplates')->willReturn($custom ? [$template] : []);
+        $settings->method('getSolspaceFormTemplates')->willReturn([$template]);
+        $service = $this->getMockBuilder(FormsService::class)->disableOriginalConstructor()->onlyMethods(['getSettingsService'])->getMock();
+        $service->method('getSettingsService')->willReturn($settings);
+        $form = $this->createMock(Form::class);
+        $attributes = new FormAttributesCollection();
+        $form->method('getAttributes')->willReturn($attributes);
+        $view = $this->createMock(View::class);
+        $view->method('renderString')->willReturn('<p>Rendered</p>');
+        $previousApp = \Craft::$app;
+        \Craft::$app = (object) ['view' => $view, 'charset' => 'UTF-8'];
+
+        try {
+            $service->renderFormTemplate($form, $name.'/index.twig');
+            self::assertSame($dark, $attributes->getForm()->get('data-freeform-sample-dark'));
         } finally {
             \Craft::$app = $previousApp;
         }

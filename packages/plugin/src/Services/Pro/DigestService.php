@@ -147,7 +147,7 @@ class DigestService extends Component
 
         $message->setTo($recipients);
 
-        \Craft::$app->mailer->send($message);
+        Freeform::getInstance()->get('activity')->observeEmail(static fn () => \Craft::$app->mailer->send($message), 2);
         \Craft::$app->view->setTemplateMode($templateMode);
 
         $logger->info("DigestService sendDigest - {$type} - Email sent");
@@ -270,7 +270,7 @@ class DigestService extends Component
                 return;
             }
 
-            $logger->error("DigestService parseDigest - {$type} - Failed: {$exception->getMessage()}");
+            $logger->error("DigestService parseDigest - {$type} - Failed: {$exception->getMessage()}", ['activityRecorded' => Freeform::getInstance()->get('activity')->hasRecordedEmailFailure($exception)]);
             $logger->info("DigestService parseDigest - {$type} - Finished processing");
 
             // Re-throw so the queue knows it failed

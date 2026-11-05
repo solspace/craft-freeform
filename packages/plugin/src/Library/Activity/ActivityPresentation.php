@@ -52,7 +52,10 @@ class ActivityPresentation
                 $row['context'][Freeform::t('Flagged by')] = implode(', ', $labels);
             }
         }
-        foreach (['httpStatus' => 'HTTP status', 'attempt' => 'Attempt', 'errorCount' => 'Error count', 'siteId' => 'Site ID'] as $key => $label) {
+        if (isset($metadata['emailType'])) {
+            $row['context'][Freeform::t('Email type')] = Freeform::t([1 => 'Form notification', 2 => 'Digest email', 3 => 'Export notification'][$metadata['emailType']]);
+        }
+        foreach (['httpStatus' => 'HTTP status', 'attempt' => 'Attempt', 'operationId' => 'Processing ID', 'errorCount' => 'Error count', 'siteId' => 'Site ID'] as $key => $label) {
             if (isset($metadata[$key])) {
                 $row['context'][Freeform::t($label)] = $metadata[$key];
             }

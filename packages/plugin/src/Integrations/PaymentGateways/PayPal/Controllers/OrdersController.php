@@ -61,7 +61,11 @@ class OrdersController extends BasePayPalController
             }
         }
 
-        $amount = $this->priceService->getAmount($form, $field);
+        try {
+            $amount = $this->priceService->getAmount($form, $field);
+        } catch (\InvalidArgumentException $exception) {
+            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
+        }
         $currency = $field->getCurrency();
 
         try {

@@ -238,7 +238,7 @@ const listView = async () => {
   );
 };
 
-it("places search, view, chart period, and Form groups in toolbar order", () => {
+it("places search, view, chart period, and Groups in toolbar order", () => {
   expect(input().getAttribute("aria-label")).toBe("Search forms");
   expect(input().placeholder).toBe("Search");
   expect(input().parentElement!.classList.contains("texticon")).toBe(true);
@@ -248,11 +248,11 @@ it("places search, view, chart period, and Form groups in toolbar order", () => 
   expect(
     controls.children[2].querySelector('[aria-label="Chart period"]'),
   ).not.toBeNull();
-  expect(controls.children[3].matches('button[aria-haspopup="dialog"]')).toBe(
+  expect(controls.children[3].textContent).toBe("Groups");
+  expect(controls.children[4].matches('button[aria-haspopup="dialog"]')).toBe(
     true,
   );
-  expect(controls.children[3].textContent).toBe("Insert widget…");
-  expect(controls.children[4].textContent).toBe("Form groups");
+  expect(controls.children[4].textContent).toBe("Widgets");
   expect(host.textContent).not.toContain("Submission history");
   expect(host.textContent).not.toContain("UTC · today so far");
 });
@@ -273,10 +273,8 @@ it("exposes the selected view using Craft's native pressed button state", async 
   );
   const period = host.querySelector('[aria-label="Chart period"]');
   expect(period).not.toBeNull();
-  const selected = period.querySelector('[aria-pressed="true"]');
-  expect(selected.textContent).toContain("30");
-  expect(selected.classList.contains("btn")).toBe(true);
-  expect(selected.classList.contains("active")).toBe(true);
+  expect(period.textContent).toBe("30 days");
+  expect(period.getAttribute("aria-haspopup")).toBe("menu");
 });
 
 it("filters grouped and unassigned forms live and hides empty groups", async () => {

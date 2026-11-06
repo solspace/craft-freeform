@@ -1,7 +1,6 @@
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
-import type { FormCardDays, FormWithStats } from "@ff-client/types/forms";
-import classes from "@ff-client/utils/classes";
+import type { FormWithStats } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
@@ -9,7 +8,6 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { FormSearchProps } from "../../form-search";
 import { createFormSearch } from "../../form-search.utils";
-import { ViewButtons } from "../../list-view.styles";
 import { useFormLimitModal } from "../../modals/hooks/use-add-form-modal";
 import { Notices } from "../../notices/notices";
 import { Archived } from "./archived/archived";
@@ -19,6 +17,7 @@ import { CardPreview } from "./card/card.preview";
 import { useCardStats } from "./card/card.queries";
 import { WidgetCard } from "./card/card.widget";
 import { GridEmpty } from "./grid.empty";
+import { ChartPeriodMenu } from "./grid.period-menu";
 import { useCardRange } from "./grid.range";
 import { useCardSizing } from "./grid.sizing";
 import { useDashboardSorting } from "./grid.sortable";
@@ -162,29 +161,17 @@ export const FormGrid: React.FC<
             periodHost &&
             data &&
             createPortal(
-              <ViewButtons
-                className="btngroup btngroup--exclusive"
-                aria-label={translate("Chart period")}
-                aria-busy={stats.isFetching}
-              >
-                {([7, 30, 90] as FormCardDays[]).map((days) => (
-                  <button
-                    key={days}
-                    type="button"
-                    className={classes("btn", range.days === days && "active")}
-                    aria-pressed={range.days === days}
-                    disabled={
-                      range.isSaving ||
-                      sizing.isSaving ||
-                      sorting.isSaving ||
-                      sorting.isDragging
-                    }
-                    onClick={() => void range.change(days)}
-                  >
-                    {translate("{days} days", { days })}
-                  </button>
-                ))}
-              </ViewButtons>,
+              <ChartPeriodMenu
+                days={range.days}
+                busy={stats.isFetching}
+                disabled={
+                  range.isSaving ||
+                  sizing.isSaving ||
+                  sorting.isSaving ||
+                  sorting.isDragging
+                }
+                onChange={(days) => void range.change(days)}
+              />,
               periodHost,
             )}
           {isProEdition && widgets.isError && (

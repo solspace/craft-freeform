@@ -6,7 +6,7 @@
                 <input type="search" class="text fullwidth" data-recent-search aria-label="{{ 'Search recent submissions'|t('freeform') }}" placeholder="{{ 'Search recent submissions…'|t('freeform') }}">
                 <div class="freeform-recent-filters">
                     <div class="freeform-recent-form-filter"><select data-recent-form data-search-label="{{ 'Search forms'|t('freeform') }}" data-no-results="{{ 'No results found.'|t('freeform') }}" data-toggle-label="{{ 'Show options'|t('freeform') }}" data-results-label="{{ '{count} results available.'|t('freeform') }}" aria-label="{{ 'Filter by form'|t('freeform') }}"><option value="">{{ 'All forms'|t('freeform') }}</option>{% for formId, name in formFilterOptions %}<option value="{{ formId }}" {{ selectedFormId == formId ? 'selected' }}>{{ name }}</option>{% endfor %}</select></div>
-                    <div class="select"><select data-recent-status aria-label="{{ 'Filter by status'|t('freeform') }}"><option value="">{{ 'All statuses'|t('freeform') }}</option></select></div>
+                    <div class="select"><select data-recent-status aria-label="{{ 'Filter by status'|t('freeform') }}"><option value="">{{ 'All'|t('freeform') }}</option></select></div>
                     <button type="button" class="btn freeform-recent-icon-button" data-recent-sort aria-pressed="false" aria-label="{{ 'Show oldest first'|t('freeform') }}" title="{{ 'Show oldest first'|t('freeform') }}"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2v12m-3-3 3 3 3-3M10 3h4m-4 4h3m-3 4h2"/></svg></button>
                 </div>
             </div>
@@ -15,7 +15,7 @@
             {% for submission in submissions %}
                 {% set status = submission.statusModel %}
                 {% set formName = formNames[submission.formId] ?? 'Deleted form'|t('freeform') %}
-                <li class="freeform-recent-row" data-recent-row data-form-id="{{ submission.formId }}" data-form-name="{{ formName }}" data-status-id="{{ submission.statusId }}" data-status-name="{{ status.name }}" {{ loop.index > pageSize ? 'hidden' }}>
+                <li class="freeform-recent-row" data-recent-row data-form-id="{{ submission.formId }}" data-form-name="{{ formName }}" data-status-id="{{ submission.statusId }}" data-status-name="{{ status.name }}" data-status-color="{{ status.color }}" {{ loop.index > pageSize ? 'hidden' }}>
                     <div class="freeform-recent-main">
                         <a href="{{ submission.getCpEditUrl() }}" class="freeform-recent-title" title="{{ submission.title }}">{{ submission.title }}</a>
                         <span class="freeform-recent-status" title="{{ status.name }}"><span class="status {{ status.color }}" aria-hidden="true"></span>{{ status.name }}</span>

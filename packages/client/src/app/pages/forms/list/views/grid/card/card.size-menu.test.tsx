@@ -1,4 +1,5 @@
 import { EscapeStackProvider } from "@ff-client/contexts/escape/escape.context";
+import type { FormCardContent } from "@ff-client/types/forms";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
@@ -12,6 +13,14 @@ vi.mock("@ff-client/contexts/site/site.context", () => ({
 vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string, params?: { name: string }) =>
     text.replace("{name}", params?.name ?? ""),
+}));
+vi.mock("./card.queries", () => ({
+  useCardFields: () => ({
+    data: [
+      { id: 5, label: "Priority" },
+      { id: 9, label: "Score" },
+    ],
+  }),
 }));
 let host: HTMLDivElement, root: Root;
 const change = vi.fn();
@@ -76,6 +85,8 @@ it("offers all four sizes and restores keyboard focus after selection", async ()
     "Large2×2",
   ]);
   expect(choices[0].getAttribute("aria-pressed")).toBe("true");
+  expect(choices[0].querySelector(".size-check path")).not.toBeNull();
+  expect(choices[1].querySelector(".size-check path")).toBeNull();
   await act(async () => {
     choices[3].focus();
     choices[3].click();
@@ -164,4 +175,67 @@ it("keeps form actions available without offering Pro customization", async () =
   );
   expect(actions.onDuplicate).toHaveBeenCalled();
   expect(change).not.toHaveBeenCalled();
+});
+
+it("keeps Field summary open through saving, dismisses only the nested picker, and selects a summary field", async () => {
+  let content: FormCardContent = "overview";
+  let fieldId: number | null = null;
+  let saving = false;
+  const client = new QueryClient();
+  const onContentChange = vi.fn(
+    (next: FormCardContent, nextField?: number | null) => {
+      content = next;
+      fieldId = nextField ?? null;
+      saving = true;
+      draw();
+    },
+  );
+  const draw = () =>
+    root.render(
+      <QueryClientProvider client={client}>
+        <EscapeStackProvider>
+          <CardSizeMenu
+            name="Contact"
+            size="2x2"
+            formId={1}
+            disabled={saving}
+            content={content}
+            fieldId={fieldId}
+            canReadSubmissions
+            onChange={change}
+            onContentChange={onContentChange}
+          />
+        </EscapeStackProvider>
+      </QueryClientProvider>,
+    );
+  await act(async () => draw());
+  await act(async () => trigger().click());
+  const picker = (label: string) =>
+    document.querySelector<HTMLButtonElement>(`button[aria-label="${label}"]`)!;
+  await act(async () => picker("Card content").click());
+  const fieldOption = [
+    ...document.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]'),
+  ].find((option) => option.textContent === "Field summary")!;
+  expect(fieldOption.querySelector("svg")).not.toBeNull();
+  await act(async () => fieldOption.click());
+  expect(onContentChange).toHaveBeenLastCalledWith("field", 5);
+  expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+  expect(picker("Summary field").matches(":disabled")).toBe(true);
+  saving = false;
+  await act(async () => draw());
+  await act(async () => picker("Summary field").click());
+  await act(async () =>
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    ),
+  );
+  expect(document.querySelector('[role="menu"]')).toBeNull();
+  expect(document.querySelector('[role="dialog"]')).not.toBeNull();
+  await act(async () => picker("Summary field").click());
+  const score = [
+    ...document.querySelectorAll<HTMLButtonElement>('[role="menuitemradio"]'),
+  ].find((option) => option.textContent === "Score")!;
+  await act(async () => score.click());
+  expect(onContentChange).toHaveBeenLastCalledWith("field", 9);
+  expect(document.querySelector('[role="dialog"]')).toBeNull();
 });

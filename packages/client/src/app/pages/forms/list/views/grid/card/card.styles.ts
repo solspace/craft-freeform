@@ -267,7 +267,6 @@ export const Activity = styled.section`
   margin: 12px ${spacings.xl};
   padding-top: 12px;
   border-top: 1px solid #dfe6ee;
-  [data-card-size='1x2'] &, [data-card-size='2x2'] & { margin-top: auto; }
   h3 { margin: 0 0 8px; font-size: 13px; line-height: 18px; font-weight: 600; }
   p { margin: 8px 0; font-size: 12px; color: #687684; }
   button { text-decoration: underline; color: var(--link-color); }
@@ -302,20 +301,17 @@ export const SizeMenu = styled.div`
   background: var(--modal-bg, #fff);
   color: #3f4d5a;
   box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
+  .menu-controls { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
+  .menu-controls:disabled { opacity: .65; }
   .content-options, .card-actions { border-top: 1px solid #dfe6ee; margin-top: 5px; padding-top: 5px; }
   .card-actions:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
   .content-options { padding: 8px 9px; }
   label { display: block; font-size: 12px; margin-bottom: 8px; }
-  .card-select { position: relative; margin-top: 5px; }
-  .card-select::after { content: ''; position: absolute; right: 13px; top: calc(50% - 5px); width: 6px; height: 6px; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); pointer-events: none; opacity: .8; }
-  select { appearance: none; -webkit-appearance: none; display: block; box-sizing: border-box; width: 100%; height: 34px; margin: 0; border: 1px solid transparent; border-radius: 5px; background: #dfe5ec; color: #3f4d5a; padding: 6px 30px 6px 10px; font-family: inherit; font-size: 13px; line-height: 20px; cursor: pointer; text-overflow: ellipsis; }
-  select:hover { background: #d5dfe9; }
-  select:focus, select:focus-visible { outline: none; border-color: #89b4e6; box-shadow: 0 0 0 2px #2c7be529; }
   p { font-size: 11px; color: #687684; margin: 4px 0 0; }
   .card-actions button { justify-content: flex-start; gap: 10px; }
   .card-actions svg { width: 16px; height: 16px; flex-shrink: 0; display: block; fill: currentColor; }
   .delete-action { color: #cf1124; }
-  > span { display: block; padding: 6px 9px; font-size: 12px; color: #687684; }
+  > span, .menu-controls > span { display: block; padding: 6px 9px; font-size: 12px; color: #687684; }
 `;
 
 export const SizeChoice = styled.button`
@@ -331,7 +327,11 @@ export const SizeChoice = styled.button`
   background: transparent;
   cursor: pointer;
   font-size: 13px;
-  &:hover, &:focus-visible, &[aria-pressed=true] { background: #e9f2fc; color: var(--link-color); }
+  &:hover, &:focus-visible { background: var(--gray-050, #f3f7fc); }
+  &[aria-pressed=true] { background: var(--gray-100, #e4edf6); }
+  &:focus-visible { outline: none; box-shadow: var(--focus-ring-inner); }
+  .size-label { display: inline-flex; align-items: center; gap: 8px; }
+  .size-check { display: block; width: 14px; height: 14px; flex-shrink: 0; }
   @media (pointer: coarse) { min-height: 44px; }
 `;
 

@@ -38,7 +38,7 @@ export const CurrentValue = styled.div`
   justify-content: start;
   gap: ${spacings.sm};
 
-  background-color: #dfe5ec;
+  background-color: var(--button-bg, #dfe5ec);
   border-radius: ${borderRadius.lg};
 
   padding: 7px 22px 7px 10px;
@@ -63,9 +63,8 @@ export const CurrentValue = styled.div`
 
   > .ff-recommended-badge { min-height: 0; margin-inline-start: auto; }
 
-  &:hover {
-    box-shadow: var(--focus-ring);
-    outline-color: transparent;
+  &:not(.missing):hover {
+    background-color: var(--button-bg--hover, #cdd4de);
   }
 
   &:after {
@@ -135,6 +134,8 @@ export const CloseButton = styled.button`
 
 export const DropdownWrapper = styled.div`
   position: relative;
+
+  &:focus-visible ${CurrentValue} { box-shadow: var(--focus-ring); }
 
   &.open {
     ${DropdownRollout} {

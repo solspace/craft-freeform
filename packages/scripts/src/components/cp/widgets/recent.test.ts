@@ -9,7 +9,7 @@ function fixture(showFilters = true, showPagination = true, pageSize = 2) {
   root.dataset.newestLabel = "Show newest first";
   root.innerHTML = `<div data-recent-tools hidden><input data-recent-search>
     <select data-recent-form><option value="">All forms</option></select>
-    <select data-recent-status><option value="">All statuses</option></select>
+    <select data-recent-status><option value="">All</option></select>
     <button data-recent-sort></button></div><ol data-recent-list>
     ${["Alice", "Bob", "Carol", "David", "Eve"].map((name, i) => `<li data-recent-row data-form-id="${i % 2}" data-form-name="${i % 2 ? "Orders" : "Contact"}" data-status-id="${i % 2}" data-status-name="${i % 2 ? "Read" : "Unread"}">${name}</li>`).join("")}</ol>
     <div data-recent-empty hidden><button data-recent-clear>Clear</button></div>
@@ -237,7 +237,7 @@ function serverMarkup(form = "", names: string[] = ["Loaded submission"]) {
     (_, i) =>
       `<option value="${i + 1}" ${form === String(i + 1) ? "selected" : ""}>Form ${String(i + 1).padStart(3, "0")}</option>`,
   ).join("");
-  return `<div data-widget-id="8" data-form-filter="${form}" data-page-size="2"><div data-recent-tools><input data-recent-search><select data-recent-form aria-label="Filter by form"><option value="">All forms</option>${options}</select><select data-recent-status><option value="">All statuses</option></select></div><ol data-recent-list>${names.map((name) => `<li data-recent-row data-form-id="${form || "1"}" data-status-id="1" data-status-name="Unread">${name}</li>`).join("")}</ol><div data-recent-empty hidden><button data-recent-clear>Clear</button></div><span data-recent-summary></span><button data-recent-refresh>Refresh</button><p data-widget-feedback hidden></p></div>`;
+  return `<div data-widget-id="8" data-form-filter="${form}" data-page-size="2"><div data-recent-tools><input data-recent-search><select data-recent-form aria-label="Filter by form"><option value="">All forms</option>${options}</select><select data-recent-status><option value="">All</option></select></div><ol data-recent-list>${names.map((name) => `<li data-recent-row data-form-id="${form || "1"}" data-status-id="1" data-status-name="Unread">${name}</li>`).join("")}</ol><div data-recent-empty hidden><button data-recent-clear>Clear</button></div><span data-recent-summary></span><button data-recent-refresh>Refresh</button><p data-widget-feedback hidden></p></div>`;
 }
 function serverFixture() {
   document.body.innerHTML = serverMarkup();

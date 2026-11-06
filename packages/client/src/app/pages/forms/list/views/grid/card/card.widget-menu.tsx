@@ -15,7 +15,11 @@ import {
 } from "@floating-ui/react";
 import { useState } from "react";
 import styled from "styled-components";
-import { SizeChoice, SizeMenu } from "./card.styles";
+import {
+  ToolbarMenu,
+  ToolbarMenuItem,
+  ToolbarMenuTrigger,
+} from "../../../list-view.styles";
 
 const choices = [
   {
@@ -40,16 +44,7 @@ const choices = [
   },
 ] as const;
 
-const Trigger = styled.button`
-  gap: 12px;
-  white-space: nowrap;
-  height: var(--forms-control-height);
-  > svg { width: 12px; height: 12px; flex-shrink: 0; }
-`;
-const Choice = styled(SizeChoice)`
-  justify-content: flex-start;
-  gap: 10px;
-  min-height: 38px;
+const Choice = styled(ToolbarMenuItem)`
   svg { display: block; width: 20px; height: 20px; flex-shrink: 0; }
 `;
 
@@ -75,13 +70,24 @@ export const WidgetTypeMenu = ({
   ]);
   return (
     <>
-      <Trigger
+      <ToolbarMenuTrigger
         type="button"
         className="btn"
+        aria-label={translate("Insert widget")}
         ref={refs.setReference}
         {...getReferenceProps()}
       >
-        {translate("Insert widget…")}
+        <svg
+          viewBox="0 0 12 12"
+          aria-hidden="true"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+        >
+          <path d="M6 1v10M1 6h10" />
+        </svg>
+        {translate("Widgets")}
         <svg
           viewBox="0 0 12 12"
           aria-hidden="true"
@@ -91,41 +97,44 @@ export const WidgetTypeMenu = ({
         >
           <path d="m2 4 4 4 4-4" />
         </svg>
-      </Trigger>
+      </ToolbarMenuTrigger>
       {open && (
         <FloatingPortal>
           <FloatingFocusManager context={context} modal={false}>
-            <SizeMenu
+            <ToolbarMenu
               ref={refs.setFloating}
               style={floatingStyles}
               {...getFloatingProps({
                 "aria-label": translate("Insert widget"),
               })}
             >
-              {choices.map(({ type, label, path }) => (
-                <Choice
-                  key={type}
-                  type="button"
-                  onClick={() => {
-                    setOpen(false);
-                    onSelect(type);
-                  }}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d={path} />
-                  </svg>
-                  {translate(label)}
-                </Choice>
-              ))}
-            </SizeMenu>
+              <ul>
+                {choices.map(({ type, label, path }) => (
+                  <li key={type}>
+                    <Choice
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        onSelect(type);
+                      }}
+                    >
+                      <svg
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.7"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d={path} />
+                      </svg>
+                      {translate(label)}
+                    </Choice>
+                  </li>
+                ))}
+              </ul>
+            </ToolbarMenu>
           </FloatingFocusManager>
         </FloatingPortal>
       )}

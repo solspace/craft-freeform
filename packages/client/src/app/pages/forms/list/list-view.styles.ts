@@ -142,3 +142,38 @@ export const PeriodControlHost = styled.div`
   flex-shrink: 0;
   &:empty { display: none; }
 `;
+
+export const ToolbarMenuTrigger = styled.button`
+  gap: 8px;
+  white-space: nowrap;
+  height: var(--forms-control-height);
+  > svg { display: block; width: 12px; height: 12px; flex-shrink: 0; }
+`;
+
+export const ToolbarMenu = styled.div.attrs({
+  className: "menu menu--disclosure visible",
+})`
+  z-index: 1100;
+  box-sizing: border-box;
+  width: 240px;
+  max-width: calc(100vw - 24px);
+
+  ul { margin: 0; padding: 0; list-style: none; }
+`;
+
+export const ToolbarMenuItem = styled.button.attrs({
+  className: "menu-item flex",
+})`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: calc(100% + 28px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  line-height: 20px;
+
+  &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  @media (pointer: coarse) { min-height: 44px; }
+`;

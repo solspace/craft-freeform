@@ -1,0 +1,66 @@
+.select.freeform-disclosure-container,
+.freeform-disclosure-container {
+  &::after { display: none; }
+  select[hidden] { display: none !important; }
+}
+.freeform-disclosure-select.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  height: var(--ui-control-height, 34px);
+  padding-inline: 10px;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: start;
+}
+.freeform-disclosure-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+}
+.freeform-disclosure-arrow {
+  flex: 0 0 6px;
+  width: 6px;
+  height: 6px;
+  margin: -3px 3px 0 0;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  opacity: .8;
+}
+.freeform-recent .freeform-recent-filters .select.freeform-disclosure-container {
+  flex: 0 0 96px;
+}
+.freeform-disclosure-menu.menu {
+  z-index: 1100;
+  box-sizing: border-box;
+  max-width: calc(100vw - 24px);
+  overflow: auto;
+  &[hidden] { display: none; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  // Keep these layout rules weaker than Craft's menu-item hover selector.
+  :where(.menu-item.flex) {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: calc(100% + 28px);
+    border: 0;
+    background: transparent;
+    line-height: 20px;
+    text-align: start;
+    > span:not(.status, .freeform-disclosure-check) { overflow: hidden; text-overflow: ellipsis; }
+    &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    @media (pointer: coarse) { min-height: 44px; }
+  }
+  .freeform-disclosure-check { flex: none; margin-inline-start: auto; }
+}
+.freeform-disclosure-label .status,
+.freeform-disclosure-menu .status {
+  flex: 0 0 auto;
+  margin: 0;
+}

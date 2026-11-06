@@ -1,3 +1,4 @@
+import { DisclosureSelect } from "@lib/cp/widgets/disclosure-select";
 import { refreshWidget } from "@lib/cp/widgets/refresh-widget";
 import { formatRelativeDate } from "@lib/cp/widgets/relative-date";
 import { SearchableSelect } from "../../../../../frontend/core/src/select/searchable-select";
@@ -57,7 +58,12 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     for (const [value, label] of [...options].sort((a, b) =>
       a[1].localeCompare(b[1]),
     )) {
-      select.add(new Option(label, value));
+      const option = new Option(label, value);
+      if (select === statuses)
+        option.dataset.statusColor =
+          rows.find((row) => row.dataset.statusId === value)?.dataset
+            .statusColor || "gray";
+      select.add(option);
     }
   }
 
@@ -65,6 +71,7 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
   if (forms && state && !root.hasAttribute("data-form-filter"))
     forms.value = state.form;
   if (statuses && state) statuses.value = state.status;
+  const statusPicker = statuses ? new DisclosureSelect(statuses, true) : null;
   const serverFilter = root.hasAttribute("data-form-filter");
   const picker =
     forms && serverFilter
@@ -108,6 +115,7 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
         root!,
         (next) => {
           picker?.destroy();
+          statusPicker?.destroy();
           initRecent(next, {
             search: search?.value || "",
             form: formId,
@@ -236,6 +244,7 @@ export function initRecent(root: HTMLElement | null, state?: RecentState) {
     if (forms) forms.value = "";
     syncPicker();
     if (statuses) statuses.value = "";
+    statusPicker?.sync();
     if (reloadAll) void reload("", true);
     else filter();
     search?.focus();

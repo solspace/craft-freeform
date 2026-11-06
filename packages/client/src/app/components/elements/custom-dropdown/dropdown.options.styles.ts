@@ -80,11 +80,11 @@ export const Label = styled.label`
 
   &:hover {
     cursor: pointer;
-    background-color: ${colors.gray500};
-    color: ${colors.white};
+    background-color: ${colors.gray050};
+    color: ${colors.gray700};
 
     ${CheckMark} {
-      fill: ${colors.white};
+      fill: ${colors.gray700};
     }
   }
 
@@ -133,7 +133,7 @@ export const Item = styled.li`
 
   &.focused {
     > ${Label} {
-      background-color: #cfd8e3;
+      background-color: ${colors.gray050};
       color: ${colors.gray700};
 
       > ${CheckMark} {
@@ -153,7 +153,7 @@ export const Item = styled.li`
       font-style: italic;
 
       &:hover {
-        color: ${colors.white};
+        color: ${colors.gray700};
       }
     }
 
@@ -162,8 +162,8 @@ export const Item = styled.li`
         background-color: transparent;
 
         &:hover {
-          background-color: ${colors.gray500};
-          color: ${colors.white};
+          background-color: ${colors.gray050};
+          color: ${colors.gray700};
         }
 
         > ${CheckMark} {

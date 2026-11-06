@@ -55,7 +55,8 @@ it.each([
   expect(select).toHaveBeenCalledExactlyOnceWith(type);
   expect(document.querySelector('[role="dialog"]')).toBeNull();
   expect(document.activeElement).toBe(trigger);
-  expect(trigger.textContent).toBe("Insert widget…");
+  expect(trigger.textContent).toBe("Widgets");
+  expect(trigger.getAttribute("aria-label")).toBe("Insert widget");
 });
 
 it("dismisses with Escape without selecting a widget", async () => {

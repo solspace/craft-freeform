@@ -97,9 +97,6 @@ export const ListProvider: React.FC = () => {
             {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
               <PeriodControlHost ref={setPeriodHost} />
             )}
-            {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
-              <InsertWidgetMenu />
-            )}
             {config.editions.isAtLeast(Edition.Pro) &&
               config.metadata.freeform.canOrganizeForms && (
                 <GroupsButton
@@ -108,9 +105,12 @@ export const ListProvider: React.FC = () => {
                   onClick={openEditGroupModal}
                 >
                   <EditIcon />
-                  {translate("Form groups")}
+                  {translate("Groups")}
                 </GroupsButton>
               )}
+            {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
+              <InsertWidgetMenu />
+            )}
           </ViewControls>
 
           {canCreate && (

@@ -90,15 +90,8 @@ export const GroupsButton = styled.button`
   white-space: nowrap;
   flex-shrink: 0;
 
-  &:hover {
-    color: var(--link-color);
-
-    svg {
-      path:last-of-type {
-        stroke: var(--link-color);
-      }
-    }
-  }
+  svg { display: block; flex-shrink: 0; }
+  svg path:last-of-type { stroke: currentColor; }
 `;
 
 export const ContentContainer = styled.div`

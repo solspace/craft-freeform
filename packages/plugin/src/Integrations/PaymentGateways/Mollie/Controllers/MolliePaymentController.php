@@ -67,7 +67,7 @@ class MolliePaymentController extends BaseMollieController
             return $this->asSerializedJson(['errors' => ['Invalid amount: '.$e->getMessage()]], 400);
         }
 
-        $currency = strtoupper((string) ($body['currency'] ?? $field->getCurrency() ?? 'EUR'));
+        $currency = strtoupper($field->getCurrency());
         $description = $this->resolveDescription($field, $form);
         $returnOrigin = $this->resolveReturnOrigin($form, $body);
         $redirectUrl = $this->buildCallbackUrl($form, $integration, $field, $returnOrigin);

@@ -40,7 +40,11 @@ class PaymentIntentsController extends BaseStripeController
             throw new NotFoundHttpException('Payment Intent not found');
         }
 
-        $amount = $this->amountService->getAmount($form, $field);
+        try {
+            $amount = $this->amountService->getAmount($form, $field);
+        } catch (\InvalidArgumentException $exception) {
+            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
+        }
 
         $stripe = $integration->getStripeClient();
         $paymentIntent = $stripe
@@ -95,6 +99,12 @@ class PaymentIntentsController extends BaseStripeController
             [$form, $integration, $field, $hash, $opts] = $this->getRequestItems();
         } catch (NotFoundHttpException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
+        }
+
+        try {
+            $amount = $this->amountService->getAmount($form, $field);
+        } catch (\InvalidArgumentException $exception) {
+            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
         }
 
         $stripe = $integration->getStripeClient();
@@ -180,7 +190,6 @@ class PaymentIntentsController extends BaseStripeController
             $id = $subscription->latest_invoice->payment_intent->id;
             $secret = $subscription->latest_invoice->payment_intent->client_secret;
         } else {
-            $amount = $this->amountService->getAmount($form, $field);
             $currency = $field->getCurrency();
 
             $paymentIntent = $stripe

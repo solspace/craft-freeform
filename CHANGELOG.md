@@ -53,6 +53,11 @@
 - Fixed Activity Log compatibility and unavailable-database handling on Craft 4.
 - Fixed **Quick Form** dashboard widgets not displaying field-specific validation errors and input error styles.
 
+## 5.17.8 - 2026-11-06
+
+### Security
+- Fixed a validation bypass that could allow underpayment on forms using dynamic payment amounts with Mollie, PayPal, Square, or Stripe. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
+
 ## 5.17.7 - 2026-11-02
 
 ### Added

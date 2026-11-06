@@ -1,9 +1,9 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.17.8 - 2026-11-06
 
 ### Security
-- Enforced server-side validation of dynamic payment amounts for Mollie, PayPal, Square, and Stripe, including configured field limits, allowed choices, and recalculated formula results. Payment currency now always comes from the field configuration. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
+- Fixed a validation bypass that could allow underpayment on forms using dynamic payment amounts with Mollie, PayPal, Square, or Stripe. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
 
 ## 5.17.7 - 2026-11-02
 

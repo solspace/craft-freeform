@@ -543,8 +543,8 @@ ul.section-structure {
     height: 40px;
     flex: 0 0 40px;
     border-radius: 50%;
-    background: var(--bg-success, #e7f3ee);
-    color: var(--fg-success, #24764f);
+    background: light-dark(#e7f3ee, var(--bg-success, #e7f3ee));
+    color: light-dark(#24764f, var(--fg-success, #24764f));
     font-size: 20px;
     line-height: 1;
   }

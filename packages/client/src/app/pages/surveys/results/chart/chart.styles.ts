@@ -30,6 +30,6 @@ export const ExtraColor = styled.div<ColorProps>`
 
 export const TooltipWrapper = styled.div<ColorProps>`
   padding: ${spacings.sm} ${spacings.md};
-  background-color: var(--pane-bg, #fff);
+  background-color: light-dark(white, var(--pane-bg, #fff));
   border: 2px solid ${({ $color }) => $color};
 `;

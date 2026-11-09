@@ -17,7 +17,7 @@ export const NewTabWrapper = styled.button`
   }
 
   &:hover {
-    color: ${colors.text};
+    color: light-dark(${colors.black}, ${colors.text});
     background-color: var(--ui-control-hover-bg-color, ${colors.gray050});
   }
 

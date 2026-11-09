@@ -17,7 +17,7 @@ export const ButtonGroup = styled.div`
 
   white-space: nowrap;
 
-  background-color: var(--ui-control-bg-color);
+  background-color: light-dark(#e5ecf6, var(--ui-control-bg-color));
   border-top-right-radius: ${borderRadius.lg};
   border-bottom-right-radius: ${borderRadius.lg};
 `;
@@ -65,20 +65,20 @@ export const TemplateCard = styled.li`
   }
 
   &.active {
-    color: ${colors.text};
-    background-color: var(--bg-selection-dark);
+    color: light-dark(${colors.white}, ${colors.text});
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
 
     button svg {
-      fill: ${colors.text};
+      fill: light-dark(${colors.white}, ${colors.text});
     }
 
     ${ButtonGroup} {
-      background-color: var(--ui-control-hover-bg-color);
+      background-color: light-dark(#51606c, var(--ui-control-hover-bg-color));
     }
 
     ${Button} {
       &:hover {
-        background-color: var(--ui-control-active-bg-color);
+        background-color: light-dark(${colors.gray800}, var(--ui-control-active-bg-color));
       }
     }
   }

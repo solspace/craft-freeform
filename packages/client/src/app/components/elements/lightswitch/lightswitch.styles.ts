@@ -13,7 +13,7 @@ export const LightSwitchHandle = styled.div`
   border: 0 solid #e5e7eb;
   border-radius: 9px;
 
-  background-color: var(--lightswitch-handle-off-color, ${colors.white});
+  background-color: light-dark(${colors.white}, var(--lightswitch-handle-off-color, ${colors.white}));
   box-shadow: inset 0 0 0 1px var(--_lightswitch-border-color);
 
   transition: transform 0.2s ${beziers.bounce.easeOut};

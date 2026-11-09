@@ -127,7 +127,7 @@ export function FormBehaviorCards({
   onChange: (value: string) => void;
 }) {
   return (
-    <CardLayout data-choice-count={options.length}>
+    <CardLayout>
       <ChoiceCards
         label={label}
         value={typeof value === "string" ? value : ""}
@@ -201,9 +201,9 @@ const CardLayout = styled.div`
   }
   @container (min-width: 850px) {
     .ff-choice-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    &[data-choice-count="4"] .ff-choice-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ff-choice-cards[data-choice-count="4"] { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
-  @container (min-width: 1050px) {
-    &[data-choice-count="4"] .ff-choice-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  @container (min-width: 1000px) {
+    .ff-choice-cards[data-choice-count="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
 `;

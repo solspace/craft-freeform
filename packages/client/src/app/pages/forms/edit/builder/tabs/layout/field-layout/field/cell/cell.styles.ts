@@ -69,7 +69,7 @@ export const Instructions = styled.div`
   margin-top: -6px;
   margin-bottom: 6px;
 
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   font-style: italic;
   font-size: 12px;
 `;
@@ -120,10 +120,10 @@ export const FieldCellWrapper = styled.div`
   }
 
   &:hover {
-    background: ${colors.secondarySurface};
+    background: light-dark(#f3f7fd, ${colors.secondarySurface});
 
     &:not(.active) {
-      border: 1px solid ${colors.border};
+      border: 1px solid light-dark(#cdd8e4, ${colors.border});
     }
   }
 
@@ -201,13 +201,13 @@ export const FieldCellWrapper = styled.div`
     width: 100%;
     padding: 6px 9px;
 
-    border: 1px solid ${colors.inputBorder};
+    border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
     background-color: ${colors.inputBackground};
     border-radius: 3px;
-    color: ${colors.text};
+    color: light-dark(${colors.gray500}, ${colors.text});
 
     &::placeholder {
-      color: ${colors.muted};
+      color: light-dark(${colors.gray300}, ${colors.muted});
       opacity: 1;
     }
   }
@@ -236,9 +236,9 @@ export const FieldCellWrapper = styled.div`
       border-radius: 3px;
     }
     select, select:hover, select:focus {
-      background-color: ${colors.selectBackground};
+      background-color: light-dark(#fff, ${colors.selectBackground});
       box-shadow: none;
-      color: ${colors.text};
+      color: light-dark(${colors.gray500}, ${colors.text});
     }
     select:not([multiple]) { padding-inline-end: 30px; }
   }
@@ -253,12 +253,15 @@ export const FieldCellWrapper = styled.div`
     option {
       padding: 4px 6px;
       border-radius: 3px;
-      color: ${colors.text};
+      color: light-dark(${colors.gray500}, ${colors.text});
     }
 
     option:checked {
       color: ${colors.gray600};
       background: var(--ui-control-bg-color);
+  :root:not([data-dark-mode="dark"]) & {
+    background: linear-gradient(#eaf1fb, #eaf1fb);
+  };
     }
 
     optgroup {
@@ -314,17 +317,17 @@ export const FieldCellWrapper = styled.div`
       border: 1px solid #d9d9d9;
       padding: 10px;
       white-space: pre-wrap;
-      background-color: var(--ui-control-bg-color);
+      background-color: light-dark(rgb(247, 247, 247), var(--ui-control-bg-color));
     }
 
     table {
       border-collapse: collapse;
       width: 100%;
 
-      border: 1px solid ${colors.border};
+      border: 1px solid light-dark(black, ${colors.border});
 
       td {
-        border: 1px solid ${colors.border};
+        border: 1px solid light-dark(black, ${colors.border});
         padding: 5px;
       }
     }
@@ -344,7 +347,7 @@ export const FieldCellWrapper = styled.div`
         grid-column: 1 / -1;
         padding-top: 10px;
 
-        color: ${colors.text};
+        color: light-dark(${colors.gray500}, ${colors.text});
         text-align: left;
         font-style: italic;
       }
@@ -354,7 +357,7 @@ export const FieldCellWrapper = styled.div`
         grid-template-rows: min-content 20px auto;
         gap: 5px;
 
-        background: ${colors.surface};
+        background: light-dark(${colors.white}, ${colors.surface});
         border: 1px solid ${colors.gray200};
         border-radius: 8px;
 
@@ -391,7 +394,7 @@ export const FieldCellWrapper = styled.div`
         &__description {
           padding: 0 ${spacings.sm} ${spacings.sm};
 
-          color: ${colors.text};
+          color: light-dark(${colors.gray500}, ${colors.text});
           font-size: 12px;
           font-style: italic;
         }
@@ -440,7 +443,7 @@ export const SampleValueMarker = styled.div<{ $select?: boolean }>`
     padding: 0;
     border: 0;
     background: transparent;
-    color: ${colors.muted};
+    color: light-dark(${colors.gray300}, ${colors.muted});
   }
   button:hover, button:focus { color: #3476b8; }
   button:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; border-radius: 3px; }

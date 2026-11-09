@@ -44,7 +44,7 @@ export const Button = styled.span`
   border: 1px solid ${colors.gray300};
   border-radius: 4px;
   color: ${colors.gray600};
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   font-size: 10px;
   font-weight: 400;
   line-height: 14px;
@@ -53,8 +53,8 @@ export const Button = styled.span`
   > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   &.submit {
     border-color: var(--secondary-button-bg, ${colors.gray600});
-    background: var(--secondary-button-bg, ${colors.gray600});
-    color: var(--secondary-button-text-color, ${colors.white});
+    background: light-dark(${colors.gray600}, var(--secondary-button-bg, ${colors.gray600}));
+    color: light-dark(${colors.white}, var(--secondary-button-text-color, ${colors.white}));
   }
 `;
 
@@ -67,7 +67,7 @@ export const LayoutBlock = styled.label`
   padding: 10px;
   border: 1px solid ${colors.gray200};
   border-radius: 6px;
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s;
 
@@ -82,9 +82,12 @@ export const LayoutBlock = styled.label`
   &:hover { border-color: ${colors.muted}; }
   &:has(input:checked) {
     border-color: var(--ui-control-selected-border, ${colors.link});
-    background: var(--ui-control-selected-bg, var(--bg-selection-light, #edf5fc));
+    background: light-dark(#edf5fc, var(--ui-control-selected-bg, var(--bg-selection-light, #edf5fc)));
     color: var(--ui-control-selected-color, ${colors.text});
     box-shadow: inset 0 0 0 1px var(--ui-control-selected-border, ${colors.link});
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: inset 0 0 0 1px #397fbe;
+  };
   }
-  &:has(input:focus-visible) { outline: 2px solid ${colors.link}; outline-offset: 2px; }
+  &:has(input:focus-visible) { outline: 2px solid light-dark(#397fbe, ${colors.link}); outline-offset: 2px; }
 `;

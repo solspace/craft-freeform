@@ -23,7 +23,7 @@ ul.cards {
 
     text-align: center;
 
-    background: var(--pane-bg, #fff);
+    background: light-dark(white, var(--pane-bg, #fff));
     border: 1px solid #e2e2e5;
     border-radius: 5px;
     transition: all $speed ease-out;

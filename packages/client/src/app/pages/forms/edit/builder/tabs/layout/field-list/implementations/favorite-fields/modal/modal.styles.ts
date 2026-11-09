@@ -55,7 +55,7 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${SectionBlockContainer} {
     &:after {
-      background-color: ${colors.surface};
+      background-color: light-dark(white, ${colors.surface});
     }
   }
 `;
@@ -114,8 +114,8 @@ export const FieldListItem = styled.li`
   }
 
   &.active {
-    background: var(--bg-selection-dark);
-    color: ${colors.text};
+    background: light-dark(${colors.gray500}, var(--bg-selection-dark));
+    color: light-dark(${colors.white}, ${colors.text});
     fill: currentColor;
 
     a {

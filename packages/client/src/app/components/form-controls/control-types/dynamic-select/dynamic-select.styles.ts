@@ -15,7 +15,7 @@ export const RefreshButton = styled.button`
   align-items: center;
   justify-content: center;
   color: ${colors.text};
-  background-color: var(--button-bg, #dfe5ec);
+  background-color: light-dark(#dfe5ec, var(--button-bg, #dfe5ec));
 
   &:not(:disabled):hover { background-color: var(--button-bg--hover, #cdd4de); }
 
@@ -25,11 +25,11 @@ export const RefreshButton = styled.button`
   }
 
   &[disabled] {
-    background-color: var(--ui-control-static-bg-color, #eef2f8);
+    background-color: light-dark(#eef2f8, var(--ui-control-static-bg-color, #eef2f8));
     color: ${colors.muted};
 
     svg {
-      fill: ${colors.muted};
+      fill: light-dark(${colors.gray300}, ${colors.muted});
 
       animation: ${animations.spinner} 2s infinite;
       transform-origin: 50% 50%;

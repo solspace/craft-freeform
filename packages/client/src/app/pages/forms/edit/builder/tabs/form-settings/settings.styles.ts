@@ -4,5 +4,5 @@ import styled from "styled-components";
 export const FormSettingsWrapper = styled.div`
   display: flex;
   height: 100%;
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
 `;

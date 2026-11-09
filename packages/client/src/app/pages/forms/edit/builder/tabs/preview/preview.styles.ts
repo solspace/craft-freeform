@@ -9,7 +9,7 @@ export const PreviewWrapper = styled.div`
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  background: ${colors.surface};
+  background: light-dark(#fff, ${colors.surface});
 `;
 
 export const PreviewSidebar = styled(Sidebar)`
@@ -40,7 +40,7 @@ export const FrameArea = styled.div`
   justify-content: center;
   overflow: hidden;
   padding: ${spacings.lg};
-  background: ${colors.surface};
+  background: light-dark(#fff, ${colors.surface});
 `;
 
 export const Frame = styled.iframe`

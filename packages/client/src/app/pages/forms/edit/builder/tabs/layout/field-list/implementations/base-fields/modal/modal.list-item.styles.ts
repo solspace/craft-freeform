@@ -13,8 +13,8 @@ export const Wrapper = styled.div`
   padding: 0 4px;
   overflow: hidden;
 
-  background: ${colors.inputBackground};
-  border: 1px solid ${colors.border};
+  background: light-dark(${colors.white}, ${colors.inputBackground});
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   border-radius: 3px;
 
   font-size: 12px;
@@ -24,7 +24,7 @@ export const Wrapper = styled.div`
   &:hover {
     transform: scale(1.05);
     border-color: ${colors.inputBorder};
-    background-color: var(--ui-control-hover-bg-color, ${colors.mutedSurface});
+    background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color, ${colors.mutedSurface}));
   }
 `;
 

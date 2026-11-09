@@ -66,7 +66,7 @@ export const EmailInput = styled.input`
   outline: none;
   min-height: 100% !important;
 
-  background-color: ${colors.inputBackground};
+  background-color: light-dark(transparent, ${colors.inputBackground});
   color: ${colors.text};
 
   &:focus,
@@ -76,7 +76,7 @@ export const EmailInput = styled.input`
   }
 
   &::placeholder {
-    color: ${colors.muted};
+    color: light-dark(${colors.gray200}, ${colors.muted});
   }
 `;
 
@@ -111,7 +111,7 @@ export const RecipientItem = styled.li`
 
   overflow: hidden;
   background-color: ${colors.inputBackground};
-  border: 1px solid ${colors.inputBorder};
+  border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
 
   &:hover {
     ${Button} {

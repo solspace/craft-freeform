@@ -7,7 +7,7 @@ export const FormMonitorWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.lg};
   padding: ${spacings.xl};
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   height: 100%;
   flex: 1;
 `;
@@ -153,7 +153,7 @@ export const ErrorMessage = styled.div`
   font-size: 14px;
   line-height: 1.5;
   padding: ${spacings.xl};
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   width: 100%;
   height: 100%;
 `;

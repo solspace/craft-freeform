@@ -71,7 +71,7 @@ export const TimeInput = styled.div`
 
 export const TimezoneNote = styled.div`
   margin-top: 6px;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray400}, ${colors.muted});
   font-size: 12px;
 `;
 
@@ -83,7 +83,7 @@ export const Icon = styled.div`
   z-index: 2;
 
   font-size: 16px;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray400}, ${colors.muted});
 
   user-select: none;
   pointer-events: none;

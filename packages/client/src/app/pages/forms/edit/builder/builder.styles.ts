@@ -1,4 +1,4 @@
-import { borderRadius } from "@ff-client/styles/variables";
+import { borderRadius, colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const BuilderWrapper = styled.div`
@@ -14,5 +14,9 @@ export const BuilderContent = styled.div`
   overflow: hidden;
 
   box-shadow: var(--pane-shadow);
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 1px ${colors.gray200},
+    0 2px 12px rgb(205 216 228 / 50%);
+  };
   border-radius: ${borderRadius.lg};
 `;

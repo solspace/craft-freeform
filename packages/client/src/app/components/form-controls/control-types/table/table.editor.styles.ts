@@ -20,7 +20,7 @@ export const TableEditorWrapper = styled(PreviewEditor)`
 
 export const TableContainer = styled(PreviewEditorContainer)`
   border-radius: ${borderRadius.lg};
-  background-color: var(--pane-bg, #fff);
+  background-color: light-dark(white, var(--pane-bg, #fff));
 `;
 
 export const ColumnTabsWrapper = styled(TableColumnTabsWrapper)`
@@ -38,7 +38,9 @@ export const ColumnEditor = styled.div`
   padding: ${spacings.lg};
 `;
 
-export const TabularOptions = styled.table`
+export const TabularOptions = styled.table.attrs({
+  className: "freeform-ui-table",
+})`
   width: 100%;
 
   thead {
@@ -69,7 +71,7 @@ export const Cell = styled.td<CellProps>`
 
   padding: ${({ $tiny }) => ($tiny ? "6px 9px !important" : "0 !important")};
 
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.1), ${colors.border});
 
   label {
     display: none;
@@ -82,7 +84,7 @@ export const Input = styled.input`
 
   padding: 6px 9px;
 
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
 
   &:focus {
     box-shadow: var(--inner-focus-ring);
@@ -94,7 +96,7 @@ export const Input = styled.input`
 
   &:disabled {
     background: #00000004;
-    color: ${colors.muted};
+    color: light-dark(${colors.gray300}, ${colors.muted});
   }
 `;
 

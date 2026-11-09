@@ -4,7 +4,7 @@
   position: relative;
   padding: 24px;
   margin-bottom: 24px;
-  border: 1px solid var(--hairline-color, hsla(240, 4%, 91%, 0.5));
+  border: 1px solid light-dark(HSLA(240, 4%, 91%, 0.5), var(--hairline-color, hsla(240, 4%, 91%, 0.5)));
   border-radius: 3px;
 }
 .chart-explorer .chart-header {

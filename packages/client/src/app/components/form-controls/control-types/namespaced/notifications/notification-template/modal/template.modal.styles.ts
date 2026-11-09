@@ -25,6 +25,9 @@ export const TabList = styled.ul`
 
   border-bottom: 1px solid ${colors.hairline};
   box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 1px 5px #cdd8e440;
+  };
 
   list-style: none;
 `;
@@ -37,7 +40,7 @@ export const TabListItem = styled.li`
 
   padding: 14px 15px 12px;
 
-  color: ${colors.muted};
+  color: light-dark(#7e8fa0, ${colors.muted});
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;

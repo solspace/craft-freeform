@@ -25,7 +25,7 @@ export const PopupMenu = styled.div`
 
   padding: 0 14px;
 
-  background: var(--pane-bg, #fff);
+  background: light-dark(white, var(--pane-bg, #fff));
   box-shadow:
     0 0 0 1px rgba(31, 41, 51, 0.1),
     0 5px 20px rgba(31, 41, 51, 0.25);
@@ -70,7 +70,7 @@ export const PopupMenu = styled.div`
             float: left;
 
             font-family: Craft;
-            color: ${colors.muted};
+            color: light-dark(${colors.gray400}, ${colors.muted});
           }
         }
       }

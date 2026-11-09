@@ -9,7 +9,7 @@ export const Title = styled.div`
   > span {
     font-size: 20px;
     font-weight: bold;
-    color: ${colors.text};
+    color: light-dark(#414141, ${colors.text});
   }
 `;
 
@@ -19,7 +19,7 @@ export const VersionString = styled.small`
   font-size: 12px;
   font-weight: normal;
   font-family: monospace;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
 `;
 
 export const FavoriteButton = styled.button`
@@ -61,7 +61,7 @@ export const Icon = styled.div`
 
   &.spinning {
     animation: spin 2s linear infinite;
-    fill: ${colors.muted};
+    fill: light-dark(${colors.gray300}, ${colors.muted});
   }
 `;
 
@@ -164,10 +164,10 @@ export const Action = styled.a`
   font-size: 12px;
 
   &.info-button {
-    background-color: var(--bg-selection-light);
+    background-color: light-dark(${colors.blue100}, var(--bg-selection-light));
 
     &:hover {
-      background-color: var(--ui-control-hover-bg-color);
+      background-color: light-dark(${colors.blue200}, var(--ui-control-hover-bg-color));
     }
   }
 
@@ -182,12 +182,12 @@ export const Action = styled.a`
 export const ErrorList = styled.ul`
   padding: 10px;
 
-  border: 1px solid var(--border-error);
+  border: 1px solid light-dark(${colors.red200}, var(--border-error));
   border-radius: 5px;
 
-  background-color: var(--bg-error);
+  background-color: light-dark(${colors.red100}, var(--bg-error));
 
-  color: var(--fg-error);
+  color: light-dark(${colors.red600}, var(--fg-error));
   font-size: 14px;
 
   width: 100%;

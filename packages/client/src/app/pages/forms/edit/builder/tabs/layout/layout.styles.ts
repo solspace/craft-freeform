@@ -10,7 +10,7 @@ export const Grid = styled.div`
   height: 100%;
   overflow: hidden;
 
-  background: ${colors.surface};
+  background: light-dark(#fff, ${colors.surface});
 
   /* One divider for the palette and its overlaid property editor. */
   > ${Sidebar} {

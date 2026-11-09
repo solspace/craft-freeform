@@ -15,7 +15,13 @@
 .ff-choice-card-illustrated {
   --choice-color: #617488;
   --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-wash: #f1f5f9;
+  };
   --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-border: #cbd8e4;
+  };
 }
 
 .ff-settings-choice {
@@ -29,20 +35,47 @@
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=blue] {
   --choice-color: light-dark(#3476b8, #82b2e2);
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-color: #3476b8;
+  };
   --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-wash: #edf5fd;
+  };
   --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-border: #b5cfe9;
+  };
 }
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=purple] {
   --choice-color: light-dark(#8657c5, #b89adb);
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-color: #8657c5;
+  };
   --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-wash: #f5effc;
+  };
   --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-border: #cfb9e8;
+  };
 }
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=teal] {
   --choice-color: light-dark(#2e8b81, #64c9bc);
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-color: #2e8b81;
+  };
   --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-wash: #edf8f5;
+  };
   --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
+  :root:not([data-dark-mode="dark"]) & {
+    --choice-border: #a9d4cb;
+  };
 }
 
 .ff-settings-choice .radio + label {
@@ -82,13 +115,19 @@
 
 .ff-settings-choice:has(.radio:checked) {
   border-color: var(--choice-color);
-  background: color-mix(in srgb, var(--choice-color) 4%, var(--card-surface));
+  background: light-dark(var(--choice-wash), color-mix(in srgb, var(--choice-color) 4%, var(--card-surface)));
   box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 2px var(--choice-color), 0 5px 18px rgba(63, 107, 154, 0.08);
+  };
 }
 
 .ff-settings-choice:has(.radio:not(:disabled)):hover {
   border-color: var(--choice-color);
   box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 8px 24px rgba(63, 107, 154, 0.0823529412);
+  };
 }
 
 .ff-settings-choice:has(.radio:focus-visible) {
@@ -267,6 +306,9 @@
 .ff-settings-helper {
   --helper-color: #617488;
   --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --helper-wash: #f1f5f9;
+  };
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -279,21 +321,33 @@
 .ff-settings-helper[data-tone=red] {
   --helper-color: #b53748;
   --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --helper-wash: #fff0f1;
+  };
 }
 
 .ff-settings-helper[data-tone=orange] {
   --helper-color: #a66b20;
   --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --helper-wash: #fff5e6;
+  };
 }
 
 .ff-settings-helper[data-tone=green] {
   --helper-color: #2e8172;
   --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --helper-wash: #edf8f5;
+  };
 }
 
 .ff-settings-helper[data-tone=blue] {
   --helper-color: #3476b8;
   --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
+  :root:not([data-dark-mode="dark"]) & {
+    --helper-wash: #edf5fd;
+  };
 }
 
 .ff-settings-helper-heading {
@@ -465,4 +519,16 @@
   border-radius: 0;
   background: none;
   transform: translateY(-50%) rotate(45deg);
+}
+
+// Match the shared neutral selection treatment without recoloring card artwork.
+:root:not([data-dark-mode="dark"]) .ff-settings-choice:has(.radio:checked) {
+  border-color: var(--gray-300, #9aa5b1);
+  background: #e4e7eb;
+  box-shadow: none;
+}
+
+:root:not([data-dark-mode="dark"]) .ff-settings-choice .radio:checked + label::before {
+  border-color: var(--teal-600, #0d9488);
+  background: var(--teal-600, #0d9488);
 }

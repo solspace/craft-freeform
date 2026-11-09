@@ -6,7 +6,7 @@ import { Label } from "./label.styles";
 export const Instructions = styled.span`
   display: block;
 
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   padding-top: 0;
   line-height: 16px;
   font-size: 12px;
@@ -20,7 +20,7 @@ export const Instructions = styled.span`
   code {
     padding: 1px 4px;
     border-radius: 3px;
-    background-color: var(--ui-control-bg-color);
+    background-color: light-dark(#dfe5ec, var(--ui-control-bg-color));
 
     font-family: monospace;
     font-style: normal;
@@ -202,13 +202,13 @@ export const InstructionHelpButton = styled.button`
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: ${colors.muted};
+  color: light-dark(#8a97a5, ${colors.muted});
   opacity: 0.65;
   cursor: pointer;
   transition: color 120ms ease-out, opacity 120ms ease-out;
 
-  &:hover, &:focus { color: ${colors.link}; opacity: 1; }
-  &:focus-visible { outline: 2px solid ${colors.link}; outline-offset: 2px; }
+  &:hover, &:focus { color: light-dark(#3476b8, ${colors.link}); opacity: 1; }
+  &:focus-visible { outline: 2px solid light-dark(#3476b8, ${colors.link}); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { transition: none; }
 `;
 

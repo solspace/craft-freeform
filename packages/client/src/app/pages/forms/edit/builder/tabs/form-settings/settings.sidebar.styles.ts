@@ -25,7 +25,7 @@ export const SectionLink = styled.button`
 
   &.active {
     color: ${colors.white};
-    background-color: var(--bg-selection-dark);
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
   }
 
   &.errors {
@@ -54,13 +54,13 @@ export const SidebarSeperator = styled.div`
 
 export const SidebarMeta = styled.p`
   font-size: 0.75rem;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray400}, ${colors.muted});
   padding: 0 ${spacings.md};
   margin: 0 0 ${spacings.xs};
 `;
 
 export const SidebarMetaUserLink = styled.a`
-  color: ${colors.muted};
+  color: light-dark(${colors.gray400}, ${colors.muted});
   text-decoration: ${(props) => (props.href ? "underline" : "none")};
   font-weight: ${(props) => (props.href ? 600 : 400)};
 

@@ -14,7 +14,7 @@ export const UsageContent = styled.div`
   p { margin: 4px 0 0; }
   .muted { color: ${colors.gray500}; font-size: 13px; line-height: 20px; }
   .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
-  .count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 5px; background: var(--ui-control-bg-color, ${colors.gray100}); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 12px; font-weight: 600; }
+  .count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 5px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 12px; font-weight: 600; }
   .heading-label { display: flex; align-items: center; gap: 8px; }
   .error { margin: 0; }
 `;
@@ -74,7 +74,7 @@ export const Metrics = styled.div`
     height: 24px;
     border-radius: 7px;
     color: var(--metric-accent);
-    background: color-mix(in srgb, var(--metric-accent) 12%, var(--pane-bg, white));
+    background: light-dark(var(--metric-tint), color-mix(in srgb, var(--metric-accent) 12%, var(--pane-bg, white)));
     box-shadow: inset 0 0 0 1px rgb(0 0 0 / 2%);
   }
   .metric-icon i { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; font-size: 14px; line-height: 1; }
@@ -109,10 +109,10 @@ export const UsagePanel = styled.section`
   .chart-period select { min-height: 28px; font-size: 12px; line-height: 20px; }
   .chart-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center; pointer-events: none; }
   .chart-empty[hidden] { display: none; }
-  .chart-empty > span { padding: 6px 10px; border-radius: 4px; background: ${colors.surface}; }
+  .chart-empty > span { padding: 6px 10px; border-radius: 4px; background: light-dark(${colors.white}, ${colors.surface}); }
   .chart-footnote.muted, .panel-footnote.muted {
     margin-top: 12px;
-    color: ${colors.muted};
+    color: light-dark(${colors.gray400}, ${colors.muted});
     font-size: 12px;
     font-style: italic;
     line-height: 18px;
@@ -176,7 +176,7 @@ export const DiagnosticsGrid = styled.div`
   .configuration-status-list, .field-type-list { display: flex; flex-wrap: wrap; gap: 4px; }
   .configuration-status-dot.status { flex: 0 0 6px; width: 6px; height: 6px; margin: 0; }
   .configuration-status-chip { max-width: 100%; }
-  .configuration-status-badge { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 14px; height: 16px; padding: 0 4px; border-radius: 3px; background: var(--ui-control-bg-color, ${colors.gray100}); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 10px; line-height: 16px; }
+  .configuration-status-badge { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 14px; height: 16px; padding: 0 4px; border-radius: 3px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 10px; line-height: 16px; }
   .configuration-status-name { min-width: 0; overflow-wrap: anywhere; }
   .configuration-status-type { flex-shrink: 0; font-weight: 600; white-space: nowrap; }
   .configuration-status-type + .configuration-status-name { padding-inline-start: 6px; border-inline-start: 1px solid ${colors.gray200}; color: ${colors.gray500}; font-size: 10px; line-height: 16px; }

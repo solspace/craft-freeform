@@ -12,10 +12,10 @@ export const CheckboxElement = styled.input`
   height: 16px;
   margin: 0;
   padding: 0;
-  background: ${colors.inputBackground};
-  border: 1px solid ${colors.inputBorder};
+  background: light-dark(#fbfcfe, ${colors.inputBackground});
+  border: 1px solid light-dark(#b9c6d7, ${colors.inputBorder});
   border-radius: 3px;
-  color: ${colors.text};
+  color: light-dark(currentColor, ${colors.text});
   vertical-align: middle;
 
   &:focus { outline: none; }

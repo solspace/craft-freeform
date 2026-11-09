@@ -18,7 +18,7 @@ export const Item = styled.li`
 
   padding: 12px 16px;
 
-  background-color: ${colors.surface};
+  background-color: light-dark(${colors.white}, ${colors.surface});
   border: 1px solid #eee;
   border-radius: 8px;
 

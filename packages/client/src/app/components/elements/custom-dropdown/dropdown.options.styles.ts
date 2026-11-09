@@ -37,7 +37,7 @@ export const CheckMark = styled.div`
   font-size: 18px;
   font-weight: bold;
 
-  fill: ${colors.text};
+  fill: light-dark(${colors.gray500}, ${colors.text});
 `;
 
 export const LabelIcon = styled.div``;
@@ -56,7 +56,7 @@ export const LabelContainer = styled.div`
 `;
 
 export const LabelValueDisplay = styled.div`
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   font-size: 11px;
   font-style: italic;
   line-height: 11px;
@@ -81,7 +81,7 @@ export const Label = styled.label`
 
   &:hover {
     cursor: pointer;
-    background-color: var(--ui-control-hover-bg-color);
+    background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color));
     color: ${colors.gray700};
 
     ${CheckMark} {
@@ -99,14 +99,14 @@ export const Label = styled.label`
 
     font-size: 12px;
 
-    color: ${colors.muted};
+    color: light-dark(#7d8c9d, ${colors.muted});
     fill: currentColor;
 
     > ${LabelContainer} {
       position: relative;
 
       padding: 0;
-      background-color: transparent;
+      background-color: light-dark(${colors.gray050}, transparent);
 
       z-index: 1;
     }
@@ -125,7 +125,7 @@ export const Item = styled.li`
 
   &.focused {
     > ${Label} {
-      background-color: var(--ui-control-hover-bg-color);
+      background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color));
       color: ${colors.gray700};
 
       > ${CheckMark} {
@@ -141,7 +141,7 @@ export const Item = styled.li`
 
   &.empty {
     > ${Label} {
-      color: ${colors.muted};
+      color: light-dark(${colors.gray300}, ${colors.muted});
       font-style: italic;
 
       &:hover {
@@ -154,7 +154,7 @@ export const Item = styled.li`
         background-color: transparent;
 
         &:hover {
-          background-color: var(--ui-control-hover-bg-color);
+          background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color));
           color: ${colors.gray700};
         }
 

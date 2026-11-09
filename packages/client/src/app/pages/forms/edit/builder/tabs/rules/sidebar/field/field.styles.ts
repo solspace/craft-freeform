@@ -52,8 +52,8 @@ export const FieldWrapper = styled(animated.div)`
   width: 100%;
   height: 100%;
 
-  background: ${colors.inputBackground};
-  border: 1px solid ${colors.border};
+  background: light-dark(${colors.gray100}, ${colors.inputBackground});
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   color: ${colors.text};
   border-radius: ${borderRadius.md};
 
@@ -66,11 +66,11 @@ export const FieldWrapper = styled(animated.div)`
 
   &.has-rule:not(.active) {
     border-color: var(--border-success, ${colors.teal550});
-    background-color: var(--bg-success, ${colors.teal050});
+    background-color: light-dark(${colors.teal050}, var(--bg-success, ${colors.teal050}));
   }
 
   &.group {
-    background-color: ${colors.surface};
+    background-color: light-dark(${colors.white}, ${colors.surface});
     border-color: ${colors.border};
 
     > ${FieldInfo} ${Icon} {
@@ -83,12 +83,12 @@ export const FieldWrapper = styled(animated.div)`
   }
 
   &:hover {
-    background-color: var(--ui-control-hover-bg-color, ${colors.gray200});
+    background-color: light-dark(${colors.gray200}, var(--ui-control-hover-bg-color, ${colors.gray200}));
     border-color: ${colors.inputBorder};
   }
 
   &.active {
-    background-color: var(--bg-selection-dark, #5b6573);
+    background-color: light-dark(#5b6573, var(--bg-selection-dark, #5b6573));
     border-color: var(--focus-ring-color, ${colors.border});
     color: white;
   }
@@ -106,7 +106,7 @@ export const FieldWrapper = styled(animated.div)`
       width: 0;
       border-left: 10px solid transparent;
       border-bottom: 10px solid transparent;
-      border-left: 10px solid ${colors.gray200};
+      border-left: 10px solid light-dark(transparent, ${colors.gray200});
     }
 
     &-active:after {
@@ -121,7 +121,7 @@ export const FieldWrapper = styled(animated.div)`
     }
 
     &:hover {
-      background-color: ${colors.inputBackground};
+      background-color: light-dark(${colors.gray100}, ${colors.inputBackground});
       border-color: ${colors.border};
     }
   }

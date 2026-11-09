@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
   cursor: grab;
   transition: background-color 150ms;
 
-  > .form-grip { width: 12px; height: 12px; fill: currentColor; color: ${colors.muted}; opacity: .6; flex-shrink: 0; }
+  > .form-grip { width: 12px; height: 12px; fill: currentColor; color: light-dark(${colors.gray400}, ${colors.muted}); opacity: .6; flex-shrink: 0; }
   &:hover { background: ${colors.gray050}; }
   &.is-drag-placeholder { opacity: .25; }
   &.is-drag-chosen { cursor: grabbing; }

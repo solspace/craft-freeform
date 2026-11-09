@@ -14,9 +14,12 @@ export const PreviewWrapper = styled.div`
 `;
 
 export const PreviewContainer = styled.div`
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(${colors.gray200}, ${colors.border});
   border-radius: 5px;
   box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 1px 12px #31315d26;
+  };
 `;
 
 export const HeaderRow = styled.div`
@@ -51,7 +54,7 @@ export const Label = styled.label`
   font-size: 13px;
   font-weight: 700;
   text-align: right;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray250}, ${colors.muted});
 `;
 
 export const Value = styled.div`
@@ -59,7 +62,7 @@ export const Value = styled.div`
   padding: 0 5px 0 15px;
 
   font-size: 13px;
-  color: ${colors.text};
+  color: light-dark(${colors.gray900}, ${colors.text});
 `;
 
 export const Body = styled.div`
@@ -73,7 +76,7 @@ export const Input = styled.input`
   padding: 0 ${spacings.xs};
   color: ${colors.text};
   background: ${colors.inputBackground};
-  border: 1px solid ${colors.inputBorder};
+  border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
   border-radius: 3px;
 
   font-size: 12px;

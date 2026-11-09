@@ -53,7 +53,7 @@ export const FMContainer = styled.div`
 export const Title = styled.h2`
   cursor: default;
   margin: 0 0 ${spacings.xs} 0;
-  color: ${colors.text};
+  color: light-dark(#3d464e, ${colors.text});
   font-size: 20px;
   line-height: 24px;
   padding-inline-end: 26px;
@@ -74,7 +74,7 @@ export const TitleLink = styled(Title)`
 
 export const Subtitle = styled.span`
   display: block;
-  color: ${colors.muted};
+  color: light-dark(#868f96, ${colors.muted});
   font-size: 14px;
   line-height: 1.4;
   max-width: 100%;
@@ -85,7 +85,7 @@ export const Subtitle = styled.span`
   cursor: default;
 
   &:hover {
-    color: ${colors.text};
+    color: light-dark(#6f7a82, ${colors.text});
   }
 `;
 
@@ -127,9 +127,9 @@ export const ControlButton = styled.button`
   padding: 0;
   border-radius: 4px;
   font-size: 14px;
-  color: ${colors.muted};
-  background: ${colors.overlay};
-  &:hover, &:focus-visible { color: var(--link-color); background: var(--ui-control-hover-bg-color); }
+  color: light-dark(#687684, ${colors.muted});
+  background: light-dark(#ffffffed, ${colors.overlay});
+  &:hover, &:focus-visible { color: var(--link-color); background: light-dark(#e9f2fc, var(--ui-control-hover-bg-color)); }
 
 
   > svg {
@@ -181,8 +181,8 @@ export const CardWrapper = styled.li`
   overflow: hidden;
   &:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
 
-  background-color: ${colors.surface};
-  border: 1px solid ${colors.border};
+  background-color: light-dark(#fcfdff, ${colors.surface});
+  border: 1px solid light-dark(#dfe6ee, ${colors.border});
   box-shadow: 0 1px 3px #1f344508;
   border-radius: var(--large-border-radius);
 
@@ -213,7 +213,7 @@ export const CardWrapper = styled.li`
   }
 
   &:not(.dragging):hover, &:focus-within {
-    background-color: color-mix(in srgb, var(--ui-control-hover-bg-color) 20%, var(--pane-bg));
+    background-color: light-dark(#f3f7fd, color-mix(in srgb, var(--ui-control-hover-bg-color) 20%, var(--pane-bg)));
     border-color: ${colors.border};
     box-shadow: 0 3px 12px #1f344510;
 
@@ -244,7 +244,7 @@ export const ChartLabel = styled.div`
   gap: 12px;
   font-size: 12px;
   line-height: 18px;
-  color: ${colors.muted};
+  color: light-dark(#687684, ${colors.muted});
 `;
 
 export const ExpandedStats = styled.dl`
@@ -253,7 +253,7 @@ export const ExpandedStats = styled.dl`
   flex-wrap: wrap;
   gap: 12px 28px;
   margin: 12px ${spacings.xl} 0;
-  dt { font-size: 12px; line-height: 16px; color: ${colors.muted}; }
+  dt { font-size: 12px; line-height: 16px; color: light-dark(#687684, ${colors.muted}); }
   dd { margin: 2px 0 0; font-size: 22px; line-height: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
   @container form-card-grid (width < 658px) {
     [data-card-size='2x1'] & { display: none; }
@@ -266,9 +266,9 @@ export const Activity = styled.section`
   overflow: auto;
   margin: 12px ${spacings.xl};
   padding-top: 12px;
-  border-top: 1px solid ${colors.border};
+  border-top: 1px solid light-dark(#dfe6ee, ${colors.border});
   h3 { margin: 0 0 8px; font-size: 13px; line-height: 18px; font-weight: 600; }
-  p { margin: 8px 0; font-size: 12px; color: ${colors.muted}; }
+  p { margin: 8px 0; font-size: 12px; color: light-dark(#687684, ${colors.muted}); }
   button { text-decoration: underline; color: var(--link-color); }
   ul { list-style: none; padding: 0; margin: 0; }
   li { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 6px; padding: 2px 0; font-size: 12px; line-height: 18px; }
@@ -277,16 +277,16 @@ export const Activity = styled.section`
   .activity-heading h3 { margin: 0; }
   li a, .field-option { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   time { flex-shrink: 0; white-space: nowrap; }
-  .status-summary { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: ${colors.muted}; }
-  .status-summary h3 { width: 100%; color: ${colors.text}; }
-  .status-summary strong { color: ${colors.text}; font-variant-numeric: tabular-nums; }
-  .field-average { font-size: 12px; color: ${colors.muted}; }
-  .field-average > strong { font-size: 22px; color: ${colors.text}; }
+  .status-summary { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: light-dark(#687684, ${colors.muted}); }
+  .status-summary h3 { width: 100%; color: light-dark(#3f4d5a, ${colors.text}); }
+  .status-summary strong { color: light-dark(#3f4d5a, ${colors.text}); font-variant-numeric: tabular-nums; }
+  .field-average { font-size: 12px; color: light-dark(#687684, ${colors.muted}); }
+  .field-average > strong { font-size: 22px; color: light-dark(#3f4d5a, ${colors.text}); }
   &.compact-details { margin-top: auto; padding-top: 6px; border-top: 0; }
   &.compact-details h3 { margin-bottom: 2px; font-size: 12px; }
-  time { color: ${colors.muted}; font-variant-numeric: tabular-nums; }
+  time { color: light-dark(#687684, ${colors.muted}); font-variant-numeric: tabular-nums; }
   dl { margin: 0; font-size: 12px; }
-  dt { color: ${colors.muted}; margin-top: 8px; }
+  dt { color: light-dark(#687684, ${colors.muted}); margin-top: 8px; }
   dd { margin: 0; overflow-wrap: anywhere; }
 `;
 
@@ -296,22 +296,22 @@ export const SizeMenu = styled.div`
   width: 240px;
   max-width: calc(100vw - 24px);
   padding: 5px;
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(#cdd8e4, ${colors.border});
   border-radius: 6px;
   background: var(--modal-bg, #fff);
-  color: ${colors.text};
+  color: light-dark(#3f4d5a, ${colors.text});
   box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
   .menu-controls { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
   .menu-controls:disabled { opacity: .65; }
-  .content-options, .card-actions { border-top: 1px solid ${colors.border}; margin-top: 5px; padding-top: 5px; }
+  .content-options, .card-actions { border-top: 1px solid light-dark(#dfe6ee, ${colors.border}); margin-top: 5px; padding-top: 5px; }
   .card-actions:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
   .content-options { padding: 8px 9px; }
   label { display: block; font-size: 12px; margin-bottom: 8px; }
-  p { font-size: 11px; color: ${colors.muted}; margin: 4px 0 0; }
+  p { font-size: 11px; color: light-dark(#687684, ${colors.muted}); margin: 4px 0 0; }
   .card-actions button { justify-content: flex-start; gap: 10px; }
   .card-actions svg { width: 16px; height: 16px; flex-shrink: 0; display: block; fill: currentColor; }
-  .delete-action { color: ${colors.error}; }
-  > span, .menu-controls > span { display: block; padding: 6px 9px; font-size: 12px; color: ${colors.muted}; }
+  .delete-action { color: light-dark(#cf1124, ${colors.error}); }
+  > span, .menu-controls > span { display: block; padding: 6px 9px; font-size: 12px; color: light-dark(#687684, ${colors.muted}); }
 `;
 
 export const SizeChoice = styled.button`
@@ -349,7 +349,7 @@ export const PaddedChartFooter = styled.div<{ $color: string }>`
   overflow: hidden;
 `;
 export const ChangeArrow = styled.span<{ $up: boolean }>`
-  color: ${({ $up }) => ($up ? "var(--fg-success, #218739)" : "var(--fg-error, #c23c3c)")};
+  color: light-dark(${({ $up }) => ($up ? "#218739" : "#c23c3c")}, ${({ $up }) => ($up ? "var(--fg-success, #218739)" : "var(--fg-error, #c23c3c)")});
   display: inline-block;
   line-height: 1;
   vertical-align: baseline;

@@ -1,12 +1,17 @@
 import { createGlobalStyle } from "styled-components";
 
 const style = createGlobalStyle`
-  #freeform-client .react-loading-skeleton {
+  :root[data-dark-mode="dark"] {
+    --freeform-panel-shadow: var(--modal-shadow);
+    --freeform-box-shadow: var(--pane-shadow);
+  }
+
+  :root[data-dark-mode="dark"] #freeform-client .react-loading-skeleton {
     --base-color: var(--ui-control-bg-color);
     --highlight-color: var(--ui-control-hover-bg-color);
   }
 
-  .ff-token-dropdown {
+  :root[data-dark-mode="dark"] .ff-token-dropdown {
     --tagify-dd-text-color: var(--text-color);
     --tagify-dd-bg-color: var(--modal-bg);
     --tagify-dd-color-primary: var(--bg-selection-dark);
@@ -14,8 +19,8 @@ const style = createGlobalStyle`
     border-color: var(--hairline-color);
     box-shadow: var(--modal-shadow);
   }
-  .ff-token-dropdown .tagify__dropdown__wrapper { border-color: var(--hairline-color); }
-  .ff-token-dropdown .tagify__dropdown__item--active { color: var(--text-color); }
+  :root[data-dark-mode="dark"] .ff-token-dropdown .tagify__dropdown__wrapper { border-color: var(--hairline-color); }
+  :root[data-dark-mode="dark"] .ff-token-dropdown .tagify__dropdown__item--active { color: var(--text-color); }
 
   #main-content {
     padding: 0;

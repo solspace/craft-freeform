@@ -29,8 +29,8 @@
   [data-command=italic] .ff-toolbar-chip-symbol { font-style: italic; }
   [data-command=underline] .ff-toolbar-chip-symbol { text-decoration: underline; }
   [data-command=strikethrough] .ff-toolbar-chip-symbol { text-decoration: line-through; }
-  .ff-toolbar-remove { position: absolute; z-index: 3; inset-block-start: -7px; inset-inline-end: -5px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 18px; height: 18px; padding: 0; border: 1px solid var(--gray-200, #cdd8e4); border-radius: 50%; background: var(--pane-bg, #fff); font-size: 15px; line-height: 1; color: var(--gray-500, #64748b); cursor: pointer; opacity: 0; transition: opacity 120ms ease; }
-  .ff-toolbar-chip:hover, .ff-toolbar-chip:has(:focus-visible) { border-color: var(--gray-200, #cdd8e4); background: var(--pane-bg, #fff); z-index: 4; }
+  .ff-toolbar-remove { position: absolute; z-index: 3; inset-block-start: -7px; inset-inline-end: -5px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 18px; height: 18px; padding: 0; border: 1px solid var(--gray-200, #cdd8e4); border-radius: 50%; background: light-dark(var(--white, #fff), var(--pane-bg, #fff)); font-size: 15px; line-height: 1; color: var(--gray-500, #64748b); cursor: pointer; opacity: 0; transition: opacity 120ms ease; }
+  .ff-toolbar-chip:hover, .ff-toolbar-chip:has(:focus-visible) { border-color: var(--gray-200, #cdd8e4); background: light-dark(var(--white, #fff), var(--pane-bg, #fff)); z-index: 4; }
   .ff-toolbar-chip:hover .ff-toolbar-remove, .ff-toolbar-chip:has(:focus-visible) .ff-toolbar-remove { opacity: 1; }
   .ff-toolbar-remove svg { display: block; flex: 0 0 10px; width: 10px; height: 10px; }
   .ff-toolbar-remove:hover:not(:disabled) { color: var(--red-600, #dc2626); }

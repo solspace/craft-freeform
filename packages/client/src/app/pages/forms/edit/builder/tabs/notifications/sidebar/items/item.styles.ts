@@ -28,7 +28,7 @@ export const Link = styled(NavLink)`
 
   &.active {
     color: ${colors.white};
-    background-color: var(--bg-selection-dark);
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
 
     ${Icon} {
       fill: ${colors.white};
@@ -61,7 +61,7 @@ export const Name = styled.div`
 
   &:empty:after {
     content: 'No Title';
-    color: ${colors.muted};
+    color: light-dark(${colors.gray400}, ${colors.muted});
     font-style: italic;
   }
 `;

@@ -1,5 +1,10 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
@@ -41,7 +46,7 @@ export const CurrentValue = styled.div`
   align-items: center;
   gap: ${spacings.sm};
 
-  background-color: ${colors.selectBackground};
+  background-color: light-dark(var(--button-bg, #dfe5ec), ${colors.selectBackground});
   box-shadow: inset 0 0 0 1px ${colors.inputBorder};
   border-radius: ${borderRadius.lg};
 
@@ -57,7 +62,7 @@ export const CurrentValue = styled.div`
   }
 
   &.empty > span {
-    color: ${colors.muted};
+    color: light-dark(${colors.gray300}, ${colors.muted});
     font-style: italic;
   }
 
@@ -108,10 +113,13 @@ export const DropdownRollout = styled(animated.div)`
   right: 0;
   top: 0;
 
-  background-color: ${colors.mutedSurface};
+  background-color: light-dark(${colors.gray050}, ${colors.mutedSurface});
   border: 1px solid ${colors.inputBorder};
   border-radius: ${borderRadius.lg};
   box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: ${shadows.container};
+  };
 
   overflow: hidden;
   z-index: 1000;
@@ -137,7 +145,7 @@ export const CloseButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.overlay};
+    background-color: light-dark(${colors.gray050}, ${colors.overlay});
   }
 `;
 

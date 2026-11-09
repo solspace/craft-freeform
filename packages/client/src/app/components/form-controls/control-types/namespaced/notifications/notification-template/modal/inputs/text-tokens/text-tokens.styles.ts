@@ -8,14 +8,14 @@ export const TextTokenContainer = styled.div`
   span[data-freeform-token] {
     display: inline-block;
 
-    background-color: var(--bg-selection-light);
+    background-color: light-dark(#e4edf6, var(--bg-selection-light));
     color: var(--text-color);
-    border: 1px solid var(--hairline-color);
+    border: 1px solid light-dark(#33404d1a, var(--hairline-color));
     border-radius: 3px;
     padding: 0.0625em 0.25em;
 
     &[data-selected] {
-      outline: 3px solid var(--blue-500, #0078d4) !important;
+      outline: 3px solid light-dark(#0078d4, var(--blue-500, #0078d4)) !important;
     }
   }
 `;

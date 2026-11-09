@@ -22,7 +22,7 @@ export const Button = styled.button`
 
   border: 2px solid transparent;
   border-radius: ${borderRadius.lg};
-  background-color: var(--ui-control-bg-color);
+  background-color: light-dark(rgba(96, 125, 159, 0.25), var(--ui-control-bg-color));
 
   font-size: 12px;
   line-height: 12px;
@@ -34,24 +34,24 @@ export const Button = styled.button`
   transition: background-color 0.2s ease-out;
 
   &.active {
-    background-color: var(--bg-selection-dark);
-    color: ${colors.text};
+    background-color: light-dark(${colors.gray600}, var(--bg-selection-dark));
+    color: light-dark(white, ${colors.text});
   }
 
   &:hover:not(.active) {
-    background-color: var(--ui-control-hover-bg-color);
+    background-color: light-dark(rgba(96, 125, 159, 0.3), var(--ui-control-hover-bg-color));
   }
 
   &.submit {
-    background-color: var(--bg-selection-dark);
-    color: ${colors.text};
+    background-color: light-dark(${colors.gray600}, var(--bg-selection-dark));
+    color: light-dark(${colors.white}, ${colors.text});
 
     &.active {
-      background-color: var(--ui-control-active-bg-color);
+      background-color: light-dark(${colors.gray900}, var(--ui-control-active-bg-color));
     }
 
     &:hover:not(.active) {
-      background-color: var(--ui-control-active-bg-color);
+      background-color: light-dark(${colors.gray900}, var(--ui-control-active-bg-color));
     }
   }
 

@@ -19,7 +19,10 @@
   --event-wash: color-mix(in srgb, var(--event-color) 8%, var(--activity-surface));
 }
 .ff-activity [data-level=error] { --event-color: #bb3449; }
-.ff-activity [data-level=warning] { --event-color: var(--ff-status-warning-fg); }
+.ff-activity [data-level=warning] { --event-color: var(--ff-status-warning-fg);
+  :root:not([data-dark-mode="dark"]) & {
+    --event-color: #aa681c;
+  }; }
 .ff-activity [data-level=notice] { --event-color: var(--ff-status-notice-fg); --event-wash: var(--ff-status-notice-bg); }
 .ff-activity > .ff-log-alert { margin-block-end: 24px; }
 .ff-activity [data-level=success] { --event-color: #268576; }

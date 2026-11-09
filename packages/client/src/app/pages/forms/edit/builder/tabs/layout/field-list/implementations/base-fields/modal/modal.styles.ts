@@ -14,7 +14,7 @@ interface EmptyProps {
 export const ManagerWrapper = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  background: ${colors.mutedSurface};
+  background: light-dark(var(--gray-050, #f3f7fc), ${colors.mutedSurface});
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -26,7 +26,7 @@ export const ManagerWrapper = styled.div`
 
 export const GroupLayout = styled.div`
   position: relative;
-  background-color: ${colors.overlay};
+  background-color: light-dark(${colors.white}, ${colors.overlay});
   padding: ${spacings.md};
   border-radius: ${borderRadius.md};
   border: 1px solid ${colors.hairline};
@@ -86,12 +86,12 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   }
 
   svg {
-    fill: ${({ color }) => (!color || /^#(?:000|000000)$|^black$/i.test(color) ? colors.text : color)};
+    fill: light-dark(${({ color }) => color || colors.black}, ${({ color }) => (!color || /^#(?:000|000000)$|^black$/i.test(color) ? colors.text : color)});
   }
 
   .remove {
     svg {
-      fill: ${colors.text} !important;
+      fill: light-dark(${colors.black}, ${colors.text}) !important;
     }
   }
 `;
@@ -183,9 +183,9 @@ export const ColorCircle = styled.button`
   height: 20px;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   cursor: pointer;
-  background-color: ${({ color }) => color || colors.text};
+  background-color: light-dark(${({ color }) => color || colors.black}, ${({ color }) => color || colors.text});
   position: relative;
 `;
 
@@ -202,10 +202,13 @@ export const ColorPopover = styled.div`
   left: calc(100% + ${spacings.sm});
   z-index: 10;
   padding: ${spacings.sm};
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   border-radius: ${borderRadius.md};
-  background: ${colors.overlay};
+  background: light-dark(${colors.white}, ${colors.overlay});
   box-shadow: var(--menu-shadow, var(--modal-shadow, 0 8px 24px rgb(0 0 0 / 16%)));
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
+  };
 `;
 
 export const ErrorBlock = styled.div`

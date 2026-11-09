@@ -65,7 +65,7 @@ const PlanName = styled.strong`
   padding: ${spacings.xs} ${spacings.sm};
   border: 1px solid ${colors.gray300};
   border-radius: ${borderRadius.md};
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   font-size: 18px;
   font-weight: 300;
   letter-spacing: 0.02em;

@@ -1,7 +1,14 @@
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const ButtonGroupWrapper = styled.div<{
+export const ButtonGroupWrapper = styled.div.attrs({
+  className: "freeform-button-group",
+})<{
   $compact?: boolean;
   $small?: boolean;
   $stacked?: boolean;
@@ -62,8 +69,11 @@ export const Button = styled.button`
 
   min-height: var(--ui-control-height, 34px);
   border: var(--button-border, none);
-  background-color: var(--button-bg, ${colors.gray100});
+  background-color: light-dark(${colors.gray100}, var(--button-bg, ${colors.gray100}));
   box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: ${shadows.right};
+  };
   box-sizing: border-box;
 
   > span { flex: 0 0 auto; }
@@ -90,7 +100,7 @@ export const Button = styled.button`
 
   &.active {
     color: ${colors.white};
-    background-color: var(--bg-selection-dark, ${colors.gray500});
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark, ${colors.gray500}));
   }
 
   &:first-child {

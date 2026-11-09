@@ -29,7 +29,12 @@ export function ChoiceCards({
 }: Props) {
   const id = useId();
   return (
-    <div className="ff-choice-cards" role="radiogroup" aria-label={label}>
+    <div
+      className="ff-choice-cards"
+      data-choice-count={options.length}
+      role="radiogroup"
+      aria-label={label}
+    >
       {options.map((option, index) => (
         <label className="ff-choice-card" key={option.value}>
           <input

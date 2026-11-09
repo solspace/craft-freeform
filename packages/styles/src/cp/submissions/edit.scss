@@ -67,7 +67,7 @@ $gutter: 10px;
       padding: 0 10px;
 
       font-weight: bold;
-      background: var(--pane-bg, #fff);
+      background: light-dark(white, var(--pane-bg, #fff));
     }
   }
 }

@@ -1,7 +1,7 @@
 import { borderRadius, colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const Table = styled.table`
+export const Table = styled.table.attrs({ className: "freeform-ui-table" })`
   width: 100%;
 
   margin: 0;
@@ -62,7 +62,7 @@ export const Table = styled.table`
     tr:last-child {
       td {
         padding: 0 !important;
-        background-color: ${colors.surface};
+        background-color: light-dark(${colors.white}, ${colors.surface});
 
         .btn {
           border: 0 !important;
@@ -102,7 +102,7 @@ export const Action = styled.button`
     width: 16px;
     height: 16px;
     stroke-width: 3px;
-    fill: currentColor;
+    fill: light-dark(#e5e7eb, currentColor);
   }
 
   &:hover { color: ${colors.error}; }

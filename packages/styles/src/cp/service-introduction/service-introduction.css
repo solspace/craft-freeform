@@ -14,6 +14,13 @@
     transparent 65%
   );
   isolation: isolate;
+  :root:not([data-dark-mode="dark"]) & {
+    background: radial-gradient(
+      ellipse at 100% 0,
+      rgba(224, 236, 252, 0.52),
+      transparent 65%
+    );
+  }
 }
 .ff-service-intro .ff-service-hero {
   position: relative;
@@ -44,9 +51,9 @@
   padding: 3px 8px;
   font-size: 12px;
   line-height: 18px;
-  color: var(--fg-success, #27694c);
-  background: var(--bg-success, #e5f3ec);
-  border: 1px solid var(--border-success, #a4d2b8);
+  color: light-dark(#27694c, var(--fg-success, #27694c));
+  background: light-dark(#e5f3ec, var(--bg-success, #e5f3ec));
+  border: 1px solid light-dark(#a4d2b8, var(--border-success, #a4d2b8));
   border-radius: 4px;
 }
 .ff-service-intro .ff-service-offer--footnote {
@@ -187,7 +194,10 @@
 .ff-service-intro .ff-service-workflow {
   padding: 24px;
   margin-bottom: 30px;
-  background: var(--secondary-pane-bg, #f3f7fc);
+  background: light-dark(
+    rgba(243, 247, 252, 0.55),
+    var(--secondary-pane-bg, #f3f7fc)
+  );
   border: 1px solid var(--gray-200, #d8e1eb);
   border-radius: 6px;
 }
@@ -235,19 +245,25 @@
   height: 28px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--link-color, #4d6e95);
+  color: light-dark(#4d6e95, var(--link-color, #4d6e95));
   content: counter(workflow);
-  background: var(--secondary-pane-bg, #e6effa);
-  border: 1px solid var(--hairline-color, #bfd1e5);
+  background: light-dark(#e6effa, var(--secondary-pane-bg, #e6effa));
+  border: 1px solid light-dark(#bfd1e5, var(--hairline-color, #bfd1e5));
   border-radius: 50%;
   box-shadow: 0 0 0 4px var(--pane-bg, #f5f8fc);
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 4px #f5f8fc;
+  }
 }
 .ff-service-intro .ff-service-steps li:last-child::before {
-  color: var(--fg-success, #4b8067);
-  background: color-mix(
-    in srgb,
-    var(--fg-success, #4b8067) 12%,
-    var(--secondary-pane-bg, #fff)
+  color: light-dark(#4b8067, var(--fg-success, #4b8067));
+  background: light-dark(
+    #e7f3ed,
+    color-mix(
+      in srgb,
+      var(--fg-success, #4b8067) 12%,
+      var(--secondary-pane-bg, #fff)
+    )
   );
   border-color: var(--border-success, #bfd9cb);
 }
@@ -348,6 +364,13 @@
     color-mix(in srgb, var(--orange-500, #f97316) 7%, transparent),
     transparent 70%
   );
+  :root:not([data-dark-mode="dark"]) & {
+    background: radial-gradient(
+      ellipse at 100% 0,
+      rgba(255, 224, 201, 0.6),
+      transparent 70%
+    );
+  }
 }
 .ff-service-intro.ff-form-monitor-intro::before {
   inset-block: 0 auto;

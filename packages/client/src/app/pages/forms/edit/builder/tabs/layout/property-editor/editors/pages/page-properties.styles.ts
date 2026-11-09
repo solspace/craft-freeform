@@ -6,5 +6,5 @@ export const PagePropertiesWrapper = styled.div`
   flex-direction: column;
 
   height: 100%;
-  background: ${colors.mutedSurface};
+  background: light-dark(${colors.gray050}, ${colors.mutedSurface});
 `;

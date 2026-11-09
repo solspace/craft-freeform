@@ -29,8 +29,8 @@ export const SelectAll = styled.a`
 export const FileList = styled.div`
   padding: 10px;
 
-  background: var(--input-bg, #f4f7fd);
-  border: 1px solid var(--hairline-color, #e1e5ea);
+  background: light-dark(#f4f7fd, var(--input-bg, #f4f7fd));
+  border: 1px solid light-dark(#e1e5ea, var(--hairline-color, #e1e5ea));
   border-radius: 3px;
 `;
 
@@ -52,6 +52,9 @@ export const Label = styled.label<LabelProps>`
     padding-left: 20px;
     font-size: 10px;
     opacity: 0.7;
+  :root:not([data-dark-mode="dark"]) & {
+    opacity: 0.4;
+  };
   }
 `;
 
@@ -81,7 +84,7 @@ export const Spacer = styled.div<SpacerProps>`
     display: ${({ $dash }) => ($dash ? "block" : "none")};
     height: 2px;
 
-    background: var(--hairline-color, #b9c6d7);
+    background: light-dark(#b9c6d7, var(--hairline-color, #b9c6d7));
   }
 `;
 
@@ -173,6 +176,9 @@ export const ListItem = styled.li<ListItemProps>`
   &.selectable:not(.selected) {
     ${Label}, ${Icon}, ${Spacer} {
       opacity: 0.7;
+  :root:not([data-dark-mode="dark"]) & {
+    opacity: 0.4;
+  };
       transition: opacity 0.2s ease-out;
     }
   }

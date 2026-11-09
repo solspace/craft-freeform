@@ -25,7 +25,7 @@ export const PageTabsContainer = styled.div`
   }
 
   &:hover {
-    background-color: ${colors.surface};
+    background-color: light-dark(white, ${colors.surface});
 
     &::-webkit-scrollbar-thumb {
       visibility: visible;

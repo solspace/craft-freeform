@@ -6,7 +6,7 @@ export const MarkdownWrapper = styled.div`
   margin: 0 -24px;
   padding: 0 24px;
 
-  background-color: var(--secondary-pane-bg);
+  background-color: light-dark(#f3f7fc, var(--secondary-pane-bg));
 
   border-top: 1px solid ${colors.hr};
 `;
@@ -20,7 +20,7 @@ export const Instructions = styled.div`
   max-height: 0;
   margin-top: 0;
 
-  background-color: var(--secondary-pane-bg);
+  background-color: light-dark(#f3f7fc, var(--secondary-pane-bg));
 
   overflow-y: hidden;
   overflow-x: hidden;
@@ -72,7 +72,7 @@ export const Content = styled.div`
     min-height: 44px;
     padding: 8px 12px 8px 16px;
     box-sizing: border-box;
-    color: ${colors.muted};
+    color: light-dark(var(--gray-600, #515f6c), ${colors.muted});
     font-size: 11px;
     font-weight: 600;
     line-height: 16px;
@@ -89,8 +89,8 @@ export const Content = styled.div`
     box-sizing: border-box;
     border: 1px solid var(--gray-200, #cdd8e4);
     border-radius: var(--radius-sm, 4px);
-    background: var(--pane-bg, #fff);
-    color: ${colors.muted};
+    background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
+    color: light-dark(var(--gray-600, #515f6c), ${colors.muted});
     font: inherit;
     font-size: 12px;
     line-height: 18px;
@@ -114,9 +114,9 @@ export const Content = styled.div`
     }
 
     &[data-copied] {
-      color: var(--fg-success);
+      color: light-dark(#226b45, var(--fg-success));
       border-color: var(--border-success);
-      background: var(--bg-success);
+      background: light-dark(#f0f7f3, var(--bg-success));
     }
 
     &:disabled {
@@ -127,7 +127,7 @@ export const Content = styled.div`
   .readme-copy-status {
     display: block;
     padding: 0 16px 12px;
-    color: ${colors.muted};
+    color: light-dark(var(--gray-600, #515f6c), ${colors.muted});
     font-size: 12px;
     line-height: 18px;
 
@@ -141,7 +141,7 @@ export const Content = styled.div`
     border: 1px solid var(--border-hairline, #cdd8e4);
     border-radius: var(--radius-md, 6px);
     background: var(--gray-050, #f3f7fc);
-    color: ${colors.text};
+    color: light-dark(var(--gray-800, #33404d), ${colors.text});
     font-size: 13px;
     line-height: 1.6;
 
@@ -170,40 +170,40 @@ export const Content = styled.div`
     .doctype,
     .cdata,
     .punctuation {
-      color: ${colors.muted};
+      color: light-dark(#596b7c, ${colors.muted});
     }
 
     .property,
     .tag,
     .selector,
     .attr-name {
-      color: ${colors.link};
+      color: light-dark(#28639b, ${colors.link});
     }
 
     .string,
     .attr-value,
     .char,
     .builtin {
-      color: var(--fg-success);
+      color: light-dark(#226b45, var(--fg-success));
     }
 
     .keyword,
     .function,
     .class-name {
-      color: color-mix(in srgb, ${colors.text} 65%, #a855f7);
+      color: light-dark(#794395, color-mix(in srgb, ${colors.text} 65%, #a855f7));
     }
 
     .number,
     .boolean,
     .constant,
     .variable {
-      color: color-mix(in srgb, ${colors.text} 65%, #d97706);
+      color: light-dark(#8a4b16, color-mix(in srgb, ${colors.text} 65%, #d97706));
     }
 
     .operator,
     .entity,
     .url {
-      color: ${colors.text};
+      color: light-dark(#515f6c, ${colors.text});
     }
   }
 
@@ -270,8 +270,8 @@ export const Content = styled.div`
   }
 
   .tip {
-    color: ${colors.link};
-    border: 1px solid ${colors.link};
+    color: light-dark(#1f5fea, ${colors.link});
+    border: 1px solid light-dark(#1f5fea, ${colors.link});
   }
 
   .danger {
@@ -288,7 +288,7 @@ export const Content = styled.div`
     margin: 10px 0;
     border: 1px solid var(--gray-200, #cdd8e4);
     border-radius: 8px;
-    background: var(--pane-bg, #fff);
+    background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
 
     > summary {
       display: flex;
@@ -298,8 +298,8 @@ export const Content = styled.div`
       padding: 11px 14px;
       box-sizing: border-box;
       border-radius: 7px;
-      background: var(--gray-050, #f8fafc);
-      color: ${colors.muted};
+      background: light-dark(#f8fafc, var(--gray-050, #f8fafc));
+      color: light-dark(var(--gray-600, #515f6c), ${colors.muted});
       font-weight: 600;
       line-height: 20px;
       list-style: none;
@@ -323,7 +323,7 @@ export const Content = styled.div`
       }
 
       &:hover {
-        background: var(--ui-control-hover-bg-color, #edf2f8);
+        background: light-dark(#edf2f8, var(--ui-control-hover-bg-color, #edf2f8));
       }
 
       &:focus-visible {
@@ -340,7 +340,7 @@ export const Content = styled.div`
       border-bottom: 1px solid var(--gray-200, #cdd8e4);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      background: var(--ui-control-hover-bg-color, #edf2f8);
+      background: light-dark(#edf2f8, var(--ui-control-hover-bg-color, #edf2f8));
 
       &::before {
         transform: rotate(45deg);

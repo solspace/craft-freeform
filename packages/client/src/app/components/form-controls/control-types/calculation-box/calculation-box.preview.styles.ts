@@ -8,7 +8,7 @@ export const PreviewContainer = styled(PreviewTable)`
     padding: ${spacings.xs} ${spacings.sm};
     border-radius: ${borderRadius.lg};
     color: ${colors.text};
-    background: var(--bg-selection-light, ${colors.gray100});
+    background: light-dark(${colors.gray100}, var(--bg-selection-light, ${colors.gray100}));
     box-shadow: inset 0 0 0 1px ${colors.border};
   }
 `;

@@ -36,11 +36,13 @@ export const HistorySection = styled.div`
   }
 `;
 
-export const TestEmailTable = styled.table`
+export const TestEmailTable = styled.table.attrs({
+  className: "freeform-ui-table",
+})`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: ${colors.surface};
+  background: light-dark(${colors.white}, ${colors.surface});
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
   overflow: hidden;

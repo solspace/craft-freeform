@@ -173,22 +173,22 @@ const AvailabilityModal = styled(ModalContainer)`
   .form-limit-edition {
     display: block;
     margin-bottom: 4px;
-    color: var(--text-color);
+    color: light-dark(#617488, var(--text-color));
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
   }
   > ${FormWrapper} { padding: 24px 28px; gap: 20px; }
-  p { margin: 0; font-size: 14px; line-height: 1.65; color: var(--text-color); }
+  p { margin: 0; font-size: 14px; line-height: 1.65; color: light-dark(#526578, var(--text-color)); }
   .form-limit-upgrade {
     padding: 16px;
-    border: 1px solid var(--hairline-color);
+    border: 1px solid light-dark(#d5e1ed, var(--hairline-color));
     border-radius: 8px;
-    background: var(--ui-control-bg-color);
+    background: light-dark(#f5f8fc, var(--ui-control-bg-color));
   }
-  .form-limit-upgrade strong { color: var(--text-color); font-size: 14px; line-height: 24px; }
-  .form-limit-upgrade p { margin-top: 3px; font-size: 13px; color: var(--text-color); }
-  > footer { padding: 16px 28px; background: var(--pane-bg, #fff); flex-wrap: wrap; }
+  .form-limit-upgrade strong { color: light-dark(#345c85, var(--text-color)); font-size: 14px; line-height: 24px; }
+  .form-limit-upgrade p { margin-top: 3px; font-size: 13px; color: light-dark(#617488, var(--text-color)); }
+  > footer { padding: 16px 28px; background: light-dark(#fff, var(--pane-bg, #fff)); flex-wrap: wrap; }
   .form-limit-compare {
     display: inline-flex;
     align-items: center;
@@ -500,12 +500,15 @@ const Chooser = styled(ModalContainer)<{ $optionCount: number }>`
   &[data-leaving=true] { opacity: 0; transform: translateY(-4px) scale(.985); pointer-events: none; }
   > header { display: flex; align-items: flex-start; gap: 20px; padding: 26px 28px; background: var(--gray-100, #e9eff6); border-radius: inherit; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
   h1 { margin: 0; font-size: 22px; line-height: 1.3; }
-  header p { margin: 7px 0 0; color: var(--text-color); font-size: 13px; line-height: 1.5; }
-  .form-start-close { flex: none; margin-left: auto; padding: 0; width: 28px; height: 28px; border: 0; background: transparent; color: var(--text-color); cursor: pointer; font-size: 26px; line-height: 1; border-radius: 4px; }
+  header p { margin: 7px 0 0; color: light-dark(#65788b, var(--text-color)); font-size: 13px; line-height: 1.5; }
+  .form-start-close { flex: none; margin-left: auto; padding: 0; width: 28px; height: 28px; border: 0; background: transparent; color: light-dark(#65788b, var(--text-color)); cursor: pointer; font-size: 26px; line-height: 1; border-radius: 4px; }
   .form-start-options { display: grid; grid-template-columns: repeat(${({ $optionCount }) => Math.max(1, $optionCount)}, minmax(0, 1fr)); gap: 16px; padding: 28px; }
   .form-start-card { --method-color: light-dark(#3476b8, #82b2e2); --method-wash: color-mix(in srgb, var(--method-color) 10%, var(--modal-bg, white)); --method-border: var(--hairline-color);
-    position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; aspect-ratio: 1; padding: 18px; text-align: start; font: inherit; color: var(--text-color); border: 1px solid var(--hairline-color); border-radius: 12px;
-    background: linear-gradient(155deg, var(--method-wash), var(--modal-bg, #fff) 60%); cursor: pointer;
+    position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; min-width: 0; aspect-ratio: 1; padding: 18px; text-align: start; font: inherit; color: light-dark(#3f4d5a, var(--text-color)); border: 1px solid light-dark(#d5e0eb, var(--hairline-color)); border-radius: 12px;
+    background: linear-gradient(155deg, var(--method-wash), var(--modal-bg, #fff) 60%);
+  :root:not([data-dark-mode="dark"]) & {
+    background: linear-gradient(155deg, var(--method-wash), #fff 60%);
+  }; cursor: pointer;
     transition: border-color .18s, box-shadow .18s, transform .18s;
   }
   [data-method=ai] { --method-color: light-dark(#8657c5, #b89adb);  --method-border: var(--hairline-color); }
@@ -523,14 +526,14 @@ const Chooser = styled(ModalContainer)<{ $optionCount: number }>`
   .form-start-art-spark { transform-origin: 195px 39px; transition: transform .3s ease; }
   .form-start-card:hover:not(:disabled) .form-start-art-spark { transform: rotate(12deg) scale(1.08); }
   strong { font-size: 17px; line-height: 1.4; }
-  .form-start-description, .form-start-note { font-size: 12px; line-height: 1.6; color: var(--light-text-color); }
+  .form-start-description, .form-start-note { font-size: 12px; line-height: 1.6; color: light-dark(#65788b, var(--light-text-color)); }
   .form-start-note { font-size: 11px; }
   .form-start-action { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; box-sizing: border-box; margin-top: auto; padding-top: 12px; border-top: 1px solid var(--method-border); font-size: 12px; font-weight: 600; color: var(--method-color); }
   .form-start-action > span { display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; background: var(--method-wash); font-size: 16px; transition: translate .18s; }
   .form-start-card:hover:not(:disabled) .form-start-action > span { translate: 2px 0; }
-  .form-start-card[data-unavailable=true] { cursor: default; background: var(--ui-control-bg-color); }
+  .form-start-card[data-unavailable=true] { cursor: default; background: light-dark(#f7f8fa, var(--ui-control-bg-color)); }
   .form-start-card[data-unavailable=true] .form-start-art { filter: grayscale(.7); opacity: .65; }
-  .form-start-card[data-unavailable=true] .form-start-action { color: var(--text-color); }
+  .form-start-card[data-unavailable=true] .form-start-action { color: light-dark(#718196, var(--text-color)); }
   @media (max-width: 700px) {
     .form-start-options { grid-template-columns: 1fr; padding: 20px; gap: 12px; }
     .form-start-card { aspect-ratio: auto; gap: 8px; padding: 18px; }

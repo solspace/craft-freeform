@@ -317,8 +317,8 @@
     flex-wrap: wrap;
     border: 1px solid var(--ff-status-border);
     border-radius: 7px;
-    background: var(--ff-status-bg);
-    color: var(--ff-status-fg);
+    background: light-dark(color-mix(in srgb, var(--ff-diag-banner-color) 6%, var(--secondary-pane-bg, var(--gray-050))), var(--ff-status-bg));
+    color: light-dark(var(--ff-diag-banner-text-color, var(--ff-diag-banner-color)), var(--ff-status-fg));
     box-shadow: none;
   }
   .ff-diag-banner-metric {
@@ -412,13 +412,13 @@
 
     &.item-suggestions .diag-check {
       display: inline-block;
-      background: var(--ff-status-warning-mark);
+      background: light-dark(var(--yellow-500, #eab308), var(--ff-status-warning-mark));
       box-shadow: none;
     }
 
     &.item-warnings .diag-check {
       display: inline-block;
-      background: var(--ff-status-error-fg);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
       box-shadow: none;
     }
   }
@@ -439,7 +439,7 @@
 
     &.diag-enabled,
     &.is-pass {
-      background: var(--ff-status-success-fg);
+      background: light-dark(var(--enabled-color), var(--ff-status-success-fg));
     }
 
     &.diag-disabled,
@@ -455,7 +455,7 @@
 
     &.diag-warning,
     &.is-error {
-      background: var(--ff-status-error-fg);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
 
     &.diag-spacer {
@@ -470,7 +470,7 @@
     line-height: 1.5;
 
     .suggestionvalidator {
-      color: var(--ff-status-warning-fg);
+      color: light-dark(var(--yellow-700, #a16207), var(--ff-status-warning-fg));
     }
 
     .noticevalidator,
@@ -594,20 +594,20 @@
     }
 
     &.is-success::before {
-      background: var(--ff-status-success-fg);
+      background: light-dark(var(--enabled-color), var(--ff-status-success-fg));
     }
 
     &.is-warning::before {
-      background: var(--ff-status-warning-mark);
+      background: light-dark(var(--yellow-500, #eab308), var(--ff-status-warning-mark));
     }
 
     &.is-error::before {
-      background: var(--ff-status-error-fg);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
 
     &.is-info::before,
     &.is-running::before {
-      background: var(--ff-status-notice-mark);
+      background: light-dark(var(--link-color, #0b69d5), var(--ff-status-notice-mark));
     }
   }
 
@@ -655,13 +655,19 @@
 
   .ff-diag-scan-feedback {
     --ff-scan-color: var(--ff-status-fg);
+  :root:not([data-dark-mode="dark"]) & {
+    --ff-scan-color: var(--link-color, #0b69d5);
+  };
     --ff-scan-text-color: var(--ff-status-fg);
+  :root:not([data-dark-mode="dark"]) & {
+    --ff-scan-text-color: var(--gray-700);
+  };
     display: block;
     margin-top: 14px;
     padding: 12px 16px;
-    border: 1px solid var(--ff-status-border);
+    border: 1px solid light-dark(color-mix(in srgb, var(--ff-scan-color) 30%, var(--hairline-color)), var(--ff-status-border));
     border-radius: 7px;
-    background: var(--ff-status-bg);
+    background: light-dark(color-mix(in srgb, var(--ff-scan-color) 6%, var(--gray-050)), var(--ff-status-bg));
     &.hidden { display: none; }
     &.is-error progress { display: none; }
     [data-status-icon][hidden] { display: none; }
@@ -800,15 +806,15 @@
     }
 
     .is-info {
-      color: var(--ff-status-notice-fg);
+      color: light-dark(var(--link-color, #0b69d5), var(--ff-status-notice-fg));
     }
 
     .is-warning {
-      color: var(--ff-status-warning-fg);
+      color: light-dark(var(--yellow-700, #a16207), var(--ff-status-warning-fg));
     }
 
     .is-error {
-      color: var(--ff-status-error-fg);
+      color: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
   }
 

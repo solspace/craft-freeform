@@ -22,9 +22,9 @@ export const PageButton = styled.button`
   max-width: 150px;
   padding: ${spacings.xs} ${spacings.sm};
 
-  background-color: ${colors.surface};
+  background-color: light-dark(${colors.white}, ${colors.surface});
 
-  border: 1px solid ${colors.border};
+  border: 1px solid light-dark(#cdd8e4, ${colors.border});
   border-bottom: none;
   border-radius: ${borderRadius.md} ${borderRadius.md} 0 0;
 
@@ -37,7 +37,7 @@ export const PageButton = styled.button`
 
   &.has-rule {
     border-color: var(--border-success);
-    background-color: var(--bg-success);
+    background-color: light-dark(${colors.teal050}, var(--bg-success));
 
     &.active {
       border-right-color: ${colors.teal700};
@@ -45,7 +45,7 @@ export const PageButton = styled.button`
   }
 
   &.active {
-    background-color: var(--bg-selection-dark);
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
     border-color: ${colors.border};
     color: ${colors.white};
   }
@@ -69,8 +69,8 @@ export const PageButton = styled.button`
 
 export const PageBody = styled.div`
   padding: ${spacings.sm};
-  border: 1px solid ${colors.border};
-  background-color: ${colors.surface};
+  border: 1px solid light-dark(#cdd8e4, ${colors.border});
+  background-color: light-dark(${colors.white}, ${colors.surface});
 
   border-radius: 0 ${borderRadius.md} ${borderRadius.md} ${borderRadius.md};
 
@@ -78,11 +78,11 @@ export const PageBody = styled.div`
 
   &.has-rule {
     border-color: var(--border-success);
-    background-color: var(--bg-success);
+    background-color: light-dark(${colors.teal050}, var(--bg-success));
   }
 
   &.active {
-    background-color: var(--bg-selection-dark);
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
     border-color: ${colors.border};
 
     ${Button} {

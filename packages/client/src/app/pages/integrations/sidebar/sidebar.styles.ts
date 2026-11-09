@@ -59,9 +59,9 @@ export const StatusIndicator = styled.span`
   height: 12px;
 
   border-radius: 50%;
-  border: 2px solid ${colors.muted};
+  border: 2px solid light-dark(${colors.gray300}, ${colors.muted});
 
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   font-size: 10px;
   font-weight: bold;
   line-height: 8px;
@@ -70,14 +70,14 @@ export const StatusIndicator = styled.span`
   &.active {
     border-color: transparent;
     background-color: ${colors.teal500};
-    color: ${colors.surface};
+    color: light-dark(${colors.white}, ${colors.surface});
   }
 
   &.unsupported {
     border-style: dashed;
     border-width: 2px;
     border-color: ${colors.muted};
-    color: ${colors.muted};
+    color: light-dark(${colors.gray300}, ${colors.muted});
   }
 `;
 
@@ -101,12 +101,12 @@ export const Integration = styled.li`
     &:hover,
     &.active {
       cursor: pointer;
-      color: var(--text-color);
+      color: light-dark(${colors.white}, var(--text-color));
 
     }
 
     &:hover {
-      background: var(--ui-control-hover-bg-color);
+      background: light-dark(${colors.gray300}, var(--ui-control-hover-bg-color));
 
       .ff-integration-version { color: inherit; opacity: 0.8; }
 
@@ -122,7 +122,7 @@ export const Integration = styled.li`
     }
 
     &.active {
-      background: var(--ui-control-selected-bg, var(--gray-500));
+      background: light-dark(${colors.gray500}, var(--ui-control-selected-bg, var(--gray-500)));
       color: var(--ui-control-selected-color, #fff);
 
       &:hover {
@@ -143,7 +143,7 @@ export const Integration = styled.li`
         &:not(.active) { border-color: currentColor; color: inherit; }
         &.active {
           background-color: ${colors.teal500};
-          color: ${colors.surface};
+          color: light-dark(${colors.gray700}, ${colors.surface});
         }
       }
     }
@@ -168,6 +168,6 @@ export const Version = styled.span.attrs({
   className: "ff-integration-version",
 })`
   font-size: 10px;
-  color: ${colors.muted};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   margin-left: auto;
 `;

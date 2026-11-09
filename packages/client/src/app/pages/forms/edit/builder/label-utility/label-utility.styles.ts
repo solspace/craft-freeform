@@ -81,7 +81,9 @@ export const FieldTypeFilter = styled.details`
   .utility-select-types:focus-visible { outline: 2px solid var(--link-color, #3476b8); outline-offset: 3px; border-radius: 2px; }
   .utility-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 `;
-export const LabelTable = styled.table`
+export const LabelTable = styled.table.attrs({
+  className: "freeform-ui-table",
+})`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -94,12 +96,12 @@ export const LabelTable = styled.table`
   th { background: var(--gray-050, #f7f9fc); font-weight: 600; }
   td { border-top: 1px solid ${colors.hairline}; }
   th:first-child, td:first-child { width: 40px; }
-  small { display: block; margin-top: 6px; color: ${colors.muted}; font-size: 11px; font-weight: 400; }
+  small { display: block; margin-top: 6px; color: light-dark(${colors.gray400}, ${colors.muted}); font-size: 11px; font-weight: 400; }
   tr[data-selected="false"] td:not(:first-child) { opacity: .55; }
   .utility-label { white-space: pre-wrap; }
   mark { padding: 1px 2px; border-radius: 2px; color: inherit; font-weight: 600; box-decoration-break: clone; }
-  .utility-label-current mark { background: var(--bg-error, #fce8e6); color: var(--fg-error, var(--error-color, #a32920)); }
-  .utility-label-updated mark { background: var(--bg-success, #e1f3ec); color: var(--fg-success, var(--success-color, #176248)); }
+  .utility-label-current mark { background: light-dark(#fce8e6, var(--bg-error, #fce8e6)); color: var(--fg-error, var(--error-color, #a32920)); }
+  .utility-label-updated mark { background: light-dark(#e1f3ec, var(--bg-success, #e1f3ec)); color: var(--fg-success, var(--success-color, #176248)); }
 `;
 export const PreviewHeading = styled.div`
   display: flex;

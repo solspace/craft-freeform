@@ -19,7 +19,7 @@ export const PropertyEditorWrapper = styled.div<PropertyEditorProps>`
   overflow: hidden;
 
   pointer-events: ${({ $active }) => ($active ? "auto" : "none")};
-  background: ${({ $active }) => ($active ? colors.mutedSurface : "transparent")};
+  background: light-dark(${({ $active }) => ($active ? colors.gray050 : "transparent")}, ${({ $active }) => ($active ? colors.mutedSurface : "transparent")});
 
   transition: background-color 0.2s ease-in-out;
 `;

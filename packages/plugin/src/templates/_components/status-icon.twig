@@ -1,0 +1,3 @@
+{% macro icon(level) %}
+    <svg class="ff-status-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="{{ craft.app.assetManager.getPublishedUrl('@freeform/Resources/icons/status.svg', true) }}#{{ level }}"/></svg>
+{% endmacro %}

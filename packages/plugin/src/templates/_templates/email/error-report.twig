@@ -15,7 +15,7 @@
     {{ macros.heading('{name} Alert' | t('freeform', { name: craft.freeform.name })) }}
     {{ macros.title('A critical Freeform error was detected' | t('freeform'), true) }}
 
-    {% set intro = "Freeform logged a <b>{level}</b> level exception in the <b>{channel}</b> logger on {date}. Review the details below." | t('freeform', {
+    {% set intro = "Freeform recorded a <b>{level}</b> event in <b>{channel}</b> on {date}. Review the details below." | t('freeform', {
         level: log.level|upper,
         channel: log.channel,
         date: log.datetime|datetime
@@ -117,4 +117,7 @@
     { url: cpUrl('freeform'), text: 'Open the Freeform control panel' | t('freeform') },
     { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update error notification recipients' | t('freeform') }
 ] %}
+{% if logReview|default(null) %}
+    {% set links = [{url: logReview.url, text: logReview.label}]|merge(links) %}
+{% endif %}
 

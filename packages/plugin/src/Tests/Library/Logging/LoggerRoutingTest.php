@@ -9,6 +9,7 @@ use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\controllers\LogsController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Logging\FreeformLogRecord;
 use Solspace\Freeform\Library\Logging\LoggerFactory;
@@ -42,6 +43,7 @@ class LoggerRoutingTest extends TestCase
         $this->notifications = $this->createMock(ErrorNotificationsService::class);
         $this->settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
         $this->settings->technicalFileLogging = '1';
+        $this->settings->loggingStyle = 'classic';
         $this->settings->errorNotificationRecipients = 'qa@example.test';
         $this->activity = $this->createMock(ActivityService::class);
         $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get', 'getSettings', 'get'])->getMock();
@@ -79,7 +81,7 @@ class LoggerRoutingTest extends TestCase
     public function testErrorsAreRoutedExclusivelyToTheErrorLog(string $file, int $level, int $expectedDetails): void
     {
         $this->notifications->expects(self::exactly(4))->method('handle')->willReturnCallback(static function (FreeformLogRecord $record) {
-            self::assertSame('secr**********', $record->context['password']);
+            self::assertSame('[redacted]', $record->context['password']);
         });
         $logger = $this->service->getLogger('routing-test', $file, $level);
         foreach (['debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency'] as $severity) {
@@ -90,7 +92,7 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(['ERROR', 'CRITICAL', 'ALERT', 'EMERGENCY'], array_map(static fn ($line) => $line->getLevel(), $errors));
         foreach ($errors as $error) {
             self::assertSame('routing-test', $error->getChannel());
-            self::assertSame('secr**********', $error->getContext()['password']);
+            self::assertSame('[redacted]', $error->getContext()['password']);
             self::assertNotEmpty($error->getExtra()['requestId']);
         }
 
@@ -115,6 +117,22 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(1, $this->service->getErrorLogLineCount());
     }
 
+    public function testWarningCountsLinkToTheirOwnFilesAndExcludeOtherLevels(): void
+    {
+        $this->settings->errorNotificationRecipients = '';
+        $this->service->getLogger('system-warning', level: Logger::DEBUG)->warning('System warning');
+        $email = $this->service->getLogger('email-warning', 'freeform-email.log', Logger::DEBUG);
+        $email->warning('Email warning');
+        $email->info('Email information');
+        $email->error('Email error');
+        $integration = $this->service->getLogger('integration-warning', 'freeform-integrations.log', Logger::DEBUG);
+        $integration->warning('Integration warning');
+        $integration->warning('Another integration warning');
+        self::assertSame(['error-log' => 1, 'integrations-log' => 2, 'email-log' => 1], $this->service->getWarningLogCounts());
+        $this->service->clearLogs('freeform-email.log');
+        self::assertSame(['error-log' => 1, 'integrations-log' => 2], $this->service->getWarningLogCounts());
+    }
+
     public function testTechnicalFilesAreNotRecreatedWhenFileLoggingIsDisabled(): void
     {
         $this->settings->technicalFileLogging = '0';
@@ -126,12 +144,59 @@ class LoggerRoutingTest extends TestCase
         self::assertSame([], $this->service->getExistingLogs());
     }
 
+    public function testNoneDoesNotWriteFilesAndKeepsErrorNotificationsIndependent(): void
+    {
+        $this->settings->loggingStyle = 'none';
+        $this->notifications->expects(self::once())->method('handle');
+        $this->service->getLogger('none-style', 'freeform-email.log', Logger::DEBUG)->error('A failure');
+        self::assertSame([], glob($this->logPath.'/*'));
+    }
+
+    public function testActivityStyleDoesNotWriteFilesEvenWithClassicPreferenceEnabled(): void
+    {
+        $this->settings->loggingStyle = 'activity';
+        $this->settings->technicalFileLogging = '1';
+        $this->notifications->expects(self::once())->method('handle');
+        $logger = $this->service->getLogger('activity-exclusive', 'freeform-email.log', Logger::DEBUG);
+        $logger->info('Private detail');
+        $logger->error('A failure');
+        self::assertSame([], glob($this->logPath.'/*'));
+        self::assertSame('1', $this->settings->technicalFileLogging);
+    }
+
+    public function testTypedDebugMarkersReachActivityWithoutCapturingOtherDebugRecords(): void
+    {
+        $this->settings->loggingStyle = 'activity';
+        $this->activity->expects(self::exactly(2))->method('recordIntegrationDiagnostic')->with(self::callback(static fn ($reason) => \in_array($reason, [ActivityContext::INTEGRATION_NO_MAPPING, ActivityContext::INTEGRATION_CREATED], true)));
+        $this->activity->expects(self::never())->method('record');
+        $payload = new class implements \JsonSerializable {
+            public function jsonSerialize(): mixed
+            {
+                throw new \RuntimeException('Private debug payload must not be serialized.');
+            }
+        };
+        $logger = $this->service->getLogger('typed-debug', 'freeform-integrations.log');
+        $logger->debug('Private payload', ['response' => $payload]);
+        $logger->debug('Private marker text', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
+        $logger->info('Private record contents', ['response' => $payload, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
+        self::assertSame([], glob($this->logPath.'/*'));
+    }
+
+    public function testKnownSubsystemErrorsHaveSpecificSafeDiagnoses(): void
+    {
+        $this->settings->loggingStyle = 'activity';
+        $this->activity->expects(self::once())->method('record')->with('error', null, null, self::callback(static fn ($metadata) => ActivityContext::AI_FAILED === $metadata['reasonCode'] && isset($metadata['diagnostics']['message'])));
+        $this->service->getLogger('ai')->error('SECRET provider response');
+        self::assertSame([], glob($this->logPath.'/*'));
+    }
+
     public function testActivityOnlyLoggingNeverSerializesPayloadsOrCreatesTechnicalFiles(): void
     {
+        $this->settings->loggingStyle = 'activity';
         $this->settings->technicalFileLogging = '0';
         $this->settings->errorNotificationRecipients = null;
         $this->notifications->expects(self::never())->method('handle');
-        $this->activity->expects(self::once())->method('record')->with('email-error');
+        $this->activity->expects(self::once())->method('record')->with('email-error', null, null, self::callback(static fn ($metadata) => !str_contains(json_encode($metadata), 'private@example.test') && !str_contains(json_encode($metadata), 'response')));
         $payload = new class implements \JsonSerializable {
             public function jsonSerialize(): mixed
             {
@@ -145,9 +210,10 @@ class LoggerRoutingTest extends TestCase
 
     public function testTypedMarkersAddOnlyCataloguedContextToActivity(): void
     {
+        $this->settings->loggingStyle = 'activity';
         $this->settings->technicalFileLogging = '0';
         $this->settings->errorNotificationRecipients = null;
-        $this->activity->expects(self::once())->method('record')->with('warning', 12, null, ['reasonCode' => 11]);
+        $this->activity->expects(self::once())->method('record')->with('warning', 12, null, self::callback(static fn ($metadata) => 11 === $metadata['reasonCode'] && !str_contains(json_encode($metadata), 'private@example.test')));
         $logger = $this->service->getLogger('typed-warning');
         $logger->warning('SECRET warning text', ['activityReason' => 11, 'activityFormId' => 12, 'activitySubmissionId' => 'SECRET', 'recipient' => 'SECRET']);
         self::assertSame([], glob($this->logPath.'/*'));
@@ -166,6 +232,23 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(['Email info', 'Email debug'], array_map(static fn ($line) => $line->getMessage(), $this->service->getLogReader('freeform-email.log')->getLines(20, readFromEnd: false)));
         self::assertSame('Integration debug', $this->service->getLogReader('freeform-integrations.log')->getLines()[0]->getMessage());
         self::assertSame(0, $this->service->getErrorLogLineCount());
+    }
+
+    public function testClassicFilesAndErrorNotificationsReceiveSanitizedTextAndContext(): void
+    {
+        $this->notifications->expects(self::once())->method('handle')->willReturnCallback(static function (FreeformLogRecord $record) {
+            self::assertStringNotContainsString('jane@example.com', $record->message);
+            self::assertSame('[redacted]', $record->context['password']);
+        });
+        $this->service->getLogger('sanitized-classic', 'freeform-email.log', Logger::DEBUG)
+            ->error('Rejected jane@example.com using api_key=sk_live_1234567890abcdef', ['password' => 'private-password', 'response_body' => 'private-body'])
+        ;
+        $contents = file_get_contents($this->logPath.'/freeform.log');
+        foreach (['jane@example.com', '1234567890abcdef', 'private-password', 'private-body'] as $private) {
+            self::assertStringNotContainsString($private, $contents);
+        }
+        self::assertStringContainsString('j***@example.com', $contents);
+        self::assertStringContainsString('sk_live_****cdef', $contents);
     }
 
     public function testErrorCountUsesOnlyTheErrorLogAndIncludesEveryErrorSeverity(): void
@@ -225,5 +308,16 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(['email-log' => 'Emails'], $this->service->getExistingLogs());
         $this->service->clearLogs('freeform-email.log');
         self::assertSame([], $this->service->getExistingLogs());
+    }
+
+    public function testActiveClassicNavigationIncludesMissingAndEmptyLogsWithoutCreatingFiles(): void
+    {
+        $links = ['error-log' => 'Errors', 'integrations-log' => 'Integrations', 'email-log' => 'Emails'];
+        self::assertSame($links, $this->service->getLogNavigation(true));
+        self::assertSame([], glob($this->logPath.'/*'));
+        file_put_contents($this->logPath.'/freeform-email.log', '');
+        self::assertSame($links, $this->service->getLogNavigation(true));
+        self::assertSame([], $this->service->getLogNavigation());
+        self::assertSame(0, $this->service->getLogReader('freeform-integrations.log')->count());
     }
 }

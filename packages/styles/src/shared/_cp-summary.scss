@@ -9,9 +9,9 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    border: 1px solid #d8e2ec;
+    border: 1px solid light-dark(#d8e2ec, var(--hairline-color));
     border-radius: 5px;
-    background: #fbfcfe;
+    background: light-dark(#fbfcfe, var(--pane-bg));
 
     > [data-summary-field] {
       display: grid;
@@ -21,7 +21,7 @@
       padding: 8px 14px;
 
       + [data-summary-field] {
-        border-top: 1px solid #e7edf4;
+        border-top: 1px solid light-dark(#e7edf4, var(--hairline-color));
       }
 
       > dt,
@@ -35,12 +35,12 @@
       }
 
       > dt {
-        color: #596673;
+        color: light-dark(#596673, var(--light-text-color));
         font-weight: 600;
       }
 
       > dd {
-        color: variables.$color-input-text;
+        color: light-dark(variables.$color-input-text, var(--text-color));
         font-weight: normal;
       }
     }

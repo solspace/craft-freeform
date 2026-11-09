@@ -78,6 +78,23 @@ class FormDashboardWidgetsServiceTest extends TestCase
         };
         \Craft::$app = \Yii::$app = new class($user, $mutex, $this->preferences) {
             public array $loadedModules = [];
+            public string $language = 'en';
+            public string $charset = 'UTF-8';
+
+            public function getI18n(): object
+            {
+                return new class {
+                    public function format($message, $params, $language): string
+                    {
+                        return strtr($message, array_combine(array_map(static fn ($key) => '{'.$key.'}', array_keys($params)), array_values($params)));
+                    }
+
+                    public function translate($category, $message, $params, $language): string
+                    {
+                        return strtr($message, array_combine(array_map(static fn ($key) => '{'.$key.'}', array_keys($params)), array_values($params)));
+                    }
+                };
+            }
             public object $request;
 
             public function __construct(private object $user, private object $mutex, private object $preferences)
@@ -227,6 +244,44 @@ class FormDashboardWidgetsServiceTest extends TestCase
             self::assertSame($saved, $this->preferences->values);
             self::assertSame($saved['freeform.dashboardWidgets.2'], $this->service->getItems(2));
         }
+    }
+
+    public function testHealthWidgetSavesPersonalDisplayChoicesAndClearedActivityTypes(): void
+    {
+        $item = ['uid' => 'health', 'type' => 'activity-health', 'size' => '2x2', 'groupUid' => null, 'beforeId' => null, 'settings' => ['days' => '7', 'events' => '', 'showRecent' => '', 'replaceBanner' => '']];
+        $result = PermissionHelper::asAuthenticatedUser(fn () => $this->service->save(2, $item), [strtolower(Freeform::PERMISSION_ACTIVITY_ACCESS)]);
+        self::assertCount(3, $result);
+        self::assertSame(['title' => null, 'days' => 7, 'events' => [], 'showRecent' => false, 'replaceBanner' => false], $result[2]['settings']);
+        self::assertSame($result, $this->preferences->values['freeform.dashboardWidgets.2']);
+        self::assertSame([], $this->service->getItems(3));
+    }
+
+    #[TestWith(['days', 0])]
+    #[TestWith(['days', 366])]
+    #[TestWith(['days', 'bad'])]
+    #[TestWith(['events', ['unsupported']])]
+    #[TestWith(['events', [['submission']]])]
+    #[TestWith(['replaceBanner', 'bad'])]
+    #[TestWith(['title', []])]
+    public function testInvalidHealthSettingsDoNotChangeSavedWidgets(string $field, mixed $value): void
+    {
+        $previous = $this->preferences->values;
+
+        try {
+            PermissionHelper::asAuthenticatedUser(fn () => $this->service->save(2, ['uid' => 'health', 'type' => 'activity-health', 'size' => '2x2', 'groupUid' => null, 'beforeId' => null, 'settings' => [$field => $value]]), [strtolower(Freeform::PERMISSION_ACTIVITY_ACCESS)]);
+            self::fail('Expected invalid health settings to fail.');
+        } catch (BadRequestHttpException) {
+            self::assertSame($previous, $this->preferences->values);
+        }
+    }
+
+    public function testHealthWidgetsAndTheirInsertChoiceRequireLogAccess(): void
+    {
+        PermissionHelper::asAuthenticatedUser(function () {
+            self::assertArrayNotHasKey('activity-health', $this->service->getAvailableTypes());
+            $this->expectException(ForbiddenHttpException::class);
+            $this->service->createWidget(2, ['uid' => 'health', 'type' => 'activity-health', 'settings' => []]);
+        }, [strtolower(Freeform::PERMISSION_FORMS_ACCESS)]);
     }
 
     public function testRejectsUnregisteredWidgetClasses(): void

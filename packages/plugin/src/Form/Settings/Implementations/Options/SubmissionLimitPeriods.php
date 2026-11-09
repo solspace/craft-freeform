@@ -13,10 +13,10 @@ class SubmissionLimitPeriods implements OptionsGeneratorInterface
     {
         return (new OptionCollection())
             ->add('total', Freeform::t('Total'))
-            ->add('day', Freeform::t('Per day'))
-            ->add('week', Freeform::t('Per week'))
-            ->add('month', Freeform::t('Per month'))
-            ->add('year', Freeform::t('Per year'))
+            ->add('day', Freeform::t('Daily'))
+            ->add('week', Freeform::t('Weekly'))
+            ->add('month', Freeform::t('Monthly'))
+            ->add('year', Freeform::t('Yearly'))
         ;
     }
 }

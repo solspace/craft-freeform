@@ -11,12 +11,12 @@ export const PropertyEditorWrapper = styled.div`
 
   padding: ${spacings.xl};
 
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   overflow-y: auto;
 
   ${scrollBar};
 
-  --background-color: ${colors.white};
+  --background-color: ${colors.surface};
   --margins: -24px;
 
   h1 {

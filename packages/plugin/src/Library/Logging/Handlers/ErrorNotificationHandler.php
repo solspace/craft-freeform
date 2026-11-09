@@ -23,7 +23,8 @@ class ErrorNotificationHandler extends AbstractProcessingHandler
     {
         try {
             $normalized = $this->normalizeRecord($record);
-            if ($normalized) {
+            // Typed Activity failures already dispatch their own critical alert.
+            if ($normalized && empty($normalized->context['activityRecorded'])) {
                 $this->errorNotificationsService->handle($normalized);
             }
         } catch (\Throwable) {

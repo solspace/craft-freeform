@@ -1,29 +1,29 @@
 import { useEffect } from "react";
 
 const setSelected = (element: HTMLLIElement, selected: boolean): void => {
-  const child = <HTMLDivElement>element.children[0];
-  const sidebar = element.querySelector(".sidebar-action--sub");
+  const child = element.firstElementChild;
+  // Craft 4 renders a direct anchor; Craft 5 wraps its anchor in .nav-item.
+  const sidebar = element.querySelector("a");
 
   if (selected) {
-    child.classList.add("sel");
+    child?.classList.add("sel");
     sidebar?.classList.add("sel");
     sidebar?.setAttribute("aria-current", "page");
   } else {
-    child.classList.remove("sel");
+    child?.classList.remove("sel");
     sidebar?.classList.remove("sel");
     sidebar?.removeAttribute("aria-current");
   }
 };
 
 export const useSidebarSelect = (urlPart: string): void => {
-  const navItems = document.querySelectorAll<HTMLLIElement>(
-    "#nav-freeform > ul > li",
-  );
-
   useEffect(() => {
+    const navItems = document.querySelectorAll<HTMLLIElement>(
+      "#nav-freeform > ul > li",
+    );
     navItems.forEach((item) => {
-      const url = item.querySelector("a.sidebar-action")?.getAttribute("href");
-      setSelected(item, url?.includes(urlPart));
+      const url = item.querySelector("a")?.getAttribute("href");
+      setSelected(item, url?.includes(urlPart) ?? false);
     });
 
     return () => {
@@ -31,7 +31,9 @@ export const useSidebarSelect = (urlPart: string): void => {
         setSelected(item, false);
       });
 
-      setSelected(navItems[0], true);
+      if (navItems[0]) {
+        setSelected(navItems[0], true);
+      }
     };
-  }, [urlPart, navItems]);
+  }, [urlPart]);
 };

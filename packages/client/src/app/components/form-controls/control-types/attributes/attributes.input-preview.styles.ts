@@ -15,17 +15,17 @@ export const CodeBlock = styled.div`
 `;
 
 export const Name = styled.span`
-  color: ${colors.teal700};
+  color: light-dark(${colors.teal700}, var(--code-attribute-color, #56d4c7));
 `;
 
 export const Operator = styled.span`
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
 `;
 
 export const Quote = styled.span`
   &:before {
     content: '"';
-    color: ${colors.gray300};
+    color: light-dark(${colors.gray300}, ${colors.muted});
   }
 `;
 

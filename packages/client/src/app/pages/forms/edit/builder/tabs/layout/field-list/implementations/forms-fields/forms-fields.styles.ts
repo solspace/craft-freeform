@@ -53,6 +53,7 @@ export const FormFieldsChevron = styled.span`
   transition: transform 0.15s ease;
 
   svg {
+    fill: currentColor;
     height: 12px;
     fill: currentColor;
   }

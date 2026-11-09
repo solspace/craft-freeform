@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Integrations;
 
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
@@ -138,12 +137,6 @@ class IntegrationsBundle extends FeatureBundle
         $exception = $event->getException();
 
         $message = $exception->getMessage();
-        if ($exception instanceof RequestException) {
-            $response = $exception->getResponse();
-            if ($response && method_exists($response, 'getBody')) {
-                $message = (string) $response->getBody();
-            }
-        }
 
         $context = [
             'activityRecorded' => true,
@@ -153,12 +146,6 @@ class IntegrationsBundle extends FeatureBundle
 
         if ($form) {
             $context['form'] = $form->getHandle();
-        }
-
-        $json = json_decode($message, true);
-        if (\JSON_ERROR_NONE === json_last_error()) {
-            $context['response'] = $json;
-            $message = 'Failed request';
         }
 
         $logger->error($message, $context);

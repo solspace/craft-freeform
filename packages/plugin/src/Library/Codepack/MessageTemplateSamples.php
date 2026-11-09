@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\Codepack;
 
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+
 class MessageTemplateSamples
 {
     private const TEMPLATES = [
@@ -34,6 +36,29 @@ class MessageTemplateSamples
         return [
             ...$sample,
             'content' => file_get_contents(__DIR__.'/../../Resources/message-template-samples/'.$type.'/'.$id.'.twig'),
+        ];
+    }
+
+    /** Reuse sample copy while keeping field loops safe for the rich-text editor. */
+    public static function formEmail(string $id): ?array
+    {
+        if (!isset(self::TEMPLATES['email'][$id])) {
+            return null;
+        }
+
+        $template = NotificationTemplate::fromFile(__DIR__.'/../../Resources/message-template-samples/email/'.$id.'.twig');
+        $body = preg_replace(
+            '~<table\b[^>]*>\s*{%\s*for field in allFields\s*%}.*?{%\s*endfor\s*%}\s*</table>~s',
+            '<p>{{ loops.fields.all }}</p>',
+            $template->getBody(),
+        );
+
+        return [
+            'name' => $template->getName(),
+            'handle' => self::TEMPLATES['email'][$id]['fileName'],
+            'description' => $template->getDescription() ?? '',
+            'subject' => $template->getSubject(),
+            'body' => trim($body),
         ];
     }
 }

@@ -14,7 +14,7 @@ interface EmptyProps {
 export const ManagerWrapper = styled.div`
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  background: var(--gray-050, #f3f7fc);
+  background: light-dark(var(--gray-050, #f3f7fc), ${colors.mutedSurface});
   flex: 1;
   min-height: 0;
   overflow: auto;
@@ -26,7 +26,7 @@ export const ManagerWrapper = styled.div`
 
 export const GroupLayout = styled.div`
   position: relative;
-  background-color: ${colors.white};
+  background-color: light-dark(${colors.white}, ${colors.overlay});
   padding: ${spacings.md};
   border-radius: ${borderRadius.md};
   border: 1px solid ${colors.hairline};
@@ -71,33 +71,60 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   border-radius: ${borderRadius.md};
 
+  &:empty {
+    min-height: 72px;
+    padding: ${spacings.md};
+    box-sizing: border-box;
+    color: ${colors.muted};
+    background: ${colors.inputBackground};
+    border: 1px dashed ${colors.inputBorder};
+  }
+
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
   }
 
   svg {
-    fill: ${({ color }) => color || colors.black};
+    fill: light-dark(${({ color }) => color || colors.black}, ${({ color }) => (!color || /^#(?:000|000000)$|^black$/i.test(color) ? colors.text : color)});
   }
 
   svg[data-outline="true"] { fill: none; stroke: ${({ color }) => color || colors.black}; }
 
   .remove {
     svg {
-      fill: ${colors.black} !important;
+      fill: light-dark(${colors.black}, ${colors.text}) !important;
     }
   }
 `;
 
 GroupItemWrapper.defaultProps = {
   $empty: "Drag and drop any field here",
-  color: colors.black,
+  color: colors.text,
 };
 
 export const CloseAndMoveWrapper = styled.div`
+  fill: currentColor;
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
+  color: ${colors.muted};
+
+  > button {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: ${borderRadius.sm};
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    svg { display: block; width: 14px; height: 14px; }
+    &:hover { color: ${colors.text}; background: var(--ui-control-hover-bg-color); }
+    &:focus-visible { outline: 2px solid ${colors.link}; outline-offset: 1px; }
+  }
 `;
 
 export const FieldListWrapper = styled.div`
@@ -110,13 +137,21 @@ export const FieldListWrapper = styled.div`
 
 export const FieldTypes = styled.div<EmptyProps>`
   &.catalog-source .field-item-remove { display: none; }
+  svg { fill: currentColor; }
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
+  min-height: 96px;
+  padding: ${spacings.md};
+  box-sizing: border-box;
+  border: 1px dashed ${colors.inputBorder};
+  border-radius: ${borderRadius.md};
+  background: ${colors.surface};
 
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
+    color: ${colors.muted};
   }
 `;
 
@@ -153,9 +188,9 @@ export const ColorCircle = styled.button`
   height: 20px;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid ${colors.gray100};
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   cursor: pointer;
-  background-color: ${({ color }) => color || colors.black};
+  background-color: light-dark(${({ color }) => color || colors.black}, ${({ color }) => color || colors.text});
   position: relative;
 `;
 
@@ -165,15 +200,20 @@ export const ColorPickerWrapper = styled.div`
 `;
 
 export const ColorPopover = styled.div`
+  width: 252px;
+  max-width: calc(100vw - 32px);
   position: absolute;
   top: -6px;
   left: calc(100% + ${spacings.sm});
   z-index: 10;
   padding: ${spacings.sm};
-  border: 1px solid ${colors.gray100};
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
-  box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
+  background: light-dark(${colors.white}, ${colors.overlay});
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 8px 24px rgb(0 0 0 / 16%)));
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
+  };
 `;
 
 export const ErrorBlock = styled.div`

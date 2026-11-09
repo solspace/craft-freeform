@@ -13,6 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\PurgeActivityJob;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Activity\FormChangeSummary;
 use Solspace\Freeform\Library\Activity\SpamChecks;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -134,7 +135,7 @@ class ActivityBundle extends FeatureBundle
         if ($this->service()->hasRecordedIntegrationFailure($event->getException())) {
             return;
         }
-        $metadata = ActivityContext::integrationFailure($event->getException()) + ['integrationId' => $event->getIntegration()->getId(), 'attempt' => 1];
+        $metadata = ActivityContext::integrationFailure($event->getException()) + ['integrationId' => $event->getIntegration()->getId(), 'attempt' => 1, 'diagnostics' => ActivityDiagnostics::fromException($event->getException())];
         $form = $event->getForm();
         $this->service()->record('integration-error', $form?->getId(), $form?->getSubmission()?->id, $metadata);
     }

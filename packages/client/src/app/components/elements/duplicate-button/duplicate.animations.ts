@@ -1,38 +1,15 @@
-import { colors } from "@ff-client/styles/variables";
 import type { SpringValue } from "@react-spring/web";
 import { useSpring } from "@react-spring/web";
 
-type RemoveAnimation = (options: { active: boolean; hovering: boolean }) => {
+type RemoveAnimation = (options: { active: boolean }) => {
   opacity: SpringValue<number>;
 };
 
-export const useDuplicateAnimation: RemoveAnimation = ({
-  active,
-  hovering,
-}) => {
+export const useDuplicateAnimation: RemoveAnimation = ({ active }) => {
   return useSpring({
     opacity: active ? 1 : 0,
-    background: hovering ? colors.green600 : "transparent",
-    fill: hovering ? "#fff" : colors.gray300,
-    color: hovering ? "#fff" : colors.gray300,
-    scale: hovering ? 1.2 : 1,
     rotate: active ? 0 : 30,
 
-    config: (key) => {
-      switch (key) {
-        case "background":
-        case "color":
-          return {
-            tension: 330,
-            friction: 20,
-          };
-
-        default:
-          return {
-            tension: 330,
-            friction: 15,
-          };
-      }
-    },
+    config: { tension: 330, friction: 15 },
   });
 };

@@ -45,7 +45,8 @@ class DiagnosticsController extends BaseController
         $modules = $diagnostics->getCraftModules();
 
         $combined = array_merge($server, $site, $stats, $configurations, $integrations, $formType, $modules);
-        [$warnings, $suggestions] = $this->compileBanners($combined);
+        [$warnings, $suggestions, $notices] = $this->compileBanners($combined);
+        $bannerCounts = ['error' => \count($warnings), 'warning' => \count($suggestions), 'notice' => \count($notices)];
 
         $report = $this->compileReport([
             Freeform::t('Server Checks') => $server,
@@ -69,6 +70,8 @@ class DiagnosticsController extends BaseController
                 'modules' => $modules,
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
+                'notices' => $notices,
+                'bannerCounts' => $bannerCounts,
                 'report' => $report,
                 'readOnly' => false,
             ]
@@ -229,6 +232,8 @@ class DiagnosticsController extends BaseController
             [
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
+                'notices' => $notices,
+                'bannerCounts' => $bannerCounts,
                 'readOnly' => false,
             ]
         );
@@ -379,13 +384,15 @@ class DiagnosticsController extends BaseController
             if ($item->getWarnings()) {
                 $status = 'Potential issue';
             } elseif ($item->getSuggestions()) {
-                $status = 'Advisory';
+                $status = 'Warning';
+            } elseif ($item->getNotices()) {
+                $status = 'Notice';
             } elseif (preg_match('/\bdiag-(enabled|disabled|warning|info)\b/', $markup, $matches)) {
                 $status = match ($matches[1]) {
                     'enabled' => 'Enabled / Valid',
                     'disabled' => 'Disabled',
                     'warning' => 'Potential issue',
-                    'info' => 'Advisory',
+                    'info' => 'Notice',
                 };
             }
 
@@ -405,12 +412,13 @@ class DiagnosticsController extends BaseController
 
     private function compileBanners($items): array
     {
-        $warnings = $suggestions = [];
+        $warnings = $suggestions = $notices = [];
         foreach ($items as $item) {
             if (\is_array($item)) {
-                [$subWarnings, $subSuggestions] = $this->compileBanners($item);
+                [$subWarnings, $subSuggestions, $subNotices] = $this->compileBanners($item);
                 $warnings = array_merge($warnings, $subWarnings);
                 $suggestions = array_merge($suggestions, $subSuggestions);
+                $notices = array_merge($notices, $subNotices);
 
                 continue;
             }
@@ -419,11 +427,15 @@ class DiagnosticsController extends BaseController
                 $warnings = array_merge($warnings, $item->getWarnings());
             }
 
+            if ($item->getNotices()) {
+                $notices = array_merge($notices, $item->getNotices());
+            }
+
             if ($item->getSuggestions()) {
                 $suggestions = array_merge($suggestions, $item->getSuggestions());
             }
         }
 
-        return [$warnings, $suggestions];
+        return [$warnings, $suggestions, $notices];
     }
 }

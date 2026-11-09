@@ -1,0 +1,74 @@
+{% extends "freeform/_layouts/settings" %}
+{% set fullPageForm = false %}
+{% set title = "Form Monitor"|t('freeform') %}
+{% set crumbs = [
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Settings"|t('freeform'), url: url('freeform/settings') },
+    { label: title, url: url('freeform/settings/form-monitor') },
+] %}
+{% block actionButton %}{% endblock %}
+{% block content %}
+<div class="ff-service-intro ff-form-monitor-intro">
+    <header class="ff-service-hero">
+        <div class="ff-service-hero-copy">
+        <div class="ff-service-eyebrow">
+            <span class="ff-service-brand">
+                {{ svg('@Solspace/Freeform/Integrations/Single/FormMonitor/icon.svg')|attr({ 'aria-hidden': 'true', focusable: 'false' }) }}
+                {{ "Form Monitor"|t('freeform') }}
+            </span>
+            <span class="ff-service-offer ff-service-offer--footnote">{{ "Included with Freeform Pro"|t('freeform') }} <a class="ff-service-footnote-ref" href="#fm-license-note" aria-label="{{ 'License requirements'|t('freeform') }}">*</a></span>
+        </div>
+        <h2 class="ff-service-title">{{ "Know your forms are doing their job."|t('freeform') }}</h2>
+        <p class="ff-service-lead">{{ "A form can look fine and still fail when it matters. Form Monitor tests your public forms on a schedule and alerts you when something needs attention."|t('freeform') }}</p>
+        <div class="ff-service-actions">
+            <a class="btn submit" href="{{ url('freeform/integrations/single/FormMonitor') }}">{{ "Set up Form Monitor"|t('freeform') }}</a>
+            <a class="btn" href="https://docs.solspace.com/craft/freeform/v5/monitoring/" target="_blank" rel="noopener">{{ "Explore the docs"|t('freeform') }}</a>
+        </div>
+        </div>
+    </header>
+    <div class="ff-service-features">
+        <section class="ff-service-feature">
+            {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/monitor.svg')|attr({ class: 'ff-service-usecase-illustration', 'aria-hidden': 'true', focusable: 'false' }) }}
+            <h3>{{ "Regular checks. Fewer surprises."|t('freeform') }}</h3>
+            <p>{{ "Test up to 3 forms per site, roughly every 8 hours. See submission times, test results, and screenshots to help track down problems."|t('freeform') }}</p>
+        </section>
+        <section class="ff-service-feature">
+            {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/email.svg')|attr({ class: 'ff-service-usecase-illustration', 'aria-hidden': 'true', focusable: 'false' }) }}
+            <h3>{{ "Check the emails, too"|t('freeform') }}</h3>
+            <p>{{ "Enable email notification testing to check that test messages reach Form Monitor. Receive failure alerts and regular summaries of your forms' results."|t('freeform') }}</p>
+        </section>
+        <section class="ff-service-feature">
+            {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/queue.svg')|attr({ class: 'ff-service-usecase-illustration', 'aria-hidden': 'true', focusable: 'false' }) }}
+            <h3>{{ "Keep background tasks moving"|t('freeform') }}</h3>
+            <p>{{ "Use the free Queue Pinging service to trigger Craft's queue on a schedule. Keep queued emails, integrations, and AI tasks moving when your site is quiet."|t('freeform') }}</p>
+        </section>
+    </div>
+    <section class="ff-service-workflow" aria-labelledby="fm-how-it-works">
+        <h3 id="fm-how-it-works">{{ "How it works"|t('freeform') }}</h3>
+        <ol class="ff-service-steps">
+            <li>
+                {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/connect.svg')|attr({ 'aria-hidden': 'true', focusable: 'false' }) }}
+                <h4>{{ "Connect your site"|t('freeform') }}</h4>
+                <p>{{ "Save and authorize Form Monitor in Freeform. No separate account to create or extra login to remember."|t('freeform') }}</p>
+                <span class="ff-service-step-arrow" aria-hidden="true"></span>
+            </li>
+            <li>
+                {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/configure.svg')|attr({ 'aria-hidden': 'true', focusable: 'false' }) }}
+                <h4>{{ "Choose your forms"|t('freeform') }}</h4>
+                <p>{{ "Enable monitoring for each form and provide the public page URL where it appears."|t('freeform') }}</p>
+                <span class="ff-service-step-arrow" aria-hidden="true"></span>
+            </li>
+            <li>
+                {{ svg('@Solspace/Freeform/Resources/icons/service-introduction/results.svg')|attr({ 'aria-hidden': 'true', focusable: 'false' }) }}
+                <h4>{{ "Stay informed"|t('freeform') }}</h4>
+                <p>{{ "Form Monitor runs scheduled tests. Review screenshots and results, and receive alerts when tests fail."|t('freeform') }}</p>
+            </li>
+        </ol>
+    </section>
+    <aside class="ff-service-setup">
+        <h3>{{ "Before you connect"|t('freeform') }}</h3>
+        <p id="fm-license-note" tabindex="-1">* {{ "Form Monitor is included while your Freeform Pro license is active. Renew your license if it has expired."|t('freeform') }}</p>
+        <p>{{ "Form testing requires a publicly accessible site. Spam checks and external integrations are bypassed during tests. See the docs for supported setups and privacy details."|t('freeform') }}</p>
+    </aside>
+</div>
+{% endblock %}

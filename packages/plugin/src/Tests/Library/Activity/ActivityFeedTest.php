@@ -22,7 +22,7 @@ class ActivityFeedTest extends TestCase
         $this->previousApp = \Craft::$app;
         $this->previousYiiApp = \Yii::$app;
         $this->db = new Connection(['dsn' => 'sqlite::memory:']);
-        $this->db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, event TEXT, category TEXT, level TEXT, formId INTEGER, submissionId INTEGER, metadata TEXT, dateCreated TEXT)')->execute();
+        $this->db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, resolvedAt TEXT, event TEXT, category TEXT, level TEXT, formId INTEGER, submissionId INTEGER, metadata TEXT, dateCreated TEXT)')->execute();
         \Craft::$app = \Yii::$app = new class($this->db) {
             public function __construct(private Connection $db) {}
 
@@ -140,6 +140,23 @@ class ActivityFeedTest extends TestCase
         self::assertSame(60, ActivityFeed::page($this->query()->andWhere(['level' => 'error']), self::CUTOFF, 0, false)['total']);
         self::assertSame(1, ActivityFeed::page($this->query()->andWhere(['level' => 'error']), self::CUTOFF)['total']);
         self::assertSame(0, ActivityFeed::page($this->query()->andWhere(['level' => 'warning']), self::CUTOFF)['total']);
+    }
+
+    public function testNoticesRemainVisibleInGroupedChainsWithoutBecomingOpenIssues(): void
+    {
+        $this->add(1, 'notice', 12, 42);
+        $this->add(2, 'success', 12, 42);
+        $this->add(3, 'warning', 12, 43);
+        $this->add(4, 'notice', 12, 43);
+        $row = ActivityFeed::page($this->query()->andWhere(['level' => 'notice']), self::CUTOFF)['rows'][1];
+        self::assertSame('notice', $row['level']);
+        self::assertSame(1, (int) $row['id']);
+        self::assertSame(2, $row['chainCount']);
+        self::assertSame(0, $row['chainOpenIssues']);
+        self::assertFalse($row['isResolved']);
+        $all = ActivityFeed::page($this->query(), self::CUTOFF)['rows'];
+        self::assertSame('warning', $all[0]['level']);
+        self::assertSame(4, $all[0]['cursor']);
     }
 
     private function query(): Query

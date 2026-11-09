@@ -8,6 +8,10 @@ import { Button, ButtonGroupWrapper } from "./button-group.styles";
 type Props = {
   label?: string;
   small?: boolean;
+  compact?: boolean;
+  stacked?: boolean;
+  flush?: boolean;
+  disabled?: boolean;
   value: string;
   options: OptionCollection;
   onClick: (value: string) => void;
@@ -20,6 +24,10 @@ export const ButtonGroup: React.FC<Props> = ({
   onClick,
   label,
   small,
+  compact,
+  stacked,
+  flush,
+  disabled,
   renderIcon,
 }) => {
   const elements: ReactNode[] = [];
@@ -29,6 +37,7 @@ export const ButtonGroup: React.FC<Props> = ({
       elements.push(
         <Button
           type="button"
+          disabled={disabled}
           aria-pressed={option.value === value}
           key={idx}
           className={classes(option.value === value && "active")}
@@ -49,8 +58,10 @@ export const ButtonGroup: React.FC<Props> = ({
     <ButtonGroupWrapper
       role="group"
       aria-label={label}
-      $compact={elements.length >= 4}
+      $compact={compact ?? elements.length >= 4}
       $small={small}
+      $stacked={stacked}
+      $flush={flush}
     >
       {elements}
     </ButtonGroupWrapper>

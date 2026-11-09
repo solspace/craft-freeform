@@ -61,13 +61,13 @@ $gutter: 10px;
 
     border: 1px solid transparent;
     border-radius: 5px;
-    box-shadow: 0 0 0 1px #cdd8e4;
+    box-shadow: 0 0 0 1px light-dark(#cdd8e4, var(--hairline-color));
 
     legend {
       padding: 0 10px;
 
       font-weight: bold;
-      background: white;
+      background: light-dark(white, var(--pane-bg, #fff));
     }
   }
 }

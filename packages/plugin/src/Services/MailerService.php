@@ -32,6 +32,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\SignatureHelper;
@@ -133,6 +134,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {
+                    $this->recordActivity('email-skipped', $form->getId(), $submission?->id, ['notificationId' => $notification?->getId(), 'reasonCode' => ActivityContext::MAIL_CANCELLED, 'durationMs' => ActivityContext::elapsed($started)]);
                     $logger?->info('Email sending was cancelled by an event listener');
 
                     continue;
@@ -157,7 +159,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     $logger?->warning('Email sending failed', ['activityRecorded' => true]);
                 }
             } catch (\Exception $exception) {
-                $this->recordActivity('email-error', $form->getId(), $submission?->id, ['notificationId' => $notification?->getId(), 'reasonCode' => $stage, 'durationMs' => ActivityContext::elapsed($started)]);
+                $this->recordActivity('email-error', $form->getId(), $submission?->id, ['notificationId' => $notification?->getId(), 'reasonCode' => ActivityContext::exceptionReason($exception, $stage), 'durationMs' => ActivityContext::elapsed($started), 'diagnostics' => ActivityDiagnostics::fromException($exception, ['recipient' => $emailAddress])]);
                 $message = $exception->getMessage();
                 $context = [
                     'activityRecorded' => true,

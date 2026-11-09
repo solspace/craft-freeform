@@ -8,7 +8,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import DOMPurify from "dompurify";
 import type { FC } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import type { AuthState, Integration } from "../../integration.types";
@@ -54,6 +54,9 @@ export const Titlebar: FC<Props> = ({ integration }) => {
   const [state, setState] = useState<AuthState>("pending");
   const [errors, setErrors] = useState<string[]>([]);
   const [activeReadme, setActiveReadme] = useState(false);
+  const authCleanup = useRef<() => void>(() => {});
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Switching integrations must cancel the previous authorization attempt.
+  useEffect(() => () => authCleanup.current(), [integration.id]);
 
   const { toggleFavorite, hasFavorite } = useTitlebarFavorites();
   const { data, isFetching, refetch } = useAuthCheck(integration);
@@ -141,7 +144,21 @@ export const Titlebar: FC<Props> = ({ integration }) => {
               {showAuth.includes(state) && (
                 <Action
                   className="btn small"
-                  onClick={() => showAuthWindow(integration.id, refetch)}
+                  onClick={() => {
+                    authCleanup.current();
+                    authCleanup.current = showAuthWindow(
+                      integration.id,
+                      refetch,
+                      () => {
+                        const message = translate(
+                          "Authorization could not be completed. Check the integration settings and the Freeform integration log, then try again.",
+                        );
+                        setState("error");
+                        setErrors([message]);
+                        notifications.error(message);
+                      },
+                    );
+                  }}
                 >
                   <IconShield />
                   <span>{translate("Authorize")}</span>

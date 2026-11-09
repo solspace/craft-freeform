@@ -4,6 +4,9 @@ import { fileURLToPath } from "node:url";
 
 import { build, context } from "esbuild";
 import { globSync } from "glob";
+import { generateToolbarIcons } from "./generate-toolbar-icons.mjs";
+
+await generateToolbarIcons();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

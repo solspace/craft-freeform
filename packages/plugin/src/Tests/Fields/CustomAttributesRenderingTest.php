@@ -111,6 +111,17 @@ class CustomAttributesRenderingTest extends TestCase
         }
     }
 
+    public function testServerRenderedErrorsUseTheSameColorHookAsAjaxErrors(): void
+    {
+        $field = $this->createField();
+        $field->addError('This field is required');
+        $html = (new \ReflectionMethod(AbstractField::class, 'getErrorHtml'))->invoke($field);
+        self::assertStringContainsString('data-field-errors', $html);
+        self::assertStringContainsString('frontend-error', $html);
+        self::assertStringContainsString('This field is required', $html);
+        self::assertSame('true', $field->getAttributes()->getInput()->get('aria-invalid'));
+    }
+
     private function createField(): TextField
     {
         $field = $this->getMockBuilder(TextField::class)

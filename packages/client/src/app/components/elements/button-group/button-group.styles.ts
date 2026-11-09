@@ -6,9 +6,13 @@ import {
 } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
-export const ButtonGroupWrapper = styled.div<{
+export const ButtonGroupWrapper = styled.div.attrs({
+  className: "freeform-button-group",
+})<{
   $compact?: boolean;
   $small?: boolean;
+  $stacked?: boolean;
+  $flush?: boolean;
 }>`
   display: inline-flex;
   flex-direction: row;
@@ -17,7 +21,7 @@ export const ButtonGroupWrapper = styled.div<{
 
   width: fit-content;
   max-width: 100%;
-  padding-top: ${spacings.sm};
+  padding-top: ${({ $flush }) => ($flush ? "0" : spacings.sm)};
 
   ${({ $compact }) =>
     $compact &&
@@ -29,6 +33,27 @@ export const ButtonGroupWrapper = styled.div<{
     `
     > button { min-width: 0; padding-inline: 4px; font-size: 12px; white-space: nowrap; }
     > button > span:not(.button-group-icon) { display: inline-block; transform: scaleX(0.88); }
+  `}
+
+  ${({ $stacked }) =>
+    $stacked &&
+    `
+    width: 100%;
+    && > button {
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      min-height: 68px;
+      padding: 10px 8px;
+      line-height: 18px;
+    }
+    && > button > span:not(.button-group-icon) { white-space: nowrap; }
+    && > button > .button-group-icon {
+      width: 22px;
+      height: 22px;
+      svg { width: 22px; height: 22px; }
+    }
   `}
 `;
 
@@ -42,8 +67,13 @@ export const Button = styled.button`
 
   padding: ${spacings.xs} ${spacings.md};
 
-  background-color: ${colors.gray100};
-  box-shadow: ${shadows.right};
+  min-height: var(--ui-control-height, 34px);
+  border: var(--button-border, none);
+  background-color: light-dark(${colors.gray100}, var(--button-bg, ${colors.gray100}));
+  box-shadow: none;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: ${shadows.right};
+  };
   box-sizing: border-box;
 
   > span { flex: 0 0 auto; }
@@ -57,9 +87,20 @@ export const Button = styled.button`
     svg { display: block; width: 14px; height: 14px; }
   }
 
+  &:hover:not(:disabled):not(.active) {
+    background-color: var(--button-bg--hover, ${colors.gray200});
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: var(--focus-ring);
+    position: relative;
+    z-index: 1;
+  }
+
   &.active {
-    color: ${colors.white};
-    background-color: ${colors.gray500};
+    color: light-dark(${colors.white}, var(--ui-control-selected-color));
+    background-color: light-dark(${colors.gray500}, var(--ui-control-selected-bg));
   }
 
   &:first-child {

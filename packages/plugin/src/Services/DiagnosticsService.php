@@ -17,6 +17,7 @@ use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Database\DatabaseIntegrity;
 use Solspace\Freeform\Library\Database\ForeignKeyRepair;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
+use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
@@ -53,7 +54,7 @@ class DiagnosticsService extends BaseService
         $trueOrFalse = static function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.12.0';
+        $maxCraftVersion = '5.13.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.5.99';
         $latestVersion = $this->getLatestFreeformVersion();
@@ -80,7 +81,7 @@ class DiagnosticsService extends BaseService
                     'hasUpdate' => $hasUpdate,
                 ],
                 [
-                    new SuggestionValidator(
+                    new NoticeValidator(
                         static fn ($value) => !$value['hasUpdate'],
                         'Version Outdated',
                         Freeform::t(
@@ -171,7 +172,7 @@ class DiagnosticsService extends BaseService
                 \ini_get('memory_limit'),
                 [
                     // Suggestion validator for memory limits between 256M and 511M
-                    new SuggestionValidator(
+                    new NoticeValidator(
                         static function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
@@ -336,7 +337,7 @@ class DiagnosticsService extends BaseService
                 '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Run Queue Automatically').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->runQueueAutomatically,
                 [
-                    new SuggestionValidator(
+                    new NoticeValidator(
                         static fn ($value) => $value,
                         '',
                         'Freeform relies on the Craft Queue to work when using the Queue for processing Email Notifications and/or Integrations.'
@@ -488,6 +489,17 @@ class DiagnosticsService extends BaseService
 
         $settings = Freeform::getInstance()->settings;
         $settingsModel = $settings->getSettingsModel();
+        $loggingStyle = $settingsModel->getEffectiveLoggingStyle();
+        $logErrors = match ($loggingStyle) {
+            'activity' => Freeform::getInstance()->get('activity')->getErrorCount(),
+            'classic' => Freeform::getInstance()->logger->getErrorLogLineCount(),
+            default => 0,
+        };
+        $logWarnings = match ($loggingStyle) {
+            'activity' => Freeform::getInstance()->get('activity')->getOperationalWarningCount(),
+            'classic' => Freeform::getInstance()->logger->getWarningLogCounts()['error-log'] ?? 0,
+            default => 0,
+        };
 
         return [
             Freeform::t('General Settings') => [
@@ -512,7 +524,7 @@ class DiagnosticsService extends BaseService
                     Freeform::t(
                         match ($rawScriptInsertLocation) {
                             Settings::SCRIPT_INSERT_LOCATION_FOOTER => Freeform::t('Page Footer'),
-                            Settings::SCRIPT_INSERT_LOCATION_HEADER => Freeform::t('Page Header'),
+                            Settings::SCRIPT_INSERT_LOCATION_HEADER => Freeform::t('Start of Page'),
                             Settings::SCRIPT_INSERT_LOCATION_FORM => Freeform::t('Inside Form'),
                             Settings::SCRIPT_INSERT_LOCATION_MANUAL => Freeform::t('None (add manually)'),
                         }
@@ -575,7 +587,7 @@ class DiagnosticsService extends BaseService
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Spam Folder').'</span>',
                     $this->getSummary()->statistics->spam->spamFolder,
                     [
-                        new SuggestionValidator(
+                        new NoticeValidator(
                             static fn ($value) => $value,
                             '',
                             'Most websites can benefit from using this feature because it helps detect false positives.'
@@ -791,7 +803,13 @@ class DiagnosticsService extends BaseService
                     $settings->isDisplayFeed()
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Level').': <b>{{ value }}</b></span>',
+                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Style').': <b>{{ value }}</b></span>',
+                    Freeform::t(match ($settingsModel->getEffectiveLoggingStyle()) {
+                        'classic' => 'Classic Logging', 'activity' => 'Activity Logging', default => 'None'
+                    }),
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Classic Logging').' — '.Freeform::t('Log Detail').': <b>{{ value }}</b></span>',
                     Freeform::t(
                         match (Freeform::getInstance()->settings->getSettingsModel()->loggingLevel) {
                             Settings::LOGGING_LEVEL_INFO => Freeform::t('Info'),
@@ -800,35 +818,20 @@ class DiagnosticsService extends BaseService
                         }
                     ),
                 ),
-                new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value.count ? "warning" : "enabled" }}"></span><span class="item-inline">'.Freeform::t('Error Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
-                    [
-                        'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                    ],
-                    [
-                        new WarningValidator(
-                            static function ($value) {
-                                return !$value['count'];
-                            },
-                            '',
-                            Freeform::t(
-                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
-                                [
-                                    'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
-                                    'type' => Freeform::t('error log'),
-                                ]
-                            ),
-                        ),
-                    ]
+                $this->createLogStatusItem(
+                    Freeform::t('activity' === $loggingStyle ? 'Activity Log' : 'Error Log'),
+                    UrlHelper::cpUrl('activity' === $loggingStyle ? 'freeform/activity' : 'freeform/settings/error-log', 'activity' === $loggingStyle ? ['view' => 'events', 'resolution' => 'open'] : []),
+                    $logErrors,
+                    $logWarnings,
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Integrations Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
+                    '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Classic Logging').' — '.Freeform::t('Integrations Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
                     [
                         'count' => Freeform::getInstance()->logger->getLogReader(IntegrationLoggerProvider::LOG_FILE)->count(),
                         'level' => ucfirst($settingsModel->loggingLevel),
                     ],
                     [
-                        new SuggestionValidator(
+                        new NoticeValidator(
                             static function ($value) {
                                 return !$value['count'];
                             },
@@ -844,13 +847,13 @@ class DiagnosticsService extends BaseService
                     ]
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Email Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
+                    '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Classic Logging').' — '.Freeform::t('Email Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
                     [
                         'count' => Freeform::getInstance()->logger->getLogReader(NotificationLoggerProvider::LOG_FILE)->count(),
                         'level' => ucfirst($settingsModel->loggingLevel),
                     ],
                     [
-                        new SuggestionValidator(
+                        new NoticeValidator(
                             static function ($value) {
                                 return !$value['count'];
                             },
@@ -888,6 +891,21 @@ class DiagnosticsService extends BaseService
         }
 
         return $diagnosticItems;
+    }
+
+    /** A warning-only log must remain amber, rather than becoming a red potential issue. */
+    private function createLogStatusItem(string $label, string $url, int $errors, int $warnings): DiagnosticItem
+    {
+        $message = Freeform::t('Please check the <a href="{url}">{type}</a> to see if there are any potential issues.', ['url' => $url, 'type' => $label]);
+
+        return new DiagnosticItem(
+            '<span class="diag-check {{ value.errors ? "is-error" : (value.warnings ? "is-warning" : "is-pass") }}"></span><span class="item-inline">'.$label.': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
+            ['count' => $errors + $warnings, 'errors' => $errors, 'warnings' => $warnings],
+            [
+                new WarningValidator(static fn ($value) => !$value['errors'], '', $message),
+                new SuggestionValidator(static fn ($value) => $value['errors'] || !$value['warnings'], '', $message),
+            ],
+        );
     }
 
     private function getForeignKeyCheck(): DiagnosticItem

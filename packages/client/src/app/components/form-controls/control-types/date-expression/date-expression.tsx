@@ -11,6 +11,7 @@ import {
   DateExpressionWrapper,
 } from "./date-expression.styles";
 import "../../../../../../../frontend/core/src/datetime/picker.css";
+import "./date-expression.css";
 
 const DateExpressionControl: React.FC<ControlType<DateExpressionProperty>> = ({
   value,

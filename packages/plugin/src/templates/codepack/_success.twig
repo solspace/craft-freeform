@@ -1,0 +1,15 @@
+<div class="freeform-demo-success">
+    <span class="freeform-demo-success-icon" data-icon="check" aria-hidden="true"></span>
+    <div class="freeform-demo-success-body">
+        <h2 class="first">{{ "Your demo templates are ready"|t('freeform') }}</h2>
+        <p class="light">{{ "Installed {templates} templates and {assets} assets, and configured {routes} routes."|t('freeform', {
+            templates: codePack.templates.contents.fileCount,
+            assets: codePack.assets.contents.fileCount,
+            routes: codePack.routes.data|length,
+        }) }}</p>
+        <div class="freeform-demo-actions">
+            <a class="btn submit" href="{{ siteUrl ~ prefix ~ '/' }}">{{ "View demos"|t('freeform') }}</a>
+            <a class="btn" href="{{ cpUrl('freeform/settings/demo-templates') }}">{{ "Back to installer"|t('freeform') }}</a>
+        </div>
+    </div>
+</div>

@@ -20,7 +20,9 @@ use Solspace\Freeform\Library\Codepack\Exceptions\FileObject\FileObjectException
 use Solspace\Freeform\Library\Codepack\Exceptions\Manifest\ManifestNotPresentException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -71,6 +73,7 @@ class CodepackController extends BaseController
                 'codePack' => $codePack,
                 'prefix' => 'freeform-demo',
                 'readOnly' => $readOnly,
+                'templatesExist' => $this->templatesDirectoryExists('freeform-demo'),
             ]
         );
     }
@@ -81,30 +84,63 @@ class CodepackController extends BaseController
 
         $this->requirePostRequest();
 
-        $codePack = $this->getCodepack();
-        $prefix = \Craft::$app->request->post('prefix');
+        if (!$this->getSettingsService()->isAllowAdminEdit()) {
+            throw new ForbiddenHttpException('Changes to these settings aren’t permitted in this environment.');
+        }
 
-        $prefix = str_replace(['\\', '/'], '', $prefix);
+        $prefix = $this->getPostedPrefix();
+
+        $codePack = $this->getCodepack();
+        if ($codePack instanceof Response) {
+            return $codePack;
+        }
 
         try {
             $codePack->install($prefix);
-        } catch (FileObjectException $exception) {
+        } catch (FileObjectException|IOExceptionInterface $exception) {
+            $message = strip_tags(str_replace('<br>', ' ', $exception->getMessage()));
+            if (\Craft::$app->request->getAcceptsJson()) {
+                return $this->asJson(['success' => false, 'message' => $message]);
+            }
+
             return $this->renderTemplate(
                 'freeform/codepack',
                 [
                     'codePack' => $codePack,
                     'prefix' => $prefix,
-                    'exceptionMessage' => $exception->getMessage(),
+                    'exceptionMessage' => $message,
+                    'readOnly' => false,
+                    'templatesExist' => $this->templatesDirectoryExists($prefix),
                 ]
             );
         }
 
-        \Craft::$app->session->setFlash('codepack_prefix', $prefix);
+        if (\Craft::$app->request->getAcceptsJson()) {
+            return $this->asJson([
+                'success' => true,
+                'html' => $this->view->renderTemplate('freeform/codepack/_success', [
+                    'codePack' => $codePack,
+                    'prefix' => $prefix,
+                ]),
+            ]);
+        }
+
+        \Craft::$app->session->setFlash(self::FLASH_VAR_KEY, $prefix);
 
         return $this->redirectToPostedUrl();
     }
 
-    private function getCodepack(): CodePack|Response
+    public function actionCheckDestination(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $this->requirePostRequest();
+
+        return $this->asJson([
+            'templatesExist' => $this->templatesDirectoryExists($this->getPostedPrefix()),
+        ]);
+    }
+
+    protected function getCodepack(): CodePack|Response
     {
         try {
             $codePack = new CodePack(__DIR__.'/../codepack');
@@ -113,5 +149,23 @@ class CodepackController extends BaseController
         }
 
         return $codePack;
+    }
+
+    private function getPostedPrefix(): string
+    {
+        $prefix = \Craft::$app->request->post('prefix');
+        if (!\is_string($prefix) || !preg_match('/^[\pL\pN][\pL\pN._-]*$/u', $prefix)) {
+            throw new BadRequestHttpException(\Craft::t('freeform', 'Enter a folder name using letters, numbers, hyphens, underscores, or dots. Start with a letter or number.'));
+        }
+
+        return $prefix;
+    }
+
+    private function templatesDirectoryExists(string $prefix): bool
+    {
+        $directory = \Craft::$app->getPath()->getSiteTemplatesPath().'/'.$prefix;
+        clearstatcache(true, $directory);
+
+        return is_dir($directory);
     }
 }

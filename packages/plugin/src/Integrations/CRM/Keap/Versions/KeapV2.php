@@ -25,6 +25,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Keap\BaseKeapIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -106,7 +107,7 @@ class KeapV2 extends BaseKeapIntegration
     private function processContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
-            $this->logger->debug('No Contacts mapped, skipping.');
+            $this->logger->debug('No Contacts mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -206,7 +207,7 @@ class KeapV2 extends BaseKeapIntegration
             $this->contactId = $json->id;
         }
 
-        $this->logger->info('Contact created', ['id' => $json?->id]);
+        $this->logger->info('Contact created', ['id' => $json?->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $mapping);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
@@ -215,7 +216,7 @@ class KeapV2 extends BaseKeapIntegration
     private function processTags(Form $form, Client $client): void
     {
         if (!$this->mapTags) {
-            $this->logger->debug('No Tags mapped, skipping.');
+            $this->logger->debug('No Tags mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }

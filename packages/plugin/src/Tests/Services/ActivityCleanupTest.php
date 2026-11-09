@@ -22,7 +22,7 @@ class ActivityCleanupTest extends TestCase
         $this->craftApp = \Craft::$app;
         $this->yiiApp = \Yii::$app;
         $this->db = new Connection(['dsn' => 'sqlite::memory:']);
-        $this->db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, dateCreated TEXT, level TEXT)')->execute();
+        $this->db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, resolvedAt TEXT, dateCreated TEXT, level TEXT)')->execute();
         $app = new class($this->db) {
             public function __construct(private Connection $db) {}
 

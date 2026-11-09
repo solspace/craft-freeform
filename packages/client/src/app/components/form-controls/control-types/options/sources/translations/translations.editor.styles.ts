@@ -24,5 +24,5 @@ export const OriginalValuePreview = styled.span`
   overflow: hidden;
 
   background: #00000005;
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
 `;

@@ -13,7 +13,7 @@ class ActivityPresentation
         $decoded = \is_array($row['metadata'] ?? null) ? $row['metadata'] : json_decode($row['metadata'] ?? '{}', true);
         $metadata = ActivityPolicy::metadata(\is_array($decoded) ? $decoded : []);
         $reason = $metadata['reasonCode'] ?? ('integration-error' === $row['event'] ? ActivityContext::httpReason($metadata['httpStatus'] ?? 0) : null);
-        $diagnostic = ActivityContext::REASONS[$reason] ?? null;
+        $diagnostic = null !== $reason ? (ActivityContext::REASONS[$reason] ?? null) : null;
         $row['title'] = Freeform::t($diagnostic[0] ?? $definition[1]);
         $row['description'] = Freeform::t($diagnostic[1] ?? $definition[2]);
         $row['metadata'] = $metadata;
@@ -21,6 +21,8 @@ class ActivityPresentation
         $row['recordedAt'] = $row['dateCreated']->format(\DATE_ATOM);
         $row['level'] = $definition[3];
         $row['category'] = $definition[4];
+        $row['actionable'] = 'error' === $row['level'] || ('warning' === $row['level'] && 'system' === $row['category']);
+        $row['isResolved'] ??= !empty($row['resolvedAt']);
         $row['context'] = [];
         $row['changes'] = [];
         $row['previewFacts'] = [];
@@ -52,7 +54,10 @@ class ActivityPresentation
                 $row['context'][Freeform::t('Flagged by')] = implode(', ', $labels);
             }
         }
-        foreach (['httpStatus' => 'HTTP status', 'attempt' => 'Attempt', 'errorCount' => 'Error count', 'siteId' => 'Site ID'] as $key => $label) {
+        if (isset($metadata['emailType'])) {
+            $row['context'][Freeform::t('Email type')] = Freeform::t([1 => 'Form notification', 2 => 'Digest email', 3 => 'Export notification'][$metadata['emailType']]);
+        }
+        foreach (['httpStatus' => 'HTTP status', 'attempt' => 'Attempt', 'operationId' => 'Processing ID', 'errorCount' => 'Error count', 'siteId' => 'Site ID'] as $key => $label) {
             if (isset($metadata[$key])) {
                 $row['context'][Freeform::t($label)] = $metadata[$key];
             }

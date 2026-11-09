@@ -56,6 +56,7 @@ const GroupColorPicker: React.FC<GroupColorPickerProps> = ({
   const wrapperRef = useClickOutside<HTMLDivElement>({
     callback: () => setIsOpen(false),
     isEnabled: isOpen,
+    excludeClassNames: ["ff-color-popover"],
   });
 
   return (

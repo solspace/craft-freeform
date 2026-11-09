@@ -1,0 +1,18 @@
+/* Only the picker used in Craft's control panel inherits Craft theme roles. */
+.ff-datetime-picker[data-appearance="control-panel"] {
+  --ff-picker-bg: var(--modal-bg, #fff);
+  --ff-picker-header: var(--gray-050, #f4f7fb);
+  --ff-picker-text: var(--text-color, #445360);
+  --ff-picker-muted: var(--light-text-color, #7b8794);
+  --ff-picker-border: var(--input-border-color, #d8e0ea);
+  --ff-picker-hover: var(--ui-control-hover-bg-color, #e5edf8);
+  --ff-picker-selected: var(
+    --ui-control-selected-bg,
+    var(--bg-selection-dark, #5f6d7a)
+  );
+  --ff-picker-focus: var(--focus-ring-color, #2563eb);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 12px 32px #1f293324));
+}
+.ff-datetime-picker[data-appearance="control-panel"] .ff-datetime-menu {
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 8px 24px #1f293326));
+}

@@ -65,7 +65,7 @@ class PaymentsController extends BaseApiController
             return $this->asSerializedJson(['errors' => ['Invalid amount: '.$e->getMessage()]], 400);
         }
 
-        $currency = strtoupper((string) ($body['currency'] ?? $field->getCurrency() ?? 'USD'));
+        $currency = strtoupper($field->getCurrency());
         $nonce = (string) ($body['nonce'] ?? '');
 
         if (!$amount || !$nonce) {

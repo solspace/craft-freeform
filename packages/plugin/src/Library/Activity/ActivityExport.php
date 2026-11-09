@@ -8,7 +8,7 @@ class ActivityExport
 {
     public const LIMIT = 10000;
     private const BATCH_SIZE = 500;
-    private const COLUMNS = ['eventId', 'recordedAtUtc', 'eventType', 'level', 'category', 'formId', 'submissionId', 'metadata'];
+    private const COLUMNS = ['eventId', 'recordedAtUtc', 'eventType', 'level', 'category', 'formId', 'submissionId', 'resolvedAtUtc', 'metadata'];
 
     /** Short, independent keyset reads. No offset scan or long-lived transaction. */
     public static function rows(Query $query): \Generator
@@ -18,7 +18,7 @@ class ActivityExport
         $query->andWhere(['<=', 'id', $throughId]);
         $remaining = self::LIMIT;
         while ($remaining > 0) {
-            $batch = (clone $query)->select(['id', 'event', 'formId', 'submissionId', 'metadata', 'dateCreated'])
+            $batch = (clone $query)->select(['id', 'event', 'formId', 'submissionId', 'metadata', 'dateCreated', 'resolvedAt'])
                 ->orderBy(['id' => \SORT_DESC])->limit(min(self::BATCH_SIZE, $remaining))->all()
             ;
             if (!$batch) {
@@ -57,6 +57,7 @@ class ActivityExport
                 'eventType' => $row['event'], 'level' => $definition[3], 'category' => $definition[4],
                 'formId' => $row['formId'] ? (int) $row['formId'] : null,
                 'submissionId' => $row['submissionId'] ? (int) $row['submissionId'] : null,
+                'resolvedAtUtc' => !empty($row['resolvedAt']) ? (new \DateTimeImmutable($row['resolvedAt'], new \DateTimeZone('UTC')))->format(\DATE_ATOM) : null,
                 'metadata' => (object) ActivityPolicy::metadata(\is_array($metadata) ? $metadata : []),
             ];
             if ('csv' === $format) {

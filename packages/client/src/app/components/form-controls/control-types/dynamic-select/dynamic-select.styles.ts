@@ -11,7 +11,13 @@ export const DropdownContainer = styled.div`
 export const RefreshButton = styled.button`
   padding: 0;
 
-  background-color: #dfe5ec !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: ${colors.text};
+  background-color: light-dark(#dfe5ec, var(--button-bg, #dfe5ec));
+
+  &:not(:disabled):hover { background-color: var(--button-bg--hover, #cdd4de); }
 
   svg {
     width: 20px;
@@ -19,10 +25,11 @@ export const RefreshButton = styled.button`
   }
 
   &[disabled] {
-    background-color: #eef2f8 !important;
+    background-color: light-dark(#eef2f8, var(--ui-control-static-bg-color, #eef2f8));
+    color: ${colors.muted};
 
     svg {
-      fill: ${colors.gray300};
+      fill: light-dark(${colors.gray300}, ${colors.muted});
 
       animation: ${animations.spinner} 2s infinite;
       transform-origin: 50% 50%;

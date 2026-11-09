@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Events\Integrations\ProcessMappingEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use yii\base\Event;
 
 abstract class APIIntegration extends BaseIntegration implements APIIntegrationInterface
@@ -39,7 +40,7 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
     protected function processMapping(Form $form, ?FieldMapping $mapping, string $category): array
     {
         if (null === $mapping) {
-            $this->logger->debug('Mapping empty - skipping.', ['category' => $category]);
+            $this->logger->debug('Mapping empty - skipping.', ['category' => $category, 'activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return [];
         }
@@ -90,7 +91,7 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
 
         $mappedValues = $event->getMappedValues();
         if (empty($mappedValues)) {
-            $this->logger->debug('Mapping empty - skipping.', ['category' => $category]);
+            $this->logger->debug('Mapping empty - skipping.', ['category' => $category, 'activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return [];
         }

@@ -159,7 +159,7 @@ it.each([false, true])(
     ).toBeNull();
     expect(
       host
-        .querySelector<HTMLInputElement>(".wizard-color-control input")!
+        .querySelector<HTMLInputElement>('input[aria-label="Form Color"]')!
         .closest("details"),
     ).toBeNull();
     if (customize)
@@ -199,7 +199,7 @@ it("keeps Advanced collapsed and carries its settings through creation", async (
     host.querySelector<HTMLInputElement>(".wizard-advanced input")!.value,
   ).toBe("customInquiry");
   type(".wizard-editor textarea", "Notes for the team");
-  type(".wizard-color-control input:not([type=color])", "#abcdef");
+  type('input[aria-label="Form Color"]', "#abcdef");
   const statusPicker = host.querySelector<HTMLElement>(
     '[aria-label="Default Status"]',
   )!;
@@ -233,14 +233,18 @@ it("disables Advanced controls restricted by defaults or Limited Users", () => {
   const controls = host.querySelectorAll<
     HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
   >(
-    ".wizard-advanced input, .wizard-editor textarea, .wizard-color-control input",
+    '.wizard-advanced input, .wizard-editor textarea, input[aria-label="Form Color"]',
   );
-  expect(controls.length).toBe(4);
+  expect(controls.length).toBe(3);
+  expect(
+    Array.from(
+      host.querySelectorAll<HTMLButtonElement>(".ff-color-picker button"),
+    ).every((button) => button.disabled),
+  ).toBe(true);
   expect(Array.from(controls).every((control) => control.disabled)).toBe(true);
   expect(
-    host.querySelector<HTMLInputElement>(
-      ".wizard-color-control input:not([type=color])",
-    )!.value,
+    host.querySelector<HTMLInputElement>('input[aria-label="Form Color"]')!
+      .value,
   ).toBe("#123456");
   expect(
     host
@@ -249,17 +253,26 @@ it("disables Advanced controls restricted by defaults or Limited Users", () => {
   ).toBe("true");
 });
 
-it("opens Advanced and marks invalid handles and colors when continuing", () => {
+it("marks invalid handles and restores incomplete color drafts without saving them", () => {
   enableAdvancedSettings();
   type(".wizard-advanced input", "invalid handle!");
-  type(".wizard-color-control input:not([type=color])", "#oops");
+  type('input[aria-label="Form Color"]', "#oops");
+  act(() =>
+    host
+      .querySelector<HTMLInputElement>('input[aria-label="Form Color"]')!
+      .dispatchEvent(new FocusEvent("blur")),
+  );
+  expect(
+    host.querySelector<HTMLInputElement>('input[aria-label="Form Color"]')!
+      .value,
+  ).toBe("#123456");
   continueStep();
   expect(host.querySelector<HTMLDetailsElement>(".wizard-advanced")!.open).toBe(
     true,
   );
   expect(
     host.querySelectorAll(".wizard-editor [aria-invalid=true]"),
-  ).toHaveLength(2);
+  ).toHaveLength(1);
 });
 
 it("keeps Behavior defaults and locks for messages, redirects, and stored submissions", () => {

@@ -17,9 +17,9 @@ use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Logging\Handlers\ActivityLogHandler;
 use Solspace\Freeform\Library\Logging\Handlers\ErrorNotificationHandler;
@@ -36,7 +36,7 @@ class LoggerFactory
     ): LoggerInterface {
         $plugin = Freeform::getInstance();
         $settings = $plugin->getSettings();
-        $writeFiles = BooleanHelper::normalize($settings->technicalFileLogging);
+        $writeFiles = $settings->isClassicLoggingEnabled();
         $notifyErrors = '' !== trim((string) $settings->errorNotificationRecipients);
         $hash = sha1($category.':'.$logfilePath.':'.$level.':'.(int) $writeFiles.':'.(int) $notifyErrors);
 
@@ -47,7 +47,7 @@ class LoggerFactory
                 'freeform-integrations.log' => 'integrations',
                 default => 'system',
             };
-            $logger->pushHandler(new ActivityLogHandler($activitySource));
+            $logger->pushHandler(new ActivityLogHandler($activitySource, $category));
 
             if ($notifyErrors) {
                 $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
@@ -68,7 +68,14 @@ class LoggerFactory
             if ($writeFiles || $notifyErrors) {
                 static $requestId;
                 $requestId ??= CryptoHelper::getUniqueToken(6);
-                $logger->pushProcessor(new RedactSensitiveInfoProcessor());
+                $redactor = new RedactSensitiveInfoProcessor();
+                $logger->pushProcessor(static function ($record) use ($writeFiles, $redactor) {
+                    $level = $record instanceof LogRecord ? $record->level->value : $record['level'];
+
+                    // Typed Activity diagnostics only consume numeric markers. Do not
+                    // inspect their raw context unless a file/notification needs it.
+                    return $writeFiles || $level >= Logger::ERROR ? $redactor($record) : $record;
+                });
                 $logger->pushProcessor(static function ($record) use ($requestId) {
                     $record['extra']['requestId'] = $requestId;
 

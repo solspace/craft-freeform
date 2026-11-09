@@ -8,7 +8,10 @@ type Props = {
 
 export const ThemedSkeleton: React.FC<Props> = ({ children }) => {
   return (
-    <SkeletonTheme baseColor="#e6eaee" highlightColor="#ced1d4">
+    <SkeletonTheme
+      baseColor="var(--ui-control-bg-color, #e6eaee)"
+      highlightColor="var(--ui-control-hover-bg-color, #ced1d4)"
+    >
       {children}
     </SkeletonTheme>
   );

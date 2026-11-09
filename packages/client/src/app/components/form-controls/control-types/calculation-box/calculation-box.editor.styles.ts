@@ -8,6 +8,7 @@ export const PreviewTitle = styled.div`
   gap: ${spacings.md};
 
   mark {
+    color: light-dark(MarkText, var(--light-text-color));
     padding: 0 ${spacings.xs};
     border-radius: ${borderRadius.lg};
     background: ${colors.gray200};

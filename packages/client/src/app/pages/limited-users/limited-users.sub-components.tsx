@@ -1,5 +1,4 @@
 import { LightSwitch } from "@components/elements/lightswitch/lightswitch";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import type { ReactNode } from "react";
@@ -7,6 +6,8 @@ import type { ReactNode } from "react";
 import {
   Actions,
   Block,
+  ChildrenCollapse,
+  ChildrenViewport,
   Control,
   ControlArea,
   Heading,
@@ -14,6 +15,8 @@ import {
   List,
   ListItem,
   TitleBlock,
+  ToggleButton,
+  ToggleIndicator,
   ToggleList,
   ToggleListItem,
 } from "./limited-users.styles";
@@ -95,38 +98,39 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
       <TitleBlock>
         <Label>{translate(item.name)}</Label>
         <Actions>
-          <a
-            className={classes(
-              item.values.length === item.options.length && "disabled",
-            )}
+          <button
+            type="button"
+            disabled={item.values.length === item.options.length}
             onClick={() =>
               updateValue(item.options.map((option) => option.value))
             }
           >
             {translate("Enable All")}
-          </a>
-          <a
-            className={classes(item.values.length === 0 && "disabled")}
+          </button>
+          <button
+            type="button"
+            disabled={item.values.length === 0}
             onClick={() => updateValue([])}
           >
             {translate("Disable All")}
-          </a>
+          </button>
         </Actions>
       </TitleBlock>
       <ControlArea>
         <ToggleList>
           {item.options.map((option) => (
-            <ToggleListItem
-              key={option.value}
-              onClick={update(option.value)}
-              className={classes(
-                item.values.includes(option.value) && "selected",
-              )}
-            >
-              {item.values.includes(option.value) && (
-                <i className="fa-sharp fa-solid fa-check" />
-              )}
-              {translate(option.label)}
+            <ToggleListItem key={option.value}>
+              <ToggleButton
+                type="button"
+                role="switch"
+                aria-checked={item.values.includes(option.value)}
+                onClick={update(option.value)}
+              >
+                <span>{translate(option.label)}</span>
+                <ToggleIndicator aria-hidden="true">
+                  <LightSwitch enabled={item.values.includes(option.value)} />
+                </ToggleIndicator>
+              </ToggleButton>
             </ToggleListItem>
           ))}
         </ToggleList>
@@ -167,8 +171,12 @@ export const Group: React.FC<{
         <Heading>{translate(item.name)}</Heading>
         {nesting === 0 && (
           <Actions>
-            <a onClick={update(true)}>{translate("Enable All")}</a>
-            <a onClick={update(false)}>{translate("Disable All")}</a>
+            <button type="button" onClick={update(true)}>
+              {translate("Enable All")}
+            </button>
+            <button type="button" onClick={update(false)}>
+              {translate("Disable All")}
+            </button>
           </Actions>
         )}
       </TitleBlock>
@@ -181,8 +189,11 @@ export const ItemBlock: React.FC<{
   parentId?: string;
   nesting?: number;
   updateValue: RecursiveUpdate;
-}> = ({ item, parentId, nesting = 0, updateValue }) => {
+  hiddenPropertyGroups?: ReadonlySet<string>;
+}> = ({ item, parentId, nesting = 0, updateValue, hiddenPropertyGroups }) => {
   const id = parentId ? `${parentId}.${item.id}` : item.id;
+  const isFieldProperty = parentId === "props";
+  const propertyVisible = !hiddenPropertyGroups?.has(item.id);
   let controls: ReactNode;
 
   switch (item.type) {
@@ -225,26 +236,50 @@ export const ItemBlock: React.FC<{
       break;
   }
 
-  return (
-    <ListItem data-type={item.type} data-nesting={nesting}>
-      {controls}
+  const children = item.children && (
+    <List>
+      {item.children.map((child) => (
+        <ItemBlock
+          key={child.id}
+          item={child}
+          parentId={id}
+          nesting={nesting + 1}
+          updateValue={updateValue}
+          hiddenPropertyGroups={hiddenPropertyGroups}
+        />
+      ))}
+    </List>
+  );
 
-      {item.children && (
-        <List
-          className={classes(
-            item.type === "boolean" && !item.enabled && "disabled",
-          )}
+  return (
+    <ListItem
+      data-id={item.id}
+      data-type={item.type}
+      data-nesting={nesting}
+      data-collapsed={isFieldProperty && !propertyVisible ? true : undefined}
+    >
+      {isFieldProperty ? (
+        <ChildrenCollapse
+          $expanded={propertyVisible}
+          aria-hidden={!propertyVisible}
+          inert={!propertyVisible}
         >
-          {item.children.map((item) => (
-            <ItemBlock
-              key={item.id}
-              item={item}
-              parentId={id}
-              nesting={nesting + 1}
-              updateValue={updateValue}
-            />
-          ))}
-        </List>
+          <ChildrenViewport>{controls}</ChildrenViewport>
+        </ChildrenCollapse>
+      ) : (
+        controls
+      )}
+
+      {children && item.type === "boolean" ? (
+        <ChildrenCollapse
+          $expanded={item.enabled}
+          aria-hidden={!item.enabled}
+          inert={!item.enabled}
+        >
+          <ChildrenViewport>{children}</ChildrenViewport>
+        </ChildrenCollapse>
+      ) : (
+        children
       )}
     </ListItem>
   );

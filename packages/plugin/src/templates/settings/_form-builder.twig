@@ -68,11 +68,12 @@
 
     {% if craft.freeform.pro %}
 
-        <div class="field">
+        <div class="ff-toolbar-setting" data-toolbar-editor>
             {{ forms.autosuggestField({
+                id: 'rich-text-toolbar',
                 class: "code",
                 label: "Rich Text Field Toolbar Configuration"|t('freeform'),
-                instructions: "Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported."|t('freeform'),
+                instructions: "Choose the toolbar buttons for rich text fields. Drag to reorder, use **Add…** for buttons or dividers, and hover or focus a button to preview it."|t('freeform'),
                 name: "settings[defaults][richTextFieldToolbarConfiguration]",
                 value: settings.defaults.richTextFieldToolbarConfiguration,
                 errors: settings.getErrors("defaults.richTextFieldToolbarConfiguration"),
@@ -81,11 +82,12 @@
             }) }}
         </div>
 
-        <div class="field">
+        <div class="ff-toolbar-setting" data-toolbar-editor>
             {{ forms.autosuggestField({
+                id: 'notification-toolbar',
                 class: "code",
                 label: "Email Notification Template Toolbar Configuration"|t('freeform'),
-                instructions: "Choose which components appear in the Email Notification Template editor toolbar and in what order. Only core native TinyMCE components are supported."|t('freeform'),
+                instructions: "Choose the toolbar buttons for email notification templates. Drag to reorder, use **Add…** for buttons or dividers, and hover or focus a button to preview it."|t('freeform'),
                 name: "settings[emailNotificationToolbarConfiguration]",
                 value: settings.emailNotificationToolbarConfiguration,
                 errors: settings.getErrors("emailNotificationToolbarConfiguration"),
@@ -158,11 +160,9 @@
                                             disabled: readOnly,
                                         }) }}
                                     {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\ColorItem') %}
-                                        {{ forms.color({
-                                            name: path~"[value]",
-                                            value: item.value,
-                                            disabled: readOnly,
-                                        }) }}
+                                        <div data-ff-color-picker data-allow-transparent="{{ catName == 'settings' and subName == 'successAndErrors' ? 'false' : 'true' }}">
+                                            <input type="text" data-color-value name="{{ path }}[value]" value="{{ item.value }}" {% if readOnly %}disabled{% endif %} aria-label="{{ item.label|t('freeform') }}">
+                                        </div>
                                     {% else %}
                                         {{ measurement.input({
                                             unit: item.unit ? item.unit|t("freeform") : null,

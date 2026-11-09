@@ -9,6 +9,38 @@ use Solspace\Freeform\Models\Settings;
 #[CoversClass(Settings::class)]
 class SettingsTest extends TestCase
 {
+    public function testLoggingStylesPreservePreferencesWhileEnablingOnlyTheSelectedSystem(): void
+    {
+        $settings = $this->normalize(['activityEnabled' => 'true', 'technicalFileLogging' => 'true', 'loggingLevel' => 'debug', 'activityMode' => 'custom']);
+        self::assertTrue($settings->isActivityLoggingEnabled());
+        self::assertFalse($settings->isClassicLoggingEnabled());
+        $settings->loggingStyle = 'classic';
+        self::assertFalse($settings->isActivityLoggingEnabled());
+        self::assertTrue($settings->isClassicLoggingEnabled());
+        $settings->loggingStyle = 'activity';
+        self::assertTrue($settings->isActivityLoggingEnabled());
+        self::assertSame('debug', $settings->loggingLevel);
+        self::assertSame('custom', $settings->activityMode);
+        self::assertSame('1', $settings->technicalFileLogging);
+        $settings->loggingStyle = 'none';
+        self::assertTrue($settings->validate(['loggingStyle']));
+        self::assertFalse($settings->isActivityLoggingEnabled());
+        self::assertFalse($settings->isClassicLoggingEnabled());
+        self::assertSame('none', $settings->getEffectiveLoggingStyle());
+        self::assertSame('debug', $settings->loggingLevel);
+        self::assertSame('custom', $settings->activityMode);
+        $settings->loggingStyle = 'unknown';
+        self::assertFalse($settings->validate(['loggingStyle']));
+    }
+
+    public function testPreviouslyDisabledLoggingShowsNoneUntilAStyleIsChosen(): void
+    {
+        $settings = $this->normalize(['activityEnabled' => 'false']);
+        self::assertSame('none', $settings->getEffectiveLoggingStyle());
+        $settings->setAttributes(['loggingStyle' => 'classic', 'activityEnabled' => '1', 'technicalFileLogging' => '1'], false);
+        self::assertSame('classic', $settings->getEffectiveLoggingStyle());
+    }
+
     public function testUploadVolumeSettingAcceptsAllNoneOrHandlesAndNormalizesClearedCheckboxes(): void
     {
         foreach (['*', 'none', [], ['forms'], ['forms', 'privateUploads']] as $value) {

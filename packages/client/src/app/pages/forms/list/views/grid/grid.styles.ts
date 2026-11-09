@@ -15,7 +15,7 @@ export const CardWrapper = styled.div<{ $dragging?: boolean }>`
   ${({ $dragging }) =>
     $dragging &&
     `
-    [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: #f6faff; }
+    [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: var(--bg-selection-light, #f6faff); }
     iframe { pointer-events: none; }
   `}
 `;
@@ -37,8 +37,8 @@ export const Cards = styled.ul<{ $empty?: string }>`
     align-items: center;
     justify-content: center;
     min-height: 80px;
-    border: 1px dashed #cbd5df;
-    color: #7b8794;
+    border: 1px dashed light-dark(#cbd5df, var(--hairline-color, #cbd5df));
+    color: light-dark(#7b8794, var(--light-text-color, #7b8794));
     font-size: 13px;
     &::after { content: "${({ $empty }) => $empty}"; pointer-events: none; }
   }
@@ -47,7 +47,7 @@ export const Cards = styled.ul<{ $empty?: string }>`
   ${CardWrapper} & .card-drop-placeholder {
     opacity: 0.18;
     border: 2px dashed var(--link-color, #0d78f2);
-    background: #eaf3ff;
+    background: light-dark(#eaf3ff, var(--bg-selection-light, #eaf3ff));
   }
   ${CardWrapper} & .card-chosen { box-shadow: 0 8px 24px #1f34452b; }
   ${CardWrapper} & .card-moving { opacity: 0.95; }
@@ -58,14 +58,14 @@ export const Cards = styled.ul<{ $empty?: string }>`
 export const GroupWrap = styled.div`
   container: form-card-grid / inline-size;
   & + & {
-    border-top: 1px solid #e7edf3;
+    border-top: 1px solid light-dark(#e7edf3, var(--hairline-color, #e7edf3));
     padding-top: 20px;
   }
 `;
 
 export const GroupTitle = styled.h2`
   margin: 0 0 16px;
-  color: #596673;
+  color: light-dark(#596673, var(--light-text-color, #596673));
   font-size: 14px;
   font-weight: 600;
 `;
@@ -90,15 +90,8 @@ export const GroupsButton = styled.button`
   white-space: nowrap;
   flex-shrink: 0;
 
-  &:hover {
-    color: var(--link-color);
-
-    svg {
-      path:last-of-type {
-        stroke: var(--link-color);
-      }
-    }
-  }
+  svg { display: block; flex-shrink: 0; }
+  svg path:last-of-type { stroke: currentColor; }
 `;
 
 export const ContentContainer = styled.div`

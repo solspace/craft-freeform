@@ -28,6 +28,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\HubSpot\BaseHubSpotIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -222,7 +223,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private function pushContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
-            $this->logger->debug('No Contacts mapped, skipping.');
+            $this->logger->debug('No Contacts mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -299,7 +300,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
             $response = $this->updateContact($client, $contactId, $mapping);
 
-            $this->logger->info('Updated contact', ['contactId' => $contactId]);
+            $this->logger->info('Updated contact', ['contactId' => $contactId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
         } else {
             [$response, $contactId] = $this->createContact($client, $mapping);
         }
@@ -313,7 +314,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private function pushCompanies(Form $form, Client $client): void
     {
         if (!$this->mapCompanies) {
-            $this->logger->debug('No Companies mapped, skipping.');
+            $this->logger->debug('No Companies mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -369,7 +370,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
             $response = $this->updateCompany($client, (int) $companyId, $mapping);
 
-            $this->logger->info('Updated company', ['companyId' => $companyId]);
+            $this->logger->info('Updated company', ['companyId' => $companyId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
         } else {
             [$response, $companyId] = $this->createCompany($client, $mapping);
         }
@@ -383,7 +384,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private function pushDeals(Form $form, Client $client): void
     {
         if (!$this->mapDeals) {
-            $this->logger->debug('No Deals mapped, skipping.');
+            $this->logger->debug('No Deals mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -400,7 +401,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
             )
         );
 
-        $this->logger->info('New Deal created', ['dealId' => $data->id]);
+        $this->logger->info('New Deal created', ['dealId' => $data->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $properties);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
@@ -418,7 +419,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
             );
 
             $contactId = (int) $data->id;
-            $this->logger->info('New Contact created', ['contactId' => $contactId]);
+            $this->logger->info('New Contact created', ['contactId' => $contactId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
             return [$response, $contactId];
         } catch (ClientException $exception) {
@@ -428,7 +429,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
             }
 
             $response = $this->updateContact($client, $contactId, $mapping);
-            $this->logger->info('Contact conflict resolved via update', ['contactId' => $contactId]);
+            $this->logger->info('Contact conflict resolved via update', ['contactId' => $contactId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
 
             return [$response, $contactId];
         }
@@ -453,7 +454,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
             );
 
             $companyId = (int) $data->id;
-            $this->logger->info('New Company created', ['companyId' => $companyId]);
+            $this->logger->info('New Company created', ['companyId' => $companyId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
             return [$response, $companyId];
         } catch (ClientException $exception) {
@@ -463,7 +464,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
             }
 
             $response = $this->updateCompany($client, $companyId, $mapping);
-            $this->logger->info('Company conflict resolved via update', ['companyId' => $companyId]);
+            $this->logger->info('Company conflict resolved via update', ['companyId' => $companyId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
 
             return [$response, $companyId];
         }

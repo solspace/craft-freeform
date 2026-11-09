@@ -72,7 +72,7 @@ class LocationAttributesRenderingTest extends TestCase
         $group = $xpath->query('//section[@class="address-items"]')->item(0);
         self::assertTrue($group->hasAttribute('data-freeform-location-components'));
         self::assertFalse($group->hasAttribute('hidden'));
-        self::assertSame('display: flex; gap: 20px;', $group->getAttribute('style'));
+        self::assertSame('display:flex;gap:20px;', preg_replace('/\s+/', '', $group->getAttribute('style')));
         self::assertSame(1, $xpath->query('//section[@class="address-item-city"]/input[@class="address-control"]')->length);
         $city = $xpath->query('//input[@id="address-id-city"]')->item(0);
         self::assertSame('Winnipeg', $city->getAttribute('value'));

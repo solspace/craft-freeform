@@ -71,7 +71,7 @@ class ActivityExportTest extends TestCase
         $db = new Connection(['dsn' => 'sqlite::memory:']);
 
         try {
-            $db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, event TEXT, category TEXT, level TEXT, formId INTEGER, submissionId INTEGER, metadata TEXT, dateCreated TEXT)')->execute();
+            $db->createCommand('CREATE TABLE freeform_activity (id INTEGER PRIMARY KEY, resolvedAt TEXT, event TEXT, category TEXT, level TEXT, formId INTEGER, submissionId INTEGER, metadata TEXT, dateCreated TEXT)')->execute();
             \Craft::$app = \Yii::$app = new class($db) {
                 public function __construct(private Connection $db) {}
 

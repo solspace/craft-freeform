@@ -1,5 +1,5 @@
 import translate from "@ff-client/utils/translations";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
@@ -33,8 +33,37 @@ const Placeholder = styled.div`
 
 // The parent keys this component by widget/site/revision so a replacement frame
 // starts loading immediately, without briefly revealing the previous content.
-export const WidgetFrame = ({ src, title }: { src: string; title: string }) => {
+export const WidgetFrame = ({
+  src,
+  title,
+  onHealthReady,
+}: {
+  src: string;
+  title: string;
+  onHealthReady?: (ready: boolean) => void;
+}) => {
   const [loaded, setLoaded] = useState(false);
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    // A widget can be ready before its window load event (for example while a
+    // third-party asset is pending). Only accept messages from this frame.
+    const receive = (event: MessageEvent) => {
+      if (
+        event.origin !== window.location.origin ||
+        event.source !== frameRef.current?.contentWindow ||
+        event.data?.type !== "freeform-widget-ready"
+      )
+        return;
+      setLoaded(true);
+      onHealthReady?.(event.data.healthReady === true);
+    };
+    window.addEventListener("message", receive);
+    return () => window.removeEventListener("message", receive);
+  }, [onHealthReady]);
+  useEffect(() => {
+    onHealthReady?.(false);
+    return () => onHealthReady?.(false);
+  }, [onHealthReady]);
   return (
     <Content aria-busy={!loaded}>
       {!loaded && (
@@ -54,6 +83,7 @@ export const WidgetFrame = ({ src, title }: { src: string; title: string }) => {
         </Placeholder>
       )}
       <Frame
+        ref={frameRef}
         data-freeform-widget-frame
         data-no-drag
         title={title}
@@ -66,7 +96,19 @@ export const WidgetFrame = ({ src, title }: { src: string; title: string }) => {
           if (event.currentTarget.contentDocument?.URL === "about:blank")
             return;
           setLoaded(true);
+          if (onHealthReady) {
+            try {
+              onHealthReady(
+                !!event.currentTarget.contentDocument?.querySelector(
+                  '[data-freeform-health-ready="true"]',
+                ),
+              );
+            } catch {
+              onHealthReady(false);
+            }
+          }
         }}
+        onError={() => onHealthReady?.(false)}
       />
     </Content>
   );

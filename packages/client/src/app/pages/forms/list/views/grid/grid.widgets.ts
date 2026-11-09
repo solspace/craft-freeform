@@ -16,11 +16,20 @@ export const getExtraWidgetSizes = (type: string) => {
     label: string;
     dimensions: string;
   }[] = [];
-  if (type === "linear" || type === "recent")
+  if (type === "linear" || type === "recent" || type === "activity-health")
     sizes.push({ size: "3x2", label: "Extra wide", dimensions: "3×2" });
-  if (type === "quick-form" || type === "recent" || type === "radial")
+  if (
+    type === "quick-form" ||
+    type === "recent" ||
+    type === "radial" ||
+    type === "activity-health"
+  )
     sizes.push({ size: "2x3", label: "Extra tall", dimensions: "2×3" });
-  if (["linear", "recent", "radial", "quick-form"].includes(type))
+  if (
+    ["linear", "recent", "radial", "quick-form", "activity-health"].includes(
+      type,
+    )
+  )
     sizes.push({ size: "3x3", label: "Extra large", dimensions: "3×3" });
   return sizes;
 };
@@ -33,7 +42,30 @@ export type DashboardWidget = {
   size: DashboardWidgetSize;
   groupUid: string | null;
   beforeId: number | null;
+  replacesBanner?: boolean;
+  navigation?: {
+    period: string;
+    scope: string;
+    days: number;
+    links: { label: string; url: string }[];
+  };
 };
+export const healthWidgetKey = (widget: DashboardWidget, siteId: number) =>
+  `${siteId}:${widget.uid}:${widget.revision ?? ""}`;
+export const hasVisibleHealthWidget = (
+  items: DashboardWidget[],
+  siteId: number | undefined,
+  ready: ReadonlySet<string>,
+  visible: boolean,
+) =>
+  visible &&
+  !!siteId &&
+  items.some(
+    (widget) =>
+      widget.type === "activity-health" &&
+      widget.replacesBanner &&
+      ready.has(healthWidgetKey(widget, siteId)),
+  );
 export type WidgetPlacement = Pick<
   DashboardWidget,
   "uid" | "size" | "groupUid" | "beforeId"

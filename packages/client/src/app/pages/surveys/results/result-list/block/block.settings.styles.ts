@@ -55,7 +55,7 @@ export const DropdownWrapper = styled.div`
 
   border-radius: 0 5px 5px 5px;
   border: 1px solid #e0e2e6;
-  background: #ffffff;
+  background: light-dark(#ffffff, var(--pane-bg, #fff));
 
   box-shadow: rgba(17, 17, 26, 0.1) 5px 5px 8px;
 `;
@@ -64,7 +64,7 @@ export const DropdownItem = styled.a`
   display: block;
   padding: 3px 10px;
 
-  background-color: #ffffff;
+  background-color: light-dark(#ffffff, var(--pane-bg, #fff));
   color: #000000 !important;
   font-size: 12px;
 

@@ -49,14 +49,36 @@ window.FreeformDashboardChart = (root, config) => {
       external: tooltip,
     },
   };
+  // Resolve scale colors explicitly: Chart.js scale defaults otherwise retain
+  // its light-theme black grid and tick colors on dark control panels.
+  const themeColor = (role: string, fallback: string) => () =>
+    getComputedStyle(root).getPropertyValue(role).trim() || fallback;
+  const mutedColor = themeColor("--light-text-color", "#596673");
+  const gridColor = themeColor("--hairline-color", "#dce4ec");
   const submissionTicks = {
+    color: mutedColor,
     maxTicksLimit: 6,
     precision: 0,
     format: { maximumFractionDigits: 0 },
   };
+  // Resolve semantic Craft colors at draw time: canvas cannot inherit CSS vars.
+  // This also works with other CP themes; no Dark Mode plugin API is required.
+  const surfaceColor = () =>
+    getComputedStyle(root).getPropertyValue("--pane-bg").trim() || "#fff";
+  const textColor = () => getComputedStyle(root).color;
+  options.color = textColor;
   if (radial) {
+    config.data.datasets[0].borderColor ??= surfaceColor;
     if (config.type === "polarArea") {
-      options.scales = { r: { beginAtZero: true, ticks: submissionTicks } };
+      options.scales = {
+        r: {
+          beginAtZero: true,
+          ticks: { ...submissionTicks, backdropColor: surfaceColor },
+          grid: { color: gridColor },
+          angleLines: { color: gridColor },
+          pointLabels: { color: mutedColor },
+        },
+      };
     }
     config.data.datasets[0].borderWidth = 2;
     if (config.type === "doughnut") {
@@ -68,9 +90,16 @@ window.FreeformDashboardChart = (root, config) => {
       x: {
         type: "category",
         grid: { display: false },
-        ticks: { maxTicksLimit: 8, maxRotation: 0 },
+        ticks: { color: mutedColor, maxTicksLimit: 8, maxRotation: 0 },
+        border: { display: false },
       },
-      y: { type: "linear", beginAtZero: true, ticks: submissionTicks },
+      y: {
+        type: "linear",
+        beginAtZero: true,
+        ticks: submissionTicks,
+        grid: { color: gridColor },
+        border: { display: false },
+      },
     };
     config.data.datasets.forEach((dataset) => {
       dataset.borderWidth = 2;
@@ -132,9 +161,22 @@ window.FreeformDashboardChart = (root, config) => {
     legend.append(button);
   });
 
+  // CSS theme switches change attributes on <html> (class, style, data, etc.).
+  // Repaint only when the effective palette changes; do not reset legend state.
+  let palette = `${surfaceColor()}|${textColor()}|${mutedColor()}|${gridColor()}`;
+  const themeObserver = new MutationObserver(() => {
+    const next = `${surfaceColor()}|${textColor()}|${mutedColor()}|${gridColor()}`;
+    if (next !== palette && root.isConnected) {
+      palette = next;
+      chart.update("none");
+    }
+  });
+  themeObserver.observe(document.documentElement, { attributes: true });
+
   // Craft replaces widget bodies when settings change, and removes deleted cards.
   const observer = new MutationObserver(() => {
     if (!root.isConnected) {
+      themeObserver.disconnect();
       chart.destroy();
       tooltip.destroy();
       observer.disconnect();

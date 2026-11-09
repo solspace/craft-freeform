@@ -58,7 +58,7 @@ class ImplementationProvider
 
                 if (!empty($matches)) {
                     $match = $matches[1];
-                    $name = str_replace($match, StringHelper::toLowerCase($match), $name);
+                    $name = str_replace($match, StringHelper::toLowerCase($match, 'en'), $name);
                 }
 
                 return StringHelper::toCamelCase($name);

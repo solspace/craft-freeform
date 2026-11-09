@@ -9,6 +9,7 @@ import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { RecommendedBadge } from "../badges/recommended-badge";
 
 import { PopUpPortal } from "../pop-up-portal";
 
@@ -33,6 +34,8 @@ import {
 
 export type DropdownProps = {
   loading?: boolean;
+  disabled?: boolean;
+  ariaLabel?: string;
   emptyOption?: string;
   missingOption?: Pick<Option, "label" | "icon">;
   options?: OptionCollection;
@@ -40,6 +43,7 @@ export type DropdownProps = {
   showValues?: boolean;
   showHints?: boolean;
   showSelectedIcon?: boolean;
+  recommendedValue?: string;
   onChange?: (value: string) => void;
   className?: string;
 };
@@ -52,9 +56,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
   showValues,
   showHints,
   showSelectedIcon,
+  recommendedValue,
   onChange,
   className,
   loading = false,
+  disabled = false,
+  ariaLabel,
 }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -75,10 +82,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   });
 
   const toggleOpen = useCallback(() => {
-    if (!loading) {
+    if (!loading && !disabled) {
       setOpen(!open);
     }
-  }, [loading, open]);
+  }, [loading, disabled, open]);
 
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,
@@ -132,10 +139,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   );
 
   useEffect(() => {
-    if (loading && open) {
+    if ((loading || disabled) && open) {
       setOpen(false);
     }
-  }, [loading, open]);
+  }, [loading, disabled, open]);
 
   useEffect(() => {
     if (open) {
@@ -157,7 +164,20 @@ export const Dropdown: React.FC<DropdownProps> = ({
   return (
     <DropdownWrapper
       ref={containerRef}
-      className={classes(open && "open", className)}
+      className={classes(open && "open", disabled && "readonly", className)}
+      role={ariaLabel ? "combobox" : undefined}
+      aria-label={ariaLabel}
+      aria-expanded={ariaLabel ? open : undefined}
+      aria-haspopup={ariaLabel ? "listbox" : undefined}
+      aria-disabled={disabled || undefined}
+      tabIndex={ariaLabel && !disabled ? 0 : undefined}
+      onKeyDown={(event) => {
+        if (!ariaLabel || event.target !== event.currentTarget) return;
+        if (["Enter", " ", "ArrowDown"].includes(event.key)) {
+          event.preventDefault();
+          toggleOpen();
+        }
+      }}
       onClick={toggleOpen}
     >
       <CurrentValue
@@ -182,6 +202,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
             ),
           }}
         />
+        {recommendedValue !== undefined && value === recommendedValue && (
+          <RecommendedBadge />
+        )}
         {loading && (
           <SpinnerWrapper>
             <SpinnerIcon />
@@ -210,13 +233,26 @@ export const Dropdown: React.FC<DropdownProps> = ({
               }}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <ListWrapper>
+            <ListWrapper
+              style={{
+                maxHeight: Math.max(
+                  120,
+                  Math.min(
+                    300,
+                    window.innerHeight -
+                      (containerRef.current?.getBoundingClientRect().top ?? 0) -
+                      50,
+                  ),
+                ),
+              }}
+            >
               <Options
                 options={filteredOptions}
                 value={value}
                 focusIndex={focusIndex}
                 showValues={showValues}
                 showHints={showHints}
+                recommendedValue={recommendedValue}
                 onChange={onOptionClick}
               />
             </ListWrapper>

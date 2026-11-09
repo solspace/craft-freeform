@@ -9,9 +9,9 @@ export const GroupFieldLayoutWrapper = styled.div`
   height: 100%;
   padding: 8px;
 
-  border: 1px solid #f2f4f7;
+  border: 1px solid light-dark(#f2f4f7, ${colors.border});
   border-radius: ${borderRadius.lg};
-  background-color: #fcfdfe;
+  background-color: light-dark(#fcfdfe, ${colors.surface});
 
   &[data-form-section='true'] {
     height: auto;
@@ -54,7 +54,7 @@ export const EmptyLayout = styled.div`
   min-height: 40px;
   height: 100%;
 
-  color: ${colors.gray200};
+  color: light-dark(${colors.gray200}, ${colors.muted});
   font-size: 18px;
   text-align: center;
 `;

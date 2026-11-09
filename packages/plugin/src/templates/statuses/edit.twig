@@ -6,6 +6,7 @@
 {% set saveShortcutRedirect = 'freeform/settings/statuses/{id}' %}
 
 {% set fullPageForm = true %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\ColorPickerBundle') %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -71,36 +72,22 @@
 
     <hr>
 
-    {{ forms.hidden({
-        id: "color",
-        name: "color",
-        value: status.color,
-        errors: status.getErrors("color"),
-        required: true
-    }) }}
-
     {% set colorField %}
-        <div>
-            <a id="color-menu-btn" class="btn menubtn" href="#">
-                <span class="status {{ status.color }}"></span>
-                {{ status.color|t('freeform')|title }}
-            </a>
-            <div class="menu">
-                <ul class="padded">
-                    {% set colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
-                    {% if craft.app.version < '5.0.0' %}
-                        {% set colors = ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
-                    {% endif %}
-                    {% for color in colors %}
-                        <li>
-                            <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
-                                <span class="status {{ color }}"></span>
-                                {{ color|t('freeform')|title }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+        {% set colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
+        {% if craft.app.version < '5.0.0' %}
+            {% set colors = ['green', 'orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+        {% endif %}
+        {% set legacyColor = status.color and status.color not in colors %}
+        {% if legacyColor %}
+            {% set colors = colors|merge([status.color]) %}
+        {% endif %}
+        <div class="ff-color-statuses" role="radiogroup" aria-label="{{ 'Color'|t('freeform') }}">
+            {% for color in colors %}
+                <label class="ff-color-status-choice" title="{{ color|t('freeform')|title }}">
+                    <input type="radio" name="color" value="{{ color }}" {% if status.color == color %}checked{% endif %} aria-label="{{ color|t('freeform')|title }}" required>
+                    <span class="status {{ color }}" {% if legacyColor and status.color == color %}style="background-color:{{ status.colorHex }}"{% endif %} aria-hidden="true"></span>
+                </label>
+            {% endfor %}
         </div>
     {% endset %}
 
@@ -115,15 +102,4 @@
 {% js %}
     {% if not status.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
 
-    $(function () {
-        $colorSelect = $('#color-menu-btn');
-        new Garnish.MenuBtn($colorSelect, {
-            onOptionSelect: function(data) {
-                var val = $(data).data('val');
-                $('#color').val(val);
-                var html = "<span class='status "+val+"'></span>"+Craft.uppercaseFirst(val);
-                $colorSelect.html(html);
-            }
-        });
-    });
 {% endjs %}

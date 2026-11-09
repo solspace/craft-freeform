@@ -8,12 +8,12 @@
   padding: 0;
   border: 0;
   border-radius: var(--large-border-radius);
-  background: var(--white);
+  background: light-dark(var(--white), var(--modal-bg, #fff));
   color: var(--gray-700);
   box-shadow: 0 25px 100px rgba(31, 41, 51, .5);
   overflow: auto;
 
-  &::backdrop { background: rgba(123, 135, 147, .35); }
+  &::backdrop { background: light-dark(rgba(123, 135, 147, .35), var(--shade-bg, rgba(31, 41, 51, .5))); }
   > header {
     padding: var(--l) var(--xl);
     background: var(--gray-100);

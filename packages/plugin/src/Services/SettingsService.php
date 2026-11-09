@@ -309,7 +309,8 @@ class SettingsService extends BaseService
 
     public function getSettingsNavigation(): array
     {
-        $legacyLogs = Freeform::getInstance()->logger->getExistingLogs();
+        $loggingStyle = $this->getSettingsModel()->getEffectiveLoggingStyle();
+        $logs = Freeform::getInstance()->logger->getLogNavigation('classic' === $loggingStyle);
         $solspaceAiNavItem = null;
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS)) {
             $plugin = Freeform::getInstance();
@@ -317,6 +318,7 @@ class SettingsService extends BaseService
         }
 
         $nav = [
+            'setup' => $this->canUseSetupGuide() ? ['title' => Freeform::t('Setup Guide')] : null,
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
             'queue-processing' => ['title' => Freeform::t('Queue Processing')],
@@ -328,15 +330,15 @@ class SettingsService extends BaseService
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
             'ai' => $solspaceAiNavItem,
-            'hdalerts' => ['heading' => Freeform::t('Reliability')],
+            'hdalerts' => ['heading' => Freeform::t('System Health')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'diagnostics' => ['title' => Freeform::t('Diagnostics')],
-            'activity' => ['title' => Freeform::t('Activity Logging')],
+            'activity' => ['title' => Freeform::t('Logging')],
         ];
 
-        if ($legacyLogs) {
-            $nav['hdlogs'] = ['heading' => Freeform::t('Legacy Logs')];
-            foreach ($legacyLogs as $route => $label) {
+        if ($logs) {
+            $nav['hdlogs'] = ['heading' => Freeform::t('Logs')];
+            foreach ($logs as $route => $label) {
                 $nav[$route] = ['title' => Freeform::t($label)];
             }
         }
@@ -393,6 +395,11 @@ class SettingsService extends BaseService
         return \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
 
         return true;
+    }
+
+    public function canUseSetupGuide(): bool
+    {
+        return PermissionHelper::isAdmin() && $this->isAllowAdminEdit();
     }
 
     public function getFailedNotificationRecipients(): RecipientCollection
@@ -458,7 +465,11 @@ class SettingsService extends BaseService
 
         if ('all' === $type || 'errors' === $type) {
             if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS)) {
-                $total += $freeform->get('activity')->getErrorCount();
+                $total += match ($this->getSettingsModel()->getEffectiveLoggingStyle()) {
+                    'classic' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) ? $freeform->logger->getErrorLogLineCount() : 0,
+                    'activity' => $freeform->get('activity')->getErrorCount(),
+                    default => 0,
+                };
             }
         }
 

@@ -161,7 +161,7 @@ class PropertyProvider
             /** @var Section $section */
             $fallbackLabel = StringHelper::dasherize($property->getName());
             $fallbackLabel = StringHelper::replace($fallbackLabel, '-', ' ');
-            $fallbackLabel = StringHelper::toTitleCase($fallbackLabel);
+            $fallbackLabel = StringHelper::toTitleCase($fallbackLabel, \Craft::$app->language ?? 'en');
 
             $attribute->section = $section?->handle;
             $attribute->type = $this->processType($property, $attribute);

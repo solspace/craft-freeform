@@ -81,8 +81,13 @@ class ActivityFeed
                 ->select([
                     'formId', 'submissionId', 'count' => new Expression('COUNT(*)'),
                     'errorId' => new Expression("MAX(CASE WHEN [[level]] = 'error' THEN [[id]] END)"),
+                    'noticeId' => new Expression("MAX(CASE WHEN [[level]] = 'notice' THEN [[id]] END)"),
                     'warningId' => new Expression("MAX(CASE WHEN [[level]] = 'warning' THEN [[id]] END)"),
+                    'openErrorId' => new Expression("MAX(CASE WHEN [[level]] = 'error' AND [[resolvedAt]] IS NULL THEN [[id]] END)"),
+                    'openWarningId' => new Expression("MAX(CASE WHEN [[level]] = 'warning' AND [[category]] = 'system' AND [[resolvedAt]] IS NULL THEN [[id]] END)"),
                     'latestId' => new Expression('MAX([[id]])'),
+                    'issueCount' => new Expression("SUM(CASE WHEN [[level]] = 'error' OR ([[level]] = 'warning' AND [[category]] = 'system') THEN 1 ELSE 0 END)"),
+                    'openIssues' => new Expression("SUM(CASE WHEN ([[level]] = 'error' OR ([[level]] = 'warning' AND [[category]] = 'system')) AND [[resolvedAt]] IS NULL THEN 1 ELSE 0 END)"),
                 ])->where($conditions)->andWhere(['>=', 'dateCreated', $cutoff])->groupBy(['formId', 'submissionId'])->all()
             ;
             foreach ($summaryRows as $summary) {
@@ -91,14 +96,14 @@ class ActivityFeed
         }
         $ids = array_column($keys, 'id');
         foreach ($summaries as $summary) {
-            $ids[] = $summary['errorId'] ?? $summary['warningId'] ?? $summary['latestId'];
+            $ids[] = $summary['openErrorId'] ?? $summary['openWarningId'] ?? $summary['errorId'] ?? $summary['warningId'] ?? $summary['noticeId'] ?? $summary['latestId'];
         }
         $records = (new Query())->from(ActivityTable::TABLE)->where(['id' => array_unique($ids)])->indexBy('id')->all();
         $rows = [];
         foreach ($keys as $key) {
             $chainKey = self::chainKey($key);
             $summary = $summaries[$chainKey] ?? null;
-            $head = $summary ? ($summary['errorId'] ?? $summary['warningId'] ?? $summary['latestId']) : $key['id'];
+            $head = $summary ? ($summary['openErrorId'] ?? $summary['openWarningId'] ?? $summary['errorId'] ?? $summary['warningId'] ?? $summary['noticeId'] ?? $summary['latestId']) : $key['id'];
             $row = $records[$head] ?? null;
             $latest = $records[$key['id']] ?? null;
             // A concurrent cleanup may have removed a record between these bounded reads.
@@ -110,6 +115,9 @@ class ActivityFeed
             $row['latestDate'] = new \DateTimeImmutable($latest['dateCreated'], new \DateTimeZone('UTC'));
             $row['chainCount'] = $summary ? (int) $summary['count'] : 1;
             $row['isChain'] = (bool) $key['submissionId'];
+            $row['chainIssueCount'] = $summary ? (int) $summary['issueCount'] : 0;
+            $row['chainOpenIssues'] = $summary ? (int) $summary['openIssues'] : 0;
+            $row['isResolved'] = $summary ? $row['chainIssueCount'] > 0 && 0 === $row['chainOpenIssues'] : !empty($row['resolvedAt']);
             $rows[] = $row;
         }
 

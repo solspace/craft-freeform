@@ -60,12 +60,24 @@
     {{ redirectInput('freeform/settings/queue-processing') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Queue Pinging Service"|t('freeform') }}</h2>
-
     {% set fmReady = craft.freeformServices.settings.isFormMonitorEnabledAndAuthorized() %}
-    {% if not fmReady %}
-        <p class="instructions">{{ "Freeform can routinely ping your site at the interval you configure, using the free <a href='{link}'>Form Monitor</a> service, to trigger Craft's queue automatically. To use this feature, <a href='{link}'>enable and authorize Form Monitor</a> first."|t('freeform', { link: cpUrl('freeform/integrations/single/FormMonitor')})|raw }}</p>
-    {% else %}
+    <section class="freeform-queue-ping-promo" aria-labelledby="queue-ping-title">
+        <span class="freeform-queue-ping-icon" aria-hidden="true">
+            <svg viewBox="0 0 32 32" focusable="false">
+                <circle class="freeform-queue-ping-ring" cx="16" cy="16" r="5" />
+                <circle class="freeform-queue-ping-ring freeform-queue-ping-ring--delayed" cx="16" cy="16" r="5" />
+                <circle cx="16" cy="16" r="3" fill="currentColor" />
+            </svg>
+        </span>
+        <div class="freeform-queue-ping-copy">
+            <div class="freeform-queue-ping-heading"><span>{{ 'Queue Pinging Service'|t('freeform') }}</span><span class="freeform-queue-ping-badge">{{ 'Free'|t('freeform') }}</span></div>
+            <h2 id="queue-ping-title">{{ 'Keep background tasks moving'|t('freeform') }}</h2>
+            <p>{{ 'Form Monitor pings your site on a schedule to trigger Craft’s queue, even when your site is quiet. No cron setup required.'|t('freeform') }}</p>
+            <p class="freeform-queue-ping-details">{{ 'Use it for queued email notifications, integrations, and AI processing when you don’t have a server-side queue runner. Connect Form Monitor, then choose a ping interval from 5 minutes to 6 hours. Your site must be publicly accessible.'|t('freeform') }}</p>
+        </div>
+        {% if not fmReady %}<a class="btn submit" href="{{ cpUrl('freeform/integrations/single/FormMonitor') }}">{{ 'Set up Form Monitor'|t('freeform') }}</a>{% endif %}
+    </section>
+    {% if fmReady %}
         <p class="instructions">{{ "When enabled, the Form Monitor service will automatically ping the following URL:"|t('freeform') }} <code>{{ pingUrl|split('ping')[0] ~ 'ping' }}</code></p>
     {% endif %}
 

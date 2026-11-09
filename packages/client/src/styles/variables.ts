@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
 export const BoxShadow = styled.div`
-  box-shadow:
-    0 0 0 1px #cdd8e4,
+  box-shadow: var(--pane-shadow);
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 1px #cdd8e4,
     0 2px 12px rgb(205 216 228 / 50%);
+  };
 `;
 
 export const spacings = {
@@ -21,8 +23,8 @@ export const borderRadius = {
 };
 
 export const shadows = {
-  panel: "0 0 20px 10px rgb(205 216 228 / 50%)",
-  box: "0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%)",
+  panel: "var(--freeform-panel-shadow, 0 0 20px 10px rgb(205 216 228 / 50%))",
+  box: "var(--freeform-box-shadow, 0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%))",
   boxSubtle: "0 2px 8px rgba(0, 0, 0, 0.1)",
   bottom: "inset 0 -1px 0 0 rgb(154 165 177 / 25%)",
   top: "inset 0 1px 0 0 rgb(154 165 177 / 25%)",
@@ -42,18 +44,36 @@ export const beziers = {
   },
 };
 
+// Preserve Freeform's Light palette; use Craft's semantic roles in Dark.
+// Keep literal white/black for
+// content colors, logos, signature canvases, and text on solid accent fills.
 export const colors = {
-  hairline: "rgba(51,64,77,.1)",
-  hr: "rgb(from var(--gray-800) r g b/10%)",
-  inputBorder: "rgba(96,125,159,0.25)",
-  barelyVisible: "rgb(154 165 177 / 75%)",
-  link: "#1f5fea",
+  surface: "var(--pane-bg, var(--white))",
+  secondarySurface: "var(--secondary-pane-bg, var(--gray-050))",
+  mutedSurface:
+    "color-mix(in srgb, var(--text-color, var(--gray-700)) 3.5%, var(--pane-bg, var(--white)))",
+  canvas: "var(--body-bg, var(--gray-100))",
+  overlay: "var(--modal-bg, var(--white))",
+  text: "var(--text-color, var(--gray-700))",
+  muted: "var(--light-text-color, var(--gray-550))",
+  border: "var(--hairline-color, var(--gray-200))",
+  inputBackground: "var(--input-bg, var(--white))",
+  hairline:
+    "light-dark(rgba(51,64,77,.1), var(--hairline-color, rgba(51,64,77,.1)))",
+  hr: "light-dark(rgb(from var(--gray-800) r g b/10%), var(--hairline-color, rgb(from var(--gray-800) r g b/10%)))",
+  inputBorder:
+    "light-dark(rgba(96,125,159,0.25), var(--input-border-color, rgba(96,125,159,0.25)))",
+  selectBackground:
+    "color-mix(in srgb, var(--text-color, #3f4d5a) 5%, var(--input-bg, var(--white)))",
+  barelyVisible:
+    "light-dark(rgb(154 165 177 / 75%), var(--light-text-color, rgb(154 165 177 / 75%)))",
+  link: "light-dark(#1f5fea, var(--link-color, #1f5fea))",
 
   elements: {
-    dropdown: "#dfe5ec",
+    dropdown: "light-dark(#dfe5ec, var(--ui-control-bg-color, #dfe5ec))",
   },
 
-  error: "#cf1124",
+  error: "light-dark(#cf1124, var(--fg-error, var(--error-color, #cf1124)))",
   warning: "var(--warning-color)",
   success: "var(--success-color)",
   notice: "var(--notice-color)",

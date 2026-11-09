@@ -21,6 +21,7 @@ use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
@@ -209,7 +210,10 @@ class Settings extends Model
     public string $useQueueForIntegrations = 'false';
     public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
-    public string $technicalFileLogging = 'false';
+    public string $loggingStyle = 'activity';
+
+    /** Compatibility guards for earlier 5.18 configurations; the CP uses loggingStyle. */
+    public string $technicalFileLogging = 'true';
     public string $activityEnabled = 'true';
     public string $activityMode = 'standard';
     public array $activityEvents = [];
@@ -288,10 +292,33 @@ class Settings extends Model
             ['defaultAiIntegration', 'string', 'max' => 64],
             ['allowedUploadVolumes', 'validateAllowedUploadVolumes', 'skipOnEmpty' => false],
             ['activityMode', 'in', 'range' => ActivityPolicy::MODES, 'skipOnEmpty' => false],
+            ['loggingStyle', 'in', 'range' => ['activity', 'classic', 'none'], 'skipOnEmpty' => false],
             ['activityRetentionDays', 'integer', 'min' => 1, 'max' => 365],
             ['activityMaxRows', 'integer', 'min' => 1000, 'max' => 1000000],
             ['activityEvents', 'validateActivityEvents'],
         ];
+    }
+
+    public function getEffectiveLoggingStyle(): string
+    {
+        if ($this->isActivityLoggingEnabled()) {
+            return 'activity';
+        }
+        if ($this->isClassicLoggingEnabled()) {
+            return 'classic';
+        }
+
+        return 'none';
+    }
+
+    public function isActivityLoggingEnabled(): bool
+    {
+        return 'activity' === $this->loggingStyle && BooleanHelper::normalize($this->activityEnabled);
+    }
+
+    public function isClassicLoggingEnabled(): bool
+    {
+        return 'classic' === $this->loggingStyle && BooleanHelper::normalize($this->technicalFileLogging);
     }
 
     public function validateActivityEvents(string $attribute): void

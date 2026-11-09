@@ -14,7 +14,6 @@ use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityPresentation;
 use Solspace\Freeform\Library\Activity\ActivityQuery;
 use Solspace\Freeform\Library\Activity\ActivityTable;
-use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -173,7 +172,17 @@ class ActivityController extends BaseController
             'nextUrl' => $rows && $pageNumber * ActivityFeed::PAGE_SIZE < $total ? UrlHelper::cpUrl('freeform/activity', array_merge($filters, ['before' => $nextCursor, 'page' => $pageNumber + 1])) : null,
         ];
 
+        // Match the Forms dashboard: retained, unresolved issues across all forms.
+        // Search and outcome filters must not hide issues from this summary.
+        $alertCounts = ['error' => 0, 'warning' => 0];
+        if (!$resultsOnly && !$unavailable) {
+            $activity = Freeform::getInstance()->get('activity');
+            $alertCounts = ['error' => $activity->getErrorCount(), 'warning' => $activity->getOperationalWarningCount()];
+        }
+
         return $this->renderTemplate($resultsOnly ? 'freeform/activity/_results' : 'freeform/activity/index', [
+            'alertCounts' => $alertCounts,
+            'alertRetentionDays' => max(1, min(365, $settings->activityRetentionDays)),
             'names' => ActivityPolicy::CATEGORY_LABELS,
             'levels' => ActivityPolicy::LEVEL_LABELS,
             'activityView' => $view,
@@ -191,7 +200,7 @@ class ActivityController extends BaseController
             'exportLimit' => ActivityExport::LIMIT,
             'filters' => $filters,
             'unavailable' => $unavailable,
-            'activityEnabled' => BooleanHelper::normalize($settings->activityEnabled),
+            'activityEnabled' => $settings->isActivityLoggingEnabled(),
             'settings' => $settings,
             'forms' => $formNames,
             'formColors' => $formColors,
@@ -224,16 +233,20 @@ class ActivityController extends BaseController
         }
 
         try {
-            $enabled = ActivityInput::enabled($body['activityEnabled'] ?? '0');
+            $technicalLogging = ActivityInput::technicalLogging($body);
+            $loggingStyle = ActivityInput::loggingStyle($body['loggingStyle'] ?? $this->getSettingsService()->getSettingsModel()->loggingStyle);
         } catch (\InvalidArgumentException $exception) {
             throw new BadRequestHttpException($exception->getMessage());
         }
         $data = [
+            'loggingStyle' => $loggingStyle,
             'activityMode' => $body['activityMode'],
-            'activityEnabled' => $enabled,
+            // The style cards are the only on/off control in the CP.
+            'activityEnabled' => '1',
+            'technicalFileLogging' => '1',
             'activityRetentionDays' => filter_var($body['activityRetentionDays'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
             'activityMaxRows' => filter_var($body['activityMaxRows'] ?? null, \FILTER_VALIDATE_INT) ?: 0,
-        ];
+        ] + $technicalLogging;
         if ('custom' === $data['activityMode']) {
             if (!\is_array($body['activityEvents'] ?? null)) {
                 throw new BadRequestHttpException('Invalid activity event settings.');
@@ -312,6 +325,27 @@ class ActivityController extends BaseController
         return $this->redirect(UrlHelper::cpUrl('freeform/activity'));
     }
 
+    public function actionResolve(): Response
+    {
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_ACTIVITY_MANAGE);
+        $request = \Craft::$app->getRequest();
+
+        try {
+            $scope = $request->getBodyParam('scope', 'event');
+            if (!\in_array($scope, ['event', 'submission'], true)) {
+                throw new \InvalidArgumentException('Invalid activity resolution scope.');
+            }
+            $resolved = '1' === ActivityInput::enabled($request->getBodyParam('resolved', '1'));
+            Freeform::getInstance()->get('activity')->setResolved(ActivityInput::id($request->getBodyParam('eventId')), ActivityInput::id($request->getBodyParam('throughId')), $resolved, 'submission' === $scope);
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+        \Craft::$app->getSession()->setNotice(Freeform::t($resolved ? 'Activity marked as resolved. History has been kept.' : 'Activity reopened. Unresolved issues appear in alerts again.'));
+
+        return $this->redirectToPostedUrl(null, UrlHelper::cpUrl('freeform/activity'));
+    }
+
     public function present(array $row): array
     {
         return ActivityPresentation::present($row, [], $this->integrationNames, $this->notificationNames);
@@ -367,7 +401,7 @@ class ActivityController extends BaseController
     {
         return $this->renderTemplate('freeform/settings/activity', [
             'settings' => $settings,
-            'activityEnabled' => BooleanHelper::normalize($settings->activityEnabled),
+            'loggingStyle' => $settings->getEffectiveLoggingStyle(),
             'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
             'catalog' => ActivityPolicy::EVENTS,
             'examples' => ActivityExamples::all(),

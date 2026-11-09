@@ -1,4 +1,3 @@
-import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { useCellNavigation } from "@components/form-controls/hooks/use-cell-navigation";
 import CrossIcon from "@ff-client/assets/icons/delete";
 import type { Recipient } from "@ff-client/types/notifications";
@@ -12,10 +11,12 @@ import {
   updateRecipient,
 } from "./recipients.operations";
 import {
+  AddRecipientButton,
   Button,
   EmailInput,
   Icon,
   RecipientItem,
+  RecipientList,
   RecipientWrapper,
 } from "./recipients.styles";
 
@@ -35,7 +36,7 @@ const RecipientsController: React.FC<Props> = React.memo(
     };
 
     return (
-      <>
+      <RecipientList>
         <RecipientWrapper>
           {!value.length && (
             <RecipientItem>
@@ -100,9 +101,9 @@ const RecipientsController: React.FC<Props> = React.memo(
           ))}
         </RecipientWrapper>
         {value.length > 0 && (
-          <AddButtonArea label="Add a recipient" onClick={addCell} />
+          <AddRecipientButton label="Add a recipient" onClick={addCell} />
         )}
-      </>
+      </RecipientList>
     );
   },
 );

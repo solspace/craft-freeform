@@ -1,3 +1,4 @@
+import { HexColorInput } from "@components/elements/hex-color-input/hex-color-input";
 import { addSelectOptionIcons } from "@components/form-controls/control-types/select/select-option-icons";
 import type { ModalContainerProps } from "@components/modals/modal.types";
 import { InfoBlock } from "@components/notification-blocks/info/info-block";
@@ -762,38 +763,19 @@ function WizardContent({
                           />
                           <small>{translate("For new submissions.")}</small>
                         </div>
-                        <div className="wizard-field">
-                          <span id={`${titleId}-color`}>
-                            {translate("Form Color")}
-                          </span>
-                          <div className="wizard-color-control">
-                            <input
-                              type="color"
-                              aria-label={translate("Choose form color")}
-                              value={
-                                /^#[a-f\d]{6}$/i.test(draft.color ?? "")
-                                  ? draft.color
-                                  : "#3b82f6"
-                              }
-                              disabled={!editable("color") || isSaving}
-                              onChange={(event) =>
-                                update({ color: event.target.value })
-                              }
-                            />
-                            <input
-                              aria-labelledby={`${titleId}-color`}
-                              {...errorProps("color")}
-                              value={draft.color ?? ""}
-                              maxLength={7}
-                              spellCheck={false}
-                              placeholder="#RRGGBB"
-                              disabled={!editable("color") || isSaving}
-                              onChange={(event) =>
-                                update({ color: event.target.value })
-                              }
-                            />
-                          </div>
-                        </div>
+                      </div>
+                      <div className="wizard-field">
+                        <span id={`${titleId}-color`}>
+                          {translate("Form Color")}
+                        </span>
+                        <HexColorInput
+                          value={draft.color ?? ""}
+                          onChange={(color) => update({ color })}
+                          ariaLabel={translate("Form Color")}
+                          ariaInvalid={invalid("color")}
+                          errorId={invalid("color") ? errorId : undefined}
+                          disabled={!editable("color") || isSaving}
+                        />
                       </div>
                       <details
                         className="wizard-advanced"

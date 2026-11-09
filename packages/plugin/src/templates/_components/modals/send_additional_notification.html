@@ -262,6 +262,14 @@
         line-height: 20px;
         box-sizing: border-box;
     }
+    :root[data-dark-mode="dark"] #send-additional-notification-modal .header,
+    :root[data-dark-mode="dark"] #send-additional-notification-modal .recipient-option {
+        background: var(--pane-bg, #161b22);
+    }
+    :root[data-dark-mode="dark"] #send-additional-notification-modal .recipient-detail-pill {
+        background: var(--ui-control-bg-color, #21262d);
+        border-color: var(--medium-hairline-color, #3d444d);
+    }
 </style>
 
 <form id="send-additional-notification-modal">

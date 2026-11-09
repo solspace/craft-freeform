@@ -32,13 +32,13 @@ const style = createGlobalStyle`
           margin: 0;
           border: 1px solid ${colors.inputBorder};
           border-radius: 3px;
-          background: #fff;
+          background: light-dark(#fff, var(--input-bg));
           font-size: 13px;
           font-weight: 400;
           line-height: 20px;
           text-align: center;
           overflow-wrap: anywhere;
-          color: ${colors.gray500};
+          color: light-dark(${colors.gray500}, var(--text-color));
           cursor: default;
         }
 
@@ -52,9 +52,9 @@ const style = createGlobalStyle`
           visibility: hidden;
 
           &:checked ~ label {
-            background: ${colors.gray100};
-            border-color: ${colors.gray250};
-            color: ${colors.gray700};
+            background: light-dark(${colors.gray100}, var(--bg-selection-light));
+            border-color: light-dark(${colors.gray250}, var(--light-text-color));
+            color: light-dark(${colors.gray700}, var(--gray-800));
           }
         }
       }

@@ -675,7 +675,7 @@ class FormGenerationService
             return 'form';
         }
 
-        $handle = StringHelper::camelCase($name);
+        $handle = preg_replace('/[^a-zA-Z0-9_]/', '', StringHelper::camelCase(StringHelper::toAscii($name, \Craft::$app->language ?? 'en')));
 
         return '' !== $handle ? $handle : 'form';
     }

@@ -8,10 +8,11 @@ use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
 use Solspace\Freeform\Library\Activity\ActivityTable;
-use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Models\Settings;
 
 class ActivityService extends BaseService
@@ -22,23 +23,43 @@ class ActivityService extends BaseService
     private bool $unavailable = false;
     private array $integrationContext = [];
     private ?\WeakMap $reportedIntegrationFailures = null;
+    private ?\WeakMap $reportedEmailFailures = null;
     private array $pending = [];
     private bool $cleanupBudgetExhausted = false;
 
     /** Logging is deliberately best-effort and may never break the operation being observed. */
-    public function record(string $event, ?int $formId = null, ?int $submissionId = null, array $metadata = []): void
+    public function record(string $event, ?int $formId = null, ?int $submissionId = null, array $metadata = [], bool $notifyErrors = true): void
     {
+        // Critical alerts are independent of recording style, selected categories, and storage failures.
+        if ($notifyErrors && 'error' === (ActivityPolicy::EVENTS[$event][3] ?? null)) {
+            try {
+                if ($this->getSettingsService()->isErrorNotificationEnabled()) {
+                    Freeform::getInstance()->get('errorNotifications')->handleActivity($event, $formId ?? $this->integrationContext['formId'] ?? null, $submissionId ?? $this->integrationContext['submissionId'] ?? null, $metadata + array_intersect_key($this->integrationContext, array_flip(['integrationId', 'attempt', 'operationId'])));
+                }
+            } catch (\Throwable) {
+                // Alert delivery must not change recording or the operation being observed.
+            }
+        }
+
         try {
             if ($this->unavailable || $this->written >= self::MAX_EVENTS_PER_REQUEST || !isset(ActivityPolicy::EVENTS[$event])) {
                 return;
             }
 
             $settings = $this->getSettingsService()->getSettingsModel();
-            if (!BooleanHelper::normalize($settings->activityEnabled) || !ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event]) {
+            if (!$settings->isActivityLoggingEnabled() || !ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event]) {
                 return;
             }
 
+            $formId ??= $this->integrationContext['formId'] ?? null;
+            $submissionId ??= $this->integrationContext['submissionId'] ?? null;
+            $metadata = array_filter($metadata, static fn ($value) => null !== $value)
+                + array_intersect_key($this->integrationContext, array_flip(['integrationId', 'attempt', 'operationId']));
+
             $definition = ActivityPolicy::EVENTS[$event];
+            if (!\in_array($definition[3], ['error', 'warning'], true)) {
+                unset($metadata['diagnostics']);
+            }
             $now = Db::prepareDateForDb(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
             $row = [
                 'event' => $event,
@@ -70,7 +91,7 @@ class ActivityService extends BaseService
         try {
             $settings = $this->getSettingsService()->getSettingsModel();
 
-            return BooleanHelper::normalize($settings->activityEnabled) && (ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event] ?? false);
+            return $settings->isActivityLoggingEnabled() && (ActivityPolicy::options($settings->activityMode, $settings->activityEvents)[$event] ?? false);
         } catch (\Throwable) {
             return false;
         }
@@ -93,6 +114,7 @@ class ActivityService extends BaseService
         $this->unavailable = false;
         $this->integrationContext = [];
         $this->reportedIntegrationFailures = null;
+        $this->reportedEmailFailures = null;
     }
 
     /** One bounded database write at the end of a web request or queue job. */
@@ -118,13 +140,17 @@ class ActivityService extends BaseService
         $started = microtime(true);
 
         try {
-            $this->integrationContext = ['formId' => $form->getId(), 'submissionId' => $form->getSubmission()?->id, 'started' => $started, 'attempt' => $attempt];
+            $this->integrationContext = ['formId' => $form->getId(), 'submissionId' => $form->getSubmission()?->id, 'started' => $started, 'attempt' => $attempt, 'integrationId' => $integrationId, 'operationId' => random_int(1, 2147483647)];
         } catch (\Throwable) {
             $this->integrationContext = [];
         }
 
         try {
-            return $operation();
+            $this->recordForForm('integration-started', $form);
+            $result = $operation();
+            $this->recordForForm('integration-finished', $form, ['durationMs' => ActivityContext::elapsed($started)]);
+
+            return $result;
         } catch (\Throwable $exception) {
             try {
                 $alreadyReported = $exception instanceof RequestException && $exception->getResponse()
@@ -132,6 +158,7 @@ class ActivityService extends BaseService
                 if (!$alreadyReported && !$this->hasRecordedIntegrationFailure($exception)) {
                     $this->recordForForm('integration-error', $form, ActivityContext::integrationFailure($exception) + [
                         'integrationId' => $integrationId, 'attempt' => $attempt, 'durationMs' => ActivityContext::elapsed($started),
+                        'diagnostics' => ActivityDiagnostics::fromException($exception),
                     ]);
                 }
                 $this->reportedIntegrationFailures ??= new \WeakMap();
@@ -149,6 +176,39 @@ class ActivityService extends BaseService
     public function hasRecordedIntegrationFailure(\Throwable $exception): bool
     {
         return isset($this->reportedIntegrationFailures[$exception]);
+    }
+
+    /** Typed integration markers are meaningful only while processing a submitted form. */
+    public function recordIntegrationDiagnostic(int $reason): void
+    {
+        if (!empty($this->integrationContext['formId']) && empty($this->integrationContext['diagnostics'][$reason]) && ($event = ActivityContext::diagnosticEvent($reason))) {
+            $this->integrationContext['diagnostics'][$reason] = true;
+            $this->record($event, metadata: ['reasonCode' => $reason]);
+        }
+    }
+
+    /** Capture scheduled email outcomes without retaining message content or recipients. */
+    public function observeEmail(callable $operation, int $emailType): mixed
+    {
+        $started = microtime(true);
+
+        try {
+            $sent = $operation();
+        } catch (\Throwable $exception) {
+            $this->record('email-error', metadata: ['emailType' => $emailType, 'reasonCode' => ActivityContext::exceptionReason($exception, ActivityContext::MAIL_SEND_EXCEPTION), 'durationMs' => ActivityContext::elapsed($started), 'diagnostics' => ActivityDiagnostics::fromException($exception)]);
+            $this->reportedEmailFailures ??= new \WeakMap();
+            $this->reportedEmailFailures[$exception] = true;
+
+            throw $exception;
+        }
+        $this->record($sent ? 'email-sent' : 'email-error', metadata: ['emailType' => $emailType, 'reasonCode' => $sent ? null : ActivityContext::MAIL_REJECTED, 'durationMs' => ActivityContext::elapsed($started)]);
+
+        return $sent;
+    }
+
+    public function hasRecordedEmailFailure(\Throwable $exception): bool
+    {
+        return isset($this->reportedEmailFailures[$exception]);
     }
 
     public function recordIntegrationResponse(int $status, ?int $integrationId): void
@@ -180,7 +240,7 @@ class ActivityService extends BaseService
             $settings = $this->getSettingsService()->getSettingsModel();
 
             return (int) \Craft::$app->getCache()->getOrSet(['freeform-activity-errors', $settings->activityRetentionDays], static fn () => (new Query())->from(ActivityTable::TABLE)
-                ->where(['level' => 'error'])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
+                ->where(['level' => 'error', 'resolvedAt' => null])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
         } catch (\Throwable) {
             return 0;
         }
@@ -191,9 +251,65 @@ class ActivityService extends BaseService
         try {
             $days = $this->getSettingsService()->getSettingsModel()->activityRetentionDays;
             \Craft::$app->getCache()->delete(['freeform-activity-errors', $days]);
+            \Craft::$app->getCache()->delete(['freeform-activity-operational-warnings', $days]);
         } catch (\Throwable) {
             // A stale badge must never interrupt cleanup.
         }
+    }
+
+    public function getOperationalWarningCount(): int
+    {
+        try {
+            $settings = $this->getSettingsService()->getSettingsModel();
+
+            return (int) \Craft::$app->getCache()->getOrSet(['freeform-activity-operational-warnings', $settings->activityRetentionDays], static fn () => (new Query())->from(ActivityTable::TABLE)
+                ->where(['level' => 'warning', 'category' => 'system', 'resolvedAt' => null])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
+        } catch (\Throwable) {
+            return 0;
+        }
+    }
+
+    /** Latest retained errors and operational warnings inside a digest's UTC interval. */
+    public function getOperationalEvents(\DateTimeInterface $start, \DateTimeInterface $end, int $limit = 5): array
+    {
+        try {
+            $settings = $this->getSettingsService()->getSettingsModel();
+            $utc = new \DateTimeZone('UTC');
+
+            return (new Query())->from(ActivityTable::TABLE)
+                ->where(['or', ['level' => 'error'], ['level' => 'warning', 'category' => 'system']])
+                ->andWhere(['resolvedAt' => null])
+                ->andWhere(['>=', 'dateCreated', self::cutoff($settings)])
+                ->andWhere(['>=', 'dateCreated', \DateTimeImmutable::createFromInterface($start)->setTimezone($utc)->format('Y-m-d H:i:s')])
+                ->andWhere(['<=', 'dateCreated', \DateTimeImmutable::createFromInterface($end)->setTimezone($utc)->format('Y-m-d H:i:s')])
+                ->orderBy(['dateCreated' => \SORT_DESC, 'id' => \SORT_DESC])->limit(max(1, min(50, $limit)))->all()
+            ;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    /** Resolve only the observed events, so new failures in the same submission stay open. */
+    public function setResolved(int $eventId, int $throughId, bool $resolved, bool $submission = false): int
+    {
+        if ($eventId < 1 || $throughId < $eventId) {
+            throw new \InvalidArgumentException('Invalid activity resolution target.');
+        }
+        $row = (new Query())->from(ActivityTable::TABLE)->where(['id' => $eventId])->one();
+        if (!$row) {
+            return 0;
+        }
+        $condition = ['and',
+            ['or', ['level' => 'error'], ['level' => 'warning', 'category' => 'system']],
+            ['<=', 'id', $throughId],
+            ['>=', 'dateCreated', self::cutoff($this->getSettingsService()->getSettingsModel())],
+            $submission && $row['submissionId'] ? ['formId' => $row['formId'], 'submissionId' => $row['submissionId']] : ['id' => $eventId],
+            $resolved ? ['resolvedAt' => null] : ['not', ['resolvedAt' => null]],
+        ];
+        $count = \Craft::$app->getDb()->createCommand()->update(ActivityTable::TABLE, ['resolvedAt' => $resolved ? gmdate('Y-m-d H:i:s') : null], $condition)->execute();
+        $this->invalidateErrorCount();
+
+        return $count;
     }
 
     /** Bounded cleanup; expired records are also excluded from reads while cleanup catches up. */

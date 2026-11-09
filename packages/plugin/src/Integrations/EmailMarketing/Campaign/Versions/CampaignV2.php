@@ -29,6 +29,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Campaign\BaseCampaignIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -68,14 +69,14 @@ class CampaignV2 extends BaseCampaignIntegration
     public function push(Form $form, Client $client): void
     {
         if (!$this->mailingList || !$this->emailField) {
-            $this->logger->debug('Mailing list or email field not set. Skipping.');
+            $this->logger->debug('Mailing list or email field not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NOT_CONFIGURED]);
 
             return;
         }
 
         $listId = $this->mailingList->getResourceId();
         if (!$listId) {
-            $this->logger->debug('Mailing list ID not set. Skipping.');
+            $this->logger->debug('Mailing list ID not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_LIST]);
 
             return;
         }
@@ -88,7 +89,7 @@ class CampaignV2 extends BaseCampaignIntegration
         if ($this->optInField) {
             $optInValue = $form->get($this->optInField->getUid())->getValue();
             if (!$optInValue) {
-                $this->logger->debug('Opt-in field used but not chosen. Skipping.');
+                $this->logger->debug('Opt-in field used but not chosen. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_OPT_IN]);
 
                 return;
             }
@@ -96,7 +97,7 @@ class CampaignV2 extends BaseCampaignIntegration
 
         $email = $form->get($this->emailField->getUid())->getValue();
         if (!$email) {
-            $this->logger->debug('Email field empty. Skipping.');
+            $this->logger->debug('Email field empty. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_EMAIL]);
 
             return;
         }
@@ -116,7 +117,7 @@ class CampaignV2 extends BaseCampaignIntegration
                 $source,
             );
 
-            $this->logger->info('New Contact created and subscribed', ['email' => $email]);
+            $this->logger->info('New Contact created and subscribed', ['email' => $email, 'activityReason' => ActivityContext::INTEGRATION_SUBSCRIBED]);
             $this->logger->debug('With Mapping', $mapping);
         } else {
             $contact = Campaign::$plugin->contacts->getContactByEmail($email);
@@ -141,7 +142,7 @@ class CampaignV2 extends BaseCampaignIntegration
                         $mailingListElement,
                     );
 
-                    $this->logger->info('New Contact created and verification email sent', ['email' => $email]);
+                    $this->logger->info('New Contact created and verification email sent', ['email' => $email, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
                     $this->logger->debug('With Mapping', $mapping);
                 }
             } elseif (\Craft::$app->getElements()->saveElement($contact)) {
@@ -152,7 +153,7 @@ class CampaignV2 extends BaseCampaignIntegration
                     $source,
                 );
 
-                $this->logger->info('New Contact created and subscribed', ['email' => $email]);
+                $this->logger->info('New Contact created and subscribed', ['email' => $email, 'activityReason' => ActivityContext::INTEGRATION_SUBSCRIBED]);
                 $this->logger->debug('With Mapping', $mapping);
             }
         }

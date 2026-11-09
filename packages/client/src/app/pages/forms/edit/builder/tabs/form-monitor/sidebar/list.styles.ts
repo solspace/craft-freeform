@@ -222,7 +222,7 @@ export const MenuDropdown = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  background: white;
+  background: light-dark(white, ${colors.overlay});
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.md};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

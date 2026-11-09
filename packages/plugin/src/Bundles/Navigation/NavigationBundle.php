@@ -72,7 +72,8 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
-        if ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS)) {
+        if ($freeform->settings->getSettingsModel()->isActivityLoggingEnabled()
+            && ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
             $event->addSubnavItem('activity', Freeform::t('Activity Log'), 'freeform/activity');
         }
 
@@ -84,7 +85,7 @@ class NavigationBundle extends FeatureBundle
 
         if ($showImportExport) {
             $request = \Craft::$app->getRequest();
-            $path = $request->getFullPath();
+            $path = $request->getPathInfo();
 
             // Determine default subnav landing
             if ($canAccessExportProfiles) {
@@ -135,7 +136,11 @@ class NavigationBundle extends FeatureBundle
                 'export',
                 Freeform::t('Import / Export'),
                 $defaultExportUrl,
-                extraOptions: ['subnav' => $subnav],
+                extraOptions: [
+                    'subnav' => $subnav,
+                    'sel' => str_starts_with($path, 'freeform/export/')
+                        || str_starts_with($path, 'freeform/import/'),
+                ],
             );
         }
 

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.17.9 - Unreleased
+
+### Security
+- Fixed stored cross-site scripting in the form builder field picker when displaying field labels from other forms or favorites. Credit to [arpitjain099](https://github.com/arpitjain099) for reporting.
+
 ## 5.17.8 - 2026-11-06
 
 ### Security

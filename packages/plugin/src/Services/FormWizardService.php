@@ -157,7 +157,7 @@ class FormWizardService
             throw new \InvalidArgumentException(Freeform::t('Choose between 1 and {count} fields.', ['count' => $options['fieldLimit']]));
         }
         $fields = array_values($fields);
-        $handle = StringHelper::camelCase(StringHelper::toAscii($name)) ?: 'form';
+        $handle = preg_replace('/[^a-zA-Z0-9_]/', '', StringHelper::camelCase(StringHelper::toAscii($name, \Craft::$app->language ?? 'en'))) ?: 'form';
         if (\in_array('handle', $options['editableSettings'], true) && isset($input['handle']) && '' !== $input['handle']) {
             $handle = $this->text($input['handle'], 100);
             if (!preg_match(($options['allowDashesInHandles'] ?? false) ? '/^[a-zA-Z0-9_-]+$/D' : '/^[a-zA-Z0-9_]+$/D', $handle)) {

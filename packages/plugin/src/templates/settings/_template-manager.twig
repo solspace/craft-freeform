@@ -10,6 +10,17 @@
 
 {% set title = "Template Manager"|t("freeform") %}
 
+{% do view.registerTranslations('freeform', [
+    'Clone a Sample Template',
+    'Sample',
+    'Framework libraries are not cloned. Load the framework in your site layout if this sample uses one.',
+    'New template name',
+    'Cancel',
+    'Clone Template',
+    'Use letters, numbers, spaces, hyphens, or underscores.',
+    'Could not clone the sample template.',
+]) %}
+
 {% macro listFiles(files) %}
     {% if files|length %}
         <ul class="ff-template-file-list">

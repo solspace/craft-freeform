@@ -92,8 +92,6 @@ return [
     'Classic Logs' => 'Klassieke logs',
     'Completed integration processing' => 'Voltooide integratieverwerking',
     'Conditional rule failed' => 'Voorwaardelijke regel mislukt',
-    'Counts errors recorded by the selected logging style.' => 'Telt fouten die door de geselecteerde logstijl zijn vastgelegd.',
-    'Counts unread update notices and errors recorded by the selected logging style.' => 'Telt ongelezen updatemeldingen en fouten van de geselecteerde logstijl.',
     'Digest email' => 'Samenvattingsmail',
     'Email marketing address unavailable' => 'E-mailmarketingadres niet beschikbaar',
     'Email marketing configuration incomplete' => 'E-mailmarketingconfiguratie onvolledig',

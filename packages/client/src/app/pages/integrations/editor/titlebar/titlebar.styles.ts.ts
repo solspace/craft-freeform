@@ -47,6 +47,7 @@ export const FavoriteButton = styled.button`
   }
 
   &.active {
+    svg,
     svg .star-filler {
       fill: ${colors.yellow500};
     }

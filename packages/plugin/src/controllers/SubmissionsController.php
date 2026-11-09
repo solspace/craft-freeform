@@ -78,6 +78,10 @@ class SubmissionsController extends BaseController
             'Could not approve submission.',
             'Could not delete submission.',
             'Submission updated, but the list could not be refreshed. Reload the page to see the latest submissions.',
+            'Select a recipient or enter an email address.',
+            'Unable to send notifications. Please try again.',
+            'Unable to load notification recipients. Please try again.',
+            'Notifications sent successfully.',
         ]);
 
         $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);

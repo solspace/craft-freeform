@@ -206,7 +206,7 @@ export const HistoryButton = styled.button`
   cursor: pointer;
 
   & + & {
-    border-left: 1px solid light-dark(#e3ecfb, var(--hairline-color));
+    border-left: 1px solid light-dark(#e3ecfb, transparent);
   }
 
   &:hover:not(:disabled) {

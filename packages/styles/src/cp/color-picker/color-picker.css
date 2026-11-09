@@ -21,6 +21,9 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 50%;
+  transition:
+    background-color 120ms ease-out,
+    border-color 120ms ease-out;
 }
 .ff-color-picker .ff-color-swatch::before {
   display: block;
@@ -30,6 +33,15 @@
   background: var(--ff-swatch-color);
   border-radius: 50%;
   box-shadow: inset 0 0 0 1px rgb(31 41 51 / 25%);
+  transition: transform 120ms ease-out;
+}
+.ff-color-picker .ff-color-swatch:hover:not(:disabled, [aria-pressed="true"]) {
+  background: var(--ui-control-hover-bg-color, #e4edf6);
+  border-color: var(--light-text-color, #657585);
+}
+.ff-color-picker
+  .ff-color-swatch:not(:disabled):is(:hover, :focus-visible)::before {
+  transform: scale(1.12);
 }
 .ff-color-picker .ff-color-swatch[aria-pressed="true"] {
   border-color: var(--link-color, #3478b9);
@@ -120,7 +132,7 @@
     "Segoe UI",
     sans-serif;
   color: var(--gray-700, #3f4d5a);
-  background: light-dark(var(--white, #fff), var(--modal-bg, #fff));
+  background: var(--modal-bg, #fff);
   border: 1px solid var(--gray-200, #cdd8e4);
   border-radius: 6px;
   box-shadow: 0 7px 24px rgb(31 41 51 / 18%);
@@ -310,6 +322,11 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .ff-color-picker .ff-color-swatch,
+  .ff-color-picker .ff-color-swatch::before {
+    transition: none;
+  }
+
   .ff-color-presets-popover,
   .ff-color-presets-popover.is-closing {
     animation: none;

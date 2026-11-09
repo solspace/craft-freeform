@@ -28,6 +28,13 @@ const Actions = styled.div`
     box-shadow: inset 0 0 0 1px var(--hairline-color, #cdd8e4);
     &:hover:not(:disabled) { background: var(--button-bg--hover, #cdd4de); }
   }
+  :root[data-dark-mode="dark"] & > button {
+    --button-border: 1px solid transparent;
+    --button-border--hover: var(--button-border);
+    --button-border--active: var(--button-border);
+    box-shadow: none;
+    &:focus-visible { box-shadow: var(--focus-ring); }
+  }
   svg { display: block; width: 14px; height: 14px; flex: 0 0 14px; }
 `;
 

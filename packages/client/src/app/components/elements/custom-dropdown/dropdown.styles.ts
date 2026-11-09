@@ -173,10 +173,13 @@ export const DropdownWrapper = styled.div`
 
 export const Icon = styled.span`
   display: flex;
+  flex: 0 0 16px;
   align-items: center;
 
   width: 16px;
   height: 16px;
+
+  > .status { flex: none; margin: 0; }
 
   svg {
     width: 16px !important;
@@ -186,11 +189,14 @@ export const Icon = styled.span`
 
 export const OptionIcon = styled.div`
   display: flex;
+  flex: 0 0 16px;
   align-items: center;
   justify-content: center;
 
   width: 16px;
   height: 16px;
+
+  > .status { flex: none; margin: 0; }
 
   svg {
     width: 16px !important;

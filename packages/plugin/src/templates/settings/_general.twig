@@ -37,10 +37,10 @@
 	{% endif %}
 
     {% set defaultViews = {
-        forms: {label:'Forms', description:'Open your forms overview.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_FORMS_ACCESS')), path:'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5'},
-        submissions: {label:'Submissions', description:'Review submissions across your forms.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')), path:'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
-        spam: {label:'Spam', description:'Review submissions flagged as spam.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')) and craft.freeformServices.settings.isSpamFolderEnabled(), path:'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM9 10l6 6M15 10l-6 6'},
-        'ab-tests': {label:'A/B Tests', description:'Compare form variants and their performance.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_AB_ACCESS')) and craft.freeform.pro and craft.freeformServices.settings.isAbTestsEnabled(), path:'M12 3v5M6 8h12M6 8v5M18 8v5M3 14h6v7H3ZM15 14h6v7h-6Z'},
+        forms: {label:'Forms', description:'Create and organize forms, or open the builder to edit fields and settings.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_FORMS_ACCESS')), path:'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5'},
+        submissions: {label:'Submissions', description:'Search and filter submissions, review their details, and export your form data.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')), path:'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
+        spam: {label:'Spam', description:'Review flagged submissions and approve genuine responses.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_SUBMISSIONS_ACCESS')) and craft.freeformServices.settings.isSpamFolderEnabled(), path:'M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6ZM9 10l6 6M15 10l-6 6'},
+        'ab-tests': {label:'A/B Tests', description:'Manage form experiments and compare conversion rates.', available:currentUser.can(constant('Solspace\\Freeform\\Freeform::PERMISSION_AB_ACCESS')) and craft.freeform.pro and craft.freeformServices.settings.isAbTestsEnabled(), path:'M12 3v5M6 8h12M6 8v5M18 8v5M3 14h6v7H3ZM15 14h6v7h-6Z'},
     } %}
     {% set defaultViewInput %}
         <div class="ff-choice-cards">
@@ -104,12 +104,12 @@
     {% endif %}
 
     {% set badgeOptions = {
-        all: {label: 'Notices & Errors', description: 'Counts unread update notices and errors recorded by the selected logging style.', path: 'M4 4h16v12H4ZM8 20h8M9 8h6M9 12h3'},
-        notices: {label: 'Update Notices', description: 'Counts unread update notices.', path: 'M4 5h16v14H4ZM8 9h8M8 13h5'},
-        errors: {label: 'Logged Errors', description: 'Counts errors recorded by the selected logging style.', path: 'M12 3 2 21h20ZM12 9v5M12 17h.01'},
-        submissions: {label: 'Submissions', description: 'Counts saved submissions, excluding spam.', path: 'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
-        spam: {label: 'Spam Folder', description: 'Counts submissions stored in the Spam folder.', path: 'M12 3 20 6v6c0 5-8 9-8 9s-8-4-8-9V6ZM9 9l6 6m0-6-6 6'},
-        '': {label: 'None', description: 'Hides the count beside Freeform in the control panel navigation.', path: 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM6 6l12 12'},
+        all: {label: 'Notices & Errors', description: 'Shows unread update notices and recorded errors that need attention.', path: 'M4 4h16v12H4ZM8 20h8M9 8h6M9 12h3'},
+        notices: {label: 'Update Notices', description: 'Shows unread notices about Freeform updates and important changes.', path: 'M4 5h16v14H4ZM8 9h8M8 13h5'},
+        errors: {label: 'Logged Errors', description: 'Shows recorded errors to help you spot and troubleshoot problems.', path: 'M12 3 2 21h20ZM12 9v5M12 17h.01'},
+        submissions: {label: 'Submissions', description: 'Shows the total number of saved submissions, excluding spam.', path: 'M4 4h16v16H4ZM4 13h5l2 3h2l2-3h5'},
+        spam: {label: 'Spam Folder', description: 'Shows the number of submissions held in the Spam folder.', path: 'M12 3 20 6v6c0 5-8 9-8 9s-8-4-8-9V6ZM9 9l6 6m0-6-6 6'},
+        '': {label: 'None', description: 'Hides the badge beside Freeform in the control panel.', path: 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM6 6l12 12'},
     } %}
     {% set badgeInput %}
         <div class="ff-choice-cards" data-columns="3">

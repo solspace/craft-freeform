@@ -92,8 +92,6 @@ return [
     'Classic Logs' => 'Classic Logs',
     'Completed integration processing' => 'Completed integration processing',
     'Conditional rule failed' => 'Conditional rule failed',
-    'Counts errors recorded by the selected logging style.' => 'Counts errors recorded by the selected logging style.',
-    'Counts unread update notices and errors recorded by the selected logging style.' => 'Counts unread update notices and errors recorded by the selected logging style.',
     'Digest email' => 'Digest email',
     'Email marketing address unavailable' => 'Email marketing address unavailable',
     'Email marketing configuration incomplete' => 'Email marketing configuration incomplete',

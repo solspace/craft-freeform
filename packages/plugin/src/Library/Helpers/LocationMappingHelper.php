@@ -36,7 +36,8 @@ class LocationMappingHelper
         static $repository;
         $repository ??= new SubdivisionRepository();
         foreach ($repository->getAll([$countryCode]) as $subdivision) {
-            if (self::matches($value, [$subdivision->getId(), $subdivision->getCode(), $subdivision->getName(), $subdivision->getLocalCode(), $subdivision->getLocalName()])) {
+            $id = method_exists($subdivision, 'getId') ? $subdivision->getId() : $subdivision->getCode();
+            if (self::matches($value, [$id, $subdivision->getCode(), $subdivision->getName(), $subdivision->getLocalCode(), $subdivision->getLocalName()])) {
                 // Craft uses the addressing repository's subdivision codes.
                 return $subdivision->getCode();
             }

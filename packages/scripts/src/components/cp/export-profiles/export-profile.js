@@ -1,5 +1,11 @@
+import { attachDateRangePicker } from "@lib/cp/export-profiles/date-range-picker";
+
 // eslint-disable no-undef
 $(() => {
+  document.querySelectorAll("[data-export-range-picker]").forEach((input) => {
+    attachDateRangePicker(input, input.dataset.exportRangePicker);
+  });
+
   new Garnish.DragSort($("#field-settings tbody tr"), {
     handle: ".move",
     axis: "y",

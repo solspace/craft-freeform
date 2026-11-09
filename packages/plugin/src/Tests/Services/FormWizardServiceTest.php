@@ -46,6 +46,17 @@ class FormWizardServiceTest extends TestCase
         \Craft::$app = $this->previousApp;
     }
 
+    #[TestWith(['Freeform 5.18 Craft 4 compatibility QA'])]
+    #[TestWith(['Quote / Event: 5.18'])]
+    #[TestWith(['Demande d’inscription – été'])]
+    #[TestWith(['!!!'])]
+    public function testGeneratedHandlesRemainValidForNamesWithPunctuation(string $name): void
+    {
+        $payload = $this->service()->payload(array_replace($this->input(), ['name' => $name]));
+        self::assertMatchesRegularExpression('/^[a-zA-Z0-9_]+$/D', $payload->form->settings->general->handle);
+        self::assertSame($name, $payload->form->settings->general->name);
+    }
+
     public function testPresetsFitExpressAndFallbackWithoutLosingTheirQuestions(): void
     {
         $catalog = new PresetCatalog();

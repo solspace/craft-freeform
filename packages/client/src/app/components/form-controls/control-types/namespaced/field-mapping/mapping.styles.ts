@@ -111,10 +111,12 @@ export const TypeButton = styled.button`
   height: 28px;
 
   fill: ${colors.gray550};
+  color: ${colors.gray550};
   background-color: ${colors.elements.dropdown};
 
   &.active {
     fill: light-dark(${colors.gray050}, ${colors.text});
+    color: light-dark(${colors.gray050}, ${colors.text});
     background-color: light-dark(${colors.gray550}, var(--bg-selection-dark));
   }
 

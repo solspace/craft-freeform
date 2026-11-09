@@ -24,6 +24,8 @@
 
 ### Changed
 - Improved light and dark control panel styling across the builder, settings, dashboards, and email editor. Dark editing colors do not change outgoing email designs.
+- Improved export profile filters and added compact date-range inputs with calendar pickers.
+- Clarified control panel card descriptions and completed translation coverage across all five supported languages.
 - Aligned log alerts, diagnostics, and digest summaries with the selected logging system, distinguishing routine notices from operational issues. Critical error emails work independently of activity recording.
 - Refreshed the **Welcome** page with setup resources and edition comparisons, and simplified the **Demo Templates** installer.
 - The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
@@ -42,6 +44,9 @@
 - Added Location support to sample formatting templates, with configurable markup and styling attributes.
 
 ### Fixed
+- Fixed form creation from starters and AI-generated forms when names contain punctuation.
+- Fixed Location component mapping with the older address library used by Craft 4.
+- Fixed Craft 4 selected controls, navigation highlights, rule pills, and dropdown status icons after the control panel theme updates.
 - Fixed notification editor appearance overriding authored email colors in Dark Mode. Email content now uses a light canvas while the toolbar follows the control panel appearance.
 - Fixed form builder action icons losing their outlines or retaining hover colors, and improved Dark Mode contrast in card menus and bulk-label previews.
 - Fixed integration authorization failures showing raw errors. Failures now display a helpful message, record diagnostics, and reject callback URLs pointing to another site.

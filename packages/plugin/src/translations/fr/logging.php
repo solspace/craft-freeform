@@ -92,8 +92,6 @@ return [
     'Classic Logs' => 'Journaux classiques',
     'Completed integration processing' => 'Traitement d’intégration terminé',
     'Conditional rule failed' => 'Échec d’une règle conditionnelle',
-    'Counts errors recorded by the selected logging style.' => 'Compte les erreurs enregistrées par le style de journalisation sélectionné.',
-    'Counts unread update notices and errors recorded by the selected logging style.' => 'Compte les avis de mise à jour non lus et les erreurs du style de journalisation sélectionné.',
     'Digest email' => 'E-mail récapitulatif',
     'Email marketing address unavailable' => 'Adresse e-mail marketing indisponible',
     'Email marketing configuration incomplete' => 'Configuration du marketing par e-mail incomplète',

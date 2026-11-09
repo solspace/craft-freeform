@@ -13,7 +13,7 @@ export const FieldListWrapper = styled(animated.div)`
   overflow-x: hidden;
 
   height: 100%;
-  background: ${colors.mutedSurface};
+  background: light-dark(${colors.gray050}, ${colors.mutedSurface});
   ${scrollBar};
 
   &.fields-disabled {

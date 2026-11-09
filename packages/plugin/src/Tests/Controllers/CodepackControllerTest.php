@@ -15,7 +15,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Symfony\Component\Filesystem\Exception\IOException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
-use yii\web\MethodNotAllowedHttpException;
+use yii\web\HttpException;
 use yii\web\Response;
 
 #[CoversClass(CodepackController::class)]
@@ -157,7 +157,8 @@ class CodepackControllerTest extends TestCase
     public function testDestinationCheckRequiresPost(): void
     {
         [$controller] = $this->fixture(post: false);
-        $this->expectException(MethodNotAllowedHttpException::class);
+        $this->expectException(HttpException::class);
+        $this->expectExceptionMessage('Post request required');
         $controller->actionCheckDestination();
     }
 

@@ -105,8 +105,11 @@ class DiagnosticSanitizerTest extends TestCase
     {
         $processor = new RedactSensitiveInfoProcessor();
         $data = ['message' => 'Failure for jane@example.com password=private-password', 'context' => ['password' => 'private-password'], 'extra' => ['email' => 'jane@example.com']];
-        $modern = new LogRecord(new \DateTimeImmutable(), 'test', Level::Error, $data['message'], $data['context'], $data['extra']);
-        foreach ([$data, $modern] as $record) {
+        $records = [$data];
+        if (class_exists(LogRecord::class)) {
+            $records[] = new LogRecord(new \DateTimeImmutable(), 'test', Level::Error, $data['message'], $data['context'], $data['extra']);
+        }
+        foreach ($records as $record) {
             $output = $processor($record);
             $json = json_encode($output instanceof LogRecord ? $output->toArray() : $output);
             self::assertStringNotContainsString('jane@example.com', $json);

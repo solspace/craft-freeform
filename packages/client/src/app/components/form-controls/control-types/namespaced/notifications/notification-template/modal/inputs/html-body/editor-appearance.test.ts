@@ -12,9 +12,11 @@ afterEach(() => {
 });
 
 function fixture() {
-  const doc = document.implementation.createHTMLDocument("Email");
+  const frame = document.createElement("iframe");
+  document.body.appendChild(frame);
+  const doc = frame.contentDocument!;
   doc.body.innerHTML =
-    '<div style="background-color: white"><h1 style="color:#263445">Hello</h1><img src="logo.png" style="width:80px"><span data-freeform-token="form.name">Form Name</span></div>';
+    '<div style="background-color: white"><h1 style="color:#263445">Hello</h1><img src="logo.png" style="width:80px"><p><span style="color:#cf1124;background-color:#fff2cc">Authored color</span></p><span data-freeform-token="form.name">Form Name</span></div>';
   const authored = doc.body.outerHTML;
   const handlers = new Map<string, () => void>();
   const editor = {
@@ -22,52 +24,56 @@ function fixture() {
     on: (event: string, callback: () => void) => handlers.set(event, callback),
   } as unknown as Editor;
   setupNotificationEditorAppearance(editor);
-  cleanups.push(() => handlers.get("remove")?.());
+  cleanups.push(() => {
+    handlers.get("remove")?.();
+    frame.remove();
+  });
   return { doc, authored, handlers };
 }
 
-describe("notification editing appearance", () => {
-  it("themes only the editing document and preserves authored email HTML and images", () => {
-    document.documentElement.dataset.darkMode = "dark";
-    const { doc, authored, handlers } = fixture();
-    handlers.get("init")?.();
-    expect(doc.documentElement.hasAttribute("data-freeform-dark-editor")).toBe(
-      true,
-    );
-    expect(doc.head.querySelector("style")?.textContent).toContain(
-      "color-scheme: dark",
-    );
-    expect(doc.body.outerHTML).toBe(authored);
-    expect(doc.body.querySelector("style")).toBeNull();
-  });
+function expectLightCanvas(doc: Document) {
+  const computed = doc.defaultView!.getComputedStyle(doc.body);
+  expect(computed.backgroundColor).toBe("rgb(255, 255, 255)");
+  expect(computed.color).toBe("rgb(38, 52, 69)");
+  expect(
+    doc.defaultView!.getComputedStyle(doc.documentElement).colorScheme,
+  ).toBe("light");
+}
 
-  it("restores authored appearance when switching to light without editing or saving content", () => {
-    document.documentElement.dataset.darkMode = "dark";
+describe("notification editing appearance", () => {
+  it.each(["dark", "light"])(
+    "keeps a light email canvas and authored colors in Craft %s mode",
+    (mode) => {
+      document.documentElement.dataset.darkMode = mode;
+      const { doc, authored, handlers } = fixture();
+      handlers.get("init")?.();
+      expectLightCanvas(doc);
+      const color = doc.defaultView!.getComputedStyle(
+        doc.body.querySelector("p span")!,
+      );
+      expect(color.color).toBe("rgb(207, 17, 36)");
+      expect(color.backgroundColor).toBe("rgb(255, 242, 204)");
+      expect(doc.body.outerHTML).toBe(authored);
+      expect(doc.body.querySelector("style")).toBeNull();
+    },
+  );
+
+  it("keeps the authored email unchanged when Craft appearance changes", () => {
     const { doc, authored, handlers } = fixture();
     handlers.get("init")?.();
-    document.documentElement.dataset.darkMode = "light";
-    document.dispatchEvent(new Event("craft-dark-mode:change"));
-    expect(doc.documentElement.hasAttribute("data-freeform-dark-editor")).toBe(
-      false,
-    );
-    expect(doc.body.outerHTML).toBe(authored);
-    document.documentElement.dataset.darkMode = "dark";
-    document.dispatchEvent(new Event("craft-dark-mode:change"));
-    expect(doc.documentElement.hasAttribute("data-freeform-dark-editor")).toBe(
-      true,
-    );
+    for (const mode of ["dark", "light", "dark"]) {
+      document.documentElement.dataset.darkMode = mode;
+      document.dispatchEvent(new Event("craft-dark-mode:change"));
+      expectLightCanvas(doc);
+      expect(doc.body.outerHTML).toBe(authored);
+    }
     expect(doc.head.querySelectorAll("style")).toHaveLength(1);
   });
 
-  it("removes its theme listener and stylesheet when the editor closes", () => {
-    document.documentElement.dataset.darkMode = "dark";
+  it("removes its editing stylesheet when the editor closes", () => {
     const { doc, authored, handlers } = fixture();
     handlers.get("init")?.();
     handlers.get("remove")?.();
-    document.dispatchEvent(new Event("craft-dark-mode:change"));
-    expect(doc.documentElement.hasAttribute("data-freeform-dark-editor")).toBe(
-      false,
-    );
     expect(doc.head.querySelector("style")).toBeNull();
     expect(doc.body.outerHTML).toBe(authored);
   });

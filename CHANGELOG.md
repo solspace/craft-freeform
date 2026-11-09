@@ -42,6 +42,7 @@
 - Added Location support to sample formatting templates, with configurable markup and styling attributes.
 
 ### Fixed
+- Fixed notification editor appearance overriding authored email colors in Dark Mode. Email content now uses a light canvas while the toolbar follows the control panel appearance.
 - Fixed form builder action icons losing their outlines or retaining hover colors, and improved Dark Mode contrast in card menus and bulk-label previews.
 - Fixed integration authorization failures showing raw errors. Failures now display a helpful message, record diagnostics, and reject callback URLs pointing to another site.
 - Improved submission Multi-Select fields with searchable selection tags, and fixed builder recipient-row spacing and single-button layout controls.

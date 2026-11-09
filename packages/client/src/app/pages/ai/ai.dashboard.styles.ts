@@ -115,7 +115,7 @@ export const SectionTitle = styled.h2`
 `;
 
 export const UsageChart = styled.div`
-  background: ${colors.white};
+  background: ${colors.surface};
   border: none;
   border-radius: ${borderRadius.md};
   padding: ${spacings.md};
@@ -127,7 +127,7 @@ export const UsageChart = styled.div`
 export const MetricsTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  background: ${colors.white};
+  background: ${colors.surface};
   border-radius: ${borderRadius.md};
   overflow: hidden;
   font-size: 12px;
@@ -159,7 +159,7 @@ export const MetricsTableCell = styled.td`
 export const EmptyState = styled.div`
   text-align: center;
   padding: ${spacings.xl} ${spacings.lg};
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 0;
   border-radius: ${borderRadius.md};
   color: rgba(0, 0, 0, 0.6);

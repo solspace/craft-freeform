@@ -20,6 +20,24 @@ use yii\db\Transaction;
 #[CoversNothing]
 class ActivityServiceTest extends TestCase
 {
+    public function testExpectedSubmissionOutcomesAreStoredAsNoticesWithoutDiagnostics(): void
+    {
+        $service = $this->service($this->settings(['activityMode' => 'detailed']));
+        $service->expects(self::once())->method('write')->with(self::callback(static function ($rows) {
+            self::assertSame(['validation', 'spam', 'warning'], array_column($rows, 'event'));
+            self::assertSame(['notice', 'notice', 'warning'], array_column($rows, 'level'));
+            self::assertSame(['submissions', 'spam', 'system'], array_column($rows, 'category'));
+            self::assertArrayNotHasKey('diagnostics', json_decode($rows[0]['metadata'], true));
+            self::assertArrayNotHasKey('diagnostics', json_decode($rows[1]['metadata'], true));
+
+            return true;
+        }));
+        $service->record('validation', 7, null, ['diagnostics' => ['message' => 'Expected user input outcome']]);
+        $service->record('spam', 7, 42, ['diagnostics' => ['message' => 'Expected spam outcome']]);
+        $service->record('warning', 7, null);
+        $service->flush();
+    }
+
     public function testDisabledCategoriesAreNeverWritten(): void
     {
         $service = $this->service($this->settings(['activityMode' => 'custom', 'activityEvents' => ['submission' => true, 'email-error' => false]]));

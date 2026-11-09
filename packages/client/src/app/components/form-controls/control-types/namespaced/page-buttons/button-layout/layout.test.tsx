@@ -86,8 +86,8 @@ it("deduplicates arrangements when optional buttons are disabled and chooses an 
   const inputs = Array.from(
     element.querySelectorAll<HTMLInputElement>('input[type="radio"]'),
   );
-  expect(inputs).toHaveLength(1);
-  expect(inputs[0].checked).toBe(true);
+  expect(inputs).toHaveLength(0);
+  expect(element.textContent).not.toContain("Button order");
   expect(element.textContent).not.toContain("Save");
   expect(element.textContent).not.toContain("Back");
 });
@@ -97,9 +97,7 @@ it("recognizes the wizard submit shorthand as left aligned without changing the 
   expect(element.querySelector('[aria-pressed="true"]')?.textContent).toBe(
     "Left",
   );
-  const selected = element.querySelector<HTMLInputElement>("input:checked");
-  expect(selected?.getAttribute("aria-label")).toBe("Left: Submit");
-  expect(selected?.value).toBe("submit");
+  expect(element.querySelector('[role="radiogroup"]')).toBeNull();
   expect(updateValue).not.toHaveBeenCalled();
 });
 it("changes a wizard submit button to right alignment on the first click", () => {
@@ -127,9 +125,7 @@ it("retains the selected layout when its visible buttons duplicate an earlier op
   expect(element.querySelector('[aria-pressed="true"]')?.textContent).toBe(
     "Right",
   );
-  expect(element.querySelector<HTMLInputElement>("input:checked")?.value).toBe(
-    " back|submit|save",
-  );
+  expect(element.querySelector('[role="radiogroup"]')).toBeNull();
   expect(updateValue).not.toHaveBeenCalled();
 });
 it("uses the same default as the builder preview when a new page has no explicit layout", () => {
@@ -137,9 +133,7 @@ it("uses the same default as the builder preview when a new page has no explicit
   expect(element.querySelector('[aria-pressed="true"]')?.textContent).toBe(
     "Right",
   );
-  expect(element.querySelector<HTMLInputElement>("input:checked")?.value).toBe(
-    "save back|submit",
-  );
+  expect(element.querySelector('[role="radiogroup"]')).toBeNull();
   expect(updateValue).not.toHaveBeenCalled();
 });
 

@@ -5,7 +5,10 @@ namespace Solspace\Freeform\controllers\api;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityPolicy;
+use Solspace\Freeform\Services\ActivityHealthService;
 use Solspace\Freeform\Services\FormDashboardWidgetsService;
+use Solspace\Freeform\Widgets\Pro\ActivityHealthWidget;
 use Solspace\Freeform\Widgets\QuickFormWidget;
 use yii\web\BadRequestHttpException;
 use yii\web\Response;
@@ -28,16 +31,27 @@ class FormDashboardWidgetsController extends BaseApiController
     {
         $siteId = $this->siteId();
         $items = [];
+        $style = Freeform::getInstance()->settings->getSettingsModel()->getEffectiveLoggingStyle();
         foreach ($this->service()->getItems($siteId) as $item) {
+            if ('activity-health' === $item['type'] && !ActivityHealthService::canAccess($style)) {
+                continue;
+            }
+
             try {
                 $widget = $this->service()->createWidget($siteId, $item);
-                $items[] = array_diff_key($item, ['settings' => true]) + ['title' => $widget->getTitle()];
+                $metadata = array_diff_key($item, ['settings' => true]) + ['title' => $widget->getTitle(), 'replacesBanner' => $widget instanceof ActivityHealthWidget && (bool) $widget->replaceBanner];
+                if ($widget instanceof ActivityHealthWidget) {
+                    $metadata['navigation'] = (new ActivityHealthService())->navigation((int) $widget->days);
+                }
+                $items[] = $metadata;
             } catch (\Throwable) {
                 // Settings remain stored if access is temporarily lost.
             }
         }
 
-        return $this->asJson(['items' => $items, 'types' => array_map(static fn ($type, $class) => ['type' => $type, 'name' => $class::displayName()], array_keys(FormDashboardWidgetsService::TYPES), array_values(FormDashboardWidgetsService::TYPES))]);
+        $types = $this->service()->getAvailableTypes($style);
+
+        return $this->asJson(['items' => $items, 'types' => array_map(static fn ($type, $class) => ['type' => $type, 'name' => $class::displayName()], array_keys($types), array_values($types))]);
     }
 
     public function actionLayout(): Response
@@ -104,17 +118,21 @@ class FormDashboardWidgetsController extends BaseApiController
             }
         }
         $widget = $service->createWidget($siteId, $item);
-        if (!$widget instanceof QuickFormWidget && ($item['settings']['formIds'] ?? null) === '*') {
+        if (!$widget instanceof QuickFormWidget && !$widget instanceof ActivityHealthWidget && ($item['settings']['formIds'] ?? null) === '*') {
             $widget->formIds = '*';
         }
-        $formOptions = array_map(static fn ($form) => $form->getName(), $service->getForms($siteId, $item['type']));
+        $formOptions = $widget instanceof ActivityHealthWidget ? [] : array_map(static fn ($form) => $form->getName(), $service->getForms($siteId, $item['type']));
         $template = match ($item['type']) {
             'linear' => 'linear-charts',
             'radial' => 'radial-charts',
             'recent' => 'recent',
             'quick-form' => 'quick-form',
+            'activity-health' => 'activity-health',
         };
         $context = ['settings' => $widget, 'formOptions' => $formOptions, 'formList' => $formOptions, 'dateRangeOptions' => Freeform::getInstance()->widgets->getDateRanges(), 'chartTypes' => $item['type'] === 'linear' ? ['line' => Freeform::t('Line'), 'bar' => Freeform::t('Bar')] : ['doughnut' => Freeform::t('Donut'), 'pie' => Freeform::t('Pie'), 'polarArea' => Freeform::t('Polar Area')]];
+        if ($widget instanceof ActivityHealthWidget) {
+            $context['eventOptions'] = array_map(static fn ($definition) => Freeform::t($definition[0]), ActivityPolicy::EVENTS);
+        }
         $settingsHtml = $this->getView()->namespaceInputs(fn () => $this->getView()->renderTemplate('freeform/_widgets/'.$template.'/settings', $context), 'settings');
         $groups = ['' => Freeform::t('Other')];
         foreach ($service->getGroups($siteId) as $group) {

@@ -289,6 +289,9 @@ ul.section-structure {
 
   .freeform-demo-note {
     --pane-padding: 12px;
+    background: var(--bg-warning);
+    color: var(--fg-warning);
+    border-color: var(--border-warning);
     margin: 14px 0 0;
     padding-inline: 40px 14px;
     font-size: 13px;
@@ -540,8 +543,8 @@ ul.section-structure {
     height: 40px;
     flex: 0 0 40px;
     border-radius: 50%;
-    background: #e7f3ee;
-    color: #24764f;
+    background: var(--bg-success, #e7f3ee);
+    color: var(--fg-success, #24764f);
     font-size: 20px;
     line-height: 1;
   }

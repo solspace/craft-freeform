@@ -43,7 +43,7 @@ export const PreviewRow = styled.div`
     bottom: -7px;
 
     padding: 0 5px;
-    background: ${colors.white};
+    background: ${colors.surface};
 
     ${labelText};
     font-size: 8px;

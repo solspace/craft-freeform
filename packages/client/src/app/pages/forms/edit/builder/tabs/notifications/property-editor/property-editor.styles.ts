@@ -10,7 +10,7 @@ export const PropertyEditorWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.xl};
 
-  background: ${colors.white};
+  background: ${colors.surface};
   padding: ${spacings.xl};
 
   overflow-y: auto;

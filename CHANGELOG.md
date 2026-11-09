@@ -13,15 +13,18 @@
 - Added **Send Notifications** with selectable form recipients, configured or shared templates, and additional addresses. Renamed the immediate resend action to **Quick Resend**.
 - Added editable starter lists for blocked emails, 100 keyword patterns, allowed gibberish terms, and URL tracking parameters, with duplicate skipping and Undo.
 - Added optional native reCAPTCHA Enterprise verification with Google Cloud assessments, server API keys, matching classic/headless support, external JavaScript mode, alternate script domains, and hostname allowlists. Existing integrations retain Legacy verification.
-- Added **Activity Log** with submission timelines, filters, exports, configurable retention, and sanitized email and integration diagnostics. New installs use Standard mode and upgrades use Minimal. Logging settings offer Activity, Classic file logging, or None.
+- Added **Activity Log** with submission timelines, filters, exports, configurable retention, sanitized diagnostics, and controls to resolve or reopen errors and operational warnings. New installs use Standard mode and upgrades use Minimal. Logging settings offer Activity, Classic file logging, or None.
 - Added a Freeform date/time picker with searchable month and year menus, configurable time intervals, keyboard navigation, and light/dark themes. Date fields now offer Freeform, Classic (Flatpickr), Browser, and None modes; existing fields and configured defaults retain their previous mode.
 - Added ready-to-use success and email notification template samples, including starting points in the form-specific email editor.
 - Added a **Setup Guide** with recommendations for site defaults, shared email templates, and Limited Users profiles, with a review before applying changes.
 - Added **Limited Users permission presets** with editable options and Undo.
 - Added Pro-only customizable **Forms dashboard cards** and **Linear Chart**, **Radial Chart**, **Recent Submissions**, and **Quick Form** widgets, with resizable layouts, keyboard reordering, per-user preferences, form-group placement, and 7-, 30-, and 90-day trends and comparisons.
+- Added a Pro-only **Activity & Health** card for the Forms dashboard, with recorded activity trends, recent issues, and links to the selected logging system.
 - Added a Pro-only **Location** field with Google Places address autocomplete, manual address entry, included or mapped address fields, configurable visibility and required components, country restrictions, structured submission values, component CSV columns, and React/Vue support.
 
 ### Changed
+- Improved light and dark control panel styling across the builder, settings, dashboards, and email editor. Dark editing colors do not change outgoing email designs.
+- Aligned log alerts, diagnostics, and digest summaries with the selected logging system, distinguishing routine notices from operational issues. Critical error emails work independently of activity recording.
 - Refreshed the **Welcome** page with setup resources and edition comparisons, and simplified the **Demo Templates** installer.
 - The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
 - Streamlined integration and CAPTCHA setup with guided choices, clearer instructions, and Advanced panels that remember their state. Existing connections and selections are preserved.
@@ -39,6 +42,8 @@
 - Added Location support to sample formatting templates, with configurable markup and styling attributes.
 
 ### Fixed
+- Fixed integration authorization failures showing raw errors. Failures now display a helpful message, record diagnostics, and reject callback URLs pointing to another site.
+- Improved submission Multi-Select fields with searchable selection tags, and fixed builder recipient-row spacing and single-button layout controls.
 - Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
 - Fixed boolean environment indicators and dependent setting visibility without clearing saved values.
 - Fixed Salesforce and Account Engagement custom login URLs not resolving environment variables, and legacy product labels in headings and tabs.

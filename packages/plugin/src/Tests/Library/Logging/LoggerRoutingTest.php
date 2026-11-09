@@ -117,6 +117,22 @@ class LoggerRoutingTest extends TestCase
         self::assertSame(1, $this->service->getErrorLogLineCount());
     }
 
+    public function testWarningCountsLinkToTheirOwnFilesAndExcludeOtherLevels(): void
+    {
+        $this->settings->errorNotificationRecipients = '';
+        $this->service->getLogger('system-warning', level: Logger::DEBUG)->warning('System warning');
+        $email = $this->service->getLogger('email-warning', 'freeform-email.log', Logger::DEBUG);
+        $email->warning('Email warning');
+        $email->info('Email information');
+        $email->error('Email error');
+        $integration = $this->service->getLogger('integration-warning', 'freeform-integrations.log', Logger::DEBUG);
+        $integration->warning('Integration warning');
+        $integration->warning('Another integration warning');
+        self::assertSame(['error-log' => 1, 'integrations-log' => 2, 'email-log' => 1], $this->service->getWarningLogCounts());
+        $this->service->clearLogs('freeform-email.log');
+        self::assertSame(['error-log' => 1, 'integrations-log' => 2], $this->service->getWarningLogCounts());
+    }
+
     public function testTechnicalFilesAreNotRecreatedWhenFileLoggingIsDisabled(): void
     {
         $this->settings->technicalFileLogging = '0';

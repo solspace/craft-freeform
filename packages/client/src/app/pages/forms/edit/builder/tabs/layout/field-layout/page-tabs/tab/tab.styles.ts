@@ -51,8 +51,8 @@ export const PageTab = styled(animated.div)`
   padding: 7px 10px;
   margin: 0 5px;
 
-  color: ${colors.gray400};
-  border-bottom: 2px solid ${colors.gray100};
+  color: ${colors.muted};
+  border-bottom: 2px solid ${colors.border};
 
   overflow: hidden;
 

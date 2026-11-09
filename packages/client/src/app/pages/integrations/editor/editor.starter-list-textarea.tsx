@@ -20,6 +20,13 @@ const Actions = styled.div`
     gap: 5px;
     min-height: 28px;
     white-space: nowrap;
+    --button-bg: var(--secondary-button-bg, #dfe5ec);
+    --button-bg--hover: var(--secondary-button-bg--hover, #cdd4de);
+    --button-border: 1px solid var(--input-border-color, #b9c6d7);
+    background: var(--button-bg, #dfe5ec);
+    color: var(--text-color, #3f4d5a);
+    box-shadow: inset 0 0 0 1px var(--hairline-color, #cdd8e4);
+    &:hover:not(:disabled) { background: var(--button-bg--hover, #cdd4de); }
   }
   svg { display: block; width: 14px; height: 14px; flex: 0 0 14px; }
 `;

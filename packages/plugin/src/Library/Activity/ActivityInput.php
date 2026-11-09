@@ -10,16 +10,20 @@ class ActivityInput
             'q' => mb_substr(trim(self::text($params['q'] ?? '')), 0, 80),
             'category' => self::text($params['category'] ?? ''),
             'level' => self::text($params['level'] ?? ''),
+            'resolution' => self::text($params['resolution'] ?? ''),
             'formId' => self::id($params['formId'] ?? 0),
             'submissionId' => self::id($params['submissionId'] ?? 0),
+            'days' => self::id($params['days'] ?? 0),
         ];
-        foreach (['category', 'level'] as $key) {
+        foreach (['category', 'level', 'resolution'] as $key) {
             if ('all' === $filters[$key]) {
                 $filters[$key] = '';
             }
         }
         if (!\in_array($filters['category'], ['', 'system', 'submissions', 'spam', 'email', 'integrations', 'forms'], true)
-            || !\in_array($filters['level'], ['', 'error', 'warning', 'success', 'info'], true)) {
+            || !\in_array($filters['level'], ['', ...array_keys(ActivityPolicy::LEVEL_LABELS)], true)
+            || !\in_array($filters['resolution'], ['', 'open', 'resolved'], true)
+            || $filters['days'] > 365) {
             throw new \InvalidArgumentException('Invalid activity filter.');
         }
 

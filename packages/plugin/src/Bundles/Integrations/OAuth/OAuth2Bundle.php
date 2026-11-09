@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\CallbackOrigin;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
@@ -80,6 +81,18 @@ class OAuth2Bundle extends FeatureBundle
             OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
             $event
         );
+
+        $origin = \Craft::$app->request->getHostInfo();
+        $callback = (string) ($event->getPayload()['redirect_uri'] ?? '');
+        if (!CallbackOrigin::matches($callback, $origin)) {
+            // Do not log query strings, authorization codes, or credentials.
+            Freeform::getInstance()->logger->getLogger('oauth', 'freeform-integrations.log')->error(
+                'OAuth2 callback URL does not match the control panel origin',
+                ['integrationId' => $integration->getId(), 'expectedOrigin' => $origin, 'callbackHost' => parse_url($callback, \PHP_URL_HOST)]
+            );
+
+            throw new IntegrationException(Freeform::t('The callback URL must use this site’s origin: {origin}.', ['origin' => $origin]));
+        }
 
         $queryString = http_build_query($event->getPayload());
 

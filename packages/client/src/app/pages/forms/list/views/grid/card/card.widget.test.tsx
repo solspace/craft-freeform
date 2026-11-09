@@ -13,6 +13,8 @@ vi.mock("@ff-client/utils/translations", () => ({
 vi.mock("../grid.widgets", () => ({
   getExtraWidgetSizes: () => [],
   widgetKey: () => [],
+  healthWidgetKey: (item: DashboardWidget, siteId: number) =>
+    `${siteId}:${item.uid}:${item.revision ?? ""}`,
 }));
 vi.mock("./card.size-menu", () => ({
   CardSizeMenu: () => <button type="button">Card options</button>,
@@ -30,6 +32,7 @@ const widget: DashboardWidget = {
 let host: HTMLDivElement;
 let root: Root;
 beforeEach(() => {
+  healthReady.mockReset();
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.stubGlobal("Craft", {
     getCpUrl: (path: string) => `https://craft.test/admin/${path}`,
@@ -43,6 +46,7 @@ afterEach(async () => {
   host.remove();
   vi.unstubAllGlobals();
 });
+const healthReady = vi.fn();
 const render = async (item = widget, siteId = 1) => {
   await act(async () =>
     root.render(
@@ -53,15 +57,20 @@ const render = async (item = widget, siteId = 1) => {
         onResize={vi.fn()}
         onRemove={vi.fn()}
         onKeyboardMove={vi.fn()}
+        onHealthReady={healthReady}
       />,
     ),
   );
 };
 const frame = () => host.querySelector("iframe")!;
-const load = async (element: HTMLIFrameElement, url: string | null) => {
+const load = async (
+  element: HTMLIFrameElement,
+  url: string | null,
+  ready = false,
+) => {
   Object.defineProperty(element, "contentDocument", {
     configurable: true,
-    value: url ? { URL: url } : null,
+    value: url ? { URL: url, querySelector: () => (ready ? {} : null) } : null,
   });
   await act(async () => element.dispatchEvent(new Event("load")));
 };
@@ -110,4 +119,77 @@ it("releases the placeholder when the browser finishes a document whose contents
   await render();
   await load(frame(), null);
   expect(host.querySelector("[role=status]")).toBeNull();
+});
+
+it("only replaces the banner after a successful health document and releases it on failure or changed settings", async () => {
+  const health = {
+    ...widget,
+    uid: "health",
+    type: "activity-health",
+    replacesBanner: true,
+  };
+  await render(health);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
+  await load(frame(), "https://craft.test/widget", true);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", true);
+  await load(frame(), "https://craft.test/error", false);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
+  await load(frame(), "https://craft.test/widget", true);
+  await render({ ...health, revision: "updated" });
+  expect(healthReady).toHaveBeenCalledWith("1:health:first", false);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:updated", false);
+});
+
+it("shows a ready health frame before load completes and ignores other frames and origins", async () => {
+  await render({ ...widget, uid: "health", type: "activity-health" });
+  const send = async (
+    origin: string,
+    source: MessageEventSource | null,
+    health = true,
+  ) => {
+    await act(async () =>
+      window.dispatchEvent(
+        new MessageEvent("message", {
+          origin,
+          source,
+          data: { type: "freeform-widget-ready", healthReady: health },
+        }),
+      ),
+    );
+  };
+  await send("https://untrusted.test", frame().contentWindow);
+  await send(window.location.origin, window);
+  expect(frame().getAttribute("aria-hidden")).toBe("true");
+  await send(window.location.origin, frame().contentWindow);
+  expect(frame().getAttribute("aria-hidden")).toBe("false");
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", true);
+  await send(window.location.origin, frame().contentWindow, false);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
+});
+
+it("puts the health period and selected log links next to the widget title", async () => {
+  await render({
+    ...widget,
+    type: "activity-health",
+    navigation: {
+      days: 7,
+      period: "Past 7 days",
+      scope: "All forms",
+      links: [
+        {
+          label: "Open Activity Log",
+          url: "https://craft.test/admin/freeform/activity?days=7",
+        },
+      ],
+    },
+  });
+  const link = host.querySelector<HTMLAnchorElement>("nav a")!;
+  expect(link.textContent).toBe("Open Activity Log");
+  expect(link.href).toContain("activity?days=7");
+  expect(link.closest("[data-health=true]")?.textContent).toContain(
+    "Past 7 days",
+  );
+  expect(host.querySelector("nav")?.getAttribute("aria-label")).toBe(
+    "Review logs",
+  );
 });

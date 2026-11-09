@@ -24,6 +24,7 @@ class ActivityTemplateTest extends TestCase
             '_includes/forms' => '{% macro selectize(config) %}<select name="{{ config.name }}"></select>{% endmacro %}{% macro selectField(config) %}{% endmacro %}',
             'freeform/activity/_results' => '<div data-activity-results></div>',
             'freeform/_components/confirmation-dialog' => '<dialog id="{{ id }}"></dialog>',
+            'freeform/_components/log-alert' => '<div data-log-alert></div>',
         ]), ['strict_variables' => true, 'autoescape' => 'html']);
         $twig->addFilter(new TwigFilter('t', static fn ($text) => $text));
         $twig->addFilter(new TwigFilter('number', static fn ($number) => $number));
@@ -40,8 +41,10 @@ class ActivityTemplateTest extends TestCase
             'throughId' => 12,
             'unavailable' => false,
             'activityEnabled' => true,
+            'alertCounts' => ['error' => 5, 'warning' => 2],
+            'alertRetentionDays' => 30,
             'settings' => ['activityMode' => 'minimal', 'activityRetentionDays' => 30],
-            'filters' => ['q' => '', 'formId' => 0, 'category' => '', 'level' => '', 'submissionId' => 0, 'view' => $view],
+            'filters' => ['q' => '', 'formId' => 0, 'category' => '', 'level' => '', 'resolution' => '', 'days' => 0, 'submissionId' => 0, 'view' => $view],
             'forms' => [1 => 'Contact'],
             'formColors' => [1 => '#7352d6'],
             'names' => ['submissions' => 'Submissions'],
@@ -59,5 +62,6 @@ class ActivityTemplateTest extends TestCase
         self::assertStringContainsString('Configure Activity', $html);
         self::assertStringContainsString('Clear activity history', $html);
         self::assertStringContainsString('data-activity-results', $html);
+        self::assertStringContainsString('data-log-alert', $html);
     }
 }

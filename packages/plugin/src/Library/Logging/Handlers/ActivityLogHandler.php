@@ -65,7 +65,7 @@ class ActivityLogHandler extends AbstractHandler
                 ]);
                 $formId = $context['activityFormId'] ?? null;
                 $submissionId = $context['activitySubmissionId'] ?? null;
-                Freeform::getInstance()->get('activity')->record($event, \is_int($formId) && $formId > 0 ? $formId : null, \is_int($submissionId) && $submissionId > 0 ? $submissionId : null, $metadata);
+                Freeform::getInstance()->get('activity')->record($event, \is_int($formId) && $formId > 0 ? $formId : null, \is_int($submissionId) && $submissionId > 0 ? $submissionId : null, $metadata, notifyErrors: false);
             }
         } catch (\Throwable) {
             // Compatible with both Monolog record formats; Activity must never interrupt file logging.

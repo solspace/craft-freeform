@@ -19,7 +19,7 @@ export const Wrapper = styled.div`
 
     &.active {
       color: ${colors.white};
-      background-color: ${colors.gray500};
+      background-color: var(--bg-selection-dark);
     }
 
     &.active.inactive {

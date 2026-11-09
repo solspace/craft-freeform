@@ -17,7 +17,7 @@ export const SuggestionsWrapper = styled.ul`
   padding: 0;
   margin: 0;
 
-  background-color: ${colors.white};
+  background-color: ${colors.overlay};
   border-radius: ${borderRadius.lg};
   box-shadow: ${shadows.autosuggest};
 
@@ -32,7 +32,7 @@ export const Title = styled.div`
   margin: 14px 0 3px;
   padding: 0 14px;
 
-  color: ${colors.gray400};
+  color: ${colors.muted};
   font-size: 11px;
   line-height: 1.2;
   text-transform: uppercase;
@@ -44,7 +44,7 @@ export const Dash = styled.span`
   display: inline-block;
   width: 8px;
   height: 1px;
-  background-color: ${colors.gray400};
+  background-color: ${colors.inputBackground};
 `;
 
 export const ItemName = styled.span`
@@ -54,7 +54,7 @@ export const ItemName = styled.span`
 
 export const Hint = styled.span`
   flex: 0 1 auto;
-  color: ${colors.gray400};
+  color: ${colors.muted};
 `;
 
 export const Item = styled.li`
@@ -73,14 +73,14 @@ export const Item = styled.li`
   white-space: nowrap;
 
   &:hover {
-    background-color: ${colors.gray500};
+    background-color: var(--bg-selection-dark);
 
     ${ItemName}, ${Hint} {
-      color: ${colors.white};
+      color: ${colors.text};
     }
 
     ${Dash} {
-      background-color: ${colors.white};
+      background-color: ${colors.overlay};
     }
   }
 `;

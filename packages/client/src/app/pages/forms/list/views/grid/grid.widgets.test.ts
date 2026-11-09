@@ -3,6 +3,8 @@ import { expect, it } from "vitest";
 import {
   type DashboardWidget,
   getExtraWidgetSizes,
+  hasVisibleHealthWidget,
+  healthWidgetKey,
   mergeWidgetCards,
   placementsFromLists,
 } from "./grid.widgets";
@@ -74,4 +76,38 @@ it("preserves extra sizes while moving widgets between groups", () => {
     { uid: "tall", size: "2x3", groupUid: "b", beforeId: 2 },
     { uid: "wide", size: "3x2", groupUid: "b", beforeId: 2 },
   ]);
+});
+
+it("restores the banner for hidden, removed, failed, stale, and non-replacing health widgets", () => {
+  const health = {
+    ...widget("health", null),
+    type: "activity-health",
+    revision: "first",
+    replacesBanner: true,
+  };
+  const ready = new Set([healthWidgetKey(health, 1)]);
+  expect(hasVisibleHealthWidget([health], 1, ready, true)).toBe(true);
+  expect(hasVisibleHealthWidget([health], 1, ready, false)).toBe(false);
+  expect(hasVisibleHealthWidget([], 1, ready, true)).toBe(false);
+  expect(hasVisibleHealthWidget([health], 1, new Set(), true)).toBe(false);
+  expect(hasVisibleHealthWidget([health], 2, ready, true)).toBe(false);
+  expect(
+    hasVisibleHealthWidget(
+      [{ ...health, revision: "updated" }],
+      1,
+      ready,
+      true,
+    ),
+  ).toBe(false);
+  expect(
+    hasVisibleHealthWidget(
+      [{ ...health, replacesBanner: false }],
+      1,
+      ready,
+      true,
+    ),
+  ).toBe(false);
+  expect(
+    getExtraWidgetSizes("activity-health").map(({ size }) => size),
+  ).toEqual(["3x2", "2x3", "3x3"]);
 });

@@ -22,7 +22,7 @@ export const Title = styled.div`
   > span {
     padding: 0;
 
-    color: ${colors.gray300};
+    color: ${colors.muted};
     font-size: 13px;
     font-weight: bold;
     text-transform: uppercase;

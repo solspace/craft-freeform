@@ -25,7 +25,7 @@ const HeaderLoader = styled.div`
 
 const DetailsLoaderContainer = styled(LoaderContainer)`
   padding: ${spacings.xl};
-  background: ${colors.white};
+  background: ${colors.surface};
 `;
 
 const ChartLoaderContainer = styled.div`

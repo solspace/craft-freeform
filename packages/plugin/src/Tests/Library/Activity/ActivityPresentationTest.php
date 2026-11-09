@@ -38,6 +38,16 @@ class ActivityPresentationTest extends TestCase
         self::assertSame(['reasonCode' => ActivityContext::MAIL_RENDER_FAILED, 'durationMs' => 100], ActivityPolicy::metadata(['reasonCode' => ActivityContext::MAIL_RENDER_FAILED, 'durationMs' => 100]));
     }
 
+    #[TestWith(['spam'])]
+    #[TestWith(['validation'])]
+    public function testLegacySubmissionWarningsPresentAsNoticesWithoutResolutionActions(string $event): void
+    {
+        $record = ActivityPresentation::present(['event' => $event, 'level' => 'warning', 'dateCreated' => '2026-11-06 08:00:00']);
+        self::assertSame('notice', $record['level']);
+        self::assertFalse($record['actionable']);
+        self::assertFalse($record['isResolved']);
+    }
+
     public function testExamplesUseTheSamePresentationContractAsRealRecords(): void
     {
         $examples = ActivityExamples::all();

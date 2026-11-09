@@ -14,7 +14,7 @@ export const SampleDefaultInputRow = styled.div`
     height: 34px;
     padding: 8px;
     border: 1px solid ${colors.inputBorder};
-    background: #fff;
+    background: ${colors.overlay};
   }
 `;
 
@@ -40,7 +40,7 @@ export const SampleTokenWrapper = styled.div<{ $multiline: boolean }>`
     white-space: pre-wrap;
   }
   .tagify__tag { margin: 0 2px; vertical-align: baseline; font-size: 11px; line-height: 18px; }
-  .tagify__tag:focus-visible { outline: 2px solid #3476b8; border-radius: 12px; }
+  .tagify__tag:focus-visible { outline: 2px solid var(--link-color); border-radius: 12px; }
   .tagify__tag__removeBtn { width: 14px; height: 14px; margin-inline-end: 3px; }
 `;
 
@@ -52,17 +52,17 @@ export const ExpressionModeButton = styled.button`
   border: 0;
   background: transparent;
   font-size: 11px;
-  color: var(--link-color, #3476b8);
+  color: var(--link-color);
   text-decoration: none;
   cursor: pointer;
   &:hover, &:focus-visible {
-    color: var(--link-color, #3476b8);
+    color: var(--link-color);
     background: transparent;
     text-decoration: underline;
     text-decoration-color: currentColor;
     text-underline-offset: 2px;
   }
-  &:focus-visible { outline: 2px solid var(--link-color, #3476b8); outline-offset: 3px; border-radius: 2px; }
+  &:focus-visible { outline: 2px solid var(--link-color); outline-offset: 3px; border-radius: 2px; }
 `;
 
 export const SamplePickerButton = styled.button`
@@ -80,10 +80,10 @@ export const SamplePickerButton = styled.button`
   cursor: pointer;
 
   &:hover, &:focus-visible, &[aria-expanded='true'] {
-    background: #e8f0fc;
-    color: #3476b8;
+    background: var(--bg-selection-light, #e8f0fc);
+    color: var(--link-color);
   }
-  &:focus-visible { outline: 2px solid #3476b8; outline-offset: 1px; }
+  &:focus-visible { outline: 2px solid var(--link-color); outline-offset: 1px; }
   &:disabled { opacity: .5; cursor: default; }
 `;
 
@@ -91,15 +91,15 @@ export const RefreshSamplesButton = styled(SamplePickerButton)`
   min-height: 30px;
   padding: 6px 10px;
   border: 1px solid ${colors.gray200};
-  background: #f3f6fa;
+  background: var(--ui-control-bg-color, #f3f6fa);
   color: ${colors.gray600};
   font-weight: 500;
 
   svg { width: 14px; height: 14px; }
   &:hover:not(:disabled), &:focus-visible {
     border-color: #b8cee8;
-    background: #e8f0fc;
-    color: #3476b8;
+    background: var(--bg-selection-light, #e8f0fc);
+    color: var(--link-color);
   }
 `;
 
@@ -124,7 +124,7 @@ export const OptionSampleToggle = styled.button`
   color: ${colors.gray500};
   cursor: pointer;
 
-  &:hover, &:focus-visible { color: #3476b8; background: #e8f0fc; }
+  &:hover, &:focus-visible { color: var(--link-color); background: var(--bg-selection-light, #e8f0fc); }
   &[aria-pressed='true'] {
     color: #fff;
     background: var(--bg-enabled, var(--enabled-color, #14b8a6));
@@ -149,7 +149,7 @@ export const PickerPanel = styled.div`
   overflow: hidden;
   border: 1px solid ${colors.gray200};
   border-radius: 10px;
-  background: #fff;
+  background: ${colors.overlay};
   box-shadow: 0 12px 40px rgb(31 41 51 / 18%);
   color: ${colors.gray700};
   z-index: 9000;
@@ -186,7 +186,7 @@ export const GeneratorButton = styled.button`
   cursor: pointer;
   font-size: 12px;
 
-  &:hover, &:focus-visible, &[aria-pressed='true'] { background: #edf3fc; color: #2865a5; }
-  &:focus-visible { outline: 2px solid #3476b8; outline-offset: -2px; }
+  &:hover, &:focus-visible, &[aria-pressed='true'] { background: var(--bg-selection-light, #edf3fc); color: var(--link-color); }
+  &:focus-visible { outline: 2px solid var(--link-color); outline-offset: -2px; }
   span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: ${colors.gray500}; font-size: 11px; }
 `;

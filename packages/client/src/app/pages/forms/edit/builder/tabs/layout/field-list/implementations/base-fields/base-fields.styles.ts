@@ -8,7 +8,7 @@ export const GroupWrapper = styled.div`
   margin-bottom: ${spacings.md};
 
   svg {
-    fill: ${({ color }) => color || colors.black};
+    fill: ${({ color }) => (color === "#000000" || color === "#000" || color === "black" ? colors.text : color || colors.text)};
   }
 `;
 

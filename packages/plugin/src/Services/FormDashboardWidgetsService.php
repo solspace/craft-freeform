@@ -8,6 +8,7 @@ use Solspace\Freeform\Library\Helpers\FormCardHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormGroupsRecord;
+use Solspace\Freeform\Widgets\Pro\ActivityHealthWidget;
 use Solspace\Freeform\Widgets\Pro\LinearChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RadialChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RecentWidget;
@@ -24,12 +25,13 @@ class FormDashboardWidgetsService
         'radial' => RadialChartsWidget::class,
         'recent' => RecentWidget::class,
         'quick-form' => QuickFormWidget::class,
+        'activity-health' => ActivityHealthWidget::class,
     ];
 
     private const EXTRA_SIZES = [
-        '3x2' => ['linear', 'recent'],
-        '3x3' => ['linear', 'recent', 'radial', 'quick-form'],
-        '2x3' => ['quick-form', 'recent', 'radial'],
+        '3x2' => ['linear', 'recent', 'activity-health'],
+        '3x3' => ['linear', 'recent', 'radial', 'quick-form', 'activity-health'],
+        '2x3' => ['quick-form', 'recent', 'radial', 'activity-health'],
     ];
 
     public function requireAccess(int $siteId): void
@@ -45,6 +47,11 @@ class FormDashboardWidgetsService
         $items = \Craft::$app->getUser()->getIdentity()->getPreference($this->key($siteId));
 
         return \is_array($items) ? array_values($items) : [];
+    }
+
+    public function getAvailableTypes(string $style = 'activity'): array
+    {
+        return array_filter(self::TYPES, static fn ($class) => ActivityHealthWidget::class !== $class || ActivityHealthService::canAccess($style));
     }
 
     public function getItem(int $siteId, string $uid): array
@@ -84,9 +91,21 @@ class FormDashboardWidgetsService
             throw new BadRequestHttpException('Unknown widget type.');
         }
         $widget = new $class();
+
         // Only widget settings may be hydrated; never accept a class name or model properties.
-        $widget->setAttributes(array_intersect_key($item['settings'] ?? [], array_flip($widget->settingsAttributes())), false);
+        try {
+            $widget->setAttributes(array_intersect_key($item['settings'] ?? [], array_flip($widget->settingsAttributes())), false);
+        } catch (\TypeError|\ValueError) {
+            throw new BadRequestHttpException('Invalid widget settings.');
+        }
         $widget->id = -((int) hexdec(substr(hash('sha256', $siteId.'.'.($item['uid'] ?? 'new')), 0, 7)) + 1);
+        if ($widget instanceof ActivityHealthWidget) {
+            if (!ActivityHealthService::canAccess()) {
+                throw new ForbiddenHttpException('Activity access is required.');
+            }
+
+            return $widget;
+        }
         $allowed = array_map(static fn ($form) => $form->getId(), $this->getForms($siteId, $item['type']));
         if ($widget instanceof QuickFormWidget) {
             if ($widget->formId && !\in_array($widget->formId, $allowed, true)) {
@@ -114,6 +133,9 @@ class FormDashboardWidgetsService
         $widget = $this->createWidget($siteId, $item);
         if (!$widget->validate()) {
             throw new BadRequestHttpException(implode(' ', $widget->getFirstErrors()));
+        }
+        if ($widget instanceof ActivityHealthWidget) {
+            $item['settings'] = ['title' => $widget->title, 'days' => (int) $widget->days, 'events' => array_values(array_unique($widget->events)), 'showRecent' => (bool) $widget->showRecent, 'replaceBanner' => (bool) $widget->replaceBanner];
         }
 
         return $this->mutate($siteId, static function ($items) use ($item) {

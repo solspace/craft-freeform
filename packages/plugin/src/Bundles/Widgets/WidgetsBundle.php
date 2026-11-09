@@ -10,6 +10,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
+use Solspace\Freeform\Widgets\FormDashboardOnlyWidgetInterface;
 use yii\base\Event;
 
 class WidgetsBundle extends FeatureBundle
@@ -36,6 +37,7 @@ class WidgetsBundle extends FeatureBundle
                         !$reflectionClass->isSubclassOf(Widget::class)
                         || $reflectionClass->isAbstract()
                         || $reflectionClass->isInterface()
+                        || $reflectionClass->implementsInterface(FormDashboardOnlyWidgetInterface::class)
                     ) {
                         continue;
                     }

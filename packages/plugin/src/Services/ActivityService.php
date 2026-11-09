@@ -8,6 +8,7 @@ use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Activity\ActivityPolicy;
@@ -27,8 +28,19 @@ class ActivityService extends BaseService
     private bool $cleanupBudgetExhausted = false;
 
     /** Logging is deliberately best-effort and may never break the operation being observed. */
-    public function record(string $event, ?int $formId = null, ?int $submissionId = null, array $metadata = []): void
+    public function record(string $event, ?int $formId = null, ?int $submissionId = null, array $metadata = [], bool $notifyErrors = true): void
     {
+        // Critical alerts are independent of recording style, selected categories, and storage failures.
+        if ($notifyErrors && 'error' === (ActivityPolicy::EVENTS[$event][3] ?? null)) {
+            try {
+                if ($this->getSettingsService()->isErrorNotificationEnabled()) {
+                    Freeform::getInstance()->get('errorNotifications')->handleActivity($event, $formId ?? $this->integrationContext['formId'] ?? null, $submissionId ?? $this->integrationContext['submissionId'] ?? null, $metadata + array_intersect_key($this->integrationContext, array_flip(['integrationId', 'attempt', 'operationId'])));
+                }
+            } catch (\Throwable) {
+                // Alert delivery must not change recording or the operation being observed.
+            }
+        }
+
         try {
             if ($this->unavailable || $this->written >= self::MAX_EVENTS_PER_REQUEST || !isset(ActivityPolicy::EVENTS[$event])) {
                 return;
@@ -228,7 +240,7 @@ class ActivityService extends BaseService
             $settings = $this->getSettingsService()->getSettingsModel();
 
             return (int) \Craft::$app->getCache()->getOrSet(['freeform-activity-errors', $settings->activityRetentionDays], static fn () => (new Query())->from(ActivityTable::TABLE)
-                ->where(['level' => 'error'])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
+                ->where(['level' => 'error', 'resolvedAt' => null])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
         } catch (\Throwable) {
             return 0;
         }
@@ -239,9 +251,65 @@ class ActivityService extends BaseService
         try {
             $days = $this->getSettingsService()->getSettingsModel()->activityRetentionDays;
             \Craft::$app->getCache()->delete(['freeform-activity-errors', $days]);
+            \Craft::$app->getCache()->delete(['freeform-activity-operational-warnings', $days]);
         } catch (\Throwable) {
             // A stale badge must never interrupt cleanup.
         }
+    }
+
+    public function getOperationalWarningCount(): int
+    {
+        try {
+            $settings = $this->getSettingsService()->getSettingsModel();
+
+            return (int) \Craft::$app->getCache()->getOrSet(['freeform-activity-operational-warnings', $settings->activityRetentionDays], static fn () => (new Query())->from(ActivityTable::TABLE)
+                ->where(['level' => 'warning', 'category' => 'system', 'resolvedAt' => null])->andWhere(['>=', 'dateCreated', self::cutoff($settings)])->count(), 60);
+        } catch (\Throwable) {
+            return 0;
+        }
+    }
+
+    /** Latest retained errors and operational warnings inside a digest's UTC interval. */
+    public function getOperationalEvents(\DateTimeInterface $start, \DateTimeInterface $end, int $limit = 5): array
+    {
+        try {
+            $settings = $this->getSettingsService()->getSettingsModel();
+            $utc = new \DateTimeZone('UTC');
+
+            return (new Query())->from(ActivityTable::TABLE)
+                ->where(['or', ['level' => 'error'], ['level' => 'warning', 'category' => 'system']])
+                ->andWhere(['resolvedAt' => null])
+                ->andWhere(['>=', 'dateCreated', self::cutoff($settings)])
+                ->andWhere(['>=', 'dateCreated', \DateTimeImmutable::createFromInterface($start)->setTimezone($utc)->format('Y-m-d H:i:s')])
+                ->andWhere(['<=', 'dateCreated', \DateTimeImmutable::createFromInterface($end)->setTimezone($utc)->format('Y-m-d H:i:s')])
+                ->orderBy(['dateCreated' => \SORT_DESC, 'id' => \SORT_DESC])->limit(max(1, min(50, $limit)))->all()
+            ;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    /** Resolve only the observed events, so new failures in the same submission stay open. */
+    public function setResolved(int $eventId, int $throughId, bool $resolved, bool $submission = false): int
+    {
+        if ($eventId < 1 || $throughId < $eventId) {
+            throw new \InvalidArgumentException('Invalid activity resolution target.');
+        }
+        $row = (new Query())->from(ActivityTable::TABLE)->where(['id' => $eventId])->one();
+        if (!$row) {
+            return 0;
+        }
+        $condition = ['and',
+            ['or', ['level' => 'error'], ['level' => 'warning', 'category' => 'system']],
+            ['<=', 'id', $throughId],
+            ['>=', 'dateCreated', self::cutoff($this->getSettingsService()->getSettingsModel())],
+            $submission && $row['submissionId'] ? ['formId' => $row['formId'], 'submissionId' => $row['submissionId']] : ['id' => $eventId],
+            $resolved ? ['resolvedAt' => null] : ['not', ['resolvedAt' => null]],
+        ];
+        $count = \Craft::$app->getDb()->createCommand()->update(ActivityTable::TABLE, ['resolvedAt' => $resolved ? gmdate('Y-m-d H:i:s') : null], $condition)->execute();
+        $this->invalidateErrorCount();
+
+        return $count;
     }
 
     /** Bounded cleanup; expired records are also excluded from reads while cleanup catches up. */

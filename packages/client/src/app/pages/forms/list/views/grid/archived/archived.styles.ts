@@ -7,7 +7,7 @@ export const Wrapper = styled.section`
   border: 1px solid ${colors.hairline};
   border-radius: 6px;
   overflow: hidden;
-  background: #fff;
+  background: var(--pane-bg, #fff);
   container: archived-forms / inline-size;
   h2 { margin: 0; padding: 0; }
 `;
@@ -41,8 +41,8 @@ export const Count = styled.span`
   min-width: 24px;
   padding: 0 7px;
   border-radius: 12px;
-  background: #e1e7ef;
-  color: #5b6c7e;
+  background: var(--ui-control-bg-color);
+  color: var(--light-text-color);
   font-size: 12px;
   line-height: 22px;
 `;

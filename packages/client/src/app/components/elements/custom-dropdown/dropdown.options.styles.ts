@@ -37,12 +37,13 @@ export const CheckMark = styled.div`
   font-size: 18px;
   font-weight: bold;
 
-  fill: ${colors.gray500};
+  fill: ${colors.text};
 `;
 
 export const LabelIcon = styled.div``;
 
 export const LabelContainer = styled.div`
+  fill: currentColor;
   display: inline-flex;
   justify-content: start;
   align-items: center;
@@ -55,7 +56,7 @@ export const LabelContainer = styled.div`
 `;
 
 export const LabelValueDisplay = styled.div`
-  color: ${colors.gray300};
+  color: ${colors.muted};
   font-size: 11px;
   font-style: italic;
   line-height: 11px;
@@ -80,7 +81,7 @@ export const Label = styled.label`
 
   &:hover {
     cursor: pointer;
-    background-color: ${colors.gray050};
+    background-color: var(--ui-control-hover-bg-color);
     color: ${colors.gray700};
 
     ${CheckMark} {
@@ -91,21 +92,21 @@ export const Label = styled.label`
   &.has-children {
     position: relative;
 
-    padding-left: 12px;
+    padding: 10px 14px 4px;
 
     text-transform: uppercase;
     font-weight: bold;
 
     font-size: 12px;
 
-    color: #7d8c9d;
+    color: ${colors.muted};
     fill: currentColor;
 
     > ${LabelContainer} {
       position: relative;
 
-      padding: 0 10px;
-      background-color: ${colors.gray050};
+      padding: 0;
+      background-color: transparent;
 
       z-index: 1;
     }
@@ -115,16 +116,7 @@ export const Label = styled.label`
       background-color: transparent;
     }
 
-    &:before {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 13px;
 
-      height: 1px;
-      background-color: ${colors.gray200};
-    }
   }
 `;
 
@@ -133,7 +125,7 @@ export const Item = styled.li`
 
   &.focused {
     > ${Label} {
-      background-color: ${colors.gray050};
+      background-color: var(--ui-control-hover-bg-color);
       color: ${colors.gray700};
 
       > ${CheckMark} {
@@ -149,7 +141,7 @@ export const Item = styled.li`
 
   &.empty {
     > ${Label} {
-      color: ${colors.gray300};
+      color: ${colors.muted};
       font-style: italic;
 
       &:hover {
@@ -162,7 +154,7 @@ export const Item = styled.li`
         background-color: transparent;
 
         &:hover {
-          background-color: ${colors.gray050};
+          background-color: var(--ui-control-hover-bg-color);
           color: ${colors.gray700};
         }
 

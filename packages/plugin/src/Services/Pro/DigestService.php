@@ -3,9 +3,12 @@
 namespace Solspace\Freeform\Services\Pro;
 
 use Carbon\Carbon;
+use craft\helpers\UrlHelper;
 use craft\web\View;
 use Solspace\Freeform\Bundles\Digest\Providers\DigestLoggerProvider;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityPolicy;
+use Solspace\Freeform\Library\Activity\ActivityPresentation;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\FeedMessageRecord;
@@ -140,8 +143,10 @@ class DigestService extends Component
                 'rangeStart' => $rangeStart,
                 'rangeEnd' => $rangeEnd,
                 'forms' => $this->getFormData($rangeStart, $rangeEnd),
-                'errors' => $this->getErrorData($rangeStart, $rangeEnd),
-                'updates' => $this->getUpdateData(),
+                'errors' => $isFullDigest ? $this->getErrorData($rangeStart, $rangeEnd) : [],
+                'updates' => $isFullDigest ? $this->getUpdateData() : [],
+                'loggingStyle' => Freeform::getInstance()->getSettings()->getEffectiveLoggingStyle(),
+                'activityRetentionDays' => max(1, min(365, Freeform::getInstance()->getSettings()->activityRetentionDays)),
             ]
         );
 
@@ -307,13 +312,30 @@ class DigestService extends Component
 
     private function getErrorData(Carbon $rangeStart, Carbon $rangeEnd): array
     {
-        $logReader = Freeform::getInstance()->logger->getLogReader();
+        $plugin = Freeform::getInstance();
+        $style = $plugin->getSettings()->getEffectiveLoggingStyle();
+        if ('activity' === $style) {
+            return array_map(static function ($row) {
+                $row = ActivityPresentation::present($row);
 
+                return ['date' => $row['dateCreated'], 'level' => ucfirst($row['level']), 'channel' => Freeform::t(ActivityPolicy::CATEGORY_LABELS[$row['category']]), 'message' => $row['title'], 'url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'eventId' => $row['id']])];
+            }, $plugin->get('activity')->getOperationalEvents($rangeStart, $rangeEnd));
+        }
+        if ('classic' !== $style) {
+            return [];
+        }
         $data = [];
-        foreach ($logReader->getLines(5) as $line) {
-            $date = $line->getDate();
-            if ($date && $rangeStart->lte($date) && $rangeEnd->gte($date)) {
-                $data[] = $line;
+        foreach (['error-log' => null, 'integrations-log' => 'freeform-integrations.log', 'email-log' => 'freeform-email.log'] as $route => $file) {
+            foreach ($plugin->logger->getLogReader($file) as $line) {
+                if (!$line || !\in_array(strtolower($line->getLevel()), ['error', 'critical', 'alert', 'emergency', 'warning'], true)) {
+                    continue;
+                }
+                $date = $line->getDate();
+                if ($rangeStart->lte($date) && $rangeEnd->gte($date)) {
+                    $data[] = ['date' => $date, 'level' => $line->getLevel(), 'channel' => $line->getChannel(), 'message' => $line->getMessage(), 'url' => UrlHelper::cpUrl('freeform/settings/'.$route)];
+                    usort($data, static fn ($a, $b) => $b['date'] <=> $a['date']);
+                    $data = \array_slice($data, 0, 5);
+                }
             }
         }
 

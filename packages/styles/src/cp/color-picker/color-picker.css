@@ -84,7 +84,7 @@
   min-width: 0;
   padding: 5px 9px;
   line-height: 20px;
-  background: var(--white, #fff);
+  background: var(--input-bg, #fff);
 }
 .ff-color-picker .ff-color-custom:disabled,
 .ff-color-picker .ff-color-swatch:disabled,
@@ -120,7 +120,7 @@
     "Segoe UI",
     sans-serif;
   color: var(--gray-700, #3f4d5a);
-  background: var(--white, #fff);
+  background: var(--modal-bg, #fff);
   border: 1px solid var(--gray-200, #cdd8e4);
   border-radius: 6px;
   box-shadow: 0 7px 24px rgb(31 41 51 / 18%);

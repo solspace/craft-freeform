@@ -13,7 +13,7 @@ class ActivityPresentation
         $decoded = \is_array($row['metadata'] ?? null) ? $row['metadata'] : json_decode($row['metadata'] ?? '{}', true);
         $metadata = ActivityPolicy::metadata(\is_array($decoded) ? $decoded : []);
         $reason = $metadata['reasonCode'] ?? ('integration-error' === $row['event'] ? ActivityContext::httpReason($metadata['httpStatus'] ?? 0) : null);
-        $diagnostic = ActivityContext::REASONS[$reason] ?? null;
+        $diagnostic = null !== $reason ? (ActivityContext::REASONS[$reason] ?? null) : null;
         $row['title'] = Freeform::t($diagnostic[0] ?? $definition[1]);
         $row['description'] = Freeform::t($diagnostic[1] ?? $definition[2]);
         $row['metadata'] = $metadata;
@@ -21,6 +21,8 @@ class ActivityPresentation
         $row['recordedAt'] = $row['dateCreated']->format(\DATE_ATOM);
         $row['level'] = $definition[3];
         $row['category'] = $definition[4];
+        $row['actionable'] = 'error' === $row['level'] || ('warning' === $row['level'] && 'system' === $row['category']);
+        $row['isResolved'] ??= !empty($row['resolvedAt']);
         $row['context'] = [];
         $row['changes'] = [];
         $row['previewFacts'] = [];

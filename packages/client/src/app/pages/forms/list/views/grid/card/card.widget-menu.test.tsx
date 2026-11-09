@@ -7,6 +7,18 @@ import { WidgetTypeMenu } from "./card.widget-menu";
 vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string) => text,
 }));
+const permission = vi.hoisted(() => ({ activity: true }));
+vi.mock("@config/freeform/freeform.config", () => ({
+  default: {
+    metadata: {
+      freeform: {
+        get canViewActivity() {
+          return permission.activity;
+        },
+      },
+    },
+  },
+}));
 let host: HTMLDivElement, root: Root;
 const select = vi.fn();
 beforeEach(async () => {
@@ -14,6 +26,7 @@ beforeEach(async () => {
     globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
   ).IS_REACT_ACT_ENVIRONMENT = true;
   select.mockReset();
+  permission.activity = true;
   host = document.createElement("div");
   document.body.append(host);
   root = createRoot(host);
@@ -35,6 +48,7 @@ it.each([
   ["Radial Chart", "radial"],
   ["Recent Submissions", "recent"],
   ["Quick Form", "quick-form"],
+  ["Activity & Health", "activity-health"],
 ])("selects %s and closes the menu", async (label, type) => {
   const trigger = host.querySelector("button");
   await act(async () => {
@@ -48,6 +62,7 @@ it.each([
     "Radial Chart",
     "Recent Submissions",
     "Quick Form",
+    "Activity & Health",
   ]);
   await act(async () =>
     buttons.find((button) => button.textContent === label).click(),
@@ -71,4 +86,12 @@ it("dismisses with Escape without selecting a widget", async () => {
   );
   expect(document.querySelector('[role="dialog"]')).toBeNull();
   expect(select).not.toHaveBeenCalled();
+});
+
+it("does not offer log data to users without log access", async () => {
+  permission.activity = false;
+  await act(async () => host.querySelector("button").click());
+  expect(document.querySelector('[role="dialog"]').textContent).not.toContain(
+    "Activity & Health",
+  );
 });

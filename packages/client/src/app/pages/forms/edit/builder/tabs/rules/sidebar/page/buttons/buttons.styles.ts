@@ -22,7 +22,7 @@ export const Button = styled.button`
 
   border: 2px solid transparent;
   border-radius: ${borderRadius.lg};
-  background-color: rgba(96, 125, 159, 0.25);
+  background-color: var(--ui-control-bg-color);
 
   font-size: 12px;
   line-height: 12px;
@@ -34,24 +34,24 @@ export const Button = styled.button`
   transition: background-color 0.2s ease-out;
 
   &.active {
-    background-color: ${colors.gray600};
-    color: white;
+    background-color: var(--bg-selection-dark);
+    color: ${colors.text};
   }
 
   &:hover:not(.active) {
-    background-color: rgba(96, 125, 159, 0.3);
+    background-color: var(--ui-control-hover-bg-color);
   }
 
   &.submit {
-    background-color: ${colors.gray600};
-    color: ${colors.white};
+    background-color: var(--bg-selection-dark);
+    color: ${colors.text};
 
     &.active {
-      background-color: ${colors.gray900};
+      background-color: var(--ui-control-active-bg-color);
     }
 
     &:hover:not(.active) {
-      background-color: ${colors.gray900};
+      background-color: var(--ui-control-active-bg-color);
     }
   }
 

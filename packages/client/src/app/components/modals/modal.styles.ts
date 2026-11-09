@@ -12,7 +12,7 @@ export const ModalOverlay = styled(animated.div)`
   bottom: 0;
   z-index: 1000;
 
-  background-color: rgba(123, 135, 147, 0);
+  background-color: var(--shade-bg, rgba(31, 41, 51, .5));
 
   &.inactive {
     pointer-events: none;
@@ -36,9 +36,9 @@ export const ModalContainer = styled.div`
   width: 100%;
   max-width: 500px;
 
-  background-color: #fff;
+  background-color: var(--modal-bg, #fff);
   border-radius: ${borderRadius.lg};
-  box-shadow: 0 25px 100px rgba(31, 41, 51, 0.5);
+  box-shadow: var(--modal-shadow, 0 25px 100px rgba(31, 41, 51, .5));
 `;
 
 export const ModalHeader = styled.header`

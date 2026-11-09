@@ -8,14 +8,14 @@ class ActivityPolicy
     public const MODES = ['minimal', 'standard', 'detailed', 'custom'];
 
     public const CATEGORY_LABELS = ['system' => 'System', 'submissions' => 'Submissions', 'spam' => 'Spam', 'email' => 'Email', 'integrations' => 'Integrations', 'forms' => 'Forms'];
-    public const LEVEL_LABELS = ['error' => 'Error', 'warning' => 'Warning', 'success' => 'Success', 'info' => 'Information'];
+    public const LEVEL_LABELS = ['error' => 'Error', 'warning' => 'Warning', 'notice' => 'Notice', 'success' => 'Success', 'info' => 'Information'];
 
     public const EVENTS = [
         'error' => ['Errors', 'System error', 'Freeform reported an error. Review related events, the affected configuration, and any sanitized technical details.', 'error', 'system'],
         'warning' => ['Warnings', 'Operational warning', 'Freeform reported a warning. Review related events, the affected configuration, and any sanitized technical details.', 'warning', 'system'],
         'submission' => ['Saved submissions', 'Submission saved', 'The submission was saved in Freeform.', 'success', 'submissions'],
-        'validation' => ['Failed validation', 'Validation failed', 'A form submission attempt did not pass validation. Field values and validation messages are not recorded.', 'warning', 'submissions'],
-        'spam' => ['Spam outcomes', 'Submission flagged as spam', 'Spam protection flagged this submission or submission attempt.', 'warning', 'spam'],
+        'validation' => ['Failed validation', 'Validation failed', 'A form submission attempt did not pass validation. Field values and validation messages are not recorded.', 'notice', 'submissions'],
+        'spam' => ['Spam outcomes', 'Submission flagged as spam', 'Spam protection flagged this submission or submission attempt.', 'notice', 'spam'],
         'email-error' => ['Email failures', 'Email failed', 'Email processing reported a failure. Review related email events, email configuration, and mail transport settings.', 'error', 'email'],
         'email-sent' => ['Email handoffs', 'Email accepted by mail transport', 'The mail transport accepted the email. Inbox delivery has not been confirmed.', 'success', 'email'],
         'email-skipped' => ['Cancelled emails', 'Notification cancelled', 'A notification was cancelled before reaching the mail transport.', 'info', 'email'],

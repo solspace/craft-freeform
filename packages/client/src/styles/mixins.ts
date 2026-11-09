@@ -40,7 +40,7 @@ export const labelText = css`
     sans-serif;
   font-weight: bold;
   text-transform: uppercase;
-  color: rgb(154 165 177 / 75%);
+  color: var(--light-text-color, rgb(154 165 177 / 75%));
 `;
 
 export const errorAlert = css`

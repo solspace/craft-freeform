@@ -1,5 +1,5 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import { spacings } from "@ff-client/styles/variables";
+import { colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
@@ -13,6 +13,7 @@ export const FieldListWrapper = styled(animated.div)`
   overflow-x: hidden;
 
   height: 100%;
+  background: ${colors.mutedSurface};
   ${scrollBar};
 
   &.fields-disabled {

@@ -2,9 +2,9 @@ import translate from "@ff-client/utils/translations";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import solspaceAiIcon from "../../../../../plugin/src/Integrations/AI/SolspaceAI/icon.svg";
-import analyzeIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/analyze.svg";
-import generateIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/generate.svg";
-import spamIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/spam.svg";
+import analyzeIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/analyze.svg?raw";
+import generateIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/generate.svg?raw";
+import spamIllustration from "../../../../../plugin/src/Resources/icons/service-introduction/spam.svg?raw";
 
 import "../../../../../styles/src/cp/service-introduction/service-introduction.css";
 
@@ -20,18 +20,17 @@ const Feature = ({
   example: string;
 }) => (
   <section className="ff-service-feature">
-    <img
+    <span
       className="ff-service-usecase-illustration"
-      src={
-        {
+      aria-hidden="true"
+      dangerouslySetInnerHTML={{
+        // Trusted local artwork must be inline to inherit Craft's theme variables.
+        __html: {
           form: generateIllustration,
           text: analyzeIllustration,
           shield: spamIllustration,
-        }[kind]
-      }
-      alt=""
-      width="240"
-      height="110"
+        }[kind],
+      }}
     />
     <h3>{title}</h3>
     <span className="ff-service-example">{example}</span>

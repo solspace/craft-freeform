@@ -25,9 +25,9 @@ export const CodeBlock = styled.div`
   align-items: start;
   gap: ${spacings.sm};
   padding: ${spacings.sm};
-  border: 1px solid ${colors.gray200};
+  border: 1px solid ${colors.border};
   border-radius: ${borderRadius.md};
-  background: ${colors.gray050};
+  background: ${colors.canvas};
 
   code {
     min-width: 0;

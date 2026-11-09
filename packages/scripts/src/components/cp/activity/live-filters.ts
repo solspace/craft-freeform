@@ -37,7 +37,7 @@ export function initializeActivityFilters(
       if (
         typeof value === "string" &&
         value !== "" &&
-        !(["category", "level"].includes(name) && value === "all")
+        !(["category", "level", "resolution"].includes(name) && value === "all")
       )
         url.searchParams.set(name, value);
     });
@@ -79,7 +79,7 @@ export function initializeActivityFilters(
     syncViewForm();
     const data = new FormData(form);
     const filtered =
-      ["q", "category", "level", "submissionId"].some(
+      ["q", "category", "level", "resolution", "submissionId", "days"].some(
         (name) =>
           !!data.get(name) && !(name !== "q" && data.get(name) === "all"),
       ) || !!Number(data.get("formId"));
@@ -179,6 +179,11 @@ export function initializeActivityFilters(
     if (submission) {
       submission.value = url.searchParams.get("submissionId") || "";
       submission.disabled = submission.value === "";
+    }
+    const days = form.querySelector<HTMLInputElement>('input[name="days"]');
+    if (days) {
+      days.value = url.searchParams.get("days") || "";
+      days.disabled = days.value === "";
     }
   };
   const onPopState = (): void => {

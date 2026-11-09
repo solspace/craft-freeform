@@ -9,9 +9,11 @@
   font-size: 11px;
   font-weight: 700;
   line-height: 16px;
-  color: #246344;
-  background: #e1f1e7;
-  border: 1px solid #a7cdb7;
+  color: var(--fg-success, #246344);
+  background:
+    linear-gradient(var(--bg-success, #e1f1e7), var(--bg-success, #e1f1e7)),
+    var(--pane-bg, #fff);
+  border: 1px solid var(--border-success, #a7cdb7);
   border-radius: 3px;
 }
 

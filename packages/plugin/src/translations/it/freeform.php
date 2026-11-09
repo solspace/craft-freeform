@@ -12,6 +12,8 @@
  */
 
 return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php', require __DIR__.'/setup.php', [
+    'The callback URL must use this site’s origin: {origin}.' => 'L’URL di callback deve utilizzare l’origine di questo sito: {origin}.',
+    'Authorization could not be completed. Check the integration settings and the Freeform integration log, then try again.' => 'Impossibile completare l’autorizzazione. Controlla le impostazioni dell’integrazione e il registro delle integrazioni di Freeform, quindi riprova.',
     'Full Access' => 'Accesso completo',
     'Start with every option enabled, then turn off what you do not need.' => 'Inizia con tutte le opzioni attive, poi disattiva quelle che non ti servono.',
     'Simplified Building' => 'Creazione semplificata',

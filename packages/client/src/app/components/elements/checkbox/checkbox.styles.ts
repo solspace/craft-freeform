@@ -1,47 +1,49 @@
+import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const CheckboxElement = styled.input`
   position: relative;
-
   appearance: none;
-  display: grid;
+  display: inline-grid;
   place-content: center;
-
-  width: 1.15em;
-  height: 1.15em;
+  flex: 0 0 16px;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
   margin: 0;
-
-  background-color: #fbfcfe;
-  border: 1px solid #b9c6d7;
+  padding: 0;
+  background: ${colors.inputBackground};
+  border: 1px solid ${colors.inputBorder};
   border-radius: 3px;
+  color: ${colors.text};
+  vertical-align: middle;
 
-  font: inherit;
-  color: currentColor;
-  transform: translateY(-0.075em);
+  &:focus { outline: none; }
+  &:focus-visible { box-shadow: var(--focus-ring); }
+  &:hover:not(:disabled) { cursor: pointer; border-color: ${colors.muted}; }
+  &:disabled { opacity: .5; cursor: not-allowed; }
 
-  &:focus {
-    outline: none;
+  &::before {
+    content: '';
+    display: block;
+    box-sizing: border-box;
+    width: 5px;
+    height: 9px;
+    margin-top: -2px;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
   }
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:before {
-    content: 'check';
-
-    position: absolute;
-    top: -1px;
-    left: 1px;
-
-    font-family: Craft;
-    transform: scale(0);
-    transition: 80ms transform ease-in-out;
-  }
-
   &:checked {
-    &:before {
-      transform: scale(1);
-    }
+    background: var(--ui-control-selected-bg, var(--gray-500));
+    border-color: var(--ui-control-selected-border, var(--gray-500));
+    color: var(--ui-control-selected-color, #fff);
+    &::before { transform: rotate(45deg) scale(1); }
+  }
+  &:indeterminate {
+    background: var(--ui-control-selected-bg, var(--gray-500));
+    border-color: var(--ui-control-selected-border, var(--gray-500));
+    color: var(--ui-control-selected-color, #fff);
+    &::before { width: 8px; height: 2px; border: 0; margin: 0; background: currentColor; transform: none; }
   }
 `;

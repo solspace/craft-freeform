@@ -34,7 +34,7 @@ export const DropZone = styled(animated.div)`
 export const EmptyLayout = styled.div`
   padding: ${spacings.sm} ${spacings.lg};
 
-  color: ${colors.gray300};
+  color: ${colors.muted};
   font-size: 18px;
   text-align: left;
 `;

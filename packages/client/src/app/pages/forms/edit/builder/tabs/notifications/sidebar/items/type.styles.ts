@@ -41,5 +41,5 @@ export const NotificationItemEmpty = styled.div`
   font-style: italic;
   font-size: 12px;
 
-  color: ${colors.gray300};
+  color: ${colors.muted};
 `;

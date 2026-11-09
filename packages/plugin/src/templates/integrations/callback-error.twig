@@ -65,5 +65,10 @@
         {{ "Please check your credentials and try again, or contact support."|t('freeform') }}
     </p>
 </div>
+<script>
+    if (window.opener) {
+        window.opener.postMessage({ type: 'oauth2', status: 'error' }, window.location.origin);
+    }
+</script>
 </body>
 </html>

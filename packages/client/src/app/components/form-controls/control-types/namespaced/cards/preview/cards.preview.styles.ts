@@ -56,7 +56,7 @@ export const Label = styled.div`
 export const Description = styled.div`
   grid-area: description;
 
-  color: ${colors.gray300};
+  color: ${colors.muted};
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;

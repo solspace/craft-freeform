@@ -1,3 +1,4 @@
+import config from "@config/freeform/freeform.config";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import translate from "@ff-client/utils/translations";
 import {
@@ -41,6 +42,11 @@ const choices = [
     type: "quick-form",
     label: "Quick Form",
     path: "M4 3h16v18H4ZM8 7h8M8 11h8M8 15h4",
+  },
+  {
+    type: "activity-health",
+    label: "Activity & Health",
+    path: "M3 12h4l3-8 4 16 3-8h4",
   },
 ] as const;
 
@@ -109,30 +115,36 @@ export const WidgetTypeMenu = ({
               })}
             >
               <ul>
-                {choices.map(({ type, label, path }) => (
-                  <li key={type}>
-                    <Choice
-                      type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        onSelect(type);
-                      }}
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.7"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                {choices
+                  .filter(
+                    ({ type }) =>
+                      type !== "activity-health" ||
+                      config.metadata?.freeform?.canViewActivity,
+                  )
+                  .map(({ type, label, path }) => (
+                    <li key={type}>
+                      <Choice
+                        type="button"
+                        onClick={() => {
+                          setOpen(false);
+                          onSelect(type);
+                        }}
                       >
-                        <path d={path} />
-                      </svg>
-                      {translate(label)}
-                    </Choice>
-                  </li>
-                ))}
+                        <svg
+                          viewBox="0 0 24 24"
+                          aria-hidden="true"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.7"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d={path} />
+                        </svg>
+                        {translate(label)}
+                      </Choice>
+                    </li>
+                  ))}
               </ul>
             </ToolbarMenu>
           </FloatingFocusManager>

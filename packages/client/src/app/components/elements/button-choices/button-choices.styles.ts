@@ -21,7 +21,7 @@ export const ChoiceWrapper = styled.div`
   padding: 0;
   overflow-y: auto;
 
-  background-color: white;
+  background-color: var(--pane-bg, #fff);
   border: 0px solid #ccc;
   border-radius: 4px;
   box-shadow:

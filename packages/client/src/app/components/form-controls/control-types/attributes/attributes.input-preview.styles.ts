@@ -19,13 +19,13 @@ export const Name = styled.span`
 `;
 
 export const Operator = styled.span`
-  color: ${colors.gray300};
+  color: ${colors.muted};
 `;
 
 export const Quote = styled.span`
   &:before {
     content: '"';
-    color: ${colors.gray300};
+    color: ${colors.muted};
   }
 `;
 

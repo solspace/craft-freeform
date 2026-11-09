@@ -17,8 +17,8 @@ const FieldDragPlaceholderContainer = styled(animated.div)`
   pointer-events: none;
   user-select: none;
 
-  background-color: #e9effd;
-  border: 1px dashed #c3c3c3;
+  background-color: var(--bg-selection-light, #e9effd);
+  border: 1px dashed var(--link-color, #c3c3c3);
   border-radius: ${borderRadius.md};
 `;
 

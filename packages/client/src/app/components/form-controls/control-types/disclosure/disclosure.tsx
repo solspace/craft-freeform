@@ -6,9 +6,10 @@ import styled from "styled-components";
 
 const Panel = styled.div`
   width: 100%;
-  border: 1px solid var(--gray-200, #cdd8e4);
+  border: 1px solid var(--hairline-color, #cdd8e4);
   border-radius: 8px;
-  background: var(--white, #fff);
+  background: var(--pane-bg, #fff);
+  color: var(--text-color, #3f4d5a);
 `;
 
 const Header = styled.button`
@@ -21,7 +22,7 @@ const Header = styled.button`
   border: 0;
   border-radius: 7px;
   background: var(--gray-050, #f3f7fc);
-  color: var(--gray-600, #515f6c);
+  color: var(--text-color, #515f6c);
   text-align: start;
   font: inherit;
   font-weight: 600;
@@ -29,7 +30,8 @@ const Header = styled.button`
   cursor: pointer;
 
   &[aria-expanded='true'] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
-  &:focus-visible { outline: 2px solid #3476b8; outline-offset: 3px; }
+  &:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
+  &:hover:not(:disabled) { background: var(--ui-control-hover-bg-color, #e4edf6); }
   &:disabled { opacity: .55; cursor: default; }
   svg { display: block; width: 16px; height: 16px; transition: transform 200ms ease; }
   &[aria-expanded='true'] svg { transform: rotate(90deg); }
@@ -48,7 +50,7 @@ const Region = styled.div<{ $expanded: boolean }>`
     flex-direction: column;
     gap: 22px;
     padding: 18px 16px;
-    border-top: 1px solid var(--gray-200, #cdd8e4);
+    border-top: 1px solid var(--hairline-color, #cdd8e4);
   }
   @media (prefers-reduced-motion: reduce) { transition: none; }
 `;

@@ -44,7 +44,7 @@ export const Button = styled.span`
   border: 1px solid ${colors.gray300};
   border-radius: 4px;
   color: ${colors.gray600};
-  background: ${colors.white};
+  background: ${colors.surface};
   font-size: 10px;
   font-weight: 400;
   line-height: 14px;
@@ -52,9 +52,9 @@ export const Button = styled.span`
   svg { width: 12px; height: 12px; flex: 0 0 12px; }
   > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   &.submit {
-    border-color: ${colors.gray600};
-    background: ${colors.gray600};
-    color: ${colors.white};
+    border-color: var(--secondary-button-bg, ${colors.gray600});
+    background: var(--secondary-button-bg, ${colors.gray600});
+    color: var(--secondary-button-text-color, ${colors.white});
   }
 `;
 
@@ -67,7 +67,7 @@ export const LayoutBlock = styled.label`
   padding: 10px;
   border: 1px solid ${colors.gray200};
   border-radius: 6px;
-  background: ${colors.white};
+  background: ${colors.surface};
   cursor: pointer;
   transition: border-color 0.15s, background-color 0.15s;
 
@@ -78,12 +78,13 @@ export const LayoutBlock = styled.label`
     align-items: center;
     justify-content: space-between;
   }
-  input { position: static; flex: 0 0 12px; width: 12px; height: 12px; margin: 0; accent-color: #397fbe; }
-  &:hover { border-color: ${colors.gray400}; }
+  input { position: static; flex: 0 0 14px; width: 14px; height: 14px; box-sizing: border-box; margin: 0; accent-color: var(--ui-control-selected-border, ${colors.link}); }
+  &:hover { border-color: ${colors.muted}; }
   &:has(input:checked) {
-    border-color: #397fbe;
-    background: #edf5fc;
-    box-shadow: inset 0 0 0 1px #397fbe;
+    border-color: var(--ui-control-selected-border, ${colors.link});
+    background: var(--ui-control-selected-bg, var(--bg-selection-light, #edf5fc));
+    color: var(--ui-control-selected-color, ${colors.text});
+    box-shadow: inset 0 0 0 1px var(--ui-control-selected-border, ${colors.link});
   }
-  &:has(input:focus-visible) { outline: 2px solid #397fbe; outline-offset: 2px; }
+  &:has(input:focus-visible) { outline: 2px solid ${colors.link}; outline-offset: 2px; }
 `;

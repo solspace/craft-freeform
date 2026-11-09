@@ -59,9 +59,9 @@ export const StatusIndicator = styled.span`
   height: 12px;
 
   border-radius: 50%;
-  border: 2px solid ${colors.gray300};
+  border: 2px solid ${colors.muted};
 
-  color: ${colors.gray300};
+  color: ${colors.muted};
   font-size: 10px;
   font-weight: bold;
   line-height: 8px;
@@ -70,14 +70,14 @@ export const StatusIndicator = styled.span`
   &.active {
     border-color: transparent;
     background-color: ${colors.teal500};
-    color: ${colors.white};
+    color: ${colors.surface};
   }
 
   &.unsupported {
     border-style: dashed;
     border-width: 2px;
-    border-color: ${colors.gray200};
-    color: ${colors.gray300};
+    border-color: ${colors.muted};
+    color: ${colors.muted};
   }
 `;
 
@@ -101,28 +101,18 @@ export const Integration = styled.li`
     &:hover,
     &.active {
       cursor: pointer;
-      color: ${colors.white};
+      color: var(--text-color);
 
-      svg,
-      i {
-        path:not([fill='none']) {
-          fill: ${colors.gray100} !important;
-          color: ${colors.gray100};
-
-          &.inverted {
-            fill: ${colors.gray700} !important;
-            color: ${colors.gray700};
-          }
-        }
-      }
     }
 
     &:hover {
-      background: ${colors.gray300};
+      background: var(--ui-control-hover-bg-color);
+
+      .ff-integration-version { color: inherit; opacity: 0.8; }
 
       ${StatusIndicator} {
         &:not(.active) {
-          border-color: ${colors.gray500};
+          border-color: ${colors.text};
         }
 
         &.active {
@@ -132,12 +122,13 @@ export const Integration = styled.li`
     }
 
     &.active {
-      background: ${colors.gray500};
+      background: var(--ui-control-selected-bg, var(--gray-500));
+      color: var(--ui-control-selected-color, #fff);
 
       &:hover {
         ${StatusIndicator} {
           &:not(.active) {
-            border-color: ${colors.gray100};
+            border-color: currentColor;
           }
 
           &.active {
@@ -146,10 +137,13 @@ export const Integration = styled.li`
         }
       }
 
+      .ff-integration-version { color: inherit; opacity: 0.8; }
+
       ${StatusIndicator} {
+        &:not(.active) { border-color: currentColor; color: inherit; }
         &.active {
           background-color: ${colors.teal500};
-          color: ${colors.gray700};
+          color: ${colors.surface};
         }
       }
     }
@@ -170,8 +164,10 @@ export const Icon = styled.span`
   }
 `;
 
-export const Version = styled.span`
+export const Version = styled.span.attrs({
+  className: "ff-integration-version",
+})`
   font-size: 10px;
-  color: ${colors.gray300};
+  color: ${colors.muted};
   margin-left: auto;
 `;

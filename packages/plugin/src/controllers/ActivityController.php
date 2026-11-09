@@ -172,7 +172,17 @@ class ActivityController extends BaseController
             'nextUrl' => $rows && $pageNumber * ActivityFeed::PAGE_SIZE < $total ? UrlHelper::cpUrl('freeform/activity', array_merge($filters, ['before' => $nextCursor, 'page' => $pageNumber + 1])) : null,
         ];
 
+        // Match the Forms dashboard: retained, unresolved issues across all forms.
+        // Search and outcome filters must not hide issues from this summary.
+        $alertCounts = ['error' => 0, 'warning' => 0];
+        if (!$resultsOnly && !$unavailable) {
+            $activity = Freeform::getInstance()->get('activity');
+            $alertCounts = ['error' => $activity->getErrorCount(), 'warning' => $activity->getOperationalWarningCount()];
+        }
+
         return $this->renderTemplate($resultsOnly ? 'freeform/activity/_results' : 'freeform/activity/index', [
+            'alertCounts' => $alertCounts,
+            'alertRetentionDays' => max(1, min(365, $settings->activityRetentionDays)),
             'names' => ActivityPolicy::CATEGORY_LABELS,
             'levels' => ActivityPolicy::LEVEL_LABELS,
             'activityView' => $view,
@@ -313,6 +323,27 @@ class ActivityController extends BaseController
         \Craft::$app->getSession()->setNotice(Freeform::t('Activity cleanup is queued. Existing history will be cleared in the background. New events and technical log files will be kept.'));
 
         return $this->redirect(UrlHelper::cpUrl('freeform/activity'));
+    }
+
+    public function actionResolve(): Response
+    {
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_ACTIVITY_MANAGE);
+        $request = \Craft::$app->getRequest();
+
+        try {
+            $scope = $request->getBodyParam('scope', 'event');
+            if (!\in_array($scope, ['event', 'submission'], true)) {
+                throw new \InvalidArgumentException('Invalid activity resolution scope.');
+            }
+            $resolved = '1' === ActivityInput::enabled($request->getBodyParam('resolved', '1'));
+            Freeform::getInstance()->get('activity')->setResolved(ActivityInput::id($request->getBodyParam('eventId')), ActivityInput::id($request->getBodyParam('throughId')), $resolved, 'submission' === $scope);
+        } catch (\InvalidArgumentException $exception) {
+            throw new BadRequestHttpException($exception->getMessage());
+        }
+        \Craft::$app->getSession()->setNotice(Freeform::t($resolved ? 'Activity marked as resolved. History has been kept.' : 'Activity reopened. Unresolved issues appear in alerts again.'));
+
+        return $this->redirectToPostedUrl(null, UrlHelper::cpUrl('freeform/activity'));
     }
 
     public function present(array $row): array

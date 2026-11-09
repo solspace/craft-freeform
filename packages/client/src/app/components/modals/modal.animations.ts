@@ -5,13 +5,10 @@ import type { ModalType } from "./modal.types";
 
 export const useAnimateOverlay = (
   active: boolean,
-): SpringValues<{ opacity: number; backgroundColor: string }> =>
+): SpringValues<{ opacity: number }> =>
   useSpring({
     to: {
       opacity: active ? 1 : 0,
-      backgroundColor: active
-        ? "rgba(123, 135, 147, 0.35)"
-        : "rgba(123, 135, 147, 0)",
     },
   });
 

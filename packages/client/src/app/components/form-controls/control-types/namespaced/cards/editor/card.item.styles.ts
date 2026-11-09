@@ -18,7 +18,7 @@ export const Item = styled.li`
 
   padding: 12px 16px;
 
-  background-color: ${colors.white};
+  background-color: ${colors.surface};
   border: 1px solid #eee;
   border-radius: 8px;
 
@@ -32,7 +32,7 @@ export const Item = styled.li`
   }
 
   &:hover {
-    border-color: ${colors.gray300};
+    border-color: ${colors.muted};
   }
 `;
 

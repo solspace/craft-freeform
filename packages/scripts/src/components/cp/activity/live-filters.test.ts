@@ -45,10 +45,11 @@ describe("live Activity filters", () => {
     document.body.innerHTML = `<div data-activity-log>
       <form class="ff-activity-view-form"><input data-activity-view-filter type="hidden" name="q" value=""><button type="submit" name="view" value="submissions">By submission</button><button type="submit" name="view" value="events">Individual events</button></form>
       <form class="ff-activity-filters" action="/admin/freeform/activity?site=english">
-        <input name="q" value="">
+        <input type="hidden" name="days" value="" disabled><input name="q" value="">
         <select name="formId"><option value="0">All forms</option><option value="14">Contact</option><option value="20">Feedback</option></select>
         <select name="category"><option value="all">All activity</option><option value="email">Email</option></select>
         <select name="level"><option value="all">All outcomes</option><option value="error">Errors</option></select>
+        <select name="resolution"><option value="all">All resolutions</option><option value="open">Unresolved</option><option value="resolved">Resolved</option></select>
         <input type="hidden" name="view" value="submissions">
         <button data-activity-apply>Apply</button><span class="spinner hidden" data-activity-loading></span>
         <a data-activity-reset href="/admin/freeform/activity?site=english&view=submissions">Reset</a>
@@ -68,6 +69,28 @@ describe("live Activity filters", () => {
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
     document.body.innerHTML = "";
+  });
+
+  it("keeps the widget time window across filters and view changes, and clears it with Reset", async () => {
+    const days = root.querySelector<HTMLInputElement>('input[name="days"]')!;
+    days.value = "7";
+    days.disabled = false;
+    changeForm("14");
+    await settle();
+    expect(new URL(fetcher.mock.calls[0][0]).searchParams.get("days")).toBe(
+      "7",
+    );
+    expect(
+      root.querySelector<HTMLInputElement>(
+        '.ff-activity-view-form [name="days"]',
+      )!.value,
+    ).toBe("7");
+    root.querySelector<HTMLButtonElement>("[data-activity-reset]")!.click();
+    await settle();
+    expect(days.disabled || !days.value).toBe(true);
+    expect(new URL(fetcher.mock.lastCall![0]).searchParams.has("days")).toBe(
+      false,
+    );
   });
 
   it("updates immediately on selection, preserves controls, and keeps the view switch in sync", async () => {
@@ -94,6 +117,33 @@ describe("live Activity filters", () => {
     ).toBe("14");
     expect(window.location.search).toContain("formId=14");
     expect(bind).toHaveBeenCalledTimes(1);
+  });
+
+  it("preserves the resolution filter when switching views and clears it with Reset", async () => {
+    const resolution = root.querySelector<HTMLSelectElement>(
+      'select[name="resolution"]',
+    )!;
+    resolution.value = "open";
+    resolution.dispatchEvent(new Event("change", { bubbles: true }));
+    await settle();
+    expect(
+      new URL(fetcher.mock.calls[0][0]).searchParams.get("resolution"),
+    ).toBe("open");
+    expect(
+      new FormData(
+        root.querySelector<HTMLFormElement>(".ff-activity-view-form")!,
+      ).get("resolution"),
+    ).toBe("open");
+    const reset = root.querySelector<HTMLAnchorElement>(
+      "[data-activity-reset]",
+    )!;
+    expect(reset.getAttribute("aria-disabled")).toBe("false");
+    reset.click();
+    await settle();
+    expect(resolution.value).toBe("all");
+    expect(
+      new URL(fetcher.mock.calls[1][0]).searchParams.has("resolution"),
+    ).toBe(false);
   });
 
   it("submits a changed view even when Craft's button handler prevents default submission", async () => {

@@ -9,13 +9,13 @@ export type TooltipTheme = "dark" | "light";
 
 const themeStyles = {
   dark: css`
-    background: ${colors.gray800};
-    border: 1px solid ${colors.gray800};
+    background: #33404d;
+    border: 1px solid #33404d;
     box-shadow: 0 10px 24px rgb(8 15 24 / 18%);
     color: ${colors.white};
   `,
   light: css`
-    background: ${colors.white};
+    background: ${colors.overlay};
     border: 1px solid ${colors.gray100};
     box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
     color: ${colors.gray800};

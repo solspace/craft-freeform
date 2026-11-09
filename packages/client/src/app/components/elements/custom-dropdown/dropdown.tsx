@@ -233,7 +233,19 @@ export const Dropdown: React.FC<DropdownProps> = ({
               }}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <ListWrapper>
+            <ListWrapper
+              style={{
+                maxHeight: Math.max(
+                  120,
+                  Math.min(
+                    300,
+                    window.innerHeight -
+                      (containerRef.current?.getBoundingClientRect().top ?? 0) -
+                      50,
+                  ),
+                ),
+              }}
+            >
               <Options
                 options={filteredOptions}
                 value={value}

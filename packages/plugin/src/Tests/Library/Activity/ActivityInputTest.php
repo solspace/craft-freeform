@@ -21,7 +21,7 @@ class ActivityInputTest extends TestCase
 
     public function testAllChoicesNormalizeToAnUnfilteredQuery(): void
     {
-        self::assertSame(ActivityInput::filters([]), ActivityInput::filters(['category' => 'all', 'level' => 'all']));
+        self::assertSame(ActivityInput::filters([]), ActivityInput::filters(['category' => 'all', 'level' => 'all', 'resolution' => 'all']));
     }
 
     #[TestWith([['q' => ['private@example.test']]])]
@@ -29,6 +29,11 @@ class ActivityInputTest extends TestCase
     #[TestWith([['submissionId' => '-1']])]
     #[TestWith([['category' => 'unknown']])]
     #[TestWith([['level' => 'unknown']])]
+    #[TestWith([['days' => '366']])]
+    #[TestWith([['days' => ['7']]])]
+    #[TestWith([['days' => '-1']])]
+    #[TestWith([['resolution' => 'unknown']])]
+    #[TestWith([['resolution' => ['open']]])]
     public function testMalformedFiltersAreRejectedWithoutSerializingTheirValues(array $params): void
     {
         try {

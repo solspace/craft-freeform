@@ -28,6 +28,7 @@ import "tinymce/plugins/table";
 
 import type { InputControl } from "../../template.modal.types";
 
+import { setupNotificationEditorAppearance } from "./editor-appearance";
 import { registerFormTokens } from "./tokens/tokens.plugin";
 
 registerFormTokens(tinymce);
@@ -55,6 +56,7 @@ export const HtmlBodyInput: FC<InputControl> = (props) => {
             statusbar: true,
             promotion: false,
             content_css: stylesPath,
+            setup: setupNotificationEditorAppearance,
             store,
             queryClient,
           }}

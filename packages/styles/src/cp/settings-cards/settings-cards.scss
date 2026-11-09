@@ -14,8 +14,8 @@
 .ff-settings-choice,
 .ff-choice-card-illustrated {
   --choice-color: #617488;
-  --choice-wash: #f1f5f9;
-  --choice-border: #cbd8e4;
+  --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
 }
 
 .ff-settings-choice {
@@ -28,21 +28,21 @@
 }
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=blue] {
-  --choice-color: #3476b8;
-  --choice-wash: #edf5fd;
-  --choice-border: #b5cfe9;
+  --choice-color: light-dark(#3476b8, #82b2e2);
+  --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
 }
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=purple] {
-  --choice-color: #8657c5;
-  --choice-wash: #f5effc;
-  --choice-border: #cfb9e8;
+  --choice-color: light-dark(#8657c5, #b89adb);
+  --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
 }
 
 :is(.ff-settings-choice, .ff-choice-card-illustrated)[data-tone=teal] {
-  --choice-color: #2e8b81;
-  --choice-wash: #edf8f5;
-  --choice-border: #a9d4cb;
+  --choice-color: light-dark(#2e8b81, #64c9bc);
+  --choice-wash: color-mix(in srgb, var(--choice-color) 10%, var(--pane-bg, white));
+  --choice-border: color-mix(in srgb, var(--choice-color) 30%, var(--hairline-color));
 }
 
 .ff-settings-choice .radio + label {
@@ -82,14 +82,13 @@
 
 .ff-settings-choice:has(.radio:checked) {
   border-color: var(--choice-color);
-  background: var(--choice-wash);
-  box-shadow: 0 0 0 2px var(--choice-color), 0 5px 18px rgba(63, 107, 154, 0.08);
+  background: color-mix(in srgb, var(--choice-color) 4%, var(--card-surface));
+  box-shadow: none;
 }
 
 .ff-settings-choice:has(.radio:not(:disabled)):hover {
   border-color: var(--choice-color);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(63, 107, 154, 0.0823529412);
+  box-shadow: none;
 }
 
 .ff-settings-choice:has(.radio:focus-visible) {
@@ -267,7 +266,7 @@
 }
 .ff-settings-helper {
   --helper-color: #617488;
-  --helper-wash: #f1f5f9;
+  --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -279,22 +278,22 @@
 
 .ff-settings-helper[data-tone=red] {
   --helper-color: #b53748;
-  --helper-wash: #fff0f1;
+  --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
 }
 
 .ff-settings-helper[data-tone=orange] {
   --helper-color: #a66b20;
-  --helper-wash: #fff5e6;
+  --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
 }
 
 .ff-settings-helper[data-tone=green] {
   --helper-color: #2e8172;
-  --helper-wash: #edf8f5;
+  --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
 }
 
 .ff-settings-helper[data-tone=blue] {
   --helper-color: #3476b8;
-  --helper-wash: #edf5fd;
+  --helper-wash: color-mix(in srgb, var(--helper-color) 10%, var(--pane-bg, white));
 }
 
 .ff-settings-helper-heading {

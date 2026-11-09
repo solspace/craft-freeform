@@ -30,7 +30,7 @@ export const Cards = styled.div`
 export const Card = styled.section`
   padding: 2px 3px;
 
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
   box-shadow: ${shadows.box};
@@ -75,7 +75,7 @@ export const Meta = styled.div`
         content: '•';
         display: inline-block;
         margin-right: ${spacings.sm};
-        color: ${colors.gray400};
+        color: ${colors.muted};
       }
     }
   }
@@ -117,9 +117,13 @@ export const Tab = styled.button<{ $active?: boolean }>`
   cursor: pointer;
   padding: ${spacings.sm} ${spacings.md};
 
-  background: ${({ $active }) => ($active ? colors.gray500 : colors.gray100)};
+  background: ${({ $active }) =>
+    $active
+      ? "var(--ui-control-selected-bg, var(--gray-500))"
+      : "var(--ui-control-bg-color, var(--gray-100))"};
   border: 0;
-  color: ${({ $active }) => ($active ? colors.white : colors.gray800)};
+  color: ${({ $active }) =>
+    $active ? "var(--ui-control-selected-color, var(--white))" : colors.text};
 `;
 
 export const Variants = styled.div`
@@ -137,7 +141,7 @@ export const VariantCardWrapper = styled.div``;
 export const VariantCard = styled.article`
   padding: 2px;
 
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.md};
 
@@ -240,7 +244,7 @@ export const VariantFooter = styled.footer`
 export const EmptyState = styled.div`
   padding: ${spacings.xl};
 
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px dashed ${colors.gray300};
   border-radius: ${borderRadius.lg};
   color: ${colors.gray700};

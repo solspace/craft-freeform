@@ -52,8 +52,9 @@ export const FieldWrapper = styled(animated.div)`
   width: 100%;
   height: 100%;
 
-  background: ${colors.gray100};
-  border: 1px solid ${colors.gray100};
+  background: ${colors.inputBackground};
+  border: 1px solid ${colors.border};
+  color: ${colors.text};
   border-radius: ${borderRadius.md};
 
   transition: all 0.2s ease-out;
@@ -64,13 +65,13 @@ export const FieldWrapper = styled(animated.div)`
   }
 
   &.has-rule:not(.active) {
-    border-color: ${colors.teal550};
-    background-color: ${colors.teal050};
+    border-color: var(--border-success, ${colors.teal550});
+    background-color: var(--bg-success, ${colors.teal050});
   }
 
   &.group {
-    background-color: ${colors.white};
-    border-color: ${colors.gray100};
+    background-color: ${colors.surface};
+    border-color: ${colors.border};
 
     > ${FieldInfo} ${Icon} {
       display: none;
@@ -82,13 +83,13 @@ export const FieldWrapper = styled(animated.div)`
   }
 
   &:hover {
-    background-color: ${colors.gray200};
-    border-color: ${colors.gray200};
+    background-color: var(--ui-control-hover-bg-color, ${colors.gray200});
+    border-color: ${colors.inputBorder};
   }
 
   &.active {
-    background-color: #5b6573;
-    border-color: #5b6573;
+    background-color: var(--bg-selection-dark, #5b6573);
+    border-color: var(--focus-ring-color, ${colors.border});
     color: white;
   }
 
@@ -120,8 +121,8 @@ export const FieldWrapper = styled(animated.div)`
     }
 
     &:hover {
-      background-color: ${colors.gray100};
-      border-color: ${colors.gray100};
+      background-color: ${colors.inputBackground};
+      border-color: ${colors.border};
     }
   }
 `;

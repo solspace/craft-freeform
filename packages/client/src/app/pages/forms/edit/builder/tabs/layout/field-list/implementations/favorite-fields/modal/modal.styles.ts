@@ -46,6 +46,7 @@ export const FavoritesEditorWrapper = styled.div`
       height: ${titleIconSize}px;
 
       svg {
+    fill: currentColor;
         max-width: ${titleIconSize}px;
         max-height: ${titleIconSize}px;
       }
@@ -54,7 +55,7 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${SectionBlockContainer} {
     &:after {
-      background-color: white;
+      background-color: ${colors.surface};
     }
   }
 `;
@@ -113,8 +114,8 @@ export const FieldListItem = styled.li`
   }
 
   &.active {
-    background: ${colors.gray500};
-    color: ${colors.white};
+    background: var(--bg-selection-dark);
+    color: ${colors.text};
     fill: currentColor;
 
     a {
@@ -135,6 +136,7 @@ export const Icon = styled.div`
 
   &,
   svg {
+    fill: currentColor;
     height: 20px;
     width: 20px;
   }

@@ -91,8 +91,8 @@
             'integration-skipped': ['When a supported integration step is skipped because its mapping, configuration, or subscription prerequisites are unavailable.', 'Related record and processing IDs, attempt number, and skip reason.', 'Field values, email addresses, list IDs, and mapping contents.'],
             'form-change': ['When a form configuration is successfully saved in the form builder.', 'Form ID and change counts for fields, pages, settings, notifications, and integrations. Very large configurations may have an incomplete summary.', 'Setting values, before/after content, and the user identity. Rule and translation changes, and standalone layout settings, are not summarized.']
         } %}
-        {% set eventColors = {error:'red', warning:'orange', success:'green', info:'blue'} %}
-        {% set eventLevels = {error:'Error', warning:'Warning', success:'Success', info:'Information'} %}
+        {% set eventColors = {error:'red', warning:'orange', notice:'sky', success:'green', info:'blue'} %}
+        {% set eventLevels = {error:'Error', warning:'Warning', notice:'Notice', success:'Success', info:'Information'} %}
         {% set exampleTimes = {
             error:'12 minutes ago', warning:'13 hours ago', submission:'2 minutes ago',
             validation:('now'|date_modify('-3 hours'))|date('l, H:i'), spam:'45 minutes ago', 'email-error':'Yesterday, 09:18',

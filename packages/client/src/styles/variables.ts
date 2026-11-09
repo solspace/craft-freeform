@@ -1,9 +1,7 @@
 import styled from "styled-components";
 
 export const BoxShadow = styled.div`
-  box-shadow:
-    0 0 0 1px #cdd8e4,
-    0 2px 12px rgb(205 216 228 / 50%);
+  box-shadow: var(--pane-shadow);
 `;
 
 export const spacings = {
@@ -21,8 +19,8 @@ export const borderRadius = {
 };
 
 export const shadows = {
-  panel: "0 0 20px 10px rgb(205 216 228 / 50%)",
-  box: "0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%)",
+  panel: "var(--modal-shadow, 0 0 20px 10px rgb(205 216 228 / 50%))",
+  box: "var(--pane-shadow, 0 0 0 1px #cdd8e4)",
   boxSubtle: "0 2px 8px rgba(0, 0, 0, 0.1)",
   bottom: "inset 0 -1px 0 0 rgb(154 165 177 / 25%)",
   top: "inset 0 1px 0 0 rgb(154 165 177 / 25%)",
@@ -42,18 +40,32 @@ export const beziers = {
   },
 };
 
+// Use Craft's semantic theme API for UI roles. Keep literal white/black for
+// content colors, logos, signature canvases, and text on solid accent fills.
 export const colors = {
-  hairline: "rgba(51,64,77,.1)",
-  hr: "rgb(from var(--gray-800) r g b/10%)",
-  inputBorder: "rgba(96,125,159,0.25)",
-  barelyVisible: "rgb(154 165 177 / 75%)",
-  link: "#1f5fea",
+  surface: "var(--pane-bg, var(--white))",
+  secondarySurface: "var(--secondary-pane-bg, var(--gray-050))",
+  mutedSurface:
+    "color-mix(in srgb, var(--text-color, var(--gray-700)) 3.5%, var(--pane-bg, var(--white)))",
+  canvas: "var(--body-bg, var(--gray-100))",
+  overlay: "var(--modal-bg, var(--white))",
+  text: "var(--text-color, var(--gray-700))",
+  muted: "var(--light-text-color, var(--gray-550))",
+  border: "var(--hairline-color, var(--gray-200))",
+  inputBackground: "var(--input-bg, var(--white))",
+  hairline: "var(--hairline-color, rgba(51,64,77,.1))",
+  hr: "var(--hairline-color, rgb(from var(--gray-800) r g b/10%))",
+  inputBorder: "var(--input-border-color, rgba(96,125,159,0.25))",
+  selectBackground:
+    "color-mix(in srgb, var(--text-color, #3f4d5a) 5%, var(--input-bg, var(--white)))",
+  barelyVisible: "var(--light-text-color, rgb(154 165 177 / 75%))",
+  link: "var(--link-color, #1f5fea)",
 
   elements: {
-    dropdown: "#dfe5ec",
+    dropdown: "var(--ui-control-bg-color, #dfe5ec)",
   },
 
-  error: "#cf1124",
+  error: "var(--fg-error, var(--error-color, #cf1124))",
   warning: "var(--warning-color)",
   success: "var(--success-color)",
   notice: "var(--notice-color)",

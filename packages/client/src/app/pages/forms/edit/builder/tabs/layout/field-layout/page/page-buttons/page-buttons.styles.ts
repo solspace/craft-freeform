@@ -21,10 +21,10 @@ export const ButtonGroupWrapper = styled.div`
   }
 
   &:hover {
-    background: #f3f7fd;
+    background: ${colors.mutedSurface};
 
     &:not(.active) {
-      border: 1px solid #cdd8e4;
+      border: 1px solid var(--hairline-color, #cdd8e4);
     }
   }
 `;
@@ -50,15 +50,19 @@ export const Button = styled.button`
   }
 
   &.btn-submit {
-    background-color: ${colors.gray600};
-    color: white;
+    background-color: var(--secondary-button-bg, ${colors.gray600});
+    color: var(--secondary-button-text-color, white);
 
     svg {
-      fill: white;
+      fill: currentColor;
     }
 
     &:hover {
-      background-color: ${colors.gray700};
+      background-color: var(--secondary-button-bg--hover, ${colors.gray700});
+    }
+
+    &:active {
+      background-color: var(--secondary-button-bg--active, ${colors.gray800});
     }
   }
 `;

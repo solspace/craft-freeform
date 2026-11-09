@@ -44,6 +44,9 @@ const PageButtonLayout: React.FC<ComponentType> = ({
     value,
     context,
   );
+  const orderChoices = items.filter(
+    (item) => layoutAlignment(item.groups) === alignment,
+  );
   const labels: Record<string, string> = {
     save: translate("Save"),
     back: translate("Back"),
@@ -106,15 +109,14 @@ const PageButtonLayout: React.FC<ComponentType> = ({
           }}
         />
       </AlignmentControl>
-      <OrderControl>
-        <OrderLabel>{translate("Button order")}</OrderLabel>
-        <ButtonLayoutWrapper
-          role="radiogroup"
-          aria-label={translate("Button order")}
-        >
-          {items
-            .filter((item) => layoutAlignment(item.groups) === alignment)
-            .map((item) => {
+      {orderChoices.length > 1 && (
+        <OrderControl>
+          <OrderLabel>{translate("Button order")}</OrderLabel>
+          <ButtonLayoutWrapper
+            role="radiogroup"
+            aria-label={translate("Button order")}
+          >
+            {orderChoices.map((item) => {
               const description = item.groups
                 .map((buttons) =>
                   buttons.map((button) => labels[button]).join(", "),
@@ -147,8 +149,9 @@ const PageButtonLayout: React.FC<ComponentType> = ({
                 </LayoutBlock>
               );
             })}
-        </ButtonLayoutWrapper>
-      </OrderControl>
+          </ButtonLayoutWrapper>
+        </OrderControl>
+      )}
     </Control>
   );
 };

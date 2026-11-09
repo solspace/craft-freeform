@@ -358,7 +358,7 @@
 
     &::before {
       // The colored surface blends over the persistent gray layer.
-      background: color-mix(in srgb, var(--ff-review-accent) var(--ff-review-tint, 12%), var(--white, #fff));
+      background: color-mix(in srgb, var(--ff-review-accent) var(--ff-review-tint, 12%), var(--pane-bg, #fff));
       opacity: 1;
     }
   }
@@ -698,7 +698,7 @@
 
   &.white {
     &::before {
-      background-color: var(--white);
+      background-color: var(--pane-bg, #fff);
       border: 1px solid var(--black);
       opacity: 1;
     }
@@ -719,11 +719,41 @@
     }
 
     .ff-status {
-      background-color: var(--white);
+      background-color: var(--pane-bg, #fff);
     }
 
     .ff-status-label-text {
       color: var(--white);
+    }
+  }
+}
+
+// Match Craft's status hierarchy on a dark control-panel surface. Keep the
+// existing hue semantics, with one readable foreground for both dot and label.
+html[data-dark-mode="dark"] .ff-status-label {
+  @each $hue in "red", "orange", "amber", "rose", "pink", "lime", "emerald", "teal", "green",
+    "yellow", "violet", "indigo", "fuchsia", "purple", "cyan", "sky", "blue" {
+    &.#{$hue} {
+      &::before,
+      .ff-status {
+        background-color: var(--#{$hue}-400);
+      }
+      .ff-status-label-text {
+        color: var(--#{$hue}-400);
+      }
+    }
+  }
+  &:is(.gray, .white, .black) {
+    &::before {
+      background-color: var(--light-text-color);
+      border: 0;
+      opacity: 0.15;
+    }
+    .ff-status {
+      background-color: var(--light-text-color);
+    }
+    .ff-status-label-text {
+      color: var(--light-text-color);
     }
   }
 }

@@ -40,7 +40,7 @@ export const TestEmailTable = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
   overflow: hidden;

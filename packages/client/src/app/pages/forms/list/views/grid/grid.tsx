@@ -4,7 +4,7 @@ import type { FormWithStats } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import type { FormSearchProps } from "../../form-search";
 import { createFormSearch } from "../../form-search.utils";
@@ -32,6 +32,7 @@ import {
 } from "./grid.styles";
 import {
   type DashboardWidget,
+  hasVisibleHealthWidget,
   mergeWidgetCards,
   useDashboardWidgets,
 } from "./grid.widgets";
@@ -46,6 +47,18 @@ export const FormGrid: React.FC<
   const sizing = useCardSizing();
   const range = useCardRange(data?.cardRange);
   const widgets = useDashboardWidgets();
+  const [readyHealthWidgets, setReadyHealthWidgets] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const onHealthReady = useCallback((key: string, ready: boolean) => {
+    setReadyHealthWidgets((previous) => {
+      if (previous.has(key) === ready) return previous;
+      const next = new Set(previous);
+      if (ready) next.add(key);
+      else next.delete(key);
+      return next;
+    });
+  }, []);
   const stats = useCardStats(range.days, isProEdition && !!data);
   const sorting = useDashboardSorting(
     data,
@@ -110,6 +123,7 @@ export const FormGrid: React.FC<
           onResize={(size) => void widgets.resize(item, size).catch(() => {})}
           onRemove={() => void widgets.remove(item.uid).catch(() => {})}
           onKeyboardMove={sorting.onKeyboardMove}
+          onHealthReady={onHealthReady}
         />
       );
     const form = item as FormWithStats;
@@ -149,7 +163,14 @@ export const FormGrid: React.FC<
   return (
     <ContentContainer>
       <div id="content" className="content-pane">
-        <Notices />
+        <Notices
+          hideLogAlert={hasVisibleHealthWidget(
+            widgets.items,
+            widgets.siteId,
+            readyHealthWidgets,
+            isProEdition && !isSearching && !widgets.isError,
+          )}
+        />
 
         <Wrapper>
           <span id="form-card-move-help" className="visually-hidden">

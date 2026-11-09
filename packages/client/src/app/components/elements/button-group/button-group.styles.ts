@@ -1,9 +1,4 @@
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const ButtonGroupWrapper = styled.div<{
@@ -65,8 +60,10 @@ export const Button = styled.button`
 
   padding: ${spacings.xs} ${spacings.md};
 
-  background-color: ${colors.gray100};
-  box-shadow: ${shadows.right};
+  min-height: var(--ui-control-height, 34px);
+  border: var(--button-border, none);
+  background-color: var(--button-bg, ${colors.gray100});
+  box-shadow: none;
   box-sizing: border-box;
 
   > span { flex: 0 0 auto; }
@@ -80,9 +77,20 @@ export const Button = styled.button`
     svg { display: block; width: 14px; height: 14px; }
   }
 
+  &:hover:not(:disabled):not(.active) {
+    background-color: var(--button-bg--hover, ${colors.gray200});
+  }
+
+  &:focus-visible {
+    outline: 0;
+    box-shadow: var(--focus-ring);
+    position: relative;
+    z-index: 1;
+  }
+
   &.active {
     color: ${colors.white};
-    background-color: ${colors.gray500};
+    background-color: var(--bg-selection-dark, ${colors.gray500});
   }
 
   &:first-child {

@@ -4,18 +4,25 @@ import styled from "styled-components";
 export const NewTabWrapper = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: ${colors.muted};
+  border-radius: 4px;
 
   padding: 0 10px;
 
-  transition: all 0.2s ease-in-out;
+  transition: color 0.15s ease-out, background-color 0.15s ease-out;
 
   &:focus {
     outline: none;
   }
 
   &:hover {
-    transform: scale(1.2);
-    color: ${colors.black};
+    color: ${colors.text};
+    background-color: var(--ui-control-hover-bg-color, ${colors.gray050});
+  }
+
+  &:focus-visible {
+    box-shadow: var(--focus-ring-inner);
   }
 
   svg {

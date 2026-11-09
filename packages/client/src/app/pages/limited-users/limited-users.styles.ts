@@ -18,7 +18,7 @@ export const MainContainer = styled.div`
 `;
 
 export const GroupWrapper = styled.div`
-  background-color: white;
+  background-color: var(--pane-bg, #fff);
   padding: ${spacings.xl};
   border-radius: 5px;
 `;
@@ -226,7 +226,7 @@ export const ToggleButton = styled.button`
   }
 
   &[aria-checked='true']:hover {
-    background-color: color-mix(in srgb, var(--permission-accent) 6%, white);
+    background-color: color-mix(in srgb, var(--permission-accent) 6%, var(--pane-bg, white));
   }
 `;
 
@@ -284,7 +284,7 @@ export const Actions = styled.div`
     }
 
     &:disabled {
-      color: ${colors.gray400};
+      color: ${colors.muted};
       opacity: 0.6;
       cursor: default;
     }

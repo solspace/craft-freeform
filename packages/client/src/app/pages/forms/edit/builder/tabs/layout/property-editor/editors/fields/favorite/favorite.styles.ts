@@ -25,7 +25,7 @@ export const IconBox = styled.div`
 
   padding: 5px;
 
-  background: ${colors.gray050};
+  background: ${colors.mutedSurface};
 
   border-style: solid;
   border-width: 1px;
@@ -43,11 +43,11 @@ export const InfoBlock = styled.div`
   width: 240px;
   padding: ${spacings.lg};
 
-  background: ${colors.gray050};
+  background: ${colors.mutedSurface};
   border: 1px solid ${colors.barelyVisible};
   border-radius: ${borderRadius.md};
 
-  box-shadow: 4px 12px 8px rgb(205 216 228 / 80%);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 8px 24px rgb(0 0 0 / 16%)));
 `;
 
 export const Button = styled(animated.button)`

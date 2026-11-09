@@ -83,7 +83,7 @@ export const ZoomButtons = styled.div`
 export const ZoomButton = styled.button`
   width: 32px;
   height: 32px;
-  border: 1px solid ${colors.gray300};
+  border: 1px solid ${colors.border};
   background: ${colors.white};
   border-radius: 4px;
   cursor: pointer;
@@ -96,7 +96,7 @@ export const ZoomButton = styled.button`
 
   &:hover {
     background: ${colors.gray100};
-    border-color: ${colors.gray400};
+    border-color: ${colors.muted};
   }
 
   &:disabled {

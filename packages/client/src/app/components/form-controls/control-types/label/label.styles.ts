@@ -35,7 +35,7 @@ export const EditButton = styled(animated.button)`
     width: 100%;
     height: 100%;
 
-    color: ${colors.gray400};
+    color: ${colors.muted};
   }
 `;
 
@@ -53,7 +53,7 @@ export const RemoveButton = styled(animated.button)`
     width: 100%;
     height: 100%;
 
-    color: ${colors.gray400};
+    color: ${colors.muted};
   }
 `;
 
@@ -75,7 +75,7 @@ export const LabelElement = styled(animated.h1)`
     > span:empty:after {
       content: 'No Title';
 
-      color: ${colors.gray300};
+      color: ${colors.muted};
       font-style: italic;
     }
   }

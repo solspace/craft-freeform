@@ -21,7 +21,7 @@ export const EditorWrapper = styled.div`
   height: 100%;
   overflow-y: auto;
 
-  background: white;
+  background: var(--pane-bg, #fff);
 
   border-top-right-radius: ${borderRadius.lg};
   border-bottom-right-radius: ${borderRadius.lg};

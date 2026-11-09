@@ -46,7 +46,7 @@ const AddButton = styled.button`
   width: 100%;
   padding: 6px 9px;
 
-  background: ${colors.white};
+  background: ${colors.surface};
   border-radius: 4px;
 
   text-align: center;

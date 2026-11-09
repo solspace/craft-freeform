@@ -8,6 +8,6 @@ export const IntegrationsWrapper = styled.div`
 
 export const IntegrationsEditorPanel = styled.div`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: ${colors.surface};
   border-radius: 0 ${borderRadius.lg} ${borderRadius.lg} 0;
 `;

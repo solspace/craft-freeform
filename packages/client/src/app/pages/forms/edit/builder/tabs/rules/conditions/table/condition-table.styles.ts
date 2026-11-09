@@ -62,7 +62,7 @@ export const Table = styled.table`
     tr:last-child {
       td {
         padding: 0 !important;
-        background-color: ${colors.white};
+        background-color: ${colors.surface};
 
         .btn {
           border: 0 !important;
@@ -92,6 +92,8 @@ export const Action = styled.button`
   margin: 0;
   padding: 0;
   border: none;
+  color: ${colors.muted};
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,6 +102,9 @@ export const Action = styled.button`
     width: 16px;
     height: 16px;
     stroke-width: 3px;
-    fill: #e5e7eb;
+    fill: currentColor;
   }
+
+  &:hover { color: ${colors.error}; }
+  &:focus-visible { outline: 2px solid ${colors.link}; outline-offset: 2px; }
 `;

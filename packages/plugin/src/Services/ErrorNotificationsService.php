@@ -5,8 +5,11 @@ namespace Solspace\Freeform\Services;
 use craft\console\Request as ConsoleRequest;
 use craft\helpers\App;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
 use craft\web\Request as WebRequest;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityPolicy;
+use Solspace\Freeform\Library\Activity\ActivityPresentation;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Logging\FreeformLogRecord;
 
@@ -16,9 +19,30 @@ class ErrorNotificationsService extends BaseService
     private const CACHE_TTL_SECONDS = 3600; // 1-hour cooldown to avoid duplicate alerts
     private const TEMPLATE_PATH = __DIR__.'/../templates/_templates/email/error-report.twig';
     private const MAX_DEPTH = 6;
+    private bool $sending = false;
+
+    public function handleActivity(string $event, ?int $formId, ?int $submissionId, array $metadata): void
+    {
+        if ('error' !== (ActivityPolicy::EVENTS[$event][3] ?? null)) {
+            return;
+        }
+        $row = ActivityPresentation::present(['event' => $event, 'formId' => $formId, 'submissionId' => $submissionId, 'metadata' => $metadata, 'dateCreated' => new \DateTimeImmutable('now', new \DateTimeZone('UTC'))]);
+        $this->handle(new FreeformLogRecord(
+            message: $row['title'],
+            channel: 'Activity: '.$row['category'],
+            datetime: $row['dateCreated'],
+            context: ['activityEvent' => $event, 'formId' => $formId, 'submissionId' => $submissionId] + $row['metadata'],
+            extra: [],
+            levelValue: 400,
+            levelName: 'ERROR',
+        ));
+    }
 
     public function handle(FreeformLogRecord $record): void
     {
+        if ($this->sending) {
+            return;
+        }
         $recipients = $this->getSettingsService()->getErrorNotificationRecipients();
         if (!\count($recipients)) {
             return;
@@ -49,6 +73,7 @@ class ErrorNotificationsService extends BaseService
 
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->templateMode = \Craft::$app->view::TEMPLATE_MODE_CP;
+        $this->sending = true;
 
         try {
             $variables = [
@@ -67,6 +92,7 @@ class ErrorNotificationsService extends BaseService
                 'request' => $this->getRequestContext(),
                 'site' => $this->getSiteContext(),
                 'cooldownSeconds' => self::CACHE_TTL_SECONDS,
+                'logReview' => $this->getLogReview(),
             ];
 
             $message = $mailerService->compileMessage($notification, $variables);
@@ -80,9 +106,19 @@ class ErrorNotificationsService extends BaseService
             \Craft::$app->getMailer()->send($message);
         } catch (\Throwable $exception) {
             // Swallow mailer issues to avoid recursive logging loops.
+        } finally {
+            $this->sending = false;
+            \Craft::$app->view->templateMode = $templateMode;
         }
+    }
 
-        \Craft::$app->view->templateMode = $templateMode;
+    protected function getLogReview(): ?array
+    {
+        return match ($this->getSettingsService()->getSettingsModel()->getEffectiveLoggingStyle()) {
+            'activity' => ['url' => UrlHelper::cpUrl('freeform/activity', ['view' => 'events', 'resolution' => 'open', 'level' => 'error']), 'label' => Freeform::t('View Activity Log')],
+            'classic' => ['url' => UrlHelper::cpUrl('freeform/settings/error-log'), 'label' => Freeform::t('View error log')],
+            default => null,
+        };
     }
 
     private function extractException(FreeformLogRecord $record): ?\Throwable
@@ -224,6 +260,9 @@ class ErrorNotificationsService extends BaseService
 
     private function buildFingerprint(FreeformLogRecord $record, ?\Throwable $exception = null, array $context = []): string
     {
+        if (isset($context['activityEvent'])) {
+            $context = array_intersect_key($context, array_flip(['activityEvent', 'formId', 'submissionId', 'reasonCode', 'integrationId', 'notificationId', 'emailType']));
+        }
         $payload = [
             'channel' => $record->channel,
             'level' => $record->getLevelValue(),

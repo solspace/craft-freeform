@@ -20,7 +20,7 @@ export const TableEditorWrapper = styled(PreviewEditor)`
 
 export const TableContainer = styled(PreviewEditorContainer)`
   border-radius: ${borderRadius.lg};
-  background-color: white;
+  background-color: var(--pane-bg, #fff);
 `;
 
 export const ColumnTabsWrapper = styled(TableColumnTabsWrapper)`
@@ -43,7 +43,7 @@ export const TabularOptions = styled.table`
 
   thead {
     background-color: ${colors.gray050};
-    border: 1px solid red;
+    border: 1px solid ${colors.border};
     border-radius: 5px 5px 0 0;
 
     th {
@@ -69,7 +69,7 @@ export const Cell = styled.td<CellProps>`
 
   padding: ${({ $tiny }) => ($tiny ? "6px 9px !important" : "0 !important")};
 
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid ${colors.border};
 
   label {
     display: none;
@@ -82,7 +82,7 @@ export const Input = styled.input`
 
   padding: 6px 9px;
 
-  background: ${colors.white};
+  background: ${colors.surface};
 
   &:focus {
     box-shadow: var(--inner-focus-ring);
@@ -94,7 +94,7 @@ export const Input = styled.input`
 
   &:disabled {
     background: #00000004;
-    color: ${colors.gray300};
+    color: ${colors.muted};
   }
 `;
 

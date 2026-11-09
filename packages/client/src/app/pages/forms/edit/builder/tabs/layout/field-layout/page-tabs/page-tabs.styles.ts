@@ -1,4 +1,5 @@
 import { scrollBar } from "@ff-client/styles/mixins";
+import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const PageTabsWrapper = styled.div`
@@ -24,7 +25,7 @@ export const PageTabsContainer = styled.div`
   }
 
   &:hover {
-    background-color: white;
+    background-color: ${colors.surface};
 
     &::-webkit-scrollbar-thumb {
       visibility: visible;

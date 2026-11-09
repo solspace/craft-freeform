@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 export const ResultsWrapper = styled.div`
   flex: 1;
-  background: ${colors.white};
+  background: ${colors.surface};
   padding: ${spacings.xl};
   overflow-y: auto;
   width: calc(100% - 300px);
@@ -41,7 +41,7 @@ export const StatsContainer = styled.div`
 `;
 
 export const ChartContainer = styled.div`
-  background: ${colors.white};
+  background: ${colors.surface};
   border-radius: 4px;
 `;
 
@@ -87,7 +87,7 @@ export const PageButton = styled.button<{ disabled?: boolean }>`
   align-items: center;
   justify-content: center;
   border-radius: ${borderRadius.sm};
-  background: ${colors.white};
+  background: ${colors.surface};
   cursor: pointer;
   transition: all 0.2s ease;
 
@@ -125,7 +125,7 @@ export const PageButton = styled.button<{ disabled?: boolean }>`
   }
 
   &:disabled::after {
-    border-color: ${colors.gray300};
+    border-color: ${colors.muted};
   }
 `;
 
@@ -151,7 +151,7 @@ export const TestTableStyled = styled.table`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
   overflow: hidden;
@@ -468,7 +468,7 @@ export const StatusText = styled.span`
 
 export const SubmissionDurationChartContainer = styled.div`
   padding: ${spacings.lg} ${spacings.lg} 0 ${spacings.lg};
-  background: ${colors.white};
+  background: ${colors.surface};
   border-radius: ${borderRadius.lg};
   overflow-x: auto;
   ${scrollBar};
@@ -481,7 +481,7 @@ export const SubmissionDurationChartContainer = styled.div`
 `;
 
 export const ChartTooltip = styled.div`
-  background: ${colors.white};
+  background: ${colors.surface};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.md};
   padding: ${spacings.sm};
@@ -519,7 +519,7 @@ export const ChartWrapper = styled.div`
 export const ChartTestTooltip = styled.div`
   overflow: hidden;
   min-width: 160px;
-  background: ${colors.white};
+  background: ${colors.surface};
   border-radius: ${borderRadius.md};
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 `;

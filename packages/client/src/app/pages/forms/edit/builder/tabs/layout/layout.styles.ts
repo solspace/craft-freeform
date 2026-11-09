@@ -1,3 +1,5 @@
+import { Sidebar } from "@components/layout/sidebar/sidebar";
+import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const Grid = styled.div`
@@ -8,5 +10,11 @@ export const Grid = styled.div`
   height: 100%;
   overflow: hidden;
 
-  background: #fff;
+  background: ${colors.surface};
+
+  /* One divider for the palette and its overlaid property editor. */
+  > ${Sidebar} {
+    border-inline-end: 1px solid ${colors.border};
+    box-shadow: none;
+  }
 `;

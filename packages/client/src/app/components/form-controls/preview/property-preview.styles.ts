@@ -4,15 +4,15 @@ import styled from "styled-components";
 export const PreviewSurface = styled.div`
   min-width: 0;
   padding: 12px;
-  border: 1px solid var(--gray-200, #cdd8e4);
+  border: 1px solid var(--input-border-color, #cdd8e4);
   border-radius: var(--radius-lg, 5px);
-  background: var(--white, #fff);
+  background: var(--input-bg, #fff);
   cursor: pointer;
   transition: border-color 0.15s ease-out;
 
   &:hover { border-color: var(--gray-300, #a6b4c9); }
   &:focus-visible {
-    outline: 2px solid var(--blue-500, #0d99f2);
+    outline: 2px solid var(--link-color, #0d99f2);
     outline-offset: 2px;
   }
 
@@ -32,7 +32,7 @@ export const PreviewEmpty = styled.div`
   display: flex;
   align-items: center;
   min-height: 48px;
-  color: var(--gray-500, #606d7b);
+  color: var(--light-text-color, #606d7b);
   font-size: 12px;
   font-weight: normal;
   font-style: italic;
@@ -43,7 +43,7 @@ export const PreviewCue = styled.div`
   margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid var(--border-hairline, rgba(51, 64, 77, .1));
-  color: var(--blue-600, #0d78b7);
+  color: var(--link-color, #0d78b7);
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;

@@ -11,7 +11,7 @@ export const RefreshButton = styled.button`
   font-size: 16px;
 
   &[disabled] > svg {
-    fill: ${colors.gray300};
+    fill: ${colors.muted};
 
     animation: ${animations.spinner} 2s infinite;
     transform-origin: 50% 50%;
@@ -43,7 +43,7 @@ export const MappingContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 
-  border: 1px solid rgb(205 216 228 / 50%);
+  border: 1px solid ${colors.border};
   border-radius: 5px;
 
   padding: ${spacings.sm} ${spacings.lg};
@@ -71,7 +71,7 @@ export const SourceField = styled.div`
     width: 100%;
     height: 1px;
 
-    background-color: ${colors.gray100};
+    background-color: ${colors.border};
   }
 
   > span {
@@ -82,7 +82,7 @@ export const SourceField = styled.div`
     padding: 0 10px 0 0;
     width: fit-content;
 
-    background-color: white;
+    background-color: var(--pane-bg, #fff);
   }
 
   &.required > span {
@@ -114,8 +114,8 @@ export const TypeButton = styled.button`
   background-color: ${colors.elements.dropdown};
 
   &.active {
-    fill: ${colors.gray050};
-    background-color: ${colors.gray550};
+    fill: ${colors.text};
+    background-color: var(--bg-selection-dark);
   }
 
   &:first-child {
@@ -136,6 +136,6 @@ export const TypeButton = styled.button`
 
 export const TwigInput = styled.input`
   &::placeholder {
-    color: ${colors.gray250};
+    color: ${colors.muted};
   }
 `;

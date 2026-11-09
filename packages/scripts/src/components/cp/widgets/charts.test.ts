@@ -131,4 +131,56 @@ describe("dashboard charts", () => {
     );
     expect(el.querySelector("[data-chart-total]")!.textContent).toBe("5");
   });
+  it("uses Craft's current surface for radial separators and repaints theme changes", async () => {
+    const el = root();
+    el.style.setProperty("--pane-bg", "#161b22");
+    window.FreeformDashboardChart(el, {
+      type: "doughnut",
+      data: { labels: ["Contact"], datasets: [{ data: [3] }] },
+    });
+    const config = construct.mock.calls[0][1];
+    expect(config.data.datasets[0].borderColor()).toBe("#161b22");
+    el.style.setProperty("--pane-bg", "#ffffff");
+    document.documentElement.setAttribute("data-test-theme", "light");
+    await Promise.resolve();
+    expect(config.data.datasets[0].borderColor()).toBe("#ffffff");
+    expect(chart.update).toHaveBeenCalledWith("none");
+    el.remove();
+    await Promise.resolve();
+    chart.update.mockClear();
+    document.documentElement.removeAttribute("data-test-theme");
+    await Promise.resolve();
+    expect(chart.update).not.toHaveBeenCalled();
+  });
+
+  it("keeps explicitly configured radial separator colors", () => {
+    window.FreeformDashboardChart(root(), {
+      type: "pie",
+      data: {
+        labels: ["Contact"],
+        datasets: [{ data: [3], borderColor: "red" }],
+      },
+    });
+    expect(construct.mock.calls[0][1].data.datasets[0].borderColor).toBe("red");
+  });
+
+  it("updates scale labels and grid when the effective Craft palette changes", async () => {
+    const el = root();
+    el.style.setProperty("--light-text-color", "#8b949e");
+    el.style.setProperty("--hairline-color", "#30363d");
+    window.FreeformDashboardChart(el, {
+      type: "line",
+      data: { labels: ["Nov 7"], datasets: [{ label: "Contact", data: [3] }] },
+    });
+    const scales = construct.mock.calls[0][1].options.scales;
+    expect(scales.x.ticks.color()).toBe("#8b949e");
+    expect(scales.y.ticks.color()).toBe("#8b949e");
+    expect(scales.y.grid.color()).toBe("#30363d");
+    el.style.setProperty("--hairline-color", "#dce4ec");
+    document.documentElement.setAttribute("data-scale-theme", "light");
+    await Promise.resolve();
+    expect(scales.y.grid.color()).toBe("#dce4ec");
+    expect(chart.update).toHaveBeenCalledWith("none");
+    document.documentElement.removeAttribute("data-scale-theme");
+  });
 });

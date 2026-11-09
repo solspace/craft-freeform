@@ -1,18 +1,20 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const Search = styled.input`
+  background: ${colors.inputBackground};
+  color: ${colors.text};
+  &::placeholder { color: ${colors.muted}; opacity: 1; }
   width: 100%;
   padding: 7px 30px 7px 10px;
 
+  border: 0;
   border-bottom: 1px solid ${colors.hairline};
+  border-radius: 0;
+  box-sizing: border-box;
+  height: 34px;
 
   &:focus,
   &:active,
@@ -36,9 +38,11 @@ export const CurrentValue = styled.div`
 
   display: flex;
   justify-content: start;
+  align-items: center;
   gap: ${spacings.sm};
 
-  background-color: var(--button-bg, #dfe5ec);
+  background-color: ${colors.selectBackground};
+  box-shadow: inset 0 0 0 1px ${colors.inputBorder};
   border-radius: ${borderRadius.lg};
 
   padding: 7px 22px 7px 10px;
@@ -53,7 +57,7 @@ export const CurrentValue = styled.div`
   }
 
   &.empty > span {
-    color: ${colors.gray300};
+    color: ${colors.muted};
     font-style: italic;
   }
 
@@ -104,9 +108,10 @@ export const DropdownRollout = styled(animated.div)`
   right: 0;
   top: 0;
 
-  background-color: ${colors.gray050};
+  background-color: ${colors.mutedSurface};
+  border: 1px solid ${colors.inputBorder};
   border-radius: ${borderRadius.lg};
-  box-shadow: ${shadows.container};
+  box-shadow: 0 8px 24px rgb(0 0 0 / 18%);
 
   overflow: hidden;
   z-index: 1000;
@@ -124,11 +129,15 @@ export const CloseButton = styled.button`
 
   width: 30px;
   height: 34px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: ${colors.muted};
 
   cursor: pointer;
 
   &:hover {
-    background-color: ${colors.gray050};
+    background-color: ${colors.overlay};
   }
 `;
 

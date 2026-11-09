@@ -1,6 +1,22 @@
 import { createGlobalStyle } from "styled-components";
 
 const style = createGlobalStyle`
+  #freeform-client .react-loading-skeleton {
+    --base-color: var(--ui-control-bg-color);
+    --highlight-color: var(--ui-control-hover-bg-color);
+  }
+
+  .ff-token-dropdown {
+    --tagify-dd-text-color: var(--text-color);
+    --tagify-dd-bg-color: var(--modal-bg);
+    --tagify-dd-color-primary: var(--bg-selection-dark);
+    color: var(--text-color);
+    border-color: var(--hairline-color);
+    box-shadow: var(--modal-shadow);
+  }
+  .ff-token-dropdown .tagify__dropdown__wrapper { border-color: var(--hairline-color); }
+  .ff-token-dropdown .tagify__dropdown__item--active { color: var(--text-color); }
+
   #main-content {
     padding: 0;
   }

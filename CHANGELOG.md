@@ -58,6 +58,11 @@
 - Fixed Activity Log compatibility and unavailable-database handling on Craft 4.
 - Fixed **Quick Form** dashboard widgets not displaying field-specific validation errors and input error styles.
 
+## 5.17.9 - 2026-11-09
+
+### Security
+- Fixed stored cross-site scripting in the form builder field picker when displaying field labels from other forms or favorites. Credit to [arpitjain099](https://github.com/arpitjain099) for reporting.
+
 ## 5.17.8 - 2026-11-06
 
 ### Security

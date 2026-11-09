@@ -1,3 +1,4 @@
+import DOMPurify from "dompurify";
 import type React from "react";
 import { useCallback } from "react";
 import type { ConnectDragSource } from "react-dnd";
@@ -20,8 +21,8 @@ export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
   );
   return (
     <Wrapper ref={connectDrag} onClick={onClick} title={label}>
-      <Icon dangerouslySetInnerHTML={{ __html: icon }} />
-      <Name dangerouslySetInnerHTML={{ __html: label }} />
+      <Icon dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(icon) }} />
+      <Name dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(label) }} />
     </Wrapper>
   );
 };

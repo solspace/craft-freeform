@@ -31,6 +31,11 @@ Please change the parent <Route path="${e}"> to <Route path="${e===`/`?`*`:`${e}
   justify-content: center;
   align-items: center;
 `,El=o.div`
+  :root[data-dark-mode="dark"] & .react-loading-skeleton {
+    --base-color: var(--ui-control-bg-color) !important;
+    --highlight-color: var(--ui-control-hover-bg-color) !important;
+  }
+
   width: 100%;
   max-width: 500px;
 

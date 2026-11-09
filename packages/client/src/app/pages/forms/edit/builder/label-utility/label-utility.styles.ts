@@ -100,8 +100,8 @@ export const LabelTable = styled.table.attrs({
   tr[data-selected="false"] td:not(:first-child) { opacity: .55; }
   .utility-label { white-space: pre-wrap; }
   mark { padding: 1px 2px; border-radius: 2px; color: inherit; font-weight: 600; box-decoration-break: clone; }
-  .utility-label-current mark { background: light-dark(#fce8e6, var(--bg-error, #fce8e6)); color: var(--fg-error, var(--error-color, #a32920)); }
-  .utility-label-updated mark { background: light-dark(#e1f3ec, var(--bg-success, #e1f3ec)); color: var(--fg-success, var(--success-color, #176248)); }
+  .utility-label-current mark { background: light-dark(#fce8e6, color-mix(in srgb, var(--error-color) 22%, var(--pane-bg))); color: light-dark(var(--fg-error, var(--error-color, #a32920)), var(--gray-800)); }
+  .utility-label-updated mark { background: light-dark(#e1f3ec, color-mix(in srgb, var(--enabled-color) 28%, var(--pane-bg))); color: light-dark(var(--fg-success, var(--success-color, #176248)), var(--gray-800)); }
 `;
 export const PreviewHeading = styled.div`
   display: flex;
@@ -114,7 +114,7 @@ export const PreviewHeading = styled.div`
 `;
 export const EmptyPreview = styled.p`
   padding: 24px;
-  border: 1px dashed ${colors.gray250};
+  border: 1px dashed light-dark(${colors.gray250}, var(--hairline-color));
   border-radius: 6px;
   text-align: center;
   color: ${colors.gray500};

@@ -155,7 +155,7 @@ export const VariantCard = styled.article`
   overflow: hidden;
 
   &.winner {
-    border-color: ${colors.green600};
+    border-color: light-dark(${colors.green600}, color-mix(in srgb, var(--green-400) 65%, var(--light-text-color)));
   }
 `;
 
@@ -164,9 +164,9 @@ export const Winner = styled.div`
   margin: 0 0 -4px;
 
   border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
-  background: ${colors.green600};
+  background: light-dark(${colors.green600}, color-mix(in srgb, var(--green-400) 65%, var(--light-text-color)));
 
-  color: ${colors.white};
+  color: light-dark(${colors.white}, var(--body-bg));
   font-size: 18px;
   font-weight: 700;
   text-align: center;

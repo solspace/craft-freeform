@@ -13,14 +13,23 @@ const style = createGlobalStyle`
 
   :root[data-dark-mode="dark"] .ff-token-dropdown {
     --tagify-dd-text-color: var(--text-color);
-    --tagify-dd-bg-color: var(--modal-bg);
-    --tagify-dd-color-primary: var(--bg-selection-dark);
+    --tagify-dd-bg-color: var(--gray-050);
+    --tagify-dd-color-primary: var(--bg-selection-light);
     color: var(--text-color);
-    border-color: var(--hairline-color);
+    border-color: var(--medium-hairline-color);
     box-shadow: var(--modal-shadow);
   }
-  :root[data-dark-mode="dark"] .ff-token-dropdown .tagify__dropdown__wrapper { border-color: var(--hairline-color); }
+  :root[data-dark-mode="dark"] .ff-token-dropdown .tagify__dropdown__wrapper { border-color: var(--medium-hairline-color); }
   :root[data-dark-mode="dark"] .ff-token-dropdown .tagify__dropdown__item--active { color: var(--text-color); }
+
+  /* Freeform-owned tables, including portal editors. Authored tables do not
+     receive this class. Keep input fills in step with their hovered row. */
+  :root[data-dark-mode="dark"] body:not(.dragging) table.freeform-ui-table > tbody > tr:not(.sel, .selected, .disabled, .active-drop-target, [aria-selected="true"]):hover {
+    --freeform-row-hover: color-mix(in srgb, var(--text-color) 3.5%, var(--pane-bg));
+    > th, > td { background-color: var(--freeform-row-hover); }
+    > td > input:not([type="checkbox"], [type="radio"], [type="color"], [type="range"]):not(:focus),
+    > td > textarea:not(:focus) { background-color: var(--freeform-row-hover); }
+  }
 
   #main-content {
     padding: 0;

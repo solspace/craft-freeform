@@ -101,7 +101,7 @@ export const TabsWrapper = styled.div.attrs({ className: "freeform-tabs" })`
       background: light-dark(${colors.white}, ${colors.surface});
       color: ${colors.gray700};
       box-shadow:
-        inset 0 2px 0 var(--link-color),
+        inset 0 2px 0 var(--white),
         0 0 0 1px ${colors.border} !important;
   :root:not([data-dark-mode="dark"]) & {
     box-shadow: inset 0 2px 0 ${colors.gray500},
@@ -112,7 +112,8 @@ export const TabsWrapper = styled.div.attrs({ className: "freeform-tabs" })`
 
     &.errors {
       position: relative;
-      color: ${colors.error};
+      &, &.active, &:hover, &:focus-visible { color: ${colors.error}; }
+      > span { color: inherit; }
 
       ${errorAlert};
     }

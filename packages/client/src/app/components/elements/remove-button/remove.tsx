@@ -1,7 +1,5 @@
-import { useHover } from "@ff-client/hooks/use-hover";
 import DeleteIcon from "@ff-icons/actions/trash-can";
 import type React from "react";
-import { useRef } from "react";
 
 import { useRemoveAnimation } from "./remove.animations";
 import { RemoveButtonWrapper } from "./remove.styles";
@@ -14,10 +12,7 @@ type Props = {
 export const RemoveButton: React.FC<
   Props & React.ComponentProps<typeof RemoveButtonWrapper>
 > = ({ active, onClick, ...rest }) => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const hovering = useHover(ref);
-
-  const animation = useRemoveAnimation({ active, hovering });
+  const animation = useRemoveAnimation({ active });
   const style = { ...animation, ...rest?.style };
 
   delete rest.style;
@@ -25,7 +20,6 @@ export const RemoveButton: React.FC<
   return (
     <RemoveButtonWrapper
       type="button"
-      ref={ref}
       style={style}
       onClick={onClick}
       {...rest}

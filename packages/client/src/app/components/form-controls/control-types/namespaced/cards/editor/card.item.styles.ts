@@ -19,7 +19,7 @@ export const Item = styled.li`
   padding: 12px 16px;
 
   background-color: light-dark(${colors.white}, ${colors.surface});
-  border: 1px solid #eee;
+  border: 1px solid light-dark(#eee, var(--medium-hairline-color));
   border-radius: 8px;
 
   ${ControlWrapper} {

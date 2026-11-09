@@ -241,6 +241,10 @@ export const FieldCellWrapper = styled.div`
       color: light-dark(${colors.gray500}, ${colors.text});
     }
     select:not([multiple]) { padding-inline-end: 30px; }
+    :root[data-dark-mode="dark"] && select {
+      box-shadow: none;
+      &:focus-visible { box-shadow: var(--focus-ring-light); }
+    }
   }
 
   &[data-field-type='multiple-select'] select[multiple] {
@@ -357,8 +361,8 @@ export const FieldCellWrapper = styled.div`
         grid-template-rows: min-content 20px auto;
         gap: 5px;
 
-        background: light-dark(${colors.white}, ${colors.surface});
-        border: 1px solid ${colors.gray200};
+        background: light-dark(${colors.white}, var(--ui-control-bg-color));
+        border: 1px solid light-dark(${colors.gray200}, ${colors.border});
         border-radius: 8px;
 
         &__image {
@@ -377,7 +381,7 @@ export const FieldCellWrapper = styled.div`
             width: 100%;
             max-height: 80px;
 
-            fill: ${colors.gray200};
+            fill: light-dark(${colors.gray200}, ${colors.muted});
           }
         }
 

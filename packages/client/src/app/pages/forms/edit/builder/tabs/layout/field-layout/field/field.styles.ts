@@ -4,7 +4,6 @@ import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 export const FieldTools = styled.div`
-  svg { fill: currentColor; }
   position: absolute;
   top: 4px;
   right: 4px;

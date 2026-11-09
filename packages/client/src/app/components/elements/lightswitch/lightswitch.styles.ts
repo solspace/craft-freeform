@@ -99,6 +99,12 @@ export const LightSwitchWrapper = styled.div`
     }
   }
 
+  :root[data-dark-mode="dark"] & {
+    &.craft-5_8 > div { background-color: var(--pane-bg); box-shadow: inset 0 0 0 1px var(--hairline-color); }
+    &.craft-5_8.on > div::before { background-color: var(--gray-800); }
+    &.craft-5_8:not(.on, .error) { --lightswitch-border-color: var(--gray-350); background-image: linear-gradient(to right, var(--gray-350), var(--gray-350)); }
+  }
+
   &.readonly {
     cursor: not-allowed;
     opacity: 0.6;

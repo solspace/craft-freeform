@@ -61,7 +61,7 @@ export const TabListItem = styled.li`
       width: calc(100% - 30px);
       height: 2px;
 
-      background-color: #0d99f2;
+      background-color: light-dark(#0d99f2, var(--white));
     }
   }
 

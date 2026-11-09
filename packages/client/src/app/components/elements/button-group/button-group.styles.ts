@@ -99,8 +99,8 @@ export const Button = styled.button`
   }
 
   &.active {
-    color: ${colors.white};
-    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark, ${colors.gray500}));
+    color: light-dark(${colors.white}, var(--ui-control-selected-color));
+    background-color: light-dark(${colors.gray500}, var(--ui-control-selected-bg));
   }
 
   &:first-child {

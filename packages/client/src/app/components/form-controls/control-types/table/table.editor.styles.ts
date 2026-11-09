@@ -44,7 +44,7 @@ export const TabularOptions = styled.table.attrs({
   width: 100%;
 
   thead {
-    background-color: ${colors.gray050};
+    background-color: light-dark(${colors.gray050}, var(--ui-control-bg-color));
     border: 1px solid ${colors.border};
     border-radius: 5px 5px 0 0;
 
@@ -53,7 +53,7 @@ export const TabularOptions = styled.table.attrs({
       padding-inline: 10px !important;
       margin: 0;
 
-      background-color: ${colors.gray050};
+      background-color: light-dark(${colors.gray050}, var(--ui-control-bg-color));
       border: 1px solid ${colors.hairline};
     }
   }
@@ -72,6 +72,7 @@ export const Cell = styled.td<CellProps>`
   padding: ${({ $tiny }) => ($tiny ? "6px 9px !important" : "0 !important")};
 
   border: 1px solid light-dark(rgba(0, 0, 0, 0.1), ${colors.border});
+  background: light-dark(transparent, ${colors.surface});
 
   label {
     display: none;

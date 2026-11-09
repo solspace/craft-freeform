@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
   overflow: hidden;
 
   background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
+  border: 1px solid light-dark(${colors.gray100}, var(--medium-hairline-color));
   border-radius: 3px;
 
   font-size: 12px;

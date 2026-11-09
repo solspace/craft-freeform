@@ -146,3 +146,13 @@ $logColors: (
     }
   }
 }
+
+:root[data-dark-mode="dark"] .paginator a svg { fill: currentColor; }
+:root[data-dark-mode="dark"] .log-table {
+  .hljs { background: var(--body-bg); color: var(--text-color); border-color: var(--hairline-color); }
+  .hljs-punctuation, .hljs-attr { color: var(--text-color); }
+  .hljs-string, .hljs-regexp { color: #a5d6ff; }
+  .hljs-number, .hljs-literal { color: #79c0ff; }
+  .hljs-keyword { color: #ff7b72; }
+  .hljs-comment { color: var(--light-text-color); }
+}

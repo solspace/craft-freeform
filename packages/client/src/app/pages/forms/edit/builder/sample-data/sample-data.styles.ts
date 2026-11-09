@@ -15,6 +15,12 @@ export const SampleDefaultInputRow = styled.div`
     padding: 8px;
     border: 1px solid ${colors.inputBorder};
     background: light-dark(#fff, ${colors.overlay});
+  :root[data-dark-mode="dark"] & {
+    background: var(--button-bg);
+    color: var(--light-text-color);
+    &:hover, &:focus-visible, &[aria-expanded="true"] { background: var(--button-bg--hover); color: var(--link-color); }
+  }
+
   }
 `;
 
@@ -80,7 +86,7 @@ export const SamplePickerButton = styled.button`
   cursor: pointer;
 
   &:hover, &:focus-visible, &[aria-expanded='true'] {
-    background: light-dark(#e8f0fc, var(--bg-selection-light, #e8f0fc));
+    background: light-dark(#e8f0fc, var(--ui-control-hover-bg-color));
     color: light-dark(#3476b8, var(--link-color));
   }
   &:focus-visible { outline: 2px solid light-dark(#3476b8, var(--link-color)); outline-offset: 1px; }
@@ -97,8 +103,8 @@ export const RefreshSamplesButton = styled(SamplePickerButton)`
 
   svg { width: 14px; height: 14px; }
   &:hover:not(:disabled), &:focus-visible {
-    border-color: #b8cee8;
-    background: light-dark(#e8f0fc, var(--bg-selection-light, #e8f0fc));
+    border-color: light-dark(#b8cee8, var(--input-border-color));
+    background: light-dark(#e8f0fc, var(--ui-control-hover-bg-color));
     color: light-dark(#3476b8, var(--link-color));
   }
 `;
@@ -124,7 +130,7 @@ export const OptionSampleToggle = styled.button`
   color: ${colors.gray500};
   cursor: pointer;
 
-  &:hover, &:focus-visible { color: light-dark(#3476b8, var(--link-color)); background: light-dark(#e8f0fc, var(--bg-selection-light, #e8f0fc)); }
+  &:hover, &:focus-visible { color: light-dark(#3476b8, var(--link-color)); background: light-dark(#e8f0fc, var(--ui-control-hover-bg-color)); }
   &[aria-pressed='true'] {
     color: #fff;
     background: var(--bg-enabled, var(--enabled-color, #14b8a6));
@@ -149,7 +155,7 @@ export const PickerPanel = styled.div`
   overflow: hidden;
   border: 1px solid ${colors.gray200};
   border-radius: 10px;
-  background: light-dark(#fff, ${colors.overlay});
+  background: light-dark(#fff, var(--gray-050));
   box-shadow: 0 12px 40px rgb(31 41 51 / 18%);
   color: ${colors.gray700};
   z-index: 9000;
@@ -158,7 +164,7 @@ export const PickerPanel = styled.div`
   header > div { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
   h3 { margin: 0; font-size: 14px; font-weight: 600; }
   input { width: 100%; }
-  footer { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px; border-top: 1px solid ${colors.gray100}; font-size: 11px; line-height: 1.5; color: ${colors.gray500}; }
+  footer { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 12px 14px; border-top: 1px solid light-dark(${colors.gray100}, ${colors.border}); font-size: 11px; line-height: 1.5; color: ${colors.gray500}; }
 `;
 
 export const PickerResults = styled.div`
@@ -186,7 +192,7 @@ export const GeneratorButton = styled.button`
   cursor: pointer;
   font-size: 12px;
 
-  &:hover, &:focus-visible, &[aria-pressed='true'] { background: light-dark(#edf3fc, var(--bg-selection-light, #edf3fc)); color: light-dark(#2865a5, var(--link-color)); }
+  &:hover, &:focus-visible, &[aria-pressed='true'] { background: light-dark(#edf3fc, var(--bg-selection-light)); color: light-dark(#2865a5, var(--gray-800)); }
   &:focus-visible { outline: 2px solid light-dark(#3476b8, var(--link-color)); outline-offset: -2px; }
   span:last-child { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: ${colors.gray500}; font-size: 11px; }
 `;

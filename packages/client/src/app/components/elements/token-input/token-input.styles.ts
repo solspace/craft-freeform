@@ -5,11 +5,11 @@ export const TokenPillStyles = css`
   .tagify {
     --placeholder-color: var(--light-text-color);
     --placeholder-color-focus: var(--light-text-color);
-    --tag-bg: var(--bg-selection-light, #e8f0fc);
-    --tag-hover: var(--bg-selection-dark, #d8e7fb);
+    --tag-bg: light-dark(var(--bg-selection-light, #e8f0fc), var(--bg-selection-light));
+    --tag-hover: light-dark(var(--bg-selection-dark, #d8e7fb), var(--ui-control-hover-bg-color));
     --tag-text-color: var(--text-color, #30689f);
     --tag-remove-bg: var(--ui-control-bg-color, #cfdef1);
-    --tag-remove-btn-color: var(--text-color, #30689f);
+    --tag-remove-btn-color: light-dark(var(--text-color, #30689f), var(--light-text-color));
     --tag-remove-btn-bg--hover: var(--ui-control-hover-bg-color, #cfdef1);
     --tag-border-radius: 12px;
     --tag-pad: 2px 6px;
@@ -34,7 +34,7 @@ export const TokenPillStyles = css`
     text-decoration: none !important;
     opacity: 1;
   }
-  .tagify__tag__removeBtn:hover { color: #30689f; }
+  .tagify__tag__removeBtn:hover { color: light-dark(#30689f, var(--gray-800)); }
   .tagify__tag__removeBtn:hover + div::before {
     box-shadow: none !important;
   }

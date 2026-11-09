@@ -1,4 +1,4 @@
-import { spacings } from "@ff-client/styles/variables";
+import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const FieldGroupWrapper = styled.div`
@@ -24,6 +24,7 @@ export const GroupTitle = styled.h2.attrs({
     top: 1px;
     right: 0;
 
+    :root[data-dark-mode="dark"] & { color: ${colors.muted}; }
     transition: all 0.2s ease;
 
     &:hover {

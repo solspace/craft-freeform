@@ -40,4 +40,11 @@ export const Surface = styled.div<SurfaceProps>`
   word-break: break-word;
 
   ${({ $theme }) => themeStyles[$theme]}
+  :root[data-dark-mode="dark"] & {
+    background: var(--gray-050);
+    color: var(--gray-800);
+    border-color: var(--hairline-color);
+    box-shadow: var(--menu-shadow);
+  }
+
 `;

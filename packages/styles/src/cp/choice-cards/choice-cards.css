@@ -179,3 +179,24 @@
   input[type="radio"]:focus-visible {
   box-shadow: var(--focus-ring);
 }
+
+:root[data-dark-mode="dark"] .ff-choice-card {
+  --choice-accent: var(--gray-350);
+  --choice-selected-background: var(--ui-control-hover-bg-color);
+  --choice-selected-heading: var(--gray-800);
+}
+:root[data-dark-mode="dark"] .ff-choice-card:has(input:checked) {
+  color: var(--gray-800);
+}
+:root[data-dark-mode="dark"] .ff-choice-card input {
+  accent-color: var(--teal-400);
+}
+:root[data-dark-mode="dark"]
+  .ff-choice-card
+  input[type="radio"]:not(.radio):checked {
+  background-image: radial-gradient(
+    circle,
+    var(--teal-400) 0 4px,
+    transparent 4.5px
+  );
+}

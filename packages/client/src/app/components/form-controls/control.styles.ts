@@ -210,6 +210,11 @@ export const InstructionHelpButton = styled.button`
   &:hover, &:focus { color: light-dark(#3476b8, ${colors.link}); opacity: 1; }
   &:focus-visible { outline: 2px solid light-dark(#3476b8, ${colors.link}); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { transition: none; }
+  :root[data-dark-mode="dark"] & {
+    > svg > circle[fill="#fff"] { fill: var(--pane-bg); }
+    > svg > path[stroke="#fff"] { stroke: var(--pane-bg); }
+  }
+
 `;
 
 export const InstructionHelpText = styled.div<{ $open: boolean }>`
@@ -223,6 +228,7 @@ export const InstructionHelpText = styled.div<{ $open: boolean }>`
     visibility 0s ${({ $open }) => ($open ? "0s" : "180ms")};
 
   @media (prefers-reduced-motion: reduce) { transition: none; }
+
 `;
 
 export const InstructionHelpContent = styled.div`

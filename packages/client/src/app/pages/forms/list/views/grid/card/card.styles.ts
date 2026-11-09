@@ -296,11 +296,11 @@ export const SizeMenu = styled.div`
   width: 240px;
   max-width: calc(100vw - 24px);
   padding: 5px;
-  border: 1px solid light-dark(#cdd8e4, ${colors.border});
+  border: 1px solid light-dark(#cdd8e4, var(--medium-hairline-color));
   border-radius: 6px;
-  background: var(--modal-bg, #fff);
+  background: light-dark(var(--modal-bg, #fff), color-mix(in srgb, var(--text-color) 5%, var(--gray-050)));
   color: light-dark(#3f4d5a, ${colors.text});
-  box-shadow: 0 6px 20px rgb(0 0 0 / 15%);
+  box-shadow: 0 6px 20px light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 45%));
   .menu-controls { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
   .menu-controls:disabled { opacity: .65; }
   .content-options, .card-actions { border-top: 1px solid light-dark(#dfe6ee, ${colors.border}); margin-top: 5px; padding-top: 5px; }
@@ -327,8 +327,11 @@ export const SizeChoice = styled.button`
   background: transparent;
   cursor: pointer;
   font-size: 13px;
-  &:hover, &:focus-visible { background: var(--gray-050, #f3f7fc); }
-  &[aria-pressed=true] { background: var(--gray-100, #e4edf6); }
+  &:hover, &:focus-visible { background: light-dark(var(--gray-050, #f3f7fc), var(--bg-selection-light)); }
+  &[aria-pressed=true] {
+    background: light-dark(var(--gray-100, #e4edf6), var(--ui-control-selected-bg));
+    color: light-dark(#3f4d5a, var(--ui-control-selected-color));
+  }
   &:focus-visible { outline: none; box-shadow: var(--focus-ring-inner); }
   .size-label { display: inline-flex; align-items: center; gap: 8px; }
   .size-check { display: block; width: 14px; height: 14px; flex-shrink: 0; }

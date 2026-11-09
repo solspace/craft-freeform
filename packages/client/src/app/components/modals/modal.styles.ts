@@ -33,6 +33,11 @@ export const ModalWrapper = styled(animated.div)`
 `;
 
 export const ModalContainer = styled.div`
+  :root[data-dark-mode="dark"] & .react-loading-skeleton {
+    --base-color: var(--ui-control-bg-color) !important;
+    --highlight-color: var(--ui-control-hover-bg-color) !important;
+  }
+
   width: 100%;
   max-width: 500px;
 

@@ -208,3 +208,22 @@
     }
   }
 }
+
+:root[data-dark-mode="dark"] .freeform-widget-quick-form {
+  .freeform-pages li.active { color: var(--gray-800); background: var(--bg-selection-light); }
+  .freeform-form-errors { color: var(--error-color); background: color-mix(in srgb, var(--error-color) 8%, var(--pane-bg)); }
+  .freeform-column:has(> .freeform-has-errors, > .freeform-errors:not(:empty)) > .freeform-label { color: var(--error-color); }
+  .freeform-form-success, .freeform-quick-form-success { color: var(--fg-success); background: color-mix(in srgb, var(--fg-success) 8%, var(--pane-bg)); border-color: color-mix(in srgb, var(--fg-success) 40%, var(--hairline-color)); }
+  .freeform-phone-country {
+    --ff-phone-background: var(--gray-050);
+    --ff-phone-selector-background: var(--input-bg);
+    --ff-phone-selector-overlay: transparent;
+    --ff-phone-color: var(--text-color);
+    --ff-phone-border: var(--input-border-color);
+    --ff-phone-highlight: var(--ui-control-hover-bg-color);
+    --ff-phone-dial-color: var(--text-color);
+    --ff-phone-muted-color: var(--light-text-color);
+    --ff-phone-focus-color: var(--focus-ring-color);
+    color-scheme: dark;
+  }
+}

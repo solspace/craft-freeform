@@ -136,7 +136,8 @@ export const MetricsTable = styled.table.attrs({
 `;
 
 export const MetricsTableHead = styled.thead`
-  background: #cfd8e3;
+  background: light-dark(#cfd8e3, var(--gray-050));
+  :root[data-dark-mode="dark"] & { color: var(--light-text-color); }
 `;
 
 export const MetricsTableHeaderCell = styled.th`
@@ -148,7 +149,7 @@ export const MetricsTableHeaderCell = styled.th`
 
 export const MetricsTableRow = styled.tr`
   &:nth-child(even) {
-    background: #f4f7fc;
+    background: light-dark(#f4f7fc, var(--ui-control-bg-color));
   }
 `;
 

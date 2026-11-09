@@ -36,7 +36,7 @@ const PlansCardsGrid = styled.div`
 `;
 
 const PlanCard = styled.div`
-  border: 1px solid ${colors.gray100};
+  border: 1px solid light-dark(${colors.gray100}, var(--input-border-color));
   border-radius: ${borderRadius.md};
   padding: calc(${spacings.xl} + ${spacings.xs}) ${spacings.lg};
   display: flex;

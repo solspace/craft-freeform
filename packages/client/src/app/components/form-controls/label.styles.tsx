@@ -11,7 +11,7 @@ export const Label = styled.label<LabelProps>`
   align-items: center;
   gap: 6px;
 
-  color: ${colors.gray550};
+  color: light-dark(${colors.gray550}, var(--gray-800));
   font-weight: ${({ $regular }) => ($regular ? "normal" : "bold")} !important;
 `;
 
@@ -21,7 +21,7 @@ export const RequiredStar = styled.span`
   &:after {
     content: 'asterisk';
 
-    color: ${colors.red500};
+    color: light-dark(${colors.red500}, ${colors.error});
     font-family: Craft;
     font-size: 10px;
   }

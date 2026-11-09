@@ -36,7 +36,7 @@ const Wrapper = styled.div.attrs({ className: "freeform-add-button-area" })`
   justify-content: center;
 
   background: transparent;
-  border: 1px dashed rgba(0, 0, 0, 0.25);
+  border: 1px dashed light-dark(rgba(0, 0, 0, 0.25), var(--medium-hairline-color));
   border-top: none;
   border-bottom-left-radius: ${borderRadius.lg};
   border-bottom-right-radius: ${borderRadius.lg};

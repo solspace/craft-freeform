@@ -58,7 +58,7 @@ export const PageTab = styled(animated.div)`
 
   &.active {
     color: ${colors.gray800};
-    border-bottom-color: ${colors.blue600};
+    border-bottom-color: light-dark(${colors.blue600}, var(--link-color));
   }
 
   &.errors {

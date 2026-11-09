@@ -26,15 +26,13 @@ class NavigationItem extends FeatureBundle
 
         $this->registerController('form-monitor', FormMonitorController::class);
 
-        // Add Form Monitor shortcut to settings nav
+        // Resolve the shortcut or introduction when the settings page is opened.
         Event::on(
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
             static function (RegisterSettingsNavigationEvent $event) {
-                $freeform = Freeform::getInstance();
-
                 $event->addNavigationItem(
-                    '../integrations/single/FormMonitor',
+                    'form-monitor',
                     Freeform::t('Form Monitor'),
                     'notices-and-alerts'
                 );

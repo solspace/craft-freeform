@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
@@ -18,6 +19,10 @@ class FavoritesProvider
             if (is_a($record->type, SignatureField::class, true) && \is_object($properties) && !isset($properties->customizeAppearance)) {
                 // Older favorites retain their configured colors when reused.
                 $properties->customizeAppearance = true;
+            }
+
+            if (is_a($record->type, DatetimeField::class, true)) {
+                $properties = (object) DatetimeField::normalizePickerProperties((array) $properties);
             }
 
             $favorites[] = [

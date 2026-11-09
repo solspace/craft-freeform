@@ -8,6 +8,6 @@ class DashboardBundle extends AbstractFreeformAssetBundle
 {
     public function getStylesheets(): array
     {
-        return ['css/cp/widgets/dashboard.css'];
+        return ['css/cp/widgets/dashboard.css', 'css/cp/widgets/disclosure-select.css'];
     }
 }

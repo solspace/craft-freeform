@@ -68,6 +68,7 @@ class MollieField extends AbstractField implements PaymentFieldInterface, SkipGi
     #[Input\Integer(
         label: 'Payment Amount',
         instructions: 'Enter the amount you want to charge for this payment.',
+        unitProperty: 'currency',
         min: 1,
         unsigned: true,
     )]

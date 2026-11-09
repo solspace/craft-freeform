@@ -1,4 +1,5 @@
 import type { Property } from "@ff-client/types/properties";
+import type { ReactNode } from "react";
 
 export type ControlType<P extends Property, C = unknown> = {
   property: P;
@@ -8,4 +9,5 @@ export type ControlType<P extends Property, C = unknown> = {
   context?: C;
   autoFocus?: boolean;
   focus?: boolean;
+  children?: ReactNode;
 };

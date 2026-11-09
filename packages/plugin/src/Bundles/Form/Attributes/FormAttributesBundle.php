@@ -9,6 +9,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\BannerColorHelper;
 use yii\base\Event;
 
 class FormAttributesBundle extends FeatureBundle
@@ -101,6 +102,13 @@ class FormAttributesBundle extends FeatureBundle
 
         $attributes->replace('data-success-message', $form->getSuccessMessage());
         $attributes->replace('data-error-message', $form->getErrorMessage());
+
+        if ($behaviorSettings->customMessageColors) {
+            $dark = true === $attributes->getForm()->get('data-freeform-sample-dark');
+            BannerColorHelper::apply($attributes->getSuccess(), $behaviorSettings->successColor, $dark, $behaviorSettings->bannerStyle);
+            BannerColorHelper::apply($attributes->getErrors(), $behaviorSettings->errorColor, $dark, $behaviorSettings->bannerStyle);
+            BannerColorHelper::applyFieldColors($attributes->getForm(), $behaviorSettings->errorColor, $dark);
+        }
 
         // Pass the resolved template overrides to the AJAX renderer. Attributes
         // escapes the JSON when it is written to the form tag.

@@ -9,6 +9,7 @@ use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
+use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
@@ -16,6 +17,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
@@ -126,6 +128,7 @@ class ManifestFieldSerializer
             $asset = $assetId ? $field->getAsset((int) $assetId) : null;
             $data['content'] = [
                 'image' => [
+                    'style' => $field->getDisplayStyles(),
                     'src' => $asset ? $field->getSrc($asset) : null,
                     'srcset' => $asset ? $field->getSrcset($asset) : null,
                     'alt' => $asset ? $asset->title : ($field->getLabel() ?: ''),
@@ -141,6 +144,9 @@ class ManifestFieldSerializer
      */
     private function serializeFrontendConfig(Form $form, FieldInterface $field): array
     {
+        if ($field instanceof LocationField) {
+            return $field->getLocationConfig();
+        }
         if ($field instanceof PhoneField && $field->isInternational()) {
             return $field->getInternationalConfig();
         }
@@ -156,6 +162,10 @@ class ManifestFieldSerializer
 
         if ($field instanceof RangeField) {
             return ['min' => $field->getMinValue(), 'max' => $field->getMaxValue(), 'step' => $field->getStep()];
+        }
+
+        if ($field instanceof NumberField) {
+            return $field->getNumberConfig();
         }
 
         if ($field instanceof SummaryField) {
@@ -200,16 +210,25 @@ class ManifestFieldSerializer
 
         if ($field instanceof DatetimeField) {
             return [
+                'picker' => $field->getPicker(),
+                'pickerMinDate' => $field->getPickerMinDate(),
+                'pickerMaxDate' => $field->getPickerMaxDate(),
+                'referenceDate' => $field->getPickerReferenceDate(),
+                'referenceTimestamp' => $field->getPickerReferenceTimestamp(),
+                'minDateOffset' => $field->getMinDateOffset(),
+                'maxDateOffset' => $field->getMaxDateOffset(),
+                'labels' => $field->getPickerLabels(),
+                'minuteStep' => $field->getMinuteStep(),
                 'dateTimeType' => $field->getDateTimeType(),
                 'useNativeTypes' => $field->isUseNativeTypes(),
                 'useDatepicker' => $field->isUseDatepicker(),
-                'locale' => $field->getLocale(),
+                'locale' => $field->getLocale() ?: \Craft::$app->locale->id,
                 'format' => $field->getFormat(),
                 'datepickerFormat' => $field->getDatepickerFormat(),
                 'nativeInputType' => $field->getInputType(),
                 'clock24h' => $field->isClock24h(),
-                'minDate' => $field->getGeneratedMinDate(),
-                'maxDate' => $field->getGeneratedMaxDate(),
+                'minDate' => $field->getMinDateInputValue($field->isUseNativeTypes() ? $field->getNativeFormat() : ($field->isShowTime() ? 'Y-m-d\TH:i:s' : 'Y-m-d')),
+                'maxDate' => $field->getMaxDateInputValue($field->isUseNativeTypes() ? $field->getNativeFormat() : ($field->isShowTime() ? 'Y-m-d\TH:i:s' : 'Y-m-d')),
                 'enableTime' => $field->isShowTime(),
                 'enableDate' => $field->isShowDate(),
             ];
@@ -460,6 +479,7 @@ class ManifestFieldSerializer
             $asset = $assetId ? $field->getAsset((int) $assetId) : null;
 
             return [
+                'style' => $field->getDisplayStyles(),
                 'src' => $asset ? $field->getSrc($asset) : null,
                 'srcset' => $asset ? $field->getSrcset($asset) : null,
                 'alt' => $asset ? $asset->title : ($field->getLabel() ?: ''),

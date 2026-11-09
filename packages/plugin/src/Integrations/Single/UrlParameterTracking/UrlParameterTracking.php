@@ -64,7 +64,8 @@ class UrlParameterTracking extends BaseIntegration implements SingletonIntegrati
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[Input\Integer(
         label: 'Cookie Lifetime',
-        instructions: 'How long tracked parameters should be stored in cookies (in minutes).',
+        unit: 'minutes',
+        instructions: 'How long tracked parameters should be stored in cookies.',
         min: 1,
     )]
     #[Message('When set at the form level, this overrides the default cookie lifetime defined in the integration.')]

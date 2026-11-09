@@ -1,3 +1,7 @@
+import {
+  blurNumberInputOnWheel,
+  NumberInput,
+} from "@components/elements/number-input/number-input";
 import { Control } from "@components/form-controls/control";
 import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
 import { spacings } from "@ff-client/styles/variables";
@@ -57,6 +61,7 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         <Control width={50} label={translate("Default value")} handle="value">
           <input
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             step="any"
             className="text fullwidth"
             value={column.value}
@@ -84,8 +89,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
 
       <FlexRow $gap={spacings.md}>
         <Control width={50} label={translate("Min Length")} handle="minLength">
-          <input
-            type="number"
+          <NumberInput
+            id="minLength"
+            unit="chars"
             min={0}
             className="text fullwidth"
             value={metadata.minLength ?? ""}
@@ -98,8 +104,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         </Control>
 
         <Control width={50} label={translate("Max Length")} handle="maxLength">
-          <input
-            type="number"
+          <NumberInput
+            id="maxLength"
+            unit="chars"
             min={0}
             className="text fullwidth"
             value={metadata.maxLength ?? ""}
@@ -116,6 +123,7 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         <Control width={50} label={translate("Min")} handle="minValue">
           <input
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             step="any"
             className="text fullwidth"
             value={minValue ?? ""}
@@ -133,6 +141,7 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         <Control width={50} label={translate("Max")} handle="maxValue">
           <input
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             step="any"
             className="text fullwidth"
             value={maxValue ?? ""}
@@ -154,8 +163,9 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
           label={translate("Decimal Count")}
           handle="decimalCount"
         >
-          <input
-            type="number"
+          <NumberInput
+            id="decimalCount"
+            unit="places"
             min={0}
             className="text fullwidth"
             value={metadata.decimalCount ?? ""}
@@ -170,6 +180,7 @@ export const TableNumberEditor: React.FC<TableEditorProps> = ({
         <Control width={50} label={translate("Step")} handle="step">
           <input
             type="number"
+            onWheelCapture={blurNumberInputOnWheel}
             min={0}
             step="any"
             className="text fullwidth"

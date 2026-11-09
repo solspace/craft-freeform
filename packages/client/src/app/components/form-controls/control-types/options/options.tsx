@@ -21,6 +21,29 @@ import { generateDefaultValue } from "./sources/defaults";
 import { SourceComponent } from "./sources/source.component";
 import { OptionsTranslatable } from "./sources/translations/translations";
 
+const SourceIcon = ({ source }: { source: string }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.75"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    {source === Source.Custom ? (
+      <path d="m16 3 5 5L9 20l-6 1 1-6L16 3Zm-2 2 5 5" />
+    ) : source === Source.Elements ? (
+      <path d="m12 3 10 5-10 5L2 8l10-5ZM2 12l10 5 10-5M2 16l10 5 10-5" />
+    ) : (
+      <>
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="m6 8 1 1 2-2m-3 7 1 1 2-2m3-5h6m-6 6h6" />
+      </>
+    )}
+  </svg>
+);
+
 const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
   value,
   errors,
@@ -111,9 +134,14 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         <ControlWrapper $width={property.width}>
           <OptionsHeading>
             <Label>{translate("Source")}</Label>
-            {source !== Source.Custom && sampleAction}
+            {sampleAction}
           </OptionsHeading>
           <ButtonGroup
+            label={translate("Source")}
+            stacked
+            renderIcon={(selectedSource) => (
+              <SourceIcon source={selectedSource} />
+            )}
             options={sourceLabels}
             value={source}
             onClick={(selectedSource) => {
@@ -139,7 +167,9 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         isMultiple={isMultiple}
         allowOptgroup={property.allowOptgroup}
         autoUpdateHandle={autoUpdateHandle}
-        headerAction={sampleAction}
+        headerAction={
+          config.editions.isAtLeast(Edition.Lite) ? undefined : sampleAction
+        }
       />
 
       <FormErrorList errors={errors} />

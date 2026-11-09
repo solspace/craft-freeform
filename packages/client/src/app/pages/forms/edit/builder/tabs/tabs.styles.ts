@@ -56,11 +56,11 @@ const tabDimensions = css`
   font: inherit;
 `;
 
-export const TabsWrapper = styled.div`
+export const TabsWrapper = styled.div.attrs({ className: "freeform-tabs" })`
   display: flex;
   width: max-content;
   max-width: 100%;
-  background-color: ${colors.gray050};
+  background-color: light-dark(${colors.gray050}, ${colors.mutedSurface});
   border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
   box-shadow:
     inset 0 -1px 0 0 rgba(154, 165, 177, 0.25),
@@ -79,7 +79,12 @@ export const TabsWrapper = styled.div`
 
     &:hover {
       text-decoration: none;
-      background-color: rgba(154, 165, 177, 0.15);
+      /* Keep the strip's bottom hairline visible beneath the hover fill. */
+      background: linear-gradient(
+        var(--ui-control-bg-color, ${colors.gray050}),
+        var(--ui-control-bg-color, ${colors.gray050})
+      ) top / 100% calc(100% - 1px) no-repeat;
+      :root:not([data-dark-mode="dark"]) &:not(.active) { background: rgba(154, 165, 177, 0.15); }
 
       &:not(.active) {
         &:not(:first-child) {
@@ -93,17 +98,22 @@ export const TabsWrapper = styled.div`
     }
 
     &.active {
-      background: ${colors.white};
+      background: light-dark(${colors.white}, ${colors.surface});
       color: ${colors.gray700};
       box-shadow:
-        inset 0 2px 0 ${colors.gray500},
+        inset 0 2px 0 var(--white),
+        0 0 0 1px ${colors.border} !important;
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: inset 0 2px 0 ${colors.gray500},
         0 0 0 1px rgba(51, 64, 77, 0.1),
         0 2px 12px rgba(205, 216, 228, 0.5) !important;
+  };
     }
 
     &.errors {
       position: relative;
-      color: ${colors.error};
+      &, &.active, &:hover, &:focus-visible { color: ${colors.error}; }
+      > span { color: inherit; }
 
       ${errorAlert};
     }
@@ -146,7 +156,7 @@ export const OverflowMenu = styled.div`
   padding: 6px;
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   box-shadow: 0 4px 16px rgb(51 64 77 / 18%);
 
   a {
@@ -180,7 +190,7 @@ export const HistoryControls = styled.div`
   align-items: center;
   overflow: hidden;
   border-radius: ${borderRadius.md};
-  background: #c4cfe1;
+  background: light-dark(#c4cfe1, var(--ui-control-bg-color));
 `;
 
 export const HistoryButton = styled.button`
@@ -191,20 +201,20 @@ export const HistoryButton = styled.button`
   height: 34px;
   padding: 0;
   border: 0;
-  background: #c4cfe1;
-  color: #5a6875;
+  background: light-dark(#c4cfe1, var(--ui-control-bg-color));
+  color: light-dark(#5a6875, var(--text-color));
   cursor: pointer;
 
   & + & {
-    border-left: 1px solid #e3ecfb;
+    border-left: 1px solid light-dark(#e3ecfb, transparent);
   }
 
   &:hover:not(:disabled) {
-    background: #b5c4d8;
+    background: light-dark(#b5c4d8, var(--ui-control-hover-bg-color));
   }
 
   &:active:not(:disabled) {
-    background: #a6b4c9;
+    background: light-dark(#a6b4c9, var(--ui-control-active-bg-color));
   }
 
   &:focus-visible {
@@ -213,8 +223,8 @@ export const HistoryButton = styled.button`
   }
 
   &:disabled {
-    background: #d5dfeb;
-    color: #a0aab4;
+    background: light-dark(#d5dfeb, var(--ui-control-bg-color));
+    color: light-dark(#a0aab4, var(--light-text-color));
     cursor: default;
   }
 `;

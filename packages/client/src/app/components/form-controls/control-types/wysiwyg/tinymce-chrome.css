@@ -1,0 +1,448 @@
+/* Shared editor chrome for rich text fields and notification templates. */
+.ff-tinymce-editor .tox.tox-tinymce {
+  padding: 0;
+  border: 1px solid var(--gray-200, #cdd8e4);
+  border-radius: 6px;
+}
+.ff-tinymce-editor .tox.tox-tinymce .tox-editor-header {
+  padding: 4px 6px !important;
+  background: var(--gray-050, #f3f7fc);
+  border-bottom: 1px solid var(--gray-150, #dae4ef);
+  box-shadow: none !important;
+}
+.ff-tinymce-editor .tox .tox-toolbar-overlord,
+.ff-tinymce-editor .tox .tox-toolbar,
+.ff-tinymce-editor .tox .tox-toolbar__primary,
+.ff-tinymce-editor .tox .tox-toolbar__overflow {
+  padding: 0;
+  background: transparent;
+}
+.ff-tinymce-editor .tox .tox-toolbar__group {
+  padding: 0 6px;
+  margin: 3px 0;
+  border-color: var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-tbtn {
+  width: 30px;
+  height: 30px;
+  margin: 0 2px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--gray-700, #3f4d5a);
+  background: transparent;
+  border-radius: 4px;
+}
+.ff-tinymce-editor .tox .tox-tbtn svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+.ff-tinymce-editor .tox .tox-tbtn:not(.tox-tbtn--disabled):hover {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #dae4ef);
+}
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--enabled,
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--enabled:hover {
+  color: var(--ui-control-selected-color, var(--link-color, #245f96));
+  background: var(--ui-control-selected-bg, var(--bg-selection-light, #dbeafe));
+}
+.ff-tinymce-editor .tox .tox-tbtn--select {
+  width: auto;
+  min-width: 0;
+  padding: 0 6px;
+}
+.ff-tinymce-editor .tox .tox-tbtn--select:has(.tox-tbtn__select-label) {
+  min-width: 110px;
+  padding: 0 8px;
+  background: var(--gray-100, #e4edf6);
+}
+.ff-tinymce-editor .tox .tox-tbtn__select-label {
+  margin: 0 8px 0 0;
+}
+.ff-tinymce-editor .tox .tox-tbtn__select-chevron svg {
+  width: 10px;
+  height: 10px;
+}
+.ff-tinymce-editor .tox .tox-split-button {
+  height: 30px;
+  margin: 0 2px;
+  border-color: transparent;
+  border-radius: 4px;
+}
+.ff-tinymce-editor .tox .tox-split-button:hover {
+  border-color: var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-split-button .tox-tbtn {
+  margin: 0;
+}
+.ff-tinymce-editor .tox .tox-split-button__chevron {
+  width: 18px;
+}
+.ff-tinymce-editor .tox .tox-split-button__chevron svg {
+  width: 10px;
+  height: 10px;
+}
+.ff-tinymce-editor .tox .tox-statusbar {
+  font-size: 11px;
+  color: var(--gray-500, #657585);
+  border-color: var(--gray-150, #dae4ef);
+}
+
+.ff-tinymce-editor .tox.tox-tinymce .tox-toolbar__group:not(:last-of-type) {
+  border-inline-end: 1px solid var(--gray-200, #cdd8e4);
+}
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--disabled {
+  color: var(--gray-500, #657585);
+  background: transparent;
+  opacity: 0.45;
+}
+
+.ff-tinymce-editor .tox :is(.tox-edit-area, .tox-statusbar, .tox-sidebar-wrap) {
+  color: var(--text-color);
+  background: var(--pane-bg, white);
+}
+.ff-tinymce-editor .tox .tox-tbtn.tox-tbtn--enabled {
+  color: var(--ui-control-selected-color, var(--link-color));
+  background: var(--ui-control-selected-bg, var(--bg-selection-light));
+}
+.ff-tinymce-editor
+  .tox
+  .tox-split-button:hover
+  .tox-tbtn:not(.tox-tbtn--disabled) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #dae4ef);
+}
+
+.ff-tinymce-editor .tox .tox-tbtn:not(.tox-tbtn--disabled):hover svg,
+.ff-tinymce-editor
+  .tox
+  .tox-split-button:hover
+  .tox-tbtn:not(.tox-tbtn--disabled)
+  svg {
+  fill: currentColor;
+}
+
+/* TinyMCE mounts dropdown menus outside the editor wrapper. Limit these rules
+   to pages with a Freeform editor, and leave color swatches/content untouched. */
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-menu {
+  color: var(--text-color, #3f4d5a);
+  background: var(--modal-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 5px 20px #1f293340));
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-collection__group {
+  border-color: var(--hairline-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-collection__item {
+  color: var(--text-color, #3f4d5a);
+  background: transparent;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-collection__item--enabled {
+  color: var(--ui-control-selected-color, var(--text-color, #3f4d5a));
+  background: var(--ui-control-selected-bg, var(--bg-selection-light, #e4edf6));
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #e4edf6);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-collection__item-label {
+  color: inherit;
+  background: transparent;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(
+    .tox-collection__item-icon,
+    .tox-collection__item-checkmark,
+    .tox-collection__item-caret
+  ) {
+  color: inherit;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(
+    .tox-collection__item-icon,
+    .tox-collection__item-checkmark,
+    .tox-collection__item-caret
+  )
+  svg {
+  fill: currentColor;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-collection__item--state-disabled {
+  color: var(--light-text-color, #7b8793);
+}
+
+/* Editor-owned dialogs use the same surfaces and controls as the Craft CP. */
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-dialog-wrap__backdrop {
+  background: var(--shade-bg, rgba(0, 0, 0, 0.5));
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-dialog {
+  color: var(--text-color, #3f4d5a);
+  background: var(--modal-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+  box-shadow: var(--modal-shadow, 0 16px 48px #1f293340);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(.tox-dialog__header, .tox-dialog__body, .tox-dialog__body-content) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--modal-bg, #fff);
+  border-color: var(--hairline-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-dialog__footer {
+  color: var(--text-color, #3f4d5a);
+  background: var(--gray-050, #f3f7fc);
+  border-color: var(--hairline-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(.tox-dialog__title, .tox-checkbox__label) {
+  color: var(--text-color, #3f4d5a);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(.tox-label, .tox-toolbar-label) {
+  color: var(--light-text-color, #657585);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(
+    .tox-textfield,
+    .tox-textarea,
+    .tox-selectfield select,
+    .tox-listboxfield .tox-listbox--select
+  ) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--input-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(
+    .tox-textfield,
+    .tox-textarea,
+    .tox-selectfield select,
+    .tox-listboxfield .tox-listbox--select
+  ):focus {
+  border-color: var(--focus-ring-color, #3476b8);
+  box-shadow: var(--focus-ring-light, 0 0 0 2px #3476b840);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  :is(.tox-textfield, .tox-textarea)::placeholder {
+  color: var(--light-text-color, #657585);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-button {
+  color: var(--primary-button-text-color, #fff);
+  background: var(--primary-button-bg, #3476b8);
+  border-color: transparent;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-button:hover:not(:disabled) {
+  background: var(--primary-button-bg--hover, #245f96);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-button--secondary {
+  color: var(--button-text-color, #3f4d5a);
+  background: var(--button-bg, #e4edf6);
+  border-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-button--secondary:hover:not(:disabled) {
+  background: var(--button-bg--hover, #cdd8e4);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-button--naked {
+  color: var(--text-color, #3f4d5a);
+  background: transparent;
+  border-color: transparent;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-button--naked:hover:not(:disabled) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #e4edf6);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-button:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring-light, 0 0 0 2px #3476b840);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-button svg {
+  fill: currentColor;
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-dialog__body-nav {
+  background: var(--gray-050, #f3f7fc);
+  border-color: var(--hairline-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-dialog__body-nav-item {
+  color: var(--text-color, #3f4d5a);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-dialog__body-nav-item--active {
+  color: var(--ui-control-selected-color, var(--text-color, #3f4d5a));
+  background: var(--ui-control-selected-bg, var(--bg-selection-light, #e4edf6));
+  border-color: var(
+    --ui-control-selected-border,
+    var(--input-border-color, #cdd8e4)
+  );
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-insert-table-picker {
+  background: var(--modal-bg, #fff);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-insert-table-picker
+  > div {
+  background: var(--input-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-insert-table-picker
+  > div.tox-insert-table-picker__selected {
+  background: var(--ui-control-selected-bg, var(--bg-selection-light, #e4edf6));
+  border-color: var(
+    --ui-control-selected-border,
+    var(--input-border-color, #cdd8e4)
+  );
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-insert-table-picker__label {
+  color: var(--text-color, #3f4d5a);
+  background: var(--modal-bg, #fff);
+}
+
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-dialog
+  :is(.tox-listbox__select-chevron, .tox-selectfield__icon)
+  svg {
+  fill: currentColor;
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-rgb-form label {
+  color: var(--text-color, #3f4d5a);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-textarea-wrap {
+  color: var(--text-color, #3f4d5a);
+  background: var(--input-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-textarea-wrap:focus-within {
+  background: var(--input-bg, #fff);
+  border-color: var(--focus-ring-color, #3476b8);
+  box-shadow: var(--focus-ring-light, 0 0 0 2px #3476b840);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-textarea-wrap
+  .tox-textarea:focus {
+  box-shadow: none;
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop__dialog {
+  color: var(--text-color, #3f4d5a);
+  background: var(--modal-bg, #fff);
+  border-color: var(--input-border-color, #cdd8e4);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 5px 20px #1f293340));
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop .tox-toolbar {
+  background: transparent;
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop .tox-tbtn {
+  color: var(--text-color, #3f4d5a);
+  background: transparent;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop
+  .tox-tbtn:hover:not(.tox-tbtn--disabled) {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #e4edf6);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop .tox-tbtn--enabled {
+  color: var(--ui-control-selected-color, var(--text-color, #3f4d5a));
+  background: var(--ui-control-selected-bg, var(--bg-selection-light, #e4edf6));
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop .tox-tbtn svg {
+  fill: currentColor;
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop .tox-tbtn--disabled {
+  color: var(--light-text-color, #657585);
+  opacity: 0.45;
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--top::before {
+  border-bottom-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor) .tox.tox-tinymce-aux .tox-pop.tox-pop--top::after {
+  border-bottom-color: var(--modal-bg, #fff);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--bottom::before {
+  border-top-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--bottom::after {
+  border-top-color: var(--modal-bg, #fff);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--left::before {
+  border-right-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--left::after {
+  border-right-color: var(--modal-bg, #fff);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--right::before {
+  border-left-color: var(--input-border-color, #cdd8e4);
+}
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-pop.tox-pop--right::after {
+  border-left-color: var(--modal-bg, #fff);
+}
+
+/* Format previews retain their typography without borrowing the email canvas. */
+body:has(.ff-tinymce-editor)
+  .tox.tox-tinymce-aux
+  .tox-collection__item-label
+  :is(p, h1, h2, h3, h4, h5, h6, pre) {
+  color: inherit !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.ff-tinymce-editor
+  .tox
+  .tox-statusbar
+  :is(
+    .tox-statusbar__path-item,
+    .tox-statusbar__path-divider,
+    .tox-statusbar__wordcount
+  ) {
+  color: var(--light-text-color, #657585);
+}
+.ff-tinymce-editor .tox .tox-statusbar .tox-statusbar__path-item:hover {
+  color: var(--text-color, #3f4d5a);
+  background: var(--ui-control-hover-bg-color, #e4edf6);
+}
+.ff-tinymce-editor .tox .tox-statusbar__resize-handle svg {
+  fill: var(--light-text-color, #657585);
+}

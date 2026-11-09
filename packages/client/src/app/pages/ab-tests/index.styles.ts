@@ -7,10 +7,13 @@ export const ABWrapper = styled.div`
 
   border-radius: ${borderRadius.lg};
   box-shadow: ${shadows.box};
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%);
+  };
 `;
 
 export const ABEditorPanel = styled.div`
   flex: 1;
-  background-color: ${colors.white};
+  background-color: light-dark(${colors.white}, ${colors.surface});
   border-radius: 0 ${borderRadius.lg} ${borderRadius.lg} 0;
 `;

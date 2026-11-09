@@ -1,5 +1,6 @@
 import { Checkbox } from "@components/elements/checkbox/checkbox";
 import { Dropdown } from "@components/elements/custom-dropdown/dropdown";
+import { NumberInput } from "@components/elements/number-input/number-input";
 import { Control } from "@components/form-controls/control";
 import { FlexColumn, FlexRow } from "@components/layout/blocks/flex";
 import { spacings } from "@ff-client/styles/variables";
@@ -91,8 +92,9 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
     <FlexColumn $gap={spacings.lg}>
       <FlexRow $gap={spacings.md}>
         <Control width={40} label={translate("Max Files")} handle="fileCount">
-          <input
-            type="number"
+          <NumberInput
+            id="fileCount"
+            unit="files"
             min={1}
             className="text fullwidth"
             value={metadata.fileCount}
@@ -106,11 +108,12 @@ export const TableFileEditor: React.FC<TableEditorProps> = ({
 
         <Control
           width={60}
-          label={translate("Maximum File Size (KB)")}
+          label={translate("Maximum File Size")}
           handle="maxFileSizeKB"
         >
-          <input
-            type="number"
+          <NumberInput
+            id="maxFileSizeKB"
+            unit="KB"
             min={1}
             className="text fullwidth"
             value={metadata.maxFileSizeKB}

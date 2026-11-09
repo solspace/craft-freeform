@@ -57,6 +57,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
 use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
@@ -84,6 +85,7 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\Ai\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ClientAssetsService;
@@ -120,6 +122,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
+use Solspace\Freeform\Services\SubmissionUndoService;
 use Solspace\Freeform\Services\SummaryService;
 use Solspace\Freeform\Twig\Extensions\FreeformGlobalsExtension;
 use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
@@ -151,6 +154,7 @@ use yii\web\View;
  * @property SettingsService             $settings
  * @property StatusesService             $statuses
  * @property SubmissionsService          $submissions
+ * @property SubmissionUndoService       $submissionUndo
  * @property SubmitService               $submit
  * @property SpamSubmissionsService      $spamSubmissions
  * @property LoggerService               $logger
@@ -212,6 +216,8 @@ class Freeform extends Plugin
     public const PERMISSION_PDF_TEMPLATES_MANAGE = 'freeform-pdfTemplatesManage';
     public const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
     public const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
+    public const PERMISSION_ACTIVITY_ACCESS = 'freeform-activityAccess';
+    public const PERMISSION_ACTIVITY_MANAGE = 'freeform-activityManage';
     public const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
     public const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
     public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
@@ -423,6 +429,7 @@ class Freeform extends Plugin
             CalculationField::class,
             SignatureField::class,
             SummaryField::class,
+            LocationField::class,
         ];
         $group->save();
 
@@ -684,6 +691,7 @@ class Freeform extends Plugin
                 'integrationsQueue' => IntegrationsQueueService::class,
                 'lock' => LockService::class,
                 'logger' => LoggerService::class,
+                'activity' => ActivityService::class,
                 'mailer' => MailerService::class,
                 'notes' => NotesService::class,
                 'notifications' => NotificationsService::class,
@@ -694,6 +702,7 @@ class Freeform extends Plugin
                 'spamSubmissions' => SpamSubmissionsService::class,
                 'statuses' => StatusesService::class,
                 'submissions' => SubmissionsService::class,
+                'submissionUndo' => SubmissionUndoService::class,
                 'submit' => SubmitService::class,
                 'summary' => SummaryService::class,
                 'translations' => TranslationsService::class,

@@ -91,6 +91,7 @@ export * from "./client/submit-client.js";
 export * from "./conditionals/evaluator.js";
 export * from "./conditionals/operators.js";
 export * from "./extensions/registry.js";
+export * from "./number/number.js";
 export * from "./signature/signature.js";
 export * from "./signature/signature-pad.js";
 export * from "./state/form-state.js";
@@ -100,6 +101,7 @@ export * from "./types/manifest.js";
 export * from "./types/submit.js";
 export * from "./utils/cookie-fetch.js";
 export * from "./utils/url.js";
+export * from "./website/website.js";
 
 export const FIELD_RENDERERS = {
   TEXT: "text",
@@ -127,6 +129,8 @@ export const FIELD_RENDERERS = {
   CALCULATION: "calculation",
 } as const;
 
+export * from "./datetime/format.js";
+export * from "./datetime/picker.js";
 export {
   getEmailSuggestion,
   mountEmailSuggestions,
@@ -135,6 +139,7 @@ export type {
   EmailSuggestionConfig,
   EmailSuggestionLabels,
 } from "./email/types.js";
+export * from "./location/location.js";
 export {
   type InternationalPhoneConfig,
   mountInternationalPhone,

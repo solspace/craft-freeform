@@ -25,6 +25,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pipedrive\BasePipedriveIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -194,7 +195,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     private function processOrganization(Form $form, Client $client): void
     {
         if (!$this->mapOrganization) {
-            $this->logger->debug('No Organization mapped, skipping.');
+            $this->logger->debug('No Organization mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -230,7 +231,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
         if (isset($json->data->id)) {
             $this->organizationId = (int) $json->data->id;
-            $this->logger->info('New Organization created', ['id' => $this->organizationId]);
+            $this->logger->info('New Organization created', ['id' => $this->organizationId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
     }
@@ -238,7 +239,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     private function processPerson(Form $form, Client $client): void
     {
         if (!$this->mapPerson) {
-            $this->logger->debug('No Person mapped, skipping.');
+            $this->logger->debug('No Person mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -271,7 +272,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 ['json' => $mapping],
             );
 
-            $this->logger->info('Existing Person updated', ['id' => $personId]);
+            $this->logger->info('Existing Person updated', ['id' => $personId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
             $this->logger->debug('With Mapping', $mapping);
         } else {
             [$response, $json] = $this->getJsonResponse($client->post(
@@ -279,7 +280,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 ['json' => $mapping],
             ));
 
-            $this->logger->info('New Person created', ['id' => $json?->data?->id]);
+            $this->logger->info('New Person created', ['id' => $json?->data?->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 
@@ -295,7 +296,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            $this->logger->debug('No Lead mapped, skipping.');
+            $this->logger->debug('No Lead mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -340,7 +341,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
         if (isset($json->data->id)) {
             $this->leadId = $json->data->id;
-            $this->logger->info('New Lead created', ['id' => $this->leadId]);
+            $this->logger->info('New Lead created', ['id' => $this->leadId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 
@@ -358,7 +359,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     private function processDeals(Form $form, Client $client): void
     {
         if (!$this->mapDeals) {
-            $this->logger->debug('No Deal mapped, skipping.');
+            $this->logger->debug('No Deal mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -400,7 +401,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
         if (isset($json->data->id)) {
             $this->dealId = (int) $json->data->id;
-            $this->logger->info('New Deal created', ['id' => $this->dealId]);
+            $this->logger->info('New Deal created', ['id' => $this->dealId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 
@@ -422,7 +423,7 @@ class PipedriveV1 extends BasePipedriveIntegration
             ['json' => $json],
         );
 
-        $this->logger->info('Note added to entity', $json);
+        $this->logger->info('Note added to entity', ['response' => $json, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
         $this->triggerAfterResponseEvent('note', $response);
     }

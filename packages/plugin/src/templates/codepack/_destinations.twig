@@ -1,0 +1,19 @@
+{% set projectRoot = alias('@root')|replace({'\\': '/'})|trim('/', 'right') %}
+<section class="freeform-demo-locations" aria-labelledby="demo-locations-heading">
+    <h3 id="demo-locations-heading">{{ "Installation Locations"|t('freeform') }}</h3>
+    <dl class="freeform-demo-destination">
+        {% for location in [
+            {label: 'Templates'|t('app'), description: 'Craft templates directory'|t('freeform'), directory: codePack.templates.installDirectoryPath, fallback: 'templates'},
+            {label: 'Assets'|t('app'), description: 'Public web directory'|t('freeform'), directory: codePack.assets.installDirectoryPath, fallback: 'webroot/assets'},
+        ] %}
+            {% set displayDirectory = projectRoot and location.directory starts with (projectRoot ~ '/') ? location.directory|slice(projectRoot|length + 1) : location.fallback %}
+            <div>
+                <dt>
+                    <strong>{{ location.label }}</strong>
+                    <span class="light">{{ location.description }}</span>
+                </dt>
+                <dd><p><code>{{ displayDirectory }}/<span data-prefix>{{ prefix }}</span>/</code></p></dd>
+            </div>
+        {% endfor %}
+    </dl>
+</section>

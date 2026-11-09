@@ -20,6 +20,8 @@ export type FieldType = {
   previewTemplate?: string;
   implements: string[];
   properties: Property[];
+  /** Saved favorites retain their values instead of receiving new-field defaults. */
+  fromFavorite?: boolean;
 };
 
 enum DraggableTypes {

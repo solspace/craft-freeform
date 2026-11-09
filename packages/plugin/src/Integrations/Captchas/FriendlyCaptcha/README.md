@@ -1,68 +1,151 @@
-# Setup Guide
+# Friendly Captcha
 
-This guide assumes you have an account and basic understanding of [Friendly Captcha](https://friendlycaptcha.com/).
+Freeform loads Friendly Captcha on your forms and verifies each submission on the server.
+Existing integrations keep their saved settings.
 
-## Overview
+## Set up the integration
 
-This integration uses **Friendly Captcha v2**. The Friendly Captcha widget is loaded and handled automatically by Freeform when the integration is enabled for a form. The widget is inserted above the submit button(s).
+1. Enter your **Site Key** and **API Key** from the [Friendly Captcha dashboard](https://app.friendlycaptcha.eu/).
+2. Choose **When to start verification**. **On form focus** suits most forms. It starts
+   verification when the visitor focuses a field.
+3. Choose whether the integration should be **Enabled by default** on forms.
+4. Click **Save**.
+5. Open your form in the builder, go to **Integrations → Captchas**, and select
+   **Friendly Captcha**. Make sure it is enabled, review its settings, and save the form.
+6. Submit a test entry on your website.
 
-### Widget Mode
+## Setup help and settings
 
-Which interaction users see (one-click, zero-click, smart) is configured per **application** in the [Friendly Captcha dashboard](https://app.friendlycaptcha.eu/), not in Freeform. That design prevents visitors from weakening the captcha by changing client-side settings.
+<details>
+<summary>Get your keys</summary>
 
-### Risk Intelligence
+This integration uses **Friendly Captcha v2**.
 
-When **Risk Intelligence** is enabled on your Friendly Captcha account, verification responses can include **risk scores**. Freeform stores a short summary (for example `Overall 2/5, Network 1/5, Browser 3/5`) on spam submissions so you can review them in the control panel.
+1. Open the [Friendly Captcha dashboard](https://app.friendlycaptcha.eu/).
+2. Create or open an application and copy its **Sitekey** into Freeform's
+   **Site Key** field.
+3. Create an API key in the dashboard's keys section and copy it into Freeform's
+   **API Key** field. Store it securely before leaving the page.
 
-## Setup Instructions
+The API key stays on your server. You can use an environment variable such as
+`$FRIENDLY_CAPTCHA_API_KEY` instead of entering it directly.
 
-### 1. Create a Friendly Captcha application
+This integration uses Friendly Captcha's Global endpoint for both the widget
+and server verification. See its [getting started guide](https://developer.friendlycaptcha.com/docs/v2/getting-started).
 
-- Open the [Friendly Captcha dashboard](https://app.friendlycaptcha.eu/).
-- Select an existing application or create a new one:
-    - Click on **Applications** on the left navigation.
-    - Click the **New application** button.
-    - Name the application, e.g. `Freeform` and click **Next**.
-    - For Use-cases, choose something like `Contact` under `Forms`, then click **Next**.
-    - Review the app and click **Create application**.
-    - On the next page that loads, copy the **Sitekey**, e.g. `FCXXXXXXXXXXXXXX`.
+</details>
 
-### 2. Create a Friendly Captcha API Key
+<details>
+<summary>Verification timing and widget mode</summary>
 
-- Click on **Keys** on the left navigation.
-- Click the **New API Key** button.
-- Name the API key, e.g. `Freeform` and click **Generate API key**.
-- Copy the **API Key** provides on the next step, e.g. `A1XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX`.
-    - API keys are shown only once. Copy them securely.
+**When to start verification** in Freeform controls when verification starts:
 
-### 3. Set up Integration on your site
+- **On form focus** starts when the visitor focuses a field. This is the default.
+- **When widget loads** starts as soon as the widget is ready. If delayed loading is
+  enabled, verification waits until the widget loads.
+- **On request** waits for the visitor to click the widget. Freeform also starts
+  it when the form is submitted.
 
-- Switch back to this integration tab.
-- In the **Site Key** and **API Key** settings, paste in the **Sitekey** and **API Key** values from the Friendly Captcha site.
+The separate **Widget Mode** in Friendly Captcha's dashboard determines whether
+verification needs a click to finish. It offers One-click, Zero-click, and Smart.
+Changing when verification starts in Freeform does not change Widget Mode.
 
-### 4. Additional Configuration
+See [Friendly Captcha's configuration guide](https://developer.friendlycaptcha.com/docs/v2/sdk/configuration).
 
-- Complete the rest of the following optional fields (these will only be the default value when configuring the integration in the form builder later):
-    - **Only load Captcha scripts once the user interacts with the form?**
-    - **Failure Behavior** - set to `Display Error Message` or `Send to Spam Folder`.
-        - **Error Message** - set a custom error message if using `Display Error Message` failure behavior.
-    - **Start Mode** - when the puzzle starts (`Auto`, `Focus`, `None`).
-    - **Theme** - set to `Auto`, `Light` or `Dark`.
-    - **Language** - leave blank for auto-detection, or set a 2-letter code such as `en`, `de`, `fr`.
-- Click the **Save** button.
+</details>
 
-### 5. Enable on each form
+<details>
+<summary>Choose failure settings</summary>
 
-- Open the form in the form builder → **Integrations** → **Friendly Captcha** → enable and adjust overrides if needed.
+**Failure Behavior** controls what happens when the provider rejects a token:
 
-## Content Security Policy (CSP)
+- **Display Error Message** lets the visitor try again. This is the default.
+  Set the message in **Error Message**.
+- **Send to Spam Folder** marks the submission as spam.
 
-If your site sends a `Content-Security-Policy` header, allow Friendly Captcha's iframe origin. See Friendly Captcha's documentation: [Content Security Policy (CSP)](https://developer.friendlycaptcha.com/docs/v2/guides/csp) (typically `frame-src` for `*.frcapi.com`). Freeform bundles the widget SDK with its scripts so you do not need to allow an extra script CDN for Freeform's captcha bundle.
+A missing token, invalid credentials, or an unavailable verification service
+always shows an error. These problems do not mean the visitor is spam.
+Existing saved choices are preserved.
 
-## Testing
+</details>
 
-Use the [Friendly Captcha Playground](https://developer.friendlycaptcha.com/playground) to preview widget behavior. Production widget mode and some options are controlled in the Friendly Captcha dashboard, not in the playground's UI on your site.
+<details>
+<summary>Loading and advanced settings</summary>
 
----
+**Only load Captcha scripts once the user interacts with the form** delays
+initialization until the visitor starts filling out the form. Submitting directly
+also initializes it. Disable this setting to initialize when the page opens.
+Your site's consent settings still apply.
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+Open **Advanced settings** for the options below. Closing the panel does not
+reset its values. The panel remembers its open or closed state for this integration
+in this browser, without needing to click Save.
+
+### Widget theme
+
+Keep **Auto** to follow the visitor’s appearance preference, or choose Light or
+Dark to match your form.
+
+### Friendly Captcha language
+
+Leave blank for automatic selection, or enter a provider language code such as
+`en`, `fr`, or `de`. Friendly Captcha chooses the language when this is blank.
+
+</details>
+
+<details>
+<summary>Headless forms</summary>
+
+With Freeform's official frontend packages, use the provider's captcha extension
+to load the widget and supply its token. Keep the core and extensions packages
+compatible with each other.
+
+If your frontend handles tokens itself, include the following in your normal
+JSON submission payload. Replace `TOKEN` with the token from the provider:
+
+```json
+{
+  "meta": {
+    "captcha": {
+      "name": "frc-captcha-response",
+      "value": "TOKEN"
+    }
+  }
+}
+```
+
+For GraphQL, use the `captcha` input's `name` and `value` fields. Tokens can only
+be used once. Obtain a new token after a submission or an expired challenge.
+
+</details>
+
+<details>
+<summary>Risk Intelligence</summary>
+
+If your Friendly Captcha account returns Risk Intelligence with challenge
+verification, Freeform keeps a short score summary for reviewing spam, such as
+`Overall 2/5, Network 1/5, Browser 3/5`. Freeform does not apply a score threshold
+to these values.
+
+This requires Friendly Captcha's Risk Intelligence on Captcha Challenge feature.
+See its [Risk Intelligence guide](https://developer.friendlycaptcha.com/docs/v2/risk-intelligence/).
+
+</details>
+
+<details>
+<summary>Troubleshooting</summary>
+
+- **Widget does not load:** Check for content blockers, consent tools, or Content
+  Security Policy rules blocking the provider. Confirm that the integration is
+  enabled on the form.
+- **Verification fails:** Check the site key and server key. Make sure the keys
+  belong to the same provider account or widget and are valid for your site.
+- **Testing while logged in:** If **Bypass All Spam Checks for Logged in Users**
+  is enabled in Freeform's spam settings, test while signed out.
+
+Service errors are logged without including tokens, keys, or raw provider
+responses. Visitors see your configured error message and can retry.
+
+See the [Friendly Captcha testing guide](https://developer.friendlycaptcha.com/docs/v2/guides/automated-testing) and [Friendly Captcha CSP guide](https://developer.friendlycaptcha.com/docs/v2/guides/csp) for provider-specific checks.
+
+</details>

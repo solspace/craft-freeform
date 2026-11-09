@@ -14,6 +14,7 @@ export enum Fields {
   Text = "Solspace\\Freeform\\Fields\\Implementations\\TextField",
 
   // Pro
+  Location = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\LocationField",
   Calculation = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\CalculationField",
   Confirmation = "Solspace\\Freeform\\Fields\\Implementations\\Pro\\ConfirmationField",
   Datetime = "Solspace\\Freeform\\Fields\\Implementations\\DatetimeField",

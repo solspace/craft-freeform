@@ -1,3 +1,4 @@
+import { NumberInput } from "@components/elements/number-input/number-input";
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import type { IntegerProperty } from "@ff-client/types/properties";
@@ -14,6 +15,18 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   context,
 }) => {
   const { handle, min, max, unsigned, step = 1 } = property;
+  const properties =
+    context &&
+    typeof context === "object" &&
+    "properties" in context &&
+    context.properties &&
+    typeof context.properties === "object"
+      ? (context.properties as Record<string, unknown>)
+      : undefined;
+  const selectedUnit = property.unitProperty
+    ? properties?.[property.unitProperty]
+    : undefined;
+  const unit = typeof selectedUnit === "string" ? selectedUnit : property.unit;
   const isReadOnly =
     property.flags?.includes("readonly") ||
     property.flags?.includes("as-readonly-in-instance");
@@ -28,9 +41,9 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
 
   return (
     <Control property={property} errors={errors} context={context}>
-      <input
+      <NumberInput
         id={handle}
-        type="number"
+        unit={unit}
         className={classes(
           "text",
           "fullwidth",

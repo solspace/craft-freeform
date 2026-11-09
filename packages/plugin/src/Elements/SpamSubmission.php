@@ -27,15 +27,10 @@ class SpamSubmission extends Submission
         return 'spam';
     }
 
-    public static function hasStatuses(): bool
-    {
-        return false;
-    }
-
     public static function sortOptions(): array
     {
         $attributes = parent::sortOptions();
-        unset($attributes['spamReasons']);
+        unset($attributes['spamReasons'], $attributes['spamActions']);
 
         return $attributes;
     }
@@ -43,6 +38,26 @@ class SpamSubmission extends Submission
     public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/spam/'.$this->id) : false;
+    }
+
+    protected static function defineTableAttributes(): array
+    {
+        return ['spamActions' => ['label' => Freeform::t('Actions')]] + parent::defineTableAttributes();
+    }
+
+    protected static function defineDefaultTableAttributes(string $source): array
+    {
+        return ['spamActions', ...parent::defineDefaultTableAttributes($source)];
+    }
+
+    protected function tableAttributeHtml(string $attribute): string
+    {
+        return 'spamActions' === $attribute ? $this->spamActionsHtml() : parent::tableAttributeHtml($attribute);
+    }
+
+    protected function attributeHtml(string $attribute): string
+    {
+        return 'spamActions' === $attribute ? $this->spamActionsHtml() : parent::attributeHtml($attribute);
     }
 
     protected static function defineActions(?string $source = null): array
@@ -85,5 +100,14 @@ class SpamSubmission extends Submission
         ]);
 
         return $actions;
+    }
+
+    private function spamActionsHtml(): string
+    {
+        if (!$this->isSpam || $this->isHidden || $this->trashed || !$this->getIsEditable()) {
+            return '';
+        }
+
+        return \Craft::$app->getView()->renderTemplate('freeform/spam/_actions', ['submission' => $this]);
     }
 }

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Integrations\Elements;
 
 use craft\base\ElementInterface;
+use craft\fields\Addresses;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
@@ -24,6 +25,17 @@ class ElementFieldMappingHelper
 
         $sourceToField = $this->getSourceToFieldMap($form, $integration);
 
+        foreach ($element->getFieldLayout()?->getCustomFields() ?? [] as $craftField) {
+            if (!$craftField instanceof Addresses) {
+                continue;
+            }
+
+            $addresses = AddressFieldMapping::getAddresses($element, $craftField);
+            foreach (($addresses[0] ?? null)?->getErrors() ?? [] as $attribute => $errorList) {
+                $errors[$craftField->handle.'.'.$attribute] = $errorList;
+            }
+        }
+
         foreach ($errors as $craftField => $errorList) {
             if (isset($sourceToField[$craftField])) {
                 $field = $sourceToField[$craftField];
@@ -32,7 +44,17 @@ class ElementFieldMappingHelper
                     $field->addErrors($errorList);
                 }
             } else {
-                if ($form->isLastPage()) {
+                $matched = false;
+                foreach ($sourceToField as $source => $field) {
+                    if (str_starts_with($source, $craftField.'.')) {
+                        $matched = true;
+                        if ($form->getCurrentPage()->getFields()->has($field)) {
+                            $field->addErrors($errorList);
+                        }
+                    }
+                }
+
+                if (!$matched && $form->isLastPage()) {
                     $form->addErrors($errorList);
                 }
             }

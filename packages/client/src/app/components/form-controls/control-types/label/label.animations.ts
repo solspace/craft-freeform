@@ -25,7 +25,7 @@ type BackgroundAnimation = {
 
 export const useLabelAnimation = (hover: boolean): BackgroundAnimation => {
   return useSpring({
-    backgroundColor: hover ? colors.gray050 : colors.white,
+    backgroundColor: hover ? colors.secondarySurface : colors.surface,
     config: {
       tension: 500,
     },

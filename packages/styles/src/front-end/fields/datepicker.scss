@@ -1,3 +1,5 @@
+@use "../../../../frontend/core/src/datetime/picker.css";
+
 // Scoped to calendars owned by dark Freeform templates. The popup may be
 // attached to <body>, or kept inside the form with Flatpickr's static option.
 .flatpickr-calendar.freeform-datepicker-dark {

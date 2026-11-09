@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "The most flexible and user-friendly form building plugin!",
-  "version": "5.17.9",
+  "version": "5.18.0",
   "type": "craft-plugin",
   "authors": [
     {
@@ -59,7 +59,7 @@
     "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
   },
   "extra": {
-    "schemaVersion": "5.17.4",
+    "schemaVersion": "5.18.0.3",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

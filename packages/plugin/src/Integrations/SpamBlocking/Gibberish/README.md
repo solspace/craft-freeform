@@ -21,6 +21,13 @@ Spam Blocking is handled as an integration to give you more control. Spam Blocki
 - If you did not enable the **Enabled by default** setting, you will need to enable this spam block manually for each form that you wish for it to apply to.
 - If you want to add form-specific blocks, you can enter them inside this integration in the form builder. Anything added there will be in addition to the global blocks set here and will apply only to that form.
 
+<details>
+<summary>Use the starter list</summary>
+
+Click **Add Starter List** beside the default list to add suggested entries. Existing entries are kept and duplicates are skipped. Review the entries and remove any you do not need before saving. **Undo** restores the previous list until you edit it manually.
+
+</details>
+
 ---
 
 <small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>

@@ -35,6 +35,7 @@ use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\PreviewState;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
@@ -406,6 +407,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $fallback = null;
         $templateMode = View::TEMPLATE_MODE_SITE;
         $templatePath = null;
+        $sampleTemplateName = null;
         foreach ($customTemplates as $template) {
             if (str_ends_with($template->getFilePath(), $templateName)) {
                 $templatePath = $template->getFilePath();
@@ -423,6 +425,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
                     $templateMode = View::TEMPLATE_MODE_CP;
+                    $sampleTemplateName = $template->getFileName();
 
                     break;
                 }
@@ -432,6 +435,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (null === $templatePath || !file_exists($templatePath)) {
             $templatePath = $fallback?->getFilePath();
             $templateMode = View::TEMPLATE_MODE_CP;
+            $sampleTemplateName = $fallback?->getFileName();
 
             Freeform::getInstance()
                 ->logger
@@ -447,6 +451,13 @@ class FormsService extends BaseService implements FormHandlerInterface
                 )
             ;
         }
+
+        // Resolve the actual template, including preview/demo overrides and custom
+        // templates with sample filenames, before choosing the banner treatment.
+        $form->getAttributes()->getForm()->replace(
+            'data-freeform-sample-dark',
+            PreviewState::isDark($sampleTemplateName, View::TEMPLATE_MODE_CP !== $templateMode),
+        );
 
         $output = \Craft::$app->view->renderString(
             file_get_contents($templatePath),

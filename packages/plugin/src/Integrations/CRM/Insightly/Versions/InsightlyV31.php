@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Insightly\BaseInsightlyIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -70,7 +71,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
     private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            $this->logger->debug('No Leads mapped, skipping.');
+            $this->logger->debug('No Leads mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }

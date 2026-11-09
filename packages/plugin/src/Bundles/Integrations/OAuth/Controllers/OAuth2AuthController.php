@@ -9,6 +9,7 @@ use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\controllers\PopUpTrait;
 use Solspace\Freeform\Events\Integrations\OAuth2\FetchTokenEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 use yii\web\Response;
@@ -30,6 +31,20 @@ class OAuth2AuthController extends BaseController
     }
 
     public function actionCallback(): Response
+    {
+        try {
+            return $this->completeAuthorization();
+        } catch (\Throwable $exception) {
+            $this->getLoggerService()->getLogger('oauth', 'freeform-integrations.log')->error(
+                'OAuth2 callback could not complete',
+                ['exceptionClass' => $exception::class]
+            );
+
+            return $this->renderPopUpError(Freeform::t('Authorization could not be completed. Check the integration settings and the Freeform integration log, then try again.'));
+        }
+    }
+
+    private function completeAuthorization(): Response
     {
         $integrationsService = $this->getIntegrationsService();
 
@@ -80,23 +95,17 @@ class OAuth2AuthController extends BaseController
                 ['form_params' => $event->getPayload()]
             );
         } catch (RequestException $exception) {
-            if ($exception->hasResponse()) {
-                $responseBody = (string) $exception->getResponse()->getBody();
-                $errorMessage = json_decode($responseBody, true)['error_description'] ?? $responseBody;
-            } else {
-                $errorMessage = $exception->getMessage();
-            }
-
             $logger = $this->loggerProvider->getLogger($integration);
             $logger->error('OAuth2 authorization failed', [
-                'exception' => $exception,
+                'exceptionClass' => $exception::class,
+                'statusCode' => $exception->getResponse()?->getStatusCode(),
                 'integration' => [
                     'id' => $integration->getId(),
                     'handle' => $integration->getHandle(),
                 ],
             ]);
 
-            return $this->renderPopUpError($errorMessage);
+            return $this->renderPopUpError(Freeform::t('Authorization could not be completed. Check the integration settings and the Freeform integration log, then try again.'));
         }
 
         $responsePayload = json_decode((string) $response->getBody());

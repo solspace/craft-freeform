@@ -68,7 +68,7 @@ export const ProgressBarElement = styled.div<ProgressBarProps>`
 
   border: none;
   border-radius: 3px;
-  background: #e5ecf6;
+  background: light-dark(#e5ecf6, var(--ui-control-hover-bg-color, #30363d));
 
   font-size: 12px;
   line-height: 12px;

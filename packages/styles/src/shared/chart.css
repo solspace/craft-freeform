@@ -23,7 +23,8 @@
 }
 :is(.freeform-dashboard-chart, .freeform-usage-chart)
   .freeform-chart-legend-item:focus-visible {
-  outline: 2px solid var(--primary-color, #0b69a3);
+  outline: 2px solid
+    light-dark(var(--primary-color, #0b69a3), var(--focus-ring-color, #0b69a3));
 }
 :is(.freeform-dashboard-chart, .freeform-usage-chart)
   .freeform-chart-legend-item[aria-pressed="false"]
@@ -65,7 +66,10 @@
   color: var(--text-color, #3f4d5a);
   overflow-wrap: anywhere;
   pointer-events: none;
-  background: var(--white, #fff);
+  background: light-dark(
+    var(--white, #fff),
+    var(--modal-bg, var(--white, #fff))
+  );
   border: 1px solid var(--hairline-color, #d5dce5);
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(20, 30, 45, 0.14);
@@ -118,4 +122,18 @@
   margin-top: 10px;
   color: var(--light-text-color, #596673);
   border-top: 1px solid var(--hairline-color, #e5e9ef);
+}
+
+:root[data-dark-mode="dark"]
+  :is(.freeform-dashboard-chart, .freeform-usage-chart)
+  .freeform-chart-tooltip {
+  color: var(--text-color);
+  background: var(--gray-050);
+  border-color: var(--hairline-color);
+  box-shadow: var(--menu-shadow);
+}
+:root[data-dark-mode="dark"]
+  :is(.freeform-dashboard-chart, .freeform-usage-chart)
+  .freeform-chart-tooltip-title {
+  color: var(--gray-800);
 }

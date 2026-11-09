@@ -24,6 +24,7 @@ export const removeField = (
     );
 
     if (!layout) {
+      dispatch(fieldActions.remove(field.uid));
       return;
     }
 

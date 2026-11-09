@@ -1,0 +1,25 @@
+// Opt-in form colors cover server-rendered and AJAX validation alike.
+form[data-freeform-custom-error-color] {
+  :is(input, select, textarea, canvas, [data-freeform-file-upload])[aria-invalid="true"],
+  .ff-searchable:has([aria-invalid="true"]) .ff-searchable__input {
+    border-color: var(--ff-error-color) !important;
+    outline-color: var(--ff-error-color) !important;
+    --tw-ring-color: var(--ff-error-color);
+  }
+
+  [data-field-errors],
+  [data-field-errors] > li {
+    color: var(--ff-error-text-color) !important;
+  }
+
+  :is(.required, .freeform-required, .ff-daisy-required)::after {
+    color: var(--ff-error-color) !important;
+  }
+}
+
+// Template utility classes may color headings, lists and icons individually.
+// Keep the resolved banner foreground consistent throughout its contents.
+[data-freeform-custom-banner-color],
+[data-freeform-custom-banner-color] * {
+  color: var(--ff-banner-text-color) !important;
+}

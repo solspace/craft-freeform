@@ -6,7 +6,7 @@ import { Label } from "./label.styles";
 export const Instructions = styled.span`
   display: block;
 
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   padding-top: 0;
   line-height: 16px;
   font-size: 12px;
@@ -20,7 +20,7 @@ export const Instructions = styled.span`
   code {
     padding: 1px 4px;
     border-radius: 3px;
-    background-color: #dfe5ec;
+    background-color: light-dark(#dfe5ec, var(--ui-control-bg-color));
 
     font-family: monospace;
     font-style: normal;
@@ -29,6 +29,8 @@ export const Instructions = styled.span`
 `;
 
 export const FormField = styled.div`
+  /* Preserve explicit SVG fills, especially outline icons with fill="none". */
+  svg:not([fill]) { fill: currentColor; }
   display: flex;
   flex-direction: column;
   gap: ${spacings.sm};
@@ -173,6 +175,10 @@ export const LabelGroup = styled.div`
   gap: ${spacings.sm};
 
   width: 100%;
+
+  &:has(${Label}) {
+    margin-bottom: 3px;
+  }
 `;
 
 export const LabelInstructionsWrapper = styled.div`
@@ -196,13 +202,19 @@ export const InstructionHelpButton = styled.button`
   border: 0;
   border-radius: 50%;
   background: transparent;
-  color: #8a97a5;
+  color: light-dark(#8a97a5, ${colors.muted});
+  opacity: 0.65;
   cursor: pointer;
-  transition: color 120ms ease-out;
+  transition: color 120ms ease-out, opacity 120ms ease-out;
 
-  &:hover, &:focus { color: #3476b8; }
-  &:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; }
+  &:hover, &:focus { color: light-dark(#3476b8, ${colors.link}); opacity: 1; }
+  &:focus-visible { outline: 2px solid light-dark(#3476b8, ${colors.link}); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { transition: none; }
+  :root[data-dark-mode="dark"] & {
+    > svg > circle[fill="#fff"] { fill: var(--pane-bg); }
+    > svg > path[stroke="#fff"] { stroke: var(--pane-bg); }
+  }
+
 `;
 
 export const InstructionHelpText = styled.div<{ $open: boolean }>`
@@ -216,6 +228,7 @@ export const InstructionHelpText = styled.div<{ $open: boolean }>`
     visibility 0s ${({ $open }) => ($open ? "0s" : "180ms")};
 
   @media (prefers-reduced-motion: reduce) { transition: none; }
+
 `;
 
 export const InstructionHelpContent = styled.div`

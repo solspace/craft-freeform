@@ -37,6 +37,7 @@ function getCaptchas(manifestCaptchas: ManifestCaptchaSecurity[] | undefined) {
 }
 
 async function ensureTurnstile(): Promise<TurnstileApi> {
+  if (typeof window.turnstile?.render === "function") return window.turnstile;
   await loadScriptOnce(
     "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit",
     "ff-turnstile-script",
@@ -50,8 +51,8 @@ async function ensureTurnstile(): Promise<TurnstileApi> {
 }
 
 export function createTurnstileExtension(): FreeformExtension {
-  const instances = new Map<string, TurnstileInstance>();
-  const tokens = new Map<string, string>();
+  const instances = new Map<ManifestCaptchaSecurity, TurnstileInstance>();
+  const tokens = new Map<ManifestCaptchaSecurity, string>();
 
   return {
     name: "captcha.turnstile",
@@ -80,21 +81,21 @@ export function createTurnstileExtension(): FreeformExtension {
         action: captcha.action ?? undefined,
         language: captcha.locale || undefined,
         callback: (value: string) => {
-          tokens.set(captcha.name, value);
+          tokens.set(captcha, value);
         },
         "expired-callback": () => {
-          tokens.delete(captcha.name);
+          tokens.delete(captcha);
         },
         "error-callback": () => {
-          tokens.delete(captcha.name);
+          tokens.delete(captcha);
         },
       });
 
-      instances.set(captcha.name, { widgetId, element, captcha });
+      instances.set(captcha, { widgetId, element, captcha });
 
       return () => {
-        instances.delete(captcha.name);
-        tokens.delete(captcha.name);
+        instances.delete(captcha);
+        tokens.delete(captcha);
         element.replaceChildren();
       };
     },
@@ -112,13 +113,13 @@ export function createTurnstileExtension(): FreeformExtension {
 
       const api = await ensureTurnstile();
       for (const captcha of captchas) {
-        const instance = instances.get(captcha.name);
+        const instance = instances.get(captcha);
         if (!instance) {
           continue;
         }
 
         const existing =
-          tokens.get(captcha.name) ||
+          tokens.get(captcha) ||
           api.getResponse?.(instance.widgetId) ||
           (
             instance.element.querySelector(
@@ -127,7 +128,7 @@ export function createTurnstileExtension(): FreeformExtension {
           )?.value;
 
         if (existing) {
-          tokens.set(captcha.name, existing);
+          tokens.set(captcha, existing);
           continue;
         }
 
@@ -140,25 +141,24 @@ export function createTurnstileExtension(): FreeformExtension {
               ) as HTMLInputElement | null
             )?.value,
         );
-        tokens.set(captcha.name, value);
+        tokens.set(captcha, value);
       }
     },
 
     async buildPayload({ setCaptchaToken, manifest }) {
       for (const captcha of getCaptchas(manifest.security.captchas)) {
-        const value = tokens.get(captcha.name);
+        const value = tokens.get(captcha);
         if (value) {
           setCaptchaToken(captcha.name, value);
         }
       }
     },
 
-    async afterSubmit({ response }) {
-      if (response.success || response.status === "validation_failed") {
-        tokens.clear();
-        for (const instance of instances.values()) {
-          window.turnstile?.reset(instance.widgetId);
-        }
+    async afterSubmit({ manifest }) {
+      for (const captcha of getCaptchas(manifest.security.captchas)) {
+        tokens.delete(captcha);
+        const instance = instances.get(captcha);
+        if (instance) window.turnstile?.reset(instance.widgetId);
       }
     },
 

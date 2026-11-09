@@ -12,13 +12,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./datetime.css": "./src/datetime/picker.css",
     "./searchable-select.css": "./src/select/searchable-select.css"
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE",
-    "src/select/searchable-select.css"
+    "src/select/searchable-select.css",
+    "src/datetime/picker.css"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

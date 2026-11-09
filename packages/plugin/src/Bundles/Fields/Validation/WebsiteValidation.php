@@ -30,12 +30,18 @@ class WebsiteValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        if (empty($value)) {
+        if (null === $value || '' === $value) {
             return;
         }
 
-        if (!preg_match(self::PATTERN, $value)) {
-            $field->addError(Freeform::t('Website not valid'));
+        $parts = \is_string($value) ? parse_url($value) : false;
+        if (
+            !\is_array($parts)
+            || empty($parts['host'])
+            || !\in_array(strtolower($parts['scheme'] ?? ''), ['http', 'https', 'sftp', 'ftp', 'ssh'], true)
+            || !preg_match(self::PATTERN, $value)
+        ) {
+            $field->addError(Freeform::t('Enter a website address, like example.com.'));
         }
     }
 }

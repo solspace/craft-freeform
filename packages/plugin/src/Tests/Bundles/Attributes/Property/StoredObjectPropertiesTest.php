@@ -15,6 +15,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
@@ -153,6 +154,26 @@ class StoredObjectPropertiesTest extends TestCase
 
                 $this->assertEquals($original, $optimized);
             }
+        }
+    }
+
+    public function testLegacyDatePickerModesSurviveStoredFieldHydration(): void
+    {
+        \Craft::$container = new Container();
+        $provider = $this->createProvider();
+        foreach ([
+            [[], 'flatpickr'],
+            [['useDatepicker' => true, 'useNativeTypes' => false], 'flatpickr'],
+            [['useDatepicker' => true, 'useNativeTypes' => true], 'browser'],
+            [['useDatepicker' => false, 'useNativeTypes' => true], 'browser'],
+            [['useDatepicker' => false, 'useNativeTypes' => false], 'none'],
+            [['picker' => 'freeform', 'useNativeTypes' => true], 'freeform'],
+        ] as [$values, $expected]) {
+            $field = (new \ReflectionClass(DatetimeField::class))->newInstanceWithoutConstructor();
+            $provider->setStoredObjectProperties($field, $values);
+            $this->assertSame($expected, $field->getPicker());
+            $this->assertSame('browser' === $expected, $field->isUseNativeTypes());
+            $this->assertSame(\in_array($expected, ['freeform', 'flatpickr'], true), $field->isUseDatepicker());
         }
     }
 

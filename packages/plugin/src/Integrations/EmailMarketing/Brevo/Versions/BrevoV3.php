@@ -24,6 +24,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Brevo\BaseBrevoIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -65,14 +66,14 @@ class BrevoV3 extends BaseBrevoIntegration
     public function push(Form $form, Client $client): void
     {
         if (!$this->mailingList || !$this->emailField) {
-            $this->logger->debug('Mailing list or email field not set. Skipping.');
+            $this->logger->debug('Mailing list or email field not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NOT_CONFIGURED]);
 
             return;
         }
 
         $listId = (int) $this->mailingList->getResourceId();
         if (!$listId) {
-            $this->logger->debug('Mailing list ID not set. Skipping.');
+            $this->logger->debug('Mailing list ID not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_LIST]);
 
             return;
         }
@@ -80,7 +81,7 @@ class BrevoV3 extends BaseBrevoIntegration
         if ($this->optInField) {
             $optInValue = $form->get($this->optInField->getUid())->getValue();
             if (!$optInValue) {
-                $this->logger->debug('Opt-in field used but not chosen. Skipping.');
+                $this->logger->debug('Opt-in field used but not chosen. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_OPT_IN]);
 
                 return;
             }
@@ -88,7 +89,7 @@ class BrevoV3 extends BaseBrevoIntegration
 
         $email = $form->get($this->emailField->getUid())->getValue();
         if (!$email) {
-            $this->logger->debug('Email field empty. Skipping.');
+            $this->logger->debug('Email field empty. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_EMAIL]);
 
             return;
         }

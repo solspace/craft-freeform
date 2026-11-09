@@ -33,7 +33,7 @@ export const PreviewRow = styled.div`
   justify-items: stretch;
   align-items: center;
 
-  border-bottom: 1px solid ${colors.gray100};
+  border-bottom: 1px solid light-dark(${colors.gray100}, ${colors.hairline});
 
   &:after {
     content: attr(data-title);
@@ -43,7 +43,7 @@ export const PreviewRow = styled.div`
     bottom: -4px;
 
     padding: 0 5px;
-    background: ${colors.white};
+    background: light-dark(${colors.white}, ${colors.inputBackground});
 
     ${labelText};
     font-size: 8px;
@@ -67,7 +67,7 @@ export const PreviewData = styled.div`
   &:empty {
     &:after {
       content: attr(data-empty);
-      color: ${colors.gray200};
+      color: light-dark(${colors.gray200}, ${colors.muted});
       font-size: 12px;
       font-style: italic;
     }

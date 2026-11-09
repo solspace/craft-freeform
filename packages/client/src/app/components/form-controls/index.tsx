@@ -23,6 +23,7 @@ type Props = {
   context?: unknown;
   autoFocus?: boolean;
   control?: ComponentType<ControlType<Property>>;
+  children?: React.ReactNode;
 };
 
 const types: {
@@ -37,6 +38,7 @@ export const FormComponent: React.FC<Props> = ({
   context,
   autoFocus = false,
   control,
+  children,
 }) => {
   const { handle, type, visibilityFilters } = property;
   const FormControl = control || types[type];
@@ -68,7 +70,9 @@ export const FormComponent: React.FC<Props> = ({
           errors={errors}
           context={context}
           autoFocus={autoFocus}
-        />
+        >
+          {children}
+        </FormControl>
       </Suspense>
     </ErrorBoundary>
   );

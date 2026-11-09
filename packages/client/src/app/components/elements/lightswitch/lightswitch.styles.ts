@@ -13,7 +13,7 @@ export const LightSwitchHandle = styled.div`
   border: 0 solid #e5e7eb;
   border-radius: 9px;
 
-  background-color: ${colors.white};
+  background-color: light-dark(${colors.white}, var(--lightswitch-handle-off-color, ${colors.white}));
   box-shadow: inset 0 0 0 1px var(--_lightswitch-border-color);
 
   transition: transform 0.2s ${beziers.bounce.easeOut};
@@ -84,6 +84,7 @@ export const LightSwitchWrapper = styled.div`
     }
 
     ${LightSwitchHandle} {
+      background-color: ${colors.white};
       transform: translateX(12px);
     }
 
@@ -96,6 +97,12 @@ export const LightSwitchWrapper = styled.div`
         }
       }
     }
+  }
+
+  :root[data-dark-mode="dark"] & {
+    &.craft-5_8 > div { background-color: var(--pane-bg); box-shadow: inset 0 0 0 1px var(--hairline-color); }
+    &.craft-5_8.on > div::before { background-color: var(--gray-800); }
+    &.craft-5_8:not(.on, .error) { --lightswitch-border-color: var(--gray-350); background-image: linear-gradient(to right, var(--gray-350), var(--gray-350)); }
   }
 
   &.readonly {

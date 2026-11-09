@@ -5,12 +5,14 @@ namespace Solspace\Freeform\controllers\api;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\FormCardHelper;
 use Solspace\Freeform\Library\Helpers\FormOrderHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Services\FormDashboardWidgetsService;
 use Solspace\Freeform\Services\FormGroupsService;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -39,7 +41,7 @@ class FormGroupsController extends BaseApiController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
         $freeform = Freeform::getInstance();
-        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
+        if (!$freeform->isPro()) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
@@ -116,6 +118,15 @@ class FormGroupsController extends BaseApiController
                         \Craft::$app->db->createCommand()->update(FormRecord::TABLE, ['order' => $order], ['id' => $id])->execute();
                     }
                 }
+                $widgets = $this->request->post('widgets');
+                if ($widgets !== null) {
+                    if (!\is_array($widgets) || \count($widgets) > 30 || array_filter($widgets, static fn ($item) => !\is_array($item))) {
+                        throw new BadRequestHttpException('Invalid widget layout.');
+                    }
+                    $widgetService = \Craft::$container->get(FormDashboardWidgetsService::class);
+                    $widgetService->requireAccess($siteId);
+                    $widgetService->updateLayout($siteId, $widgets);
+                }
                 $transaction->commit();
             } catch (\Throwable $exception) {
                 $transaction->rollBack();
@@ -132,6 +143,10 @@ class FormGroupsController extends BaseApiController
     protected function post(int|string|null $id = null): array|object|null
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+
+        if (!Freeform::getInstance()->isPro()) {
+            throw new ForbiddenHttpException('Form groups require Pro');
+        }
 
         $groups = $this->request->post('groups');
         $siteId = $this->request->post('siteId');
@@ -231,6 +246,7 @@ class FormGroupsController extends BaseApiController
     protected function get(): array|object
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+        $this->response->getHeaders()->set('Cache-Control', 'no-store, private');
 
         $freeform = Freeform::getInstance();
         $currentSite = \Craft::$app->sites->getCurrentSite();
@@ -248,6 +264,14 @@ class FormGroupsController extends BaseApiController
             )
         );
 
+        $user = \Craft::$app->getUser()->getIdentity();
+        foreach ($allForms as $form) {
+            $form->cardSize = FormCardHelper::normalizeSize($freeform->isPro() ? $user->getPreference(FormCardHelper::preferenceKey((int) $siteId, $form->uid)) : null);
+            $content = FormCardHelper::normalizeContent($freeform->isPro() ? $user->getPreference(FormCardHelper::contentKey((int) $siteId, $form->uid)) : null);
+            $form->cardContent = $content['content'];
+            $form->cardFieldId = $content['fieldId'];
+        }
+
         $forms = array_values(
             array_filter(
                 $allForms,
@@ -263,6 +287,7 @@ class FormGroupsController extends BaseApiController
         );
 
         $response = (object) [
+            'cardRange' => ($days = $freeform->isPro() ? $user->getPreference(FormCardHelper::rangeKey((int) $siteId)) : null) && \in_array($days, FormCardHelper::RANGES, true) ? $days : 30,
             'forms' => $forms,
             'formGroups' => null,
             'archivedForms' => $archivedForms,

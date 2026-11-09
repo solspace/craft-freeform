@@ -1,0 +1,139 @@
+{% extends 'freeform/_layouts/settings' %}
+{% import '_includes/forms' as forms %}
+{% import 'freeform/_components/measurement' as measurement %}
+{% import 'freeform/_components/settings-cards' as cards %}
+{% set title = 'Logging'|t('freeform') %}
+{% set additionalButtons %}
+    <a class="btn ff-activity-open-log" href="{{ cpUrl('freeform/activity') }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5"/></svg>
+        <span>{{ 'Open Activity Log'|t('freeform') }}</span>
+    </a>
+{% endset %}
+{% set crumbs = [
+    {label:craft.freeform.name, url:cpUrl('freeform')},
+    {label:'Settings'|t('freeform'), url:cpUrl('freeform/settings')},
+    {label:'Logging'|t('freeform'), url:cpUrl('freeform/settings/activity')},
+] %}
+
+{% block content %}
+{% set jsonOptions = constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_UNESCAPED_UNICODE') %}
+{{ parent() }}
+{{ actionInput('freeform/activity/save-settings') }}
+<div class="ff-activity-settings" data-activity-settings {{ readOnly ? 'data-readonly' }}>
+    {% set styleOptions = {
+        activity: {label:'Activity Logging', description:'Structured, searchable event history with related records and storage limits.', path:'M4 4h16v16H4ZM8 8h8M8 12h8M8 16h5'},
+        classic: {label:'Classic Logging', description:'Traditional log files with Errors, Info, and Debug levels.', path:'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h6'},
+        none: {label:'None', description:'Stops new Activity events and Classic log files. Existing logs remain available.', path:'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM6 6l12 12'},
+    } %}
+    {% set styleInput %}
+        <div class="ff-choice-cards">
+            {% for value, option in styleOptions %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({id:'logging-style-' ~ value, name:'settings[loggingStyle]', value:value, selected:loggingStyle == value, recommended:value == 'activity', disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({id:'logging-style', fieldset:true, label:'Logging Style'|t('freeform'), instructions:'Choose how Freeform records new logs. Switching styles preserves existing logs and each style’s settings.'|t('freeform'), errors:settings.errors('loggingStyle')}, styleInput) }}
+    <hr>
+    <div data-logging-panel="activity" {{ loggingStyle != 'activity' ? 'hidden' }}>
+    <div class="ff-activity-settings-intro"><h2>{{ 'Activity recording'|t('freeform') }}</h2><p class="light">{{ 'Choose which events Freeform records and how long to keep them.'|t('freeform') }}</p></div>
+    <div data-recording-options>
+    {% set modeInput %}
+    <div class="ff-activity-modes">
+        {% set modes = {
+            minimal: ['Minimal', 'Failures only', 'System, email, and integration errors. The default for upgraded sites.'],
+            standard: ['Standard', 'The important outcomes', 'Failures, warnings, saved submissions, spam, and key email and integration outcomes. The default for new installs.'],
+            detailed: ['Detailed', 'Every supported event type', 'Everything in Standard, plus validation failures, HTTP responses, integration start/finish events, and form changes.'],
+            custom: ['Custom', 'Your own combination', 'Start with Standard, then choose each event type. Your saved choices are remembered.']
+        } %}
+        {% set modeTones = {minimal:'slate', standard:'blue', detailed:'purple', custom:'teal'} %}
+        {% for mode,details in modes %}
+            {% set includedCount = presets[mode]|filter(enabled => enabled)|length %}
+            {% set illustration %}{% include 'freeform/settings/_activity-mode-art' with {mode:mode} only %}{% endset %}
+            {{ cards.compactChoice({
+                id:'activity-mode-' ~ mode, name:'settings[activityMode]', value:mode,
+                selected:settings.activityMode == mode, disabled:readOnly,
+                label:details[0]|t('freeform'), subtitle:details[1]|t('freeform'), description:details[2]|t('freeform'),
+                illustration:illustration, tone:modeTones[mode],
+                footer:mode == 'custom' ? 'You choose'|t('freeform') : '{count} event types'|t('freeform', {count:includedCount}),
+                attributes:{data:{'mode-card':true, mode:mode}}
+            }) }}
+        {% endfor %}
+    </div>
+    {% endset %}
+    {{ forms.field({id:'activity-mode', fieldset:true, label:'Recording mode'|t('freeform'), errors:settings.errors('activityMode')}, modeInput) }}
+    {% set eventInstructions %}<p data-options-hint><span data-mode-hint="preset">{{ 'These event types are included in this mode. Choose {option} to change them.'|t('freeform', {option: '<strong>' ~ ('Custom'|t('freeform')|e) ~ '</strong>'})|raw }}</span><span data-mode-hint="custom" hidden>{{ 'Choose each event type independently.'|t('freeform') }}</span></p>{% endset %}
+    {% set eventInput %}
+    <div class="ff-activity-event-grid">
+        <details class="ff-activity-data-disclosure ff-activity-data-panel">
+            {% include 'freeform/settings/_activity-disclosure-summary' with {label:'About recorded data'|t('freeform')} only %}
+            <div class="ff-activity-data-content">
+                <p>{{ 'Every event includes its type and time. Other details are recorded when available. Activity records up to 100 events per request or background job. Additional events are skipped to keep form processing responsive.'|t('freeform') }}</p>
+                <p>{{ 'Email addresses and recognized keys are masked. Passwords and authorization headers are removed. Errors and warnings may include sanitized messages and stack locations without arguments or full server paths. Masking is best effort. Review details before sharing.'|t('freeform') }}</p>
+                <p>{{ 'Activity is stored in your Craft database. Related records require permission to access. Form, integration, and notification names reflect their current values.'|t('freeform') }}</p>
+                <p>{{ 'Recording choices apply to new events. Retention and storage limits also apply to existing history.'|t('freeform') }}</p>
+            </div>
+        </details>
+        {% set eventGuidance = {
+            error: ['When a Freeform operation reports an error.', 'Failure reason, related form/submission IDs, error count, and sanitized diagnostics.', 'Submitted field values and request/response bodies.'],
+            warning: ['When Freeform reports a warning that may need attention.', 'Related IDs and sanitized diagnostics.', 'Submitted field values and request/response bodies.'],
+            submission: ['When Freeform saves a new or updated submission that is not spam.', 'Form and submission IDs.', 'Save & Continue drafts, submitted values, and personal contact details.'],
+            validation: ['When a submission attempt fails validation and is not marked as spam.', 'Form ID and validation error count.', 'Field values, field names, and validation messages.'],
+            spam: ['When a submission or attempt is flagged as spam, including supported background checks.', 'Form/submission IDs and the checks that flagged the attempt.', 'Raw rejection messages, scores, blocked values, and IP addresses.'],
+            'email-error': ['Failures preparing or sending form notifications, or sending digest and export emails.', 'Related IDs, email type, failure reason, processing time, and sanitized diagnostics.', 'Email bodies and attachments.'],
+            'email-sent': ['When the mail transport accepts an email. This does not confirm inbox delivery.', 'Form/submission and notification IDs, email type, site ID, and processing time.', 'Recipient addresses, email bodies, and delivery/open tracking.'],
+            'integration-error': ['When an integration or webhook reports a failure.', 'Related record and processing IDs, failure reason, HTTP status, attempt, timing, and sanitized diagnostics.', 'Request/response bodies and external record contents.'],
+            'integration-response': ['When a submission integration or webhook returns a non-error HTTP response. This does not guarantee the external action completed.', 'Related record and processing IDs, HTTP status, attempt, and response time.', 'Request/response bodies and external record contents.'],
+            'email-skipped': ['When a before-send event handler cancels a notification.', 'Form/submission and notification IDs, cancellation reason, and processing time.', 'Recipient addresses, email bodies, and attachments.'],
+            'integration-started': ['When Freeform starts a submission integration attempt.', 'Form/submission and integration IDs, processing ID, and attempt number.', 'Request/response bodies and external record contents.'],
+            'integration-finished': ['When integration processing returns without an uncaught exception. Related steps may have been skipped or rejected.', 'Form/submission and integration IDs, processing ID, attempt number, and processing time.', 'Request/response bodies and external record contents.'],
+            'integration-action': ['When an integration reports a record creation, update, association, save, or subscription action.', 'Related record and processing IDs, attempt number, and action type. Each action type is recorded once per attempt.', 'External record IDs, record contents, and personal contact details.'],
+            'integration-skipped': ['When a supported integration step is skipped because its mapping, configuration, or subscription prerequisites are unavailable.', 'Related record and processing IDs, attempt number, and skip reason.', 'Field values, email addresses, list IDs, and mapping contents.'],
+            'form-change': ['When a form configuration is successfully saved in the form builder.', 'Form ID and change counts for fields, pages, settings, notifications, and integrations. Very large configurations may have an incomplete summary.', 'Setting values, before/after content, and the user identity. Rule and translation changes, and standalone layout settings, are not summarized.']
+        } %}
+        {% set eventColors = {error:'red', warning:'orange', notice:'sky', success:'green', info:'blue'} %}
+        {% set eventLevels = {error:'Error', warning:'Warning', notice:'Notice', success:'Success', info:'Information'} %}
+        {% set exampleTimes = {
+            error:'12 minutes ago', warning:'13 hours ago', submission:'2 minutes ago',
+            validation:('now'|date_modify('-3 hours'))|date('l, H:i'), spam:'45 minutes ago', 'email-error':'Yesterday, 09:18',
+            'email-sent':'Just now', 'email-skipped':'2 minutes ago', 'integration-started':'3 hours ago', 'integration-finished':'3 hours ago', 'integration-skipped':'3 hours ago', 'integration-action':'3 hours ago', 'integration-error':('now'|date_modify('-17 hours'))|date('l, H:i'),
+            'integration-response':'3 hours ago', 'form-change':'8 minutes ago'
+        } %}
+        {% for key,definition in catalog %}
+            {% set control %}{{ forms.lightswitch({id:'activity-event-' ~ key, name:'settings[activityEvents][' ~ key ~ ']', on:options[key], disabled:readOnly, labelledBy:'activity-event-' ~ key ~ '-label', describedBy:'activity-event-' ~ key ~ '-description', containerAttributes:{data:{'event-option':key}}}) }}{% endset %}
+            {% set icon %}{% include 'freeform/_components/activity-event-icon' with {key:key} only %}{% endset %}
+            {% set example %}
+                {{ cards.example({caption:'Example summary'|t('freeform'), title:examples[key].title, description:examples[key].description, facts:examples[key].previewFacts, status:eventColors[definition[3]], statusLabel:eventLevels[definition[3]]|t('freeform'), time:exampleTimes[key]|t('freeform')}) }}
+                {% if examples[key].metadata.diagnostics is defined %}
+                    <details class="ff-activity-data-disclosure ff-activity-example-details">
+                        {% include 'freeform/settings/_activity-disclosure-summary' with {label:'Technical details'|t('freeform')} only %}
+                        <div class="ff-activity-data-content"><pre><code class="language-json" data-activity-json>{{ examples[key].metadata|json_encode(jsonOptions) }}</code></pre></div>
+                    </details>
+                {% endif %}
+            {% endset %}
+            {% set recordingDetails %}<dl><dt>{{ 'Recorded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][1]|t('freeform') }}</dd><dt>{{ 'Excluded'|t('freeform') }}</dt><dd>{{ eventGuidance[key][2]|t('freeform') }}</dd></dl>{% endset %}
+            {{ cards.helper({layout:'split', id:'activity-event-' ~ key, label:definition[0]|t('freeform'), description:eventGuidance[key][0]|t('freeform'), icon:icon, control:control, controlHidden:settings.activityMode != 'custom', example:example, details:recordingDetails, tone:eventColors[definition[3]], attributes:{hidden:settings.activityMode != 'custom' and not options[key], data:{'event-row':true}}}) }}
+        {% endfor %}
+    </div>
+    {% endset %}
+    {{ forms.field({id:'activity-events', fieldset:true, label:'Recorded events'|t('freeform'), instructions:eventInstructions, errors:settings.errors('activityEvents')}, eventInput) }}
+    </div>
+    <hr>
+    <h2>{{ 'Storage limits'|t('freeform') }}</h2><div class="ff-activity-limits">
+        {{ measurement.field({label:'Keep events for'|t('freeform'), id:'activity-retention-days', unit:'days'|t('freeform'), name:'settings[activityRetentionDays]', type:'number', min:1, max:365, value:settings.activityRetentionDays, errors:settings.errors('activityRetentionDays'), disabled:readOnly, instructions:'Choose 1–365 days. Expired events are hidden immediately and removed by background cleanup.'|t('freeform')}) }}
+        {{ measurement.field({label:'Event storage limit'|t('freeform'), id:'activity-max-events', unit:'events'|t('freeform'), name:'settings[activityMaxRows]', type:'number', min:1000, max:1000000, value:settings.activityMaxRows, errors:settings.errors('activityMaxRows'), disabled:readOnly, instructions:'Choose 1,000–1,000,000 events. Background cleanup removes the oldest events above this limit. The count can exceed the limit until cleanup runs.'|t('freeform')}) }}
+    </div>
+    </div>
+    <div data-logging-panel="classic" {{ loggingStyle != 'classic' ? 'hidden' }}>
+        {% include 'freeform/settings/_technical-file-logging' with {settings:settings, readOnly:readOnly} only %}
+    </div>
+    <div data-logging-panel="none" {{ loggingStyle != 'none' ? 'hidden' }}>
+        <div class="pane warning ff-activity-logging-warning" role="status"><p>
+            <strong>{{ 'Turning off logging is not recommended.'|t('freeform') }}</strong>
+            {{ 'For basic error tracking, choose {style} and set {setting} to {level}.'|t('freeform', {style: '<strong>' ~ ('Classic Logging'|t('freeform')|e) ~ '</strong>', setting: '<strong>' ~ ('Log Detail'|t('freeform')|e) ~ '</strong>', level: '<strong>' ~ ('Errors'|t('freeform')|e) ~ '</strong>'})|raw }}
+        </p></div>
+    </div>
+    <script type="application/json" data-activity-presets>{{ presets|json_encode|raw }}</script>
+    <script type="application/json" data-activity-custom>{{ customOptions|json_encode|raw }}</script>
+</div>
+{% endblock %}

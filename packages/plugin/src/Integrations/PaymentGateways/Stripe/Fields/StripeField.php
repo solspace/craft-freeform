@@ -130,6 +130,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface, SkipGi
     #[VisibilityFilter('properties.intervalCountType === "static"')]
     #[Input\Integer(
         label: 'Interval Count',
+        unit: 'intervals',
         instructions: 'Enter the number of intervals between each subscription payment. If using interval `month` and count `3`, the subscription will be charged every 3 months.',
         unsigned: true,
     )]
@@ -167,6 +168,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface, SkipGi
     #[Input\Integer(
         label: 'Payment Amount',
         instructions: 'Enter the amount you want to charge for this payment.',
+        unitProperty: 'currency',
         min: 1,
         unsigned: true,
     )]

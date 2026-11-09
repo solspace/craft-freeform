@@ -39,6 +39,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
         instructions: 'Maximum number of tokens to generate.',
         min: 1,
         max: 1048576,
+        unit: 'tokens',
     )]
     protected int $maxTokens = 15000;
 

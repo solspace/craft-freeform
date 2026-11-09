@@ -1,69 +1,125 @@
-# Setup Guide
+# hCaptcha
 
-This guide assumes you have a basic understanding of [hCaptcha](https://www.hcaptcha.com/).
+Freeform loads hCaptcha on your forms and verifies each submission on the server.
+Existing integrations keep their saved settings.
 
-<span class="note warning"><b>Important:</b> In order for this to work, the site you are connecting the integration to will need to be publicly accessible.</span>
+## Set up the integration
 
-## Overview
-All **hCaptcha** offerings will be automatically loaded and handled by Freeform (when enabled for the form). The **hCaptcha Checkbox** field will be automatically inserted above the Submit button(s).
+1. Enter your **Site Key** and **Secret Key** from the [hCaptcha dashboard](https://dashboard.hcaptcha.com/).
+2. Choose **Captcha Type**:
+   - **Invisible** starts on submit and may show a puzzle. This is the recommended option.
+   - **Checkbox** shows a checkbox and may also ask the visitor to solve a puzzle.
+3. Choose whether the integration should be **Enabled by default** on forms.
+4. Click **Save**.
+5. Open your form in the builder, go to **Integrations → Captchas**, and select
+   **hCaptcha**. Make sure it is enabled, review its settings, and save the form.
+6. Submit a test entry on your website.
 
-If you're not already familiar, here's an overview of how each Captcha works:
+## Setup help and settings
 
-### hCaptcha Checkbox
-This is based off of _reCAPTCHA_ and works very similarly. All users submitting your form must check off the hCaptcha checkbox, and in some cases, users will be presented the puzzle to solve to submit the form successfully.
+<details>
+<summary>Get your keys</summary>
 
-### hCaptcha Invisible
-Most users will not even know it's automatically validating them, but like the hCaptcha Checkbox described above, some users will be presented a modal on the page with the puzzle to solve when they click the submit button.
+Open the [hCaptcha dashboard](https://dashboard.hcaptcha.com/). Create or open a
+site in **Sites** and copy its site key. Copy your secret key from **Settings**.
+Enter them in Freeform's **Site Key** and **Secret Key** fields.
 
-## Setup Instructions
+The secret key stays on your server. You can use an environment variable such as
+`$HCAPTCHA_SECRET_KEY` instead of entering it directly.
 
-### 1. Get the Secret Key on hCaptcha site
+Invisible and Checkbox can both show a puzzle. Invisible does not mean passive
+or score-based verification. Account features and challenge difficulty are
+managed in hCaptcha. See the [hCaptcha setup guide](https://docs.hcaptcha.com/).
 
-- Go to the [hCaptcha admin site](https://dashboard.hcaptcha.com/) and log into your account.
-- At the top left of the page, click on your profile icon and select **Settings**.
-- On the next page, copy the value in the **Secret Key** field.
+For Invisible, add hCaptcha's required disclosure near your form. See its
+[Invisible guide](https://docs.hcaptcha.com/invisible) for the current wording.
 
-### 2. Set up App on hCaptcha site
+</details>
 
-- If you don't already have an app created, click on the **New Site** icon button at the top right.
-    - Enter a name for it in the **Add New Sitekey** setting (optional).
-    - In the **Domains** section, enter in any domain(s) you plan on using the captcha for, e.g. `mysite.net`.
-    - Choose an option in the **hCaptcha Behavior** setting.
-    - Choose an option in the **Passing Threshold** setting.
-    - Scroll back to the top and click the **Save** button.
-    - On the next page, you'll be presented a **Site Key** for each app. Copy this key.
-- If you have already created an app, the app name and **Site Key** will appear in the list of _Sites_.
-    - Copy the **Site Key** value.
-- Leave this page open and open a new tab...
+<details>
+<summary>Choose failure settings</summary>
 
-### 3. Set up Integration on your site
+**Failure Behavior** controls what happens when the provider rejects a token:
 
-- Switch back to this integration tab.
-- Choose an hCaptcha version and type from the **Captcha Type** select dropdown.
-- In the **Site Key** and **Secret Key** settings, paste in the **Site Key** and **Secret Key** values from the hCaptcha site.
+- **Display Error Message** lets the visitor try again. This is the default.
+  Set the message in **Error Message**.
+- **Send to Spam Folder** marks the submission as spam.
 
-### 4. Additional Configuration
+A missing token, invalid credentials, or an unavailable verification service
+always shows an error. These problems do not mean the visitor is spam.
+Existing saved choices are preserved.
 
-- Complete the rest of the following optional fields (these will only be the default value when configuring the integration in the form builder later):
-    - **Only load Captcha scripts once the user interacts with the form?**
-    - **Failure Behavior** - set to `Display Error Message` or `Send to Spam Folder`.
-        - **Error Message** - set a custom error message if using `Display Error Message` failure behavior.
-    - If using **hCaptcha Checkbox**, set the defaults for the following:
-        - **Theme** - set to `Light` or `Dark`.
-        - **Size** - set to `Normal` or `Compact`.
-- Click the **Save** button.
+</details>
 
-### 5. Configure the Form
+<details>
+<summary>Loading and advanced settings</summary>
 
-To use this integration on your form(s), you'll need to configure each form individually.
+**Only load Captcha scripts once the user interacts with the form** delays
+initialization until the visitor starts filling out the form. Submitting directly
+also initializes it. Disable this setting to initialize when the page opens.
+Your site's consent settings still apply.
 
-- Visit the form inside the form builder.
-- Click on the **Integrations** tab.
-- Click on **hCaptcha** in the list of available integrations.
-- On the right side of the page:
-    - Enable the integration.
-    - Adjust any of the settings as needed.
+Open **Advanced settings** for the options below. Closing the panel does not
+reset its values. The panel remembers its open or closed state for this integration
+in this browser, without needing to click Save.
 
----
+### Widget theme
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+Choose Light or Dark to match your form. This setting applies to Checkbox.
+
+### Widget size
+
+Choose **Normal** for the standard checkbox, or **Compact** for a narrow form.
+This setting applies to Checkbox.
+
+### hCaptcha language
+
+Leave blank for automatic selection, or enter a provider language code such as
+`en`, `fr`, or `de`. Regular forms use the Craft site language when this is blank.
+Headless frontends let the provider choose.
+
+</details>
+
+<details>
+<summary>Headless forms</summary>
+
+With Freeform's official frontend packages, use the provider's captcha extension
+to load the widget and supply its token. Keep the core and extensions packages
+compatible with each other.
+
+If your frontend handles tokens itself, include the following in your normal
+JSON submission payload. Replace `TOKEN` with the token from the provider:
+
+```json
+{
+  "meta": {
+    "captcha": {
+      "name": "h-captcha-response",
+      "value": "TOKEN"
+    }
+  }
+}
+```
+
+For GraphQL, use the `captcha` input's `name` and `value` fields. Tokens can only
+be used once. Obtain a new token after a submission or an expired challenge.
+
+</details>
+
+<details>
+<summary>Troubleshooting</summary>
+
+- **Widget does not load:** Check for content blockers, consent tools, or Content
+  Security Policy rules blocking the provider. Confirm that the integration is
+  enabled on the form.
+- **Verification fails:** Check the site key and server key. Make sure the keys
+  belong to the same provider account or widget and are valid for your site.
+- **Testing while logged in:** If **Bypass All Spam Checks for Logged in Users**
+  is enabled in Freeform's spam settings, test while signed out.
+
+Service errors are logged without including tokens, keys, or raw provider
+responses. Visitors see your configured error message and can retry.
+
+See the [hCaptcha development and testing](https://docs.hcaptcha.com/#local-development) and [hCaptcha CSP guide](https://docs.hcaptcha.com/#content-security-policy-settings) for provider-specific checks.
+
+</details>

@@ -34,7 +34,7 @@ export const AddRow = styled(AddButtonArea)<{ $empty: boolean }>`
       : "0 0 var(--radius-lg, 5px) var(--radius-lg, 5px)"};
 
   && .btn {
-    background: var(--white, #fff);
+    background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
     border-radius: inherit;
 
     &:hover:not(:disabled) {

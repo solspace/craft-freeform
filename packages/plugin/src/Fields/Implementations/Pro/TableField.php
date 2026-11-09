@@ -17,7 +17,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
+use Solspace\Freeform\Fields\Implementations\Options\UploadSourceOptions;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -98,7 +98,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 'label' => 'File Upload',
             ],
         ],
-        assetSourceOptions: AssetSourceOptions::class,
+        assetSourceOptions: UploadSourceOptions::class,
         fileKindsOptions: FileKindsOptionsGenerator::class,
     )]
     protected TableLayout $tableLayout;
@@ -130,7 +130,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.minRows')]
     #[Input\Integer(
         label: 'Minimum number of rows',
-        instructions: 'Set the minimum number of rows. At least this many rows will be shown by default; rows cannot be removed below this count.',
+        instructions: 'At least this many rows will be shown by default; rows cannot be removed below this count.',
+        unit: 'rows',
     )]
     protected ?int $minRows = null;
 
@@ -140,7 +141,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(
         label: 'Maximum number of rows',
-        instructions: 'Set the maximum number of rows that can be added to the table.',
+        unit: 'rows',
     )]
     protected ?int $maxRows = null;
 
@@ -150,7 +151,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[DefaultValue('props.table.exactRows')]
     #[Input\Integer(
         label: 'Exact number of rows',
-        instructions: 'Set the exact number of rows. This many rows will be shown with no option to add or remove.',
+        instructions: 'This many rows will be shown with no option to add or remove.',
+        unit: 'rows',
     )]
     protected ?int $exactRows = null;
 

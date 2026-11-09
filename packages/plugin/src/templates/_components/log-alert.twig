@@ -1,0 +1,16 @@
+{% import 'freeform/_components/status-icon' as statusIcons %}
+{% if counts.error or counts.warning %}
+<div class="ff-log-alert ff-status-surface" data-status="{{ counts.error ? 'error' : 'warning' }}" role="status">
+    <div class="ff-log-alert__content">
+        <p class="ff-log-alert__summary">
+            <strong>{{ 'Activity Log'|t('freeform') }}:</strong>
+            {% for level,labels in {error:['{count} error', '{count} errors'], warning:['{count} warning', '{count} warnings']} %}
+                {% if counts[level] %}
+                    <a class="ff-log-alert__link" data-level="{{ level }}" href="{{ cpUrl('freeform/activity', {view:'events', resolution:'open', level:level}|merge(level == 'warning' ? {category:'system'} : {})) }}" title="{{ (level == 'warning' ? 'Unresolved operational warnings. Spam and validation failures are excluded.' : 'Unresolved errors')|t('freeform') }}"><span class="ff-log-alert__icon">{{ statusIcons.icon(level) }}</span><span>{{ labels[counts[level] == 1 ? 0 : 1]|t('freeform', {count:counts[level]|number}) }}</span></a>
+                {% endif %}
+            {% endfor %}
+        </p>
+        <span class="ff-log-alert__period">{{ (retentionDays == 1 ? 'Recorded in the past day' : 'Recorded in the past {days} days')|t('freeform', {days:retentionDays}) }}</span>
+    </div>
+</div>
+{% endif %}

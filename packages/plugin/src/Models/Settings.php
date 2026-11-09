@@ -17,8 +17,11 @@ use craft\base\Model;
 use craft\helpers\App;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Activity\ActivityPolicy;
+use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
@@ -93,6 +96,9 @@ class Settings extends Model
     public string $defaultView = Freeform::VIEW_FORMS;
     public array|string $formCreationOptions = self::FORM_CREATION_OPTIONS;
     public string $defaultAiIntegration = '';
+
+    /** '*' allows all volumes, 'none' allows none, and arrays contain volume handles. */
+    public array|string $allowedUploadVolumes = '*';
 
     public string $removeNewlines = 'false';
     public string $exportLabels = 'false';
@@ -203,6 +209,15 @@ class Settings extends Model
     public string $useQueueForIntegrations = 'false';
     public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
+    public string $loggingStyle = 'activity';
+
+    /** Compatibility guards for earlier 5.18 configurations; the CP uses loggingStyle. */
+    public string $technicalFileLogging = 'true';
+    public string $activityEnabled = 'true';
+    public string $activityMode = 'standard';
+    public array $activityEvents = [];
+    public int $activityRetentionDays = 30;
+    public int $activityMaxRows = 100000;
     public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
     public string $useIdempotencyKey = 'false';
 
@@ -215,6 +230,9 @@ class Settings extends Model
 
     public function __construct(array $config = [])
     {
+        if (isset($config['allowedUploadVolumes']) && \in_array($config['allowedUploadVolumes'], ['', []], true)) {
+            $config['allowedUploadVolumes'] = 'none';
+        }
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);
 
@@ -251,6 +269,10 @@ class Settings extends Model
 
     public function setAttributes($values, $safeOnly = true): void
     {
+        // Craft project config removes empty arrays, so persist an explicit none value.
+        if (isset($values['allowedUploadVolumes']) && \in_array($values['allowedUploadVolumes'], ['', []], true)) {
+            $values['allowedUploadVolumes'] = 'none';
+        }
         if (\array_key_exists('defaults', $values)) {
             $values['defaults'] = new Defaults($values['defaults']);
         }
@@ -266,7 +288,54 @@ class Settings extends Model
             ['formTemplateDirectory', 'folderExists'],
             ['formCreationOptions', 'validateFormCreationOptions', 'skipOnEmpty' => false],
             ['defaultAiIntegration', 'string', 'max' => 64],
+            ['allowedUploadVolumes', 'validateAllowedUploadVolumes', 'skipOnEmpty' => false],
+            ['activityMode', 'in', 'range' => ActivityPolicy::MODES, 'skipOnEmpty' => false],
+            ['loggingStyle', 'in', 'range' => ['activity', 'classic', 'none'], 'skipOnEmpty' => false],
+            ['activityRetentionDays', 'integer', 'min' => 1, 'max' => 365],
+            ['activityMaxRows', 'integer', 'min' => 1000, 'max' => 1000000],
+            ['activityEvents', 'validateActivityEvents'],
         ];
+    }
+
+    public function getEffectiveLoggingStyle(): string
+    {
+        if ($this->isActivityLoggingEnabled()) {
+            return 'activity';
+        }
+        if ($this->isClassicLoggingEnabled()) {
+            return 'classic';
+        }
+
+        return 'none';
+    }
+
+    public function isActivityLoggingEnabled(): bool
+    {
+        return 'activity' === $this->loggingStyle && BooleanHelper::normalize($this->activityEnabled);
+    }
+
+    public function isClassicLoggingEnabled(): bool
+    {
+        return 'classic' === $this->loggingStyle && BooleanHelper::normalize($this->technicalFileLogging);
+    }
+
+    public function validateActivityEvents(string $attribute): void
+    {
+        foreach ($this->{$attribute} as $event => $enabled) {
+            if (!isset(ActivityPolicy::EVENTS[$event]) || !\in_array($enabled, [true, false, 0, 1, '0', '1', '', 'true', 'false'], true)) {
+                $this->addError($attribute, Freeform::t('Choose valid activity event settings.'));
+
+                break;
+            }
+        }
+    }
+
+    public function validateAllowedUploadVolumes(string $attribute): void
+    {
+        $value = $this->{$attribute};
+        if (!\in_array($value, ['*', 'none'], true) && (!\is_array($value) || array_filter($value, static fn ($handle) => !\is_string($handle) || !preg_match('/^[a-zA-Z][a-zA-Z0-9_]*$/D', $handle)))) {
+            $this->addError($attribute, Freeform::t('Choose valid upload volumes.'));
+        }
     }
 
     public function getEnabledFormCreationOptions(): array
@@ -385,10 +454,11 @@ class Settings extends Model
      *
      * @throws FreeformException
      */
-    public function getEmailTemplateContent(): string
+    public function getEmailTemplateContent(?string $sampleId = null): string
     {
         $path = __DIR__.'/../templates/_templates/email/default.twig';
-        if (!file_exists($path)) {
+        $content = null === $sampleId ? (file_exists($path) ? file_get_contents($path) : false) : (MessageTemplateSamples::get('email', $sampleId)['content'] ?? false);
+        if (false === $content) {
             throw new FreeformException(
                 Freeform::t(
                     'Could not get email template content. Please contact Solspace.'
@@ -402,14 +472,15 @@ class Settings extends Model
         return str_replace(
             ['__placeholderFromEmail__', '__placeholderFromName__'],
             [$email, $name],
-            file_get_contents($path)
+            $content
         );
     }
 
-    public function getSuccessTemplateContent(): string
+    public function getSuccessTemplateContent(?string $sampleId = null): string
     {
         $path = __DIR__.'/../templates/_templates/success/default.twig';
-        if (!file_exists($path)) {
+        $content = null === $sampleId ? (file_exists($path) ? file_get_contents($path) : false) : (MessageTemplateSamples::get('success', $sampleId)['content'] ?? false);
+        if (false === $content) {
             throw new FreeformException(
                 Freeform::t(
                     'Could not get success template content. Please contact Solspace.'
@@ -417,7 +488,7 @@ class Settings extends Model
             );
         }
 
-        return file_get_contents($path);
+        return $content;
     }
 
     /**

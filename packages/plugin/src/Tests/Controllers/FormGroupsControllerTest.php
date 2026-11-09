@@ -8,15 +8,19 @@ use craft\web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\api\FormGroupsController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\Transaction;
 use yii\mutex\FileMutex;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
+use yii\web\Response;
 
 #[CoversClass(FormGroupsController::class)]
 class FormGroupsControllerTest extends TestCase
@@ -70,16 +74,18 @@ class FormGroupsControllerTest extends TestCase
         $controller->actionMove();
     }
 
-    public function testExpressCannotReorderCards(): void
+    #[TestWith([Freeform::EDITION_LITE])]
+    #[TestWith([Freeform::EDITION_EXPRESS])]
+    public function testNonProCannotReorderCards(string $edition): void
     {
-        [$controller] = $this->fixture(edition: Freeform::EDITION_EXPRESS);
+        [$controller] = $this->fixture(edition: $edition);
         $this->expectException(ForbiddenHttpException::class);
         $controller->actionMove();
     }
 
     public function testLiteCannotMoveIntoGroups(): void
     {
-        [$controller] = $this->fixture(params: ['groupUid' => 'sales']);
+        [$controller] = $this->fixture(params: ['groupUid' => 'sales'], edition: Freeform::EDITION_LITE);
         $this->expectException(ForbiddenHttpException::class);
         $controller->actionMove();
     }
@@ -98,9 +104,37 @@ class FormGroupsControllerTest extends TestCase
         $controller->actionMove();
     }
 
-    private function fixture(array $params = [], bool $allowed = true, bool $post = true, string $edition = Freeform::EDITION_LITE): array
+    #[TestWith([Freeform::EDITION_LITE])]
+    #[TestWith([Freeform::EDITION_EXPRESS])]
+    public function testDowngradedDashboardReturnsStandardCardsWithoutReadingProPreferences(string $edition): void
     {
-        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['edition', 'isPro'])->getMock();
+        [$controller] = $this->fixture(edition: $edition);
+        $transformer = $this->createMock(FormTransformer::class);
+        $transformer->method('transformList')->willReturn([
+            (object) ['id' => 1, 'uid' => 'one', 'dateArchived' => null],
+            (object) ['id' => 2, 'uid' => 'two', 'dateArchived' => null],
+        ]);
+        (new \ReflectionProperty(FormGroupsController::class, 'formTransformer'))->setValue($controller, $transformer);
+        $response = PermissionHelper::asAuthenticatedUser(
+            static fn () => (new \ReflectionMethod(FormGroupsController::class, 'get'))->invoke($controller),
+            [strtolower(Freeform::PERMISSION_FORMS_ACCESS)]
+        );
+        self::assertSame(30, $response->cardRange);
+        self::assertNull($response->formGroups);
+        self::assertCount(2, $response->forms);
+        foreach ($response->forms as $form) {
+            self::assertSame('1x1', $form->cardSize);
+            self::assertSame('overview', $form->cardContent);
+            self::assertNull($form->cardFieldId);
+        }
+    }
+
+    private function fixture(array $params = [], bool $allowed = true, bool $post = true, string $edition = Freeform::EDITION_PRO): array
+    {
+        $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['edition', 'isPro', 'getSettings'])->getMock();
+        $settings = $this->getMockBuilder(Settings::class)->disableOriginalConstructor()->onlyMethods(['__call'])->getMock();
+        $settings->method('__call')->willReturn(false);
+        $plugin->method('getSettings')->willReturn($settings);
         $plugin->method('edition')->willReturn(new EditionHelper($edition, [Freeform::EDITION_EXPRESS, Freeform::EDITION_LITE, Freeform::EDITION_PRO]));
         $plugin->method('isPro')->willReturn(Freeform::EDITION_PRO === $edition);
         $request = $this->createMock(Request::class);
@@ -120,6 +154,11 @@ class FormGroupsControllerTest extends TestCase
                 return [$this->site];
             }
 
+            public function getCurrentSite(): Site
+            {
+                return $this->site;
+            }
+
             public function getSiteById($id): Site
             {
                 return $this->site;
@@ -128,6 +167,16 @@ class FormGroupsControllerTest extends TestCase
         $user = new class($allowed) {
             public function __construct(private bool $allowed) {}
 
+            public function getIdentity(): object
+            {
+                return $this;
+            }
+
+            public function getPreference($key): mixed
+            {
+                throw new \LogicException('Downgraded dashboards must ignore stored Pro preferences.');
+            }
+
             public function getIsAdmin(): bool
             {
                 return false;
@@ -135,7 +184,7 @@ class FormGroupsControllerTest extends TestCase
 
             public function checkPermission($permission): bool
             {
-                TestCase::assertSame(strtolower(Freeform::PERMISSION_FORMS_MANAGE), $permission);
+                TestCase::assertContains($permission, [strtolower(Freeform::PERMISSION_FORMS_MANAGE), strtolower(Freeform::PERMISSION_FORMS_ACCESS)]);
 
                 return $this->allowed;
             }
@@ -167,6 +216,7 @@ class FormGroupsControllerTest extends TestCase
         $forms->method('getAllNonArchivedForms')->willReturn([]);
         $controller = $this->getMockBuilder(FormGroupsController::class)->disableOriginalConstructor()->onlyMethods(['getFormsService'])->getMock();
         $controller->request = $request;
+        $controller->response = new Response(['charset' => 'UTF-8']);
         $controller->method('getFormsService')->willReturn($forms);
 
         return [$controller, $db, $mutex];

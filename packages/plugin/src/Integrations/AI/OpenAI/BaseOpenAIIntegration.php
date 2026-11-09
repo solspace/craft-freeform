@@ -50,6 +50,7 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
         instructions: 'Maximum tokens for the response, including reasoning and the generated content. Large forms and higher reasoning levels may need a larger allowance.',
         min: 1,
         max: 128000,
+        unit: 'tokens',
     )]
     protected int $maxTokens = 15000;
 

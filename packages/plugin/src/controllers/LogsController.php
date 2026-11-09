@@ -18,16 +18,22 @@ class LogsController extends BaseController
 
     public function actionError(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         return $this->renderLogs();
     }
 
     public function actionIntegrations(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         return $this->renderLogs(IntegrationLoggerProvider::LOG_FILE, 'integrations');
     }
 
     public function actionEmails(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         return $this->renderLogs(NotificationLoggerProvider::LOG_FILE, 'emails');
     }
 

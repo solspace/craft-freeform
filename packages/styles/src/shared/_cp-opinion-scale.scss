@@ -49,10 +49,10 @@
       min-height: 34px;
       padding: 6px 12px;
       margin: 0;
-      border: 1px solid #cdd8e4;
+      border: 1px solid light-dark(#cdd8e4, var(--input-border-color));
       border-radius: 5px;
-      background: #fbfcfe;
-      color: #3f4d5a !important;
+      background: light-dark(#fbfcfe, var(--input-bg));
+      color: light-dark(#3f4d5a, var(--text-color)) !important;
       font: inherit;
       line-height: 20px;
       text-align: center;
@@ -62,19 +62,19 @@
     }
 
     input:not(:disabled) + label:hover {
-      border-color: #8f98a3;
-      background: #f3f7fc;
+      border-color: light-dark(#8f98a3, var(--light-text-color));
+      background: light-dark(#f3f7fc, var(--ui-control-hover-bg-color));
     }
 
     input:checked + label {
-      border-color: #596b7d;
-      background: #e4edf6;
-      color: #273b4e !important;
-      box-shadow: inset 0 0 0 1px #596b7d;
+      border-color: light-dark(#596b7d, var(--light-text-color));
+      background: light-dark(#e4edf6, var(--ui-control-selected-bg));
+      color: light-dark(#273b4e, var(--ui-control-selected-color)) !important;
+      box-shadow: inset 0 0 0 1px light-dark(#596b7d, var(--light-text-color));
     }
 
     input:focus-visible + label {
-      outline: 2px solid #0b69a3;
+      outline: 2px solid light-dark(#0b69a3, var(--link-color));
       outline-offset: 2px;
     }
 
@@ -88,7 +88,7 @@
     justify-content: space-between;
     gap: 12px;
     margin-top: 6px;
-    color: #596673;
+    color: light-dark(#596673, var(--light-text-color));
     font-size: 12px;
 
     > li {

@@ -8,11 +8,16 @@ export function formatRelativeDate(
   if (!Number.isFinite(date.getTime())) return null;
   try {
     const relative = new Intl.RelativeTimeFormat(locale.replace(/_/g, "-"), {
-      numeric: "auto",
+      numeric: "always",
+      style: "narrow",
     });
     const seconds = (date.getTime() - now.getTime()) / 1000;
     const magnitude = Math.abs(seconds);
-    if (magnitude < 60) return relative.format(0, "second");
+    if (magnitude < 60)
+      return new Intl.RelativeTimeFormat(locale.replace(/_/g, "-"), {
+        numeric: "auto",
+        style: "narrow",
+      }).format(0, "second");
     if (magnitude < 3600)
       return relative.format(Math.trunc(seconds / 60), "minute");
     const calendar = new Intl.DateTimeFormat("en-US", {

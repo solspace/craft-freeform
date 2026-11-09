@@ -62,7 +62,7 @@ class WebhooksBundle extends FeatureBundle
             }
 
             try {
-                $webhook->trigger($form);
+                $this->plugin()->get('activity')->observeIntegration($form, static fn () => $webhook->trigger($form), $webhook->getId());
             } catch (\Exception $exception) {
                 $event = new FailedRequestEvent($form, $webhook, $exception);
                 Event::trigger(

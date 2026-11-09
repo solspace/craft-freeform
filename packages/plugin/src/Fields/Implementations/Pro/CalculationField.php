@@ -58,9 +58,9 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     #[Limitation('props.calculation', 'decimalCount')]
     #[DefaultValue('props.calculation.decimalCount')]
     #[Input\Integer(
-        instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for empty / no rounding',
         min: 0,
+        unit: 'places',
     )]
     protected ?int $decimalCount = null;
 

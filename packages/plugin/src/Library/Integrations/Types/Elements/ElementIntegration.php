@@ -8,6 +8,7 @@ use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Bundles\Form\ElementEdit\ElementEditBundle;
+use Solspace\Freeform\Bundles\Integrations\Elements\AddressFieldMapping;
 use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
@@ -72,6 +73,7 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
         }
 
         $customFields = $fieldLayout->getCustomFields();
+        $addressMappings = [];
         foreach ($mapping as $item) {
             if (FieldMapItem::TYPE_RELATION === $item->getType() && empty($item->getValue())) {
                 continue;
@@ -79,7 +81,7 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
 
             $craftField = null;
             foreach ($customFields as $field) {
-                if ($field->handle === $item->getSource()) {
+                if ($field->handle === $item->getSource() || null !== AddressFieldMapping::getAttribute($field, $item->getSource())) {
                     $craftField = $field;
 
                     break;
@@ -88,7 +90,7 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
 
             $freeformField = null;
             if (FieldMapItem::TYPE_RELATION === $item->getType()) {
-                $freeformField = $form->get($item->getValue());
+                $freeformField = $item->getField($form);
             }
 
             $key = $item->getSource();
@@ -108,7 +110,11 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
                 continue;
             }
 
-            if ($craftField) {
+            $addressAttribute = $craftField ? AddressFieldMapping::getAttribute($craftField, $key) : null;
+            if (null !== $addressAttribute) {
+                $addressMappings[$craftField->handle]['field'] = $craftField;
+                $addressMappings[$craftField->handle]['attributes'][$addressAttribute] = $event->getValue();
+            } elseif ($craftField) {
                 $element->setFieldValue($craftField->handle, $event->getValue());
             } else {
                 try {
@@ -117,6 +123,10 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
                     // Do nothing
                 }
             }
+        }
+
+        foreach ($addressMappings as $addressMapping) {
+            AddressFieldMapping::apply($element, $addressMapping['field'], $addressMapping['attributes']);
         }
     }
 }

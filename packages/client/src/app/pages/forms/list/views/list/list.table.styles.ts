@@ -13,7 +13,7 @@ export const TableScrollWrapper = styled.div`
   }
 `;
 
-export const Table = styled.table`
+export const Table = styled.table.attrs({ className: "freeform-ui-table" })`
   border-collapse: collapse;
   width: 100%;
 

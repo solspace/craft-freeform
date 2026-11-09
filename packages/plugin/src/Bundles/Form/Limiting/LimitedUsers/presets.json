@@ -1,0 +1,192 @@
+{
+  "presets": [
+    {
+      "id": "content-editor",
+      "label": "Content Editor",
+      "description": "Edit existing field content and choices, with advanced tools hidden.",
+      "permissions": [
+        "layout.options.custom",
+        "layout.options.predefined",
+        "preview.tab"
+      ],
+      "options": {
+        "props.date": [
+          "initialValue"
+        ],
+        "props.file": [
+          "placeholder",
+          "showUploadRequirements"
+        ],
+        "props.table": [
+          "addButtonLabel",
+          "removeButtonLabel"
+        ],
+        "layout.options.predefined.types": "*"
+      },
+      "fullAccess": false
+    },
+    {
+      "id": "simplified-building",
+      "label": "Simplified Building",
+      "description": "Build simple forms with essential fields, custom choices, and admin notifications.",
+      "permissions": [
+        "layout.fields",
+        "layout.fields.clone",
+        "layout.options.custom",
+        "preview.tab",
+        "notifications.tab",
+        "notifications.tab.Solspace\\Freeform\\Notifications\\Types\\Admin\\Admin"
+      ],
+      "options": {
+        "layout.fieldTypes": [
+          "Solspace\\Freeform\\Fields\\Implementations\\TextField",
+          "Solspace\\Freeform\\Fields\\Implementations\\TextareaField",
+          "Solspace\\Freeform\\Fields\\Implementations\\EmailField",
+          "Solspace\\Freeform\\Fields\\Implementations\\DropdownField",
+          "Solspace\\Freeform\\Fields\\Implementations\\MultipleSelectField",
+          "Solspace\\Freeform\\Fields\\Implementations\\CheckboxField",
+          "Solspace\\Freeform\\Fields\\Implementations\\CheckboxesField",
+          "Solspace\\Freeform\\Fields\\Implementations\\RadiosField",
+          "Solspace\\Freeform\\Fields\\Implementations\\NumberField",
+          "Solspace\\Freeform\\Fields\\Implementations\\Pro\\DatetimeField",
+          "Solspace\\Freeform\\Fields\\Implementations\\Pro\\PhoneField",
+          "Solspace\\Freeform\\Fields\\Implementations\\Pro\\WebsiteField"
+        ],
+        "props.date": [
+          "type",
+          "initialValue",
+          "picker"
+        ]
+      },
+      "fullAccess": false
+    },
+    {
+      "id": "advanced-building",
+      "label": "Advanced Building",
+      "description": "Build with all field types, notifications, rules, and everyday settings.",
+      "permissions": [
+        "layout.options.custom",
+        "layout.options.predefined",
+        "preview.tab",
+        "layout.fields",
+        "layout.multiPageForms",
+        "layout.fields.clone",
+        "layout.options.convert",
+        "notifications.tab",
+        "notifications.tab.Solspace\\Freeform\\Notifications\\Types\\Admin\\Admin",
+        "notifications.tab.Solspace\\Freeform\\Notifications\\Types\\EmailField\\EmailField",
+        "layout.fields.types",
+        "layout.favorite",
+        "layout.options.elements",
+        "notifications.tab.Solspace\\Freeform\\Notifications\\Types\\Conditional\\Conditional",
+        "notifications.tab.Solspace\\Freeform\\Notifications\\Types\\Dynamic\\Dynamic",
+        "rules.tab",
+        "rules.tab.fields",
+        "rules.tab.buttons",
+        "rules.tab.pages",
+        "rules.tab.submit",
+        "settings.tab",
+        "settings.tab.general",
+        "settings.tab.general.translations",
+        "settings.tab.general.submissionTitle",
+        "settings.tab.success-and-errors",
+        "settings.tab.limits"
+      ],
+      "options": {
+        "props.date": [
+          "type",
+          "initialValue",
+          "locale",
+          "picker",
+          "minuteStep",
+          "formatAsPlaceholder",
+          "dateOrder",
+          "date4DigitYear",
+          "dateLeadingZero",
+          "dateSeparator",
+          "minDate",
+          "maxDate",
+          "clock24h",
+          "clockSeparator",
+          "clockAMPMSeparate"
+        ],
+        "props.phone": [
+          "pattern",
+          "javascript"
+        ],
+        "props.file": [
+          "count",
+          "fileKinds",
+          "maxFileSizeKB",
+          "showUploadRequirements",
+          "accentColor",
+          "theme",
+          "placeholder"
+        ],
+        "props.table": [
+          "javascript",
+          "limitRows",
+          "minRows",
+          "maxRows",
+          "exactRows",
+          "addButtonLabel",
+          "removeButtonLabel"
+        ],
+        "props.rating": [
+          "max",
+          "idle",
+          "hover",
+          "selected"
+        ],
+        "props.signature": [
+          "width",
+          "height",
+          "clear",
+          "borderColor",
+          "backgroundColor",
+          "penColor",
+          "penDotSize"
+        ],
+        "props.calculation": [
+          "decimalCount",
+          "inputType"
+        ],
+        "props.cards": [
+          "max",
+          "perRow",
+          "transform",
+          "srcset"
+        ],
+        "props.image": [
+          "transform",
+          "srcset"
+        ],
+        "layout.options.predefined.types": "*",
+        "layout.fieldTypes": "*",
+        "layout.options.elements.types": "*"
+      },
+      "fullAccess": false
+    },
+    {
+      "id": "full-access",
+      "label": "Full Access",
+      "description": "Start with every option enabled, then turn off what you do not need.",
+      "permissions": [],
+      "options": {},
+      "fullAccess": true
+    }
+  ],
+  "uploadOptions": {
+    "layout.fieldTypes": [
+      "Solspace\\Freeform\\Fields\\Implementations\\FileUploadField",
+      "Solspace\\Freeform\\Fields\\Implementations\\Pro\\FileDragAndDropField"
+    ],
+    "props.file": [
+      "count",
+      "fileKinds",
+      "maxFileSizeKB",
+      "showUploadRequirements",
+      "placeholder"
+    ]
+  }
+}

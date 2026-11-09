@@ -52,6 +52,14 @@ class FieldContainerBundleTest extends TestCase
         self::assertSame('content', $attributes->getContainer()->get('data-field-container'));
     }
 
+    public function testDashboardQuickFormRetainsFieldHooksWithoutPreviewMode(): void
+    {
+        $attributes = $this->compile(cp: true, preview: false, type: 'location', widget: true);
+        self::assertSame('location', $attributes->getContainer()->get('data-field-type'));
+        self::assertSame('content', $attributes->getContainer()->get('data-field-container'));
+        self::assertSame('w-full px-2', $attributes->getContainer()->get('class'));
+    }
+
     public function testUnrelatedAttributeCollectionsAreNotChanged(): void
     {
         $field = $this->createMock(FieldInterface::class);
@@ -62,14 +70,14 @@ class FieldContainerBundleTest extends TestCase
         self::assertSame('class="custom"', trim((string) $attributes));
     }
 
-    private function compile(bool $cp, bool $preview, string $type = 'html'): FieldAttributesCollection
+    private function compile(bool $cp, bool $preview, string $type = 'html', bool $widget = false): FieldAttributesCollection
     {
-        $request = new class($cp) {
-            public function __construct(public bool $isCpRequest) {}
+        $request = new class($cp, $widget) {
+            public function __construct(public bool $isCpRequest, private bool $widget) {}
 
-            public function getSegment(int $index): string
+            public function getSegment(int $index): ?string
             {
-                return [1 => 'freeform', 2 => 'api', 3 => 'forms'][$index];
+                return [1 => 'freeform', 2 => 'api', 3 => 'forms', 4 => $this->widget ? 'widgets' : '13'][$index] ?? null;
             }
         };
         \Craft::$app = (object) ['request' => $request];

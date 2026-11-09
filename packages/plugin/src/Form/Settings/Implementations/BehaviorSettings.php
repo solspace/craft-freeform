@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Date\DateTimeTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators;
@@ -21,6 +22,7 @@ use Solspace\Freeform\Form\Settings\Implementations\Options\SubmissionLimitPerio
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
+use Solspace\Freeform\Library\Helpers\BannerColorHelper;
 
 #[SettingNamespace(
     'Behavior',
@@ -156,7 +158,7 @@ class BehaviorSettings extends SettingsNamespace
     #[DefaultValue('settings.successAndErrors.successMessage')]
     #[Input\TextArea(
         instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with `{{ form.settings.successMessage }}`.',
-        order: 4,
+        order: 6,
         placeholder: 'e.g. Form has been submitted successfully!',
     )]
     public string $successMessage = self::DEFAULT_SUCCESS_MESSAGE;
@@ -166,10 +168,54 @@ class BehaviorSettings extends SettingsNamespace
     #[DefaultValue('settings.successAndErrors.errorMessage')]
     #[Input\TextArea(
         instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with `{{ form.settings.errorMessage }}`.',
-        order: 5,
+        order: 8,
         placeholder: 'e.g. Sorry, there was an error submitting the form. Please try again.',
     )]
     public string $errorMessage = self::DEFAULT_ERROR_MESSAGE;
+
+    #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.customMessageColors')]
+    #[Limitation('settings.tab.success-and-errors.customMessageColors')]
+    #[Input\Boolean(
+        label: 'Custom Success and Error Colors',
+        instructions: 'Use custom banner colors instead of the colors from your form template.',
+        order: 4,
+    )]
+    public bool $customMessageColors = false;
+
+    #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.bannerStyle')]
+    #[Limitation('settings.tab.success-and-errors.customMessageColors')]
+    #[VisibilityFilter('Boolean(customMessageColors)')]
+    #[Input\ButtonGroup(
+        label: 'Banner Style',
+        instructions: 'Soft uses a tinted background. Bold uses a solid color. Applies to both banners.',
+        order: 5,
+        options: ['soft' => 'Soft', 'bold' => 'Bold'],
+    )]
+    public string $bannerStyle = 'soft';
+
+    #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.successColor')]
+    #[Limitation('settings.tab.success-and-errors.customMessageColors')]
+    #[VisibilityFilter('Boolean(customMessageColors)')]
+    #[Input\ColorPicker(
+        label: 'Success Color',
+        instructions: 'Choose the color of the success banner.',
+        order: 7,
+    )]
+    public string $successColor = '#16a34a';
+
+    #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.errorColor')]
+    #[Limitation('settings.tab.success-and-errors.customMessageColors')]
+    #[VisibilityFilter('Boolean(customMessageColors)')]
+    #[Input\ColorPicker(
+        label: 'Error Color',
+        instructions: 'Choose the color of the error banner, invalid field borders, and validation messages.',
+        order: 9,
+    )]
+    public string $errorColor = '#dc2626';
 
     #[Section(
         self::SECTION_LIMITS,
@@ -269,6 +315,7 @@ class BehaviorSettings extends SettingsNamespace
     #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
     #[Input\Integer(
         label: 'Number of Submissions',
+        unit: 'submissions',
         instructions: 'The maximum number of submissions to accept. Requires Store Submitted Data to be enabled. Spam and deleted submissions are excluded.',
         order: 9,
         min: 1,
@@ -279,7 +326,7 @@ class BehaviorSettings extends SettingsNamespace
     #[Section(self::SECTION_LIMITS)]
     #[Edition(Edition::LITE)]
     #[VisibilityFilter('Boolean(submissionLimitEnabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Limit Period',
         instructions: 'Calendar periods use Craft\'s timezone and configured week start. Total never resets.',
         order: 10,
@@ -297,6 +344,25 @@ class BehaviorSettings extends SettingsNamespace
         order: 11,
     )]
     public string $submissionLimitMessage = 'Submission limit reached';
+
+    public function normalizeBannerColors(array $stored): void
+    {
+        // Preserve explicit color choices made before the shared toggle was added.
+        if (!\array_key_exists('customMessageColors', $stored)) {
+            $this->customMessageColors = false;
+            foreach (['successColor', 'errorColor'] as $key) {
+                if (isset($stored[$key]) && \is_string($stored[$key]) && null !== BannerColorHelper::style($stored[$key])) {
+                    $this->customMessageColors = true;
+                }
+            }
+        }
+
+        foreach (['successColor' => '#16a34a', 'errorColor' => '#dc2626'] as $key => $default) {
+            if (null === BannerColorHelper::style($this->{$key})) {
+                $this->{$key} = $default;
+            }
+        }
+    }
 
     public function normalizeSchedule(): void
     {

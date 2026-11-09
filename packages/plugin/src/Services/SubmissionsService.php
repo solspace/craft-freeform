@@ -35,6 +35,8 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\ProcessSpamValidationJob;
+use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Activity\ActivityDiagnostics;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\FileUploadPreviewHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
@@ -369,12 +371,22 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         $updateSearchIndex = $this->getSettingsService()->isUpdateSearchIndexes();
-        if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
+
+        try {
+            $saved = \Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex);
+        } catch (\Throwable $exception) {
+            $this->recordStorageFailure($form, $submission, ActivityContext::exceptionReason($exception, ActivityContext::SUBMISSION_SAVE_EXCEPTION), $exception);
+
+            throw $exception;
+        }
+        if ($saved) {
             $this->clearSubmissionCountCache();
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
             return true;
         }
+
+        $this->recordStorageFailure($form, $submission, ActivityContext::SUBMISSION_SAVE_REJECTED);
 
         return false;
     }
@@ -387,50 +399,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
-        $allowedFormIds = $this->getFormsService()->getAllowedWriteFormIds();
-        if (!$query->count()) {
-            return false;
-        }
+        return $this->deleteSubmissions($query, $bypassPermissionCheck, $hardDelete, false);
+    }
 
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-        $deleted = 0;
-
-        try {
-            foreach ($query->batch() as $submissions) {
-                foreach ($submissions as $submission) {
-                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
-                        continue;
-                    }
-
-                    $submission->enableDeletingByToken();
-
-                    $deleteEvent = new DeleteEvent($submission);
-                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
-
-                    if ($deleteEvent->isValid) {
-                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
-
-                        if ($isSuccessful) {
-                            ++$deleted;
-                        }
-
-                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
-                    }
-                }
-            }
-
-            $transaction?->commit();
-        } catch (\Exception $e) {
-            $transaction?->rollBack();
-
-            throw $e;
-        }
-
-        if ($deleted > 0) {
-            $this->clearSubmissionCountCache();
-        }
-
-        return $deleted > 0;
+    public function deleteWithUndo(ElementQueryInterface $query): bool
+    {
+        return $this->deleteSubmissions($query, false, false, true);
     }
 
     /**
@@ -620,6 +594,74 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    private function deleteSubmissions(ElementQueryInterface $query, bool $bypassPermissionCheck, bool $hardDelete, bool $recordUndo): bool
+    {
+        $allowedFormIds = $this->getFormsService()->getAllowedWriteFormIds();
+        if (!$query->count()) {
+            return false;
+        }
+
+        $transaction = \Craft::$app->getDb()->beginTransaction();
+        $deleted = 0;
+        $undoItems = [];
+        $undo = $recordUndo ? Freeform::getInstance()->submissionUndo : null;
+
+        try {
+            foreach ($query->batch() as $submissions) {
+                foreach ($submissions as $submission) {
+                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
+                        continue;
+                    }
+
+                    $submission->enableDeletingByToken();
+
+                    $deleteEvent = new DeleteEvent($submission);
+                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
+
+                    if ($deleteEvent->isValid) {
+                        $canUndo = $undo && !$submission->trashed;
+                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
+
+                        if ($isSuccessful) {
+                            ++$deleted;
+                            if ($canUndo) {
+                                $undoItems[] = $undo->snapshot($submission, 'delete');
+                            }
+                        }
+
+                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    }
+                }
+            }
+
+            $transaction?->commit();
+        } catch (\Exception $e) {
+            $transaction?->rollBack();
+
+            throw $e;
+        }
+
+        if ($deleted > 0) {
+            $this->clearSubmissionCountCache();
+            $undo?->recordBatch($undoItems);
+        }
+
+        return $deleted > 0;
+    }
+
+    private function recordStorageFailure(Form $form, Submission $submission, int $reason, ?\Throwable $exception = null): void
+    {
+        try {
+            $metadata = ['reasonCode' => $reason, 'errorCount' => \count($submission->getErrors())];
+            if ($exception) {
+                $metadata['diagnostics'] = ActivityDiagnostics::fromException($exception);
+            }
+            Freeform::getInstance()->get('activity')->record('error', $form->getId(), $submission->id, $metadata);
+        } catch (\Throwable) {
+            // Optional diagnostics must preserve the original save result or exception.
+        }
     }
 
     private function clearSubmissionCountCache(): void

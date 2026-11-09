@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Export\Implementations\Csv;
 use Solspace\Freeform\Bundles\Export\AbstractSubmissionExport;
 use Solspace\Freeform\Bundles\Export\Interfaces\StringValueExportInterface;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 
@@ -42,7 +43,11 @@ class ExportCsv extends AbstractSubmissionExport implements StringValueExportInt
                     $field = $column->getField();
                     $value = $column->getValue();
 
-                    if ($field instanceof TableField) {
+                    if ($field instanceof LocationField) {
+                        foreach (['search', ...array_keys(LocationField::COMPONENTS)] as $key) {
+                            $values[] = \is_array($value) ? ($value[$key] ?? '') : '';
+                        }
+                    } elseif ($field instanceof TableField) {
                         $extraRows = max($extraRows, \count($value) - 1);
                         foreach ($this->extractTableRow(0, $value, $field) as $tableColumns) {
                             $values[] = $tableColumns;
@@ -66,6 +71,8 @@ class ExportCsv extends AbstractSubmissionExport implements StringValueExportInt
                                     foreach ($this->extractTableRow($i, $value, $field) as $tableColumns) {
                                         $values[] = $tableColumns;
                                     }
+                                } elseif ($field instanceof LocationField) {
+                                    array_push($values, ...array_fill(0, 1 + \count(LocationField::COMPONENTS), ''));
                                 } else {
                                     $values[] = '';
                                 }
@@ -122,7 +129,11 @@ class ExportCsv extends AbstractSubmissionExport implements StringValueExportInt
                 continue;
             }
 
-            if ($field instanceof TableField) {
+            if ($field instanceof LocationField) {
+                foreach (['search' => 'Address Search', ...$field->getComponentLabels()] as $key => $label) {
+                    $labels[] = $isHandlesAsNames ? $field->getHandle().'.'.$key : $field->getLabel().': '.$label;
+                }
+            } elseif ($field instanceof TableField) {
                 foreach ($field->getTableLayout() as $layout) {
                     $labels[] = $layout->label ?? '-';
                 }

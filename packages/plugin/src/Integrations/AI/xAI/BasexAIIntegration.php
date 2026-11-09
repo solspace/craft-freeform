@@ -42,6 +42,7 @@ abstract class BasexAIIntegration extends APIIntegration implements AiIntegratio
         instructions: 'Maximum number of tokens to generate.',
         min: 1,
         max: 256000,
+        unit: 'tokens',
     )]
     protected int $maxTokens = 15000;
 

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields\Implementations\SummaryField;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 
@@ -11,7 +12,7 @@ class SummaryFormatter
 {
     // An allowlist prevents newly registered/sensitive field types leaking into a review.
     private const TYPES = [
-        'text', 'textarea', 'email', 'number', 'range', 'phone', 'website', 'regex',
+        'text', 'textarea', 'email', 'number', 'range', 'phone', 'location', 'website', 'regex',
         'dropdown', 'multiple-select', 'checkbox', 'checkboxes', 'radios',
         'datetime', 'rating', 'opinion-scale', 'cards', 'calculation', 'file', 'file-dnd', 'table',
     ];
@@ -57,6 +58,16 @@ class SummaryFormatter
     public function formatValue(array $source, mixed $value, array $config): string
     {
         $type = $source['type'];
+        if ('location' === $type) {
+            $parts = [];
+            foreach (array_keys(LocationField::COMPONENTS) as $key) {
+                if (\is_scalar($value[$key] ?? null) && '' !== trim((string) $value[$key])) {
+                    $parts[] = trim((string) $value[$key]);
+                }
+            }
+
+            return $parts ? implode(', ', $parts) : (\is_array($value) && \is_scalar($value['search'] ?? null) ? (string) $value['search'] : '');
+        }
         if ('checkbox' === $type) {
             $checked = !\in_array($value, [null, false, '', 0, '0'], true);
 

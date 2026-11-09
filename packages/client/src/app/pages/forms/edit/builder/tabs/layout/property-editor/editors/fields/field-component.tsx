@@ -1,4 +1,6 @@
 import { FormComponent } from "@components/form-controls";
+import ClockFormatControl from "@components/form-controls/control-types/clock-format/clock-format";
+import DateOrderControl from "@components/form-controls/control-types/date-order/date-order";
 import { OptionSampleArea } from "@editor/builder/sample-data/sample-data.styles";
 import { SampleDataDefault } from "@editor/builder/sample-data/sample-data-default";
 import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-options";
@@ -12,6 +14,11 @@ import { Implementation } from "@ff-client/types/fields";
 import { type Property, PropertyType } from "@ff-client/types/properties";
 import type React from "react";
 import { useSelector } from "react-redux";
+
+import {
+  LocationIntegration,
+  LocationRequiredComponents,
+} from "./location-integration";
 
 type Props = {
   control?: React.ComponentProps<typeof FormComponent>["control"];
@@ -81,7 +88,19 @@ export const FieldComponent: React.FC<Props> = ({
 
   const component = (
     <FormComponent
-      control={control}
+      control={
+        control ||
+        (type?.type === "datetime" && property.handle === "clock24h"
+          ? ClockFormatControl
+          : type?.type === "datetime" && property.handle === "dateOrder"
+            ? DateOrderControl
+            : type?.type === "location" && property.handle === "integration"
+              ? LocationIntegration
+              : type?.type === "location" &&
+                  property.handle === "requiredComponents"
+                ? LocationRequiredComponents
+                : undefined)
+      }
       autoFocus={autoFocus}
       value={canUseTranslationValue(property) ? translationEnabledValue : value}
       property={property}

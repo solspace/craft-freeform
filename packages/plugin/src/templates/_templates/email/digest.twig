@@ -73,6 +73,9 @@
 
     {% if fullDigest %}
         <h2 class="digest-text" style="margin: 28px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Errors and warnings'|t('freeform') }}</h2>
+        {% if loggingStyle|default('classic') == 'activity' %}
+            <p class="digest-muted" style="margin: 0 0 12px; color: #526175; font-size: 13px; line-height: 20px;">{{ 'Activity Log records are kept for {days} days. Older events may be unavailable.'|t('freeform', {days: activityRetentionDays}) }}</p>
+        {% endif %}
         {% for data in errors %}
             {% set level = data.level|lower %}
             {% set severity = level in criticalLevels ? 'critical' : (level == 'warning' ? 'warning' : 'info') %}
@@ -81,13 +84,13 @@
                 <tr>
                     <td class="digest-soft digest-alert-{{ severity }}" bgcolor="#f0f4fa" style="padding: 10px 12px; background-color: #f0f4fa; border-left: 3px solid {{ colors.accent }}; overflow-wrap: anywhere; word-break: break-word;">
                         <p style="margin: 0 0 4px; font-size: 14px; line-height: 20px;"><span class="digest-label-{{ severity }}" style="color: {{ colors.text }}; font-weight: bold;">{{ data.level }} &middot; {{ data.channel }}</span><span class="digest-muted" style="color: #526175;"> &middot; {{ data.date|date }}</span></p>
-                        <p class="digest-text" style="margin: 0; color: #1f2937; font-size: 16px; line-height: 24px;">{{ data.message|truncater(50) }}</p>
+                        <p class="digest-text" style="margin: 0; color: #1f2937; font-size: 16px; line-height: 24px;">{% if data.url|default(null) %}<a class="digest-link" href="{{ data.url }}" style="color: #1d4ed8; text-decoration: underline;">{{ data.message|truncater(50) }}</a>{% else %}{{ data.message|truncater(50) }}{% endif %}</p>
                     </td>
                 </tr>
                 <tr aria-hidden="true"><td height="8" style="height: 8px; font-size: 0; line-height: 8px;">&nbsp;</td></tr>
             </table>
         {% else %}
-            <p class="digest-muted" style="margin: 0; color: #526175;">{{ 'No errors to report for this period.'|t('freeform') }}</p>
+            <p class="digest-muted" style="margin: 0; color: #526175;">{{ (loggingStyle|default('classic') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}</p>
         {% endfor %}
 
         <h2 class="digest-text" style="margin: 24px 0 8px; color: #1f2937; font-size: 20px; line-height: 28px;">{{ 'Updates and notices'|t('freeform') }}</h2>
@@ -138,12 +141,16 @@
 {% endfor %}
 {% if fullDigest %}
 {{ 'Errors and warnings'|t('freeform') }}
+{% if loggingStyle|default('classic') == 'activity' %}
+{{ 'Activity Log records are kept for {days} days. Older events may be unavailable.'|t('freeform', {days: activityRetentionDays}) }}
+{% endif %}
 {% for data in errors %}
 {{ data.level }} — {{ data.channel }} — {{ data.date|date }}
 {{ data.message|truncater(50) }}
+{% if data.url|default(null) %}{{ data.url }}{% endif %}
 
 {% else %}
-{{ 'No errors to report for this period.'|t('freeform') }}
+{{ (loggingStyle|default('classic') == 'none' ? 'Logging is turned off.' : 'No errors to report for this period.')|t('freeform') }}
 {% endfor %}
 
 {{ 'Updates and notices'|t('freeform') }}

@@ -1,4 +1,4 @@
-import { spacings } from "@ff-client/styles/variables";
+import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const FieldGroupWrapper = styled.div`
@@ -11,7 +11,9 @@ export const FieldGroupWrapper = styled.div`
   }
 `;
 
-export const GroupTitle = styled.h2`
+export const GroupTitle = styled.h2.attrs({
+  className: "freeform-field-group-title",
+})`
   position: relative;
 
   margin: 0;
@@ -22,6 +24,7 @@ export const GroupTitle = styled.h2`
     top: 1px;
     right: 0;
 
+    :root[data-dark-mode="dark"] & { color: ${colors.muted}; }
     transition: all 0.2s ease;
 
     &:hover {

@@ -8,9 +8,11 @@
         min-width: 400px;
         padding: 10px 15px;
 
-        border: 1px solid #e3e3e3;
+        border: 1px solid light-dark(#e3e3e3, var(--medium-hairline-color));
+        background: light-dark(white, var(--pane-bg));
         border-radius: 5px;
         box-shadow: 0 2px 12px rgba(205,216,228,.5);
+        :root[data-dark-mode="dark"] & { box-shadow: var(--pane-shadow); }
 
         & ul {
             display: flex;

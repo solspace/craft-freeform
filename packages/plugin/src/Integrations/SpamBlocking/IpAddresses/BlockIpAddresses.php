@@ -27,54 +27,66 @@ class BlockIpAddresses extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Optional DNS block list checks.', order: 90)]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 11,
         label: 'Blocked IP Addresses for this Form',
-        instructions: 'Enter IP addresses you would like blocked. Separate multiples on new lines.',
+        instructions: 'One IP address or CIDR range per line, such as `192.0.2.10` or `192.0.2.0/24`.',
         rows: 8,
     )]
-    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
+    #[Message('Added to the default block list for this form only.')]
     protected array $ips = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 10,
         label: 'Default Blocked IP Addresses',
-        instructions: 'Enter IP addresses you would like blocked. Separate multiples on new lines.',
+        instructions: 'One IP address or CIDR range per line, such as `192.0.2.10` or `192.0.2.0/24`.',
         rows: 8,
     )]
-    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
+    #[Message('Used by every form with this integration. Add form-specific entries in the form builder.')]
     protected array $defaultIps = [];
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
+        order: 100,
         label: 'Check DNS Block Lists',
-        instructions: 'IP addresses will be checked against the DNS block lists provided below to help detect spam and abusive activity.',
+        instructions: 'Check the visitor’s IP against the DNS block lists below, in addition to your own blocked IP addresses.',
     )]
     protected string $checkDnsBlockLists = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 111,
         label: 'DNS Block Lists',
-        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
+        instructions: 'One DNS block list hostname per line, such as `zen.spamhaus.org`.',
         rows: 8,
     )]
-    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
+    #[Message('Added to the default block list for this form only.')]
     protected array $dnsBlockLists = [];
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 110,
         label: 'Default DNS Block Lists',
-        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
+        instructions: 'One DNS block list hostname per line, such as `zen.spamhaus.org`.',
         rows: 8,
     )]
-    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
+    #[Message('Used by every form with this integration. Add form-specific entries in the form builder.')]
     protected array $defaultDnsBlockLists = ['zen.spamhaus.org', 'bl.spamcop.net'];
 
     public function isCheckDnsBlockLists(): bool

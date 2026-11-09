@@ -16,12 +16,15 @@ export const TokenDropdownWrapper = styled.div`
   max-height: 300px;
   overflow: hidden;
 
-  background-color: ${colors.white};
-  color: black;
+  background-color: light-dark(${colors.white}, ${colors.overlay});
+  color: light-dark(black, ${colors.text});
 
   border: 1px solid ${colors.hairline};
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 2px 8px rgb(0 0 0 / 15%)));
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  };
 `;
 
 export const Title = styled.h3`

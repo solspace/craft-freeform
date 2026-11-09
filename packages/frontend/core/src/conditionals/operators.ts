@@ -1,3 +1,4 @@
+import { formatLocation, type LocationValue } from "../location/location.js";
 import type { ConditionalOperator } from "../types/manifest.js";
 
 export type TableFieldValue = Array<
@@ -5,6 +6,7 @@ export type TableFieldValue = Array<
 >;
 
 export type FieldValue =
+  | LocationValue
   | string
   | number
   | boolean
@@ -41,6 +43,12 @@ function normalizeScalar(value: unknown): string {
     return String(value);
   }
 
+  if (
+    typeof value === "object" &&
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) === Object.prototype
+  )
+    return formatLocation(value);
   return String(value);
 }
 

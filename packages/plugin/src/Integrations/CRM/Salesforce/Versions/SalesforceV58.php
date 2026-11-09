@@ -32,10 +32,12 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
+use Solspace\Freeform\Library\Activity\ActivityContext;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'Salesforce',
+    name: 'Salesforce CRM',
     type: Type::TYPE_CRM,
     version: 'v58',
     readme: __DIR__.'/../README.md',
@@ -227,7 +229,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Contact fields.',
+        instructions: 'Map Freeform fields to Salesforce Account fields.',
         order: 19,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
@@ -290,7 +292,54 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $contactMapping = null;
 
+    // ==========================================
+    //                   Cases
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Delimiter('Cases')]
+    #[Input\Boolean(
+        label: 'Map to Cases',
+        instructions: 'Map submission data to create a new support Case in Salesforce for each submission.',
+        order: 25,
+    )]
+    protected bool $mapCases = false;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Boolean(
+        label: 'Apply Case Assignment Rules',
+        instructions: 'Let Salesforce apply its active Case assignment rules. Disable this when mapping an Owner ID directly.',
+        order: 26,
+    )]
+    protected bool $assignCaseOwner = true;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Boolean(
+        label: 'Attach Uploaded Files to Cases',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Case.',
+        order: 27,
+    )]
+    protected bool $filesForCases = false;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('values.mapCases')]
+    #[Input\Special\Properties\FieldMapping(
+        instructions: 'Map Freeform fields to Salesforce Case fields. Account and Contact records created or matched by this integration are linked automatically unless their IDs are mapped here.',
+        order: 28,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CASE,
+        parameterFields: ['id' => 'id'],
+    )]
+    protected ?FieldMapping $caseMapping = null;
+
     private ?string $accountId = null;
+    private ?string $contactId = null;
     private ?array $linkedContentDocumentIds = null;
 
     public function getApiRootUrl(): string
@@ -320,10 +369,15 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     public function push(Form $form, Client $client): void
     {
+        $this->accountId = null;
+        $this->contactId = null;
+        $this->linkedContentDocumentIds = null;
+
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
         $this->processContacts($form, $client);
         $this->processOpportunities($form, $client);
+        $this->processCases($form, $client);
     }
 
     private function isCreateTasksForDuplicates(): bool
@@ -334,7 +388,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            $this->logger->debug('No Leads mapped, skipping.');
+            $this->logger->debug('No Leads mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -388,7 +442,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 )
             );
 
-            $this->logger->info('Lead updated', ['id' => $leadId]);
+            $this->logger->info('Lead updated', ['id' => $leadId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
             $this->logger->debug('With Mapping', $mapping);
         } else {
             [$response, $json] = $this->getJsonResponse(
@@ -399,7 +453,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             );
 
             $leadId = $json->id;
-            $this->logger->info('New Lead created', ['id' => $leadId]);
+            $this->logger->info('New Lead created', ['id' => $leadId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 
@@ -413,7 +467,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     private function processAccounts(Form $form, Client $client): void
     {
         if (!$this->mapAccounts) {
-            $this->logger->debug('No Accounts mapped, skipping.');
+            $this->logger->debug('No Accounts mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -510,7 +564,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             );
 
             $this->accountId = $accountRecord->Id;
-            $this->logger->info('Existing Account updated', ['id' => $accountRecord->Id]);
+            $this->logger->info('Existing Account updated', ['id' => $accountRecord->Id, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
             $this->logger->debug('With Mapping', $mapping);
         } else {
             $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
@@ -522,7 +576,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
             $json = json_decode((string) $response->getBody());
             $this->accountId = $json->id;
-            $this->logger->info('New Account created', ['id' => $this->accountId]);
+            $this->logger->info('New Account created', ['id' => $this->accountId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 
@@ -536,7 +590,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     private function processContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
-            $this->logger->debug('No Contacts mapped, skipping.');
+            $this->logger->debug('No Contacts mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -620,7 +674,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 ['json' => $mapping],
             );
 
-            $this->logger->info('Existing Contact updated', ['id' => $contactId]);
+            $this->logger->info('Existing Contact updated', ['id' => $contactId, 'activityReason' => ActivityContext::INTEGRATION_UPDATED]);
             $this->logger->debug('With Mapping', $mapping);
         } else {
             [$response, $json] = $this->getJsonResponse(
@@ -631,9 +685,11 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             );
 
             $contactId = $json->id;
-            $this->logger->info('New Contact created', ['id' => $contactId]);
+            $this->logger->info('New Contact created', ['id' => $contactId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
+
+        $this->contactId = $contactId;
 
         if ($this->filesForContacts && $contactId) {
             $this->linkFilesTo($contactId, $form, $client);
@@ -645,7 +701,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     private function processOpportunities(Form $form, Client $client): void
     {
         if (!$this->mapOpportunities) {
-            $this->logger->debug('No Opportunities mapped, skipping.');
+            $this->logger->debug('No Opportunities mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -675,7 +731,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             )
         );
 
-        $this->logger->info('New Opportunity created', ['id' => $json->id]);
+        $this->logger->info('New Opportunity created', ['id' => $json->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $mapping);
 
         if ($this->filesForOpportunities) {
@@ -683,6 +739,55 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         }
 
         $this->triggerAfterResponseEvent(self::CATEGORY_OPPORTUNITY, $response);
+    }
+
+    private function processCases(Form $form, Client $client): void
+    {
+        if (!$this->mapCases) {
+            $this->logger->debug('No Cases mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
+
+            return;
+        }
+
+        $mapping = $this->processMapping($form, $this->caseMapping, self::CATEGORY_CASE);
+        if (!$mapping) {
+            return;
+        }
+
+        if ($this->accountId && !\array_key_exists('AccountId', $mapping)) {
+            $mapping['AccountId'] = $this->accountId;
+        }
+
+        if ($this->contactId && !\array_key_exists('ContactId', $mapping)) {
+            $mapping['ContactId'] = $this->contactId;
+        }
+
+        $mapping = $this->triggerPushEvent(self::CATEGORY_CASE, $mapping);
+
+        [$response, $json] = $this->getJsonResponse(
+            $client->post(
+                $this->getEndpoint('/sobjects/Case'),
+                [
+                    'headers' => [
+                        'Sforce-Auto-Assign' => $this->assignCaseOwner ? 'TRUE' : 'FALSE',
+                    ],
+                    'json' => $mapping,
+                ],
+            )
+        );
+
+        if (true !== ($json->success ?? false) || !\is_string($json->id ?? null) || '' === $json->id) {
+            throw new IntegrationException('Salesforce did not return a successful Case creation response.');
+        }
+
+        $this->logger->info('New Case created', ['id' => $json->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
+        $this->logger->debug('With Mapping', $mapping);
+
+        if ($this->filesForCases) {
+            $this->linkFilesTo($json->id, $form, $client);
+        }
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CASE, $response);
     }
 
     private function createTasksForDuplicates(Form $form, Client $client, array $keyValueList): bool
@@ -728,7 +833,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     ['json' => $payload],
                 ));
 
-                $this->logger->info('Task created for existing Contact', ['contactId' => $contact->Id, 'taskId' => $json->id]);
+                $this->logger->info('Task created for existing Contact', ['contactId' => $contact->Id, 'taskId' => $json->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
                 $this->logger->debug('With Mapping', $payload);
 
                 return 201 === $response->getStatusCode();

@@ -18,8 +18,8 @@ export const Item = styled.li`
 
   padding: 12px 16px;
 
-  background-color: ${colors.white};
-  border: 1px solid #eee;
+  background-color: light-dark(${colors.white}, ${colors.surface});
+  border: 1px solid light-dark(#eee, var(--medium-hairline-color));
   border-radius: 8px;
 
   ${ControlWrapper} {
@@ -32,7 +32,7 @@ export const Item = styled.li`
   }
 
   &:hover {
-    border-color: ${colors.gray300};
+    border-color: ${colors.muted};
   }
 `;
 

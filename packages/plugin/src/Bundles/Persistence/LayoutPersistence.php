@@ -124,9 +124,9 @@ class LayoutPersistence extends FeatureBundle
                 $record = new FormRowRecord();
                 $record->uid = $uid;
                 $record->formId = $form->getId();
-                $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->layoutUid);
             }
 
+            $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->layoutUid);
             $record->order = $item->order;
             $record->save();
 
@@ -143,6 +143,13 @@ class LayoutPersistence extends FeatureBundle
     private function saveFields(Form $form, array $data, $event): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormFieldRecord::class);
+
+        $handles = [];
+        foreach ($data as $item) {
+            if (isset($item->properties->handle)) {
+                $handles[$item->uid] = $item->properties->handle;
+            }
+        }
 
         foreach ($data as $item) {
             $uid = $item->uid;
@@ -162,6 +169,7 @@ class LayoutPersistence extends FeatureBundle
             $record->order = $item->order ?? 0;
             $record->type = $item->typeClass;
             $record->metadata = $this->getValidatedMetadata($item, $event);
+            $record->setLayoutHandles($handles);
             $record->save();
 
             if (!$record->hasErrors()) {

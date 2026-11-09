@@ -52,8 +52,9 @@ export const FieldWrapper = styled(animated.div)`
   width: 100%;
   height: 100%;
 
-  background: ${colors.gray100};
-  border: 1px solid ${colors.gray100};
+  background: light-dark(${colors.gray100}, ${colors.inputBackground});
+  border: 1px solid light-dark(${colors.gray100}, ${colors.border});
+  color: ${colors.text};
   border-radius: ${borderRadius.md};
 
   transition: all 0.2s ease-out;
@@ -64,13 +65,13 @@ export const FieldWrapper = styled(animated.div)`
   }
 
   &.has-rule:not(.active) {
-    border-color: ${colors.teal550};
-    background-color: ${colors.teal050};
+    border-color: var(--border-success, ${colors.teal550});
+    background-color: light-dark(${colors.teal050}, var(--bg-success, ${colors.teal050}));
   }
 
   &.group {
-    background-color: ${colors.white};
-    border-color: ${colors.gray100};
+    background-color: light-dark(${colors.white}, ${colors.surface});
+    border-color: ${colors.border};
 
     > ${FieldInfo} ${Icon} {
       display: none;
@@ -82,13 +83,13 @@ export const FieldWrapper = styled(animated.div)`
   }
 
   &:hover {
-    background-color: ${colors.gray200};
-    border-color: ${colors.gray200};
+    background-color: light-dark(${colors.gray200}, var(--ui-control-hover-bg-color, ${colors.gray200}));
+    border-color: ${colors.inputBorder};
   }
 
   &.active {
-    background-color: #5b6573;
-    border-color: #5b6573;
+    background-color: light-dark(#5b6573, var(--bg-selection-dark, #5b6573));
+    border-color: var(--focus-ring-color, ${colors.border});
     color: white;
   }
 
@@ -105,7 +106,7 @@ export const FieldWrapper = styled(animated.div)`
       width: 0;
       border-left: 10px solid transparent;
       border-bottom: 10px solid transparent;
-      border-left: 10px solid ${colors.gray200};
+      border-left: 10px solid light-dark(transparent, ${colors.gray200});
     }
 
     &-active:after {
@@ -120,8 +121,8 @@ export const FieldWrapper = styled(animated.div)`
     }
 
     &:hover {
-      background-color: ${colors.gray100};
-      border-color: ${colors.gray100};
+      background-color: light-dark(${colors.gray100}, ${colors.inputBackground});
+      border-color: ${colors.border};
     }
   }
 `;

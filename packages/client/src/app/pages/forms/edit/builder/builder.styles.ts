@@ -13,8 +13,10 @@ export const BuilderContent = styled.div`
   flex-grow: 1;
   overflow: hidden;
 
-  box-shadow:
-    0 0 0 1px ${colors.gray200},
+  box-shadow: var(--pane-shadow);
+  :root:not([data-dark-mode="dark"]) & {
+    box-shadow: 0 0 0 1px ${colors.gray200},
     0 2px 12px rgb(205 216 228 / 50%);
+  };
   border-radius: ${borderRadius.lg};
 `;

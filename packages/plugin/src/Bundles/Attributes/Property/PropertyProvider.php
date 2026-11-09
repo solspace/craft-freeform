@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 use Carbon\Carbon;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\DefaultValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Delimiter;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -36,6 +37,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
@@ -159,7 +161,7 @@ class PropertyProvider
             /** @var Section $section */
             $fallbackLabel = StringHelper::dasherize($property->getName());
             $fallbackLabel = StringHelper::replace($fallbackLabel, '-', ' ');
-            $fallbackLabel = StringHelper::toTitleCase($fallbackLabel);
+            $fallbackLabel = StringHelper::toTitleCase($fallbackLabel, \Craft::$app->language ?? 'en');
 
             $attribute->section = $section?->handle;
             $attribute->type = $this->processType($property, $attribute);
@@ -215,6 +217,9 @@ class PropertyProvider
         ?callable $valueUpdateCallback,
         ?Form $form,
     ): void {
+        if ($object instanceof DatetimeField) {
+            $properties = DatetimeField::normalizePickerProperties($properties);
+        }
         $propertyValueStack = $properties;
         foreach ($editableProperties as $property) {
             if (!\array_key_exists($property->handle, $propertyValueStack)) {
@@ -371,6 +376,9 @@ class PropertyProvider
         $value = $attribute->value ?? ($property->hasDefaultValue() ? $property->getDefaultValue() : null);
         if (!$hasDefaultValue && null === $referenceObject && $attribute->valueGenerator) {
             $value = $attribute->valueGenerator->generateValue($referenceObject, $context);
+        }
+        if (null === $referenceObject && $attribute->valueGenerator instanceof DefaultValueGeneratorInterface) {
+            $value = $attribute->valueGenerator->generateDefaultValue($value);
         }
 
         if ($referenceObject && $property->isInitialized($referenceObject)) {

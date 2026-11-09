@@ -10,7 +10,7 @@ export const ConfirmationContainer = styled(ModalContainer)`
   border: 0;
   color: ${colors.gray700};
   overflow: auto;
-  &::backdrop { background: rgba(123, 135, 147, .35); }
+  &::backdrop { background: light-dark(rgba(123, 135, 147, .35), var(--shade-bg, rgba(31, 41, 51, .5))); }
   h2 { margin: 0; font-size: 18px; }
 `;
 export const Message = styled.div`

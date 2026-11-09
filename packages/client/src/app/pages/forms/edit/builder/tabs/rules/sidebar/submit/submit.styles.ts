@@ -9,21 +9,21 @@ export const SubmitFormWrapper = styled.div`
   gap: ${spacings.xs};
 
   padding: ${spacings.xs} ${spacings.sm};
-  border: 1px solid #cdd8e4;
-  background-color: ${colors.white};
+  border: 1px solid light-dark(#cdd8e4, ${colors.border});
+  background-color: light-dark(${colors.white}, ${colors.surface});
 
   border-radius: ${borderRadius.md};
 
   transition: all 0.2s ease-out;
 
   &.has-rule {
-    border-color: ${colors.teal550};
-    background-color: ${colors.teal050};
+    border-color: var(--border-success);
+    background-color: light-dark(${colors.teal050}, var(--bg-success));
   }
 
   &.active {
-    background-color: ${colors.gray500};
-    border-color: ${colors.gray700};
+    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
+    border-color: ${colors.border};
 
     color: white;
     fill: currentColor;

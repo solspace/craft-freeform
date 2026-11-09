@@ -46,6 +46,8 @@ type Config = {
       canDelete: boolean;
       canOrganizeForms: boolean;
       canManageHtmlEmbeds: boolean;
+      canUseSetupGuide?: boolean;
+      canViewActivity?: boolean;
     };
     tinymce: {
       stylesPath: string;

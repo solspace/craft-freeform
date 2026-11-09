@@ -3,14 +3,14 @@
 const toolbarTable = $("#toolbar");
 const button = $(`
 <div>
-  <div class="btn" id="quick-export" tabindex="1" role="combobox">
+  <button type="button" class="btn" id="quick-export" data-icon="download">
     ${Craft.t("freeform", "Quick Export")}
-  </div>
+  </button>
 </div>
 `);
 toolbarTable.prepend(button);
 
-$("div.btn", button).on({
+$("#quick-export", button).on({
   click: () => {
     const selectedSource = $("#sidebar").find("li a[data-key].sel").data("key");
 

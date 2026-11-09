@@ -3,27 +3,8 @@ import type {
   ManifestCaptchaSecurity,
 } from "@solspace/freeform-core";
 import { PACKAGE_VERSION } from "../version.js";
-import {
-  inferCaptchaProvider,
-  loadScriptOnce,
-  waitForValue,
-} from "./shared.js";
-
-type HcaptchaApi = {
-  render: (
-    element: HTMLElement,
-    options: Record<string, unknown>,
-  ) => string | number;
-  reset: (widgetId?: string | number) => void;
-  getResponse: (widgetId?: string | number) => string;
-  execute: (widgetId?: string | number) => void;
-};
-
-declare global {
-  interface Window {
-    hcaptcha?: HcaptchaApi;
-  }
-}
+import { loadHcaptcha } from "./hcaptcha-loader.js";
+import { inferCaptchaProvider, waitForValue } from "./shared.js";
 
 type HcaptchaInstance = {
   widgetId: string | number;
@@ -37,22 +18,9 @@ function getCaptchas(manifestCaptchas: ManifestCaptchaSecurity[] | undefined) {
   );
 }
 
-async function ensureHcaptcha(): Promise<HcaptchaApi> {
-  await loadScriptOnce(
-    "https://js.hcaptcha.com/1/api.js?render=explicit",
-    "ff-hcaptcha-script",
-  );
-
-  if (!window.hcaptcha) {
-    throw new Error("hCaptcha failed to initialize.");
-  }
-
-  return window.hcaptcha;
-}
-
 export function createHcaptchaExtension(): FreeformExtension {
-  const instances = new Map<string, HcaptchaInstance>();
-  const tokens = new Map<string, string>();
+  const instances = new Map<ManifestCaptchaSecurity, HcaptchaInstance>();
+  const tokens = new Map<ManifestCaptchaSecurity, string>();
 
   return {
     name: "captcha.hcaptcha",
@@ -67,7 +35,7 @@ export function createHcaptchaExtension(): FreeformExtension {
         throw new Error("hCaptcha site key is missing from the form manifest.");
       }
 
-      const api = await ensureHcaptcha();
+      const api = await loadHcaptcha();
       element.replaceChildren();
       const widget = document.createElement("div");
       element.appendChild(widget);
@@ -76,21 +44,25 @@ export function createHcaptchaExtension(): FreeformExtension {
       const widgetId = api.render(widget, {
         sitekey: captcha.siteKey,
         theme: captcha.theme ?? "light",
+        hl: captcha.locale || undefined,
         size:
           version === "invisible" ? "invisible" : (captcha.size ?? "normal"),
         callback: (value: string) => {
-          tokens.set(captcha.name, value);
+          tokens.set(captcha, value);
         },
         "expired-callback": () => {
-          tokens.delete(captcha.name);
+          tokens.delete(captcha);
+        },
+        "error-callback": () => {
+          tokens.delete(captcha);
         },
       });
 
-      instances.set(captcha.name, { widgetId, element, captcha });
+      instances.set(captcha, { widgetId, element, captcha });
 
       return () => {
-        instances.delete(captcha.name);
-        tokens.delete(captcha.name);
+        instances.delete(captcha);
+        tokens.delete(captcha);
         element.replaceChildren();
       };
     },
@@ -105,38 +77,42 @@ export function createHcaptchaExtension(): FreeformExtension {
         return;
       }
 
-      const api = await ensureHcaptcha();
+      const api = await loadHcaptcha();
       for (const captcha of captchas) {
-        const instance = instances.get(captcha.name);
+        const instance = instances.get(captcha);
         if (!instance) {
           continue;
         }
 
         if ((captcha.version ?? "checkbox") === "invisible") {
-          api.execute(instance.widgetId);
+          await api.execute(instance.widgetId);
         }
 
         const value =
-          tokens.get(captcha.name) ||
+          tokens.get(captcha) ||
           api.getResponse(instance.widgetId) ||
-          (await waitForValue(() => api.getResponse(instance.widgetId)));
-        tokens.set(captcha.name, value);
+          (await waitForValue(
+            () => api.getResponse(instance.widgetId),
+            captcha.version === "invisible" ? 120000 : 8000,
+          ));
+        tokens.set(captcha, value);
       }
     },
 
     async buildPayload({ setCaptchaToken, manifest }) {
       for (const captcha of getCaptchas(manifest.security.captchas)) {
-        const value = tokens.get(captcha.name);
+        const value = tokens.get(captcha);
         if (value) {
           setCaptchaToken(captcha.name, value);
         }
       }
     },
 
-    async afterSubmit() {
-      tokens.clear();
-      for (const instance of instances.values()) {
-        window.hcaptcha?.reset(instance.widgetId);
+    async afterSubmit({ manifest }) {
+      for (const captcha of getCaptchas(manifest.security.captchas)) {
+        tokens.delete(captcha);
+        const instance = instances.get(captcha);
+        if (instance) window.hcaptcha?.reset(instance.widgetId);
       }
     },
 

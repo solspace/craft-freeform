@@ -1,7 +1,11 @@
 <?php
 
 return [
+    'freeform/api/setup/options' => 'freeform/setup/options',
+    'freeform/api/setup/save' => 'freeform/setup/save',
+    'freeform/settings/setup' => 'freeform/app',
     'freeform/settings' => 'freeform/settings/index',
+    'freeform/settings/form-monitor' => 'freeform/settings/form-monitor',
     'freeform/settings/general' => 'freeform/settings/provide-setting',
     'freeform/settings/form-behavior' => 'freeform/settings/provide-setting',
     'freeform/settings/form-builder' => 'freeform/settings/provide-setting',

@@ -39,17 +39,17 @@ class RedactSensitiveInfoProcessorTest extends TestCase
 
         self::assertEquals(
             [
-                'pass' => 'pass**********',
-                'api_key' => 'api **********',
-                'clientId' => 'clie**********',
-                'secret' => 'secr**********',
-                'clientSecret' => 'secr**********',
-                'password' => 'pass**********',
-                'somePassword' => 'pass**********',
+                'pass' => '[redacted]',
+                'api_key' => '[redacted]',
+                'clientId' => '[redacted]',
+                'secret' => '[redacted]',
+                'clientSecret' => '[redacted]',
+                'password' => '[redacted]',
+                'somePassword' => '[redacted]',
                 'other' => 'value',
                 'nested' => [
-                    'pass' => 'nest**********',
-                    'api_key' => 'nest**********',
+                    'pass' => '[redacted]',
+                    'api_key' => '[redacted]',
                 ],
             ],
             \is_array($output) ? $output['context'] : $output->context,
@@ -83,17 +83,17 @@ class RedactSensitiveInfoProcessorTest extends TestCase
 
         self::assertEquals(
             [
-                'pass' => 'pass**********',
-                'api_key' => 'api **********',
-                'clientId' => 'clie**********',
-                'secret' => 'secr**********',
-                'clientSecret' => 'secr**********',
-                'password' => 'pass**********',
-                'somePassword' => 'pass**********',
+                'pass' => '[redacted]',
+                'api_key' => '[redacted]',
+                'clientId' => '[redacted]',
+                'secret' => '[redacted]',
+                'clientSecret' => '[redacted]',
+                'password' => '[redacted]',
+                'somePassword' => '[redacted]',
                 'other' => 'value',
-                'nested' => (object) [
-                    'pass' => 'nest**********',
-                    'api_key' => 'nest**********',
+                'nested' => [
+                    'pass' => '[redacted]',
+                    'api_key' => '[redacted]',
                 ],
             ],
             \is_array($output) ? $output['context'] : $output->context,

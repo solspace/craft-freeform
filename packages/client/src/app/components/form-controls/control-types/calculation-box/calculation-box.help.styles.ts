@@ -5,7 +5,7 @@ export const OperatorReferenceTitle = styled.div`
   font-style: italic;
   font-weight: 500;
   font-size: 14px;
-  color: ${colors.gray400};
+  color: light-dark(${colors.gray400}, ${colors.muted});
   break-inside: avoid;
 `;
 
@@ -16,7 +16,7 @@ export const OperatorReference = styled.div`
 export const OperatorReferenceItem = styled.div`
   font-size: 12px;
   break-inside: avoid;
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   margin: 0 0 0.8rem;
   display: flex;
   flex-direction: column;

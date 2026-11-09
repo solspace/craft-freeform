@@ -71,6 +71,8 @@ class RecentWidgetTemplateTest extends TestCase
             'widgetId' => 1,
             'pageSize' => 5,
             'formNames' => [10 => 'Contact & support'],
+            'formFilterOptions' => [10 => 'Contact & support'],
+            'selectedFormId' => null,
             'craft' => ['app' => ['language' => 'en', 'timeZone' => 'UTC']],
             'view' => new class {
                 public function registerAssetBundle(string $class): void {}

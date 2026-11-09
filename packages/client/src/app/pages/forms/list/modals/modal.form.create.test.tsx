@@ -44,6 +44,10 @@ vi.mock("@components/middleware/implementations", () => ({
 }));
 const properties = [
   { handle: "name", value: "" },
+  {
+    handle: "type",
+    value: "Solspace\\Freeform\\Form\\Types\\Regular",
+  },
   { handle: "formattingTemplate", value: "light.twig" },
   { handle: "storeData", value: true },
 ];
@@ -95,19 +99,36 @@ vi.mock("@components/form-controls", () => ({
   }) => (
     <label>
       {property.handle}
-      <input
-        aria-label={property.handle}
-        type={property.handle === "storeData" ? "checkbox" : "text"}
-        checked={value === true}
-        value={typeof value === "string" ? value : ""}
-        onChange={(event) =>
-          updateValue(
-            property.handle === "storeData"
-              ? event.target.checked
-              : event.target.value,
-          )
-        }
-      />
+      {property.handle === "type" ? (
+        <select
+          aria-label="Form Type"
+          value={String(value)}
+          onChange={(event) => updateValue(event.target.value)}
+        >
+          <option value={"Solspace\\Freeform\\Form\\Types\\Regular"}>
+            Regular
+          </option>
+          <option
+            value={"Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page"}
+          >
+            Page
+          </option>
+        </select>
+      ) : (
+        <input
+          aria-label={property.handle}
+          type={property.handle === "storeData" ? "checkbox" : "text"}
+          checked={value === true}
+          value={typeof value === "string" ? value : ""}
+          onChange={(event) =>
+            updateValue(
+              property.handle === "storeData"
+                ? event.target.checked
+                : event.target.value,
+            )
+          }
+        />
+      )}
       {errors?.map((error) => (
         <span key={error}>{error}</span>
       ))}
@@ -165,6 +186,15 @@ function select(value: string) {
     el.dispatchEvent(new Event("change", { bubbles: true }));
   });
 }
+function selectType(value: string) {
+  act(() => {
+    const el = host.querySelector<HTMLSelectElement>(
+      'select[aria-label="Form Type"]',
+    )!;
+    el.value = value;
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+}
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   vi.clearAllMocks();
@@ -204,6 +234,7 @@ it("keeps blank creation on the regular endpoint", async () => {
   expect(axios.post).toHaveBeenCalledWith("/api/forms/modal", {
     name: "Empty form",
     handle: "emptyform",
+    type: "Solspace\\Freeform\\Form\\Types\\Regular",
     formattingTemplate: "light.twig",
     storeData: true,
     sites: [2],
@@ -212,8 +243,21 @@ it("keeps blank creation on the regular endpoint", async () => {
   expect(fixture.close).toHaveBeenCalledOnce();
 });
 
+it("creates a blank Page form when that type is selected", async () => {
+  input("name", "Landing page");
+  selectType("Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page");
+  await act(async () => create().click());
+  expect(axios.post).toHaveBeenCalledWith(
+    "/api/forms/modal",
+    expect.objectContaining({
+      type: "Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page",
+    }),
+  );
+});
+
 it("creates samples with their original fields and the selected modal settings", async () => {
   select("contact");
+  selectType("Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page");
   input("formattingTemplate", "custom.twig");
   act(() => field("storeData").click());
   await act(async () => create().click());
@@ -223,6 +267,7 @@ it("creates samples with their original fields and the selected modal settings",
     expect.objectContaining({
       purpose: "contact",
       name: "Contact",
+      type: "Solspace\\Freeform\\Bundles\\Form\\Types\\Pages\\Page",
       fields: fixture.fields,
       siteIds: [2],
       formattingTemplate: "custom.twig",

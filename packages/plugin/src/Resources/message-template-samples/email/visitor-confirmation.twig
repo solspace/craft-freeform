@@ -1,0 +1,19 @@
+{# subject: We received your {{ form.name }} submission #}
+{# fromEmail: __placeholderFromEmail__ #}
+{# fromName: __placeholderFromName__ #}
+{# templateName: Visitor Confirmation #}
+{# description: A reassuring receipt for the person who submitted a form. #}
+
+<div style="max-width:640px;margin:0 auto;padding:28px;font-family:Arial,sans-serif;color:#263445;line-height:1.5;">
+    <p style="margin:0 0 10px;color:#256548;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">Submission received</p>
+    <h1 style="margin:0 0 16px;font-size:26px;line-height:1.25;">Thank you for getting in touch.</h1>
+    <p style="margin:0 0 16px;">This email confirms that we received your {{ form.name }} submission.</p>
+    <p style="margin:0 0 24px;">We’ll review it and get back to you if a response is needed. You do not need to submit it again.</p>
+    <p style="margin:0;padding-top:18px;border-top:1px solid #dce4ed;color:#667589;font-size:13px;">Received {{ dateCreated|date('F j, Y') }}</p>
+</div>
+
+{# text #}
+Thank you for getting in touch.
+We received your {{ form.name }} submission on {{ dateCreated|date('F j, Y') }}.
+We’ll review it and get back to you if a response is needed. You do not need to submit it again.
+{# /text #}

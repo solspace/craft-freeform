@@ -13,6 +13,7 @@ export const SvgTag: FC<PropsWithChildren<SVGPropsWithTitle>> = (props) => {
       role={title ? "img" : undefined}
       aria-hidden={title ? undefined : true}
       xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
       {...svgProps}
     >
       {generateTitleTag(title)}

@@ -1,0 +1,27 @@
+{# subject: New submission on {{ form.name }} #}
+{# fromEmail: __placeholderFromEmail__ #}
+{# fromName: __placeholderFromName__ #}
+{# templateName: Team Notification #}
+{# description: A clear internal alert with submission details and a plain-text fallback. #}
+
+<div style="max-width:640px;margin:0 auto;padding:28px;font-family:Arial,sans-serif;color:#263445;line-height:1.5;">
+    <p style="margin:0 0 10px;color:#47648a;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">New submission</p>
+    <h1 style="margin:0 0 12px;font-size:26px;line-height:1.25;">{{ form.name }}</h1>
+    <p style="margin:0 0 24px;color:#667589;">Received {{ dateCreated|date('F j, Y \\a\\t g:i a') }}</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
+        {% for field in allFields %}
+            <tr>
+                <th scope="row" style="width:36%;padding:12px;border-top:1px solid #dce4ed;text-align:left;vertical-align:top;color:#4a596c;font-weight:600;">{{ field.label }}</th>
+                <td style="padding:12px;border-top:1px solid #dce4ed;vertical-align:top;white-space:pre-wrap;overflow-wrap:anywhere;">{{ field.implements('options') ? field.labelsAsString : field.valueAsString }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{# text #}
+New submission on {{ form.name }}
+Received {{ dateCreated|date('F j, Y \\a\\t g:i a') }}
+{% for field in allFields %}
+{{ field.label }}: {{ field.implements('options') ? field.labelsAsString : field.valueAsString }}
+{% endfor %}
+{# /text #}

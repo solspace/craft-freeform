@@ -146,6 +146,8 @@ class PropertyProviderTest extends TestCase
                 'type' => 'int',
                 'edition' => 'pro',
                 'handle' => 'optionalInt',
+                'unit' => 'px',
+                'unitProperty' => null,
                 'label' => 'Optional Integer',
                 'instructions' => null,
                 'order' => 3,
@@ -272,6 +274,7 @@ class TestAttributesClass
     #[Input\Integer(
         'Optional Integer',
         placeholder: 'placeholder',
+        unit: 'px',
     )]
     private ?int $optionalInt;
 

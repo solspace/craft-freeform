@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\FileUploads\UploadVolumePolicy;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
@@ -19,6 +20,7 @@ class FormPersistence extends FeatureBundle
     public function __construct(
         private FormsService $formsService,
         private SettingsProvider $settingsProvider,
+        private UploadVolumePolicy $uploadVolumePolicy,
     ) {
         Event::on(
             FormsController::class,
@@ -75,6 +77,12 @@ class FormPersistence extends FeatureBundle
 
     private function update(PersistFormEvent $event, FormRecord $record): void
     {
+        $uploadErrors = $this->uploadVolumePolicy->validatePayload($event->getPayload());
+        if ($uploadErrors) {
+            $event->addErrorsToResponse('fields', $uploadErrors);
+
+            return;
+        }
         $payload = $event->getPayload()->form;
 
         $record->name = $payload->settings?->general?->name ?? null;

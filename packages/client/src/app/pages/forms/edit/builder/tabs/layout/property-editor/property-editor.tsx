@@ -45,6 +45,8 @@ export const PropertyEditor: React.FC = () => {
       "tagify__dropdown",
       "tox",
       "elementselectormodal",
+      "icon-picker-modal",
+      "ff-datetime-picker",
       // Native panels live under <body>, outside the property editor's DOM.
       "ff-delete-confirmation",
       "freeform-slideout",

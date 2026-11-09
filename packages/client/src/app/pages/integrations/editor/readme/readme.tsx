@@ -1,8 +1,8 @@
 import classes from "@ff-client/utils/classes";
-import DOMPurify from "dompurify";
-import { marked } from "marked";
-import type { FC } from "react";
-
+import { type FC, useEffect, useMemo, useRef } from "react";
+import { wireReadmeCopyButtons } from "./readme.copy";
+import { animateReadmeDisclosures } from "./readme.disclosures";
+import { renderReadme } from "./readme.render";
 import { Content, Instructions, MarkdownWrapper } from "./readme.styles";
 
 import "./markdown.css";
@@ -13,7 +13,17 @@ type Props = {
 };
 
 export const Readme: FC<Props> = ({ active, content }) => {
-  const parsedContent = marked.parse(content, { gfm: true, async: false });
+  const ref = useRef<HTMLDivElement>(null);
+  const html = useMemo(() => renderReadme(content), [content]);
+  useEffect(() => {
+    if (!html || !ref.current) return;
+    const stopAnimation = animateReadmeDisclosures(ref.current);
+    const stopCopy = wireReadmeCopyButtons(ref.current);
+    return () => {
+      stopAnimation();
+      stopCopy();
+    };
+  }, [html]);
 
   if (!content) {
     return <MarkdownWrapper />;
@@ -23,8 +33,9 @@ export const Readme: FC<Props> = ({ active, content }) => {
     <MarkdownWrapper>
       <Instructions className={classes("markdown-body", active && "active")}>
         <Content
+          ref={ref}
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(parsedContent),
+            __html: html,
           }}
         />
       </Instructions>

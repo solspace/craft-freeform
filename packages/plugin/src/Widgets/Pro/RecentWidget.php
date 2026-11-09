@@ -18,6 +18,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Widgets\AbstractWidget;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
+use yii\web\ForbiddenHttpException;
 
 class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 {
@@ -33,6 +34,26 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
     public bool $showFilters = true;
 
     public bool $showPagination = true;
+
+    private ?int $formFilter = null;
+
+    public function getFormFilterOptions(): array
+    {
+        $service = $this->getFormService();
+        $allowed = array_flip($service->getAllowedReadFormIds());
+        $configured = '*' === $this->formIds ? $allowed : array_flip((array) $this->formIds);
+
+        return array_intersect_key($service->getAllFormNames(orderByName: true), $allowed, $configured);
+    }
+
+    public function setFormFilter(?int $formId): void
+    {
+        if (null !== $formId && (!$this->showFilters || !\array_key_exists($formId, $this->getFormFilterOptions()))) {
+            throw new ForbiddenHttpException('Form is not available in this widget.');
+        }
+
+        $this->formFilter = $formId;
+    }
 
     public static function displayName(): string
     {
@@ -79,19 +100,16 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
             );
         }
 
-        $formIdList = $this->formIds;
-        if ('*' === $formIdList) {
-            $formIdList = $this->getFormService()->getAllFormIds();
-        }
+        $formOptions = $this->getFormFilterOptions();
+        $formIdList = null !== $this->formFilter ? [$this->formFilter] : array_keys($formOptions);
 
         $pageSize = max(1, min(self::BROWSE_LIMIT, (int) $this->limit));
 
-        $submissions = Submission::find()
+        $submissions = $formIdList ? Submission::find()
             ->formId($formIdList)
-            ->orderBy(['id' => \SORT_DESC])
+            ->orderBy(['dateCreated' => \SORT_DESC, 'id' => \SORT_DESC])
             ->limit($this->showFilters || $this->showPagination ? self::BROWSE_LIMIT : $pageSize)
-            ->all()
-        ;
+            ->all() : [];
 
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/recent/body',
@@ -100,6 +118,8 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
                 'settings' => $this,
                 'widgetId' => $this->id,
                 'pageSize' => $pageSize,
+                'formFilterOptions' => $formOptions,
+                'selectedFormId' => $this->formFilter,
                 'formNames' => $this->getFormService()->getAllFormNames(),
             ]
         );

@@ -1,0 +1,3 @@
+{% extends 'freeform/_widgets/form-card/layout' %}
+{% block body %}<p role="status">{{ 'Widget saved.'|t('freeform') }}</p>{% endblock %}
+{% js %}window.parent.postMessage({type: 'freeform-widget-saved', uid: {{ uid|json_encode|raw }}}, window.location.origin);{% endjs %}

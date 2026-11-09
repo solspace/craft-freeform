@@ -1,10 +1,20 @@
+import { initColorPickers } from "../../../lib/color-picker";
+import { initDigestSchedules } from "./digest-schedule";
+import { initScriptInsertLocation } from "./script.location";
 import { loadFormattingTemplatesScript } from "./templates.formatting";
-import { loadTemplatesModeScript } from "./templates.mode";
+import {
+  loadTemplateStorageScript,
+  loadTemplatesModeScript,
+} from "./templates.mode";
+import { initToolbarEditors } from "./toolbar";
 
 // eslint-disable no-undef
 $(() => {
+  initColorPickers();
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
+  initToolbarEditors();
+  initDigestSchedules();
 
   const sessionTime = $("#session-time");
   const sessionCount = $("#session-count");
@@ -45,76 +55,10 @@ $(() => {
     },
   });
 
-  const spamProtectionBehavior = $("select#spam-protection-behavior");
-  spamProtectionBehavior.on({
-    change: function () {
-      const customError = $("#custom-spam-error-message");
-      if ($(this).val() === "display_errors") {
-        customError.show("fast");
-      } else {
-        customError.hide("fast");
-      }
-    },
-  });
+  initScriptInsertLocation();
 
-  const scriptInsertLocation = $(
-    'select[name="settings[scriptInsertLocation]"]',
-  );
-  const warningText = $("#script-insert-warning").text();
-  scriptInsertLocation.on({
-    change: function () {
-      const value = $(this).val();
-      const parent = $(this).parents(".field:first");
-
-      if (value === "manual") {
-        const warning = document.createElement("div");
-        warning.classList.add("warning", "with-icon");
-        warning.innerText = warningText;
-
-        parent.append(warning);
-      } else {
-        parent.find(".warning.with-icon").remove();
-      }
-    },
-  });
-
-  scriptInsertLocation.trigger("change");
-
-  const loggingLevel = $('select[name="settings[loggingLevel]"]');
-  const loggingLevelWarningText = $("#logging-level-warning").text();
-  loggingLevel.on({
-    change: function () {
-      const value = $(this).val();
-      const parent = $(this).parents(".field:first");
-
-      if (value === "info" || value === "debug") {
-        const warning = document.createElement("div");
-        warning.classList.add("warning", "with-icon");
-        warning.innerText = loggingLevelWarningText;
-
-        parent.append(warning);
-      } else {
-        parent.find(".warning.with-icon").remove();
-      }
-    },
-  });
-
-  loggingLevel.trigger("change");
-
-  const filesDirectory = $("#files-directory");
   const templateDefault = $("#template-default");
-  $("#storage-type").on({
-    change: (event) => {
-      const { value } = event.target;
-
-      const isFiles = ["files", "files_database"].includes(value);
-
-      filesDirectory.toggleClass("hidden", !isFiles);
-      templateDefault
-        .toggleClass("combined", value === "files_database")
-        .trigger("change");
-    },
-  });
+  loadTemplateStorageScript();
 
   $("#allow-builder-templates").on({
     change: (event) => {

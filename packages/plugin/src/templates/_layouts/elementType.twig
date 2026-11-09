@@ -14,5 +14,8 @@
 
 {% block body %}
     {{ parent() }}
+    {% if elementType in ['Solspace\\Freeform\\Elements\\Submission', 'Solspace\\Freeform\\Elements\\SpamSubmission'] %}
+        {% include 'freeform/submissions/_undo' %}
+    {% endif %}
     {% hook 'freeform-beta-widget' %}
 {% endblock %}

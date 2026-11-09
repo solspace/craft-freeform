@@ -13,10 +13,11 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
-    name: 'Pardot',
+    name: 'Salesforce Account Engagement (Pardot)',
     type: Type::TYPE_CRM,
     version: 'v4',
     readme: __DIR__.'/../README.md',
@@ -44,7 +45,7 @@ class PardotV4 extends BasePardotIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapProspect)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Prospect fields',
+        instructions: 'Map Freeform fields to Account Engagement prospect fields.',
         order: 6,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_PROSPECT,
         parameterFields: ['id' => 'id'],
@@ -69,7 +70,7 @@ class PardotV4 extends BasePardotIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapCustom)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Custom fields',
+        instructions: 'Map Freeform fields to Account Engagement custom fields.',
         order: 8,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CUSTOM,
         parameterFields: ['id' => 'id'],
@@ -111,7 +112,7 @@ class PardotV4 extends BasePardotIntegration
 
         $mapping = array_merge($prospectMapping, $customMapping);
         if (!$mapping) {
-            $this->logger->debug('No data mapped, skipping.');
+            $this->logger->debug('No data mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -124,7 +125,7 @@ class PardotV4 extends BasePardotIntegration
             ['query' => $mapping],
         ));
 
-        $this->logger->info('New Prospect created', ['id' => $json?->id ?? $json?->Id ?? null]);
+        $this->logger->info('New Prospect created', ['id' => $json?->id ?? $json?->Id ?? null, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_PROSPECT, $response);
     }

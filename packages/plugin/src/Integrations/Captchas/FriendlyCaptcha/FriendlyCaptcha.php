@@ -2,14 +2,17 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\FriendlyCaptcha;
 
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\ClientInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerificationResult;
+use Solspace\Freeform\Integrations\Captchas\CaptchaVerifier;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
@@ -35,13 +38,13 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     public const START_FOCUS = 'focus';
     public const START_NONE = 'none';
 
-    private const VERIFY_URL = 'https://global.frcapi.com/api/v2/captcha/siteverify';
-
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
+        order: 10,
+        instructions: 'Copy the site key from the provider’s dashboard.',
         placeholder: 'FC…',
     )]
     private ?string $siteKey = null;
@@ -52,24 +55,31 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'API Key',
-        instructions: 'Create an API key in the Friendly Captcha dashboard. Used as the X-API-Key header for server-side verification (not the site key).',
+        order: 11,
+        instructions: 'Copy the API key from the Friendly Captcha dashboard. This stays on your server.',
         placeholder: 'A1…',
     )]
     private ?string $apiKey = null;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Appearance and language options.', order: 90)]
+    private bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
         label: 'Only load Captcha scripts once the user interacts with the form',
-        instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
+        order: 20,
+        instructions: 'Enable to wait until the visitor starts filling out the form. Disable to load when the page opens.',
     )]
     private string $triggerOnInteract = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Failure Behavior',
+        order: 30,
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
             self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
@@ -79,26 +89,31 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
-        instructions: 'The error message to display when the Captcha validation fails.',
+        order: 31,
+        instructions: 'Shown when verification fails or cannot be completed. Visitors can try again.',
         placeholder: 'Please verify that you are not a robot.',
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
-        label: 'Start Mode',
-        instructions: 'When the widget begins solving.',
+    #[Input\ButtonGroup(
+        label: 'When to start verification',
+        order: 1,
+        instructions: 'Choose when the verification starts. This is separate from loading the widget.',
         options: [
-            self::START_AUTO => 'Auto - activate immediately',
-            self::START_FOCUS => 'Focus - activate on form focus',
-            self::START_NONE => 'None - manual activation only',
+            self::START_FOCUS => 'On form focus',
+            self::START_AUTO => 'When widget loads',
+            self::START_NONE => 'On request',
         ],
     )]
     private string $startMode = self::START_FOCUS;
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Select(
-        label: 'Theme',
+    #[Input\ButtonGroup(
+        label: 'Widget theme',
+        instructions: 'Auto follows the visitor’s light or dark appearance preference.',
+        order: 100,
         options: [
             'auto' => 'Auto',
             'light' => 'Light',
@@ -107,23 +122,25 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
     )]
     private string $theme = 'auto';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Language',
-        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
-        placeholder: '',
+        label: 'Friendly Captcha language',
+        instructions: 'Leave blank for automatic selection. To choose a language, enter a code such as `en`, `fr`, or `de`.',
+        placeholder: 'Automatic',
+        order: 105,
     )]
     private string $locale = '';
 
     public function getSiteKey(): ?string
     {
-        return $this->getProcessedValue($this->siteKey);
+        return trim((string) $this->getProcessedValue($this->siteKey)) ?: null;
     }
 
     public function getApiKey(): ?string
     {
-        return $this->getProcessedValue($this->apiKey);
+        return trim((string) $this->getProcessedValue($this->apiKey)) ?: null;
     }
 
     public function isTriggerOnInteract(): bool
@@ -158,14 +175,23 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
 
     public function getLocale(): string
     {
-        return strtolower($this->locale);
+        return strtolower(trim((string) $this->getProcessedValue($this->locale)));
     }
 
     public function validate(Form $form): void
     {
+        $settings = Freeform::getInstance()->settings;
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
+            return;
+        }
+        if (!$form->isCaptchaEnabled()) {
+            return;
+        }
+
         $formHandle = $form->getHandle();
 
-        if (empty($this->getCaptchaResponse($form))) {
+        $token = $this->getCaptchaResponse($form);
+        if (empty($token) || str_starts_with($token, '.')) {
             $form->addError($this->getErrorMessage());
 
             $this->logger->debug('Friendly Captcha validation failed: token missing, widget may not have loaded', ['form' => $formHandle]);
@@ -173,8 +199,16 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
             return;
         }
 
-        $errors = $this->getValidationErrors($form);
+        $result = $this->verifyToken($form);
+        if ($result->serviceError) {
+            $form->addError($this->getErrorMessage());
+            $this->logger->error('Friendly Captcha verification unavailable', ['form' => $formHandle, 'errors' => $result->errors]);
+
+            return;
+        }
+        $errors = $result->errors;
         if (empty($errors)) {
+            $this->cacheRiskIntelligence($form, $result->data);
             $this->logger->debug('Friendly Captcha validation passed', ['form' => $formHandle]);
 
             return;
@@ -249,53 +283,20 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
         return implode(', ', $parts);
     }
 
-    /**
-     * @return string[]
-     */
-    private function getValidationErrors(Form $form): array
+    protected function createClient(): ClientInterface
     {
-        $apiKey = $this->getApiKey();
-        $captchaResponse = $this->getCaptchaResponse($form);
+        return \Craft::createGuzzleClient();
+    }
 
-        if (empty($apiKey)) {
-            return ['The Friendly Captcha API key is not configured.'];
-        }
-
-        $client = \Craft::createGuzzleClient();
-
-        try {
-            $response = $client->post(self::VERIFY_URL, [
-                'headers' => [
-                    'X-API-Key' => $apiKey,
-                    'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                ],
-                'json' => array_filter([
-                    'response' => $captchaResponse,
-                    'sitekey' => $this->getSiteKey(),
-                ]),
-            ]);
-        } catch (GuzzleException $exception) {
-            $this->logger->error('Friendly Captcha siteverify request failed', [
-                'form' => $form->getHandle(),
-                'exception' => $exception->getMessage(),
-            ]);
-
-            return ['Unable to reach Friendly Captcha verification. Please try again.'];
-        }
-
-        $result = json_decode((string) $response->getBody(), true);
-        if (!\is_array($result)) {
-            return ['Invalid response from Friendly Captcha verification.'];
-        }
-
-        if (!empty($result['success'])) {
-            $this->cacheRiskIntelligence($form, $result);
-
-            return [];
-        }
-
-        return $this->mapVerificationErrors($result);
+    private function verifyToken(Form $form): CaptchaVerificationResult
+    {
+        return (new CaptchaVerifier($this->createClient()))->verify(
+            'friendly-captcha',
+            (string) $this->getSiteKey(),
+            (string) $this->getApiKey(),
+            (string) $this->getCaptchaResponse($form),
+            \Craft::$app->request->getUserIP(),
+        );
     }
 
     private function cacheRiskIntelligence(Form $form, array $result): void
@@ -318,40 +319,6 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
         $form->getProperties()->set(self::PROPERTY_RISK_CACHE, $formatted);
     }
 
-    /**
-     * @return string[]
-     */
-    private function mapVerificationErrors(array $result): array
-    {
-        $errors = [];
-
-        $error = $result['error'] ?? null;
-        if (\is_array($error)) {
-            $code = $error['error_code'] ?? null;
-            $detail = $error['detail'] ?? null;
-
-            if (\is_string($code)) {
-                $errors[] = match ($code) {
-                    'auth_required' => 'Friendly Captcha verification failed: API key was not sent.',
-                    'auth_invalid' => 'Friendly Captcha verification failed: API key is invalid.',
-                    'sitekey_invalid' => 'Friendly Captcha verification failed: site key is invalid.',
-                    'response_missing' => 'The Friendly Captcha response token was not submitted.',
-                    'response_invalid' => 'The Friendly Captcha response is invalid.',
-                    'response_timeout' => 'The Friendly Captcha response has expired. Please try again.',
-                    'response_duplicate' => 'The Friendly Captcha response was already used.',
-                    'bad_request' => 'The Friendly Captcha verification request was invalid.',
-                    default => 'Friendly Captcha verification failed'.(\is_string($detail) ? ': '.$detail : '.'),
-                };
-            }
-        }
-
-        if (empty($errors)) {
-            $errors[] = 'Friendly Captcha verification failed.';
-        }
-
-        return $errors;
-    }
-
     private function getCaptchaResponse(Form $form): ?string
     {
         if ($form->isGraphQLPosted()) {
@@ -362,7 +329,7 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
             }
 
             $property = $arguments['captcha'];
-            if (empty($property['name']) || empty($property['value']) || 'frc-captcha-response' !== $property['name']) {
+            if (!\is_array($property) || !\is_string($property['value'] ?? null) || empty($property['value']) || 'frc-captcha-response' !== ($property['name'] ?? null)) {
                 return null;
             }
 
@@ -373,6 +340,8 @@ class FriendlyCaptcha extends BaseIntegration implements CaptchaIntegrationInter
             return HeadlessPayloadHelper::getCaptchaResponse($form, 'frc-captcha-response');
         }
 
-        return \Craft::$app->request->post('frc-captcha-response');
+        $token = \Craft::$app->request->post('frc-captcha-response');
+
+        return \is_string($token) ? $token : null;
     }
 }

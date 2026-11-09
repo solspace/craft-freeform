@@ -5,10 +5,13 @@ namespace Solspace\Freeform\Integrations\Other\Jira;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\OAuth\ReturnURLValueGenerator;
 use Solspace\Freeform\Library\Integrations\PushableInterface;
 use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
 use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
@@ -21,11 +24,44 @@ abstract class BaseJiraIntegration extends CRMIntegration implements JiraIntegra
     use RulesTrait;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_READONLY)]
+    #[ValueGenerator(ReturnURLValueGenerator::class)]
+    #[Input\Text(
+        label: 'OAuth Callback URL',
+        instructions: 'Copy this URL into the Callback URL field in your Jira app. It must match exactly.',
+        order: 10,
+    )]
+    protected string $redirectUri = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Client ID',
+        instructions: 'Copy the client ID from your Jira app.',
+        order: 20,
+    )]
+    protected string $clientId = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Client Secret',
+        instructions: 'Copy the client secret from your Jira app. This stays on your server.',
+        order: 30,
+    )]
+    protected string $clientSecret = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        label: 'Instance URL',
-        instructions: 'Enter your Jira instance URL (optional). If you do not enter a value, the first available resource URL is going to be used.',
-        placeholder: 'your-instance.atlassian.net',
+        label: 'Jira Site URL',
+        instructions: 'Enter your Jira site URL. Leave blank to use the first site available to the authorizing account.',
+        placeholder: 'https://your-team.atlassian.net',
+        order: 40,
     )]
     protected string $instanceUrl = '';
 

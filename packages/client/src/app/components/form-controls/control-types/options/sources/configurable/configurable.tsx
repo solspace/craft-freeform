@@ -10,6 +10,7 @@ import type { GenericValue } from "@ff-client/types/properties";
 import { PropertyType } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
 import type { UseQueryResult } from "@tanstack/react-query";
+import DOMPurify from "dompurify";
 import type React from "react";
 import { useState } from "react";
 
@@ -70,6 +71,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
           emptyOption="Choose type"
           loading={isFetching}
           value={value.typeClass}
+          showSelectedIcon
           onChange={(selectedValue) => {
             const properties: GenericValue = {};
             const provider = data?.find(
@@ -92,6 +94,21 @@ export const ConfigurableOptions: React.FC<Props> = ({
           options={data?.map((typeProvider) => ({
             label: typeProvider.name,
             value: typeProvider.typeClass,
+            icon: typeProvider.icon ? (
+              <span
+                aria-hidden="true"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fill: "currentColor",
+                  opacity: 0.85,
+                }}
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(typeProvider.icon),
+                }}
+              />
+            ) : undefined,
           }))}
         />
       </Control>

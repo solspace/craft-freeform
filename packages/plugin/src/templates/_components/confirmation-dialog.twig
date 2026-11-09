@@ -1,0 +1,9 @@
+{# Twig counterpart of the client ConfirmationDialog for lightweight CP screens. #}
+<dialog id="{{ id }}" class="ff-confirmation-dialog" aria-modal="true" aria-labelledby="{{ id }}-title" aria-describedby="{{ id }}-message">
+    <header><h2 id="{{ id }}-title">{{ title }}</h2></header>
+    <div id="{{ id }}-message" class="ff-confirmation-message">{{ message }}</div>
+    <footer>
+        <button type="button" class="btn cancel" data-confirmation-cancel autofocus>{{ 'Cancel'|t('freeform') }}</button>
+        <button type="button" class="btn submit confirm" data-confirmation-accept>{{ confirmLabel }}</button>
+    </footer>
+</dialog>

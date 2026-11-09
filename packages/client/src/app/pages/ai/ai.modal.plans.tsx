@@ -36,7 +36,7 @@ const PlansCardsGrid = styled.div`
 `;
 
 const PlanCard = styled.div`
-  border: 1px solid ${colors.gray100};
+  border: 1px solid light-dark(${colors.gray100}, var(--input-border-color));
   border-radius: ${borderRadius.md};
   padding: calc(${spacings.xl} + ${spacings.xs}) ${spacings.lg};
   display: flex;
@@ -65,7 +65,7 @@ const PlanName = styled.strong`
   padding: ${spacings.xs} ${spacings.sm};
   border: 1px solid ${colors.gray300};
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   font-size: 18px;
   font-weight: 300;
   letter-spacing: 0.02em;

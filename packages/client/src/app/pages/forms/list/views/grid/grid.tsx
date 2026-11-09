@@ -1,20 +1,25 @@
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useFetchFormGroups } from "@ff-client/queries/form-groups";
+import type { FormWithStats } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
-import { useEffect } from "react";
-
+import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import type { FormSearchProps } from "../../form-search";
 import { createFormSearch } from "../../form-search.utils";
 import { useFormLimitModal } from "../../modals/hooks/use-add-form-modal";
 import { Notices } from "../../notices/notices";
-
 import { Archived } from "./archived/archived";
 import { Card } from "./card/card";
 import { CardLoading } from "./card/card.loading";
 import { CardPreview } from "./card/card.preview";
+import { useCardStats } from "./card/card.queries";
+import { WidgetCard } from "./card/card.widget";
 import { GridEmpty } from "./grid.empty";
+import { ChartPeriodMenu } from "./grid.period-menu";
+import { useCardRange } from "./grid.range";
+import { useCardSizing } from "./grid.sizing";
 import { useDashboardSorting } from "./grid.sortable";
 import {
   ArchivedAndGroupWrapper,
@@ -25,26 +30,131 @@ import {
   GroupWrap,
   Wrapper,
 } from "./grid.styles";
+import {
+  type DashboardWidget,
+  hasVisibleHealthWidget,
+  mergeWidgetCards,
+  useDashboardWidgets,
+} from "./grid.widgets";
 
-export const FormGrid: React.FC<FormSearchProps> = ({ search = "" }) => {
+export const FormGrid: React.FC<
+  FormSearchProps & { periodHost?: HTMLElement | null }
+> = ({ search = "", periodHost }) => {
   const openFormLimit = useFormLimitModal();
+  const isProEdition = config.editions.isAtLeast(Edition.Pro);
   const { data, isFetching } = useFetchFormGroups();
   const isSearching = search.trim().length > 0;
-  const sorting = useDashboardSorting(data, !isSearching);
+  const sizing = useCardSizing();
+  const range = useCardRange(data?.cardRange);
+  const widgets = useDashboardWidgets();
+  const [readyHealthWidgets, setReadyHealthWidgets] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const onHealthReady = useCallback((key: string, ready: boolean) => {
+    setReadyHealthWidgets((previous) => {
+      if (previous.has(key) === ready) return previous;
+      const next = new Set(previous);
+      if (ready) next.add(key);
+      else next.delete(key);
+      return next;
+    });
+  }, []);
+  const stats = useCardStats(range.days, isProEdition && !!data);
+  const sorting = useDashboardSorting(
+    data,
+    isProEdition &&
+      !isSearching &&
+      !sizing.isSaving &&
+      !range.isSaving &&
+      !widgets.isSaving,
+    { items: widgets.items, save: widgets.save, reload: widgets.reload },
+  );
   const matchesSearch = createFormSearch(search);
-  const forms = data?.forms?.filter(matchesSearch);
+  // A downgraded session may still have grouped Pro cards in the query cache.
+  const forms = (
+    isProEdition
+      ? data?.forms
+      : data && [
+          ...(data.forms ?? []),
+          ...(data.formGroups?.groups.flatMap((group) => group.forms ?? []) ??
+            []),
+        ]
+  )?.filter(matchesSearch);
   const groups = data?.formGroups?.groups.map((group) => ({
     ...group,
     forms: group.forms?.filter(matchesSearch),
   }));
   const archivedForms = data?.archivedForms?.filter(matchesSearch);
 
+  const groupWidgets = (uid: string | null) =>
+    isSearching || !isProEdition
+      ? []
+      : widgets.items.filter((widget) => {
+          const group = groups?.some((group) => group.uid === widget.groupUid)
+            ? widget.groupUid
+            : null;
+          return group === uid;
+        });
+  const mixedItems = (forms: FormWithStats[] = [], uid: string | null) =>
+    mergeWidgetCards(forms, groupWidgets(uid));
   const isForms = (forms?.length ?? 0) > 0;
   const isGroups = groups?.some((group) => (group?.forms?.length ?? 0) > 0);
-  const isEmpty = !isFetching && !isForms && !isGroups;
+  const isEmpty =
+    !isFetching &&
+    !isForms &&
+    !isGroups &&
+    !(isProEdition && widgets.items.length && !isSearching);
 
   const isExpressEdition = config.editions.is(Edition.Express);
-  const isProEdition = config.editions.isAtLeast(Edition.Pro);
+  const renderItem = (item: FormWithStats | DashboardWidget) => {
+    if ("beforeId" in item)
+      return (
+        <WidgetCard
+          key={item.uid}
+          widget={item}
+          siteId={widgets.siteId}
+          disabled={
+            widgets.isSaving ||
+            sorting.isSaving ||
+            sizing.isSaving ||
+            range.isSaving ||
+            sorting.isDragging
+          }
+          onResize={(size) => void widgets.resize(item, size).catch(() => {})}
+          onRemove={() => void widgets.remove(item.uid).catch(() => {})}
+          onKeyboardMove={sorting.onKeyboardMove}
+          onHealthReady={onHealthReady}
+        />
+      );
+    const form = item as FormWithStats;
+    return (
+      <Card
+        isDraggingInProgress={sorting.isDragging}
+        canMove={sorting.canMoveForms}
+        onKeyboardMove={sorting.onKeyboardMove}
+        isExpressEdition={isExpressEdition}
+        key={form.id}
+        form={form}
+        size={isProEdition ? sizing.getSize(form) : "1x1"}
+        canCustomize={isProEdition}
+        days={isProEdition ? range.days : 30}
+        stats={isProEdition ? stats.data?.forms[form.id] : undefined}
+        content={isProEdition ? sizing.getContent(form) : "overview"}
+        fieldId={isProEdition ? sizing.getFieldId(form) : null}
+        onContentChange={(content, fieldId) =>
+          void sizing.setContent(form, content, fieldId)
+        }
+        onResize={(size) => void sizing.resize(form, size)}
+        isLayoutBusy={
+          widgets.isSaving ||
+          range.isSaving ||
+          sizing.isSaving ||
+          sorting.isSaving ||
+          sorting.isDragging
+        }
+      />
+    );
+  };
 
   useEffect(() => {
     document.title = translate("Forms");
@@ -53,9 +163,62 @@ export const FormGrid: React.FC<FormSearchProps> = ({ search = "" }) => {
   return (
     <ContentContainer>
       <div id="content" className="content-pane">
-        <Notices />
+        <Notices
+          hideLogAlert={hasVisibleHealthWidget(
+            widgets.items,
+            widgets.siteId,
+            readyHealthWidgets,
+            isProEdition && !isSearching && !widgets.isError,
+          )}
+        />
 
         <Wrapper>
+          <span id="form-card-move-help" className="visually-hidden">
+            {translate(
+              "Hold an empty area of a card to drag. Focus a card and use Alt + up/down arrows to reorder, or Alt + left/right to change group.",
+            )}
+          </span>
+          {isProEdition &&
+            periodHost &&
+            data &&
+            createPortal(
+              <ChartPeriodMenu
+                days={range.days}
+                busy={stats.isFetching}
+                disabled={
+                  range.isSaving ||
+                  sizing.isSaving ||
+                  sorting.isSaving ||
+                  sorting.isDragging
+                }
+                onChange={(days) => void range.change(days)}
+              />,
+              periodHost,
+            )}
+          {isProEdition && widgets.isError && (
+            <p role="status">
+              {translate("Could not load widgets.")}{" "}
+              <button
+                type="button"
+                className="btn small"
+                onClick={() => void widgets.refetch()}
+              >
+                {translate("Try again")}
+              </button>
+            </p>
+          )}
+          {isProEdition && !isEmpty && stats.isError && (
+            <p role="status">
+              {translate("Could not load charts.")}{" "}
+              <button
+                className="btn small"
+                type="button"
+                onClick={() => void stats.refetch()}
+              >
+                {translate("Try again")}
+              </button>
+            </p>
+          )}
           {isEmpty && !isSearching && <GridEmpty />}
           {isEmpty && isSearching && !archivedForms?.length && (
             <p role="status">{translate("No forms match your search.")}</p>
@@ -68,7 +231,9 @@ export const FormGrid: React.FC<FormSearchProps> = ({ search = "" }) => {
             >
               {isProEdition &&
                 groups?.map((group) =>
-                  (group?.forms?.length ?? 0) || sorting.canMove ? (
+                  (group?.forms?.length ?? 0) ||
+                  groupWidgets(group.uid).length ||
+                  sorting.canMove ? (
                     <GroupWrap key={group.uid}>
                       <GroupTitle>{group.label}</GroupTitle>
                       <Cards
@@ -76,51 +241,43 @@ export const FormGrid: React.FC<FormSearchProps> = ({ search = "" }) => {
                         aria-label={group.label}
                         $empty={translate("Drag forms here.")}
                       >
-                        {group?.forms?.map((form) => (
-                          <Card
-                            isDraggingInProgress={sorting.isDragging}
-                            canMove={sorting.canMove}
-                            onKeyboardMove={sorting.onKeyboardMove}
-                            isExpressEdition={isExpressEdition}
-                            key={form.id}
-                            form={form}
-                          />
-                        ))}
+                        {mixedItems(group.forms, group.uid).map(renderItem)}
                       </Cards>
                     </GroupWrap>
                   ) : null,
                 )}
               {/* Keep the empty drop target mounted so Sortable can register it before dragging. */}
-              {data && !isEmpty && (isForms || sorting.canMove) && (
-                <GroupWrap hidden={!isForms && !sorting.isDragging}>
-                  {data?.formGroups?.groups.length > 0 && (
-                    <GroupTitle>{translate("Other")}</GroupTitle>
-                  )}
-
-                  <Cards
-                    data-form-group=""
-                    aria-label={translate("Other")}
-                    $empty={translate("Drag forms here.")}
+              {data &&
+                !isEmpty &&
+                (isForms ||
+                  groupWidgets(null).length > 0 ||
+                  sorting.canMove) && (
+                  <GroupWrap
+                    hidden={
+                      !isForms &&
+                      !groupWidgets(null).length &&
+                      !sorting.isDragging
+                    }
                   >
-                    {forms?.map((form) => (
-                      <Card
-                        isDraggingInProgress={sorting.isDragging}
-                        canMove={sorting.canMove}
-                        onKeyboardMove={sorting.onKeyboardMove}
-                        isExpressEdition={isExpressEdition}
-                        key={form.id}
-                        form={form}
-                      />
-                    ))}
-                    {isExpressEdition && !isSearching && (
-                      <>
-                        <CardPreview />
-                        <CardPreview />
-                      </>
+                    {isProEdition && data?.formGroups?.groups.length > 0 && (
+                      <GroupTitle>{translate("Other")}</GroupTitle>
                     )}
-                  </Cards>
-                </GroupWrap>
-              )}
+
+                    <Cards
+                      data-form-group=""
+                      aria-label={translate("Other")}
+                      $empty={translate("Drag forms here.")}
+                    >
+                      {mixedItems(forms, null).map(renderItem)}
+                      {isExpressEdition && !isSearching && (
+                        <>
+                          <CardPreview />
+                          <CardPreview />
+                        </>
+                      )}
+                    </Cards>
+                  </GroupWrap>
+                )}
               {!data?.forms && isFetching && (
                 <Cards>
                   <CardLoading />

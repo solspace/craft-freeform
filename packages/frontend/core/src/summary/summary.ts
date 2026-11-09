@@ -1,3 +1,4 @@
+import { formatLocation } from "../location/location.js";
 import type {
   FreeformManifest,
   ManifestFieldDefinition,
@@ -35,6 +36,7 @@ const supportedTypes = new Set([
   "number",
   "range",
   "phone",
+  "location",
   "website",
   "regex",
   "dropdown",
@@ -62,6 +64,7 @@ export function formatSummaryValue(
   value: unknown,
   config: SummaryConfig,
 ): string {
+  if (source.type === "location") return formatLocation(value);
   if (source.type === "checkbox") {
     const checked =
       value !== null &&

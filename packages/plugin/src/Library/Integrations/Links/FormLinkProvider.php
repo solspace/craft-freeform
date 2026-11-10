@@ -9,6 +9,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Services\FormsService;
+use verbb\navigation\elements\Node;
 
 class FormLinkProvider
 {
@@ -39,6 +40,10 @@ class FormLinkProvider
 
     public function fromLink(mixed $link): ?Form
     {
+        if ($link instanceof Node) {
+            $link = $link->nodeType();
+        }
+
         if ($link instanceof FormLinkInterface) {
             return $link->getForm();
         }
@@ -53,6 +58,17 @@ class FormLinkProvider
     }
 
     public function inputHtml(string $name, mixed $value, array|string $forms = '*', ?string $site = null): string
+    {
+        return Cp::selectHtml([
+            'id' => Html::id($name),
+            'name' => $name,
+            'value' => $value,
+            'options' => $this->getOptions($value, $forms, $site),
+            'inputAttributes' => ['aria' => ['label' => Freeform::t('Freeform Form')]],
+        ]);
+    }
+
+    public function getOptions(mixed $value = null, array|string $forms = '*', ?string $site = null): array
     {
         $options = [['label' => Freeform::t('Select a form'), 'value' => '']];
         $allowedIds = Freeform::getInstance()->settings->isFormFieldShowOnlyAllowedForms()
@@ -78,13 +94,7 @@ class FormLinkProvider
             $options[] = ['label' => Freeform::t('Unavailable form'), 'value' => $value];
         }
 
-        return Cp::selectHtml([
-            'id' => Html::id($name),
-            'name' => $name,
-            'value' => $value,
-            'options' => $options,
-            'inputAttributes' => ['aria' => ['label' => Freeform::t('Freeform Form')]],
-        ]);
+        return $options;
     }
 
     public function settingsHtml(array|string $forms): string

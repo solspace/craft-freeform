@@ -33,6 +33,10 @@ The helper accepts optional render properties:
 {% set form = craft.freeform.formFromLink(link, {id: 'footer-contact-form'}) %}
 ```
 
+The helper also accepts Navigation's **Freeform Form** nodes directly. See the
+[content and navigation integration guide](../README.md) for Navigation, CKEditor,
+and Vizy setup and the bundled rendering templates.
+
 Native Craft LinkData cannot expose a custom `form` property. Its `value` is a
 rendered URL, so use `formFromLink()` rather than passing `link.value` to
 `craft.freeform.form()`.

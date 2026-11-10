@@ -1,0 +1,9 @@
+{# Resolve a separate form instance for every block, including repeated forms. #}
+{% if selectedForm and not selectedForm.dateArchived %}
+    {% set properties = {fieldIdPrefix: instanceId ~ '-'}|merge(renderProperties) %}
+    {% set properties = properties|merge({attributes: {id: 'freeform-' ~ instanceId}|merge(renderProperties.attributes ?? {})}) %}
+    {% set form = craft.freeform.form(selectedForm.id, properties, instanceId) %}
+    {% if form %}
+        {{ form.render() }}
+    {% endif %}
+{% endif %}

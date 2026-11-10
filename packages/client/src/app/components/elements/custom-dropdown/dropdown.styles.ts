@@ -46,7 +46,7 @@ export const CurrentValue = styled.div`
   align-items: center;
   gap: ${spacings.sm};
 
-  background-color: light-dark(var(--button-bg, #dfe5ec), ${colors.selectBackground});
+  background-color: light-dark(#dfe5ec, ${colors.selectBackground});
   box-shadow: inset 0 0 0 1px ${colors.inputBorder};
   border-radius: ${borderRadius.lg};
 
@@ -73,7 +73,7 @@ export const CurrentValue = styled.div`
   > .ff-recommended-badge { min-height: 0; margin-inline-start: auto; }
 
   &:not(.missing):hover {
-    background-color: var(--button-bg--hover, #cdd4de);
+    background-color: light-dark(#cdd4de, var(--button-bg--hover, #cdd4de));
   }
 
   &:after {

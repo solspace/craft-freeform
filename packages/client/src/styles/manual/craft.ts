@@ -1,6 +1,17 @@
 import { createGlobalStyle } from "styled-components";
 
 const style = createGlobalStyle`
+  /* These control roles are absent in Craft 5 Light as well as Craft 4.
+     CSS variables in both light-dark() branches must resolve. */
+  :root:not([data-dark-mode="dark"]) {
+    --ui-control-height: 34px;
+    --ui-control-bg-color: var(--gray-100);
+    --ui-control-hover-bg-color: var(--gray-200);
+    --ui-control-active-bg-color: var(--gray-300);
+    --ui-control-selected-bg: var(--gray-500);
+    --ui-control-selected-color: var(--white);
+  }
+
   /* Craft 4 has no appearance setting or semantic control tokens. Both
      light-dark() branches must resolve, even when only Light is displayed. */
   :root:not([data-dark-mode]) {
@@ -9,12 +20,6 @@ const style = createGlobalStyle`
     --modal-bg: var(--white);
     --input-bg: var(--white);
     --input-border-color: rgba(96, 125, 159, .25);
-    --ui-control-height: 34px;
-    --ui-control-bg-color: var(--gray-100);
-    --ui-control-hover-bg-color: var(--gray-200);
-    --ui-control-active-bg-color: var(--gray-300);
-    --ui-control-selected-bg: var(--gray-500);
-    --ui-control-selected-color: var(--white);
     --button-bg: var(--gray-100);
     --button-bg--hover: var(--gray-200);
     --button-border: none;

@@ -37,13 +37,13 @@ export const AddButton = styled.button`
   min-height: 26px;
 
   &&.btn {
-    color: var(--secondary-button-text-color, var(--text-color));
-    background: var(--secondary-button-bg, var(--button-bg));
+    color: var(--text-color, #3f4d5a);
+    background: light-dark(#e4edf6, var(--button-bg, #e4edf6));
     border: 1px solid var(--input-border-color, var(--hairline-color));
   }
 
   &&.btn:hover {
-    background: var(--secondary-button-bg--hover, var(--button-bg--hover));
+    background: light-dark(#cdd8e4, var(--button-bg--hover, #cdd8e4));
     border-color: var(--light-text-color, var(--input-border-color));
   }
 

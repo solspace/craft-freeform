@@ -12,6 +12,11 @@
 ### Fixed
 - Fixed placement, sizing, and rendering of nested layouts, content, and Form areas across the builder, front end, and submission views.
 
+## 5.18.1 - Unreleased
+
+### Fixed
+- Fixed light-mode control colors, selected button states, and opaque card backgrounds in Craft 5.
+
 ## 5.18.0 - 2026-11-09
 
 ### Added

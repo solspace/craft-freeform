@@ -78,16 +78,13 @@ export const LayoutBlock = styled.label`
     align-items: center;
     justify-content: space-between;
   }
-  input { position: static; flex: 0 0 14px; width: 14px; height: 14px; box-sizing: border-box; margin: 0; accent-color: var(--ui-control-selected-border, ${colors.link}); }
+  input { position: static; flex: 0 0 14px; width: 14px; height: 14px; box-sizing: border-box; margin: 0; accent-color: light-dark(var(--teal-600, #0d9488), var(--ui-control-selected-border, ${colors.link})); }
   &:hover { border-color: ${colors.muted}; }
   &:has(input:checked) {
-    border-color: var(--ui-control-selected-border, ${colors.link});
-    background: light-dark(#edf5fc, var(--ui-control-selected-bg, var(--bg-selection-light, #edf5fc)));
-    color: var(--ui-control-selected-color, ${colors.text});
-    box-shadow: inset 0 0 0 1px var(--ui-control-selected-border, ${colors.link});
-  :root:not([data-dark-mode="dark"]) & {
-    box-shadow: inset 0 0 0 1px #397fbe;
-  };
+    border-color: light-dark(${colors.gray300}, var(--ui-control-selected-border, ${colors.link}));
+    background: light-dark(#e4e7eb, var(--ui-control-selected-bg, var(--bg-selection-light, #e4e7eb)));
+    color: light-dark(${colors.text}, var(--ui-control-selected-color, ${colors.text}));
+    box-shadow: none;
   }
   &:has(input:focus-visible) { outline: 2px solid light-dark(#397fbe, ${colors.link}); outline-offset: 2px; }
 `;

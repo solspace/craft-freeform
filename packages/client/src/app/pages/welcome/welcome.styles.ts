@@ -128,8 +128,8 @@ export const WelcomeWrapper = styled.div`
   .setup-navigation { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 24px; margin-top: 18px; }
   .setup-primary:disabled { opacity: .4 !important; cursor: not-allowed !important; filter: grayscale(.4); }
   .setup-navigation .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; }
-  .setup-navigation > .btn:not(.setup-primary) { --button-bg: var(--secondary-button-bg, #dfe5ec); --button-bg--hover: var(--secondary-button-bg--hover, #cdd4de); --button-border: 1px solid var(--input-border-color, #b9c6d7); background: var(--button-bg, #dfe5ec); color: var(--text-color); box-shadow: inset 0 0 0 1px var(--input-border-color, #b9c6d7); }
-  .setup-navigation > .btn:not(.setup-primary):hover:not(:disabled) { background: var(--button-bg--hover, #cdd4de); }
+  .setup-navigation > .btn:not(.setup-primary) { --button-border: 1px solid var(--input-border-color, #b9c6d7); background: light-dark(#e4edf6, var(--button-bg, #e4edf6)); color: var(--text-color); box-shadow: inset 0 0 0 1px var(--input-border-color, #b9c6d7); }
+  .setup-navigation > .btn:not(.setup-primary):hover:not(:disabled) { background: light-dark(#cdd8e4, var(--button-bg--hover, #cdd8e4)); }
   .setup-navigation .setup-primary { margin-inline-start: auto; }
   .setup-review-notice { display: flex; align-items: center; gap: 10px; padding: 12px 14px; margin: 0 0 20px; border: 1px solid light-dark(#cadff1, var(--border-notice, #b6d4fe)); border-radius: 6px; background: light-dark(#e7f2ff, var(--bg-notice, #eaf3ff)); color: light-dark(#345776, var(--fg-notice, #24578f)); font-size: 13px; line-height: 1.65; }
   .setup-review-notice svg { width: 18px; height: 18px; flex: 0 0 18px; color: light-dark(#2878bd, inherit); }

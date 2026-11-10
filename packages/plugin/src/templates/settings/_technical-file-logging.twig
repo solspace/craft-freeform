@@ -1,0 +1,40 @@
+{% import '_includes/forms' as forms %}
+{% import 'freeform/_components/settings-cards' as cards %}
+
+    {% set loggingOptions = {
+        error: {label: 'Errors', description: 'Records errors and critical failures.', path: 'M12 3 2 21h20ZM12 9v5M12 17h.01'},
+        info: {label: 'Info', description: 'Also records informational messages and warnings from email and integrations.', path: 'M20 12a8 8 0 1 1-16 0 8 8 0 0 1 16 0ZM12 11v6M12 7h.01'},
+        debug: {label: 'Debug', description: 'Adds detailed diagnostic messages from email and integrations. Use temporarily when troubleshooting.', path: 'M8 8h8v9a4 4 0 0 1-8 0ZM9 8V6a3 3 0 0 1 6 0v2M4 10h4m8 0h4M3 15h5m8 0h5M5 21l4-4m6 0 4 4M12 8v13'},
+    } %}
+    {% set loggingInput %}
+        <div class="ff-choice-cards" data-columns="3">
+            {% for value, option in loggingOptions %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({
+                    id: 'technical-log-level-' ~ value,
+                    name: 'settings[loggingLevel]',
+                    value: value,
+                    selected: settings.loggingLevel == value,
+                    recommended: value == 'error',
+                    disabled: readOnly,
+                    label: option.label|t('freeform'),
+                    description: option.description|t('freeform'),
+                    icon: icon,
+                }) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
+        id: 'technical-log-level',
+        fieldset: true,
+        label: 'Log Detail'|t('freeform'),
+        instructions: 'Choose how much detail Classic Logging writes to its files.'|t('freeform'),
+        errors: settings.errors().get("loggingLevel"),
+    }, loggingInput) }}
+<details class="ff-activity-data-disclosure ff-activity-data-panel">
+    {% include 'freeform/settings/_activity-disclosure-summary' with {label: 'About Classic logging'|t('freeform')} only %}
+    <div class="ff-activity-data-content">
+        <p>{{ 'Recognized secrets and email addresses are masked. Known payload fields are omitted. Masking is best effort. Review files before sharing.'|t('freeform') }}</p>
+        <p>{{ 'Classic log files do not use Activity storage limits. New Activity events are paused while Classic Logging is selected. Existing Activity history continues to expire.'|t('freeform') }}</p>
+    </div>
+</details>

@@ -19,12 +19,15 @@ import {
   Header,
   HeaderContainer,
   PageLayout,
+  PeriodControlHost,
   Title,
   ViewButtons,
   ViewControls,
 } from "./list-view.styles";
 import { useAddFormModal } from "./modals/hooks/use-add-form-modal";
 import { useEditGroupModal } from "./modals/hooks/use-edit-group-modal";
+import { useWelcomeFormStart } from "./use-welcome-form-start";
+import { InsertWidgetMenu } from "./views/grid/card/card.widget";
 import { FormGrid } from "./views/grid/grid";
 import { GroupsButton } from "./views/grid/grid.styles";
 import { FormList } from "./views/list/list";
@@ -40,8 +43,10 @@ export const ListProvider: React.FC = () => {
   const openAddForm = useAddFormModal();
 
   const [search, setSearch] = useState("");
+  const [periodHost, setPeriodHost] = useState<HTMLDivElement | null>(null);
   const [view, setView] = useLocalStorage("forms-list-view", View.Grid);
   const { canCreate } = config.metadata.freeform;
+  useWelcomeFormStart(canCreate, openAddForm);
 
   useEffect(() => {
     void queryClient.prefetchQuery({
@@ -94,6 +99,9 @@ export const ListProvider: React.FC = () => {
                 onClick={() => setView(View.List)}
               />
             </ViewButtons>
+            {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
+              <PeriodControlHost ref={setPeriodHost} />
+            )}
             {config.editions.isAtLeast(Edition.Pro) &&
               config.metadata.freeform.canOrganizeForms && (
                 <GroupsButton
@@ -102,9 +110,12 @@ export const ListProvider: React.FC = () => {
                   onClick={openEditGroupModal}
                 >
                   <EditIcon />
-                  {translate("Form groups")}
+                  {translate("Groups")}
                 </GroupsButton>
               )}
+            {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
+              <InsertWidgetMenu />
+            )}
           </ViewControls>
 
           {canCreate && (
@@ -122,7 +133,9 @@ export const ListProvider: React.FC = () => {
       </HeaderContainer>
 
       {view === View.List && <FormList search={search} />}
-      {view === View.Grid && <FormGrid search={search} />}
+      {view === View.Grid && (
+        <FormGrid search={search} periodHost={periodHost} />
+      )}
     </PageLayout>,
   );
 };

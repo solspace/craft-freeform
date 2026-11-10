@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services;
 
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\DynamicAmountService;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
@@ -43,7 +44,7 @@ class StripePriceService
 
         switch ($field->getAmountType()) {
             case StripeField::AMOUNT_TYPE_DYNAMIC:
-                $amount = $this->getDynamicAmount($form, $field);
+                $amount = (new DynamicAmountService())->getAmount($form, $field->getAmountField());
 
                 break;
 
@@ -58,7 +59,12 @@ class StripePriceService
 
         $multiplier = $isZeroDecimal ? 1 : 100;
 
-        return (int) round($amount * $multiplier);
+        $finalAmount = (int) round($amount * $multiplier);
+        if (StripeField::AMOUNT_TYPE_DYNAMIC === $field->getAmountType() && $finalAmount <= 0) {
+            throw new \InvalidArgumentException('The payment amount must be greater than zero in the payment currency.');
+        }
+
+        return $finalAmount;
     }
 
     public function getInterval(Form $form, StripeField $field): string
@@ -144,23 +150,6 @@ class StripePriceService
         }
 
         return $price;
-    }
-
-    private function getDynamicAmount(Form $form, StripeField $field): float
-    {
-        $amount = 0;
-        $formField = $form->get($field->getAmountField()?->getId());
-        if ($formField) {
-            $amount = (float) $formField->getValue();
-        }
-
-        // Stripe expects the minimum amount of $0.50 US or equivalent in Payment Currency.
-        // https://docs.stripe.com/api/payment_intents/create?lang=php&api-version=2026-02-25.clover#create_payment_intent-amount
-        if (empty($amount)) {
-            return 0.5;
-        }
-
-        return $amount;
     }
 
     private function getDynamicInterval(Form $form, StripeField $field): string

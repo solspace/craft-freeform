@@ -75,7 +75,11 @@ class SummaryService extends Component
         $totals->favoriteFields = $fieldProvider->getFavoriteFieldCount();
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);
-        $totals->errors = $freeform->logger->getLogReader()->count();
+        $totals->errors = match ($settingsModel->getEffectiveLoggingStyle()) {
+            'activity' => $freeform->activity->getErrorCount(),
+            'classic' => $freeform->logger->getErrorLogLineCount(),
+            default => 0,
+        };
 
         $summary->statistics->totals = $totals;
 

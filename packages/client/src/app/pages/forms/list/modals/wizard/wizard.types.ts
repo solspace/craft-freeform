@@ -48,6 +48,7 @@ export type WizardOptions = {
 };
 export type WizardDraft = WizardOptions["defaults"] & {
   handle?: string;
+  type?: string;
   purpose: string;
   name: string;
   siteIds: number[];

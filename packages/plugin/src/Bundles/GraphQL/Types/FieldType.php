@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
+use craft\gql\GqlEntityRegistry;
 use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -22,7 +23,7 @@ class FieldType extends AbstractObjectType
 
     public static function resolveType($context = null): string
     {
-        return self::getType($context);
+        return GqlEntityRegistry::prefixTypeName(self::getType($context));
     }
 
     public static function getType(FreeformFieldInterface $field): string

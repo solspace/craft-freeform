@@ -36,13 +36,18 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     public function allowSpamSubmission(SpamSubmission $submission): bool
     {
         $submission->isSpam = false;
-        \Craft::$app->elements->saveElement($submission, false, false);
+        if (!\Craft::$app->elements->saveElement($submission, false, false, false)) {
+            $submission->isSpam = true;
 
-        // HACK: this is dirty, but I wasn't able to find better way to
-        //      quickly convert SpamSubmission to Submission
-        $element = Element::findOne($submission->id);
-        $element->type = Submission::class;
-        $element->save(false);
+            return false;
+        }
+
+        $this->convertToSubmission($submission);
+
+        // Index immediately: a queued job for SpamSubmission can no longer find the converted element.
+        if ($this->getSettingsService()->isUpdateSearchIndexes()) {
+            \Craft::$app->getSearch()->indexElementAttributes($submission);
+        }
 
         \Craft::$app->cache->flush();
 
@@ -72,6 +77,13 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     protected function getFindQuery(): Query
     {
         return SpamSubmission::find();
+    }
+
+    protected function convertToSubmission(SpamSubmission $submission): void
+    {
+        $element = Element::findOne($submission->id);
+        $element->type = Submission::class;
+        $element->save(false);
     }
 
     protected function findSubmissions(): Query

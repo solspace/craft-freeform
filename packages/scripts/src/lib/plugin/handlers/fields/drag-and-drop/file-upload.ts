@@ -2,6 +2,7 @@ import type Freeform from "@components/front-end/plugin/freeform";
 import events from "@lib/plugin/constants/event-types";
 import { ajax } from "@lib/plugin/helpers/ajax";
 import { CancelToken } from "@lib/plugin/helpers/ajax/ajax.classes";
+import { truncate } from "@lib/plugin/helpers/strings";
 
 import { askForConfirmation } from "./confirm";
 import { addFieldErrors } from "./error-handling";
@@ -127,14 +128,16 @@ export const handleFileUpload = (
   const removeButton = previewContainer.querySelector<HTMLElement>(
     "[data-remove-button]",
   )!;
+  let hasServerPreview = false;
 
   if (isImage(extension)) {
     const reader = new FileReader();
-    reader.readAsDataURL(file);
     reader.onloadend = () => {
+      if (hasServerPreview || typeof reader.result !== "string") return;
       thumbnail.setAttribute("data-has-preview", "");
-      thumbnail.style.backgroundImage = `url(${reader.result!.toString()})`;
+      thumbnail.style.backgroundImage = `url(${reader.result})`;
     };
+    reader.readAsDataURL(file);
   }
 
   previewZone.appendChild(previewContainer);
@@ -170,6 +173,33 @@ export const handleFileUpload = (
       },
     })
     .then((response) => {
+      // The saved image may have been converted or resized by the server.
+      const filename =
+        previewContainer.querySelector<HTMLElement>("[data-filename]");
+      const filesize =
+        previewContainer.querySelector<HTMLElement>("[data-filesize]");
+      const extensionLabel = previewContainer.querySelector<HTMLElement>(
+        "[data-extension-label]",
+      );
+      if (response.data.name && filename) {
+        filename.textContent = truncate(response.data.name, 14);
+        filename.title = response.data.name;
+      }
+      if (response.data.size && filesize)
+        filesize.textContent = response.data.size;
+      if (response.data.extension && extensionLabel)
+        extensionLabel.textContent = response.data.extension.toUpperCase();
+
+      if (
+        /^data:image\/jpeg;base64,[A-Za-z0-9+/]+=*$/.test(
+          response.data.preview || "",
+        )
+      ) {
+        hasServerPreview = true;
+        thumbnail.style.backgroundImage = `url("${response.data.preview}")`;
+        thumbnail.setAttribute("data-has-preview", "");
+      }
+
       const deleteFormData = new FormData(freeform.form as HTMLFormElement);
       deleteFormData.delete("action");
       deleteFormData.append("handle", handle);

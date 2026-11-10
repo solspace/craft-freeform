@@ -1,5 +1,6 @@
 import { contentPreview } from "@ff-client/styles/content-preview";
 import { CardCell } from "@ff-client/styles/field-cells/cards";
+import { RangeCell } from "@ff-client/styles/field-cells/range";
 import { RatingCell } from "@ff-client/styles/field-cells/rating";
 import { SignatureCell } from "@ff-client/styles/field-cells/signature";
 import { SquareCell } from "@ff-client/styles/field-cells/square";
@@ -36,6 +37,7 @@ export const LabelText = styled.div``;
 
 const iconSize = 16;
 export const LabelIcon = styled.div`
+  fill: currentColor;
   flex: 0 0 ${iconSize}px;
   position: relative;
   top: 2px;
@@ -52,6 +54,7 @@ export const LabelIcon = styled.div`
 `;
 
 export const Icon = styled(animated.div)`
+  fill: currentColor;
   position: absolute;
   left: 0;
   top: 0;
@@ -68,7 +71,7 @@ export const Instructions = styled.div`
   margin-top: -6px;
   margin-bottom: 6px;
 
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
   font-style: italic;
   font-size: 12px;
 `;
@@ -88,6 +91,27 @@ export const FieldCellWrapper = styled.div`
     border-color 0.2s ease-out,
     background-color 0.2s ease-out;
 
+  .location-component-required {
+    color: ${colors.error};
+    font-weight: 600;
+    vertical-align: baseline;
+  }
+
+  .location-preview-search {
+    position: relative;
+    > input:not([type='checkbox']):not([type='radio']) { padding-inline-start: 36px; }
+    > svg {
+      position: absolute;
+      inset-inline-start: 12px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateY(-50%);
+      opacity: .65;
+      pointer-events: none;
+    }
+  }
+
   &.input-only {
     flex-direction: row !important;
     gap: ${spacings.sm};
@@ -98,10 +122,10 @@ export const FieldCellWrapper = styled.div`
   }
 
   &:hover {
-    background: #f3f7fd;
+    background: light-dark(#f3f7fd, ${colors.secondarySurface});
 
     &:not(.active) {
-      border: 1px solid #cdd8e4;
+      border: 1px solid light-dark(#cdd8e4, ${colors.border});
     }
   }
 
@@ -179,12 +203,13 @@ export const FieldCellWrapper = styled.div`
     width: 100%;
     padding: 6px 9px;
 
-    border: 1px solid rgba(96, 125, 159, 0.25);
+    border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
+    background-color: ${colors.inputBackground};
     border-radius: 3px;
-    color: ${colors.gray500};
+    color: light-dark(${colors.gray500}, ${colors.text});
 
     &::placeholder {
-      color: ${colors.gray300};
+      color: light-dark(${colors.gray300}, ${colors.muted});
       opacity: 1;
     }
   }
@@ -201,15 +226,21 @@ export const FieldCellWrapper = styled.div`
 
   &[data-field-type='dropdown'],
   &[data-field-type='multiple-select'] {
+    /* Give selects a subtle tint alongside the text previews. Craft also
+       paints these controls using the local UI control roles. */
+    --ui-control-bg-color: ${colors.selectBackground};
+    --ui-control-hover-bg-color: ${colors.selectBackground};
+    --ui-control-active-bg-color: ${colors.selectBackground};
+
     .select { background: transparent; border: 0; box-shadow: none; }
     select, .select > select {
       border: 1px solid ${colors.inputBorder};
       border-radius: 3px;
     }
     select, select:hover, select:focus {
-      background-color: #fff;
+      background-color: light-dark(#fff, ${colors.selectBackground});
       box-shadow: none;
-      color: ${colors.gray500};
+      color: light-dark(${colors.gray500}, ${colors.text});
     }
     select:not([multiple]) { padding-inline-end: 30px; }
   }
@@ -224,12 +255,12 @@ export const FieldCellWrapper = styled.div`
     option {
       padding: 4px 6px;
       border-radius: 3px;
-      color: ${colors.gray500};
+      color: light-dark(${colors.gray500}, ${colors.text});
     }
 
     option:checked {
       color: ${colors.gray600};
-      background: linear-gradient(#eaf1fb, #eaf1fb);
+      background: var(--ui-control-bg-color);
     }
 
     optgroup {
@@ -285,17 +316,17 @@ export const FieldCellWrapper = styled.div`
       border: 1px solid #d9d9d9;
       padding: 10px;
       white-space: pre-wrap;
-      background-color: rgb(247, 247, 247);
+      background-color: light-dark(rgb(247, 247, 247), var(--ui-control-bg-color));
     }
 
     table {
       border-collapse: collapse;
       width: 100%;
 
-      border: 1px solid black;
+      border: 1px solid light-dark(black, ${colors.border});
 
       td {
-        border: 1px solid black;
+        border: 1px solid light-dark(black, ${colors.border});
         padding: 5px;
       }
     }
@@ -315,7 +346,7 @@ export const FieldCellWrapper = styled.div`
         grid-column: 1 / -1;
         padding-top: 10px;
 
-        color: ${colors.gray500};
+        color: light-dark(${colors.gray500}, ${colors.text});
         text-align: left;
         font-style: italic;
       }
@@ -325,8 +356,8 @@ export const FieldCellWrapper = styled.div`
         grid-template-rows: min-content 20px auto;
         gap: 5px;
 
-        background: ${colors.white};
-        border: 1px solid ${colors.gray200};
+        background: light-dark(${colors.white}, var(--ui-control-bg-color));
+        border: 1px solid light-dark(${colors.gray200}, ${colors.border});
         border-radius: 8px;
 
         &__image {
@@ -345,7 +376,7 @@ export const FieldCellWrapper = styled.div`
             width: 100%;
             max-height: 80px;
 
-            fill: ${colors.gray200};
+            fill: light-dark(${colors.gray200}, ${colors.muted});
           }
         }
 
@@ -362,7 +393,7 @@ export const FieldCellWrapper = styled.div`
         &__description {
           padding: 0 ${spacings.sm} ${spacings.sm};
 
-          color: ${colors.gray500};
+          color: light-dark(${colors.gray500}, ${colors.text});
           font-size: 12px;
           font-style: italic;
         }
@@ -379,6 +410,7 @@ export const FieldCellWrapper = styled.div`
   ${SquareCell}
   ${CardCell}
   ${RatingCell}
+  ${RangeCell}
   ${SignatureCell}
   ${TableCell}
 `;
@@ -411,7 +443,7 @@ export const SampleValueMarker = styled.div<{ $select?: boolean }>`
     padding: 0;
     border: 0;
     background: transparent;
-    color: ${colors.gray300};
+    color: light-dark(${colors.gray300}, ${colors.muted});
   }
   button:hover, button:focus { color: #3476b8; }
   button:focus-visible { outline: 2px solid #3476b8; outline-offset: 2px; border-radius: 3px; }

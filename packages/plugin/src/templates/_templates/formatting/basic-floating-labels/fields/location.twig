@@ -1,0 +1,14 @@
+{% do field.setParameters({
+    locationLabelPosition: 'after',
+    locationSearchLabel: true,
+    locationAttributes: {
+        searchContainer: { '+class': 'freeform-location-floating' },
+        componentContainer: { '+class': 'freeform-location-floating' },
+    },
+}) %}
+
+{{ field.renderContainerOpeningTag }}
+    {{ field.renderInput }}
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
+{{ field.renderContainerClosingTag }}

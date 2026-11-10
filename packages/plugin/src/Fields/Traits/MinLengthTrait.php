@@ -7,7 +7,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 trait MinLengthTrait
 {
     #[Input\Integer(
-        instructions: 'The minimum number of characters allowed in the field.',
+        unit: 'chars',
         order: 40,
     )]
     protected ?int $minLength = null;

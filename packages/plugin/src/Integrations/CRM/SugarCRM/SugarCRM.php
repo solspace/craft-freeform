@@ -15,6 +15,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -314,7 +315,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     private function processData(string $category, Form $form, Client $client): void
     {
         if (!$this->{'map'.$category}) {
-            $this->logger->debug("No {$category} mapped, skipping.");
+            $this->logger->debug("No {$category} mapped, skipping.", ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -336,7 +337,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
             )
         );
 
-        $this->logger->info("New {$category} created", ['id' => $json->id]);
+        $this->logger->info("New {$category} created", ['id' => $json->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $mapping);
 
         $this->triggerAfterResponseEvent($category, $response);

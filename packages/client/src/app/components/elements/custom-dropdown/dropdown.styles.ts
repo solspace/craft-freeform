@@ -51,6 +51,7 @@ export const CurrentValue = styled.div`
     min-height: 20px;
   }
 
+  > .ff-recommended-badge { min-height: 0; margin-inline-start: auto; }
   &:after {
     content: '';
     position: absolute;
@@ -121,6 +122,8 @@ export const CloseButton = styled.button`
 export const DropdownWrapper = styled.div`
   position: relative;
 
+  &:focus-visible ${CurrentValue} { box-shadow: var(--focus-ring); }
+
   &.open {
     ${DropdownRollout} {
       display: block;
@@ -140,10 +143,13 @@ export const DropdownWrapper = styled.div`
 
 export const Icon = styled.span`
   display: flex;
+  flex: 0 0 16px;
   align-items: center;
 
   width: 16px;
   height: 16px;
+
+  > .status { flex: none; margin: 0; }
 
   svg {
     width: 16px !important;
@@ -153,11 +159,14 @@ export const Icon = styled.span`
 
 export const OptionIcon = styled.div`
   display: flex;
+  flex: 0 0 16px;
   align-items: center;
   justify-content: center;
 
   width: 16px;
   height: 16px;
+
+  > .status { flex: none; margin: 0; }
 
   svg {
     width: 16px !important;

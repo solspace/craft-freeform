@@ -68,6 +68,8 @@
                 label: "Range Start"|t('freeform'),
                 instructions: "Enter the beginning of the time period. Specify an exact date (e.g. '2025-09-01') or use something relative like '15 days ago'. Default is 'today'."|t('freeform'),
                 name: 'rangeStart',
+                id: 'rangeStart',
+                inputAttributes: { 'data-export-range-picker': 'Choose Range Start date'|t('freeform') },
                 value: profile.rangeStart,
                 errors: profile.getErrors('rangeStart'),
             }) }}
@@ -76,6 +78,8 @@
                 label: "Range End"|t('freeform'),
                 instructions: "Enter the end of the time period. Specify an exact date (e.g. '2025-09-30') or use something relative like '15 days ago'. Default is 'today'."|t('freeform'),
                 name: 'rangeEnd',
+                id: 'rangeEnd',
+                inputAttributes: { 'data-export-range-picker': 'Choose Range End date'|t('freeform') },
                 value: profile.rangeEnd,
                 errors: profile.getErrors('rangeEnd'),
             }) }}
@@ -141,7 +145,7 @@
             </div>
             <div class="input">
 
-                <table class="shadow-box editable value-group fullwidth" id="filter-table"
+                <table class="fullwidth" id="filter-table"
                        data-type="checkbox_group">
                     <colgroup>
                         <col class="filter-field">
@@ -187,9 +191,9 @@
                                 </div>
                             </td>
                             <td class="textual">
-                                <textarea class="code" name="filters[{{ iterator }}][value]" rows="1">{{ filter.value }}</textarea>
+                                <textarea class="text code" name="filters[{{ iterator }}][value]" rows="1">{{ filter.value }}</textarea>
                             </td>
-                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('freeform') }}"></a></td>
+                            <td class="thin action"><button type="button" class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}"></button></td>
                         </tr>
                     {% endfor %}
                     <template>
@@ -217,24 +221,98 @@
                                 </div>
                             </td>
                             <td class="textual">
-                                <textarea class="code" name="filters[__iterator__][value]" rows="1"></textarea>
+                                <textarea class="text code" name="filters[__iterator__][value]" rows="1"></textarea>
                             </td>
-                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('freeform') }}"></a></td>
+                            <td class="thin action"><button type="button" class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}"></button></td>
                         </tr>
                     </template>
                     </tbody>
                 </table>
 
-                <div class="btn dashed add icon" id="add-filter">
+                <button type="button" class="btn dashed add icon" id="add-filter">
                     {{ addRowLabel is defined ? addRowLabel : "Add an option"|t('freeform') }}
-                </div>
+                </button>
 
             </div>
         </div>
 
     <style>
+        #date-range .field > .input {
+            position: relative;
+            width: 50%;
+        }
+
+        .ff-export-date-control > input.text {
+            padding-inline-end: 38px;
+        }
+
+        .ff-export-date-picker,
+        .ff-export-date-icon {
+            position: absolute;
+            inset-inline-end: 0;
+            bottom: 0;
+            width: 34px;
+            height: 34px;
+        }
+
+        .ff-export-date-picker {
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .ff-export-date-picker::-webkit-calendar-picker-indicator {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .ff-export-date-icon {
+            box-sizing: border-box;
+            padding: 9px;
+            fill: none;
+            stroke: var(--light-text-color, #596673);
+            stroke-width: 1.8;
+            pointer-events: none;
+        }
+
+        .ff-export-date-control:has(.ff-export-date-picker:focus-visible) > input.text {
+            box-shadow: var(--focus-ring);
+        }
+
+        @media (max-width: 768px) {
+            #date-range .field > .input { width: 100%; }
+        }
+
         #filter-table {
+            display: table;
             table-layout: fixed;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid var(--hairline-color, #cdd8e4);
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+        }
+
+        #filter-table th {
+            padding: 8px;
+            text-align: start;
+            color: var(--light-text-color, #596673);
+            background: var(--ui-control-bg-color, #f3f5f7);
+            border-bottom: 1px solid var(--hairline-color, #cdd8e4);
+        }
+
+        #filter-table td {
+            padding: 8px;
+            vertical-align: middle;
+            background: var(--pane-bg, #fff);
+        }
+
+        #filter-table tr + tr td {
+            border-top: 1px solid var(--hairline-color, #cdd8e4);
         }
 
         #filter-table .filter-field {
@@ -246,7 +324,7 @@
         }
 
         #filter-table .filter-action {
-            width: 34px;
+            width: 50px;
         }
 
         #filter-table .select,
@@ -261,12 +339,64 @@
             text-overflow: ellipsis;
         }
 
-        #filter-table textarea.code {
-            padding: 10px 9px 9px;
+        #filter-table textarea.text {
+            display: block;
+            box-sizing: border-box;
+            width: 100%;
+            height: 34px;
+            min-height: 34px;
+            margin: 0;
+            padding: 7px 10px;
+            line-height: 20px;
+            resize: vertical;
         }
 
-        #filter-table textarea.code:focus {
-            padding: 10px 9px 9px;
+        #filter-table .action .delete {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            color: var(--light-text-color, #596673);
+            background: transparent;
+            border: 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #filter-table .action .delete:hover {
+            color: var(--fg-error, #cf1124);
+            background: var(--bg-error, #fff0f0);
+        }
+
+        #filter-table .action .delete:focus-visible {
+            box-shadow: var(--focus-ring);
+        }
+
+        #add-filter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            min-height: 34px;
+            margin-top: -1px;
+            color: var(--text-color, #3f4d5a);
+            background: var(--pane-bg, #fff);
+            border: 1px dashed var(--hairline-color, #cdd8e4);
+            border-top: 0;
+            border-radius: 0 0 5px 5px;
+            box-shadow: none;
+        }
+
+        #add-filter:hover {
+            background: var(--ui-control-hover-bg-color, #e4e7eb);
+            border-color: var(--light-text-color, #596673);
+        }
+
+        #add-filter:focus-visible {
+            box-shadow: var(--focus-ring);
         }
     </style>
 {% endblock %}

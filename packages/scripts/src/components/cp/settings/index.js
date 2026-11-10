@@ -1,12 +1,22 @@
+import { initColorPickers } from "../../../lib/color-picker";
 import { initializeSettingsControls } from "./controls";
+import { initDigestSchedules } from "./digest-schedule";
+import { initScriptInsertLocation } from "./script.location";
 import { loadFormattingTemplatesScript } from "./templates.formatting";
-import { loadTemplatesModeScript } from "./templates.mode";
+import {
+  loadTemplateStorageScript,
+  loadTemplatesModeScript,
+} from "./templates.mode";
+import { initToolbarEditors } from "./toolbar";
 
 // eslint-disable no-undef
 $(() => {
+  initColorPickers();
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();
   initializeSettingsControls();
+  initToolbarEditors();
+  initDigestSchedules();
 
   const sessionTime = $("#session-time");
   const sessionCount = $("#session-count");
@@ -37,32 +47,9 @@ $(() => {
     },
   });
 
-  const spamProtectionBehavior = $("select#spam-protection-behavior");
-  spamProtectionBehavior.on({
-    change: function () {
-      const customError = $("#custom-spam-error-message");
-      if ($(this).val() === "display_errors") {
-        customError.show("fast");
-      } else {
-        customError.hide("fast");
-      }
-    },
-  });
-
-  const filesDirectory = $("#files-directory");
+  initScriptInsertLocation();
   const templateDefault = $("#template-default");
-  $("#storage-type").on({
-    change: (event) => {
-      const { value } = event.target;
-
-      const isFiles = ["files", "files_database"].includes(value);
-
-      filesDirectory.toggleClass("hidden", !isFiles);
-      templateDefault
-        .toggleClass("combined", value === "files_database")
-        .trigger("change");
-    },
-  });
+  loadTemplateStorageScript();
 
   templateDefault.on("change", () => {
     const isBoth =

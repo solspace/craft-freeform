@@ -1,6 +1,6 @@
 {
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js": {
-    "file": "assets/de-CZVtM_zn.js",
+    "file": "assets/de-DVIzjqiZ.js",
     "name": "de",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/de.js",
     "isDynamicEntry": true,
@@ -9,7 +9,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js": {
-    "file": "assets/fr-Dx4lMTJz.js",
+    "file": "assets/fr-f4lE_rxG.js",
     "name": "fr",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/fr.js",
     "isDynamicEntry": true,
@@ -18,7 +18,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js": {
-    "file": "assets/it-DZSa95NT.js",
+    "file": "assets/it-DbXnl5rc.js",
     "name": "it",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/it.js",
     "isDynamicEntry": true,
@@ -27,7 +27,7 @@
     ]
   },
   "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js": {
-    "file": "assets/nl-BHCXO256.js",
+    "file": "assets/nl-UQduk-T1.js",
     "name": "nl",
     "src": "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
     "isDynamicEntry": true,
@@ -35,16 +35,20 @@
       "src/index.tsx"
     ]
   },
-  "_confirm-submissions.modal-DuKy8LYc.js": {
-    "file": "assets/confirm-submissions.modal-DuKy8LYc.js",
+  "../plugin/src/Resources/icons/status.svg": {
+    "file": "assets/status-DQ2TQNLb.svg",
+    "src": "../plugin/src/Resources/icons/status.svg"
+  },
+  "_confirm-submissions.modal-BOOXrYc8.js": {
+    "file": "assets/confirm-submissions.modal-BOOXrYc8.js",
     "name": "confirm-submissions.modal",
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
-      "_react-redux-PZc35ELf.js"
+      "_react-redux-gtwWhNon.js"
     ]
   },
-  "_react-redux-PZc35ELf.js": {
-    "file": "assets/react-redux-PZc35ELf.js",
+  "_react-redux-gtwWhNon.js": {
+    "file": "assets/react-redux-gtwWhNon.js",
     "name": "react-redux",
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js"
@@ -55,40 +59,37 @@
     "name": "rolldown-runtime"
   },
   "src/app/pages/ai/ai.usage-chart.tsx": {
-    "file": "assets/ai.usage-chart-2SZG2We2.js",
+    "file": "assets/ai.usage-chart-BD0omvMz.js",
     "name": "ai.usage-chart",
     "src": "src/app/pages/ai/ai.usage-chart.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
-      "_react-redux-PZc35ELf.js",
+      "_react-redux-gtwWhNon.js",
       "src/index.tsx"
     ]
   },
   "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx": {
-    "file": "assets/settings.usage-DUr5YSJi.js",
+    "file": "assets/settings.usage-CVAWbvUi.js",
     "name": "settings.usage",
     "src": "src/app/pages/forms/edit/builder/tabs/form-settings/settings.usage.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
-      "_react-redux-PZc35ELf.js",
-      "_confirm-submissions.modal-DuKy8LYc.js",
+      "_react-redux-gtwWhNon.js",
+      "_confirm-submissions.modal-BOOXrYc8.js",
       "src/index.tsx"
-    ],
-    "css": [
-      "assets/settings-DT6oP9oN.css"
     ]
   },
   "src/app/pages/forms/list/modals/wizard/wizard.tsx": {
-    "file": "assets/wizard-SsTwXN6j.js",
+    "file": "assets/wizard-BIhVAknS.js",
     "name": "wizard",
     "src": "src/app/pages/forms/list/modals/wizard/wizard.tsx",
     "isDynamicEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
-      "_react-redux-PZc35ELf.js",
-      "_confirm-submissions.modal-DuKy8LYc.js",
+      "_react-redux-gtwWhNon.js",
+      "_confirm-submissions.modal-BOOXrYc8.js",
       "src/index.tsx"
     ]
   },
@@ -96,19 +97,15 @@
     "file": "assets/daisyui-Bb46CV6P.svg",
     "src": "src/assets/icons/formatting-templates/daisyui.svg"
   },
-  "src/assets/icons/formatting-templates/foundation.svg": {
-    "file": "assets/foundation-Ci2_O8Bq.svg",
-    "src": "src/assets/icons/formatting-templates/foundation.svg"
-  },
   "src/index.tsx": {
-    "file": "assets/index-BYFcM-ra.js",
+    "file": "assets/index-ypUGaspV.js",
     "name": "index",
     "src": "src/index.tsx",
     "isEntry": true,
     "imports": [
       "_rolldown-runtime-BWaJ3C7D.js",
-      "_react-redux-PZc35ELf.js",
-      "_confirm-submissions.modal-DuKy8LYc.js"
+      "_react-redux-gtwWhNon.js",
+      "_confirm-submissions.modal-BOOXrYc8.js"
     ],
     "dynamicImports": [
       "../../node_modules/.pnpm/date-fns@4.4.0/node_modules/date-fns/locale/nl.js",
@@ -120,11 +117,11 @@
       "src/app/pages/forms/list/modals/wizard/wizard.tsx"
     ],
     "css": [
-      "assets/index-CLAzhdmK.css"
+      "assets/index-DY7PZYs-.css"
     ],
     "assets": [
       "assets/daisyui-Bb46CV6P.svg",
-      "assets/foundation-Ci2_O8Bq.svg"
+      "assets/status-DQ2TQNLb.svg"
     ]
   }
 }

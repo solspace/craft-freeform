@@ -11,6 +11,6 @@ class SettingsBundle extends AbstractFreeformAssetBundle
 
     public function getStylesheets(): array
     {
-        return ['css/cp/settings/settings.css'];
+        return ['css/cp/settings/settings.css', 'css/cp/color-picker/color-picker.css'];
     }
 }

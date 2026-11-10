@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Carried forward Freeform 5.18.1 features and fixes, plus the latest form Link, Content Block, Hyper, Linkit, and Navigation integrations, adapted for Craft 6.
+
+### Changed
+- Aligned shared settings controls and control panel colors with native Craft 6 tokens, retaining compatibility with its upcoming appearance updates.
+
+### Fixed
+- Adapted form-link settings, address mapping, validation, and service lookups to Craft 6 APIs.
+- Corrected submission permission criteria for native queries and schema migration handling on MySQL.
+
 ## 6.0.0-beta.5 - 2026-10-27
 
 ### Fixed
@@ -37,6 +49,121 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.18.1 - 2026-11-10
+
+### Fixed
+- Fixed read-only project config upgrades to Freeform 5.18 and preserved deployed Activity Log settings.
+- Fixed stale drop positions and invalid column ordering when moving fields in the form builder.
+- Improved disabled settings controls, cards, and cursors, and hid Activity Log configuration when admin changes are disabled.
+- Corrected control colors, selected states, card backgrounds, chart axes, and table/range previews in light and dark modes.
+- Improved toolbar and calculation editor contrast, token hover colors, button icon alignment, and Attributes editor corners.
+- Fixed schedule date-picker layout shifts and icon alignment, improved clear controls, and outlined today's date.
+
+## 5.18.0 - 2026-11-09
+
+### Added
+- Added a customizable Pro **Forms dashboard** with resizable form cards, **Linear Chart**, **Radial Chart**, **Recent Submissions**, **Quick Form**, and **Activity & Health** widgets. Includes keyboard reordering, per-user layouts, form groups, and 7-, 30-, and 90-day trends.
+- Added **Activity Log** with submission timelines, filters, exports, sanitized diagnostics, retention controls, and options to resolve or reopen errors and operational warnings. New installs use Standard recording; upgrades use Minimal. Logging settings offer Activity, Classic file logging, or None.
+- Added a Pro-only **Location** field with Google Places autocomplete, manual entry, configurable address components, country restrictions, CSV columns, and React/Vue support. Address components can map directly to integrations, including full addresses and country/state codes, and are supported in sample formatting templates.
+- Added support for native Craft 5 Addresses fields in Entry and User integrations, including component mapping, edit prefilling, and address validation.
+- Added quick submission status changes, inline Spam approval and deletion, and session **Undo** for individual and bulk actions. Undoing approval does not reverse sent notifications or completed integrations.
+- Added **Send Notifications** with selectable form recipients, configured or shared templates, and additional email addresses. Renamed immediate resend to **Quick Resend**.
+- Added success and email notification template samples, starting points in the form-specific email editor, and formatting-template cloning under a chosen name.
+- Added a **Setup Guide** for reviewing and applying recommended site defaults, shared notifications, and Limited Users profiles, plus editable **Limited Users permission presets** with Undo.
+- Added a global **Allowed Upload Volumes** setting in General Settings to restrict upload destinations, including File Upload columns in Table fields. All volumes remain allowed by default; existing forms retain their saved destinations.
+- Added a **Freeform date/time picker** with searchable months and years, configurable time intervals, and keyboard navigation. Choose Freeform, Classic (Flatpickr), Browser, or None; existing fields and defaults retain their configured picker.
+- Added custom colors for banners and field errors, with Soft/Bold styles, builder defaults, and Limited Users controls. Existing forms retain their template colors.
+- Added optional sizing and cropping controls for Image fields.
+- Added Salesforce CRM Case creation with field mapping, assignment rules, file attachments, and links to related Accounts and Contacts.
+- Added optional **reCAPTCHA Enterprise** verification through Google Cloud for regular and headless forms, plus alternate script domains and hostname allowlists. Existing integrations retain Legacy verification.
+- Added editable starter lists for blocked emails, keywords, allowed gibberish terms, and URL tracking parameters, with duplicate skipping and Undo.
+- Confirmed compatibility with Craft **5.12.x**.
+
+### Changed
+- Updated control panel styles to use Craft's standard CSS variables.
+- Refreshed **Welcome** with setup resources and edition comparisons, and simplified the **Demo Templates** installer.
+- Simplified settings and builder controls with visual choices, page-button alignment options, and a visual toolbar editor for rich text fields and email templates.
+- Redesigned date/time settings with format previews and calendar pickers while retaining typed English date expressions.
+- Unified color controls with preset swatches and custom pickers. New forms receive a preset color automatically.
+- Number fields now use appropriate mobile keyboards, preserve invalid input for correction, and apply decimal precision consistently across regular, React, and Vue forms. Custom increments are preserved.
+- Website fields now add `https://` to bare domains, trim surrounding whitespace, and give clearer validation feedback across regular, React, and Vue forms.
+- The Spam list's status filter now includes all configured submission statuses alongside All and Trashed.
+- Submission Multi-Select fields now offer searchable selection tags.
+- Improved export profile filters and added compact date-range inputs with calendar pickers.
+- Streamlined integration and CAPTCHA setup with guided choices, clearer instructions, and Advanced panels that remember their state.
+- Renamed Pardot to Salesforce Account Engagement (Pardot), preserving connections and custom names.
+- New Dotdigital integrations default to Verified Double opt-in and HTML emails; existing selections are preserved.
+- Updated the Friendly Captcha SDK used by headless forms to match regular forms.
+- Dashboard alerts, diagnostics, and digests now follow the selected logging system. Critical error emails remain independent of activity recording.
+- Updated control panel descriptions and translations across all five supported languages.
+
+### Fixed
+- Fixed integration authorization failures exposing raw provider errors. OAuth callback URLs must now match the control panel's origin.
+- Fixed Salesforce and Account Engagement custom login URLs not resolving environment variables.
+- Fixed CAPTCHA service errors and outages being treated as spam, and tightened reCAPTCHA action, score, quota, and response validation.
+- Fixed CAPTCHA loading, language settings, and token handling across multiple forms and headless submissions, including Invisible reCAPTCHA v2. Friendly Captcha now waits for a token before submission.
+- Fixed email block-list patterns matching only part of an address, including `.ru` rules matching `.ru.com`.
+- Fixed guided and AI-assisted form creation failing when names contain punctuation.
+- Fixed duplicate field handles when adding or duplicating fields and Groups.
+- Fixed date/time limits discarding the time portion of expressions such as `12 hours ago`. Date-only limits include the entire day.
+- Fixed mouse-wheel and trackpad scrolling accidentally changing focused numeric settings in the form builder.
+- Fixed enabled-state indicators and conditional settings for boolean environment variables.
+- Fixed Settings tab navigation disrupting browser history.
+
+## 5.17.9 - 2026-11-09
+
+### Security
+- Fixed stored cross-site scripting in the form builder field picker when displaying field labels from other forms or favorites. Credit to [arpitjain099](https://github.com/arpitjain099) for reporting.
+
+## 5.17.8 - 2026-11-06
+
+### Security
+- Fixed a validation bypass that could allow underpayment on forms using dynamic payment amounts with Mollie, PayPal, Square, or Stripe. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
+
+## 5.17.7 - 2026-11-02
+
+### Added
+- Added a saved-form purge event for TTL and session-limit cleanup, including headless drafts, with deleted record identifiers and cleanup reason for custom integrations.
+
+### Changed
+- Clarified reCAPTCHA setup instructions and integration help text to distinguish Google Cloud keys using legacy verification from native Enterprise API support.
+
+### Fixed
+- Fixed Freeform GraphQL interface resolution when a GraphQL type prefix is configured.
+- Fixed GraphQL schemas including submission types for forms outside the schema's submission permissions.
+- Fixed stale GraphQL form-read permissions after switching schemas.
+- Fixed GraphQL mutation arguments using another form's fields when rebuilding a schema with cached submission types.
+- Fixed unnecessary field metadata processing slowing down GraphQL requests, including queries that do not use Freeform.
+- Fixed searchable Dropdown and Multi-Select fields appearing twice in the form builder Preview.
+- Fixed duplicate searchable-select arrows in daisyUI 5 sample formatting templates.
+- Fixed searchable field heights in Bootstrap 5 templates and missing or low-contrast search hints in floating-label and dark templates.
+
+### Security
+- Fixed a submission read-permission bypass that could allow control panel users to access submissions from unauthorized forms, including through element indexes and exports. Credit to [kta1kri](https://github.com/kta1kri) for reporting.
+- Updated dependencies to address credential disclosure and denial-of-service vulnerabilities.
+
+## 5.17.6 - 2026-10-28
+
+### Added
+- Added an optional **Optimize Photos** setting to File Upload and File Drag & Drop fields to convert supported photos to JPEG, apply orientation, remove metadata, and limit dimensions, quality and file size. HEIC/HEIF conversion requires Imagick with HEIC support. JPEG orientation with GD requires PHP EXIF. Upload limits still apply to the original file.
+
+### Changed
+- Improved Tailwind 4 light and dark upload spacing, placeholder sizing and stacked field layouts.
+- Replaced font-dependent searchable dropdown arrows with consistently sized, centered SVG chevrons.
+- Improved upload previews to wrap within their field, with readable filenames, file sizes and larger removal controls.
+
+### Fixed
+- Fixed allowed spam submissions not becoming searchable by their field values until search indexes were rebuilt.
+- Fixed log clearing on Craft 4 and routed email and integration errors exclusively to the Error log, so clearing it also clears dashboard error counts.
+- Fixed CSV exports silently omitting submissions when selecting submissions from multiple forms. Mixed-form selections now display an error toast asking users to select a single form, without opening a new tab.
+- Fixed File Drag & Drop browser size checks using a different KB unit than server validation.
+- Fixed file upload errors being ignored when another file in the same batch uploaded successfully.
+- Fixed GraphQL uploads leaving temporary files behind after unsuccessful asset saves.
+- Fixed upload requirement text overriding template instruction styling.
+
+### Security
+- Updated TinyMCE to address a stored cross-site scripting vulnerability in rich-text and email-template editors.
 
 ## 5.17.5 - 2026-10-27
 

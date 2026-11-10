@@ -8,6 +8,7 @@ use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
+use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use yii\web\Response;
 
 class SurveySettingsController extends BaseController
@@ -33,6 +34,8 @@ class SurveySettingsController extends BaseController
         }
 
         $fieldTypes = array_filter($fieldTypes);
+
+        $this->view->registerAssetBundle(SettingsBundle::class);
 
         return $this->renderTemplate(
             'freeform-surveys/settings',

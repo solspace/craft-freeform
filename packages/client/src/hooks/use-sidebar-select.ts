@@ -13,14 +13,14 @@ const setSelected = (
     return;
   }
 
-  const sidebar = element.querySelector(".sidebar-action--sub");
+  const sidebar = element.querySelector(".sidebar-action--sub, a");
 
   if (selected) {
-    child.classList.add("sel");
+    child?.classList.add("sel");
     sidebar?.classList.add("sel");
     sidebar?.setAttribute("aria-current", "page");
   } else {
-    child.classList.remove("sel");
+    child?.classList.remove("sel");
     sidebar?.classList.remove("sel");
     sidebar?.removeAttribute("aria-current");
   }
@@ -33,7 +33,7 @@ export const useSidebarSelect = (urlPart: string): void => {
     );
 
     navItems.forEach((item) => {
-      const url = item.querySelector("a.sidebar-action")?.getAttribute("href");
+      const url = item.querySelector("a")?.getAttribute("href");
       setSelected(item, url?.includes(urlPart) ?? false);
     });
 

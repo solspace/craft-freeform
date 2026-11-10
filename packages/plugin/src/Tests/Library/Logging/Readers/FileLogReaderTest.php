@@ -30,6 +30,20 @@ class FileLogReaderTest extends TestCase
         $this->assertEquals(['password' => 'reda**********', 'username' => 'testuser'], $lastLine->getContext());
     }
 
+    public function testFilteredCountsIncludeTheFirstEntryAndCanBeRepeated(): void
+    {
+        $reader = new FileLogReader(__DIR__.'/test.log');
+        self::assertSame(2, $reader->count('debug'));
+        self::assertSame(2, $reader->count(['DEBUG']));
+        self::assertSame(0, $reader->count('error'));
+        self::assertCount(2, $reader->getLines());
+
+        $reader->next();
+        $key = $reader->key();
+        self::assertSame(2, $reader->count('debug'));
+        self::assertSame($key, $reader->key());
+    }
+
     public function testReadFirst5(): void
     {
         $reader = new FileLogReader(__DIR__.'/test-large.log');

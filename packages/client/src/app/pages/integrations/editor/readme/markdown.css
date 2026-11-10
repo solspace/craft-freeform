@@ -3,8 +3,8 @@
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   margin: 0;
-  color: #24292f;
-  background-color: #fff;
+  color: var(--text-color, #24292f);
+  background-color: var(--pane-bg, #fff);
   font-family:
     -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
     Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -43,7 +43,7 @@
   display: none !important;
 }
 .markdown-body a {
-  color: #0969da;
+  color: var(--link-color, #0969da);
   text-decoration: none;
   background-color: transparent;
 }
@@ -63,10 +63,10 @@
   margin: 0.67em 0;
   font-size: 2em;
   font-weight: 600;
-  border-bottom: 1px solid #d7dde3;
+  border-bottom: 1px solid var(--hairline-color, #d7dde3);
 }
 .markdown-body mark {
-  color: #24292f;
+  color: var(--text-color, #24292f);
   background-color: #fff8c5;
 }
 .markdown-body small {
@@ -108,9 +108,9 @@
   margin: 24px 0;
   overflow: hidden;
   background: 0 0;
-  background-color: #d0d7de;
+  background-color: var(--hairline-color, #d0d7de);
   border: 0;
-  border-bottom: 1px solid #d7dde3;
+  border-bottom: 1px solid var(--hairline-color, #d7dde3);
 }
 .markdown-body input {
   margin: 0;
@@ -150,7 +150,7 @@
   text-decoration: underline;
 }
 .markdown-body ::placeholder {
-  color: #6e7781;
+  color: var(--light-text-color, #6e7781);
   opacity: 1;
 }
 .markdown-body hr::before {
@@ -223,8 +223,8 @@
     monospace;
   line-height: 10px;
   vertical-align: middle;
-  color: #24292f;
-  background-color: #f6f8fa;
+  color: var(--text-color, #24292f);
+  background-color: var(--gray-050, #f6f8fa);
   border: solid 1px rgba(175, 184, 193, 0.2);
   border-bottom-color: rgba(175, 184, 193, 0.2);
   border-radius: 6px;
@@ -245,7 +245,7 @@
   padding-bottom: 0.3em;
   font-size: 1.5em;
   font-weight: 600;
-  border-bottom: 1px solid #d7dde3;
+  border-bottom: 1px solid var(--hairline-color, #d7dde3);
 }
 .markdown-body h3 {
   font-size: 1.25em;
@@ -262,7 +262,7 @@
 .markdown-body h6 {
   font-size: 0.85em;
   font-weight: 600;
-  color: #57606a;
+  color: var(--light-text-color, #57606a);
 }
 .markdown-body p {
   margin-top: 0;
@@ -271,8 +271,8 @@
 .markdown-body blockquote {
   padding: 0 1em;
   margin: 0;
-  color: #57606a;
-  border-left: 0.25em solid #d0d7de;
+  color: var(--light-text-color, #57606a);
+  border-left: 0.25em solid var(--hairline-color, #d0d7de);
 }
 .markdown-body ol,
 .markdown-body ul {
@@ -388,7 +388,7 @@
 .markdown-body h6 .octicon-link {
   visibility: hidden;
   vertical-align: middle;
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body h1:hover .anchor,
 .markdown-body h2:hover .anchor,
@@ -498,14 +498,14 @@
 .markdown-body table td,
 .markdown-body table th {
   padding: 6px 13px;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--hairline-color, #d0d7de);
 }
 .markdown-body table tr {
-  background-color: #fff;
-  border-top: 1px solid #d7dde3;
+  background-color: var(--pane-bg, #fff);
+  border-top: 1px solid var(--hairline-color, #d7dde3);
 }
 .markdown-body table tr:nth-child(2n) {
-  background-color: #f6f8fa;
+  background-color: var(--gray-050, #f6f8fa);
 }
 .markdown-body table img {
   background-color: transparent;
@@ -532,7 +532,7 @@
   padding: 7px;
   margin: 13px 0 0;
   overflow: hidden;
-  border: 1px solid #d0d7de;
+  border: 1px solid var(--hairline-color, #d0d7de);
 }
 .markdown-body span.frame span img {
   float: left;
@@ -542,7 +542,7 @@
   clear: both;
   display: block;
   padding: 5px 0 0;
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body span.align-center {
   clear: both;
@@ -638,7 +638,7 @@
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: #f6f8fa;
+  background-color: var(--gray-050, #f6f8fa);
   border-radius: 6px;
 }
 .markdown-body pre code,
@@ -665,7 +665,7 @@
 .markdown-body .csv-data .blob-num {
   padding: 10px 8px 9px;
   text-align: right;
-  background: #fff;
+  background: var(--pane-bg, #fff);
   border: 0;
 }
 .markdown-body .csv-data tr {
@@ -673,7 +673,7 @@
 }
 .markdown-body .csv-data th {
   font-weight: 600;
-  background: #f6f8fa;
+  background: var(--gray-050, #f6f8fa);
   border-top: 0;
 }
 .markdown-body [data-footnote-ref]::before {
@@ -684,8 +684,8 @@
 }
 .markdown-body .footnotes {
   font-size: 12px;
-  color: #57606a;
-  border-top: 1px solid #d0d7de;
+  color: var(--light-text-color, #57606a);
+  border-top: 1px solid var(--hairline-color, #d0d7de);
 }
 .markdown-body .footnotes ol {
   padding-left: 16px;
@@ -710,13 +710,13 @@
   border-radius: 6px;
 }
 .markdown-body .footnotes li:target {
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body .footnotes .data-footnote-backref g-emoji {
   font-family: monospace;
 }
 .markdown-body .pl-c {
-  color: #6e7781;
+  color: var(--light-text-color, #6e7781);
 }
 .markdown-body .pl-c1,
 .markdown-body .pl-s .pl-v {
@@ -728,7 +728,7 @@
 }
 .markdown-body .pl-s .pl-s1,
 .markdown-body .pl-smi {
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body .pl-ent {
   color: #116329;
@@ -775,11 +775,11 @@
 }
 .markdown-body .pl-mi {
   font-style: italic;
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body .pl-mb {
   font-weight: 700;
-  color: #24292f;
+  color: var(--text-color, #24292f);
 }
 .markdown-body .pl-md {
   color: #82071e;
@@ -802,7 +802,7 @@
   color: #8250df;
 }
 .markdown-body .pl-ba {
-  color: #57606a;
+  color: var(--light-text-color, #57606a);
 }
 .markdown-body .pl-sg {
   color: #8c959f;

@@ -27,6 +27,14 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
     theme,
     size,
     action,
+    language: container.dataset.language || "auto",
+    "expired-callback": () => {
+      const id = element.dataset.captchaId;
+      if (id) {
+        // @ts-expect-error Turnstile exposes its API globally.
+        turnstile.reset(id);
+      }
+    },
   });
 
   element.dataset.captchaId = String(captchaId);
@@ -68,7 +76,11 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 
 addListeners(
   document,
-  [events.form.ajaxAfterSubmit, events.dragAndDrop.afterUpload],
+  [
+    events.form.ajaxAfterSubmit,
+    events.form.afterFailedSubmit,
+    events.dragAndDrop.afterUpload,
+  ],
   async (event: FreeformEvent) => {
     loadCaptcha(event.form, true)
       .then(() => {

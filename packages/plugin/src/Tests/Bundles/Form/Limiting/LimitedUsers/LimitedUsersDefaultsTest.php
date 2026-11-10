@@ -34,4 +34,26 @@ class LimitedUsersDefaultsTest extends TestCase
         $compiled = $provider->compileSettings(json_decode(json_encode($items), true));
         self::assertFalse($compiled['preview.tab']);
     }
+
+    public function testCustomBannerColorsCanBeRestrictedWithoutHidingSuccessAndErrors(): void
+    {
+        $fields = $this->createMock(FieldTypesProvider::class);
+        $fields->method('getTypes')->willReturn([]);
+        $options = $this->createMock(OptionTypesProvider::class);
+        $options->method('getElementTypes')->willReturn([]);
+        $options->method('getPredefinedTypes')->willReturn([]);
+        $defaults = new LimitedUsersDefaults($fields, $options);
+        $provider = new LimitedUsersProvider();
+        $parent = 'settings.tab.success-and-errors';
+        $path = $parent.'.customMessageColors';
+
+        $items = $provider->applySettings($defaults->get(), [$parent => true]);
+        $compiled = $provider->compileSettings(json_decode(json_encode($items), true));
+        self::assertTrue($compiled[$path]);
+
+        $items = $provider->applySettings($defaults->get(), [$parent => true, $path => false]);
+        $compiled = $provider->compileSettings(json_decode(json_encode($items), true));
+        self::assertTrue($compiled[$parent]);
+        self::assertFalse($compiled[$path]);
+    }
 }

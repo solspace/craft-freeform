@@ -60,7 +60,7 @@ const tabDimensions = css`
   font-family: inherit;
 `;
 
-export const TabsWrapper = styled.div`
+export const TabsWrapper = styled.div.attrs({ className: "freeform-tabs" })`
   display: flex;
   width: max-content;
   max-width: 100%;

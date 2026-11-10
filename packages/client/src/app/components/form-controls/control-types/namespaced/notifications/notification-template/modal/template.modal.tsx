@@ -35,6 +35,7 @@ import {
   configuration,
   type NotificationConfiguration,
 } from "./template.modal.types";
+import { TemplateStartingPoint } from "./template.starting-point";
 
 const firstTab = configuration[0].name;
 
@@ -106,7 +107,8 @@ export const EditNotificationModal: React.FC<
 
   useEffect(() => {
     if (template) {
-      setState(template);
+      const { samples: _samples, ...values } = template;
+      setState(values);
     }
   }, [template]);
 
@@ -119,7 +121,7 @@ export const EditNotificationModal: React.FC<
             loading={isLoading}
             spinner
           >
-            {template?.name || "New Template"}
+            {state?.name || template?.name || translate("New Template")}
           </LoadingText>
         </h1>
       </ModalHeader>
@@ -143,6 +145,18 @@ export const EditNotificationModal: React.FC<
       </TabList>
 
       <ModalContent>
+        {!id && data?.type === "form" && template && state && (
+          <div hidden={activeTab !== firstTab}>
+            <TemplateStartingPoint
+              defaults={template}
+              value={state}
+              onChange={(fields) => {
+                setState((previous) => ({ ...previous, ...fields }));
+                setErrors({});
+              }}
+            />
+          </div>
+        )}
         {!isLoading &&
           template !== undefined &&
           configuration.map((tab) => (
@@ -203,7 +217,12 @@ export const EditNotificationModal: React.FC<
         <button type="button" className="btn cancel" onClick={closeModal}>
           {translate("Close")}
         </button>
-        <button type="button" className="btn submit" onClick={handleSave}>
+        <button
+          type="button"
+          className="btn submit"
+          onClick={handleSave}
+          disabled={isLoading || !state || mutation.isPending}
+        >
           <LoadingText
             loadingText={translate("Saving")}
             loading={mutation.isPending}

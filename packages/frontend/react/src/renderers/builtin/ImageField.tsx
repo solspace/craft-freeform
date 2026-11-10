@@ -4,6 +4,7 @@ export function ImageFieldRenderer(props: ReactFieldRendererProps) {
   const contentClass =
     props.classNames.content ?? props.classNames.input ?? "ff-field__content";
   const config = (props.field.frontend?.config ?? {}) as {
+    style?: Record<string, string>;
     src?: string | null;
     srcset?: string | null;
     alt?: string | null;
@@ -12,6 +13,7 @@ export function ImageFieldRenderer(props: ReactFieldRendererProps) {
     props.field.content as
       | {
           image?: {
+            style?: Record<string, string>;
             src?: string | null;
             srcset?: string | null;
             alt?: string | null;
@@ -32,6 +34,16 @@ export function ImageFieldRenderer(props: ReactFieldRendererProps) {
       className={contentClass}
       src={src}
       srcSet={srcset || undefined}
+      style={Object.fromEntries(
+        Object.entries(image?.style ?? config.style ?? {}).map(
+          ([key, value]) => [
+            key.replace(/-([a-z])/g, (_match, letter: string) =>
+              letter.toUpperCase(),
+            ),
+            value,
+          ],
+        ),
+      )}
       alt={alt}
     />
   );

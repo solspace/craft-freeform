@@ -6,6 +6,7 @@
 {% set saveShortcutRedirect = 'freeform/settings/statuses/{id}' %}
 
 {% set fullPageForm = true %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\ColorPickerBundle') %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },

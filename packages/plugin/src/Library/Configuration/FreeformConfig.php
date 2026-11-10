@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Services\ActivityHealthService;
 use Solspace\Freeform\Services\SettingsService;
 
 class FreeformConfig implements \JsonSerializable
@@ -58,6 +59,8 @@ class FreeformConfig implements \JsonSerializable
                     'canOrganizeForms' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE),
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
                     'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
+                    'canUseSetupGuide' => $settings->canUseSetupGuide(),
+                    'canViewActivity' => ActivityHealthService::canAccess($settingsModel->getEffectiveLoggingStyle()),
                 ],
                 'tinymce' => [
                     'stylesPath' => \Craft::$app->assetManager->getPublishedUrl('@freeform/Resources/css/cp/tinymce/style.css', true),

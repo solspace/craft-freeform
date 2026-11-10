@@ -9,6 +9,7 @@ export { FileFieldRenderer } from "./FileField.js";
 export { HiddenFieldRenderer } from "./HiddenField.js";
 export { HtmlFieldRenderer } from "./HtmlField.js";
 export { ImageFieldRenderer } from "./ImageField.js";
+export { LocationFieldRenderer } from "./LocationField.js";
 export { MolliePaymentFieldRenderer } from "./MolliePaymentField.js";
 export { MultipleSelectFieldRenderer } from "./MultipleSelectField.js";
 export { NumberFieldRenderer } from "./NumberField.js";

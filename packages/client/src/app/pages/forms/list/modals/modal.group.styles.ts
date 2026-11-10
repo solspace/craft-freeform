@@ -63,7 +63,7 @@ export const IconButton = styled.button`
   cursor: pointer;
   svg { display: block; width: 16px; height: 16px; }
   &.group-handle svg, &.group-rename svg { fill: currentColor; }
-  &.group-handle { cursor: grab; color: ${colors.gray400}; }
+  &.group-handle { cursor: grab; color: light-dark(${colors.gray400}, ${colors.muted}); }
   &.group-handle:active { cursor: grabbing; }
   &:hover { background: ${colors.gray100}; color: ${colors.gray700}; }
   &.group-remove:hover { background: ${colors.red050}; color: ${colors.red600}; }

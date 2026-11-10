@@ -200,7 +200,9 @@ class Submission extends Element
 
     public static function gqlScopesByContext(mixed $context): array
     {
-        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$context->uid];
+        $uid = $context instanceof Form ? $context->getUid() : $context->uid;
+
+        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$uid];
     }
 
     public static function gqlMutationNameByContext(mixed $context): string
@@ -500,7 +502,13 @@ class Submission extends Element
 
     public function canView(User $user): bool
     {
-        return true;
+        foreach ([Freeform::PERMISSION_SUBMISSIONS_READ, Freeform::PERMISSION_SUBMISSIONS_MANAGE] as $permission) {
+            if ($user->can($permission) || ($this->formId && $user->can(PermissionHelper::prepareNestedPermission($permission, $this->formId)))) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getCpEditUrl(): ?string
@@ -871,7 +879,7 @@ class Submission extends Element
     protected function tableAttributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
-            return $this->getStatusModel()->name;
+            return $this->statusAttributeHtml(Html::encode($this->getStatusModel()->name));
         }
 
         if ('userId' === $attribute) {
@@ -925,7 +933,7 @@ class Submission extends Element
     protected function attributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
-            return Cp::componentStatusLabelHtml($this);
+            return $this->statusAttributeHtml(Cp::componentStatusLabelHtml($this) ?? '');
         }
 
         if ('userId' === $attribute) {
@@ -978,6 +986,21 @@ class Submission extends Element
     protected function getNotesService(): NotesService
     {
         return Freeform::getInstance()->notes;
+    }
+
+    private function statusAttributeHtml(string $label): string
+    {
+        if ($this->isHidden || $this->trashed || !$this->getIsEditable()) {
+            return $label;
+        }
+
+        return Html::tag('span', $label, [
+            'data' => [
+                'freeform-submission-status' => true,
+                'submission-id' => $this->id,
+                'status-id' => $this->statusId,
+            ],
+        ]);
     }
 
     private function generateToken(): void

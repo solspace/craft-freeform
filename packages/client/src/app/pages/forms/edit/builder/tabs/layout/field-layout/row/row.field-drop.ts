@@ -4,9 +4,9 @@ import type { Row } from "@editor/builder/types/layout";
 import { useAppDispatch } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
 import type { RefObject } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ConnectDropTarget } from "react-dnd";
-import { useDrop } from "react-dnd";
+import { useDragDropManager, useDrop } from "react-dnd";
 
 type FieldDrop = {
   isOver: boolean;
@@ -34,8 +34,24 @@ export const useRowFieldDrop = (
   width: number,
 ): FieldDropHook => {
   const dispatch = useAppDispatch();
+  const manager = useDragDropManager();
   const [fieldWidth, setFieldWidth] = useState<number>();
   const [hoverPosition, setHoverPosition] = useState<number>();
+
+  const getPosition = useCallback(
+    (item: DragItem, offset: { x: number; y: number } | null) => {
+      if (!item || !offset || !wrapperRef.current) return undefined;
+      const bounds = wrapperRef.current.getBoundingClientRect();
+      if (bounds.width <= 0) return undefined;
+      const sameRow = item.type === Drag.Field && item.data.rowUid === row.uid;
+      const count = fieldCount + (sameRow ? 0 : 1);
+      const position = Math.floor(
+        (offset.x - bounds.x) / (bounds.width / count),
+      );
+      return Math.max(0, Math.min(count - 1, position));
+    },
+    [wrapperRef, row.uid, fieldCount],
+  );
 
   const [
     { isOver, isCurrentRow, dragFieldIndex, isDraggingField, canDrop },
@@ -59,38 +75,17 @@ export const useRowFieldDrop = (
         };
       },
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
-      hover: (item, monitor) => {
-        if (width === undefined || !wrapperRef.current) {
-          return;
-        }
-
-        const isThisRow =
-          item.type === Drag.Field && item.data.rowUid === row.uid;
-
-        const count = fieldCount + (isThisRow ? 0 : 1);
-        if (count <= 1) {
-          return;
-        }
-
-        // Read the row's viewport x-position on demand (during an active drag)
-        // rather than storing it in state, which would cause re-renders on every
-        // scroll or resize and feed back into the ResizeObserver loop.
-        const offsetX = wrapperRef.current.getBoundingClientRect().x;
-        const offset = monitor.getClientOffset();
-        const x = offset.x - offsetX;
-
-        const position = Math.floor(x / (width / count));
-        if (hoverPosition !== position) {
-          setHoverPosition(position);
-        }
-      },
-      drop: (item) => {
+      drop: (item, monitor) => {
+        // The native backend hovers and drops in one event. React may not have
+        // rendered that last hover, so resolve the release coordinates directly.
+        const position = getPosition(item, monitor.getClientOffset());
+        if (position === undefined) return;
         if (item.type === Drag.Field) {
           dispatch(
             fieldThunks.move.existingField.existingRow(
               item.data,
               row,
-              hoverPosition,
+              position,
             ),
           );
         } else if (item.type === Drag.FieldType) {
@@ -98,7 +93,7 @@ export const useRowFieldDrop = (
             fieldThunks.move.newField.existingRow({
               fieldType: item.data,
               row,
-              order: hoverPosition,
+              order: position,
             }),
           );
         }
@@ -106,8 +101,25 @@ export const useRowFieldDrop = (
         setHoverPosition(undefined);
       },
     },
-    [wrapperRef, row, fieldCount, hoverPosition, width],
+    [row, getPosition],
   );
+
+  useEffect(() => {
+    if (!isOver) {
+      setHoverPosition(undefined);
+      return;
+    }
+    const monitor = manager.getMonitor();
+    const updatePosition = () => {
+      setHoverPosition(
+        getPosition(monitor.getItem<DragItem>(), monitor.getClientOffset()),
+      );
+    };
+    // hover() runs before React DnD publishes the new pointer offset. Subscribe
+    // to the committed offset, only while this row is the active drop target.
+    updatePosition();
+    return monitor.subscribeToOffsetChange(updatePosition);
+  }, [manager, isOver, getPosition]);
 
   useEffect(() => {
     let count = fieldCount;

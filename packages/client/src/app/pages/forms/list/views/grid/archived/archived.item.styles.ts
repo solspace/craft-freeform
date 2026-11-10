@@ -12,7 +12,7 @@ export const Item = styled.li`
   list-style: none;
 
   & + & { border-top: 1px solid ${colors.hairline}; }
-  &:hover { background: #fbfcfe; }
+  &:hover { background: light-dark(#fbfcfe, color-mix(in srgb, var(--ui-control-hover-bg-color) 40%, var(--pane-bg))); }
   &.disabled { opacity: .6; }
 
   @container archived-forms (max-width: 640px) {
@@ -120,6 +120,6 @@ export const DeleteButton = styled.button`
   cursor: pointer;
 
   svg { width: 18px; height: 18px; }
-  &:hover:not(:disabled) { color: #b91c1c; background: #fff1f2; }
+  &:hover:not(:disabled) { color: light-dark(#b91c1c, var(--fg-error)); background: light-dark(#fff1f2, var(--bg-error)); }
   &:focus-visible { outline: 2px solid #b91c1c; outline-offset: 1px; }
 `;

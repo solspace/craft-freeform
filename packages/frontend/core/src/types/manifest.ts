@@ -29,6 +29,9 @@ export type ManifestCaptchaSecurity = ManifestSecurityIntegration & {
   failureBehavior?: string;
   triggerOnInteract?: boolean;
   version?: string | null;
+  verificationMode?: "legacy" | "enterprise";
+  frontendMode?: "managed" | "external";
+  scriptDomain?: "google.com" | "recaptcha.net";
   action?: string | null;
   scoreThreshold?: string | number | null;
   startMode?: string;
@@ -71,6 +74,7 @@ export type ManifestFieldDefinition = {
     rendered?: { html?: string };
     structured?: unknown;
     image?: {
+      style?: Record<string, string>;
       src?: string | null;
       srcset?: string | null;
       alt?: string | null;

@@ -40,7 +40,7 @@ export const Subtitle = styled.p`
   padding: 0;
 
   font-size: 1rem;
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
 
   &:not(:last-child) {
     padding-bottom: 1.5rem;

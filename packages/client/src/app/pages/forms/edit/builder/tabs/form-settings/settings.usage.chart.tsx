@@ -74,6 +74,12 @@ export const SubmissionActivityChart = ({
     if (!root || !canvas) return;
 
     const styles = getComputedStyle(root);
+    const mutedColor = () =>
+      getComputedStyle(root).getPropertyValue("--light-text-color").trim() ||
+      "#596673";
+    const gridColor = () =>
+      getComputedStyle(root).getPropertyValue("--hairline-color").trim() ||
+      "#dce4ec";
     const chart = new Chart<"line", number[], string>(canvas, {
       type: "line",
       plugins: [
@@ -115,14 +121,18 @@ export const SubmissionActivityChart = ({
           x: {
             type: "category",
             grid: { display: false },
-            ticks: { maxTicksLimit: 8, maxRotation: 0 },
+            ticks: { color: mutedColor, maxTicksLimit: 8, maxRotation: 0 },
+            border: { display: false },
           },
           y: {
             type: "linear",
             beginAtZero: true,
             suggestedMax: 1,
             grace: "10%",
+            grid: { color: gridColor },
+            border: { display: false },
             ticks: {
+              color: mutedColor,
               maxTicksLimit: 6,
               precision: 0,
               format: { maximumFractionDigits: 0 },
@@ -140,7 +150,17 @@ export const SubmissionActivityChart = ({
       },
     });
     chartRef.current = chart;
+    let palette = `${mutedColor()}|${gridColor()}`;
+    const themeObserver = new MutationObserver(() => {
+      const next = `${mutedColor()}|${gridColor()}`;
+      if (next !== palette) {
+        palette = next;
+        chart.update("none");
+      }
+    });
+    themeObserver.observe(document.documentElement, { attributes: true });
     return () => {
+      themeObserver.disconnect();
       chart.destroy();
       chartRef.current = null;
       root.querySelector(".freeform-chart-tooltip")?.remove();

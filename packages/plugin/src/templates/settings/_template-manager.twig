@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
 {% import "_includes/forms" as forms %}
+{% import 'freeform/_components/settings-cards' as cards %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -9,22 +10,32 @@
 
 {% set title = "Template Manager"|t("freeform") %}
 
-{% macro listFiles(folder, files) %}
+{% do view.registerTranslations('freeform', [
+    'Clone a Sample Template',
+    'Sample',
+    'Framework libraries are not cloned. Load the framework in your site layout if this sample uses one.',
+    'New template name',
+    'Cancel',
+    'Clone Template',
+    'Use letters, numbers, spaces, hyphens, or underscores.',
+    'Could not clone the sample template.',
+]) %}
 
-    <ul class="directory-structure">
-        <li class="dir">
-            <span>{{ folder }}</span>
-            <ul>
-                {% for file in files %}
-                    <li class="file">
-                        <label>{{ file.name }}</label>
-                        <small style="font-family: monospace; color: #afa5a5;">{{ file.fileName }}</small>
-                    </li>
-                {% endfor %}
-            </ul>
-        </li>
-    </ul>
-
+{% macro listFiles(files) %}
+    {% if files|length %}
+        <ul class="ff-template-file-list">
+            {% for file in files %}
+                {% set name = file.name is defined ? file.name : file %}
+                {% set fileName = file.fileName is defined ? file.fileName : file %}
+                <li>
+                    <span class="ff-template-file-name">{{ name }}</span>
+                    {% if fileName != name %}<code>{{ fileName }}</code>{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="ff-template-empty">{{ "No Twig files found in this directory yet."|t('freeform') }}</p>
+    {% endif %}
 {% endmacro %}
 
 {% block content %}
@@ -34,6 +45,8 @@
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/template-manager') }}
     {{ csrfInput() }}
+
+    <div class="ff-template-manager">
 
     <h2 class="first">{{ "Formatting Templates"|t('freeform') }}</h2>
 
@@ -60,17 +73,21 @@
         name: "settings[formTemplateDirectory]",
         value: settings.formTemplateDirectory,
         errors: settings.getErrors("formTemplateDirectory"),
-        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        instructions: "Choose an existing directory inside Craft's templates folder. Twig files here control form markup."|t('freeform'),
         placeholder: "e.g. _freeform/formatting",
     }) }}
 
     {% if settings.absoluteFormTemplateDirectory %}
-
-        <div id="components-wrapper">
-            <div>
+        {% set formattingFiles = freeform.plugin.settings.customFormTemplates %}
+        <div class="ff-template-directory-preview">
+            <div class="ff-template-directory-header">
+                <div class="ff-template-directory-title">
+                    <strong>{{ settings.formTemplateDirectory }}</strong>
+                    <span class="ff-template-file-count">{{ formattingFiles|length }} {{ "files"|t('freeform') }}</span>
+                </div>
                 <div class="btn-group">
                     {% if not readOnly %}
-                        <button type="button" class="btn submit small icon add menubtn" id="add-formatting-template">
+                        <button type="button" class="btn small icon add menubtn" id="add-formatting-template">
                             {{ "Clone a Sample Template"|t('freeform') }}
                         </button>
                     {% endif %}
@@ -84,12 +101,8 @@
                         </ul>
                     </div>
                 </div>
-
-                {{ _self.listFiles(
-                    settings.formTemplateDirectory,
-                    freeform.plugin.settings.customFormTemplates
-                ) }}
             </div>
+            {{ _self.listFiles(formattingFiles) }}
         </div>
     {% endif %}
 
@@ -120,23 +133,34 @@
         value: settings.successTemplateDirectory,
         errors: settings.getErrors("successTemplateDirectory"),
         disabled: readOnly,
-        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        instructions: "Choose an existing directory inside Craft's templates folder. Twig files here render success messages."|t('freeform'),
         placeholder: "e.g. _freeform/success",
     }) }}
 
     {% if settings.absoluteSuccessTemplateDirectory %}
-
-        <div id="components-wrapper">
-            <div>
-                <button type="button" class="btn submit small icon add add-sample-template" id="add-success-template">
-                    {{ "Add Sample"|t('freeform') }}
-                </button>
-
-                {{ _self.listFiles(
-                    settings.successTemplateDirectory,
-                    freeform.plugin.settings.successTemplates
-                ) }}
+        {% set successFiles = freeform.plugin.settings.successTemplates %}
+        <div class="ff-template-directory-preview">
+            <div class="ff-template-directory-header">
+                <div class="ff-template-directory-title">
+                    <strong>{{ settings.successTemplateDirectory }}</strong>
+                    <span class="ff-template-file-count">{{ successFiles|length }} {{ "files"|t('freeform') }}</span>
+                </div>
+                {% if not readOnly %}
+                    <div class="btn-group">
+                        <button type="button" class="btn small icon add menubtn" id="add-success-template">
+                            {{ "Add Sample"|t('freeform') }}
+                        </button>
+                        <div class="menu" id="success-sample-template-list">
+                            <ul>
+                                {% for id, sample in successTemplateSamples %}
+                                    <li><a data-sample="{{ id }}">{{ sample.name|t('freeform') }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
+            {{ _self.listFiles(successFiles) }}
         </div>
     {% endif %}
 
@@ -144,36 +168,48 @@
 
     <h2>{{ "Email Notification Templates"|t('freeform') }}</h2>
 
-    {{ forms.selectField({
+    {% set templateMethods = {
+        form: {label: 'Form-specific only', description: 'Create email templates for individual forms.', path: 'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h4'},
+        global: {label: 'Global only', description: 'Use shared email templates across forms.', path: 'M4 4h6v6H4ZM14 4h6v6h-6ZM4 14h6v6H4ZM14 14h6v6h-6Z'},
+        all: {label: 'Form-specific & Global', description: 'Allow both form-specific and shared email templates.', path: 'M3 3h11v14H3ZM7 7h11v14H7M10 11h5M10 15h5'},
+    } %}
+    {% set templateMethodInput %}
+        <div class="ff-choice-cards">
+            {% for value, option in templateMethods %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({id:'template-method-' ~ value, name:'settings[emailTemplateMethod]', value:value, selected:settings.emailTemplateMethod == value, disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
         label: "Template Method"|t('freeform'),
         id: 'template-method',
+        fieldset: true,
         instructions: "Choose whether you want to use form-specific templates, global templates, or both."|t('freeform'),
-        name: "settings[emailTemplateMethod]",
-        value: settings.emailTemplateMethod,
         errors: settings.errors().get("emailTemplateMethod"),
-        disabled: readOnly,
-        options: {
-            "form": "Form-specific only" | t('freeform'),
-            "global": "Global only" | t('freeform'),
-            "all": "Form-specific & Global" | t('freeform'),
-        },
-    }) }}
+    }, templateMethodInput) }}
 
     <div id="global-email-block" class="{{ settings.emailTemplateMethod == 'form' ? 'hidden' }}">
-        {{ forms.selectField({
+        {% set storageTypes = {
+            files: {label:'File', description:'Store Twig templates in your project files.', path:'M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h4'},
+            database: {label:'Database', description:'Store templates in Craft and edit them in the control panel.', path:'M20 6c0 2-16 2-16 0s16-2 16 0ZM4 6v12c0 2 16 2 16 0V6M4 12c0 2 16 2 16 0'},
+            files_database: {label:'File & Database', description:'Make both file and database templates available.', path:'M3 3h10v14H3ZM13 8c0-2 8-2 8 0v11c0 2-8 2-8 0ZM13 8c0 2 8 2 8 0M13 14c0 2 8 2 8 0'},
+        } %}
+        {% set storageTypeInput %}
+            <div class="ff-choice-cards">
+                {% for value, option in storageTypes %}
+                    {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                    {{ cards.compactChoice({id:'storage-type-' ~ value, name:'settings[emailTemplateStorageType]', value:value, selected:settings.emailTemplateStorageType == value, disabled:readOnly, label:option.label|t('freeform'), description:option.description|t('freeform'), icon:icon}) }}
+                {% endfor %}
+            </div>
+        {% endset %}
+        {{ forms.field({
             label: "Template Storage Type"|t('freeform'),
             id: 'storage-type',
+            fieldset: true,
             instructions: "Choose whether you want to enable email notification templates stored as files, in the database, or have both options available."|t('freeform'),
-            name: "settings[emailTemplateStorageType]",
-            value: settings.emailTemplateStorageType,
             errors: settings.errors().get("emailTemplateStorageType"),
-            disabled: readOnly,
-            options: {
-                "files": "File" | t('freeform'),
-                "database": "Database" | t('freeform'),
-                "files_database": "File & Database" | t('freeform'),
-            },
-        }) }}
+        }, storageTypeInput) }}
 
         <div class="hidden">
             {{ forms.lightswitchField({
@@ -241,35 +277,34 @@
                 value: settings.emailTemplateDirectory,
                 errors: settings.getErrors("emailTemplateDirectory"),
                 disabled: readOnly,
-                instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
+                instructions: "Choose an existing directory inside Craft's templates folder. Twig files here power email notifications."|t('freeform'),
                 placeholder: "e.g. _freeform/notifications",
             }) }}
 
             {% if settings.absoluteEmailTemplateDirectory %}
-
-                <div id="components-wrapper">
-                    <div style="margin: 0;">
+                {% set emailFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
+                <div class="ff-template-directory-preview">
+                    <div class="ff-template-directory-header">
+                        <div class="ff-template-directory-title">
+                            <strong>{{ settings.emailTemplateDirectory }}</strong>
+                            <span class="ff-template-file-count">{{ emailFiles|length }} {{ "files"|t('freeform') }}</span>
+                        </div>
                         {% if not readOnly %}
-                            <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
-                                {{ "Add Sample"|t('freeform') }}
-                            </button>
+                            <div class="btn-group">
+                                <button type="button" class="btn small icon add menubtn" id="add-email-template">
+                                    {{ "Add Sample"|t('freeform') }}
+                                </button>
+                                <div class="menu" id="email-sample-template-list">
+                                    <ul>
+                                        {% for id, sample in emailTemplateSamples %}
+                                            <li><a data-sample="{{ id }}">{{ sample.name|t('freeform') }}</a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
                         {% endif %}
-
-                        {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
-
-                        <ul class="directory-structure">
-                            <li class="dir">
-                                <span>{{ settings.emailTemplateDirectory }}</span>
-                                <ul>
-                                    {% for file in templateFiles %}
-                                        <li class="file">
-                                            <span>{{ file }}</span>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        </ul>
                     </div>
+                    {{ _self.listFiles(emailFiles) }}
                 </div>
 
             {% endif %}
@@ -352,60 +387,117 @@
 
     {% endif %}
 
+    </div>
+
 {% endblock %}
 
+{% css %}
+    .ff-template-manager > hr { margin-inline: calc(var(--padding, var(--pane-padding, 24px)) * -1); }
+
+    .ff-template-manager #formTemplateDirectory,
+    .ff-template-manager #successTemplateDirectory,
+    .ff-template-manager #emailTemplateDirectory { max-width: 900px; }
+
+    .ff-template-directory-preview {
+        width: min(100%, 900px);
+        margin: 14px 0 4px;
+        border: 1px solid var(--hairline-color, #dce3eb);
+        border-radius: 8px;
+        background: var(--pane-bg, #fff);
+    }
+    .ff-template-directory-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        min-height: 52px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--hairline-color, #dce3eb);
+        border-radius: 8px 8px 0 0;
+        background: var(--gray-050, #f7f9fc);
+    }
+    .ff-template-directory-title {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px 10px;
+        min-width: 0;
+        color: var(--text-color, #3f4d5a);
+    }
+    .ff-template-directory-title::before {
+        content: "folder";
+        font: 16px/1 Craft;
+        color: var(--gray-500, #708095);
+    }
+    .ff-template-directory-title strong { overflow-wrap: anywhere; }
+    .ff-template-file-count {
+        padding: 2px 7px;
+        border-radius: 999px;
+        background: var(--gray-200, #e6edf4);
+        color: var(--gray-600, #627182);
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .ff-template-directory-header .btn-group { flex: 0 0 auto; }
+    .ff-template-directory-header .btn { display: inline-flex; align-items: center; justify-content: center; }
+    .ff-template-file-list { margin: 0; padding: 4px 0; list-style: none; }
+    .ff-template-file-list li {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 36px;
+        padding: 6px 14px;
+    }
+    .ff-template-file-list li + li { border-top: 1px solid var(--hairline-color, #edf0f4); }
+    .ff-template-file-list li::before {
+        content: "templates";
+        flex: 0 0 16px;
+        font: 15px/1 Craft;
+        color: var(--gray-500, #708095);
+    }
+    .ff-template-file-name { min-width: 0; overflow-wrap: anywhere; }
+    .ff-template-file-list code {
+        margin-inline-start: auto;
+        padding: 0;
+        background: transparent;
+        color: var(--gray-500, #8491a0);
+        font-size: 11px;
+        white-space: nowrap;
+    }
+    .ff-template-empty { margin: 0; padding: 14px; color: var(--gray-500, #708095); }
+    @media (max-width: 700px) {
+        .ff-template-directory-header { align-items: flex-start; flex-wrap: wrap; }
+        .ff-template-file-list li { flex-wrap: wrap; }
+        .ff-template-file-list code { width: 100%; margin-inline-start: 24px; white-space: normal; }
+    }
+{% endcss %}
+
 {% js %}
-    var dataEmail = {
-        templateName: "emailsample",
-    };
-
-    dataEmail["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
-
-    $("#add-email-template").on({
-        click: function() {
-            $.ajax({
-                url: "{{ url("freeform/settings/add-email-template") }}",
-                type: "post",
-                dataType: "json",
-                data: dataEmail,
-                success: function(response) {
-                    if (!response.errors.length) {
-                        window.location.reload();
-                    } else {
-                        for (var i = 0; i < response.errors.length; i++ ) {
-                            var message = response.errors[i];
-                            Craft.cp.displayError(message);
+    function addMessageTemplateSample(button, endpoint) {
+        if (!$(button).length) return;
+        new Garnish.MenuBtn($(button), {
+            onOptionSelect: function(option) {
+                var data = { sample: $(option).data('sample') };
+                data["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
+                $.ajax({
+                    url: endpoint,
+                    type: 'post',
+                    dataType: 'json',
+                    data: data,
+                    success: function(response) {
+                        if (!response.errors.length) {
+                            window.location.reload();
+                        } else {
+                            response.errors.forEach(function(message) { Craft.cp.displayError(message); });
                         }
-                    }
-                }
-            });
-        }
-    });
+                    },
+                    error: function() { Craft.cp.displayError({{ 'Could not add the sample template.'|t('freeform')|json_encode|raw }}); }
+                });
+            }
+        });
+    }
 
-    var dataSuccess = {
-        templateName: "successsample",
-    };
-
-    dataSuccess["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
-
-    $("#add-success-template").on({
-        click: function() {
-            $.ajax({
-                url: "{{ url("freeform/settings/add-success-template") }}",
-                type: "post",
-                dataType: "json",
-                data: dataSuccess,
-                success: function(response) {
-                    if (!response.errors.length) {
-                        window.location.reload();
-                    } else {
-                        for (var i = 0; i < response.errors.length; i++ ) {
-                            var message = response.errors[i];
-                            Craft.cp.displayError(message);
-                        }
-                    }
-                }
-            });
-        }
-    });
+    addMessageTemplateSample('#add-email-template', "{{ url('freeform/settings/add-email-template') }}");
+    addMessageTemplateSample('#add-success-template', "{{ url('freeform/settings/add-success-template') }}");
 {% endjs %}

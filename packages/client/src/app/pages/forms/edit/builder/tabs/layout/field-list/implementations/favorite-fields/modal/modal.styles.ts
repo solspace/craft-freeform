@@ -45,6 +45,7 @@ export const FavoritesEditorWrapper = styled.div`
       height: ${titleIconSize}px;
 
       svg {
+    fill: currentColor;
         max-width: ${titleIconSize}px;
         max-height: ${titleIconSize}px;
       }
@@ -134,6 +135,7 @@ export const Icon = styled.div`
 
   &,
   svg {
+    fill: currentColor;
     height: 20px;
     width: 20px;
   }

@@ -26,4 +26,7 @@
 {% block body %}
     {{ parent() }}
     {% include 'freeform/_components/shell-indicators' %}
+    {% if elementType in ['Solspace\\Freeform\\Elements\\Submission', 'Solspace\\Freeform\\Elements\\SpamSubmission'] %}
+        {% include 'freeform/submissions/_undo' %}
+    {% endif %}
 {% endblock %}

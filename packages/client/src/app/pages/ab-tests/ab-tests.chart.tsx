@@ -1,3 +1,4 @@
+import { colors } from "@ff-client/styles/variables";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import {
@@ -48,10 +49,11 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
           data={chartData}
           margin={{ top: 12, right: 12, left: 0, bottom: 0 }}
         >
-          <CartesianGrid stroke="#e5e7eb99" vertical={false} />
+          <CartesianGrid stroke={colors.hairline} vertical={false} />
 
           <XAxis
             dataKey="date"
+            tick={{ fill: colors.muted }}
             axisLine={false}
             tickLine={false}
             interval={2}
@@ -64,12 +66,21 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
           />
 
           <YAxis
+            tick={{ fill: colors.muted }}
             axisLine={false}
             tickLine={false}
             tickFormatter={(value) => `${value}${isRate ? "%" : ""}`}
           />
 
           <Tooltip
+            contentStyle={{
+              background: colors.overlay,
+              border: `1px solid ${colors.border}`,
+              borderRadius: 4,
+              boxShadow: "var(--menu-shadow)",
+            }}
+            labelStyle={{ color: colors.text }}
+            cursor={{ stroke: colors.muted }}
             formatter={(value: number) =>
               isRate ? formatRate(Number(value)) : Number(value)
             }

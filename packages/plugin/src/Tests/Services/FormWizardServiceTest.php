@@ -14,10 +14,12 @@ use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
+use Solspace\Freeform\Bundles\Form\Types\Pages\Page;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\DataObjects\FormWizard\PresetCatalog;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -51,6 +53,17 @@ class FormWizardServiceTest extends TestCase
     protected function tearDown(): void
     {
         \Craft::$app = $this->previousApp;
+    }
+
+    #[TestWith(['Freeform 5.18 Craft 4 compatibility QA'])]
+    #[TestWith(['Quote / Event: 5.18'])]
+    #[TestWith(['Demande d’inscription – été'])]
+    #[TestWith(['!!!'])]
+    public function testGeneratedHandlesRemainValidForNamesWithPunctuation(string $name): void
+    {
+        $payload = $this->service()->payload(array_replace($this->input(), ['name' => $name]));
+        self::assertMatchesRegularExpression('/^[a-zA-Z0-9_]+$/D', $payload->form->settings->general->handle);
+        self::assertSame($name, $payload->form->settings->general->name);
     }
 
     public function testPresetsFitExpressAndFallbackWithoutLosingTheirQuestions(): void
@@ -109,6 +122,30 @@ class FormWizardServiceTest extends TestCase
         self::assertSame('1', $rating->properties->optionConfiguration['options'][0]['value']);
         self::assertObjectNotHasProperty('maxValue', $rating->properties);
         self::assertSame([], $payload->notifications);
+    }
+
+    public function testStartingPointUsesAnAvailableSelectedFormTypeAndDefaultsToRegular(): void
+    {
+        $service = $this->service(editable: ['type'], extraOptions: [
+            'formTypes' => [
+                ['value' => Regular::class, 'label' => 'Regular'],
+                ['value' => Page::class, 'label' => 'Page'],
+            ],
+        ]);
+        self::assertSame(Regular::class, $service->payload($this->input())->form->type);
+
+        $payload = $service->payload($this->input() + ['type' => Page::class]);
+        self::assertSame(Page::class, $payload->form->type);
+        self::assertSame(Page::class, $payload->form->settings->general->type);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $service->payload($this->input() + ['type' => 'Unregistered\Form']);
+    }
+
+    public function testStartingPointRejectsUnavailablePageType(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->service()->payload($this->input() + ['type' => Page::class]);
     }
 
     public function testEveryStartingPointSetsItsMatchingIconInCreationAndPreview(): void

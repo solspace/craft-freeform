@@ -312,7 +312,7 @@ class FormMonitorController extends BaseApiController
         try {
             $formMonitor = $this->getFormMonitor();
             $client = $this->clientProvider->getAuthorizedClient($formMonitor);
-            $settingsService = Freeform::getInstance()->get('settings');
+            $settingsService = Freeform::getInstance()->settings;
 
             if ($settingsService->isManagedPingerEnabled()) {
                 $settingsService->disablePinging();
@@ -335,7 +335,7 @@ class FormMonitorController extends BaseApiController
         try {
             $formMonitor = $this->getFormMonitor();
             $client = $this->clientProvider->getAuthorizedClient($formMonitor);
-            $settingsService = Freeform::getInstance()->get('settings');
+            $settingsService = Freeform::getInstance()->settings;
 
             if ($settingsService->isManagedPingerEnabled()) {
                 $settingsService->disablePinging();

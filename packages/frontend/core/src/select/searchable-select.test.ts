@@ -34,6 +34,15 @@ afterEach(() => {
 });
 
 describe("searchable select", () => {
+  it("uses a fixed-size decorative chevron with an accessible toggle label", () => {
+    const { control } = setup();
+    const toggle = control.element.querySelector(".ff-searchable__toggle")!;
+    const icon = toggle.querySelector("svg")!;
+    expect(toggle.getAttribute("aria-label")).toBe("Show options");
+    expect(icon.getAttribute("aria-hidden")).toBe("true");
+    expect(icon.getAttribute("width")).toBe("16");
+    expect(icon.getAttribute("height")).toBe("16");
+  });
   it("uses the visible outline for borderless Tailwind selects and preserves real borders", () => {
     const { control, select } = setup();
     select.style.color = "white";

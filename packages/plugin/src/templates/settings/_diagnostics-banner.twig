@@ -1,0 +1,10 @@
+{% import 'freeform/_components/status-icon' as statusIcons %}
+{% set level = counts.error ? 'error' : (counts.warning ? 'warning' : (counts.notice ? 'notice' : 'success')) %}
+<div class="pane ff-diag-banner ff-status-surface" data-status="{{ level }}" role="status">
+    {% for severity,labels in {error:['{count} potential issue', '{count} potential issues'], warning:['{count} warning', '{count} warnings'], notice:['{count} notice', '{count} notices']} %}
+        {% if counts[severity] %}
+            <span class="ff-diag-banner-metric" data-status="{{ severity }}">{{ statusIcons.icon(severity) }}<span>{{ labels[counts[severity] == 1 ? 0 : 1]|t('freeform', {count:counts[severity]|number}) }}</span></span>
+        {% endif %}
+    {% endfor %}
+    {% if level == 'success' %}<span class="ff-diag-banner-metric is-clear">{{ statusIcons.icon('success') }}<strong>{{ 'No errors or warnings'|t('freeform') }}</strong></span>{% endif %}
+</div>

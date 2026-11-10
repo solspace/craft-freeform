@@ -21,10 +21,10 @@ export const ActionMenuButton = styled.button`
   height: var(--ui-control-height);
   padding: 0;
 
-  border: 1px solid ${colors.gray250};
+  border: var(--button-border, none);
   border-radius: ${borderRadius.md};
-  background: ${colors.white};
-  color: ${colors.gray700};
+  background: light-dark(${colors.white}, var(--button-bg, ${colors.overlay}));
+  color: light-dark(${colors.gray700}, var(--button-text-color, ${colors.gray700}));
 
   svg {
     width: 18px;
@@ -34,7 +34,7 @@ export const ActionMenuButton = styled.button`
 
   &:hover,
   &.open {
-    background: rgba(96, 125, 159, 0.3);
+    background: light-dark(rgba(96, 125, 159, 0.3), var(--button-bg--hover, ${colors.gray100}));
   }
 `;
 
@@ -46,7 +46,7 @@ export const ActionMenuDropdown = styled.div`
 
   min-width: 120px;
 
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.overlay});
   box-shadow: ${shadows.boxSubtle};
 
   border: 1px solid ${colors.gray200};
@@ -68,7 +68,7 @@ export const ActionMenuItem = styled.button<{ $destructive?: boolean }>`
     $destructive ? colors.red600 : colors.gray700};
 
   border: 0;
-  border-top: 1px solid ${colors.gray200};
+  border-top: 0;
 
   font-size: 12px;
   text-align: left;

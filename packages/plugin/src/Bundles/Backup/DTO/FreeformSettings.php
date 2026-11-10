@@ -14,6 +14,7 @@ class FreeformSettings
     public ?string $defaultView = null;
     public ?array $formCreationOptions = null;
     public ?string $defaultAiIntegration = null;
+    public array|string|null $allowedUploadVolumes = null;
     public ?bool $removeNewlines = null;
     public ?bool $exportLabels = null;
     public ?bool $exportHandlesAsNames = null;

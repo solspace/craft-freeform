@@ -14,9 +14,13 @@
 namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\Notification;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\LoggerService;
+use Solspace\Freeform\Services\SettingsService;
 
 class NoticesController extends BaseApiController
 {
@@ -26,13 +30,15 @@ class NoticesController extends BaseApiController
         $config,
         private FreeformFeedService $feedService,
         private LoggerService $loggerService,
+        private ActivityService $activityService,
+        private SettingsService $settingsService,
     ) {
         parent::__construct($id, $module, $config ?? []);
     }
 
     protected function get(): array|object
     {
-        $messages = $this->feedService->getUnreadFeedMessages();
+        $messages = $this->settingsService->isDisplayFeed() ? $this->feedService->getUnreadFeedMessages() : [];
 
         $notices = [];
         foreach ($messages as $message) {
@@ -54,9 +60,36 @@ class NoticesController extends BaseApiController
             }
         );
 
+        $settings = $this->settingsService->getSettingsModel();
+        $style = $settings->getEffectiveLoggingStyle();
+        $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $errorLog = match ($style) {
+            'classic' => $canAccessSettings ? 'classic' : null,
+            'activity' => $canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS) ? 'activity' : null,
+            default => null,
+        };
+        $warningCounts = match ($errorLog) {
+            'classic' => $this->loggerService->getWarningLogCounts(),
+            'activity' => ['activity' => $this->activityService->getOperationalWarningCount()],
+            default => [],
+        };
+        $warningLogs = [];
+        foreach ($warningCounts as $log => $count) {
+            if ($count) {
+                $warningLogs[] = ['log' => $log, 'count' => $count];
+            }
+        }
+
         return [
             'notices' => $notices,
-            'errors' => $this->loggerService->getCombinedLogLineCount(['error']),
+            'errors' => match ($errorLog) {
+                'classic' => $this->loggerService->getErrorLogLineCount(),
+                'activity' => $this->activityService->getErrorCount(),
+                default => 0,
+            },
+            'errorLog' => $errorLog,
+            'activityRetentionDays' => 'activity' === $errorLog ? max(1, min(365, $settings->activityRetentionDays)) : null,
+            'warningLogs' => $warningLogs,
         ];
     }
 

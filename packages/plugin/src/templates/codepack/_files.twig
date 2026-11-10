@@ -1,0 +1,18 @@
+{% macro tree(folder, prefix) %}
+    <ul class="directory-structure">
+        {{ _self.item(folder, prefix) }}
+    </ul>
+{% endmacro %}
+
+{% macro item(file, prefix = null) %}
+    <li class="{{ file.isFolder ? 'dir' : 'file' }}">
+        <span{% if prefix is not null %} data-name="/"{% endif %}>{{ prefix is not null ? prefix ~ '/' : file.name }}</span>
+        {% if file.isFolder %}
+            <ul>
+                {% for child in file.files %}
+                    {{ _self.item(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}

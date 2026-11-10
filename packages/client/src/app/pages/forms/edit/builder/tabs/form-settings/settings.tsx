@@ -36,10 +36,10 @@ export const FormSettings: React.FC = () => {
   const { data, isFetching } = useQueryFormSettings();
 
   useEffect(() => {
-    if (lastTab) {
-      navigate(`${lastTab}${tourSearch}`);
+    if (lastTab && !sectionHandle) {
+      navigate(`${lastTab}${tourSearch}`, { replace: true });
     }
-  }, [navigate, lastTab, tourSearch]);
+  }, [navigate, lastTab, sectionHandle, tourSearch]);
 
   useEffect(() => {
     if (!sectionHandle && !lastTab) {
@@ -49,7 +49,7 @@ export const FormSettings: React.FC = () => {
 
       if (firstSection) {
         setLastTab(firstSection.handle);
-        navigate(`${firstSection.handle}${tourSearch}`);
+        navigate(`${firstSection.handle}${tourSearch}`, { replace: true });
       }
     }
   }, [data, sectionHandle, lastTab, navigate, setLastTab, tourSearch]);

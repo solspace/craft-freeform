@@ -24,6 +24,30 @@ use Solspace\Freeform\Services\Integrations\IntegrationsService;
 #[CoversClass(FormGenerationService::class)]
 class FormGenerationServiceTest extends TestCase
 {
+    public function testGeneratedNamesWithPunctuationReachPersistenceWithValidHandles(): void
+    {
+        $integration = $this->getMockBuilder(OpenAIV1::class)->disableOriginalConstructor()->onlyMethods(['processAiRequest', 'getModel', 'getMaxTokens'])->getMock();
+        $integration->method('getModel')->willReturn('test-model');
+        $integration->method('getMaxTokens')->willReturn(1000);
+        $integration->method('processAiRequest')->willReturn('{"name":"Quote / Event: 5.18","fields":[]}');
+        $provider = $this->createMock(IntegrationClientProvider::class);
+        $provider->method('getAuthorizedClient')->willReturn(new Client());
+        $forms = $this->createMock(FormsService::class);
+        $forms->expects(self::once())->method('getUniqueNameAndHandle')
+            ->with('Quote / Event: 5.18', self::callback(static fn (string $handle): bool => 1 === preg_match('/^[a-zA-Z0-9_]+$/D', $handle)))
+            ->willThrowException(new \RuntimeException('Valid handle reached persistence'))
+        ;
+        $service = $this->getMockBuilder(FormGenerationService::class)->setConstructorArgs([
+            $this->createMock(IntegrationsService::class), $provider,
+            $this->createMock(PropertyProvider::class), $this->createMock(FormTransformer::class), $forms,
+        ])->onlyMethods(['validateRequest', 'getSystemPrompt'])->getMock();
+        $service->method('validateRequest')->willReturn($integration);
+        $service->method('getSystemPrompt')->willReturn('system');
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Valid handle reached persistence');
+        $service->generate('Create a quote form', null, 'integration');
+    }
+
     public function testOpenAIGenerationHonorsConfiguredBudgetAndDoesNotForceLowReasoning(): void
     {
         $integration = (new \ReflectionClass(OpenAIV1::class))->newInstanceWithoutConstructor();

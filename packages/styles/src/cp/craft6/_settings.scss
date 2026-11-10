@@ -55,10 +55,10 @@
   #content.content-pane {
     padding: var(--c-spacing-lg, 16px);
 
-    // Keep ordinary settings readable on wide screens. Editors, tables, and
-    // checkbox groups retain their available space; small inputs stay small.
+    // Native settings controls use their field width, matching Craft 6.
     :is(craft-input, craft-input-handle, craft-input-password, craft-input-date, craft-input-time, craft-select, craft-combobox, .freeform-boolean-menu, .autosuggest-container, .select, .selectize-control) {
-      max-inline-size: min(100%, 40rem);
+      inline-size: 100%;
+      max-inline-size: 100%;
     }
 
     // Native fields need their own rhythm, but conditional wrappers and the

@@ -1,5 +1,4 @@
 {% extends "freeform/_layouts/settings" %}
-{% import "_includes/forms" as forms %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -7,22 +6,14 @@
     { label: "Demo Templates"|t("freeform"), url: url("freeform/settings/demo-templates") },
 ] %}
 
-{% set selectedSubnavItem = "settings" %}
 {% set title = "Demo Templates"|t('freeform') %}
+
+{% set fullPageForm = false %}
 
 {% block actionButton %}{% endblock %}
 
 {% block content %}
-
-    {% set stats = {
-        templates: codePack.templates.contents.fileCount,
-        assets: codePack.assets.contents.fileCount
-    } %}
-
-    <div class="zilch">
-        {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t('freeform', stats)|raw }}
-        <br /><br />
-        <small><a href="{{ siteUrl ~ prefix ~ '/' }}">{{ 'View the Demo area now!'|t('freeform') }}</a></small>
+    <div class="freeform-demo-installer">
+        {% include 'freeform/codepack/_success' %}
     </div>
-
 {% endblock %}

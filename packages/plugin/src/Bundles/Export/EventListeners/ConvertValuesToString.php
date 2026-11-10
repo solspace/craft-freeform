@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Bundles\Export\EventListeners;
 
 use Solspace\Freeform\Bundles\Export\Events\PrepareExportValueEvent;
+use Solspace\Freeform\Bundles\Export\Implementations\Csv\ExportCsv;
 use Solspace\Freeform\Bundles\Export\Interfaces\StringValueExportInterface;
 use Solspace\Freeform\Bundles\Export\SubmissionExportInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\LocationField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\StringHelper;
@@ -35,7 +37,7 @@ class ConvertValuesToString extends FeatureBundle
         $field = $event->getField();
         $value = $event->getValue();
 
-        if ($field instanceof TableField) {
+        if ($field instanceof TableField || ($field instanceof LocationField && $event->getExporter() instanceof ExportCsv)) {
             return;
         }
 

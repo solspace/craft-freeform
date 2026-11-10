@@ -2,6 +2,8 @@
 
 {% import "_includes/forms" as forms %}
 {% import "freeform/_components/boolean-menu" as booleanMenu %}
+{% import "freeform/_components/measurement" as measurement %}
+{% import "freeform/_components/settings-cards" as cards %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -90,33 +92,70 @@
 
     <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
 
-    {{ forms.selectField({
+    {% set scriptLocations = {
+        footer: {label: 'Page Footer', description: 'Inserts scripts at the end of the page body.', path: 'M4 15h16M8 18h8'},
+        header: {label: 'Start of Page', description: 'Inserts scripts at the beginning of the page body, before the page content.', path: 'M4 9h16M8 6h8'},
+        form: {label: 'Inside Form', description: 'Outputs scripts with the form markup instead of registering them with the page.', path: 'M8 8h8M8 12h8M8 16h5'},
+        manual: {label: 'None (add manually)', description: 'Disables automatic insertion. Load Freeform’s scripts and styles in your templates.', path: 'm9 9-3 3 3 3m6-6 3 3-3 3'},
+    } %}
+    {% set scriptLocationInput %}
+        <div class="ff-choice-cards">
+            {% for location, option in scriptLocations %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({
+                    id: 'script-location-' ~ location,
+                    name: 'settings[scriptInsertLocation]',
+                    value: location,
+                    selected: settings.scriptInsertLocation == location,
+                    recommended: location == 'footer',
+                    disabled: readOnly,
+                    label: option.label|t('freeform'),
+                    description: option.description|t('freeform'),
+                    icon: icon,
+                }) }}
+            {% endfor %}
+        </div>
+        <p class="warning with-icon" data-script-insert-warning role="status" {{ settings.scriptInsertLocation != 'manual' ? 'hidden' }}>
+            {{ "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)."|t('freeform') }}
+        </p>
+    {% endset %}
+    {{ forms.field({
+        id: 'script-insert-location',
+        fieldset: true,
         label: "Script Insert Location"|t('freeform'),
-        instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
-        name: "settings[scriptInsertLocation]",
-        value: settings.scriptInsertLocation,
+        instructions: "Choose where Freeform inserts the scripts used by forms and fields."|t('freeform'),
         errors: settings.errors().get("scriptInsertLocation"),
-        disabled: readOnly,
-        options: {
-            "footer": "Page Footer (recommended)"|t('freeform'),
-            "header": "Page Header"|t('freeform'),
-            "form": "Inside Form"|t('freeform'),
-            "manual": "None (add manually)"|t('freeform'),
-        },
-    }) }}
+    }, scriptLocationInput) }}
 
-    {{ forms.selectField({
+    {% set scriptTypes = {
+        files: {label: 'Asset Bundles', description: 'Loads JavaScript and CSS as separate files, so browsers can cache them.', path: 'M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9ZM14 3v6h6M8 13h8M8 17h5'},
+        inline: {label: 'Inline', description: 'Embeds JavaScript and CSS directly in the page HTML.', path: 'm8 8-4 4 4 4m8-8 4 4-4 4m-3-11-2 14'},
+    } %}
+    {% set scriptTypeInput %}
+        <div class="ff-choice-cards">
+            {% for type, option in scriptTypes %}
+                {% set icon %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="{{ option.path }}"/></svg>{% endset %}
+                {{ cards.compactChoice({
+                    id: 'script-type-' ~ type,
+                    name: 'settings[scriptInsertType]',
+                    value: type,
+                    selected: settings.scriptInsertType == type,
+                    recommended: type == 'files',
+                    disabled: readOnly,
+                    label: option.label|t('freeform'),
+                    description: option.description|t('freeform'),
+                    icon: icon,
+                }) }}
+            {% endfor %}
+        </div>
+    {% endset %}
+    {{ forms.field({
+        id: 'script-insert-type',
+        fieldset: true,
         label: "Script Insert Type"|t('freeform'),
-        instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
-        name: "settings[scriptInsertType]",
-        value: settings.scriptInsertType,
+        instructions: "Choose how Freeform’s JavaScript and CSS are included in the page."|t('freeform'),
         errors: settings.errors().get("scriptInsertType"),
-        disabled: readOnly,
-        options: {
-            "files": "Asset Bundles (recommended)"|t('freeform'),
-            "inline": "Inline"|t('freeform'),
-        },
-    }) }}
+    }, scriptTypeInput) }}
 
     <hr>
 
@@ -150,11 +189,12 @@
     {% endif %}
 
     <div id="session-time" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ forms.autosuggestField({
+        {{ measurement.field({
             class: "code",
-            label: "Session length in minutes"|t('freeform'),
+            label: "Session Length"|t('freeform'),
             instructions: "Specify when the sessions should expire. Set to 0 for unlimited."|t('freeform'),
             name: "settings[sessionContextTimeToLiveMinutes]",
+            unit: "minutes"|t('freeform'),
             value: settings.sessionContextTimeToLiveMinutes,
             errors: settings.getErrors("sessionContextTimeToLiveMinutes"),
             disabled: readOnly,
@@ -163,11 +203,11 @@
     </div>
 
     <div id="session-count" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
-        {{ forms.autosuggestField({
+        {{ measurement.field({
             class: "code",
             label: "Amount of active forms per user"|t('freeform'),
-            instructions: "Specify the amount of active forms a user can have."|t('freeform'),
             name: "settings[sessionContextCount]",
+            unit: "forms"|t('freeform'),
             value: settings.sessionContextCount,
             errors: settings.getErrors("sessionContextCount"),
             disabled: readOnly,
@@ -221,10 +261,11 @@
             }
         }) }}
 
-        {{ forms.textField({
+        {{ measurement.field({
             label: "Maximum Number of Saved Forms Per Session"|t('freeform'),
             instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number. Once the maximum has been reached, Freeform will begin overwriting existing older entries to create new ones."|t('freeform'),
             name: "settings[saveFormSessionLimit]",
+            unit: "forms"|t('freeform'),
             value: settings.saveFormSessionLimit,
             errors: settings.errors().get("saveFormSessionLimit"),
             disabled: readOnly,
@@ -234,8 +275,6 @@
     {% endif %}
 
 
-    <div id="script-insert-warning" class="hidden">
-        {{- "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)."|t('freeform') -}}
-    </div>
+
 
 {% endblock %}

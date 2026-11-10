@@ -13,12 +13,15 @@
 
 namespace Solspace\Freeform\Library\Logging;
 
+use Monolog\Handler\FilterHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Level;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Logging\Handlers\ActivityLogHandler;
 use Solspace\Freeform\Library\Logging\Handlers\ErrorNotificationHandler;
 use Solspace\Freeform\Library\Logging\Processors\RedactSensitiveInfoProcessor;
 
@@ -31,25 +34,54 @@ class LoggerFactory
         string $logfilePath,
         ?int $level = null
     ): LoggerInterface {
-        static $requestId;
-        if (null === $requestId) {
-            $requestId = CryptoHelper::getUniqueToken(6);
-        }
-
-        $hash = sha1($category.$logfilePath);
+        $plugin = Freeform::getInstance();
+        $settings = $plugin->getSettings();
+        $writeFiles = $settings->isClassicLoggingEnabled();
+        $notifyErrors = '' !== trim((string) $settings->errorNotificationRecipients);
+        $hash = sha1($category.':'.$logfilePath.':'.$level.':'.(int) $writeFiles.':'.(int) $notifyErrors);
 
         if (!isset(self::$instance[$hash])) {
             $logger = new Logger($category);
+            $activitySource = match (basename($logfilePath)) {
+                'freeform-email.log' => 'email',
+                'freeform-integrations.log' => 'integrations',
+                default => 'system',
+            };
+            $logger->pushHandler(new ActivityLogHandler($activitySource, $category));
 
-            $plugin = Freeform::getInstance();
-            $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
-            $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
-            $logger->pushProcessor(new RedactSensitiveInfoProcessor());
-            $logger->pushProcessor(static function ($record) use ($requestId) {
-                $record['extra']['requestId'] = $requestId;
+            if ($notifyErrors) {
+                $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
+            }
+            $errorLogfilePath = FreeformLogger::getLogfilePath(null);
+            if ($writeFiles) {
+                if ($logfilePath === $errorLogfilePath) {
+                    $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
+                } else {
+                    $logger->pushHandler(new StreamHandler($errorLogfilePath, self::defaultErrorLevel()));
+                    $logger->pushHandler(new FilterHandler(
+                        new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()),
+                        Logger::DEBUG,
+                        Logger::WARNING,
+                    ));
+                }
+            }
+            if ($writeFiles || $notifyErrors) {
+                static $requestId;
+                $requestId ??= CryptoHelper::getUniqueToken(6);
+                $redactor = new RedactSensitiveInfoProcessor();
+                $logger->pushProcessor(static function ($record) use ($writeFiles, $redactor) {
+                    $level = $record instanceof LogRecord ? $record->level->value : $record['level'];
 
-                return $record;
-            });
+                    // Typed Activity diagnostics only consume numeric markers. Do not
+                    // inspect their raw context unless a file/notification needs it.
+                    return $writeFiles || $level >= Logger::ERROR ? $redactor($record) : $record;
+                });
+                $logger->pushProcessor(static function ($record) use ($requestId) {
+                    $record['extra']['requestId'] = $requestId;
+
+                    return $record;
+                });
+            }
 
             self::$instance[$hash] = $logger;
         }

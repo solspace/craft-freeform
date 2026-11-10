@@ -8,6 +8,7 @@ use craft\helpers\StringHelper;
 use craft\records\UserPermission;
 use craft\records\UserPermission_User;
 use craft\records\UserPermission_UserGroup;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMapping;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
@@ -195,7 +196,7 @@ class FormDuplicator
             $clone->formId = $form->id;
             $clone->rowId = $this->rows[$field->rowId]->id;
 
-            if (GroupField::class === $clone->type) {
+            if (is_a($clone->type, GroupField::class, true)) {
                 $metadata = JsonHelper::decode($clone->metadata);
                 $metadata->layout = $this->layoutsUids[$metadata->layout]->uid;
                 $clone->metadata = json_encode($metadata);
@@ -376,10 +377,6 @@ class FormDuplicator
                             continue;
                         }
 
-                        if (!isset($this->fieldUidMap[$value->value])) {
-                            continue;
-                        }
-
                         if (!isset($metadata->{$handle}->{$key}) || !\is_object($metadata->{$handle}->{$key})) {
                             continue;
                         }
@@ -388,7 +385,7 @@ class FormDuplicator
                             continue;
                         }
 
-                        $metadata->{$handle}->{$key}->value = $this->fieldUidMap[$value->value];
+                        $metadata->{$handle}->{$key}->value = FieldMapItem::remapReference($value->value, $this->fieldUidMap);
                     }
                 }
 

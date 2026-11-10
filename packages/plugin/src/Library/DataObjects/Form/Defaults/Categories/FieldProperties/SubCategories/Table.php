@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldPr
 use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
+use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\BoolItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
@@ -28,12 +29,15 @@ class Table extends BaseCategory
     public SelectItem $limitRows;
 
     #[Label('Minimum number of rows')]
+    #[Unit('rows')]
     public TextItem $minRows;
 
     #[Label('Maximum number of rows')]
+    #[Unit('rows')]
     public TextItem $maxRows;
 
     #[Label('Exact number of rows')]
+    #[Unit('rows')]
     public TextItem $exactRows;
 
     #[Label('Add Button Label')]

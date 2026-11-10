@@ -10,6 +10,7 @@ use craft\elements\db\ElementQuery;
 use craft\events\PopulateElementEvent;
 use craft\helpers\Db;
 use CraftCms\Cms\Element\Queries\Exceptions\QueryAbortedException;
+use Illuminate\Database\Query\Builder;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
@@ -497,9 +498,9 @@ class SubmissionQuery extends ElementQuery
             $this->query->select($select);
         }
 
-        $isEmptyFormId = empty($this->formId);
-        $isIndex = !$request->getIsConsoleRequest() && 'index' === $request->post('context');
-        if ($isEmptyFormId && $isCpRequest && $isIndex) {
+        // CP criteria and element-index context are client-controlled. Always
+        // intersect requested forms with the current user's readable forms.
+        if ($isCpRequest && !$isConsoleRequest) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();
             $this->applySubmissionWhere([$table.'.[[formId]]' => $allowedFormIds]);
         }
@@ -609,41 +610,61 @@ class SubmissionQuery extends ElementQuery
 
     private function applyCraft6Where(mixed $condition): void
     {
-        if (\is_array($condition) && !\array_is_list($condition)) {
-            foreach ($condition as $column => $value) {
-                $this->where($this->normalizeSqlColumn((string) $column), $value);
+        $apply = function (Builder $query, mixed $condition) use (&$apply): void {
+            if (!$condition) {
+                return;
             }
-
-            return;
-        }
-
-        if (\is_array($condition) && isset($condition[0], $condition[1], $condition[2]) && \is_string($condition[0])) {
-            $this->where(
-                $this->normalizeSqlColumn($condition[0]),
-                $condition[1],
-                $condition[2],
-            );
-
-            return;
-        }
-
-        if (\is_array($condition) && isset($condition[0]) && 'or' === $condition[0]) {
-            $this->where(function ($query) use ($condition) {
-                foreach (\array_slice($condition, 1) as $subCondition) {
-                    if (\is_array($subCondition) && isset($subCondition[0], $subCondition[1], $subCondition[2])) {
-                        $query->orWhere(
-                            $this->normalizeSqlColumn($subCondition[0]),
-                            $subCondition[1],
-                            $subCondition[2],
-                        );
+            if (\is_array($condition) && !\array_is_list($condition)) {
+                foreach ($condition as $column => $value) {
+                    $column = $this->normalizeSqlColumn((string) $column);
+                    if (\is_array($value)) {
+                        $query->whereIn($column, $value);
+                    } elseif (null === $value) {
+                        $query->whereNull($column);
+                    } else {
+                        $query->where($column, $value);
                     }
                 }
-            });
 
-            return;
-        }
+                return;
+            }
+            if (\is_array($condition)) {
+                $operator = strtolower((string) $condition[0]);
+                if (\in_array($operator, ['and', 'or', 'not'], true)) {
+                    if ('not' === $operator) {
+                        $query->whereNot(static fn ($nested) => $apply($nested, $condition[1]));
+                    } else {
+                        $query->where(static function ($nested) use ($condition, $operator, $apply): void {
+                            foreach (\array_slice($condition, 1) as $part) {
+                                $method = 'or' === $operator ? 'orWhere' : 'where';
+                                $nested->{$method}(static fn ($branch) => $apply($branch, $part));
+                            }
+                        });
+                    }
 
-        $this->andWhere($condition);
+                    return;
+                }
+                if (isset($condition[1]) && \array_key_exists(2, $condition)) {
+                    $column = $this->normalizeSqlColumn((string) $condition[1]);
+                    if (\in_array($operator, ['in', 'not in'], true)) {
+                        $method = 'in' === $operator ? 'whereIn' : 'whereNotIn';
+                        $query->{$method}($column, (array) $condition[2]);
+                    } else {
+                        $query->where($column, $operator, $condition[2]);
+                    }
+
+                    return;
+                }
+            }
+            if (\is_string($condition)) {
+                $query->whereRaw($condition);
+
+                return;
+            }
+
+            throw new \InvalidArgumentException('Unsupported submission query condition.');
+        };
+        $apply($this->query, $condition);
     }
 
     private function normalizeSqlColumn(string $column): string

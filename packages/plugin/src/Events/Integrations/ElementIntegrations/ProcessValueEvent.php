@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Events\Integrations\ElementIntegrations;
 
-use craft\base\FieldInterface as CraftFieldInterface;
+use CraftCms\Cms\Field\Contracts\FieldInterface as CraftFieldInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Fields\FieldInterface as FreeformFieldInterface;
 use Solspace\Freeform\Form\Form;

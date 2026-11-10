@@ -51,8 +51,8 @@ export const DropZoneAnimation = styled(animated.div)`
   overflow: hidden;
   height: 100%;
 
-  background-color: #e9effd;
-  border: 1px dashed #c3c3c3;
+  background-color: light-dark(#e9effd, var(--bg-selection-light, #e9effd));
+  border: 1px dashed light-dark(#c3c3c3, var(--link-color, #c3c3c3));
   border-radius: ${borderRadius.md};
 
   font-size: 12px;
@@ -63,7 +63,7 @@ export const DropZoneAnimation = styled(animated.div)`
 `;
 
 export const FieldPlaceholder = styled(animated.div)`
-  border: 2px dashed grey;
+  border: 2px dashed light-dark(grey, var(--hairline-color, grey));
 
   min-height: ${minHeight};
   flex-grow: 1;

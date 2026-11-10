@@ -90,6 +90,15 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   min-width: 0;
   border-radius: ${borderRadius.md};
 
+  &:empty {
+    min-height: 72px;
+    padding: ${spacings.md};
+    box-sizing: border-box;
+    color: ${colors.muted};
+    background: ${colors.inputBackground};
+    border: 1px dashed ${colors.inputBorder};
+  }
+
   &:empty::before {
     content: ${({ $empty }) => `"${$empty}"`};
     display: block;
@@ -101,25 +110,43 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
   }
 
   svg {
-    fill: ${({ color }) => color || colors.black};
+    fill: light-dark(${({ color }) => color || colors.black}, ${({ color }) => (!color || /^#(?:000|000000)$|^black$/i.test(color) ? colors.text : color)});
   }
 
   .remove {
     svg {
-      fill: ${colors.black} !important;
+      fill: light-dark(${colors.black}, ${colors.text}) !important;
     }
   }
 `;
 
 GroupItemWrapper.defaultProps = {
   $empty: "Drag and drop any field here",
-  color: colors.black,
+  color: colors.text,
 };
 
 export const CloseAndMoveWrapper = styled.div`
+  fill: currentColor;
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
+  color: ${colors.muted};
+
+  > button {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: ${borderRadius.sm};
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+    svg { display: block; width: 14px; height: 14px; }
+    &:hover { color: ${colors.text}; background: var(--ui-control-hover-bg-color); }
+    &:focus-visible { outline: 2px solid ${colors.link}; outline-offset: 1px; }
+  }
 `;
 
 export const FieldListWrapper = styled.div`
@@ -190,7 +217,7 @@ export const ColorCircle = styled.button`
   border-radius: 50%;
   border: 1px solid var(--c-color-border-quiet);
   cursor: pointer;
-  background-color: ${({ color }) => color || colors.black};
+  background-color: light-dark(${({ color }) => color || colors.black}, ${({ color }) => color || colors.text});
   position: relative;
 `;
 
@@ -200,6 +227,8 @@ export const ColorPickerWrapper = styled.div`
 `;
 
 export const ColorPopover = styled.div`
+  width: 252px;
+  max-width: calc(100vw - 32px);
   position: absolute;
   top: -6px;
   left: calc(100% + ${spacings.sm});

@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Freshdesk\BaseFreshdeskIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -73,7 +74,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
 
         $mapping = $this->processMapping($form, $this->ticketMapping, self::CATEGORY_TICKET);
         if (!$mapping) {
-            $this->logger->debug('No Tickets mapped, skipping');
+            $this->logger->debug('No Tickets mapped, skipping', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -171,7 +172,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
             [$requestType => $values],
         ));
 
-        $this->logger->info('New Ticket created', ['response' => $json]);
+        $this->logger->info('New Ticket created', ['response' => $json, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_TICKET, $response);
     }

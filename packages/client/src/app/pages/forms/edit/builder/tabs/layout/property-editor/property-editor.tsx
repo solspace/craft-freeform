@@ -48,6 +48,9 @@ export const PropertyEditor: React.FC = () => {
       "tagify__dropdown",
       "tox",
       "elementselectormodal",
+      "icon-picker-modal",
+      "ff-datetime-picker",
+      "ff-delete-confirmation",
       // Keep legacy and native slideouts outside the editor's click-away path.
       "freeform-slideout",
       "slideout-shade",

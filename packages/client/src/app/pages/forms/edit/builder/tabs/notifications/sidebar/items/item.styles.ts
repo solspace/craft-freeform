@@ -33,7 +33,7 @@ export const Name = styled.div`
 
   &:empty:after {
     content: 'No Title';
-    color: ${colors.gray400};
+    color: light-dark(${colors.gray400}, ${colors.muted});
     font-style: italic;
   }
 `;

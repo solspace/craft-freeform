@@ -3,11 +3,15 @@ import type { FormWithStats } from "@ff-client/types/forms";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
+import { MemoryRouter } from "react-router-dom";
 import Sortable from "sortablejs";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
 import { ListProvider } from "./index";
+import type { DashboardWidget } from "./views/grid/grid.widgets";
 
 const fixture = vi.hoisted(() => ({
+  edition: "pro",
+  widgets: [] as DashboardWidget[],
   groups: {} as FormWithGroup,
   forms: [] as FormWithStats[],
 }));
@@ -18,7 +22,12 @@ vi.mock("@config/freeform/freeform.config", () => ({
       craft: { is5: true },
       freeform: { canCreate: true, canOrganizeForms: true },
     },
-    editions: { is: () => false, isAtLeast: () => true },
+    editions: {
+      is: (edition: string) => fixture.edition === edition,
+      isAtLeast: (edition: string) =>
+        ["express", "lite", "pro"].indexOf(fixture.edition) >=
+        ["express", "lite", "pro"].indexOf(edition),
+    },
   },
 }));
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
@@ -53,13 +62,50 @@ vi.mock("./modals/hooks/use-add-form-modal", () => ({
 vi.mock("./modals/hooks/use-edit-group-modal", () => ({
   useEditGroupModal: () => vi.fn(),
 }));
+vi.mock("./views/grid/grid.widgets", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./views/grid/grid.widgets")>()),
+  useDashboardWidgets: () => ({
+    items: fixture.widgets,
+    isSaving: false,
+    isError: false,
+    siteId: 1,
+    save: vi.fn(),
+    reload: vi.fn(),
+  }),
+}));
+vi.mock("./views/grid/card/card.widget", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./views/grid/card/card.widget")>()),
+  WidgetCard: ({ widget }: { widget: DashboardWidget }) => (
+    <li data-widget={widget.uid}>{widget.title}</li>
+  ),
+}));
 vi.mock("./notices/notices", () => ({ Notices: () => null }));
 vi.mock("./views/grid/grid.empty", () => ({
   GridEmpty: () => <p>Create your first form</p>,
 }));
 vi.mock("./views/grid/card/card", () => ({
-  Card: ({ form, canMove }: { form: FormWithStats; canMove: boolean }) => (
-    <li data-id={form.id}>
+  Card: ({
+    form,
+    canMove,
+    size,
+    content,
+    canCustomize,
+    days,
+  }: {
+    form: FormWithStats;
+    canMove: boolean;
+    size: string;
+    content: string;
+    canCustomize: boolean;
+    days: number;
+  }) => (
+    <li
+      data-id={form.id}
+      data-card-size={size}
+      data-content={content}
+      data-customize={canCustomize}
+      data-days={days}
+    >
       {form.name}
       {canMove && (
         <button type="button" className="handle">
@@ -75,6 +121,9 @@ vi.mock("./views/list/list.table.row", () => ({
       <td>{form.name}</td>
     </tr>
   ),
+}));
+vi.mock("./views/grid/card/card.preview", () => ({
+  CardPreview: () => <li data-preview />,
 }));
 vi.mock("./views/grid/archived/archived", () => ({
   Archived: ({ data }: { data: FormWithStats[] }) => (
@@ -111,7 +160,22 @@ let host: HTMLDivElement;
 let client: QueryClient;
 beforeEach(async () => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  vi.stubGlobal("Craft", {
+    getCpUrl: (path: string) => `/admin/${path}`,
+    t: (
+      _category: string,
+      text: string,
+      params: Record<string, string | number> = {},
+    ) =>
+      Object.entries(params).reduce(
+        (value, [key, replacement]) =>
+          value.replaceAll(`{${key}}`, String(replacement)),
+        text,
+      ),
+  });
   localStorage.clear();
+  fixture.edition = "pro";
+  fixture.widgets = [];
   const contact = form(1, "Contact Us", "contactUs", "Main enquiries");
   const quote = form(2, "Get a Quote", "quoteRequest", "Sales estimates");
   const survey = form(3, "Survey", "customerFeedback");
@@ -140,7 +204,9 @@ beforeEach(async () => {
   await act(async () =>
     root.render(
       <QueryClientProvider client={client}>
-        <ListProvider />
+        <MemoryRouter>
+          <ListProvider />
+        </MemoryRouter>
       </QueryClientProvider>,
     ),
   );
@@ -172,14 +238,23 @@ const listView = async () => {
   );
 };
 
-it("places search, view buttons, and Form groups in toolbar order", () => {
+it("places search, view, chart period, and Groups in toolbar order", () => {
   expect(input().getAttribute("aria-label")).toBe("Search forms");
   expect(input().placeholder).toBe("Search");
   expect(input().parentElement!.classList.contains("texticon")).toBe(true);
   const controls = input().parentElement!.parentElement!;
   expect(controls.firstElementChild!.contains(input())).toBe(true);
   expect(controls.children[1].getAttribute("aria-label")).toBe("View");
-  expect(controls.children[2].textContent).toBe("Form groups");
+  expect(
+    controls.children[2].querySelector('[aria-label="Chart period"]'),
+  ).not.toBeNull();
+  expect(controls.children[3].textContent).toBe("Groups");
+  expect(controls.children[4].matches('button[aria-haspopup="dialog"]')).toBe(
+    true,
+  );
+  expect(controls.children[4].textContent).toBe("Widgets");
+  expect(host.textContent).not.toContain("Submission history");
+  expect(host.textContent).not.toContain("UTC · today so far");
 });
 
 it("exposes the selected view using Craft's native pressed button state", async () => {
@@ -190,6 +265,16 @@ it("exposes the selected view using Craft's native pressed button state", async 
   await listView();
   expect(cards.getAttribute("aria-pressed")).toBe("false");
   expect(table.getAttribute("aria-pressed")).toBe("true");
+  expect(host.querySelector('[aria-label="Chart period"]')).toBeNull();
+  await act(async () =>
+    host
+      .querySelector<HTMLButtonElement>('[aria-label="Display as cards"]')!
+      .click(),
+  );
+  const period = host.querySelector('[aria-label="Chart period"]');
+  expect(period).not.toBeNull();
+  expect(period.textContent).toBe("30 days");
+  expect(period.getAttribute("aria-haspopup")).toBe("menu");
 });
 
 it("filters grouped and unassigned forms live and hides empty groups", async () => {
@@ -279,3 +364,64 @@ it("treats whitespace as an empty search and preserves fetched form ordering", a
   expect(ids()).toEqual(["1", "2", "3"]);
   expect(fixture.forms.map((form) => form.id)).toEqual(originalIds);
 });
+
+it.each(["lite", "express"])(
+  "reduces saved Pro layouts to standard cards on %s and restores them on upgrade",
+  async (edition) => {
+    fixture.groups.cardRange = 90;
+    fixture.widgets = [
+      {
+        uid: "saved-widget",
+        type: "linear",
+        title: "Saved chart",
+        size: "3x3",
+        groupUid: "contact",
+        beforeId: null,
+      },
+    ];
+    const groupedForm = fixture.groups.formGroups.groups[0].forms[0];
+    groupedForm.cardSize = "2x2";
+    groupedForm.cardContent = "field";
+    groupedForm.cardFieldId = 99;
+    fixture.edition = edition;
+    await act(async () =>
+      root.render(
+        <QueryClientProvider client={client}>
+          <MemoryRouter>
+            <ListProvider />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      ),
+    );
+    expect(host.querySelectorAll("li[data-id]")).toHaveLength(3);
+    expect(host.querySelector('[aria-label="Chart period"]')).toBeNull();
+    expect(host.querySelector('[aria-label="Insert widget"]')).toBeNull();
+    expect(host.querySelector("[data-widget]")).toBeNull();
+    expect(host.querySelectorAll(".handle")).toHaveLength(0);
+    const card = host.querySelector('[data-id="1"]')!;
+    expect(card.getAttribute("data-card-size")).toBe("1x1");
+    expect(card.getAttribute("data-content")).toBe("overview");
+    expect(card.getAttribute("data-customize")).toBe("false");
+    expect(card.getAttribute("data-days")).toBe("30");
+    fixture.edition = "pro";
+    await act(async () =>
+      root.render(
+        <QueryClientProvider client={client}>
+          <MemoryRouter>
+            <ListProvider />
+          </MemoryRouter>
+        </QueryClientProvider>,
+      ),
+    );
+    expect(
+      host.querySelector('[data-id="1"]')?.getAttribute("data-card-size"),
+    ).toBe("2x2");
+    expect(
+      host.querySelector('[data-id="1"]')?.getAttribute("data-content"),
+    ).toBe("field");
+    expect(host.querySelector('[aria-label="Chart period"]')).not.toBeNull();
+    expect(groupedForm.cardFieldId).toBe(99);
+    expect(host.querySelector('[data-widget="saved-widget"]')).not.toBeNull();
+    expect(fixture.widgets[0].size).toBe("3x3");
+  },
+);

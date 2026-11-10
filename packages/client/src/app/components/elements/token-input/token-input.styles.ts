@@ -3,12 +3,14 @@ import styled, { css } from "styled-components";
 export const TokenPillStyles = css`
   .tagify + input, .tagify + textarea { display: none !important; }
   .tagify {
-    --tag-bg: #e8f0fc;
-    --tag-hover: #d8e7fb;
-    --tag-text-color: #30689f;
-    --tag-remove-bg: #cfdef1;
-    --tag-remove-btn-color: #30689f;
-    --tag-remove-btn-bg--hover: #cfdef1;
+    --placeholder-color: var(--light-text-color);
+    --placeholder-color-focus: var(--light-text-color);
+    --tag-bg: light-dark(var(--bg-selection-light, #e8f0fc), var(--bg-selection-light));
+    --tag-hover: light-dark(color-mix(in srgb, var(--bg-selection-light, #e8f0fc), var(--text-color, #3f4d5a) 10%), var(--ui-control-hover-bg-color));
+    --tag-text-color: var(--text-color, #30689f);
+    --tag-remove-bg: var(--ui-control-bg-color, #cfdef1);
+    --tag-remove-btn-color: light-dark(var(--text-color, #30689f), var(--light-text-color));
+    --tag-remove-btn-bg--hover: var(--ui-control-hover-bg-color, #cfdef1);
     --tag-border-radius: 12px;
     --tag-pad: 2px 6px;
     --tags-border-color: var(--input-border-color, rgba(96, 125, 159, 0.4));
@@ -18,6 +20,7 @@ export const TokenPillStyles = css`
     border: var(--input-border, 1px solid rgba(96, 125, 159, 0.4));
     border-radius: var(--input-border-radius, 3px);
   }
+  .tagify__input::before { color: var(--light-text-color); opacity: 1; }
   .tagify__tag { font-size: 12px; }
   .tagify__tag > div::before {
     border-radius: 12px;
@@ -31,7 +34,7 @@ export const TokenPillStyles = css`
     text-decoration: none !important;
     opacity: 1;
   }
-  .tagify__tag__removeBtn:hover { color: #30689f; }
+  .tagify__tag__removeBtn:hover { color: light-dark(#30689f, var(--gray-800)); }
   .tagify__tag__removeBtn:hover + div::before {
     box-shadow: none !important;
   }

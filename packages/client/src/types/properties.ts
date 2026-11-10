@@ -21,6 +21,7 @@ export enum PropertyType {
   Attributes = "attributes",
   Boolean = "bool",
   BooleanEnv = "boolEnv",
+  ButtonGroup = "buttonGroup",
   FormMonitorTools = "formMonitorTools",
   Calculation = "calculation",
   Cards = "cards",
@@ -29,6 +30,7 @@ export enum PropertyType {
   Color = "color",
   ConditionalRules = "conditionalRules",
   DateTime = "dateTime",
+  DateExpression = "dateExpression",
   DynamicCheckboxes = "dynamicCheckboxes",
   DynamicSelect = "dynamicSelect",
   EventParameters = "eventParameters",
@@ -135,6 +137,8 @@ export type AssetPickerProperty = BaseProperty<
 };
 
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
+  unit?: string;
+  unitProperty?: string;
   min?: number;
   max?: number;
   step?: number;
@@ -157,7 +161,10 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
 };
-export type ButtonGroupProperty = BaseProperty<string, PropertyType.Select> & {
+export type ButtonGroupProperty = BaseProperty<
+  string,
+  PropertyType.ButtonGroup
+> & {
   options: OptionCollection;
 };
 export type DynamicCheckboxesProperty = BaseProperty<
@@ -243,6 +250,12 @@ export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   dateFormat?: string;
   minDate?: string;
   maxDate?: string;
+};
+export type DateExpressionProperty = BaseProperty<
+  string,
+  PropertyType.DateExpression
+> & {
+  includeTime?: boolean;
 };
 export type MinMaxProperty = BaseProperty<
   [number, number],
@@ -347,6 +360,7 @@ export type Property =
   | AttributeProperty
   | BooleanProperty
   | BooleanEnvProperty
+  | ButtonGroupProperty
   | FormMonitorToolsProperty
   | CalculationProperty
   | CardsProperty
@@ -355,6 +369,7 @@ export type Property =
   | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
+  | DateExpressionProperty
   | DynamicCheckboxesProperty
   | DynamicSelectProperty
   | EventParametersProperty

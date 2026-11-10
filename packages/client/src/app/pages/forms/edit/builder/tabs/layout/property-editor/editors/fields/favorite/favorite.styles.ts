@@ -47,7 +47,7 @@ export const InfoBlock = styled.div`
   border: 1px solid ${colors.barelyVisible};
   border-radius: ${borderRadius.md};
 
-  box-shadow: 4px 12px 8px rgb(205 216 228 / 80%);
+  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 8px 24px rgb(0 0 0 / 16%)));
 `;
 
 export const Button = styled(animated.button)`

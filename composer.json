@@ -44,9 +44,7 @@
       "Solspace\\Freeform\\": "packages/plugin/src/",
       "Solspace\\Freeform\\migrations\\": "packages/plugin/migrations/"
     },
-    "exclude-from-classmap": [
-      "packages/plugin/src/migrations/"
-    ]
+    "exclude-from-classmap": ["packages/plugin/src/migrations/"]
   },
   "autoload-dev": {
     "psr-4": {
@@ -62,7 +60,7 @@
     "post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
   },
   "extra": {
-    "schemaVersion": "5.17.4",
+    "schemaVersion": "5.18.0.3",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

@@ -7,6 +7,8 @@ import { type ReactNode, useId } from "react";
 import {
   Actions,
   Block,
+  ChildrenCollapse,
+  ChildrenViewport,
   Control,
   ControlArea,
   Heading,
@@ -215,8 +217,18 @@ export const ItemBlock: React.FC<{
   nesting?: number;
   updateValue: RecursiveUpdate;
   disabled?: boolean;
-}> = ({ item, parentId, nesting = 0, updateValue, disabled = false }) => {
+  hiddenPropertyGroups?: ReadonlySet<string>;
+}> = ({
+  item,
+  parentId,
+  nesting = 0,
+  updateValue,
+  disabled = false,
+  hiddenPropertyGroups,
+}) => {
   const id = parentId ? `${parentId}.${item.id}` : item.id;
+  const isFieldProperty = parentId === "props";
+  const propertyVisible = !hiddenPropertyGroups?.has(item.id);
   const childrenDisabled =
     disabled || (item.type === "boolean" && !item.enabled);
   let controls: ReactNode;
@@ -265,27 +277,50 @@ export const ItemBlock: React.FC<{
       break;
   }
 
+  const children = item.children && (
+    <List>
+      {item.children.map((child) => (
+        <ItemBlock
+          key={child.id}
+          item={child}
+          parentId={id}
+          nesting={nesting + 1}
+          hiddenPropertyGroups={hiddenPropertyGroups}
+          disabled={childrenDisabled}
+          updateValue={updateValue}
+        />
+      ))}
+    </List>
+  );
   return (
     <ListItem
+      data-id={item.id}
       data-type={item.type}
       data-nesting={nesting}
       data-disabled={disabled || undefined}
+      data-collapsed={isFieldProperty && !propertyVisible ? true : undefined}
     >
-      {controls}
-
-      {item.children && (
-        <List>
-          {item.children.map((item) => (
-            <ItemBlock
-              key={item.id}
-              item={item}
-              parentId={id}
-              nesting={nesting + 1}
-              disabled={childrenDisabled}
-              updateValue={updateValue}
-            />
-          ))}
-        </List>
+      {isFieldProperty ? (
+        <ChildrenCollapse
+          $expanded={propertyVisible}
+          aria-hidden={!propertyVisible}
+          inert={!propertyVisible}
+        >
+          <ChildrenViewport>{controls}</ChildrenViewport>
+        </ChildrenCollapse>
+      ) : (
+        controls
+      )}
+      {children && item.type === "boolean" ? (
+        <ChildrenCollapse
+          $expanded={item.enabled}
+          aria-hidden={!item.enabled}
+          inert={!item.enabled}
+        >
+          <ChildrenViewport>{children}</ChildrenViewport>
+        </ChildrenCollapse>
+      ) : (
+        children
       )}
     </ListItem>
   );

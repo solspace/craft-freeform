@@ -11,6 +11,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { SettingsLayout } from "../settings/settings.layout";
 
+import { PermissionPresets } from "./limited-users.preset-picker";
+import {
+  applyPermissionPreset,
+  type PermissionPresetId,
+  permissionPresets,
+} from "./limited-users.presets";
 import {
   useLimitedUsersMutation,
   useLimitedUsersSingleQuery,
@@ -18,6 +24,7 @@ import {
 import { GroupWrapper, List, ProfileFields } from "./limited-users.styles";
 import { ItemBlock } from "./limited-users.sub-components";
 import type { Item, RecursiveUpdate } from "./limited-users.types";
+import { getHiddenPropertyGroups } from "./limited-users.visibility";
 
 export const LimitedUsersDetail: React.FC = () => {
   const { id } = useParams();
@@ -26,7 +33,9 @@ export const LimitedUsersDetail: React.FC = () => {
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [state, setState] = useState([]);
+  const [state, setState] = useState<Item[]>([]);
+  const [presetUndo, setPresetUndo] = useState<Item[] | null>(null);
+  const [presetMessage, setPresetMessage] = useState("");
   const mutation = useLimitedUsersMutation(id);
 
   useSidebarSelect("freeform/settings");
@@ -36,8 +45,28 @@ export const LimitedUsersDetail: React.FC = () => {
       setName(data.name);
       setDescription(data.description);
       setState(data.items);
+      setPresetUndo(null);
+      setPresetMessage("");
     }
   }, [data]);
+
+  const applyPreset = (presetId: PermissionPresetId): void => {
+    setPresetUndo(state);
+    setState(applyPermissionPreset(state, presetId));
+    const preset = permissionPresets.find(({ id }) => id === presetId);
+    setPresetMessage(
+      translate("{preset} applied. Review the options below, then Save.", {
+        preset: translate(preset.label),
+      }),
+    );
+  };
+
+  const undoPreset = (): void => {
+    if (!presetUndo) return;
+    setState(presetUndo);
+    setPresetUndo(null);
+    setPresetMessage(translate("Previous options restored."));
+  };
 
   const updateValue: RecursiveUpdate = (id, updates): void => {
     const updateItem = (items: Item[], path?: string): Item[] => {
@@ -68,6 +97,8 @@ export const LimitedUsersDetail: React.FC = () => {
         { name, description, items: state },
         {
           onSuccess: () => {
+            setPresetUndo(null);
+            setPresetMessage("");
             if (goBack) {
               navigate(`/settings/limited-users`);
             }
@@ -79,6 +110,13 @@ export const LimitedUsersDetail: React.FC = () => {
     };
 
   useSaveShortcut(triggerSave(false));
+
+  const hiddenPropertyGroups = getHiddenPropertyGroups(state);
+  const visibleSections = state.filter(
+    (item) =>
+      item.id !== "props" ||
+      item.children?.some((child) => !hiddenPropertyGroups.has(child.id)),
+  );
 
   if (!data && isFetching) {
     return <div>{translate("Loading...")}</div>;
@@ -124,6 +162,16 @@ export const LimitedUsersDetail: React.FC = () => {
         }
       >
         <GroupWrapper>
+          <PermissionPresets
+            items={state}
+            disabled={!data || isFetching || mutation.isPending}
+            canUndo={presetUndo !== null}
+            onApply={applyPreset}
+            onUndo={undoPreset}
+          />
+          <div className="visually-hidden" role="status" aria-live="polite">
+            {presetMessage}
+          </div>
           <ProfileFields>
             <div className="profile-field">
               <div className="heading">
@@ -169,8 +217,13 @@ export const LimitedUsersDetail: React.FC = () => {
           </ProfileFields>
 
           <List>
-            {state.map((item) => (
-              <ItemBlock key={item.id} item={item} updateValue={updateValue} />
+            {visibleSections.map((item) => (
+              <ItemBlock
+                key={item.id}
+                item={item}
+                updateValue={updateValue}
+                hiddenPropertyGroups={hiddenPropertyGroups}
+              />
             ))}
           </List>
         </GroupWrapper>

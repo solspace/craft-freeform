@@ -24,6 +24,9 @@ use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Services\SubmissionsService;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SpamSubmissionsController extends SubmissionsController
@@ -33,6 +36,40 @@ class SpamSubmissionsController extends SubmissionsController
     public function getSubmissionsService(): SubmissionsService
     {
         return $this->getSpamSubmissionsService();
+    }
+
+    public function actionReview(): Response
+    {
+        $this->requireCpRequest();
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
+
+        $id = filter_var($this->request->getRequiredBodyParam('submissionId'), \FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        $operation = $this->request->getRequiredBodyParam('operation');
+        if (false === $id || !\in_array($operation, ['approve', 'delete'], true)) {
+            throw new BadRequestHttpException('Invalid spam review request.');
+        }
+
+        $service = $this->getSpamSubmissionsService();
+        $submission = $service->getSubmissionById($id);
+        if (!$submission instanceof SpamSubmission || !$submission->isSpam || $submission->isHidden || $submission->trashed) {
+            throw new NotFoundHttpException('Spam submission not found.');
+        }
+        if (!$submission->getIsEditable()) {
+            throw new ForbiddenHttpException('User is not permitted to review this submission.');
+        }
+
+        $success = 'approve' === $operation
+            ? $service->allowSpamSubmission($submission)
+            : $service->delete(SpamSubmission::find()->id($id), false, false);
+
+        if (!$success) {
+            $this->response->setStatusCode(422);
+        } else {
+            $this->getSubmissionUndoService()->record($submission, $operation);
+        }
+
+        return $this->asJson(['success' => $success, 'undoHistory' => $this->getSubmissionUndoService()->getHistory()]);
     }
 
     public function actionBlockIpAddress(): Response

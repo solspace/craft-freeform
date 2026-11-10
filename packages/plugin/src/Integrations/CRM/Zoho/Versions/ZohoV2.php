@@ -25,6 +25,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Zoho\BaseZohoIntegration;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 
 #[Edition(Edition::PRO)]
 #[Type(
@@ -227,7 +228,7 @@ class ZohoV2 extends BaseZohoIntegration
     private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            $this->logger->debug('No Leads mapped, skipping.');
+            $this->logger->debug('No Leads mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -250,7 +251,7 @@ class ZohoV2 extends BaseZohoIntegration
 
         $json = json_decode((string) $response->getBody(), true);
 
-        $this->logger->info('New Lead created', ['id' => $json?->data?->id]);
+        $this->logger->info('New Lead created', ['id' => $json?->data?->id, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
         $this->logger->debug('With Mapping', $mapping);
 
         $this->processZohoResponseError($json);
@@ -259,7 +260,7 @@ class ZohoV2 extends BaseZohoIntegration
     private function processAccount(Form $form, Client $client): void
     {
         if (!$this->mapAccount) {
-            $this->logger->debug('No Account mapped, skipping.');
+            $this->logger->debug('No Account mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -289,7 +290,7 @@ class ZohoV2 extends BaseZohoIntegration
             $data = $json['data'][0];
 
             $this->accountId = $data['details']['id'];
-            $this->logger->info('New Account created', ['id' => $this->accountId]);
+            $this->logger->info('New Account created', ['id' => $this->accountId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
     }
@@ -297,7 +298,7 @@ class ZohoV2 extends BaseZohoIntegration
     private function processContact(Form $form, Client $client): void
     {
         if (!$this->mapContact) {
-            $this->logger->debug('No Contact mapped, skipping.');
+            $this->logger->debug('No Contact mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -329,7 +330,7 @@ class ZohoV2 extends BaseZohoIntegration
             $data = $json['data'][0];
 
             $this->contactId = $data['details']['id'];
-            $this->logger->info('New Contact created', ['id' => $this->contactId]);
+            $this->logger->info('New Contact created', ['id' => $this->contactId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
     }
@@ -337,7 +338,7 @@ class ZohoV2 extends BaseZohoIntegration
     private function processDeals(Form $form, Client $client): void
     {
         if (!$this->mapDeals) {
-            $this->logger->debug('No Deals mapped, skipping.');
+            $this->logger->debug('No Deals mapped, skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_MAPPING]);
 
             return;
         }
@@ -369,7 +370,7 @@ class ZohoV2 extends BaseZohoIntegration
             $data = $json['data'][0];
 
             $this->dealId = $data['details']['id'];
-            $this->logger->info('New Deal created', ['id' => $this->dealId]);
+            $this->logger->info('New Deal created', ['id' => $this->dealId, 'activityReason' => ActivityContext::INTEGRATION_CREATED]);
             $this->logger->debug('With Mapping', $mapping);
         }
 

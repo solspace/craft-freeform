@@ -214,6 +214,11 @@ class PermissionsBundle extends FeatureBundle
     private function getSettingsPermissions(): array
     {
         return [
+            Freeform::PERMISSION_ACTIVITY_ACCESS => [
+                'label' => Freeform::t('Access Activity'),
+                'info' => Freeform::t('View site-wide operational activity and form/submission IDs. Submission content still requires its own permissions.'),
+                'nested' => [Freeform::PERMISSION_ACTIVITY_MANAGE => ['label' => Freeform::t('Clear Activity')]],
+            ],
             Freeform::PERMISSION_SETTINGS_ACCESS => ['label' => Freeform::t('Access Settings')],
         ];
     }

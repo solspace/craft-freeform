@@ -76,24 +76,7 @@
             disabled: readOnly,
         }) }}
 
-        {{ forms.selectField({
-            label: "Developer Digest Email Frequency"|t('freeform'),
-            instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
-            name: "settings[digestFrequency]",
-            value: settings.digestFrequency,
-            errors: settings.errors().get("digestFrequency"),
-            disabled: readOnly,
-            options: {
-                "-1": "Daily" | t('freeform'),
-                "0": "Weekly on Sundays" | t('freeform'),
-                "1": "Weekly on Mondays" | t('freeform'),
-                "2": "Weekly on Tuesdays" | t('freeform'),
-                "3": "Weekly on Wednesdays" | t('freeform'),
-                "4": "Weekly on Thursdays" | t('freeform'),
-                "5": "Weekly on Fridays" | t('freeform'),
-                "6": "Weekly on Saturdays" | t('freeform'),
-            },
-        }) }}
+        {% include 'freeform/_components/digest-frequency' with {id:'developer-digest-frequency', label:'Developer Digest Email Frequency'|t('freeform'), name:'settings[digestFrequency]', value:settings.digestFrequency, errors:settings.errors().get('digestFrequency'), readOnly:readOnly} only %}
 
         {{ forms.textField({
             class: "code",
@@ -106,24 +89,7 @@
             disabled: readOnly,
         }) }}
 
-        {{ forms.selectField({
-            label: "Stats Digest Email Frequency"|t('freeform'),
-            instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
-            name: "settings[clientDigestFrequency]",
-            value: settings.clientDigestFrequency,
-            errors: settings.errors().get("clientDigestFrequency"),
-            disabled: readOnly,
-            options: {
-                "-1": "Daily" | t('freeform'),
-                "0": "Weekly on Sundays" | t('freeform'),
-                "1": "Weekly on Mondays" | t('freeform'),
-                "2": "Weekly on Tuesdays" | t('freeform'),
-                "3": "Weekly on Wednesdays" | t('freeform'),
-                "4": "Weekly on Thursdays" | t('freeform'),
-                "5": "Weekly on Fridays" | t('freeform'),
-                "6": "Weekly on Saturdays" | t('freeform'),
-            },
-        }) }}
+        {% include 'freeform/_components/digest-frequency' with {id:'stats-digest-frequency', label:'Stats Digest Email Frequency'|t('freeform'), name:'settings[clientDigestFrequency]', value:settings.clientDigestFrequency, errors:settings.errors().get('clientDigestFrequency'), readOnly:readOnly} only %}
 
         {{ booleanMenu.field({
             includeEnvVars: true,

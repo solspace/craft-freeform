@@ -23,6 +23,8 @@ class Integer extends Property
         public ?int $max = null,
         public ?float $step = null,
         public ?bool $unsigned = false,
+        public ?string $unit = null,
+        public ?string $unitProperty = null,
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }

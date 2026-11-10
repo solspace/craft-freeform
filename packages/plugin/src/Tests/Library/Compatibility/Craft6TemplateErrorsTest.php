@@ -15,6 +15,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
+use Solspace\Freeform\Tests\Helpers\UsesCraft6Container;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
 use Twig\Loader\ChainLoader;
@@ -28,6 +29,8 @@ use Twig\TwigFunction;
 #[CoversNothing]
 class Craft6TemplateErrorsTest extends TestCase
 {
+    use UsesCraft6Container;
+
     private Container $previousContainer;
 
     protected function setUp(): void
@@ -215,9 +218,16 @@ class Craft6TemplateErrorsTest extends TestCase
             new ArrayLoader([
                 'freeform/_layouts/settings' => '{% block content %}{% endblock %}',
                 '_includes/forms' => $macros,
+                'freeform/_components/measurement' => '{% macro input(config) %}<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>{% endmacro %}{% macro field(config) %}<script data-field="{{ config.name }}" type="application/json">{{ (config.errors ?? [])|fieldErrors|json_encode|raw }}</script>{% endmacro %}',
+                'freeform/_components/settings-cards' => '{% macro compactChoice(config) %}{% endmacro %}{% macro choice(config) %}{% endmacro %}{% macro field(config) %}{% endmacro %}',
                 'freeform/_components/boolean-menu' => file_get_contents(\dirname(__DIR__, 3).'/templates/_components/boolean-menu.twig'),
             ]),
-            new FilesystemLoader(\dirname(__DIR__, 3).'/templates'),
+            (static function () {
+                $loader = new FilesystemLoader(\dirname(__DIR__, 3).'/templates');
+                $loader->addPath(\dirname(__DIR__, 3).'/templates', 'freeform');
+
+                return $loader;
+            })(),
         ]));
         $twig->addFilter(new TwigFilter('t', static fn (string $text): string => $text));
         $twig->addFunction(new TwigFunction('freeformBooleanMenu', static fn (array $config): string => ''));

@@ -19,7 +19,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
-use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
+use Solspace\Freeform\Fields\Implementations\Options\UploadSourceOptions;
 use Solspace\Freeform\Fields\Implementations\ValueGenerators\AssetSourceGenerator;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 
@@ -34,7 +34,7 @@ trait FileUploadTrait
         label: 'Asset Source',
         instructions: 'Select an asset source to be able to store user uploaded files.',
         order: 1,
-        options: AssetSourceOptions::class,
+        options: UploadSourceOptions::class,
     )]
     protected ?int $assetSourceId = null;
 

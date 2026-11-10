@@ -31,10 +31,11 @@ class FieldContainerBundle extends FeatureBundle
             $isFreeform = 'freeform' === $request->getSegment(1);
             $isApi = 'api' === $request->getSegment(2);
             $isForms = 'forms' === $request->getSegment(3);
+            $isWidget = 'widgets' === $request->getSegment(4);
 
-            // Builder metadata omits frontend hooks, but the rendered Preview
-            // needs them for template styling and conditional field behavior.
-            if ($isFreeform && $isApi && $isForms && !$field->getForm()->isPreview()) {
+            // Builder metadata omits frontend hooks. Rendered previews and
+            // dashboard forms need them for validation and conditional behavior.
+            if ($isFreeform && $isApi && $isForms && !$isWidget && !$field->getForm()->isPreview()) {
                 return;
             }
         }

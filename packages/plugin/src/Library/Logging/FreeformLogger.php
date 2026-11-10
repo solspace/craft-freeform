@@ -88,15 +88,9 @@ class FreeformLogger
         'EMERGENCY' => '#dc3545',
     ];
 
-    private static array $loggers = [];
-
     public static function getInstance(string $category, ?string $fileName = null, ?int $level = null): LoggerInterface
     {
-        if (!isset(self::$loggers[$category])) {
-            self::$loggers[$category] = LoggerFactory::getOrCreateFileLogger($category, self::getLogfilePath($fileName), $level);
-        }
-
-        return self::$loggers[$category];
+        return LoggerFactory::getOrCreateFileLogger($category, self::getLogfilePath($fileName), $level);
     }
 
     public static function getLogfilePath(?string $fileName): string

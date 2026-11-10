@@ -4,6 +4,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import axios from "axios";
 
+export type TemplateSampleFields = Pick<
+  NotificationTemplate,
+  "name" | "handle" | "description" | "subject" | "body"
+>;
+export type NotificationTemplateDefaults = NotificationTemplate & {
+  samples?: { id: string; name: string; fields: TemplateSampleFields }[];
+};
+
 export const QKNotificationTemplates = {
   all: ["notification-templates"] as const,
   one: (templateId?: string | number, site?: string) =>
@@ -13,7 +21,7 @@ export const QKNotificationTemplates = {
 export const useQueryNotificationTemplate = (
   templateId?: string | number,
   site?: string,
-): UseQueryResult<NotificationTemplate, AxiosError> => {
+): UseQueryResult<NotificationTemplateDefaults, AxiosError> => {
   return useQuery({
     queryKey: QKNotificationTemplates.one(templateId, site),
     queryFn: () =>

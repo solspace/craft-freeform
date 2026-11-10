@@ -116,7 +116,7 @@ export const SectionTitle = styled.h2`
 `;
 
 export const UsageChart = styled.div`
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   border: none;
   border-radius: ${borderRadius.md};
   padding: ${spacings.md};
@@ -125,10 +125,12 @@ export const UsageChart = styled.div`
   overflow: hidden;
 `;
 
-export const MetricsTable = styled.table`
+export const MetricsTable = styled.table.attrs({
+  className: "freeform-ui-table",
+})`
   width: 100%;
   border-collapse: collapse;
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   border-radius: ${borderRadius.md};
   overflow: hidden;
   font-size: 14px;
@@ -147,7 +149,7 @@ export const MetricsTableHeaderCell = styled.th`
 
 export const MetricsTableRow = styled.tr`
   &:nth-child(even) {
-    background: #f4f7fc;
+    background: light-dark(#f4f7fc, var(--ui-control-bg-color));
   }
 `;
 
@@ -160,7 +162,7 @@ export const MetricsTableCell = styled.td`
 export const EmptyState = styled.div`
   text-align: center;
   padding: ${spacings.xl} ${spacings.lg};
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   border: 0;
   border-radius: ${borderRadius.md};
   color: rgba(0, 0, 0, 0.6);

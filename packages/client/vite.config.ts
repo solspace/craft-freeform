@@ -57,6 +57,9 @@ export default defineConfig(({ mode, command }) => {
     },
     build: {
       target: "es2020",
+      // Appearance comes from Craft's styles, outside this CSS bundle. Keep
+      // light-dark() native so CSS lowering does not lose that color scheme.
+      cssTarget: ["chrome123", "firefox120", "safari17.5"],
       emptyOutDir: true,
       sourcemap: shouldGenerateSourceMaps,
       manifest: "manifest.json",

@@ -21,7 +21,7 @@ export const VersionString = styled.small`
   font-size: 12px;
   font-weight: normal;
   font-family: monospace;
-  color: ${colors.gray300};
+  color: light-dark(${colors.gray300}, ${colors.muted});
 `;
 
 export const FavoriteButton = styled.button`
@@ -53,6 +53,7 @@ export const FavoriteButton = styled.button`
   }
 
   &.active {
+    svg,
     svg .star-filler {
       fill: ${colors.yellow500};
     }
@@ -74,7 +75,7 @@ export const Icon = styled.div`
 
   &.spinning {
     animation: spin 2s linear infinite;
-    fill: ${colors.gray300};
+    fill: light-dark(${colors.gray300}, ${colors.muted});
   }
 `;
 
@@ -105,6 +106,7 @@ export const MessageBox = styled.div`
 export const Indicator = styled.div`
   display: inline-flex;
   flex-wrap: nowrap;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
 
@@ -176,6 +178,7 @@ export const Actions = styled.div`
 `;
 
 export const Action = styled.a`
+  display: inline-flex;
   align-items: center;
   gap: 5px;
 
@@ -206,12 +209,12 @@ export const Action = styled.a`
 export const ErrorList = styled.ul`
   padding: 10px;
 
-  border: 1px solid ${colors.red200};
+  border: 1px solid light-dark(${colors.red200}, var(--border-error));
   border-radius: 5px;
 
-  background-color: ${colors.red100};
+  background-color: light-dark(${colors.red100}, var(--bg-error));
 
-  color: ${colors.red600};
+  color: light-dark(${colors.red600}, var(--fg-error));
   font-size: 14px;
 
   width: 100%;

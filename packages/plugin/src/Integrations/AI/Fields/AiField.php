@@ -78,6 +78,7 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
         instructions: 'Leave empty to use integration settings. Override only if you need different max tokens for this field.',
         min: 1,
         max: 128000,
+        unit: 'tokens',
     )]
     protected ?int $maxTokens = null;
 

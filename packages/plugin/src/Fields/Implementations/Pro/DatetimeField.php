@@ -23,6 +23,7 @@ use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
+use Solspace\Freeform\Freeform;
 
 #[Type(
     name: 'Date & Time',
@@ -39,6 +40,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';
 
+    public const PICKER_OPTIONS = [
+        'freeform' => 'Freeform',
+        'flatpickr' => 'Classic',
+        'browser' => 'Browser',
+        'none' => 'None',
+    ];
+
     #[Section(
         handle: null,
         label: 'Configuration',
@@ -47,7 +55,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     #[Limitation('props.date', 'type')]
     #[DefaultValue('props.date.type')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Type',
         instructions: 'Use date, time or both.',
         order: 0,
@@ -62,31 +70,43 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[Translatable]
     #[Limitation('props.date', 'initialValue')]
     #[DefaultValue('props.date.initialValue')]
-    #[Input\Text(
+    #[Input\DateExpression(
         label: 'Initial value',
+        includeTime: true,
         instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
     protected string $initialValue = '';
 
-    #[Limitation('props.date', 'nativeTypes')]
-    #[DefaultValue('props.date.nativeTypes')]
-    #[Input\Boolean(
-        label: 'Use native input types',
-        instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
+    #[Limitation('props.date', 'picker')]
+    #[DefaultValue('props.date.picker')]
+    #[Input\ButtonGroup(
+        label: 'Date picker',
+        instructions: 'Freeform: searchable calendar and time list. Classic: Flatpickr. Browser: device controls. None: text input.',
         order: 1,
+        options: self::PICKER_OPTIONS,
     )]
+    protected string $picker = 'freeform';
+
+    // Retained for older imports, integrations, and saved field metadata.
+    #[Input\Hidden]
     protected bool $useNativeTypes = false;
 
-    #[VisibilityFilter('properties.useNativeTypes === false')]
-    #[Limitation('props.date', 'datepicker')]
-    #[DefaultValue('props.date.datepicker')]
-    #[Input\Boolean(
-        label: 'Use built-in datepicker',
-        order: 3,
-    )]
+    #[Input\Hidden]
     protected bool $useDatepicker = true;
 
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker === "freeform"')]
+    #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'minuteStep')]
+    #[DefaultValue('props.date.minuteStep')]
+    #[Input\Select(
+        label: 'Time interval',
+        instructions: 'Choose the interval between times shown in the picker. Manually entered times are also allowed.',
+        order: 2,
+        options: [1 => '1 minute', 5 => '5 minutes', 10 => '10 minutes', 15 => '15 minutes', 30 => '30 minutes', 60 => '1 hour'],
+    )]
+    protected int $minuteStep = 30;
+
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[Limitation('props.date', 'formatAsPlaceholder')]
     #[DefaultValue('props.date.formatAsPlaceholder')]
     #[Input\Boolean(
@@ -96,9 +116,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected bool $generatePlaceholder = true;
 
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[Limitation('props.date', 'locale')]
     #[DefaultValue('props.date.locale')]
+    #[VisibilityFilter('["freeform", "flatpickr"].includes(properties.picker)')]
     #[Input\Text(
         label: 'Force a locale',
         instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
@@ -106,7 +127,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected ?string $locale = null;
 
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('properties.generatePlaceholder === false')]
     #[Input\Text(
         instructions: "The text that will be shown if the field doesn't have a value.",
@@ -121,24 +142,24 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 2,
     )]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateOrder')]
     #[DefaultValue('props.date.dateOrder')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Date order',
         instructions: 'Choose the order in which to show day, month and year.',
         options: [
-            'ymd' => 'Year, Month, Day',
-            'mdy' => 'Month, Day, Year',
-            'dmy' => 'Day, Month, Year',
+            'ymd' => 'Y / M / D',
+            'mdy' => 'M / D / Y',
+            'dmy' => 'D / M / Y',
         ],
     )]
     protected string $dateOrder = 'ymd';
 
     #[Section('date')]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'date4DigitYear')]
     #[DefaultValue('props.date.date4DigitYear')]
@@ -147,7 +168,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateLeadingZero')]
     #[DefaultValue('props.date.dateLeadingZero')]
@@ -159,15 +180,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'dateSeparator')]
     #[DefaultValue('props.date.dateSeparator')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Date separator',
         instructions: 'Used to separate date values.',
-        emptyOption: 'None',
         options: [
+            '' => 'None',
             'space' => 'Space',
             '/' => '/',
             '-' => '-',
@@ -181,7 +202,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'minDate')]
     #[DefaultValue('props.date.minDate')]
-    #[Input\Text(
+    #[Input\DateExpression(
         label: 'Minimum date',
         instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
@@ -192,7 +213,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'maxDate')]
     #[DefaultValue('props.date.maxDate')]
-    #[Input\Text(
+    #[Input\DateExpression(
         label: 'Maximum date',
         instructions: "Enter an English date expression such as 'now', 'today', '5 days ago', or '2025-01-01 20:00:00'. Keep these values in English regardless of your control panel language.",
     )]
@@ -205,24 +226,24 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 3,
     )]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clock24h')]
     #[DefaultValue('props.date.clock24h')]
-    #[Input\Boolean('24h clock')]
+    #[Input\ButtonGroup(label: 'Clock format', instructions: 'Use a 12-hour clock with AM/PM or a 24-hour clock.', options: ['12' => '12-hour', '24' => '24-hour'])]
     protected bool $clock24h = false;
 
     #[Section('time')]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockSeparator')]
     #[DefaultValue('props.date.clockSeparator')]
-    #[Input\Select(
+    #[Input\ButtonGroup(
         label: 'Clock Separator',
         instructions: 'Used to separate clock values.',
-        emptyOption: 'None',
         options: [
+            '' => 'None',
             'space' => 'Space',
             ':' => ':',
             '-' => '-',
@@ -233,13 +254,24 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[Translatable]
-    #[VisibilityFilter('properties.useNativeTypes === false')]
+    #[VisibilityFilter('properties.picker !== "browser"')]
     #[VisibilityFilter('properties.clock24h === false')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Limitation('props.date', 'clockAMPMSeparate')]
     #[DefaultValue('props.date.clockAMPMSeparate')]
     #[Input\Boolean('Separate AM/PM with a space')]
     protected bool $clockAMPMSeparate = true;
+
+    public static function normalizePickerProperties(array $properties): array
+    {
+        if (!isset($properties['picker'])) {
+            $properties['picker'] = !empty($properties['useNativeTypes'])
+                ? 'browser'
+                : (($properties['useDatepicker'] ?? true) ? 'flatpickr' : 'none');
+        }
+
+        return $properties;
+    }
 
     public static function getSupportedLocale(string $locale): string
     {
@@ -358,14 +390,31 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         return $this->translate('clockAMPMSeparate', $this->clockAMPMSeparate);
     }
 
+    public function getPicker(): string
+    {
+        return isset(self::PICKER_OPTIONS[$this->picker]) ? $this->picker : 'flatpickr';
+    }
+
+    public function getPickerLabels(): array
+    {
+        $labels = ['previous' => 'Previous month', 'next' => 'Next month', 'month' => 'Month', 'year' => 'Year', 'searchMonths' => 'Search months…', 'searchYears' => 'Search years…', 'time' => 'Time', 'today' => 'Today', 'clear' => 'Clear', 'noResults' => 'No matches found.', 'chooseDate' => 'Choose date and time'];
+
+        return array_map(static fn ($label) => Freeform::t($label), $labels);
+    }
+
+    public function getMinuteStep(): int
+    {
+        return \in_array($this->minuteStep, [1, 5, 10, 15, 30, 60], true) ? $this->minuteStep : 30;
+    }
+
     public function isUseDatepicker(): bool
     {
-        return $this->useDatepicker && !$this->isUseNativeTypes();
+        return \in_array($this->getPicker(), ['freeform', 'flatpickr'], true);
     }
 
     public function isUseNativeTypes(): bool
     {
-        return $this->useNativeTypes;
+        return 'browser' === $this->getPicker();
     }
 
     public function getMinDate(): ?string
@@ -399,6 +448,67 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         }
 
         return date($format ?? 'Y-m-d', strtotime($this->getMaxDate()));
+    }
+
+    public function getMinDateBoundary(): ?Carbon
+    {
+        return $this->resolveDateBoundary($this->getMinDate(), false);
+    }
+
+    public function getMaxDateBoundary(): ?Carbon
+    {
+        return $this->resolveDateBoundary($this->getMaxDate(), true);
+    }
+
+    public function getMinDateInputValue(string $format): ?string
+    {
+        $date = $this->getMinDateBoundary();
+        if ($date && $this->isShowTime() && $date->second) {
+            $date->addMinute()->setSecond(0);
+        }
+
+        return $date?->format($format);
+    }
+
+    public function getMaxDateInputValue(string $format): ?string
+    {
+        return $this->getMaxDateBoundary()?->format($format);
+    }
+
+    public function getPickerMinDate(): ?string
+    {
+        return $this->getPickerBoundary($this->getMinDate(), false);
+    }
+
+    public function getPickerMaxDate(): ?string
+    {
+        return $this->getPickerBoundary($this->getMaxDate(), true);
+    }
+
+    public function getPickerReferenceDate(): string
+    {
+        return Carbon::now()->format('Y-m-d\TH:i:s');
+    }
+
+    public function getPickerReferenceTimestamp(): int
+    {
+        return Carbon::now()->getTimestamp();
+    }
+
+    public function getDateBoundaryFormat(?string $expression): string
+    {
+        return $this->isShowTime() && $this->hasBoundaryTime($expression ?? '')
+            ? $this->getFormat() : $this->getDateFormat();
+    }
+
+    public function getMinDateOffset(): ?int
+    {
+        return $this->getRelativeTimeOffset($this->getMinDate());
+    }
+
+    public function getMaxDateOffset(): ?int
+    {
+        return $this->getRelativeTimeOffset($this->getMaxDate());
     }
 
     public function getPlaceholder(): string
@@ -612,11 +722,11 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
         $minDate = $this->getMinDate() === 'today'
             ? 'today'
-            : $this->getGeneratedMinDate($this->getFormat());
+            : $this->getMinDateInputValue($this->getFormat());
 
         $maxDate = $this->getMaxDate() === 'today'
             ? 'today'
-            : $this->getGeneratedMaxDate($this->getFormat());
+            : $this->getMaxDateInputValue($this->getFormat());
 
         $attributes = $this->getAttributes()
             ->getInput()
@@ -630,11 +740,22 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->set($this->getRequiredAttribute())
             ->set('data-datepicker', true)
             ->set('data-datepicker-enabled', $this->isUseDatepicker())
+            ->set('data-datepicker-kind', $this->getPicker())
+            ->set('data-datepicker-labels', json_encode($this->getPickerLabels(), \JSON_THROW_ON_ERROR))
+            ->set('data-datepicker-php-format', $this->getFormat())
+            ->set('data-datepicker-minute-step', $this->getMinuteStep())
+            ->set('data-datepicker-min-value', $this->getPickerMinDate())
+            ->set('data-datepicker-max-value', $this->getPickerMaxDate())
+            ->set('data-datepicker-reference-date', $this->getPickerReferenceDate())
+            ->set('data-datepicker-reference-timestamp', $this->getPickerReferenceTimestamp())
+            ->set('data-datepicker-min-offset', $this->getMinDateOffset())
+            ->set('data-datepicker-max-offset', $this->getMaxDateOffset())
             ->set('data-datepicker-format', $this->getDatepickerFormat())
             ->set('data-datepicker-enabletime', $hasTime)
             ->set('data-datepicker-enabledate', $hasDate)
             ->set('data-datepicker-clock_24h', $this->isClock24h())
             ->set('data-datepicker-locale', $this->getSupportedLocale($locale))
+            ->set('data-datepicker-language', $locale)
             ->set('data-datepicker-min-date', $minDate)
             ->set('data-datepicker-max-date', $maxDate)
         ;
@@ -645,8 +766,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
         if ($this->isUseNativeTypes() && $hasDate) {
             $attributes
-                ->set('min', $this->getGeneratedMinDate($this->getNativeFormat()))
-                ->set('max', $this->getGeneratedMaxDate($this->getNativeFormat()))
+                ->set('min', $this->getMinDateInputValue($this->getNativeFormat()))
+                ->set('max', $this->getMaxDateInputValue($this->getNativeFormat()))
             ;
         }
 
@@ -655,5 +776,67 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             '',
             $attributes->toHtmlTagArray(['field' => $this]),
         );
+    }
+
+    private function resolveDateBoundary(?string $expression, bool $maximum): ?Carbon
+    {
+        if (!$expression) {
+            return null;
+        }
+
+        try {
+            $date = Carbon::parse($expression)->setTimezone(date_default_timezone_get())->setMicrosecond(0);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
+
+        // Date-only expressions retain inclusive whole-day limits. Expressions
+        // containing an explicit time or relative hours/minutes retain that time.
+        if (!$this->isShowTime() || !$this->hasBoundaryTime($expression)) {
+            return $maximum ? $date->endOfDay()->setMicrosecond(0) : $date->startOfDay();
+        }
+
+        return $date;
+    }
+
+    private function getPickerBoundary(?string $expression, bool $maximum): ?string
+    {
+        if ('today' === $expression) {
+            return 'today';
+        }
+
+        return $this->resolveDateBoundary($expression, $maximum)?->format(
+            $this->isShowTime() && $this->hasBoundaryTime($expression ?? '') ? 'Y-m-d\TH:i:s' : 'Y-m-d'
+        );
+    }
+
+    private function hasBoundaryTime(string $expression): bool
+    {
+        if (preg_match('/\b(?:now|noon|midnight|hours?|hrs?|minutes?|mins?|seconds?|secs?)\b|\d{1,2}:\d{2}|\d\s*(?:am|pm)\b/i', $expression)) {
+            return true;
+        }
+
+        $parts = date_parse($expression);
+
+        return false !== $parts['hour'] && !isset($parts['relative'])
+            && !\in_array(strtolower(trim($expression)), ['today', 'tomorrow', 'yesterday'], true);
+    }
+
+    private function getRelativeTimeOffset(?string $expression): ?int
+    {
+        if (!$expression || !$this->isShowTime() || !$this->hasBoundaryTime($expression)) {
+            return null;
+        }
+
+        $parts = date_parse($expression);
+        $relative = $parts['relative'] ?? [];
+        if ($parts['error_count'] || false !== $parts['year'] || false !== $parts['month']
+            || false !== $parts['day'] || false !== $parts['hour']
+            || !empty($relative['year']) || !empty($relative['month']) || isset($relative['weekday'])) {
+            return null;
+        }
+
+        return ($relative['day'] ?? 0) * 86400 + ($relative['hour'] ?? 0) * 3600
+            + ($relative['minute'] ?? 0) * 60 + ($relative['second'] ?? 0);
     }
 }

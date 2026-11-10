@@ -20,6 +20,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
@@ -61,6 +62,14 @@ class NotificationsController extends BaseApiController
             $fields = $this->getParsedTwigValues($fields);
             $fields['body'] = $fields['bodyHtml'];
             $fields['autoText'] = true;
+            $fields['samples'] = [];
+            foreach (MessageTemplateSamples::options('email') as $sampleId => $sample) {
+                $fields['samples'][] = [
+                    'id' => $sampleId,
+                    'name' => Freeform::t($sample['name']),
+                    'fields' => $this->getParsedTwigValues(MessageTemplateSamples::formEmail($sampleId)),
+                ];
+            }
 
             return $this->asSerializedJson($fields);
         }

@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
 use Solspace\Freeform\Attributes\Defaults\SetPlaceholder;
+use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
@@ -83,11 +84,12 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                     'locked' => $config[$name]['locked'] ?? false,
                 ];
 
-                $placeholderAttribute = AttributeHelper::findAttribute(
-                    $property,
-                    SetPlaceholder::class
-                );
+                $unitAttribute = AttributeHelper::findAttribute($property, Unit::class);
+                if ($unitAttribute) {
+                    $configuration['unit'] = $unitAttribute->unit;
+                }
 
+                $placeholderAttribute = AttributeHelper::findAttribute($property, SetPlaceholder::class);
                 if ($placeholderAttribute) {
                     $configuration['placeholder'] = $placeholderAttribute->value;
                 }

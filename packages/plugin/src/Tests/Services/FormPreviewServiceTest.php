@@ -15,6 +15,7 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\PreviewAssetHelper;
 use Solspace\Freeform\Services\FormPreviewService;
@@ -30,6 +31,22 @@ use yii\base\Event;
 class FormPreviewServiceTest extends TestCase
 {
     use UsesCraft6Container;
+
+    public function testPublicImagesCanRenderWithoutCorsHeadersAndRemainUrlRestricted(): void
+    {
+        $html = (new FormPreviewService())->isolate('<html><head></head><body><img src="https://example.test/photo.jpg" crossorigin="anonymous" srcset="https://other.test/photo.jpg 2x"></body></html>', 'CSRF');
+        $document = new \DOMDocument();
+        @$document->loadHTML($html);
+        $xpath = new \DOMXPath($document);
+        $image = $xpath->query('//img')->item(0);
+        self::assertFalse($image->hasAttribute('crossorigin'));
+        self::assertFalse($image->hasAttribute('srcset'));
+        self::assertSame('no-referrer', $image->getAttribute('referrerpolicy'));
+        $policy = $xpath->query('//head/meta')->item(0)->getAttribute('content');
+        self::assertStringContainsString('img-src data: blob: https://example.test/photo.jpg;', $policy);
+        self::assertStringNotContainsString('other.test', $policy);
+        self::assertStringContainsString("connect-src 'none'", $policy);
+    }
 
     #[TestWith(['javascript:alert(1)'])]
     #[TestWith(['0'])]
@@ -106,6 +123,7 @@ class FormPreviewServiceTest extends TestCase
     #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="0"></form>'])]
     #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled="false"></form>'])]
     #[TestWith(['<form data-freeform data-scripts-datepicker><input type="date"></form>'])]
+    #[TestWith(['<form data-freeform data-scripts-datepicker><input data-datepicker data-datepicker-enabled data-datepicker-kind="freeform"></form>'])]
     public function testPreviewDoesNotAllowDatepickerAssetsForFormsWithoutEnabledPickers(string $markup): void
     {
         $html = (new FormPreviewService())->isolate('<html><head></head><body>'.$markup.'</body></html>', 'CSRF');
@@ -122,9 +140,12 @@ class FormPreviewServiceTest extends TestCase
         $form->setPreview();
         $bundled = new RenderTagEvent($form);
         $bundled->addScript('js/scripts/front-end/plugin/freeform.js');
+        $bundled->addStylesheet('css/front-end/plugin/freeform.css');
         $bundled->addScript('/etc/passwd');
         self::assertFalse($bundled->isScriptsDisabled());
         self::assertStringContainsString('<script>', $bundled->getChunksAsString());
+        self::assertStringContainsString('<style>select.ff-searchable-native', $bundled->getChunksAsString());
+        self::assertStringNotContainsString("\xEF\xBB\xBF", $bundled->getChunksAsString());
         self::assertStringNotContainsString('root:', $bundled->getChunksAsString());
         self::assertTrue($form->isPreview());
         self::assertTrue($form->isAvailable());
@@ -220,8 +241,8 @@ class FormPreviewServiceTest extends TestCase
     public function testKnownBundledTemplateAssetsAreInlinedAndHashed(): void
     {
         $html = (new FormPreviewService())->isolate('<html><head><link rel="stylesheet" href="/cpresources/example/_main.css?v=1"></head><body><script src="/cpresources/example/_main.js?v=1"></script></body></html>', 'CSRF', [
-            '/cpresources/example/_main.css' => 'body{padding:24px}',
-            '/cpresources/example/_main.js' => 'window.sampleLoaded=true;',
+            '/cpresources/example/_main.css' => "\xEF\xBB\xBFbody{padding:24px}",
+            '/cpresources/example/_main.js' => "\xEF\xBB\xBFwindow.sampleLoaded=true;",
         ]);
         self::assertStringNotContainsString('src=', $html);
         self::assertStringContainsString('<style>body{padding:24px}</style>', $html);
@@ -293,6 +314,40 @@ class FormPreviewServiceTest extends TestCase
 
         try {
             self::assertSame('<p>Sample</p>', (string) $service->renderFormTemplate($form, $sample->getFilePath()));
+        } finally {
+            \Craft::$app = $previousApp;
+        }
+    }
+
+    #[TestWith(['daisyui-5-dark', false, true])]
+    #[TestWith(['bootstrap-5-dark', false, true])]
+    #[TestWith(['tailwind-4-dark', false, true])]
+    #[TestWith(['basic-dark', false, true])]
+    #[TestWith(['conversational', false, true])]
+    #[TestWith(['daisyui-5-light', false, false])]
+    #[TestWith(['daisyui-5-dark', true, false])]
+    public function testBannerThemeFollowsTheResolvedSampleAndDoesNotGuessFromCustomFilenames(string $name, bool $custom, bool $dark): void
+    {
+        $path = realpath(__DIR__.'/../../templates/_templates/formatting/'.$name.'/index.twig');
+        $template = $this->createMock(FormTemplate::class);
+        $template->method('getFileName')->willReturn($name.'/index.twig');
+        $template->method('getFilePath')->willReturn($path);
+        $settings = $this->createMock(SettingsService::class);
+        $settings->method('getCustomFormTemplates')->willReturn($custom ? [$template] : []);
+        $settings->method('getSolspaceFormTemplates')->willReturn([$template]);
+        $service = $this->getMockBuilder(FormsService::class)->disableOriginalConstructor()->onlyMethods(['getSettingsService'])->getMock();
+        $service->method('getSettingsService')->willReturn($settings);
+        $form = $this->createMock(Form::class);
+        $attributes = new FormAttributesCollection();
+        $form->method('getAttributes')->willReturn($attributes);
+        $view = $this->createMock(View::class);
+        $view->method('renderString')->willReturn('<p>Rendered</p>');
+        $previousApp = \Craft::$app;
+        \Craft::$app = (object) ['view' => $view, 'charset' => 'UTF-8'];
+
+        try {
+            $service->renderFormTemplate($form, $name.'/index.twig');
+            self::assertSame($dark, $attributes->getForm()->get('data-freeform-sample-dark'));
         } finally {
             \Craft::$app = $previousApp;
         }

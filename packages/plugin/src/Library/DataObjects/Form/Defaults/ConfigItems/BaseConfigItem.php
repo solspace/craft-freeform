@@ -7,7 +7,7 @@ abstract class BaseConfigItem implements DefaultConfigInterface
     public bool $locked = false;
     public mixed $value = '';
     public string $placeholder = '';
-
+    public ?string $unit = null;
     private string $label = '';
 
     public function __construct(array $config = [])

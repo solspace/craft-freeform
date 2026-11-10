@@ -18,10 +18,10 @@
 {% endmacro %}
 
 {% macro scanFeedback(id, label) %}
-    <div class="ff-diag-scan-feedback hidden" id="{{ id }}-feedback">
+    <div class="ff-diag-scan-feedback ff-status-surface hidden" id="{{ id }}-feedback">
         <progress class="ff-diag-scan-progress" id="{{ id }}-progress" max="1" aria-label="{{ label|e('html_attr') }}" aria-describedby="{{ id }}-status"></progress>
         <p class="ff-diag-scan-message">
-            <span id="{{ id }}-icon" aria-hidden="true"></span>
+            <span id="{{ id }}-icon" aria-hidden="true">{% import 'freeform/_components/status-icon' as statusIcons %}{% for level in ['error', 'warning', 'notice', 'success'] %}<span data-status-icon="{{ level }}" hidden>{{ statusIcons.icon(level) }}</span>{% endfor %}</span>
             <span id="{{ id }}-status" role="status" aria-live="polite" aria-atomic="true"></span>
         </p>
     </div>
@@ -37,7 +37,7 @@
                         {{ _self.renderItems(item, sectionKey) }}
                     {% else %}
                         <div class="ff-diag-item {{ item.validationClasses|join(' ') }}{{ sectionKey == 'server' and loop.index <= 2 ? ' is-product' }}">
-                            {% if item.warnings %}<span class="visually-hidden">{{ 'Potential issue'|t('freeform') }}</span>{% elseif item.suggestions %}<span class="visually-hidden">{{ 'Advisory'|t('freeform') }}</span>{% endif %}
+                            {% if item.warnings %}<span class="visually-hidden">{{ 'Potential issue'|t('freeform') }}</span>{% elseif item.suggestions %}<span class="visually-hidden">{{ 'Warning'|t('freeform') }}</span>{% elseif item.notices %}<span class="visually-hidden">{{ 'Notice'|t('freeform') }}</span>{% endif %}
                             {% if sectionKey == 'modules' %}
                                 <code>{{ item.markup }}</code>
                             {% elseif sectionKey in ['stats', 'integrations', 'formType'] %}
@@ -70,35 +70,9 @@
             {label: 'Health Checks'|t('freeform'), controls: 'freeform-diagnostics-health-checks'},
         ],
     }) }}
-    <div id="freeform-diagnostics" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
-        <div id="freeform-diagnostics-overview">
-            {% set diagnosticSummary %}
-                <p class="ff-diag-summary">
-                    {% if warnings|length %}
-                        <span>{{ 'Potential issues: {count}'|t('freeform', {count: warnings|length}) }}</span>
-                    {% elseif suggestions|length %}
-                        <span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>
-                    {% else %}
-                        <strong>{{ 'No diagnostic warnings'|t('freeform') }}</strong>
-                    {% endif %}
-                    {% if warnings|length and suggestions|length %}<span>{{ 'Advisories: {count}'|t('freeform', {count: suggestions|length}) }}</span>{% endif %}
-                </p>
-            {% endset %}
-            {{ ui('callout', {
-                variant: warnings|length ? 'danger' : (suggestions|length ? 'warning' : 'success'),
-                content: diagnosticSummary,
-                attributes: {role: 'status'},
-            }) }}
-            <div class="ff-diag-legend">
-                {% for status, label in {
-                    pass: 'Enabled / Valid'|t('freeform'),
-                    disabled: 'Disabled'|t('freeform'),
-                    warning: 'Advisory'|t('freeform'),
-                    error: 'Potential issue'|t('freeform')
-                } %}
-                    <span>{{ _self.status(status, label) }}{{ label }}</span>
-                {% endfor %}
-            </div>
+    <div id="freeform-diagnostics" class="ff-status-theme" data-copy-success="{{ 'Diagnostic report copied.'|t('freeform')|e('html_attr') }}" data-copy-fallback="{{ 'Copy the selected report using your keyboard.'|t('freeform')|e('html_attr') }}">
+        <div id="freeform-diagnostics-overview" role="tabpanel" aria-labelledby="tab-freeform-diagnostics-overview">
+            {% include 'freeform/settings/_diagnostics-banner' with {counts:bannerCounts} only %}
             <div class="ff-diag-grid">
                 {% set configurationSections = [] %}
                 {% for heading, items in configurations %}
@@ -234,8 +208,8 @@
         (() => {
             const labels = {{ {
                 running: 'Running'|t('freeform'), success: 'Passed'|t('freeform'),
-                warning: 'Needs attention'|t('freeform'), error: 'Incomplete'|t('freeform'),
-                info: 'Information'|t('freeform'), issues: 'Issues'|t('freeform'),
+                warning: 'Warning'|t('freeform'), error: 'Incomplete'|t('freeform'),
+                info: 'Notice'|t('freeform'), issues: 'Issues'|t('freeform'),
                 unchecked: 'Unchecked'|t('freeform')
             }|json_encode|raw }};
             const setExpanded = (id, expanded) => {
@@ -283,9 +257,12 @@
                     const badge = document.getElementById(id + '-badge');
                     badge.textContent = labels[state];
                     badge.className = 'ff-diag-health-status is-' + state;
-                    feedback.className = 'ff-diag-scan-feedback is-' + state;
+                    feedback.className = 'ff-diag-scan-feedback ff-status-surface is-' + state;
+                    feedback.dataset.status = state === 'running' ? 'info' : state;
                     status.textContent = message;
-                    icon.className = state === 'success' ? 'checkmark-icon' : (state === 'info' ? 'ff-diag-scan-info-icon' : (state === 'running' ? '' : 'alert-icon'));
+                    for (const glyph of icon.querySelectorAll('[data-status-icon]')) {
+                        glyph.hidden = glyph.dataset.statusIcon !== (state === 'info' ? 'notice' : state);
+                    }
                     if (value === null) progress.removeAttribute('value');
                     else progress.value = Math.max(0, Math.min(1, value));
                 };

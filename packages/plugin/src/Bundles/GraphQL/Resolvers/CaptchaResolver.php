@@ -109,6 +109,9 @@ class CaptchaResolver extends Resolver
             $arguments['siteKey'] = $integration->getSiteKey();
             $arguments['action'] = $integration->getAction();
             $arguments['version'] = $integration->getVersion();
+            $arguments['verificationMode'] = $integration->getVerificationMode();
+            $arguments['frontendMode'] = $integration->getFrontendMode();
+            $arguments['scriptDomain'] = $integration->getScriptDomain();
             $arguments['scoreThreshold'] = $integration->getScoreThreshold();
             $arguments['name'] = 'g-recaptcha-response';
         }

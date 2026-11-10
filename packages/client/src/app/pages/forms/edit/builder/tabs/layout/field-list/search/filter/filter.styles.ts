@@ -10,10 +10,10 @@ export const FilterIcon = styled.button`
 
   ${IconStyle}
 
-  color: ${colors.gray300};
+  color: ${colors.muted};
   transition: all 0.2s ease-out;
 
-  background: white;
+  background: light-dark(white, ${colors.surface});
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 
@@ -70,7 +70,7 @@ export const DropDownWrapper = styled(animated.div)`
   text-align: left;
 
   border: 1px solid ${colors.gray200};
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   box-shadow:
     rgba(255, 255, 255, 0.1) 0px 1px 1px 0px inset,
     rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,

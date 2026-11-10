@@ -40,6 +40,7 @@ export const TokenInput: React.FC<Props> = ({
           enforceWhitelist: !allowCustom,
           whitelist: options,
           dropdown: {
+            classname: "ff-token-dropdown",
             mapValueTo: "name",
             enabled: 0,
           },

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\migrations;
 
+use Solspace\Freeform\Library\Activity\ActivityTable;
 use Solspace\Freeform\Library\Migrations\ForeignKey;
 use Solspace\Freeform\Library\Migrations\StreamlinedInstallMigration;
 use Solspace\Freeform\Library\Migrations\Table;
@@ -68,6 +69,7 @@ class Install extends StreamlinedInstallMigration
     protected function defineTableData(): array
     {
         return [
+            ActivityTable::definition($this),
             (new Table('freeform_forms'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(200)->notNull())

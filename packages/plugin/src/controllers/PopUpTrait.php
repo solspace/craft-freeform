@@ -27,6 +27,11 @@ trait PopUpTrait
             $messages = [$messages];
         }
 
+        $this->getLoggerService()->getLogger('oauth', 'freeform-integrations.log')->error(
+            'Integration authorization failed',
+            ['controller' => static::class, 'action' => $this->action?->id]
+        );
+
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         return $this->renderTemplate(

@@ -1,0 +1,54 @@
+{% macro icon(name) %}
+    {% if name in ['error', 'warning', 'check'] %}
+        {% import 'freeform/_components/status-icon' as statusIcons %}
+        {{ statusIcons.icon(name == 'check' ? 'success' : name) }}
+    {% else %}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        {% if name == 'refresh' %}<path d="M20 7v5h-5M4 17v-5h5M6.1 6.1a8.3 8.3 0 0 1 13.4 3M17.9 17.9a8.3 8.3 0 0 1-13.4-3"/>
+        {% elseif name == 'clock' %}<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+        {% else %}<path d="M5 12h14m-5-5 5 5-5 5"/>{% endif %}
+    </svg>
+    {% endif %}
+{% endmacro %}
+{% import _self as icons %}
+<section class="ff-health-widget ff-status-theme" data-freeform-health-ready="{{ health.available ? 'true' : 'false' }}" aria-label="{{ 'Activity & Health'|t('freeform') }}">
+{% if not health.available %}
+    <p class="ff-health-unavailable" role="status">{{ 'Activity could not be loaded. Refresh to try again.'|t('freeform') }}</p>
+{% elseif health.style == 'none' %}
+    <p class="ff-health-unavailable">{{ 'Logging is turned off.'|t('freeform') }}</p>
+    <p class="light">{{ 'No new events are being recorded.'|t('freeform') }}</p>
+{% else %}
+    {% set hasIssues = health.errors or health.warnings %}
+    <div class="ff-health-counts" data-clear="{{ hasIssues ? 'false' : 'true' }}">
+    {% if not hasIssues %}
+        <div class="ff-health-metric ff-status-surface ff-health-all-clear" data-level="success" role="status">
+            <span class="ff-health-metric-icon">{{ icons.icon('check') }}</span>
+            <span class="ff-health-clear-copy"><strong>{{ 'No errors or warnings'|t('freeform') }}</strong></span>
+        </div>
+    {% else %}
+    {% for metric in [{level:'error', count:health.errors, url:health.errorUrl, label:health.errors == 1 ? 'Error' : 'Errors'}, {level:'warning', count:health.warnings, url:health.warningUrl, label:health.warnings == 1 ? 'Warning' : 'Warnings'}] %}
+        <{{ metric.url ? 'a' : 'div' }}{% if metric.url %} href="{{ metric.url }}"{% endif %} class="ff-health-metric ff-status-surface" title="{{ (health.style == 'activity' ? (metric.level == 'warning' ? 'Unresolved operational warnings. Spam and validation failures are excluded.' : 'Unresolved errors') : (metric.level == 'warning' ? 'Logged warnings' : 'Logged errors'))|t('freeform') }}" data-level="{{ metric.level }}" data-empty="{{ metric.count ? 'false' : 'true' }}">
+            <span class="ff-health-metric-icon">{{ icons.icon(metric.level) }}</span>
+            <span class="ff-health-metric-value"><strong>{{ metric.count|number }}</strong><span>{{ metric.label|t('freeform') }}</span></span>
+        </{{ metric.url ? 'a' : 'div' }}>
+    {% endfor %}
+    {% endif %}
+    </div>
+    <div class="ff-health-content">
+        {% if health.recent %}
+            <section class="ff-health-recent" aria-label="{{ 'Recent issues'|t('freeform') }}"><div class="ff-health-section-heading"><h3>{{ 'Recent issues'|t('freeform') }}</h3></div>
+                <ul>{% for issue in health.recent %}<li data-level="{{ issue.level }}"><a href="{{ issue.url }}" title="{{ issue.title }} ({{ issue.date|datetime('short') }})"><span class="ff-health-issue-icon">{{ icons.icon(issue.level) }}</span><span class="ff-health-issue-text"><span title="{{ issue.title }}">{{ issue.title }}</span><time datetime="{{ issue.date|date('c', 'UTC') }}">{{ issue.date|datetime('short') }}</time></span><span class="ff-health-issue-arrow">{{ icons.icon('arrow') }}</span></a></li>{% endfor %}</ul>
+            </section>
+        {% endif %}
+        {% if health.style == 'activity' %}
+        <section class="ff-health-breakdown" aria-label="{{ 'Recorded activity'|t('freeform') }}">
+            <div class="ff-health-section-heading"><h3>{{ 'Recorded activity'|t('freeform') }}</h3><span class="ff-health-total" title="{{ 'All recorded event types'|t('freeform') }}">{{ health.recorded == 1 ? '1 event'|t('freeform') : '{count} events'|t('freeform', {count:health.recorded|number}) }}</span></div>
+            <div class="ff-health-volume" role="img" aria-label="{{ 'Recorded event volume (UTC)'|t('freeform') }}">{% for bar in health.trend %}<span class="ff-health-volume-track"><span style="height:{{ bar.height }}%"></span></span>{% endfor %}</div>
+            {% if health.breakdown %}<dl>{% for item in health.breakdown %}<div class="ff-health-activity-row" data-event="{{ item.event }}"><dt>{{ item.label|t('freeform') }}</dt><dd>{% if item.recording or item.count %}{{ item.count|number }}{% else %}<span class="light" title="{{ 'This event type is not enabled in {mode} logging mode.'|t('freeform', {mode:health.mode|capitalize|t('freeform')}) }}">{{ 'Not enabled'|t('freeform') }}</span>{% endif %}</dd></div>{% endfor %}</dl>{% endif %}
+            {% if health.days < health.requestedDays %}<p class="ff-health-retention">{{ 'Limited to {days} days by retention settings.'|t('freeform', {days:health.retentionDays}) }}</p>{% endif %}
+        </section>
+        {% else %}<p class="light">{{ 'Detailed event totals are available with Activity logging.'|t('freeform') }}</p>{% endif %}
+
+    </div>
+{% endif %}
+</section>

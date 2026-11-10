@@ -1,3 +1,5 @@
+import { captchaScriptUrl } from "./script-url.js";
+
 export type CaptchaToken = {
   name: string;
   value: string;
@@ -20,25 +22,52 @@ export function loadScriptOnce(src: string, id: string): Promise<void> {
       reject(new Error("Captcha scripts require a browser environment."));
       return;
     }
-
-    const existingNode = document.getElementById(id);
-    if (existingNode) {
+    let node = document.getElementById(id) as HTMLScriptElement | null;
+    if (node?.dataset.loaded === "true") {
       resolve();
       return;
     }
-
-    const script = document.createElement("script");
-    script.id = id;
-    script.src = src;
-    script.async = true;
-    script.defer = true;
-    script.onload = () => resolve();
-    script.onerror = () =>
-      reject(new Error(`Failed to load captcha script: ${src}`));
-    document.head.appendChild(script);
+    const existingNode = Boolean(node);
+    node ??= document.createElement("script");
+    const script = node;
+    const cleanup = () => {
+      window.clearTimeout(timeout);
+      script.removeEventListener("load", loaded);
+      script.removeEventListener("error", failed);
+    };
+    const loaded = () => {
+      cleanup();
+      script.dataset.loaded = "true";
+      resolve();
+    };
+    const failed = () => {
+      cleanup();
+      script.remove();
+      reject(new Error("Failed to load captcha script."));
+    };
+    const timeout = window.setTimeout(failed, 10000);
+    script.addEventListener("load", loaded);
+    script.addEventListener("error", failed);
+    if (!existingNode) {
+      try {
+        script.id = id;
+        script.src = captchaScriptUrl(src);
+        script.async = true;
+        script.defer = true;
+        const nonce =
+          document.querySelector<HTMLScriptElement>("script[nonce]")?.nonce;
+        if (nonce) script.nonce = nonce;
+        document.head.appendChild(script);
+      } catch {
+        failed();
+      }
+    }
   });
 
   loadedScripts.set(id, { promise });
+  void promise.catch(() => {
+    if (loadedScripts.get(id)?.promise === promise) loadedScripts.delete(id);
+  });
   return promise;
 }
 

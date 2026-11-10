@@ -1,0 +1,228 @@
+{% extends 'freeform/_widgets/form-card/layout' %}
+{% block head %}
+    {{ parent() }}
+    <base target="_top">
+{% endblock %}
+{% block body %}
+    <main class="form-card-widget">{{ html|raw }}</main>
+{% endblock %}
+{% css %}
+html, body { min-height: 0; height: auto; background: transparent; }
+body { margin: 0; padding: 0; }
+.form-card-widget { padding: 0 24px 16px; }
+.freeform-dashboard-chart { height: calc(100vh - 16px); min-height: 0; }
+.freeform-dashboard-chart .freeform-chart-legend { flex-basis: 64px; height: 64px; }
+.freeform-dashboard-chart .freeform-chart-summary { margin-bottom: 10px; }
+.freeform-dashboard-chart .freeform-chart-legend { margin-top: 10px; }
+
+/* Circular charts use the available card width for their plot and legend. */
+.form-card-widget .is-radial .freeform-chart-legend {
+  flex-basis: clamp(96px, 30vh, 180px);
+  height: clamp(96px, 30vh, 180px);
+  grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  gap: 4px 16px;
+}
+@media (min-width: 340px) {
+  .form-card-widget .is-radial {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 12px;
+  }
+  .form-card-widget .is-radial .freeform-chart-summary {
+    grid-column: 2;
+    grid-row: 1;
+    margin-bottom: 0;
+  }
+  .form-card-widget .is-radial .freeform-chart-plot,
+  .form-card-widget .is-radial .freeform-chart-empty {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+  .form-card-widget .is-radial .freeform-chart-legend {
+    display: grid;
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 0;
+    height: auto;
+    margin-top: 0;
+    align-content: safe center;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 340px) and (max-width: 619px) and (min-height: 181px) {
+  .form-card-widget .is-radial .freeform-chart-summary {
+    grid-column: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .form-card-widget .is-radial .freeform-chart-plot,
+  .form-card-widget .is-radial .freeform-chart-empty { grid-row: 2; }
+  .form-card-widget .is-radial .freeform-chart-legend { grid-row: 1 / -1; }
+}
+
+@media (min-width: 620px) and (min-height: 181px) and (max-height: 359px) {
+  .form-card-widget .is-radial { column-gap: 24px; }
+  .form-card-widget .is-radial .freeform-chart-legend {
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+  }
+}
+@media (min-width: 620px) and (min-height: 360px) {
+  .form-card-widget .is-radial {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.62fr);
+    column-gap: 24px;
+  }
+  .form-card-widget .is-radial .freeform-chart-legend {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 340px) and (max-height: 180px) {
+  .form-card-widget:has(> .is-radial) { padding-bottom: 8px; }
+  .form-card-widget .is-radial { height: calc(100vh - 8px); row-gap: 8px; }
+}
+@media (min-width: 340px) and (max-width: 619px) and (max-height: 180px) {
+  .form-card-widget .is-radial {
+    grid-template-columns: minmax(72px, 0.65fr) minmax(0, 1.35fr);
+  }
+  .form-card-widget .is-radial .freeform-chart-summary {
+    flex-wrap: nowrap;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .form-card-widget .is-radial .freeform-chart-summary > span { white-space: nowrap; }
+}
+@media (min-width: 620px) and (max-height: 180px) {
+  .form-card-widget .is-radial {
+    display: grid;
+    grid-template-columns: minmax(72px, 0.7fr) minmax(110px, 0.7fr) minmax(0, 2fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .form-card-widget .is-radial .freeform-chart-plot,
+  .form-card-widget .is-radial .freeform-chart-empty { grid-column: 1; grid-row: 1; }
+  .form-card-widget .is-radial .freeform-chart-summary {
+    grid-column: 2;
+    grid-row: 1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    margin: 0;
+  }
+  .form-card-widget .is-radial .freeform-chart-legend {
+    display: grid;
+    grid-column: 3;
+    grid-row: 1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: safe center;
+    min-height: 0;
+    height: auto;
+    margin: 0;
+    gap: 0 12px;
+  }
+}
+
+.form-card-widget .is-radial[data-chart-legend="none"] {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.form-card-widget .is-radial[data-chart-legend="none"] .freeform-chart-summary {
+  flex-direction: row;
+  align-items: center;
+  gap: 4px 12px;
+  margin-bottom: 10px;
+}
+
+/* A compact activity list for the Forms layout; Craft's Dashboard keeps its own presentation. */
+.form-card-widget:has(> .freeform-recent) {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-height: 0;
+  box-sizing: border-box;
+  padding-top: 4px;
+}
+.form-card-widget > .freeform-recent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.form-card-widget .freeform-recent-tools,
+.form-card-widget .freeform-recent-pagination,
+.form-card-widget .freeform-widget-feedback { flex-shrink: 0; }
+.form-card-widget .freeform-recent-footer { display: none; }
+.form-card-widget .freeform-recent-list {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+}
+.form-card-widget .freeform-recent-empty { flex: 1; min-height: 0; overflow: auto; }
+.form-card-widget .freeform-recent-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(72px, 24%) 88px;
+  align-items: center;
+  column-gap: 16px;
+  padding: 3px 0;
+  border: 0;
+  font-size: 12px;
+  line-height: 18px;
+}
+.form-card-widget .freeform-recent-row:hover { background: transparent; }
+.form-card-widget .freeform-recent-main { min-width: 0; gap: 6px; }
+.form-card-widget .freeform-recent-title { font-size: 12px; font-weight: 400; line-height: 18px; }
+.form-card-widget .freeform-recent-status {
+  order: -1;
+  flex: 0 0 6px;
+  width: 6px;
+  max-width: none;
+  gap: 0;
+  font-size: 0;
+  line-height: 0;
+}
+.form-card-widget .freeform-recent-status .status {
+  width: 6px;
+  height: 6px;
+  min-width: 6px;
+  min-height: 6px;
+  margin: 0;
+  border-radius: 50%;
+}
+.form-card-widget .freeform-recent-meta { display: contents; }
+.form-card-widget .freeform-recent-meta > span:first-child {
+  min-width: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: #687684;
+}
+.form-card-widget .freeform-recent-id { display: none; }
+.form-card-widget .freeform-recent-meta time {
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: right;
+  color: #687684;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 400px) {
+  .form-card-widget .freeform-recent-row { grid-template-columns: minmax(0, 1fr) minmax(64px, 24%) 76px; column-gap: 8px; }
+}
+{% endcss %}
+
+{% css %}
+@media (max-height: 180px) {
+  .freeform-dashboard-chart .freeform-chart-legend { display: none; }
+  .freeform-dashboard-chart:not(.is-radial) .freeform-chart-summary { display: none; }
+  .freeform-dashboard-chart .freeform-chart-summary { font-size: 11px; margin-bottom: 6px; }
+  .form-card-widget:has(> .freeform-recent) { padding-bottom: 8px; }
+  .form-card-widget .freeform-recent-tools,
+  .form-card-widget .freeform-recent-footer { display: none; }
+  .form-card-widget .freeform-recent-pagination { margin-top: 6px; }
+  .form-card-widget .freeform-widget-feedback { max-height: 18px; overflow: auto; }
+}
+{% endcss %}

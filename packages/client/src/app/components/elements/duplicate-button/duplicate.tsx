@@ -1,6 +1,4 @@
-import { useHover } from "@ff-client/hooks/use-hover";
 import type React from "react";
-import { useRef } from "react";
 
 import { useDuplicateAnimation } from "./duplicate.animations";
 import DuplicateIcon from "./duplicate.icon";
@@ -14,10 +12,7 @@ type Props = {
 export const DuplicateButton: React.FC<
   Props & React.ComponentProps<typeof DuplicateButtonWrapper>
 > = ({ active, onClick, ...rest }) => {
-  const ref = useRef<HTMLButtonElement>(null);
-  const hovering = useHover(ref);
-
-  const animation = useDuplicateAnimation({ active, hovering });
+  const animation = useDuplicateAnimation({ active });
   const style = { ...animation, ...rest?.style };
 
   delete rest.style;
@@ -25,7 +20,6 @@ export const DuplicateButton: React.FC<
   return (
     <DuplicateButtonWrapper
       type="button"
-      ref={ref}
       style={style}
       onClick={onClick}
       {...rest}

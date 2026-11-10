@@ -12,7 +12,9 @@ export const FieldGroupWrapper = styled.div`
   }
 `;
 
-export const GroupTitle = styled.h2`
+export const GroupTitle = styled.h2.attrs({
+  className: "freeform-field-group-title",
+})`
   ${sectionHeading}
   position: relative;
 

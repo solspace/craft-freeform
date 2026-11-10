@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Integrations\Elements;
 use craft\base\ElementInterface;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
+use CraftCms\Cms\Field\Addresses;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
@@ -17,12 +18,23 @@ class ElementFieldMappingHelper
         ElementInterface $element,
         ElementIntegrationInterface $integration
     ): void {
-        $errors = $element->getErrors();
+        $errors = $element->errors()->getMessages();
         if (empty($errors)) {
             return;
         }
 
         $sourceToField = $this->getSourceToFieldMap($form, $integration);
+
+        foreach ($element->getFieldLayout()?->getCustomFields() ?? [] as $craftField) {
+            if (!$craftField instanceof Addresses) {
+                continue;
+            }
+
+            $addresses = AddressFieldMapping::getAddresses($element, $craftField);
+            foreach (($addresses[0] ?? null)?->errors()->getMessages() ?? [] as $attribute => $errorList) {
+                $errors[$craftField->handle.'.'.$attribute] = $errorList;
+            }
+        }
 
         foreach ($errors as $craftField => $errorList) {
             if (isset($sourceToField[$craftField])) {
@@ -32,7 +44,17 @@ class ElementFieldMappingHelper
                     $field->addErrors($errorList);
                 }
             } else {
-                if ($form->isLastPage()) {
+                $matched = false;
+                foreach ($sourceToField as $source => $field) {
+                    if (str_starts_with($source, $craftField.'.')) {
+                        $matched = true;
+                        if ($form->getCurrentPage()->getFields()->has($field)) {
+                            $field->addErrors($errorList);
+                        }
+                    }
+                }
+
+                if (!$matched && $form->isLastPage()) {
                     $form->addErrors($errorList);
                 }
             }

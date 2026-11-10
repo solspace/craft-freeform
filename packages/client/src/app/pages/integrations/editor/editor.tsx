@@ -18,9 +18,9 @@ import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
-
+import { integrationLabel } from "../integration-label";
 import { useIntegrationNavigation } from "../sidebar/sidebar.queries";
-import { EditorInput } from "./editor.input";
+import { EditorInputs } from "./editor.inputs";
 import { EditorLoader } from "./editor.loader";
 import { VersionUpgradeOverlay } from "./editor.overlay";
 import {
@@ -129,6 +129,18 @@ export const IntegrationsEditor: FC = () => {
   const canManage = config.permissions.integrations === "manage";
   const isAddNew = id === "new";
   const isLoading = isFetching || !data;
+  const pageTitle = data
+    ? integrationLabel(data.name || data.type.name, data.type.shortName)
+    : undefined;
+
+  useEffect(() => {
+    if (!pageTitle) return;
+    const previous = document.title;
+    document.title = pageTitle;
+    return () => {
+      document.title = previous;
+    };
+  }, [pageTitle]);
 
   const saveHandler = (): void => {
     if (data?.supported) {
@@ -162,7 +174,7 @@ export const IntegrationsEditor: FC = () => {
                 to={`../${type}/${integration}/${instance.id}`}
                 key={instance.id}
               >
-                <span>{instance.name}</span>
+                <span>{integrationLabel(instance.name, integration)}</span>
               </NavLink>
             ))}
           </EditorTabsWrapper>
@@ -203,7 +215,7 @@ export const IntegrationsEditor: FC = () => {
     <EditorContainer>
       <Breadcrumb
         id="integration-edit"
-        label={data.name}
+        label={integrationLabel(data.name, data.type.shortName)}
         url={`integrations/${type}/${integration}${id ? `/${id}` : ""}`}
       />
 
@@ -216,7 +228,7 @@ export const IntegrationsEditor: FC = () => {
               to={`../${type}/${integration}/${instance.id}`}
               key={instance.id}
             >
-              <span>{instance.name}</span>
+              <span>{integrationLabel(instance.name, integration)}</span>
             </NavLink>
           ))}
           {isAddNew && (
@@ -257,24 +269,21 @@ export const IntegrationsEditor: FC = () => {
 
         <hr />
 
-        {data.properties.map((property) => (
-          <EditorInput
-            key={`${data.type.class}-${data.id ?? "new"}-${property.handle}`}
-            integration={data}
-            property={property}
-            values={values}
-            errors={errors}
-            onUpdate={(key, value) => {
-              setValues((prev) => ({
-                ...prev,
-                metadata: {
-                  ...prev.metadata,
-                  [key]: value,
-                },
-              }));
-            }}
-          />
-        ))}
+        <EditorInputs
+          key={`${data.type.class}-${data.id ?? "new"}`}
+          integration={data}
+          values={values}
+          errors={errors}
+          onUpdate={(key, value) => {
+            setValues((prev) => ({
+              ...prev,
+              metadata: {
+                ...prev.metadata,
+                [key]: value,
+              },
+            }));
+          }}
+        />
       </EditorWrapper>
 
       {canManage && <PageFooter />}

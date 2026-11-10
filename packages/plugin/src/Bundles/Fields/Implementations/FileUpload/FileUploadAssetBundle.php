@@ -71,7 +71,7 @@ class FileUploadAssetBundle extends FeatureBundle
                 self::$filesUploadedErrors[$handle] = [];
 
                 if ($response) {
-                    if ($response->getAssetIds() || empty($response->getErrors())) {
+                    if (empty($response->getErrors())) {
                         $field->setValue($response->getAssetIds());
                         self::$filesUploaded[$handle] = $response->getAssetIds();
 

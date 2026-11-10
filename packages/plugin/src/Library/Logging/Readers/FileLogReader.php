@@ -99,13 +99,16 @@ class FileLogReader extends LogReader
 
         $count = 0;
         $file = $this->file;
+        $position = $file->key();
+        $file->rewind();
         while ($file->valid()) {
-            $file->next();
             $parsed = $this->getParser()->parse($file->current());
             if ($parsed && \in_array($parsed->getLevel(), $level, true)) {
                 ++$count;
             }
+            $file->next();
         }
+        $file->seek($position);
 
         return $count;
     }

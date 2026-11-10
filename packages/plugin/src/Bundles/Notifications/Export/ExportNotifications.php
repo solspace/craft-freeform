@@ -219,7 +219,7 @@ class ExportNotifications extends FeatureBundle
 
         $logger->info("ExportNotifications {$logMethod} - {$notification->name} - Sending email", $emailLogContext);
 
-        \Craft::$app->mailer->send($message);
+        Freeform::getInstance()->activity->observeEmail(static fn () => \Craft::$app->mailer->send($message), 3);
 
         $logger->info("ExportNotifications {$logMethod} - {$notification->name} - Email sent");
         $logger->info("ExportNotifications {$logMethod} - {$notification->name} - Finished processing");
@@ -361,7 +361,7 @@ class ExportNotifications extends FeatureBundle
                 return false;
             }
 
-            $logger->error("ExportNotifications {$logMethod} - {$record->name} - Failed: {$exception->getMessage()}");
+            $logger->error("ExportNotifications {$logMethod} - {$record->name} - Failed: {$exception->getMessage()}", ['activityRecorded' => Freeform::getInstance()->activity->hasRecordedEmailFailure($exception)]);
             $logger->info("ExportNotifications {$logMethod} - {$record->name} - Finished processing");
 
             // Re-throw so the queue knows it failed

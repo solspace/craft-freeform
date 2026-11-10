@@ -3,7 +3,7 @@
 {% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-settings') %}
 
 {% set selectedSubnavItem = 'settings' %}
-{% set fullPageForm = true %}
+{% set fullPageForm = fullPageForm ?? true %}
 {% set saveShortcutRedirect = saveShortcutRedirect ?? craft.app.request.absoluteUrl %}
 {% set retainScrollOnSaveShortcut = true %}
 {% set formActions = formActions ?? [{
@@ -12,6 +12,12 @@
     shortcut: true,
     retainScroll: true,
 }] %}
+
+{% if readOnly ?? false %}
+    {% set mainFormAttributes = (mainFormAttributes ?? {})|merge({
+        class: (mainFormAttributes.class ?? [])|explodeClass|merge(['freeform-settings-readonly']),
+    }) %}
+{% endif %}
 
 {% set navItems = craft.freeform.settingsNavigation %}
 

@@ -63,6 +63,28 @@ class DiagnosticsControllerTest extends TestCase
         $controller->actionIndex();
     }
 
+    public function testOverviewSeparatesPotentialIssuesWarningsAndNoticesWithoutChangingReportMeaning(): void
+    {
+        [$controller, $diagnostics] = $this->fixture();
+        $diagnostics->method('getServerChecks')->willReturn([
+            $this->item('Unsupported server', warning: true),
+            $this->item('Queue risk', suggestion: true),
+            $this->item('Optional recommendation', notice: true),
+        ]);
+        foreach (['getSiteChecks', 'getFreeformStats', 'getFreeformConfigurations', 'getFreeformIntegrations', 'getFreeformFormType', 'getCraftModules'] as $method) {
+            $diagnostics->method($method)->willReturn([]);
+        }
+        $controller->method('renderTemplate')->willReturnCallback(static function ($template, $variables) {
+            self::assertSame(['error' => 1, 'warning' => 1, 'notice' => 1], $variables['bannerCounts']);
+            self::assertStringContainsString('Unsupported server [Potential issue]', $variables['report']);
+            self::assertStringContainsString('Queue risk [Warning]', $variables['report']);
+            self::assertStringContainsString('Optional recommendation [Notice]', $variables['report']);
+
+            return (new \ReflectionClass(Response::class))->newInstanceWithoutConstructor();
+        });
+        $controller->actionIndex();
+    }
+
     public function testManualCheckRefreshesMetadataAndReturnsHealthyResults(): void
     {
         [$controller, $diagnostics, $schema, $view] = $this->fixture();
@@ -255,13 +277,17 @@ class DiagnosticsControllerTest extends TestCase
         return [$controller, $diagnostics, $schema, $view, $body];
     }
 
-    private function item(string $label, bool $warning = false): DiagnosticItem
+    private function item(string $label, bool $warning = false, bool $suggestion = false, bool $notice = false): DiagnosticItem
     {
         $item = $this->createMock(DiagnosticItem::class);
         $item->method('getMarkup')->willReturn(new Markup($label, 'UTF-8'));
         $warnings = $warning ? [new NotificationItem(new Markup('Missing key', 'UTF-8'), new Markup('Read the repair guide.', 'UTF-8'), 'WarningValidator')] : [];
         $item->method('getWarnings')->willReturn($warnings);
-        $item->method('getAllValidators')->willReturn($warnings);
+        $suggestions = $suggestion ? [new NotificationItem(new Markup('', 'UTF-8'), new Markup('Review configuration.', 'UTF-8'), 'SuggestionValidator')] : [];
+        $notices = $notice ? [new NotificationItem(new Markup('', 'UTF-8'), new Markup('Optional recommendation.', 'UTF-8'), 'NoticeValidator')] : [];
+        $item->method('getSuggestions')->willReturn($suggestions);
+        $item->method('getNotices')->willReturn($notices);
+        $item->method('getAllValidators')->willReturn(array_merge($warnings, $suggestions, $notices));
 
         return $item;
     }

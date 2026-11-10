@@ -4,6 +4,7 @@ namespace Solspace\Freeform\controllers\api\elements;
 
 use craft\models\Section;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Bundles\Integrations\Elements\AddressFieldMapping;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Helpers\SectionHelper;
 use yii\web\NotFoundHttpException;
@@ -45,11 +46,7 @@ class EntryController extends BaseApiController
 
         $fields = [];
         foreach ($layout->getCustomFields() as $item) {
-            $fields[] = [
-                'id' => $item->handle,
-                'label' => $item->name,
-                'required' => $item->required,
-            ];
+            array_push($fields, ...AddressFieldMapping::getMappingFields($item));
         }
 
         return $this->asJson($fields);

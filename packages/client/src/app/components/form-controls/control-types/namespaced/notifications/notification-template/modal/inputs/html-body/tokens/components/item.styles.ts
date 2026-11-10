@@ -10,17 +10,18 @@ export const ItemWrapper = styled.a`
   font-size: 14px;
 
   text-decoration: none;
+  color: ${colors.text};
 
   &:hover {
     cursor: pointer;
-    background-color: ${colors.gray050};
+    background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color, ${colors.gray050}));
   }
 
   &.active {
-    background-color: ${colors.gray100};
+    background-color: light-dark(${colors.gray100}, var(--bg-selection-light, ${colors.gray100}));
 
     &:hover {
-      background-color: ${colors.gray200};
+      background-color: light-dark(${colors.gray200}, var(--ui-control-active-bg-color, ${colors.gray200}));
     }
   }
 `;

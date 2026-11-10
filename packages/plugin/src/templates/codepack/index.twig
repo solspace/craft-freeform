@@ -6,128 +6,137 @@
     { label: "Settings"|t("freeform"), url: url("freeform/settings") },
 ] %}
 
-{% set selectedSubnavItem = "settings" %}
 {% set title = "Demo Templates"|t('freeform') %}
+{% set fullPageForm = false %}
 
-{% macro listFiles(file) %}
-    {% import _self as dir %}
+{% import 'freeform/codepack/_files' as files %}
 
-    {% set isFolder = file.isFolder %}
-    <li class="{{ isFolder ? 'dir' : 'file' }}">
-        <span>{{ file.name }}</span>
-        {% if isFolder %}
-            <ul>
-                {% for childFile in file.files %}
-                    {{ dir.listFiles(childFile) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </li>
-{% endmacro %}
-{% import _self as dir %}
+{% set components = [
+    {
+        id: 'templates',
+        label: 'Templates'|t('app'),
+        icon: 'templates',
+        count: codePack.templates.contents.fileCount,
+        summary: '{count} files'|t('freeform', {count: codePack.templates.contents.fileCount}),
+        contents: codePack.templates.contents,
+    },
+    {
+        id: 'assets',
+        label: 'Assets'|t('app'),
+        icon: 'folder',
+        count: codePack.assets.contents.fileCount,
+        summary: '{count} files'|t('freeform', {count: codePack.assets.contents.fileCount}),
+        contents: codePack.assets.contents,
+    },
+    {
+        id: 'routes',
+        label: 'Routes'|t('app'),
+        icon: 'routes',
+        count: codePack.routes.data|length,
+        summary: '{count} routes'|t('freeform', {count: codePack.routes.data|length}),
+        contents: codePack.routes.data,
+    },
+] %}
+
+{% do view.registerTranslations('freeform', [
+    'View all files',
+    'Show fewer files',
+    'Enter a folder name using letters, numbers, hyphens, underscores, or dots. Start with a letter or number.',
+    'Checking folder…',
+    'Couldn’t check this folder. Retry the check before installing.',
+    'Installation could not be completed. Check your folder permissions and try again.',
+    'Installation could not be confirmed. Check the demo folder before trying again.',
+]) %}
 
 {% block actionButton %}{% endblock %}
 
 {% block content %}
-
     {{ parent() }}
 
-    <form method="post">
-        <input type="hidden" name="action" value="freeform/codepack/install">
-        {{ redirectInput('freeform/settings/demo-templates') }}
-        <input type="hidden" name="{{ craft.app.config.general.csrfTokenName }}" value="{{ craft.app.request.csrfToken }}">
+    <div id="demo-installer" class="freeform-demo-installer">
+        <div data-install-setup>
+            <h2 class="first">{{ "Install demo templates"|t('freeform') }}</h2>
+            <p class="light">{{ "Try your forms on the front end with ready-to-use examples you can explore and customize."|t('freeform') }}</p>
 
-        <table width="100%">
-            <tr>
-                <td width="95%">
-                    {{ forms.textField({
-                        label: "Install Path"|t('freeform'),
-                        instructions: "The folder name you'd like the demo templates installed to, relative to the Craft templates directory."|t('freeform'),
-                        id: 'prefix',
-                        name: 'prefix',
-                        value: prefix,
-                        placeholder: "e.g. freeform-demo",
-                        disabled: readOnly,
-                        autofocus: true
-                    }) }}
-                </td>
-                <td>
-                    <div class="buttons" style="margin: 40px 0 0 5px !important;">
-                        <input type="submit" class="btn submit {{ readOnly ? "disabled" }}" value="{{ 'Install'|t('app') }}" {{ readOnly ? 'disabled="disabled"'}} />
-                    </div>
-                </td>
-            </tr>
-            {% if exceptionMessage is defined %}
-                <tr>
-                    <td colspan="2">
-                        <div class="error">
-                            {{ exceptionMessage|raw }}
-                        </div>
-                    </td>
-                </tr>
-            {% endif %}
-        </table>
-    </form>
-
-    <hr />
-    <div class="field">
-        <p>{{ "The following templates, assets and routes will be installed and configured:"|t('freeform') }}</p>
-    </div>
-
-    <div id="components-wrapper">
-
-        {% if codePack.templates %}
-            <div>
-                <h3>{{ "Templates"|t('app') }}</h3>
-
-                <ul class="directory-structure">
-                    <li class="dir">
-                        <span data-name="/">demo</span>
-                    </li>
-                    <ul>
-                        {% for file in codePack.templates.contents %}
-                            {{ dir.listFiles(file) }}
-                        {% endfor %}
-                    </ul>
-                </ul>
-            </div>
-        {% endif %}
-
-        <div>
-        {% if codePack.assets %}
-            <h3>{{ "Assets"|t('app') }}</h3>
-
-            <ul class="directory-structure">
-                <li class="dir">
-                    <span data-name="/">demo</span>
-                </li>
-                <ul>
-                    {% for file in codePack.assets.contents %}
-                        {{ dir.listFiles(file) }}
-                    {% endfor %}
-                </ul>
-            </ul>
-        {% endif %}
-
-        {% if codePack.routes.data %}
-            <br />
-            <h3>{{ "Routes"|t('app') }}</h3>
-
-            <ul class="directory-structure routes">
-                {% for route in codePack.routes.data %}
+            <ul class="freeform-demo-summary">
+                {% for component in components %}
                     <li>
-                        <span class="route" data-name="/{{ route.urlPattern }}">
-                            demo/{{ route.urlPattern }}
-                        </span>
-
-                        <div class="template">
-                            {{ route.template }}
-                        </div>
+                        <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                        <span><strong>{{ component.label }}</strong><span class="light">{{ component.summary }}</span></span>
                     </li>
                 {% endfor %}
             </ul>
-        {% endif %}
-        </div>
-    </div>
 
+            <form method="post" id="demo-install-form" data-read-only="{{ readOnly ? 'true' : 'false' }}" data-checked-prefix="{{ prefix }}">
+                <input type="hidden" name="action" value="freeform/codepack/install">
+                {{ redirectInput('freeform/settings/demo-templates') }}
+                {{ csrfInput() }}
+
+                <div class="freeform-demo-install-row">
+                    {{ forms.textField({
+                        label: "Demo Folder"|t('freeform'),
+                        instructions: "This folder name is used for both locations below."|t('freeform'),
+                        id: 'prefix',
+                        name: 'prefix',
+                        value: prefix,
+                        placeholder: 'freeform-demo',
+                        disabled: readOnly,
+                        required: true,
+                    }) }}
+                    <div class="freeform-demo-actions">
+                        <button type="submit" class="btn submit{{ readOnly ? ' disabled' }}" {{ readOnly ? 'disabled' }}>{{ "Install demo templates"|t('freeform') }}</button>
+                    </div>
+                </div>
+                <p id="demo-prefix-error" data-prefix-error class="error" hidden>{{ "Enter a folder name using letters, numbers, hyphens, underscores, or dots. Start with a letter or number."|t('freeform') }}</p>
+                <div class="pane warning freeform-demo-note" data-existing-templates role="note" {{ not templatesExist ? 'hidden' }}>
+                    <p><strong>{{ "Folder already exists."|t('freeform') }}</strong> {{ "Installing here may overwrite existing files. Choose a different folder or back up its contents first."|t('freeform') }}</p>
+                </div>
+                <div class="freeform-demo-check-status" role="status" aria-live="polite" hidden>
+                    <span data-destination-status></span>
+                    <button type="button" class="btn small" data-retry-destination hidden>{{ "Retry check"|t('freeform') }}</button>
+                </div>
+                {% include 'freeform/codepack/_destinations' %}
+            </form>
+
+            <div data-install-error class="freeform-demo-error error" role="alert" tabindex="-1" {{ exceptionMessage is not defined ? 'hidden' }}>{{ exceptionMessage ?? '' }}</div>
+
+            <details class="freeform-demo-details">
+                <summary>{{ "View files and routes"|t('freeform') }}</summary>
+                <div id="components-wrapper">
+                    {% for component in components %}
+                        <div{% if component.id == 'routes' %} class="freeform-demo-routes"{% endif %}>
+                            <h3 class="freeform-demo-section-heading">
+                                <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                                <span>{{ component.label }}</span>
+                                <span class="freeform-demo-count">{{ component.count }}</span>
+                            </h3>
+                            {% if component.id == 'routes' %}
+                                <ul class="directory-structure routes">
+                                    {% for route in component.contents %}
+                                        <li><span class="route" data-name="/{{ route.urlPattern }}">{{ prefix }}/{{ route.urlPattern }}</span><div class="template">{{ route.template }}</div></li>
+                                    {% endfor %}
+                                </ul>
+                            {% elseif component.id == 'templates' %}
+                                <div class="freeform-demo-file-preview" data-file-preview>
+                                    <div id="demo-template-files" class="freeform-demo-file-list">
+                                        {{ files.tree(component.contents, prefix) }}
+                                    </div>
+                                    <button type="button" class="freeform-demo-view-files" data-view-files aria-controls="demo-template-files" aria-expanded="false" hidden>{{ "View all files"|t('freeform') }}</button>
+                                </div>
+                            {% else %}
+                                {{ files.tree(component.contents, prefix) }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </details>
+        </div>
+
+        <div data-install-progress hidden role="status" aria-live="polite" tabindex="-1">
+            <h2 class="first">{{ "Installing demo templates…"|t('freeform') }}</h2>
+            <p class="light">{{ "Copying templates and assets, and configuring routes. Please keep this page open."|t('freeform') }}</p>
+            <progress class="freeform-demo-progress" aria-label="{{ 'Installing demo templates'|t('freeform') }}"></progress>
+        </div>
+        <div data-install-result role="status" aria-live="polite" tabindex="-1" hidden></div>
+    </div>
 {% endblock %}

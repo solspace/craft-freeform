@@ -3,7 +3,7 @@
 const toolbarTable = $("#toolbar");
 const button = $(`
 <div>
-  <button type="button" class="btn" id="quick-export" aria-haspopup="dialog">
+  <button type="button" class="btn" id="quick-export" aria-haspopup="dialog" data-icon="download">
     ${Craft.t("freeform", "Quick Export")}
   </button>
 </div>

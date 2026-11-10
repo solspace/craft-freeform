@@ -4,6 +4,13 @@ namespace Solspace\Freeform\Resources\Bundles;
 
 class PdfTemplateEditorBundle extends AbstractFreeformAssetBundle
 {
+    public function getStylesheets(): array
+    {
+        return [
+            'css/cp/notifications/editor.css',
+        ];
+    }
+
     public function getScripts(): array
     {
         return [

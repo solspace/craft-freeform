@@ -81,7 +81,9 @@ export const FieldTypeFilter = styled.details`
   .utility-select-types:focus-visible { outline: 2px solid var(--link-color, #3476b8); outline-offset: 3px; border-radius: 2px; }
   .utility-types { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
 `;
-export const LabelTable = styled.table`
+export const LabelTable = styled.table.attrs({
+  className: "freeform-ui-table",
+})`
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -94,12 +96,12 @@ export const LabelTable = styled.table`
   th { background: var(--gray-050, #f7f9fc); font-weight: 600; }
   td { border-top: 1px solid ${colors.hairline}; }
   th:first-child, td:first-child { width: 40px; }
-  small { display: block; margin-top: 6px; color: ${colors.gray400}; font-size: 11px; font-weight: 400; }
+  small { display: block; margin-top: 6px; color: light-dark(${colors.gray400}, ${colors.muted}); font-size: 11px; font-weight: 400; }
   tr[data-selected="false"] td:not(:first-child) { opacity: .55; }
   .utility-label { white-space: pre-wrap; }
-  mark { padding: 1px 0; border-radius: 2px; color: inherit; font-weight: 600; box-decoration-break: clone; }
-  .utility-label-current mark { background: #fce8e6; }
-  .utility-label-updated mark { background: #e1f3ec; }
+  mark { padding: 1px 2px; border-radius: 2px; color: inherit; font-weight: 600; box-decoration-break: clone; }
+  .utility-label-current mark { background: light-dark(#fce8e6, color-mix(in srgb, var(--error-color) 22%, var(--pane-bg))); color: light-dark(var(--fg-error, var(--error-color, #a32920)), var(--gray-800)); }
+  .utility-label-updated mark { background: light-dark(#e1f3ec, color-mix(in srgb, var(--enabled-color) 28%, var(--pane-bg))); color: light-dark(var(--fg-success, var(--success-color, #176248)), var(--gray-800)); }
 `;
 export const PreviewHeading = styled.div`
   display: flex;
@@ -112,7 +114,7 @@ export const PreviewHeading = styled.div`
 `;
 export const EmptyPreview = styled.p`
   padding: 24px;
-  border: 1px dashed ${colors.gray250};
+  border: 1px dashed light-dark(${colors.gray250}, var(--hairline-color));
   border-radius: 6px;
   text-align: center;
   color: ${colors.gray500};

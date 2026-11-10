@@ -7,7 +7,7 @@ export const RulesEditorWrapper = styled.div`
 
   flex: 1;
 
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   padding: ${spacings.xl};
 
   overflow-x: hidden;

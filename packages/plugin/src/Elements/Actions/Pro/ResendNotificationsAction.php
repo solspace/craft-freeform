@@ -15,7 +15,7 @@ class ResendNotificationsAction extends ElementAction
 {
     public function getTriggerLabel(): string
     {
-        return Freeform::t('Resend Notifications');
+        return Freeform::t('Quick Resend');
     }
 
     public function performAction(ElementQueryInterface $query): bool

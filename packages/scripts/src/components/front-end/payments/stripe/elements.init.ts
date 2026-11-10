@@ -218,11 +218,15 @@ export const initStripe =
         });
       })
       .catch((error) => {
+        initializedContainers.delete(container);
+        elementMap.delete(field);
         field.innerHTML = "Could not load payment element.";
 
         const errors: Record<string, string[]> = {};
         amountFields.forEach((handle) => {
-          errors[handle] = [error?.response?.data?.message];
+          errors[handle] = error?.response?.data?.errors ?? [
+            error?.response?.data?.message ?? "Enter a valid payment amount.",
+          ];
         });
 
         form.freeform._renderFieldErrors(errors);
@@ -230,19 +234,23 @@ export const initStripe =
         const executeOnce = () => {
           initStripe(props)(container);
 
-          amountFields.forEach((handle) => {
-            (form[handle] as HTMLInputElement)?.removeEventListener(
-              "change",
-              executeOnce,
-            );
+          amountInputs.forEach((input) => {
+            input.removeEventListener("change", executeOnce);
           });
         };
 
-        amountFields.forEach((handle) => {
-          (form[handle] as HTMLInputElement)?.addEventListener(
-            "change",
-            executeOnce,
-          );
+        const amountInputs = amountFields.flatMap((handle) => {
+          const input =
+            form.elements.namedItem(handle) ??
+            form.elements.namedItem(`${handle}[]`);
+          return input instanceof RadioNodeList
+            ? Array.from(input)
+            : input
+              ? [input]
+              : [];
+        });
+        amountInputs.forEach((input) => {
+          input.addEventListener("change", executeOnce);
         });
       })
       .finally(() => {

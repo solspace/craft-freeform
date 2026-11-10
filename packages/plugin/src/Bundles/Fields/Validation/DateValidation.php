@@ -78,26 +78,25 @@ class DateValidation extends FeatureBundle
             return;
         }
 
-        $generatedMinDate = $field->getGeneratedMinDate();
-        if (!$generatedMinDate) {
+        $minDate = $field->getMinDateBoundary();
+        if (!$minDate) {
             return;
         }
 
-        $minDate = new Carbon($generatedMinDate);
-        // TODO: risky change - do not reset time if the field input is not DATE only
-        $minDate->setTime(0, 0, 0);
-
         try {
             $format = $field->isUseNativeTypes() ? $field->getNativeFormat() : $field->getFormat();
-            $date = Carbon::createFromFormat($format, $value);
+            $date = Carbon::createFromFormat('!'.$format, $value);
+            if (!$field->isShowDate()) {
+                $date->setDateFrom(Carbon::now());
+            }
 
             if ($date->lt($minDate)) {
                 $field->addError(
                     Freeform::t(
-                        'Date "{date}" must be after "{minDate}"',
+                        'Date "{date}" must be on or after "{minDate}"',
                         [
                             'date' => $date->format($field->getFormat()),
-                            'minDate' => $field->getGeneratedMinDate($field->getDateFormat()),
+                            'minDate' => $field->getMinDateInputValue($field->getDateBoundaryFormat($field->getMinDate())),
                         ]
                     )
                 );
@@ -118,26 +117,25 @@ class DateValidation extends FeatureBundle
             return;
         }
 
-        $generatedMaxDate = $field->getGeneratedMaxDate();
-        if (!$generatedMaxDate) {
+        $maxDate = $field->getMaxDateBoundary();
+        if (!$maxDate) {
             return;
         }
 
-        $maxDate = new Carbon($generatedMaxDate);
-        // TODO: risky change - do not reset time if the field input is not DATE only
-        $maxDate->setTime(23, 59, 59);
-
         try {
             $format = $field->isUseNativeTypes() ? $field->getNativeFormat() : $field->getFormat();
-            $date = Carbon::createFromFormat($format, $value);
+            $date = Carbon::createFromFormat('!'.$format, $value);
+            if (!$field->isShowDate()) {
+                $date->setDateFrom(Carbon::now());
+            }
 
             if ($date->gt($maxDate)) {
                 $field->addError(
                     Freeform::t(
-                        'Date "{date}" must be before "{maxDate}"',
+                        'Date "{date}" must be on or before "{maxDate}"',
                         [
                             'date' => $value,
-                            'maxDate' => $field->getGeneratedMaxDate($field->getDateFormat()),
+                            'maxDate' => $maxDate->format($field->getDateBoundaryFormat($field->getMaxDate())),
                         ]
                     )
                 );

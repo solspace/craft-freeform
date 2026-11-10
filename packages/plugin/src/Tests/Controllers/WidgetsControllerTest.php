@@ -63,10 +63,36 @@ class WidgetsControllerTest extends TestCase
         $controller->actionRefresh();
     }
 
-    private function fixture(?Widget $widget, bool $cp = true): WidgetsController
+    public function testRefreshPassesASelectedFormToTheWidget(): void
+    {
+        $widget = $this->getMockBuilder(RecentWidget::class)->disableOriginalConstructor()->onlyMethods(['getBodyHtml', 'setFormFilter'])->getMock();
+        $widget->expects(self::once())->method('setFormFilter')->with(200);
+        $widget->method('getBodyHtml')->willReturn('<div>Selected form</div>');
+        $this->fixture($widget, true, '200')->actionRefresh();
+    }
+
+    public function testClearingTheFilterReturnsToAllConfiguredForms(): void
+    {
+        $widget = $this->getMockBuilder(RecentWidget::class)->disableOriginalConstructor()->onlyMethods(['getBodyHtml', 'setFormFilter'])->getMock();
+        $widget->expects(self::once())->method('setFormFilter')->with(null);
+        $widget->method('getBodyHtml')->willReturn('<div>All forms</div>');
+        $this->fixture($widget, true, '')->actionRefresh();
+    }
+
+    public function testMalformedFormFilterIsRejectedBeforeRendering(): void
+    {
+        $widget = $this->getMockBuilder(RecentWidget::class)->disableOriginalConstructor()->onlyMethods(['getBodyHtml'])->getMock();
+        $widget->expects(self::never())->method('getBodyHtml');
+        $controller = $this->fixture($widget, true, ['200']);
+        $this->expectException(BadRequestHttpException::class);
+        $controller->actionRefresh();
+    }
+
+    private function fixture(?Widget $widget, bool $cp = true, mixed $formId = null): WidgetsController
     {
         $request = $this->createMock(Request::class);
         $request->method('getIsCpRequest')->willReturn($cp);
+        $request->method('getBodyParam')->with('formId')->willReturn($formId);
         $request->method('getIsPost')->willReturn(true);
         $request->method('getAcceptsJson')->willReturn(true);
         $request->method('getRequiredBodyParam')->with('widgetId')->willReturn(33);

@@ -8,9 +8,9 @@ export const Wrapper = styled.div`
   padding: 12px ${spacings.md};
   min-width: 0;
 
-  color: ${colors.red800};
-  background-color: #fff5f5;
-  border: 1px solid #f2c6ca;
+  color: light-dark(${colors.red800}, ${colors.error});
+  background-color: light-dark(#fff5f5, color-mix(in srgb, ${colors.error} 8%, ${colors.surface}));
+  border: 1px solid light-dark(#f2c6ca, ${colors.error});
   border-inline-start: 3px solid ${colors.error};
   border-radius: ${borderRadius.lg};
 

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldPr
 use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
+use Solspace\Freeform\Attributes\Defaults\Unit;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
@@ -13,6 +14,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 class Calculation extends BaseCategory
 {
     #[Label('Decimal Count')]
+    #[Unit('places')]
     public TextItem $decimalCount;
 
     #[Label('Input Type')]

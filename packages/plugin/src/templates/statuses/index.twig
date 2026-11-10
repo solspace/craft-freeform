@@ -7,15 +7,14 @@
 ] %}
 
 {% set selectedSubnavItem = "statuses" %}
+{% set fullPageForm = false %}
 
 {% block actionButton %}
 
     {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
-        <div class="buttons">
-            <a class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
-                {{ "New Status"|t('freeform') }}
-            </a>
-        </div>
+        <a id="newstatuscontainer" class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
+            {{ "New Status"|t('freeform') }}
+        </a>
     {% endif %}
 
 {% endblock %}
@@ -45,33 +44,31 @@
                         {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
                                 {{ status.name }}
-                            </a>
-                        {% else %}
-                            {{ status.name }}
+                            {% endif %}
+                        </th>
+                        <td data-title="{{ 'Handle'|t('freeform') }}">
+                            <code>
+                                {{ status.handle }}
+                            </code>
+                        </td>
+                        <td class="thin centeralign" data-title="{{ 'Default'|t('freeform') }}">{% if status.id == defaultStatusId %}<span data-icon="check" aria-label="{{ 'Yes'|t('app') }}"></span>{% endif %}</td>
+                        {% if not readOnly %}
+                            <td class="thin">
+                                {% if currentUser.can("freeform-settingsAccess") and (statuses|length) > 1 %}
+                                    <a class="move icon" title="{{ 'Reorder'|t('freeform') }}" aria-label="{{ 'Reorder'|t('freeform') }}" role="button"></a>
+                                {% endif %}
+                            </td>
+                            <td class="thin">
+                                {% if currentUser.can("freeform-settingsAccess") and status.id != defaultStatusId and (statuses|length) > 1 %}
+                                    <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}" role="button" tabindex="0"></a>
+                                {% endif %}
+                            </td>
                         {% endif %}
-                    </th>
-                    <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ status.handle }}
-                        </code>
-                    </td>
-                    <td>{% if status.id == defaultStatusId %}<span data-icon="check"></span>{% endif %}</td>
-                    {% if not readOnly %}
-                        <td class="thin">
-                            {% if currentUser.can("freeform-settingsAccess") and (statuses|length) > 1 %}
-                                <a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a>
-                            {% endif %}
-                        </td>
-                        <td class="thin">
-                            {% if currentUser.can("freeform-settingsAccess") and status.id != defaultStatusId and (statuses|length) > 1 %}
-                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
-                            {% endif %}
-                        </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
         {{ ui('empty', {label: "No statuses exist yet."|t('freeform')}) }}
     {% endif %}

@@ -19,11 +19,11 @@ export const LabelText = styled.span``;
 
 export const RequiredStar = styled.span`
   &:after {
-    content: 'asterisk';
+    content: '*';
 
-    color: ${colors.red500};
-    font-family: Craft;
-    font-size: 10px;
+    color: light-dark(${colors.red500}, ${colors.error});
+    font-family: inherit;
+    font-size: inherit;
   }
 `;
 

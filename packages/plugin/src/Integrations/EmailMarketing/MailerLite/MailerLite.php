@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
@@ -118,20 +119,20 @@ class MailerLite extends EmailMarketingIntegration implements MailerLiteIntegrat
     public function push(Form $form, Client $client): void
     {
         if (!$this->mailingList || !$this->emailField || !$this->mailingList->getResourceId()) {
-            $this->logger->debug('Mailing list or email field not set. Skipping.');
+            $this->logger->debug('Mailing list or email field not set. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NOT_CONFIGURED]);
 
             return;
         }
 
         if ($this->optInField && !$form->get($this->optInField->getUid())?->getValue()) {
-            $this->logger->debug('Opt-in field used but not chosen. Skipping.');
+            $this->logger->debug('Opt-in field used but not chosen. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_OPT_IN]);
 
             return;
         }
 
         $email = $form->get($this->emailField->getUid())?->getValue();
         if (!\is_string($email) || '' === trim($email)) {
-            $this->logger->debug('Email field empty. Skipping.');
+            $this->logger->debug('Email field empty. Skipping.', ['activityReason' => ActivityContext::INTEGRATION_NO_EMAIL]);
 
             return;
         }
@@ -161,7 +162,7 @@ class MailerLite extends EmailMarketingIntegration implements MailerLiteIntegrat
         }
 
         $this->triggerAfterResponseEvent(self::CATEGORY_SUBSCRIBER, $response);
-        $this->logger->info('Subscriber saved to MailerLite.', ['status' => $json['data']['status'] ?? null]);
+        $this->logger->info('Subscriber saved to MailerLite.', ['status' => $json['data']['status'] ?? null, 'activityReason' => ActivityContext::INTEGRATION_SUBSCRIBED]);
     }
 
     private function fetchCollection(Client $client, string $endpoint): array

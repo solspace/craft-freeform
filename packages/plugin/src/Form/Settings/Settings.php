@@ -39,6 +39,7 @@ class Settings
             $propertyProvider->setStoredObjectProperties($object, $propertySettings);
             if ($object instanceof BehaviorSettings) {
                 $object->normalizeSchedule();
+                $object->normalizeBannerColors($propertySettings);
             }
         }
     }

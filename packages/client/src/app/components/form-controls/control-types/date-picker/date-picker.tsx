@@ -62,34 +62,36 @@ const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
     <Control property={property} errors={errors} context={context}>
       <DatePickerWrapper>
         <DateTimeRow $includeTime={includeTime}>
-          <DatePicker
-            locale={locale}
-            id={property.handle}
-            minDate={min}
-            maxDate={max}
-            disabled={property.disabled}
-            selected={selectedDate}
-            dateFormat={format}
-            showIcon={includeTime}
-            toggleCalendarOnIconClick={includeTime}
-            placeholderText={
-              includeTime ? translate("Choose a date") : undefined
-            }
-            isClearable={includeTime && Boolean(selectedDate)}
-            className={classes("text", "fullwidth")}
-            onChange={(date: Date | null) => {
-              if (date && includeTime) {
-                const [hours, minutes] = defaultTime.split(":").map(Number);
-                date.setHours(
-                  selectedDate?.getHours() ?? hours,
-                  selectedDate?.getMinutes() ?? minutes,
-                  selectedDate?.getSeconds() ?? 0,
-                  0,
-                );
+          <div className="date-input">
+            <DatePicker
+              locale={locale}
+              id={property.handle}
+              minDate={min}
+              maxDate={max}
+              disabled={property.disabled}
+              selected={selectedDate}
+              dateFormat={format}
+              showIcon={includeTime}
+              toggleCalendarOnIconClick={includeTime}
+              placeholderText={
+                includeTime ? translate("Choose a date") : undefined
               }
-              updateValue(date ? formatISO(date) : null);
-            }}
-          />
+              isClearable={includeTime && Boolean(selectedDate)}
+              className={classes("text", "fullwidth")}
+              onChange={(date: Date | null) => {
+                if (date && includeTime) {
+                  const [hours, minutes] = defaultTime.split(":").map(Number);
+                  date.setHours(
+                    selectedDate?.getHours() ?? hours,
+                    selectedDate?.getMinutes() ?? minutes,
+                    selectedDate?.getSeconds() ?? 0,
+                    0,
+                  );
+                }
+                updateValue(date ? formatISO(date) : null);
+              }}
+            />
+          </div>
           {includeTime && (
             <TimeInput>
               <input

@@ -1,4 +1,5 @@
 import { dropdownControl } from "@ff-client/styles/craft6";
+import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const GroupWrapper = styled.div`
@@ -38,6 +39,88 @@ export const ProfileFields = styled.div`
     display: block;
     resize: vertical;
   }
+`;
+
+export const PresetSection = styled.section`
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid ${colors.gray100};
+
+  > p {
+    margin: 4px 0 12px;
+    color: ${colors.gray500};
+    font-size: 13px;
+    line-height: 1.5;
+  }
+`;
+
+export const PresetHeader = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+
+  h2 {
+    margin: 0;
+    color: ${colors.gray700};
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+`;
+
+export const PresetGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 10px;
+`;
+
+export const PresetButton = styled.button`
+  width: 100%;
+  max-width: none;
+  align-items: stretch;
+  font: inherit;
+  text-align: start;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  && .choice-heading {
+    flex-wrap: nowrap;
+    padding-inline-end: 0;
+  }
+
+  &:hover:not(:disabled) {
+    border-color: var(--choice-accent);
+  }
+
+  &[aria-pressed='true'], &[aria-pressed='true']:hover:not(:disabled) {
+    border-color: var(--choice-accent);
+    background: var(--choice-selected-background);
+    box-shadow: inset 0 0 0 1px var(--choice-accent);
+
+    .choice-heading {
+      color: var(--choice-selected-heading);
+    }
+
+    .choice-icon {
+      color: var(--choice-accent);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--choice-accent);
+    outline-offset: 3px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+`;
+
+export const PresetDescription = styled.span`
+  color: ${colors.gray600};
+  font-size: 12px;
+  line-height: 1.5;
 `;
 
 export const TitleBlock = styled.div`
@@ -258,6 +341,31 @@ export const List = styled.ul`
   margin: 0;
   padding: 0;
   list-style: none;
+`;
+
+export const ChildrenViewport = styled.div`
+  min-height: 0;
+  overflow: hidden;
+  margin-inline: -4px;
+  padding-inline: 4px;
+`;
+
+export const ChildrenCollapse = styled.div<{ $expanded: boolean }>`
+  display: grid;
+  grid-template-rows: ${({ $expanded }) => ($expanded ? "1fr" : "0fr")};
+  opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
+  transition: grid-template-rows 320ms cubic-bezier(0.22, 1, 0.36, 1), opacity 160ms ease;
+
+  > ${ChildrenViewport} > ${List}, > ${ChildrenViewport} > ${Block} {
+    transform: translateY(${({ $expanded }) => ($expanded ? "0" : "-6px")});
+    transition: transform 360ms cubic-bezier(0.34, 1.45, 0.64, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &, > ${ChildrenViewport} > ${List}, > ${ChildrenViewport} > ${Block} {
+      transition: none;
+    }
+  }
 `;
 
 export const ListItem = styled.li`

@@ -29,6 +29,14 @@ class FormElementUsageControllerTest extends TestCase
 {
     use UsesCraft6Container;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        if (!method_exists(Fields::class, 'getAllLayouts')) {
+            self::markTestSkipped('Element usage is a Craft 5 feature.');
+        }
+    }
+
     #[TestWith([5, 0, 5])]
     #[TestWith([25, 5, 25])]
     #[TestWith([999, 0, 50])]

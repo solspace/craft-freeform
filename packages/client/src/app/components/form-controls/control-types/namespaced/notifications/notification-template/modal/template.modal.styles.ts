@@ -24,7 +24,7 @@ export const TabList = styled.ul`
   padding: 0 9px;
 
   border-bottom: 1px solid ${colors.hairline};
-  box-shadow: 0 1px 5px #cdd8e440;
+  box-shadow: none;
 
   list-style: none;
 `;
@@ -37,7 +37,7 @@ export const TabListItem = styled.li`
 
   padding: 14px 15px 12px;
 
-  color: #7e8fa0;
+  color: light-dark(#7e8fa0, ${colors.muted});
   font-size: 12px;
   font-weight: 500;
   text-transform: uppercase;
@@ -58,7 +58,7 @@ export const TabListItem = styled.li`
       width: calc(100% - 30px);
       height: 2px;
 
-      background-color: #0d99f2;
+      background-color: light-dark(#0d99f2, var(--white));
     }
   }
 

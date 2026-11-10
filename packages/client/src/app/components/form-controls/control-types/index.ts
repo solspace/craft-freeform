@@ -9,6 +9,7 @@ export { default as calculationBox } from "./calculation-box/calculation-box";
 export { default as checkboxes } from "./checkboxes/checkboxes";
 export { default as codeEditor } from "./code-editor/code";
 export { default as colorPicker } from "./color-picker/color-picker";
+export { default as dateExpression } from "./date-expression/date-expression";
 export { default as datePicker } from "./date-picker/date-picker";
 export { default as dynamicCheckboxes } from "./dynamic-checkboxes/dynamic-checkboxes";
 export { default as dynamicSelect } from "./dynamic-select/dynamic-select";

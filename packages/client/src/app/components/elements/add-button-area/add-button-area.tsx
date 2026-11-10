@@ -30,13 +30,13 @@ export const AddButtonArea: React.FC<Props> = ({
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.div.attrs({ className: "freeform-add-button-area" })`
   width: 100%;
   display: flex;
   justify-content: center;
 
   background: transparent;
-  border: 1px dashed rgba(0, 0, 0, 0.25);
+  border: 1px dashed light-dark(rgba(0, 0, 0, 0.25), var(--medium-hairline-color));
   border-top: none;
   border-bottom-left-radius: ${borderRadius.lg};
   border-bottom-right-radius: ${borderRadius.lg};
@@ -46,7 +46,7 @@ const AddButton = styled.button`
   width: 100%;
   padding: 6px 9px;
 
-  background: ${colors.white};
+  background: light-dark(${colors.white}, ${colors.surface});
   border-radius: 4px;
 
   text-align: center;

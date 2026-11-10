@@ -1,0 +1,5 @@
+{% macro glyph(event, level) %}
+    {% import 'freeform/_components/settings-cards' as cards %}
+    {% set icon %}{% include 'freeform/_components/activity-event-icon' with {key:event} only %}{% endset %}
+    {{ cards.icon({icon:icon, class:'ff-activity-glyph', attributes:{data:{level:level}}}) }}
+{% endmacro %}

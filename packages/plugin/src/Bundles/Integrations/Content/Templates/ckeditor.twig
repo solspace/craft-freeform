@@ -1,0 +1,7 @@
+{# Include from templates/_partials/entry/<entryTypeHandle>.twig. #}
+{% set selectedForm = attribute(entry, freeformFieldHandle ?? 'freeformForm') ?? null %}
+{% include 'freeform-integrations/_form' with {
+    selectedForm: selectedForm,
+    instanceId: 'ckeditor-' ~ entry.uid,
+    renderProperties: renderProperties ?? {},
+} only %}

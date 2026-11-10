@@ -18,7 +18,6 @@ export const PropertyEditorWrapper = styled.div<PropertyEditorProps>`
   z-index: 2;
 
   overflow: hidden;
-  border-right: 1px solid rgb(154 165 177 / 25%);
 
   pointer-events: ${({ $active }) => ($active ? "auto" : "none")};
   background: ${({ $active }) => ($active ? "var(--background-color)" : "transparent")};
@@ -53,7 +52,7 @@ export const Title = styled.h3`
 
   display: flex;
   justify-content: flex-start;
-  align-items: end;
+  align-items: center;
   gap: ${spacings.sm};
 
   margin: 0;
@@ -68,6 +67,7 @@ export const Title = styled.h3`
 `;
 
 export const Icon = styled.div`
+  fill: currentColor;
   display: flex;
   justify-content: center;
   align-items: center;

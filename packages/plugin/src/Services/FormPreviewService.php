@@ -138,6 +138,10 @@ class FormPreviewService
             $attribute = 'link' === $node->nodeName ? 'href' : 'src';
             $url = $node->getAttribute($attribute);
             $asset = $bundledAssets[explode('?', $url, 2)[0]] ?? null;
+            if (null !== $asset) {
+                // A file BOM is an encoding marker, not inline CSS/JS content.
+                $asset = preg_replace('/^\xEF\xBB\xBF/', '', $asset);
+            }
             if (null !== $asset && 'script' === $node->nodeName) {
                 $node->removeAttribute('src');
                 $node->removeAttribute('integrity');
@@ -170,7 +174,13 @@ class FormPreviewService
             }
 
             $node->setAttribute($attribute, $url);
-            $node->setAttribute('crossorigin', 'anonymous');
+            if ('img' === $node->nodeName) {
+                // Public asset volumes need not send CORS headers. These images
+                // remain limited to their exact URLs by the frame's CSP.
+                $node->removeAttribute('crossorigin');
+            } else {
+                $node->setAttribute('crossorigin', 'anonymous');
+            }
             $node->setAttribute('referrerpolicy', 'no-referrer');
             if ('script' === $node->nodeName) {
                 $scripts[] = $url;
@@ -202,7 +212,7 @@ class FormPreviewService
 
     private function getDatepickerSources(\DOMXPath $xpath): array
     {
-        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false")]');
+        $pickers = $xpath->query('//form[@data-freeform and @data-scripts-datepicker]//*[@data-datepicker and @data-datepicker-enabled and not(@data-datepicker-enabled="0") and not(@data-datepicker-enabled="false") and not(@data-datepicker-kind="freeform")]');
         if (!$pickers->length) {
             return [[], []];
         }

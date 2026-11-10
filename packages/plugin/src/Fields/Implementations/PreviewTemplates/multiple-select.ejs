@@ -18,7 +18,7 @@
   <% if (tags.length) { %>
   <div data-preview-tags style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;">
     <% tags.forEach(function(option) { %>
-    <span style="display:inline-flex;align-items:center;gap:6px;max-width:100%;box-sizing:border-box;padding:2px 6px;border:1px solid rgba(96,125,159,.25);border-radius:4px;background:#fbfcfe;color:#596673;font-size:13px;line-height:20px;">
+    <span style="display:inline-flex;align-items:center;gap:6px;max-width:100%;box-sizing:border-box;padding:2px 6px;border:1px solid light-dark(rgba(96,125,159,.25),var(--medium-hairline-color));border-radius:4px;background:light-dark(#fbfcfe,var(--bg-selection-light));color:light-dark(#596673,var(--text-color));font-size:13px;line-height:20px;">
       <span style="min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"><%- option.label %></span>
       <span aria-hidden="true" style="display:flex;align-items:center;justify-content:center;flex:0 0 12px;width:12px;height:20px;font-size:16px;">×</span>
     </span>

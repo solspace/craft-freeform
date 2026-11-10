@@ -28,25 +28,35 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(label: 'Advanced settings', instructions: 'Additional checks and field error messages.', order: 90)]
+    protected bool $showAdvanced = false;
+
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
-        label: 'Check MX Record',
-        instructions: "Email addresses will be validated against their domain's MX records to ensure the domain can receive mail.",
+        order: 100,
+        label: 'Check Email Domains',
+        instructions: 'Check for mail or address records on the email domain. This does not verify that the mailbox exists.',
     )]
     protected string $checkMxRecord = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\BooleanEnv(
-        label: 'Display Errors about Blocked Emails under each Email Field',
-        instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
+        order: 110,
+        label: 'Show Field Errors',
+        instructions: 'Show a message beside fields with blocked values. Helpful when troubleshooting submissions.',
     )]
     protected string $errorsBelowFields = 'false';
 
+    #[VisibilityFilter('Boolean(values.showAdvanced)')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
+        order: 120,
         label: 'Error Message',
-        instructions: 'The message shown to users when blocked emails are submitted. Can use the `{email}` variable.',
+        instructions: 'Shown beside a blocked email field. You can use `{email}` for the submitted address.',
         placeholder: 'Invalid Email Address',
     )]
     protected string $errorMessage = '';
@@ -55,22 +65,24 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 11,
         label: 'Blocked Email Addresses for this Form',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
+        instructions: 'One email address or pattern per line, such as `person@example.com` or `*@example.com`.',
         rows: 8,
     )]
-    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
+    #[Message('Added to the default block list for this form only.')]
     protected array $emails = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
+        order: 10,
         label: 'Default Blocked Email Addresses',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
+        instructions: 'One email address or pattern per line, such as `person@example.com` or `*@example.com`.',
         rows: 8,
     )]
-    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
+    #[Message('Used by every form with this integration. Add form-specific entries in the form builder.')]
     protected array $defaultEmails = [];
 
     public function isCheckMxRecord(): bool
@@ -94,7 +106,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
             $emails = $this->getCombinedEmails();
             foreach ($emails as $email) {
-                if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
+                if (ComparisonHelper::stringMatchesWildcard($email, $value)) {
                     if ($this->isErrorsBelowFields()) {
                         $message = $this->errorMessage ?: 'Invalid Email Address';
                         $field->addError(Freeform::t($message, ['email' => $value]));

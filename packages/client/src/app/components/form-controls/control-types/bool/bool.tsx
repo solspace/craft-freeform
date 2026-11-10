@@ -19,25 +19,20 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
     property.flags?.includes("as-readonly-in-instance");
 
   return (
-    <Control
-      property={property}
-      errors={errors}
-      context={context}
-      preContent={
-        <CheckboxWrapper>
-          <CheckboxItem>
-            <LightSwitch
-              id={property.handle}
-              label={translate(property.label)}
-              enabled={enabled}
-              readOnly={isReadonly}
-              onClick={(enabled) => updateValue(enabled)}
-              errors={errors}
-            />
-          </CheckboxItem>
-        </CheckboxWrapper>
-      }
-    ></Control>
+    <Control property={property} errors={errors} context={context}>
+      <CheckboxWrapper>
+        <CheckboxItem>
+          <LightSwitch
+            id={property.handle}
+            label={translate(property.label)}
+            enabled={enabled}
+            readOnly={isReadonly}
+            onClick={(enabled) => updateValue(enabled)}
+            errors={errors}
+          />
+        </CheckboxItem>
+      </CheckboxWrapper>
+    </Control>
   );
 };
 

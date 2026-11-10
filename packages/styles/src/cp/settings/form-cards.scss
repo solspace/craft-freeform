@@ -11,7 +11,7 @@ ul#form-cards {
   > li {
     display: grid;
     grid-template-rows: auto 70px;
-    background: #fff;
+    background: light-dark(#fff, var(--pane-bg, #fff));
 
     border: 1px solid #d5dce5;
 

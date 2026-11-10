@@ -6,10 +6,13 @@ use craft\web\View;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Services\ClientAssetsService;
+use Solspace\Freeform\Tests\Helpers\UsesCraft6Container;
 
 #[CoversClass(ClientAssetsService::class)]
 class ClientAssetsServiceTest extends TestCase
 {
+    use UsesCraft6Container;
+
     public function testCommittedManifestCanRegisterProductionAssets(): void
     {
         $resources = \dirname(__DIR__, 2).'/Resources';

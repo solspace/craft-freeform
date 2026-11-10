@@ -1,29 +1,54 @@
-# Setup Guide
+# Blocked email addresses
 
-Spam Blocking is handled as an integration to give you more control. Spam Blocking can be updated even when setting changes are disabled for the site. It also offers the ability to create multiple sets of blocks as well as form-specific blocks (entered directly inside each form).
+Block values submitted through Email fields. Keep a shared list here and add extra addresses or patterns to individual forms.
 
-## Setup Instructions
+## Set up the default list
 
-### 1. Configure the Integration
+1. Choose whether the integration is **Enabled by default**.
+2. Enter one address or pattern per line in **Default Blocked Email Addresses**.
+3. Save the integration.
 
-- Enable the **Enabled by default** setting if you'd like this integration to be enabled by default for any existing and new forms. Otherwise, you will need to manually opt-in for each form inside the builder.
-- Enable the **Display Errors about Blocked Email Addresses under each Email Field** setting if you'd like field-based errors to display under the Email field(s) for which the user has entered a blocked email address. This isn't recommended for regular use but is helpful if you're trying to troubleshoot submission issues.
-    - If enabled, enter an error message to show users when blocked email addresses are submitted. You can use the `{email}` variables.
-    - This can be overrided on a per form level inside the form builder.
+<details>
+<summary>Address and wildcard examples</summary>
 
-### 2. Set the Defaults
+```text
+person@example.com
+*@example.com
+*@*.ru
+```
 
-- In the **Default Blocked Email Addresses** textarea below, enter email addresses you would like blocked from being used in all Email fields for any form that enables this integration.
-- Use asterisks for wildcards (e.g. ``*@hotmail.ru``), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, make good use of the wildcard character by placing one before and after.
-- If you ever need to add, remove or change blocked email addresses, you can come back to this integration settings page and do so.
-- Click the **Save** button.
+Patterns match the whole email address. Use `*` to match a variable part. For example, `*@example.com` matches that domain, while `*@*.ru` matches domains ending in `.ru`, including subdomains. It does not match `example.ru.com`.
 
-### 3. Configure the Form
+Start with a small list and check that it matches the addresses you intend to block. Domain-ending rules filter the email address, not the visitor's location.
 
-- If you enabled the **Enabled by default** setting, this will already be enabled on all of your existing forms, and you likely shouldn't need to touch anything else after that.
-- If you did not enable the **Enabled by default** setting, you will need to enable this spam block manually for each form that you wish for it to apply to.
-- If you want to add form-specific blocks, you can enter them inside this integration in the form builder. Anything added there will be in addition to the global blocks set here and will apply only to that form.
+</details>
 
----
+<details>
+<summary>Domain checks and field errors</summary>
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/custom-development/) to build any feature or change you need.</small>
+These options are in **Advanced settings**. Opening or closing the panel does not change them.
+
+**Check Email Domains** marks a submission as spam if an email domain has neither an MX record nor an A record. This checks the domain, not whether the individual mailbox exists.
+
+**Show Field Errors** adds a message beside Email fields containing blocked values. It is usually left off and can be useful when troubleshooting. Enable it to edit **Error Message**, which supports `{email}` for the submitted address.
+
+</details>
+
+## Use the list on a form
+
+1. Open the form and select **Integrations**.
+2. Enable this integration if it is not already enabled.
+3. Add form-specific entries if needed. These are combined with the default list rather than replacing it.
+4. Save the form.
+
+Matches mark the submission as spam. Freeform's spam settings determine how the submission is handled.
+
+
+<details>
+<summary>Use the starter list</summary>
+
+Click **Add Starter List** beside the default list to add suggested entries. Existing entries are kept and duplicates are skipped. Review the entries and remove any you do not need before saving. **Undo** restores the previous list until you edit it manually.
+
+The list includes disposable email domains and broader rules for `.ru`, `.su`, `.xyz`, and `.top`. These are optional examples, not a list of confirmed spam sources. Domain-ending rules block every address using those endings, including legitimate contacts.
+
+</details>

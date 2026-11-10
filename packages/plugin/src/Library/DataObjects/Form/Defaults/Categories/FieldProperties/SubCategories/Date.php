@@ -28,13 +28,15 @@ class Date extends BaseCategory
     #[Label('Force a locale')]
     public TextItem $locale;
 
-    #[Label('Use built-in datepicker')]
-    #[SetDefaultValue(true)]
-    public BoolItem $datepicker;
+    #[Label('Date picker')]
+    #[SetDefaultValue('freeform')]
+    #[OptionsGenerator(DatetimeField::PICKER_OPTIONS)]
+    public SelectItem $picker;
 
-    #[Label('Use native input types')]
-    #[SetDefaultValue(false)]
-    public BoolItem $nativeTypes;
+    #[Label('Time interval (minutes)')]
+    #[SetDefaultValue(30)]
+    #[OptionsGenerator([1 => '1', 5 => '5', 10 => '10', 15 => '15', 30 => '30', 60 => '60'])]
+    public SelectItem $minuteStep;
 
     #[Label('Use date format as placeholder')]
     #[SetDefaultValue(true)]
@@ -90,6 +92,20 @@ class Date extends BaseCategory
     #[Label('Separate AM/PM with a space')]
     #[SetDefaultValue(true)]
     public BoolItem $clockAMPMSeparate;
+
+    public function __construct(array $config = [])
+    {
+        // Preserve deliberately configured legacy defaults as well as their locks.
+        if (!isset($config['picker']) && (isset($config['datepicker']) || isset($config['nativeTypes']))) {
+            $native = $config['nativeTypes']['value'] ?? false;
+            $enabled = $config['datepicker']['value'] ?? true;
+            $config['picker'] = [
+                'value' => $native ? 'browser' : ($enabled ? 'flatpickr' : 'none'),
+                'locked' => ($config['nativeTypes']['locked'] ?? false) || ($config['datepicker']['locked'] ?? false),
+            ];
+        }
+        parent::__construct($config);
+    }
 
     public function getLabel(): string
     {

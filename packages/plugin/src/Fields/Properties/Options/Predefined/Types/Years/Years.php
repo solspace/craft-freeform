@@ -9,10 +9,10 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Years implements PredefinedSourceTypeInterface
 {
-    #[Integer('First value from current year')]
+    #[Integer('First value from current year', unit: 'years')]
     private ?int $first = 0;
 
-    #[Integer('Last value from current year')]
+    #[Integer('Last value from current year', unit: 'years')]
     private ?int $last = -100;
 
     public function getName(): string

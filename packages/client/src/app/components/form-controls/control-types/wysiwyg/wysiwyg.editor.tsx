@@ -3,6 +3,7 @@ import {
   PreviewEditor,
 } from "@components/form-controls/preview/previewable-component.styles";
 import config from "@config/freeform/freeform.config";
+import { editorColorMap } from "@ff-client/utils/color-palette";
 import { Editor } from "@tinymce/tinymce-react";
 import type { FC } from "react";
 
@@ -22,6 +23,8 @@ import "tinymce/plugins/lists";
 import "tinymce/plugins/media";
 import "tinymce/plugins/searchreplace";
 import "tinymce/plugins/table";
+
+import "./tinymce-chrome.css";
 
 import { WysiwygEditorWrapper } from "./wysiwyg.editor.styles";
 
@@ -51,9 +54,13 @@ export const WysiwygEditor: FC<Props> = ({
   return (
     <PreviewEditor>
       <PreviewContainer>
-        <WysiwygEditorWrapper $fullHeight={fullHeight}>
+        <WysiwygEditorWrapper
+          className="ff-tinymce-editor"
+          $fullHeight={fullHeight}
+        >
           <Editor
             init={{
+              color_map: editorColorMap(),
               ...(fullHeight ? { height: "100%", resize: false } : {}),
               menubar: menu,
               statusbar: statusbar,

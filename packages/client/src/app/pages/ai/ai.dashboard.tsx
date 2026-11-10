@@ -38,6 +38,7 @@ import {
   StatusValue,
   UsageChart,
 } from "./ai.dashboard.styles";
+import { AiIntroduction } from "./ai.introduction";
 import { AiPlansModal } from "./ai.modal.plans";
 import { useAiUsageQuery } from "./ai.queries";
 import { formatAiDate, formatAiDateTime } from "./ai.utils";
@@ -181,19 +182,7 @@ export const AiDashboard: React.FC = () => {
         />
       )}
 
-      {isNotFound && (
-        <AiSettingsEmpty
-          title={translate("SolspaceAI is not enabled")}
-          subtitle={translate(
-            "Enable SolspaceAI in the Integrations area to view usage.",
-          )}
-          iconFade
-        >
-          <Link to={AI_INTEGRATION_PATH} className="btn submit">
-            {translate("Enable SolspaceAI")}
-          </Link>
-        </AiSettingsEmpty>
-      )}
+      {isNotFound && <AiIntroduction />}
 
       {isForbidden && (
         <AiSettingsEmpty

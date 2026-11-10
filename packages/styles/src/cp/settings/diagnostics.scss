@@ -1,3 +1,5 @@
+@use "../../shared/status.css";
+
 .diagnostic-color {
   &-error {
     color: var(--c-color-danger-on-normal);
@@ -354,47 +356,30 @@
   }
 
   .ff-diag-banner {
-    --ff-diag-banner-color: var(--enabled-color);
     margin-block: 0 14px;
-    padding: 10px 16px;
-    color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
-    border-color: color-mix(in srgb, var(--ff-diag-banner-color) 30%, var(--border-hairline, var(--hairline-color)));
-    background: color-mix(in srgb, var(--ff-diag-banner-color) 6%, var(--secondary-pane-bg, var(--gray-050)));
-
-    &.is-warning {
-      --ff-diag-banner-color: var(--c-color-warning-on-normal);
-      --ff-diag-banner-text-color: var(--c-color-warning-on-quiet);
-      border-color: var(--c-color-warning-border-normal);
-      background: var(--c-color-warning-fill-quiet);
-    }
-
-    &.is-error {
-      --ff-diag-banner-color: var(--error-color);
-    }
-
-    p {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 0;
-    }
-
-    .checkmark-icon,
-    .alert-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      line-height: 1;
-      cursor: default;
-      background-color: transparent;
-
-      &::before {
-        font-size: 2em;
-        color: var(--ff-diag-banner-text-color, var(--ff-diag-banner-color));
-      }
-    }
+    padding: 12px 16px;
+    min-height: 54px;
+    gap: 8px 20px;
+    flex-wrap: wrap;
+    border: 1px solid var(--ff-status-border);
+    border-radius: 7px;
+    background: var(--ff-status-bg);
+    color: var(--ff-status-fg);
+    box-shadow: none;
+  }
+  .ff-diag-banner-metric {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    strong { font-weight: 500; }
+    &[data-status=error] { color: var(--ff-status-error-fg); }
+    &[data-status=warning] { color: var(--ff-status-warning-fg); }
+    &[data-status=notice] { color: var(--ff-status-notice-fg); }
+    &[data-status=notice] .ff-status-icon { color: var(--ff-status-notice-mark); }
+    &.is-clear .ff-status-icon { width: 24px; height: 24px; }
   }
 
   .ff-diag-grid {
@@ -469,15 +454,17 @@
       }
     }
 
+    &.item-notices .diag-check { background: var(--ff-status-notice-mark); }
+
     &.item-suggestions .diag-check {
       display: inline-block;
-      background: var(--yellow-500, #eab308);
+      background: light-dark(var(--yellow-500, #eab308), var(--ff-status-warning-mark));
       box-shadow: none;
     }
 
     &.item-warnings .diag-check {
       display: inline-block;
-      background: var(--error-color);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
       box-shadow: none;
     }
   }
@@ -498,7 +485,7 @@
 
     &.diag-enabled,
     &.is-pass {
-      background: var(--enabled-color);
+      background: light-dark(var(--enabled-color), var(--ff-status-success-fg));
     }
 
     &.diag-disabled,
@@ -508,13 +495,13 @@
     }
 
     &.diag-info,
-    &.is-warning {
-      background: var(--yellow-500, #eab308);
-    }
+    &.is-notice { background: var(--ff-status-notice-mark); }
+
+    &.is-warning { background: var(--ff-status-warning-mark); }
 
     &.diag-warning,
     &.is-error {
-      background: var(--error-color);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
 
     &.diag-spacer {
@@ -529,12 +516,14 @@
     line-height: 1.5;
 
     .suggestionvalidator {
-      color: var(--yellow-700, #a16207);
+      color: light-dark(var(--yellow-700, #a16207), var(--ff-status-warning-fg));
     }
 
-    .warningvalidator,
-    .warningnoticevalidator {
-      color: var(--error-color);
+    .noticevalidator,
+    .warningnoticevalidator { color: var(--ff-status-notice-fg); }
+
+    .warningvalidator {
+      color: var(--ff-status-error-fg);
     }
 
     a {
@@ -551,24 +540,6 @@
     font-weight: normal;
   }
 
-  .ff-diag-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 20px;
-    margin-top: 10px;
-    color: var(--gray-600);
-    font-size: 12px;
-
-    > span {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .ff-diag-dot {
-      margin-inline-end: 7px;
-    }
-  }
   .ff-diag-disclosure {
     margin-top: 16px;
 
@@ -669,20 +640,20 @@
     }
 
     &.is-success::before {
-      background: var(--enabled-color);
+      background: light-dark(var(--enabled-color), var(--ff-status-success-fg));
     }
 
     &.is-warning::before {
-      background: var(--yellow-500, #eab308);
+      background: light-dark(var(--yellow-500, #eab308), var(--ff-status-warning-mark));
     }
 
     &.is-error::before {
-      background: var(--error-color);
+      background: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
 
     &.is-info::before,
     &.is-running::before {
-      background: var(--link-color, #0b69d5);
+      background: light-dark(var(--link-color, #0b69d5), var(--ff-status-notice-mark));
     }
   }
 
@@ -729,40 +700,15 @@
   }
 
   .ff-diag-scan-feedback {
-    --ff-scan-color: var(--link-color, #0b69d5);
-    --ff-scan-text-color: var(--gray-700);
+    --ff-scan-color: var(--ff-status-fg);
+    --ff-scan-text-color: var(--ff-status-fg);
+    display: block;
     margin-top: 14px;
-    padding: 12px 14px;
-    border: 1px solid color-mix(in srgb, var(--ff-scan-color) 30%, var(--hairline-color));
-    border-radius: var(--large-border-radius, 5px);
-    background: color-mix(in srgb, var(--ff-scan-color) 6%, var(--gray-050));
-
-    &.hidden {
-      display: none;
-    }
-
-    &.is-success {
-      --ff-scan-color: var(--enabled-color);
-      --ff-scan-text-color: var(--enabled-color);
-    }
-
-    &.is-info {
-      --ff-scan-text-color: var(--link-color, #0b69d5);
-    }
-
-    &.is-warning {
-      --ff-scan-color: var(--yellow-500, #eab308);
-      --ff-scan-text-color: var(--yellow-700, #a16207);
-    }
-
-    &.is-error {
-      --ff-scan-color: var(--error-color);
-      --ff-scan-text-color: var(--error-color);
-
-      progress {
-        display: none;
-      }
-    }
+    padding: 12px 16px;
+    border-radius: 7px;
+    &.hidden { display: none; }
+    &.is-error progress { display: none; }
+    [data-status-icon][hidden] { display: none; }
   }
 
   .ff-diag-scan-progress {
@@ -810,7 +756,7 @@
 
   .ff-diag-scan-message {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
     margin: 0;
     color: var(--ff-scan-text-color);
@@ -818,30 +764,12 @@
     line-height: 1.5;
 
     > span:first-child {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      flex: 0 0 1em;
-      width: 1em;
-      height: 1.5em;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-size: 1em;
-      line-height: 1;
-      color: inherit;
-      cursor: default;
-      background: transparent;
-
-      &.ff-diag-scan-info-icon::before {
-        content: "ⓘ";
-      }
-
-      &::before {
-        font-size: 1em;
-        line-height: 1;
-        color: inherit;
-      }
+      flex: none;
+      width: 24px;
+      height: 24px;
     }
 
     > span:last-child {
@@ -916,15 +844,15 @@
     }
 
     .is-info {
-      color: var(--link-color, #0b69d5);
+      color: light-dark(var(--link-color, #0b69d5), var(--ff-status-notice-fg));
     }
 
     .is-warning {
-      color: var(--yellow-700, #a16207);
+      color: light-dark(var(--yellow-700, #a16207), var(--ff-status-warning-fg));
     }
 
     .is-error {
-      color: var(--error-color);
+      color: light-dark(var(--error-color), var(--ff-status-error-fg));
     }
   }
 

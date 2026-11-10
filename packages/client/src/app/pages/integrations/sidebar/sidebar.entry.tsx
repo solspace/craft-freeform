@@ -1,9 +1,11 @@
 import config from "@config/freeform/freeform.config";
 import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
 import type { FC } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import { integrationSidebarLabel } from "../integration-label";
 
 import type { Entry } from "./sidebar.queries";
 import {
@@ -24,6 +26,9 @@ export const EntryComponent: FC<Props> = ({ entry }): React.JSX.Element => {
 
   const type = entry.type;
   const title = entry.type.name;
+  const sidebarTitle = translate(
+    integrationSidebarLabel(title, type.shortName),
+  );
 
   const isStatusActive = entry.instances.length > 0;
   const isUnsupportedEdition =
@@ -42,6 +47,7 @@ export const EntryComponent: FC<Props> = ({ entry }): React.JSX.Element => {
     <Integration>
       <NavLink
         to={url}
+        title={sidebarTitle !== title ? title : undefined}
         className={classes(
           isActive && "active",
           isUnsupportedEdition && "unsupported",
@@ -69,7 +75,7 @@ export const EntryComponent: FC<Props> = ({ entry }): React.JSX.Element => {
           </Icon>
         )}
 
-        <IntegrationTitle>{title}</IntegrationTitle>
+        <IntegrationTitle>{sidebarTitle}</IntegrationTitle>
         {type.version && <Version>{type.version}</Version>}
       </NavLink>
     </Integration>

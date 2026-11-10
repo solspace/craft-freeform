@@ -1,0 +1,102 @@
+[
+  {
+    "label": "Red",
+    "value": "#dc2626",
+    "random": true
+  },
+  {
+    "label": "Orange",
+    "value": "#fb923c",
+    "random": true
+  },
+  {
+    "label": "Amber",
+    "value": "#f59e0b",
+    "random": true
+  },
+  {
+    "label": "Yellow",
+    "value": "#eab308",
+    "random": true
+  },
+  {
+    "label": "Lime",
+    "value": "#84cc16",
+    "random": true
+  },
+  {
+    "label": "Green",
+    "value": "#16a34a",
+    "random": true
+  },
+  {
+    "label": "Emerald",
+    "value": "#10b981",
+    "random": true
+  },
+  {
+    "label": "Teal",
+    "value": "#11a697",
+    "random": true
+  },
+  {
+    "label": "Cyan",
+    "value": "#06b6d4",
+    "random": true
+  },
+  {
+    "label": "Sky",
+    "value": "#0ea5e9",
+    "random": true
+  },
+  {
+    "label": "Blue",
+    "value": "#2563eb",
+    "random": true
+  },
+  {
+    "label": "Indigo",
+    "value": "#6366f1",
+    "random": true
+  },
+  {
+    "label": "Violet",
+    "value": "#8b5cf6",
+    "random": true
+  },
+  {
+    "label": "Purple",
+    "value": "#a855f7",
+    "random": true
+  },
+  {
+    "label": "Fuchsia",
+    "value": "#d946ef",
+    "random": true
+  },
+  {
+    "label": "Pink",
+    "value": "#ec4899",
+    "random": true
+  },
+  {
+    "label": "Rose",
+    "value": "#f43f5e",
+    "random": true
+  },
+  {
+    "label": "White",
+    "value": "#ffffff",
+    "random": false
+  },
+  {
+    "label": "Gray",
+    "value": "#9aa5b1",
+    "random": false
+  },
+  {
+    "label": "Black",
+    "value": "#000000",
+    "random": false
+  }
+]

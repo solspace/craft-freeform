@@ -8,6 +8,7 @@ import translate from "@ff-client/utils/translations";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 import camelCase from "lodash/camelCase";
+import { uniqueFieldHandle } from "./unique-handle";
 
 import "./fields.persistence";
 
@@ -93,6 +94,13 @@ export const fieldsSlice = createSlice({
         properties.handle = camelCase(label);
       }
 
+      properties.handle = uniqueFieldHandle(
+        state,
+        String(
+          properties.handle || camelCase(String(properties.label)) || "field",
+        ),
+      );
+
       state.push({
         uid,
         rowUid,
@@ -131,18 +139,11 @@ export const fieldsSlice = createSlice({
 
       const properties = { ...field.properties };
 
-      const originalHandle = properties.handle.replace(/_\d+$/, "");
-      let newHandle = properties.handle;
-      let matchingHandle = true;
-      let handleIteration = 1;
-      do {
-        newHandle = `${originalHandle}_${handleIteration}`;
-        matchingHandle = state.some(
-          (fieldItem) => fieldItem.properties.handle === newHandle,
-        );
-      } while (matchingHandle && handleIteration++ < 500);
-
-      properties.handle = newHandle;
+      const originalHandle = String(properties.handle || "field").replace(
+        /_\d+$/,
+        "",
+      );
+      properties.handle = uniqueFieldHandle(state, originalHandle);
 
       state.push({
         uid,
@@ -169,14 +170,15 @@ export const fieldsSlice = createSlice({
     edit: (state, action: PayloadAction<EditType>) => {
       const { uid, handle, value } = action.payload;
 
-      state.find((field) => field.uid === uid).properties[handle] = value;
+      const field = state.find((field) => field.uid === uid);
+      field.properties[handle] = value;
     },
     batchEdit: (state, action: PayloadAction<EditBatch>) => {
       const { uid, typeClass, properties } = action.payload;
 
       const field = state.find((field) => field.uid === uid);
       field.typeClass = typeClass;
-      field.properties = properties;
+      field.properties = { ...properties };
     },
     clearErrors: (state) => {
       for (const field of state) {

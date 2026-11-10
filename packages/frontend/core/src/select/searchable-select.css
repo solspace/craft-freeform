@@ -50,6 +50,10 @@ select.ff-searchable-native {
   border: 0;
   box-shadow: none;
 }
+.ff-searchable.ff-searchable .ff-searchable__input::placeholder {
+  color: inherit;
+  opacity: 0.6;
+}
 .ff-searchable.ff-searchable button.ff-searchable__toggle {
   position: absolute;
   inset-inline-end: 0;
@@ -177,4 +181,11 @@ select.ff-searchable-native {
 select.ff-searchable-native ~ svg[data-slot="icon"],
 select.ff-searchable-native ~ .pointer-events-none:has(> svg) {
   display: none;
+}
+
+.ff-searchable.ff-searchable .ff-searchable__chevron {
+  display: block;
+  flex: none;
+  width: 1rem;
+  height: 1rem;
 }

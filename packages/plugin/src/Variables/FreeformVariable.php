@@ -29,6 +29,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Links\FormLinkProvider;
 use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
@@ -47,6 +48,11 @@ class FreeformVariable
     public function formIcon(?string $name): ?Markup
     {
         return $this->plugin()->formIcons->getMarkup($name);
+    }
+
+    public function formFromLink(mixed $link, ?array $properties = null): ?Form
+    {
+        return \Craft::$container->get(FormLinkProvider::class)->fromLink($link)?->setProperties($properties);
     }
 
     public function form(int|string $handleOrId, mixed $properties = null, ?string $uniqueId = null): ?Form

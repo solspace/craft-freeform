@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Added
+- Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
+
 ## 5.18.1 - 2026-11-10
 
 ### Fixed

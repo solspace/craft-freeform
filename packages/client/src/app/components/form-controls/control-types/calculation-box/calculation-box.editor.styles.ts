@@ -37,4 +37,8 @@ export const CalculationBoxWrapper = styled.div`
 
 export const TagMenu = styled.ul`
   min-width: 25%;
+
+  .empty > span {
+    color: ${colors.muted};
+  }
 `;

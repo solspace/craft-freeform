@@ -4,8 +4,62 @@ import styled from "styled-components";
 export const DatePickerWrapper = styled.div`
   position: relative;
 
+  .react-datepicker__navigation {
+    color: ${colors.muted};
+    &:hover { color: ${colors.text}; }
+  }
   .react-datepicker__navigation-icon {
-    top: 4px;
+    display: block;
+    width: 8px;
+    height: 8px;
+    top: 0;
+    left: 0;
+    right: auto;
+  }
+  && .react-datepicker__navigation-icon::before {
+    box-sizing: border-box;
+    width: 8px;
+    height: 8px;
+    top: 0;
+    left: 0;
+    right: auto;
+    border-width: 2px 2px 0 0;
+    border-color: currentColor;
+  }
+  .react-datepicker__close-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    right: 6px;
+    padding: 0;
+    color: ${colors.text};
+    &:focus-visible { box-shadow: var(--focus-ring); border-radius: 4px; }
+  }
+  .react-datepicker__close-icon::after {
+    content: '';
+    display: block;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background: ${colors.gray300};
+  }
+  .react-datepicker__close-icon::before {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background:
+      linear-gradient(45deg, transparent 42%, currentColor 42% 58%, transparent 58%),
+      linear-gradient(-45deg, transparent 42%, currentColor 42% 58%, transparent 58%);
+  }
+  .react-datepicker__close-icon:hover::after { background: ${colors.gray200}; }
+  .react-datepicker__day--today {
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px currentColor;
   }
 
   .react-datepicker-popper {
@@ -50,8 +104,9 @@ export const DateTimeRow = styled.div<{ $includeTime?: boolean }>`
   ${({ $includeTime }) =>
     $includeTime &&
     `
-    .react-datepicker-wrapper { width: 180px; max-width: 100%; }
-    .react-datepicker__input-container input { padding-left: 32px; min-height: 36px; }
+    .date-input { width: 180px; max-width: 100%; }
+    .react-datepicker-wrapper { width: 100%; }
+    .react-datepicker__input-container input { padding-left: 32px; padding-right: 30px; min-height: 36px; }
     .react-datepicker__calendar-icon { padding: 10px 9px; fill: ${colors.gray400}; }
   `}
 `;

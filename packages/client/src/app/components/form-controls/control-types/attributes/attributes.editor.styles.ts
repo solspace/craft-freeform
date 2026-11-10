@@ -1,6 +1,11 @@
 import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
 import { scrollBar } from "@ff-client/styles/mixins";
-import { colors, shadows, spacings } from "@ff-client/styles/variables";
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 import {
@@ -11,6 +16,7 @@ import {
 export const AttributeEditorWrapper = styled(PreviewEditor)`
   gap: 0;
   padding: 0;
+  overflow: hidden;
 `;
 
 export const AttributeTypeTabs = styled(TabsWrapper)`
@@ -36,4 +42,6 @@ export const AttributeTabContent = styled.div`
   background: light-dark(${colors.white}, ${colors.surface});
 `;
 
-export const AttributeContainer = styled(PreviewEditorContainer)``;
+export const AttributeContainer = styled(PreviewEditorContainer)`
+  border-radius: 0 0 ${borderRadius.lg} ${borderRadius.lg};
+`;

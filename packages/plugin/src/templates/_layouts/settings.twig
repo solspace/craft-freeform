@@ -3,6 +3,12 @@
 {% set selectedSubnavItem = 'settings' %}
 {% set fullPageForm = fullPageForm ?? true %}
 
+{% if readOnly ?? false %}
+    {% set mainFormAttributes = (mainFormAttributes ?? {})|merge({
+        class: (mainFormAttributes.class ?? [])|explodeClass|merge(['freeform-settings-readonly']),
+    }) %}
+{% endif %}
+
 {% set navItems = craft.freeform.settingsNavigation %}
 
 {% set segment2 = craft.app.request.getSegment(2) %}

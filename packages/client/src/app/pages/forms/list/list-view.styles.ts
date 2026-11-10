@@ -23,6 +23,14 @@ export const Header = styled.header`
     min-height: var(--forms-control-height);
   }
 
+  :root:not([data-dark-mode='dark']) & .btn:not(.submit):not(.active) {
+    background-color: var(--gray-200);
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--gray-200), var(--gray-300) 25%);
+    }
+  }
+
   @container (max-width: 680px) {
     grid-template-areas: 'title button' 'views views';
     grid-template-columns: 1fr auto;

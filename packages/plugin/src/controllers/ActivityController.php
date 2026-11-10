@@ -204,7 +204,7 @@ class ActivityController extends BaseController
             'settings' => $settings,
             'forms' => $formNames,
             'formColors' => $formColors,
-            'canConfigure' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
+            'canConfigure' => $this->getSettingsService()->isAllowAdminEdit() && PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'canManage' => PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_MANAGE),
             'canReadSubmission' => $canReadSubmission,
             'canManageForm' => $canManageForm,

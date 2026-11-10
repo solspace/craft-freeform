@@ -5,7 +5,7 @@ export const OperatorReferenceTitle = styled.div`
   font-style: italic;
   font-weight: 500;
   font-size: 14px;
-  color: light-dark(${colors.gray400}, ${colors.muted});
+  color: ${colors.text};
   break-inside: avoid;
 `;
 
@@ -16,7 +16,7 @@ export const OperatorReference = styled.div`
 export const OperatorReferenceItem = styled.div`
   font-size: 12px;
   break-inside: avoid;
-  color: light-dark(${colors.gray300}, ${colors.muted});
+  color: ${colors.text};
   margin: 0 0 0.8rem;
   display: flex;
   flex-direction: column;
@@ -24,12 +24,13 @@ export const OperatorReferenceItem = styled.div`
 
   > span {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
   }
 `;
 
 export const Operator = styled.div`
   display: flex;
+  align-items: center;
 
   > mark {
     font-size: 12px;
@@ -37,7 +38,7 @@ export const Operator = styled.div`
     padding: 0 ${spacings.xs};
     border-radius: ${borderRadius.md};
     background: ${colors.gray100};
-    color: ${colors.gray500};
+    color: ${colors.text};
     margin-right: ${spacings.md};
     max-height: 20px;
   }

@@ -30,6 +30,12 @@ export const Toolbar = styled.div`
   > label > div { font-weight: 400; }
   > label > p { margin: 0; font-weight: 400; }
   ${CurrentValue} { align-items: center; }
+  :root[data-dark-mode='dark'] & > .btn {
+    background: ${colors.gray200};
+    border: 1px solid ${colors.gray300};
+
+    &:hover:not(:disabled) { background: ${colors.gray300}; }
+  }
 `;
 
 export const FrameArea = styled.div`

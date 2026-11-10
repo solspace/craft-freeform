@@ -3,8 +3,12 @@
 ## 5.18.1 - Unreleased
 
 ### Fixed
-- Fixed light-mode control colors, selected button states, and opaque card backgrounds in Craft 5.
-- Fixed upgrades to Freeform 5.18 failing when project config is read-only, and protected deployed Activity Log settings from being overwritten during migration.
+- Fixed read-only project config upgrades to Freeform 5.18 and preserved deployed Activity Log settings.
+- Fixed stale drop positions and invalid column ordering when moving fields in the form builder.
+- Improved disabled settings controls, cards, and cursors, and hid Activity Log configuration when admin changes are disabled.
+- Corrected control colors, selected states, card backgrounds, chart axes, and table/range previews in light and dark modes.
+- Improved toolbar and calculation editor contrast, token hover colors, button icon alignment, and Attributes editor corners.
+- Fixed schedule date-picker layout shifts and icon alignment, improved clear controls, and outlined today's date.
 
 ## 5.18.0 - 2026-11-09
 

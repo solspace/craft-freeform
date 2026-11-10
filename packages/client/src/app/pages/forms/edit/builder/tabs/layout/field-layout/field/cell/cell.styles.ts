@@ -1,4 +1,5 @@
 import { CardCell } from "@ff-client/styles/field-cells/cards";
+import { RangeCell } from "@ff-client/styles/field-cells/range";
 import { RatingCell } from "@ff-client/styles/field-cells/rating";
 import { SignatureCell } from "@ff-client/styles/field-cells/signature";
 import { SquareCell } from "@ff-client/styles/field-cells/square";
@@ -415,6 +416,7 @@ export const FieldCellWrapper = styled.div`
   ${SquareCell}
   ${CardCell}
   ${RatingCell}
+  ${RangeCell}
   ${SignatureCell}
   ${TableCell}
 `;

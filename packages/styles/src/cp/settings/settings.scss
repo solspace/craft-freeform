@@ -3,6 +3,22 @@
 
 @use "../measurement";
 
+.freeform-settings-readonly {
+  .lightswitch.noteditable,
+  .ff-toolbar-visual,
+  .select:has(> select:disabled):not(.disabled),
+  input.checkbox:disabled + label:not(.disabled),
+  input.text:disabled:not(.disabled),
+  textarea.text:disabled:not(.disabled) {
+    opacity: .5;
+  }
+
+  input.checkbox:disabled,
+  input.checkbox:disabled + label {
+    cursor: not-allowed;
+  }
+}
+
 .ff-toolbar-setting {
   max-width: none;
 

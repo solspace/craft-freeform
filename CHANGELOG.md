@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed light-mode control colors, selected button states, and opaque card backgrounds in Craft 5.
+- Fixed upgrades to Freeform 5.18 failing when project config is read-only, and protected deployed Activity Log settings from being overwritten during migration.
 
 ## 5.18.0 - 2026-11-09
 

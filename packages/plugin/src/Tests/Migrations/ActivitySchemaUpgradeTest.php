@@ -26,11 +26,12 @@ class ActivitySchemaUpgradeTest extends TestCase
             }
         };
         $config = new class {
+            public bool $readOnly = false;
             public ?string $mode = null;
 
-            public function get(string $path): ?string
+            public function get(string $path, bool $getFromExternalConfig = false): ?string
             {
-                return $this->mode;
+                return 'plugins.freeform.settings.activityMode' === $path ? $this->mode : null;
             }
 
             public function set(string $path, string $value, string $message): void
@@ -39,7 +40,7 @@ class ActivitySchemaUpgradeTest extends TestCase
             }
         };
         \Craft::$app = \Yii::$app = new class($db, $config) {
-            public function __construct(private Connection $db, private object $config) {}
+            public function __construct(private Connection $db, public object $projectConfig) {}
 
             public function getDb(): Connection
             {
@@ -48,7 +49,7 @@ class ActivitySchemaUpgradeTest extends TestCase
 
             public function getProjectConfig(): object
             {
-                return $this->config;
+                return $this->projectConfig;
             }
 
             public function get(string $id, bool $throwException = true): mixed

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.18.1 - Unreleased
+## 5.18.1 - 2026-11-10
 
 ### Fixed
 - Fixed read-only project config upgrades to Freeform 5.18 and preserved deployed Activity Log settings.

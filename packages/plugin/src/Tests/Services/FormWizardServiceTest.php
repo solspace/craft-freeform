@@ -15,6 +15,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Form\Types\Pages\Page;
+use Solspace\Freeform\Bundles\Form\Types\Surveys\Survey;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
@@ -146,6 +147,30 @@ class FormWizardServiceTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->service()->payload($this->input() + ['type' => Page::class]);
+    }
+
+    #[TestWith([null, false, true])]
+    #[TestWith([Survey::class, false, true])]
+    #[TestWith([Regular::class, false, false])]
+    #[TestWith([Regular::class, true, true])]
+    public function testQuickSetupStartingPointsRespectTheConfiguredFormTypeWhenLocked(?string $type, bool $editable, bool $accepted): void
+    {
+        $service = $this->service(editable: $editable ? ['type'] : [], extraOptions: [
+            'defaultFormType' => Survey::class,
+            'formTypes' => [
+                ['value' => Regular::class, 'label' => 'Regular'],
+                ['value' => Survey::class, 'label' => 'Surveys & Polls'],
+            ],
+        ]);
+        $input = $this->input();
+        if (null !== $type) {
+            $input['type'] = $type;
+        }
+        if (!$accepted) {
+            $this->expectException(\InvalidArgumentException::class);
+        }
+        $payload = $service->payload($input);
+        self::assertSame($type ?? Survey::class, $payload->form->type);
     }
 
     public function testEveryStartingPointSetsItsMatchingIconInCreationAndPreview(): void

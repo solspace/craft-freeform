@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Tests\Services;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Activity\ActivityInput;
@@ -27,6 +28,7 @@ class ActivityHealthServiceTest extends TestCase
     private Connection $db;
     private ActivityHealthService $service;
     private string $path;
+    private bool $allowAdminEdit = true;
 
     protected function setUp(): void
     {
@@ -39,6 +41,7 @@ class ActivityHealthServiceTest extends TestCase
         $this->settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
         $provider = $this->createStub(SettingsService::class);
         $provider->method('getSettingsModel')->willReturn($this->settings);
+        $provider->method('isAllowAdminEdit')->willReturnCallback(fn () => $this->allowAdminEdit);
         $this->service = $this->getMockBuilder(ActivityHealthService::class)->onlyMethods(['getSettingsService'])->getMock();
         $this->service->method('getSettingsService')->willReturn($provider);
         $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get'])->getMock();
@@ -236,6 +239,24 @@ class ActivityHealthServiceTest extends TestCase
         $this->settings->loggingStyle = 'classic';
         $this->expectException(ForbiddenHttpException::class);
         PermissionHelper::asAuthenticatedUser(fn () => $this->service->snapshot(7, []), [strtolower(Freeform::PERMISSION_ACTIVITY_ACCESS)]);
+    }
+
+    #[TestWith([true, true, true])]
+    #[TestWith([true, false, false])]
+    #[TestWith([false, true, false])]
+    #[TestWith([false, false, false])]
+    public function testDisabledLoggingLinksToSettingsOnlyWhenTheUserCanEnableIt(bool $settingsAccess, bool $allowAdminEdit, bool $canEnableLogging): void
+    {
+        $this->settings->loggingStyle = 'none';
+        $this->allowAdminEdit = $allowAdminEdit;
+        $permissions = [strtolower($settingsAccess ? Freeform::PERMISSION_SETTINGS_ACCESS : Freeform::PERMISSION_ACTIVITY_ACCESS)];
+        $health = PermissionHelper::asAuthenticatedUser(fn () => $this->service->snapshot(7, []), $permissions);
+
+        if ($canEnableLogging) {
+            self::assertStringContainsString('/admin/freeform/settings/activity', $health['settingsUrl']);
+        } else {
+            self::assertNull($health['settingsUrl']);
+        }
     }
 
     public function testActivityDataRequiresExplicitLogAccess(): void

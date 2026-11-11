@@ -8,6 +8,7 @@ use craft\helpers\Html;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
 use Solspace\Freeform\Services\FormsService;
 use verbb\navigation\elements\Node;
 
@@ -57,15 +58,25 @@ class FormLinkProvider
         return null;
     }
 
-    public function inputHtml(string $name, mixed $value, array|string $forms = '*', ?string $site = null): string
+    public function inputHtml(string $name, mixed $value, array|string $forms = '*', ?string $site = null, ?string $integration = null): string
     {
-        return Cp::selectHtml([
+        $settings = new ExternalIntegrations();
+        $disabled = $integration && !$settings->isEnabled($integration);
+        $input = Cp::selectHtml([
             'id' => Html::id($name),
             'name' => $name,
             'value' => $value,
             'options' => $this->getOptions($value, $forms, $site),
             'inputAttributes' => ['aria' => ['label' => Freeform::t('Freeform Form')]],
+            'disabled' => $disabled,
         ]);
+        if ($disabled) {
+            $input .= Html::hiddenInput($name, $value ?? '').Html::tag('span', Freeform::t('Integration disabled. Existing selections are preserved.'), ['class' => 'light']);
+        }
+
+        $icon = str_replace('<svg ', '<svg style="width:20px;height:20px;display:block" ', $settings->getIconSvg());
+
+        return Html::tag('div', Html::tag('span', $icon, ['aria-hidden' => 'true', 'style' => 'display:inline-flex;flex:0 0 20px;align-items:center;justify-content:center']).$input, ['class' => 'freeform-external-picker', 'style' => 'display:flex;align-items:center;gap:8px;flex-wrap:wrap']);
     }
 
     public function getOptions(mixed $value = null, array|string $forms = '*', ?string $site = null): array

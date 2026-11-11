@@ -9,6 +9,8 @@ return [
     'freeform/settings/general' => 'freeform/settings/provide-setting',
     'freeform/settings/form-behavior' => 'freeform/settings/provide-setting',
     'freeform/settings/form-builder' => 'freeform/settings/provide-setting',
+    'freeform/settings/external-integrations' => 'freeform/settings/provide-setting',
+    'freeform/settings/content-integrations' => 'freeform/settings/provide-setting',
     'freeform/settings/notices-and-alerts' => 'freeform/settings/provide-setting',
     'freeform/settings/template-manager' => 'freeform/settings/provide-setting',
     'freeform/settings/limited-users' => 'freeform/app',

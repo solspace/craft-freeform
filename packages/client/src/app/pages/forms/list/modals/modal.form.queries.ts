@@ -33,7 +33,8 @@ export const useFetchFormModalType: FetchFormModalQuery = () => {
     queryKey: QKFormModal.all,
     queryFn: () =>
       axios.get<Property[]>(`/api/forms/modal`).then((res) => res.data),
-    staleTime: Infinity,
+    staleTime: 0,
+    gcTime: 0,
   });
 };
 

@@ -1,0 +1,255 @@
+{% extends 'freeform/_layouts/settings' %}
+{% import '_includes/forms' as forms %}
+{% set title = 'Content Integrations'|t('freeform') %}
+{% set crumbs = [{label: craft.freeform.name, url: url('freeform')}, {label: 'Settings'|t('freeform'), url: url('freeform/settings')}] %}
+
+{% macro versions(integration) %}
+<dl class="ff-content-metadata">
+    <div><dt>{{ 'Supported'|t('freeform') }}</dt><dd>{{ integration.support }}</dd></div>
+    <div>
+        <dt>{{ 'Installed'|t('freeform') }}</dt>
+        <dd>
+            {% if integration.installed %}
+                {{ integration.displayVersion }}
+                {% if integration.compatible %}
+                    <span class="ff-content-version-check" title="{{ 'Compatible version'|t('freeform') }}" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="m3 8 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                {% elseif integration.status == 'unsupported' %}
+                    <span class="ff-content-version-check ff-content-version-warning" title="{{ 'Unsupported version'|t('freeform') }}" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path d="M7.1 2.2a1 1 0 0 1 1.8 0l6 10.4a1 1 0 0 1-.9 1.5H2a1 1 0 0 1-.9-1.5Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.5v3.7m0 2v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+                {% endif %}
+            {% else %}
+                {{ 'Not installed'|t('freeform') }}
+            {% endif %}
+        </dd>
+    </div>
+</dl>
+{% endmacro %}
+
+{% block content %}
+    {{ parent() }}
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/content-integrations') }}
+    {{ csrfInput() }}
+
+    <section class="ff-content-section" aria-labelledby="ff-content-tools-heading">
+        <h2 id="ff-content-tools-heading" class="ff-content-section-heading">{{ 'Content tools'|t('freeform') }}</h2>
+        <p class="light ff-content-section-description">{{ 'Turn off an integration to prevent new form selections. Existing content will still render. Manage editor toolbars in each editor’s settings.'|t('freeform') }}</p>
+        <div class="ff-external-integrations" id="content-integrations-list">
+            <div class="ff-external-columns">
+                <span class="ff-external-column-name" aria-hidden="true">{{ 'Integration'|t('freeform') }}</span>
+                <div class="ff-content-metadata" aria-hidden="true"><span>{{ 'Supported'|t('freeform') }}</span><span>{{ 'Installed'|t('freeform') }}</span></div>
+                <button type="button" class="btn small" id="content-integrations-toggle-all" aria-controls="content-integrations-list"{{ readOnly ? ' disabled' : '' }}>{{ 'Disable all'|t('freeform') }}</button>
+            </div>
+            {% set statuses = {'available': 'Available'|t('freeform'), 'not-installed': 'Not installed'|t('freeform'), 'plugin-disabled': 'Plugin disabled'|t('freeform'), 'unsupported': 'Unsupported version'|t('freeform')} %}
+            {% set alphabeticalIntegrations = externalIntegrations|sort((a, b) => a.name <=> b.name) %}
+            {% set orderedIntegrations = alphabeticalIntegrations|filter(integration => integration.available)|merge(alphabeticalIntegrations|filter(integration => not integration.available)) %}
+            {% for integration in orderedIntegrations %}
+                <div class="ff-external-row {{ integration.status == 'unsupported' ? 'ff-external-unsupported' : (not integration.available ? 'ff-external-unavailable' : '') }}{{ integration.status == 'not-installed' ? ' ff-external-not-installed' : '' }}">
+                    <span class="ff-content-plugin-icon" aria-hidden="true"><img src="{{ externalIntegrationIconUrls[integration.id] }}" alt="" width="36" height="36"></span>
+                    <div class="ff-external-info">
+                        <div class="ff-external-title">
+                            <label id="external-{{ integration.id }}-label" for="external-{{ integration.id }}">{{ integration.name }}</label>
+                            <span class="ff-external-status{{ integration.available ? ' ff-external-status-available' : '' }}">
+                                {% if integration.available %}
+                                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m3 8 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                {% elseif integration.status == 'unsupported' %}
+                                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7.1 2.2a1 1 0 0 1 1.8 0l6 10.4a1 1 0 0 1-.9 1.5H2a1 1 0 0 1-.9-1.5Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.5v3.7m0 2v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                {% endif %}
+                                {{ statuses[integration.status] }}
+                            </span>
+                        </div>
+                        <p id="external-{{ integration.id }}-description" class="light">{{ integration.description|t('freeform') }}</p>
+                    </div>
+                    {{ _self.versions(integration) }}
+                    {% if not integration.available or readOnly %}
+                        {{ hiddenInput('settings[externalIntegrations][' ~ integration.id ~ ']', integration.enabled ? '1' : '0') }}
+                    {% endif %}
+                    {{ forms.lightswitch({
+                        id: 'external-' ~ integration.id,
+                        name: 'settings[externalIntegrations][' ~ integration.id ~ ']',
+                        on: integration.enabled and integration.available,
+                        disabled: readOnly or not integration.available,
+                        labelledBy: 'external-' ~ integration.id ~ '-label',
+                        describedBy: 'external-' ~ integration.id ~ '-description',
+                    }) }}
+                </div>
+            {% endfor %}
+        </div>
+        {% if settings.errors().get('externalIntegrations') %}<p class="error">{{ settings.errors().get('externalIntegrations')|join(' ') }}</p>{% endif %}
+
+        {% if craft.app.version starts with '6.' %}
+            {{ forms.iconPickerField({
+                id: 'external-integration-icon',
+                name: 'settings[externalIntegrationIcon]',
+                label: 'Integration Icon'|t('freeform'),
+                instructions: 'Choose the icon shown for Freeform across content integrations.'|t('freeform'),
+                value: settings.externalIntegrationIcon ?: null,
+                static: readOnly,
+                errors: settings.errors().get('externalIntegrationIcon'),
+            }) }}
+        {% else %}
+            <p class="light">{{ 'Content integrations require Craft 6.'|t('freeform') }}</p>
+        {% endif %}
+    </section>
+
+    <section class="ff-content-section" aria-labelledby="ff-field-container-heading">
+        <h2 id="ff-field-container-heading" class="ff-content-section-heading ff-field-container-heading">
+            <span>{{ 'Works with Freeform fields'|t('freeform') }}</span>
+            <span class="ff-external-status">{{ 'Freeform Lite + Pro'|t('freeform') }}</span>
+        </h2>
+        <p class="light ff-content-section-description">{{ 'Use the Freeform Form field inside these containers. No extra integration is required.'|t('freeform') }}</p>
+        <div class="ff-external-integrations ff-field-containers" id="content-field-support-list">
+            <div class="ff-external-columns">
+                <span class="ff-external-column-name" aria-hidden="true">{{ 'Field type'|t('freeform') }}</span>
+                <div class="ff-content-metadata" aria-hidden="true"><span>{{ 'Supported'|t('freeform') }}</span><span>{{ 'Installed'|t('freeform') }}</span></div>
+            </div>
+            {% for container in contentFieldContainers %}
+                <div class="ff-external-row {{ container.status == 'unsupported' ? 'ff-external-unsupported' : (not container.available ? 'ff-external-unavailable' : '') }}{{ container.status == 'not-installed' ? ' ff-external-not-installed' : '' }}">
+                    <span class="ff-content-plugin-icon" aria-hidden="true"><img src="{{ externalIntegrationIconUrls[container.id] }}" alt="" width="36" height="36"></span>
+                    <div class="ff-external-info">
+                        <div class="ff-external-title">
+                            <span>{{ container.package is null ? (container.name|t('app')) : container.name }}</span>
+                            <span class="ff-external-status{{ container.available ? ' ff-external-status-available' : '' }}">
+                                {% if container.available %}
+                                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="m3 8 3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                {% elseif container.status == 'unsupported' %}
+                                    <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M7.1 2.2a1 1 0 0 1 1.8 0l6 10.4a1 1 0 0 1-.9 1.5H2a1 1 0 0 1-.9-1.5Z" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M8 5.5v3.7m0 2v.1" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                {% endif %}
+                                {{ container.available ? ('Built-in support'|t('freeform')) : statuses[container.status] }}
+                            </span>
+                        </div>
+                        <p class="light">{{ container.description|t('freeform') }}</p>
+                    </div>
+                    {{ _self.versions(container) }}
+                    <a class="ff-field-guide" href="{{ contentFieldContainerGuideUrl }}" target="_blank" rel="noopener noreferrer">{{ 'Setup guide'|t('freeform') }}</a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    {% css %}
+        #external-integration-icon-field { margin-block: 24px 0; }
+        .ff-content-icon-suggestions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-block-start: 12px; }
+        .ff-content-icon-choice { display: inline-flex; align-items: center; justify-content: center; }
+        .ff-content-icon-choice svg { display: block; width: 20px; height: 20px; }
+        .ff-external-row > craft-switch { justify-self: end; }
+        .ff-content-section { margin-block-start: 0; }
+        .ff-content-section + .ff-content-section { margin-block-start: 40px; }
+        .ff-content-section-heading { margin-block: 0 8px; }
+        .ff-content-section-description { margin-block: 0; }
+        .ff-field-container-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .ff-external-integrations { margin-block: 16px 0; container: ff-content-integrations / inline-size; }
+        .ff-field-guide { justify-self: end; max-inline-size: 80px; overflow-wrap: anywhere; text-align: end; font-size: 12px; }
+        .ff-external-row, .ff-external-columns { display: grid; grid-template-columns: 36px minmax(0, 1fr) 208px 80px; align-items: center; gap: 16px; border-block-end: 1px solid var(--hairline-color); }
+        .ff-external-row { padding: 20px 12px; }
+        .ff-external-columns { padding: 12px; color: var(--text-color); font-size: 14px; font-weight: 600; background: var(--gray-050, #f1f5f9); border-radius: 6px 6px 0 0; }
+        .ff-external-column-name { grid-column: 1 / span 2; }
+        .ff-external-columns .ff-content-metadata { grid-column: 3; }
+        #content-integrations-toggle-all, .ff-external-row > [role="switch"] { justify-self: end; }
+        #content-integrations-toggle-all { font-weight: 400; }
+        .ff-content-plugin-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; flex: 0 0 36px; }
+        .ff-content-plugin-icon img { width: 36px; height: 36px; display: block; object-fit: contain; }
+        .ff-external-info { flex: 1; min-width: 0; }
+        .ff-external-title { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-weight: 600; }
+        .ff-external-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 400; color: var(--light-text-color); border: 1px solid var(--hairline-color); border-radius: 4px; padding: 1px 6px; }
+        .ff-external-status svg { display: block; width: 12px; height: 12px; flex: 0 0 12px; }
+        .ff-external-status-available { color: var(--fg-success); background: var(--bg-success); border-color: var(--border-success); }
+        .ff-external-unsupported .ff-external-status { color: var(--fg-warning, #92400e); background: var(--bg-warning); border-color: var(--border-warning); }
+        .ff-external-info p { margin-block: 5px 0; }
+        .ff-content-metadata { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; margin: 0; }
+        .ff-content-metadata dt { color: var(--light-text-color); font-size: 11px; line-height: 1.4; }
+        .ff-content-metadata dd { display: flex; align-items: center; gap: 5px; color: var(--text-color); font-size: 12px; font-weight: 500; line-height: 1.5; margin: 2px 0 0; overflow-wrap: anywhere; }
+        .ff-content-version-check { display: inline-flex; align-items: center; justify-content: center; color: var(--fg-success); flex: 0 0 14px; }
+        .ff-content-version-check svg { display: block; width: 14px; height: 14px; }
+        .ff-content-version-warning { color: var(--fg-warning, #b45309); }
+        .ff-external-unavailable :is(.ff-external-info, .ff-content-plugin-icon, .ff-content-metadata) { opacity: .55; }
+        .ff-external-unavailable:not(.ff-external-not-installed) .ff-content-plugin-icon { filter: grayscale(1); }
+        #external-integration-icon { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+        #external-integration-icon .icon-picker--icon { display: inline-flex; align-items: center; justify-content: center; box-sizing: border-box; width: 34px; height: 34px; padding: 6px; flex: 0 0 34px; }
+        #external-integration-icon .icon-picker--icon svg { display: block; width: 20px; height: 20px; }
+        #external-integration-icon .btn { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; margin: 0; }
+        @container ff-content-integrations (min-width: 681px) {
+            .ff-content-metadata dt { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+            .ff-content-metadata dd { margin-block-start: 0; }
+        }
+        @container ff-content-integrations (max-width: 680px) {
+            .ff-external-columns { grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+            .ff-external-column-name { grid-column: 1; }
+            .ff-external-columns .ff-content-metadata { display: none; }
+            .ff-external-row { grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; }
+            .ff-content-plugin-icon { grid-column: 1; grid-row: 1 / span 2; }
+            .ff-external-info { grid-column: 2; grid-row: 1; }
+            .ff-content-metadata { grid-column: 2; grid-row: 2; grid-template-columns: max-content max-content; gap: 24px; }
+            .ff-external-row > craft-switch, .ff-field-guide { grid-column: 3; grid-row: 1 / span 2; }
+            .ff-content-plugin-icon, .ff-content-plugin-icon img { width: 28px; height: 28px; }
+        }
+    {% endcss %}
+
+    {% set suggestedIcons = [] %}
+    {% if craft.app.version starts with '6.' %}
+        {% for name in ['clipboard-list', 'clipboard-check', 'file-pen', 'pen-to-square', 'list-check', 'file-lines', 'rectangle-list', 'table-list', 'input-text', 'square-check'] %}
+            {% set svg = craft.freeform.formIcon(name) %}
+            {% if svg %}
+                {% set suggestedIcons = suggestedIcons|merge([{name: name, svg: svg ~ ''}]) %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% js %}
+        (() => {
+            const host = document.getElementById('external-integration-icon-field');
+            let picker = host?.querySelector('craft-icon-picker');
+            if (picker) {
+                const suggestions = {{ suggestedIcons|json_encode|raw }};
+                const choices = document.createElement('div');
+                choices.className = 'ff-content-icon-suggestions';
+                const choose = (value) => {
+                    // Craft 6 reads the initial value when its native picker mounts.
+                    const replacement = picker.cloneNode(false);
+                    if (value) replacement.setAttribute('value', value);
+                    else replacement.removeAttribute('value');
+                    picker.replaceWith(replacement);
+                    picker = replacement;
+                    picker.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {value}}));
+                };
+                for (const icon of suggestions) {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.className = 'btn ff-content-icon-choice';
+                    button.disabled = {{ readOnly ? 'true' : 'false' }};
+                    button.setAttribute('aria-label', icon.name);
+                    button.title = icon.name;
+                    button.innerHTML = icon.svg;
+                    button.addEventListener('click', () => choose(icon.name));
+                    choices.append(button);
+                }
+                const reset = document.createElement('button');
+                reset.type = 'button';
+                reset.className = 'btn';
+                reset.disabled = {{ readOnly ? 'true' : 'false' }};
+                reset.textContent = {{ 'Use Freeform logo'|t('freeform')|json_encode|raw }};
+                reset.addEventListener('click', () => choose(''));
+                choices.append(reset);
+                picker.after(choices);
+            }
+            const bulk = document.getElementById('content-integrations-toggle-all');
+            void customElements.whenDefined('craft-switch').then(() => {
+                const toggles = [...document.querySelectorAll('#content-integrations-list craft-switch')].filter(toggle => !toggle.disabled);
+                const allOn = () => toggles.length > 0 && toggles.every(toggle => toggle.checked);
+                const syncBulk = () => {
+                    bulk.textContent = allOn() ? {{ 'Disable all'|t('freeform')|json_encode|raw }} : {{ 'Enable all'|t('freeform')|json_encode|raw }};
+                    bulk.disabled = {{ readOnly ? 'true' : 'false' }} || toggles.length === 0;
+                };
+                bulk.addEventListener('click', () => {
+                    const enable = !allOn();
+                    for (const toggle of toggles) {
+                        if (enable) toggle.turnOn();
+                        else toggle.turnOff();
+                    }
+                    syncBulk();
+                });
+                for (const toggle of toggles) toggle.addEventListener('change', syncBulk);
+                syncBulk();
+            });
+        })();
+    {% endjs %}
+{% endblock %}

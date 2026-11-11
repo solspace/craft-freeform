@@ -27,7 +27,7 @@ class LinkitFormLink extends Link implements FormLinkInterface
 
     public function getInputHtml(string $name, $field, ?Link $currentLink = null, ?ElementInterface $element = null): string
     {
-        return $this->provider()->inputHtml($name.'[values]['.$this->getType().']', $currentLink?->value, $this->forms, $element?->getSite()->handle);
+        return $this->provider()->inputHtml($name.'[values]['.$this->getType().']', $currentLink?->value, $this->forms, $element?->getSite()->handle, 'linkit');
     }
 
     public function getForm(): ?Form

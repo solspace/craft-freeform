@@ -23,6 +23,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -83,6 +84,12 @@ class Settings extends PluginSettings
     public const LOGGING_LEVEL_DEBUG = 'debug';
 
     public ?string $pluginName = null;
+
+    /** Missing keys retain the default enabled state for optional integrations. */
+    public array $externalIntegrations = [];
+
+    /** Empty uses the Freeform logo; other values are Craft system icon names. */
+    public string $externalIntegrationIcon = '';
     public ?string $formTemplateDirectory = null;
     public bool $allowFileTemplateEdit = true;
     public ?string $emailTemplateDirectory = null;
@@ -302,6 +309,16 @@ class Settings extends PluginSettings
     public function getRules(): array
     {
         return [
+            'externalIntegrations' => ['array', static function (string $attribute, mixed $value, \Closure $fail): void {
+                foreach ($value as $id => $enabled) {
+                    if (!isset(ExternalIntegrations::DEFINITIONS[$id]) || !\in_array($enabled, [true, false, 0, 1, '0', '1', '', 'true', 'false'], true)) {
+                        $fail(Freeform::t('Choose valid external integration settings.'));
+
+                        break;
+                    }
+                }
+            }],
+            'externalIntegrationIcon' => ['nullable', 'string', 'regex:/^[a-z0-9-]{1,100}$/D'],
             'formTemplateDirectory' => ['nullable', function (string $attribute, mixed $value, \Closure $fail): void {
                 $absolutePath = $this->getAbsolutePath($value);
 
@@ -346,6 +363,16 @@ class Settings extends PluginSettings
         }
 
         return 'none';
+    }
+
+    public function validateExternalIntegrations(string $attribute): void
+    {
+        foreach ($this->{$attribute} as $id => $enabled) {
+            if (!isset(ExternalIntegrations::DEFINITIONS[$id])
+                || !\in_array($enabled, [true, false, 0, 1, '0', '1', '', 'true', 'false'], true)) {
+                $this->addError($attribute, Freeform::t('Choose valid external integration settings.'));
+            }
+        }
     }
 
     public function isActivityLoggingEnabled(): bool

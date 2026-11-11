@@ -44,7 +44,7 @@ class HyperFormLink extends Link implements FormLinkInterface
             return '';
         }
 
-        return $this->provider()->inputHtml('linkValue', $this->linkValue, $this->forms, $this->siteHandle());
+        return $this->provider()->inputHtml('linkValue', $this->linkValue, $this->forms, $this->siteHandle(), 'hyper');
     }
 
     public function getForm(): ?Form

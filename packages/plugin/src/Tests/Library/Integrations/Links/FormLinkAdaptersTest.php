@@ -26,9 +26,17 @@ class FormLinkAdaptersTest extends TestCase
     use UsesCraft6Container;
 
     private mixed $previousContainer;
+    private mixed $previousApp;
 
     protected function setUp(): void
     {
+        $this->previousApp = \Craft::$app;
+        \Craft::$app = new class {
+            public function getVersion(): string
+            {
+                return '6.0.0-alpha.20';
+            }
+        };
         $this->previousContainer = \Craft::$container;
         \Craft::$container = new Container();
     }
@@ -36,6 +44,7 @@ class FormLinkAdaptersTest extends TestCase
     protected function tearDown(): void
     {
         \Craft::$container = $this->previousContainer;
+        \Craft::$app = $this->previousApp;
     }
 
     public function testNativeSerializationRetainsTheReferenceWithoutInventingAUrl(): void

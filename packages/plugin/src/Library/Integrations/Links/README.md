@@ -1,8 +1,7 @@
 # Freeform form links
 
-On Craft 5, Freeform registers **Freeform Form** with Craft's native Link field,
-Hyper (2.x and 3.x), and Linkit 5 when those plugins are installed. Craft 4 does
-not load these adapters. No additional Composer dependencies are required.
+On Craft 6, Freeform registers **Freeform Form** with Craft's native Link field,
+Hyper (2.x and 3.x), and Linkit 5 when those plugins are installed. Optional plugins must provide compatible link APIs. No additional Composer dependencies are required.
 
 Enable the type in the link field's settings, then choose which forms authors
 may select. The picker follows the existing **Show only allowed forms** Freeform

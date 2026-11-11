@@ -61,6 +61,7 @@ const Select: React.FC<ControlType<SelectProperty>> = ({
         />
       ) : (
         <Dropdown
+          disabled={property.disabled}
           value={value ?? ""}
           emptyOption={emptyOption}
           options={iconOptions}

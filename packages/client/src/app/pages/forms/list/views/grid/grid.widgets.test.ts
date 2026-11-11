@@ -78,32 +78,33 @@ it("preserves extra sizes while moving widgets between groups", () => {
   ]);
 });
 
-it("restores the banner for hidden, removed, failed, stale, and non-replacing health widgets", () => {
+it("suppresses the banner for loading and ready health widgets, with a fallback for unavailable widgets", () => {
   const health = {
     ...widget("health", null),
     type: "activity-health",
     revision: "first",
     replacesBanner: true,
   };
-  const ready = new Set([healthWidgetKey(health, 1)]);
-  expect(hasVisibleHealthWidget([health], 1, ready, true)).toBe(true);
-  expect(hasVisibleHealthWidget([health], 1, ready, false)).toBe(false);
-  expect(hasVisibleHealthWidget([], 1, ready, true)).toBe(false);
-  expect(hasVisibleHealthWidget([health], 1, new Set(), true)).toBe(false);
-  expect(hasVisibleHealthWidget([health], 2, ready, true)).toBe(false);
+  const failed = new Set([healthWidgetKey(health, 1)]);
+  expect(hasVisibleHealthWidget([health], 1, new Set(), true)).toBe(true);
+  expect(hasVisibleHealthWidget([health], 1, failed, false)).toBe(false);
+  expect(hasVisibleHealthWidget([], 1, failed, true)).toBe(false);
+  expect(hasVisibleHealthWidget([health], 1, failed, true)).toBe(false);
+  expect(hasVisibleHealthWidget([health], undefined, failed, true)).toBe(false);
+  expect(hasVisibleHealthWidget([health], 2, failed, true)).toBe(true);
   expect(
     hasVisibleHealthWidget(
       [{ ...health, revision: "updated" }],
       1,
-      ready,
+      failed,
       true,
     ),
-  ).toBe(false);
+  ).toBe(true);
   expect(
     hasVisibleHealthWidget(
       [{ ...health, replacesBanner: false }],
       1,
-      ready,
+      failed,
       true,
     ),
   ).toBe(false);

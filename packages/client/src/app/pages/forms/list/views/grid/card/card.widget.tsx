@@ -157,12 +157,12 @@ export const WidgetCard = ({
   onResize: (size: DashboardWidgetSize) => void;
   onRemove: () => void;
   onKeyboardMove: (id: string, key: string) => void;
-  onHealthReady?: (key: string, ready: boolean) => void;
+  onHealthReady?: (key: string, ready: boolean | null) => void;
 }) => {
   const { openSlideout } = useModal();
   const key = healthWidgetKey(widget, siteId);
   const reportHealthReady = useCallback(
-    (ready: boolean) => onHealthReady?.(key, ready),
+    (ready: boolean | null) => onHealthReady?.(key, ready),
     [onHealthReady, key],
   );
   return (

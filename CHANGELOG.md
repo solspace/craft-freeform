@@ -3,12 +3,14 @@
 ## Unreleased
 
 ### Added
-- Carried forward Freeform 5.18.1 features and fixes, plus the latest form Link, Content Block, Hyper, Linkit, and Navigation integrations, adapted for Craft 6.
+- Carried forward Freeform 5.18.2 features and fixes, plus the latest form Link, Content Block, Hyper, Linkit, and Navigation integrations, adapted for Craft 6.
+- Added Content Integrations settings, shared integration icons, and native editor form blocks, with compatibility checks for installed plugins.
 
 ### Changed
 - Aligned shared settings controls and control panel colors with native Craft 6 tokens, retaining compatibility with its upcoming appearance updates.
 
 ### Fixed
+- Fixed Forms dashboard loading, Quick setup restrictions, and Demo Templates installer warnings.
 - Adapted form-link settings, address mapping, validation, and service lookups to Craft 6 APIs.
 - Corrected submission permission criteria for native queries and schema migration handling on MySQL.
 
@@ -49,6 +51,26 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.18.2 - 2026-11-11
+
+### Added
+- Added **Content Integrations** settings with plugin compatibility indicators, individual and bulk authoring controls, and a shared icon picker with ten suggested form icons (Craft 5 only).
+- Added opt-in **Freeform Form** toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering (Craft 5 only).
+- Added **Freeform Form** nodes for Navigation 3 and 4, with template helpers and examples for rendering forms from menu nodes (Craft 5 only).
+- Added compatibility and edition information for Matrix, Neo 5, and native Content Block fields to Content Integrations (Craft 5 only), plus setup and rendering examples using the existing **Freeform Form** field.
+- Added an Enable logging button to the Activity & Health widget when logging is turned off and the user can edit logging settings.
+- Added Freeform form selection to native Link fields, Hyper 2 and 3, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper (Craft 5 only).
+
+### Changed
+- Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme (Craft 5 only).
+- Refined Forms dashboard drop zone styling.
+
+### Fixed
+- Fixed warning colors, borders, and spacing in the Demo Templates installer.
+- Fixed compatible installed versions losing their checkmark when a content integration plugin is disabled (Craft 5 only).
+- Fixed the Activity Log banner briefly appearing while the Forms dashboard's Activity & Health widget loads.
+- Fixed Quick setup ignoring Limited Users Form Type restrictions and locked Form Builder defaults when displaying the selector and creating forms.
 
 ## 5.18.1 - 2026-11-10
 

@@ -1,11 +1,15 @@
 <?php
 
 return [
+    'Suggested' => 'Suggestions',
+    'All icons' => 'Toutes les icônes',
+    'Other results' => 'Autres résultats',
     'Available' => 'Disponible',
     'Choose a form to render in your navigation template. Forms do not have a public URL.' => 'Choisissez un formulaire à afficher dans votre modèle de navigation. Les formulaires n’ont pas d’URL publique.',
     'Choose the icon shown for Freeform across content integrations.' => 'Choisissez l’icône représentant Freeform dans les intégrations de contenu.',
     'Choose valid external integration settings.' => 'Choisissez des paramètres valides pour les intégrations externes.',
     'Compatible version' => 'Version compatible',
+    'Content tools' => 'Outils de contenu',
     'Content Integrations' => 'Intégrations de contenu',
     'Content integrations require Craft 5.' => 'Les intégrations de contenu nécessitent Craft 5.',
     'Disable all' => 'Tout désactiver',
@@ -31,4 +35,13 @@ return [
     'Unavailable form' => 'Formulaire indisponible',
     'Unsupported version' => 'Version non prise en charge',
     'Use Freeform logo' => 'Utiliser le logo Freeform',
+    'Freeform Lite + Pro' => 'Freeform Lite + Pro',
+    'Works with Freeform fields' => 'Compatible avec les champs Freeform',
+    'Use the Freeform Form field inside these containers. No extra integration is required.' => 'Utilisez le champ Formulaire Freeform dans ces conteneurs. Aucune intégration supplémentaire n’est nécessaire.',
+    'Built-in support' => 'Prise en charge native',
+    'Setup guide' => 'Guide de configuration',
+    'Field type' => 'Type de champ',
+    'Add a Freeform Form field to the content block’s field layout.' => 'Ajoutez un champ Formulaire Freeform à la disposition des champs du bloc de contenu.',
+    'Add a Freeform Form field to a nested entry type.' => 'Ajoutez un champ Formulaire Freeform à un type d’entrée imbriquée.',
+    'Add a Freeform Form field to a Neo block type.' => 'Ajoutez un champ Formulaire Freeform à un type de bloc Neo.',
 ];

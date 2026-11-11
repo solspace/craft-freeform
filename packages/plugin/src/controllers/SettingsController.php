@@ -329,7 +329,7 @@ class SettingsController extends BaseController
             : null;
         $integrationIconUrls = [];
         if ($integrationIcons) {
-            foreach (array_keys(ExternalIntegrations::DEFINITIONS) as $id) {
+            foreach (array_keys(ExternalIntegrations::DEFINITIONS + ExternalIntegrations::FIELD_CONTAINERS) as $id) {
                 $integrationIconUrls[$id] = $this->view->getAssetManager()->getAssetUrl($integrationIcons, 'plugins/'.$id.'.svg', true);
             }
         }
@@ -346,6 +346,8 @@ class SettingsController extends BaseController
                 'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
                 'externalIntegrations' => 'content-integrations' === $section ? (new ExternalIntegrations())->getCatalog() : [],
+                'contentFieldContainers' => 'content-integrations' === $section ? (new ExternalIntegrations())->getFieldContainers() : [],
+                'contentFieldContainerGuideUrl' => 'https://github.com/solspace/craft-freeform/blob/v5/packages/plugin/src/Library/Integrations/README.md#matrix-neo-and-content-block-fields',
                 'externalIntegrationIconUrls' => $integrationIconUrls,
                 'externalIntegrationDefaultIconSvg' => 'content-integrations' === $section ? (new ExternalIntegrations())->getDefaultIconSvg() : '',
             ]

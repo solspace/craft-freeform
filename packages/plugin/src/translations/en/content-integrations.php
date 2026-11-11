@@ -1,11 +1,15 @@
 <?php
 
 return [
+    'Suggested' => 'Suggested',
+    'All icons' => 'All icons',
+    'Other results' => 'Other results',
     'Available' => 'Available',
     'Choose a form to render in your navigation template. Forms do not have a public URL.' => 'Choose a form to render in your navigation template. Forms do not have a public URL.',
     'Choose the icon shown for Freeform across content integrations.' => 'Choose the icon shown for Freeform across content integrations.',
     'Choose valid external integration settings.' => 'Choose valid external integration settings.',
     'Compatible version' => 'Compatible version',
+    'Content tools' => 'Content tools',
     'Content Integrations' => 'Content Integrations',
     'Content integrations require Craft 5.' => 'Content integrations require Craft 5.',
     'Disable all' => 'Disable all',
@@ -31,4 +35,13 @@ return [
     'Unavailable form' => 'Unavailable form',
     'Unsupported version' => 'Unsupported version',
     'Use Freeform logo' => 'Use Freeform logo',
+    'Freeform Lite + Pro' => 'Freeform Lite + Pro',
+    'Works with Freeform fields' => 'Works with Freeform fields',
+    'Use the Freeform Form field inside these containers. No extra integration is required.' => 'Use the Freeform Form field inside these containers. No extra integration is required.',
+    'Built-in support' => 'Built-in support',
+    'Setup guide' => 'Setup guide',
+    'Field type' => 'Field type',
+    'Add a Freeform Form field to the content block’s field layout.' => 'Add a Freeform Form field to the content block’s field layout.',
+    'Add a Freeform Form field to a nested entry type.' => 'Add a Freeform Form field to a nested entry type.',
+    'Add a Freeform Form field to a Neo block type.' => 'Add a Freeform Form field to a Neo block type.',
 ];

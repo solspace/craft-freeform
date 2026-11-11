@@ -1,11 +1,15 @@
 <?php
 
 return [
+    'Suggested' => 'Suggeriti',
+    'All icons' => 'Tutte le icone',
+    'Other results' => 'Altri risultati',
     'Available' => 'Disponibile',
     'Choose a form to render in your navigation template. Forms do not have a public URL.' => 'Scegli un modulo da visualizzare nel template di navigazione. I moduli non hanno un URL pubblico.',
     'Choose the icon shown for Freeform across content integrations.' => 'Scegli l’icona che rappresenta Freeform nelle integrazioni dei contenuti.',
     'Choose valid external integration settings.' => 'Scegli impostazioni valide per le integrazioni esterne.',
     'Compatible version' => 'Versione compatibile',
+    'Content tools' => 'Strumenti per i contenuti',
     'Content Integrations' => 'Integrazioni dei contenuti',
     'Content integrations require Craft 5.' => 'Le integrazioni dei contenuti richiedono Craft 5.',
     'Disable all' => 'Disabilita tutto',
@@ -31,4 +35,13 @@ return [
     'Unavailable form' => 'Modulo non disponibile',
     'Unsupported version' => 'Versione non supportata',
     'Use Freeform logo' => 'Usa il logo Freeform',
+    'Freeform Lite + Pro' => 'Freeform Lite + Pro',
+    'Works with Freeform fields' => 'Compatibile con i campi Freeform',
+    'Use the Freeform Form field inside these containers. No extra integration is required.' => 'Usa il campo Modulo Freeform in questi contenitori. Non è necessaria un’integrazione aggiuntiva.',
+    'Built-in support' => 'Supporto integrato',
+    'Setup guide' => 'Guida alla configurazione',
+    'Field type' => 'Tipo di campo',
+    'Add a Freeform Form field to the content block’s field layout.' => 'Aggiungi un campo Modulo Freeform al layout dei campi del blocco di contenuto.',
+    'Add a Freeform Form field to a nested entry type.' => 'Aggiungi un campo Modulo Freeform a un tipo di voce nidificata.',
+    'Add a Freeform Form field to a Neo block type.' => 'Aggiungi un campo Modulo Freeform a un tipo di blocco Neo.',
 ];

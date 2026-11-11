@@ -1,11 +1,15 @@
 <?php
 
 return [
+    'Suggested' => 'Suggesties',
+    'All icons' => 'Alle pictogrammen',
+    'Other results' => 'Andere resultaten',
     'Available' => 'Beschikbaar',
     'Choose a form to render in your navigation template. Forms do not have a public URL.' => 'Kies een formulier om in je navigatietemplate weer te geven. Formulieren hebben geen openbare URL.',
     'Choose the icon shown for Freeform across content integrations.' => 'Kies het pictogram waarmee Freeform in contentintegraties wordt weergegeven.',
     'Choose valid external integration settings.' => 'Kies geldige instellingen voor externe integraties.',
     'Compatible version' => 'Compatibele versie',
+    'Content tools' => 'Contenttools',
     'Content Integrations' => 'Contentintegraties',
     'Content integrations require Craft 5.' => 'Contentintegraties vereisen Craft 5.',
     'Disable all' => 'Alles uitschakelen',
@@ -31,4 +35,13 @@ return [
     'Unavailable form' => 'Formulier niet beschikbaar',
     'Unsupported version' => 'Niet-ondersteunde versie',
     'Use Freeform logo' => 'Freeform-logo gebruiken',
+    'Freeform Lite + Pro' => 'Freeform Lite + Pro',
+    'Works with Freeform fields' => 'Werkt met Freeform-velden',
+    'Use the Freeform Form field inside these containers. No extra integration is required.' => 'Gebruik het Freeform-formulierveld in deze containers. Er is geen extra integratie nodig.',
+    'Built-in support' => 'Ingebouwde ondersteuning',
+    'Setup guide' => 'Installatiegids',
+    'Field type' => 'Veldtype',
+    'Add a Freeform Form field to the content block’s field layout.' => 'Voeg een Freeform-formulierveld toe aan de veldindeling van het contentblok.',
+    'Add a Freeform Form field to a nested entry type.' => 'Voeg een Freeform-formulierveld toe aan een genest itemtype.',
+    'Add a Freeform Form field to a Neo block type.' => 'Voeg een Freeform-formulierveld toe aan een Neo-bloktype.',
 ];

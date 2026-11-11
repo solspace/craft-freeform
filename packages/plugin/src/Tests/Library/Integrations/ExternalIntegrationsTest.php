@@ -119,4 +119,51 @@ class ExternalIntegrationsTest extends TestCase
         $catalog = array_column($service->getCatalog(), null, 'id');
         self::assertFalse($catalog['hyper']['enabled']);
     }
+
+    public function testFieldContainerAvailabilityDoesNotCreateAuthoringPreferences(): void
+    {
+        $settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+        $service = new class($settings) extends ExternalIntegrations {
+            public array $neoState = [];
+
+            protected function pluginState(string $id, array $definition): array
+            {
+                $state = ['installed' => true, 'enabled' => true, 'version' => $definition['min'], 'displayVersion' => $definition['min'], 'craft5' => true, 'capable' => true];
+
+                return 'neo' === $id ? array_replace($state, $this->neoState) : $state;
+            }
+        };
+        $catalog = array_column($service->getFieldContainers(), null, 'id');
+        self::assertSame(['content-block', 'matrix', 'neo'], array_keys($catalog));
+        foreach ($catalog as $container) {
+            self::assertSame('available', $container['status']);
+        }
+        self::assertCount(6, $service->getCatalog());
+        self::assertFalse($service->isEnabled('neo'));
+        self::assertSame([], $settings->externalIntegrations);
+
+        $service->neoState = ['installed' => false];
+        $catalog = array_column($service->getFieldContainers(), null, 'id');
+        self::assertSame('not-installed', $catalog['neo']['status']);
+        self::assertFalse($catalog['neo']['available']);
+        self::assertFalse($catalog['neo']['compatible']);
+        self::assertTrue($catalog['matrix']['available']);
+
+        $service->neoState = ['enabled' => false];
+        $catalog = array_column($service->getFieldContainers(), null, 'id');
+        self::assertSame('plugin-disabled', $catalog['neo']['status']);
+        self::assertFalse($catalog['neo']['available']);
+        self::assertTrue($catalog['neo']['compatible']);
+
+        $service->neoState = ['enabled' => false, 'version' => '4.0.0'];
+        $catalog = array_column($service->getFieldContainers(), null, 'id');
+        self::assertSame('plugin-disabled', $catalog['neo']['status']);
+        self::assertFalse($catalog['neo']['compatible']);
+
+        $service->neoState = ['version' => '4.0.0'];
+        $catalog = array_column($service->getFieldContainers(), null, 'id');
+        self::assertSame('unsupported', $catalog['neo']['status']);
+        self::assertFalse($catalog['neo']['compatible']);
+        self::assertSame([], $settings->externalIntegrations);
+    }
 }

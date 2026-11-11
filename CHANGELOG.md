@@ -3,6 +3,8 @@
 ## Unreleased
 
 ### Added
+- Added a Works with Freeform fields section to Content Integrations, showing compatibility, Lite and Pro availability, and setup guidance for Matrix, Neo, and Content Block fields.
+- Added ten suggested form icons to the Content Integrations icon picker, including search matches for form-related terms.
 - Added a Content Integrations settings page with plugin logos, compatibility indicators, individual and bulk authoring controls, and one shared icon defaulting to the Freeform logo. Existing sites use the defaults without a migration.
 - Added opt-in Freeform Form toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering.
 - Added Freeform form nodes for Navigation 3 and 4, with template helpers and sample code for rendering forms from menu nodes.
@@ -12,6 +14,7 @@
 - Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
 
 ### Fixed
+- Fixed compatible installed versions losing their checkmark when a content integration plugin is disabled.
 - Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme.
 - Fixed the Activity Log banner briefly appearing while the Forms dashboard's Activity & Health widget loads.
 - Lightened Forms dashboard drop zones in light mode.

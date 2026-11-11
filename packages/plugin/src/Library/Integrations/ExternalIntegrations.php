@@ -21,6 +21,12 @@ class ExternalIntegrations
         'linkit' => ['name' => 'Linkit', 'package' => 'presseddigital/linkit', 'min' => '5.0.0', 'max' => '6.0.0', 'support' => '5.x', 'description' => 'Select Freeform forms using the Freeform Form link type.'],
     ];
 
+    public const FIELD_CONTAINERS = [
+        'content-block' => ['name' => 'Content Block', 'package' => null, 'min' => '5.8.0', 'max' => '6.0.0', 'support' => 'Craft 5.8+', 'description' => 'Add a Freeform Form field to the content block’s field layout.'],
+        'matrix' => ['name' => 'Matrix', 'package' => null, 'min' => '5.0.0', 'max' => '6.0.0', 'support' => 'Craft 5', 'description' => 'Add a Freeform Form field to a nested entry type.'],
+        'neo' => ['name' => 'Neo', 'package' => 'spicyweb/craft-neo', 'min' => '5.0.0', 'max' => '6.0.0', 'support' => '5.x', 'description' => 'Add a Freeform Form field to a Neo block type.'],
+    ];
+
     public function __construct(private ?Settings $settings = null, private ?FormIconService $icons = null) {}
 
     public function isEnabled(string $integration): bool
@@ -39,6 +45,7 @@ class ExternalIntegrations
                 'id' => $id,
                 'status' => $status,
                 'available' => 'available' === $status,
+                'compatible' => self::isCompatible($definition, $state),
                 'enabled' => $this->isEnabled($id),
             ]);
         }
@@ -58,6 +65,23 @@ class ExternalIntegrations
         return null !== $version && version_compare($version, $definition['min'], '>=') && version_compare($version, $definition['max'], '<');
     }
 
+    public function getFieldContainers(): array
+    {
+        $catalog = [];
+        foreach (self::FIELD_CONTAINERS as $id => $definition) {
+            $state = $this->pluginState($id, $definition);
+            $status = self::status($definition, $state);
+            $catalog[] = array_merge($definition, $state, [
+                'id' => $id,
+                'status' => $status,
+                'available' => 'available' === $status,
+                'compatible' => self::isCompatible($definition, $state),
+            ]);
+        }
+
+        return $catalog;
+    }
+
     public static function status(array $definition, array $state): string
     {
         if (!$state['installed']) {
@@ -66,13 +90,18 @@ class ExternalIntegrations
         if (!$state['enabled']) {
             return 'plugin-disabled';
         }
-        if (!$state['craft5'] || !$state['capable']
-            || version_compare($state['version'], $definition['min'], '<')
-            || version_compare($state['version'], $definition['max'], '>=')) {
+        if (!self::isCompatible($definition, $state)) {
             return 'unsupported';
         }
 
         return 'available';
+    }
+
+    public static function isCompatible(array $definition, array $state): bool
+    {
+        return $state['installed'] && $state['craft5'] && $state['capable']
+            && version_compare($state['version'], $definition['min'], '>=')
+            && version_compare($state['version'], $definition['max'], '<');
     }
 
     public function getIconSvg(): string
@@ -114,7 +143,7 @@ class ExternalIntegrations
     protected function pluginState(string $id, array $definition): array
     {
         $craft = \Craft::$app->getVersion();
-        $native = 'craft-link' === $id;
+        $native = null === $definition['package'];
         $plugins = \Craft::$app->getPlugins();
         $installed = $native || $plugins->isPluginInstalled($id);
         $enabled = $native || ($installed && $plugins->isPluginEnabled($id));

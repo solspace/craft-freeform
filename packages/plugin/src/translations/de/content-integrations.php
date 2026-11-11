@@ -1,11 +1,15 @@
 <?php
 
 return [
+    'Suggested' => 'Vorschläge',
+    'All icons' => 'Alle Symbole',
+    'Other results' => 'Weitere Ergebnisse',
     'Available' => 'Verfügbar',
     'Choose a form to render in your navigation template. Forms do not have a public URL.' => 'Wählen Sie ein Formular aus, das in Ihrer Navigationsvorlage ausgegeben werden soll. Formulare haben keine öffentliche URL.',
     'Choose the icon shown for Freeform across content integrations.' => 'Wählen Sie das Symbol, das Freeform in Inhaltsintegrationen darstellt.',
     'Choose valid external integration settings.' => 'Wählen Sie gültige Einstellungen für externe Integrationen.',
     'Compatible version' => 'Kompatible Version',
+    'Content tools' => 'Inhaltswerkzeuge',
     'Content Integrations' => 'Inhaltsintegrationen',
     'Content integrations require Craft 5.' => 'Inhaltsintegrationen erfordern Craft 5.',
     'Disable all' => 'Alle deaktivieren',
@@ -31,4 +35,13 @@ return [
     'Unavailable form' => 'Formular nicht verfügbar',
     'Unsupported version' => 'Nicht unterstützte Version',
     'Use Freeform logo' => 'Freeform-Logo verwenden',
+    'Freeform Lite + Pro' => 'Freeform Lite + Pro',
+    'Works with Freeform fields' => 'Funktioniert mit Freeform-Feldern',
+    'Use the Freeform Form field inside these containers. No extra integration is required.' => 'Verwenden Sie das Freeform-Formularfeld in diesen Containern. Eine zusätzliche Integration ist nicht erforderlich.',
+    'Built-in support' => 'Integrierte Unterstützung',
+    'Setup guide' => 'Einrichtung',
+    'Field type' => 'Feldtyp',
+    'Add a Freeform Form field to the content block’s field layout.' => 'Fügen Sie ein Freeform-Formularfeld zum Feldlayout des Inhaltsblocks hinzu.',
+    'Add a Freeform Form field to a nested entry type.' => 'Fügen Sie ein Freeform-Formularfeld zu einem verschachtelten Eintragstyp hinzu.',
+    'Add a Freeform Form field to a Neo block type.' => 'Fügen Sie ein Freeform-Formularfeld zu einem Neo-Blocktyp hinzu.',
 ];

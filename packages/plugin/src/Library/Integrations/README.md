@@ -26,6 +26,9 @@ The single **Integration Icon** setting applies to Freeform toolbar controls and
 form pickers across these plugins. It defaults to the Freeform logo. Choose a
 Craft system icon, or use **Use Freeform logo** to restore the default. Host
 plugin menus that display text-only type labels continue using their own layout.
+This setting's picker starts with ten suggested form-related Craft icons above
+the remaining icons. Searching for **form**, **fields**, **survey**, or
+**questionnaire** also finds these suggestions. Other icon pickers are unchanged.
 Settings use the normal Freeform settings permissions and Project Config rules.
 No migration or Project Config rewrite is required. Missing settings assume all
 supported integrations enabled and the Freeform logo; absent integration keys
@@ -81,6 +84,10 @@ The nested field value is a Freeform `Form` object, or `null` when empty. It is
 not a link-field value, so `formFromLink()` is not needed. Saving the container
 stores the selected form ID. The field's Available Forms filter applies in all
 three pickers.
+
+The **Works with Freeform fields** section on the Content Integrations settings
+page lists these containers, their compatibility, and a setup guide. It is
+informational and has no enable switches or additional saved preferences.
 
 ### Render the selection
 

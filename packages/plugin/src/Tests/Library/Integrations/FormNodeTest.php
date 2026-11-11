@@ -6,8 +6,11 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Integrations\Content\ContentIntegrationsBundle;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Links\FormLinkProvider;
 use Solspace\Freeform\Library\Integrations\Navigation\FormNode;
+use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Services\SettingsService;
 use verbb\navigation\base\NodeType;
 use verbb\navigation\elements\Node;
 use yii\di\Container;
@@ -18,23 +21,33 @@ class FormNodeTest extends TestCase
 {
     private mixed $previousContainer;
     private mixed $previousApp;
+    private mixed $previousYiiApp;
+    private Settings $settings;
 
     protected function setUp(): void
     {
         $this->previousContainer = \Craft::$container;
         $this->previousApp = \Craft::$app;
+        $this->previousYiiApp = \Yii::$app;
         if (!class_exists(NodeType::class)) {
             self::markTestSkipped('Navigation is not installed.');
         }
 
         \Craft::$container = new Container();
         \Craft::$app = null;
+        $this->settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
+        $service = $this->createMock(SettingsService::class);
+        $service->method('getSettingsModel')->willReturn($this->settings);
+        $plugin = (new \ReflectionClass(Freeform::class))->newInstanceWithoutConstructor();
+        $plugin->setComponents(['settings' => $service]);
+        \Yii::$app = (object) ['loadedModules' => [Freeform::class => $plugin]];
     }
 
     protected function tearDown(): void
     {
         \Craft::$container = $this->previousContainer;
         \Craft::$app = $this->previousApp;
+        \Yii::$app = $this->previousYiiApp;
     }
 
     public function testFormReferenceUsesTheNodesSiteAndIsAcceptedByTheTwigLinkHelper(): void
@@ -90,6 +103,26 @@ class FormNodeTest extends TestCase
         self::assertNull($type->getUrl());
         self::assertTrue($type->beforeSaveNode(false));
         self::assertNull($node->urlSuffix);
+    }
+
+    public function testDisabledIntegrationRejectsNewNodesAndPreservesExistingSelections(): void
+    {
+        $this->settings->externalIntegrations = ['navigation' => false];
+        $form = $this->createMock(Form::class);
+        $provider = $this->createMock(FormLinkProvider::class);
+        $provider->method('getForm')->willReturn($form);
+        \Craft::$container->setSingleton(FormLinkProvider::class, $provider);
+        [$type, $node] = $this->node('freeform:12');
+
+        $type->validateForm();
+        self::assertTrue($node->hasErrors('data.freeformForm'));
+
+        $node->clearErrors();
+        $node->id = 123;
+        $type->validateForm();
+        self::assertFalse($node->hasErrors());
+        self::assertSame('freeform:12', $node->data[FormNode::DATA_KEY]);
+        self::assertSame($form, $type->getForm());
     }
 
     public function testCraftModelValidationRejectsAnEmptySelectionAndAcceptsAnAvailableForm(): void

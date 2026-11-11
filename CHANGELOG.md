@@ -3,10 +3,15 @@
 ## Unreleased
 
 ### Added
+- Added a Content Integrations settings page with plugin logos, compatibility indicators, individual and bulk authoring controls, and one shared icon defaulting to the Freeform logo. Existing sites use the defaults without a migration.
+- Added opt-in Freeform Form toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering.
+- Added Freeform form nodes for Navigation 3 and 4, with template helpers and sample code for rendering forms from menu nodes.
+- Added English, German, French, Italian, and Dutch translations for content integration settings and controls.
 - Added an Enable logging button to the Activity & Health widget when logging is turned off and the user can edit logging settings.
 - Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
 
 ### Fixed
+- Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme.
 - Fixed the Activity Log banner briefly appearing while the Forms dashboard's Activity & Health widget loads.
 - Lightened Forms dashboard drop zones in light mode.
 - Fixed Quick setup ignoring Limited Users Form Type restrictions and locked Form Builder defaults when displaying the selector and creating forms.

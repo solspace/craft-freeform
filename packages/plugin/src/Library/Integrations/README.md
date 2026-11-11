@@ -1,9 +1,53 @@
 # Content and navigation integrations
 
-Freeform includes render templates for CKEditor's native nested entries and Vizy
-blocks, and registers a **Freeform Form** node type with Navigation on Craft 5.
-These plugins remain optional. Installing Freeform does not change existing
-fields, entry types, menus, or project config.
+Freeform registers optional authoring integrations for CKEditor, Vizy, Navigation,
+Craft Link, Hyper, and Linkit. Installing Freeform does not change existing fields,
+entry types, menus, or project config. Enable the editor controls on the fields
+where authors should be able to embed forms.
+
+## Content Integrations settings
+
+Open **Freeform → Settings → Content Integrations** to review the six supported
+content integrations. Each row uses the plugin’s color logo and shows the supported version range, installed
+version, availability, and an authoring toggle. Missing or disabled plugins are
+dimmed. Unsupported versions stay in full color with amber warnings. These
+unavailable integrations cannot be enabled here. Supported integrations default to
+on; **Enable all** / **Disable all** changes the available integrations together. Turning one off preserves saved form references and frontend rendering.
+Editor insertion buttons are hidden while off; existing link/node pickers keep
+their selections but do not allow new form choices. Existing manual embedding
+recipes remain ordinary project content.
+
+Both native editor blocks show a static form skeleton with the selected form's
+name and the shared integration icon. The preview has no interactive form inputs
+and is not saved as authored content. Frontend rendering still uses the selected
+form's real fields and template.
+
+The single **Integration Icon** setting applies to Freeform toolbar controls and
+form pickers across these plugins. It defaults to the Freeform logo. Choose a
+Craft system icon, or use **Use Freeform logo** to restore the default. Host
+plugin menus that display text-only type labels continue using their own layout.
+Settings use the normal Freeform settings permissions and Project Config rules.
+No migration or Project Config rewrite is required. Missing settings assume all
+supported integrations enabled and the Freeform logo; absent integration keys
+retain that default. Preferences are persisted through the normal settings save.
+
+## Supported plugins and content types
+
+| Integration | Supported versions | Freeform support | Front-end rendering |
+| --- | --- | --- | --- |
+| Craft Link | Native Link field on Craft 5 | Registered **Freeform Form** link type | Resolve the field with `craft.freeform.formFromLink()` |
+| Hyper | 2.x and 3.x on Craft 5 | Registered **Freeform Form** link type | Resolve an individual Hyper link with `formFromLink()`; `link.form` is also available |
+| Linkit | 5.x on Craft 5 | Registered **Freeform Form** link type | Resolve the Linkit field with `formFromLink()`; `link.form` is also available |
+| CKEditor | 5.9+ on Craft 5 | Registered **Freeform Form** toolbar plugin | `craft.freeform.renderContent(entry.body)` |
+| Vizy | 4.x on Craft 5 | Registered **Freeform Form** node and toolbar control | Normal Vizy field `.render()` |
+| Vizy content blocks | 3.x and 4.x on Craft 5 | Optional recipe using a Freeform Craft field inside a project-defined block | Block template including `freeform-integrations/vizy` |
+| Navigation | 3.x and 4.x on Craft 5 | Registered **Freeform Form** node type | Resolve the node with `formFromLink()` and render it in your menu template |
+
+These optional content recipes and link/navigation adapters target Craft 5. See the
+[form-link guide](Links/README.md) for field configuration and link examples.
+Form selections store a reference to a form. Your site template determines
+whether to render it inline, inside a disclosure, or in a modal; the selection
+does not generate a public form URL.
 
 The `freeform-integrations` site template root is supplied by Freeform; you do
 not need to copy its templates into your project. Each block resolves a separate
@@ -12,7 +56,52 @@ templates render nothing for empty, archived, or deleted selections. Forms keep
 their own formatting templates; load any CSS required by those templates in your
 site layout. Render properties can override the formatting template as usual.
 
-## CKEditor (5.x on Craft 5.9+)
+## Native editor controls
+
+### CKEditor 5.9+
+
+Add **Freeform Form** (`freeformForm`) to the CKEditor field's toolbar in its
+settings. Authors click it to pick a form. The editor inserts a selectable block;
+select that block and click the toolbar button again to change its form. Editor
+Undo/Redo, moving, copying, and deleting the block use CKEditor's native model.
+
+Render the field through the helper:
+
+```twig
+{{ craft.freeform.renderContent(entry.body) }}
+{# Optional render properties apply to each embedded form. #}
+{{ craft.freeform.renderContent(entry.body, {
+    formattingTemplate: 'bootstrap-5/index.twig'
+}) }}
+```
+
+CKEditor stores an empty `<div data-freeform-form="5"></div>` placeholder. The
+helper replaces only these canonical placeholders; it never evaluates content
+as Twig. Normal `{{ entry.body }}` output leaves the placeholders empty. Keep the
+Freeform toolbar control enabled when editing fields containing these blocks.
+
+### Vizy 4
+
+In the field's Editor Config, enable the **Freeform Form** node and put its
+control on the toolbar. Authors use the same picker to insert a native atomic
+node, or select an existing node and click the control to change its form. No
+project-defined Vizy block type or additional Craft field is required.
+
+```twig
+{{ entry.body.render() }}
+```
+
+Vizy saves a `freeformForm` node with a `formId` attribute. Freeform renders the
+form through Vizy's supported PHP node renderer. Optional Vizy node templates
+can override the presentation, as with other custom Vizy nodes. Forms use their
+configured formatting templates; load the corresponding CSS in the site layout.
+
+Both controls share the existing form picker's allowed-form policy, preserve
+unavailable selections while editing, and render nothing for archived/deleted
+forms. Each occurrence receives its own form and field IDs. Existing nested
+entries/content blocks remain supported and are not converted automatically.
+
+## Optional CKEditor nested-entry recipe
 
 Use CKEditor's native **nested entries**, which preserve forms as structured
 content alongside rich text:
@@ -115,6 +204,85 @@ own markup and JavaScript. Navigation's automatic menu renderer cannot decide
 how a form should open; a custom navigation template is required for form UI.
 You can also get the form with `node.nodeType().form`. Deleted or archived forms
 resolve to `null`, and ordinary Navigation nodes return `null` from the helper.
+
+### Optional button and modal example
+
+The disclosure example above works without JavaScript. To open a form in a
+modal, your site template can render a button and a native `<dialog>`, with the
+JavaScript below providing the opening and closing behavior. Freeform supplies
+the selected form; this presentation belongs to the site template.
+
+This complete example renders top-level menu items. For a nested menu, apply
+the same button logic within your existing node loop.
+
+```twig
+{% set nodes = craft.navigation.nodes('mainMenu').level(1).all() %}
+
+<nav aria-label="Main navigation">
+    <ul>
+        {% for node in nodes %}
+            {% set form = craft.freeform.formFromLink(node) %}
+            <li>
+                {% if form %}
+                    <button type="button"
+                            data-freeform-dialog-open="form-dialog-{{ node.uid }}"
+                            aria-haspopup="dialog">
+                        {{ node.title }}
+                    </button>
+                {% elseif node.url %}
+                    {{ node.link }}
+                {% else %}
+                    <span>{{ node.title }}</span>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</nav>
+
+{# Keep the form markup outside navigation lists and interactive controls. #}
+{% for node in nodes %}
+    {% set form = craft.freeform.formFromLink(node) %}
+    {% if form %}
+        <dialog id="form-dialog-{{ node.uid }}"
+                data-freeform-dialog
+                aria-labelledby="form-title-{{ node.uid }}">
+            <h2 id="form-title-{{ node.uid }}">{{ node.title }}</h2>
+            <button type="button" data-freeform-dialog-close>Close</button>
+            {% include 'freeform-integrations/_form' with {
+                selectedForm: form,
+                instanceId: 'navigation-' ~ node.uid,
+                renderProperties: {},
+            } only %}
+        </dialog>
+    {% endif %}
+{% endfor %}
+```
+
+Place the following script after the dialogs. Native dialogs handle Escape and
+keep keyboard focus inside the open modal. The close handler returns focus to
+the menu button. Load the CSS required by each form's formatting template, and
+style the dialog to suit your site.
+
+```html
+<script>
+const formDialogTriggers = new WeakMap();
+
+document.querySelectorAll('[data-freeform-dialog-open]').forEach(button => {
+    button.addEventListener('click', () => {
+        const dialog = document.getElementById(button.dataset.freeformDialogOpen);
+        if (!dialog) return;
+        formDialogTriggers.set(dialog, button);
+        dialog.showModal();
+    });
+});
+
+document.querySelectorAll('[data-freeform-dialog]').forEach(dialog => {
+    dialog.querySelector('[data-freeform-dialog-close]')
+        .addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => formDialogTriggers.get(dialog)?.focus());
+});
+</script>
+```
 
 ## Upstream references
 

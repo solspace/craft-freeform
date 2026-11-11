@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\Integrations\Navigation;
 use craft\helpers\Cp;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
 use Solspace\Freeform\Library\Integrations\Links\FormLinkInterface;
 use Solspace\Freeform\Library\Integrations\Links\FormLinkProvider;
 use verbb\navigation\base\NodeType;
@@ -40,6 +41,7 @@ class FormNode extends NodeType implements FormLinkInterface
                 'instructions' => self::instructions(),
                 'validation' => 'required',
                 'options' => self::provider()->getOptions(site: $site),
+                'disabled' => !(new ExternalIntegrations())->isEnabled('navigation'),
             ],
             [
                 '$field' => 'text',
@@ -91,6 +93,9 @@ class FormNode extends NodeType implements FormLinkInterface
 
     public function validateForm(): void
     {
+        if (!(new ExternalIntegrations())->isEnabled('navigation') && !$this->node?->id) {
+            $this->node?->addError('data.'.self::DATA_KEY, Freeform::t('The Navigation integration is disabled.'));
+        }
         if (null === $this->getForm()) {
             $this->node?->addError('data.'.self::DATA_KEY, Freeform::t('Select an available Freeform form.'));
         }
@@ -125,7 +130,7 @@ class FormNode extends NodeType implements FormLinkInterface
     {
         $value = $this->node?->data[self::DATA_KEY] ?? '';
 
-        return Cp::fieldHtml(self::provider()->inputHtml(self::DATA_KEY, $value, site: $this->site()), [
+        return Cp::fieldHtml(self::provider()->inputHtml(self::DATA_KEY, $value, site: $this->site(), integration: 'navigation'), [
             'label' => self::displayName(),
             'instructions' => self::instructions(),
             'id' => self::DATA_KEY,

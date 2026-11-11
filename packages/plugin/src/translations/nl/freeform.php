@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php', require __DIR__.'/setup.php', [
+return array_merge(require __DIR__.'/wizard.php', require __DIR__.'/logging.php', require __DIR__.'/setup.php', require __DIR__.'/content-integrations.php', [
     'The callback URL must use this site’s origin: {origin}.' => 'De callback-URL moet de oorsprong van deze site gebruiken: {origin}.',
     'Authorization could not be completed. Check the integration settings and the Freeform integration log, then try again.' => 'De autorisatie kon niet worden voltooid. Controleer de integratie-instellingen en het Freeform-integratielogboek en probeer het opnieuw.',
     'Full Access' => 'Volledige toegang',

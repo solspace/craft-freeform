@@ -37,7 +37,7 @@ class CraftFormLink extends BaseLinkType
 
     public function inputHtml(Link $field, ?string $value, string $containerId): string
     {
-        return $this->provider()->inputHtml('value', $value, $this->forms);
+        return $this->provider()->inputHtml('value', $value, $this->forms, integration: 'craft-link');
     }
 
     public function getSettingsHtml(): ?string

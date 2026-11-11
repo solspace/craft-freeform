@@ -5,6 +5,9 @@
 ### Added
 - Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
 
+### Fixed
+- Fixed Quick setup ignoring Limited Users Form Type restrictions and locked Form Builder defaults when displaying the selector and creating forms.
+
 ## 5.18.1 - 2026-11-10
 
 ### Fixed

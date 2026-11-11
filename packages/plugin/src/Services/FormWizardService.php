@@ -99,6 +99,7 @@ class FormWizardService
             'editableSettings' => $editable,
             'statuses' => $statuses,
             'formTypes' => $formTypes,
+            'defaultFormType' => ($defaults['general']['type'] ?? '') ?: Regular::class,
             'successBehaviors' => $successBehaviors,
             'allowDashesInHandles' => Freeform::getInstance()->settings->isAllowDashesInFieldHandles(),
             'defaults' => [
@@ -164,9 +165,10 @@ class FormWizardService
                 throw new \InvalidArgumentException(Freeform::t('Enter a valid form handle using letters, numbers, and underscores.'));
             }
         }
-        $formType = $input['type'] ?? Regular::class;
+        $defaultFormType = $options['defaultFormType'] ?? Regular::class;
+        $formType = $input['type'] ?? $defaultFormType;
         if (!\is_string($formType) || !\in_array($formType, array_column($options['formTypes'] ?? [['value' => Regular::class]], 'value'), true)
-            || (Regular::class !== $formType && !\in_array('type', $options['editableSettings'], true))) {
+            || ($defaultFormType !== $formType && !\in_array('type', $options['editableSettings'], true))) {
             throw new \InvalidArgumentException(Freeform::t('Choose an available form type.'));
         }
         $general = ['name' => $name, 'handle' => $handle, 'type' => $formType, 'sites' => $siteIds];

@@ -22,7 +22,9 @@ class ActivityHealthTemplateTest extends TestCase
     #[TestWith([true, 'classic'])]
     #[TestWith([true, 'classic', 0])]
     #[TestWith([true, 'none'])]
-    public function testWidgetReportsReadinessAndOnlyRendersAvailableData(bool $available, string $style, int $errors = 1, ?int $warnings = null, bool $recording = false): void
+    #[TestWith([true, 'none', 0, 0, false, false])]
+    #[TestWith([false, 'none'])]
+    public function testWidgetReportsReadinessAndOnlyRendersAvailableData(bool $available, string $style, int $errors = 1, ?int $warnings = null, bool $recording = false, bool $canEnableLogging = true): void
     {
         $warnings ??= $errors ? 2 : 0;
         $hasIssues = $errors || $warnings;
@@ -41,17 +43,24 @@ class ActivityHealthTemplateTest extends TestCase
             {
                 return '/status.svg';
             }
-        }]], 'health' => ['available' => $available, 'style' => $style, 'days' => 7, 'requestedDays' => 30, 'retentionDays' => 7, 'mode' => 'minimal', 'errors' => $errors, 'warnings' => $warnings, 'errorUrl' => '/activity?level=error', 'warningUrl' => '/activity?level=warning', 'breakdown' => [['label' => 'Saved submissions', 'count' => 0, 'recording' => $recording, 'event' => 'submission']], 'recorded' => 3, 'trend' => [['count' => 3, 'height' => 100]], 'recent' => $errors ? [['title' => 'Known error', 'level' => 'error', 'date' => '2026-11-06 08:00:00', 'url' => '/event']] : [], 'links' => []]]);
+        }]], 'health' => ['available' => $available, 'style' => $style, 'days' => 7, 'requestedDays' => 30, 'retentionDays' => 7, 'mode' => 'minimal', 'errors' => $errors, 'warnings' => $warnings, 'errorUrl' => '/activity?level=error', 'warningUrl' => '/activity?level=warning', 'settingsUrl' => $canEnableLogging ? '/settings/activity' : null, 'breakdown' => [['label' => 'Saved submissions', 'count' => 0, 'recording' => $recording, 'event' => 'submission']], 'recorded' => 3, 'trend' => [['count' => 3, 'height' => 100]], 'recent' => $errors ? [['title' => 'Known error', 'level' => 'error', 'date' => '2026-11-06 08:00:00', 'url' => '/event']] : [], 'links' => []]]);
         self::assertStringContainsString('data-freeform-health-ready="'.($available ? 'true' : 'false').'"', $html);
         if (!$available) {
             self::assertStringContainsString('Activity could not be loaded.', $html);
             self::assertStringNotContainsString('Unresolved errors', $html);
             self::assertStringNotContainsString('<strong>No errors or warnings</strong>', $html);
+            self::assertStringNotContainsString('Enable logging', $html);
         } elseif ('none' === $style) {
             self::assertStringContainsString('Logging is turned off.', $html);
+            if ($canEnableLogging) {
+                self::assertStringContainsString('href="/settings/activity" target="_top">Enable logging</a>', $html);
+            } else {
+                self::assertStringNotContainsString('Enable logging', $html);
+            }
             self::assertStringNotContainsString('Unresolved errors', $html);
             self::assertStringNotContainsString('<strong>No errors or warnings</strong>', $html);
         } else {
+            self::assertStringNotContainsString('Enable logging', $html);
             if ('activity' === $style) {
                 if ($recording) {
                     self::assertStringNotContainsString('Not enabled', $html);

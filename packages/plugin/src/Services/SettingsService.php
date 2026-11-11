@@ -328,7 +328,7 @@ class SettingsService extends BaseService
             'template-manager' => ['title' => Freeform::t('Template Manager')],
             'pdf-templates' => ['title' => Freeform::t('PDF Templates')],
             'statuses' => ['title' => Freeform::t('Statuses')],
-            'content-integrations' => ['title' => Freeform::t('Content Integrations')],
+            'content-integrations' => version_compare(\Craft::$app->getVersion(), '5.0', '>=') ? ['title' => Freeform::t('Content Integrations')] : null,
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'ai' => $solspaceAiNavItem,
             'hdalerts' => ['heading' => Freeform::t('System Health')],

@@ -222,6 +222,10 @@ ul.section-structure {
     align-items: flex-end;
     gap: 12px;
 
+    .text {
+      min-height: 34px;
+    }
+
     .freeform-demo-actions {
       flex: 0 0 auto;
       margin: 0;
@@ -287,21 +291,28 @@ ul.section-structure {
     color: var(--gray-600, #596673);
   }
 
-  .freeform-demo-note {
+  #demo-install-form .freeform-demo-note {
     --pane-padding: 12px;
-    background: var(--bg-warning);
-    color: var(--fg-warning);
-    border-color: var(--border-warning);
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--bg-warning, #fff7e0);
+    color: var(--fg-warning, #8f4f00);
+    border-color: var(--border-warning, #f4d58d);
     margin: 14px 0 0;
-    padding-inline: 40px 14px;
+    padding: 12px 14px;
     font-size: 13px;
     line-height: 1.5;
 
     &::before {
-      inset-inline-start: 12px;
+      content: none;
+    }
+
+    .freeform-demo-note-icon {
+      display: block;
+      flex: 0 0 18px;
       width: 18px;
-      font-size: 16px;
-      line-height: 1.21875;
+      height: 19.5px;
     }
 
     p {

@@ -1,23 +1,23 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.18.2 - 2026-11-11
 
 ### Added
-- Added a Works with Freeform fields section to Content Integrations, showing compatibility, Lite and Pro availability, and setup guidance for Matrix, Neo, and Content Block fields.
-- Added ten suggested form icons to the Content Integrations icon picker, including search matches for form-related terms.
-- Added a Content Integrations settings page with plugin logos, compatibility indicators, individual and bulk authoring controls, and one shared icon defaulting to the Freeform logo. Existing sites use the defaults without a migration.
-- Added opt-in Freeform Form toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering.
-- Added Freeform form nodes for Navigation 3 and 4, with template helpers and sample code for rendering forms from menu nodes.
-- Added English, German, French, Italian, and Dutch translations for content integration settings and controls.
-- Added setup and rendering examples for the existing Freeform Form field inside Matrix, Neo, and native Content Block fields.
+- Added **Content Integrations** settings with plugin compatibility indicators, individual and bulk authoring controls, and a shared icon picker with ten suggested form icons (Craft 5 only).
+- Added opt-in **Freeform Form** toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering (Craft 5 only).
+- Added **Freeform Form** nodes for Navigation 3 and 4, with template helpers and examples for rendering forms from menu nodes (Craft 5 only).
+- Added compatibility and edition information for Matrix, Neo 5, and native Content Block fields to Content Integrations (Craft 5 only), plus setup and rendering examples using the existing **Freeform Form** field.
 - Added an Enable logging button to the Activity & Health widget when logging is turned off and the user can edit logging settings.
-- Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
+- Added Freeform form selection to native Link fields, Hyper 2 and 3, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper (Craft 5 only).
+
+### Changed
+- Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme (Craft 5 only).
+- Refined Forms dashboard drop zone styling.
 
 ### Fixed
-- Fixed compatible installed versions losing their checkmark when a content integration plugin is disabled.
-- Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme.
+- Fixed warning colors, borders, and spacing in the Demo Templates installer.
+- Fixed compatible installed versions losing their checkmark when a content integration plugin is disabled (Craft 5 only).
 - Fixed the Activity Log banner briefly appearing while the Forms dashboard's Activity & Health widget loads.
-- Lightened Forms dashboard drop zones in light mode.
 - Fixed Quick setup ignoring Limited Users Form Type restrictions and locked Form Builder defaults when displaying the selector and creating forms.
 
 ## 5.18.1 - 2026-11-10

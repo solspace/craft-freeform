@@ -184,7 +184,7 @@
     {% set suggestedIcons = [] %}
     {% if craft.app.version starts with '5.' %}
         {% for name in ['clipboard-list', 'clipboard-check', 'file-pen', 'pen-to-square', 'list-check', 'file-lines', 'rectangle-list', 'table-list', 'input-text', 'square-check'] %}
-            {% set svg = iconSvg(name) %}
+            {% set svg = craft.freeform.formIcon(name) %}
             {% if svg %}
                 {% set suggestedIcons = suggestedIcons|merge([{name: name, svg: svg ~ ''}]) %}
             {% endif %}

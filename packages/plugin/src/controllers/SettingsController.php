@@ -296,6 +296,11 @@ class SettingsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $section = \Craft::$app->request->getSegment(3);
+        if (\in_array($section, ['content-integrations', 'external-integrations'], true)
+            && version_compare(\Craft::$app->getVersion(), '5.0', '<')) {
+            return $this->redirect(UrlHelper::cpUrl('freeform/settings/general'));
+        }
+
         if ('external-integrations' === $section) {
             return $this->redirect(UrlHelper::cpUrl('freeform/settings/content-integrations'));
         }

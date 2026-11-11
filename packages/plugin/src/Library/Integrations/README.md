@@ -42,6 +42,9 @@ retain that default. Preferences are persisted through the normal settings save.
 | Vizy | 4.x on Craft 5 | Registered **Freeform Form** node and toolbar control | Normal Vizy field `.render()` |
 | Vizy content blocks | 3.x and 4.x on Craft 5 | Optional recipe using a Freeform Craft field inside a project-defined block | Block template including `freeform-integrations/vizy` |
 | Navigation | 3.x and 4.x on Craft 5 | Registered **Freeform Form** node type | Resolve the node with `formFromLink()` and render it in your menu template |
+| Matrix | Native Matrix field on Craft 5 | Existing **Freeform Form** field inside a nested entry type | Read the selected form from the nested entry |
+| Neo | 5.x on Craft 5 | Existing **Freeform Form** field inside a block type | Read the selected form from the Neo block |
+| Content Block | Native Content Block field on Craft 5.8+ | Existing **Freeform Form** field inside its field layout | Read the selected form from the content block element |
 
 These optional content recipes and link/navigation adapters target Craft 5. See the
 [form-link guide](Links/README.md) for field configuration and link examples.
@@ -55,6 +58,81 @@ form instance so the same form can be embedded more than once on a page. The
 templates render nothing for empty, archived, or deleted selections. Forms keep
 their own formatting templates; load any CSS required by those templates in your
 site layout. Render properties can override the formatting template as usual.
+
+## Matrix, Neo, and Content Block fields
+
+These containers use the existing **Freeform Form** Craft field. They do not
+register a new toolbar control or link type, and do not need separate toggles on
+the Content Integrations settings page. Configure their field layouts and site
+templates normally.
+
+### Set up the field
+
+1. Create a **Freeform Form** field, for example with the handle `selectedForm`.
+2. Use its **Available Forms** setting to choose which forms authors can select.
+3. Add that field to the appropriate layout:
+   - **Matrix:** a nested entry type allowed by the Matrix field.
+   - **Neo:** a Neo block type.
+   - **Content Block:** the Content Block field's own field layout.
+4. Add the container field to the owner's layout. Authors can select or clear a
+   form inside the container and save the owner as usual.
+
+The nested field value is a Freeform `Form` object, or `null` when empty. It is
+not a link-field value, so `formFromLink()` is not needed. Saving the container
+stores the selected form ID. The field's Available Forms filter applies in all
+three pickers.
+
+### Render the selection
+
+Use a unique instance ID for each occurrence when a page can contain the same
+form more than once. This keeps form IDs, input IDs, and label targets separate.
+The included partial creates an independent instance and renders nothing for an
+empty, archived, or deleted selection.
+
+For a Matrix field named `pageBlocks`, whose form entry type is `form`:
+
+```twig
+{% for block in entry.pageBlocks.all() %}
+    {% if block.type.handle == 'form' %}
+        {% include 'freeform-integrations/_form' with {
+            selectedForm: block.selectedForm,
+            instanceId: 'matrix-' ~ entry.id ~ '-' ~ block.id,
+            renderProperties: {},
+        } only %}
+    {% endif %}
+{% endfor %}
+```
+
+For a Neo field named `pageBlocks`, whose form block type is `form`:
+
+```twig
+{% for block in entry.pageBlocks.all() %}
+    {% if block.type.handle == 'form' %}
+        {% include 'freeform-integrations/_form' with {
+            selectedForm: block.selectedForm,
+            instanceId: 'neo-' ~ entry.id ~ '-' ~ block.id,
+            renderProperties: {},
+        } only %}
+    {% endif %}
+{% endfor %}
+```
+
+For a Content Block field named `formBlock`, access its nested field directly:
+
+```twig
+{% include 'freeform-integrations/_form' with {
+    selectedForm: entry.formBlock.selectedForm,
+    instanceId: 'content-block-' ~ entry.id,
+    renderProperties: {},
+} only %}
+```
+
+Use different keys if the same owner or block is rendered in several places on
+one page. `renderProperties` accepts the usual Freeform render options, including
+formatting template overrides. Load the chosen formatting template's styles as
+you would for any other Freeform embed.
+
+See the [container QA notes](container-qa.md) for the tested versions and checks.
 
 ## Native editor controls
 

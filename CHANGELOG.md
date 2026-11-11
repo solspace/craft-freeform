@@ -7,6 +7,7 @@
 - Added opt-in Freeform Form toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering.
 - Added Freeform form nodes for Navigation 3 and 4, with template helpers and sample code for rendering forms from menu nodes.
 - Added English, German, French, Italian, and Dutch translations for content integration settings and controls.
+- Added setup and rendering examples for the existing Freeform Form field inside Matrix, Neo, and native Content Block fields.
 - Added an Enable logging button to the Activity & Health widget when logging is turned off and the user can edit logging settings.
 - Added Freeform form selection to Craft 5 Link fields, Hyper, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper.
 

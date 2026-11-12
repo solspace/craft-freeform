@@ -1,11 +1,6 @@
 import { TabsWrapper } from "@editor/builder/tabs/tabs.styles";
 import { scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 import {
@@ -20,17 +15,22 @@ export const AttributeEditorWrapper = styled(PreviewEditor)`
 `;
 
 export const AttributeTypeTabs = styled(TabsWrapper)`
+  --freeform-builder-tab-gap: var(--c-spacing-lg);
   width: 100%;
+  height: var(--c-size-control-lg);
+  min-height: var(--c-size-control-lg);
+  box-sizing: border-box;
   overflow: hidden;
   overflow-x: auto;
   align-self: flex-start;
 
-  padding: ${spacings.md} ${spacings.md} 0;
-  box-shadow: ${shadows.bottom};
+  padding: 0 var(--c-spacing-lg);
+  border-bottom: 1px solid var(--c-color-neutral-border-quiet);
+  box-shadow: none;
 
   ${scrollBar};
 
-  a {
+  button {
     cursor: pointer;
     user-select: none;
   }
@@ -39,7 +39,7 @@ export const AttributeTypeTabs = styled(TabsWrapper)`
 export const AttributeTabContent = styled.div`
   padding: ${spacings.md};
 
-  background: light-dark(${colors.white}, ${colors.surface});
+  background: var(--c-surface-overlay);
 `;
 
 export const AttributeContainer = styled(PreviewEditorContainer)`

@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
@@ -12,7 +13,7 @@ export const ModalOverlay = styled(animated.div)`
   bottom: 0;
   z-index: 1000;
 
-  background-color: light-dark(rgba(123, 135, 147, 0), var(--shade-bg, rgba(31, 41, 51, .5)));
+  background-color: var(--c-surface-shade);
 
   &.inactive {
     pointer-events: none;
@@ -45,10 +46,11 @@ export const ModalContainer = styled.div`
 export const ModalHeader = styled.header`
   padding: ${spacings.lg} ${spacings.xl};
 
-  background-color: ${colors.gray100};
+  background-color: var(--c-modal-fill);
   box-shadow: inset 0 -1px 0 ${colors.hairline};
 
   border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
+  h1 { ${sectionHeading}; margin: 0; }
 `;
 
 export const ModalFooter = styled.footer`
@@ -59,7 +61,7 @@ export const ModalFooter = styled.footer`
 
   padding: ${spacings.sm} ${spacings.xl};
 
-  background-color: ${colors.gray100};
+  background-color: var(--c-modal-fill);
   box-shadow: inset 0 1px 0 ${colors.hairline};
 
   border-radius: 0 0 ${borderRadius.lg} ${borderRadius.lg};

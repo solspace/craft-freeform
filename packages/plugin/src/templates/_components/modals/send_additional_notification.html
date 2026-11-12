@@ -1,4 +1,5 @@
 {% import "_includes/forms" as formFields %}
+{% import "freeform/_components/settings-cards.twig" as cards %}
 
 {% macro recipientPill(name, type) %}
     <span class="recipient-detail-pill" title="{{ name }}">
@@ -30,31 +31,8 @@
         margin-top: 10px;
     }
     #send-additional-notification-modal .notification-mode-option {
-        display: flex;
-        align-items: flex-start;
-        gap: 9px;
-        padding: 12px;
-        border: 1px solid var(--hairline-color, #d8e2ec);
-        border-radius: 8px;
-        cursor: pointer;
-        line-height: 20px;
-    }
-    #send-additional-notification-modal .notification-mode-option.is-selected {
-        border-color: var(--gray-500, #718096);
-        background: var(--gray-050, #f3f7fc);
-    }
-    #send-additional-notification-modal .notification-mode-option input {
-        flex-shrink: 0;
-        width: 14px;
-        height: 14px;
-        margin: 3px 0 0;
-    }
-    #send-additional-notification-modal .notification-mode-option small {
-        display: block;
-        margin-top: 2px;
-        color: var(--light-text-color, #596673);
-        font-size: 12px;
-        line-height: 18px;
+        width: auto;
+        max-width: none;
     }
     @media (max-width: 520px) {
         #send-additional-notification-modal .notification-mode-options {
@@ -291,15 +269,27 @@
 
         <fieldset class="field">
             <legend class="heading">{{ "Templates"|t('freeform') }}</legend>
-            <div class="notification-mode-options">
-                <label class="notification-mode-option is-selected">
-                    <input type="radio" name="templateMode" value="custom" checked aria-label="{{ 'Choose one template'|t('freeform') }}">
-                    <span><strong>{{ "Choose one template"|t('freeform') }}</strong><small>{{ "Use it for every recipient."|t('freeform') }}</small></span>
-                </label>
-                <label class="notification-mode-option">
-                    <input type="radio" name="templateMode" value="configured" aria-label="{{ 'Use configured templates'|t('freeform') }}">
-                    <span><strong>{{ "Use configured templates"|t('freeform') }}</strong><small>{{ "Follow each form’s notifications."|t('freeform') }}</small></span>
-                </label>
+            <div class="ff-choice-cards notification-mode-options">
+                {% set customIcon %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6M9 16h4"/>
+                    </svg>
+                {% endset %}
+                {% set configuredIcon %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3h11v14H3ZM7 7h11v14H7M10 11h5M10 15h5"/>
+                    </svg>
+                {% endset %}
+                {{ cards.compactChoice({
+                    id: 'notification-template-custom', name: 'templateMode', value: 'custom', selected: true,
+                    label: 'Choose one template'|t('freeform'), description: 'Use it for every recipient.'|t('freeform'), icon: customIcon,
+                    attributes: {class: 'ff-choice-card notification-mode-option'},
+                }) }}
+                {{ cards.compactChoice({
+                    id: 'notification-template-configured', name: 'templateMode', value: 'configured',
+                    label: 'Use configured templates'|t('freeform'), description: 'Follow each form’s notifications.'|t('freeform'), icon: configuredIcon,
+                    attributes: {class: 'ff-choice-card notification-mode-option'},
+                }) }}
             </div>
         </fieldset>
 
@@ -307,9 +297,9 @@
             <span data-template-label data-custom-label="{{ 'Template for All Recipients'|t('freeform') }}" data-configured-label="{{ 'Template for Additional Emails'|t('freeform') }}">{{ 'Template for All Recipients'|t('freeform') }}</span>
         {% endset %}
         <span hidden data-custom-template-anchor></span>
-        <div data-template-field>
+        <div data-template-field data-custom-template-label="{{ 'Template for All Recipients'|t('freeform') }}" data-configured-template-label="{{ 'Template for Additional Emails'|t('freeform') }}">
         {{ formFields.selectField({
-            label: templateLabel,
+            label: craft.app.version starts with '6.' ? 'Template for All Recipients'|t('freeform') : templateLabel,
             name: "template",
             options: templates,
             value: "",

@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Library\Helpers\NotificationTemplateNames;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
@@ -177,29 +178,13 @@ class NotificationsController extends BaseApiController
     {
         $post = $this->postedContentProvider->getConvertedPostWithTwigValues();
 
-        $handle = $post['handle'] ?? '';
-        if (!empty($handle)) {
-            do {
-                $exists = NotificationTemplateRecord::find()
-                    ->where(['handle' => $handle])
-                    ->andWhere('"formId" = :formId', [':formId' => $formId])
-                    ->exists()
-                ;
-
-                if ($exists) {
-                    $number = 1;
-                    if (preg_match('/^(.*?)-(\d+)$/', $handle, $matches)) {
-                        $number = (int) $matches[2] + 1;
-                    }
-
-                    $handle = preg_replace('/^(.*?)(-\d+)?$/', '$1-'.$number, $handle);
-                    $post['handle'] = $handle;
-
-                    // replace the $post['name'] as well, but use a space and number
-                    $post['name'] = preg_replace('/^(.*?)( \d+)?$/', '$1 '.$number, $post['name'] ?? '');
-                }
-            } while ($exists);
-        }
+        [$post['name'], $post['handle']] = NotificationTemplateNames::unique(
+            $post['name'] ?? '',
+            $post['handle'] ?? '',
+            static fn (string $handle): bool => NotificationTemplateRecord::find()
+                ->where(['formId' => $formId, 'handle' => $handle])
+                ->exists(),
+        );
 
         $record = NotificationTemplateRecord::create();
         $record->formId = $formId;

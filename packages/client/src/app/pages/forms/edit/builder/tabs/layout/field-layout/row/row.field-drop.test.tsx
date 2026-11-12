@@ -27,6 +27,7 @@ const makeField = (uid: string, order: number, rowUid = row.uid): Field => ({
 function Backend() {
   return {
     setup() {},
+    profile: () => ({}),
     teardown() {},
     connectDragSource: () => () => {},
     connectDragPreview: () => () => {},

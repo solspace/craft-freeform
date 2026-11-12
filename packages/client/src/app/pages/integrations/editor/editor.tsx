@@ -1,6 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import StringInput from "@components/form-controls/control-types/string/string";
-import { PageFooter } from "@components/layout/blocks/page-footer";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import config from "@config/freeform/freeform.config";
 import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
@@ -182,8 +181,6 @@ export const IntegrationsEditor: FC = () => {
 
         <EditorLoader />
 
-        {canManage && <PageFooter />}
-
         {canManage && (
           <ActionsWrapper className="freeform-form-footer">
             <div className="btngroup">
@@ -285,8 +282,6 @@ export const IntegrationsEditor: FC = () => {
           }}
         />
       </EditorWrapper>
-
-      {canManage && <PageFooter />}
 
       {canManage && (
         <ActionsWrapper className="freeform-form-footer">

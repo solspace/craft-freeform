@@ -1,5 +1,4 @@
 import { sectionHeading } from "@ff-client/styles/craft6";
-import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const Label = styled.h2`
@@ -8,19 +7,9 @@ export const Label = styled.h2`
 `;
 
 export const ConfigurationDescription = styled.div`
-  margin-bottom: ${spacings.xl};
-
-  .select {
-    margin: 0 5px;
-
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-
-  &.short {
-    .select:first-child {
-      margin-left: 5px;
-    }
-  }
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--c-spacing-md);
+  margin-block: var(--c-spacing-md) var(--c-spacing-xl);
 `;

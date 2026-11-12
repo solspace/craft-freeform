@@ -107,6 +107,15 @@ export function bindNotificationRecipients(
           (configured
             ? label.dataset.configuredLabel
             : label.dataset.customLabel) ?? "";
+      const nativeField = templateField.querySelector("craft-field");
+      if (nativeField) {
+        nativeField.setAttribute(
+          "label",
+          (configured
+            ? templateField.dataset.configuredTemplateLabel
+            : templateField.dataset.customTemplateLabel) ?? "",
+        );
+      }
     }
     const count = form.querySelector<HTMLElement>("[data-recipient-count]");
     const selectedCount = selectedNotificationEmails(form).length;

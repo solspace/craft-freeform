@@ -96,8 +96,12 @@ const FloatingContent = ({
           <FloatingArrow
             ref={arrowRef}
             context={context}
-            fill={theme === "light" ? "#ffffff" : "#2f3c4c"}
-            stroke={theme === "light" ? "#d3dae2" : "#2f3c4c"}
+            fill={theme === "light" ? "var(--c-modal-fill)" : "#33404d"}
+            stroke={
+              theme === "light"
+                ? "var(--c-color-neutral-border-quiet)"
+                : "#33404d"
+            }
             strokeWidth={1}
           />
         )}
@@ -118,7 +122,7 @@ const BaseFloating = ({
   interactiveBorder,
   position = "top",
   style,
-  theme = "dark",
+  theme = "light",
   title,
   trigger,
 }: BaseFloatingProps) => {

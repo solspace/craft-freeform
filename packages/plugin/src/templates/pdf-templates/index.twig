@@ -1,5 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
+{% set fullPageForm = false %}
+
 {% block actionButton %}
 
     {% if currentUser.can("freeform-pdfTemplatesManage") %}

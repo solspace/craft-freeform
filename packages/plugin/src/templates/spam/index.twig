@@ -25,7 +25,9 @@
         maximum_submit_time: 'clock',
     } %}
     <span class="ff-spam-reason-icon" aria-hidden="true">
-        {% if craft.app.version >= '5.0.0' %}
+        {% if craft.app.version >= '6.0.0' %}
+            {{ craft.freeform.formIcon(reason == 'blocked_email_address' ? 'envelope-slash' : (reason == 'gibberish' ? 'scribble-slash' : (glyphs[reason] ?? 'circle-question'))) }}
+        {% elseif craft.app.version >= '5.0.0' %}
             {% if reason == 'blocked_email_address' %}
                 {{ svg('@Solspace/Freeform/Resources/icons/spam/envelope-slash.svg', namespace: true) }}
             {% elseif reason == 'gibberish' %}

@@ -6,12 +6,11 @@ import { useSiteContext } from "@ff-client/contexts/site/site.context";
 import { QKNotifications } from "@ff-client/queries/notifications";
 import type { APIError } from "@ff-client/types/api";
 import type { GenericValue } from "@ff-client/types/properties";
-import classes from "@ff-client/utils/classes";
 import { objectHasAnyKey } from "@ff-client/utils/comparison";
 import translate from "@ff-client/utils/translations";
 import { useQueryClient } from "@tanstack/react-query";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { createElement, useEffect, useId, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { TemplatePreview } from "./inputs/preview/preview";
@@ -28,7 +27,6 @@ import {
   Row,
   TabContent,
   TabList,
-  TabListItem,
 } from "./template.modal.styles";
 import type { NotificationTabs } from "./template.modal.types";
 import {
@@ -64,6 +62,7 @@ export const EditNotificationModal: React.FC<
   );
 
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
+  const tabId = useId();
   const [state, setState] = useState<PushState>();
   const [errors, setErrors] = useState<Record<string, string[]>>({});
 
@@ -127,21 +126,40 @@ export const EditNotificationModal: React.FC<
       </ModalHeader>
 
       <TabList>
-        {configuration.map((tab) => (
-          <TabListItem
-            key={tab.name}
-            className={classes(
-              tab.name === activeTab && "active",
-              objectHasAnyKey(
-                errors,
-                tab.rows.flatMap((row) => row.map((field) => field.handle)),
-              ) && "errors",
-            )}
-            onClick={() => setActiveTab(tab.name)}
-          >
-            <span>{tab.name}</span>
-          </TabListItem>
-        ))}
+        {createElement(
+          "craft-tabs",
+          {
+            label: translate("Notification template settings"),
+            "sync-location-hash": "false",
+            selectedIndex: configuration.findIndex(
+              (tab) => tab.name === activeTab,
+            ),
+            "oncraft-tab-show": (event: Event) => {
+              const index = (
+                event.currentTarget as HTMLElement & { selectedIndex: number }
+              ).selectedIndex;
+              if (configuration[index]) setActiveTab(configuration[index].name);
+            },
+          },
+          configuration.map((tab, index) =>
+            createElement(
+              "craft-tab",
+              {
+                key: tab.name,
+                slot: "tab",
+                controls: `${tabId}-panel-${index}`,
+                className: objectHasAnyKey(
+                  errors,
+                  tab.rows.flatMap((row) => row.map((field) => field.handle)),
+                )
+                  ? "errors"
+                  : undefined,
+                onClick: () => setActiveTab(tab.name),
+              },
+              tab.name,
+            ),
+          ),
+        )}
       </TabList>
 
       <ModalContent>
@@ -157,14 +175,15 @@ export const EditNotificationModal: React.FC<
             />
           </div>
         )}
-        {!isLoading &&
-          template !== undefined &&
-          configuration.map((tab) => (
-            <TabContent
-              key={tab.name}
-              className={classes(tab.name === activeTab && "active")}
-            >
-              {tab.rows.map((row, index) => (
+        {configuration.map((tab, index) => (
+          <TabContent
+            key={tab.name}
+            id={`${tabId}-panel-${index}`}
+            hidden={tab.name !== activeTab}
+          >
+            {!isLoading &&
+              template !== undefined &&
+              tab.rows.map((row, index) => (
                 <Row key={index}>
                   {row.map((field) => {
                     if ("minEdition" in field && field.minEdition) {
@@ -209,8 +228,8 @@ export const EditNotificationModal: React.FC<
                   })}
                 </Row>
               ))}
-            </TabContent>
-          ))}
+          </TabContent>
+        ))}
       </ModalContent>
 
       <ModalFooter>

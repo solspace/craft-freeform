@@ -77,8 +77,10 @@ type Config = {
   };
 };
 
-const element = document.getElementById("freeform-config") as HTMLScriptElement;
-const baseConfig = JSON.parse(element?.innerHTML || "[]") as Config;
+const element = document.getElementById("freeform-config");
+const baseConfig = JSON.parse(
+  element?.getAttribute("data-config") || element?.textContent || "[]",
+) as Config;
 
 const config: Config = {
   ...baseConfig,

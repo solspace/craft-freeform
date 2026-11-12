@@ -67,8 +67,7 @@ vi.mock("./modal.list-item.queries", async () => {
 class Panel {
   static instances: Panel[] = [];
   container = document.createElement("div");
-  $container = { 0: this.container };
-  $outerContainer = { 0: this.container };
+  outerContainer = this.container;
   onClose?: () => void;
   onBeforeClose?: () => void;
   open = vi.fn();

@@ -1,7 +1,6 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { useModal } from "@components/modals/modal.context";
-import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
 import { isFuture, isPast } from "date-fns";
 import type React from "react";
@@ -33,8 +32,6 @@ import type {
 } from "./ab-tests.types";
 
 export const AbTests: React.FC = () => {
-  useSidebarSelect("ab-tests");
-
   const { openModal } = useModal();
   const [searchParams] = useSearchParams();
   const data = useAbTestsDashboard();
@@ -64,13 +61,8 @@ export const AbTests: React.FC = () => {
     openEditor(test);
   }, [searchParams, data, openEditor]);
 
-  return createElement(
-    "craft-pane",
-    {
-      className: "freeform-settings-surface freeform-ab-tests-surface",
-      padding: "0",
-    },
-    <PageLayout slot="body">
+  return (
+    <PageLayout>
       <Breadcrumb id="ab-tests-list" label="A/B Tests" url="/ab-tests" />
       <HeaderRow>
         <HeaderContainer>{translate("A/B Tests")}</HeaderContainer>
@@ -176,6 +168,6 @@ export const AbTests: React.FC = () => {
           })}
         </Cards>
       </PageWrapper>
-    </PageLayout>,
+    </PageLayout>
   );
 };

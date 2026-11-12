@@ -1,6 +1,7 @@
 import { CurrentValue } from "@components/elements/custom-dropdown/dropdown.styles";
 import { ControlWrapper } from "@components/form-controls/control.styles";
 import { Sidebar } from "@components/layout/sidebar/sidebar";
+import { editorButton } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -30,6 +31,7 @@ export const Toolbar = styled.div`
   > label > div { font-weight: 400; }
   > label > p { margin: 0; font-weight: 400; }
   ${CurrentValue} { align-items: center; }
+  > button.btn { ${editorButton} }
 `;
 
 export const FrameArea = styled.div`
@@ -40,7 +42,8 @@ export const FrameArea = styled.div`
   justify-content: center;
   overflow: hidden;
   padding: ${spacings.lg};
-  background: light-dark(#fff, ${colors.surface});
+  padding-block-start: var(--freeform-builder-padding-block, calc(var(--c-spacing-lg) + var(--c-spacing-md)));
+  background: var(--freeform-builder-canvas, var(--c-surface-default));
 `;
 
 export const Frame = styled.iframe`

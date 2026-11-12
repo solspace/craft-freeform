@@ -1,4 +1,3 @@
-import { colors } from "@ff-client/styles/variables";
 import type { SpringValue } from "@react-spring/web";
 import { useSpring } from "@react-spring/web";
 
@@ -13,19 +12,6 @@ export const useEditButtonAnimations = (
   return useSpring({
     opacity: hover ? 1 : 0,
     transform: hover ? "rotate(0deg)" : "rotate(-30deg)",
-    config: {
-      tension: 500,
-    },
-  });
-};
-
-type BackgroundAnimation = {
-  backgroundColor: SpringValue<string>;
-};
-
-export const useLabelAnimation = (hover: boolean): BackgroundAnimation => {
-  return useSpring({
-    backgroundColor: hover ? colors.secondarySurface : colors.surface,
     config: {
       tension: 500,
     },

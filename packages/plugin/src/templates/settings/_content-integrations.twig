@@ -5,7 +5,7 @@
 
 {% macro versions(integration) %}
 <dl class="ff-content-metadata">
-    <div><dt>{{ 'Supported'|t('freeform') }}</dt><dd>{{ integration.support }}</dd></div>
+    <div><dt>{{ 'Supported'|t('freeform') }}</dt><dd><span{% if integration.expected ?? false %} title="{{ 'Expected Craft 6 version; not yet confirmed by the publisher.'|t('freeform') }}"{% endif %}>{{ integration.support }}{% if integration.expected ?? false %}<small> {{ '(expected)'|t('freeform') }}</small>{% endif %}</span></dd></div>
     <div>
         <dt>{{ 'Installed'|t('freeform') }}</dt>
         <dd>
@@ -128,9 +128,10 @@
 
     {% css %}
         #external-integration-icon-field { margin-block: 24px 0; }
-        .ff-content-icon-suggestions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-block-start: 12px; }
-        .ff-content-icon-choice { display: inline-flex; align-items: center; justify-content: center; }
-        .ff-content-icon-choice svg { display: block; width: 20px; height: 20px; }
+        .ff-content-icon-control { display: block; width: 100%; min-width: 0; }
+        .ff-content-icon-control craft-button[hidden] { display: none !important; }
+        .ff-content-icon-suggestions { margin-block-end: var(--c-spacing-lg); }
+        .ff-content-icon-suggestions .icon-grid { justify-content: start; }
         .ff-external-row > craft-switch { justify-self: end; }
         .ff-content-section { margin-block-start: 0; }
         .ff-content-section + .ff-content-section { margin-block-start: 40px; }
@@ -200,8 +201,45 @@
             let picker = host?.querySelector('craft-icon-picker');
             if (picker) {
                 const suggestions = {{ suggestedIcons|json_encode|raw }};
-                const choices = document.createElement('div');
-                choices.className = 'ff-content-icon-suggestions';
+                const logo = {{ externalIntegrationDefaultIconSvg|json_encode|raw }};
+                const choices = document.createElement('section');
+                choices.className = 'icon-group ff-content-icon-suggestions';
+                choices.setAttribute('aria-label', {{ 'Suggested'|t('freeform')|json_encode|raw }});
+                const heading = document.createElement('h3');
+                heading.className = 'mt-0 mb-sm text-base font-semibold';
+                heading.textContent = {{ 'Suggested'|t('freeform')|json_encode|raw }};
+                const grid = document.createElement('ul');
+                grid.className = 'icon-grid';
+                choices.append(heading, grid);
+                const control = document.createElement('div');
+                control.className = 'ff-content-icon-control';
+                control.slot = picker.slot;
+                picker.before(control);
+                picker.removeAttribute('slot');
+                control.append(picker);
+                const syncChoices = () => {
+                    const input = picker.querySelector('input');
+                    const value = input ? input.value : (picker.getAttribute('value') || '');
+                    const preview = picker.querySelector('.icon-preview .contents');
+                    if (!value && preview && !preview.querySelector('[aria-label="Freeform logo"]')) {
+                        preview.innerHTML = logo;
+                        preview.querySelector('svg')?.setAttribute('aria-label', {{ 'Freeform logo'|t('freeform')|json_encode|raw }});
+                        preview.setAttribute('role', 'img');
+                        preview.setAttribute('aria-label', {{ 'Freeform logo'|t('freeform')|json_encode|raw }});
+                    }
+                    const actions = picker.querySelector('craft-button')?.parentElement;
+                    if (actions && !actions.contains(reset)) {
+                        // Match Craft 5: the reset action belongs beside Choose.
+                        actions.querySelectorAll('craft-button').forEach(button => {
+                            if (button !== actions.firstElementChild) button.hidden = true;
+                        });
+                        actions.append(reset);
+                    }
+                    reset.hidden = !value;
+                    for (const button of choices.querySelectorAll('button')) {
+                        button.setAttribute('aria-pressed', String(button.dataset.iconValue === value));
+                    }
+                };
                 const choose = (value) => {
                     // Craft 6 reads the initial value when its native picker mounts.
                     const replacement = picker.cloneNode(false);
@@ -210,26 +248,84 @@
                     picker.replaceWith(replacement);
                     picker = replacement;
                     picker.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {value}}));
+                    void customElements.whenDefined('craft-icon-picker').then(() => requestAnimationFrame(syncChoices));
                 };
                 for (const icon of suggestions) {
                     const button = document.createElement('button');
                     button.type = 'button';
-                    button.className = 'btn ff-content-icon-choice';
+                    button.className = 'icon-picker--icon';
                     button.disabled = {{ readOnly ? 'true' : 'false' }};
                     button.setAttribute('aria-label', icon.name);
                     button.title = icon.name;
+                    button.dataset.iconValue = icon.name;
                     button.innerHTML = icon.svg;
                     button.addEventListener('click', () => choose(icon.name));
-                    choices.append(button);
+                    const item = document.createElement('li');
+                    item.append(button);
+                    grid.append(item);
                 }
-                const reset = document.createElement('button');
+                const reset = document.createElement('craft-button');
                 reset.type = 'button';
-                reset.className = 'btn';
+                reset.setAttribute('type', 'button');
+                reset.setAttribute('size', 'small');
+                reset.dataset.iconValue = '';
                 reset.disabled = {{ readOnly ? 'true' : 'false' }};
                 reset.textContent = {{ 'Use Freeform logo'|t('freeform')|json_encode|raw }};
                 reset.addEventListener('click', () => choose(''));
-                choices.append(reset);
-                picker.after(choices);
+
+                control.addEventListener('change', syncChoices);
+                let modalObserver;
+                control.addEventListener('click', (event) => {
+                    if (!picker.querySelector('craft-button')?.contains(event.target)) return;
+                    modalObserver?.disconnect();
+                    const attach = () => {
+                        const pane = document.querySelector('craft-dialog[open] .icon-picker-pane');
+                        if (!pane) return;
+                        const body = [...pane.children].find(child => !child.hasAttribute('slot'));
+                        const nativeGroup = body?.querySelector('.icon-group');
+                        if (!nativeGroup) return;
+                        // Reuse the native grid's scoped component styles for identical tiles.
+                        const scope = [...nativeGroup.attributes].filter(attr => attr.name.startsWith('data-v-'));
+                        for (const element of [choices, heading, grid, ...choices.querySelectorAll('*')]) {
+                            for (const attr of scope) element.setAttribute(attr.name, '');
+                        }
+                        body.prepend(choices);
+                        if (!nativeGroup.querySelector('h3')) {
+                            const allHeading = heading.cloneNode(false);
+                            allHeading.textContent = {{ 'All icons'|t('freeform')|json_encode|raw }};
+                            nativeGroup.prepend(allHeading);
+                        }
+                        const names = new Set(suggestions.map(icon => icon.name));
+                        for (const button of nativeGroup.querySelectorAll('button')) {
+                            if (names.has(button.title)) button.closest('li').hidden = true;
+                        }
+                        const formKeywords = ['form', 'forms', 'field', 'fields', 'survey', 'questionnaire', {{ 'Form'|t('freeform')|lower|json_encode|raw }}];
+                        const filterSuggestions = () => {
+                            const search = pane.querySelector('[role="search"] input')?.value.trim().toLowerCase() || '';
+                            const terms = search.split(/\s+/).filter(Boolean);
+                            let matches = 0;
+                            for (const item of grid.children) {
+                                const name = item.querySelector('button').dataset.iconValue;
+                                item.hidden = !terms.every(term => `${name.replaceAll('-', ' ')} ${formKeywords.join(' ')}`.includes(term));
+                                if (!item.hidden) matches++;
+                            }
+                            choices.hidden = matches === 0;
+                            const allHeading = nativeGroup.querySelector('h3');
+                            if (allHeading) allHeading.textContent = search ? {{ 'Other results'|t('freeform')|json_encode|raw }} : {{ 'All icons'|t('freeform')|json_encode|raw }};
+                        };
+                        pane.addEventListener('input', filterSuggestions);
+                        filterSuggestions();
+                        syncChoices();
+                        modalObserver?.disconnect();
+                    };
+                    modalObserver = new MutationObserver(attach);
+                    modalObserver.observe(document.body, {childList: true, subtree: true});
+                    attach();
+                });
+                const pickerObserver = new MutationObserver(syncChoices);
+                pickerObserver.observe(control, {childList: true, subtree: true});
+                // Preview updates are only written when missing to avoid observing ourselves.
+                syncChoices();
             }
             const bulk = document.getElementById('content-integrations-toggle-all');
             void customElements.whenDefined('craft-switch').then(() => {

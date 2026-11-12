@@ -1,4 +1,5 @@
 import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
+import { textControl } from "@ff-client/styles/craft6";
 import { labelText } from "@ff-client/styles/mixins";
 import { borderRadius, colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -18,24 +19,7 @@ export const RecipientWrapper = styled.ul`
   list-style: none;
 `;
 
-export const AddRecipientButton = styled(AddButtonArea)`
-  box-sizing: border-box;
-  border-color: ${colors.inputBorder};
-
-  && > .btn {
-    border-radius: inherit;
-    color: ${colors.text};
-    background: var(--button-bg, ${colors.gray050});
-
-    &:hover:not(:disabled) {
-      background: var(--button-bg--hover, ${colors.gray100});
-    }
-
-    &:focus-visible {
-      box-shadow: var(--focus-ring-inner);
-    }
-  }
-`;
+export const AddRecipientButton = AddButtonArea;
 
 export const Icon = styled.div`
   display: flex;
@@ -58,6 +42,8 @@ export const Icon = styled.div`
 `;
 
 export const EmailInput = styled.input`
+  ${textControl}
+  font-family: var(--c-font-mono);
   flex-grow: 1;
   min-width: 0;
 
@@ -85,6 +71,7 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
   padding: 0 10px;
+  border: 0;
   color: ${colors.muted};
   background: transparent;
   opacity: 0;
@@ -105,6 +92,10 @@ export const Button = styled.button`
 `;
 
 export const RecipientItem = styled.li`
+  &:focus-within {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: -1px;
+  }
   display: flex;
   justify-content: space-between;
   gap: 0;
@@ -113,7 +104,7 @@ export const RecipientItem = styled.li`
   background-color: ${colors.inputBackground};
   border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
 
-  &:hover {
+  &:hover, &:focus-within {
     ${Button} {
       transform: rotate(0deg);
       opacity: 1;
@@ -135,9 +126,4 @@ export const RecipientItem = styled.li`
   }
 `;
 
-export const RecipientList = styled(RecipientEditor)`
-  ${RecipientWrapper}:not(:last-child) ${RecipientItem}:last-child {
-    border-end-start-radius: 0;
-    border-end-end-radius: 0;
-  }
-`;
+export const RecipientList = styled(RecipientEditor)``;

@@ -34,7 +34,7 @@ function setup(value = "") {
     controller,
     values,
     button: document.querySelector("button")!,
-    panel: document.querySelector(".freeform-phone-country")!,
+    panel: document.querySelector<HTMLElement>(".freeform-phone-country")!,
   };
 }
 it("preserves floating labels and formats valid numbers without losing country context", () => {
@@ -123,7 +123,9 @@ it("handles pasted numbers, external changes, resets and cleanup", async () => {
   await Promise.resolve();
   expect(button.disabled).toBe(true);
   controller.destroy();
-  expect(document.querySelector(".freeform-phone-country")).toBeNull();
+  expect(
+    document.querySelector<HTMLElement>(".freeform-phone-country"),
+  ).toBeNull();
   expect(input.name).toBe("phone");
   expect(input.hasAttribute("placeholder")).toBe(false);
 });

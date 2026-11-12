@@ -8,7 +8,7 @@ import { useMemo } from "react";
 
 export const isInOptions = (
   options: OptionCollection,
-  value: string,
+  value: string | number,
 ): boolean => {
   if (!options) {
     return false;
@@ -54,7 +54,7 @@ export const findFirstValue = (
 
 export const findOptionByValue = (
   options: OptionCollection,
-  value: string,
+  value: string | number,
 ): Option | undefined => {
   if (!options) {
     return;
@@ -78,7 +78,7 @@ export const findOptionByValue = (
 
 export const findLabelByValue = (
   options: OptionCollection,
-  value: string,
+  value: string | number,
 ): string | undefined => {
   if (!options) {
     return;
@@ -102,7 +102,7 @@ export const findLabelByValue = (
 
 export const findShadowIndexByValue = (
   options: OptionCollection,
-  value: string,
+  value: string | number,
 ): number | undefined => {
   if (!options) {
     return;

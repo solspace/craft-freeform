@@ -26,7 +26,7 @@ vi.mock("@ff-client/queries/field-types", () => ({
   useFieldType: () => ({
     type: fixture.fieldType,
     name: "Text",
-    implements: [],
+    implements: [] as never[],
     icon: "",
   }),
 }));
@@ -39,9 +39,9 @@ vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
   }),
 }));
 vi.mock("../../layout/group-field-layout/group-field-layout", () => ({
-  GroupFieldLayout: () => null,
+  GroupFieldLayout: (): null => null,
 }));
-vi.mock("./cell-badges", () => ({ FieldAssociationsBadges: () => null }));
+vi.mock("./cell-badges", () => ({ FieldAssociationsBadges: (): null => null }));
 vi.mock("./cell.animations", () => ({ useLoaderAnimation: () => [{}, {}] }));
 vi.mock("./use-field-preview", () => ({
   useFieldPreview: (field: Field) => {
@@ -114,7 +114,9 @@ it("only rerenders the old and new selected field in a 145-field layout", async 
     "field-0",
     "field-144",
   ]);
-  expect(host.querySelectorAll(".field.active")).toHaveLength(1);
+  expect(host.querySelectorAll(".freeform-builder-field.active")).toHaveLength(
+    1,
+  );
   expect(sanitize).not.toHaveBeenCalled();
 
   fixture.preview.mockClear();
@@ -184,7 +186,9 @@ it.each(["html", "rich-text"])(
     await renderContentField(type, "<h2>Client information</h2>");
     expect(host!.querySelector(".label")).toBeNull();
     expect(host!.textContent).toBe("Client information");
-    act(() => host!.querySelector<HTMLElement>(".field")!.click());
+    act(() =>
+      host!.querySelector<HTMLElement>(".freeform-builder-field")!.click(),
+    );
     expect(fixture.dispatch).toHaveBeenCalledWith(
       contextActions.setFocusedItem({
         type: FocusType.Field,

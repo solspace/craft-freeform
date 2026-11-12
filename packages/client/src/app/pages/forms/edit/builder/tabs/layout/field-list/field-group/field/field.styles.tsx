@@ -8,23 +8,24 @@ export const Wrapper = styled.div`
   gap: 6px;
   align-items: center;
 
-  height: 28px;
+  box-sizing: border-box;
+  min-width: 0;
+  height: 30px;
 
-  padding: 0 4px;
+  padding: 0 6px;
   overflow: hidden;
 
-  background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px solid light-dark(${colors.gray100}, var(--medium-hairline-color));
-  border-radius: 3px;
+  background: var(--c-surface-default);
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-radius-sm);
 
   font-size: 12px;
 
-  transition: all 0.2s ease-in-out;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out;
 
   &:hover {
-    transform: scale(1.05);
-    border-color: ${colors.inputBorder};
-    background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color, ${colors.gray050}));
+    border-color: var(--c-color-neutral-border-normal);
+    background-color: var(--c-color-neutral-fill-quiet);
   }
 `;
 

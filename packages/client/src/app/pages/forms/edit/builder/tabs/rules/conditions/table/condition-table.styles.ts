@@ -3,92 +3,27 @@ import styled from "styled-components";
 
 export const Table = styled.table.attrs({ className: "freeform-ui-table" })`
   width: 100%;
-
   margin: 0;
   border-spacing: 0;
   border-collapse: separate;
 
   td {
-    &:nth-child(1) {
-      width: 25%;
-    }
-
-    &:nth-child(2) {
-      width: 20%;
-    }
-
-    &:last-child {
-      width: 20px;
-    }
+    padding: 8px;
+    border-bottom: 1px solid ${colors.inputBorder};
+    border-inline: 0;
+    background: var(--c-surface-default);
+    &:first-child { width: 25%; border-left: 1px solid ${colors.inputBorder}; }
+    &:nth-child(2) { width: 20%; }
+    &:last-child { width: 20px; border-inline-end: 1px solid ${colors.inputBorder}; }
   }
-
-  tbody {
-    tr {
-      td {
-        padding: 0 !important;
-        padding-top: 7px !important;
-        padding-right: 7px !important;
-        padding-bottom: 7px !important;
-        border-bottom: 1px solid ${colors.inputBorder};
-        background-color: ${colors.gray050};
-      }
-
-      td:first-child {
-        padding-left: 7px !important;
-        border-left: 1px solid ${colors.inputBorder};
-      }
-
-      td:last-child {
-        border-right: 1px solid ${colors.inputBorder};
-      }
-    }
-
-    tr:first-child {
-      td {
-        border-top: 1px solid ${colors.inputBorder};
-      }
-
-      td:first-child {
-        border-top-left-radius: ${borderRadius.lg};
-        border-top: 1px solid ${colors.inputBorder};
-      }
-
-      td:last-child {
-        border-top: 1px solid ${colors.inputBorder};
-        border-top-right-radius: ${borderRadius.lg};
-      }
-    }
-
-    tr:last-child {
-      td {
-        padding: 0 !important;
-        background-color: light-dark(${colors.white}, ${colors.surface});
-
-        .btn {
-          border: 0 !important;
-          border-radius: 0 !important;
-          background-color: transparent !important;
-        }
-      }
-
-      td:last-child {
-        border-left: 1px dashed ${colors.inputBorder};
-        border-right: 1px dashed ${colors.inputBorder};
-        border-bottom: 1px dashed ${colors.inputBorder};
-        border-bottom-left-radius: ${borderRadius.lg};
-        border-bottom-right-radius: ${borderRadius.lg};
-      }
-    }
-
-    tr:first-child:last-child {
-      td {
-        border-top: 1px dashed ${colors.inputBorder};
-      }
-    }
-  }
+  tr:first-child td { border-top: 1px solid ${colors.inputBorder}; }
+  tr:first-child td:first-child { border-start-start-radius: ${borderRadius.md}; }
+  tr:first-child td:last-child { border-start-end-radius: ${borderRadius.md}; }
+  tr:last-child td:first-child { border-end-start-radius: ${borderRadius.md}; }
+  tr:last-child td:last-child { border-end-end-radius: ${borderRadius.md}; }
 `;
 
-export const Action = styled.button`
+export const Action = styled.button.attrs({ type: "button" })`
   margin: 0;
   padding: 0;
   border: none;

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\Cp;
+use craft\helpers\Html;
 use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Property\Validators\IconName;
 use Twig\Markup;
@@ -39,6 +40,10 @@ class FormIconService
 
     protected function renderIcon(string $name): ?string
     {
+        if (\in_array($name, ['envelope-slash', 'scribble-slash'], true)) {
+            return Html::svg(__DIR__.'/../Resources/icons/spam/'.$name.'.svg', false, true);
+        }
+
         return Cp::iconSvg($name);
     }
 }

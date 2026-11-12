@@ -5,9 +5,13 @@ import styled, { css } from "styled-components";
 export const TabWrapper = styled.nav`
   position: relative;
   container: builder-header / inline-size;
+  --freeform-builder-tab-gap: 24px;
   flex: 0 0 auto;
   min-width: 0;
+  width: calc(100% + var(--cp-container-padding) * 2);
+  margin-inline: calc(-1 * var(--cp-container-padding));
   overflow: hidden;
+  border-bottom: 1px solid var(--c-color-neutral-border-quiet);
 `;
 
 export const HeaderRow = styled.div`
@@ -15,6 +19,7 @@ export const HeaderRow = styled.div`
   grid-template: "heading tabs actions" 50px / 300px minmax(0, 1fr) max-content;
   align-items: center;
   box-sizing: border-box;
+  padding-inline: var(--cp-container-padding);
 
   @container builder-header (max-width: 760px) {
     grid-template: "heading actions" 50px "tabs tabs" 49px / minmax(0, 1fr) max-content;
@@ -50,84 +55,58 @@ export const TabsRegion = styled.div`
 const tabDimensions = css`
   display: flex;
   align-items: center;
-  gap: 8px;
-  height: var(--c-size-control-md, 34px);
-  padding-inline: calc(var(--c-tab-spacing-inline, 1em) - 1px);
-  border: 1px solid transparent;
+  gap: var(--c-spacing-sm);
+  height: 100%;
+  padding-inline: var(--c-tab-spacing-inline, 0);
+  border: 0;
+  font: inherit;
   font-size: var(--c-tabs-font-size, var(--c-text-base));
   box-sizing: border-box;
   white-space: nowrap;
-  font-family: inherit;
 `;
 
 export const TabsWrapper = styled.div.attrs({ className: "freeform-tabs" })`
   display: flex;
   width: max-content;
   max-width: 100%;
-  align-self: center;
-  gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
+  height: 100%;
+  align-self: stretch;
+  gap: var(--freeform-builder-tab-gap);
   background: transparent;
-  border-radius: 0;
-  box-shadow: none;
 
   && > a, && > button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex: 0 0 auto;
-    white-space: nowrap;
+    ${tabDimensions}
     position: relative;
-    box-sizing: border-box;
-    height: var(--c-size-control-md, 34px);
-    padding-inline: calc(var(--c-tab-spacing-inline, 1em) - 1px);
-    border: 1px solid transparent;
-    border-radius: var(--c-form-control-radius);
+    flex: none;
+    border-radius: 0;
     background: transparent;
     color: var(--c-text-default);
-    font-size: var(--c-tabs-font-size, var(--c-text-base));
     text-decoration: none;
-    transition:
-      background-color 160ms ease,
-      border-color 160ms ease,
-      color 160ms ease;
-
-    @media (prefers-reduced-motion: reduce) {
-      transition: none;
-    }
 
     &::after {
-      content: none;
+      content: '';
+      position: absolute;
+      inset-inline: 0;
+      bottom: 0;
+      height: var(--c-tab-indicator-block-size, 2px);
+      background: transparent;
     }
 
-    &:hover,
-    &:hover:not(.active):not(:first-child),
-    &:hover:not(.active):not(:last-child) {
-      background: var(--c-color-neutral-fill-quiet);
-      border-radius: var(--c-form-control-radius);
-      color: var(--c-text-default);
-    }
+    &:hover { color: var(--c-text-link); }
 
     &:focus-visible {
       outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
-      outline-offset: var(--c-focus-outline-offset);
+      outline-offset: calc(-1 * var(--c-focus-outline-width));
     }
 
     &.active {
-      background: var(--c-color-accent-fill-quiet);
-      border-color: var(--c-color-accent-border-normal);
-      color: var(--c-color-accent-on-quiet);
-      font-weight: 700;
-      box-shadow: none !important;
+      font-weight: var(--c-tab-font-weight-active, 600);
+      &::after { background: var(--c-tab-border-active, var(--c-color-accent-fill-loud)); }
     }
 
     &.errors {
-      color: var(--c-color-danger-on-normal);
-    }
-
-    &.active.errors {
-      background: var(--c-color-danger-fill-quiet);
-      border-color: var(--c-color-danger-border-normal);
       color: var(--c-color-danger-on-quiet);
+      &::after { background: var(--c-color-danger-border-normal); }
     }
   }
 `;
@@ -139,7 +118,7 @@ export const BuilderTabLabel = styled.span`
     content: attr(data-label);
     grid-area: 1 / 1;
     visibility: hidden;
-    font-weight: 700;
+    font-weight: var(--c-tab-font-weight-active, 600);
     user-select: none;
   }
 
@@ -151,7 +130,7 @@ export const BuilderTabLabel = styled.span`
   /* Reserve the bold label's width so changing tabs doesn't move its neighbors. */
   > span[aria-hidden] {
     visibility: hidden;
-    font-weight: 700;
+    font-weight: var(--c-tab-font-weight-active, 600);
     user-select: none;
   }
 `;
@@ -169,7 +148,7 @@ export const MoreButton = styled.button`
 
 export const TabMeasurements = styled.div`
   display: flex;
-  gap: var(--c-tabs-tab-gap, var(--c-spacing-md));
+  gap: var(--freeform-builder-tab-gap);
   position: absolute;
   width: 0;
   height: 0;
@@ -210,7 +189,7 @@ export const OverflowMenu = styled.div`
 `;
 
 export const SaveButtonWrapper = styled.div`
-  --freeform-builder-action-height: 36px;
+  --freeform-builder-action-height: var(--c-size-control-md);
   grid-area: actions;
   margin-inline-start: 12px;
   display: flex;
@@ -250,19 +229,19 @@ export const HistoryButton = styled.button`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: calc(var(--freeform-builder-action-height, 36px) * 0.85);
-  height: calc(var(--freeform-builder-action-height, 36px) * 0.85);
-  flex: 0 0 calc(var(--freeform-builder-action-height, 36px) * 0.85);
+  width: var(--freeform-builder-action-height, 32px);
+  height: var(--freeform-builder-action-height, 32px);
+  flex: 0 0 var(--freeform-builder-action-height, 32px);
   padding: 0;
-  border: 1px solid var(--c-color-neutral-border-loud);
+  border: 1px solid var(--c-color-neutral-border-quiet);
   border-radius: 0;
   background: transparent;
   color: var(--c-color-neutral-on-quiet);
   cursor: pointer;
 
   svg {
-    width: calc(18px * 0.85);
-    height: calc(16px * 0.85);
+    width: 16px;
+    height: 16px;
   }
 
   & + & {
@@ -317,22 +296,19 @@ export const SubmissionsShortcut = styled.a`
   gap: 4px;
   text-decoration: none;
 
-  margin-block: 0;
-  margin-inline: 2px;
-  margin-left: ${spacings.sm};
-  min-height: var(--input-height);
-  padding-block: 4px;
-  padding: 5px 10px;
+  box-sizing: border-box;
+  height: var(--freeform-builder-action-height);
+  padding: 0 10px;
 
-  border: 1px solid rgba(154, 165, 177, 0.35);
-  border-radius: var(--radius-md);
-  background: rgba(154, 165, 177, 0.08);
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-form-control-radius);
+  background: var(--c-color-neutral-fill-quiet);
   color: var(--link-color);
 
   &:hover {
     text-decoration: none;
-    border-color: rgba(154, 165, 177, 0.6);
-    background: rgba(154, 165, 177, 0.14);
+    border-color: var(--c-color-neutral-border-normal);
+    background: var(--c-color-neutral-fill-normal);
   }
 
   @container builder-header (max-width: 1100px) {

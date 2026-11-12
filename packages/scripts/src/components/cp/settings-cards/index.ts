@@ -28,3 +28,5 @@ document
       else control.turnOn();
     });
   });
+
+export {};

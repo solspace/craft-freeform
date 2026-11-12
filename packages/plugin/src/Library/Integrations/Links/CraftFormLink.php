@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Library\Integrations\Links;
 
 use CraftCms\Cms\Field\Link;
 use CraftCms\Cms\Field\LinkTypes\BaseLinkType;
-use CraftCms\Cms\Form\Controls\Choice;
-use CraftCms\Cms\Form\Enums\ChoicePresentation;
-use CraftCms\Cms\Form\Nodes\Field;
+use CraftCms\Cms\Ui\Controls\Choice;
+use CraftCms\Cms\Ui\Enums\ChoicePresentation;
+use CraftCms\Cms\Ui\Nodes\Field;
 use Solspace\Freeform\Freeform;
 
 class CraftFormLink extends BaseLinkType

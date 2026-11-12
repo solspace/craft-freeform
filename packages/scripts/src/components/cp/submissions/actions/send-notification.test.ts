@@ -115,7 +115,7 @@ describe("submission additional notification modal", () => {
     });
     await import("./send-notification.js");
     (
-      window as Window & { freeform_notify: (ids: number[]) => void }
+      window as unknown as Window & { freeform_notify: (ids: number[]) => void }
     ).freeform_notify([1, 2]);
   });
 

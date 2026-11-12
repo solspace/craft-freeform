@@ -1,0 +1,33 @@
+// Dashboard widgets also render on Craft screens without Freeform's CP bundle.
+// Scope the legacy roles to our content, including portalled chart tooltips.
+@mixin tokens {
+  --text-color: var(--c-text-default);
+  --light-text-color: var(--c-text-quiet);
+  --link-color: var(--c-text-link);
+  --pane-bg: var(--c-surface-raised);
+  --modal-bg: var(--c-surface-overlay);
+  --hairline-color: var(--c-color-neutral-border-quiet);
+  --gray-050: var(--c-color-neutral-fill-quiet);
+  --gray-100: var(--c-color-neutral-fill-normal);
+  --gray-200: var(--c-color-neutral-border-normal);
+  --gray-500: var(--c-text-quiet);
+  --gray-600: var(--c-text-default);
+  --gray-700: var(--c-text-default);
+  --bg-success: var(--c-color-success-fill-quiet);
+  --fg-success: var(--c-color-success-on-quiet);
+  --border-success: var(--c-color-success-border-quiet);
+  --bg-error: var(--c-color-danger-fill-quiet);
+  --fg-error: var(--c-color-danger-on-quiet);
+  --border-error: var(--c-color-danger-border-quiet);
+  --error-color: var(--c-color-danger-on-quiet);
+  color: var(--c-text-default);
+}
+
+@mixin settings {
+  .freeform-widget-settings {
+    display: grid;
+    gap: var(--c-spacing-lg);
+
+    > .field { margin-block: 0; }
+  }
+}

@@ -1,3 +1,4 @@
+import { PropertyType } from "@ff-client/types/properties";
 import { act, type ReactNode, useState } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -75,6 +76,11 @@ describe("bulk options slideout", () => {
         return (
           <>
             <CustomEditor
+              property={{
+                type: PropertyType.Options,
+                handle: "options",
+                label: "Options",
+              }}
               value={value}
               updateValue={(updated) => {
                 updateValue(updated);

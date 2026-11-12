@@ -13,7 +13,7 @@ vi.mock("./editors/fields/field-properties", () => ({
   FieldProperties: () => <div>HTML field settings</div>,
 }));
 vi.mock("./editors/pages/page-properties", () => ({
-  PageProperties: () => null,
+  PageProperties: (): null => null,
 }));
 
 it("keeps field settings open for native slideout, shade, and confirmation clicks, but still closes for ordinary outside clicks", () => {

@@ -1,4 +1,5 @@
 import type { Row as RowType } from "@editor/builder/types/layout";
+import type { Field as FieldType } from "@editor/store/slices/layout/fields";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
 import { useDimensionsObserver } from "@ff-client/hooks/use-height-animation";
 import type React from "react";
@@ -25,7 +26,7 @@ type Props = {
 
 const Row: React.FC<Props> = memo(({ row }) => {
   const selectFields = useMemo(() => fieldSelectors.inRow(row), [row]);
-  const fields = useSelector(selectFields, shallowEqual);
+  const fields: FieldType[] = useSelector(selectFields, shallowEqual);
 
   const { ref: wrapperRef, dimensions } =
     useDimensionsObserver<HTMLDivElement>();

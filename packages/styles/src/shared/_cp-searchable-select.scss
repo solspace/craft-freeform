@@ -1,11 +1,11 @@
 @mixin searchable-select {
   .ff-searchable {
     // Override the front-end theme sampled into inline custom properties.
-    --ff-searchable-color: var(--text-color, #3f4d5a) !important;
-    --ff-searchable-bg: var(--button-bg, #d7dce2) !important;
-    --ff-searchable-menu-bg: var(--pane-bg, #fff) !important;
-    --ff-searchable-border: var(--hairline-color, #cdd8e4) !important;
-    --ff-searchable-radius: var(--radius-md, 5px) !important;
+    --ff-searchable-color: var(--c-text-default) !important;
+    --ff-searchable-bg: var(--c-input-fill) !important;
+    --ff-searchable-menu-bg: var(--c-surface-overlay) !important;
+    --ff-searchable-border: var(--c-color-neutral-border-quiet) !important;
+    --ff-searchable-radius: var(--c-radius-md) !important;
     font-family: inherit !important;
   }
   .ff-searchable.ff-searchable .ff-searchable__input {
@@ -13,12 +13,12 @@
     min-height: var(--ui-control-height, 34px);
     padding: 7px 34px 7px 10px;
     padding-inline: 10px 34px;
-    border: 0;
+    border: 1px solid var(--c-color-neutral-border-normal);
     font-size: 14px;
     line-height: 20px;
     box-shadow: none;
-    &:hover:not(:disabled) { background: var(--button-bg--hover, #cdd4de); }
-    &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-quiet); }
+    &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
     &[aria-invalid="true"], &.freeform-has-errors { box-shadow: inset 0 0 0 1px var(--error-color, #cf1124); }
   }
   .ff-searchable.ff-searchable button.ff-searchable__toggle {
@@ -46,7 +46,7 @@
   .ff-searchable .ff-searchable__group { padding: 7px 10px; line-height: 20px; }
   .ff-searchable .ff-searchable__option:not([aria-disabled="true"]):hover,
   .ff-searchable .ff-searchable__option[data-active] {
-    color: var(--text-color, #3f4d5a);
-    background: light-dark(var(--gray-050, #f3f7fc), var(--bg-selection-light, #f3f7fc));
+    color: var(--c-color-neutral-on-quiet);
+    background: var(--c-color-neutral-fill-quiet);
   }
 }

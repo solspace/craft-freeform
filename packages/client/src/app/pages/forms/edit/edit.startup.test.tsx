@@ -116,19 +116,19 @@ const payload = (id: number) => ({
       {
         uid: `rule-${id}`,
         field: `field-${id}`,
-        conditions: [],
+        conditions: [] as never[],
         display: "show",
       },
     ],
-    pages: [],
-    buttons: [],
-    submitForm: null,
+    pages: [] as never[],
+    buttons: [] as never[],
+    submitForm: null as null,
   },
   notificationRules: [
     {
       uid: `notification-rule-${id}`,
       notification: `notification-${id}`,
-      conditions: [],
+      conditions: [] as never[],
     },
   ],
   notifications: [{ uid: `notification-${id}`, enabled: false }],
@@ -144,10 +144,10 @@ const payload = (id: number) => ({
 let host: HTMLDivElement;
 let root: Root;
 let client: QueryClient;
-let editorStore: ReturnType<typeof configureStore>;
+let editorStore: ReturnType<typeof configureStore<RootState>>;
 let navigate: ReturnType<typeof useNavigate>;
 
-function Navigation() {
+function Navigation(): null {
   navigate = useNavigate();
   return null;
 }

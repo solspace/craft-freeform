@@ -86,13 +86,15 @@ export const AttributesEditor: React.FC<Props> = ({
     <AttributeEditorWrapper>
       <AttributeTypeTabs>
         {property.tabs?.map((tabEntry) => (
-          <a
+          <button
+            type="button"
+            aria-pressed={tabEntry === tab}
             key={tabEntry.handle}
             className={classes(tabEntry === tab && "active")}
             onClick={() => setTab(tabEntry)}
           >
             {translate(tabEntry.label)}
-          </a>
+          </button>
         ))}
       </AttributeTypeTabs>
       <AttributeTabContent>

@@ -23,7 +23,7 @@ export const translate = (
     return "";
   }
 
-  if (typeof Craft !== "undefined") {
+  if (typeof Craft !== "undefined" && typeof Craft.t === "function") {
     return Craft.t("freeform", string, params);
   }
 

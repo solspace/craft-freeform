@@ -11,20 +11,25 @@ const Actions = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 6px;
+  gap: var(--c-spacing-sm);
+  margin: 0;
   > button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
-    min-height: 28px;
+    gap: var(--c-spacing-sm);
+    min-height: var(--c-size-control-sm);
+    padding: 4px 8px;
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-sm);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-color-neutral-on-quiet);
+    box-shadow: none;
+    font-size: 12px;
+    line-height: 18px;
     white-space: nowrap;
-    --button-border: 1px solid var(--input-border-color, #b9c6d7);
-    background: light-dark(#e4edf6, var(--button-bg, #e4edf6));
-    color: var(--text-color, #3f4d5a);
-    box-shadow: inset 0 0 0 1px var(--hairline-color, #cdd8e4);
-    &:hover:not(:disabled) { background: light-dark(#cdd8e4, var(--button-bg--hover, #cdd8e4)); }
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-normal); }
+    &:disabled { opacity: .5; }
   }
   svg { display: block; width: 14px; height: 14px; flex: 0 0 14px; }
 `;
@@ -69,62 +74,6 @@ export function StarterListTextarea({
       property={{ ...property, instructions: description }}
       errors={errors}
       context={context}
-      extraContent={
-        <Actions>
-          <button
-            type="button"
-            className="btn small"
-            disabled={disabled || !next.added}
-            title={translate(
-              "Adds missing entries without replacing your list.",
-            )}
-            onClick={() => {
-              setInsertion({ before: text, after: next.value });
-              updateValue(next.value);
-            }}
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 16 16"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            >
-              <path d="M8 3v10M3 8h10" />
-            </svg>
-            <span>
-              {translate(
-                next.added ? "Add Starter List" : "Starter List Added",
-              )}
-            </span>
-          </button>
-          {canUndo && (
-            <button
-              type="button"
-              className="btn small"
-              disabled={disabled}
-              onClick={() => {
-                updateValue(insertion.before);
-                setInsertion(undefined);
-              }}
-            >
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 16 16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M5 3 2 6l3 3M2 6h7a4 4 0 0 1 0 8H7" />
-              </svg>
-              <span>{translate("Undo")}</span>
-            </button>
-          )}
-        </Actions>
-      }
     >
       <TextArea
         id={property.handle}
@@ -140,6 +89,56 @@ export function StarterListTextarea({
           updateValue(event.target.value);
         }}
       />
+      <Actions>
+        <button
+          type="button"
+          className="btn small"
+          disabled={disabled || !next.added}
+          title={translate("Adds missing entries without replacing your list.")}
+          onClick={() => {
+            setInsertion({ before: text, after: next.value });
+            updateValue(next.value);
+          }}
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+          >
+            <path d="M8 3v10M3 8h10" />
+          </svg>
+          <span>
+            {translate(next.added ? "Add Starter List" : "Starter List Added")}
+          </span>
+        </button>
+        {canUndo && (
+          <button
+            type="button"
+            className="btn small"
+            disabled={disabled}
+            onClick={() => {
+              updateValue(insertion.before);
+              setInsertion(undefined);
+            }}
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 16 16"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 3 2 6l3 3M2 6h7a4 4 0 0 1 0 8H7" />
+            </svg>
+            <span>{translate("Undo")}</span>
+          </button>
+        )}
+      </Actions>
     </Control>
   );
 }

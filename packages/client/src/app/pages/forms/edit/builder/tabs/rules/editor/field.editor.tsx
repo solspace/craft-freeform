@@ -1,3 +1,4 @@
+import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useAppDispatch } from "@editor/store";
@@ -5,7 +6,6 @@ import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.select
 import { fieldRuleActions } from "@editor/store/slices/rules/fields";
 import { fieldRuleSelectors } from "@editor/store/slices/rules/fields/field-rules.selectors";
 import { useQueryFormRules } from "@ff-client/queries/rules";
-import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type React from "react";
@@ -55,14 +55,11 @@ export const FieldRulesEditor: React.FC = () => {
           </LoadingText>
         </Label>
         {!isFetching && (
-          <button
-            type="button"
-            className={classes("btn add icon dashed")}
+          <AddButtonArea
             disabled={!isPro}
             onClick={() => dispatch(fieldRuleActions.add(uid))}
-          >
-            {translate("Add rules")}
-          </button>
+            label="Add rules"
+          />
         )}
       </RulesEditorWrapper>
     );

@@ -47,17 +47,17 @@ class Craft6BooleanMenuTest extends TestCase
     {
         $dom = $this->render(['value' => '$FREEFORM_BOOL_OFF', 'includeEnvVars' => true]);
         $combobox = $dom->getElementsByTagName('craft-combobox')->item(0);
-        self::assertSame('$FREEFORM_BOOL_OFF', $combobox->getAttribute('model-value'));
-        self::assertTrue($combobox->hasAttribute('requireoptionmatch'));
+        self::assertSame('$FREEFORM_BOOL_OFF', $this->selectedValue($combobox));
+        self::assertTrue($combobox->hasAttribute('require-option-match') || $combobox->hasAttribute('requireoptionmatch'));
         self::assertFalse($combobox->hasAttribute('name'), 'Only the hidden select should submit the setting.');
         $options = json_decode($combobox->getAttribute('options'), true, flags: \JSON_THROW_ON_ERROR);
         self::assertSame(['Enabled', 'Disabled'], array_column(\array_slice($options, 0, 2), 'label'));
         $envOptions = array_column($options[2]['options'], null, 'value');
         self::assertSame('Enabled', $envOptions['$FREEFORM_BOOL_ON']['data']['hint']);
         self::assertSame('Disabled', $envOptions['$FREEFORM_BOOL_OFF']['data']['hint']);
-        self::assertSame('empty', $envOptions['$FREEFORM_BOOL_OFF']['data']['indicator']['variant']);
+        self::assertSame('outline', $envOptions['$FREEFORM_BOOL_OFF']['data']['indicator']['appearance']);
         self::assertArrayNotHasKey('$FREEFORM_NON_BOOL', $envOptions);
-        self::assertSame('empty', $dom->getElementsByTagName('craft-indicator')->item(0)->getAttribute('variant'));
+        self::assertSame('outline', $dom->getElementsByTagName('craft-indicator')->item(0)->getAttribute('appearance'));
     }
 
     public function testFormAndDependentFieldOwnerRetainsItsNameAndSelectedValue(): void
@@ -71,13 +71,13 @@ class Craft6BooleanMenuTest extends TestCase
         self::assertTrue($select->hasAttribute('hidden'));
         self::assertSame('1', $dom->getElementsByTagName('option')->item(0)->getAttribute('value'));
         self::assertTrue($dom->getElementsByTagName('option')->item(0)->hasAttribute('selected'));
-        self::assertSame('success', $dom->getElementsByTagName('craft-indicator')->item(0)->getAttribute('variant'));
+        self::assertSame('solid', $dom->getElementsByTagName('craft-indicator')->item(0)->getAttribute('appearance'));
     }
 
     public function testMissingEnvReferenceIsPreservedAndReadOnlyControlsDoNotSubmit(): void
     {
         $dom = $this->render(['value' => '$FREEFORM_MISSING_FLAG', 'disabled' => true]);
-        self::assertSame('$FREEFORM_MISSING_FLAG', $dom->getElementsByTagName('craft-combobox')->item(0)->getAttribute('model-value'));
+        self::assertSame('$FREEFORM_MISSING_FLAG', $this->selectedValue($dom->getElementsByTagName('craft-combobox')->item(0)));
         self::assertTrue($dom->getElementsByTagName('craft-combobox')->item(0)->hasAttribute('disabled'));
         self::assertTrue($dom->getElementsByTagName('select')->item(0)->hasAttribute('disabled'));
         self::assertTrue($dom->getElementsByTagName('option')->item(2)->hasAttribute('selected'));
@@ -89,6 +89,11 @@ class Craft6BooleanMenuTest extends TestCase
         $dom = $this->render([]);
         self::assertSame('slideout[settings][enabled]', $dom->getElementsByTagName('select')->item(0)->getAttribute('name'));
         self::assertSame('slideout-enabled', $dom->getElementsByTagName('craft-combobox')->item(0)->getAttribute('id'));
+    }
+
+    private function selectedValue(\DOMElement $combobox): string
+    {
+        return $combobox->getAttribute($combobox->hasAttribute('value') ? 'value' : 'model-value');
     }
 
     private function render(array $config): \DOMDocument

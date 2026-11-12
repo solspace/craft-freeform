@@ -9,9 +9,10 @@ export const PageWrapper = styled.div`
   flex-direction: column;
 `;
 
-export const PageButton = styled.button`
+export const PageButton = styled.button.attrs({ type: "button" })`
   position: relative;
   bottom: -1px;
+  z-index: 1;
 
   display: inline-flex;
   justify-content: start;
@@ -20,11 +21,12 @@ export const PageButton = styled.button`
   gap: ${spacings.sm};
 
   max-width: 150px;
-  padding: ${spacings.xs} ${spacings.sm};
+  min-height: var(--c-size-control-md);
+  padding: var(--c-spacing-md) var(--c-spacing-lg);
 
-  background-color: light-dark(${colors.white}, ${colors.surface});
+  background-color: var(--c-surface-default);
 
-  border: 1px solid light-dark(#cdd8e4, ${colors.border});
+  border: 1px solid var(--c-color-neutral-border-quiet);
   border-bottom: none;
   border-radius: ${borderRadius.md} ${borderRadius.md} 0 0;
 
@@ -61,16 +63,16 @@ export const PageButton = styled.button`
   }
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
   }
 `;
 
 export const PageBody = styled.div`
   padding: ${spacings.sm};
-  border: 1px solid light-dark(#cdd8e4, ${colors.border});
-  background-color: light-dark(${colors.white}, ${colors.surface});
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  background-color: var(--c-surface-default);
 
   border-radius: 0 ${borderRadius.md} ${borderRadius.md} ${borderRadius.md};
 
@@ -95,7 +97,12 @@ export const PageBody = styled.div`
   }
 `;
 
-export const PageIcon = styled.div``;
+export const PageIcon = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+`;
 
 export const PageLabel = styled.label`
   display: block;

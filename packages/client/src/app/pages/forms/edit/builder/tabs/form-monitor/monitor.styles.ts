@@ -7,6 +7,7 @@ export const FormMonitorWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.lg};
   padding: ${spacings.xl};
+  padding-block-start: var(--freeform-builder-padding-block, calc(var(--c-spacing-lg) + var(--c-spacing-md)));
   background: light-dark(${colors.white}, ${colors.surface});
   height: 100%;
   flex: 1;

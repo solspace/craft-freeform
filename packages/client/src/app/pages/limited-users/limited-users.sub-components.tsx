@@ -1,8 +1,7 @@
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
-import CheckmarkIcon from "@ff-icons/actions/checkmark";
 import type React from "react";
-import { type ReactNode, useId } from "react";
+import { createElement, type ReactNode, useId } from "react";
 
 import {
   Actions,
@@ -15,7 +14,6 @@ import {
   Label,
   List,
   ListItem,
-  PermissionSwitch,
   TitleBlock,
   ToggleList,
   ToggleListItem,
@@ -44,20 +42,30 @@ const BooleanInput: React.FC<Props<BooleanItem, boolean>> = ({
   return (
     <Block>
       <Control>
-        <PermissionSwitch
-          id={controlId}
-          type="button"
-          role="switch"
-          aria-checked={item.enabled}
-          aria-label={translate(item.name)}
-          disabled={disabled}
-          onClick={() => updateValue(!item.enabled)}
-        >
-          {item.enabled && <CheckmarkIcon aria-hidden="true" />}
-        </PermissionSwitch>
+        {createElement("craft-switch-button", {
+          id: controlId,
+          type: "button",
+          role: "switch",
+          checked: item.enabled || undefined,
+          "aria-checked": String(item.enabled),
+          "aria-disabled": String(!!disabled),
+          "aria-label": translate(item.name),
+          disabled: disabled || undefined,
+          onClick: () => {
+            if (!disabled) updateValue(!item.enabled);
+          },
+        })}
       </Control>
       <TitleBlock>
-        <Label htmlFor={controlId}>{translate(item.name)}</Label>
+        <Label
+          htmlFor={controlId}
+          onClick={(event) => {
+            event.preventDefault();
+            if (!disabled) updateValue(!item.enabled);
+          }}
+        >
+          {translate(item.name)}
+        </Label>
       </TitleBlock>
     </Block>
   );
@@ -156,6 +164,18 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
                   onChange={update(option.value)}
                 />
                 <span>{translate(option.label)}</span>
+                <span
+                  className="permission-toggle-indicator"
+                  aria-hidden="true"
+                >
+                  {createElement("craft-switch-button", {
+                    size: "small",
+                    checked: item.values.includes(option.value) || undefined,
+                    tabIndex: -1,
+                    inert: true,
+                    "aria-hidden": true,
+                  })}
+                </span>
               </label>
             </ToggleListItem>
           ))}

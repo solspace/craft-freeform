@@ -1,3 +1,4 @@
+import { editorButton } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
@@ -54,8 +55,12 @@ export const Button = styled(animated.button)`
   position: relative;
   z-index: 5;
 
-  width: 20px;
-  height: 20px;
+  ${editorButton}
+  width: var(--c-size-control-md);
+  height: var(--c-size-control-md);
+  padding: 0;
+  background: transparent;
+  border-color: transparent;
 
   svg {
     fill: ${colors.barelyVisible};
@@ -64,8 +69,8 @@ export const Button = styled(animated.button)`
 
 export const FavoriteButtonWrapper = styled.div`
   position: absolute;
-  top: 17px;
-  right: 40px;
+  top: var(--c-spacing-md);
+  right: calc(var(--c-spacing-md) + var(--c-size-control-md) + 4px);
   z-index: 3;
 
   background: none;

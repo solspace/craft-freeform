@@ -6,7 +6,11 @@ import { parseEnvBoolean } from "./bool-env.operations";
 export type BooleanOption = {
   label: string;
   value: string;
-  data: { boolean: string; indicator: { variant: string }; hint?: string };
+  data: {
+    boolean: string;
+    indicator: { fill: string; appearance: string };
+    hint?: string;
+  };
 };
 
 export type BooleanOptionGroup = {
@@ -29,7 +33,10 @@ export const useEnvOptions = (): (BooleanOption | BooleanOptionGroup)[] => {
       label,
       data: {
         boolean: enabled ? "1" : "0",
-        indicator: { variant: enabled ? "success" : "empty" },
+        indicator: {
+          fill: enabled ? "success" : "neutral",
+          appearance: enabled ? "solid" : "outline",
+        },
       },
     });
     return [
@@ -47,7 +54,10 @@ export const useEnvOptions = (): (BooleanOption | BooleanOptionGroup)[] => {
                 ...option(item.name, item.name, enabled),
                 data: {
                   boolean: enabled ? "1" : "0",
-                  indicator: { variant: enabled ? "success" : "empty" },
+                  indicator: {
+                    fill: enabled ? "success" : "neutral",
+                    appearance: enabled ? "solid" : "outline",
+                  },
                   hint: enabled ? enabledLabel : disabledLabel,
                 },
               },

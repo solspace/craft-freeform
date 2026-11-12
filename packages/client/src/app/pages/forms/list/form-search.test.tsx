@@ -31,7 +31,7 @@ vi.mock("@config/freeform/freeform.config", () => ({
   },
 }));
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
-  Breadcrumb: () => null,
+  Breadcrumb: (): null => null,
 }));
 vi.mock("@ff-client/contexts/site/site.context", () => ({
   useSiteContext: () => ({
@@ -49,8 +49,8 @@ vi.mock("@ff-client/queries/forms", () => ({
 }));
 vi.mock("@ff-client/queries/field-types", () => ({
   QKFieldTypes: { all: ["fields"], propertySections: () => ["sections"] },
-  fetchFieldTypes: async () => [],
-  fetchFieldPropertySections: async () => [],
+  fetchFieldTypes: async (): Promise<never[]> => [],
+  fetchFieldPropertySections: async (): Promise<never[]> => [],
 }));
 vi.mock("@ff-client/utils/notifications", () => ({
   notifications: { success: vi.fn(), error: vi.fn() },
@@ -79,7 +79,7 @@ vi.mock("./views/grid/card/card.widget", async (importOriginal) => ({
     <li data-widget={widget.uid}>{widget.title}</li>
   ),
 }));
-vi.mock("./notices/notices", () => ({ Notices: () => null }));
+vi.mock("./notices/notices", () => ({ Notices: (): null => null }));
 vi.mock("./views/grid/grid.empty", () => ({
   GridEmpty: () => <p>Create your first form</p>,
 }));

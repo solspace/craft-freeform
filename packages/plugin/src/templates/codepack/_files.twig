@@ -6,6 +6,7 @@
 
 {% macro item(file, prefix = null) %}
     <li class="{{ file.isFolder ? 'dir' : 'file' }}">
+        <span class="freeform-demo-icon" aria-hidden="true">{{ craft.freeform.formIcon(file.isFolder ? 'folder' : 'file-code') }}</span>
         <span{% if prefix is not null %} data-name="/"{% endif %}>{{ prefix is not null ? prefix ~ '/' : file.name }}</span>
         {% if file.isFolder %}
             <ul>

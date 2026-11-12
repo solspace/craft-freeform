@@ -1,3 +1,4 @@
+import { builderSettingsDropdowns } from "@ff-client/styles/builder-settings";
 import { labelText, scrollBar } from "@ff-client/styles/mixins";
 import { shadows, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
@@ -8,7 +9,7 @@ export const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding: 0 ${spacings.lg} ${spacings.lg};
+  padding: 0 var(--freeform-sidebar-padding-inline) var(--c-spacing-lg);
 
   overflow-y: auto;
   overflow-x: hidden;
@@ -28,11 +29,12 @@ export const SectionBlockIcon = styled(Icon)`
 `;
 
 export const SectionBlockContainer = styled.section`
+  ${builderSettingsDropdowns};
   position: relative;
 
   display: flex;
   flex-direction: column;
-  gap: ${spacings.md};
+  gap: calc(var(--c-spacing-lg) + var(--c-spacing-md));
 
   margin-top: ${spacings.lg};
   padding-top: ${spacings.lg};

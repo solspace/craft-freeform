@@ -1,15 +1,18 @@
+import { builderSettingsDropdowns } from "@ff-client/styles/builder-settings";
 import { sectionHeading } from "@ff-client/styles/craft6";
 import { scrollBar } from "@ff-client/styles/mixins";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const FormSettingsContainer = styled.div`
+  ${builderSettingsDropdowns};
   flex: 1;
 
-  background: light-dark(${colors.white}, ${colors.surface});
+  background: var(--freeform-builder-canvas, var(--c-surface-default));
   padding: ${spacings.xl};
+  padding-block-start: var(--freeform-builder-padding-block, calc(var(--c-spacing-lg) + var(--c-spacing-md)));
   overflow-y: auto;
-  width: calc(100% - 300px);
+  min-width: 0;
 
   ${scrollBar};
 
@@ -29,7 +32,7 @@ export const SectionHeader = styled.h2`
   display: flex;
 
   width: 100%;
-  padding: 0 0 ${spacings.md};
+  padding: 0 0 var(--c-spacing-lg);
   margin: 0;
 `;
 
@@ -38,7 +41,7 @@ export const SectionContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
-  gap: ${spacings.md};
+  gap: calc(var(--c-spacing-lg) + var(--c-spacing-md));
 
   width: 100%;
 

@@ -22,7 +22,8 @@
     "build": "vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly && vite build",
     "dev": "vite build --watch",
     "test": "vitest run --config vitest.config.ts",
-    "lint": "biome check src"
+    "lint": "biome check src",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
     "@solspace/freeform-core": "^1.0.0",

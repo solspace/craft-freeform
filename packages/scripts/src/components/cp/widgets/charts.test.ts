@@ -11,7 +11,7 @@ const chart = vi.hoisted(() => ({
 const construct = vi.hoisted(() => vi.fn());
 vi.mock("chart.js/auto", () => ({
   default: class {
-    constructor(canvas, config) {
+    constructor(canvas: HTMLCanvasElement, config: unknown) {
       construct(canvas, config);
       Object.assign(this, chart);
     }

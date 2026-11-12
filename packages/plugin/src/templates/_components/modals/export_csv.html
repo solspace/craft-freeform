@@ -54,30 +54,20 @@
     <div class="body">
         <div class="field">
             <div class="heading">
-                <label>{{ 'Export as'|t('freeform') }}</label>
+                <label for="quick-export-type">{{ 'Export as'|t('freeform') }}</label>
             </div>
-            <div class="select">
-                <select class="select" name="export_type">
-                    {% for type, exporter in exporters %}
-                        <option value="{{ type }}">{{ exporter }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+            {{ formFields.select({id: 'quick-export-type', name: 'export_type', options: exporters}) }}
         </div>
 
         <div class="field">
             <div class="heading">
-                <label>{{ 'Form'|t('freeform') }}</label>
+                <label for="quick-export-form">{{ 'Form'|t('freeform') }}</label>
             </div>
-            <div class="select">
-                <select class="select" name="form_id">
-                    {% for form in forms %}
-                        <option value="{{ form.id }}" {{ form.id == selectedFormId ? 'selected' }}>
-                            {{ form.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
+            {% set formOptions = [] %}
+            {% for form in forms %}
+                {% set formOptions = formOptions|merge([{value: form.id, label: form.name}]) %}
+            {% endfor %}
+            {{ formFields.select({id: 'quick-export-form', name: 'form_id', options: formOptions, value: selectedFormId}) }}
         </div>
 
         {% for settingItem in setting %}

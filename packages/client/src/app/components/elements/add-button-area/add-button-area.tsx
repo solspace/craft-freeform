@@ -1,6 +1,7 @@
-import { borderRadius, colors } from "@ff-client/styles/variables";
+import { editorButton } from "@ff-client/styles/craft6";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
+import { createElement } from "react";
 import styled from "styled-components";
 
 type Props = {
@@ -20,10 +21,11 @@ export const AddButtonArea: React.FC<Props> = ({
     <Wrapper className={className}>
       <AddButton
         type="button"
-        className="btn add icon"
+        className="freeform-add-row"
         onClick={onClick}
         disabled={disabled}
       >
+        {createElement("craft-icon", { name: "plus", "aria-hidden": true })}
         {translate(label)}
       </AddButton>
     </Wrapper>
@@ -33,41 +35,14 @@ export const AddButtonArea: React.FC<Props> = ({
 const Wrapper = styled.div.attrs({ className: "freeform-add-button-area" })`
   width: 100%;
   display: flex;
-  justify-content: center;
-
-  background: transparent;
-  border: 1px dashed light-dark(rgba(0, 0, 0, 0.25), var(--medium-hairline-color));
-  border-top: none;
-  border-bottom-left-radius: ${borderRadius.lg};
-  border-bottom-right-radius: ${borderRadius.lg};
+  margin-top: var(--c-spacing-md);
 `;
 
 const AddButton = styled.button`
+  ${editorButton}
   width: 100%;
-  padding: 6px 9px;
-
-  background: light-dark(${colors.white}, ${colors.surface});
-  border-radius: 4px;
-
-  text-align: center;
-  cursor: pointer;
-
-  &:before {
-    margin-right: 6px;
-  }
-
-  &:hover {
-    background: ${colors.gray050};
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: var(--inner-focus-ring);
-  }
-
-  &:disabled {
-    background: #00000004;
-    color: ${colors.gray300};
-    cursor: not-allowed;
-  }
+  border: 1px dashed var(--c-form-control-border-color);
+  background: var(--c-surface-default);
+  font-weight: 400;
+  craft-icon { width: 16px; height: 16px; flex: none; }
 `;

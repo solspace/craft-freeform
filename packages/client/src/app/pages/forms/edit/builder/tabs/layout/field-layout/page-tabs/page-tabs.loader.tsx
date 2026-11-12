@@ -1,5 +1,6 @@
+import { ThemedSkeleton as SkeletonTheme } from "@components/loaders/skeletons/themed-skeleton";
 import type React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import { PageTabsContainer, PageTabsWrapper } from "./page-tabs.styles";
 import { PageTab, TabWrapper } from "./tab/tab.styles";
 

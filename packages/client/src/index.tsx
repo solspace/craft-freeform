@@ -2,8 +2,8 @@ import "vite/modulepreload-polyfill";
 
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { BreadcrumbProvider } from "@components/breadcrumbs/breadcrumbs.context";
-import { CpNavigation } from "@components/cp-navigation/cp-navigation";
 import { ZIndexContextProvider } from "@components/form-controls/context/z-index.context";
+import { ThemedSkeleton } from "@components/loaders/skeletons/themed-skeleton";
 import { ModalProvider } from "@components/modals/modal.context";
 import { queryClient } from "@config/react-query";
 import { PortalProvider } from "@editor/builder/contexts/portal.context";
@@ -57,80 +57,93 @@ debug.log(
 );
 
 mountFreeformApp(() => (
-  <DndProvider backend={HTML5Backend}>
-    <BrowserRouter basename={generateUrl("/", false)}>
-      <QueryClientProvider client={queryClient}>
-        <SiteProvider>
-          <ZIndexContextProvider>
-            <EscapeStackProvider>
-              <BreadcrumbProvider>
-                <Provider store={store}>
-                  <PortalProvider>
-                    <ModalProvider>
-                      <Breadcrumb id="root" label="Freeform" url="/forms" />
-                      <ManualStyles />
-                      {showDevtools ? (
-                        <ReactQueryDevtools initialIsOpen={false} />
-                      ) : null}
-                      <CpNavigation />
-                      <Routes>
-                        <Route path="/" element={<App />}>
-                          <Route path="forms">
-                            <Route path=":formId/*" element={<Form />} />
-                            <Route index element={<Forms />} />
-                          </Route>
-                          <Route
-                            path="/surveys/:handle"
-                            element={<SurveyResults />}
-                          />
-                          <Route path="welcome" element={<Welcome />} />
-                          <Route
-                            path="settings/setup"
-                            element={<Welcome setup />}
-                          />
-                          <Route path="integrations" element={<Integrations />}>
-                            <Route index element={<IntegrationsEmptyView />} />
+  <ThemedSkeleton>
+    <DndProvider backend={HTML5Backend}>
+      <BrowserRouter basename={generateUrl("/", false)}>
+        <QueryClientProvider client={queryClient}>
+          <SiteProvider>
+            <ZIndexContextProvider>
+              <EscapeStackProvider>
+                <BreadcrumbProvider>
+                  <Provider store={store}>
+                    <PortalProvider>
+                      <ModalProvider>
+                        <Breadcrumb id="root" label="Freeform" url="/forms" />
+                        <ManualStyles />
+                        {showDevtools ? (
+                          <ReactQueryDevtools initialIsOpen={false} />
+                        ) : null}
+                        <Routes>
+                          <Route path="/" element={<App />}>
+                            <Route path="forms">
+                              <Route path=":formId/*" element={<Form />} />
+                              <Route index element={<Forms />} />
+                            </Route>
                             <Route
-                              path=":type/:integration/:id?"
-                              element={<IntegrationsEditor />}
+                              path="/surveys/:handle"
+                              element={<SurveyResults />}
                             />
-                          </Route>
-                          <Route path="settings/ai" element={<AiDashboard />} />
-                          <Route path="import" element={<ImportExport />}>
+                            <Route path="welcome" element={<Welcome />} />
                             <Route
-                              path="forms"
-                              element={<ImportFreeformData />}
+                              path="settings/setup"
+                              element={<Welcome setup />}
                             />
                             <Route
-                              path="express-forms"
-                              element={<ImportExpressForms />}
-                            />
+                              path="integrations"
+                              element={<Integrations />}
+                            >
+                              <Route
+                                index
+                                element={<IntegrationsEmptyView />}
+                              />
+                              <Route
+                                path=":type/:integration/:id?"
+                                element={<IntegrationsEditor />}
+                              />
+                            </Route>
                             <Route
-                              path="formie/v3"
-                              element={<ImportFormie />}
+                              path="settings/ai"
+                              element={<AiDashboard />}
                             />
+                            <Route path="import" element={<ImportExport />}>
+                              <Route
+                                path="forms"
+                                element={<ImportFreeformData />}
+                              />
+                              <Route
+                                path="express-forms"
+                                element={<ImportExpressForms />}
+                              />
+                              <Route
+                                path="formie/v3"
+                                element={<ImportFormie />}
+                              />
+                            </Route>
+                            <Route path="export" element={<ImportExport />}>
+                              <Route
+                                path="forms"
+                                element={<ExportFreeform />}
+                              />
+                            </Route>
+                            <Route path="settings/limited-users">
+                              <Route
+                                path=":id"
+                                element={<LimitedUsersDetail />}
+                              />
+                              <Route index element={<LimitedUsers />} />
+                            </Route>
+                            <Route path="ab-tests" element={<AbTests />} />
                           </Route>
-                          <Route path="export" element={<ImportExport />}>
-                            <Route path="forms" element={<ExportFreeform />} />
-                          </Route>
-                          <Route path="settings/limited-users">
-                            <Route
-                              path=":id"
-                              element={<LimitedUsersDetail />}
-                            />
-                            <Route index element={<LimitedUsers />} />
-                          </Route>
-                          <Route path="ab-tests" element={<AbTests />} />
-                        </Route>
-                      </Routes>
-                    </ModalProvider>
-                  </PortalProvider>
-                </Provider>
-              </BreadcrumbProvider>
-            </EscapeStackProvider>
-          </ZIndexContextProvider>
-        </SiteProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
-  </DndProvider>
+                        </Routes>
+                      </ModalProvider>
+                    </PortalProvider>
+                  </Provider>
+                </BreadcrumbProvider>
+              </EscapeStackProvider>
+            </ZIndexContextProvider>
+          </SiteProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
+    </DndProvider>
+  </ThemedSkeleton>
 ));

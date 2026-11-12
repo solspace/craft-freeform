@@ -15,6 +15,13 @@
   font-size: 14px;
   line-height: 20px;
   text-align: start;
+  box-sizing: border-box;
+  border: 1px solid var(--c-color-neutral-border-normal);
+  border-radius: var(--c-radius-md);
+  background: var(--c-input-fill);
+  color: var(--c-text-default);
+  &:hover:not(:disabled) { background: var(--c-color-neutral-fill-quiet); }
+  &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
 }
 .freeform-disclosure-label {
   display: inline-flex;
@@ -41,6 +48,13 @@
   box-sizing: border-box;
   max-width: calc(100vw - 24px);
   overflow: auto;
+  background: var(--c-surface-overlay);
+  color: var(--c-text-default);
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-radius-md);
+  box-shadow: var(--c-shadow-sm);
+  padding: var(--c-spacing-xs);
+  font-size: var(--c-text-base);
   &[hidden] { display: none; }
   ul { margin: 0; padding: 0; list-style: none; }
   // Keep these layout rules weaker than Craft's menu-item hover selector.
@@ -48,13 +62,18 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    width: calc(100% + 28px);
-    border: 0;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: var(--c-radius-md);
+    padding: var(--c-spacing-sm);
+    font: inherit;
+    color: inherit;
     background: transparent;
     line-height: 20px;
     text-align: start;
     > span:not(.status, .freeform-disclosure-check) { overflow: hidden; text-overflow: ellipsis; }
-    &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-quiet); color: var(--c-color-neutral-on-quiet); }
+    &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: calc(-1 * var(--c-focus-outline-width)); }
     @media (pointer: coarse) { min-height: 44px; }
   }
   .freeform-disclosure-check { flex: none; margin-inline-start: auto; }

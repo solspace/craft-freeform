@@ -1,4 +1,4 @@
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { borderRadius, spacings } from "@ff-client/styles/variables";
 import styled, { css } from "styled-components";
 
 type SurfaceProps = {
@@ -12,13 +12,13 @@ const themeStyles = {
     background: #33404d;
     border: 1px solid #33404d;
     box-shadow: 0 10px 24px rgb(8 15 24 / 18%);
-    color: ${colors.white};
+    color: #fff;
   `,
   light: css`
-    background: ${colors.overlay};
-    border: 1px solid ${colors.gray100};
-    box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
-    color: ${colors.gray800};
+    background: var(--c-modal-fill);
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    box-shadow: var(--c-shadow-md);
+    color: var(--c-text-default);
   `,
 };
 

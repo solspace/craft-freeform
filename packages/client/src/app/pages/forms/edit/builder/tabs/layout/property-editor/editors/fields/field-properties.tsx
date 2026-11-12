@@ -8,13 +8,13 @@ import { SampleDataOptions } from "@editor/builder/sample-data/sample-data-optio
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import { fieldSelectors } from "@editor/store/slices/layout/fields/fields.selectors";
-import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid";
 import {
   useFetchFieldPropertySections,
   useFieldType,
 } from "@ff-client/queries/field-types";
 import type { Property } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
+import CloseIcon from "@ff-icons/actions/delete";
 import DOMPurify from "dompurify";
 import type React from "react";
 import { useMemo } from "react";
@@ -113,7 +113,10 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   return (
     <FieldPropertiesWrapper>
-      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+      <CloseLink
+        aria-label={translate("Close field properties")}
+        onClick={() => dispatch(contextActions.unfocus())}
+      >
         <CloseIcon />
       </CloseLink>
       {config.limitations.can("layout.favorite") && (

@@ -3,12 +3,17 @@ import Checkboxes from "@components/form-controls/control-types/checkboxes/check
 import type { ControlType } from "@components/form-controls/types";
 import type { RootState } from "@editor/store";
 import type { Field } from "@editor/store/slices/layout/fields";
-import type { Property } from "@ff-client/types/properties";
+import type {
+  AppStateSelectProperty,
+  CheckboxesProperty,
+} from "@ff-client/types/properties";
 import { PropertyType } from "@ff-client/types/properties";
 import type React from "react";
 import { useSelector } from "react-redux";
 
-export const LocationIntegration: React.FC<ControlType<Property>> = (props) => {
+export const LocationIntegration: React.FC<
+  ControlType<AppStateSelectProperty>
+> = (props) => {
   const needsEnabling = useSelector((state: RootState) => {
     const integrations = state.integrations.filter(
       (integration) => integration.shortName === "GooglePlaces",
@@ -33,9 +38,9 @@ export const LocationIntegration: React.FC<ControlType<Property>> = (props) => {
   );
 };
 
-export const LocationRequiredComponents: React.FC<ControlType<Property>> = (
-  props,
-) => {
+export const LocationRequiredComponents: React.FC<
+  ControlType<CheckboxesProperty>
+> = (props) => {
   if (props.property.type !== PropertyType.Checkboxes) return null;
   const included =
     ((props.context as Field)?.properties?.includedComponents as string[]) ??

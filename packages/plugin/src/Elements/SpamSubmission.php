@@ -9,6 +9,7 @@ use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 
 class SpamSubmission extends Submission
 {
@@ -38,6 +39,27 @@ class SpamSubmission extends Submission
     public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/spam/'.$this->id) : false;
+    }
+
+    protected static function defineSources(?string $context = null): array
+    {
+        $sources = parent::defineSources($context);
+        if (version_compare(\Craft::$app->version, '6.0.0-dev', '<')) {
+            return $sources;
+        }
+
+        $reason = \Craft::$app->request->getQueryParam('spamReason');
+        if (!\is_string($reason) || !\in_array($reason, SpamReason::getReasons(), true)) {
+            return $sources;
+        }
+
+        foreach ($sources as &$source) {
+            if (isset($source['criteria'])) {
+                $source['criteria']['spamReason'] = $reason;
+            }
+        }
+
+        return $sources;
     }
 
     protected static function defineTableAttributes(): array

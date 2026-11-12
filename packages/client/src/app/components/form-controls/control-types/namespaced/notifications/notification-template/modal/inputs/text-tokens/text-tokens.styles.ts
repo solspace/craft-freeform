@@ -1,10 +1,16 @@
+import { textControl } from "@ff-client/styles/craft6";
 import styled from "styled-components";
 
 export const TextTokenWrapper = styled.div`
   position: relative;
+  min-width: 0;
 `;
 
 export const TextTokenContainer = styled.div`
+  ${textControl}
+  width: 100%;
+  padding-inline-end: 36px;
+  overflow-wrap: anywhere;
   span[data-freeform-token] {
     display: inline-block;
 
@@ -22,32 +28,24 @@ export const TextTokenContainer = styled.div`
 
 export const AddButton = styled.button`
   position: absolute;
-  top: 0;
-  inset-inline-end: 0;
-
-  margin: 4px;
+  top: 50%;
+  inset-inline-end: 4px;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 28px;
+  width: 24px;
+  height: 24px;
+  min-height: 0;
+  margin: 0;
   padding: 0;
-
-  height: 26px;
-  min-height: 26px;
-
-  &&.btn {
-    color: var(--text-color, #3f4d5a);
-    background: light-dark(#e4edf6, var(--button-bg, #e4edf6));
-    border: 1px solid var(--input-border-color, var(--hairline-color));
-  }
-
-  &&.btn:hover {
-    background: light-dark(#cdd8e4, var(--button-bg--hover, #cdd8e4));
-    border-color: var(--light-text-color, var(--input-border-color));
-  }
-
-  &&.btn:focus-visible {
-    box-shadow: var(--focus-ring-light, var(--focus-ring));
-  }
+  border: 0;
+  border-radius: var(--c-radius-sm);
+  background: transparent;
+  color: var(--c-text-quiet);
+  cursor: pointer;
+  craft-icon { width: 14px; height: 14px; }
+  &:hover { background: var(--c-color-neutral-fill-quiet); color: var(--c-text-default); }
+  &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: 0; }
 `;

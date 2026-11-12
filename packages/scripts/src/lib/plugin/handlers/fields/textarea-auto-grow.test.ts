@@ -111,19 +111,43 @@ describe("textarea auto grow", () => {
     handler.reload();
     expect(field.style.height).toBe("");
     observerCallback(
-      [{ target: field }] as ResizeObserverEntry[],
+      [
+        {
+          target: field,
+          contentRect: field.getBoundingClientRect(),
+          borderBoxSize: [],
+          contentBoxSize: [],
+          devicePixelContentBoxSize: [],
+        },
+      ],
       {} as ResizeObserver,
     );
     layout.visible = true;
     observerCallback(
-      [{ target: field }] as ResizeObserverEntry[],
+      [
+        {
+          target: field,
+          contentRect: field.getBoundingClientRect(),
+          borderBoxSize: [],
+          contentBoxSize: [],
+          devicePixelContentBoxSize: [],
+        },
+      ],
       {} as ResizeObserver,
     );
     expect(field.offsetHeight).toBe(304);
     layout.width = 600;
     layout.contentHeight = 100;
     observerCallback(
-      [{ target: field }] as ResizeObserverEntry[],
+      [
+        {
+          target: field,
+          contentRect: field.getBoundingClientRect(),
+          borderBoxSize: [],
+          contentBoxSize: [],
+          devicePixelContentBoxSize: [],
+        },
+      ],
       {} as ResizeObserver,
     );
     expect(field.offsetHeight).toBe(104);

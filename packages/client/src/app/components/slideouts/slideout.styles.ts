@@ -15,8 +15,7 @@ export const SlideoutContainer = styled.div`
   --background-color: color-mix(in srgb, var(--c-surface-default, #fff) 98%, var(--c-text-default, #2b3549));
 `;
 
-export const SlideoutHeader = styled.header.attrs({ className: "pane-header" })`
-  // Override the legacy pane header's negative margins and compact padding.
+export const SlideoutHeader = styled.header`
   && {
     display: flex;
     align-items: center;
@@ -26,7 +25,7 @@ export const SlideoutHeader = styled.header.attrs({ className: "pane-header" })`
     margin: 0;
     padding: var(--c-spacing-lg, 24px);
     border-radius: 0;
-    border-bottom: 1px solid var(--c-color-border-quiet);
+    border-bottom: 1px solid var(--c-color-neutral-border-quiet);
     background: var(--c-modal-fill, #fff);
     box-shadow: none;
   }
@@ -48,7 +47,7 @@ export const SlideoutFooter = styled.footer.attrs({
     flex: 0 0 auto;
     margin: 0;
     padding: var(--c-spacing-md, 16px) var(--c-spacing-lg, 24px);
-    border-top: 1px solid var(--c-color-border-quiet);
+    border-top: 1px solid var(--c-color-neutral-border-quiet);
     background: var(--c-modal-fill, #fff);
   }
 

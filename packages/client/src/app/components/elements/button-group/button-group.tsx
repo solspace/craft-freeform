@@ -48,7 +48,7 @@ export const ButtonGroup: React.FC<Props> = ({
               {renderIcon(option.value)}
             </span>
           )}
-          <span>{option.label}</span>
+          <span data-label={option.label}>{option.label}</span>
         </Button>,
       );
     }

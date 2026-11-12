@@ -1,4 +1,5 @@
 import { initColorPickers } from "../../../lib/color-picker";
+import { whenCpReady } from "../../../lib/cp/ready";
 import { initializeSettingsControls } from "./controls";
 import { initDigestSchedules } from "./digest-schedule";
 import { initScriptInsertLocation } from "./script.location";
@@ -10,7 +11,7 @@ import {
 import { initToolbarEditors } from "./toolbar";
 
 // eslint-disable no-undef
-$(() => {
+whenCpReady(() => {
   initColorPickers();
   loadFormattingTemplatesScript();
   loadTemplatesModeScript();

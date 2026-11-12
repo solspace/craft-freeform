@@ -1,3 +1,4 @@
+import { editorButton } from "@ff-client/styles/craft6";
 import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -20,11 +21,14 @@ export const Label = styled.span`
 `;
 
 export const Button = styled.button`
-  align-self: end;
-
-  &:hover {
-    background-color: ${colors.gray200};
-  }
+  ${editorButton}
+  height: 22px;
+  min-height: 22px;
+  padding: 0 6px;
+  border: 1px dashed var(--c-form-control-border-color);
+  background: var(--c-surface-default);
+  font-size: 12px;
+  line-height: 1.25;
 `;
 
 export const NotificationItemWrapper = styled.div`

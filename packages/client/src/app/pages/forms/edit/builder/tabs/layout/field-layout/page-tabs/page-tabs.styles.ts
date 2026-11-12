@@ -1,12 +1,11 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const PageTabsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 10px 15px;
+  padding: var(--freeform-builder-padding-block, calc(var(--c-spacing-lg) + var(--c-spacing-md))) var(--c-spacing-lg) var(--c-spacing-md);
 `;
 
 export const PageTabsContainer = styled.div`
@@ -15,7 +14,7 @@ export const PageTabsContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
-  gap: 4px;
+  gap: var(--c-spacing-sm);
   overflow-y: hidden;
   overflow-x: auto;
   ${scrollBar};
@@ -25,8 +24,6 @@ export const PageTabsContainer = styled.div`
   }
 
   &:hover {
-    background-color: light-dark(white, ${colors.surface});
-
     &::-webkit-scrollbar-thumb {
       visibility: visible;
     }

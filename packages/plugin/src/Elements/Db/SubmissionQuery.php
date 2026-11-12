@@ -317,7 +317,6 @@ class SubmissionQuery extends ElementQuery
         $table = Submission::TABLE_STD;
         $formTable = FormRecord::TABLE_STD;
         $statusTable = StatusRecord::TABLE_STD;
-        $spamReasonTable = SpamReasonRecord::TABLE_STD;
 
         if (!$this->usesCraft6ElementQuery()) {
             $this->joinElementTable($table);
@@ -533,13 +532,7 @@ class SubmissionQuery extends ElementQuery
             $this->applySubmissionWhere(Db::parseParam($table.'.[[isHidden]]', $this->isHidden));
         }
 
-        if (!empty($this->spamReason)) {
-            $this->query->innerJoin(
-                SpamReasonRecord::TABLE." {$spamReasonTable}",
-                "{$spamReasonTable}.[[submissionId]] = {$table}.[[id]] AND {$spamReasonTable}.[[reasonType]] = :spamReason",
-                ['spamReason' => $this->spamReason]
-            );
-        }
+        $this->applySpamReasonFilter();
 
         if (!$this->usesCraft6ElementQuery() && $this->status) {
             $this->freeformStatus = $this->status;
@@ -590,6 +583,28 @@ class SubmissionQuery extends ElementQuery
         $this->prepareFieldSearch($joinedForms);
 
         return true;
+    }
+
+    private function applySpamReasonFilter(): void
+    {
+        $table = Submission::TABLE_STD;
+        $spamReasonTable = SpamReasonRecord::TABLE_STD;
+        if (!empty($this->spamReason)) {
+            if ($this->usesCraft6ElementQuery()) {
+                $this->query->whereExists(function ($query) use ($spamReasonTable, $table): void {
+                    $query->selectRaw('1')->from($spamReasonTable)
+                        ->whereColumn($spamReasonTable.'.submissionId', $table.'.id')
+                        ->where($spamReasonTable.'.reasonType', $this->spamReason)
+                    ;
+                });
+            } else {
+                $this->query->innerJoin(
+                    SpamReasonRecord::TABLE." {$spamReasonTable}",
+                    "{$spamReasonTable}.[[submissionId]] = {$table}.[[id]] AND {$spamReasonTable}.[[reasonType]] = :spamReason",
+                    ['spamReason' => $this->spamReason]
+                );
+            }
+        }
     }
 
     private function usesCraft6ElementQuery(): bool

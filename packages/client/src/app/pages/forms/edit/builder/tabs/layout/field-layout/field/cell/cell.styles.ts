@@ -1,4 +1,5 @@
 import { contentPreview } from "@ff-client/styles/content-preview";
+import { textControl } from "@ff-client/styles/craft6";
 import { CardCell } from "@ff-client/styles/field-cells/cards";
 import { RangeCell } from "@ff-client/styles/field-cells/range";
 import { RatingCell } from "@ff-client/styles/field-cells/rating";
@@ -118,14 +119,14 @@ export const FieldCellWrapper = styled.div`
   }
 
   &.active {
-    border: 1px dashed #5782ef;
+    border: 1px dashed var(--c-color-accent-border-normal);
   }
 
   &:hover {
-    background: light-dark(#f3f7fd, ${colors.secondarySurface});
+    background: var(--c-color-neutral-fill-quiet);
 
     &:not(.active) {
-      border: 1px solid light-dark(#cdd8e4, ${colors.border});
+      border: 1px solid var(--c-color-neutral-border-quiet);
     }
   }
 
@@ -198,30 +199,15 @@ export const FieldCellWrapper = styled.div`
   input:not([type='checkbox']):not([type='radio']),
   textarea,
   select {
+    ${textControl}
     pointer-events: none;
-
     width: 100%;
-    padding: 6px 9px;
-
-    border: 1px solid light-dark(rgba(96, 125, 159, 0.25), ${colors.inputBorder});
-    background-color: ${colors.inputBackground};
-    border-radius: 3px;
-    color: light-dark(${colors.gray500}, ${colors.text});
-
-    &::placeholder {
-      color: light-dark(${colors.gray300}, ${colors.muted});
-      opacity: 1;
-    }
+    color: var(--c-text-default);
   }
 
   input:not([type='checkbox']):not([type='radio']),
-  select:not([multiple]),
-  .select > select:not([multiple]) {
-    box-sizing: border-box;
-    height: 34px;
-    min-height: 0;
-    padding-block: 6px;
-    line-height: 20px;
+  select:not([multiple]) {
+    height: var(--c-size-control-md);
   }
 
   &[data-field-type='dropdown'],
@@ -232,7 +218,27 @@ export const FieldCellWrapper = styled.div`
     --ui-control-hover-bg-color: ${colors.selectBackground};
     --ui-control-active-bg-color: ${colors.selectBackground};
 
-    .select { background: transparent; border: 0; box-shadow: none; }
+    .select {
+      position: relative;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+
+      &:has(> select:not([multiple]))::after {
+        content: '';
+        position: absolute;
+        display: block;
+        inset-inline-end: var(--c-input-spacing-inline);
+        top: calc(50% - 5px);
+        margin-block-start: 0;
+        width: 7px;
+        height: 7px;
+        border: solid currentColor;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        pointer-events: none;
+      }
+    }
     select, .select > select {
       border: 1px solid ${colors.inputBorder};
       border-radius: 3px;
@@ -242,7 +248,10 @@ export const FieldCellWrapper = styled.div`
       box-shadow: none;
       color: light-dark(${colors.gray500}, ${colors.text});
     }
-    select:not([multiple]) { padding-inline-end: 30px; }
+    select:not([multiple]) {
+      appearance: none;
+      padding-inline-end: 30px;
+    }
   }
 
   &[data-field-type='multiple-select'] select[multiple] {

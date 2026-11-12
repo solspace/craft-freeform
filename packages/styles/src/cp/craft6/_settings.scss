@@ -1,461 +1,164 @@
-// Keep the settings sidebar inside the page gutter rather than letting the
-// legacy desktop layout pull it back across the global navigation divider.
-.freeform-cp.freeform-settings {
-  #main {
-    padding: var(--c-spacing-md);
-    padding-inline-start: 0;
-  }
-
-  #freeform-settings-pane {
-    --cp-container-padding: var(--c-spacing-lg);
-    min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
-    margin: 0;
-
-    > .freeform-secondary-layout {
-      min-height: calc(100dvh - var(--cp-header-height) - 2 * var(--c-spacing-md));
-    }
-
-    #header {
-      padding-block: var(--c-spacing-lg) var(--c-spacing-md);
-      align-items: center;
-    }
-
-    #page-title {
-      flex: 1 1 auto;
-    }
-
-    #header #action-buttons .buttons {
-      margin: 0;
-    }
-
-    #content.content-pane > .tablepane {
-      margin: 0;
-      border: 0;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    #content.content-pane {
-      padding-block-start: calc(var(--c-spacing-md) + var(--c-spacing-sm));
-
-      &:has(> table, > .tablepane, > craft-empty) {
-        padding-block-start: 0;
-      }
-    }
-  }
-
-  #sidebar-container {
+// Keep section rhythm and control widths consistent with Craft's settings pages.
+.freeform-settings #content .cp-container > div {
+  > hr {
+    margin-block: var(--c-spacing-xl);
     margin-inline: 0;
-  }
-
-  #sidebar:has(.freeform-secondary-nav) {
-    padding: 0;
-  }
-
-  #content.content-pane {
-    padding: var(--c-spacing-lg, 16px);
-
-    // Native settings controls use their field width, matching Craft 6.
-    :is(craft-input, craft-input-handle, craft-input-password, craft-input-date, craft-input-time, craft-select, craft-combobox, .freeform-boolean-menu, .autosuggest-container, .select, .selectize-control) {
-      inline-size: 100%;
-      max-inline-size: 100%;
-    }
-
-    // Native fields need their own rhythm, but conditional wrappers and the
-    // form builder's switch/label grid must not add a second set of margins.
-    craft-field,
-    .field {
-      margin-block: calc(var(--c-spacing-md, 8px) * 3);
-    }
-
-    :is(craft-field, .field) :is(craft-field, .field) {
-      margin-block: 0;
-    }
-
-    :is(craft-field, .field) > :is(craft-field, .field):not(.hidden):not([hidden])
-      ~ :is(craft-field, .field):not(.hidden):not([hidden]) {
-      margin-block-start: calc(var(--c-spacing-md, 8px) * 3);
-    }
-
-    h2 {
-      margin-block: var(--c-spacing-lg, 16px) var(--c-spacing-md, 8px);
-    }
-
-    :is(h2, craft-field, .field).first {
-      margin-block-start: 0;
-    }
-
-    hr {
-      margin-block: calc(var(--c-spacing-md) + var(--c-spacing-sm));
-    }
-
-    > form > p,
-    > p {
-      margin-block-end: var(--c-spacing-lg, 16px);
-    }
-
-    // Craft's notice callout uses display: contents, so its own top margin
-    // has no effect. Space the input slot instead, moving the icon and text
-    // together and also handling warnings added after the field is rendered.
-    craft-field:has(> [slot='tip'], > [slot='warning']) > [slot='input'] {
-      margin-block-end: var(--c-spacing-md, 8px);
-    }
-
-    .field.smart-switch {
-      align-items: start;
-      gap: var(--c-spacing-lg, 16px);
-    }
-  }
-}
-
-.freeform-cp {
-  #content table.freeform-settings-table {
-    border-collapse: collapse;
-
-    thead {
-      background: transparent;
-    }
-
-    :is(th, td) {
-      padding: 12px 8px;
-      font-size: 14px;
-      line-height: 1.42;
-      vertical-align: middle;
-      background: transparent;
-      border-radius: 0;
-    }
-
-    thead th {
-      border-block-end: 2px solid var(--c-color-border-quiet);
-      font-weight: 700;
-    }
-
-    tbody :is(th, td) {
-      border-block-end: 1px solid var(--c-color-border-quiet);
-      font-weight: 400;
-    }
-
-    tbody th a {
-      color: var(--c-text-link);
-      font-weight: 500;
-    }
-
-    .color-indicator.status {
-      inline-size: 10px;
-      block-size: 10px;
-      margin-inline-end: 4px;
-      vertical-align: -1px;
-    }
-  }
-
-  #content craft-select-color.form-control {
-    --c-spacing-sm: 8px;
-    display: block;
-    flex: 0 1 15rem;
-    inline-size: 15rem;
-    max-inline-size: min(100%, 15rem);
-  }
-}
-
-.freeform-cp.freeform-submission-edit {
-  #main {
-    padding: 8px 8px 8px 0;
-  }
-
-  #freeform-submission-pane {
-    min-height: calc(100dvh - var(--cp-header-height) - 16px);
-  }
-
-  .freeform-submission-layout {
-    grid-template-columns: minmax(0, 1fr) 22rem;
-    grid-template-areas: 'header details' 'content details' 'notices details' 'footer details';
-    min-height: calc(100dvh - var(--cp-header-height) - 16px);
-
-    > #main-content {
-      display: contents;
-    }
-
-    #header-container {
-      grid-area: header;
-      padding: 16px 16px 8px;
-      margin: 0;
-
-      #header {
-        padding: 0;
-      }
-    }
-
-    #content-container {
-      grid-area: content;
-      width: auto;
-      min-width: 0;
-      padding: 0;
-    }
-
-    #content {
-      padding: 12px 16px 24px;
-    }
-
-    #details-container {
-      grid-area: details;
-      width: auto;
-      margin: 0;
-      padding: 0;
-      border-inline-start: 1px solid var(--c-color-border-quiet);
-      background: var(--c-surface-default);
-    }
-
-    #details {
-      padding: 16px;
-      background: var(--c-surface-default);
-      box-shadow: none;
-    }
-
-    .freeform-info-heading {
-      margin: 0 0 24px;
-      padding: 0 0 16px;
-      border-block-end: 1px solid var(--c-color-border-quiet);
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 28px;
-    }
-
-    #details :is(.meta, .field) {
-      padding: 0;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
-    }
-
-    #details :is(craft-field, .field) {
-      margin-block: 0 24px;
-    }
-
-    #details .meta.read-only {
-      padding-block-start: 16px;
-      border-block-start: 1px solid var(--c-color-border-quiet);
-
-      .data {
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        margin-block: 12px;
-
-        .heading {
-          font-size: 12px;
-          font-weight: 700;
-          color: var(--c-text-default);
-        }
-
-        .value {
-          min-width: 0;
-          text-align: end;
-          overflow-wrap: anywhere;
-          color: var(--c-text-default);
-        }
-      }
-    }
-
-    #status-menu-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 34px;
-      padding: 6px 10px;
-      border: 1px solid var(--c-form-control-border-color);
-      border-radius: var(--c-form-control-radius);
-      background: var(--c-form-control-fill);
-    }
-
-    @media (max-width: 1023px) {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'header' 'content' 'details' 'notices' 'footer';
-    }
-  }
-}
-
-.freeform-cp #freeform-client-app .freeform-import-export-surface #content.content-pane {
-  padding: 12px 16px 24px;
-}
-
-.freeform-cp #freeform-submission-pane #details-container {
-  #details {
-    padding: 0;
-  }
-
-  .details {
-    --neg-padding: 0px;
-    padding: 16px;
-  }
-
-  #settings {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    padding: 0;
     border: 0;
-    border-radius: 0;
-    background: transparent;
-    box-shadow: none;
-
-    :is(craft-field, .field) {
-      margin: 0;
-      padding: 0;
-      background: transparent;
-    }
-
-    craft-input {
-      width: 100%;
-    }
+    border-block-start: 1px solid var(--c-color-neutral-border-quiet);
   }
 
-  .freeform-submission-note {
-    min-height: 60px !important;
-    background: var(--c-form-control-fill);
-    border: 1px solid var(--c-form-control-border-color);
-    box-shadow: var(--c-input-shadow);
+  > h2 {
+    margin-block: 0 var(--c-spacing-xl);
+    font-size: var(--c-text-lg);
+    line-height: var(--c-leading-normal);
   }
 
+  .field > [slot='input']:is(craft-input, craft-select, craft-combobox, craft-autosuggest, .freeform-boolean-menu) {
+    inline-size: 100%;
+    max-inline-size: 40rem;
+  }
+
+  .ff-toolbar-setting .field > craft-combobox[slot='input'] {
+    inline-size: 100%;
+    max-inline-size: none;
+  }
+}
+
+// Freeform submission metadata is plugin content inside Craft's native details rail.
+.freeform-submission-edit {
+  .freeform-submission-form { display: inline-flex; align-items: center; gap: var(--c-spacing-sm); }
+  .freeform-submission-note { width: 100%; box-sizing: border-box; }
   .meta.read-only .data {
     display: grid;
-    grid-template-columns: 7rem minmax(0, 1fr);
-    align-items: baseline;
-    gap: 16px;
-    margin: 0;
-    padding: 6px 0;
-
-    .heading, .value {
-      float: none;
-      width: auto;
-      margin: 0;
-      padding: 0;
-    }
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: var(--c-spacing-lg);
+    padding-block: var(--c-spacing-sm);
+    .value { text-align: end; overflow-wrap: anywhere; }
   }
 }
-
-.freeform-cp #freeform-submission-pane #details-container #settings.meta {
-  // Craft's legacy meta selector forces a gray background with !important.
-  background: transparent !important;
-  > craft-field { display: block; }
-}
-
-.freeform-cp #freeform-submission-pane #details-container {
-  .freeform-submission-note {
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
-    padding: 8px;
-    border-radius: var(--c-form-control-radius);
-    font: inherit;
-  }
-  #settings > .field:not(craft-field) {
-    display: block;
-    min-height: 0;
-    > .heading { padding: 0; margin: 0 0 8px; }
-    > .input { padding: 0; }
-  }
-}
-
-.freeform-cp #freeform-submission-pane > .freeform-submission-layout:has(#details-container[data-state='collapsed']) {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: 'header' 'content' 'notices' 'footer';
-}
-
-.freeform-cp #freeform-client-app .freeform-integration-surface .btn.info-button {
-  min-height: 34px;
-  height: 34px;
-  padding: 6px 10px;
-  font-size: 14px;
-  color: var(--c-color-neutral-on-normal);
-  background: var(--c-color-neutral-fill-normal);
-}
-
-.freeform-cp #freeform-submission-pane #details-container #settings > .field:not(craft-field) {
-  > .heading {
-    float: none;
-    width: auto;
+// Keep the legacy settings content within Craft's native panel rhythm.
+.freeform-settings #content {
+  hr {
+    position: relative;
+    inset-inline-start: calc(-1 * var(--c-spacing-lg));
+    margin-block: var(--c-spacing-xl);
+    margin-inline: 0;
+    width: calc(100% + 2 * var(--c-spacing-lg));
+    max-width: none;
     border: 0;
-    label { font-weight: 700; color: var(--c-text-default); }
+    border-block-start: 1px solid var(--c-color-neutral-border-quiet);
   }
-  > .input { border: 0; }
-}
 
-// Follow Craft 6's DetailsTabs panel and rail, using the same native tab controls.
-.freeform-cp.freeform-submission-edit {
-  #main { padding-inline-end: 50px; }
-  .freeform-info-rail {
-    position: fixed;
-    inset-inline-end: 8px;
-    inset-block-start: calc(var(--cp-header-height) + 17px);
-    width: 34px;
-    &::part(base) { gap: 0; }
-    &::part(strip) { background: transparent; border: 0; padding: 0; }
-    &::part(panels) { display: none; }
-    craft-tab {
-      display: grid;
-      place-items: center;
-      width: 34px;
-      height: 34px;
-      padding: 0;
-      border: 1px solid var(--c-color-border-quiet);
-      border-radius: var(--c-radius-md);
-      background: var(--c-surface-raised);
-      &[aria-selected='true'] {
-        border-color: var(--c-color-accent-border-normal);
-        background: var(--c-color-accent-fill-quiet);
-        color: var(--c-color-accent-on-quiet);
-        &::after { display: none; }
-      }
-    }
+  hr + h2 { margin-block: 0 var(--c-spacing-xl); }
+
+  craft-select-color { inline-size: 14rem; max-inline-size: 100%; }
+  .ff-status-name { display: inline-flex; align-items: center; gap: var(--c-spacing-md); }
+
+  .ff-toolbar-editor { width: 100%; min-width: 0; }
+  .ff-toolbar-setting craft-combobox { inline-size: 100%; max-inline-size: none; }
+  .ff-toolbar-setting craft-field > [slot='help-text'] { display: flow-root; }
+  .ff-toolbar-mode-switch [data-toolbar-toggle] {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
-  #freeform-submission-pane .freeform-submission-layout {
-    grid-template-columns: minmax(0, 1fr) 25rem;
-    &:has(#details-container.hidden) {
+
+  .ff-service-workflow,
+  .ff-service-setup {
+    border-color: var(--c-color-neutral-border-quiet);
+  }
+
+  .freeform-queue-ping-promo {
+    display: grid;
+    grid-template-columns: 80px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--c-spacing-lg) var(--c-spacing-xl);
+    padding: var(--c-spacing-xl);
+    border-color: var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-lg);
+    background: var(--c-surface-raised);
+
+    .freeform-queue-ping-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--c-color-accent-fill-quiet);
+      color: var(--c-text-link);
+      svg { width: 64px; height: 64px; }
+    }
+
+    .freeform-queue-ping-copy { max-inline-size: 66ch; }
+    .freeform-queue-ping-heading { margin-block-end: var(--c-spacing-md); }
+    h2 { margin-block: 0 var(--c-spacing-md); }
+    p { line-height: 1.6; }
+    .freeform-queue-ping-details { margin-block-start: var(--c-spacing-md); }
+    > .btn { margin: 0; justify-self: start; }
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 80px minmax(0, 1fr);
+      > .btn { grid-column: 2; }
+    }
+
+    @media (max-width: 600px) {
       grid-template-columns: minmax(0, 1fr);
-      grid-template-areas: 'header' 'content' 'notices' 'footer';
+      padding: var(--c-spacing-lg);
+      > .btn { grid-column: 1; }
     }
-    #details-toggle { display: none; }
   }
-  #freeform-submission-pane #details-container {
-    .details { padding: 16px; }
-    .freeform-info-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: var(--cp-header-height);
-      margin: -16px -16px 16px;
-      padding: 4px 16px;
-      border-block-end: 1px solid var(--c-color-border-quiet);
-      h3 { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; }
+
+  .freeform-demo-installer .freeform-demo-note {
+    border: 1px solid var(--c-color-warning-border-quiet);
+    border-radius: var(--c-radius-md);
+  }
+
+  .smart-switch craft-field.field { margin-block: 0; }
+
+  .freeform-throttling-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--c-spacing-sm);
+
+    > craft-select {
+      flex: 0 0 10rem;
+      inline-size: 10rem;
+      max-inline-size: 100%;
     }
-    .freeform-submission-form { display: inline-flex; align-items: center; gap: 6px; }
-    .freeform-submission-note {
-      min-height: 34px !important;
-      height: 34px;
-      background: var(--c-form-control-fill) !important;
-    }
-    .meta.read-only .data {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-      .value { justify-self: end; text-align: end; }
+  }
+
+  .category-item-list .lock-button {
+    align-self: center;
+    box-sizing: border-box;
+    width: var(--c-size-control-md);
+    height: var(--c-size-control-md);
+    padding: 0;
+    border: 0;
+    border-radius: var(--c-radius-sm);
+    background: transparent;
+    box-shadow: none;
+    color: var(--c-text-quiet);
+    cursor: pointer;
+
+    span { fill: currentColor; }
+    span.unlocked { color: var(--c-color-success-on-quiet); }
+    span.locked { color: var(--c-color-danger-on-quiet); }
+
+    &:hover { color: var(--c-text-default); }
+
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
     }
   }
 }
 
-@media (max-width: 1023px) {
-  .freeform-cp.freeform-submission-edit #freeform-submission-pane .freeform-submission-layout {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'header' 'content' 'details' 'notices' 'footer';
-  }
+// The native picker uses a public pane part; keep its long icon list scrollable.
+.freeform-settings .icon-picker-pane::part(base) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
-.freeform-cp #freeform-submission-pane #details-container {
-  #details, .details { width: 100%; max-width: none; box-sizing: border-box; }
-  #freeform-info-close {
-    width: 24px;
-    height: 24px;
-    margin-inline-end: -5px;
-    svg { width: 16px; height: 16px; }
-  }
+.freeform-settings .icon-picker-pane::part(body) {
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
 }

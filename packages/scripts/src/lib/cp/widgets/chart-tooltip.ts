@@ -1,11 +1,23 @@
-import type { TooltipModel } from "chart.js";
+import type { TooltipItem, TooltipModel } from "chart.js";
 import type { WidgetChartType } from "./chart-data";
 import { getWidgetFrameHost } from "./frame-session";
 
 type TooltipState = Pick<
   TooltipModel<WidgetChartType>,
-  "opacity" | "dataPoints" | "title" | "caretX" | "caretY"
->;
+  "opacity" | "title" | "caretX" | "caretY"
+> & {
+  dataPoints: (Pick<
+    TooltipItem<WidgetChartType>,
+    "raw" | "label" | "dataIndex"
+  > & {
+    dataset: {
+      label?: string;
+      borderColor?: unknown;
+      backgroundColor?: unknown;
+    };
+    element: { x: number; y: number };
+  })[];
+};
 
 export function createChartTooltip(root: HTMLElement, radial: boolean) {
   const plot = root.querySelector<HTMLElement>("[data-chart-plot]")!;

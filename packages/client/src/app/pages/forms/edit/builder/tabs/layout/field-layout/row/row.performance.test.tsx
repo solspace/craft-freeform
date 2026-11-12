@@ -25,7 +25,7 @@ vi.mock("./row.field-drop", () => ({
   useRowFieldDrop: () => ({ ref: (ref: unknown) => ref }),
 }));
 vi.mock("../field/field.placeholder", () => ({
-  FieldDragPlaceholder: () => null,
+  FieldDragPlaceholder: (): null => null,
 }));
 vi.mock("../field/field", () => ({
   Field: ({ field }: { field: Field }) => {
@@ -43,7 +43,7 @@ it("keeps the other 144 rows unchanged when one field is edited", async () => {
   })) as Field[];
   const store = configureStore({
     reducer: {
-      layout: (state = { fields }, action) =>
+      layout: (state: { fields: Field[] } = { fields }, action) =>
         action.type === "rename"
           ? {
               fields: state.fields.map((field, index) =>

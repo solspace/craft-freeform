@@ -26,6 +26,8 @@ it("shows the saved JPEG metadata and private thumbnail after HEIC conversion", 
   } as unknown as Freeform;
   const preview = "data:image/jpeg;base64,/9j/AA==";
   vi.mocked(ajax.post).mockResolvedValue({
+    status: 200,
+    request: new XMLHttpRequest(),
     data: {
       id: "saved-photo-id",
       name: "phone.jpg",
@@ -76,7 +78,11 @@ it("keeps the optimized thumbnail when the original preview finishes reading lat
     ),
   } as unknown as Freeform;
   const preview = "data:image/jpeg;base64,/9j/AA==";
-  vi.mocked(ajax.post).mockResolvedValue({ data: { id: "saved", preview } });
+  vi.mocked(ajax.post).mockResolvedValue({
+    status: 200,
+    request: new XMLHttpRequest(),
+    data: { id: "saved", preview },
+  });
   await handleFileUpload(
     new File(["jpeg"], "photo.jpg"),
     "photos",

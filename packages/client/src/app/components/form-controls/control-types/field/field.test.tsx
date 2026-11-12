@@ -1,4 +1,4 @@
-import type { Field } from "@ff-client/types/fields";
+import type { Field } from "@editor/store/slices/layout/fields";
 import type { FieldProperty } from "@ff-client/types/properties";
 import { PropertyType } from "@ff-client/types/properties";
 import { act } from "react";
@@ -25,7 +25,7 @@ vi.mock("@editor/store/slices/layout/fields/fields.selectors", () => ({
   fieldSelectors: { all: (state: { fields: Field[] }) => state.fields },
 }));
 vi.mock("@ff-client/contexts/site/site.context", () => ({
-  useSiteContext: () => ({ current: null }),
+  useSiteContext: () => ({ current: null as null }),
 }));
 vi.mock("@ff-client/queries/field-types", () => ({
   useFieldTypeSearch: () => (typeClass: string) => ({

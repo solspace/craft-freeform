@@ -11,23 +11,22 @@ import { NativeSlideout } from "./slideout";
 class CraftSlideout {
   static instances: CraftSlideout[] = [];
   container = document.createElement("div");
-  $container = { 0: this.container };
+  outerContainer = document.createElement("div");
   onClose?: () => void;
-  onBeforeClose?: () => void;
   open = vi.fn();
   close = vi.fn();
-  destroy = vi.fn(() => this.container.remove());
+  destroy = vi.fn(() => this.outerContainer.remove());
 
   constructor(host: HTMLElement, settings: { autoOpen: boolean }) {
     expect(settings.autoOpen).toBe(false);
     this.container.append(host);
-    document.body.append(this.container);
+    this.outerContainer.append(this.container);
+    document.body.append(this.outerContainer);
     CraftSlideout.instances.push(this);
   }
 
   on(event: string, callback: () => void) {
     if (event === "close") this.onClose = callback;
-    else if (event === "beforeClose") this.onBeforeClose = callback;
     else throw new Error(`Unexpected event: ${event}`);
   }
 }
@@ -88,15 +87,20 @@ describe("native Craft manager slideout", () => {
     );
     expect(panel.close).toHaveBeenCalledOnce();
   });
-  it("finishes closing on Craft 4 when no transition event fires", () => {
-    vi.useFakeTimers();
+  it("opens a named manager with Craft 6's DOM-based slideout API", () => {
     const onClose = vi.fn();
     const panel = setup(
-      <NativeSlideout content={() => <input />} onClose={onClose} />,
+      <NativeSlideout
+        title="Field Manager"
+        content={() => <input />}
+        onClose={onClose}
+      />,
     );
-    act(() => panel.onBeforeClose?.());
-    act(() => vi.advanceTimersByTime(50));
-    expect(onClose).toHaveBeenCalledOnce();
+    expect(panel.outerContainer.getAttribute("aria-label")).toBe(
+      "Field Manager",
+    );
+    expect(panel.open).toHaveBeenCalledOnce();
+    act(() => panel.onClose?.());
     act(() => panel.onClose?.());
     expect(onClose).toHaveBeenCalledOnce();
   });

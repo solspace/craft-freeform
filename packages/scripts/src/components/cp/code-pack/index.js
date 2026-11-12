@@ -1,5 +1,5 @@
 export function initDemoInstaller(root) {
-  if (!root) return;
+  if (!root || root.dataset.demoReady) return;
 
   for (const preview of root.querySelectorAll("[data-file-preview]")) {
     const toggle = preview.querySelector("[data-view-files]");
@@ -17,8 +17,12 @@ export function initDemoInstaller(root) {
   }
 
   const form = root.querySelector("#demo-install-form");
-  const prefix = root.querySelector("#prefix");
+  const prefixHost = root.querySelector("#prefix");
+  const prefix = prefixHost?.matches("input")
+    ? prefixHost
+    : prefixHost?.querySelector("input");
   if (!form || !prefix) return;
+  root.dataset.demoReady = "true";
 
   const submit = form.querySelector('[type="submit"]');
   const prefixError = root.querySelector("[data-prefix-error]");
@@ -198,8 +202,6 @@ export function initDemoInstaller(root) {
 
 const initialize = () =>
   initDemoInstaller(document.getElementById("demo-installer"));
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initialize, { once: true });
-} else {
-  initialize();
-}
+whenCpReady(initialize, "#demo-installer");
+
+import { whenCpReady } from "../../../lib/cp/ready";

@@ -74,47 +74,21 @@ export const NativeSlideout: React.FC<Props> = ({
       },
       triggerElement: document.activeElement ?? undefined,
     });
-    if (title) panel.$outerContainer[0].setAttribute("aria-label", title);
+    if (title) panel.outerContainer.setAttribute("aria-label", title);
     panelRef.current = panel;
     let disposed = false;
     let closed = false;
-    let closeTimeout: ReturnType<typeof setTimeout>;
     const finishClose = (): void => {
-      clearTimeout(closeTimeout);
       if (!disposed && !closed) {
         closed = true;
         onCloseRef.current();
       }
     };
     panel.on("close", finishClose);
-    panel.on("beforeClose", () => {
-      if (disposed) return;
-      // Craft 4 waits for transitionend, which is absent when motion is disabled.
-      const styles = getComputedStyle(panel.$container[0]);
-      const longestTime = (times: string): number =>
-        Math.max(
-          0,
-          ...times
-            .split(",")
-            .map(
-              (time) =>
-                (parseFloat(time) || 0) *
-                (time.trim().endsWith("ms") ? 1 : 1000),
-            ),
-        );
-      clearTimeout(closeTimeout);
-      closeTimeout = setTimeout(
-        finishClose,
-        longestTime(styles.transitionDuration) +
-          longestTime(styles.transitionDelay) +
-          50,
-      );
-    });
     panel.open();
 
     return () => {
       disposed = true;
-      clearTimeout(closeTimeout);
       // Closing unregisters the native panel stack before destroying the DOM.
       panel.close();
       panel.destroy();

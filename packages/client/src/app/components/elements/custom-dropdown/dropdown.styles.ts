@@ -3,14 +3,24 @@ import { scrollBar } from "@ff-client/styles/mixins";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
+export const SearchRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--c-spacing-md);
+  min-width: 0;
+`;
+
 export const Search = styled.input`
   ${dropdownControl};
   width: 100%;
-  padding: var(--c-spacing-sm) 30px var(--c-spacing-sm) var(--c-input-spacing-inline);
+  flex: 1;
+  min-width: 0;
+  padding: var(--c-spacing-sm) var(--c-input-spacing-inline);
 `;
 
 export const ListWrapper = styled.div`
   max-height: 300px;
+  min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
 
@@ -87,35 +97,51 @@ export const DropdownRollout = styled(animated.div)`
   left: 0;
   right: 0;
   top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--c-spacing-sm);
+  max-height: calc(100dvh - 16px);
+  box-sizing: border-box;
 
   background-color: var(--c-surface-overlay);
   color: var(--c-text-default);
   border: 1px solid var(--c-color-neutral-border-quiet);
   border-radius: var(--c-radius-md);
   box-shadow: var(--c-shadow-sm);
-  padding: var(--c-spacing-sm);
+  padding: var(--c-spacing-md);
 
   overflow: hidden;
   z-index: 1000;
 `;
 
-export const CloseButton = styled.button`
-  position: absolute;
-  inset-block-start: var(--c-spacing-sm);
-  inset-inline-end: var(--c-spacing-sm);
+export const CloseButton = styled.button.attrs({ type: "button" })`
+  position: static;
+  flex: 0 0 var(--c-size-control-md);
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 30px;
+  width: var(--c-size-control-md);
   height: var(--c-size-control-md);
   color: var(--c-text-default);
+  background: transparent;
+  border: 0;
+  border-radius: var(--c-radius-sm);
+  padding: 0;
+  box-sizing: border-box;
+
+  > svg { width: 16px; height: 16px; }
 
   cursor: pointer;
 
   &:hover {
-    background-color: var(--c-color-neutral-fill-normal);
+    background-color: var(--c-color-neutral-fill-quiet);
+  }
+
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
   }
 `;
 
@@ -130,8 +156,6 @@ export const DropdownWrapper = styled.div`
     }
 
     ${CurrentValue} {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
 
       &:hover {
         box-shadow: none;

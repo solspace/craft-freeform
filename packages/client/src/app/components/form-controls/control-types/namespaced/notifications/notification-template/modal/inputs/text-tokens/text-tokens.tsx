@@ -1,9 +1,10 @@
 import { ControlBlock } from "@components/form-controls/control.block";
 import { useAppStore } from "@editor/store";
 import type { Suggestion } from "@ff-client/types/notifications";
+import translate from "@ff-client/utils/translations";
 import DOMPurify from "dompurify";
 import type { FC, FormEvent } from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { createElement, useCallback, useEffect, useMemo, useRef } from "react";
 
 import type { InputControl } from "../../template.modal.types";
 import { hide, show } from "../html-body/tokens/operations/dropdown";
@@ -236,7 +237,7 @@ export const TextTokens: FC<InputControl> = (props) => {
     <ControlBlock {...props}>
       <TextTokenWrapper>
         <TextTokenContainer
-          className="text fullwidth"
+          className="freeform-token-input"
           ref={wrapperRef}
           contentEditable
           onInput={handleInput}
@@ -248,13 +249,17 @@ export const TextTokens: FC<InputControl> = (props) => {
 
         <AddButton
           ref={buttonRef}
-          className="btn"
+          type="button"
+          aria-label={translate("Insert a token into {label}", {
+            label: translate(props.label),
+          })}
+          title={translate("Insert a token")}
           onClick={(): void => {
             restoreRange();
             show(buttonBackend);
           }}
         >
-          <i className="fa-solid fa-plus" />
+          {createElement("craft-icon", { name: "plus", "aria-hidden": true })}
         </AddButton>
       </TextTokenWrapper>
     </ControlBlock>

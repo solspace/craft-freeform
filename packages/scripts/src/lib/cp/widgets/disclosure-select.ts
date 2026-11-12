@@ -6,7 +6,7 @@ export class DisclosureSelect {
   readonly menu: HTMLDivElement;
   private readonly label: HTMLSpanElement;
   private open = false;
-  private readonly originalHidden: boolean;
+  private readonly originalHidden: HTMLSelectElement["hidden"];
   private readonly originalTabIndex: number;
   private readonly labels: HTMLLabelElement[];
   private readonly observer: MutationObserver;

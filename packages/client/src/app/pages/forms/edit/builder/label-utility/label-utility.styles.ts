@@ -1,11 +1,16 @@
 import { Wrapper as InfoBanner } from "@components/notification-blocks/info/info-block.styles";
+import { editorButton } from "@ff-client/styles/craft6";
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const UtilityTrigger = styled.button.attrs({
   type: "button",
-  className: "btn small",
+  className: "freeform-label-utility-trigger",
 })`
+  ${editorButton}
+  border-color: transparent;
+  background: transparent;
+  color: var(--c-text-quiet);
   flex: 0 0 auto;
   align-self: center;
   white-space: nowrap;
@@ -22,7 +27,7 @@ export const UtilityBody = styled.div`
   .utility-hint { color: ${colors.gray500}; font-size: 13px; }
   .utility-scope { margin: 24px 0; max-width: 320px; }
   .utility-scope label { display: block; margin-bottom: 6px; font-weight: 600; }
-  .utility-scope .select, .utility-scope select { width: 100%; }
+  .utility-scope .cp-select, .utility-scope select { width: 100%; }
   .utility-type-count { color: ${colors.gray500}; }
   ${InfoBanner} { margin-top: 18px; padding: 8px 12px; gap: 8px; font-size: 12px; }
   ${InfoBanner} > svg { width: 16px; height: 16px; }
@@ -37,7 +42,7 @@ export const UtilityCheckboxWrapper = styled.div`
   position: relative;
   min-height: 20px;
   label { display: block; margin: 0; font-weight: 400; cursor: pointer; }
-  .select + &, .text + & { margin-top: 10px; }
+  .cp-select + &, .text + & { margin-top: 10px; }
 `;
 export const UtilityControls = styled.div`
   display: grid;
@@ -46,8 +51,8 @@ export const UtilityControls = styled.div`
   gap: 18px;
 
   > div > label { display: block; margin-bottom: 6px; font-weight: 600; }
-  .select, select { width: 100%; }
-  select { min-height: 34px; }
+  .cp-select, select { width: 100%; }
+  select { min-height: var(--c-size-control-md); }
   .utility-replace { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
   .utility-replace > div > label { display: block; margin-bottom: 6px; font-weight: 600; }
   .utility-replace input.text { box-sizing: border-box; width: 100%; }

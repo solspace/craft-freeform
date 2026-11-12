@@ -64,6 +64,7 @@
     {{ parent() }}
     {% set databaseGuideLink %}<a href="https://docs.solspace.com/craft/freeform/v5/configuration/console-commands/#check-database-integrity" target="_blank" rel="noopener">{{ 'database integrity guide'|t('freeform') }}</a>{% endset %}
     {{ ui('tabs', {
+        label: 'Diagnostics sections'|t('freeform'),
         attributes: {class: 'freeform-diagnostic-tabs', 'data-freeform-page-tabs': true},
         tabs: [
             {label: 'Overview'|t('freeform'), controls: 'freeform-diagnostics-overview'},

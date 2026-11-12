@@ -15,7 +15,7 @@
     {
         id: 'templates',
         label: 'Templates'|t('app'),
-        icon: 'templates',
+        icon: 'file-code',
         count: codePack.templates.contents.fileCount,
         summary: '{count} files'|t('freeform', {count: codePack.templates.contents.fileCount}),
         contents: codePack.templates.contents,
@@ -31,7 +31,7 @@
     {
         id: 'routes',
         label: 'Routes'|t('app'),
-        icon: 'routes',
+        icon: 'signs-post',
         count: codePack.routes.data|length,
         summary: '{count} routes'|t('freeform', {count: codePack.routes.data|length}),
         contents: codePack.routes.data,
@@ -61,7 +61,7 @@
             <ul class="freeform-demo-summary">
                 {% for component in components %}
                     <li>
-                        <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                        <span class="freeform-demo-icon" aria-hidden="true">{{ craft.freeform.formIcon(component.icon) }}</span>
                         <span><strong>{{ component.label }}</strong><span class="light">{{ component.summary }}</span></span>
                     </li>
                 {% endfor %}
@@ -107,14 +107,14 @@
                     {% for component in components %}
                         <div{% if component.id == 'routes' %} class="freeform-demo-routes"{% endif %}>
                             <h3 class="freeform-demo-section-heading">
-                                <span data-icon="{{ component.icon }}" aria-hidden="true"></span>
+                                <span class="freeform-demo-icon" aria-hidden="true">{{ craft.freeform.formIcon(component.icon) }}</span>
                                 <span>{{ component.label }}</span>
                                 <span class="freeform-demo-count">{{ component.count }}</span>
                             </h3>
                             {% if component.id == 'routes' %}
                                 <ul class="directory-structure routes">
                                     {% for route in component.contents %}
-                                        <li><span class="route" data-name="/{{ route.urlPattern }}">{{ prefix }}/{{ route.urlPattern }}</span><div class="template">{{ route.template }}</div></li>
+                                        <li><span class="freeform-demo-icon" aria-hidden="true">{{ craft.freeform.formIcon('signs-post') }}</span><span class="route" data-name="/{{ route.urlPattern }}">{{ prefix }}/{{ route.urlPattern }}</span><div class="template">{{ route.template }}</div></li>
                                     {% endfor %}
                                 </ul>
                             {% elseif component.id == 'templates' %}

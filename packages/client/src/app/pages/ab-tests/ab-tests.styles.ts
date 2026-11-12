@@ -9,8 +9,8 @@ import styled from "styled-components";
 import type { ABStatus } from "./ab-tests.types";
 
 export const PageLayout = styled.div`
-  min-height: calc(100dvh - var(--cp-header-height) - 16px);
-  padding: 16px;
+  min-width: 0;
+  padding-block-start: var(--c-spacing-lg);
 `;
 
 export const PageWrapper = styled.div`

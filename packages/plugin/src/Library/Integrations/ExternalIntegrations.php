@@ -12,19 +12,20 @@ use verbb\vizy\services\Extensions;
 
 class ExternalIntegrations
 {
+    // Unreleased third-party majors are provisional Craft 6 targets.
+    // Recheck their APIs and version numbers as their Craft 6 releases become available.
     public const DEFINITIONS = [
-        'ckeditor' => ['name' => 'CKEditor', 'package' => 'craftcms/ckeditor', 'min' => '5.9.0', 'max' => '6.0.0', 'support' => '5.9+', 'description' => 'Insert forms directly into rich-text content using a Freeform Form toolbar button.'],
-        'vizy' => ['name' => 'Vizy', 'package' => 'verbb/vizy', 'min' => '4.0.0', 'max' => '5.0.0', 'support' => '4.x', 'description' => 'Insert native Freeform Form nodes from the editor toolbar.'],
-        'navigation' => ['name' => 'Navigation', 'package' => 'verbb/navigation', 'min' => '3.0.0', 'max' => '5.0.0', 'support' => '3.x–4.x', 'description' => 'Select Freeform forms as menu nodes for rendering in your site templates.'],
-        'craft-link' => ['name' => 'Craft Link', 'package' => null, 'min' => '6.0.0-alpha.19', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Select a Freeform Form in Craft’s built-in Link field.'],
-        'hyper' => ['name' => 'Hyper', 'package' => 'verbb/hyper', 'min' => '2.0.0', 'max' => '4.0.0', 'support' => '2.x–3.x', 'description' => 'Select Freeform forms using the Freeform Form link type.'],
-        'linkit' => ['name' => 'Linkit', 'package' => 'presseddigital/linkit', 'min' => '5.0.0', 'max' => '6.0.0', 'support' => '5.x', 'description' => 'Select Freeform forms using the Freeform Form link type.'],
+        'ckeditor' => ['name' => 'CKEditor', 'package' => 'craftcms/ckeditor', 'min' => '6.0.0-beta.1', 'max' => '7.0.0', 'support' => '6.x', 'description' => 'Insert forms directly into rich-text content using a Freeform Form toolbar button.'],
+        'vizy' => ['name' => 'Vizy', 'package' => 'verbb/vizy', 'min' => '5.0.0-alpha.1', 'max' => '6.0.0', 'support' => '5.x', 'expected' => true, 'description' => 'Insert native Freeform Form nodes from the editor toolbar.'],
+        'navigation' => ['name' => 'Navigation', 'package' => 'verbb/navigation', 'min' => '5.0.0-alpha.1', 'max' => '6.0.0', 'support' => '5.x', 'expected' => true, 'description' => 'Select Freeform forms as menu nodes for rendering in your site templates.'],
+        'craft-link' => ['name' => 'Craft Link', 'package' => null, 'min' => '6.0.0-beta.1', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Select a Freeform Form in Craft’s built-in Link field.'],
+        'hyper' => ['name' => 'Hyper', 'package' => 'verbb/hyper', 'min' => '4.0.0-alpha.1', 'max' => '5.0.0', 'support' => '4.x', 'expected' => true, 'description' => 'Select Freeform forms using the Freeform Form link type.'],
+        'linkit' => ['name' => 'Linkit', 'package' => 'presseddigital/linkit', 'min' => '6.0.0-alpha.1', 'max' => '7.0.0', 'support' => '6.x', 'expected' => true, 'description' => 'Select Freeform forms using the Freeform Form link type.'],
     ];
 
     public const FIELD_CONTAINERS = [
-        'content-block' => ['name' => 'Content Block', 'package' => null, 'min' => '6.0.0-alpha.19', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Add a Freeform Form field to the content block’s field layout.'],
-        'matrix' => ['name' => 'Matrix', 'package' => null, 'min' => '6.0.0-alpha.19', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Add a Freeform Form field to a nested entry type.'],
-        'neo' => ['name' => 'Neo', 'package' => 'spicyweb/craft-neo', 'min' => '5.0.0', 'max' => '6.0.0', 'support' => '5.x', 'description' => 'Add a Freeform Form field to a Neo block type.'],
+        'content-block' => ['name' => 'Content Block', 'package' => null, 'min' => '6.0.0-beta.1', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Add a Freeform Form field to the content block’s field layout.'],
+        'matrix' => ['name' => 'Matrix', 'package' => null, 'min' => '6.0.0-beta.1', 'max' => '7.0.0', 'support' => 'Craft 6', 'description' => 'Add a Freeform Form field to a nested entry type.'],
     ];
 
     public function __construct(private ?Settings $settings = null, private ?FormIconService $icons = null) {}
@@ -56,7 +57,7 @@ class ExternalIntegrations
     public function canRegister(string $id): bool
     {
         $definition = self::DEFINITIONS[$id] ?? null;
-        if (!$definition || version_compare(\Craft::$app->getVersion(), '6.0.0-alpha.19', '<') || version_compare(\Craft::$app->getVersion(), '7.0', '>=')) {
+        if (!$definition || version_compare(\Craft::$app->getVersion(), '6.0.0-beta.1', '<') || version_compare(\Craft::$app->getVersion(), '7.0', '>=')) {
             return false;
         }
         $version = null === $definition['package'] ? \Craft::$app->getVersion()
@@ -152,7 +153,7 @@ class ExternalIntegrations
 
         $displayVersion = $native ? $craft : ($installed && InstalledVersions::isInstalled($definition['package']) ? InstalledVersions::getPrettyVersion($definition['package']) : '');
 
-        return ['installed' => $installed, 'enabled' => $enabled, 'version' => $version ?? '0', 'displayVersion' => $displayVersion, 'craft6' => version_compare($craft, '6.0.0-alpha.19', '>=') && version_compare($craft, '7.0', '<'), 'capable' => $capable];
+        return ['installed' => $installed, 'enabled' => $enabled, 'version' => $version ?? '0', 'displayVersion' => $displayVersion, 'craft6' => version_compare($craft, '6.0.0-beta.1', '>=') && version_compare($craft, '7.0', '<'), 'capable' => $capable];
     }
 
     private function settings(): ?Settings

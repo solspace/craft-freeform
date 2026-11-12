@@ -61,13 +61,8 @@ export const ListProvider: React.FC = () => {
     });
   }, [queryClient]);
 
-  return createElement(
-    "craft-pane",
-    {
-      className: "freeform-settings-surface freeform-forms-surface",
-      padding: "0",
-    },
-    <PageLayout slot="body">
+  return (
+    <PageLayout>
       <Breadcrumb id="form-list" label="Forms" url="/forms" />
 
       <HeaderContainer>
@@ -83,21 +78,29 @@ export const ListProvider: React.FC = () => {
               <button
                 type="button"
                 className={classes("btn", View.Grid === view && "active")}
-                data-icon="element-cards"
                 aria-label={translate("Display as cards")}
                 aria-pressed={View.Grid === view}
                 title={translate("Display as cards")}
                 onClick={() => setView(View.Grid)}
-              />
+              >
+                {createElement("craft-icon", {
+                  name: "grid-2",
+                  "aria-hidden": true,
+                })}
+              </button>
               <button
                 type="button"
                 className={classes("btn", View.List === view && "active")}
-                data-icon="list"
                 aria-label={translate("Display in a table")}
                 aria-pressed={View.List === view}
                 title={translate("Display as list")}
                 onClick={() => setView(View.List)}
-              />
+              >
+                {createElement("craft-icon", {
+                  name: "list",
+                  "aria-hidden": true,
+                })}
+              </button>
             </ViewButtons>
             {view === View.Grid && config.editions.isAtLeast(Edition.Pro) && (
               <PeriodControlHost ref={setPeriodHost} />
@@ -122,9 +125,13 @@ export const ListProvider: React.FC = () => {
             <ButtonGroup>
               <Button
                 type="button"
-                className="btn submit add icon"
+                className="btn submit"
                 onClick={openAddForm}
               >
+                {createElement("craft-icon", {
+                  name: "plus",
+                  "aria-hidden": true,
+                })}
                 {translate("Add new form")}
               </Button>
             </ButtonGroup>
@@ -136,6 +143,6 @@ export const ListProvider: React.FC = () => {
       {view === View.Grid && (
         <FormGrid search={search} periodHost={periodHost} />
       )}
-    </PageLayout>,
+    </PageLayout>
   );
 };

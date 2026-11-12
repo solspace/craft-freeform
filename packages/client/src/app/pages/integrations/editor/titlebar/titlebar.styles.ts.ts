@@ -24,7 +24,7 @@ export const VersionString = styled.small`
   color: light-dark(${colors.gray300}, ${colors.muted});
 `;
 
-export const FavoriteButton = styled.button`
+export const FavoriteButton = styled.button.attrs({ type: "button" })`
   cursor: pointer;
 
   display: flex;
@@ -32,6 +32,9 @@ export const FavoriteButton = styled.button`
   justify-content: center;
 
   padding: 6px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
   width: 34px;
   height: 34px;
   border-radius: var(--c-radius-sm);
@@ -47,15 +50,17 @@ export const FavoriteButton = styled.button`
   }
 
   &:hover {
-    svg {
-      fill: ${colors.yellow600};
-    }
+    color: var(--c-color-warning-on-quiet);
+    svg, svg .star-filler { fill: currentColor; }
   }
 
+  &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+
   &.active {
+    color: var(--c-color-warning-on-quiet);
     svg,
     svg .star-filler {
-      fill: ${colors.yellow500};
+      fill: currentColor;
     }
   }
 `;
@@ -190,12 +195,21 @@ export const Action = styled.a`
     font-size: 14px;
   }
 
-  &.info-button {
-    background-color: var(--c-color-neutral-fill-normal);
-
-    &:hover {
-      background-color: var(--c-color-neutral-fill-loud);
+  &&.info-button {
+    min-height: var(--c-size-control-sm);
+    padding: 4px 8px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    color: var(--c-text-quiet);
+    font-size: 12px;
+    line-height: 18px;
+    border-radius: var(--c-radius-sm);
+    &:hover, &[aria-expanded='true'] {
+      background: var(--c-color-neutral-fill-quiet);
+      color: var(--c-text-default);
     }
+    svg { width: 14px; height: 14px; }
   }
 
   i,

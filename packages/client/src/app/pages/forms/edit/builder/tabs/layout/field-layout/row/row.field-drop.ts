@@ -112,7 +112,7 @@ export const useRowFieldDrop = (
     const monitor = manager.getMonitor();
     const updatePosition = () => {
       setHoverPosition(
-        getPosition(monitor.getItem<DragItem>(), monitor.getClientOffset()),
+        getPosition(monitor.getItem() as DragItem, monitor.getClientOffset()),
       );
     };
     // hover() runs before React DnD publishes the new pointer offset. Subscribe

@@ -40,8 +40,8 @@ const createCraft = () => {
 describe("submission index status controls", () => {
   let craft: ReturnType<typeof createCraft>;
   let collection: ReturnType<typeof createCollection>;
-  let cleanup: ReturnType<typeof vi.fn>;
-  let reviewCleanup: ReturnType<typeof vi.fn>;
+  let cleanup: ReturnType<typeof vi.fn<() => void>>;
+  let reviewCleanup: ReturnType<typeof vi.fn<() => void>>;
 
   beforeEach(async () => {
     vi.resetModules();

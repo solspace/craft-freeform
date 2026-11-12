@@ -7,7 +7,7 @@ const randomSubmissions = (min: number, max: number): number =>
 
 export const SampleSkeleton: React.FC = () => (
   <>
-    <Skeleton height={20} width={40} highlightColor="#5372b64f" />
+    <Skeleton height={20} width={40} />
   </>
 );
 

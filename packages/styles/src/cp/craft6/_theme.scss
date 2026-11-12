@@ -1,11 +1,20 @@
 // Bridge Freeform control roles to Craft 6. Craft owns the active color scheme.
 :root:has(body.freeform-cp) {
+  /* The bridged shell no longer defines the legacy spacing/radius aliases. */
+  --xs: var(--c-spacing-xs);
+  --s: var(--c-spacing-sm);
+  --m: var(--c-spacing-md);
+  --l: var(--c-spacing-lg);
+  --xl: var(--c-spacing-xl);
+  --small-border-radius: var(--c-radius-sm);
+  --medium-border-radius: var(--c-radius-md);
+  --large-border-radius: var(--c-radius-lg);
   --pane-bg: var(--c-surface-default);
   --secondary-pane-bg: var(--c-surface-raised);
   --body-bg: var(--c-surface-sunken);
   --modal-bg: var(--c-modal-fill);
   --input-bg: var(--c-input-fill);
-  --input-border-color: var(--c-input-border-color);
+  --input-border-color: var(--c-input-border-color, var(--c-form-control-border-color));
   --text-color: var(--c-text-default);
   --light-text-color: var(--c-text-quiet);
   --link-color: var(--c-text-link);

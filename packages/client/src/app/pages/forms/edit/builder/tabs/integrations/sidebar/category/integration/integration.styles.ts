@@ -19,9 +19,12 @@ export const Wrapper = styled.div`
 `;
 
 export const Icon = styled.div`
-  display: block;
-  width: 20px;
-  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
 
   svg {
     width: 100%;
@@ -32,8 +35,6 @@ export const Icon = styled.div`
 export const Name = styled.div`
   flex-grow: 1;
   max-width: 90%;
-
-  padding: 1px 0;
 
   overflow: hidden;
   text-overflow: ellipsis;

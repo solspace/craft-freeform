@@ -14,12 +14,12 @@ use craft\helpers\Db;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
+use CraftCms\Cms\Element\Actions\ClientAction;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
 use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
-use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
@@ -87,8 +87,21 @@ class Submission extends Element
     public function __construct($config = [])
     {
         $this->formId = $config['formId'] ?? null;
+        $fieldValues = [];
+        foreach ($config as $name => $value) {
+            if (preg_match('/^form_\d+__[a-z\d\-_]+_\d+$/i', $name)) {
+                $fieldValues[$name] = $value;
+                unset($config[$name]);
+            }
+        }
 
         parent::__construct($config);
+
+        // Craft 6 keeps unknown constructor attributes in its model data bag,
+        // bypassing the setter that loads Freeform's per-form field columns.
+        foreach ($fieldValues as $name => $value) {
+            $this->__set($name, $value);
+        }
     }
 
     public function __get($name): mixed
@@ -838,7 +851,11 @@ class Submission extends Element
 
         if (Freeform::getInstance()->isPro()) {
             $actions[] = \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]);
-            $actions[] = \Craft::$app->elements->createAction(['type' => SendNotificationAction::class]);
+            $actions[] = new ClientAction(
+                key: 'freeform:send-notifications',
+                label: Freeform::t('Send Notifications...'),
+                event: 'freeform:send-notifications',
+            );
         }
 
         $actions[] = \Craft::$app->elements->createAction([

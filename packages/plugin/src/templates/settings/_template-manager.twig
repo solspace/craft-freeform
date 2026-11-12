@@ -28,6 +28,7 @@
                 {% set name = file.name is defined ? file.name : file %}
                 {% set fileName = file.fileName is defined ? file.fileName : file %}
                 <li>
+                    <span class="ff-template-icon" aria-hidden="true">{{ craft.freeform.formIcon('file-code') }}</span>
                     <span class="ff-template-file-name">{{ name }}</span>
                     {% if fileName != name %}<code>{{ fileName }}</code>{% endif %}
                 </li>
@@ -82,6 +83,7 @@
         <div class="ff-template-directory-preview">
             <div class="ff-template-directory-header">
                 <div class="ff-template-directory-title">
+                    <span class="ff-template-icon" aria-hidden="true">{{ craft.freeform.formIcon('folder') }}</span>
                     <strong>{{ settings.formTemplateDirectory }}</strong>
                     <span class="ff-template-file-count">{{ formattingFiles|length }} {{ "files"|t('freeform') }}</span>
                 </div>
@@ -142,6 +144,7 @@
         <div class="ff-template-directory-preview">
             <div class="ff-template-directory-header">
                 <div class="ff-template-directory-title">
+                    <span class="ff-template-icon" aria-hidden="true">{{ craft.freeform.formIcon('folder') }}</span>
                     <strong>{{ settings.successTemplateDirectory }}</strong>
                     <span class="ff-template-file-count">{{ successFiles|length }} {{ "files"|t('freeform') }}</span>
                 </div>
@@ -286,6 +289,7 @@
                 <div class="ff-template-directory-preview">
                     <div class="ff-template-directory-header">
                         <div class="ff-template-directory-title">
+                    <span class="ff-template-icon" aria-hidden="true">{{ craft.freeform.formIcon('folder') }}</span>
                             <strong>{{ settings.emailTemplateDirectory }}</strong>
                             <span class="ff-template-file-count">{{ emailFiles|length }} {{ "files"|t('freeform') }}</span>
                         </div>
@@ -424,17 +428,22 @@
         min-width: 0;
         color: var(--text-color, #3f4d5a);
     }
-    .ff-template-directory-title::before {
-        content: "folder";
-        font: 16px/1 Craft;
-        color: var(--gray-500, #708095);
+    .ff-template-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 16px;
+        color: var(--c-text-quiet);
     }
+    .ff-template-icon svg { display: block; width: 16px; height: 16px; fill: currentColor; }
     .ff-template-directory-title strong { overflow-wrap: anywhere; }
     .ff-template-file-count {
         padding: 2px 7px;
         border-radius: 999px;
-        background: var(--gray-200, #e6edf4);
-        color: var(--gray-600, #627182);
+        background: var(--c-color-neutral-fill-normal);
+        color: var(--c-text-quiet);
         font-size: 11px;
         font-weight: 600;
         white-space: nowrap;
@@ -450,12 +459,6 @@
         padding: 6px 14px;
     }
     .ff-template-file-list li + li { border-top: 1px solid var(--hairline-color, #edf0f4); }
-    .ff-template-file-list li::before {
-        content: "templates";
-        flex: 0 0 16px;
-        font: 15px/1 Craft;
-        color: var(--gray-500, #708095);
-    }
     .ff-template-file-name { min-width: 0; overflow-wrap: anywhere; }
     .ff-template-file-list code {
         margin-inline-start: auto;

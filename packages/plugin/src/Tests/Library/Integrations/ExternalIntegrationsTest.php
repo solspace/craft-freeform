@@ -42,11 +42,11 @@ class ExternalIntegrationsTest extends TestCase
     public function testAvailabilityDistinguishesMissingDisabledAndUnsupportedPlugins(): void
     {
         $definition = ExternalIntegrations::DEFINITIONS['ckeditor'];
-        $state = ['installed' => true, 'enabled' => true, 'craft6' => true, 'capable' => true, 'version' => '5.9.0'];
+        $state = ['installed' => true, 'enabled' => true, 'craft6' => true, 'capable' => true, 'version' => '6.0.0-beta.1'];
         self::assertSame('available', ExternalIntegrations::status($definition, $state));
         self::assertSame('not-installed', ExternalIntegrations::status($definition, array_replace($state, ['installed' => false])));
         self::assertSame('plugin-disabled', ExternalIntegrations::status($definition, array_replace($state, ['enabled' => false])));
-        foreach ([['version' => '5.8.0'], ['version' => '6.0.0'], ['craft6' => false], ['capable' => false]] as $change) {
+        foreach ([['version' => '5.9.0'], ['version' => '7.0.0'], ['craft6' => false], ['capable' => false]] as $change) {
             self::assertSame('unsupported', ExternalIntegrations::status($definition, array_replace($state, $change)));
         }
     }
@@ -99,7 +99,7 @@ class ExternalIntegrationsTest extends TestCase
         $previous = \Craft::$app;
 
         try {
-            foreach (['4.16.0' => false, '5.2.0' => false, '5.3.0' => false, '5.12.0.1' => false, '6.0.0-alpha.18' => false, '6.0.0-alpha.19' => true, '6.0.0' => true, '7.0.0' => false] as $version => $supported) {
+            foreach (['4.16.0' => false, '5.2.0' => false, '5.3.0' => false, '5.12.0.1' => false, '6.0.0-alpha.18' => false, '6.0.0-alpha.19' => false, '6.0.0-alpha.20' => false, '6.0.0-beta.1' => true, '6.0.0' => true, '7.0.0' => false] as $version => $supported) {
                 \Craft::$app = new class($version) {
                     public function __construct(private string $version) {}
 
@@ -138,46 +138,18 @@ class ExternalIntegrationsTest extends TestCase
     {
         $settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
         $service = new class($settings) extends ExternalIntegrations {
-            public array $neoState = [];
-
             protected function pluginState(string $id, array $definition): array
             {
-                $state = ['installed' => true, 'enabled' => true, 'version' => $definition['min'], 'displayVersion' => $definition['min'], 'craft6' => true, 'capable' => true];
-
-                return 'neo' === $id ? array_replace($state, $this->neoState) : $state;
+                return ['installed' => true, 'enabled' => true, 'version' => $definition['min'], 'displayVersion' => $definition['min'], 'craft6' => true, 'capable' => true];
             }
         };
         $catalog = array_column($service->getFieldContainers(), null, 'id');
-        self::assertSame(['content-block', 'matrix', 'neo'], array_keys($catalog));
+        self::assertSame(['content-block', 'matrix'], array_keys($catalog));
         foreach ($catalog as $container) {
             self::assertSame('available', $container['status']);
         }
         self::assertCount(6, $service->getCatalog());
         self::assertFalse($service->isEnabled('neo'));
-        self::assertSame([], $settings->externalIntegrations);
-
-        $service->neoState = ['installed' => false];
-        $catalog = array_column($service->getFieldContainers(), null, 'id');
-        self::assertSame('not-installed', $catalog['neo']['status']);
-        self::assertFalse($catalog['neo']['available']);
-        self::assertFalse($catalog['neo']['compatible']);
-        self::assertTrue($catalog['matrix']['available']);
-
-        $service->neoState = ['enabled' => false];
-        $catalog = array_column($service->getFieldContainers(), null, 'id');
-        self::assertSame('plugin-disabled', $catalog['neo']['status']);
-        self::assertFalse($catalog['neo']['available']);
-        self::assertTrue($catalog['neo']['compatible']);
-
-        $service->neoState = ['enabled' => false, 'version' => '4.0.0'];
-        $catalog = array_column($service->getFieldContainers(), null, 'id');
-        self::assertSame('plugin-disabled', $catalog['neo']['status']);
-        self::assertFalse($catalog['neo']['compatible']);
-
-        $service->neoState = ['version' => '4.0.0'];
-        $catalog = array_column($service->getFieldContainers(), null, 'id');
-        self::assertSame('unsupported', $catalog['neo']['status']);
-        self::assertFalse($catalog['neo']['compatible']);
         self::assertSame([], $settings->externalIntegrations);
     }
 }

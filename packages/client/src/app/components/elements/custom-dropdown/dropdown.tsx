@@ -1,4 +1,3 @@
-import { useEditorAnimations } from "@components/form-controls/preview/previewable-component.animations";
 import SpinnerIcon from "@components/loaders/spinner";
 import { useEscapeStack } from "@ff-client/contexts/escape/escape.context";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
@@ -21,6 +20,7 @@ import {
   useFilteredOptions,
 } from "./dropdown.operations";
 import { Options } from "./dropdown.options";
+import { useDropdownPosition } from "./dropdown.position";
 import {
   CloseButton,
   CurrentValue,
@@ -29,6 +29,7 @@ import {
   Icon,
   ListWrapper,
   Search,
+  SearchRow,
   SpinnerWrapper,
 } from "./dropdown.styles";
 
@@ -39,7 +40,7 @@ export type DropdownProps = {
   emptyOption?: string;
   missingOption?: Pick<Option, "label" | "icon">;
   options?: OptionCollection;
-  value?: string;
+  value?: string | number;
   showValues?: boolean;
   showHints?: boolean;
   showSelectedIcon?: boolean;
@@ -75,11 +76,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     excludeClassNames: ["dropdown-rollout"],
   });
 
-  const { editorAnimation } = useEditorAnimations({
-    wrapper: containerRef.current,
-    editor: dropdownRef.current,
-    isEditing: open,
-  });
+  const menuPosition = useDropdownPosition(containerRef, dropdownRef, open);
 
   const toggleOpen = useCallback(() => {
     if (!loading && !disabled) {
@@ -216,23 +213,31 @@ export const Dropdown: React.FC<DropdownProps> = ({
           <DropdownRollout
             className="dropdown-rollout"
             ref={dropdownRef}
-            style={editorAnimation}
+            style={menuPosition}
           >
-            <CloseButton>
-              <CloseIcon />
-            </CloseButton>
-            <Search
-              placeholder={translate("Search...")}
-              ref={searchRef}
-              value={query}
-              onClick={(event) => event.stopPropagation()}
-              onKeyDown={(event) => {
-                if (["ArrowUp", "ArrowDown"].includes(event.key)) {
-                  event.preventDefault();
-                }
-              }}
-              onChange={(event) => setQuery(event.target.value)}
-            />
+            <SearchRow>
+              <Search
+                placeholder={translate("Search...")}
+                ref={searchRef}
+                value={query}
+                onClick={(event) => event.stopPropagation()}
+                onKeyDown={(event) => {
+                  if (["ArrowUp", "ArrowDown"].includes(event.key)) {
+                    event.preventDefault();
+                  }
+                }}
+                onChange={(event) => setQuery(event.target.value)}
+              />
+              <CloseButton
+                aria-label={translate("Close options")}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setOpen(false);
+                }}
+              >
+                <CloseIcon />
+              </CloseButton>
+            </SearchRow>
             <ListWrapper
               style={{
                 maxHeight: Math.max(

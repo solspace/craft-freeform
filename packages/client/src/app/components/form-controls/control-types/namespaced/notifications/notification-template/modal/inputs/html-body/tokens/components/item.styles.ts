@@ -1,4 +1,4 @@
-import { colors, spacings } from "@ff-client/styles/variables";
+import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const ItemWrapper = styled.a`
@@ -10,18 +10,19 @@ export const ItemWrapper = styled.a`
   font-size: 14px;
 
   text-decoration: none;
-  color: ${colors.text};
+  color: var(--c-text-default);
 
   &:hover {
     cursor: pointer;
-    background-color: light-dark(${colors.gray050}, var(--ui-control-hover-bg-color, ${colors.gray050}));
+    background-color: var(--c-color-neutral-fill-quiet);
   }
 
   &.active {
-    background-color: light-dark(${colors.gray100}, var(--bg-selection-light, ${colors.gray100}));
+    background-color: var(--c-color-accent-fill-quiet);
+    color: var(--c-color-accent-on-quiet);
 
     &:hover {
-      background-color: light-dark(${colors.gray200}, var(--ui-control-active-bg-color, ${colors.gray200}));
+      background-color: var(--c-color-accent-fill-quiet);
     }
   }
 `;

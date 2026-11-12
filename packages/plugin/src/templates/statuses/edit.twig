@@ -60,14 +60,13 @@
 
     <hr>
 
-    <input type="hidden" id="color-value" name="color" value="{{ status.color }}">
     {% set palette = status.colorPalette %}
     {% set paletteStyles = [] %}
     {% for color, hex in palette %}
         {% set paletteStyles = paletteStyles|merge(['--c-color-' ~ color ~ '-fill-loud:' ~ hex]) %}
     {% endfor %}
     {% set colorField %}
-        <craft-select-color id="color" model-value="{{ status.color }}"
+        <craft-select-color id="color" name="color" value="{{ status.color }}" slot="input"
             required
             style="{{ paletteStyles|join(';') }}"
             colors="{{ palette|keys|json_encode }}"></craft-select-color>
@@ -85,8 +84,4 @@
 {% js %}
     {% if not status.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
 
-    document.getElementById('color').addEventListener('model-value-changed', function () {
-        document.getElementById('color-value').value = this.modelValue;
-        document.getElementById('color-value').dispatchEvent(new Event('change', {bubbles: true}));
-    });
 {% endjs %}

@@ -1,5 +1,6 @@
 type RenderedWidget = { html: string; headHtml: string; bodyHtml: string };
 type CraftApi = {
+  t(category: string, message: string): string;
   sendActionRequest(
     method: string,
     action: string,

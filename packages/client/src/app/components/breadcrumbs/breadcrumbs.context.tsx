@@ -52,6 +52,9 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   children,
 }) => {
   const [stack, setStack] = useState<Breadcrumb[]>([]);
+  const portal =
+    document.getElementById("crumbs") ??
+    document.querySelector<HTMLElement>(".cp-header-bar__breadcrumbs");
 
   const push = useCallback((crumb: Breadcrumb): void => {
     setStack((stack) => {
@@ -108,6 +111,7 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     const crumbs = document.getElementById("crumbs");
+    if (!crumbs) return;
     crumbs.style.display = "block";
     crumbs.style.overflow = "initial";
     crumbs.classList.remove("empty");
@@ -116,20 +120,24 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   return (
     <BreadcrumbContext.Provider value={{ stack, push, pop, update }}>
       {children}
-      {createPortal(
-        <nav aria-label="Breadcrumbs" className="breadcrumbs">
-          <ul id="crumb-list" className="breadcrumb-list">
-            <SiteCrumb />
-            {stack.map(({ label, url, external }, i) => (
-              <li key={i} className="crumb">
-                {external && <a href={url}>{label}</a>}
-                {!external && <Link to={url}>{label}</Link>}
-              </li>
-            ))}
-          </ul>
-        </nav>,
-        document.getElementById("crumbs"),
-      )}
+      {portal &&
+        createPortal(
+          <nav
+            aria-label="Breadcrumbs"
+            className="breadcrumbs freeform-breadcrumbs"
+          >
+            <ul id="crumb-list" className="breadcrumb-list">
+              <SiteCrumb />
+              {stack.map(({ label, url, external }, i) => (
+                <li key={i} className="crumb">
+                  {external && <a href={url}>{label}</a>}
+                  {!external && <Link to={url}>{label}</Link>}
+                </li>
+              ))}
+            </ul>
+          </nav>,
+          portal,
+        )}
       {}
     </BreadcrumbContext.Provider>
   );

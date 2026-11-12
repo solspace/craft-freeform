@@ -1,4 +1,4 @@
-import { sectionHeading } from "@ff-client/styles/craft6";
+import { editorButton, sectionHeading } from "@ff-client/styles/craft6";
 import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -17,20 +17,23 @@ export const GroupTitle = styled.h2.attrs({
 })`
   ${sectionHeading}
   position: relative;
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${spacings.sm};
+  min-height: var(--c-size-control-md);
+  font-size: var(--c-text-base);
   margin: 0;
-  padding: 0 0 5px;
+  padding: 0;
+  margin-bottom: ${spacings.sm};
 
   button {
-    position: absolute;
-    top: 1px;
-    right: 0;
-
-    transition: all 0.2s ease;
-
-    &:hover {
-      transform: scale(1.1);
-    }
+    ${editorButton}
+    flex: none;
+    width: var(--c-size-control-md);
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
   }
 `;
 

@@ -1,5 +1,5 @@
 import translate from "@ff-client/utils/translations";
-import { useRef } from "react";
+import { createElement, useRef } from "react";
 import { SearchWrapper } from "./list-view.styles";
 
 export type FormSearchProps = {
@@ -20,11 +20,15 @@ export const FormSearch = ({ value, onChange }: Props) => {
 
   return (
     <SearchWrapper className="texticon">
-      <span className="texticon-icon search icon" aria-hidden="true" />
+      {createElement("craft-icon", {
+        className: "texticon-icon",
+        name: "magnifying-glass",
+        "aria-hidden": true,
+      })}
       <input
         ref={inputRef}
         type="search"
-        className="clearable text fullwidth"
+        className="cp-form-control fullwidth"
         aria-label={translate("Search forms")}
         placeholder={translate("Search")}
         autoComplete="off"
@@ -45,7 +49,9 @@ export const FormSearch = ({ value, onChange }: Props) => {
           aria-label={translate("Clear search")}
           title={translate("Clear search")}
           onClick={clear}
-        />
+        >
+          {createElement("craft-icon", { name: "xmark", "aria-hidden": true })}
+        </button>
       )}
     </SearchWrapper>
   );

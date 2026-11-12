@@ -22,7 +22,8 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "test": "vitest run --config vitest.config.ts",
-    "lint": "biome check src"
+    "lint": "biome check src",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "@solspace/freeform-core": "workspace:*",

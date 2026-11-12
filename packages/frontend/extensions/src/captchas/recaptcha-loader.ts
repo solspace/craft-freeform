@@ -40,12 +40,12 @@ export function withRecaptchaTimeout<T>(
 export function getRecaptchaApi(
   config: RecaptchaConfig,
 ): RecaptchaApi | undefined {
-  const google = (window as RecaptchaWindow).grecaptcha;
+  const google = (window as unknown as RecaptchaWindow).grecaptcha;
   return config.verificationMode === "enterprise" ? google?.enterprise : google;
 }
 
 export function loadRecaptcha(config: RecaptchaConfig): Promise<RecaptchaApi> {
-  const host = window as RecaptchaWindow;
+  const host = window as unknown as RecaptchaWindow;
   if (!config.siteKey)
     return Promise.reject(new Error("reCAPTCHA site key is missing."));
   const enterprise = config.verificationMode === "enterprise";

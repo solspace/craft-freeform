@@ -1,16 +1,24 @@
-import type { FC, PropsWithChildren } from "react";
+import translate from "@ff-client/utils/translations";
+import { createElement, type FC, type PropsWithChildren } from "react";
 import styled from "styled-components";
 
-export const EnvLine: FC<PropsWithChildren> = ({ children }) => {
-  return (
-    <Paragraph className="notice has-icon">
-      <span className="icon" aria-hidden="true" />
-      <span className="visually-hidden">Tip: </span>
-      <span>{children}</span>
-    </Paragraph>
-  );
-};
+export const EnvLine: FC<PropsWithChildren> = ({ children }) => (
+  <Tip>
+    {createElement(
+      "craft-callout",
+      {
+        appearance: "plain",
+        padding: "none",
+        variant: "info",
+        rounded: "all",
+      },
+      createElement("craft-visually-hidden", null, translate("Tip:")),
+      children,
+    )}
+  </Tip>
+);
 
-const Paragraph = styled.p`
-  margin-top: 5px;
+const Tip = styled.div`
+  margin: 0;
+  color: var(--c-color-info-on-quiet);
 `;

@@ -6,7 +6,7 @@ import type React from "react";
 import { useRef, useState } from "react";
 
 import EditIcon from "./edit-icon";
-import { useEditButtonAnimations, useLabelAnimation } from "./label.animations";
+import { useEditButtonAnimations } from "./label.animations";
 import { EditableLabelWrapper, EditButton, LabelElement } from "./label.styles";
 
 const Label: React.FC<ControlType<LabelProperty>> = ({
@@ -21,7 +21,6 @@ const Label: React.FC<ControlType<LabelProperty>> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const labelAnimation = useLabelAnimation(hover);
   const editButtonAnimation = useEditButtonAnimations(hover);
 
   return (
@@ -45,7 +44,6 @@ const Label: React.FC<ControlType<LabelProperty>> = ({
 
       {!edit && (
         <LabelElement
-          style={labelAnimation}
           onClick={() => {
             setEdit(true);
             setHover(false);

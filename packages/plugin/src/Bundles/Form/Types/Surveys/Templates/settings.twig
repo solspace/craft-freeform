@@ -69,16 +69,16 @@
 {% css %}
 
     .ff-survey-chart-groups { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; align-items:start; max-width:1100px; margin-top:16px; }
-    .ff-survey-chart-group { border:1px solid var(--gray-200,#cdd8e4); border-radius:8px; overflow:hidden; }
+    .ff-survey-chart-group { border:1px solid var(--c-color-neutral-border-quiet); border-radius:8px; overflow:hidden; }
     .ff-survey-chart-group > h3 { margin:0; padding:14px 16px; background:var(--gray-050,#f3f7fc); border-bottom:1px solid var(--hairline-color,#e5e7eb); }
-    .ff-survey-chart-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:10px 16px; }
+    .ff-survey-chart-row { display:grid; grid-template-columns:minmax(0,1fr) minmax(130px,160px); align-items:center; gap:16px; padding:10px 16px; }
     .ff-survey-chart-row + .ff-survey-chart-row { border-top:1px solid var(--hairline-color,#e5e7eb); }
-    .ff-survey-chart-row > label { display:flex; align-items:center; gap:10px; min-width:0; font-weight:600; }
+    .ff-survey-chart-row > label { display:flex; align-items:center; gap:10px; min-width:0; font-weight:500; overflow-wrap:anywhere; }
     .ff-survey-field-icon { display:flex; align-items:center; justify-content:center; flex:0 0 28px; width:28px; height:28px; border-radius:4px; background:var(--gray-050,#f3f7fc); color:var(--gray-600,#596673); }
     .ff-survey-field-icon svg { display:block; width:18px; height:18px; fill:currentColor; }
-    .ff-survey-chart-row > .select { flex:0 0 auto; }
+    .ff-survey-chart-row > .select, .ff-survey-chart-row > craft-select { width:100%; min-width:0; }
     .ff-survey-chart-row select { min-width:130px; }
     @media(max-width:900px) { .ff-survey-chart-groups { grid-template-columns:minmax(0,1fr); } }
-    @media(max-width:500px) { .ff-survey-chart-row { flex-wrap:wrap; gap:8px; } .ff-survey-chart-row > .select { margin-inline-start:38px; } }
+    @media(max-width:500px) { .ff-survey-chart-row { grid-template-columns:minmax(0,1fr); gap:8px; } .ff-survey-chart-row > .select, .ff-survey-chart-row > craft-select { margin-inline-start:38px; width:calc(100% - 38px); } }
 
 {% endcss %}

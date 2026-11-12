@@ -10,8 +10,6 @@ export const Editor = styled.div`
 
   table {
     table-layout: fixed;
-    border-end-start-radius: 0;
-    border-end-end-radius: 0;
   }
 
   td.textual {
@@ -23,22 +21,4 @@ export const Editor = styled.div`
   }
 `;
 
-export const AddRow = styled(AddButtonArea)<{ $empty: boolean }>`
-  box-sizing: border-box;
-  border-color: var(--gray-250, #b4c3d3);
-  border-top: ${({ $empty }) =>
-    $empty ? "1px dashed var(--gray-250, #b4c3d3)" : "none"};
-  border-radius: ${({ $empty }) =>
-    $empty
-      ? "var(--radius-lg, 5px)"
-      : "0 0 var(--radius-lg, 5px) var(--radius-lg, 5px)"};
-
-  && .btn {
-    background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
-    border-radius: inherit;
-
-    &:hover:not(:disabled) {
-      background: var(--gray-050, #f3f7fc);
-    }
-  }
-`;
+export const AddRow = styled(AddButtonArea)<{ $empty: boolean }>``;

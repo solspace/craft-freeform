@@ -54,8 +54,15 @@ class CodepackInstallerTemplateTest extends TestCase
             'fileCount' => 1,
             'files' => [['name' => '<example>.twig', 'isFolder' => false]],
         ];
+        $twig->addGlobal('craft', ['freeform' => new class {
+            public string $name = 'Freeform';
+
+            public function formIcon(string $name): string
+            {
+                return '';
+            }
+        }]);
         $html = $twig->render('freeform/codepack/index', [
-            'craft' => ['freeform' => ['name' => 'Freeform']],
             'view' => $view,
             'codePack' => [
                 'templates' => ['contents' => $folder('templates'), 'installDirectoryPath' => '/srv/project/templates'],

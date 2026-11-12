@@ -131,7 +131,7 @@ export const FieldCell: React.FC<Props> = memo(({ field }) => {
         hasContentPreview && "content-only",
         contentPreview.hasHeading && "section-heading",
         isActive && "active",
-        "field",
+        "freeform-builder-field",
       )}
       onClick={(event): void => {
         event.stopPropagation();

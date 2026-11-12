@@ -150,12 +150,17 @@ class SubmissionUndoServiceTest extends TestCase
     public function testDeleteUsesNativeRestoreAndPreservesSpamClassification(): void
     {
         [$service, $submission, $elements] = $this->fixture(spam: true);
+        $invalidated = [];
+        $elements->expects(self::exactly(2))->method('invalidateCachesForElementType')->willReturnCallback(static function (string $type) use (&$invalidated): void {
+            $invalidated[] = $type;
+        });
         $service->record($submission, 'delete');
         $submission->trashed = true;
         $elements->expects(self::once())->method('restoreElement')->with($submission)->willReturn(true);
         $elements->expects(self::never())->method('saveElement');
         self::assertSame('delete', $service->undo($service->getHistory()[0]['token']));
         self::assertTrue($submission->isSpam);
+        self::assertSame([Submission::class, SpamSubmission::class], $invalidated);
     }
 
     #[TestWith(['status'])]

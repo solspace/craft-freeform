@@ -3,6 +3,13 @@
 {% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp')|push('freeform-element-index') %}
 {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
 
+{% block toolbar %}
+    {{ parent() }}
+    {% if craft.app.version >= '6.0.0' and elementType in ['Solspace\\Freeform\\Elements\\Submission', 'Solspace\\Freeform\\Elements\\SpamSubmission'] %}
+        {% include 'freeform/submissions/_native-toolbar' %}
+    {% endif %}
+{% endblock %}
+
 {% set extraPageHeaderHtml %}
 
     {% if currentUser.can("freeform-formsManage") %}
@@ -16,17 +23,8 @@
 {% endset %}
 
 {% block content %}
-    {{ ui('pane', {
-        padding: 0,
-        attributes: {id: 'freeform-index-pane', hidden: true, 'data-statuses': statuses|default([])|map(s => {handle: s.handle, color: s.color, label: s.name})|json_encode},
-    }) }}
     {{ parent() }}
-{% endblock %}
-
-{% block body %}
-    {{ parent() }}
-    {% include 'freeform/_components/shell-indicators' %}
-    {% if elementType in ['Solspace\\Freeform\\Elements\\Submission', 'Solspace\\Freeform\\Elements\\SpamSubmission'] %}
+    {% if craft.app.version < '6.0.0' and elementType in ['Solspace\\Freeform\\Elements\\Submission', 'Solspace\\Freeform\\Elements\\SpamSubmission'] %}
         {% include 'freeform/submissions/_undo' %}
     {% endif %}
 {% endblock %}

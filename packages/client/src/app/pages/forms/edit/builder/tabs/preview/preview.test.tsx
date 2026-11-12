@@ -15,7 +15,7 @@ vi.mock("axios", () => ({ default: { post: fixture.post } }));
 vi.mock("react-redux", () => ({ useSelector: () => fixture.form }));
 vi.mock("react-router-dom", () => ({
   useResolvedPath: () => ({ pathname: "/forms/42/preview" }),
-  Navigate: (props: unknown) => {
+  Navigate: (props: unknown): null => {
     fixture.redirect(props);
     return null;
   },
@@ -24,7 +24,7 @@ vi.mock("@editor/store/slices/form/form.selectors", () => ({
   formSelectors: { current: vi.fn() },
 }));
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
-  Breadcrumb: () => null,
+  Breadcrumb: (): null => null,
 }));
 vi.mock("@components/elements/pop-up-portal", () => ({
   PopUpPortal: ({ children }: { children: React.ReactNode }) => children,

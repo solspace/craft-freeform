@@ -3,8 +3,11 @@
 @use "../../shared/cp-editable-table";
 @use "../../shared/cp-summary";
 @use "../../shared/cp-opinion-scale";
+@use "../../shared/cp-widget-theme";
+@include cp-widget-theme.settings;
 
 .freeform-widget-quick-form {
+  @include cp-widget-theme.tokens;
   container-type: inline-size;
   --ff-phone-input-spacing: 9px;
   color: var(--text-color, #3f4d5a);
@@ -45,7 +48,21 @@
       .freeform-label { display: block; margin-bottom: 5px; font-weight: 600; }
       .freeform-label.freeform-required::after { color: var(--error-color, #cf1124); margin-inline-start: 4px; }
       .freeform-instructions { margin: 0 0 6px; color: var(--light-text-color, #596673); font-size: 12px; line-height: 18px; }
-      .freeform-input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) { box-sizing: border-box; width: 100%; }
+      .freeform-input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="file"]) {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: var(--c-size-control-md);
+        border: var(--c-input-border-width, var(--c-form-control-border-width)) var(--c-input-border-style, var(--c-form-control-border-style)) var(--c-input-border-color, var(--c-form-control-border-color));
+        border-radius: var(--c-input-radius);
+        padding: var(--c-spacing-xs) var(--c-input-spacing-inline);
+        background: var(--c-input-fill);
+        color: var(--c-input-text, var(--c-text-default));
+        box-shadow: var(--c-input-shadow);
+        font: inherit;
+        &::placeholder { color: var(--c-text-quiet); }
+        &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+        &:disabled { opacity: .5; }
+      }
       input.text { min-height: var(--ui-control-height, 34px); }
       textarea.text { min-height: 96px; resize: vertical; }
       .select { display: block; }
@@ -78,7 +95,29 @@
   }
   .freeform-button-container, .freeform-button-wrapper { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
   .freeform-button-container { margin-top: 8px; }
-  .freeform-button-container .btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--ui-control-height, 34px); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--c-spacing-sm);
+    box-sizing: border-box;
+    min-height: var(--c-size-control-md);
+    padding: 0 var(--c-form-control-spacing-inline);
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-form-control-radius);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-text-default);
+    font: inherit;
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-normal); }
+    &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+    &:disabled { opacity: .5; }
+    &.submit {
+      background: var(--c-color-accent-fill-loud);
+      color: var(--c-color-accent-on-loud);
+      border-color: transparent;
+      &:hover:not(:disabled) { background: color-mix(in oklab, var(--c-color-accent-fill-loud), var(--c-color-mix-hover)); }
+    }
+  }
   .freeform-form-errors, .freeform-form-success {
     margin: 0 0 12px;
     padding: 12px;
@@ -99,9 +138,10 @@
   [hidden] { display: none !important; }
   .freeform-quick-form-success {
     padding: 20px 16px;
-    border: 1px solid light-dark(#b9ddca, var(--border-success, #b9ddca));
+    border: 1px solid var(--c-color-success-border-quiet);
     border-radius: 6px;
-    background: light-dark(#f3fbf6, var(--bg-success, #f3fbf6));
+    background: var(--c-color-success-fill-quiet);
+    color: var(--c-color-success-on-quiet);
     > p { margin: 10px 0 16px; overflow-wrap: anywhere; }
     .btn { display: inline-flex; align-items: center; justify-content: center; min-height: var(--ui-control-height, 34px); }
   }
@@ -109,7 +149,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: light-dark(#176c45, var(--fg-success, #176c45));
+    color: var(--c-color-success-on-quiet);
     svg { display: block; flex-shrink: 0; }
     h3 { margin: 0; color: inherit; font-size: 14px; line-height: 20px; }
   }

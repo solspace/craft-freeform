@@ -35,7 +35,7 @@ it("updates the format labels without changing saved date-order values", () => {
             properties: { date4DigitYear, dateLeadingZero, dateSeparator },
           }}
           property={{
-            type: PropertyType.Select,
+            type: PropertyType.ButtonGroup,
             handle: "dateOrder",
             label: "Date order",
             options: ["ymd", "mdy", "dmy"].map((value) => ({

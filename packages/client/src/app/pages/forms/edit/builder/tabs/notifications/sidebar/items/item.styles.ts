@@ -3,13 +3,17 @@ import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
-const iconSize = 20;
+const iconSize = 16;
 export const Icon = styled.div`
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
   width: ${iconSize}px;
   height: ${iconSize}px;
   font-size: ${iconSize}px;
   fill: currentColor;
+  svg { width: 100%; height: 100%; }
 `;
 
 export const Link = styled(NavLink)`

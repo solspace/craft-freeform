@@ -13,13 +13,13 @@ export const SearchBlock = styled.div`
 `;
 
 export const SearchBar = styled.input`
-  padding: 6px 38px 6px 30px !important;
+  padding-inline: 30px 8px !important;
 
-  border-radius: 5px;
+  border-radius: var(--c-form-control-radius);
 
   &::placeholder {
-    font-style: italic;
-    color: ${colors.gray200};
+    font-style: normal;
+    color: var(--c-text-quiet);
   }
 `;
 

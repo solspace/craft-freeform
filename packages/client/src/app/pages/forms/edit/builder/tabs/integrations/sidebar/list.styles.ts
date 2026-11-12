@@ -7,4 +7,6 @@ export const Wrapper = styled.ul`
   gap: ${spacings.sm};
 
   list-style: none;
+  margin: 0;
+  padding: 0;
 `;

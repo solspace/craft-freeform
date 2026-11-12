@@ -369,7 +369,7 @@ it("checks the Express limit before displaying any creation options", () => {
   expect(host.querySelectorAll(".form-start-card")).toHaveLength(2);
 });
 
-it.each([undefined, ["blank"], ["wizard"]])(
+it.each<[string[] | undefined]>([[undefined], [["blank"]], [["wizard"]]])(
   "shows the Express limit notice even when the chooser would be bypassed (%s)",
   (methods) => {
     fixture.config.metadata.freeform.formCreationOptions = methods;

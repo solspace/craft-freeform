@@ -1,11 +1,14 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { whenCpReady } from "../../../lib/cp/ready";
 
 const source = readFileSync(
   path.resolve("src/components/cp/code-pack/index.js"),
   "utf8",
-).replace("export function", "function");
+)
+  .replace(/^import .*;\n/m, "")
+  .replace("export function", "function");
 const built = readFileSync(
   path.resolve("../plugin/src/Resources/js/scripts/cp/code-pack/index.js"),
   "utf8",
@@ -54,7 +57,7 @@ for (const [name, script] of [
       prefix = document.querySelector("#prefix")!;
       button = document.querySelector("button")!;
       root = document.querySelector("#demo-installer")!;
-      new Function(script)();
+      new Function("whenCpReady", script)(whenCpReady);
     }
 
     beforeEach(() => {
@@ -312,7 +315,11 @@ for (const [name, script] of [
 
     it("does nothing on pages without the installer", () => {
       document.body.innerHTML = "";
-      expect(() => new Function(script)()).not.toThrow();
+      expect(() =>
+        new Function("whenCpReady", script)((initialize: () => void) =>
+          initialize(),
+        ),
+      ).not.toThrow();
     });
   });
 }

@@ -1,5 +1,7 @@
 {% import "_includes/forms" as forms %}
 
+<div class="freeform-widget-settings">
+
 
 {{ forms.textField({
     label: "Title"|t('app'),
@@ -50,3 +52,5 @@
     errors: settings.getErrors('formIds'),
     showAllOption: true,
 }) }}
+
+</div>

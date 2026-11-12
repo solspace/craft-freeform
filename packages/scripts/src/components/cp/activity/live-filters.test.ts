@@ -18,7 +18,7 @@ const deferred = () => {
 };
 let dispose: () => void;
 let fetcher: ReturnType<typeof vi.fn>;
-let bind: ReturnType<typeof vi.fn>;
+let bind: ReturnType<typeof vi.fn<(results: HTMLElement) => void>>;
 let root: HTMLElement;
 const formSelect = () =>
   root.querySelector<HTMLSelectElement>('select[name="formId"]')!;

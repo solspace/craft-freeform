@@ -1,3 +1,4 @@
+import { textControl } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -97,19 +98,19 @@ export const Cell = styled.td<CellProps>`
 `;
 
 export const Input = styled.input`
+  ${textControl}
   width: 100%;
-  height: 34px;
+  height: var(--c-size-control-md);
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
 
-  padding: 6px 9px;
-
-  background: light-dark(${colors.white}, ${colors.surface});
-
-  &:focus {
-    box-shadow: var(--inner-focus-ring);
+  &:focus-visible {
+    outline-offset: calc(-1 * var(--c-focus-outline-width));
   }
 
   &::placeholder {
-    color: ${colors.gray200};
+    color: var(--c-text-quiet);
   }
 
   &:disabled {
@@ -128,7 +129,7 @@ export const Select = styled.select`
   }
 `;
 
-export const Button = styled.button`
+export const Button = styled.button.attrs({ type: "button" })`
   padding: 1px;
   display: flex;
   flex-direction: row;

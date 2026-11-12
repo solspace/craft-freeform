@@ -14,6 +14,56 @@ afterEach(() => {
 });
 
 describe("toolbar configuration compatibility", () => {
+  it("edits Craft 6's named combobox without moving its textbox or losing its form value", () => {
+    if (!customElements.get("craft-combobox")) {
+      customElements.define(
+        "craft-combobox",
+        class extends HTMLElement {
+          get value() {
+            return this.querySelector<HTMLInputElement>('input[type="hidden"]')!
+              .value;
+          }
+          set value(value: string) {
+            this.querySelector<HTMLInputElement>(
+              'input[type="hidden"]',
+            )!.value = value;
+          }
+          get disabled() {
+            return this.hasAttribute("disabled");
+          }
+        },
+      );
+    }
+    document.body.innerHTML = `<form><div data-toolbar-editor><craft-field class="field"><craft-combobox slot="input"><input role="combobox"><input type="hidden" name="toolbar" value="bold | italic"></craft-combobox><div slot="help-text"><p>Configure the toolbar.</p></div><span slot="tip">Environment variable hint</span></craft-field></div></form>`;
+    const combobox = document.querySelector<HTMLElement>("craft-combobox")!;
+    const textbox = combobox.querySelector("input")!;
+    initToolbarEditors();
+    expect(combobox.parentElement?.tagName).toBe("CRAFT-FIELD");
+    expect(textbox.parentElement).toBe(combobox);
+    expect(combobox.hidden).toBe(true);
+    expect(
+      document.querySelector('[slot="help-text"] [data-toolbar-toggle]'),
+    ).not.toBeNull();
+    expect(submitted()).toBe("bold | italic");
+    document
+      .querySelector<HTMLButtonElement>('[aria-label="Remove Italic"]')!
+      .click();
+    expect(submitted()).toBe("bold |");
+    document.querySelector<HTMLButtonElement>("[data-toolbar-toggle]")!.click();
+    expect(combobox.hidden).toBe(false);
+    const hidden = combobox.querySelector<HTMLInputElement>(
+      'input[type="hidden"]',
+    )!;
+    hidden.value = "$TOOLBAR";
+    combobox.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(
+      document.querySelector<HTMLElement>(".ff-toolbar-visual")!.hidden,
+    ).toBe(true);
+    expect(submitted()).toBe("$TOOLBAR");
+    initToolbarEditors();
+    expect(document.querySelectorAll(".ff-toolbar-editor")).toHaveLength(1);
+  });
+
   it("keeps the mode switch in the instructions and leaves no footer in the preview", () => {
     mount("bold italic");
     const toggle = document.querySelector<HTMLButtonElement>(

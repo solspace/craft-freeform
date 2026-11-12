@@ -70,7 +70,6 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
         <Tooltip title={translate(description)}>
           <Button
             type="button"
-            className={classes("btn", "add", "icon", "small", "dashed")}
             onClick={() => {
               const uid = v4();
               dispatch(addNewNotification(type, uid));

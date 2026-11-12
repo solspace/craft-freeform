@@ -84,8 +84,7 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
 
   width: ${({ $width }) => ($width ? `${$width}%` : "100%")};
 
-  input.text:not([slot='input']),
-  textarea.text:not([slot='input']) {
+:where(input.text:not([slot='input']), textarea.text:not([slot='input'])) {
     ${textControl}
   }
 

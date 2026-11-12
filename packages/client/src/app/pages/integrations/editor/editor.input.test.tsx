@@ -14,7 +14,7 @@ import type { IntegrationState } from "./editor.types";
 vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string) => text,
 }));
-vi.mock("./editor.model-input", () => ({ ModelInput: () => null }));
+vi.mock("./editor.model-input", () => ({ ModelInput: (): null => null }));
 vi.mock("@ff-client/queries/autosuggest", () => ({
   useResolvedBoolean: (value: unknown) => {
     if (value === "$QA_TRUE") return true;
@@ -640,6 +640,7 @@ describe("block list advanced settings", () => {
             handle: list,
             label: "Default block list",
             type: PropertyType.Textarea,
+            rows: 4,
             value: "saved-list-entry",
           },
           {

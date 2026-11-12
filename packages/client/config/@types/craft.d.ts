@@ -24,8 +24,8 @@ declare namespace Craft {
         triggerElement?: Element;
       },
     );
-    $container: { 0: HTMLElement };
-    $outerContainer: { 0: HTMLElement };
+    container: HTMLElement;
+    outerContainer: HTMLElement;
     on(event: "close" | "beforeClose", callback: () => void): void;
     open(): void;
     close(): void;
@@ -44,6 +44,7 @@ declare namespace Craft {
   ): Promise<void>;
 
   function getCpUrl(path: string): string;
+  function t(category: string, message: string): string;
 
   const csrfTokenName: string;
   const csrfTokenValue: string;

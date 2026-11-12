@@ -190,7 +190,8 @@ const CardLayout = styled.div`
     padding-inline-end: 0;
   }
   .choice-heading > span:last-child { min-width: 0; }
-  .choice-icon { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 6px; background: var(--gray-050, #f3f6fa); }
+  .choice-icon { width: 28px; height: 28px; flex: 0 0 28px; border-radius: 6px; background: var(--c-color-neutral-fill-quiet); }
+  .ff-choice-card:has(input:checked) .choice-icon { background: transparent; color: var(--c-color-accent-border-loud); }
   .choice-icon svg { width: 18px; height: 18px; }
   .ff-choice-card > span:last-child { grid-column: 1 / -1; grid-row: 2; }
   .choice-detail-heading:empty { display: none; }

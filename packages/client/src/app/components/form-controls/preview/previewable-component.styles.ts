@@ -1,10 +1,5 @@
 import { scrollBar } from "@ff-client/styles/mixins";
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from "@ff-client/styles/variables";
+import { borderRadius, shadows, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
@@ -40,7 +35,7 @@ export const PreviewContainer = styled.div`
 
 export const PreviewEditor = styled.div`
   width: 100%;
-  min-width: 800px;
+  min-width: min(800px, calc(100vw - 32px));
 
   display: flex;
   flex-direction: column;
@@ -48,9 +43,10 @@ export const PreviewEditor = styled.div`
 
   padding: ${spacings.lg};
 
-  box-shadow: ${shadows.box};
+  box-shadow: var(--c-shadow-sm);
   border-radius: ${borderRadius.lg};
-  background: ${colors.gray050};
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  background: var(--c-surface-overlay);
 `;
 
 export const PreviewEditorContainer = styled.div`

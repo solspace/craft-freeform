@@ -1,8 +1,6 @@
 import type React from "react";
-import { useState } from "react";
 
 import DeleteIcon from "./delete";
-import { useRemoveAnimation } from "./remove.animations";
 import { RemoveButtonWrapper } from "./remove.styles";
 
 type Props = {
@@ -10,17 +8,8 @@ type Props = {
 };
 
 export const Remove: React.FC<Props> = ({ onClick }) => {
-  const [hovering, setHovering] = useState(false);
-  const animation = useRemoveAnimation({ hovering });
-
   return (
-    <RemoveButtonWrapper
-      type="button"
-      style={animation}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
-      onClick={onClick}
-    >
+    <RemoveButtonWrapper type="button" onClick={onClick}>
       <DeleteIcon />
     </RemoveButtonWrapper>
   );

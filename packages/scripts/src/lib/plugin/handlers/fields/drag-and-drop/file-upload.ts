@@ -245,8 +245,8 @@ export const handleFileUpload = (
 
       let messages: string[] = [];
       if (error?.response?.data?.type === ErrorTypes.FieldError) {
-        const { messages: errorMessages } = (error?.response
-          ?.data as FieldError) || { messages: [] };
+        const errorMessages: string[] =
+          (error.response.data as FieldError).messages ?? [];
         messages = errorMessages;
 
         addFieldErrors(container, previewContainer, errorMessages, freeform);

@@ -4,7 +4,6 @@ import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { useModal } from "@components/modals/modal.context";
 import config, { Edition } from "@config/freeform/freeform.config";
 import EmptyIcon from "@ff-client/app/pages/forms/edit/builder/tabs/integrations/property-editor/empty.icon";
-import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
 import axios from "axios";
 import React from "react";
@@ -76,7 +75,6 @@ const AiSettingsEmpty: React.FC<AiSettingsEmptyProps> = ({
 
 export const AiDashboard: React.FC = () => {
   const { openModal } = useModal();
-  useSidebarSelect("freeform/settings");
 
   const isProEdition = config.editions.is(Edition.Pro);
   const { data, isFetching, error, isError } = useAiUsageQuery({

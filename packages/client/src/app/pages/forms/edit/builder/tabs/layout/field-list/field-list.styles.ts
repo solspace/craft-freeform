@@ -1,5 +1,5 @@
+import { sidebarPadding } from "@components/layout/sidebar/sidebar";
 import { scrollBar } from "@ff-client/styles/mixins";
-import { colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
@@ -7,13 +7,14 @@ import { Wrapper } from "./field-group/field/field.styles";
 
 export const FieldListWrapper = styled(animated.div)`
   position: relative;
-  padding: ${spacings.lg};
+  ${sidebarPadding};
+  box-sizing: border-box;
 
   overflow-y: auto;
   overflow-x: hidden;
 
   height: 100%;
-  background: light-dark(${colors.gray050}, ${colors.mutedSurface});
+  background: var(--c-surface-default);
   ${scrollBar};
 
   &.fields-disabled {

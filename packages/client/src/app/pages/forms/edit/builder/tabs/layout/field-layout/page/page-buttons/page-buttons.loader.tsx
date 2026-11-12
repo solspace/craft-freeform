@@ -1,4 +1,3 @@
-import { colors } from "@ff-client/styles/variables";
 import type React from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -9,8 +8,8 @@ export const LoaderPageButtons: React.FC = () => {
     <ButtonGroupWrapper>
       <ButtonGroup />
       <ButtonGroup>
-        <Button className="btn btn-submit">
-          <Skeleton width={50} baseColor={colors.gray400} />
+        <Button className="ff-page-button">
+          <Skeleton width={50} />
         </Button>
       </ButtonGroup>
     </ButtonGroupWrapper>

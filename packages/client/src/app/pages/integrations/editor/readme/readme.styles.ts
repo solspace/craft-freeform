@@ -4,6 +4,7 @@ import styled from "styled-components";
 
 export const MarkdownWrapper = styled.div`
   margin: 0 -16px;
+  margin-inline-start: calc(-1 * var(--freeform-integration-padding-start));
   padding: 0;
 
   background-color: var(--c-color-neutral-fill-quiet);
@@ -44,7 +45,10 @@ export const Instructions = styled.div`
 `;
 
 export const Content = styled.div`
-  padding: 16px;
+  padding: var(--c-spacing-lg);
+  padding-inline-start: var(--freeform-integration-padding-start);
+  > :first-child { margin-block-start: 0; }
+  > :last-child { margin-block-end: 0; }
 
   font-size: 14px;
   line-height: 1.5;

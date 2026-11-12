@@ -138,7 +138,7 @@ const PageButtonLayout: React.FC<ComponentType> = ({
                     {item.groups.map((buttons, groupIdx) => (
                       <ButtonGroup key={groupIdx}>
                         {buttons.map((button) => (
-                          <Button className={button} key={button}>
+                          <Button data-kind={button} key={button}>
                             {icons[button]}
                             <span>{labels[button]}</span>
                           </Button>

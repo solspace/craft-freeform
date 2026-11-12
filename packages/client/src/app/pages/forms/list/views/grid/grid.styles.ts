@@ -15,7 +15,11 @@ export const CardWrapper = styled.div<{ $dragging?: boolean }>`
   ${({ $dragging }) =>
     $dragging &&
     `
-    [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: var(--bg-selection-light, #f6faff); }
+    [data-form-group] {
+      outline: 1px dashed var(--c-color-neutral-border-normal);
+      outline-offset: 8px;
+      background: color-mix(in srgb, var(--c-color-accent-fill-quiet) 12%, var(--c-surface-default));
+    }
     iframe { pointer-events: none; }
   `}
 `;
@@ -46,8 +50,8 @@ export const Cards = styled.ul<{ $empty?: string }>`
   ${CardWrapper}[aria-busy='true'] & .handle { pointer-events: none; }
   ${CardWrapper} & .card-drop-placeholder {
     opacity: 0.18;
-    border: 2px dashed var(--link-color, #0d78f2);
-    background: light-dark(#eaf3ff, var(--bg-selection-light, #eaf3ff));
+    border: 2px dashed var(--c-color-accent-border-normal);
+    background: var(--c-color-accent-fill-quiet);
   }
   ${CardWrapper} & .card-chosen { box-shadow: 0 8px 24px #1f34452b; }
   ${CardWrapper} & .card-moving { opacity: 0.95; }

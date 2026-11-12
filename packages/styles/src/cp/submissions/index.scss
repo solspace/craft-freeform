@@ -1,3 +1,5 @@
+@use "../choice-cards/choice-cards.css";
+
 .status {
   &.green {
     background-color: #27ab83 !important;
@@ -196,6 +198,9 @@
   }
 }
 
+.ff-spam-reason-select { inline-size: 12rem; max-inline-size: 100%; }
+.ff-spam-reason-choice { display: inline-flex; align-items: center; gap: 8px; }
+
 // Keep Craft's menu hover rules from painting transparent SVG paths white.
 .ff-spam-reason-menu .ff-spam-reason-icon svg * {
   fill: revert-layer !important;
@@ -378,6 +383,8 @@
       width: 14px;
       height: 14px;
       fill: currentColor;
+
+      &[stroke] { fill: none; }
     }
 
     [data-icon]::before {
@@ -730,3 +737,108 @@
 
 // Match Craft's status hierarchy on a dark control-panel surface. Keep the
 // existing hue semantics, with one readable foreground for both dot and label.
+
+// Freeform tools live alongside the native Craft 6 index controls.
+// Craft 6's bridged index has no inline-editing opt-out yet. Its toggle sits
+// immediately before the toolbar slot; scope this to Freeform's two indexes.
+craft-button:has(+ div > [data-freeform-native-index]) {
+  display: none;
+}
+
+.ff-native-index-tools {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--c-spacing-md);
+  flex: none;
+  craft-select { inline-size: 12rem; max-inline-size: 100%; }
+  .btn { display: inline-flex; align-items: center; gap: var(--c-spacing-md); }
+  .btn svg { display: block; inline-size: 16px; block-size: 16px; flex: none; }
+}
+.ff-native-export-dialog,
+.ff-native-notification-dialog {
+  box-sizing: border-box;
+  inline-size: min(32rem, calc(100vw - 32px));
+  max-block-size: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--c-color-neutral-border-quiet);
+  border-radius: var(--c-radius-lg);
+  background: var(--c-surface-default);
+  color: var(--c-text-default);
+  box-shadow: var(--c-modal-shadow);
+  &::backdrop { background: var(--c-modal-backdrop-fill, #0008); }
+  #export-csv-modal {
+    .header, .footer { padding: var(--c-spacing-lg); }
+    h1 { margin: 0; font-size: var(--c-text-lg); }
+    .body { box-sizing: border-box; inline-size: 100%; block-size: auto; max-block-size: 60dvh; padding: var(--c-spacing-lg); overflow: auto; }
+    .header { border-block-end: 1px solid var(--c-color-neutral-border-quiet); }
+    .footer { border-block-start: 1px solid var(--c-color-neutral-border-quiet); }
+    .buttons { display: flex; justify-content: end; align-items: center; gap: var(--c-spacing-md); }
+    .field { margin-block: 0 var(--c-spacing-lg); }
+    .checkbox-list-item { margin-block: var(--c-spacing-md); }
+    .checkbox-list-item .move { display: flex; align-items: center; gap: var(--c-spacing-md); }
+    .checkbox-list-item input[type=checkbox] { appearance: auto; inline-size: 16px; block-size: 16px; margin: 0; accent-color: var(--c-color-accent-fill-loud); }
+    .checkbox-list-item label { padding: 0; &::before, &::after { display: none; } }
+    [hidden] { display: none !important; }
+    craft-select { inline-size: 100%; }
+    .heading { margin-block-end: var(--c-spacing-sm); }
+  }
+}
+
+.ff-native-notification-dialog {
+  --white: var(--c-surface-default);
+  --gray-050: var(--c-color-neutral-fill-quiet);
+  --gray-100: var(--c-color-neutral-fill-quiet);
+  --gray-200: var(--c-color-neutral-border-quiet);
+  --gray-500: var(--c-color-neutral-border-loud);
+  --gray-600: var(--c-text-quiet);
+  --text-color: var(--c-text-default);
+  --light-text-color: var(--c-text-quiet);
+  --hairline-color: var(--c-color-neutral-border-quiet);
+  inline-size: min(42rem, calc(100vw - 32px));
+  #send-additional-notification-modal {
+    .header, .body, .footer { padding: var(--c-spacing-lg); }
+    .body { inline-size: 100%; box-sizing: border-box; max-block-size: 60dvh; }
+    .footer { border-block-start: 1px solid var(--c-color-neutral-border-quiet); }
+    .buttons { display: flex; justify-content: end; align-items: center; gap: var(--c-spacing-md); }
+    .field { margin-block: 0 var(--c-spacing-lg); }
+    craft-select { inline-size: 100%; }
+    .notification-mode-option { align-items: start; }
+    .recipient-option { padding: 12px 14px; }
+    .recipient-option label { padding: 0; inline-size: 100%; }
+    input[type=radio] { accent-color: var(--c-color-accent-fill-loud); }
+    .checkbox label::before, .checkbox label::after { display: none; }
+    .checkbox label { padding-inline-start: 0; }
+  }
+}
+
+.ff-native-status-menu { display: inline-flex; vertical-align: middle; }
+.ff-native-status-button {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding: 0 14px 0 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  border-radius: 999px;
+  cursor: pointer;
+  craft-badge { transition: padding-inline-end 180ms ease; }
+  &::after {
+    content: '';
+    position: absolute;
+    inset-inline-end: 4px;
+    width: 5px;
+    height: 5px;
+    border: solid currentColor;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg) translateY(-2px);
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  &:hover::after, &:focus-visible::after, &[aria-expanded='true']::after { opacity: .65; }
+  &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+  &:disabled { opacity: .5; cursor: progress; }
+}
+
+.ff-native-status-choice { display: inline-flex; align-items: center; gap: var(--c-spacing-md); }

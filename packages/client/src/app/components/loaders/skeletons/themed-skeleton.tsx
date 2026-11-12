@@ -1,18 +1,17 @@
-import type React from "react";
-import type { ReactNode } from "react";
+import type { ComponentProps, FC } from "react";
 import { SkeletonTheme } from "react-loading-skeleton";
 
-type Props = {
-  children?: ReactNode;
-};
+type Props = Omit<
+  ComponentProps<typeof SkeletonTheme>,
+  "baseColor" | "highlightColor"
+>;
 
-export const ThemedSkeleton: React.FC<Props> = ({ children }) => {
-  return (
-    <SkeletonTheme
-      baseColor="var(--ui-control-bg-color, #e6eaee)"
-      highlightColor="var(--ui-control-hover-bg-color, #ced1d4)"
-    >
-      {children}
-    </SkeletonTheme>
-  );
-};
+export const ThemedSkeleton: FC<Props> = ({ children, ...props }) => (
+  <SkeletonTheme
+    {...props}
+    baseColor="color-mix(in srgb, var(--c-text-default) 10%, var(--c-surface-default))"
+    highlightColor="color-mix(in srgb, var(--c-text-default) 18%, var(--c-surface-default))"
+  >
+    {children}
+  </SkeletonTheme>
+);

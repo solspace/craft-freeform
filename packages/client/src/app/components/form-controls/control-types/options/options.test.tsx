@@ -34,7 +34,7 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (value: string) => value,
 }));
 vi.mock("@ff-client/queries/field-types", () => ({
-  useFieldType: () => ({ implements: [] }),
+  useFieldType: () => ({ implements: [] as never[] }),
 }));
 vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
   useTranslations: () => ({ willTranslate: () => false }),
@@ -49,10 +49,10 @@ vi.mock("@components/form-controls/control.styles", () => ({
 }));
 vi.mock("@components/form-controls/label.styles", () => ({ Label: "span" }));
 vi.mock("@components/form-controls/error-list", () => ({
-  FormErrorList: () => null,
+  FormErrorList: (): null => null,
 }));
 vi.mock("./sources/translations/translations", () => ({
-  OptionsTranslatable: () => null,
+  OptionsTranslatable: (): null => null,
 }));
 vi.mock("@components/elements/button-group/button-group", () => ({
   ButtonGroup: ({ onClick }: { onClick: (source: string) => void }) => (
@@ -68,7 +68,7 @@ vi.mock("@components/elements/button-group/button-group", () => ({
 
 let sourceProps: ConfigurationProps;
 vi.mock("./sources/source.component", () => ({
-  SourceComponent: (props: ConfigurationProps) => {
+  SourceComponent: (props: ConfigurationProps): null => {
     sourceProps = props;
     return null;
   },
@@ -249,7 +249,7 @@ describe("option source switching", () => {
   it("does not resurrect options that the editor intentionally deleted", () => {
     switchTo(Source.Elements);
     switchTo(Source.Custom);
-    const empty = { ...custom, options: [] };
+    const empty = { ...custom, options: [] as never[] };
     act(() => sourceProps.updateValue(empty));
     switchTo(Source.Predefined);
     switchTo(Source.Custom);

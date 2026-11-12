@@ -1,8 +1,10 @@
 import { DisclosureSelect } from "@lib/cp/widgets/disclosure-select";
 import { manageWidgetFrameSession } from "@lib/cp/widgets/frame-session";
+import { syncWidgetFrameTheme } from "@lib/cp/widgets/frame-theme";
 import { fitHealthIssues } from "@lib/cp/widgets/health-issues";
 
 manageWidgetFrameSession();
+syncWidgetFrameTheme();
 
 const init = () => {
   for (const widget of document.querySelectorAll<HTMLElement>(
@@ -24,7 +26,8 @@ const init = () => {
   for (const select of document.querySelectorAll<HTMLSelectElement>(
     ".widget-editor select:not([multiple])",
   )) {
-    if (!select.closest("[hidden], #settings-chartSize-field"))
+    // Craft 6 owns the select's input slot, keyboard handling, and menu.
+    if (!select.closest("craft-select, [hidden], #settings-chartSize-field"))
       new DisclosureSelect(select);
   }
 };

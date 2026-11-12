@@ -10,18 +10,30 @@ vi.mock("@components/form-controls/control", () => ({
   Control: ({ children }: PropsWithChildren) => <div>{children}</div>,
 }));
 vi.mock("@components/slideouts/slideout", () => ({
-  NativeSlideout: ({ children, onClose }) => (
-    <div role="dialog">{children(onClose)}</div>
-  ),
+  NativeSlideout: ({
+    children,
+    onClose,
+  }: {
+    children: (onClose: () => void) => React.ReactNode;
+    onClose: () => void;
+  }) => <div role="dialog">{children(onClose)}</div>,
 }));
 vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
   useTranslations: () => ({
     willTranslate: () => false,
-    getTranslation: (_handle, value) => value,
+    getTranslation: (_handle: string, value: string) => value,
   }),
 }));
 vi.mock("@components/elements/custom-dropdown/dropdown", () => ({
-  Dropdown: ({ value, options, onChange }) => (
+  Dropdown: ({
+    value,
+    options,
+    onChange,
+  }: {
+    value: string;
+    options: { value: string; label: string }[];
+    onChange: (value: string) => void;
+  }) => (
     <select value={value} onChange={(event) => onChange(event.target.value)}>
       {options.map(({ value, label }) => (
         <option key={value} value={value}>
@@ -44,7 +56,7 @@ afterEach(() => {
 it.each(["Finish & Close", "Cancel"])(
   "initializes and edits an empty table, then handles %s",
   (action) => {
-    vi.stubGlobal("Craft", { t: (_category, value) => value });
+    vi.stubGlobal("Craft", { t: (_category: string, value: string) => value });
     vi.stubGlobal(
       "ResizeObserver",
       class {

@@ -1,4 +1,5 @@
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { editorButton } from "@ff-client/styles/craft6";
+import { borderRadius, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const ButtonGroupWrapper = styled.div`
@@ -17,14 +18,14 @@ export const ButtonGroupWrapper = styled.div`
     background-color 0.2s ease-out;
 
   &.active {
-    border: 1px dashed #5782ef;
+    border: 1px dashed var(--c-color-accent-border-normal);
   }
 
   &:hover {
-    background: light-dark(#f3f7fd, ${colors.mutedSurface});
+    background: var(--c-color-neutral-fill-quiet);
 
     &:not(.active) {
-      border: 1px solid light-dark(#cdd8e4, var(--hairline-color, #cdd8e4));
+      border: 1px solid var(--c-color-neutral-border-quiet);
     }
   }
 `;
@@ -34,35 +35,17 @@ export const ButtonGroup = styled.div`
   gap: ${spacings.md};
 `;
 
-export const Button = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 5px;
+export const Button = styled.button.attrs({ type: "button" })`
+  ${editorButton}
+  background: transparent;
+  border-style: dashed;
+  color: var(--c-text-quiet);
 
-  img,
-  svg {
-    width: 24px;
-    height: 24px;
+  &:hover {
+    color: var(--c-text-default);
+    background: var(--c-color-neutral-fill-quiet);
   }
 
-  svg {
-    animation: spin 1s linear infinite;
-  }
-
-  &.btn-submit {
-    background-color: light-dark(${colors.gray600}, var(--secondary-button-bg, ${colors.gray600}));
-    color: light-dark(white, var(--secondary-button-text-color, white));
-
-    svg {
-      fill: light-dark(white, currentColor);
-    }
-
-    &:hover {
-      background-color: light-dark(${colors.gray700}, var(--secondary-button-bg--hover, ${colors.gray700}));
-    }
-
-    &:active {
-      background-color: var(--secondary-button-bg--active, ${colors.gray800});
-    }
-  }
+  img, svg { width: 16px; height: 16px; }
+  .button-edit-cue { width: 12px; height: 12px; opacity: .7; margin-inline-start: var(--c-spacing-sm); }
 `;

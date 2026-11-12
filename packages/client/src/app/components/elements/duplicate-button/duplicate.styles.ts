@@ -12,6 +12,7 @@ export const DuplicateButtonWrapper = styled(animated.button)`
 
   font-size: 16px;
 
+  border: 0;
   border-radius: 50%;
   padding: 3px;
   background-color: transparent;
@@ -22,7 +23,6 @@ export const DuplicateButtonWrapper = styled(animated.button)`
   &:hover {
     background-color: ${colors.green600};
     color: #fff;
-    scale: 1.2;
   }
 
   @media (prefers-reduced-motion: reduce) { transition: none; }

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { prepareChartData } from "./chart-data";
 
 describe("dashboard chart data", () => {
-  it.each(["pie", "doughnut", "polarArea"])(
+  it.each(["pie", "doughnut", "polarArea"] as const)(
     "keeps labels, values and colors aligned when removing inactive %s slices",
     (type) => {
       const { config, radial, total } = prepareChartData({
@@ -29,7 +29,7 @@ describe("dashboard chart data", () => {
     },
   );
 
-  it.each(["line", "bar"])(
+  it.each(["line", "bar"] as const)(
     "removes inactive %s series without removing dates or zero points in active series",
     (type) => {
       const { config, total } = prepareChartData({

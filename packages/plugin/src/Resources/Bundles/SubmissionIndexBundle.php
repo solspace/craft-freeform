@@ -6,6 +6,10 @@ class SubmissionIndexBundle extends AbstractFreeformAssetBundle
 {
     public function getScripts(): array
     {
+        if (version_compare(\Craft::$app->version, '6.0.0-dev', '>=')) {
+            return ['js/scripts/cp/submissions/native-index.js'];
+        }
+
         return [
             'js/scripts/cp/submissions/index.js',
             'js/scripts/cp/submissions/element-index.js',

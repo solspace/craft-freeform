@@ -2,8 +2,8 @@ import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const PageLayout = styled.div`
-  min-height: calc(100dvh - var(--cp-header-height) - 16px);
-  padding: 16px;
+  min-width: 0;
+  padding-block-start: var(--c-spacing-lg);
 `;
 
 export const HeaderContainer = styled.div`
@@ -18,14 +18,36 @@ export const Header = styled.header`
   grid-template-columns: min-content minmax(0, 1fr) auto;
   justify-content: space-between;
   align-items: center;
-  gap: ${spacings.md} ${spacings.sm};
-  margin-bottom: 12px;
+  gap: ${spacings.lg} ${spacings.sm};
+  margin-bottom: var(--c-spacing-xl);
 
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: var(--forms-control-height);
+    gap: var(--c-spacing-sm);
+    box-sizing: border-box;
+    border: 1px solid transparent;
+    border-radius: var(--c-radius-md);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-color-neutral-on-quiet);
+    &:hover:not(:disabled):not(.active) { background: var(--c-color-neutral-fill-normal); }
+    &:focus-visible {
+      outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+      outline-offset: var(--c-focus-outline-offset);
+    }
+    &.submit {
+      background: var(--c-color-accent-fill-loud);
+      color: var(--c-color-accent-on-loud);
+      &:hover:not(:disabled) { background: color-mix(in oklab, var(--c-color-accent-fill-loud), var(--c-color-mix-hover)); }
+    }
+  }
+
+  && .btngroup > .btn.active {
+    background: var(--c-color-neutral-fill-loud);
+    border-color: var(--c-color-neutral-border-loud);
+    color: var(--c-color-neutral-on-loud);
   }
 
 
@@ -43,10 +65,10 @@ export const Header = styled.header`
 export const Title = styled.h1`
   grid-area: title;
 
-  padding: ${spacings.sm} 0;
+  padding: 0;
   margin: 0;
 
-  font-size: 20px;
+  font-size: var(--c-text-xl);
   font-weight: 700;
   line-height: 34px;
 `;
@@ -55,7 +77,7 @@ export const ButtonGroup = styled.div`
   grid-area: button;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: ${spacings.sm};
 `;
 
@@ -72,9 +94,6 @@ export const ViewButtons = styled.section`
     padding-inline: 10px;
   }
 
-  .btn::before {
-    opacity: 0.8;
-  }
 `;
 
 export const ViewControls = styled.div`
@@ -93,22 +112,16 @@ export const ViewControls = styled.div`
 
 export const SearchWrapper = styled.div`
   position: relative;
-  flex: 1 1 200px;
-  width: 240px;
+  flex: 0 1 320px;
+  width: 320px;
   min-width: 0;
-  max-width: 280px;
+  max-width: 320px;
 
-  input.text[type='search'] {
+  input.cp-form-control[type='search'] {
     padding-inline: 32px;
     box-sizing: border-box;
     height: var(--forms-control-height);
     min-height: var(--forms-control-height);
-    border: 1px solid var(--c-form-control-border-color);
-    border-radius: var(--c-form-control-radius);
-    background: var(--c-form-control-fill);
-    box-shadow: var(--c-input-shadow);
-    color: var(--c-text-default);
-    font: inherit;
     padding: 0 32px;
   }
 
@@ -123,9 +136,6 @@ export const SearchWrapper = styled.div`
     pointer-events: none;
   }
 
-  .texticon-icon::before {
-    opacity: 0.8;
-  }
 
   .texticon-icon,
   .clear-btn {
@@ -169,6 +179,8 @@ export const ToolbarMenu = styled.div.attrs({
   box-sizing: border-box;
   width: 240px;
   max-width: calc(100vw - 24px);
+  font-size: var(--c-text-base);
+  line-height: var(--c-leading-normal);
 
   ul { margin: 0; padding: 0; list-style: none; }
 `;
@@ -179,13 +191,16 @@ export const ToolbarMenuItem = styled.button.attrs({
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
-  width: calc(100% + 28px);
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  line-height: 20px;
+  flex-wrap: nowrap;
+  width: 100%;
 
-  &:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  &:hover:not(:disabled) {
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-color-neutral-on-quiet);
+  }
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: calc(-1 * var(--c-focus-outline-width));
+  }
   @media (pointer: coarse) { min-height: 44px; }
 `;

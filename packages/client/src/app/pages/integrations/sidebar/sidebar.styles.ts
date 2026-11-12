@@ -1,4 +1,4 @@
-import { SearchBar } from "@components/search/search.style";
+import { SearchBar, SearchKeyHelper } from "@components/search/search.style";
 import { scrollBar } from "@ff-client/styles/mixins";
 import styled from "styled-components";
 
@@ -15,23 +15,23 @@ export const SidebarNavigation = styled.nav`
   padding: 0;
   box-sizing: border-box;
   background: var(--c-surface-default);
-  border-inline-end: 1px solid var(--c-color-border-quiet);
 
   @media (max-width: 1023px) {
     position: static;
     width: 100%;
     max-height: 18rem;
-    border-inline-end: 0;
     border-block-end: 1px solid var(--c-color-border-quiet);
   }
 `;
 
 export const SearchWrapper = styled.div`
-  padding: 8px;
+  padding: var(--c-spacing-md);
   border-bottom: 1px solid var(--c-color-border-quiet);
 
   ${SearchBar} {
-    min-height: 34px;
+    box-sizing: border-box;
+    height: var(--c-size-control-md);
+    min-height: var(--c-size-control-md);
     border: 1px solid var(--c-form-control-border-color);
     background: var(--c-surface-default);
 
@@ -40,11 +40,18 @@ export const SearchWrapper = styled.div`
       color: var(--c-text-quiet);
     }
   }
+
+  ${SearchKeyHelper} {
+    top: 50%;
+    transform: translateY(-50%);
+    padding-block: var(--c-spacing-xs);
+    line-height: 1;
+  }
 `;
 
 export const CategoryList = styled.ul`
   list-style: none;
-  padding: 8px;
+  padding: var(--c-spacing-md);
   margin: 0;
   min-height: 0;
   overflow-y: auto;
@@ -52,22 +59,24 @@ export const CategoryList = styled.ul`
 `;
 
 export const Category = styled.li`
-  margin: 0 0 16px;
+  margin: 0;
+  padding: 0;
+  & + & { margin-block-start: var(--c-spacing-lg); }
 `;
 
 export const CategoryTitle = styled.h3`
   font-size: 12px;
   font-weight: 700;
   line-height: 16px;
-  padding: 8px;
-  margin: 0;
+  padding: var(--c-spacing-sm) var(--c-spacing-md);
+  margin: 0 0 var(--c-spacing-xs);
   color: var(--c-text-default);
 `;
 
 export const IntegrationList = styled.ul`
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--c-spacing-xs);
   list-style: none;
   padding: 0;
   margin: 0;
@@ -100,16 +109,19 @@ export const StatusIndicator = styled.span`
 `;
 
 export const Integration = styled.li`
+  margin: 0;
+  padding: 0;
   > a {
-    display: flex;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: 12px 16px minmax(0, 1fr) auto;
+    gap: var(--c-spacing-md);
     align-items: center;
-    min-height: 30px;
+    min-height: var(--c-size-control-md);
     box-sizing: border-box;
-    padding: 4px 8px;
+    padding: var(--c-spacing-sm) var(--c-spacing-md);
     margin: 0;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: var(--c-text-base);
+    line-height: var(--c-leading-normal);
     color: var(--c-text-default);
     text-decoration: none;
     border: 1px solid transparent;
@@ -145,11 +157,11 @@ export const Icon = styled.span`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 16px;
   width: 16px;
   height: 16px;
 
   svg, i {
+    display: block;
     width: 16px;
     height: 16px;
     font-size: 16px;

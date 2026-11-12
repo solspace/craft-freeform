@@ -3,16 +3,18 @@
 ## Unreleased
 
 ### Added
-- Carried forward Freeform 5.18.2 features and fixes, plus the latest form Link, Content Block, Hyper, Linkit, and Navigation integrations, adapted for Craft 6.
-- Added Content Integrations settings, shared integration icons, and native editor form blocks, with compatibility checks for installed plugins.
+- Ported Freeform 5.18.2 features and content integrations to Craft 6.
 
 ### Changed
-- Aligned shared settings controls and control panel colors with native Craft 6 tokens, retaining compatibility with its upcoming appearance updates.
+- Requires Craft 6.0.0-beta.1 or later.
+- Updated control panel layouts, navigation, controls, and themes to match native Craft 6.
+- Hid unsupported inline editing on submission and spam indexes.
 
 ### Fixed
-- Fixed Forms dashboard loading, Quick setup restrictions, and Demo Templates installer warnings.
-- Adapted form-link settings, address mapping, validation, and service lookups to Craft 6 APIs.
-- Corrected submission permission criteria for native queries and schema migration handling on MySQL.
+- Fixed builder startup, history navigation, slideouts, preview isolation, and notification template naming.
+- Restored submission field values and custom columns, and fixed spam filtering, exports, notifications, and status controls.
+- Fixed compatibility issues in settings, integrations, permissions, and migrations.
+- Fixed Forms dashboard loading, Quick setup restrictions, and Demo Templates warnings.
 
 ## 6.0.0-beta.5 - 2026-10-27
 

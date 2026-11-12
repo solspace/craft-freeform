@@ -538,7 +538,6 @@ export const SetupGuide = ({
                 className="text fullwidth"
                 aria-label={translate(item.label)}
                 type={item.type || "text"}
-                min={item.type === "number" ? 1 : undefined}
                 maxLength={500}
                 placeholder={
                   [

@@ -69,7 +69,7 @@ export const trackGtmSubmission = (event: FreeformResponseEvent): void => {
   const cleared = Object.fromEntries(
     [...tracking.parameters]
       .filter((name) => !(name in parameters))
-      .map((name) => [name, null]),
+      .map((name): [string, null] => [name, null]),
   );
   tracking.parameters = new Set(Object.keys(parameters));
 

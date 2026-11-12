@@ -26,7 +26,8 @@
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
     "test": "vitest run --config vitest.config.ts",
-    "lint": "biome check"
+    "lint": "biome check",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "devDependencies": {
     "jsdom": "30.1.1",

@@ -47,9 +47,14 @@ function response(overrides: Partial<FreeformResponse> = {}): FreeformResponse {
     ...overrides,
   } as FreeformResponse;
 }
-function success(data = response(), request = {}): FreeformResponseEvent {
-  const event = Object.assign(new Event("freeform-ajax-success"), {
+function success(
+  data = response(),
+  request = new XMLHttpRequest(),
+): FreeformResponseEvent {
+  const event = Object.assign(new CustomEvent("freeform-ajax-success"), {
     form,
+    freeform: form.freeform,
+    addCallback: vi.fn(),
     response: data,
     request,
   }) as FreeformResponseEvent;
@@ -118,7 +123,7 @@ it("deduplicates repeated responses, cloned responses, and repeated listener ins
   expect(hook).toHaveBeenCalledTimes(2);
 });
 it("deduplicates by request when storage and submission tokens are unavailable", () => {
-  const request = {};
+  const request = new XMLHttpRequest();
   success(
     response({ submissionId: undefined, submissionToken: undefined }),
     request,

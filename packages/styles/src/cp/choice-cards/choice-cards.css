@@ -15,21 +15,9 @@
 }
 
 .ff-choice-card {
-  --choice-accent: var(
-    --ui-card-selected-border,
-    var(--ui-control-selected-border, var(--link-color, #3476b8))
-  );
-  --choice-selected-background: var(
-    --ui-card-selected-bg,
-    var(
-      --ui-control-selected-bg,
-      color-mix(in srgb, var(--choice-accent) 4%, var(--pane-bg, #fff))
-    )
-  );
-  --choice-selected-heading: var(
-    --ui-card-selected-color,
-    var(--ui-control-selected-color, var(--text-color, #235b91))
-  );
+  --choice-accent: var(--c-color-accent-border-normal);
+  --choice-selected-background: var(--c-color-accent-fill-quiet);
+  --choice-selected-heading: var(--c-text-default);
   position: relative;
   box-sizing: border-box;
   display: flex;
@@ -40,21 +28,18 @@
   min-width: 0;
   max-width: 100%;
   padding: 14px;
-  color: var(--gray-800, #33404d);
+  color: var(--c-text-default);
   cursor: pointer;
-  background: light-dark(var(--white, #fff), var(--pane-bg, #fff));
-  border: 1px solid var(--gray-200, #cdd8e4);
+  background: var(--c-surface-default);
+  border: 1px solid var(--c-form-control-border-color);
   border-radius: 6px;
 }
 
 .ff-choice-card:has(input:checked) {
-  color: var(
-    --ui-card-selected-color,
-    var(--ui-control-selected-color, var(--text-color, #33404d))
-  );
+  color: var(--c-text-default);
   background: var(--choice-selected-background);
   border-color: var(--choice-accent);
-  box-shadow: none;
+  box-shadow: inset 0 0 0 1px var(--choice-accent);
 }
 .ff-choice-card:has(input:checked) .choice-heading {
   color: var(--choice-selected-heading);
@@ -66,8 +51,7 @@
   border-color: var(--choice-accent);
 }
 .ff-choice-card:has(input:focus-visible) {
-  outline: 2px solid
-    light-dark(var(--choice-accent), var(--link-color, #3476b8));
+  outline: 2px solid var(--c-color-focus-outline);
   outline-offset: 3px;
 }
 .ff-choice-card:has(input:disabled) {
@@ -81,10 +65,29 @@
   position: absolute;
   inset-block-start: 16px;
   inset-inline-end: 14px;
+  box-sizing: border-box;
   width: 16px;
   height: 16px;
   margin: 0;
+  appearance: none;
   accent-color: var(--choice-accent);
+  background: var(--c-input-fill);
+  border: 1px solid var(--c-form-control-border-color);
+  border-radius: 50%;
+  box-shadow: none;
+}
+.ff-choice-card input:checked {
+  background: radial-gradient(
+    circle,
+    var(--c-color-accent-fill-loud) 3px,
+    var(--c-surface-default) 3.5px
+  );
+  border-color: var(--c-color-accent-fill-loud);
+  box-shadow: none;
+}
+.ff-choice-card input:focus-visible {
+  outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+  outline-offset: var(--c-focus-outline-offset);
 }
 .ff-choice-card .choice-heading {
   display: flex;
@@ -101,7 +104,7 @@
   display: grid;
   flex: 0 0 20px;
   place-items: center;
-  color: light-dark(#617488, var(--light-text-color, #617488));
+  color: var(--c-text-quiet);
 }
 .ff-choice-card .choice-icon svg {
   display: block;
@@ -125,7 +128,7 @@
   margin-top: 4px;
   font-size: 12px;
   line-height: 18px;
-  color: var(--gray-600, #515f6c);
+  color: var(--c-text-quiet);
 }
 
 .ff-choice-card .ff-recommended-badge {
@@ -135,5 +138,3 @@
   z-index: 1;
   transform: translateY(-50%);
 }
-
-/* Neutral selected cards in Light, with teal reserved for the radio dot. */

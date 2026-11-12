@@ -29,6 +29,17 @@ vi.mock("@ff-client/queries/autosuggest", () => ({
 }));
 
 it("uses a native combobox and keeps the selected status on React settings", async () => {
+  if (!customElements.get("craft-combobox")) {
+    customElements.define(
+      "craft-combobox",
+      class extends HTMLElement {
+        value = "";
+        options: unknown[] = [];
+        requireOptionMatch = false;
+        showAllOnEmpty = false;
+      },
+    );
+  }
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const container = document.createElement("div");
   document.body.append(container);
@@ -47,9 +58,16 @@ it("uses a native combobox and keeps the selected status on React settings", asy
     );
     const combobox = container.querySelector(
       "craft-combobox",
-    ) as HTMLElement & { modelValue: string };
-    expect(combobox.getAttribute("model-value")).toBe("true");
-    const options = JSON.parse(combobox.getAttribute("options")!);
+    ) as HTMLElement & {
+      value: string;
+      options: {
+        label: string;
+        data?: { indicator: { fill: string; appearance: string } };
+        options?: { value: string; data: { hint?: string } }[];
+      }[];
+    };
+    expect(combobox.value).toBe("true");
+    const options = combobox.options;
     expect(
       options.slice(0, 2).map((option: { label: string }) => option.label),
     ).toEqual(["Enabled", "Disabled"]);
@@ -58,11 +76,19 @@ it("uses a native combobox and keeps the selected status on React settings", asy
     ).toEqual(["$ON", "$OFF"]);
     expect(options[2].options[1].data.hint).toBe("Disabled");
     expect(
-      container.querySelector("craft-indicator")!.getAttribute("variant"),
+      container.querySelector("craft-indicator")!.getAttribute("fill"),
     ).toBe("success");
-    combobox.modelValue = "$OFF";
+    expect(options[0].data.indicator).toEqual({
+      fill: "success",
+      appearance: "solid",
+    });
+    expect(options[1].data.indicator).toEqual({
+      fill: "neutral",
+      appearance: "outline",
+    });
+    combobox.value = "$OFF";
     await act(async () => {
-      combobox.dispatchEvent(new CustomEvent("model-value-changed"));
+      combobox.dispatchEvent(new CustomEvent("change"));
       await Promise.resolve();
     });
     expect(update).toHaveBeenCalledExactlyOnceWith("$OFF");
@@ -72,8 +98,11 @@ it("uses a native combobox and keeps the selected status on React settings", asy
       ),
     );
     expect(
-      container.querySelector("craft-indicator")!.getAttribute("variant"),
-    ).toBe("empty");
+      container.querySelector("craft-indicator")!.getAttribute("fill"),
+    ).toBe("neutral");
+    expect(
+      container.querySelector("craft-indicator")!.getAttribute("appearance"),
+    ).toBe("outline");
     await act(() =>
       root.render(
         <BoolEnv

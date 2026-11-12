@@ -58,7 +58,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
             tickLine={false}
             interval={2}
             tickFormatter={(value) =>
-              new Date(value).toLocaleDateString("en-US", {
+              new Date(String(value)).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
               })
@@ -85,7 +85,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
               isRate ? formatRate(Number(value)) : Number(value)
             }
             labelFormatter={(value) =>
-              new Date(value).toLocaleDateString("en-US", {
+              new Date(String(value)).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
               })

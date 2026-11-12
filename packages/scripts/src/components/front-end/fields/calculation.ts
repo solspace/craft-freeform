@@ -1,4 +1,3 @@
-// @ts-expect-error
 import ExpressionLanguage from "expression-language";
 
 const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
@@ -100,8 +99,11 @@ const attachCalculations = (input: HTMLInputElement) => {
       return;
     }
 
-    let result = expressionLanguage.evaluate(calculationsLogic, variables);
-    result = decimalCount !== null ? result.toFixed(decimalCount) : result;
+    const evaluated = expressionLanguage.evaluate(calculationsLogic, variables);
+    const result =
+      decimalCount !== null && typeof evaluated === "number"
+        ? evaluated.toFixed(decimalCount)
+        : String(evaluated);
 
     const updateInputValue = (value: string | number) => {
       input.value = value.toString();

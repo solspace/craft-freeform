@@ -82,11 +82,11 @@ export const FieldList = styled.ul`
   overflow-x: hidden;
 
   background: var(--background-color);
-  border-inline-end: 1px solid var(--c-color-border-quiet);
+  border-inline-end: 1px solid var(--c-color-neutral-border-quiet);
 
   @container (max-width: 600px) {
     border-inline-end: 0;
-    border-bottom: 1px solid var(--c-color-border-quiet);
+    border-bottom: 1px solid var(--c-color-neutral-border-quiet);
   }
 
   ${scrollBar};

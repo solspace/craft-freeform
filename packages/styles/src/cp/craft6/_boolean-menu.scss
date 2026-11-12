@@ -1,0 +1,28 @@
+// The status dot belongs to Freeform; Craft owns the combobox styling.
+.freeform-cp {
+  .freeform-boolean-menu {
+    position: relative;
+
+    // Craft builds can render the textbox without a slot attribute.
+    craft-combobox input:is([type='text'], [type='search'], :not([type])) {
+      // Reserve the dot's content width, two border pixels, and a text gap.
+      // Keep this inset when another CP stylesheet resets input padding.
+      padding-inline-start: calc(var(--c-input-spacing-inline, 8px) + 0.6em + 2px + var(--c-spacing-sm, 4px)) !important;
+    }
+
+    .freeform-boolean-menu-status {
+      position: absolute;
+      inset-inline-start: var(--c-input-spacing-inline, 8px);
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    &:has(craft-combobox[disabled]) .freeform-boolean-menu-status {
+      opacity: 0.5;
+    }
+  }
+
+}

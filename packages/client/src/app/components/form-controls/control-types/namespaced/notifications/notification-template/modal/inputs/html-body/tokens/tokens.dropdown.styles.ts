@@ -1,10 +1,10 @@
 import { labelText, scrollBar } from "@ff-client/styles/mixins";
-import { colors, spacings } from "@ff-client/styles/variables";
+import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const TokenDropdownWrapper = styled.div`
   position: absolute;
-  z-index: 1000;
+  z-index: var(--c-layer-popover);
   left: 200px;
   top: 200px;
 
@@ -13,25 +13,27 @@ export const TokenDropdownWrapper = styled.div`
   gap: 0;
 
   width: 300px;
+  max-width: calc(100vw - 16px);
   max-height: 300px;
   overflow: hidden;
 
-  background-color: light-dark(${colors.white}, ${colors.overlay});
-  color: light-dark(black, ${colors.text});
+  background-color: var(--c-surface-overlay);
+  color: var(--c-text-default);
 
-  border: 1px solid ${colors.hairline};
-  border-radius: 4px;
-  box-shadow: var(--menu-shadow, var(--modal-shadow, 0 2px 8px rgb(0 0 0 / 15%)));
+  border: 1px solid var(--c-color-neutral-border-normal);
+  border-radius: var(--c-radius-md);
+  box-shadow: var(--c-shadow-lg);
 `;
 
 export const Title = styled.h3`
-  background: ${colors.gray100};
+  background: var(--c-surface-overlay);
+  border-bottom: 1px solid var(--c-color-neutral-border-quiet);
 
   padding: 8px 8px;
   margin: 0;
 
   ${labelText};
-  color: ${colors.gray600};
+  color: var(--c-text-default);
   font-size: 11px;
 `;
 

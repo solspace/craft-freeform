@@ -1,4 +1,3 @@
-import { RemoveButton } from "@components/elements/remove-button/remove";
 import { TranslateIconWrapper } from "@components/form-controls/label.styles";
 import { useModal } from "@components/modals/modal.context";
 import type { Page } from "@editor/builder/types/layout";
@@ -10,9 +9,9 @@ import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors"
 import { useTranslations } from "@editor/store/slices/translations/translations.hooks";
 import { deletePage } from "@editor/store/thunks/pages";
 import { useClickOutside } from "@ff-client/hooks/use-click-outside";
-import { useHover } from "@ff-client/hooks/use-hover";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
+import CloseIcon from "@ff-icons/actions/delete";
 import TranslateIcon from "@ff-icons/translate.icon";
 import type React from "react";
 import type { KeyboardEvent, RefObject } from "react";
@@ -23,7 +22,8 @@ import { useTabDrop } from "./tab.drop";
 import {
   Input,
   PageTab,
-  RemoveButtonWrapper,
+  RemoveTabButton,
+  RemoveTabSlot,
   TabText,
   TabWrapper,
 } from "./tab.styles";
@@ -53,7 +53,6 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const isHovering = useHover(wrapperRef);
 
   const { canDrop, ref: dropRef } = useTabDrop(currentPage?.uid, page);
 
@@ -124,7 +123,8 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
           <Input
             type="text"
             ref={inputRef}
-            className="text small"
+            className="page-label-input"
+            size={Math.max(1, getTranslation("label", page.label).length)}
             placeholder={page.label}
             defaultValue={getTranslation("label", page.label)}
             onKeyUp={handleKeyboardEvent}
@@ -155,11 +155,16 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
           </TabText>
         )}
 
-        {totalPages > 1 && (
-          <RemoveButtonWrapper>
-            <RemoveButton
-              active={isHovering && !isEditing}
-              onClick={() => {
+        {totalPages > 1 && !isEditing && (
+          <RemoveTabSlot>
+            <RemoveTabButton
+              type="button"
+              aria-label={translate("Delete page {name}", {
+                name: getTranslation("label", page.label),
+              })}
+              title={translate("Delete page")}
+              onClick={(event) => {
+                event.stopPropagation();
                 confirmDelete({
                   title: translate("Delete page?"),
                   message: translate(
@@ -171,8 +176,10 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
                   },
                 });
               }}
-            />
-          </RemoveButtonWrapper>
+            >
+              <CloseIcon />
+            </RemoveTabButton>
+          </RemoveTabSlot>
         )}
       </PageTab>
     </TabWrapper>

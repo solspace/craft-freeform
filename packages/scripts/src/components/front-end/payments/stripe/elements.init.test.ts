@@ -12,7 +12,7 @@ vi.mock("./elements.config", () => ({
     site: "default",
     integration: "integration",
     amountFields: ["amount"],
-    fieldMapping: [],
+    fieldMapping: [] as never[],
     loadStripe: async () => ({ elements: mocks.elements }),
   }),
 }));

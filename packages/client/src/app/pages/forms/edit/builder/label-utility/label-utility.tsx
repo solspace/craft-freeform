@@ -1,3 +1,4 @@
+import { Checkbox } from "@components/elements/checkbox/checkbox";
 import { InfoBlock } from "@components/notification-blocks/info/info-block";
 import { NativeSlideout } from "@components/slideouts/slideout";
 import {
@@ -52,16 +53,14 @@ const UtilityCheckbox = ({
   const id = useId();
   return (
     <UtilityCheckboxWrapper title={title}>
-      <input
+      <Checkbox
         {...props}
         id={id}
-        type="checkbox"
-        className="checkbox"
+        label={children}
         ref={(input) => {
           if (input) input.indeterminate = indeterminate;
         }}
       />
-      <label htmlFor={id}>{children}</label>
     </UtilityCheckboxWrapper>
   );
 };
@@ -241,8 +240,9 @@ export const LabelUtilityEditor = ({ close }: { close: () => void }) => {
         <div className="utility-scope">
           <div>
             <label htmlFor="label-utility-scope">{translate("Apply to")}</label>
-            <div className="select">
+            <div className="cp-select">
               <select
+                className="cp-form-control cp-form-control--select"
                 id="label-utility-scope"
                 value={scope}
                 onChange={(event) => setScope(event.target.value)}
@@ -262,8 +262,9 @@ export const LabelUtilityEditor = ({ close }: { close: () => void }) => {
               <label htmlFor="label-utility-case">
                 {translate("Capitalization")}
               </label>
-              <div className="select">
+              <div className="cp-select">
                 <select
+                  className="cp-form-control cp-form-control--select"
                   id="label-utility-case"
                   value={capitalization}
                   onChange={(event) =>
@@ -284,8 +285,9 @@ export const LabelUtilityEditor = ({ close }: { close: () => void }) => {
               <label htmlFor="label-utility-colons">
                 {translate("Trailing colons")}
               </label>
-              <div className="select">
+              <div className="cp-select">
                 <select
+                  className="cp-form-control cp-form-control--select"
                   id="label-utility-colons"
                   value={colons}
                   onChange={(event) =>
@@ -335,7 +337,7 @@ export const LabelUtilityEditor = ({ close }: { close: () => void }) => {
                 <input
                   id="label-utility-find"
                   type="text"
-                  className="text fullwidth"
+                  className="cp-form-control fullwidth"
                   value={find}
                   onChange={(event) => setFind(event.target.value)}
                   autoComplete="off"
@@ -354,7 +356,7 @@ export const LabelUtilityEditor = ({ close }: { close: () => void }) => {
                 <input
                   id="label-utility-replacement"
                   type="text"
-                  className="text fullwidth"
+                  className="cp-form-control fullwidth"
                   value={replacement}
                   onChange={(event) => setReplacement(event.target.value)}
                   autoComplete="off"

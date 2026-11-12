@@ -1,9 +1,10 @@
 import { useAppDispatch } from "@editor/store";
 import { contextActions } from "@editor/store/slices/context";
 import { pageSelecors } from "@editor/store/slices/layout/pages/pages.selectors";
-import CloseIcon from "@ff-client/assets/icons/circle-xmark-solid";
 import { useFetchPageButtonType } from "@ff-client/queries/page-types";
 import type { Property } from "@ff-client/types/properties";
+import translate from "@ff-client/utils/translations";
+import CloseIcon from "@ff-icons/actions/delete";
 import type React from "react";
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
@@ -31,7 +32,10 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
   if (!data && isFetching) {
     return (
       <PagePropertiesWrapper>
-        <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+        <CloseLink
+          aria-label={translate("Close page properties")}
+          onClick={() => dispatch(contextActions.unfocus())}
+        >
           <CloseIcon />
         </CloseLink>
         <Title>
@@ -74,7 +78,10 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
 
   return (
     <PagePropertiesWrapper>
-      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+      <CloseLink
+        aria-label={translate("Close page properties")}
+        onClick={() => dispatch(contextActions.unfocus())}
+      >
         <CloseIcon />
       </CloseLink>
       <Title>

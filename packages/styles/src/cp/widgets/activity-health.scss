@@ -38,6 +38,10 @@ a.ff-health-metric:hover { border-color: currentColor; box-shadow: 0 2px 6px #24
 .ff-health-metric-icon svg { width: 20px; height: 20px; }
 .ff-health-all-clear .ff-health-metric-icon { width: 36px; height: 40px; }
 .ff-health-all-clear .ff-health-metric-icon svg { width: 32px; height: 32px; }
+.ff-health-metric.ff-health-all-clear {
+  --ff-status-bg: light-dark(color-mix(in srgb, var(--c-color-success-fill-quiet) 35%, var(--c-surface-default)), var(--c-color-success-fill-quiet));
+  --ff-status-border: light-dark(var(--c-color-success-border-quiet), var(--c-color-success-border-normal));
+}
 .ff-health-metric-value { display: flex; align-items: center; gap: 4px; min-width: 0; }
 .ff-health-metric-value strong { font-size: 16px; line-height: 24px; font-weight: 500; font-variant-numeric: tabular-nums; letter-spacing: normal; flex: none; }
 .ff-health-metric-value > span { color: inherit; font-size: 16px; line-height: 24px; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

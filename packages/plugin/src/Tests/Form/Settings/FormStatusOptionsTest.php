@@ -17,7 +17,7 @@ class FormStatusOptionsTest extends TestCase
     protected function setUp(): void
     {
         $this->previousApp = \Craft::$app;
-        $this->setCraftVersion('6.0.0-alpha.19');
+        $this->setCraftVersion('6.0.0-beta.1');
     }
 
     protected function tearDown(): void

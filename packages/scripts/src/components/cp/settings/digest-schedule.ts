@@ -35,11 +35,15 @@ export function initDigestSchedules(root: ParentNode = document): void {
           const selected =
             button.dataset.digestMode === (daily ? "daily" : "weekly");
           button.setAttribute("aria-pressed", String(selected));
+          if (button.localName === "craft-button")
+            button.toggleAttribute("active", selected);
           button.disabled = select.disabled;
         });
         days.forEach((button) => {
           const selected = button.dataset.digestDay === weeklyDay;
           button.setAttribute("aria-pressed", String(selected));
+          if (button.localName === "craft-button")
+            button.toggleAttribute("active", selected);
           button.disabled = select.disabled;
         });
         const dayName =

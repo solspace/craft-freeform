@@ -58,7 +58,7 @@ const Harness = ({
 }: {
   mapping?: boolean;
   excluded?: string[];
-}) => {
+}): null => {
   options = useFieldOptionCollection(undefined, excluded, mapping);
   return null;
 };

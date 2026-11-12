@@ -6,10 +6,6 @@
 {% set currentUrl = craft.app.request.absoluteUrl %}
 
 {% block sidebar %}
-    {{ ui('pane', {
-        padding: 0,
-        attributes: {id: 'freeform-settings-pane', hidden: true},
-    }) }}
     {% set items = [] %}
     {% for item in freeform.plugin.export.navigation %}
         {% set items = items|merge([item.heading is defined ? item : item|merge({

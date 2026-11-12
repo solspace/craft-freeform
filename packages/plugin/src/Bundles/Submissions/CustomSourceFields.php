@@ -2,49 +2,37 @@
 
 namespace Solspace\Freeform\Bundles\Submissions;
 
-use craft\events\DefineSourceTableAttributesEvent;
-use craft\services\ElementSources;
+use CraftCms\Cms\Element\Events\ElementSourceTableAttributesResolving;
+use Illuminate\Support\Facades\Event;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use yii\base\Event;
 
 class CustomSourceFields extends FeatureBundle
 {
     public function __construct()
     {
-        Event::on(
-            ElementSources::class,
-            ElementSources::EVENT_DEFINE_SOURCE_TABLE_ATTRIBUTES,
+        Event::listen(
+            ElementSourceTableAttributesResolving::class,
             [$this, 'handleCustomTableAttributes']
         );
     }
 
-    public function handleCustomTableAttributes(DefineSourceTableAttributesEvent $event): void
+    public function handleCustomTableAttributes(ElementSourceTableAttributesResolving $event): void
     {
-        if (\in_array($event->elementType, [Submission::class, SpamSubmission::class], true)) {
-            static $forms;
-            if (null === $forms) {
-                $forms = Freeform::getInstance()->forms->getAllForms();
-            }
+        if (!\in_array($event->elementType, [Submission::class, SpamSubmission::class], true)
+            || !preg_match('/^form:(\d+)$/', $event->source, $matches)) {
+            return;
+        }
 
-            $fields = [];
+        $forms = $this->plugin()->forms->getAllForms();
+        $form = $forms[(int) $matches[1]] ?? null;
+        if (null === $form) {
+            return;
+        }
 
-            $source = $event->source;
-            if (preg_match('/^form:(\d+)$/', $source, $matches)) {
-                $formId = $matches[1];
-                $form = $forms[$formId];
-
-                $fields = $form->getLayout()->getFields()->getStorableFields();
-            }
-
-            foreach ($fields as $field) {
-                $id = $field->getId();
-                $label = $field->getLabel();
-
-                $event->attributes["field:{$id}"] = ['label' => $label];
-            }
+        foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
+            $event->attributes->put('field:'.$field->getId(), ['label' => $field->getLabel()]);
         }
     }
 }

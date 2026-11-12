@@ -1,4 +1,4 @@
-import { sectionHeading } from "@ff-client/styles/craft6";
+import { editorButton, sectionHeading } from "@ff-client/styles/craft6";
 import { shadows, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
@@ -35,16 +35,19 @@ export const AnimatedBlock = styled(animated.div)`
   z-index: 2;
 `;
 
-export const CloseLink = styled.a`
+export const CloseLink = styled.button.attrs({ type: "button" })`
   position: absolute;
-  right: 10px;
-  top: 17px;
+  right: var(--c-spacing-md);
+  top: var(--c-spacing-md);
 
   z-index: 5;
 
-  display: block;
-  width: 20px;
-  height: 20px;
+  ${editorButton}
+  width: var(--c-size-control-md);
+  height: var(--c-size-control-md);
+  padding: 0;
+  border-color: transparent;
+  background: transparent;
 `;
 
 export const Title = styled.h3`
@@ -56,7 +59,10 @@ export const Title = styled.h3`
   gap: ${spacings.sm};
 
   margin: 0;
-  padding: ${spacings.lg};
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: ${spacings.md} 88px ${spacings.md} ${spacings.lg};
+  font-size: var(--c-text-base);
 
   ${sectionHeading}
   box-shadow: ${shadows.bottom};

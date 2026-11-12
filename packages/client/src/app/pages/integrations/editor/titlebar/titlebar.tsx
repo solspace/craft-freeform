@@ -122,6 +122,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
         <FavoriteButton
           type="button"
           className={classes(isFavorite && "active")}
+          aria-pressed={isFavorite}
           onClick={() => toggleFavorite(integration.type)}
           title={translate("Favorite")}
         >
@@ -181,10 +182,15 @@ export const Titlebar: FC<Props> = ({ integration }) => {
               as="button"
               type="button"
               className="btn small info-button"
+              aria-expanded={activeReadme}
               onClick={() => setActiveReadme(!activeReadme)}
             >
               <IconInfo />
-              <span>{translate("Show Instructions")}</span>
+              <span>
+                {translate(
+                  activeReadme ? "Hide Instructions" : "Show Instructions",
+                )}
+              </span>
             </Action>
           </Actions>
         )}

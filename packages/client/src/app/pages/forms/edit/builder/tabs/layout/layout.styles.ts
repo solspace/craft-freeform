@@ -14,6 +14,8 @@ export const Grid = styled.div`
 
   /* One divider for the palette and its overlaid property editor. */
   > ${Sidebar} {
+    --background-color: var(--c-surface-default);
+    background: var(--background-color);
     border-inline-end: 1px solid ${colors.border};
     box-shadow: none;
   }

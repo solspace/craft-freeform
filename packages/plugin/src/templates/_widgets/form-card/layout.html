@@ -1,2 +1,4 @@
 {% extends '_layouts/base' %}
+{% set bodyClass = (bodyClass ?? [])|explodeClass|push('freeform-cp') %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
 {% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Widgets\\Dashboard\\FrameBundle') %}

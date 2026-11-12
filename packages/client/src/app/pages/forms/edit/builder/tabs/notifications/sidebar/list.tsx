@@ -79,7 +79,7 @@ export const List: React.FC = () => {
   }
 
   return (
-    <Sidebar $lean data-wizard-tour="notifications">
+    <Sidebar data-wizard-tour="notifications">
       <ScrollableList>
         {notificationTypes
           .filter((type) =>

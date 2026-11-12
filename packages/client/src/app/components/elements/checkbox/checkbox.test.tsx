@@ -43,6 +43,14 @@ describe("Craft 6 checkbox change bridge", () => {
     expect(label.slot).toBe("label");
     expect(label.htmlFor).toBe(input.id);
 
+    act(() => input.click());
+    expect(changes.mock.calls).toEqual([[true]]);
+    expect(input.checked).toBe(true);
+    act(() => label.click());
+    expect(changes.mock.calls).toEqual([[true], [false]]);
+    expect(input.checked).toBe(false);
+    changes.mockClear();
+
     // Craft may emit change without the input click React normally watches.
     act(() => {
       input.checked = true;

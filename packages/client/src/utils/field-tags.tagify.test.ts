@@ -35,7 +35,13 @@ it("round-trips real adjacent Tagify chips without a space", () => {
   range.collapse(true);
   window.getSelection().removeAllRanges();
   window.getSelection().addRange(range);
-  tagify.injectAtCaret(tagify.createTagElem({ value: "firstName" }), range);
+  // Tagify accepts a DOM Range here; its published types incorrectly say Selection.
+  const inject: (node: HTMLElement, range: Range) => Tagify =
+    tagify.injectAtCaret as unknown as (
+      node: HTMLElement,
+      range: Range,
+    ) => Tagify;
+  inject.call(tagify, tagify.createTagElem({ value: "firstName" }), range);
   expect(tagify.getTagElms()).toHaveLength(2);
   const saved = serializeFieldTags(tagify.getMixedTagsAsString());
   expect(saved).toBe("field:message field:firstName");

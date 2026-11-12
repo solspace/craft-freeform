@@ -9,7 +9,10 @@ type Props = PropsWithChildren<
 >;
 
 const HeaderElement = styled.header`
-  width: auto !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--c-spacing-md);
 `;
 
 export const HeaderContainer: React.FC<Props> = ({
@@ -17,15 +20,11 @@ export const HeaderContainer: React.FC<Props> = ({
   extra,
   ...props
 }) => {
-  if (!props.style) {
-    props.style = { paddingLeft: 0, paddingRight: 0 };
-  }
-
   return (
     <div id="header-container">
       <HeaderElement id="header" {...props}>
         <div id="page-title" className="flex">
-          <h1 className="screen-title">{children}</h1>
+          <h1 className="text-xl font-bold m-0">{children}</h1>
         </div>
         {extra}
       </HeaderElement>

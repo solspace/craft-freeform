@@ -1,14 +1,15 @@
 {% extends "freeform/_layouts/main" %}
 {% hook "freeform.prepareCpTemplate" %}
 
-{% set title = "Forms"|t('freeform') %}
+{# React owns the page heading; the bridged shell must not add a second one. #}
+{% set title = '' %}
 {% set selectedSubnavItem = selectedSubnavItem ?? "forms" %}
 
 {% set showHeader = false %}
 
-{% block main %}
+{% block content %}
 
-    <script type="application/json" id="freeform-config">{{ config|json_encode|raw }}</script>
+    <div id="freeform-config" data-config="{{ config|json_encode|e('html_attr') }}" hidden></div>
     <div id="freeform-client"></div>
 
 {% endblock %}

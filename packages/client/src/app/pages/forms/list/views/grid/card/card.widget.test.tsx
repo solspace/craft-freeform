@@ -11,8 +11,8 @@ vi.mock("@ff-client/utils/translations", () => ({
   default: (text: string) => text,
 }));
 vi.mock("../grid.widgets", () => ({
-  getExtraWidgetSizes: () => [],
-  widgetKey: () => [],
+  getExtraWidgetSizes: (): never[] => [],
+  widgetKey: (): never[] => [],
   healthWidgetKey: (item: DashboardWidget, siteId: number) =>
     `${siteId}:${item.uid}:${item.revision ?? ""}`,
 }));

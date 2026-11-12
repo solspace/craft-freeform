@@ -1,3 +1,4 @@
+import { sectionHeading } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import { animated } from "@react-spring/web";
 import styled from "styled-components";
@@ -57,7 +58,12 @@ export const RemoveButton = styled(animated.button)`
   }
 `;
 
-export const LabelElement = styled(animated.h1)`
+export const LabelElement = styled(animated.h2)`
+  ${sectionHeading}
+  background: transparent;
+  transition: background-color 120ms ease-out;
+  &:hover { background: var(--c-color-neutral-fill-quiet); }
+  @media (prefers-reduced-motion: reduce) { transition: none; }
   cursor: pointer;
 
   min-height: 10px;

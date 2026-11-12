@@ -126,6 +126,9 @@ class SubmissionUndoService extends BaseService
             throw $exception;
         }
 
+        // Restoring an element can leave the other submission type's cached index stale.
+        \Craft::$app->getElements()->invalidateCachesForElementType(Submission::class);
+        \Craft::$app->getElements()->invalidateCachesForElementType(SpamSubmission::class);
         $this->discardLatest($history);
 
         return $entry['operation'];

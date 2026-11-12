@@ -1,6 +1,7 @@
 import { Display } from "@ff-client/types/rules";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
+import { InlineSelect } from "../inline-select.styles";
 
 type Props = {
   value: Display;
@@ -9,14 +10,15 @@ type Props = {
 
 export const DisplaySelect: React.FC<Props> = ({ value, onChange }) => {
   return (
-    <div className="select">
+    <InlineSelect>
       <select
+        aria-label={translate("Field visibility")}
         value={value}
         onChange={(event) => onChange?.(event.target.value as Display)}
       >
         <option value={Display.Show}>{translate("show")}</option>
         <option value={Display.Hide}>{translate("hide")}</option>
       </select>
-    </div>
+    </InlineSelect>
   );
 };

@@ -64,10 +64,10 @@ vi.mock("axios", () => ({ default: { post: fixture.post, get: fixture.get } }));
 vi.mock("../../notices/notices.queries", () => ({
   useNoticesQuery: () => ({
     data: {
-      notices: [],
+      notices: [] as never[],
       errors: fixture.errors,
       errorLog: "activity",
-      warningLogs: [],
+      warningLogs: [] as never[],
       activityRetentionDays: 30,
     },
   }),
@@ -76,14 +76,14 @@ vi.mock("../../notices/notices.queries", () => ({
 vi.mock("@components/modals/modal.context", () => ({
   useModal: () => ({ openSlideout: vi.fn() }),
 }));
-vi.mock("./card/card.size-menu", () => ({ CardSizeMenu: () => null }));
+vi.mock("./card/card.size-menu", () => ({ CardSizeMenu: (): null => null }));
 vi.mock("./card/card.queries", () => ({ useCardStats: () => ({}) }));
 vi.mock("../../modals/hooks/use-add-form-modal", () => ({
   useFormLimitModal: () => vi.fn(),
 }));
-vi.mock("./archived/archived", () => ({ Archived: () => null }));
+vi.mock("./archived/archived", () => ({ Archived: (): null => null }));
 vi.mock("./card/card.loading", () => ({ CardLoading: () => <li>Loading</li> }));
-vi.mock("./card/card.preview", () => ({ CardPreview: () => null }));
+vi.mock("./card/card.preview", () => ({ CardPreview: (): null => null }));
 vi.mock("./grid.empty", () => ({ GridEmpty: () => <p>No forms</p> }));
 vi.mock("./card/card", () => ({
   Card: ({ form }: { form: FormWithStats }) => (

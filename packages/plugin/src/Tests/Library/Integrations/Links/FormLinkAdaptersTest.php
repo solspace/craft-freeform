@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Tests\Library\Integrations\Links;
 use craft\fields\data\LinkData;
 use craft\fields\linktypes\BaseLinkType;
 use CraftCms\Cms\Field\LinkTypes;
-use CraftCms\Cms\Form\Controls\Choice;
+use CraftCms\Cms\Ui\Controls\Choice;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Integrations\LinkFields\LinkFieldsBundle;
@@ -34,7 +34,7 @@ class FormLinkAdaptersTest extends TestCase
         \Craft::$app = new class {
             public function getVersion(): string
             {
-                return '6.0.0-alpha.20';
+                return '6.0.0-beta.1';
             }
         };
         $this->previousContainer = \Craft::$container;

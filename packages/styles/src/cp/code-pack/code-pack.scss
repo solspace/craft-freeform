@@ -38,23 +38,30 @@
 ul.directory-structure {
   @extend %gradient-bg;
 
+  .freeform-demo-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 20px;
+    flex: 0 0 16px;
+    color: var(--light-text-color, currentColor);
+  }
+  .freeform-demo-icon svg { display: block; width: 14px; height: 14px; fill: currentColor; }
+
   ul {
     margin: 2px 0 0 20px;
-  }
-
-  li:before {
-    padding-right: 5px;
-    font-family: "Craft";
-    font-size: 16px;
   }
 
   li.dir {
     font-weight: bold;
 
-    &:before {
-      font-weight: normal;
-      content: "folder";
-    }
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 4px;
+
+    > ul { grid-column: 2; margin-inline-start: 0; }
   }
 
   li.file {
@@ -66,9 +73,6 @@ ul.directory-structure {
     padding: 2px 0;
     font-weight: normal;
 
-    &:before {
-      content: "templates";
-    }
 
     > small {
       flex: 1;
@@ -85,16 +89,6 @@ ul.directory-structure {
 
         font-weight: normal;
 
-        &:before {
-          position: relative;
-          top: 1px;
-          padding: 0 5px 0 0;
-          font-family: "Craft";
-          font-size: 10px;
-
-          font-weight: normal;
-          content: "routes";
-        }
       }
 
       .template {
@@ -150,6 +144,7 @@ ul.section-structure {
 }
 
 .freeform-demo-installer {
+  .freeform-demo-icon svg { display: block; width: 18px; height: 18px; fill: currentColor; }
   [data-install-setup] > h2 {
     margin-bottom: 6px;
   }
@@ -189,7 +184,7 @@ ul.section-structure {
       }
     }
 
-    [data-icon] {
+    .freeform-demo-icon {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -391,7 +386,7 @@ ul.section-structure {
       border-bottom: 1px solid var(--hairline-color, #e3e5e8);
       line-height: 24px;
 
-      [data-icon] {
+      .freeform-demo-icon {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -467,15 +462,19 @@ ul.section-structure {
       }
 
       &.routes > li {
-        display: flex;
-        align-items: baseline;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 4px 16px;
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr) minmax(0, .55fr);
+        align-items: center;
+        gap: 4px 10px;
+        text-align: start;
         padding-block: 4px;
 
-        .template {
-          color: var(--gray-500, #7b8793);
+        .route, .template { float: none; min-width: 0; text-align: start; }
+        .template { color: var(--gray-500, #7b8793); }
+        .freeform-demo-icon { align-self: start; }
+        @media (max-width: 600px) {
+          grid-template-columns: 18px minmax(0, 1fr);
+          .template { grid-column: 2; }
         }
       }
     }

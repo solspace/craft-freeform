@@ -60,13 +60,11 @@ class ClientAssetsService extends BaseService
         // Do not append ?v= — Vite lazy chunks import this file without a query
         // string. A versioned URL is treated as a different module and re-boots
         // the entire CP app (skeleton → content blink) when those chunks load.
-        $view->registerJsFile(
-            $this->buildAssetUrl($resourceBaseUrl, $entry['file']),
-            [
-                'type' => 'module',
-                'position' => View::POS_END,
-                'appendTimestamp' => false,
-            ],
+        // Craft 6's bridge mounts screen fragments after document parsing.
+        // Ready callbacks wait for those fragments before the module reads its config.
+        $view->registerJs(
+            'import('.Json::encode($this->buildAssetUrl($resourceBaseUrl, $entry['file'])).');',
+            View::POS_READY,
             'ff-client-entry'
         );
     }
@@ -103,12 +101,9 @@ class ClientAssetsService extends BaseService
             'ff-vite-client'
         );
 
-        $view->registerJsFile(
-            $origin.'/'.self::ENTRY_FILE,
-            [
-                'type' => 'module',
-                'position' => View::POS_END,
-            ],
+        $view->registerJs(
+            'import('.Json::encode($origin.'/'.self::ENTRY_FILE).');',
+            View::POS_READY,
             'ff-client-entry'
         );
 

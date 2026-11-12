@@ -1,3 +1,4 @@
+import { AddButtonArea } from "@components/elements/add-button-area/add-button-area";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useAppDispatch } from "@editor/store";
@@ -76,15 +77,12 @@ export const ButtonRulesEditor: React.FC = () => {
           </LoadingText>
         </Label>
         {!isFetching && (
-          <button
-            type="button"
-            className="btn add icon dashed"
+          <AddButtonArea
             onClick={() =>
               dispatch(buttonRuleActions.add({ pageUid: uid, button }))
             }
-          >
-            {translate("Add rules")}
-          </button>
+            label="Add rules"
+          />
         )}
       </RulesEditorWrapper>
     );

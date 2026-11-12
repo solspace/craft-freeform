@@ -307,15 +307,16 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         requestId,
       };
       if (files.length) {
-        payload = new FormData();
-        payload.append("prompt", trimmedPrompt);
-        payload.append("name", name.trim());
-        payload.append("integrationUid", integrationUid);
-        payload.append("referenceFileCount", String(files.length));
-        payload.append("requestId", requestId);
+        const attachments = new FormData();
+        attachments.append("prompt", trimmedPrompt);
+        attachments.append("name", name.trim());
+        attachments.append("integrationUid", integrationUid);
+        attachments.append("referenceFileCount", String(files.length));
+        attachments.append("requestId", requestId);
         files.forEach((file) => {
-          payload.append("references[]", file);
+          attachments.append("references[]", file);
         });
+        payload = attachments;
       }
       const { data: form } = await axios.post<Form | GenerationState>(
         "/api/forms/generate-from-ai",
@@ -329,7 +330,7 @@ export const CreateWithAiFormModal: React.FC<ModalContainerProps> = ({
         setFinishedAt(Date.now());
         setCompletedId(form.id);
       } else {
-        setGenerationStatus(form.status);
+        setGenerationStatus("status" in form ? form.status : "running");
         await monitor(requestId);
       }
     } catch (err: unknown) {

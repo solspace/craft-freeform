@@ -308,7 +308,11 @@ describe("headless integration", () => {
       await extension.mountCaptcha!(ctx);
       await extension.beforeSubmit!(ctx);
       const setCaptchaToken = vi.fn();
-      await extension.buildPayload!({ ...ctx, setCaptchaToken });
+      await extension.buildPayload!({
+        ...ctx,
+        setCaptchaToken,
+        setMeta: vi.fn(),
+      });
       expect(setCaptchaToken).toHaveBeenCalledWith(
         "g-recaptcha-response",
         "fresh-token",
@@ -321,7 +325,11 @@ describe("headless integration", () => {
     await extension.mountCaptcha!(ctx);
     await extension.beforeSubmit!(ctx);
     const setCaptchaToken = vi.fn();
-    await extension.buildPayload!({ ...ctx, setCaptchaToken });
+    await extension.buildPayload!({
+      ...ctx,
+      setCaptchaToken,
+      setMeta: vi.fn(),
+    });
     expect(setCaptchaToken).not.toHaveBeenCalled();
     expect(document.scripts).toHaveLength(0);
   });
@@ -334,7 +342,11 @@ describe("headless integration", () => {
     api.execute.mockRejectedValue(new Error("blocked"));
     await expect(extension.beforeSubmit!(ctx)).rejects.toThrow("blocked");
     const setCaptchaToken = vi.fn();
-    await extension.buildPayload!({ ...ctx, setCaptchaToken });
+    await extension.buildPayload!({
+      ...ctx,
+      setCaptchaToken,
+      setMeta: vi.fn(),
+    });
     expect(setCaptchaToken).not.toHaveBeenCalled();
   });
 });

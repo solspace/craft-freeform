@@ -66,7 +66,7 @@ describe("Limited Users permission controls", () => {
     const label = container.querySelector<HTMLLabelElement>(
       `label[for="${control.id}"]`,
     )!;
-    expect(control.type).toBe("button");
+    expect(control.getAttribute("type")).toBe("button");
     expect(control.getAttribute("aria-checked")).toBe("true");
     await act(() => label.click());
     expect(updateValue).toHaveBeenCalledExactlyOnceWith("layout.pages", {
@@ -113,8 +113,8 @@ describe("Limited Users permission controls", () => {
     });
     const switches =
       container.querySelectorAll<HTMLButtonElement>('[role="switch"]');
-    expect(switches[0].disabled).toBe(false);
-    expect(switches[1].disabled).toBe(true);
+    expect(switches[0].getAttribute("aria-disabled")).toBe("false");
+    expect(switches[1].getAttribute("aria-disabled")).toBe("true");
     expect(switches[1].getAttribute("aria-checked")).toBe("true");
     const inputs = container.querySelectorAll<HTMLInputElement>("input");
     expect([...inputs].every((input) => input.disabled)).toBe(true);

@@ -1,4 +1,4 @@
-import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
+import { spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 export const ButtonGroupWrapper = styled.div.attrs({
@@ -27,7 +27,7 @@ export const ButtonGroupWrapper = styled.div.attrs({
     $small &&
     `
     > button { min-width: 0; padding-inline: 4px; font-size: 12px; white-space: nowrap; }
-    > button > span:not(.button-group-icon) { display: inline-block; transform: scaleX(0.88); }
+
   `}
 
   ${({ $stacked }) =>
@@ -53,20 +53,27 @@ export const ButtonGroupWrapper = styled.div.attrs({
 `;
 
 export const Button = styled.button`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   flex: 0 1 auto;
   min-width: 28px;
-
-  padding: ${spacings.xs} ${spacings.md};
-
-  min-height: var(--ui-control-height, 34px);
-  border: var(--button-border, none);
-  background-color: light-dark(${colors.gray100}, var(--button-bg, ${colors.gray100}));
+  min-height: var(--c-size-control-md);
+  padding: var(--c-spacing-xs) var(--c-spacing-md);
+  border: 1px solid var(--c-form-control-border-color);
+  border-radius: 0;
+  background: var(--c-surface-default);
+  color: var(--c-text-quiet);
   box-shadow: none;
   box-sizing: border-box;
+  font: inherit;
+  cursor: pointer;
+  transition: background-color 120ms ease-out, border-color 120ms ease-out, color 120ms ease-out;
+  & + & { margin-inline-start: -1px; }
+  &:first-child { border-start-start-radius: var(--c-radius-md); border-end-start-radius: var(--c-radius-md); }
+  &:last-child { border-start-end-radius: var(--c-radius-md); border-end-end-radius: var(--c-radius-md); }
 
   > span { flex: 0 0 auto; }
   > .button-group-icon {
@@ -78,32 +85,35 @@ export const Button = styled.button`
     line-height: 1;
     svg { display: block; width: 14px; height: 14px; }
   }
+  > span[data-label] {
+    display: grid;
+    &::after {
+      content: attr(data-label);
+      font-weight: 600;
+      visibility: hidden;
+      grid-area: 1 / 1;
+      height: 0;
+    }
+  }
 
   &:hover:not(:disabled):not(.active) {
-    background-color: var(--button-bg--hover, ${colors.gray200});
+    background: color-mix(in srgb, var(--c-text-default) 4%, var(--c-surface-default));
+    color: var(--c-text-default);
   }
-
   &:focus-visible {
-    outline: 0;
-    box-shadow: var(--focus-ring);
-    position: relative;
-    z-index: 1;
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: -2px;
+    z-index: 2;
   }
-
   &.active {
-    color: light-dark(${colors.white}, var(--ui-control-selected-color));
-    background-color: light-dark(${colors.gray500}, var(--ui-control-selected-bg));
+    z-index: 1;
+    color: var(--c-text-default);
+    background: var(--c-color-accent-fill-quiet);
+    border-color: var(--c-color-accent-border-normal);
+    box-shadow: inset 0 0 0 1px var(--c-color-accent-border-normal);
+    font-weight: 600;
+    .button-group-icon { color: var(--c-color-accent-border-loud); }
   }
-
-  &:first-child {
-    border-top-left-radius: ${borderRadius.lg};
-    border-bottom-left-radius: ${borderRadius.lg};
-  }
-
-  &:last-child {
-    border-top-right-radius: ${borderRadius.lg};
-    border-bottom-right-radius: ${borderRadius.lg};
-
-    box-shadow: none;
-  }
+  &:disabled { opacity: .5; cursor: default; }
+  @media (prefers-reduced-motion: reduce) { transition: none; }
 `;

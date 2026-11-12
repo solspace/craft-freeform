@@ -1,8 +1,7 @@
 import { HeaderContainer } from "@components/layout/blocks/header-container";
-import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import { useQueryFormsWithStats } from "@ff-client/queries/forms";
 import translate from "@ff-client/utils/translations";
-import { createElement, type FC } from "react";
+import type { FC } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import { Sidebar } from "./common/sidebar/sidebar";
@@ -10,7 +9,6 @@ import { ImportExportWrapper } from "./index.styles";
 
 export const ImportExport: FC = () => {
   const { pathname } = useLocation();
-  useSidebarSelect("export/profiles");
   useQueryFormsWithStats();
 
   let title: string;
@@ -32,18 +30,13 @@ export const ImportExport: FC = () => {
       break;
   }
 
-  return createElement(
-    "craft-pane",
-    {
-      className: "freeform-settings-surface freeform-import-export-surface",
-      padding: "0",
-    },
-    <div className="freeform-secondary-layout" slot="body">
+  return (
+    <div className="freeform-secondary-layout">
       <Sidebar />
       <HeaderContainer>{translate(title)}</HeaderContainer>
       <ImportExportWrapper>
         <Outlet />
       </ImportExportWrapper>
-    </div>,
+    </div>
   );
 };

@@ -1,7 +1,7 @@
 {
   "name": "@solspace/freeform-theme-default",
   "version": "1.2.1",
-  "description": "Default Freeform theme — semantic ff-* BEM styles (React & Vue)",
+  "description": "Default Freeform theme \u2014 semantic ff-* BEM styles (React & Vue)",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -24,7 +24,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
-    "lint": "biome check src"
+    "lint": "biome check src",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "peerDependencies": {
     "@solspace/freeform-react": "^1.0.0"

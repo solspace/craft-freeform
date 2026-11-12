@@ -12,18 +12,19 @@ import { useFieldPreview } from "./use-field-preview";
 const fixture = vi.hoisted(() => ({
   compile: vi.fn(),
   render: vi.fn(),
-  settings: [],
+  settings: [] as never[],
   pageType: {},
   site: { current: { id: 1 }, isPrimary: false },
 }));
 vi.mock("lodash/template", async (importOriginal) => {
-  const { default: template } =
-    await importOriginal<typeof import("lodash/template")>();
+  const { default: template } = await importOriginal<{
+    default: typeof import("lodash/template");
+  }>();
   return {
     default: (source: string) => {
       fixture.compile(source);
       const render = template(source);
-      return (data: unknown) => {
+      return (data: object) => {
         fixture.render(data);
         return render(data);
       };
@@ -64,7 +65,7 @@ it("reuses templates and preview data across selection, while updating edits and
   const store = configureStore({
     reducer: {
       form: () => ({ settings: { general: { translations: true } } }),
-      layout: (state = { fields }, action) =>
+      layout: (state: { fields: Field[] } = { fields }, action) =>
         action.type === "edit"
           ? {
               fields: state.fields.map((field, index) =>

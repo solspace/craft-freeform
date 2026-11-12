@@ -11,7 +11,8 @@
     "test": "vitest --config ./config/vitest/vitest.config.ts",
     "test:builder-state": "vitest run --config ./config/vitest/vitest.config.ts src/app/pages/forms/edit/edit.startup.test.tsx src/app/pages/forms/edit/store/middleware/history.test.ts src/app/components/form-controls/preview/preview-cancel.test.tsx",
     "test:coverage": "vitest --config ./config/vitest/vitest.config.ts --maxWorkers=4 --collect-coverage",
-    "test:watch": "vitest --config ./config/vitest/vitest.config.ts --watch --maxWorkers=4"
+    "test:watch": "vitest --config ./config/vitest/vitest.config.ts --watch --maxWorkers=4",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "keywords": [
     "Freeform",

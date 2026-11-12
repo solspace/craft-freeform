@@ -31,7 +31,13 @@ export const List = styled.ul`
 export const CheckMark = styled.div`
   position: absolute;
   left: 8px;
-  top: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  > svg { width: 16px; height: 16px; }
 
   width: 16px;
   font-size: 18px;
@@ -63,8 +69,10 @@ export const LabelValueDisplay = styled.div`
 `;
 
 export const Label = styled.label`
-  display: block;
-  min-height: var(--c-size-control-sm);
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  min-height: var(--c-size-control-md);
   padding: var(--c-spacing-sm) var(--c-spacing-md) var(--c-spacing-sm) 30px;
   border-radius: var(--c-radius-sm);
   margin-block: var(--c-spacing-xs);
@@ -134,7 +142,11 @@ export const Label = styled.label`
 export const Item = styled.li`
   position: relative;
 
-  &.focused,
+  &.focused > ${Label} {
+    background-color: var(--c-color-neutral-fill-normal);
+    color: var(--c-color-neutral-on-normal);
+  }
+
   &.selected {
     > ${Label} {
       background-color: var(--c-color-neutral-fill-loud);

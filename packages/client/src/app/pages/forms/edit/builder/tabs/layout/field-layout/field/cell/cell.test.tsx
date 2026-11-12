@@ -10,7 +10,11 @@ import { HtmlPreviewElement } from "./cell.styles";
 vi.mock("@editor/store", () => ({ useAppDispatch: () => vi.fn() }));
 vi.mock("react-redux", () => ({ useSelector: () => ({ active: false }) }));
 vi.mock("@ff-client/queries/field-types", () => ({
-  useFieldType: () => ({ type: "rich-text", name: "Content", implements: [] }),
+  useFieldType: () => ({
+    type: "rich-text",
+    name: "Content",
+    implements: [] as never[],
+  }),
 }));
 vi.mock("@editor/store/slices/translations/translations.hooks", () => ({
   useTranslations: () => ({
@@ -24,9 +28,9 @@ vi.mock("./use-field-preview", () => ({
   ],
 }));
 vi.mock("./cell.animations", () => ({ useLoaderAnimation: () => [{}, {}] }));
-vi.mock("./cell-badges", () => ({ FieldAssociationsBadges: () => null }));
+vi.mock("./cell-badges", () => ({ FieldAssociationsBadges: (): null => null }));
 vi.mock("../../layout/group-field-layout/group-field-layout", () => ({
-  GroupFieldLayout: () => null,
+  GroupFieldLayout: (): null => null,
 }));
 
 it.each([Fields.Html, Fields.RichText])(

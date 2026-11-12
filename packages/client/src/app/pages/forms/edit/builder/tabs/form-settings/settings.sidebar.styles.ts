@@ -8,7 +8,7 @@ export const SectionWrapper = styled.div`
   gap: ${spacings.xs};
 `;
 
-export const SectionLink = styled.button`
+export const SectionLink = styled.button.attrs({ type: "button" })`
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -22,13 +22,19 @@ export const SectionLink = styled.button`
 `;
 
 export const SectionIcon = styled.div`
-  width: 18px;
-  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  svg { width: 100%; height: 100%; }
 `;
 
 export const SidebarSeperator = styled.div`
-  border-bottom: solid 1px ${colors.gray200};
-  margin: ${spacings.lg} 0;
+  border-bottom: 1px solid var(--c-color-neutral-border-quiet);
+  margin-block: var(--c-spacing-lg);
+  margin-inline: calc(-1 * var(--freeform-sidebar-padding-inline));
 `;
 
 export const SidebarMeta = styled.p`

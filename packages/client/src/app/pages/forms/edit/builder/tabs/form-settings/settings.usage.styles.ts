@@ -1,3 +1,4 @@
+import { textControl } from "@ff-client/styles/craft6";
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -14,7 +15,7 @@ export const UsageContent = styled.div`
   p { margin: 4px 0 0; }
   .muted { color: ${colors.gray500}; font-size: 13px; line-height: 20px; }
   .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
-  .count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 5px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 12px; font-weight: 600; }
+  .count { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 5px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px var(--c-color-neutral-border-quiet); font-size: 12px; font-weight: 600; }
   .heading-label { display: flex; align-items: center; gap: 8px; }
   .error { margin: 0; }
 `;
@@ -48,7 +49,7 @@ export const Metrics = styled.div`
     gap: 8px;
     min-height: 74px;
     padding: 8px 10px;
-    border: 1px solid ${colors.gray200};
+    border: 1px solid var(--c-color-neutral-border-quiet);
     border-radius: 6px;
     box-sizing: border-box;
   }
@@ -97,7 +98,7 @@ export const MetricValue = styled.strong<{ $length: number }>`
 `;
 
 export const UsagePanel = styled.section`
-  border: 1px solid ${colors.gray200};
+  border: 1px solid var(--c-color-neutral-border-quiet);
   border-radius: 6px;
   padding: 18px 20px;
   min-width: 0;
@@ -106,7 +107,7 @@ export const UsagePanel = styled.section`
   .chart[data-loading="true"] canvas { opacity: 0.35; }
   .chart-controls { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px 18px; margin-left: auto; }
   .chart-period { flex-shrink: 0; }
-  .chart-period select { min-height: 28px; font-size: 12px; line-height: 20px; }
+  .chart-period select { ${textControl}; min-height: var(--c-size-control-md); font-size: var(--c-text-sm); line-height: var(--c-leading-normal); }
   .chart-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center; pointer-events: none; }
   .chart-empty[hidden] { display: none; }
   .chart-empty > span { padding: 6px 10px; border-radius: 4px; background: light-dark(${colors.white}, ${colors.surface}); }
@@ -126,7 +127,7 @@ export const UsagePanel = styled.section`
   &.usage-elements-panel .count { min-width: 20px; height: 20px; padding: 0 5px; font-size: 11px; }
   &.usage-elements-panel[data-empty="true"] .section-heading { justify-content: flex-start; gap: 6px 16px; margin-bottom: 0; }
   .usage-empty.muted { margin: 0; font-size: 12px; line-height: 18px; }
-  .element-table { overflow-x: auto; border: 1px solid ${colors.gray200}; border-radius: 5px; }
+  .element-table { overflow-x: auto; border: 1px solid var(--c-color-neutral-border-quiet); border-radius: 5px; }
   .element-usage-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
   .element-usage-controls .muted { font-size: 12px; line-height: 18px; }
   .element-usage-toggle { display: inline-flex; align-items: center; justify-content: center; min-height: 26px; }
@@ -136,7 +137,7 @@ export const UsagePanel = styled.section`
   .usage-elements-table thead th { font-size: 12px; font-weight: 600; line-height: 20px; }
   .usage-elements-table thead th:first-child { width: 60%; }
   .usage-elements-table thead th:not(:first-child) { width: 20%; }
-  .usage-elements-table tbody tr { border-top: 1px solid ${colors.hairline}; }
+  .usage-elements-table tbody tr { border-top: 1px solid var(--c-color-neutral-border-quiet); }
   .usage-elements-table tbody th { font-weight: 500; }
   .usage-elements-table tbody td { color: ${colors.gray600}; }
   .usage-element.chip { margin: 0; padding: 0; min-height: 22px; height: 22px; max-width: 100%; border: 0; background: transparent; box-shadow: none; }
@@ -157,7 +158,7 @@ export const DiagnosticsGrid = styled.div`
   .section-heading { margin-bottom: 10px; }
   .section-heading .muted { margin-top: 2px; font-size: 12px; line-height: 18px; }
   dl { display: grid; grid-template-columns: minmax(0, 1fr); margin: 0; }
-  dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; padding: 6px 0; border-bottom: 1px solid ${colors.hairline}; font-size: 12px; line-height: 18px; }
+  dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; min-width: 0; padding: 6px 0; border-bottom: 1px solid var(--c-color-neutral-border-quiet); font-size: 12px; line-height: 18px; }
   .diagnostics-details > div:last-child { border-bottom: 0; }
   dt { flex-shrink: 0; max-width: 55%; color: ${colors.gray500}; }
   dd { min-width: 0; margin: 0; text-align: right; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
@@ -176,10 +177,10 @@ export const DiagnosticsGrid = styled.div`
   .configuration-status-list, .field-type-list { display: flex; flex-wrap: wrap; gap: 4px; }
   .configuration-status-dot.status { flex: 0 0 6px; width: 6px; height: 6px; margin: 0; }
   .configuration-status-chip { max-width: 100%; }
-  .configuration-status-badge { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 14px; height: 16px; padding: 0 4px; border-radius: 3px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px ${colors.border}; font-size: 10px; line-height: 16px; }
+  .configuration-status-badge { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 14px; height: 16px; padding: 0 4px; border-radius: 3px; background: light-dark(${colors.gray100}, var(--ui-control-bg-color, ${colors.gray100})); color: ${colors.text}; box-shadow: inset 0 0 0 1px var(--c-color-neutral-border-quiet); font-size: 10px; line-height: 16px; }
   .configuration-status-name { min-width: 0; overflow-wrap: anywhere; }
   .configuration-status-type { flex-shrink: 0; font-weight: 600; white-space: nowrap; }
-  .configuration-status-type + .configuration-status-name { padding-inline-start: 6px; border-inline-start: 1px solid ${colors.gray200}; color: ${colors.gray500}; font-size: 10px; line-height: 16px; }
+  .configuration-status-type + .configuration-status-name { padding-inline-start: 6px; border-inline-start: 1px solid var(--c-color-neutral-border-quiet); color: ${colors.gray500}; font-size: 10px; line-height: 16px; }
   .type-chip { gap: 6px; min-height: 22px; padding: 1px 7px; font-size: 11px; line-height: 18px; }
   .panel-footnote.muted { margin-top: auto; padding-top: 12px; }
 

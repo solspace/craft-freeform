@@ -1,15 +1,14 @@
-import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 import { Wrapper as BannerWrapper } from "../error/error-block.styles";
 
 export const Wrapper = styled(BannerWrapper)`
-  color: light-dark(${colors.blue900}, var(--fg-notice, var(--notice-color, ${colors.blue900})));
-  background-color: light-dark(#eef6ff, var(--bg-notice, var(--notice-background, #eef6ff)));
-  border-color: var(--border-notice, var(--notice-border-color, #bfd9f7));
-  border-inline-start-color: ${colors.link};
+  color: var(--c-color-info-on-quiet);
+  background-color: var(--c-color-info-fill-quiet);
+  border-color: var(--c-color-info-border-normal);
+  border-inline-start-color: var(--c-color-info-border-loud);
 
   > svg {
-    color: ${colors.link};
+    color: inherit;
     fill: none;
   }
 `;

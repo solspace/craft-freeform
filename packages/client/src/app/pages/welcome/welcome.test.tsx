@@ -11,7 +11,7 @@ vi.mock("@config/freeform/freeform.config", () => ({
   default: { editions: { edition: "pro" } },
 }));
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
-  Breadcrumb: () => null,
+  Breadcrumb: (): null => null,
 }));
 vi.mock("@ff-client/utils/urls", () => ({ generateUrl: (url: string) => url }));
 vi.mock("@ff-client/utils/translations", () => ({

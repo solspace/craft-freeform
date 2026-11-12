@@ -40,11 +40,16 @@
             {% for status in statuses %}
                 <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        <span class="color-indicator status" style="background-color: {{ status.colorHex }};"></span>
+                        <span class="ff-status-name">
+                        <craft-indicator fill="{{ status.color }}" appearance="solid" aria-hidden="true"></craft-indicator>
                         {% if not readOnly and currentUser.can("freeform-settingsAccess") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
                                 {{ status.name }}
+                            </a>
+                        {% else %}
+                            {{ status.name }}
                             {% endif %}
+                        </span>
                         </th>
                         <td data-title="{{ 'Handle'|t('freeform') }}">
                             <code>

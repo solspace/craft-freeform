@@ -41,37 +41,31 @@
   retainScroll: true,
 }] %}
 
-{% block mainFormAttributes %}
-  {{ parent() }}
-
-  enctype="multipart/form-data"
-  data-id="{{ form.anchor }}"
-  data-signature-filename="signature-{{ submission.formId }}-{{ submission.id }}"
-  data-freeform
-
-{% endblock %}
-
-{% block body %}
-  {{ parent() }}
-
-  <form method="post"
-      id="asset_download"
-      style="height: 0; width: 0; position: absolute; left: -99999px;">
-    <input type="hidden" name="action" value="assets/download-asset" />
-    <input type="hidden" name="assetId" value="" />
-    {{ csrfInput() }}
-  </form>
-{% endblock %}
+{% set additionalButtons %}
+{{ ui('button', {
+  id: 'freeform-delete-submission',
+  label: 'Delete'|t('app'),
+  icon: 'trash-can',
+  variant: 'danger-plain',
+  type: 'button',
+}) }}
+{% endset %}
 
 {% block content %}
+  <template id="freeform-submission-download">
+    <form method="post" id="asset_download" hidden>
+      <input type="hidden" name="action" value="assets/download-asset">
+      <input type="hidden" name="assetId" value="">
+      {{ csrfInput() }}
+    </form>
+  </template>
 
-  {{ ui('pane', {padding: 0, attributes: {id: 'freeform-submission-pane', hidden: true}}) }}
   {% if layout.pages|length > 1 %}
     {% set pageTabs = [] %}
     {% for page in layout.pages %}
       {% set pageTabs = pageTabs|merge([{label: page.label, controls: 'tab-' ~ page.index}]) %}
     {% endfor %}
-    {{ ui('tabs', {tabs: pageTabs, attributes: {'data-freeform-page-tabs': true}}) }}
+    {{ ui('tabs', {label: 'Submission pages'|t('freeform'), tabs: pageTabs, attributes: {'data-freeform-page-tabs': true}}) }}
   {% endif %}
 
   <input type="hidden" name="action" value="{{ actionUrl }}">
@@ -79,7 +73,7 @@
   {{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
   {{ csrfInput() }}
 
-  <div id="fields">
+  <div id="fields" data-freeform-submission data-form-anchor="{{ form.anchor }}" data-signature-filename="signature-{{ submission.formId }}-{{ submission.id }}">
     {% for page in layout.pages %}
       <div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
         {% for row in page.layout.allRows %}
@@ -104,11 +98,6 @@
 {% endblock %}
 
 {% block details %}
-  <div class="freeform-info-header">
-    <h3>{{ 'Info'|t('app') }}</h3>
-    {{ ui('button', {id: 'freeform-info-close', variant: 'plain', size: 'small', accessibleName: 'Close Info'|t('app'), label: ui('icon', {name: 'remove'})}) }}
-  </div>
-  {{ ui('tabs', {placement: 'inline-end', collapsible: true, tabs: [{label: ui('icon', {name: 'circle-info', label: 'Info'|t('app')}), controls: 'details-container'}], attributes: {id: 'freeform-info-tabs'}}) }}
 
   <div id="settings" class="meta">
 

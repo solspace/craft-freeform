@@ -250,6 +250,7 @@ function response(html: string) {
 }
 function api(sendActionRequest = vi.fn()) {
   window.Craft = {
+    t: (_category: string, message: string) => message,
     sendActionRequest,
     appendHeadHtml: vi.fn().mockResolvedValue(undefined),
     appendBodyHtml: vi.fn().mockResolvedValue(undefined),

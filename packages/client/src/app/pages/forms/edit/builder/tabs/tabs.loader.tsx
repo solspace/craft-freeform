@@ -1,7 +1,7 @@
+import { ThemedSkeleton as SkeletonTheme } from "@components/loaders/skeletons/themed-skeleton";
 import config, { Edition } from "@config/freeform/freeform.config";
-import { colors } from "@ff-client/styles/variables";
 import type React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 
 import {
   FormName,
@@ -15,11 +15,7 @@ import {
 
 export const LoaderTabs: React.FC = () => {
   return (
-    <SkeletonTheme
-      baseColor={colors.gray300}
-      highlightColor={colors.gray200}
-      height={10}
-    >
+    <SkeletonTheme height={10}>
       <TabWrapper>
         <HeaderRow>
           <Heading>

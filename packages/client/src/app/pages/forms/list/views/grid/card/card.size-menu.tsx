@@ -135,6 +135,7 @@ export const CardSizeMenu = ({
                     <SizeChoice
                       key={choice.size}
                       type="button"
+                      className={choice.size === size ? "sel" : undefined}
                       aria-pressed={choice.size === size}
                       onClick={() => {
                         setOpen(false);
@@ -259,7 +260,7 @@ export const CardSizeMenu = ({
                     {onRemoveWidget && (
                       <SizeChoice
                         type="button"
-                        className="delete-action"
+                        className="error"
                         onClick={() => act(onRemoveWidget)}
                       >
                         <DeleteIcon />
@@ -283,7 +284,7 @@ export const CardSizeMenu = ({
                     )}
                     {onDelete && (
                       <SizeChoice
-                        className="delete-action"
+                        className="error"
                         type="button"
                         onClick={() => act(onDelete)}
                       >

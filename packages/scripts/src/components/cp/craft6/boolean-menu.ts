@@ -1,5 +1,7 @@
+import { whenCpReady } from "@lib/cp/ready";
+
 type BooleanCombobox = HTMLElement & {
-  modelValue?: string;
+  value?: string;
 };
 
 /** Retain the selected indicator and the legacy select's form/toggle behavior. */
@@ -17,7 +19,7 @@ export function enhanceBooleanMenus(root: ParentNode = document): void {
     wrapper.dataset.booleanMenuReady = "true";
 
     const update = (): void => {
-      const value = combobox.modelValue ?? combobox.getAttribute("model-value");
+      const value = combobox.value ?? combobox.getAttribute("value");
       if (value == null) return;
       const options = JSON.parse(combobox.getAttribute("options") || "[]") as {
         value?: string;
@@ -28,22 +30,18 @@ export function enhanceBooleanMenus(root: ParentNode = document): void {
         .flatMap((item) => item.options ?? [item])
         .find((item) => item.value === value);
       const enabled = option?.data?.boolean === "1";
-      indicator.setAttribute("variant", enabled ? "success" : "empty");
+      indicator.setAttribute("fill", enabled ? "success" : "neutral");
+      indicator.setAttribute("appearance", enabled ? "solid" : "outline");
       select.dataset.boolean = enabled ? "true" : "false";
       if (select.value !== value) {
         select.value = value;
         select.dispatchEvent(new Event("change", { bubbles: true }));
       }
     };
-    combobox.addEventListener("model-value-changed", () =>
-      queueMicrotask(update),
-    );
+    const scheduleUpdate = (): void => queueMicrotask(update);
+    combobox.addEventListener("change", scheduleUpdate);
     update();
   }
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", () => enhanceBooleanMenus());
-} else {
-  enhanceBooleanMenus();
-}
+whenCpReady(() => enhanceBooleanMenus(), ".freeform-boolean-menu");

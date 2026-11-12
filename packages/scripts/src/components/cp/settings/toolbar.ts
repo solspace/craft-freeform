@@ -100,10 +100,29 @@ export function initToolbarEditors(root: ParentNode = document): void {
     .querySelectorAll<HTMLElement>("[data-toolbar-editor]")
     .forEach((holder) => {
       if (holder.dataset.toolbarReady) return;
+      // Craft 6 owns the combobox's visible textbox and submitted hidden input.
+      // Keep that component intact and edit its public value, not its textbox.
+      const combobox = holder.querySelector<
+        HTMLElement & {
+          value: string;
+          disabled: boolean;
+          readOnly?: boolean;
+        }
+      >("craft-combobox");
+      if (combobox && !customElements.get("craft-combobox")) {
+        void customElements
+          .whenDefined("craft-combobox")
+          .then(() => initToolbarEditors(root));
+        return;
+      }
       const input =
+        combobox ||
         holder.querySelector<HTMLInputElement>('input[type="text"]');
-      const raw = input?.closest<HTMLElement>(".input");
-      const environmentTip = holder.querySelector<HTMLElement>('[id$="-tip"]');
+      const raw = combobox || input?.closest<HTMLElement>(".input");
+      const environmentTip = holder.querySelector<HTMLElement>(
+        '[slot="tip"], [id$="-tip"]',
+      );
+      const tipParent = environmentTip?.parentElement;
       if (!input || !raw) return;
       holder.dataset.toolbarReady = "true";
       const readonly = input.disabled || input.readOnly;
@@ -112,6 +131,7 @@ export function initToolbarEditors(root: ParentNode = document): void {
       let writing = false;
       let dragged: number | null = null;
       const panel = element("div", "ff-toolbar-editor");
+      if (combobox) panel.slot = "input";
       const toggle = button(tr("Raw configuration"), "btn small chromeless");
       toggle.dataset.toolbarToggle = "true";
       const notice = element("p", "instructions ff-toolbar-editor-notice");
@@ -175,15 +195,16 @@ export function initToolbarEditors(root: ParentNode = document): void {
       visual.append(toolbarRow);
       panel.append(notice, visual);
       raw.before(panel);
-      panel.append(raw);
+      if (!combobox) panel.append(raw);
       const modeSwitch = element("span", "ff-toolbar-mode-switch");
       modeSwitch.append(toggle);
       const instructions = holder.querySelector<HTMLElement>(
-        ".field > .instructions",
+        '.field > .instructions, craft-field > [slot="help-text"]',
       );
       if (instructions)
         (instructions.querySelector("p") || instructions).prepend(modeSwitch);
       else panel.before(modeSwitch);
+      if (combobox && instructions) instructions.append(notice);
 
       const commit = (next: string[], focusIndex?: number) => {
         if (readonly) return;
@@ -245,10 +266,19 @@ export function initToolbarEditors(root: ParentNode = document): void {
         toggle.disabled = tokens === null;
         toggle.setAttribute("aria-expanded", String(rawMode));
         panel.classList.toggle("is-raw", rawMode);
-        if (environmentTip) environmentTip.hidden = !rawMode;
+        if (combobox) panel.hidden = rawMode;
+        if (environmentTip) {
+          environmentTip.hidden = !rawMode;
+          // Craft renders a callout icon whenever the tip slot has a node.
+          if (combobox) {
+            if (rawMode) tipParent?.append(environmentTip);
+            else environmentTip.remove();
+          }
+        }
         visual.hidden = rawMode;
         menuWrapper.hidden = rawMode;
         raw.classList.toggle("hidden", !rawMode);
+        if (combobox) raw.hidden = !rawMode;
         notice.hidden = tokens !== null;
         notice.textContent = tr(
           input.value.trim().startsWith("$")

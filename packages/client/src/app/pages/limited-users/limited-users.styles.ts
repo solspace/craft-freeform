@@ -189,119 +189,81 @@ export const Control = styled.div`
   }
 `;
 
-export const PermissionSwitch = styled.button`
-  position: relative;
-  display: block;
-  width: calc(var(--c-size-control-sm, 24px) * 2);
-  height: var(--c-size-control-sm, 24px);
-  padding: 0;
-  border: var(--c-input-border-width) var(--c-input-border-style)
-    var(--c-input-border-color);
-  border-radius: var(--c-radius-full);
-  background: var(--c-color-neutral-fill-quiet);
-  box-shadow: var(--c-input-shadow);
-  cursor: pointer;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 2px;
-    inset-inline-start: 2px;
-    width: calc(var(--c-size-control-sm, 24px) - 6px);
-    height: calc(var(--c-size-control-sm, 24px) - 6px);
-    border: 1px solid var(--c-input-border-color);
-    border-radius: var(--c-radius-full);
-    background: var(--c-surface-raised);
-    box-sizing: border-box;
-  }
-
-  &[aria-checked='true'] {
-    background: var(--c-color-accent-fill-loud);
-    border-color: var(--c-color-accent-fill-loud);
-
-    &::before {
-      inset-inline-start: auto;
-      inset-inline-end: 2px;
-      border-color: var(--c-color-accent-border-loud);
-    }
-  }
-
-  &:focus-visible {
-    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
-    outline-offset: var(--c-focus-outline-offset);
-  }
-
-  > svg {
-    position: absolute;
-    inset-inline-end: 5px;
-    inset-block-start: 50%;
-    transform: translateY(-50%);
-    width: 12px;
-    height: 12px;
-    color: var(--c-color-accent-on-quiet);
-    pointer-events: none;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
 export const ControlArea = styled.div`
   min-width: 0;
+  container: permission-options / inline-size;
 `;
 
 export const ToggleList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0 var(--c-spacing-lg);
   margin: 0;
   padding: 0;
   list-style: none;
+
+  @container permission-options (max-width: 920px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  @container permission-options (max-width: 660px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @container permission-options (max-width: 420px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 `;
 
 export const ToggleListItem = styled.li`
   min-width: 0;
+  border-block-end: 1px solid var(--c-color-neutral-border-quiet);
 
   label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: space-between;
+    gap: var(--c-spacing-md);
+    min-height: var(--c-size-control-md);
     height: 100%;
     box-sizing: border-box;
-    padding: 6px 10px;
-    border: 1px solid var(--c-color-neutral-border-quiet);
-    border-radius: var(--c-radius-sm);
-    background: var(--c-color-neutral-fill-quiet);
+    padding: 6px 4px;
     color: var(--c-text-default);
     cursor: pointer;
+    font-size: var(--c-text-sm);
     line-height: 1.5;
 
-    &:hover {
-      background: var(--c-color-neutral-fill-normal);
+    > span { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+
+    &:hover:not(:has(:disabled)) {
+      background: var(--c-color-neutral-fill-quiet);
     }
 
-    &:focus-within {
+    &:has(:focus-visible) {
       outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
       outline-offset: var(--c-focus-outline-offset);
     }
+
+    &:has(:disabled) { opacity: 0.5; cursor: not-allowed; }
   }
 
   input {
-    flex-shrink: 0;
-    margin: 0;
-    accent-color: var(--c-color-accent-fill-loud);
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
-  &.selected label {
-    border-color: var(--c-color-accent-border-quiet);
-    background: var(--c-color-accent-fill-quiet);
-
-    &:hover {
-      background: var(--c-color-accent-fill-normal);
-    }
+  .permission-toggle-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    pointer-events: none;
   }
+
 `;
 
 export const Actions = styled.div`
@@ -381,12 +343,24 @@ export const ListItem = styled.li`
   &[data-type='group']:not([data-nesting='0']) {
     padding-block-start: 16px;
 
-    ${Heading} {
+    > ${Block} ${Heading} {
       font-size: var(--c-text-base);
     }
+
+    > ${List} { margin-inline-start: 24px; }
   }
 
-  &[data-type='boolean'] > ${List} {
+  &[data-type='toggles'] {
+    margin-block-end: var(--c-spacing-lg);
+
+    ${TitleBlock} > ${Label} { font-weight: 600; }
+  }
+
+  &[data-type='group'][data-id='props'] > ${List} {
+    margin-inline-start: 24px;
+  }
+
+  &[data-type='boolean'] > ${ChildrenCollapse} > ${ChildrenViewport} > ${List} {
     margin-block: 4px 8px;
     margin-inline-start: 24px;
     padding-inline-start: 16px;

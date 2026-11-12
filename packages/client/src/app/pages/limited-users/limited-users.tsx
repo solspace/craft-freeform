@@ -2,7 +2,6 @@ import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { EmptyBlock } from "@components/empty-block/empty-block";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import config, { Edition } from "@config/freeform/freeform.config";
-import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
 import DeleteIcon from "@ff-icons/actions/delete";
 import type React from "react";
@@ -19,8 +18,6 @@ export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
   const mutation = useLimitedUsersDeleteMutation();
   const isPro = config.editions.isAtLeast(Edition.Pro);
-
-  useSidebarSelect("freeform/settings");
 
   if (!data && isFetching) {
     return <div>Loading...</div>;

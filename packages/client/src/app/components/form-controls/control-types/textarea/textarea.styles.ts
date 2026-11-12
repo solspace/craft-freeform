@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const TextArea = styled.textarea`
   &.read-only {
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    color: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    color: var(--c-text-quiet);
 
     user-select: none;
   }

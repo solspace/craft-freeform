@@ -82,10 +82,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
         return [];
       }
 
-      if (
-        optionsConfiguration?.source !== Source.Custom &&
-        !optionsConfiguration.typeClass
-      ) {
+      if (!optionsConfiguration.typeClass) {
         return [];
       }
 

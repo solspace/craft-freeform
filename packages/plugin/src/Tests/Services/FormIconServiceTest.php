@@ -14,6 +14,19 @@ use yii\di\Container;
 #[CoversClass(IconName::class)]
 class FormIconServiceTest extends TestCase
 {
+    public function testSpamFiltersRetainTheCustomCraft5IconShapes(): void
+    {
+        $service = $this->getMockBuilder(FormIconService::class)->onlyMethods(['isSupported'])->getMock();
+        $service->method('isSupported')->willReturn(true);
+
+        foreach (['envelope-slash', 'scribble-slash'] as $name) {
+            $svg = $service->getSvg($name);
+            self::assertStringContainsString('<svg', $svg);
+            self::assertStringContainsString('<mask', $svg);
+            self::assertStringContainsString('stroke="currentColor"', $svg);
+        }
+    }
+
     public function testCraft4IgnoresEvenSavedIcons(): void
     {
         $previous = \Craft::$app;

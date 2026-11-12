@@ -59,6 +59,10 @@ export const Options: FC<Props> = ({
           hint = option.hint;
         }
 
+        const isSelected =
+          value !== undefined &&
+          selectedValue != null &&
+          String(value) === String(selectedValue);
         let children: OptionCollection;
         if ("children" in option) {
           children = option.children;
@@ -78,9 +82,11 @@ export const Options: FC<Props> = ({
               }
             }}
             key={idx}
+            role="option"
+            aria-selected={isSelected}
             className={classes(
               children !== undefined && "has-children",
-              value === selectedValue && "selected",
+              isSelected && "selected",
               value === "" && "empty",
               shadowIndex === focusIndex && "focused",
             )}
@@ -92,7 +98,7 @@ export const Options: FC<Props> = ({
               )}
               data-value={value}
             >
-              {!children && selectedValue === value && (
+              {!children && isSelected && (
                 <CheckMark>
                   <CheckIcon />
                 </CheckMark>

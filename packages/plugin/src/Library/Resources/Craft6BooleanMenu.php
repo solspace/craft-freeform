@@ -87,7 +87,8 @@ final class Craft6BooleanMenu
             ->toHtml()
         ;
         $indicator = Html::tag('span', Html::tag('craft-indicator', '', [
-            'variant' => $enabled ? 'success' : 'empty',
+            'fill' => $enabled ? 'success' : 'neutral',
+            'appearance' => $enabled ? 'solid' : 'outline',
         ]), ['class' => 'freeform-boolean-menu-status', 'aria' => ['hidden' => 'true']]);
 
         return Html::tag('div', $select.$combobox.$indicator, ['class' => 'freeform-boolean-menu']);
@@ -100,7 +101,10 @@ final class Craft6BooleanMenu
             'label' => $label,
             'data' => [
                 'boolean' => $enabled ? '1' : '0',
-                'indicator' => ['variant' => $enabled ? 'success' : 'empty'],
+                'indicator' => [
+                    'fill' => $enabled ? 'success' : 'neutral',
+                    'appearance' => $enabled ? 'solid' : 'outline',
+                ],
                 ...($hint ? ['hint' => $enabled ? t('Enabled') : t('Disabled')] : []),
             ],
         ];

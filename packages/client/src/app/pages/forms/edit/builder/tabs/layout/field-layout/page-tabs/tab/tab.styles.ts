@@ -8,28 +8,39 @@ export const TabWrapper = styled(animated.div)`
 `;
 
 export const RemoveTabButton = styled.button`
-  position: absolute;
-  top: 3px;
-  right: -8px;
-
-  transition: all 0.2s ease-in-out;
-  transform: scale(0.8);
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--c-radius-sm);
+  background: transparent;
+  color: var(--c-text-quiet);
   opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 160ms ease-out;
+  @media (prefers-reduced-motion: reduce) { transition-duration: 0s; }
 
-  &:active {
-    outline: none;
-  }
+  &:hover { color: var(--c-color-danger-on-quiet); background: var(--c-color-danger-fill-quiet); }
+  &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: 1px; }
+  svg { width: 12px; height: 12px; }
+`;
 
-  &:hover {
-    transform: scale(1);
-  }
-
-  svg {
-    width: 20px;
-  }
+export const RemoveTabSlot = styled.div`
+  flex: none;
+  width: 0;
+  margin-inline-start: 0;
+  overflow: hidden;
+  transition: width 160ms ease-out, margin-inline-start 160ms ease-out;
+  @media (prefers-reduced-motion: reduce) { transition-duration: 0s; }
 `;
 
 export const TabText = styled.div`
+  min-width: 0;
+  max-width: 160px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -42,23 +53,29 @@ export const TabText = styled.div`
 `;
 
 export const PageTab = styled(animated.div)`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  max-width: 160px;
-  height: 100%;
-  padding: 7px 10px;
-  margin: 0 5px;
+  box-sizing: border-box;
+  min-height: var(--c-size-control-md);
+  padding: 0 12px;
+  transition: padding-inline-end 160ms ease-out;
+  @media (prefers-reduced-motion: reduce) { transition-duration: 0s; }
+  margin: 0;
+  border-radius: var(--c-radius-md);
 
-  color: light-dark(${colors.gray400}, ${colors.muted});
-  border-bottom: 2px solid light-dark(${colors.gray100}, ${colors.border});
+  color: var(--c-text-quiet);
+  border: 1px solid transparent;
+  background: transparent;
 
   overflow: hidden;
 
   &.active {
-    color: ${colors.gray800};
-    border-bottom-color: light-dark(${colors.blue600}, var(--link-color));
+    color: var(--c-text-default);
+    background: color-mix(in srgb, var(--c-text-default) 6%, transparent);
+    font-weight: 600;
   }
 
   &.errors {
@@ -77,12 +94,20 @@ export const PageTab = styled(animated.div)`
     z-index: 1;
   }
 
+  cursor: pointer;
+  &:hover:not(.active) { background: color-mix(in srgb, var(--c-text-default) 3%, transparent); }
+  &:hover, &:focus-within {
+    ${RemoveTabSlot} { width: 20px; margin-inline-start: 6px; }
+    ${RemoveTabButton} { opacity: 1; pointer-events: auto; }
+  }
+  &:hover:has(${RemoveTabSlot}), &:focus-within:has(${RemoveTabSlot}) { padding-inline-end: 6px; }
   &:hover {
-    cursor: pointer;
-
-    ${RemoveTabButton} {
-      opacity: 1;
-    }
+    transition-delay: 500ms;
+    ${RemoveTabSlot}, ${RemoveTabButton} { transition-delay: 500ms; }
+  }
+  &:focus-within {
+    transition-delay: 0s;
+    ${RemoveTabSlot}, ${RemoveTabButton} { transition-delay: 0s; }
   }
 `;
 
@@ -99,35 +124,19 @@ export const TabDrop = styled.div`
 
 export const Input = styled.input`
   appearance: none;
-
+  field-sizing: content;
   display: block;
-  width: 100%;
-  min-width: 100px;
-
+  width: auto;
+  min-width: 3ch;
+  max-width: 160px;
+  padding: 0;
+  margin: 0;
   border: 0;
-  padding: 0 !important;
-  line-height: 1rem;
-  font-size: 0.75rem;
-  box-shadow: none !important;
-
-  &:hover,
-  &:active {
-    box-shadow: none !important;
-  }
-
-  &::-webkit-contacts-auto-fill-button {
-    visibility: hidden;
-    display: none !important;
-    pointer-events: none;
-    position: absolute;
-    right: 0;
-  }
-`;
-
-export const RemoveButtonWrapper = styled.div`
-  position: absolute;
-  top: 0px;
-  right: -7px;
-
-  transform: scale(0.8);
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  outline: none;
+  box-shadow: none;
+  &:focus, &:focus-visible { border: 0; outline: none; box-shadow: none; }
 `;

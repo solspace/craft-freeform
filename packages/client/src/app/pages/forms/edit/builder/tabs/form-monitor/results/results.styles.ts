@@ -7,6 +7,7 @@ export const ResultsWrapper = styled.div`
   flex: 1;
   background: light-dark(${colors.white}, ${colors.surface});
   padding: ${spacings.xl};
+  padding-block-start: var(--freeform-builder-padding-block, calc(var(--c-spacing-lg) + var(--c-spacing-md)));
   overflow-y: auto;
   width: calc(100% - 300px);
   ${scrollBar};

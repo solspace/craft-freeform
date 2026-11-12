@@ -38,13 +38,13 @@ vi.mock("@ff-client/queries/form-monitor", () => ({
   useFMFormStatsQuery: () => ({}),
 }));
 vi.mock("../grid/card/card.monitor.stats", () => ({
-  FormMonitorStats: () => null,
-  getLastTestStatus: () => null,
+  FormMonitorStats: (): null => null,
+  getLastTestStatus: (): null => null,
 }));
 vi.mock("recharts", () => ({
-  ResponsiveContainer: () => null,
+  ResponsiveContainer: (): null => null,
   AreaChart: ({ children }: { children: ReactNode }) => children,
-  Area: () => null,
+  Area: (): null => null,
 }));
 let root: Root;
 let host: HTMLDivElement;

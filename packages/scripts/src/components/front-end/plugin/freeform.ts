@@ -939,7 +939,15 @@ export default class Freeform {
       );
     }
     if (errorClassList && !fieldError) {
-      removeElement(errorContainerNode.getElementsByClassName(errorClassList));
+      removeElement(
+        errorContainerNode.querySelectorAll(
+          errorClassList
+            .split(/\s+/)
+            .filter(Boolean)
+            .map((name) => `.${CSS.escape(name)}`)
+            .join(""),
+        ),
+      );
     }
 
     const fields = errorContainerNode.querySelectorAll<HTMLInputElement>(

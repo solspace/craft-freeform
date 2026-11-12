@@ -6,6 +6,8 @@ import { useTranslations } from "@editor/store/slices/translations/translations.
 import SpinnerIcon from "@ff-client/assets/icons/spinner.icon";
 import { useAssetQuery } from "@ff-client/queries/assets";
 import classes from "@ff-client/utils/classes";
+import translate from "@ff-client/utils/translations";
+import PencilIcon from "@ff-icons/actions/pencil";
 import type React from "react";
 import { useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -17,12 +19,6 @@ import { Button, ButtonGroup, ButtonGroupWrapper } from "./page-buttons.styles";
 
 type Props = {
   page: Page;
-};
-
-const buttonClasses: Record<string, string> = {
-  back: "btn",
-  save: "btn",
-  submit: "btn btn-submit",
 };
 
 export const PageButtons: React.FC<Props> = ({ page }) => {
@@ -77,13 +73,17 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
           <ButtonGroup key={index} className="page-buttons">
             {group.map(({ handle, label, iconPosition, assetId }, index) => (
               <Button
-                className={buttonClasses[handle]}
+                className={`ff-page-button ff-page-button-${handle}`}
+                aria-label={translate("Edit {label} button", {
+                  label: getTranslation(`${handle}Label`, label),
+                })}
                 key={index}
                 type="button"
               >
                 {assetId && iconPosition === "left" && getIcon(assetId)}
                 {getTranslation(`${handle}Label`, label)}
                 {assetId && iconPosition === "right" && getIcon(assetId)}
+                <PencilIcon className="button-edit-cue" />
               </Button>
             ))}
           </ButtonGroup>

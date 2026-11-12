@@ -29,7 +29,7 @@ vi.mock("./property-editor.styles", () => ({
   ),
 }));
 vi.mock("./editors/pages/page-properties", () => ({
-  PageProperties: () => null,
+  PageProperties: (): null => null,
 }));
 vi.mock("./editors/fields/field-properties", () => ({
   FieldProperties: () => {

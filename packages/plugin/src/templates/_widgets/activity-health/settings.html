@@ -1,6 +1,10 @@
 {% import '_includes/forms' as forms %}
+
+<div class="freeform-widget-settings">
 {{ forms.textField({label:'Title'|t('app'), name:'title', id:'title', value:settings.title, placeholder:'Activity & Health'|t('freeform'), errors:settings.getErrors('title')}) }}
 {{ forms.textField({label:'Past days'|t('freeform'), instructions:'Show recorded activity from the past 1–365 days, within the available retention period. Reports include all forms and system events.'|t('freeform'), name:'days', id:'days', type:'number', min:1, max:365, value:settings.days, errors:settings.getErrors('days')}) }}
 {{ forms.checkboxSelectField({label:'Additional activity'|t('freeform'), instructions:'Choose the recorded event totals to show alongside unresolved errors and warnings. Totals include resolved events. Some event types may not be recorded in your logging mode.'|t('freeform'), name:'events', id:'events', options:eventOptions, values:settings.events, showAllOption:false, errors:settings.getErrors('events')}) }}
 {{ forms.lightswitchField({label:'Show recent issues'|t('freeform'), instructions:'Show recent unresolved issues with links to their details. Larger widgets show more issues when space allows.'|t('freeform'), name:'showRecent', id:'showRecent', on:settings.showRecent, errors:settings.getErrors('showRecent')}) }}
 {{ forms.lightswitchField({label:'Replace the dashboard banner'|t('freeform'), instructions:'Hide the log alert banner while this widget is visible on your Forms dashboard. The banner returns in the table view, during form searches, or if the widget cannot load. Update announcements remain visible.'|t('freeform'), name:'replaceBanner', id:'replaceBanner', on:settings.replaceBanner, errors:settings.getErrors('replaceBanner')}) }}
+
+</div>

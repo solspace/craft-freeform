@@ -1,4 +1,3 @@
-import { colors } from "@ff-client/styles/variables";
 import type React from "react";
 import Skeleton from "react-loading-skeleton";
 
@@ -10,12 +9,7 @@ export const LoaderField: React.FC = () => {
     <FieldWrapper style={{ flex: 1 }}>
       <FieldCellWrapper>
         <Label>
-          <Skeleton
-            height={10}
-            width={60}
-            baseColor={colors.gray300}
-            highlightColor={colors.gray200}
-          />
+          <Skeleton height={10} width={60} />
         </Label>
         <Instructions>
           <Skeleton height={8} width={300} />

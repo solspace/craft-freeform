@@ -37,7 +37,7 @@ export const GroupLayout = styled.div`
   background-color: var(--c-surface-default, #fff);
   padding: ${spacings.md};
   border-radius: ${borderRadius.md};
-  border: 1px solid var(--c-color-border-quiet);
+  border: 1px solid var(--c-color-neutral-border-quiet);
   display: flex;
   gap: ${spacings.md};
 `;
@@ -168,7 +168,7 @@ export const FieldTypes = styled.div<EmptyProps>`
     display: block;
     grid-column: 1 / -1;
     padding: var(--c-spacing-md);
-    border: 1px dashed var(--c-color-border-quiet);
+    border: 1px dashed var(--c-color-neutral-border-quiet);
     border-radius: var(--c-radius-md);
     color: var(--c-text-quiet);
   }
@@ -215,7 +215,7 @@ export const ColorCircle = styled.button`
   height: 20px;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid var(--c-color-border-quiet);
+  border: 1px solid var(--c-color-neutral-border-quiet);
   cursor: pointer;
   background-color: light-dark(${({ color }) => color || colors.black}, ${({ color }) => color || colors.text});
   position: relative;
@@ -234,7 +234,7 @@ export const ColorPopover = styled.div`
   left: calc(100% + ${spacings.sm});
   z-index: 10;
   padding: ${spacings.sm};
-  border: 1px solid var(--c-color-border-quiet);
+  border: 1px solid var(--c-color-neutral-border-quiet);
   border-radius: ${borderRadius.md};
   background: var(--c-surface-overlay, #fff);
   box-shadow: 0 10px 24px rgb(32 51 72 / 14%);

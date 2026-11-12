@@ -1,6 +1,7 @@
+import { ThemedSkeleton as SkeletonTheme } from "@components/loaders/skeletons/themed-skeleton";
 import { colors, spacings } from "@ff-client/styles/variables";
 import type React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
 const LoaderContainer = styled.div`
@@ -40,7 +41,7 @@ const TableLoaderContainer = styled.div`
 
 export const FormMonitorLoader: React.FC = () => {
   return (
-    <SkeletonTheme baseColor={colors.gray100} highlightColor={colors.gray200}>
+    <SkeletonTheme>
       <LoaderContainer>
         <Skeleton width={100} height={20} />
         <Skeleton width={120} height={16} />
@@ -61,7 +62,7 @@ export const FormMonitorLoader: React.FC = () => {
 
 export const FormMonitorDetailsLoader: React.FC = () => {
   return (
-    <SkeletonTheme baseColor={colors.gray100} highlightColor={colors.gray200}>
+    <SkeletonTheme>
       <DetailsLoaderContainer>
         <ChartLoaderContainer>
           <Skeleton height={24} width={300} />

@@ -23,12 +23,12 @@ export const FormIdentity = styled.div<{
 }>`
   flex: 1;
   min-width: 0;
-  --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 28 : 0) + ($hasBadge ? 35 : 0) + ($hasBadge && $hasMenu ? 8 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
+  --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 28 : 0) + ($hasBadge ? 28 : 0) + ($hasBadge && $hasMenu ? 4 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
   --card-header-end-space: ${({ $hasMonitor }) => ($hasMonitor ? "0px" : "var(--card-title-end-space)")};
   h2 { padding-inline-end: var(--card-header-end-space); }
   [data-card-description] { max-width: calc(100% - var(--card-header-end-space)); }
   @media (pointer: coarse) {
-    --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 44 : 0) + ($hasBadge ? 35 : 0) + ($hasBadge && $hasMenu ? 8 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
+    --card-title-end-space: ${({ $hasBadge, $hasMenu }) => ($hasMenu ? 44 : 0) + ($hasBadge ? 28 : 0) + ($hasBadge && $hasMenu ? 8 : 0) + ($hasBadge || $hasMenu ? 12 : 0)}px;
   }
 
 `;
@@ -90,10 +90,10 @@ export const Subtitle = styled.span`
 `;
 
 export const Controls = styled.div`
-  --card-corner-size: 46px;
+  --card-corner-size: 28px;
   flex-shrink: 0;
   position: absolute;
-  right: 13px;
+  right: 22px;
   top: 0;
   height: 72px;
   z-index: 2;
@@ -101,7 +101,7 @@ export const Controls = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   > button { width: 28px; height: 28px; }
   > span[aria-hidden='true'] {
     flex: 0 0 var(--card-corner-size);
@@ -114,22 +114,34 @@ export const Controls = styled.div`
   > span[aria-hidden='true'] svg { width: 22px; height: 22px; }
   &:not(:has(> span[aria-hidden='true'])) { right: ${spacings.xl}; }
   @media (pointer: coarse) {
+    gap: 8px;
     > button { width: 44px; height: 44px; }
   }
 `;
 
 export const ControlButton = styled.button`
+  appearance: none;
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 26px;
   height: 26px;
   padding: 0;
-  border-radius: 4px;
+  border: 0;
+  border-radius: var(--c-radius-md);
   font-size: 14px;
-  color: light-dark(#687684, ${colors.muted});
-  background: light-dark(#ffffffed, ${colors.overlay});
-  &:hover, &:focus-visible { color: var(--link-color); background: light-dark(#e9f2fc, var(--ui-control-hover-bg-color)); }
+  color: var(--c-text-quiet);
+  background: transparent;
+  cursor: pointer;
+  &:hover:not([aria-disabled=true]), &[aria-expanded=true] {
+    color: var(--c-color-neutral-on-quiet);
+    background: var(--c-color-neutral-fill-quiet);
+  }
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: var(--c-focus-outline-offset);
+  }
 
 
   > svg {
@@ -181,7 +193,7 @@ export const CardWrapper = styled.li`
   overflow: hidden;
   &:focus-visible { outline: 2px solid var(--link-color); outline-offset: 2px; }
 
-  background-color: light-dark(#fcfdff, ${colors.surface});
+  background-color: color-mix(in srgb, var(--c-surface-sunken) 25%, var(--c-surface-default));
   border: 1px solid light-dark(#dfe6ee, ${colors.border});
   box-shadow: 0 1px 3px #1f344508;
   border-radius: var(--large-border-radius);
@@ -213,7 +225,7 @@ export const CardWrapper = styled.li`
   }
 
   &:not(.dragging):hover, &:focus-within {
-    background-color: light-dark(#f3f7fd, color-mix(in srgb, var(--ui-control-hover-bg-color) 20%, var(--pane-bg)));
+    background-color: color-mix(in srgb, var(--c-surface-sunken) 10%, var(--c-surface-default));
     border-color: ${colors.border};
     box-shadow: 0 3px 12px #1f344510;
 
@@ -290,50 +302,33 @@ export const Activity = styled.section`
   dd { margin: 0; overflow-wrap: anywhere; }
 `;
 
-export const SizeMenu = styled.div`
+export const SizeMenu = styled.div.attrs({ className: "menu visible" })`
   z-index: 1100;
   box-sizing: border-box;
   width: 240px;
   max-width: calc(100vw - 24px);
-  padding: 5px;
-  border: 1px solid light-dark(#cdd8e4, var(--medium-hairline-color));
-  border-radius: 6px;
-  background: light-dark(var(--modal-bg, #fff), color-mix(in srgb, var(--text-color) 5%, var(--gray-050)));
-  color: light-dark(#3f4d5a, ${colors.text});
-  box-shadow: 0 6px 20px light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 45%));
+  font-size: var(--c-text-base);
+  line-height: var(--c-leading-normal);
   .menu-controls { border: 0; margin: 0; padding: 0; min-inline-size: 0; }
   .menu-controls:disabled { opacity: .65; }
-  .content-options, .card-actions { border-top: 1px solid light-dark(#dfe6ee, ${colors.border}); margin-top: 5px; padding-top: 5px; }
+  .content-options, .card-actions { border-top: 1px solid var(--c-color-neutral-border-quiet); margin-top: var(--c-spacing-xs); padding-top: var(--c-spacing-xs); }
   .card-actions:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
-  .content-options { padding: 8px 9px; }
-  label { display: block; font-size: 12px; margin-bottom: 8px; }
-  p { font-size: 11px; color: light-dark(#687684, ${colors.muted}); margin: 4px 0 0; }
-  .card-actions button { justify-content: flex-start; gap: 10px; }
+  .content-options { padding: var(--c-spacing-sm); }
+  label { display: block; font-size: var(--c-text-sm); margin-bottom: var(--c-spacing-sm); }
+  p { font-size: var(--c-text-xs); color: var(--c-text-quiet); margin: var(--c-spacing-xs) 0 0; }
+  .card-actions button { justify-content: flex-start; }
   .card-actions svg { width: 16px; height: 16px; flex-shrink: 0; display: block; fill: currentColor; }
-  .delete-action { color: light-dark(#cf1124, ${colors.error}); }
-  > span, .menu-controls > span { display: block; padding: 6px 9px; font-size: 12px; color: light-dark(#687684, ${colors.muted}); }
+  > span, .menu-controls > span { display: block; padding: var(--c-spacing-sm); font-size: var(--c-text-sm); color: var(--c-text-quiet); }
 `;
 
-export const SizeChoice = styled.button`
-  display: flex;
-  align-items: center;
+export const SizeChoice = styled.button.attrs({ className: "menu-item" })`
   justify-content: space-between;
-  width: 100%;
-  min-height: 34px;
-  padding: 6px 9px;
-  border: 0;
-  border-radius: 4px;
-  color: inherit;
-  background: transparent;
-  cursor: pointer;
-  font-size: 13px;
-  &:hover, &:focus-visible { background: light-dark(var(--gray-050, #f3f7fc), var(--bg-selection-light)); }
-  &[aria-pressed=true] {
-    background: light-dark(var(--gray-100, #e4edf6), var(--ui-control-selected-bg));
-    color: light-dark(#3f4d5a, var(--ui-control-selected-color));
+  flex-wrap: nowrap;
+  &:focus-visible {
+    outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline);
+    outline-offset: calc(-1 * var(--c-focus-outline-width));
   }
-  &:focus-visible { outline: none; box-shadow: var(--focus-ring-inner); }
-  .size-label { display: inline-flex; align-items: center; gap: 8px; }
+  .size-label { display: inline-flex; align-items: center; gap: var(--c-spacing-sm); }
   .size-check { display: block; width: 14px; height: 14px; flex-shrink: 0; }
   @media (pointer: coarse) { min-height: 44px; }
 `;

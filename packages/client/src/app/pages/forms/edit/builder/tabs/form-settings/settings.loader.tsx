@@ -1,9 +1,9 @@
 import { Sidebar } from "@components/layout/sidebar/sidebar";
-import { colors } from "@ff-client/styles/variables";
+import { ThemedSkeleton as SkeletonTheme } from "@components/loaders/skeletons/themed-skeleton";
 import { range } from "@ff-client/utils/arrays";
 import { random } from "@ff-client/utils/math";
 import type React from "react";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import Skeleton from "react-loading-skeleton";
 
 import { FormSettingsContainer, SectionHeader } from "./settings.editor.styles";
 import { SectionLink } from "./settings.sidebar.styles";
@@ -13,10 +13,7 @@ export const LoaderFormSettings: React.FC = () => {
   return (
     <FormSettingsWrapper>
       <Sidebar>
-        <SkeletonTheme
-          baseColor={colors.gray200}
-          highlightColor={colors.gray300}
-        >
+        <SkeletonTheme>
           {range(5).map((i) => (
             <SectionLink key={i}>
               <Skeleton key={i} width={200} />

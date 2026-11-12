@@ -31,11 +31,11 @@ function Monitor() {
   if (++renders > 40) throw new Error("Drag state entered a render loop");
   return <output>{context.isDragging ? context.dragType : "idle"}</output>;
 }
-function Existing({ id }: { id: string }) {
+function Existing({ id }: { id: string }): null {
   useFieldDrag({ uid: id } as Field, 0);
   return null;
 }
-function Available({ id }: { id: string }) {
+function Available({ id }: { id: string }): null {
   useBaseFieldDrag({ typeClass: id } as FieldType);
   return null;
 }

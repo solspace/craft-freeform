@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Tests\Services;
 
 use craft\web\Request;
 use craft\web\View;
+use CraftCms\Cms\View\HtmlStack;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
@@ -191,6 +192,10 @@ class FormPreviewServiceTest extends TestCase
         $view->cssFiles = ['cp.css' => '<link href="cp.css">'];
         $view->metaTags = ['cp' => '<meta name="cp">'];
         $view->linkTags = ['cp' => '<link rel="icon" href="cp.ico">'];
+        $view->registerJs('Craft.controlPanelReady();', View::POS_READY, 'cp-ready');
+        $cpStack = app(HtmlStack::class);
+        $cpStack->icons(['arrow-down']);
+        $bodyEnd = new \ReflectionMethod(View::class, 'renderBodyEndHtml');
         $previous = [];
         foreach (['assetBundles', 'js', 'jsFiles', 'css', 'cssFiles', 'metaTags', 'linkTags'] as $property) {
             $previous[$property] = $view->{$property};
@@ -209,12 +214,18 @@ class FormPreviewServiceTest extends TestCase
             $method = new \ReflectionMethod(FormPreviewService::class, 'withIsolatedAssets');
 
             try {
-                $result = $method->invoke(new FormPreviewService(), static function () use ($view, $previous, $fail) {
+                $result = $method->invoke(new FormPreviewService(), static function () use ($view, $previous, $fail, $bodyEnd, $cpStack) {
+                    self::assertNotSame($cpStack, app(HtmlStack::class));
                     foreach ($previous as $property => $value) {
                         self::assertSame([], $view->{$property}, $property.' must not include CP assets');
                     }
                     $view->js[View::POS_END]['form'] = 'window.form=true;';
                     $view->assetBundles['form'] = false;
+                    $view->registerJs('window.formPreviewReady = true;', View::POS_READY, 'form-ready');
+                    $scripts = $bodyEnd->invoke($view, false);
+                    self::assertStringNotContainsString('Craft.controlPanelReady', $scripts);
+                    self::assertStringNotContainsString('Craft.icons', $scripts);
+                    self::assertStringContainsString('window.formPreviewReady', $scripts);
                     if ($fail) {
                         throw new \RuntimeException('Template failed');
                     }
@@ -233,6 +244,10 @@ class FormPreviewServiceTest extends TestCase
             foreach ($previous as $property => $value) {
                 self::assertSame($value, $view->{$property});
             }
+            self::assertSame($cpStack, app(HtmlStack::class));
+            $scripts = $bodyEnd->invoke($view, false);
+            self::assertStringContainsString('Craft.controlPanelReady', $scripts);
+            self::assertStringNotContainsString('window.formPreviewReady', $scripts);
         } finally {
             \Craft::$app = $previousApp;
         }

@@ -20,6 +20,7 @@ it("keeps multiple file samples stable while editing and respects a reduced uplo
   const random = vi.spyOn(Math, "random").mockReturnValue(0.999);
   let field = {
     uid: "files",
+    typeClass: "FileDragAndDrop",
     properties: {
       sampleData: true,
       fileKinds: ["image"],

@@ -1,3 +1,4 @@
+import { editorButton } from "@ff-client/styles/craft6";
 import { borderRadius, colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
@@ -23,11 +24,11 @@ export const ButtonGroup = styled.div`
 `;
 
 export const Button = styled.button`
-  padding: ${spacings.sm} 10px;
-
-  &:hover {
-    background-color: ${colors.gray200};
-  }
+  ${editorButton}
+  border: 0;
+  border-radius: 0;
+  min-width: var(--c-size-control-md);
+  padding: 0;
 
   &:last-child {
     border-top-right-radius: ${borderRadius.lg};
@@ -65,21 +66,12 @@ export const TemplateCard = styled.li`
   }
 
   &.active {
-    color: light-dark(${colors.white}, ${colors.text});
-    background-color: light-dark(${colors.gray500}, var(--bg-selection-dark));
+    color: var(--c-color-accent-on-quiet);
+    background: var(--c-color-accent-fill-quiet);
+    border-color: var(--c-color-accent-border-normal);
 
-    button svg {
-      fill: light-dark(${colors.white}, ${colors.text});
-    }
-
-    ${ButtonGroup} {
-      background-color: light-dark(#51606c, var(--ui-control-hover-bg-color));
-    }
-
-    ${Button} {
-      &:hover {
-        background-color: light-dark(${colors.gray800}, var(--ui-control-active-bg-color));
-      }
-    }
+    ${ButtonGroup} { background: transparent; }
+    ${Button} { color: inherit; background: transparent; }
+    ${Button}:hover { background: var(--c-color-accent-fill-normal); color: var(--c-color-accent-on-normal); }
   }
 `;

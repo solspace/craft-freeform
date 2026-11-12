@@ -14,7 +14,7 @@ export const Wrapper = styled.div`
   overflow: hidden;
 
   background: var(--c-surface-default, #fff);
-  border: 1px solid var(--c-color-border-quiet);
+  border: 1px solid var(--c-color-neutral-border-quiet);
   border-radius: 3px;
 
   font-size: 12px;

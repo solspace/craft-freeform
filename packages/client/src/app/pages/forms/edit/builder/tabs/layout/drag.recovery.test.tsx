@@ -33,7 +33,7 @@ function mount() {
   );
 }
 function begin(type: Drag = Drag.Field) {
-  let id = "";
+  let id: string | symbol = "";
   act(() => {
     id = manager.getRegistry().addSource(type, {
       canDrag: () => true,

@@ -1,5 +1,9 @@
 {% macro actionIcon(operation) %}
-    {% if craft.app.version >= '5.0.0' %}
+    {% if craft.app.version >= '6.0.0' %}
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            {% if operation == 'approve' %}<path d="m3 8 3 3 7-7"/>{% else %}<path d="m4 4 8 8m0-8-8 8"/>{% endif %}
+        </svg>
+    {% elseif craft.app.version >= '5.0.0' %}
         {{ svg('@appicons/' ~ (operation == 'approve' ? 'check' : 'xmark') ~ '.svg') }}
     {% else %}
         <span data-icon="{{ operation == 'approve' ? 'check' : 'remove' }}"></span>

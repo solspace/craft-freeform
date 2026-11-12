@@ -9,12 +9,18 @@
     {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
     {{ forms.selectField({label: 'Group'|t('freeform'), name: 'groupUid', options: groups, value: groupUid}) }}
     {{ settingsHtml|raw }}
-    <div class="buttons"><button type="submit" class="btn submit">{{ (uid ? 'Save' : 'Insert widget')|t('freeform') }}</button></div>
+    <div class="buttons">{{ ui('button', {
+        type: 'submit',
+        variant: 'primary',
+        label: (uid ? 'Save' : 'Insert widget')|t('freeform'),
+    }) }}</div>
 </form>
 {% endblock %}
 {% css %}
-html, body { height: auto; min-height: 0; background: var(--pane-bg, #fff); }
-.widget-editor { padding: 24px; }
+html, body { height: auto; min-height: 0; background: var(--c-modal-fill); color: var(--c-text-default); }
+body { margin: 0; }
+.widget-editor { padding: var(--c-spacing-lg); }
+.widget-editor .field { margin-block-end: var(--c-spacing-lg); }
 /* Card size controls the chart footprint inside the Forms grid. */
 #settings-chartSize-field { display: none; }
 {% endcss %}

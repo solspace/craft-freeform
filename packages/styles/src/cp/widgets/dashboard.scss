@@ -1,6 +1,12 @@
 @use "../../shared/chart.css";
 @use "../../../../frontend/core/src/select/searchable-select.css";
 @use "../../shared/cp-searchable-select";
+@use "../../shared/cp-widget-theme";
+@include cp-widget-theme.settings;
+
+.freeform-dashboard-chart, .freeform-recent {
+  @include cp-widget-theme.tokens;
+}
 
 .freeform-dashboard-chart {
   --freeform-widget-height: 400px;
@@ -72,6 +78,16 @@
 
 .freeform-recent {
   @include cp-searchable-select.searchable-select;
+  .btn {
+    box-sizing: border-box;
+    border: 1px solid var(--c-color-neutral-border-quiet);
+    border-radius: var(--c-radius-md);
+    background: var(--c-color-neutral-fill-quiet);
+    color: var(--c-text-default);
+    &:hover:not(:disabled) { background: var(--c-color-neutral-fill-normal); }
+    &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+    &:disabled { opacity: .5; }
+  }
   .freeform-recent-form-filter { flex: 1.4 1 0; min-width: 0; }
   .ff-searchable__input { text-overflow: ellipsis; }
   .freeform-recent-form-label {
@@ -113,7 +129,17 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 14px;
-    > input { min-width: 0; height: var(--ui-control-height, 34px); }
+    > input {
+      min-width: 0;
+      height: var(--c-size-control-md);
+      border: 1px solid var(--c-color-neutral-border-normal);
+      border-radius: var(--c-input-radius);
+      background: var(--c-input-fill);
+      color: var(--c-text-default);
+      padding-inline: var(--c-input-spacing-inline);
+      &::placeholder { color: var(--c-text-quiet); }
+      &:focus-visible { outline: var(--c-focus-outline-width) solid var(--c-color-focus-outline); outline-offset: var(--c-focus-outline-offset); }
+    }
   }
   .freeform-recent-filters {
     display: flex;

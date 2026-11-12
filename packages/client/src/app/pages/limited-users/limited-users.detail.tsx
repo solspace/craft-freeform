@@ -2,7 +2,6 @@ import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { LoadingText } from "@components/loaders/loading-text/loading-text";
 import { useSaveShortcut } from "@ff-client/hooks/use-save-shortcut";
-import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import { notifications } from "@ff-client/utils/notifications";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
@@ -37,8 +36,6 @@ export const LimitedUsersDetail: React.FC = () => {
   const [presetUndo, setPresetUndo] = useState<Item[] | null>(null);
   const [presetMessage, setPresetMessage] = useState("");
   const mutation = useLimitedUsersMutation(id);
-
-  useSidebarSelect("freeform/settings");
 
   useEffect(() => {
     if (data) {

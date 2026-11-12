@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\web\View;
+use CraftCms\Cms\View\HtmlStack;
 use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -233,6 +234,12 @@ class FormPreviewService
     private function withIsolatedAssets(callable $render): mixed
     {
         $view = \Craft::$app->getView();
+        // Craft also queues icons and imports outside the legacy View properties.
+        // Give page rendering its own stack so draining it cannot consume CP state.
+        $cpStack = app(HtmlStack::class);
+        $previewStack = clone $cpStack;
+        $previewStack->clear();
+        app()->instance(HtmlStack::class, $previewStack);
         // CP bundles are already registered before this API action runs. Only
         // assets registered by the formatting template belong in the frame.
         $previous = [];
@@ -240,6 +247,7 @@ class FormPreviewService
             $previous[$property] = $view->{$property};
             $view->{$property} = [];
         }
+        $view->startJsBuffer();
         $view->startScriptBuffer();
         $view->startHtmlBuffer();
 
@@ -247,7 +255,9 @@ class FormPreviewService
             return $render();
         } finally {
             $view->clearScriptBuffer();
+            $view->clearJsBuffer();
             $view->clearHtmlBuffer();
+            app()->instance(HtmlStack::class, $cpStack);
             foreach ($previous as $property => $value) {
                 $view->{$property} = $value;
             }

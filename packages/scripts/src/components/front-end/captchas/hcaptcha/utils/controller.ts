@@ -15,7 +15,7 @@ type Api = {
   execute(id: WidgetId): unknown;
   reset(id: WidgetId): void;
 };
-const api = () => hcaptcha as unknown as Api;
+const api = () => window.hcaptcha as unknown as Api;
 
 export function registerHcaptcha(version: string): void {
   const states = new WeakMap<HTMLFormElement, Promise<State>>();

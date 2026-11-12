@@ -33,7 +33,8 @@ const BoolEnv = ({
 
   const { data, isFetching } = useAutosuggestEnvVariables();
   const options = useEnvOptions();
-  const comboboxRef = useRef<HTMLElement & { modelValue?: string }>(null);
+  const comboboxRef = useRef<HTMLElement & { value?: string }>(null);
+  value = String(value ?? "");
 
   useEffect(() => {
     const combobox = comboboxRef.current;
@@ -42,14 +43,14 @@ const BoolEnv = ({
     const onChange = (event: Event): void => {
       if ((event as CustomEvent).detail?.initialize) return;
       queueMicrotask(() => {
-        const nextValue = combobox.modelValue;
+        const nextValue = combobox.value;
         if (active && nextValue && nextValue !== value) updateValue(nextValue);
       });
     };
-    combobox.addEventListener("model-value-changed", onChange);
+    combobox.addEventListener("change", onChange);
     return () => {
       active = false;
-      combobox.removeEventListener("model-value-changed", onChange);
+      combobox.removeEventListener("change", onChange);
     };
   }, [updateValue, value]);
 
@@ -68,16 +69,18 @@ const BoolEnv = ({
       <MenuWidth $compact={size === "small"} className="freeform-boolean-menu">
         {createElement("craft-combobox", {
           ref: comboboxRef,
-          "model-value": value,
-          options: JSON.stringify(options),
-          requireoptionmatch: true,
+          value,
+          options,
+          requireOptionMatch: true,
+          showAllOnEmpty: true,
           disabled: property.disabled || (isFetching && !data) || undefined,
           "aria-label": property.label,
           "aria-invalid": errors?.length ? "true" : undefined,
         })}
         <span className="freeform-boolean-menu-status" aria-hidden="true">
           {createElement("craft-indicator", {
-            variant: selected?.data.indicator.variant ?? "empty",
+            fill: selected?.data.indicator.fill ?? "neutral",
+            appearance: selected?.data.indicator.appearance ?? "outline",
           })}
         </span>
       </MenuWidth>

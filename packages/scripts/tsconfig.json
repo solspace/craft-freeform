@@ -2,21 +2,25 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "module": "es6",
-    "moduleResolution": "node",
-    "target": "es5",
-    "lib": ["ES2016", "DOM"],
+    "strict": false,
+    "skipLibCheck": true,
+    "rootDir": "../../",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "jsx": "react",
     "allowJs": true,
-    "baseUrl": "./src",
+    "types": ["jquery", "grecaptcha"],
     "typeRoots": [
       "./node_modules/@types",
       "../../node_modules/@types",
       "types/"
     ],
     "paths": {
-      "@lib/*": ["lib/*"],
-      "@components/*": ["components/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@components/*": ["./src/components/*"],
+      "types/*": ["./src/types/*"]
     }
   }
 }

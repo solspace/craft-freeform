@@ -1,0 +1,33 @@
+{% import '_includes/forms' as forms %}
+{% import 'freeform/spam/index' as spamUi %}
+{% set indexAssets = view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\SubmissionIndexBundle') %}
+{% set bridgeAssets = view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\Craft6CpBundle') %}
+{% set isSpam = elementType == 'Solspace\\Freeform\\Elements\\SpamSubmission' %}
+<link rel="stylesheet" href="{{ bridgeAssets.baseUrl }}/css/cp/craft6.css">
+<link rel="stylesheet" href="{{ indexAssets.baseUrl }}/css/cp/submissions/index.css">
+{% set statusOptions = [] %}
+{% for status in statuses %}
+    {% set statusOptions = statusOptions|merge([{id: status.id, name: status.name, color: status.color}]) %}
+{% endfor %}
+<div class="ff-native-index-tools" data-freeform-native-index data-spam="{{ isSpam ? 'true' : 'false' }}" data-statuses="{{ statusOptions|json_encode|e('html_attr') }}">
+    {% if isSpam %}
+        {% set selectedReason = craft.app.request.getQueryParam('spamReason', '') %}
+        <craft-select-rich name="spamReason" class="ff-spam-reason-select" label="{{ 'Spam reason'|t('freeform') }}" label-sr-only>
+            <craft-option value="" {{ selectedReason == '' ? 'selected' }}>
+                <span class="ff-spam-reason-choice">{{ spamUi.reasonIcon('') }}<span>{{ 'Reason'|t('freeform') }}</span></span>
+            </craft-option>
+            {% for reason in spamReasons %}
+                <craft-option value="{{ reason }}" {{ selectedReason == reason ? 'selected' }}>
+                    <span class="ff-spam-reason-choice">{{ spamUi.reasonIcon(reason) }}<span>{{ reason|t('freeform') }}</span></span>
+                </craft-option>
+            {% endfor %}
+        </craft-select-rich>
+    {% endif %}
+    <craft-button type="button" variant="fill" icon="arrow-rotate-left" data-freeform-index-undo disabled>{{ 'Undo'|t('freeform') }}</craft-button>
+    {% if currentUser.can('freeform-access-quick-export') %}
+        <craft-button type="button" variant="fill" icon="download" data-freeform-quick-export aria-haspopup="dialog">
+            {{ 'Quick Export'|t('freeform') }}
+        </craft-button>
+    {% endif %}
+</div>
+<script src="{{ indexAssets.baseUrl }}/js/scripts/cp/submissions/native-index.js"></script>

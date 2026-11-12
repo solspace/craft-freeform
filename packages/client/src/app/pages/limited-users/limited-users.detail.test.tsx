@@ -29,19 +29,16 @@ vi.mock("@config/freeform/freeform.config", () => ({
   default: { metadata: { craft: { is5: true, is: { atLeast: () => true } } } },
 }));
 vi.mock("@ff-client/hooks/use-save-shortcut", () => ({
-  useSaveShortcut: () => undefined,
-}));
-vi.mock("@ff-client/hooks/use-sidebar-select", () => ({
-  useSidebarSelect: () => undefined,
+  useSaveShortcut: (): undefined => undefined,
 }));
 vi.mock("@ff-client/utils/notifications", () => ({
   notifications: { success: vi.fn() },
 }));
 vi.mock("../settings/settings.sidebar", () => ({
-  SettingsSidebar: () => null,
+  SettingsSidebar: (): null => null,
 }));
 vi.mock("@components/breadcrumbs/breadcrumbs", () => ({
-  Breadcrumb: () => null,
+  Breadcrumb: (): null => null,
 }));
 vi.mock("@components/layout/blocks/header-container", () => ({
   HeaderContainer: ({

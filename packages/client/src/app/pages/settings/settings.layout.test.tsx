@@ -7,7 +7,7 @@ vi.mock("./settings.sidebar", () => ({
   SettingsSidebar: () => <aside id="sidebar-container">Settings</aside>,
 }));
 
-it("keeps Save outside the content and restores Craft's notice on route unmount", async () => {
+it("keeps React Save actions outside content and leaves native footer notices in place", async () => {
   globalThis.IS_REACT_ACT_ENVIRONMENT = true;
   const page = document.createElement("div");
   const app = document.createElement("div");
@@ -34,9 +34,8 @@ it("keeps Save outside the content and restores Craft's notice on route unmount"
         </SettingsLayout>,
       ),
     );
-    expect(app.querySelector(".freeform-footer-notices #global-footer")).toBe(
-      notice,
-    );
+    expect(notice.parentElement).toBe(page);
+    expect(app.querySelector("craft-pane")).toBeNull();
     const button = app.querySelector<HTMLButtonElement>(
       ".freeform-secondary-layout > .freeform-form-footer button",
     )!;

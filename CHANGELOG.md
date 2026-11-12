@@ -13,7 +13,7 @@
 ### Fixed
 - Fixed builder startup, history navigation, slideouts, preview isolation, and notification template naming.
 - Restored submission field values and custom columns, and fixed spam filtering, exports, notifications, and status controls.
-- Fixed compatibility issues in settings, integrations, permissions, and migrations.
+- Fixed compatibility issues in settings, integrations, permissions, and migrations, including the plugin Settings link.
 - Fixed Forms dashboard loading, Quick setup restrictions, and Demo Templates warnings.
 
 ## 6.0.0-beta.5 - 2026-10-27

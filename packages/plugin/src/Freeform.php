@@ -28,9 +28,11 @@ use CraftCms\Cms\Cp\Icons;
 use CraftCms\Cms\Database\MigrationRepository;
 use CraftCms\Cms\Plugin\Contracts\PluginInterface;
 use CraftCms\Cms\Plugin\Plugin;
+use CraftCms\Cms\Support\Url;
 use CraftCms\Cms\Twig\Twig;
 use CraftCms\Yii2Adapter\Console\LegacyCommandCompatibility;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
+use Illuminate\Http\RedirectResponse;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
@@ -540,17 +542,19 @@ class Freeform extends Plugin
         $group->save();
     }
 
+    public function getSettingsResponse(): RedirectResponse
+    {
+        return new RedirectResponse(Url::cpUrl('freeform/settings'));
+    }
+
+    public function getReadOnlySettingsResponse(): RedirectResponse
+    {
+        return $this->getSettingsResponse();
+    }
+
     protected static function createSettings(): Settings
     {
         return new Settings();
-    }
-
-    protected function settingsHtml(): string
-    {
-        return \Craft::$app->getView()->renderTemplate(
-            'freeform/settings',
-            ['settings' => $this->getSettings()]
-        );
     }
 
     /**

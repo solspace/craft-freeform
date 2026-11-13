@@ -1,12 +1,12 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 5.18.3 - 2026-11-13
+
+### Fixed
+- Fixed concurrent submissions failing when assigned the same incremental ID.
 
 ### Security
 - Fixed SQL injection through the GraphQL form queries' `orderBy` argument by restricting ordering to supported form and site columns. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
-
-### Fixed
-- Fixed concurrent submissions failing when assigned the same incremental ID. ([#2711](https://github.com/solspace/craft-freeform/issues/2711))
 
 ## 5.18.2 - 2026-11-11
 

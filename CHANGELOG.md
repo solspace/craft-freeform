@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+### Security
+- Fixed SQL injection through the GraphQL form queries' `orderBy` argument by restricting ordering to supported form and site columns. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
+
 ### Added
 - Ported Freeform 5.18.2 features and content integrations to Craft 6.
 

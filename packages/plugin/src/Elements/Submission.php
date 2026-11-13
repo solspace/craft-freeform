@@ -562,7 +562,7 @@ class Submission extends Element
             'userId' => $this->userId ?: null,
             'formId' => $this->formId,
             'statusId' => $this->statusId,
-            'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),
+            'incrementalId' => $this->incrementalId,
             'token' => $this->token,
             'ip' => $this->ip,
             'isSpam' => $this->isSpam,
@@ -601,6 +601,11 @@ class Submission extends Element
         }
 
         $contentTable = self::getContentTableName($this->getForm());
+        if (null === $insertData['incrementalId']) {
+            $this->lockIncrementalId();
+            $insertData['incrementalId'] = $this->getNewIncrementalId();
+        }
+
         if ($isNew) {
             $contentData['id'] = $this->id;
             $insertData['id'] = $this->id;
@@ -1061,14 +1066,48 @@ class Submission extends Element
         return $handle ?: null;
     }
 
+    private function lockIncrementalId(): void
+    {
+        $db = \Craft::$app->getDb();
+        $mutex = \Craft::$app->getMutex();
+        $lock = 'freeform-submission-incremental-id';
+
+        // Multiple elements can be saved within the same outer transaction.
+        if ($mutex->isAcquired($lock)) {
+            return;
+        }
+
+        $connection = $db->getLaravelConnection();
+        $transaction = app('db.transactions')->getPendingTransactions()->first(
+            static fn ($transaction) => $transaction->connection === $connection->getName() && 1 === $transaction->level
+        );
+        if (null === $transaction) {
+            throw new FreeformException('Submission incremental ID allocation requires an active transaction.');
+        }
+
+        if (!$mutex->acquire($lock, 30)) {
+            throw new FreeformException('Could not acquire the submission incremental ID lock.');
+        }
+
+        // afterSave() runs before Craft commits its element-save transaction.
+        // Releasing here would let another request allocate an uncommitted ID.
+        // Register on Laravel's root transaction: Craft 6 saves elements through
+        // native transactions, which do not emit the Yii adapter's DB events.
+        $release = static fn () => $mutex->release($lock);
+        $transaction->addCallback($release);
+        $transaction->addCallbackForRollback($release);
+    }
+
     private function getNewIncrementalId(): int
     {
-        $maxIncrementalId = (int) (new Query())
-            ->select(['MAX([[incrementalId]])'])
-            ->from(self::TABLE)
-            ->scalar()
-        ;
+        $db = \Craft::$app->getDb();
 
-        return ++$maxIncrementalId;
+        // A locking read sees the latest committed ID even when MySQL's outer
+        // transaction established a repeatable-read snapshot before the lock.
+        $maxIncrementalId = $db->useMaster(static fn () => $db->createCommand(
+            'SELECT [[incrementalId]] FROM '.self::TABLE.' ORDER BY [[incrementalId]] DESC LIMIT 1 FOR UPDATE'
+        )->queryScalar());
+
+        return (int) $maxIncrementalId + 1;
     }
 }

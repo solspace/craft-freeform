@@ -4,11 +4,12 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use craft\gql\base\InterfaceType as BaseInterfaceType;
 use craft\gql\GqlEntityRegistry;
+use CraftCms\Cms\Gql\Contracts\SingularTypeInterface;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 
-abstract class AbstractInterface extends BaseInterfaceType
+abstract class AbstractInterface extends BaseInterfaceType implements SingularTypeInterface
 {
     abstract public static function getTypeClass(): string;
 

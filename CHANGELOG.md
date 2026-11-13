@@ -14,6 +14,7 @@
 - Hid unsupported inline editing on submission and spam indexes.
 
 ### Fixed
+- Fixed Freeform GraphQL schema generation failing Craft 6 type registration.
 - Fixed concurrent submissions failing when assigned the same incremental ID. ([#2711](https://github.com/solspace/craft-freeform/issues/2711))
 - Fixed builder startup, history navigation, slideouts, preview isolation, and notification template naming.
 - Restored submission field values and custom columns, and fixed spam filtering, exports, notifications, and status controls.

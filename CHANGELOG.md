@@ -1,25 +1,17 @@
 # Solspace Freeform Changelog
 
-## Unreleased
-
-### Security
-- Fixed SQL injection through the GraphQL form queries' `orderBy` argument by restricting ordering to supported form and site columns. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
-
-### Added
-- Ported Freeform 5.18.2 features and content integrations to Craft 6.
+## 6.0.0-beta.6 - 2026-11-13
 
 ### Changed
 - Requires Craft 6.0.0-beta.1 or later.
 - Updated control panel layouts, navigation, controls, and themes to match native Craft 6.
-- Hid unsupported inline editing on submission and spam indexes.
 
 ### Fixed
-- Fixed Freeform GraphQL schema generation failing Craft 6 type registration.
-- Fixed concurrent submissions failing when assigned the same incremental ID. ([#2711](https://github.com/solspace/craft-freeform/issues/2711))
+- Fixed GraphQL schema generation under Craft 6's type registration API.
 - Fixed builder startup, history navigation, slideouts, preview isolation, and notification template naming.
 - Restored submission field values and custom columns, and fixed spam filtering, exports, notifications, and status controls.
 - Fixed compatibility issues in settings, integrations, permissions, and migrations, including the plugin Settings link.
-- Fixed Forms dashboard loading, Quick setup restrictions, and Demo Templates warnings.
+- Fixed Forms dashboard and widget loading in Craft 6.
 
 ## 6.0.0-beta.5 - 2026-10-27
 
@@ -58,6 +50,14 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.18.3 - 2026-11-13
+
+### Fixed
+- Fixed concurrent submissions failing when assigned the same incremental ID.
+
+### Security
+- Fixed SQL injection through the GraphQL form queries' `orderBy` argument by restricting ordering to supported form and site columns. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
 
 ## 5.18.2 - 2026-11-11
 

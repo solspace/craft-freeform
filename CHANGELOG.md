@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed concurrent submissions failing when assigned the same incremental ID. ([#2711](https://github.com/solspace/craft-freeform/issues/2711))
+
 ## 5.18.2 - 2026-11-11
 
 ### Added

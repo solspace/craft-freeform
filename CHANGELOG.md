@@ -5,6 +5,12 @@
 ### Added
 - Added an **Activity Log** navigation badge showing the total unresolved errors and system warnings, independently of the Plugin Badge setting. The count refreshes in the background and when returning to the tab.
 
+### Fixed
+- Fixed the Activity Log's **Resolved** status colors in dark mode.
+
+### Changed
+- Softened resolved Activity Log entries while retaining their original severity, and moved resolution actions into the event header with a more prominent **Mark resolved** button.
+
 ## 5.18.3 - 2026-11-13
 
 ### Fixed

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\DataObjects\FormModal;
 
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
@@ -15,6 +16,8 @@ class CreateFormModal
     #[Input\Text('Form Name')]
     private string $name = '';
 
+    #[Limitation('settings.tab.general.type')]
+    #[DefaultValue('settings.general.formType')]
     #[Input\Select(label: 'Form Type', options: FormTypeOptions::class)]
     private string $type = Regular::class;
 

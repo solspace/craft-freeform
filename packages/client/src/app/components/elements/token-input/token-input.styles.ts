@@ -6,7 +6,7 @@ export const TokenPillStyles = css`
     --placeholder-color: var(--light-text-color);
     --placeholder-color-focus: var(--light-text-color);
     --tag-bg: light-dark(var(--bg-selection-light, #e8f0fc), var(--bg-selection-light));
-    --tag-hover: light-dark(var(--bg-selection-dark, #d8e7fb), var(--ui-control-hover-bg-color));
+    --tag-hover: light-dark(color-mix(in srgb, var(--bg-selection-light, #e8f0fc), var(--text-color, #3f4d5a) 10%), var(--ui-control-hover-bg-color));
     --tag-text-color: var(--text-color, #30689f);
     --tag-remove-bg: var(--ui-control-bg-color, #cfdef1);
     --tag-remove-btn-color: light-dark(var(--text-color, #30689f), var(--light-text-color));

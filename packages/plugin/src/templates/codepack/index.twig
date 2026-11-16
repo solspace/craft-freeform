@@ -89,6 +89,7 @@
                 </div>
                 <p id="demo-prefix-error" data-prefix-error class="error" hidden>{{ "Enter a folder name using letters, numbers, hyphens, underscores, or dots. Start with a letter or number."|t('freeform') }}</p>
                 <div class="pane warning freeform-demo-note" data-existing-templates role="note" {{ not templatesExist ? 'hidden' }}>
+                    <svg class="freeform-demo-note-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m10.3 3.9-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3.1l-8-14a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4m0 4h.01"/></svg>
                     <p><strong>{{ "Folder already exists."|t('freeform') }}</strong> {{ "Installing here may overwrite existing files. Choose a different folder or back up its contents first."|t('freeform') }}</p>
                 </div>
                 <div class="freeform-demo-check-status" role="status" aria-live="polite" hidden>

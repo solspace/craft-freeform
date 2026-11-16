@@ -1,5 +1,5 @@
 import translate from "@ff-client/utils/translations";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 
@@ -40,10 +40,18 @@ export const WidgetFrame = ({
 }: {
   src: string;
   title: string;
-  onHealthReady?: (ready: boolean) => void;
+  onHealthReady?: (ready: boolean | null) => void;
 }) => {
   const [loaded, setLoaded] = useState(false);
   const frameRef = useRef<HTMLIFrameElement>(null);
+  const healthTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const reportHealthReady = useCallback(
+    (ready: boolean) => {
+      clearTimeout(healthTimeout.current);
+      onHealthReady?.(ready);
+    },
+    [onHealthReady],
+  );
   useEffect(() => {
     // A widget can be ready before its window load event (for example while a
     // third-party asset is pending). Only accept messages from this frame.
@@ -55,15 +63,23 @@ export const WidgetFrame = ({
       )
         return;
       setLoaded(true);
-      onHealthReady?.(event.data.healthReady === true);
+      reportHealthReady(event.data.healthReady === true);
     };
     window.addEventListener("message", receive);
     return () => window.removeEventListener("message", receive);
-  }, [onHealthReady]);
+  }, [reportHealthReady]);
   useEffect(() => {
-    onHealthReady?.(false);
-    return () => onHealthReady?.(false);
-  }, [onHealthReady]);
+    // Hide the fallback while this frame is pending, but restore it if the
+    // request fails or stalls. Null distinguishes loading from failure.
+    onHealthReady?.(null);
+    if (onHealthReady) {
+      healthTimeout.current = setTimeout(() => reportHealthReady(false), 15000);
+    }
+    return () => {
+      clearTimeout(healthTimeout.current);
+      onHealthReady?.(null);
+    };
+  }, [onHealthReady, reportHealthReady]);
   return (
     <Content aria-busy={!loaded}>
       {!loaded && (
@@ -98,17 +114,17 @@ export const WidgetFrame = ({
           setLoaded(true);
           if (onHealthReady) {
             try {
-              onHealthReady(
+              reportHealthReady(
                 !!event.currentTarget.contentDocument?.querySelector(
                   '[data-freeform-health-ready="true"]',
                 ),
               );
             } catch {
-              onHealthReady(false);
+              reportHealthReady(false);
             }
           }
         }}
-        onError={() => onHealthReady?.(false)}
+        onError={() => reportHealthReady(false)}
       />
     </Content>
   );

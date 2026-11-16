@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Tests\Elements;
 
+use craft\behaviors\CustomFieldBehavior;
 use craft\db\Connection;
 use craft\db\Query;
 use craft\elements\User;
@@ -15,6 +16,8 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Tests\Fixtures\CustomFieldQueryBehavior;
+use yii\di\Container;
 
 #[CoversClass(SubmissionQuery::class)]
 #[CoversClass(Submission::class)]
@@ -22,17 +25,23 @@ class SubmissionReadPermissionsTest extends TestCase
 {
     private mixed $previousApp;
     private mixed $previousYiiApp;
+    private Container $previousContainer;
 
     protected function setUp(): void
     {
         $this->previousApp = \Craft::$app;
         $this->previousYiiApp = \Yii::$app;
+        $this->previousContainer = \Yii::$container;
+        \Yii::$container = new Container([
+            'definitions' => [CustomFieldBehavior::class => CustomFieldQueryBehavior::class],
+        ]);
     }
 
     protected function tearDown(): void
     {
         \Craft::$app = $this->previousApp;
         \Yii::$app = $this->previousYiiApp;
+        \Yii::$container = $this->previousContainer;
     }
 
     #[DataProvider('elementPermissions')]

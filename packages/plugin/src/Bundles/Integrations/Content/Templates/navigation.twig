@@ -1,0 +1,12 @@
+{# An accessible disclosure example; include from your Navigation node loop. #}
+{% set selectedForm = craft.freeform.formFromLink(node) %}
+{% if selectedForm %}
+    <details>
+        <summary>{{ node.title }}</summary>
+        {% include 'freeform-integrations/_form' with {
+            selectedForm: selectedForm,
+            instanceId: 'navigation-' ~ node.uid,
+            renderProperties: renderProperties ?? {},
+        } only %}
+    </details>
+{% endif %}

@@ -15,8 +15,13 @@
 {% if not health.available %}
     <p class="ff-health-unavailable" role="status">{{ 'Activity could not be loaded. Refresh to try again.'|t('freeform') }}</p>
 {% elseif health.style == 'none' %}
-    <p class="ff-health-unavailable">{{ 'Logging is turned off.'|t('freeform') }}</p>
-    <p class="light">{{ 'No new events are being recorded.'|t('freeform') }}</p>
+    <div class="ff-health-logging-off">
+        <p>{{ 'Logging is turned off.'|t('freeform') }}</p>
+        <p class="light">{{ 'No new events are being recorded.'|t('freeform') }}</p>
+        {% if health.settingsUrl %}
+            <a class="btn ff-health-enable-logging" href="{{ health.settingsUrl }}" target="_top">{{ 'Enable logging'|t('freeform') }}</a>
+        {% endif %}
+    </div>
 {% else %}
     {% set hasIssues = health.errors or health.warnings %}
     <div class="ff-health-counts" data-clear="{{ hasIssues ? 'false' : 'true' }}">

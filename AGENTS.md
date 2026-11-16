@@ -6,6 +6,7 @@
 - Use `feat/v5.19` for the page builder: Page forms, Content/Layout/Components pickers, Component Design, Builder Templates, and inserting Form Starters. These features are intentionally excluded from `feat/v5.18`.
 - When starting Freeform 5.19 work, remind Kelsey to confirm whether to end Craft 4 support. This is a proposed 5.19 decision; preserve Craft 4 support for 5.18 and do not drop it without confirmation.
 - Use `craft5.test` for Freeform 5.18 database changes and workflow checks, and `craft5install.test` for 5.19/page-builder checks.
+- Keep `craft5.test`'s Freeform Composer path repository symlinked to `/Users/kmartens/Repos/craft-freeform` so testing follows that checkout's active branch and uncommitted changes, including branch switches in Tower.
 - Reserve `craft5upgrade.test` for released 5.17 fixes. It uses the released Composer package, not a development checkout.
 - Maintain only two temporary development checkouts during the 5.18 release split. After 5.18 ships, prefer the released package on `craft5.test` and keep the 5.19 checkout for ongoing work.
 

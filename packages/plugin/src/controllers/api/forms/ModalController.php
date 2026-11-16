@@ -3,7 +3,10 @@
 namespace Solspace\Freeform\controllers\api\forms;
 
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
+use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\controllers\BaseApiController;
@@ -23,13 +26,22 @@ class ModalController extends BaseApiController
         $config,
         private PropertyProvider $propertyProvider,
         private FormTransformer $formTransformer,
+        private LimitedUserChecker $checker,
+        private DefaultsProvider $defaults,
     ) {
         parent::__construct($id, $module, $config);
     }
 
     protected function get(): array|object
     {
-        return $this->propertyProvider->getEditableProperties(CreateFormModal::class);
+        $properties = $this->propertyProvider->getEditableProperties(CreateFormModal::class);
+        $type = $properties->get('type');
+        $type->value = $type->value ?: Regular::class;
+
+        return array_values(array_filter(
+            $properties->getProperties(),
+            static fn (Property $property) => $property->visible,
+        ));
     }
 
     protected function post(int|string|null $id = null): array|object|null
@@ -38,10 +50,12 @@ class ModalController extends BaseApiController
 
         $data = json_decode($this->request->getRawBody(), false);
         $data->uid = StringHelper::UUID();
+        $defaultType = $this->defaults->getValue('settings.general.formType') ?: Regular::class;
         if (!isset($data->type)) {
-            $data->type = Regular::class;
+            $data->type = $defaultType;
         }
-        if (!\is_string($data->type) || !\in_array($data->type, array_column(Freeform::getInstance()->formTypes->getTypes(), 'class'), true)) {
+        if (!\is_string($data->type) || !\in_array($data->type, array_column(Freeform::getInstance()->formTypes->getTypes(), 'class'), true)
+            || ($defaultType !== $data->type && ($this->defaults->isLocked('settings.general.formType') || !$this->checker->can('settings.tab.general.type')))) {
             $this->response->statusCode = 400;
 
             return ['message' => Freeform::t('Choose an available form type.')];

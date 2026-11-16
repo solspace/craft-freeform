@@ -1,4 +1,5 @@
 import { css } from "styled-components";
+import { colors } from "../variables";
 
 export const TableCell = css`
   .table-cell-preview {
@@ -80,24 +81,24 @@ export const TableCell = css`
         & th {
           border-left: 0 !important;
           border-right: 0 !important;
-          color: #596673 !important;
+          color: light-dark(#596673, ${colors.muted}) !important;
           font-weight: 400 !important;
           padding: 6px 10px !important;
-          background-color: #f3f7fc !important;
-          border-top: 1px solid rgba(96, 125, 159, 0.25) !important;
-          border-bottom: 1px solid rgba(51, 64, 77, 0.1) !important;
+          background-color: light-dark(#f3f7fc, ${colors.secondarySurface}) !important;
+          border-top: 1px solid ${colors.inputBorder} !important;
+          border-bottom: 1px solid ${colors.hairline} !important;
         }
 
         & th:first-child {
           border-top-left-radius: 5px !important;
           border-bottom-left-radius: 0 !important;
-          border-left: 1px solid rgba(96, 125, 159, 0.25) !important;
+          border-left: 1px solid ${colors.inputBorder} !important;
         }
 
         & th:last-child {
           border-top-right-radius: 5px !important;
           border-bottom-right-radius: 0 !important;
-          border-right: 1px solid rgba(96, 125, 159, 0.25) !important;
+          border-right: 1px solid ${colors.inputBorder} !important;
         }
       }
     }
@@ -109,27 +110,27 @@ export const TableCell = css`
           border-top: 0 !important;
           border-left: 0 !important;
           border-radius: 0 !important;
-          background-color: white !important;
-          border-right: 1px solid rgba(51, 64, 77, 0.1) !important;
-          border-bottom: 1px solid rgba(51, 64, 77, 0.1) !important;
+          background-color: light-dark(white, ${colors.surface}) !important;
+          border-right: 1px solid ${colors.hairline} !important;
+          border-bottom: 1px solid ${colors.hairline} !important;
 
           &:hover {
-            background-color: white !important;
+            background-color: light-dark(white, ${colors.surface}) !important;
           }
         }
 
         & td:first-child {
-          border-left: 1px solid rgba(96, 125, 159, 0.25) !important;
+          border-left: 1px solid ${colors.inputBorder} !important;
         }
 
         & td:last-child {
-          border-right: 1px solid rgba(96, 125, 159, 0.25) !important;
+          border-right: 1px solid ${colors.inputBorder} !important;
         }
       }
 
       & tr:last-child {
         & td {
-          border-bottom: 1px solid rgba(96, 125, 159, 0.25) !important;
+          border-bottom: 1px solid ${colors.inputBorder} !important;
         }
 
         & td:first-child {

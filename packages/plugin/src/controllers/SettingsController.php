@@ -25,6 +25,8 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\DefaultViewHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Library\Integrations\ExternalIntegrations;
+use Solspace\Freeform\Library\Integrations\IntegrationIconsAsset;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -294,6 +296,14 @@ class SettingsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $section = \Craft::$app->request->getSegment(3);
+        if (\in_array($section, ['content-integrations', 'external-integrations'], true)
+            && version_compare(\Craft::$app->getVersion(), '5.0', '<')) {
+            return $this->redirect(UrlHelper::cpUrl('freeform/settings/general'));
+        }
+
+        if ('external-integrations' === $section) {
+            return $this->redirect(UrlHelper::cpUrl('freeform/settings/content-integrations'));
+        }
 
         $formattingTemplateList = [];
         if ($this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
@@ -319,6 +329,15 @@ class SettingsController extends BaseController
 
         $this->view->registerAssetBundle(CodepackBundle::class);
         $this->view->registerAssetBundle(SettingsBundle::class);
+        $integrationIcons = 'content-integrations' === $section
+            ? $this->view->registerAssetBundle(IntegrationIconsAsset::class)
+            : null;
+        $integrationIconUrls = [];
+        if ($integrationIcons) {
+            foreach (array_keys(ExternalIntegrations::DEFINITIONS + ExternalIntegrations::FIELD_CONTAINERS) as $id) {
+                $integrationIconUrls[$id] = $this->view->getAssetManager()->getAssetUrl($integrationIcons, 'plugins/'.$id.'.svg', true);
+            }
+        }
 
         return $this->renderTemplate(
             'freeform/settings/'.($section ? '_'.(string) $section : ''),
@@ -331,6 +350,11 @@ class SettingsController extends BaseController
                 'emailTemplateSamples' => MessageTemplateSamples::options('email'),
                 'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
+                'externalIntegrations' => 'content-integrations' === $section ? (new ExternalIntegrations())->getCatalog() : [],
+                'contentFieldContainers' => 'content-integrations' === $section ? (new ExternalIntegrations())->getFieldContainers() : [],
+                'contentFieldContainerGuideUrl' => 'https://github.com/solspace/craft-freeform/blob/v5/packages/plugin/src/Library/Integrations/README.md#matrix-neo-and-content-block-fields',
+                'externalIntegrationIconUrls' => $integrationIconUrls,
+                'externalIntegrationDefaultIconSvg' => 'content-integrations' === $section ? (new ExternalIntegrations())->getDefaultIconSvg() : '',
             ]
         );
     }

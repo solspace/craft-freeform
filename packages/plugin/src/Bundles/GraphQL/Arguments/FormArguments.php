@@ -38,7 +38,7 @@ class FormArguments extends Arguments
             'orderBy' => [
                 'name' => 'orderBy',
                 'type' => Type::string(),
-                'description' => 'Order forms by a specific property',
+                'description' => 'Order forms by a supported form or site column (e.g. name, forms.dateCreated, sites.handle). SQL expressions are not supported.',
             ],
             'sort' => [
                 'name' => 'sort',

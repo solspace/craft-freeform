@@ -5,9 +5,9 @@ import { useAppDispatch, useAppStore } from "@editor/store";
 import { fieldThunks } from "@editor/store/thunks/fields";
 import { canPlaceField } from "@editor/store/thunks/fields/containers";
 import type { RefObject } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ConnectDropTarget } from "react-dnd";
-import { useDrop } from "react-dnd";
+import { useDragDropManager, useDrop } from "react-dnd";
 import { sectionDragPresentation } from "../field/section-drag";
 import { isInsideContainer, rowInsertionIndex } from "./row-placement";
 
@@ -44,8 +44,21 @@ export const useRowFieldDrop = (
 ): FieldDropHook => {
   const dispatch = useAppDispatch();
   const store = useAppStore();
+  const manager = useDragDropManager();
   const [fieldWidth, setFieldWidth] = useState<number>();
   const [hoverPosition, setHoverPosition] = useState<number>();
+
+  const getPosition = useCallback(
+    (item: DragItem, offset: { x: number; y: number } | null) => {
+      if (!item || !offset || !wrapperRef.current) return undefined;
+      const bounds = wrapperRef.current.getBoundingClientRect();
+      if (bounds.width <= 0) return undefined;
+      const sameRow = item.type === Drag.Field && item.data.rowUid === row.uid;
+      const count = fieldCount + (sameRow ? 0 : 1);
+      return rowInsertionIndex(offset.x, bounds.left, bounds.width, count);
+    },
+    [wrapperRef, row.uid, fieldCount],
+  );
 
   const [
     {
@@ -96,42 +109,11 @@ export const useRowFieldDrop = (
           return false;
         return canPlaceField(store.getState(), item.data, row.layoutUid);
       },
-      hover: (item, monitor) => {
-        if (width === undefined || !wrapperRef.current) {
-          return;
-        }
-
-        const isThisRow =
-          item.type === Drag.Field && item.data.rowUid === row.uid;
-
-        const count = fieldCount + (isThisRow ? 0 : 1);
-        if (count <= 1) {
-          return;
-        }
-
-        // Read the row's viewport x-position on demand (during an active drag)
-        // rather than storing it in state, which would cause re-renders on every
-        // scroll or resize and feed back into the ResizeObserver loop.
-        const offsetX = wrapperRef.current.getBoundingClientRect().x;
-        const offset = monitor.getClientOffset();
-        if (!offset) return;
-        const position = rowInsertionIndex(offset.x, offsetX, width, count);
-        if (hoverPosition !== position) {
-          setHoverPosition(position);
-        }
-      },
       drop: (item, monitor) => {
-        // A fast drop can precede the React render that updates hoverPosition.
-        // Resolve the final pointer position here instead of using stale state.
-        const point = monitor.getClientOffset();
-        const bounds = wrapperRef.current?.getBoundingClientRect();
-        const count =
-          fieldCount +
-          (item.type === Drag.Field && item.data.rowUid === row.uid ? 0 : 1);
-        const position =
-          point && bounds
-            ? rowInsertionIndex(point.x, bounds.left, bounds.width, count)
-            : (hoverPosition ?? Math.max(0, count - 1));
+        // The native backend hovers and drops in one event. React may not have
+        // rendered that last hover, so resolve the release coordinates directly.
+        const position = getPosition(item, monitor.getClientOffset());
+        if (position === undefined) return;
         if (item.type === Drag.Field) {
           dispatch(
             fieldThunks.move.existingField.existingRow(
@@ -153,8 +135,25 @@ export const useRowFieldDrop = (
         setHoverPosition(undefined);
       },
     },
-    [wrapperRef, row, fieldCount, hoverPosition, width],
+    [row, getPosition, store],
   );
+
+  useEffect(() => {
+    if (!isOver) {
+      setHoverPosition(undefined);
+      return;
+    }
+    const monitor = manager.getMonitor();
+    const updatePosition = () => {
+      setHoverPosition(
+        getPosition(monitor.getItem<DragItem>(), monitor.getClientOffset()),
+      );
+    };
+    // hover() runs before React DnD publishes the new pointer offset. Subscribe
+    // to the committed offset, only while this row is the active drop target.
+    updatePosition();
+    return monitor.subscribeToOffsetChange(updatePosition);
+  }, [manager, isOver, getPosition]);
 
   useEffect(() => {
     let count = fieldCount;

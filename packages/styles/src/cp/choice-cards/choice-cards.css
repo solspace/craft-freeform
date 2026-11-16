@@ -83,8 +83,15 @@
   outline-offset: 3px;
 }
 .ff-choice-card:has(input:disabled) {
-  cursor: default;
   opacity: 0.55;
+}
+:is(.ff-choice-card, .ff-settings-choice):has(input:disabled),
+:is(.ff-choice-card, .ff-settings-choice):has(input:disabled) * {
+  cursor: not-allowed;
+}
+:root[data-dark-mode="dark"]
+  :is(.ff-choice-card, .ff-settings-choice):has(input:disabled) {
+  opacity: 0.4;
 }
 .ff-choice-card input {
   position: absolute;

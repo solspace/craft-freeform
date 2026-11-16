@@ -22,9 +22,15 @@ class m261028_120000_AddActivityLog extends Migration
         }
 
         // Upgrade only. Fresh installs use the model's Standard default and Install's table definition.
-        $config = \Craft::$app->getProjectConfig();
-        if (null === $config->get('plugins.freeform.settings.activityMode')) {
-            $config->set('plugins.freeform.settings.activityMode', 'minimal', 'Default upgraded Freeform installations to minimal activity logging.');
+        $projectConfig = \Craft::$app->projectConfig;
+        // Migrations run before deployed YAML is applied. Leave incoming settings intact.
+        $schemaVersion = $projectConfig->get('plugins.freeform.schemaVersion', true);
+        if ($projectConfig->readOnly || (null !== $schemaVersion && version_compare($schemaVersion, '5.18.0', '>='))) {
+            return true;
+        }
+
+        if (null === $projectConfig->get('plugins.freeform.settings.activityMode')) {
+            $projectConfig->set('plugins.freeform.settings.activityMode', 'minimal', 'Default upgraded Freeform installations to minimal activity logging.');
         }
 
         return true;

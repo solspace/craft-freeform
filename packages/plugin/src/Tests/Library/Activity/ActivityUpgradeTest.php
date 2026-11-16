@@ -18,11 +18,13 @@ class ActivityUpgradeTest extends TestCase
     public function testUpgradeDefaultsToMinimalWithoutReplacingAnExplicitChoice(?string $configured, string $expected): void
     {
         $config = new class($configured) {
+            public bool $readOnly = false;
+
             public function __construct(public ?string $mode) {}
 
-            public function get(string $path): ?string
+            public function get(string $path, bool $getFromExternalConfig = false): ?string
             {
-                return $this->mode;
+                return 'plugins.freeform.settings.activityMode' === $path ? $this->mode : null;
             }
 
             public function set(string $path, string $value, string $message): void
@@ -32,11 +34,11 @@ class ActivityUpgradeTest extends TestCase
         };
         $previous = \Craft::$app;
         \Craft::$app = new class($config) {
-            public function __construct(private object $config) {}
+            public function __construct(public object $projectConfig) {}
 
             public function getProjectConfig(): object
             {
-                return $this->config;
+                return $this->projectConfig;
             }
         };
 

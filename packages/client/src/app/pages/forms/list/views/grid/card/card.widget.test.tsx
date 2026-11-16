@@ -43,6 +43,7 @@ beforeEach(() => {
 });
 afterEach(async () => {
   await act(async () => root.unmount());
+  vi.useRealTimers();
   host.remove();
   vi.unstubAllGlobals();
 });
@@ -121,7 +122,7 @@ it("releases the placeholder when the browser finishes a document whose contents
   expect(host.querySelector("[role=status]")).toBeNull();
 });
 
-it("only replaces the banner after a successful health document and releases it on failure or changed settings", async () => {
+it("reports loading separately from health document success and failure, resetting for changed settings", async () => {
   const health = {
     ...widget,
     uid: "health",
@@ -129,15 +130,30 @@ it("only replaces the banner after a successful health document and releases it 
     replacesBanner: true,
   };
   await render(health);
-  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", null);
   await load(frame(), "https://craft.test/widget", true);
   expect(healthReady).toHaveBeenLastCalledWith("1:health:first", true);
   await load(frame(), "https://craft.test/error", false);
   expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
   await load(frame(), "https://craft.test/widget", true);
   await render({ ...health, revision: "updated" });
-  expect(healthReady).toHaveBeenCalledWith("1:health:first", false);
-  expect(healthReady).toHaveBeenLastCalledWith("1:health:updated", false);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:updated", null);
+});
+
+it("restores the fallback when a health frame stalls, and cancels the timeout after success", async () => {
+  vi.useFakeTimers();
+  const health = { ...widget, uid: "health", type: "activity-health" };
+  await render(health);
+  await act(async () => vi.advanceTimersByTime(14999));
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", null);
+  await act(async () => vi.advanceTimersByTime(1));
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", false);
+  await load(frame(), "https://craft.test/widget", true);
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:first", true);
+  await render({ ...health, revision: "updated" });
+  await load(frame(), "https://craft.test/updated", true);
+  await act(async () => vi.advanceTimersByTime(15000));
+  expect(healthReady).toHaveBeenLastCalledWith("1:health:updated", true);
 });
 
 it("shows a ready health frame before load completes and ignores other frames and origins", async () => {

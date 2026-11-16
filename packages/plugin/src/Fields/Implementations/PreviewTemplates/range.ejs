@@ -8,7 +8,7 @@ const aligned = lower + steps * increment;
 const current = Number.isFinite(aligned) ? Number(aligned.toPrecision(14)) : lower;
 %>
 <div style="padding: 8px 0;">
-  <input type="range" min="<%- lower %>" max="<%- upper %>" step="<%- increment %>" value="<%- current %>" style="width: 100%; padding: 0; border: 0; background: transparent; appearance: auto;" />
+  <input class="ff-range-preview" type="range" min="<%- lower %>" max="<%- upper %>" step="<%- increment %>" value="<%- current %>" style="width: 100%; padding: 0; border: 0; background: transparent;" />
   <div style="display: flex; justify-content: space-between; font-size: 12px;">
     <span><%- lower %></span><strong><%- current %></strong><span><%- upper %></span>
   </div>

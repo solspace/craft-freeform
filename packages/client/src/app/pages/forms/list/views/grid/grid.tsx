@@ -47,14 +47,15 @@ export const FormGrid: React.FC<
   const sizing = useCardSizing();
   const range = useCardRange(data?.cardRange);
   const widgets = useDashboardWidgets();
-  const [readyHealthWidgets, setReadyHealthWidgets] = useState<Set<string>>(
+  const [failedHealthWidgets, setFailedHealthWidgets] = useState<Set<string>>(
     () => new Set(),
   );
-  const onHealthReady = useCallback((key: string, ready: boolean) => {
-    setReadyHealthWidgets((previous) => {
-      if (previous.has(key) === ready) return previous;
+  const onHealthReady = useCallback((key: string, ready: boolean | null) => {
+    setFailedHealthWidgets((previous) => {
+      const failed = ready === false;
+      if (previous.has(key) === failed) return previous;
       const next = new Set(previous);
-      if (ready) next.add(key);
+      if (failed) next.add(key);
       else next.delete(key);
       return next;
     });
@@ -164,12 +165,17 @@ export const FormGrid: React.FC<
     <ContentContainer>
       <div id="content" className="content-pane">
         <Notices
-          hideLogAlert={hasVisibleHealthWidget(
-            widgets.items,
-            widgets.siteId,
-            readyHealthWidgets,
-            isProEdition && !isSearching && !widgets.isError,
-          )}
+          hideLogAlert={
+            isProEdition &&
+            !isSearching &&
+            ((!widgets.data && !widgets.isError) ||
+              hasVisibleHealthWidget(
+                widgets.items,
+                widgets.siteId,
+                failedHealthWidgets,
+                !widgets.isError,
+              ))
+          }
         />
 
         <Wrapper>

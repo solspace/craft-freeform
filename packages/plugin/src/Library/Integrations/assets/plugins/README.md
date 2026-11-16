@@ -1,0 +1,3 @@
+Plugin logos identify their respective integrations. Original SVG artwork is bundled unchanged from the installed official packages: CKEditor 5.9.0 (craftcms/ckeditor), Vizy 4.0.3 (verbb/vizy), Navigation 4.1.0 (verbb/navigation), Hyper 3.0.5 (verbb/hyper), Linkit 5.0.0 (presseddigital/linkit). Craft Link uses the native Craft CMS 5.12.0.1 Link field icon on a Craft-red square. Each logo belongs to its respective owner. These images remain available when the optional plugin is not installed.
+
+Neo uses its official color logo from spicyweb/craft-neo 5.5.13. Matrix and Content Block use their native Craft CMS 5.12.0.1 field icons on Craft-red squares.

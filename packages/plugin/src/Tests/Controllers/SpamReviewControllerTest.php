@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Tests\Controllers;
 
+use craft\behaviors\CustomFieldBehavior;
 use craft\web\Request;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -11,6 +12,8 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\SubmissionUndoService;
+use Solspace\Freeform\Tests\Fixtures\CustomFieldQueryBehavior;
+use yii\di\Container;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -20,6 +23,21 @@ use yii\web\Response;
 #[CoversClass(SpamSubmissionsController::class)]
 class SpamReviewControllerTest extends TestCase
 {
+    private Container $previousContainer;
+
+    protected function setUp(): void
+    {
+        $this->previousContainer = \Yii::$container;
+        \Yii::$container = new Container([
+            'definitions' => [CustomFieldBehavior::class => CustomFieldQueryBehavior::class],
+        ]);
+    }
+
+    protected function tearDown(): void
+    {
+        \Yii::$container = $this->previousContainer;
+    }
+
     public function testApprovalUsesTheExistingWorkflowWithoutReplacingFieldValues(): void
     {
         [$controller, $service, $submission] = $this->fixture();

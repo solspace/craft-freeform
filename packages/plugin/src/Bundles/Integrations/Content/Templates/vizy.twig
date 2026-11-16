@@ -1,0 +1,8 @@
+{# Vizy 4 supplies `block`; Vizy 3 templates receive fields and attrs directly. #}
+{% set fieldHandle = freeformFieldHandle ?? 'freeformForm' %}
+{% set selectedForm = block is defined ? (attribute(block, fieldHandle) ?? null) : (attribute(_context, fieldHandle) ?? null) %}
+{% include 'freeform-integrations/_form' with {
+    selectedForm: selectedForm,
+    instanceId: 'vizy-' ~ (block.uid ?? attrs.id ?? ''),
+    renderProperties: renderProperties ?? {},
+} only %}

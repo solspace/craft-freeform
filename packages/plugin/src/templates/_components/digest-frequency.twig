@@ -8,13 +8,13 @@
     <div class="ff-digest-schedule" data-digest-schedule data-summary-daily="{{ 'Every morning'|t('freeform') }}" data-summary-weekly="{{ 'Every {day} morning'|t('freeform') }}">
         <div data-digest-controls hidden>
             <div class="ff-digest-row">
-                <div class="btngroup btngroup--exclusive ff-digest-frequency" role="group" aria-label="{{ 'Frequency'|t('freeform') }}">
+                <div class="btngroup btngroup--exclusive ff-digest-frequency{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ 'Frequency'|t('freeform') }}">
                     <button type="button" class="btn" data-digest-mode="daily" {{ readOnly ? 'disabled' }}>{{ 'Daily'|t('freeform') }}</button>
                     <button type="button" class="btn" data-digest-mode="weekly" {{ readOnly ? 'disabled' }}>{{ 'Weekly'|t('freeform') }}</button>
                 </div>
                 <div class="ff-digest-weekly" data-digest-weekly>
                     <span class="light">{{ 'Send on'|t('freeform') }}</span>
-                    <div class="btngroup btngroup--exclusive ff-digest-weekdays" role="group" aria-label="{{ 'Day of the week'|t('freeform') }}">
+                    <div class="btngroup btngroup--exclusive ff-digest-weekdays{{ readOnly ? ' disabled' }}" role="group" aria-label="{{ 'Day of the week'|t('freeform') }}">
                         {% for day, weekday in weekdays %}
                             <button type="button" class="btn" data-digest-day="{{ day }}" data-day-name="{{ weekday.name|t('freeform') }}" aria-label="{{ weekday.name|t('freeform') }}" {{ readOnly ? 'disabled' }}>{{ weekday.short|t('freeform') }}</button>
                         {% endfor %}

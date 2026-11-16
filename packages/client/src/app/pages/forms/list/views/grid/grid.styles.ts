@@ -15,7 +15,7 @@ export const CardWrapper = styled.div<{ $dragging?: boolean }>`
   ${({ $dragging }) =>
     $dragging &&
     `
-    [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: var(--bg-selection-light, #f6faff); }
+    [data-form-group] { outline: 1px dashed #a6c8ee; outline-offset: 8px; background: light-dark(#f6faff, var(--bg-selection-light, #f6faff)); }
     iframe { pointer-events: none; }
   `}
 `;

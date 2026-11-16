@@ -50,6 +50,27 @@ class FormsService extends BaseService implements FormHandlerInterface
 {
     private const FALLBACK_TEMPLATE = 'flexbox/index.twig';
 
+    private const RESOLVED_FORM_ORDER_COLUMNS = [
+        'forms.id',
+        'forms.uid',
+        'forms.type',
+        'forms.name',
+        'forms.handle',
+        'forms.order',
+        'forms.metadata',
+        'forms.spamBlockCount',
+        'forms.createdByUserId',
+        'forms.dateCreated',
+        'forms.updatedByUserId',
+        'forms.dateUpdated',
+        'forms.dateArchived',
+        'sites.id',
+        'sites.uid',
+        'sites.handle',
+        'sites.name',
+        'sites.sortOrder',
+    ];
+
     private const CACHE_PREFIX_BY_ID = 'by-id';
     private const CACHE_PREFIX_BY_HANDLE = 'by-handle';
     private const CACHE_PREFIX_ALL_FORMS = 'all-forms';
@@ -98,6 +119,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         $sort = 'desc' === $sort ? \SORT_DESC : \SORT_ASC;
 
         $orderBy = $arguments['orderBy'] ?? 'order';
+        if (\is_string($orderBy) && !str_contains($orderBy, '.')) {
+            $orderBy = 'forms.'.$orderBy;
+        }
+
+        // Query builders may treat column names containing parentheses as raw SQL.
+        if (!\in_array($orderBy, self::RESOLVED_FORM_ORDER_COLUMNS, true)) {
+            throw new \InvalidArgumentException('Invalid form orderBy property.');
+        }
 
         $offset = $arguments['offset'] ?? null;
 
@@ -143,10 +172,6 @@ class FormsService extends BaseService implements FormHandlerInterface
                 $key = "forms.{$key}";
             }
             $query->andWhere([$key => $value]);
-        }
-
-        if (!str_contains($orderBy, '.')) {
-            $orderBy = 'forms.'.$orderBy;
         }
 
         $query->orderBy([

@@ -52,10 +52,12 @@ export type DashboardWidget = {
 };
 export const healthWidgetKey = (widget: DashboardWidget, siteId: number) =>
   `${siteId}:${widget.uid}:${widget.revision ?? ""}`;
+// A visible replacement suppresses the banner while loading as well as once
+// ready. Only a confirmed failure (including a timeout) needs the fallback.
 export const hasVisibleHealthWidget = (
   items: DashboardWidget[],
   siteId: number | undefined,
-  ready: ReadonlySet<string>,
+  failed: ReadonlySet<string>,
   visible: boolean,
 ) =>
   visible &&
@@ -64,7 +66,7 @@ export const hasVisibleHealthWidget = (
     (widget) =>
       widget.type === "activity-health" &&
       widget.replacesBanner &&
-      ready.has(healthWidgetKey(widget, siteId)),
+      !failed.has(healthWidgetKey(widget, siteId)),
   );
 export type WidgetPlacement = Pick<
   DashboardWidget,

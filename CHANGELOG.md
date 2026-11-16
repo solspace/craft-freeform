@@ -12,10 +12,43 @@
 ### Fixed
 - Fixed placement, sizing, and rendering of nested layouts, content, and Form areas across the builder, front end, and submission views.
 
-## 5.18.1 - Unreleased
+## 5.18.3 - 2026-11-13
 
 ### Fixed
-- Fixed light-mode control colors, selected button states, and opaque card backgrounds in Craft 5.
+- Fixed concurrent submissions failing when assigned the same incremental ID.
+
+### Security
+- Fixed SQL injection through the GraphQL form queries' `orderBy` argument by restricting ordering to supported form and site columns. Credit to [riddhish-lichade](https://github.com/riddhish-lichade) for reporting.
+
+## 5.18.2 - 2026-11-11
+
+### Added
+- Added **Content Integrations** settings with plugin compatibility indicators, individual and bulk authoring controls, and a shared icon picker with ten suggested form icons (Craft 5 only).
+- Added opt-in **Freeform Form** toolbar controls for CKEditor 5.9+ and Vizy 4, with native editor blocks, static form previews, form selection, and frontend rendering (Craft 5 only).
+- Added **Freeform Form** nodes for Navigation 3 and 4, with template helpers and examples for rendering forms from menu nodes (Craft 5 only).
+- Added compatibility and edition information for Matrix, Neo 5, and native Content Block fields to Content Integrations (Craft 5 only), plus setup and rendering examples using the existing **Freeform Form** field.
+- Added an Enable logging button to the Activity & Health widget when logging is turned off and the user can edit logging settings.
+- Added Freeform form selection to native Link fields, Hyper 2 and 3, and Linkit 5, with a shared `craft.freeform.formFromLink()` Twig helper (Craft 5 only).
+
+### Changed
+- Softened embedded form block borders in CKEditor and Vizy to follow the control panel theme (Craft 5 only).
+- Refined Forms dashboard drop zone styling.
+
+### Fixed
+- Fixed warning colors, borders, and spacing in the Demo Templates installer.
+- Fixed compatible installed versions losing their checkmark when a content integration plugin is disabled (Craft 5 only).
+- Fixed the Activity Log banner briefly appearing while the Forms dashboard's Activity & Health widget loads.
+- Fixed Quick setup ignoring Limited Users Form Type restrictions and locked Form Builder defaults when displaying the selector and creating forms.
+
+## 5.18.1 - 2026-11-10
+
+### Fixed
+- Fixed read-only project config upgrades to Freeform 5.18 and preserved deployed Activity Log settings.
+- Fixed stale drop positions and invalid column ordering when moving fields in the form builder.
+- Improved disabled settings controls, cards, and cursors, and hid Activity Log configuration when admin changes are disabled.
+- Corrected control colors, selected states, card backgrounds, chart axes, and table/range previews in light and dark modes.
+- Improved toolbar and calculation editor contrast, token hover colors, button icon alignment, and Attributes editor corners.
+- Fixed schedule date-picker layout shifts and icon alignment, improved clear controls, and outlined today's date.
 
 ## 5.18.0 - 2026-11-09
 

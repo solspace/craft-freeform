@@ -71,6 +71,8 @@ a.ff-health-metric:hover { border-color: currentColor; box-shadow: 0 2px 6px #24
 .ff-health-clear-copy strong { font-size: 16px; line-height: 24px; font-weight: 500; }
 .ff-health-retention { color: var(--health-muted); font-size: 10px; line-height: 14px; margin-top: 6px !important; }
 .ff-health-unavailable { flex: 1; }
+.ff-health-logging-off { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.ff-health-enable-logging { display: inline-flex; align-items: center; justify-content: center; min-height: 34px; margin-top: 4px; }
 @media (min-width: 560px) and (min-height: 161px) {
   .ff-health-content:has(.ff-health-breakdown):has(.ff-health-recent) { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; grid-template-rows: minmax(0, 1fr); overflow: hidden; }
   .ff-health-breakdown dl { overflow: auto; min-height: 0; padding-inline-end: 3px; padding-bottom: 2px; scrollbar-width: thin; }
@@ -83,6 +85,8 @@ a.ff-health-metric:hover { border-color: currentColor; box-shadow: 0 2px 6px #24
 }
 @media (max-height: 160px) {
   .ff-health-widget { padding-block: 4px; }
+  .ff-health-logging-off { gap: 4px; }
+  .ff-health-enable-logging { min-height: 28px; margin-top: 0; padding: 4px 10px; font-size: 12px; line-height: 18px; }
   .ff-health-content { display: none; }
   .ff-health-counts { margin-block: auto; }
 }

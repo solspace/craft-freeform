@@ -60,7 +60,10 @@ class ActivityHealthService extends BaseService
         $effectiveDays = 'activity' === $style ? min($days, $retention) : $days;
         $until = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
         $since = $until->modify('-'.$effectiveDays.' days');
-        $result = ['available' => true, 'style' => $style, 'mode' => $settings->activityMode, 'days' => $effectiveDays, 'requestedDays' => $days, 'retentionDays' => $retention, 'errors' => 0, 'warnings' => 0, 'breakdown' => [], 'recorded' => 0, 'trend' => [], 'recent' => [], 'errorUrl' => null, 'warningUrl' => null, 'links' => []];
+        $result = ['available' => true, 'style' => $style, 'mode' => $settings->activityMode, 'days' => $effectiveDays, 'requestedDays' => $days, 'retentionDays' => $retention, 'errors' => 0, 'warnings' => 0, 'breakdown' => [], 'recorded' => 0, 'trend' => [], 'recent' => [], 'errorUrl' => null, 'warningUrl' => null, 'settingsUrl' => null, 'links' => []];
+        if ('none' === $style && PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) && $this->getSettingsService()->isAllowAdminEdit()) {
+            $result['settingsUrl'] = UrlHelper::cpUrl('freeform/settings/activity');
+        }
 
         try {
             if ('activity' === $style) {

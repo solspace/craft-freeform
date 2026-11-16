@@ -1,6 +1,12 @@
 import { colors } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
+const monitorColors = {
+  success: `light-dark(#78db89, ${colors.green600})`,
+  failed: `light-dark(#ec6d6b, ${colors.red600})`,
+  pending: `light-dark(#bcc8d9, ${colors.muted})`,
+};
+
 export const MonitorStatus = styled.span`
   display: inline-block;
   white-space: nowrap;
@@ -10,7 +16,7 @@ export const MonitorStatus = styled.span`
   line-height: 1.2;
   font-weight: 500;
   font-family: monospace;
-  color: #424d59;
+  color: light-dark(#424d59, ${colors.muted});
 `;
 
 export const LastTestStatus = styled.span`
@@ -19,8 +25,17 @@ export const LastTestStatus = styled.span`
   gap: 8px;
   border-radius: 3px;
   font-size: 11px;
-  color: #424d59;
-  margin-bottom: 7px;
+  color: light-dark(#424d59, ${colors.muted});
+  line-height: 20px;
+`;
+
+export const StatsHeader = styled.div<{ $width?: string }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: ${({ $width = "100%" }) => $width};
+  max-width: 100%;
 `;
 
 export const StatsChartContainer = styled.div<{ $align?: "left" | "right" }>`
@@ -38,12 +53,12 @@ export const LineIndicator = styled.div<{ $width?: string }>`
   border-radius: 3px;
   background: linear-gradient(
     to right,
-    #78db89 0%,
-    #78db89 var(--success),
-    #ec6d6b var(--success),
-    #ec6d6b var(--failed),
-    #bcc8d9 var(--failed),
-    #bcc8d9 var(--pending),
+    ${monitorColors.success} 0%,
+    ${monitorColors.success} var(--success),
+    ${monitorColors.failed} var(--success),
+    ${monitorColors.failed} var(--failed),
+    ${monitorColors.pending} var(--failed),
+    ${monitorColors.pending} var(--pending),
     ${colors.gray300} var(--pending),
     ${colors.gray300} 100%
   );
@@ -56,22 +71,24 @@ export const TestStatusIcon = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: ${({ $size = "sm" }) => ($size === "sm" ? "20px" : "24px")};
   height: ${({ $size = "sm" }) => ($size === "sm" ? "20px" : "24px")};
   color: ${({ $status }) => {
     switch ($status) {
       case "success":
-        return "#78db89";
+        return monitorColors.success;
       case "failed":
-        return "#ec6d6b";
+        return monitorColors.failed;
       case "pending":
-        return "#bcc8d9";
+        return monitorColors.pending;
       default:
-        return "#bcc8d9";
+        return monitorColors.pending;
     }
   }};
 
   svg {
+    display: block;
     width: 100%;
     height: 100%;
     fill: currentColor;
@@ -79,7 +96,7 @@ export const TestStatusIcon = styled.div<{
 `;
 
 export const ErrorMessage = styled.div<{ $withMargin?: boolean }>`
-  color: ${colors.red600};
+  color: ${colors.error};
   font-size: 11px;
   line-height: 1.2;
   font-weight: 500;

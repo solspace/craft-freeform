@@ -9,14 +9,14 @@ export type TooltipTheme = "dark" | "light";
 
 const themeStyles = {
   dark: css`
-    background: #33404d;
-    border: 1px solid #33404d;
+    --freeform-tooltip-bg: #33404d;
+    --freeform-tooltip-border: #33404d;
     box-shadow: 0 10px 24px rgb(8 15 24 / 18%);
     color: ${colors.white};
   `,
   light: css`
-    background: ${colors.overlay};
-    border: 1px solid ${colors.gray100};
+    --freeform-tooltip-bg: ${colors.overlay};
+    --freeform-tooltip-border: ${colors.gray100};
     box-shadow: 0 10px 24px rgb(32 51 72 / 14%);
     color: ${colors.gray800};
   `,
@@ -40,10 +40,12 @@ export const Surface = styled.div<SurfaceProps>`
   word-break: break-word;
 
   ${({ $theme }) => themeStyles[$theme]}
+  background: var(--freeform-tooltip-bg);
+  border: 1px solid var(--freeform-tooltip-border);
   :root[data-dark-mode="dark"] & {
-    background: var(--gray-050);
+    --freeform-tooltip-bg: var(--gray-050);
+    --freeform-tooltip-border: var(--medium-hairline-color);
     color: var(--gray-800);
-    border-color: var(--hairline-color);
     box-shadow: var(--menu-shadow);
   }
 

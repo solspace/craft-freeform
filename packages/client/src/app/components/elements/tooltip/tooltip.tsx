@@ -96,8 +96,8 @@ const FloatingContent = ({
           <FloatingArrow
             ref={arrowRef}
             context={context}
-            fill={theme === "light" ? "#ffffff" : "#2f3c4c"}
-            stroke={theme === "light" ? "#d3dae2" : "#2f3c4c"}
+            fill="var(--freeform-tooltip-bg)"
+            stroke="var(--freeform-tooltip-border)"
             strokeWidth={1}
           />
         )}

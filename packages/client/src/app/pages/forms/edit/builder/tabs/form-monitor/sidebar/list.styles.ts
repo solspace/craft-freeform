@@ -52,7 +52,7 @@ export const MostRecentTests = styled.div`
     }
 
     &.status-failed {
-      color: ${colors.red600};
+      color: ${colors.error};
     }
 
     &.status-pending {
@@ -77,7 +77,7 @@ export const MostRecentTests = styled.div`
         }
 
         &.status-failed {
-          color: ${colors.red600};
+          color: ${colors.error};
         }
 
         &.status-pending {
@@ -106,6 +106,7 @@ export const ConfigItem = styled.div<{ $isColumn?: boolean }>`
   flex-direction: ${({ $isColumn }) => ($isColumn ? "column" : "row")};
   justify-content: ${({ $isColumn }) =>
     $isColumn ? "flex-start" : "space-between"};
+  align-items: ${({ $isColumn }) => ($isColumn ? "stretch" : "center")};
   gap: ${({ $isColumn }) => ($isColumn ? spacings.xs : "0")};
   margin-bottom: ${spacings.sm};
 
@@ -198,7 +199,9 @@ export const ActionContainer = styled.div`
 export const MenuButton = styled.button`
   height: var(--ui-control-height);
   width: var(--ui-control-height);
-  border: 1px solid ${colors.gray250};
+  border: 1px solid light-dark(${colors.gray250}, var(--input-border-color));
+  background: var(--ui-control-bg-color);
+  box-sizing: border-box;
   border-radius: ${borderRadius.md};
   cursor: pointer;
   display: flex;
@@ -210,11 +213,12 @@ export const MenuButton = styled.button`
   svg {
     width: 16px;
     height: 16px;
-    stroke: ${colors.gray500};
+    display: block;
+    stroke: currentColor;
   }
 
   &:hover {
-    background: rgba(96, 125, 159, 0.3);
+    background: var(--ui-control-hover-bg-color);
   }
 `;
 
@@ -223,10 +227,11 @@ export const MenuDropdown = styled.div`
   top: 100%;
   left: 0;
   background: light-dark(white, ${colors.overlay});
-  border: 1px solid ${colors.gray200};
+  border: 1px solid ${colors.border};
   border-radius: ${borderRadius.md};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   min-width: 250px;
+  max-width: calc(100vw - 48px);
   z-index: 100;
   margin-top: ${spacings.sm};
 `;
@@ -257,13 +262,13 @@ export const MenuItem = styled.button`
 
 export const MenuItemWithBorder = styled(MenuItem)`
   border-top: 1px solid ${colors.gray200};
-  color: ${colors.red600};
+  color: ${colors.error};
 
   svg {
-    stroke: ${colors.red600};
+    stroke: currentColor;
   }
 
   &:hover {
-    background: ${colors.red050};
+    background: light-dark(${colors.red050}, var(--bg-error));
   }
 `;

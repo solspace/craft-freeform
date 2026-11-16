@@ -12,8 +12,12 @@ export const DescriptionText = styled.div`
   font-size: 0.9em;
 `;
 
-export const TestButton = styled.button`
-  width: 100%;
+export const TestEmailButton = styled.button`
+  align-self: flex-start;
+  width: fit-content;
+`;
+
+export const TestButton = styled(TestEmailButton)`
   margin-top: ${spacings.lg};
 `;
 
@@ -25,15 +29,21 @@ export const EmptyState = styled.div`
 
 export const HistorySection = styled.div`
   padding: ${spacings.xl};
-  height: 300px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 
   h3 {
     margin: 0 0 ${spacings.lg} 0;
     font-size: 1.1em;
     font-weight: 600;
   }
+`;
+
+export const HistoryContent = styled.div`
+  max-height: 200px;
+  overflow-y: auto;
+  min-width: 0;
 `;
 
 export const TestEmailTable = styled.table.attrs({
@@ -45,16 +55,15 @@ export const TestEmailTable = styled.table.attrs({
   background: light-dark(${colors.white}, ${colors.surface});
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
-  overflow: hidden;
   margin-top: -1px;
 
   thead {
     background: ${colors.gray050};
-    display: table;
-    width: 100%;
-    table-layout: fixed;
 
     th {
+      position: sticky;
+      top: 0;
+      background: ${colors.gray050};
       padding: ${spacings.md} ${spacings.lg};
       font-weight: 600;
       color: ${colors.gray700};
@@ -65,14 +74,7 @@ export const TestEmailTable = styled.table.attrs({
   }
 
   tbody {
-    display: block;
-    max-height: 200px;
-    overflow-y: auto;
-
     tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
       transition: background-color 0.2s ease;
 
       &:hover {
@@ -100,41 +102,41 @@ export const StatusBadge = styled.span`
   text-transform: uppercase;
 
   &.success {
-    background-color: ${colors.teal050};
-    color: ${colors.teal700};
+    background-color: light-dark(${colors.teal050}, var(--bg-success));
+    color: light-dark(${colors.teal700}, var(--fg-success));
   }
 
   &.error {
-    background-color: ${colors.red050};
-    color: ${colors.red700};
+    background-color: light-dark(${colors.red050}, var(--bg-error));
+    color: light-dark(${colors.red700}, var(--fg-error));
   }
 
   &.pending {
-    background-color: ${colors.yellow050};
-    color: ${colors.yellow700};
+    background-color: light-dark(${colors.yellow050}, var(--bg-warning));
+    color: light-dark(${colors.yellow700}, var(--fg-warning));
   }
 `;
 
 export const SuccessMessage = styled.div`
   margin-top: ${spacings.lg};
   padding: ${spacings.md};
-  background-color: ${colors.teal050};
-  color: ${colors.teal700};
+  background-color: light-dark(${colors.teal050}, var(--bg-success));
+  color: light-dark(${colors.teal700}, var(--fg-success));
   border-radius: ${borderRadius.md};
 `;
 
 export const ErrorMessage = styled.div`
   margin-top: ${spacings.lg};
   padding: ${spacings.md};
-  background-color: ${colors.red050};
-  color: ${colors.red700};
+  background-color: light-dark(${colors.red050}, var(--bg-error));
+  color: light-dark(${colors.red700}, var(--fg-error));
   border-radius: ${borderRadius.md};
 `;
 
 export const WarningMessage = styled.div`
   margin-top: ${spacings.lg};
   padding: ${spacings.md};
-  background-color: ${colors.yellow050};
-  color: ${colors.yellow700};
+  background-color: light-dark(${colors.yellow050}, var(--bg-warning));
+  color: light-dark(${colors.yellow700}, var(--fg-warning));
   border-radius: ${borderRadius.md};
 `;

@@ -62,6 +62,10 @@ class OrdersController extends BasePayPalController
         }
 
         try {
+            // Reject incompatible storage settings before the visitor pays.
+            if (!$form->getSettings()->getGeneral()->storeData || !$form->hasOptInPermission()) {
+                throw new \InvalidArgumentException('PayPal payments require stored submissions.');
+            }
             $amount = $this->priceService->getAmount($form, $field);
         } catch (\InvalidArgumentException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);

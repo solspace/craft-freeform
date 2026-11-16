@@ -16,6 +16,7 @@ import { Preview } from "../../common/preview/preview";
 import { Progress } from "../../common/progress/progress";
 import { useProgressEvent } from "../../common/progress/progress.hooks";
 import { Strategy } from "../../common/strategy/strategy";
+import { isAllOptionsEmpty } from "../../export/export.operations";
 import {
   createImportOptions,
   type FormImportData,
@@ -35,6 +36,7 @@ export const ImportFreeformData: React.FC = () => {
   const [options, setOptions] = useState<ImportOptions>(createImportOptions());
 
   const progressEvent = useProgressEvent();
+  const active = progressEvent.progress.active;
 
   const onChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
     setErrors(undefined);
@@ -80,7 +82,7 @@ export const ImportFreeformData: React.FC = () => {
   };
 
   const onImport = async (): Promise<void> => {
-    if (!fileToken) {
+    if (!fileToken || active || isAllOptionsEmpty(options)) {
       return;
     }
 
@@ -106,7 +108,12 @@ export const ImportFreeformData: React.FC = () => {
 
       <FileWrapper>
         <Label>{translate("Upload a Freeform Export zip file")}</Label>
-        <FileInput type="file" onChange={onChange} accept=".zip" />
+        <FileInput
+          type="file"
+          onChange={onChange}
+          accept=".zip"
+          disabled={active}
+        />
         <Instructions>
           {translate("Accepts `.zip` files. Only upload files that you trust.")}
         </Instructions>
@@ -122,7 +129,7 @@ export const ImportFreeformData: React.FC = () => {
             )}
           >
             <Preview
-              disabled={false}
+              disabled={active}
               data={availableOptions}
               options={options}
               onUpdate={(opts) => setOptions({ ...options, ...opts })}
@@ -132,7 +139,7 @@ export const ImportFreeformData: React.FC = () => {
           <Strategy
             data={availableOptions}
             strategy={options.strategy}
-            disabled={false}
+            disabled={active}
             onUpdate={(strategy: StrategyCollection) =>
               setOptions((prev) => ({
                 ...prev,
@@ -142,10 +149,15 @@ export const ImportFreeformData: React.FC = () => {
           />
 
           <Field>
-            <button className="btn submit" type="button" onClick={onImport}>
+            <button
+              className="btn submit"
+              type="button"
+              onClick={onImport}
+              disabled={!fileToken || active || isAllOptionsEmpty(options)}
+            >
               <LoadingText
                 loadingText={translate("Processing...")}
-                loading={false}
+                loading={active}
                 spinner
               >
                 {translate("Begin Import")}

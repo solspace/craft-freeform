@@ -1,3 +1,4 @@
+import config from "@config/freeform/freeform.config";
 import { colors } from "@ff-client/styles/variables";
 import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
@@ -36,6 +37,8 @@ type Props = {
 export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
   const chartData = mergeChartData(test.variants, activeTab);
   const isRate = activeTab === "conversionRate";
+  const locale =
+    config.metadata.craft.locale?.replaceAll("_", "-") || undefined;
 
   return (
     <ChartArea>
@@ -94,7 +97,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
               tickLine={false}
               minTickGap={40}
               tickFormatter={(value) =>
-                new Date(`${value}T00:00:00`).toLocaleDateString("en-US", {
+                new Date(`${value}T00:00:00`).toLocaleDateString(locale, {
                   month: "short",
                   day: "numeric",
                 })
@@ -123,7 +126,7 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
                 isRate ? formatRate(Number(value)) : Number(value)
               }
               labelFormatter={(value) =>
-                new Date(`${value}T00:00:00`).toLocaleDateString("en-US", {
+                new Date(`${value}T00:00:00`).toLocaleDateString(locale, {
                   month: "short",
                   day: "numeric",
                 })
@@ -138,7 +141,10 @@ export const ABTestChart: FC<Props> = ({ test, activeTab, setTab }) => {
                 stroke={getVariantColor(variant, index)}
                 strokeWidth={2}
                 dot={false}
-                name={variant.formName || `Variant ${index + 1}`}
+                name={
+                  variant.formName ||
+                  translate("Variant {number}", { number: index + 1 })
+                }
               />
             ))}
           </LineChart>

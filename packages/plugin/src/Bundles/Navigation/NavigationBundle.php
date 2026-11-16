@@ -50,6 +50,7 @@ class NavigationBundle extends FeatureBundle
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessAb = PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $canAccessPdfTemplates = $freeform->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_PDF_TEMPLATES_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
@@ -81,8 +82,8 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
-        if ($canAccessNotifications) {
-            $event->addSubnavItem('notifications', Freeform::t('Notifications'), 'freeform/notifications');
+        if ($canAccessNotifications || $canAccessPdfTemplates) {
+            $event->addSubnavItem('notifications', Freeform::t('Notifications'), $canAccessNotifications ? 'freeform/notifications' : 'freeform/notifications/pdf-templates');
         }
 
         if ($canAccessIntegrations) {

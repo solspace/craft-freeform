@@ -6,6 +6,7 @@ use craft\helpers\UrlHelper;
 use craft\models\Site;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\DarkModeTipHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Services\ActivityHealthService;
@@ -60,6 +61,7 @@ class FreeformConfig implements \JsonSerializable
                     'canDelete' => PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_DELETE),
                     'canManageHtmlEmbeds' => PermissionHelper::isAdmin(),
                     'canUseSetupGuide' => $settings->canUseSetupGuide(),
+                    'darkModeTip' => DarkModeTipHelper::getConfig(),
                     'canViewActivity' => ActivityHealthService::canAccess($settingsModel->getEffectiveLoggingStyle()),
                 ],
                 'tinymce' => [
@@ -86,6 +88,11 @@ class FreeformConfig implements \JsonSerializable
                 ),
             ],
             'permissions' => [
+                'settings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
+                'abTests' => $plugin->isPro() && $settings->isAbTestsEnabled() ? $this->getPermission(
+                    Freeform::PERMISSION_AB_ACCESS,
+                    Freeform::PERMISSION_AB_MANAGE,
+                ) : 'none',
                 'integrations' => $this->getPermission(
                     Freeform::PERMISSION_INTEGRATIONS_ACCESS,
                     Freeform::PERMISSION_INTEGRATIONS_MANAGE,

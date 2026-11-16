@@ -465,14 +465,6 @@ export const VariantFooter = styled.footer`
   }
 `;
 
-export const EmptyState = styled.div`
-  padding: ${spacings.xl};
-  background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px dashed ${colors.border};
-  border-radius: ${borderRadius.lg};
-  color: ${colors.muted};
-`;
-
 export const ModalBody = styled.div`
   display: flex;
   flex-direction: column;

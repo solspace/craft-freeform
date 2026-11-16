@@ -1,3 +1,4 @@
+import { SidebarNavigation } from "@components/layout/sidebar/sidebar-navigation";
 import { generateUrl } from "@ff-client/utils/urls";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -46,15 +47,17 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
   return (
     <div id="sidebar-container">
       <div id="sidebar" className="sidebar">
-        <nav>
-          <ul>
-            {Object.entries<Item>(data).map(([key, item]) => {
-              if (item.title) {
-                const isActive = key === activeKey;
-                const isReactRoute = REACT_SETTINGS_KEYS.has(key);
+        <SidebarNavigation
+          scope="settings"
+          items={Object.entries<Item>(data).map(([key, item]) => {
+            if (item.title) {
+              const isActive = key === activeKey;
+              const isReactRoute = REACT_SETTINGS_KEYS.has(key);
 
-                return (
-                  <li key={key}>
+              return {
+                key,
+                content: (
+                  <>
                     {isReactRoute ? (
                       <Link
                         className={isActive ? "sel" : undefined}
@@ -72,22 +75,18 @@ export const SettingsSidebar: React.FC<Props> = ({ activeKey }) => {
                         }}
                       />
                     )}
-                  </li>
-                );
-              }
+                  </>
+                ),
+              };
+            }
 
-              if (item.heading) {
-                return (
-                  <li key={key} className="heading">
-                    <span>{item.heading}</span>
-                  </li>
-                );
-              }
+            if (item.heading) {
+              return { key, heading: item.heading };
+            }
 
-              return null;
-            })}
-          </ul>
-        </nav>
+            return { key };
+          })}
+        />
       </div>
     </div>
   );

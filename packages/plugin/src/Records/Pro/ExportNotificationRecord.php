@@ -30,9 +30,9 @@ class ExportNotificationRecord extends ActiveRecord
         return self::TABLE;
     }
 
-    public function getProfile(): ExportProfileModel
+    public function getProfile(): ?ExportProfileModel
     {
-        return Freeform::getInstance()->exportProfiles->getProfileById($this->profileId);
+        return $this->profileId ? Freeform::getInstance()->exportProfiles->getProfileById($this->profileId) : null;
     }
 
     public function getRecipientArray(): array
@@ -62,7 +62,22 @@ class ExportNotificationRecord extends ActiveRecord
             [['name'], 'unique'],
             [['name', 'fileType', 'frequency', 'profileId'], 'required'],
             [['cronExpression'], 'validateCronExpression', 'skipOnEmpty' => false],
+            [['fileType'], 'validateFileType'],
         ];
+    }
+
+    public function validateFileType(string $attribute): void
+    {
+        $profile = $this->getProfile();
+        if (!$profile) {
+            $this->addError('profileId', Freeform::t('Select a valid export profile.'));
+
+            return;
+        }
+
+        if (!Freeform::getInstance()->exportProfiles->isExportTypeAllowed($profile, (string) $this->fileType)) {
+            $this->addError($attribute, Freeform::t('This file type is not allowed by the selected export profile.'));
+        }
     }
 
     public function validateCronExpression(string $attribute): void

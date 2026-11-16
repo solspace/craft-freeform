@@ -1,0 +1,30 @@
+{# Match Craft's element source groups, including their inherited line spacing. #}
+{% set grouped = craft.app.view.doesTemplateExist('_includes/disclosure-toggle') %}
+{% set nested = false %}
+<nav>
+    <ul{% if grouped %} class="sources-list"{% endif %}>
+        {% for item in items %}
+            {% if item.heading is defined %}
+                {% if grouped and nested %}</ul></li>{% endif %}
+                <li class="heading">
+                    {% set groupId = grouped ? 'freeform-sidebar-' ~ random() : null %}
+                    {% include 'freeform/_components/sidebar-heading' with {
+                        heading: item.heading,
+                        controls: groupId,
+                        storageKey: 'freeform-sidebar:' ~ scope ~ ':' ~ item.heading,
+                    } only %}
+                    {% if grouped %}
+                        <ul id="{{ groupId }}" class="sources-list">
+                        {% set nested = true %}
+                    {% else %}
+                </li>
+                    {% endif %}
+            {% else %}
+                <li>
+                    <a href="{{ item.url }}"{% if item.selected ?? false %} class="sel"{% endif %}>{{ item.title|raw }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if grouped and nested %}</ul></li>{% endif %}
+    </ul>
+</nav>

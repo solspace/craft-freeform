@@ -43,21 +43,25 @@
 
 {% endblock %}
 
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\ExportIndexBundle') %}
+
 {% set content %}
 
     {% if exportProfiles|length %}
-        <table id="export-profiles" class="data fullwidth collapsible">
-            <thead>
-            <th scope="col">{{ "Name"|t('app') }}</th>
+        <div class="tablepane ff-export-tablepane">
+        <table id="export-profiles" class="data fullwidth ff-export-table ff-export-profiles">
+            <thead><tr>
+            <th scope="col" class="ff-export-name-column">{{ "Name"|t('app') }}</th>
             <th scope="col">{{ "Form"|t('freeform') }}</th>
-            <th scope="col">{{ "Submissions"|t('freeform') }}</th>
-            <th>{{ "Actions"|t('app') }}</th>
-            <td class="thin"></td>
-            </thead>
+            <th scope="col" class="ff-export-count-column">{{ "Submissions"|t('freeform') }}</th>
+            <th scope="col" class="ff-export-download-column">{{ "Actions"|t('app') }}</th>
+            <th scope="col" class="ff-export-actions-column"><span class="visually-hidden">{{ "Delete"|t('freeform') }}</span></th>
+            </tr></thead>
             <tbody>
             {% for profile in exportProfiles %}
                 <tr data-id="{{ profile.id }}" data-name="{{ profile.name|t }}">
-                    <th scope="row" data-title="{{ 'Name'|t }}">
+                    <th scope="row" class="ff-export-name-cell">
+                        <div class="ff-export-heading">
                         {% if currentUser.can("freeform-pro-exportProfilesManage") %}
                             <a href="{{ url('freeform/export/profiles/' ~ profile.id) }}">
                                 {{ profile.name }}
@@ -65,8 +69,10 @@
                         {% else %}
                             {{ profile.name }}
                         {% endif %}
+                            <span class="ff-export-id">#{{ profile.id }}</span>
+                        </div>
                     </th>
-                    <td>
+                    <td data-title="{{ 'Form'|t('freeform') }}">
                         {% set form = profile.form %}
                         {% if form %}
                             {% set canManage = currentUser.can("freeform-formsManage") or currentUser.can("freeform-formsManage:"~form.id) %}
@@ -79,17 +85,19 @@
                             {% endif %}
                         {% endif %}
                     </td>
-                    <td>
+                    <td data-title="{{ 'Submissions'|t('freeform') }}">
+                        <span class="ff-export-badge ff-export-count">
                         {% if profile.limit > 0 and profile.submissionCount > profile.limit %}
                             {{ profile.limit }}
                         {% else %}
                             {{ profile.submissionCount }}
                         {% endif %}
+                        </span>
                     </td>
-                    <td>
-                        <div class="btngroup small file-download-list">
-                            {% for type, exporter in exporters %}
-                                <a data-type="{{ type }}" class="btn small">{{ exporter }}</a>
+                    <td class="ff-export-download-cell" data-title="{{ 'Actions'|t('app') }}">
+                        <div class="file-download-list" role="group" aria-label="{{ profile.name }}">
+                            {% for type, exporter in craft.freeformServices.exportProfiles.getAllowedExporterTypes(profile) %}
+                                <button type="button" data-type="{{ type }}" class="btn small hairline">{% include 'freeform/export/_file-type-icon' with {type: type} only %}{{ exporter }}</button>
                             {% endfor %}
                         </div>
                         <form method="post" style="position: absolute; left:-9999px; top: -9999px;">
@@ -99,42 +107,66 @@
                             <input type="hidden" name="action" value="freeform/export/profiles/export" />
                         </form>
                     </td>
-                    <td class="thin">
+                    <td class="ff-export-actions-cell">
                         {% if currentUser.can("freeform-pro-exportProfilesManage") %}
-                            <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                            <button type="button" class="delete ff-export-delete" aria-label="{{ 'Delete'|t('freeform') }}: {{ profile.name }}" title="{{ 'Delete'|t('freeform') }}">
+                                {% include 'freeform/export/_delete-icon' %}
+                            </button>
                         {% endif %}
                     </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
-    {% else %}
-        <div class="zilch">
-            {% if freeform.edition.atLeast('lite') %}
-                {{ "No export profiles exist yet."|t("freeform") }}
-            {% else %}
-                {{ "Upgrade to the Lite or Pro edition of Freeform to get access to Export Profiles."|t('freeform') }}
-            {% endif %}
         </div>
     {% endif %}
+    {% if freeform.edition.atLeast('lite') %}
+        <div id="noexport-profiles"{% if exportProfiles|length %} class="hidden"{% endif %}>
+            {% embed "freeform/_components/empty-state" with {
+                title: 'Create your first export profile'|t('freeform'),
+                description: forms|length
+                    ? 'Save a reusable export setup for a form. Choose the submissions, fields, and file format, then download the results whenever you need them.'|t('freeform')
+                    : 'Create a form first, then save a reusable export setup with your preferred submissions, fields, and file format.'|t('freeform'),
+                primaryAction: forms|length and currentUser.can('freeform-pro-exportProfilesManage') ? {label: 'Create export profile'|t('freeform')} : null,
+                secondaryAction: {label: 'View documentation'|t('freeform'), href: 'https://docs.solspace.com/craft/freeform/v5/submissions/exporting/#export-profiles', newTab: true}
+            } %}
+                {% block icon %}
+                    <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M16 4v16m-6-6 6 6 6-6M6 22v5h20v-5"/></svg>
+                {% endblock %}
+                {% block primaryAction %}
+                    {% if primaryAction %}
+                        {% if forms|length > 1 %}
+                            <div>
+                                <button type="button" class="btn submit menubtn">{{ primaryAction.label }}</button>
+                                <div class="menu"><ul>
+                                    {% for form in forms %}<li><a href="{{ url('freeform/export/profiles/new/' ~ form.handle) }}">{{ form.name }}</a></li>{% endfor %}
+                                </ul></div>
+                            </div>
+                        {% else %}
+                            <a class="btn submit" href="{{ url('freeform/export/profiles/new/' ~ (forms|first).handle) }}">{{ primaryAction.label }}</a>
+                        {% endif %}
+                    {% endif %}
+                {% endblock %}
+            {% endembed %}
+        </div>
+    {% elseif not exportProfiles|length %}
+        <div class="zilch">{{ "Upgrade to the Lite or Pro edition of Freeform to get access to Export Profiles."|t('freeform') }}</div>
+    {% endif %}
 {% endset %}
-
-{% css %}
-    #content { padding: 0; }
-{% endcss %}
 
 {% js %}
     var adminTable = new Craft.AdminTable({
     tableSelector: '#export-profiles',
     noObjectsSelector: '#noexport-profiles',
+    noItemsSelector: '#noexport-profiles',
     newObjectBtnSelector: '#newprofilecontainer',
     deleteAction: Craft.getCpUrl('freeform/export/profiles/delete'),
     confirmDeleteMessage: '{{ "Are you sure you want to delete this profile?"|t }}'
     });
 
-    $('.file-download-list > a').on({
+    $('.file-download-list > button').on({
         click: function() {
-            var parent = $(this).parents(".btngroup:first");
+            var parent = $(this).closest(".file-download-list");
             var type = $(this).data('type');
 
             parent.next().find("input[name=type]").val(type);

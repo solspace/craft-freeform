@@ -1,4 +1,4 @@
-import { spacings } from "@ff-client/styles/variables";
+import { colors, spacings } from "@ff-client/styles/variables";
 import styled from "styled-components";
 
 import { CardWrapper, LinkList, Subtitle, Title } from "./card/card.styles";
@@ -11,25 +11,22 @@ export const ActionsRow = styled.div`
 `;
 
 export const MutedWrapper = styled(Cards)`
+  --empty-form-accent: light-dark(#e0e0e0, color-mix(in srgb, ${colors.muted} 60%, ${colors.surface}));
   position: relative;
   margin-top: ${spacings.xl};
 
-  &:after {
+  // One overlay fades the entire illustration into the surrounding pane.
+  &::after {
     content: '';
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-
-    z-index: 2;
-
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
     background: linear-gradient(
       to right,
-      transparent 0%,
-      transparent 40%,
-      white 65%,
-      white 100%
+      transparent 15%,
+      color-mix(in srgb, ${colors.surface} 80%, transparent) 50%,
+      ${colors.surface} 80%
     );
   }
 
@@ -40,15 +37,16 @@ export const MutedWrapper = styled(Cards)`
   }
 
   ${CardWrapper} {
-    border-color: #fbfcfd;
-    background: #fefeff;
+    border-color: light-dark(#fbfcfd, ${colors.border});
+    background: light-dark(#fefeff, ${colors.mutedSurface});
+
   }
 
-  ${Title}, ${LinkList} a {
-    color: #cfd1d2;
+  ${Title}, ${LinkList}, ${LinkList} a {
+    color: light-dark(#cfd1d2, ${colors.muted});
   }
 
   ${Subtitle} {
-    color: #e2e4e5;
+    color: light-dark(#e2e4e5, color-mix(in srgb, ${colors.muted} 75%, ${colors.surface}));
   }
 `;

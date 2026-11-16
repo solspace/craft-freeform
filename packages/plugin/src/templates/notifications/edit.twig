@@ -9,7 +9,7 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "Email Notifications"|t("freeform"), url: url("freeform/notifications") },
-    { label: segment3|title|t("freeform"), url: url("freeform/notifications" ~ "/" ~ segment3) },
+    { label: (segment3 == 'files' ? 'Files' : 'Database')|t('freeform'), url: url('freeform/notifications/' ~ segment3) },
 ] %}
 
 {% set fullPageForm = true %}

@@ -1,4 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { DarkModeTip } from "@components/dark-mode-tip/dark-mode-tip";
 import config, { Edition } from "@config/freeform/freeform.config";
 import { useLocalStorage } from "@ff-client/hooks/ts-hooks/use-local-storage";
 import {
@@ -131,6 +132,7 @@ export const ListProvider: React.FC = () => {
       {view === View.Grid && (
         <FormGrid search={search} periodHost={periodHost} />
       )}
+      <DarkModeTip />
     </>
   );
 };

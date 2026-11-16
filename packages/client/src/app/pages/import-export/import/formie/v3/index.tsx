@@ -28,6 +28,10 @@ export const ImportFormie: React.FC = () => {
   const { data, isFetching } = useFormieDataQuery();
 
   const onClick = async (): Promise<void> => {
+    if (active || isAllOptionsEmpty(options)) {
+      return;
+    }
+
     progressEvent.clearProgress();
 
     const { data } = await axios.post("/api/import/prepare", {
@@ -92,7 +96,7 @@ export const ImportFormie: React.FC = () => {
 
       <button
         type="button"
-        disabled={active}
+        disabled={active || isAllOptionsEmpty(options)}
         onClick={onClick}
         className={classes(
           "field btn",

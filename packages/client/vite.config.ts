@@ -49,9 +49,21 @@ export default defineConfig(({ mode, command }) => {
         "@ff-icons": path.resolve(__dirname, "./src/assets/icons"),
         "@ff-client": path.resolve(__dirname, "./src"),
         "@ff-widgets": path.resolve(__dirname, "../scripts/src/lib/cp/widgets"),
+        "@ff-dark-mode-tip": path.resolve(
+          __dirname,
+          "../scripts/src/lib/cp/dark-mode-tip.ts",
+        ),
+        "@ff-dark-mode-tip-styles": path.resolve(
+          __dirname,
+          "../styles/src/shared/dark-mode-tip.css",
+        ),
         "@ff-chart-styles": path.resolve(
           __dirname,
           "../styles/src/shared/chart.css",
+        ),
+        "@ff-empty-state-styles": path.resolve(
+          __dirname,
+          "../styles/src/shared/empty-state.css",
         ),
       },
     },

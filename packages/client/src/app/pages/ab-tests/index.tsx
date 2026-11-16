@@ -1,6 +1,8 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { EmptyState } from "@components/empty-state/empty-state";
 import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { useModal } from "@components/modals/modal.context";
+import config from "@config/freeform/freeform.config";
 import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
 import ChevronIcon from "@ff-icons/chevron-left-solid";
@@ -25,7 +27,6 @@ import {
   Cards,
   CardToggle,
   Dot,
-  EmptyState,
   HeaderRow,
   Meta,
   PageWrapper,
@@ -40,12 +41,30 @@ import type {
   MetricTab,
 } from "./ab-tests.types";
 
+const TestVariantsIcon = () => (
+  <svg
+    viewBox="0 0 32 32"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M16 4v7M9 11h14M9 11v7M23 11v7" />
+    <rect x="4" y="18" width="10" height="10" rx="2" />
+    <rect x="18" y="18" width="10" height="10" rx="2" />
+  </svg>
+);
+
 export const AbTests: React.FC = () => {
   useSidebarSelect("ab-tests");
 
   const { openModal } = useModal();
   const [searchParams] = useSearchParams();
-  const data = useAbTestsDashboard();
+  const { data, isPending, isError, refetch } = useAbTestsDashboard();
+  const canManage = config.permissions?.abTests === "manage";
 
   const [tabState, setTabState] = useState<Record<number, MetricTab>>({});
   const [expandedTestId, setExpandedTestId] = useState<number | null>(null);
@@ -53,9 +72,11 @@ export const AbTests: React.FC = () => {
 
   const openEditor = useCallback(
     (test?: ABTestDashboardItem): void => {
-      openModal(ABTestModal, test ? { test: toEditorPayload(test) } : {});
+      if (canManage) {
+        openModal(ABTestModal, test ? { test: toEditorPayload(test) } : {});
+      }
     },
-    [openModal],
+    [canManage, openModal],
   );
 
   useEffect(() => {
@@ -78,19 +99,66 @@ export const AbTests: React.FC = () => {
       <Breadcrumb id="ab-tests-list" label="A/B Tests" url="/ab-tests" />
       <HeaderRow>
         <HeaderContainer>{translate("A/B Tests")}</HeaderContainer>
-        <button
-          type="button"
-          className="btn submit add icon"
-          onClick={() => openEditor()}
-        >
-          {translate("Add Test")}
-        </button>
+        {canManage && (
+          <button
+            type="button"
+            className="btn submit add icon"
+            onClick={() => openEditor()}
+          >
+            {translate("Add Test")}
+          </button>
+        )}
       </HeaderRow>
 
       <PageWrapper>
-        {!data?.length && (
-          <EmptyState>
-            {translate("No A/B Tests found. Create your first test.")}
+        {isPending && (
+          <p role="status" className="light">
+            {translate("Loading A/B tests…")}
+          </p>
+        )}
+        {isError && (
+          <EmptyState
+            title={translate("Unable to load A/B tests")}
+            description={translate(
+              "Please try again to load your tests and results.",
+            )}
+            icon={<TestVariantsIcon />}
+          >
+            <button
+              type="button"
+              className="btn"
+              onClick={() => void refetch()}
+            >
+              {translate("Try again")}
+            </button>
+          </EmptyState>
+        )}
+        {!isPending && !isError && data?.length === 0 && (
+          <EmptyState
+            title={translate(
+              canManage ? "Create your first A/B test" : "No A/B tests yet",
+            )}
+            description={translate(
+              "Compare different versions of your forms to see which converts best. Add variants, split traffic, and track the results in one place.",
+            )}
+            icon={<TestVariantsIcon />}
+          >
+            {canManage && (
+              <button
+                type="button"
+                className="btn submit"
+                onClick={() => openEditor()}
+              >
+                {translate("Create A/B test")}
+              </button>
+            )}
+            <a
+              href="https://docs.solspace.com/craft/freeform/v5/forms/ab-testing/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {translate("View documentation")}
+            </a>
           </EmptyState>
         )}
 
@@ -181,15 +249,17 @@ export const AbTests: React.FC = () => {
                     </CardToggle>
                   </h2>
 
-                  <ABTestActions
-                    onDelete={() =>
-                      openModal(ABTestDeleteModal, {
-                        id: test.id,
-                        name: test.name,
-                      })
-                    }
-                    onEdit={() => openEditor(test)}
-                  />
+                  {canManage && (
+                    <ABTestActions
+                      onDelete={() =>
+                        openModal(ABTestDeleteModal, {
+                          id: test.id,
+                          name: test.name,
+                        })
+                      }
+                      onEdit={() => openEditor(test)}
+                    />
+                  )}
                 </CardHeader>
 
                 <ABTestPanel id={panelId} expanded={isExpanded}>

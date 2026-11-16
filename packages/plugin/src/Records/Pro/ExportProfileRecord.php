@@ -18,6 +18,7 @@ use yii\db\ActiveQuery;
  * @property string $rangeEnd
  * @property array  $fields
  * @property array  $filters
+ * @property ?array $allowedExportTypes
  * @property array  $statuses
  */
 class ExportProfileRecord extends ActiveRecord

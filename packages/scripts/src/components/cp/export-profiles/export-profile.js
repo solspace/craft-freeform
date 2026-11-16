@@ -1,7 +1,15 @@
+import { attachExportChecklist } from "@lib/cp/export-profiles/checklist";
 import { attachDateRangePicker } from "@lib/cp/export-profiles/date-range-picker";
+import { attachProfileFormats } from "@lib/cp/export-profiles/profile-formats";
 
 // eslint-disable no-undef
 $(() => {
+  document
+    .querySelectorAll("[data-export-checklist]")
+    .forEach(attachExportChecklist);
+  document
+    .querySelectorAll("[data-export-profile-formats]")
+    .forEach(attachProfileFormats);
   document.querySelectorAll("[data-export-range-picker]").forEach((input) => {
     attachDateRangePicker(input, input.dataset.exportRangePicker);
   });

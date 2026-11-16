@@ -1,49 +1,56 @@
 $(() => {
-  $(".action-buttons .clone").on({
-    click: (event) => {
-      const button = $(event.target);
-      const { id, type } = button.data();
+  document.querySelectorAll("[data-notification-menu]").forEach((button) => {
+    const row = button.closest("tr");
+    const type = button.dataset.notificationType;
+    let pending = false;
 
-      $.ajax({
-        url: Craft.getCpUrl(`freeform/notifications/${type}/duplicate`),
-        type: "POST",
-        dataType: "json",
-        data: {
-          id,
-          [Craft.csrfTokenName]: Craft.csrfTokenValue,
-        },
-        success: (response) => {
-          if (response.success) {
+    new Garnish.MenuBtn($(button), {
+      onOptionSelect: async (option) => {
+        const action = option.dataset.notificationAction;
+        if (pending || !["duplicate", "delete"].includes(action)) return;
+        if (
+          action === "delete" &&
+          !confirm(
+            Craft.t("freeform", 'Are you sure you want to delete "{name}"?', {
+              name: row.dataset.name,
+            }),
+          )
+        )
+          return;
+
+        pending = true;
+        button.disabled = true;
+        row.setAttribute("aria-busy", "true");
+        try {
+          const response = await Craft.sendActionRequest(
+            "POST",
+            `freeform/notifications/${type}/${action}`,
+            { data: { id: row.dataset.id } },
+          );
+          if (!response.data.success) throw new Error("Unsuccessful response");
+          if (action === "duplicate") {
             window.location.reload();
+          } else {
+            const table = row.closest("table");
+            row.remove();
+            if (!table.querySelector("tbody tr")) {
+              table.closest(".tablepane").hidden = true;
+              document.querySelector("[data-notification-empty]").hidden =
+                false;
+            }
           }
-        },
-      });
-    },
-  });
-
-  $("[data-file-templates] a.delete[data-id]").on({
-    click: (event) => {
-      const button = $(event.target);
-      const { id, type } = button.data();
-
-      if (!confirm(confirmDeleteMessage)) {
-        return;
-      }
-
-      $.ajax({
-        url: Craft.getCpUrl(`freeform/notifications/${type}/delete`),
-        type: "POST",
-        dataType: "json",
-        data: {
-          id,
-          [Craft.csrfTokenName]: Craft.csrfTokenValue,
-        },
-        success: (response) => {
-          if (response.success) {
-            button.parents("tr:first").remove();
-          }
-        },
-      });
-    },
+        } catch {
+          Craft.cp.displayError(
+            action === "duplicate"
+              ? Craft.t("freeform", "Could not duplicate this template.")
+              : Craft.t("freeform", "Could not delete this template."),
+          );
+        } finally {
+          pending = false;
+          button.disabled = false;
+          row.removeAttribute("aria-busy");
+        }
+      },
+    });
   });
 });

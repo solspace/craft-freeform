@@ -3,6 +3,7 @@ import { HeaderContainer } from "@components/layout/blocks/header-container";
 import { useModal } from "@components/modals/modal.context";
 import { useSidebarSelect } from "@ff-client/hooks/use-sidebar-select";
 import translate from "@ff-client/utils/translations";
+import ChevronIcon from "@ff-icons/chevron-left-solid";
 import { isFuture, isPast } from "date-fns";
 import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -13,17 +14,24 @@ import { ABTestCard } from "./ab-tests.card";
 import { ABTestChart } from "./ab-tests.chart";
 import { ABTestModal } from "./ab-tests.modal";
 import { ABTestDeleteModal } from "./ab-tests.modal.delete";
-import { toEditorPayload } from "./ab-tests.operations";
+import { formatRate, toEditorPayload } from "./ab-tests.operations";
+import { ABTestPanel } from "./ab-tests.panel";
 import { useAbTestsDashboard } from "./ab-tests.queries";
 import {
   Card,
+  CardChevron,
+  CardDescription,
   CardHeader,
   Cards,
+  CardToggle,
   Dot,
   EmptyState,
   HeaderRow,
   Meta,
   PageWrapper,
+  PreviewStats,
+  Results,
+  Summary,
   Variants,
 } from "./ab-tests.styles";
 import type {
@@ -40,6 +48,7 @@ export const AbTests: React.FC = () => {
   const data = useAbTestsDashboard();
 
   const [tabState, setTabState] = useState<Record<number, MetricTab>>({});
+  const [expandedTestId, setExpandedTestId] = useState<number | null>(null);
   const autoOpenRef = useRef<string | null>(null);
 
   const openEditor = useCallback(
@@ -87,6 +96,8 @@ export const AbTests: React.FC = () => {
 
         <Cards>
           {data?.map((test) => {
+            const isExpanded = expandedTestId === test.id;
+            const panelId = `ab-test-results-${test.id}`;
             const activeTab = tabState[test.id] || "conversionRate";
             const isInFuture = test.startDate && isFuture(test.startDate);
             const isInPast = test.endDate && isPast(test.endDate);
@@ -109,32 +120,66 @@ export const AbTests: React.FC = () => {
               totalConversions,
             } = test;
 
-            const chunks = [
-              <Dot key="status" $status={status} />,
-              translate(statusLabel),
-              !isInFuture && translate("{days} days", { days: test.days }),
-              translate("{count} variants", { count: test.variantCount }),
-              translate("{count} impressions", { count: totalImpressions }),
-              translate("{count} interactions", { count: totalInteractions }),
-              translate("{failures} failures", { failures: totalFailures }),
-              translate("{conversions} conversions", {
-                conversions: totalConversions,
-              }),
-            ].filter(Boolean);
-
             return (
               <Card key={test.id}>
                 <CardHeader>
-                  <div>
-                    <h2>{test.name}</h2>
-                    {!!test.description && <p>{test.description}</p>}
-
-                    <Meta>
-                      {chunks.map((chunk, idx) => (
-                        <span key={idx}>{chunk}</span>
-                      ))}
-                    </Meta>
-                  </div>
+                  <h2>
+                    <CardToggle
+                      type="button"
+                      aria-label={test.name}
+                      aria-expanded={isExpanded}
+                      aria-controls={panelId}
+                      onClick={() => {
+                        setExpandedTestId((prev) =>
+                          prev === test.id ? null : test.id,
+                        );
+                      }}
+                    >
+                      <span className="test-info">
+                        <span className="test-title">{test.name}</span>
+                        <Meta as="span">
+                          <span>
+                            <Dot $status={status} />
+                            {statusLabel}
+                          </span>
+                          {!isInFuture && (
+                            <span>
+                              {translate("{days} days", { days: test.days })}
+                            </span>
+                          )}
+                          <span>
+                            {translate("{count} variants", {
+                              count: test.variantCount,
+                            })}
+                          </span>
+                        </Meta>
+                      </span>
+                      <PreviewStats>
+                        {[
+                          ["Impressions", totalImpressions.toLocaleString()],
+                          ["Conversions", totalConversions.toLocaleString()],
+                          [
+                            "Conversion Rate",
+                            formatRate(
+                              totalImpressions > 0
+                                ? (totalConversions / totalImpressions) * 100
+                                : 0,
+                            ),
+                          ],
+                        ].map(([label, value]) => (
+                          <span key={label}>
+                            <span className="metric-label">
+                              {translate(label)}
+                            </span>
+                            <strong>{value}</strong>
+                          </span>
+                        ))}
+                      </PreviewStats>
+                      <CardChevron $expanded={isExpanded}>
+                        <ChevronIcon aria-hidden="true" />
+                      </CardChevron>
+                    </CardToggle>
+                  </h2>
 
                   <ABTestActions
                     onDelete={() =>
@@ -147,26 +192,55 @@ export const AbTests: React.FC = () => {
                   />
                 </CardHeader>
 
-                <ABTestChart
-                  test={test}
-                  activeTab={activeTab}
-                  setTab={(tabTest, tabId) => {
-                    setTabState((prev) => ({
-                      ...prev,
-                      [tabTest.id]: tabId,
-                    }));
-                  }}
-                />
+                <ABTestPanel id={panelId} expanded={isExpanded}>
+                  {!!test.description && (
+                    <CardDescription>{test.description}</CardDescription>
+                  )}
+                  <Summary>
+                    {[
+                      ["Impressions", totalImpressions.toLocaleString()],
+                      ["Interactions", totalInteractions.toLocaleString()],
+                      ["Failures", totalFailures.toLocaleString()],
+                      ["Conversions", totalConversions.toLocaleString()],
+                      [
+                        "Conversion Rate",
+                        formatRate(
+                          totalImpressions > 0
+                            ? (totalConversions / totalImpressions) * 100
+                            : 0,
+                        ),
+                      ],
+                    ].map(([label, value]) => (
+                      <div key={label}>
+                        <dt>{translate(label)}</dt>
+                        <dd>{value}</dd>
+                      </div>
+                    ))}
+                  </Summary>
 
-                <Variants>
-                  {test.variants.map((variant) => (
-                    <ABTestCard
-                      key={variant.id}
-                      variant={variant}
+                  <Results>
+                    <Variants>
+                      {test.variants.map((variant) => (
+                        <ABTestCard
+                          key={variant.id}
+                          variant={variant}
+                          test={test}
+                        />
+                      ))}
+                    </Variants>
+
+                    <ABTestChart
                       test={test}
+                      activeTab={activeTab}
+                      setTab={(tabTest, tabId) => {
+                        setTabState((prev) => ({
+                          ...prev,
+                          [tabTest.id]: tabId,
+                        }));
+                      }}
                     />
-                  ))}
-                </Variants>
+                  </Results>
+                </ABTestPanel>
               </Card>
             );
           })}

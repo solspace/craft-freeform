@@ -4,14 +4,12 @@ import {
   shadows,
   spacings,
 } from "@ff-client/styles/variables";
+import { animated } from "@react-spring/web";
 import styled from "styled-components";
 
 import type { ABStatus } from "./ab-tests.types";
 
 export const PageWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${spacings.lg};
   margin-bottom: 50px;
 `;
 
@@ -19,47 +17,157 @@ export const HeaderRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: ${spacings.md};
 `;
 
 export const Cards = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
+  gap: ${spacings.md};
 `;
 
 export const Card = styled.section`
-  padding: 2px 3px;
-
+  container-type: inline-size;
+  min-width: 0;
   background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px solid ${colors.gray200};
+  border: 1px solid ${colors.border};
   border-radius: ${borderRadius.lg};
   box-shadow: ${shadows.box};
-  :root:not([data-dark-mode="dark"]) & {
-    box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%);
-  };
 `;
 
 export const CardHeader = styled.header`
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: ${spacings.md};
-
   padding: ${spacings.lg} ${spacings.xl};
 
-  background: ${colors.gray050};
-  border-radius: ${borderRadius.lg};
-
   h2 {
+    flex: 1;
+    min-width: 0;
     margin: 0;
-    font-size: 32px;
-    font-weight: 600;
   }
 
-  p {
-    margin: 0 0;
-    color: ${colors.gray700};
+  @container (max-width: 650px) {
+    align-items: flex-start;
   }
+`;
+
+export const CardToggle = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${spacings.xl};
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: ${colors.text};
+  text-align: left;
+  cursor: pointer;
+
+  .test-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .test-title {
+    display: block;
+    font-size: 18px;
+    line-height: 1.4;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  &:hover .test-title {
+    color: ${colors.link};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${colors.link};
+    outline-offset: 6px;
+    border-radius: ${borderRadius.sm};
+  }
+
+  @container (max-width: 650px) {
+    flex-wrap: wrap;
+    gap: ${spacings.md};
+
+    .test-info {
+      flex-basis: calc(100% - 40px);
+    }
+  }
+`;
+
+export const CardChevron = styled.span<{ $expanded: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 24px;
+  width: 24px;
+  height: var(--ui-control-height);
+  color: ${colors.muted};
+
+  svg {
+    display: block;
+    width: 10px;
+    height: 14px;
+    transform: rotate(${({ $expanded }) => ($expanded ? "90deg" : "-90deg")});
+    transition: transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  @container (max-width: 650px) {
+    order: 1;
+    align-self: flex-start;
+  }
+`;
+
+export const CardPanel = styled(animated.div)`
+  overflow: hidden;
+
+  > div {
+    display: flow-root;
+  }
+`;
+
+export const PreviewStats = styled.span`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
+  gap: ${spacings.xl};
+  font-weight: 400;
+
+  > span {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .metric-label {
+    color: ${colors.muted};
+    font-size: 12px;
+    line-height: 18px;
+  }
+
+  strong {
+    font-size: 20px;
+    line-height: 26px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @container (max-width: 650px) {
+    order: 2;
+    width: 100%;
+    gap: ${spacings.sm};
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+`;
+
+export const CardDescription = styled.p`
+  margin: 0 ${spacings.xl} ${spacings.md};
+  color: ${colors.muted};
 `;
 
 export const Meta = styled.div`
@@ -67,28 +175,28 @@ export const Meta = styled.div`
   align-items: center;
   flex-wrap: wrap;
   gap: ${spacings.sm};
-
-  margin-top: 8px;
-
-  color: ${colors.gray700};
+  margin-top: 6px;
+  color: ${colors.muted};
+  font-size: 12px;
+  font-weight: 400;
 
   > span {
-    &:nth-child(n + 3) {
-      &::before {
-        content: '•';
-        display: inline-block;
-        margin-right: ${spacings.sm};
-        color: light-dark(${colors.gray400}, ${colors.muted});
-      }
-    }
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  > span + span::before {
+    content: '·';
+    margin-right: 2px;
+    color: ${colors.muted};
   }
 `;
 
 export const Dot = styled.span<{ $status?: ABStatus }>`
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background: ${({ $status }) => {
     switch ($status) {
@@ -102,159 +210,267 @@ export const Dot = styled.span<{ $status?: ABStatus }>`
   }};
 `;
 
+export const Summary = styled.dl`
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0 ${spacings.xl};
+  padding: ${spacings.md} 0;
+  border-top: 1px solid ${colors.hairline};
+  border-bottom: 1px solid ${colors.hairline};
+  gap: ${spacings.md};
+
+  dt {
+    color: ${colors.muted};
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  dd {
+    margin: 0;
+    color: ${colors.text};
+    font-size: 24px;
+    line-height: 1.3;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+`;
+
+export const Results = styled.div`
+  display: grid;
+  gap: ${spacings.xl};
+  padding: ${spacings.lg} ${spacings.xl};
+
+  @container (min-width: 1150px) {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+`;
+
 export const ChartArea = styled.div`
-  padding: ${spacings.lg} ${spacings.xl} 0;
+  min-width: 0;
+  padding: ${spacings.lg} 0;
+  border-top: 1px solid ${colors.hairline};
+
+  @container (min-width: 1150px) {
+    padding: 0 0 0 ${spacings.xl};
+    border-top: 0;
+    border-left: 1px solid ${colors.hairline};
+  }
+`;
+
+export const ChartEmpty = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  gap: 6px;
+  padding: ${spacings.md};
+  text-align: center;
+  color: ${colors.muted};
+  font-size: 13px;
+
+  strong {
+    color: ${colors.text};
+    font-weight: 600;
+  }
+`;
+
+export const ChartToolbar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: ${spacings.md};
+  margin-bottom: ${spacings.md};
+
+  h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+  }
+`;
+
+export const ChartLegend = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${spacings.md};
+  margin: ${spacings.sm} 0 0;
+  color: ${colors.muted};
+  font-size: 12px;
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  i {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+  }
 `;
 
 export const Tabs = styled.div`
   display: inline-flex;
-  margin-bottom: ${spacings.lg};
-
-  background: ${colors.gray100};
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 3px;
+  background: ${colors.mutedSurface};
   border-radius: ${borderRadius.md};
-
-  overflow: hidden;
 `;
 
 export const Tab = styled.button<{ $active?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 5px 12px;
   cursor: pointer;
-  padding: ${spacings.sm} ${spacings.md};
-
-  background: light-dark(${({ $active }) => ($active ? colors.gray500 : colors.gray100)}, ${({
-    $active,
-  }) =>
-    $active
-      ? "var(--ui-control-selected-bg, var(--gray-500))"
-      : "var(--ui-control-bg-color, var(--gray-100))"});
   border: 0;
-  color: light-dark(${({ $active }) => ($active ? colors.white : colors.gray800)}, ${({
-    $active,
-  }) =>
-    $active ? "var(--ui-control-selected-color, var(--white))" : colors.text});
+  border-radius: ${borderRadius.sm};
+  background: ${({ $active }) => ($active ? colors.surface : "transparent")};
+  box-shadow: ${({ $active }) => ($active ? "0 1px 3px rgb(0 0 0 / 12%)" : "none")};
+  color: ${({ $active }) => ($active ? colors.text : colors.muted)};
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: ${({ $active }) => ($active ? 600 : 400)};
+
+  &:hover {
+    color: ${colors.text};
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${colors.link};
+    outline-offset: 2px;
+  }
 `;
 
 export const Variants = styled.div`
   display: grid;
-  justify-content: start;
-  align-items: end;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  align-items: stretch;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: ${spacings.md};
-
-  padding: ${spacings.lg} ${spacings.xl} ${spacings.xl};
 `;
 
-export const VariantCardWrapper = styled.div``;
-
 export const VariantCard = styled.article`
-  padding: 2px;
-
-  background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px solid ${colors.gray200};
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  row-gap: 0;
+  min-width: 0;
+  border: 1px solid ${colors.border};
   border-radius: ${borderRadius.md};
-
   overflow: hidden;
 
   &.winner {
-    border-color: light-dark(${colors.green600}, color-mix(in srgb, var(--green-400) 65%, var(--light-text-color)));
+    border-color: ${colors.green600};
   }
 `;
 
-export const Winner = styled.div`
-  padding: 6px 6px 10px;
-  margin: 0 0 -4px;
+export const Winner = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: ${borderRadius.sm};
+  background: light-dark(#eaf7ef, color-mix(in srgb, var(--green-400) 12%, transparent));
+  color: light-dark(#18703c, var(--green-400));
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  white-space: nowrap;
 
-  border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
-  background: light-dark(${colors.green600}, color-mix(in srgb, var(--green-400) 65%, var(--light-text-color)));
-
-  color: light-dark(${colors.white}, var(--body-bg));
-  font-size: 18px;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-
-  > div {
-    display: inline-block;
-    position: relative;
-
-    svg {
-      position: absolute;
-      left: -33px;
-      top: -3px;
-
-      width: 26px;
-      height: 26px;
-    }
+  svg {
+    display: block;
+    width: 13px;
+    height: 13px;
+    flex-shrink: 0;
   }
 `;
 
 export const VariantHeader = styled.header`
   display: flex;
   align-items: center;
-  gap: ${spacings.md};
-
+  flex-wrap: wrap;
+  gap: ${spacings.sm};
   padding: ${spacings.md};
+  background: ${colors.mutedSurface};
 
-  border-radius: ${borderRadius.md};
-  background: ${colors.gray050};
-
-  font-size: 20px;
-  font-weight: 600;
+  h3 {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
 `;
 
 export const VariantLetter = styled.span`
   display: inline-flex;
   justify-content: center;
   align-items: center;
-
-  width: 35px;
-  height: 35px;
-
-  border-radius: 100%;
-  background: ${colors.gray300};
-
-  color: ${colors.white};
-
-  font-size: 20px;
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: ${colors.text};
+  font-size: 14px;
   font-weight: 700;
-  text-align: center;
+  line-height: 1;
 `;
 
-export const VariantStats = styled.div`
+export const VariantStats = styled.dl`
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 4px 8px;
-
+  gap: 7px 12px;
+  margin: 0;
   padding: ${spacings.md};
+  color: ${colors.muted};
+  font-size: 13px;
 
-  color: ${colors.gray700};
+  dd {
+    margin: 0;
+    color: ${colors.text};
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
 `;
 
 export const VariantFooter = styled.footer`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  padding: ${spacings.sm} ${spacings.md};
-
-  border-radius: ${borderRadius.md};
-  background: ${colors.gray050};
-
-  font-weight: 700;
+  gap: ${spacings.sm};
+  margin-top: auto;
+  padding: 10px ${spacings.md};
+  border-top: 1px solid ${colors.hairline};
+  background: ${colors.mutedSurface};
+  font-size: 12px;
+  font-weight: 600;
 
   .thick {
     font-size: 24px;
-    line-height: 24px;
-    color: ${colors.gray500};
+    line-height: 1.2;
+    color: ${colors.text};
+    font-variant-numeric: tabular-nums;
   }
 `;
 
 export const EmptyState = styled.div`
   padding: ${spacings.xl};
-
   background: light-dark(${colors.white}, ${colors.surface});
-  border: 1px dashed ${colors.gray300};
+  border: 1px dashed ${colors.border};
   border-radius: ${borderRadius.lg};
-  color: ${colors.gray700};
+  color: ${colors.muted};
 `;
 
 export const ModalBody = styled.div`

@@ -3,41 +3,51 @@
 
 {% set selectedSubnavItem = "notifications" %}
 
-{% set title = "Email Notifications"|t('freeform') %}
+{% set title = title ?? "Email Notifications"|t('freeform') %}
 
 {% block sidebar %}
 
     {% set segment = craft.app.request.segment(3) %}
     {% set settings = freeform.settings %}
 
-    <nav>
-        <ul>
-            <li class="heading">
-                <span>{{ "Templates"|t('freeform') }}</span>
-            </li>
-            <li>
-                {% if settings.emailTemplateStorageType in ['files_database', 'files'] %}
-                <a href="{{ url('freeform/notifications/files') }}" class="{{ segment == "files" ? 'sel' }}">
-                    {{ "File Templates"|t('freeform') }}
-                </a>
-                {% endif %}
-
-                {% if settings.emailTemplateStorageType in ['files_database', 'database'] %}
-                <a href="{{ url('freeform/notifications/database') }}" class="{{ segment == "database" ? 'sel' }}">
-                    {{ "Database Templates"|t('freeform') }}
-                </a>
-                {% endif %}
-            </li>
-
-            <li class="heading">
-                <span>{{ "Template Wrappers"|t('freeform') }}</span>
-            </li>
-            <li>
-                <a href="{{ url('freeform/notifications/wrappers') }}" class="{{ segment == "wrappers" ? 'sel' }}">
-                    {{ "Notification Wrappers"|t('freeform') }}
-                </a>
-            </li>
-        </ul>
-    </nav>
+    {% set items = [] %}
+    {% if currentUser.can('freeform-notificationsAccess') %}
+        {% if settings.emailTemplateMethod != 'form' %}
+            {% set items = items|merge([{heading: 'Templates'|t('freeform')}]) %}
+            {% if settings.emailTemplateStorageType in ['files_database', 'files'] %}
+                {% set items = items|merge([{
+                    title: 'Files'|t('freeform'),
+                    url: url('freeform/notifications/files'),
+                    selected: segment == 'files',
+                }]) %}
+            {% endif %}
+            {% if settings.emailTemplateStorageType in ['files_database', 'database'] %}
+                {% set items = items|merge([{
+                    title: 'Database'|t('freeform'),
+                    url: url('freeform/notifications/database'),
+                    selected: segment == 'database',
+                }]) %}
+            {% endif %}
+        {% endif %}
+        {% set items = items|merge([
+            {heading: 'Layout'|t('freeform')},
+            {
+                title: 'Wrappers'|t('freeform'),
+                url: url('freeform/notifications/wrappers'),
+                selected: segment == 'wrappers',
+            },
+        ]) %}
+    {% endif %}
+    {% if craft.freeform.pro == 'pro' and currentUser.can('freeform-pdfTemplatesAccess') %}
+        {% set items = items|merge([
+            {heading: 'Attachments'|t('freeform')},
+            {
+                title: 'PDFs'|t('freeform'),
+                url: url('freeform/notifications/pdf-templates'),
+                selected: segment == 'pdf-templates',
+            },
+        ]) %}
+    {% endif %}
+    {% include 'freeform/_components/sidebar-navigation' with {items: items, scope: 'notifications'} only %}
 
 {% endblock %}

@@ -2,16 +2,20 @@
 
 namespace Solspace\Freeform\Bundles\Navigation;
 
+use craft\web\View;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Resources\Bundles\ActivityBadgeBundle;
 use yii\base\Event;
 
 class NavigationBundle extends FeatureBundle
 {
     public function __construct()
     {
+        Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, [$this, 'attachActivityBadgeScript']);
+
         Event::on(
             Freeform::class,
             Freeform::EVENT_REGISTER_SUBNAV_ITEMS,
@@ -25,6 +29,19 @@ class NavigationBundle extends FeatureBundle
         );
     }
 
+    public function attachActivityBadgeScript(): void
+    {
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsConsoleRequest() || !$request->getIsCpRequest()
+            || !$this->plugin()->settings->getSettingsModel()->isActivityLoggingEnabled()
+            || !(PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)
+                || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
+            return;
+        }
+
+        \Craft::$app->getView()->registerAssetBundle(ActivityBadgeBundle::class);
+    }
+
     public function registerNavigationItems(RegisterCpSubnavItemsEvent $event): void
     {
         $freeform = $this->plugin();
@@ -33,6 +50,7 @@ class NavigationBundle extends FeatureBundle
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessAb = PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $canAccessPdfTemplates = $freeform->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_PDF_TEMPLATES_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
@@ -64,8 +82,8 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
-        if ($canAccessNotifications) {
-            $event->addSubnavItem('notifications', Freeform::t('Notifications'), 'freeform/notifications');
+        if ($canAccessNotifications || $canAccessPdfTemplates) {
+            $event->addSubnavItem('notifications', Freeform::t('Notifications'), $canAccessNotifications ? 'freeform/notifications' : 'freeform/notifications/pdf-templates');
         }
 
         if ($canAccessIntegrations) {
@@ -74,7 +92,14 @@ class NavigationBundle extends FeatureBundle
 
         if ($freeform->settings->getSettingsModel()->isActivityLoggingEnabled()
             && ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
-            $event->addSubnavItem('activity', Freeform::t('Activity Log'), 'freeform/activity');
+            $activity = $freeform->get('activity');
+            $badgeCount = $activity->getErrorCount() + $activity->getOperationalWarningCount();
+            $event->addSubnavItem(
+                'activity',
+                Freeform::t('Activity Log'),
+                'freeform/activity',
+                extraOptions: ['badgeCount' => $badgeCount ?: null],
+            );
         }
 
         $showImportExport = (

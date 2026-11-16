@@ -83,7 +83,7 @@ class ExportNotifications extends FeatureBundle
                 'notification' => $notification,
             ]);
 
-            if (!$this->checkLock($notification, $logger)) {
+            if (!$this->isExportAllowed($notification, $logger) || !$this->checkLock($notification, $logger)) {
                 $logger->info("ExportNotifications handleNotifications - {$notification->name} - Finished processing", [
                     'notification' => $notification,
                 ]);
@@ -124,7 +124,7 @@ class ExportNotifications extends FeatureBundle
         ;
 
         foreach ($notifications as $notification) {
-            if (!$this->checkLockWithCustomCronSchedule($notification, $logger)) {
+            if (!$this->isExportAllowed($notification, $logger) || !$this->checkLockWithCustomCronSchedule($notification, $logger)) {
                 continue;
             }
 
@@ -134,6 +134,22 @@ class ExportNotifications extends FeatureBundle
 
             $logger->info("ExportNotifications handleNotificationsWithCustomCronSchedule - {$notification->name} - Finished processing");
         }
+    }
+
+    private function isExportAllowed(ExportNotificationRecord $notification, LoggerInterface $logger): bool
+    {
+        $profile = $notification->getProfile();
+        if ($profile && Freeform::getInstance()->exportProfiles->isExportTypeAllowed($profile, (string) $notification->fileType)) {
+            return true;
+        }
+
+        $logger->warning('Export notification skipped because its profile or allowed file type is unavailable.', [
+            'notificationId' => $notification->id,
+            'profileId' => $notification->profileId,
+            'fileType' => $notification->fileType,
+        ]);
+
+        return false;
     }
 
     private function sendNotification(ExportNotificationRecord $notification, LoggerInterface $logger, string $logMethod): void
@@ -188,12 +204,7 @@ class ExportNotifications extends FeatureBundle
         $message = $mailer->compileMessage($template, $variables, $logger);
         $message->setTo($processedRecipients);
 
-        $exporter = $exportService->createExporter(
-            $notification->fileType,
-            $form,
-            $profile->getQuery(),
-            $profile->getFieldDescriptors()
-        );
+        $exporter = $exportService->createProfileExporter($notification->fileType, $profile);
 
         $fileName = $mailer->renderString($notification->fileName ?? '', $variables);
 

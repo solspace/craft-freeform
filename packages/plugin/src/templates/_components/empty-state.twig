@@ -1,0 +1,31 @@
+{#
+    Shared empty-state reference: centered icon, title, concise description, and actions.
+    Include with title and description; optional id, hidden, primaryAction, secondaryAction.
+    Actions accept label and href; primaryAction.add uses Craft's native plus icon.
+    secondaryAction.newTab opens documentation in a new tab.
+    Use embed and override the icon block for a different illustration.
+    Layout is shared with React via packages/styles/src/shared/empty-state.css.
+#}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\EmptyStateBundle') %}
+<div{% if id|default(null) %} id="{{ id }}"{% endif %} class="ff-empty-state"{% if hidden|default(false) %} hidden{% endif %}>
+    <div class="ff-empty-state-icon" aria-hidden="true">
+        {% block icon %}
+            <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                <path d="M18 4H9a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V11z"/>
+                <path d="M18 4v7h7M12 17h8M12 22h6"/>
+            </svg>
+        {% endblock %}
+    </div>
+    <h2>{{ title }}</h2>
+    {% if description|default('') %}<p>{{ description }}</p>{% endif %}
+    {% if primaryAction|default(null) or secondaryAction|default(null) %}
+        <div class="ff-empty-state-actions">
+            {% block primaryAction %}
+                {% if primaryAction|default(null) %}<a class="btn submit{{ primaryAction.add|default(false) ? ' add icon' }}" href="{{ primaryAction.href }}">{{ primaryAction.label }}</a>{% endif %}
+            {% endblock %}
+            {% if secondaryAction|default(null) %}
+                <a href="{{ secondaryAction.href }}"{% if secondaryAction.newTab|default(false) %} target="_blank" rel="noopener noreferrer"{% endif %}>{{ secondaryAction.label }}</a>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>

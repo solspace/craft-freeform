@@ -2,6 +2,7 @@
 @use "../service-introduction/service-introduction.css";
 
 @use "../measurement";
+@use "../../shared/dark-mode-tip.css";
 
 .freeform-settings-readonly {
   .lightswitch.noteditable,

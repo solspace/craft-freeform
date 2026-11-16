@@ -8,7 +8,8 @@
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
-    { label: "Notification Wrappers"|t("freeform"), url: url("freeform/notifications/wrappers") },
+    { label: 'Email Notifications'|t('freeform'), url: url('freeform/notifications') },
+    { label: 'Wrappers'|t('freeform'), url: url('freeform/notifications/wrappers') },
     { label: title|t("freeform"), url: url("freeform/notifications/wrappers/" ~ segment3) },
 ] %}
 

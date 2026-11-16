@@ -47,6 +47,7 @@ type Config = {
       canOrganizeForms: boolean;
       canManageHtmlEmbeds: boolean;
       canUseSetupGuide?: boolean;
+      darkModeTip?: { visible: boolean; userKey: string; dismissUrl: string };
       canViewActivity?: boolean;
     };
     tinymce: {
@@ -67,6 +68,8 @@ type Config = {
     list: Site[];
   };
   permissions: {
+    settings: boolean;
+    abTests: Permission;
     integrations: Permission;
     notifications: Permission;
   };

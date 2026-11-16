@@ -49,9 +49,21 @@ export default defineConfig(({ mode, command }) => {
         "@ff-icons": path.resolve(__dirname, "./src/assets/icons"),
         "@ff-client": path.resolve(__dirname, "./src"),
         "@ff-widgets": path.resolve(__dirname, "../scripts/src/lib/cp/widgets"),
+        "@ff-dark-mode-tip": path.resolve(
+          __dirname,
+          "../scripts/src/lib/cp/dark-mode-tip.ts",
+        ),
+        "@ff-dark-mode-tip-styles": path.resolve(
+          __dirname,
+          "../styles/src/shared/dark-mode-tip.css",
+        ),
         "@ff-chart-styles": path.resolve(
           __dirname,
           "../styles/src/shared/chart.css",
+        ),
+        "@ff-empty-state-styles": path.resolve(
+          __dirname,
+          "../styles/src/shared/empty-state.css",
         ),
       },
     },
@@ -63,7 +75,9 @@ export default defineConfig(({ mode, command }) => {
       emptyOutDir: true,
       sourcemap: shouldGenerateSourceMaps,
       manifest: "manifest.json",
-      outDir: path.resolve(__dirname, "../plugin/src/Resources/js/client"),
+      // Never let Vite empty the directory Craft is serving. build.mjs
+      // validates and publishes the completed output, with the manifest last.
+      outDir: path.resolve(__dirname, ".client-build"),
       rollupOptions: {
         input: path.resolve(__dirname, "./src/index.tsx"),
         output: {

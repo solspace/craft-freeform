@@ -86,7 +86,12 @@ abstract class AbstractNotificationsController extends BaseController
 
     public function actionRedirectToNav(): Response
     {
-        $storageType = Freeform::getInstance()->settings->getSettingsModel()->emailTemplateStorageType;
+        $settings = $this->getSettingsService()->getSettingsModel();
+        if (Settings::EMAIL_TEMPLATE_METHOD_FORM === $settings->emailTemplateMethod) {
+            return $this->redirect('freeform/notifications/wrappers');
+        }
+
+        $storageType = $settings->emailTemplateStorageType;
 
         return match ($storageType) {
             Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => $this->redirect('freeform/notifications/database'),

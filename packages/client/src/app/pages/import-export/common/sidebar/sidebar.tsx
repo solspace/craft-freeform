@@ -1,4 +1,5 @@
 import { SidebarContainer } from "@components/layout/blocks/sidebar-container";
+import { SidebarNavigation } from "@components/layout/sidebar/sidebar-navigation";
 import classes from "@ff-client/utils/classes";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
@@ -40,23 +41,21 @@ export const Sidebar: React.FC = () => {
 
   return (
     <SidebarContainer>
-      <nav>
-        <ul>
-          {data.map((item, i) => {
-            if (item?.heading) {
-              return (
-                <li className="heading" key={i}>
-                  <span>{translate(item.heading)}</span>
-                </li>
-              );
-            }
+      <SidebarNavigation
+        scope="import-export"
+        items={data.map((item, i) => {
+          if (item?.heading) {
+            return { key: String(i), heading: translate(item.heading) };
+          }
 
-            const url = item.url.replace(/^freeform/, "");
-            const isLocal = localLinks.some((keyword) => url.includes(keyword));
-            const label = translate(item.title);
+          const url = item.url.replace(/^freeform/, "");
+          const isLocal = localLinks.some((keyword) => url.includes(keyword));
+          const label = translate(item.title);
 
-            return (
-              <li key={i}>
+          return {
+            key: String(i),
+            content: (
+              <>
                 {isLocal && (
                   <NavLink
                     to={url}
@@ -66,11 +65,11 @@ export const Sidebar: React.FC = () => {
                   </NavLink>
                 )}
                 {!isLocal && <a href={generateUrl(url)}>{label}</a>}
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+              </>
+            ),
+          };
+        })}
+      />
     </SidebarContainer>
   );
 };

@@ -1,0 +1,6 @@
+{% set fileIcons = {excel: 'file-excel', csv: 'file-csv', json: 'file-code', xml: 'file-xml', text: 'file-lines'} %}
+<span class="ff-export-file-icon ff-export-file-icon--{{ type }}" aria-hidden="true">
+    {{ svg(craft.app.version|split('.')|first >= 5
+        ? '@app/icons/solid/' ~ (fileIcons[type] ?? 'file') ~ '.svg'
+        : '@appicons/file.svg')|attr({focusable: 'false'}) }}
+</span>

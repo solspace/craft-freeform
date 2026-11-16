@@ -30,6 +30,9 @@ class ExportProfileModel extends Model
     public ?array $filters = null;
     public array|string|null $statuses = null;
 
+    /** Null preserves unrestricted formats for existing profiles. */
+    public ?array $allowedExportTypes = null;
+
     public static function create(Form $form): self
     {
         $model = new self();
@@ -163,6 +166,7 @@ class ExportProfileModel extends Model
             'fields',
             'statuses',
             'filters',
+            'allowedExportTypes',
         ];
     }
 

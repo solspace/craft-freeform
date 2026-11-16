@@ -67,6 +67,7 @@
         {{ forms.selectField({
             label: "Export Profile"|t('freeform'),
             instructions: "Choose the Export Profile to use for this notification."|t('freeform'),
+            id: 'profileId',
             name: "profileId",
             value: notification.profileId,
             errors: notification.getErrors("profileId"),
@@ -74,15 +75,18 @@
             options: craft.freeformServices.exportProfiles.allNamesById,
         })}}
 
+        <div data-export-profile-formats="{{ profileExporterTypes|json_encode }}" data-export-format-placeholder="{{ 'Choose a file type'|t('freeform') }}">
         {{ forms.selectField({
             label: "File Type"|t('freeform'),
             instructions: "Choose the export file type to use for this notification."|t('freeform'),
+            id: 'fileType',
             name: "fileType",
             value: notification.fileType,
             errors: notification.getErrors("fileType"),
             required: true,
-            options: craft.freeformServices.exportProfiles.exporterTypes,
+            options: fileTypeOptions,
         })}}
+        </div>
 
         {{ forms.selectField({
             label: "Frequency"|t('freeform'),

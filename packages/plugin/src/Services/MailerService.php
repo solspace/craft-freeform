@@ -310,19 +310,11 @@ class MailerService extends BaseService implements MailHandlerInterface
         $pdfTemplates = $notification->getPdfTemplateRecords();
         if ($pdfTemplates) {
             foreach ($pdfTemplates as $pdfTemplate) {
-                $fileName = $this->renderString($pdfTemplate->fileName, $values);
-                $body = $this->renderString($pdfTemplate->getBody(), $values);
-
-                if (!preg_match('/\.pdf$/i', $fileName)) {
-                    $fileName .= '.pdf';
-                }
-
-                $domPdf = new Dompdf();
-                $domPdf->loadHtml($body);
-                $domPdf->render();
+                $pdf = $this->renderPdf($pdfTemplate->getBody(), $pdfTemplate->fileName, $values);
+                $fileName = $pdf['fileName'];
 
                 $pdfPath = Assets::tempFilePath('pdf');
-                file_put_contents($pdfPath, $domPdf->output());
+                file_put_contents($pdfPath, $pdf['content']);
 
                 $message->attach($pdfPath, [
                     'fileName' => $fileName,
@@ -403,6 +395,27 @@ class MailerService extends BaseService implements MailHandlerInterface
         return $recipients->emailsToArray(
             fn (string $recipient): string => $this->isolatedTwig->render($recipient, $variables),
         );
+    }
+
+    /**
+     * Render previews and notification attachments through the same Twig and PDF pipeline.
+     *
+     * @return array{fileName: string, content: string}
+     */
+    public function renderPdf(string $body, string $fileName, array $variables): array
+    {
+        $fileName = $this->renderString($fileName, $variables);
+        $body = $this->renderString($body, $variables);
+
+        if (!preg_match('/\.pdf$/i', $fileName)) {
+            $fileName .= '.pdf';
+        }
+
+        $pdf = new Dompdf();
+        $pdf->loadHtml($body);
+        $pdf->render();
+
+        return ['fileName' => $fileName, 'content' => $pdf->output()];
     }
 
     public function compileTwigVariables(Form $form, NotificationTemplate $template, ?Submission $submission = null): array

@@ -123,6 +123,9 @@ class ProfilesController extends BaseController
         $profileId = \Craft::$app->request->post('profileId');
         $profile = $this->getNewOrExistingProfile($profileId, $form);
 
+        if (\array_key_exists('allowedExportTypes', $post) && !\is_array($post['allowedExportTypes'])) {
+            $post['allowedExportTypes'] = [];
+        }
         $profile->setAttributes($post);
 
         $profile->fields = $post['fieldSettings'];
@@ -180,10 +183,7 @@ class ProfilesController extends BaseController
         }
 
         $form = $profile->getForm();
-        $query = $profile->getQuery();
-        $descriptors = $profile->getFieldDescriptors();
-
-        $exporter = $exportProfilesService->createExporter($type, $form, $query, $descriptors);
+        $exporter = $exportProfilesService->createProfileExporter((string) $type, $profile);
 
         $exportProfilesService->export($exporter, $form);
     }
@@ -200,7 +200,7 @@ class ProfilesController extends BaseController
                 'profile' => $model,
                 'title' => $title,
                 'formOptionList' => $this->getFormsService()->getAllFormNames(),
-                'statusOptionList' => $this->getStatusesService()->getAllStatusNames(),
+                'statuses' => $this->getStatusesService()->getAllStatuses(),
                 'continueEditingUrl' => 'freeform/export/profiles/{id}',
                 'crumbs' => [
                     ['label' => 'Freeform', 'url' => UrlHelper::cpUrl('freeform')],

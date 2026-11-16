@@ -6,6 +6,7 @@ export type Config = {
   required: boolean;
   integration: string;
   amountFields: string[];
+  storageOptInField?: string | null;
   layout: StripeLayout;
   theme: StripeTheme;
   floatingLabels: boolean;

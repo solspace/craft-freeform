@@ -65,3 +65,6 @@ jobs:
 
       - name: pnpm test
         run: pnpm --filter @ff/client test
+
+      - name: Client build publishing tests
+        run: pnpm --filter @ff/client test:build

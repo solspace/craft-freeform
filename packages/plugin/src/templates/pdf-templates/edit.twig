@@ -1,13 +1,14 @@
-{% extends "freeform/_layouts/settings" %}
+{% extends "freeform/notifications/_layout" %}
 {% import "_includes/forms" as forms %}
 
-{% set selectedSubnavItem = "general" %}
-{% set saveShortcutRedirect = 'freeform/settings/pdf-templates/{id}' %}
+{% set selectedSubnavItem = "notifications" %}
+{% set saveShortcutRedirect = 'freeform/notifications/pdf-templates/{id}' %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
-    { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
-    { label: title, url: url("freeform/settings/pdf-templates/" ~ (template.id ?: 'new') ) },
+    { label: 'Email Notifications'|t('freeform'), url: url('freeform/notifications') },
+    { label: 'PDFs'|t('freeform'), url: url('freeform/notifications/pdf-templates') },
+    { label: title, url: url("freeform/notifications/pdf-templates/" ~ (template.id ?: 'new') ) },
 ] %}
 
 {% set fullPageForm = true %}
@@ -17,6 +18,9 @@
     {% if not readOnly %}
 
         <div class="buttons">
+            {% if previewForms|length %}
+                <button type="button" class="btn" id="pdf-preview-open">{{ 'Preview PDF'|t('freeform') }}</button>
+            {% endif %}
             <div class="btngroup submit">
                 <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
 
@@ -24,13 +28,13 @@
                 <div class="menu">
                     <ul>
                         <li>
-                            <a class="formsubmit" data-redirect="{{ ('freeform/settings/pdf-templates/{id}')|hash }}">
+                            <a class="formsubmit" data-redirect="{{ ('freeform/notifications/pdf-templates/{id}')|hash }}">
                                 {{ "Save and continue editing"|t('freeform') }}
                                 <span class="shortcut">⌘S</span>
                             </a>
                         </li>
                         <li>
-                            <a class="formsubmit" data-redirect="{{ url('freeform/settings/pdf-templates/new')|hash }}">
+                            <a class="formsubmit" data-redirect="{{ url('freeform/notifications/pdf-templates/new')|hash }}">
                                 {{ "Save and add another"|t('freeform') }}
                             </a>
                         </li>
@@ -47,7 +51,7 @@
 
     <input type="hidden" name="action" value="freeform/pdf/pdf-templates/save">
     <input type="hidden" name="id" value="{{ template.id }}" />
-    {{ redirectInput('freeform/settings/pdf-templates') }}
+    {{ redirectInput('freeform/notifications/pdf-templates') }}
     {{ csrfInput() }}
 
     {{ forms.textField({
@@ -122,6 +126,10 @@
         }
     </style>
     <div id="editor">{{ template.body }}</div>
+
+    {% if previewForms|length %}
+        {% include 'freeform/pdf-templates/_preview' %}
+    {% endif %}
 
 {% endblock %}
 

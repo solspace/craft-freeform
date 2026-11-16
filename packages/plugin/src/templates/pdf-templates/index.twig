@@ -1,106 +1,232 @@
-{% extends "freeform/_layouts/settings" %}
+{% extends 'freeform/notifications/_layout' %}
+
+{% set canManageTemplates = currentUser.can('freeform-pdfTemplatesManage') %}
+
+{% do view.registerTranslations('freeform', [
+    'Are you sure you want to delete “{name}”?',
+    'Unable to update this PDF template.',
+    'PDF template deleted.',
+    'Unable to update this PDF template. Please try again.',
+]) %}
 
 {% block actionButton %}
-
-    {% if currentUser.can("freeform-pdfTemplatesManage") %}
-        {% if craft.freeform.pro == "pro" %}
-            <div class="buttons">
-                <div class="btngroup submit">
-                    <a class="btn submit add icon" href="{{ url('freeform/settings/pdf-templates/new') }}">
-                        {{ "New Template"|t('freeform') }}
-                    </a>
-                </div>
-            </div>
-        {% endif %}
+    {% if canManageTemplates and craft.freeform.pro == 'pro' %}
+        <div class="buttons">
+            <a class="btn submit add icon" href="{{ url('freeform/notifications/pdf-templates/new') }}">
+                {{ 'New Template'|t('freeform') }}
+            </a>
+        </div>
     {% endif %}
-
 {% endblock %}
 
 {% set crumbs = [
-    { label: craft.freeform.name, url: url("freeform") },
-    { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: 'Email Notifications'|t('freeform'), url: url('freeform/notifications') },
+    { label: 'PDFs'|t('freeform'), url: url('freeform/notifications/pdf-templates') },
 ] %}
 
 {% block content %}
-
-    {% if craft.freeform.pro == "pro" %}
-
-        {% if templates|length %}
-
-            <div class="vue-admin-tablepane tablepane">
-                <table id="templates" data-file-templates class="data fullwidth collapsible">
+    {% if craft.freeform.pro == 'pro' %}
+        <div id="pdf-template-list"{% if not templates|length %} hidden{% endif %}>
+            <div class="tablepane ff-pdf-tablepane">
+                <table id="templates" class="data fullwidth ff-pdf-templates">
                     <thead>
-                    <th scope="col">{{ "Name"|t('freeform') }}</th>
-                    <th scope="col">{{ "ID"|t('freeform') }}</th>
-                    <th scope="col">{{ "File Name"|t('freeform') }}</th>
-                    <th scope="col">{{ "Description"|t('freeform') }}</th>
-                    <td class="thin"></td>
+                        <tr>
+                            <th scope="col" class="ff-pdf-template-column">{{ 'Template'|t('freeform') }}</th>
+                            <th scope="col">{{ 'File name'|t('freeform') }}</th>
+                            {% if canManageTemplates %}
+                                <th scope="col" class="ff-pdf-actions-column"><span class="visually-hidden">{{ 'Actions'|t('freeform') }}</span></th>
+                            {% endif %}
+                        </tr>
                     </thead>
                     <tbody>
-                    {# File based templates #}
-                    {% for id, template in templates %}
-                        <tr data-id="{{ id }}" data-name="{{ template.name|t('freeform') }}">
-                            <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                                {% if currentUser.can("freeform-pdfTemplatesManage") %}
-                                    <a href="{{ url('freeform/settings/pdf-templates/' ~ id) }}">
-                                        {{ template.name }}
-                                    </a>
-                                {% else %}
-                                    {{ template.name }}
-                                {% endif %}
-                            </th>
-                            <td data-title="{{ 'ID'|t('freeform') }}">
-                                <code>{{ template.id }}</code>
-                            </td>
-                            <td data-title="{{ 'File Name'|t('freeform') }}">
-                                <code>{{ template.fileName }}</code>
-                            </td>
-                            <td style="width: 50%;">
-                                {{ template.description }}
-                            </td>
-                            <td class="thin">
-                                <div class='action-buttons'>
-                                    {% if currentUser.can("freeform-pdfTemplatesManage") %}
-                                        <a class="clone icon" data-id="{{ id }}"
-                                        title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
-                                        <a class="delete icon" data-id="{{ id }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                        {% for id, template in templates %}
+                            <tr data-id="{{ id }}" data-name="{{ template.name }}">
+                                <th scope="row" class="ff-pdf-template-cell">
+                                    <div class="ff-pdf-template-heading">
+                                        {% if canManageTemplates %}
+                                            <a href="{{ url('freeform/notifications/pdf-templates/' ~ id) }}">{{ template.name }}</a>
+                                        {% else %}
+                                            <span>{{ template.name }}</span>
+                                        {% endif %}
+                                        <span class="ff-pdf-template-id" title="{{ 'ID {id}'|t('freeform', {id: template.id}) }}">#{{ template.id }}</span>
+                                    </div>
+                                    {% if template.description %}
+                                        <p class="ff-pdf-template-description">{{ template.description }}</p>
                                     {% endif %}
-                                </div>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                                </th>
+                                <td class="ff-pdf-filename-cell" data-title="{{ 'File name'|t('freeform') }}">
+                                    <div class="ff-pdf-filename-wrap">
+                                        <code class="ff-pdf-filename" tabindex="0" aria-describedby="pdf-filename-{{ id }}">{{ template.fileName }}</code>
+                                        <span role="tooltip" id="pdf-filename-{{ id }}" class="ff-pdf-filename-tooltip">{{ template.fileName }}</span>
+                                    </div>
+                                </td>
+                                {% if canManageTemplates %}
+                                    <td class="ff-pdf-actions-cell">
+                                        <button type="button" class="btn menubtn ff-pdf-actions" aria-label="{{ 'Actions for {name}'|t('freeform', {name: template.name}) }}">
+                                            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+                                        </button>
+                                        <div class="menu">
+                                            <ul>
+                                                <li><a role="button" tabindex="0" data-pdf-action="duplicate">{{ 'Duplicate'|t('freeform') }}</a></li>
+                                            </ul>
+                                            <hr>
+                                            <ul>
+                                                <li><a role="button" tabindex="0" class="error" data-pdf-action="delete">{{ 'Delete'|t('freeform') }}</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
-
-        {% else %}
-
-            <div class="zilch">
-                {{ "No PDF templates exist yet."|t("freeform") }}
-            </div>
-
-        {% endif %}
-
-    {% else %}
-
-        <div class="zilch">
-            {{ "Upgrade to Freeform Pro to access PDF Templates."|t('freeform') }}
         </div>
-
+        {% include 'freeform/pdf-templates/_empty' with {isEmpty: not templates|length} %}
+    {% else %}
+        <div class="zilch">{{ 'Upgrade to Freeform Pro to access PDF Templates.'|t('freeform') }}</div>
     {% endif %}
-
 {% endblock %}
 
+{% css %}
+    #pdf-template-list[hidden], #notemplates[hidden] { display: none !important; }
+    #content:has(> #pdf-template-list:not([hidden])) { padding-bottom: 0; }
+    .ff-pdf-tablepane { overflow: visible; margin-block-end: 0; }
+    .ff-pdf-templates { table-layout: fixed; --ff-pdf-twig-color: #6d28a3; --ff-pdf-twig-string-color: #276442; }
+    :root[data-dark-mode="dark"] .ff-pdf-templates { --ff-pdf-twig-color: #c8a4ee; --ff-pdf-twig-string-color: #a5c99c; }
+    .ff-pdf-templates .ff-pdf-template-column { width: 48%; }
+    .ff-pdf-templates .ff-pdf-actions-column { width: 60px; }
+    .ff-pdf-templates thead th { font-size: 12px; font-weight: 600; color: var(--light-text-color, #667789); }
+    .ff-pdf-templates tbody > tr > th, .ff-pdf-templates tbody > tr > td { padding-block: 12px; vertical-align: top; border-top: 1px solid var(--hairline-color, #e3e8ef); }
+    .ff-pdf-templates tbody > tr + tr > th, .ff-pdf-templates tbody > tr + tr > td { box-shadow: inset 0 1px 0 rgba(128, 128, 128, .18); }
+    .ff-pdf-template-heading { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+    .ff-pdf-template-heading > a, .ff-pdf-template-heading > span:first-child { min-width: 0; font-size: 14px; font-weight: 600; line-height: 20px; overflow-wrap: anywhere; }
+    .ff-pdf-template-id { flex-shrink: 0; font-size: 11px; line-height: 18px; font-weight: normal; color: var(--light-text-color, #667789); opacity: .8; }
+    .ff-pdf-template-description { margin: 3px 0 0; max-width: 72ch; font-size: 13px; line-height: 1.45; font-weight: normal; color: var(--light-text-color, #667789); overflow-wrap: anywhere; }
+    .ff-pdf-filename-wrap { position: relative; }
+    .ff-pdf-filename { display: block; width: fit-content; max-width: 100%; box-sizing: border-box; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 8px; border: 1px solid rgba(128, 128, 128, .18); background: rgba(128, 128, 128, .06); font-size: 12px; line-height: 20px; color: var(--light-text-color, #667789); border-radius: 5px; }
+    .ff-pdf-filename:focus-visible { outline: 2px solid var(--link-color, #0d78f2); outline-offset: 3px; }
+    .ff-pdf-filename-tooltip { display: none; position: absolute; inset-inline-start: 0; top: calc(100% + 6px); z-index: 10; width: max-content; max-width: min(600px, 100%); box-sizing: border-box; padding: 10px 14px; border: 1px solid var(--hairline-color, #dfe5ec); border-radius: 5px; background: var(--pane-bg, #fff); color: var(--text-color, #33404d); box-shadow: 0 4px 16px #0002; font-family: monospace; font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; white-space: normal; }
+    .ff-pdf-filename-wrap:hover .ff-pdf-filename-tooltip, .ff-pdf-filename:focus + .ff-pdf-filename-tooltip { display: block; }
+    .ff-pdf-twig-expression { color: var(--ff-pdf-twig-color); }
+    .ff-pdf-twig-string { color: var(--ff-pdf-twig-string-color); }
+    .ff-pdf-twig-comment { color: var(--light-text-color, #667789); }
+    .ff-pdf-templates .btn.ff-pdf-actions { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; min-height: 28px; padding: 0; background: transparent; border: 1px solid transparent; box-shadow: none; color: var(--light-text-color, #667789); }
+    .ff-pdf-templates .btn.ff-pdf-actions:hover, .ff-pdf-templates .btn.ff-pdf-actions[aria-expanded="true"] { background: var(--ui-control-bg-color, #edf1f6); color: var(--text-color, #33404d); }
+    .ff-pdf-templates .btn.ff-pdf-actions:focus-visible { outline: 2px solid var(--link-color, #0d78f2); outline-offset: 2px; }
+    .ff-pdf-templates .btn.menubtn.ff-pdf-actions::after { display: none; }
+    .ff-pdf-actions svg { display: block; width: 18px; height: 18px; fill: currentColor; }
+    .ff-pdf-actions-cell { text-align: end; }
+    @media (max-width: 700px) {
+        .ff-pdf-templates thead { display: none; }
+        .ff-pdf-templates tbody > tr { display: grid; grid-template-columns: minmax(0, 1fr) 40px; border-bottom: 1px solid var(--hairline-color, #dfe5ec); }
+        .ff-pdf-templates tbody > tr:last-child { border-bottom: 0; }
+        .ff-pdf-templates tbody > tr > th, .ff-pdf-templates tbody > tr > td { border: 0; box-shadow: none; padding: 16px; }
+        .ff-pdf-template-cell { grid-column: 1; grid-row: 1; }
+        .ff-pdf-actions-cell { grid-column: 2; grid-row: 1; align-self: start; }
+        .ff-pdf-templates tbody > tr > .ff-pdf-filename-cell { grid-column: 1 / -1; padding-top: 0; }
+        .ff-pdf-template-heading { gap: 8px; }
+        .ff-pdf-templates tbody > tr > .ff-pdf-actions-cell { padding-inline: 0 8px; }
+    }
+{% endcss %}
 
 {% js %}
-    var confirmDeleteMessage = '{{ "Are you sure you want to delete this template?"|t('freeform') }}';
+(() => {
+    // Decorate literal text only: never compile or evaluate filename expressions.
+    function highlightFilename(element) {
+        const source = element.textContent || '';
+        const fragment = document.createDocumentFragment();
+        // Encode opening braces so the surrounding Twig template cannot parse them.
+        const openings = /\x7b[\x7b%#]/g;
+        const closings = { '\x7b\x7b': '}}', '\x7b%': '%}', '\x7b#': '#}' };
+        let cursor = 0;
+        let opening;
+        while ((opening = openings.exec(source)) !== null) {
+            const closing = closings[opening[0]];
+            const isComment = opening[0][1] === '#';
+            let quote = null;
+            let end = -1;
+            for (let index = opening.index + 2; index < source.length; ++index) {
+                const character = source[index];
+                if (quote) {
+                    if (character === '\\') ++index;
+                    else if (character === quote) quote = null;
+                } else if (source.startsWith(closing, index)) {
+                    end = index + 2;
+                    break;
+                } else if (!isComment && (character === '"' || character === "'")) {
+                    quote = character;
+                }
+            }
+            if (end === -1) break;
+            fragment.append(document.createTextNode(source.slice(cursor, opening.index)));
+            const expression = document.createElement('span');
+            expression.className = isComment ? 'ff-pdf-twig-comment' : 'ff-pdf-twig-expression';
+            const text = source.slice(opening.index, end);
+            let offset = 0;
+            if (!isComment) {
+                const strings = /"(?:\\[\s\S]|[^"\\])*"|'(?:\\[\s\S]|[^'\\])*'/g;
+                for (const string of text.matchAll(strings)) {
+                    expression.append(document.createTextNode(text.slice(offset, string.index)));
+                    const value = document.createElement('span');
+                    value.className = 'ff-pdf-twig-string';
+                    value.textContent = string[0];
+                    expression.append(value);
+                    offset = string.index + string[0].length;
+                }
+            }
+            expression.append(document.createTextNode(text.slice(offset)));
+            fragment.append(expression);
+            cursor = end;
+            openings.lastIndex = end;
+        }
+        fragment.append(document.createTextNode(source.slice(cursor)));
+        element.replaceChildren(fragment);
+    }
+    document.querySelectorAll('.ff-pdf-filename, .ff-pdf-filename-tooltip').forEach(highlightFilename);
 
-    var adminTable = new Craft.AdminTable({
-        tableSelector: '#templates',
-        noObjectsSelector: '#notemplates',
-        newObjectBtnSelector: '#newtemplatecontainer',
-        deleteAction: 'freeform/pdf/pdf-templates/delete',
-        confirmDeleteMessage: confirmDeleteMessage,
+    const list = document.getElementById('pdf-template-list');
+    const empty = document.getElementById('notemplates');
+    const buttons = document.querySelectorAll('.ff-pdf-actions');
+    buttons.forEach(button => {
+        const row = button.closest('tr');
+        let pending = false;
+        new Garnish.MenuBtn($(button), {
+            onOptionSelect: async function(option) {
+                const action = option.dataset.pdfAction;
+                if (pending || !['duplicate', 'delete'].includes(action)) return;
+                if (action === 'delete' && !confirm(Craft.t('freeform', 'Are you sure you want to delete “{name}”?', { name: row.dataset.name }))) return;
+                pending = true;
+                button.disabled = true;
+                button.setAttribute('aria-busy', 'true');
+                try {
+                    const response = await Craft.sendActionRequest('POST', 'freeform/pdf/pdf-templates/' + action, { data: { id: row.dataset.id } });
+                    if (!response.data.success) throw new Error(response.data.message || Craft.t('freeform', 'Unable to update this PDF template.'));
+                    if (action === 'duplicate') {
+                        window.location.reload();
+                    } else {
+                        row.remove();
+                        Craft.cp.displayNotice(Craft.t('freeform', 'PDF template deleted.'));
+                        const next = list.querySelector('.ff-pdf-actions');
+                        if (!next) {
+                            list.hidden = true;
+                            empty.hidden = false;
+                            const target = empty.querySelector('a');
+                            if (target) target.focus();
+                        } else {
+                            next.focus();
+                        }
+                    }
+                } catch (exception) {
+                    Craft.cp.displayError(exception.response?.data?.message || exception.message || Craft.t('freeform', 'Unable to update this PDF template. Please try again.'));
+                } finally {
+                    pending = false;
+                    button.disabled = false;
+                    button.removeAttribute('aria-busy');
+                }
+            },
+        });
     });
-
+})();
 {% endjs %}

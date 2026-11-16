@@ -35,6 +35,7 @@ export const initStripe =
       floatingLabels,
       integration,
       amountFields,
+      storageOptInField,
       loadStripe: getStripe,
     } = config(container);
     const { elementMap, form } = props;
@@ -159,7 +160,10 @@ export const initStripe =
                 })
                 .catch((error) => {
                   form.freeform._renderFieldErrors({
-                    [handle]: [error.response.data.message],
+                    [handle]: error?.response?.data?.errors ?? [
+                      error?.response?.data?.message ??
+                        "Could not update payment amount.",
+                    ],
                   });
                 })
                 .finally(() => {
@@ -220,7 +224,10 @@ export const initStripe =
       .catch((error) => {
         initializedContainers.delete(container);
         elementMap.delete(field);
-        field.innerHTML = "Could not load payment element.";
+        field.textContent =
+          error?.response?.data?.errors?.join(" ") ??
+          error?.response?.data?.message ??
+          "Could not load payment element.";
 
         const errors: Record<string, string[]> = {};
         amountFields.forEach((handle) => {
@@ -232,6 +239,21 @@ export const initStripe =
         form.freeform._renderFieldErrors(errors);
 
         const executeOnce = () => {
+          amountFields.forEach((handle) => {
+            const input =
+              form.elements.namedItem(handle) ??
+              form.elements.namedItem(`${handle}[]`);
+            const inputs =
+              input instanceof RadioNodeList ? Array.from(input) : [input];
+            inputs.forEach((input) => {
+              if (input) {
+                form.freeform._removeMessageFrom(
+                  input as HTMLInputElement,
+                  true,
+                );
+              }
+            });
+          });
           initStripe(props)(container);
 
           amountInputs.forEach((input) => {
@@ -239,7 +261,13 @@ export const initStripe =
           });
         };
 
-        const amountInputs = amountFields.flatMap((handle) => {
+        const recoveryFields = [
+          ...new Set([
+            ...amountFields,
+            ...(storageOptInField ? [storageOptInField] : []),
+          ]),
+        ];
+        const amountInputs = recoveryFields.flatMap((handle) => {
           const input =
             form.elements.namedItem(handle) ??
             form.elements.namedItem(`${handle}[]`);

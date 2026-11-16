@@ -1,0 +1,8 @@
+{% include 'freeform/_components/empty-state' with {
+    id: 'notemplates',
+    hidden: not isEmpty,
+    title: 'Create your first PDF template'|t('freeform'),
+    description: 'Turn form submissions into PDFs you can attach to notification emails. Customize the content with HTML and Twig, then preview it using an existing submission.'|t('freeform'),
+    primaryAction: canManageTemplates ? {label: 'New Template'|t('freeform'), href: url('freeform/notifications/pdf-templates/new'), add: true} : null,
+    secondaryAction: {label: 'View documentation'|t('freeform'), href: 'https://docs.solspace.com/craft/freeform/v5/configuration/settings/pdf-templates/', newTab: true},
+} only %}

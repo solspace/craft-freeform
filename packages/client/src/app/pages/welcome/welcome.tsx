@@ -1,4 +1,5 @@
 import { Breadcrumb } from "@components/breadcrumbs/breadcrumbs";
+import { DarkModeTip } from "@components/dark-mode-tip/dark-mode-tip";
 import config, { Edition } from "@config/freeform/freeform.config";
 import translate from "@ff-client/utils/translations";
 import { generateUrl } from "@ff-client/utils/urls";
@@ -306,6 +307,7 @@ export const WelcomeContent: React.FC<WelcomeContentProps> = ({
               </span>
             </button>
           </div>
+          <DarkModeTip />
         </section>
       </div>
       <div

@@ -1,0 +1,71 @@
+{% set canManage = currentUser.can('freeform-notificationsManage') %}
+{% set canConfigure = currentUser.can('freeform-settingsAccess') and craft.app.config.general.allowAdminChanges %}
+{% set formSpecific = kind != 'wrappers' and settings.emailTemplateMethod == 'form' %}
+{% set storageAllowed = kind == 'wrappers'
+    or (kind == 'files' and settings.emailTemplateStorageType in ['files', 'files_database'])
+    or (kind == 'database' and settings.emailTemplateStorageType in ['database', 'files_database']) %}
+{% set primaryAction = null %}
+{% set docsUrl = 'https://docs.solspace.com/craft/freeform/v5/forms/email-notifications/templates/' %}
+
+{% if formSpecific %}
+    {% set emptyTitle = 'Manage notifications in your forms'|t('freeform') %}
+    {% set emptyDescription = "This site uses form-specific email notifications. Open a form's Notifications tab to create and manage its messages."|t('freeform') %}
+    {% if currentUser.can('freeform-formsAccess') %}
+        {% set primaryAction = {label: 'View forms'|t('freeform'), href: url('freeform/forms')} %}
+    {% endif %}
+{% elseif not storageAllowed %}
+    {% set emptyTitle = kind == 'files' ? 'File templates are disabled'|t('freeform') : 'Database templates are disabled'|t('freeform') %}
+    {% set emptyDescription = 'This template storage type is not enabled for your site. You can change Template Storage Type in Template Manager.'|t('freeform') %}
+    {% if canConfigure %}
+        {% set primaryAction = {label: 'Template settings'|t('freeform'), href: url('freeform/settings/template-manager')} %}
+    {% endif %}
+{% elseif kind == 'files' %}
+    {% set emptyTitle = 'Create your first file template'|t('freeform') %}
+    {% set emptyDescription = 'Create reusable email templates as Twig files you can keep in version control. Use them across forms to send messages with submission data.'|t('freeform') %}
+    {% if not settings.absoluteEmailTemplateDirectory %}
+        {% set emptyTitle = 'Set up file-based email templates'|t('freeform') %}
+        {% set emptyDescription = 'Choose a template directory in Template Manager first. Then add reusable email templates as Twig files you can keep in version control.'|t('freeform') %}
+        {% if canConfigure %}
+            {% set primaryAction = {label: 'Set template directory'|t('freeform'), href: url('freeform/settings/template-manager')} %}
+        {% endif %}
+    {% elseif not settings.allowFileTemplateEdit %}
+        {% set emptyDescription = 'Add Twig email templates to your configured template directory to reuse them across forms. File editing in the control panel is disabled in Template Manager.'|t('freeform') %}
+        {% if canConfigure %}
+            {% set primaryAction = {label: 'Template settings'|t('freeform'), href: url('freeform/settings/template-manager')} %}
+        {% endif %}
+    {% elseif canManage %}
+        {% set primaryAction = {label: 'New Template'|t('freeform'), href: url('freeform/notifications/files/new'), add: true} %}
+    {% endif %}
+{% elseif kind == 'database' %}
+    {% set emptyTitle = 'Create your first database template'|t('freeform') %}
+    {% set emptyDescription = 'Create reusable email templates right in the control panel. Customize the message with HTML and Twig, then use it across your forms.'|t('freeform') %}
+    {% if canManage %}
+        {% set primaryAction = {label: 'New Template'|t('freeform'), href: url('freeform/notifications/database/new'), add: true} %}
+    {% endif %}
+{% else %}
+    {% set emptyTitle = 'Create your first notification wrapper'|t('freeform') %}
+    {% set emptyDescription = 'Give your emails a consistent layout. Define shared branding, headers, and footers, then reuse the wrapper across notification templates.'|t('freeform') %}
+    {% set docsUrl = docsUrl ~ '#template-wrappers' %}
+    {% if canManage %}
+        {% set primaryAction = {label: 'New Wrapper'|t('freeform'), href: url('freeform/notifications/wrappers/new'), add: true} %}
+    {% endif %}
+{% endif %}
+
+{% embed 'freeform/_components/empty-state' with {
+    title: emptyTitle,
+    description: emptyDescription,
+    primaryAction: primaryAction,
+    secondaryAction: {label: 'View documentation'|t('freeform'), href: docsUrl, newTab: true}
+} %}
+    {% block icon %}
+        <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            {% if kind == 'wrappers' %}
+                <rect x="5" y="4" width="22" height="24" rx="2"/><path d="M5 11h22M5 22h22M11 16h10M11 19h6"/>
+            {% elseif kind == 'files' %}
+                <path d="M19 4H8a2 2 0 0 0-2 2v20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V11zM19 4v7h7"/><rect x="10" y="16" width="12" height="8" rx="1"/><path d="m10 17 6 4 6-4"/>
+            {% else %}
+                <rect x="4" y="7" width="24" height="18" rx="2"/><path d="m4 9 12 9L28 9"/>
+            {% endif %}
+        </svg>
+    {% endblock %}
+{% endembed %}

@@ -1,0 +1,9 @@
+<button type="button" class="btn menubtn ff-notification-actions" data-notification-menu data-notification-type="{{ notificationType }}" aria-label="{{ 'Actions for {name}'|t('freeform', {name: templateName}) }}">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg>
+</button>
+<div class="menu">
+    <ul>
+        <li><a data-notification-action="duplicate">{{ 'Duplicate'|t('freeform') }}</a></li>
+        <li><a data-notification-action="delete" class="error">{{ 'Delete'|t('freeform') }}</a></li>
+    </ul>
+</div>

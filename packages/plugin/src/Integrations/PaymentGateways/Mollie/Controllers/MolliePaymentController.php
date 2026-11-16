@@ -6,6 +6,7 @@ use craft\helpers\UrlHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Mollie;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Services\MolliePaymentService;
@@ -31,6 +32,7 @@ class MolliePaymentController extends BaseMollieController
         $config,
         private IntegrationClientProvider $clientProvider,
         private IsolatedTwig $isolatedTwig,
+        private PaymentStorageService $storageService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -57,6 +59,12 @@ class MolliePaymentController extends BaseMollieController
                     $formField->setValue($values[$handle]);
                 }
             }
+        }
+
+        try {
+            $this->storageService->assertCanStore($form, $integration, 'Mollie');
+        } catch (\InvalidArgumentException $exception) {
+            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
         }
 
         $priceService = new MolliePriceService();

@@ -48,6 +48,24 @@ class ActivityPresentationTest extends TestCase
         self::assertFalse($record['isResolved']);
     }
 
+    #[TestWith([ActivityContext::PAYMENT_STORAGE_DISABLED, 'Enable Store Submitted Data'])]
+    #[TestWith([ActivityContext::PAYMENT_STORAGE_OPT_IN_REQUIRED, 'visitor must check it before payment'])]
+    public function testBlockedPaymentsIdentifyTheFormIntegrationAndRemedy(int $reason, string $remedy): void
+    {
+        $record = ActivityPresentation::present([
+            'event' => 'integration-error', 'formId' => 12, 'submissionId' => null,
+            'dateCreated' => '2026-11-16 16:00:00',
+            'metadata' => ['integrationId' => 22, 'reasonCode' => $reason],
+        ], [12 => 'Checkout'], [22 => 'Stripe']);
+        self::assertStringStartsWith('Stripe · Payment blocked:', $record['title']);
+        self::assertStringContainsString($remedy, $record['description']);
+        self::assertContains('Checkout #12', $record['previewFacts']);
+        self::assertSame('Stripe #22', $record['context']['Integration']);
+        self::assertSame('error', $record['level']);
+        self::assertTrue($record['actionable']);
+        self::assertNull($record['submissionId']);
+    }
+
     public function testExamplesUseTheSamePresentationContractAsRealRecords(): void
     {
         $examples = ActivityExamples::all();

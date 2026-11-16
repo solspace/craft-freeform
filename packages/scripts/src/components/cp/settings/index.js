@@ -1,4 +1,8 @@
 import { initColorPickers } from "../../../lib/color-picker";
+import {
+  dismissDarkModeTip,
+  subscribeDarkModeTip,
+} from "../../../lib/cp/dark-mode-tip";
 import { initDigestSchedules } from "./digest-schedule";
 import { initScriptInsertLocation } from "./script.location";
 import { loadBuilderTemplatesScript } from "./templates.builder";
@@ -17,6 +21,30 @@ $(() => {
   loadTemplatesModeScript();
   initToolbarEditors();
   initDigestSchedules();
+
+  const darkModeTip = document.querySelector("[data-dark-mode-tip]");
+  const dismissButton = darkModeTip?.querySelector(
+    "[data-dismiss-dark-mode-tip]",
+  );
+  if (darkModeTip) {
+    subscribeDarkModeTip(darkModeTip.dataset.userKey, () =>
+      darkModeTip.remove(),
+    );
+  }
+  dismissButton?.addEventListener("click", async () => {
+    dismissButton.disabled = true;
+    try {
+      await dismissDarkModeTip(darkModeTip.dataset.userKey, () =>
+        Craft.sendActionRequest(
+          "POST",
+          "freeform/settings/dismiss-dark-mode-tip",
+        ),
+      );
+    } catch {
+      dismissButton.disabled = false;
+      Craft.cp.displayError(dismissButton.dataset.dismissError);
+    }
+  });
 
   const sessionTime = $("#session-time");
   const sessionCount = $("#session-count");

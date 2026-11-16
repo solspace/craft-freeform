@@ -45,6 +45,8 @@ class ActivityContext
     public const PAYMENT_FAILED = 52;
     public const FORWARDING_FAILED = 53;
     public const IMPORT_FAILED = 54;
+    public const PAYMENT_STORAGE_DISABLED = 55;
+    public const PAYMENT_STORAGE_OPT_IN_REQUIRED = 56;
     public const INTEGRATION_CREATED = 60;
     public const INTEGRATION_UPDATED = 61;
     public const INTEGRATION_LINKED = 62;
@@ -86,6 +88,8 @@ class ActivityContext
         52 => ['Payment processing failed', 'A payment operation reported a failure. Review the gateway connection and related payment configuration.', 'Payment processing'],
         53 => ['Submission forwarding failed', 'The forwarding operation reported a failure. Review the destination configuration and service availability.', 'Submission forwarding'],
         54 => ['Import or migration failed', 'An import or migration operation reported a failure. Review the source configuration and supported data formats.', 'Import processing'],
+        55 => ['Payment blocked: submission storage disabled', 'Enable Store Submitted Data for this Form under Settings > General > Data Storage before accepting payments. No payment was initiated by this request.', 'Payment storage validation'],
+        56 => ['Payment blocked: storage opt-in required', 'The configured data storage opt-in checkbox was not checked. The visitor must check it before payment. Review the checkbox placement in the form. No payment was initiated by this request.', 'Payment storage validation'],
         60 => ['Record creation reported', 'The integration reported creating a record. External record IDs and contents are excluded.', 'Integration action'],
         61 => ['Record update reported', 'The integration reported updating a record. External record IDs and contents are excluded.', 'Integration action'],
         62 => ['Record association reported', 'The integration reported linking related records. External record IDs and contents are excluded.', 'Integration action'],

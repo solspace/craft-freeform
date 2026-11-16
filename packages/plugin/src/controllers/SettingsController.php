@@ -22,6 +22,7 @@ use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
 use Solspace\Freeform\Jobs\ManagedPingerRegisterJob;
 use Solspace\Freeform\Library\Codepack\MessageTemplateSamples;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\DarkModeTipHelper;
 use Solspace\Freeform\Library\Helpers\DefaultViewHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -83,6 +84,19 @@ class SettingsController extends BaseController
         ]);
 
         return $this->redirect(UrlHelper::cpUrl("freeform/{$defaultView}"));
+    }
+
+    public function actionDismissDarkModeTip(): Response
+    {
+        $this->requirePostRequest();
+        $this->requireAdmin(false);
+
+        \Craft::$app->getUsers()->saveUserPreferences(
+            \Craft::$app->getUser()->getIdentity(),
+            [DarkModeTipHelper::DISMISSED_PREFERENCE => true]
+        );
+
+        return $this->asJson(['success' => true]);
     }
 
     public function actionAddEmailTemplate(): Response
@@ -350,6 +364,7 @@ class SettingsController extends BaseController
                 'emailTemplateSamples' => MessageTemplateSamples::options('email'),
                 'aiIntegrations' => 'general' === $section && Freeform::getInstance()->isPro() ? $this->getIntegrationsService()->getEnabledAiIntegrationOptions() : [],
                 'readOnly' => $readOnly,
+                'darkModeTip' => 'general' === $section ? DarkModeTipHelper::getConfig() : null,
                 'externalIntegrations' => 'content-integrations' === $section ? (new ExternalIntegrations())->getCatalog() : [],
                 'contentFieldContainers' => 'content-integrations' === $section ? (new ExternalIntegrations())->getFieldContainers() : [],
                 'contentFieldContainerGuideUrl' => 'https://github.com/solspace/craft-freeform/blob/v5/packages/plugin/src/Library/Integrations/README.md#matrix-neo-and-content-block-fields',

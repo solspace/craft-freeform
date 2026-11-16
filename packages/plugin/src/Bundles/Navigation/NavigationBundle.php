@@ -74,7 +74,14 @@ class NavigationBundle extends FeatureBundle
 
         if ($freeform->settings->getSettingsModel()->isActivityLoggingEnabled()
             && ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
-            $event->addSubnavItem('activity', Freeform::t('Activity Log'), 'freeform/activity');
+            $activity = $freeform->get('activity');
+            $badgeCount = $activity->getErrorCount() + $activity->getOperationalWarningCount();
+            $event->addSubnavItem(
+                'activity',
+                Freeform::t('Activity Log'),
+                'freeform/activity',
+                extraOptions: ['badgeCount' => $badgeCount ?: null],
+            );
         }
 
         $showImportExport = (

@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\SettingsService;
 
 #[CoversNothing]
@@ -95,7 +96,12 @@ class NavigationBundleTest extends TestCase
     #[TestWith(['none', [Freeform::PERMISSION_SETTINGS_ACCESS], false])]
     #[TestWith(['none', [Freeform::PERMISSION_ACTIVITY_ACCESS], false])]
     #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], false, false])]
-    public function testActivityNavRequiresActiveRecordingAndPermission(string $style, array $permissions, bool $visible, bool $enabled = true): void
+    #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], true, true, 3, 2])]
+    #[TestWith(['activity', [Freeform::PERMISSION_SETTINGS_ACCESS], true, true, 0, 2])]
+    #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], true, true, 3, 0])]
+    #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], true, true, 3, 2, ''])]
+    #[TestWith(['activity', [Freeform::PERMISSION_ACTIVITY_ACCESS], true, true, 3, 2, 'submissions'])]
+    public function testActivityNavRequiresActiveRecordingAndPermission(string $style, array $permissions, bool $visible, bool $enabled = true, int $errors = 0, int $warnings = 0, string $badgeType = 'all'): void
     {
         $previousApp = \Craft::$app;
         \Craft::$app = new class {
@@ -126,11 +132,16 @@ class NavigationBundleTest extends TestCase
             $settings = (new \ReflectionClass(Settings::class))->newInstanceWithoutConstructor();
             $settings->loggingStyle = $style;
             $settings->activityEnabled = $enabled ? '1' : '0';
+            $settings->badgeType = $badgeType;
+            $activity = $this->createMock(ActivityService::class);
+            $activity->expects($visible ? self::once() : self::never())->method('getErrorCount')->willReturn($errors);
+            $activity->expects($visible ? self::once() : self::never())->method('getOperationalWarningCount')->willReturn($warnings);
             $service = $this->createStub(SettingsService::class);
             $service->method('getSettingsModel')->willReturn($settings);
             $service->method('isSpamFolderEnabled')->willReturn(false);
-            $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get'])->getMock();
+            $plugin = $this->getMockBuilder(Freeform::class)->disableOriginalConstructor()->onlyMethods(['__get', 'get'])->getMock();
             $plugin->method('__get')->with('settings')->willReturn($service);
+            $plugin->method('get')->with('activity')->willReturn($activity);
             $bundle = $this->getMockBuilder(NavigationBundle::class)->disableOriginalConstructor()->onlyMethods(['plugin'])->getMock();
             $bundle->method('plugin')->willReturn($plugin);
             $event = new RegisterCpSubnavItemsEvent([], []);
@@ -138,6 +149,7 @@ class NavigationBundleTest extends TestCase
             self::assertSame($visible, isset($event->getSubnavItems()['activity']));
             if ($visible) {
                 self::assertSame('freeform/activity', $event->getSubnavItems()['activity']['url']);
+                self::assertSame(($errors + $warnings) ?: null, $event->getSubnavItems()['activity']['badgeCount']);
             }
         } finally {
             \Craft::$app = $previousApp;

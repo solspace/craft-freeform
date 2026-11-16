@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.18.4 - 2026-11-16
+
+### Added
+- Added an **Activity Log** navigation badge showing the total unresolved errors and system warnings, independently of the Plugin Badge setting.
+
 ## 5.18.3 - 2026-11-13
 
 ### Fixed

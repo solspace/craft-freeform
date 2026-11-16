@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.18.4 - Unreleased
+## 5.18.4 - 2026-11-16
 
 ### Added
 - Added per-profile **Allowed export formats** for downloads and export notifications. Existing profiles retain all formats.

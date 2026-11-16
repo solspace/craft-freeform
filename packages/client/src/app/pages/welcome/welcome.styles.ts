@@ -93,6 +93,22 @@ export const WelcomeWrapper = styled.div`
   .edition-footer p { margin: 0; line-height: 1.65; }
   .edition-footer .btn { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; min-height: 36px; }
   .setup-guide { max-width: 960px; width: 100%; margin-inline: auto; }
+  &[data-view="setup"] {
+    box-sizing: border-box;
+    margin: 0;
+    padding: clamp(20px, 2vw, 32px);
+    background: var(--c-surface-default);
+    &::before, &::after { display: none; }
+    .setup-guide { max-width: 1440px; margin-inline: 0; }
+    .edition-toolbar { margin-bottom: 20px; }
+    .setup-heading { margin-bottom: 20px; }
+    .setup-heading h2 { font-size: 26px; letter-spacing: normal; }
+    .setup-heading p { max-width: 80ch; color: var(--c-text-quiet); }
+    .setup-steps { margin-bottom: 24px; }
+    .setup-field { margin-top: 24px; }
+    .ff-choice-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); max-width: none; }
+    .ff-choice-card { width: auto; }
+  }
   .setup-heading { margin-bottom: 24px; }
   .setup-heading h2 { margin: 0 0 8px; color: var(--gray-800, #29323d); font-size: 30px; font-weight: 600; letter-spacing: -.7px; line-height: 1.2; }
   .setup-heading h2:focus, .setup-step-title:focus { outline: none !important; box-shadow: none !important; }

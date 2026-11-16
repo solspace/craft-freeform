@@ -44,7 +44,10 @@ Keep the publishable key, secret key, and webhook signing secret matched to the 
 2. Enable the integration and map the customer fields. Map an email field if you want Stripe receipts.
 3. Map the customer address fields if needed.
 4. Add a **Stripe** field to the form layout and configure the amount, payment type, and appearance.
-5. Save the form.
+5. Enable **Store Submitted Data** under the form's data storage settings. If a data storage opt-in checkbox is configured, the visitor must select it before payment.
+6. Save the form.
+
+Storage and consent are checked when Stripe initializes, when the amount changes, and again before payment confirmation. If storage is disabled or consent is withdrawn while the form is open, the payment is blocked and logged.
 
 See the [complete Freeform Stripe guide](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for payment-field options and subscription setup.
 

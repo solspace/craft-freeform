@@ -1,0 +1,7 @@
+<craft-button type="button" variant="plain" icon="ellipsis" class="menubtn action-btn ff-notification-actions" data-notification-menu data-notification-type="{{ notificationType }}" aria-label="{{ 'Actions for {name}'|t('freeform', {name: templateName}) }}"></craft-button>
+<div class="menu">
+    <ul>
+        <li><a data-notification-action="duplicate">{{ 'Duplicate'|t('freeform') }}</a></li>
+        <li><a data-notification-action="delete" class="error">{{ 'Delete'|t('freeform') }}</a></li>
+    </ul>
+</div>

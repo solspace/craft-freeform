@@ -67,6 +67,8 @@ type Config = {
     list: Site[];
   };
   permissions: {
+    settings: boolean;
+    abTests: Permission;
     integrations: Permission;
     notifications: Permission;
   };

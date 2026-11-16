@@ -1,0 +1,44 @@
+{% import '_includes/forms' as forms %}
+{% set showAllOption = showAllOption ?? false %}
+{% set selectedOptions = options|filter(option => values == '*' or option.value in values) %}
+{% set allSelected = showAllOption ? values == '*' : selectedOptions|length == options|length %}
+{% set input %}
+    <div class="ff-export-checklist" data-export-checklist
+        data-all-label="{{ allLabel }}" data-empty-label="{{ emptyLabel }}" data-count-label="{{ countLabel }}">
+        <button type="button" class="btn ff-export-checklist-toggle" data-checklist-toggle aria-controls="{{ id }}-options"
+            aria-labelledby="{{ id }}-label {{ id }}-summary" aria-expanded="false">
+            <span id="{{ id }}-summary" data-checklist-summary class="ff-export-checklist-summary">
+                {% if allSelected %}
+                    {{ allLabel }}
+                {% elseif selectedOptions|length == 0 %}
+                    {{ emptyLabel }}
+                {% elseif selectedOptions|length <= 4 %}
+                    {% for option in selectedOptions %}
+                        <span class="ff-export-summary-selection">{{ option.label }}{% if not loop.last %}, {% endif %}</span>
+                    {% endfor %}
+                {% else %}
+                    {{ countLabel|replace({'{count}': selectedOptions|length}) }}
+                {% endif %}
+            </span>
+            <svg class="ff-export-checklist-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="m4 6 4 4 4-4"/></svg>
+        </button>
+        <div class="pane ff-export-checklist-panel" data-checklist-options hidden>
+            {{ forms.checkboxSelect({
+                id: id ~ '-options',
+                name: name,
+                class: 'ff-export-checkbox-options' ~ (showAllOption ? ' ff-export-checkbox-options--all' : ''),
+                values: values,
+                options: options,
+                showAllOption: showAllOption,
+            }) }}
+        </div>
+    </div>
+{% endset %}
+{{ forms.field({
+    id: id,
+    label: label,
+    fieldset: true,
+    instructions: instructions,
+    errors: errors,
+    required: required ?? false,
+}, input) }}

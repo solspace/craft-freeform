@@ -39,6 +39,7 @@ class SubmissionQuery extends ElementQuery
     protected string $table = Submission::TABLE_STD;
     private mixed $freeformStatus = null;
     private bool $skipContentExplicit = false;
+    private bool $submissionQueryPrepared = false;
 
     public function __construct(mixed $elementType, array $config = [])
     {
@@ -58,14 +59,12 @@ class SubmissionQuery extends ElementQuery
                 "{$table}.sourceUrl as sourceUrl",
             ]);
         }
+    }
 
-        if (method_exists($this, 'beforeQuery')) {
-            $this->beforeQuery(static function (self $query): void {
-                if (!$query->prepareSubmissionQuery()) {
-                    throw new QueryAbortedException();
-                }
-            });
-        }
+    public function __clone(): void
+    {
+        parent::__clone();
+        $this->submissionQueryPrepared = false;
     }
 
     public function batch(int $size = 100): iterable
@@ -188,9 +187,16 @@ class SubmissionQuery extends ElementQuery
         return $this;
     }
 
-    protected function beforePrepare(): bool
+    protected function elementQueryBeforeQuery(): void
     {
-        return $this->prepareSubmissionQuery() && parent::beforePrepare();
+        if (!$this->submissionQueryPrepared) {
+            if (!$this->prepareSubmissionQuery()) {
+                throw new QueryAbortedException();
+            }
+            $this->submissionQueryPrepared = true;
+        }
+
+        parent::elementQueryBeforeQuery();
     }
 
     protected function prepareSubmissionQuery(): bool

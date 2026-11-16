@@ -8,6 +8,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Events\UpdateMetadataEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Records\SavedFormRecord;
@@ -30,6 +31,31 @@ class StripeCallbackService
         PaymentIntent $paymentIntent,
         ?SavedFormRecord $savedForm,
     ): bool {
+        $mutex = \Craft::$app->getMutex();
+        $lock = 'freeform-stripe-payment-'.$integration->getId().'-'.$paymentIntent->id;
+
+        if (!$mutex->acquire($lock, 30)) {
+            $this->loggerProvider->getLogger($integration)->error('Timed out waiting to handle Stripe payment', [
+                'paymentIntent' => $paymentIntent->id,
+            ]);
+
+            throw new FreeformException('Timed out waiting to handle Stripe payment.');
+        }
+
+        try {
+            return $this->processSavedForm($form, $integration, $field, $paymentIntent, $savedForm);
+        } finally {
+            $mutex->release($lock);
+        }
+    }
+
+    private function processSavedForm(
+        Form $form,
+        Stripe $integration,
+        StripeField $field,
+        PaymentIntent $paymentIntent,
+        ?SavedFormRecord $savedForm,
+    ): bool {
         $logger = $this->loggerProvider->getLogger($integration);
         $logger->debug('Handling saved form', ['form' => $form->getHandle(), 'paymentIntent' => $paymentIntent->id]);
 
@@ -40,8 +66,17 @@ class StripeCallbackService
             'resourceId' => $paymentIntent->id,
         ]);
 
+        // Controllers may have loaded the saved form before another request consumed it.
+        if ($payment) {
+            $savedForm = null;
+        }
+
         if (!$payment && $savedForm) {
-            $savedForm->delete();
+            if (1 !== $savedForm->delete()) {
+                $logger->debug('Saved form already handled. Exiting.', ['paymentIntent' => $paymentIntent->id]);
+
+                return false;
+            }
 
             $payload = json_decode(
                 \Craft::$app->security->decryptByKey(
@@ -135,7 +170,21 @@ class StripeCallbackService
         }
 
         $payment->metadata = $metadata;
-        $payment->save();
+
+        try {
+            if (!$payment->save()) {
+                throw new FreeformException('Failed to save Stripe payment record.');
+            }
+        } catch (\Throwable $exception) {
+            $logger->error('Failed to save Stripe payment record', [
+                'paymentIntent' => $paymentIntent->id,
+                'submissionId' => $payment->submissionId,
+                'errors' => $payment->getErrors(),
+                'exception' => $exception,
+            ]);
+
+            throw $exception;
+        }
 
         $logger->debug('Payment record saved', ['id' => $payment->id]);
 

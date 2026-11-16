@@ -1,5 +1,6 @@
 {% extends "freeform/export/_layout" %}
 {% import "_includes/forms" as forms %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\ExportIndexBundle') %}
 
 {% set saveShortcutRedirect = 'freeform/export/profiles/{id}' %}
 {% set fullPageForm = true %}
@@ -33,16 +34,56 @@
             required: true
         }) }}
 
-        {{ forms.checkboxSelectField({
+        {% set formatOptions = [] %}
+        {% for type, label in craft.freeformServices.exportProfiles.exporterTypes %}
+            {% set formatLabel %}
+                <span class="ff-export-option-label">
+                    {% include 'freeform/export/_file-type-icon' with {type: type} only %}
+                    <span>{{ label }}</span>
+                </span>
+            {% endset %}
+            {% set formatOptions = formatOptions|merge([{value: type, label: formatLabel}]) %}
+        {% endfor %}
+
+        {% include 'freeform/export/_checklist' with {
+            label: "Allowed export formats"|t('freeform'),
+            instructions: "Choose which file formats this profile can download or use in export notifications. Select at least one format."|t('freeform'),
+            id: 'allowedExportTypes',
+            name: 'allowedExportTypes',
+            values: profile.allowedExportTypes ?? craft.freeformServices.exportProfiles.exporterTypes|keys,
+            options: formatOptions,
+            errors: profile.getErrors('allowedExportTypes'),
+            allLabel: 'All formats'|t('freeform'),
+            emptyLabel: 'Choose formats'|t('freeform'),
+            countLabel: '{count} formats selected'|t('freeform'),
+            required: true,
+        } only %}
+
+        {% set statusOptions = [] %}
+        {% for status in statuses %}
+            {% set statusLabel %}
+                <span class="ff-export-option-label">
+                    <span class="status {{ status.color }}" style="background-color: {{ status.colorHex }};" aria-hidden="true"></span>
+                    <span>{{ status.name|t('freeform') }}</span>
+                </span>
+            {% endset %}
+            {% set statusOptions = statusOptions|merge([{value: status.id, label: statusLabel}]) %}
+        {% endfor %}
+
+        {% include 'freeform/export/_checklist' with {
             label: "Statuses"|t('freeform'),
             instructions: "Select which statuses to use"|t('freeform'),
+            id: 'exportStatuses',
             name: 'statuses',
             values: profile.statuses,
             errors: profile.getErrors('statuses'),
-            options: statusOptionList,
+            options: statusOptions,
+            allLabel: 'All statuses'|t('freeform'),
+            emptyLabel: 'Choose statuses'|t('freeform'),
+            countLabel: '{count} statuses selected'|t('freeform'),
             required: true,
             showAllOption: true,
-        }) }}
+        } only %}
 
         {{ forms.selectField({
             label: "Date Range"|t('app'),
@@ -105,20 +146,22 @@
                 </div>
             </div>
             <div class="input">
-                <table id="field-settings" class="data fullwidth collapsible">
+                <table id="field-settings" class="data fullwidth cp-table ff-export-field-table">
                     <thead>
-                    <th></th>
-                    <th width="50">{{ 'Enabled'|t('app') }}</th>
-                    <th>{{ 'Field Name'|t('freeform') }}</th>
+                    <tr>
+                        <th class="ff-export-drag-cell"><span class="visually-hidden">{{ 'Reorder'|t('app') }}</span></th>
+                        <th class="ff-export-enabled-cell">{{ 'Enabled'|t('app') }}</th>
+                        <th>{{ 'Field Name'|t('freeform') }}</th>
+                    </tr>
                     </thead>
                     <tbody>
                     {% for field in profile.fieldDescriptors %}
                         <tr>
-                            <td class="thin">
-                                <a class="move icon" title="{{ 'Reorder'|t('app') }}"></a>
+                            <td class="ff-export-drag-cell">
+                                <a class="move" title="{{ 'Reorder'|t('app') }}" aria-label="{{ 'Reorder'|t('app') }}"><craft-icon name="grip-dots"></craft-icon></a>
                             </td>
-                            <td width="50">
-                                {{ forms.lightswitchField({
+                            <td class="ff-export-enabled-cell">
+                                {{ forms.lightswitch({
                                     name: 'fieldSettings[' ~ field.id ~ '][checked]',
                                     on: field.used
                                 }) }}
@@ -193,7 +236,7 @@
                             <td class="textual">
                                 <textarea class="text code" name="filters[{{ iterator }}][value]" rows="1">{{ filter.value }}</textarea>
                             </td>
-                            <td class="thin action"><button type="button" class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}"></button></td>
+                            <td class="thin action"><button type="button" class="delete ff-export-delete" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}">{% include 'freeform/export/_delete-icon' %}</button></td>
                         </tr>
                     {% endfor %}
                     <template>
@@ -223,7 +266,7 @@
                             <td class="textual">
                                 <textarea class="text code" name="filters[__iterator__][value]" rows="1"></textarea>
                             </td>
-                            <td class="thin action"><button type="button" class="delete icon" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}"></button></td>
+                            <td class="thin action"><button type="button" class="delete ff-export-delete" title="{{ 'Delete'|t('freeform') }}" aria-label="{{ 'Delete'|t('freeform') }}">{% include 'freeform/export/_delete-icon' %}</button></td>
                         </tr>
                     </template>
                     </tbody>

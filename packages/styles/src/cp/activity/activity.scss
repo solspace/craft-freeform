@@ -452,4 +452,34 @@ html:has([data-activity-log]) { scrollbar-gutter: stable; }
 .ff-activity-resolution { display: inline-flex; margin: 0; }
 .ff-activity-resolution-note { margin: 10px 0 0; font-size: 11px; line-height: 18px; }
 .ff-activity-resolved { margin-inline-start: 8px; color: var(--fg-success, var(--success-color)); font-weight: 600; }
-.ff-activity-status.is-resolved { --event-color: var(--fg-success, var(--success-color)); --event-wash: var(--teal-050, #f0fdfa); }
+.ff-activity-status.is-resolved { --event-color: var(--ff-status-success-fg); --event-wash: var(--ff-status-success-bg); border-color: var(--ff-status-success-border); }
+
+// Resolution is the current state; severity remains a quieter historical cue.
+.ff-activity :is(.ff-activity-event, .ff-activity-detail, .ff-activity-timeline-step).is-resolved {
+  --resolved-issue-color: var(--activity-muted);
+}
+.ff-activity :is(.ff-activity-event, .ff-activity-detail, .ff-activity-timeline-step).is-resolved[data-level=error] {
+  --resolved-issue-color: color-mix(in srgb, var(--ff-status-error-fg) 30%, var(--activity-muted));
+}
+.ff-activity :is(.ff-activity-event, .ff-activity-detail, .ff-activity-timeline-step).is-resolved[data-level=warning] {
+  --resolved-issue-color: color-mix(in srgb, var(--ff-status-warning-fg) 30%, var(--activity-muted));
+}
+.ff-activity-event.is-resolved > .ff-activity-glyph,
+.ff-activity-detail.is-resolved > .ff-activity-detail-header .ff-activity-glyph,
+.ff-activity-timeline-step.is-resolved > .ff-activity-glyph {
+  --event-color: var(--resolved-issue-color);
+  --event-wash: color-mix(in srgb, var(--event-color) 4%, var(--activity-surface));
+}
+.ff-activity-event.is-resolved { background: var(--activity-surface); }
+.ff-activity-event.is-resolved:hover { background: var(--activity-bg); }
+.ff-activity-event.is-resolved.is-selected { background: var(--activity-selected); box-shadow: inset 2px 0 var(--ff-status-success-fg); }
+.ff-activity-event.is-resolved .ff-activity-chain-outcome { color: var(--activity-muted); font-weight: 400; }
+.ff-activity-event.is-resolved .ff-activity-event-arrow { color: var(--ff-status-success-fg); }
+.ff-activity-detail.is-resolved > .ff-activity-detail-header { background: var(--activity-surface); }
+.ff-activity-detail-status { display: inline-flex; align-items: center; gap: 8px; }
+.ff-activity-history-level { color: var(--activity-muted); }
+.ff-activity-resolution-actions .btn { min-height: 34px; box-sizing: border-box; }
+.ff-activity-resolution-actions [data-icon] { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 16px; width: 16px; height: 16px; margin: 0; font-size: 14px; line-height: 1; }
+.ff-activity-resolution-actions .ff-activity-resolve-button { background: var(--ff-status-success-fg); color: var(--activity-surface); border: 1px solid transparent; }
+.ff-activity-resolution-actions .ff-activity-resolve-button:hover { background: color-mix(in srgb, var(--ff-status-success-fg) 88%, var(--activity-ink)); }
+.ff-activity-resolution-actions .ff-activity-resolve-button:focus-visible { outline: 2px solid var(--ff-status-success-fg); outline-offset: 3px; }

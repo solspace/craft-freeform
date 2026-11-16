@@ -1,3 +1,4 @@
+import { Tooltip } from "@components/elements/tooltip/tooltip";
 import type { TestStats } from "@ff-client/types/form-monitor";
 import translate from "@ff-client/utils/translations";
 import CheckIcon from "@ff-icons/actions/check";
@@ -11,6 +12,7 @@ import {
   LineIndicator,
   MonitorStatus,
   StatsChartContainer,
+  StatsHeader,
   TestStatusIcon,
 } from "./card.monitor.stats.styles";
 
@@ -95,23 +97,37 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     "--failed": `${success + failed}%`,
     "--pending": `${success + failed + pending}%`,
   } as React.CSSProperties;
+  const lastTestLabel = translate("Last Test: {status}", {
+    status: translate(
+      formMonitor.lastTest?.status === "success"
+        ? "Success"
+        : formMonitor.lastTest?.status === "failed"
+          ? "Failed"
+          : "Pending",
+    ),
+  });
 
   return (
     <StatsChartContainer
       $align={align}
       style={isPending ? { marginTop: "10px" } : undefined}
     >
-      {showLastTest && formMonitor.lastTest && (
-        <LastTestStatus>
-          {translate("Last Test")} {getLastTestStatus(formMonitor, size)}
-        </LastTestStatus>
-      )}
+      <StatsHeader $width={width}>
+        <MonitorStatus>
+          {isPending
+            ? translate("Uptime: Pending")
+            : `${translate("Uptime")}: ${success}%`}
+        </MonitorStatus>
+        {showLastTest && formMonitor.lastTest && (
+          <Tooltip title={lastTestLabel}>
+            <LastTestStatus role="img" aria-label={lastTestLabel}>
+              <span className="visually-hidden">{translate("Last Test")}</span>
+              {getLastTestStatus(formMonitor, size)}
+            </LastTestStatus>
+          </Tooltip>
+        )}
+      </StatsHeader>
       <LineIndicator $width={width} style={progressStyle} />
-      <MonitorStatus>
-        {isPending
-          ? translate("Uptime: Pending")
-          : `${translate("Uptime")}: ${success}%`}
-      </MonitorStatus>
     </StatsChartContainer>
   );
 };

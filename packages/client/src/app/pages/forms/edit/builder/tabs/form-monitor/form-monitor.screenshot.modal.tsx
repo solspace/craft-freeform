@@ -4,7 +4,7 @@ import {
   ModalHeader,
 } from "@components/modals/modal.styles";
 import type { ModalContainerProps } from "@components/modals/modal.types";
-import { spacings } from "@ff-client/styles/variables";
+import { colors, spacings } from "@ff-client/styles/variables";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
 import {
@@ -113,7 +113,11 @@ export const ScreenshotModal: React.FC<
                   <MiniMap
                     width={104}
                     height={108}
-                    borderColor="rgba(255, 255, 255, 0.8)"
+                    borderColor={`light-dark(rgba(255, 255, 255, 0.8), ${colors.link})`}
+                    previewStyle={{
+                      boxShadow:
+                        "light-dark(rgba(0, 0, 0, 0.2), rgba(1, 4, 9, 0.6)) 0 0 0 10000000px",
+                    }}
                   >
                     <img src={imageUrl} alt="Minimap" />
                   </MiniMap>

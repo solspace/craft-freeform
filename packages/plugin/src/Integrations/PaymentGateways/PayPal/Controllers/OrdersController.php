@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\PayPal\Controllers;
 
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Services\PayPalOrderService;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Services\PayPalPriceService;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
@@ -20,6 +21,7 @@ class OrdersController extends BasePayPalController
         private IsolatedTwig $isolatedTwig,
         private PayPalOrderService $orderService,
         private PayPalPriceService $priceService,
+        private PaymentStorageService $storageService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -62,6 +64,7 @@ class OrdersController extends BasePayPalController
         }
 
         try {
+            $this->storageService->assertCanStore($form, $integration, 'PayPal');
             $amount = $this->priceService->getAmount($form, $field);
         } catch (\InvalidArgumentException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);

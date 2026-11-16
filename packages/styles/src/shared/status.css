@@ -1,18 +1,36 @@
 .ff-status-theme {
-  --ff-status-error-fg: var(--fg-error, #bc3544);
-  --ff-status-error-bg: var(--bg-error, #fff1f3);
-  --ff-status-error-border: var(--border-error, #ebc4cb);
-  --ff-status-warning-fg: #9b6212;
-  --ff-status-warning-mark: #bf7d1a;
-  --ff-status-warning-bg: var(--bg-warning, #fff7e7);
-  --ff-status-warning-border: var(--border-warning, #ead4a9);
-  --ff-status-notice-fg: var(--sky-700, #0369a1);
-  --ff-status-notice-mark: var(--sky-500, #0ea5e9);
-  --ff-status-notice-bg: var(--sky-050, #f0f9ff);
-  --ff-status-notice-border: var(--sky-200, #bae6fd);
-  --ff-status-success-fg: var(--fg-success, #247a62);
-  --ff-status-success-bg: var(--bg-success, #eef8f2);
-  --ff-status-success-border: var(--border-success, #c0dfcf);
+  --ff-status-error-fg: var(--c-color-danger-on-quiet);
+  --ff-status-error-bg: color-mix(
+    in srgb,
+    var(--c-color-danger-on-quiet) 8%,
+    var(--c-surface-default)
+  );
+  --ff-status-error-border: var(--c-color-danger-border-quiet);
+  --ff-status-error-mark: var(--c-color-danger-on-quiet);
+  --ff-status-warning-fg: var(--c-color-warning-on-quiet);
+  --ff-status-warning-bg: color-mix(
+    in srgb,
+    var(--c-color-warning-on-quiet) 8%,
+    var(--c-surface-default)
+  );
+  --ff-status-warning-border: var(--c-color-warning-border-quiet);
+  --ff-status-warning-mark: var(--c-color-warning-on-quiet);
+  --ff-status-notice-fg: var(--c-color-info-on-quiet);
+  --ff-status-notice-bg: color-mix(
+    in srgb,
+    var(--c-color-info-on-quiet) 8%,
+    var(--c-surface-default)
+  );
+  --ff-status-notice-border: var(--c-color-info-border-quiet);
+  --ff-status-notice-mark: var(--c-color-info-on-quiet);
+  --ff-status-success-fg: var(--c-color-success-on-quiet);
+  --ff-status-success-bg: color-mix(
+    in srgb,
+    var(--c-color-success-on-quiet) 8%,
+    var(--c-surface-default)
+  );
+  --ff-status-success-border: var(--c-color-success-border-quiet);
+  --ff-status-success-mark: var(--c-color-success-on-quiet);
 }
 .ff-status-surface {
   --ff-status-fg: var(--ff-status-error-fg);

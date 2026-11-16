@@ -1,5 +1,4 @@
 import type { FC, ReactNode } from "react";
-import { SettingsSidebar } from "./settings.sidebar";
 
 type Props = {
   activeKey: string;
@@ -8,14 +7,8 @@ type Props = {
   children: ReactNode;
 };
 
-export const SettingsLayout: FC<Props> = ({
-  activeKey,
-  header,
-  footer,
-  children,
-}) => (
-  <div className="freeform-secondary-layout">
-    <SettingsSidebar activeKey={activeKey} />
+export const SettingsLayout: FC<Props> = ({ header, footer, children }) => (
+  <div className="freeform-settings-layout">
     {header}
     <div id="main-content">
       <div id="content-container">

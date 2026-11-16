@@ -346,7 +346,7 @@ class SubmissionsController extends Controller
 
             $ids = $idQuery
                 ->select(['elements.id'])
-                ->orderBy(['elements.id' => \SORT_ASC])
+                ->orderBy('elements.id', 'asc')
                 ->limit($batchSize)
                 ->column()
             ;

@@ -18,6 +18,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\RangeField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\DynamicAmountService;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Services\MolliePriceService;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Fields\PayPalField;
@@ -247,6 +248,7 @@ class DynamicAmountTest extends TestCase
                 ->willReturn($response)
             ;
             (new \ReflectionProperty(PaymentIntentsController::class, 'amountService'))->setValue($controller, $service);
+            (new \ReflectionProperty(PaymentIntentsController::class, 'storageService'))->setValue($controller, $this->createStub(PaymentStorageService::class));
             self::assertSame($response, $controller->{$action}('pi_existing'));
         }
     }

@@ -20,6 +20,11 @@ if (!class_exists(Craft::class)) {
             // Unit tests verify the failed operation's state directly.
         }
 
+        public static function createObject($type, array $params = [])
+        {
+            return Yii::createObject($type, $params);
+        }
+
         public static function t($category, $string, $variables = [], $language = null)
         {
             return $string;

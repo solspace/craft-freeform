@@ -21,7 +21,7 @@ const Header = styled.button`
   padding: 14px 16px;
   border: 0;
   border-radius: 7px;
-  background: var(--gray-050, #f3f7fc);
+  background: var(--c-surface-raised, var(--gray-050, #f3f7fc));
   color: light-dark(var(--gray-600, #515f6c), var(--text-color, #515f6c));
   text-align: start;
   font: inherit;
@@ -31,7 +31,7 @@ const Header = styled.button`
 
   &[aria-expanded='true'] { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
   &:focus-visible { outline: var(--focus-ring); outline-offset: 3px; }
-  &:hover:not(:disabled) { background: var(--ui-control-hover-bg-color, #e4edf6); }
+  &:hover:not(:disabled) { background: var(--c-color-neutral-fill-quiet, #e4edf6); }
   &:disabled { opacity: .55; cursor: default; }
   svg { display: block; width: 16px; height: 16px; transition: transform 200ms ease; }
   &[aria-expanded='true'] svg { transform: rotate(90deg); }

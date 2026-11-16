@@ -13,6 +13,47 @@ class ClientAssetsServiceTest extends TestCase
 {
     use UsesCraft6Container;
 
+    public function testIncompletePublishedAssetsAreRepairedBeforeRegisteringTheirUrls(): void
+    {
+        $resources = \dirname(__DIR__, 2).'/Resources';
+        $published = sys_get_temp_dir().'/freeform-client-published-'.bin2hex(random_bytes(8));
+        mkdir($published.'/js/client/assets', 0775, true);
+        file_put_contents($published.'/js/client/manifest.json', '{}');
+        $manifest = json_decode(file_get_contents($resources.'/js/client/manifest.json'), true, flags: \JSON_THROW_ON_ERROR);
+        $view = $this->getMockBuilder(View::class)->disableOriginalConstructor()->onlyMethods(['registerCssFile', 'registerJsFile', 'registerHtml'])->getMock();
+        $view->method('registerJsFile')->willReturnCallback(static function () use ($manifest, $published): void {
+            foreach ($manifest as $chunk) {
+                foreach (array_merge([$chunk['file']], $chunk['css'] ?? [], $chunk['assets'] ?? []) as $file) {
+                    self::assertFileExists($published.'/js/client/'.$file);
+                }
+            }
+        });
+        $previous = $_SERVER['FF_CLIENT_DEV_ENABLED'] ?? null;
+        $_SERVER['FF_CLIENT_DEV_ENABLED'] = false;
+
+        try {
+            $service = new ClientAssetsService();
+            $service->registerAssets($view, 'https://example.test/assets', $resources, $published);
+            $entry = $published.'/js/client/'.$manifest['src/index.tsx']['file'];
+            touch($entry, 1000000000);
+            // A complete published copy is reused, including its lazy chunks.
+            $service->registerAssets($view, 'https://example.test/assets', $resources, $published);
+            clearstatcache(true, $entry);
+            self::assertSame(1000000000, filemtime($entry));
+        } finally {
+            if (null === $previous) {
+                unset($_SERVER['FF_CLIENT_DEV_ENABLED']);
+            } else {
+                $_SERVER['FF_CLIENT_DEV_ENABLED'] = $previous;
+            }
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($published, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+            foreach ($iterator as $file) {
+                $file->isDir() ? rmdir($file->getPathname()) : unlink($file->getPathname());
+            }
+            rmdir($published);
+        }
+    }
+
     public function testCommittedManifestCanRegisterProductionAssets(): void
     {
         $resources = \dirname(__DIR__, 2).'/Resources';

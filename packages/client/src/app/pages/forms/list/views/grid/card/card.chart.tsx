@@ -1,3 +1,4 @@
+import { colors } from "@ff-client/styles/variables";
 import type { FormCardDays } from "@ff-client/types/forms";
 import translate from "@ff-client/utils/translations";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
@@ -129,9 +130,13 @@ export const CardChart = ({
           contentStyle={{
             fontSize: 12,
             padding: "6px 10px",
-            border: "1px solid #cdd8e4",
+            backgroundColor: `light-dark(#fff, ${colors.overlay})`,
+            color: colors.text,
+            border: `1px solid ${colors.border}`,
             borderRadius: 4,
           }}
+          labelStyle={{ color: colors.text }}
+          cursor={{ stroke: colors.muted }}
           wrapperStyle={{ zIndex: 3 }}
         />
         <Area
@@ -139,6 +144,7 @@ export const CardChart = ({
           dataKey="uv"
           stroke={color}
           strokeWidth={1}
+          activeDot={{ stroke: `light-dark(#fff, ${colors.surface})` }}
           fill={`url(#color${id})`}
           isAnimationActive={false}
         />

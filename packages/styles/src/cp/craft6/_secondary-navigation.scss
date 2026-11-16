@@ -36,6 +36,17 @@
     }
   }
 
+  #freeform-client-app .freeform-settings-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: 'header' 'content' 'footer';
+    min-width: 0;
+    > #header-container { grid-area: header; padding: var(--c-spacing-lg); }
+    > #main-content { grid-area: content; min-width: 0; }
+    #content { padding: var(--c-spacing-lg); }
+    > .freeform-form-footer { grid-area: footer; }
+  }
+
   .freeform-profile-table {
     overflow-x: auto;
     .freeform-profile-description { white-space: normal; overflow-wrap: anywhere; }

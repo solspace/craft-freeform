@@ -2,7 +2,6 @@ import { useQueryFormColors } from "@ff-client/queries/forms";
 import type { UseMutationResult, UseQueryResult } from "@tanstack/react-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useMemo } from "react";
 
 import type {
   ABTestDashboardItem,
@@ -27,29 +26,25 @@ export const useAbTestsStatistics = (): UseQueryResult<Response> => {
   });
 };
 
-export const useAbTestsDashboard = (): ABTestDashboardItem[] => {
+export const useAbTestsDashboard = (): UseQueryResult<
+  ABTestDashboardItem[]
+> => {
   const formColors = useQueryFormColors();
-  const { data } = useQuery<ABTestDashboardItem[]>({
+  return useQuery<ABTestDashboardItem[]>({
     queryKey: QKAbTests.dashboard(),
     queryFn: () =>
       axios
         .get<ABTestDashboardItem[]>("/api/ab-tests/dashboard")
         .then((res) => res.data),
-  });
-
-  const testsWithColors = useMemo(
-    () =>
-      data?.map((test) => ({
+    select: (data) =>
+      data.map((test) => ({
         ...test,
         variants: test.variants.map((variant) => ({
           ...variant,
           formColor: variant.formColor || formColors[variant.formId] || null,
         })),
-      })) || [],
-    [data, formColors],
-  );
-
-  return testsWithColors;
+      })),
+  });
 };
 
 export const useAbTestUpsertMutation = (

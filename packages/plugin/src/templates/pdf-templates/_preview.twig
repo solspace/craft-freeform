@@ -1,0 +1,301 @@
+{% do view.registerTranslations('freeform', [
+    'Load more',
+    'Loading submissions…',
+    'Choose a form first',
+    'Choose a submission',
+    'No submissions found',
+    'Unable to load submissions',
+    'Unable to load submissions. Try choosing the form again.',
+    'Try again',
+    'Generating PDF…',
+    'Unable to generate the PDF preview. Please try again.',
+]) %}
+
+<dialog id="pdf-preview-dialog" aria-labelledby="pdf-preview-heading">
+    <div class="pdf-preview-header">
+        <div>
+            <h2 id="pdf-preview-heading">{{ 'Preview PDF'|t('freeform') }}</h2>
+            <p class="light">{{ 'Preview your current template, including unsaved changes, with an existing submission.'|t('freeform') }}</p>
+        </div>
+        <craft-button type="button" variant="outline" id="pdf-preview-close">{{ 'Close'|t('freeform') }}</craft-button>
+    </div>
+    <div class="pdf-preview-controls">
+        <div class="pdf-preview-fields">
+            <div class="field">
+                <div class="heading"><label for="pdf-preview-form">{{ 'Form'|t('freeform') }}</label></div>
+                <craft-select>
+                    <select id="pdf-preview-form" slot="input" class="form-control">
+                        <option value="">{{ 'Choose a form'|t('freeform') }}</option>
+                        {% for form in previewForms %}
+                            <option value="{{ form.value }}">{{ form.label }}</option>
+                        {% endfor %}
+                    </select>
+                </craft-select>
+            </div>
+            <div class="field">
+                <div class="heading"><label for="pdf-preview-search">{{ 'Search submissions'|t('freeform') }}</label></div>
+                <craft-input disabled>
+                    <input type="text" slot="input" class="form-control" id="pdf-preview-search" placeholder="{{ 'Search by keyword or submission ID'|t('freeform') }}" disabled>
+                </craft-input>
+            </div>
+        </div>
+        <div class="field">
+            <div class="heading"><label for="pdf-preview-submission">{{ 'Existing submission'|t('freeform') }}</label></div>
+            <div class="pdf-preview-submission-row">
+                <craft-select disabled>
+                    <select id="pdf-preview-submission" slot="input" class="form-control" disabled>
+                        <option value="">{{ 'Choose a form first'|t('freeform') }}</option>
+                    </select>
+                </craft-select>
+                <craft-button type="button" variant="outline" id="pdf-preview-more" hidden>{{ 'Load more'|t('freeform') }}</craft-button>
+            </div>
+            <p class="instructions">{{ 'Newest submissions are listed first. Previewing does not save the template or send an email.'|t('freeform') }}</p>
+        </div>
+        <div class="pdf-preview-actions">
+            <craft-button type="button" variant="primary" id="pdf-preview-generate" disabled>{{ 'Generate Preview'|t('freeform') }}</craft-button>
+            <span id="pdf-preview-status" class="light" role="status" aria-live="polite"></span>
+        </div>
+        <p id="pdf-preview-error" class="error" role="alert" hidden></p>
+    </div>
+    <div id="pdf-preview-empty" class="pdf-preview-empty light">{{ 'Choose a form and an existing submission to generate a PDF preview.'|t('freeform') }}</div>
+    <iframe id="pdf-preview-frame" title="{{ 'PDF preview'|t('freeform') }}" hidden></iframe>
+    <div id="pdf-preview-result" class="pdf-preview-result" hidden>
+        <span id="pdf-preview-filename"></span>
+        <a id="pdf-preview-download" class="btn">{{ 'Download PDF'|t('freeform') }}</a>
+    </div>
+</dialog>
+
+{% css %}
+    #pdf-preview-dialog {
+        width: min(1100px, calc(100vw - 48px));
+        max-width: none;
+        max-height: calc(100vh - 48px);
+        padding: 0;
+        border: 1px solid var(--hairline-color, #cdd8e4);
+        border-radius: 8px;
+        background: var(--pane-bg, #fff);
+        color: var(--text-color, #3f4d5a);
+        box-shadow: 0 20px 70px #0005;
+        overflow: auto;
+    }
+    #pdf-preview-dialog::backdrop { background: #0008; }
+    #pdf-preview-dialog [hidden] { display: none !important; }
+    .pdf-preview-header, .pdf-preview-result {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 20px 24px;
+    }
+    .pdf-preview-header { border-bottom: 1px solid var(--hairline-color, #e3e5e8); }
+    .pdf-preview-header h2 { margin: 0 0 4px; }
+    .pdf-preview-header p { margin: 0; }
+    .pdf-preview-controls { padding: 20px 24px; }
+    .pdf-preview-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .pdf-preview-controls .heading { margin-bottom: var(--c-spacing-xs); font-weight: 600; }
+    .pdf-preview-controls .instructions { margin-top: var(--c-spacing-xs); color: var(--c-text-quiet); }
+    .pdf-preview-fields .field { margin: 0; min-width: 0; }
+    .pdf-preview-fields craft-select, .pdf-preview-fields craft-input, .pdf-preview-submission-row craft-select { width: 100%; min-width: 0; }
+    .pdf-preview-submission-row, .pdf-preview-actions { display: flex; gap: 12px; align-items: center; }
+    .pdf-preview-submission-row craft-select { flex: 1; min-width: 0; }
+    #pdf-preview-dialog .btn { flex-shrink: 0; white-space: nowrap; }
+    #pdf-preview-error { white-space: pre-wrap; overflow-wrap: anywhere; margin-bottom: 0; }
+    .pdf-preview-empty { text-align: center; padding: 64px 24px; border-top: 1px solid var(--hairline-color, #e3e5e8); }
+    #pdf-preview-frame { display: block; width: 100%; height: 55vh; min-height: 300px; border: 0; }
+    .pdf-preview-result { border-top: 1px solid var(--hairline-color, #e3e5e8); }
+    #pdf-preview-filename { overflow-wrap: anywhere; min-width: 0; }
+    @media (max-width: 600px) {
+        .pdf-preview-fields { grid-template-columns: 1fr; gap: 16px; }
+        .pdf-preview-header, .pdf-preview-result { gap: 12px; padding: 16px; }
+        .pdf-preview-controls { padding: 16px; }
+    }
+{% endcss %}
+
+{% js %}
+(() => {
+    const dialog = document.getElementById('pdf-preview-dialog');
+    const form = document.getElementById('pdf-preview-form');
+    const search = document.getElementById('pdf-preview-search');
+    const submission = document.getElementById('pdf-preview-submission');
+    const generate = document.getElementById('pdf-preview-generate');
+    const more = document.getElementById('pdf-preview-more');
+    const status = document.getElementById('pdf-preview-status');
+    const error = document.getElementById('pdf-preview-error');
+    const frame = document.getElementById('pdf-preview-frame');
+    const empty = document.getElementById('pdf-preview-empty');
+    const result = document.getElementById('pdf-preview-result');
+    const download = document.getElementById('pdf-preview-download');
+    let listVersion = 0;
+    let previewVersion = 0;
+    let offset = 0;
+    let loading = false;
+    let rendering = false;
+    let retryList = false;
+    let pdfUrl = null;
+    let searchTimer;
+
+    // Keep picker controls outside the template's save form and dirty-state tracking.
+    document.body.appendChild(dialog);
+
+    function setDisabled(control, disabled) {
+        control.disabled = disabled;
+        const component = control.closest('craft-select, craft-input');
+        if (component) component.disabled = disabled;
+    }
+
+    function showError(message) {
+        error.textContent = message;
+        error.hidden = !message;
+    }
+
+    function resetPreview() {
+        ++previewVersion;
+        rendering = false;
+        frame.hidden = true;
+        frame.removeAttribute('src');
+        result.hidden = true;
+        empty.hidden = false;
+        if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+        pdfUrl = null;
+        status.textContent = '';
+        generate.disabled = loading || !submission.value;
+    }
+
+    function requestError(exception, fallback) {
+        return exception.response?.data?.message || fallback;
+    }
+
+    async function loadSubmissions(append = false) {
+        const version = ++listVersion;
+        loading = true;
+        retryList = false;
+        more.textContent = Craft.t('freeform', 'Load more');
+        showError('');
+        resetPreview();
+        more.hidden = true;
+        more.disabled = true;
+        if (!append) {
+            offset = 0;
+            submission.replaceChildren(new Option(Craft.t('freeform', 'Loading submissions…'), ''));
+            setDisabled(submission, true);
+        }
+        if (!form.value) {
+            loading = false;
+            submission.replaceChildren(new Option(Craft.t('freeform', 'Choose a form first'), ''));
+            return;
+        }
+        status.textContent = Craft.t('freeform', 'Loading submissions…');
+        try {
+            const response = await Craft.sendActionRequest('POST', 'freeform/pdf/pdf-templates/preview-submissions', {
+                data: { formId: form.value, search: search.value, offset },
+            });
+            if (version !== listVersion || !dialog.open) return;
+            const rows = response.data.submissions;
+            if (!append) {
+                submission.replaceChildren(new Option(rows.length
+                    ? Craft.t('freeform', 'Choose a submission')
+                    : Craft.t('freeform', 'No submissions found'), ''));
+            }
+            for (const row of rows) submission.add(new Option(row.label, row.value));
+            offset += rows.length;
+            setDisabled(submission, offset === 0);
+            more.hidden = !response.data.hasMore;
+        } catch (exception) {
+            if (version !== listVersion || !dialog.open) return;
+            if (!append) submission.replaceChildren(new Option(Craft.t('freeform', 'Unable to load submissions'), ''));
+            showError(requestError(exception, Craft.t('freeform', 'Unable to load submissions. Try choosing the form again.')));
+            retryList = true;
+            more.textContent = Craft.t('freeform', 'Try again');
+            more.hidden = false;
+        } finally {
+            if (version === listVersion && dialog.open) {
+                loading = false;
+                more.disabled = false;
+                generate.disabled = !submission.value;
+                status.textContent = '';
+            }
+        }
+    }
+
+    document.getElementById('pdf-preview-open').addEventListener('click', () => {
+        dialog.showModal();
+        form.focus();
+        if (form.value && submission.disabled) loadSubmissions();
+    });
+    document.getElementById('pdf-preview-close').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => {
+        clearTimeout(searchTimer);
+        ++listVersion;
+        if (loading) setDisabled(submission, true);
+        loading = false;
+        resetPreview();
+        showError('');
+    });
+    // Enter in a picker must never submit the template's save form.
+    dialog.addEventListener('keydown', event => {
+        if (event.key === 'Enter' && event.target.tagName === 'INPUT') {
+            event.preventDefault();
+            clearTimeout(searchTimer);
+            loadSubmissions();
+        }
+    });
+    form.addEventListener('change', () => {
+        clearTimeout(searchTimer);
+        search.value = '';
+        setDisabled(search, !form.value);
+        loadSubmissions();
+    });
+    search.addEventListener('input', () => {
+        clearTimeout(searchTimer);
+        ++listVersion;
+        loading = true;
+        resetPreview();
+        setDisabled(submission, true);
+        more.hidden = true;
+        searchTimer = setTimeout(() => loadSubmissions(), 300);
+    });
+    submission.addEventListener('change', () => {
+        resetPreview();
+        showError('');
+    });
+    more.addEventListener('click', () => loadSubmissions(retryList ? offset > 0 : true));
+    generate.addEventListener('click', async () => {
+        if (!form.value || !submission.value || rendering || loading) return;
+        resetPreview();
+        const version = previewVersion;
+        rendering = true;
+        generate.disabled = true;
+        showError('');
+        status.textContent = Craft.t('freeform', 'Generating PDF…');
+        try {
+            const response = await Craft.sendActionRequest('POST', 'freeform/pdf/pdf-templates/preview', {
+                data: {
+                    formId: form.value,
+                    submissionId: submission.value,
+                    fileName: document.querySelector('[name="fileName"]').value,
+                    body: ace.edit('editor').getValue(),
+                },
+            });
+            if (version !== previewVersion || !dialog.open) return;
+            const bytes = Uint8Array.from(atob(response.data.pdf), character => character.charCodeAt(0));
+            pdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+            frame.src = pdfUrl;
+            frame.hidden = false;
+            empty.hidden = true;
+            result.hidden = false;
+            document.getElementById('pdf-preview-filename').textContent = response.data.fileName;
+            download.href = pdfUrl;
+            download.download = response.data.fileName;
+        } catch (exception) {
+            if (version !== previewVersion || !dialog.open) return;
+            showError(requestError(exception, Craft.t('freeform', 'Unable to generate the PDF preview. Please try again.')));
+        } finally {
+            if (version === previewVersion && dialog.open) {
+                rendering = false;
+                generate.disabled = !submission.value;
+                status.textContent = '';
+            }
+        }
+    });
+})();
+{% endjs %}

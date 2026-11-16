@@ -107,7 +107,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $submissions = $formIdList ? Submission::find()
             ->formId($formIdList)
-            ->orderBy(['dateCreated' => \SORT_DESC, 'id' => \SORT_DESC])
+            ->orderBy('dateCreated', 'desc')->orderBy('id', 'desc')
             ->limit($this->showFilters || $this->showPagination ? self::BROWSE_LIMIT : $pageSize)
             ->all() : [];
 

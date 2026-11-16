@@ -28,7 +28,8 @@ class FreeformClientBundle extends AbstractFreeformAssetBundle
         Freeform::getInstance()->clientAssets->registerAssets(
             $view,
             $this->baseUrl,
-            $this->sourcePath
+            $this->sourcePath,
+            $this->basePath,
         );
     }
 }

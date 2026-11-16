@@ -171,7 +171,7 @@ export const CardWrapper = styled.li`
   grid-row: span 1;
 
   &[data-card-size='2x1'], &[data-card-size='2x2'] { grid-column: span 2; }
-  &[data-card-size='2x1'] ${LinkList}, &[data-card-size='2x2'] ${LinkList} {
+  &[data-card-size='1x2'] ${LinkList}, &[data-card-size='2x1'] ${LinkList}, &[data-card-size='2x2'] ${LinkList} {
     display: flex;
     flex-wrap: wrap;
     gap: 4px 18px;
@@ -182,8 +182,19 @@ export const CardWrapper = styled.li`
   }
 
   &[data-card-size='1x2'] ${FormBody} { flex-direction: column; }
+  &[data-card-size='2x2'] ${FMContainer}.corner-monitor {
+    transform: translateY(24px);
+    @container form-card-grid (width < 658px) { transform: none; }
+  }
   &[data-card-size='1x2'] ${FormIdentity} { --card-header-end-space: var(--card-title-end-space); }
-  &[data-card-size='1x2'] ${FMContainer} { width: 100%; margin-top: 0; &.corner-monitor { padding-top: 0; } }
+  &[data-card-size='1x2'] ${FMContainer} {
+    width: 100%;
+    margin-top: 0;
+    &.corner-monitor {
+      padding-top: 12px;
+      border-top: 1px solid light-dark(#dfe6ee, ${colors.border});
+    }
+  }
   @container form-card-grid (width < 400px) {
     ${FormBody} { flex-wrap: wrap; }
     ${FormIdentity} { --card-header-end-space: var(--card-title-end-space); }

@@ -50,6 +50,7 @@ To use this integration on your form(s), configure each form individually:
 - Click **PayPal** in the list of available integrations.
 - Toggle the _Enable_ setting ON.
 - Add a **PayPal** field to your form layout and configure as needed.
+- Enable **Store Submitted Data** for the form. PayPal payments require a stored submission to prevent reuse of an order. If the form uses a data storage opt-in field, the visitor must opt in before submitting a payment.
 - Save the form.
 
 <span class="note warning">Please refer to the [Freeform PayPal integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/paypal/) for the complete setup guide.</span>

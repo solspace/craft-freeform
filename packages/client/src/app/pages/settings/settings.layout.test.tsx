@@ -36,8 +36,9 @@ it("keeps React Save actions outside content and leaves native footer notices in
     );
     expect(notice.parentElement).toBe(page);
     expect(app.querySelector("craft-pane")).toBeNull();
+    expect(app.querySelector("#sidebar-container")).toBeNull();
     const button = app.querySelector<HTMLButtonElement>(
-      ".freeform-secondary-layout > .freeform-form-footer button",
+      ".freeform-settings-layout > .freeform-form-footer button",
     )!;
     expect(app.querySelector("#content button")).toBeNull();
     await act(() => button.click());

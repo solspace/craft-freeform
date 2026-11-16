@@ -9,14 +9,15 @@ export type TooltipTheme = "dark" | "light";
 
 const themeStyles = {
   dark: css`
-    background: #33404d;
+    --freeform-tooltip-bg: #33404d;
+    --freeform-tooltip-border: #33404d;
     border: 1px solid #33404d;
     box-shadow: 0 10px 24px rgb(8 15 24 / 18%);
     color: #fff;
   `,
   light: css`
-    background: var(--c-modal-fill);
-    border: 1px solid var(--c-color-neutral-border-quiet);
+    --freeform-tooltip-bg: var(--c-modal-fill);
+    --freeform-tooltip-border: var(--c-color-neutral-border-quiet);
     box-shadow: var(--c-shadow-md);
     color: var(--c-text-default);
   `,
@@ -40,5 +41,7 @@ export const Surface = styled.div<SurfaceProps>`
   word-break: break-word;
 
   ${({ $theme }) => themeStyles[$theme]}
+  background: var(--freeform-tooltip-bg);
+  border: 1px solid var(--freeform-tooltip-border);
 
 `;

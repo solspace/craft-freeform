@@ -21,6 +21,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
+use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
 use yii\base\Component;
 use yii\web\BadRequestHttpException;
@@ -68,6 +69,63 @@ class ExportProfilesService extends Component
         }
 
         return $types;
+    }
+
+    public function getAllowedExporterTypes(ExportProfileModel $profile): array
+    {
+        $types = $this->getExporterTypes();
+        if (null === $profile->allowedExportTypes) {
+            return $types;
+        }
+
+        return array_intersect_key($types, array_flip(array_filter($profile->allowedExportTypes, 'is_string')));
+    }
+
+    public function isExportTypeAllowed(ExportProfileModel $profile, string $type): bool
+    {
+        return \array_key_exists($type, $this->getAllowedExporterTypes($profile));
+    }
+
+    public function validateAllowedExportTypes(ExportProfileModel $profile): bool
+    {
+        if (null === $profile->allowedExportTypes) {
+            return true;
+        }
+
+        if (!$profile->allowedExportTypes) {
+            $profile->addError('allowedExportTypes', Freeform::t('Select at least one export format.'));
+
+            return false;
+        }
+
+        $types = $this->getExporterTypes();
+        foreach ($profile->allowedExportTypes as $type) {
+            if (!\is_string($type) || !\array_key_exists($type, $types)) {
+                $profile->addError('allowedExportTypes', Freeform::t('Select valid export formats.'));
+
+                return false;
+            }
+        }
+
+        foreach ($profile->id ? $this->getActiveNotificationsForProfile($profile->id) : [] as $notification) {
+            if (!\in_array($notification->fileType, $profile->allowedExportTypes, true)) {
+                $profile->addError('allowedExportTypes', Freeform::t(
+                    'The {format} format is used by the active export notification "{name}". Update or disable that notification before removing this format.',
+                    ['format' => $types[$notification->fileType] ?? $notification->fileType, 'name' => $notification->name]
+                ));
+            }
+        }
+
+        return !$profile->hasErrors('allowedExportTypes');
+    }
+
+    public function createProfileExporter(string $type, ExportProfileModel $profile): SubmissionExportInterface
+    {
+        if (!$this->isExportTypeAllowed($profile, $type)) {
+            throw new BadRequestHttpException(Freeform::t('The selected export format is not allowed for this profile.'));
+        }
+
+        return $this->createExporter($type, $profile->getForm(), $profile->getQuery(), $profile->getFieldDescriptors());
     }
 
     /**
@@ -126,6 +184,10 @@ class ExportProfilesService extends Component
 
     public function save(ExportProfileModel $model): bool
     {
+        if (!$this->validateAllowedExportTypes($model)) {
+            return false;
+        }
+
         $isNew = !$model->id;
 
         if (!$isNew) {
@@ -147,6 +209,7 @@ class ExportProfilesService extends Component
         $record->fields = $model->fields;
         $record->filters = $model->filters;
         $record->statuses = $model->statuses;
+        $record->allowedExportTypes = $model->allowedExportTypes;
 
         $record->validate();
         $model->addErrors($record->getErrors());
@@ -307,6 +370,12 @@ class ExportProfilesService extends Component
         exit;
     }
 
+    /** @return ExportNotificationRecord[] */
+    protected function getActiveNotificationsForProfile(int $profileId): array
+    {
+        return ExportNotificationRecord::find()->where(['profileId' => $profileId, 'enabled' => true])->all();
+    }
+
     private function getQuery(): Query
     {
         return (new Query())
@@ -322,6 +391,7 @@ class ExportProfilesService extends Component
                     'export_profiles.fields',
                     'export_profiles.filters',
                     'export_profiles.statuses',
+                    'export_profiles.allowedExportTypes',
                 ]
             )
             ->from(ExportProfileRecord::TABLE.' export_profiles')
@@ -331,6 +401,10 @@ class ExportProfilesService extends Component
 
     private function createExportProfile(array $data): ExportProfileModel
     {
+        if (\is_string($data['allowedExportTypes'] ?? null)) {
+            $data['allowedExportTypes'] = json_decode($data['allowedExportTypes'], true, flags: \JSON_THROW_ON_ERROR);
+        }
+
         $exportProfile = new ExportProfileModel($data);
 
         $jsonColumns = ['fields', 'filters', 'statuses'];

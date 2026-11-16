@@ -1,0 +1,10 @@
+{# Only parse Craft 5's icon/disclosure APIs when they are available. #}
+{% if craft.app.view.doesTemplateExist('_includes/disclosure-toggle') %}
+    {% include 'freeform/_components/sidebar-disclosure' with {
+        heading: heading,
+        controls: controls,
+        storageKey: storageKey,
+    } only %}
+{% else %}
+    <span>{{ heading }}</span>
+{% endif %}

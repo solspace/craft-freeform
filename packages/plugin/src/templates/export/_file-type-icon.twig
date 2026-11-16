@@ -1,0 +1,4 @@
+{% set fileIcons = {excel: 'file-excel', csv: 'file-csv', json: 'file-code', xml: 'file-xml', text: 'file-lines'} %}
+<span class="ff-export-file-icon ff-export-file-icon--{{ type }}" aria-hidden="true"{% if slot is defined %} slot="{{ slot }}"{% endif %}>
+    <craft-icon name="{{ fileIcons[type] ?? 'file' }}"></craft-icon>
+</span>

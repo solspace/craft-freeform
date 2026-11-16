@@ -46,6 +46,21 @@ class ActivityController extends BaseController
         return true;
     }
 
+    public function actionBadge(): Response
+    {
+        $count = 0;
+        if ($this->getSettingsService()->getSettingsModel()->isActivityLoggingEnabled()) {
+            $activity = Freeform::getInstance()->activity;
+            $count = $activity->getErrorCount() + $activity->getOperationalWarningCount();
+        }
+
+        return $this->asJson([
+            'count' => $count,
+            'formattedCount' => \Craft::$app->getFormatter()->asInteger($count),
+            'label' => \Craft::t('app', '{num, number} {num, plural, =1{notification} other{notifications}}', ['num' => $count]),
+        ]);
+    }
+
     public function actionIndex(): Response
     {
         \Craft::$app->getView()->registerAssetBundle(ActivityBundle::class);

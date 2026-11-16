@@ -8,7 +8,7 @@ import { Card } from "./card/card";
 import { chartDataset } from "./grid.empty.datasets";
 import { ActionsRow, MutedWrapper } from "./grid.empty.styles";
 
-const color = "#e0e0e0";
+const color = "var(--empty-form-accent, #e0e0e0)";
 const generateFormData = (
   name: string,
   description: string,

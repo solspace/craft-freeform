@@ -28,6 +28,10 @@ export const ImportExpressForms: React.FC = () => {
   const { data, isFetching } = useExpressFormsDataQuery();
 
   const onClick = async (): Promise<void> => {
+    if (active || isAllOptionsEmpty(options)) {
+      return;
+    }
+
     progressEvent.clearProgress();
 
     const { data } = await axios.post("/api/import/prepare", {
@@ -88,7 +92,7 @@ export const ImportExpressForms: React.FC = () => {
 
       <button
         type="button"
-        disabled={active}
+        disabled={active || isAllOptionsEmpty(options)}
         onClick={onClick}
         className={classes(
           "field btn",

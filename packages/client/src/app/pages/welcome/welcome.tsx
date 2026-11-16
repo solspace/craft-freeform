@@ -178,6 +178,7 @@ export const WelcomeContent: React.FC<WelcomeContentProps> = ({
       ref={canvas}
       style={{ height: canvasHeight }}
       data-comparing={secondaryOpen}
+      data-view={view}
       onKeyDown={(event) => {
         if (comparing && event.key === "Escape") {
           event.stopPropagation();

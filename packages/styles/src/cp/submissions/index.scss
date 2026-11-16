@@ -334,7 +334,7 @@
   border: 0;
   border-radius: 0.6875rem;
   background: transparent;
-  color: var(--ui-control-color, #596673);
+  color: var(--c-text-default, var(--text-color, #596673));
   font: inherit;
   cursor: pointer;
   transition: padding-inline-end 260ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -344,26 +344,27 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: var(--ui-control-color, #596673);
+    background: var(--c-color-neutral-fill-normal, var(--ui-control-bg-color, #e3e5e8));
     content: "";
-    opacity: 0.12;
+    opacity: 1;
     pointer-events: none;
   }
 
   &--approve {
-    --ff-review-accent: var(--green-600, #16a34a);
+    --ff-review-accent: var(--c-color-success-fill-loud, #16803d);
+    --ff-review-ink: var(--c-color-success-on-loud, #fff);
   }
 
   &--delete {
-    --ff-review-accent: var(--red-600, #dc2626);
+    --ff-review-accent: var(--c-color-danger-fill-loud, #bc1828);
+    --ff-review-ink: var(--c-color-danger-on-loud, #fff);
   }
 
   .ff-spam-review-layer--color & {
-    color: var(--ff-review-accent);
+    color: var(--ff-review-ink);
 
     &::before {
-      // The colored surface blends over the persistent gray layer.
-      background: color-mix(in srgb, var(--ff-review-accent) var(--ff-review-tint, 12%), var(--pane-bg, #fff));
+      background: var(--ff-review-accent);
       opacity: 1;
     }
   }
@@ -428,7 +429,6 @@
       .ff-spam-review-group:has(button[data-spam-operation="#{$operation}"]:focus-visible) &--#{$operation} {
         --ff-review-label-delay: 120ms;
         --ff-review-label-fade-delay: 200ms;
-        --ff-review-tint: 20%;
         padding-inline-end: 10px;
 
         .ff-spam-review-action-label {

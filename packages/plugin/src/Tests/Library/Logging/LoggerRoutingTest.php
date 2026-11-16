@@ -7,8 +7,14 @@ use Monolog\Logger;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\controllers\LogsController;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
+use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Activity\ActivityContext;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Logging\FreeformLogRecord;
@@ -109,6 +115,52 @@ class LoggerRoutingTest extends TestCase
         $this->service->clearLogs();
         self::assertSame(0, $this->service->getErrorLogLineCount());
         self::assertCount($expectedDetails, $this->service->getLogReader($file));
+    }
+
+    #[TestWith(['classic', false])]
+    #[TestWith(['classic', true])]
+    #[TestWith(['activity', false])]
+    #[TestWith(['activity', true])]
+    #[TestWith(['none', false])]
+    #[TestWith(['none', true])]
+    public function testPaymentStorageFailuresUseConfiguredLoggingWithoutDuplicateActivityOrAlerts(string $style, bool $optInMissing): void
+    {
+        $this->settings->loggingStyle = $style;
+        $form = $this->createMock(Form::class);
+        $form->method('getId')->willReturn(12);
+        $form->method('getHandle')->willReturn('checkout');
+        $form->method('hasOptInPermission')->willReturn(!$optInMissing);
+        $general = new GeneralSettings();
+        $general->storeData = $optInMissing;
+        $settings = $this->createStub(FormSettings::class);
+        $settings->method('getGeneral')->willReturn($general);
+        $form->method('getSettings')->willReturn($settings);
+        $integration = $this->createMock(Stripe::class);
+        $integration->method('getId')->willReturn(22);
+        $reason = $optInMissing ? ActivityContext::PAYMENT_STORAGE_OPT_IN_REQUIRED : ActivityContext::PAYMENT_STORAGE_DISABLED;
+        $this->activity->expects(self::once())->method('record')
+            ->with('integration-error', 12, null, ['integrationId' => 22, 'reasonCode' => $reason])
+        ;
+        $this->notifications->expects(self::never())->method('handle');
+        $loggers = $this->createStub(IntegrationLoggerProvider::class);
+        $loggers->method('getLogger')->willReturn($this->service->getLogger('payment-storage-'.$style, 'freeform-integrations.log'));
+        $storage = new PaymentStorageService($loggers);
+
+        try {
+            $storage->assertCanStore($form, $integration, 'Stripe');
+            self::fail('The payment must be rejected.');
+        } catch (\InvalidArgumentException $exception) {
+            self::assertSame('Stripe payments require stored submissions.', $exception->getMessage());
+        }
+        $errors = $this->service->getLogReader()->getLines(20, readFromEnd: false);
+        self::assertCount('classic' === $style ? 1 : 0, $errors);
+        if ('classic' === $style) {
+            self::assertStringContainsString(ActivityContext::REASONS[$reason][1], $errors[0]->getMessage());
+            self::assertSame(12, $errors[0]->getContext()['formId']);
+            self::assertSame('checkout', $errors[0]->getContext()['formHandle']);
+            self::assertSame(22, $errors[0]->getContext()['integrationId']);
+        }
+        self::assertCount(0, $this->service->getLogReader('freeform-integrations.log'));
     }
 
     public function testDefaultLoggerWritesEachErrorOnce(): void

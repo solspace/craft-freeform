@@ -105,10 +105,22 @@ class NotificationsController extends BaseController
     {
         $this->view->registerAssetBundle(ExportProfileBundle::class);
 
+        $service = $this->getExportProfileService();
+        $profiles = $service->getAllProfiles();
+        $profileExporterTypes = [];
+        foreach ($profiles as $profile) {
+            $profileExporterTypes[$profile->id] = $service->getAllowedExporterTypes($profile);
+        }
+        $selectedProfile = $profiles[$record->profileId] ?? (reset($profiles) ?: null);
+        $fileTypeOptions = ['' => Freeform::t('Choose a file type')]
+            + ($selectedProfile ? $service->getAllowedExporterTypes($selectedProfile) : []);
+
         return $this->renderTemplate(
             'freeform/export/notifications/edit',
             [
                 'notification' => $record,
+                'profileExporterTypes' => $profileExporterTypes,
+                'fileTypeOptions' => $fileTypeOptions,
                 'title' => $title,
                 'continueEditingUrl' => 'freeform/export/notifications/{id}',
                 'crumbs' => [

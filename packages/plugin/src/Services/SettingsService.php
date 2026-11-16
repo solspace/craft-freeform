@@ -326,7 +326,6 @@ class SettingsService extends BaseService
             'limited-users' => ['title' => Freeform::t('Limited Users')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
             'template-manager' => ['title' => Freeform::t('Template Manager')],
-            'pdf-templates' => ['title' => Freeform::t('PDF Templates')],
             'statuses' => ['title' => Freeform::t('Statuses')],
             'content-integrations' => version_compare(\Craft::$app->getVersion(), '5.0', '>=') ? ['title' => Freeform::t('Content Integrations')] : null,
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],

@@ -4,8 +4,9 @@
   "description": "Freeform Client",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "clean": "rm -rf ../plugin/src/Resources/js/client",
+    "build": "node build.mjs",
+    "clean": "rm -rf .client-build",
+    "test:build": "node --test build.node-test.mjs",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "test": "vitest --config ./config/vitest/vitest.config.ts",

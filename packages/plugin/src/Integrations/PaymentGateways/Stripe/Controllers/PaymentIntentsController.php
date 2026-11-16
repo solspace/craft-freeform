@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\Events\UpdateMetadataEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCustomerService;
@@ -24,6 +25,7 @@ class PaymentIntentsController extends BaseStripeController
         private IsolatedTwig $isolatedTwig,
         private StripeCustomerService $customerService,
         private StripePriceService $amountService,
+        private PaymentStorageService $storageService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -41,6 +43,7 @@ class PaymentIntentsController extends BaseStripeController
         }
 
         try {
+            $this->storageService->assertCanStore($form, $integration, 'Stripe');
             $amount = $this->amountService->getAmount($form, $field);
         } catch (\InvalidArgumentException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
@@ -102,6 +105,7 @@ class PaymentIntentsController extends BaseStripeController
         }
 
         try {
+            $this->storageService->assertCanStore($form, $integration, 'Stripe');
             $amount = $this->amountService->getAmount($form, $field);
         } catch (\InvalidArgumentException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);

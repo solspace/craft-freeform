@@ -43,22 +43,7 @@
     {% endif %}
 {% endblock %}
 
-{% block sidebar %}
-    {% set segment = segment3~(segment4 ? '/'~segment4) %}
-    {% set segment = segment|freeformRegexReplace('/\\/\\d+$/') %}
-    {% set items = [] %}
-    {% for id, item in navItems %}
-        {% set items = items|merge([item.heading is defined ? item : {
-            title: item.title,
-            url: 'freeform/settings/'~id,
-            selected: id == segment,
-        }]) %}
-    {% endfor %}
-    {% include 'freeform/_components/secondary-navigation' with {
-        label: 'Settings'|t('freeform'),
-        items: items,
-    } only %}
-{% endblock %}
+{% block sidebar %}{% endblock %}
 
 {% block contentNotice %}
     {% if readOnly ?? false %}

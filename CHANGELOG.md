@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 6.0.0-beta.7 - Unreleased
+
+### Changed
+- Included the features and fixes from Freeform 5.18.4, adapted for Craft 6.
+- Aligned navigation, template and export lists, setup guidance, and status banners with native Craft 6.
+
+### Fixed
+- Fixed deprecated submission queries, Activity Log loading, and payment transaction handling in Craft 6.
+- Fixed missing action icons and integration settings hover contrast in native dark mode.
+
 ## 6.0.0-beta.6 - 2026-11-13
 
 ### Changed
@@ -50,6 +60,29 @@
 
 ### Added
 - Added compatibility for Craft 6.x.
+
+## 5.18.4 - 2026-11-16
+
+### Added
+- Added per-profile **Allowed export formats** for downloads and export notifications. Existing profiles retain all formats.
+- Added an **Activity Log** navigation badge for unresolved errors and system warnings, with automatic background updates.
+- Added **Preview PDF** to preview unsaved PDF template changes with an existing submission and download the result.
+
+### Changed
+- Refreshed the **A/B Tests** dashboard with collapsible results, clearer metrics, and performance charts.
+- Streamlined template and export lists, sidebar navigation, and empty states, with creation actions that respect permissions and settings.
+- Moved **PDF Templates** from Settings to Notifications under Attachments, preserving permissions and redirecting existing URLs.
+- Payment forms using **Stripe**, **Mollie**, **Square**, or **PayPal** now require **Store Submitted Data** and, when configured, the visitor's storage opt-in before payment.
+
+### Fixed
+- Fixed duplicate Stripe submissions when payment callbacks overlap.
+- Fixed import buttons allowing empty selections or repeated imports while an import is running.
+- Improved dark mode support for Form Monitor, charts, tooltips, and resolved Activity Log entries.
+- Fixed Forms app loading failures during client rebuilds or when published assets are incomplete.
+- Added missing control panel translations across all five supported languages.
+
+### Security
+- Fixed a PayPal payment verification bypass that could allow unpaid or underpaid submissions. Payments are verified against the submitted amount, currency, and form, and reused orders are rejected. Credit to [hgrgr](https://github.com/hgrgr) for reporting.
 
 ## 5.18.3 - 2026-11-13
 

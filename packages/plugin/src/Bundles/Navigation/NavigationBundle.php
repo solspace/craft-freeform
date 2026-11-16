@@ -2,16 +2,21 @@
 
 namespace Solspace\Freeform\Bundles\Navigation;
 
+use craft\web\View;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Resources\Bundles\ActivityBadgeBundle;
 use yii\base\Event;
 
 class NavigationBundle extends FeatureBundle
 {
     public function __construct()
     {
+        Event::on(View::class, View::EVENT_BEFORE_RENDER_PAGE_TEMPLATE, [$this, 'attachActivityBadgeScript']);
+
         Event::on(
             Freeform::class,
             Freeform::EVENT_REGISTER_SUBNAV_ITEMS,
@@ -25,6 +30,19 @@ class NavigationBundle extends FeatureBundle
         );
     }
 
+    public function attachActivityBadgeScript(): void
+    {
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsConsoleRequest() || !$request->getIsCpRequest()
+            || !$this->plugin()->settings->getSettingsModel()->isActivityLoggingEnabled()
+            || !(PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)
+                || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
+            return;
+        }
+
+        \Craft::$app->getView()->registerAssetBundle(ActivityBadgeBundle::class);
+    }
+
     public function registerNavigationItems(RegisterCpSubnavItemsEvent $event): void
     {
         $freeform = $this->plugin();
@@ -33,6 +51,7 @@ class NavigationBundle extends FeatureBundle
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessAb = PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $canAccessPdfTemplates = $freeform->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_PDF_TEMPLATES_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
@@ -64,8 +83,33 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
-        if ($canAccessNotifications) {
-            $event->addSubnavItem('notifications', Freeform::t('Notifications'), 'freeform/notifications');
+        if ($canAccessNotifications || $canAccessPdfTemplates) {
+            $settings = $freeform->settings->getSettingsModel();
+            $path = \Craft::$app->getRequest()->getPathInfo();
+            $subnav = [];
+            if ($canAccessNotifications) {
+                if (Settings::EMAIL_TEMPLATE_METHOD_FORM !== $settings->emailTemplateMethod) {
+                    if (\in_array($settings->emailTemplateStorageType, [Settings::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH, Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES], true)) {
+                        $subnav['files'] = ['label' => Freeform::t('Files'), 'url' => 'freeform/notifications/files'];
+                    }
+                    if (\in_array($settings->emailTemplateStorageType, [Settings::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH, Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE], true)) {
+                        $subnav['database'] = ['label' => Freeform::t('Database'), 'url' => 'freeform/notifications/database'];
+                    }
+                }
+                $subnav['wrappers'] = ['label' => Freeform::t('Wrappers'), 'url' => 'freeform/notifications/wrappers'];
+            }
+            if ($canAccessPdfTemplates) {
+                $subnav['pdf-templates'] = ['label' => Freeform::t('PDFs'), 'url' => 'freeform/notifications/pdf-templates'];
+            }
+            foreach ($subnav as $id => &$item) {
+                $item['id'] = $id;
+                $item['sel'] = str_starts_with($path, $item['url']);
+            }
+            unset($item);
+            $event->addSubnavItem('notifications', Freeform::t('Notifications'), reset($subnav)['url'], extraOptions: [
+                'subnav' => $subnav,
+                'sel' => str_starts_with($path, 'freeform/notifications'),
+            ]);
         }
 
         if ($canAccessIntegrations) {
@@ -74,7 +118,14 @@ class NavigationBundle extends FeatureBundle
 
         if ($freeform->settings->getSettingsModel()->isActivityLoggingEnabled()
             && ($canAccessSettings || PermissionHelper::checkPermission(Freeform::PERMISSION_ACTIVITY_ACCESS))) {
-            $event->addSubnavItem('activity', Freeform::t('Activity Log'), 'freeform/activity');
+            $activity = $freeform->activity;
+            $badgeCount = $activity->getErrorCount() + $activity->getOperationalWarningCount();
+            $event->addSubnavItem(
+                'activity',
+                Freeform::t('Activity Log'),
+                'freeform/activity',
+                extraOptions: ['badgeCount' => $badgeCount ?: null],
+            );
         }
 
         $showImportExport = (
@@ -130,6 +181,21 @@ class NavigationBundle extends FeatureBundle
                     'url' => 'freeform/import/forms',
                     'sel' => str_starts_with($path, 'freeform/import/forms'),
                 ];
+
+                $plugins = \Craft::$app->getPlugins();
+                foreach ([
+                    'express-forms' => ['Express Forms', 'freeform/import/express-forms'],
+                    'formie' => ['Formie (v3)', 'freeform/import/formie/v3'],
+                ] as $handle => [$label, $url]) {
+                    if ($plugins->isPluginInstalled($handle) && $plugins->isPluginEnabled($handle)) {
+                        $subnav['import-'.$handle] = [
+                            'id' => 'import-'.$handle,
+                            'label' => Freeform::t($label),
+                            'url' => $url,
+                            'sel' => str_starts_with($path, $url),
+                        ];
+                    }
+                }
             }
 
             $event->addSubnavItem(
@@ -145,7 +211,28 @@ class NavigationBundle extends FeatureBundle
         }
 
         if ($canAccessSettings) {
-            $event->addSubnavItem('settings', Freeform::t('Settings'), 'freeform/settings');
+            $path = \Craft::$app->getRequest()->getPathInfo();
+            $subnav = [];
+            $group = null;
+            foreach ($freeform->settings->getSettingsNavigation() as $id => $item) {
+                if (isset($item['heading'])) {
+                    $group = $id;
+                    $subnav[$id] = ['id' => $id, 'label' => $item['heading'], 'group' => true, 'subnav' => []];
+
+                    continue;
+                }
+                $url = 'freeform/settings/'.$id;
+                $entry = ['id' => $id, 'label' => strip_tags($item['title']), 'url' => $url, 'sel' => $path === $url || str_starts_with($path, $url.'/')];
+                if ($group === null) {
+                    $subnav[$id] = $entry;
+                } else {
+                    $subnav[$group]['subnav'][$id] = $entry;
+                }
+            }
+            $event->addSubnavItem('settings', Freeform::t('Settings'), 'freeform/settings', extraOptions: [
+                'subnav' => $subnav,
+                'sel' => str_starts_with($path, 'freeform/settings'),
+            ]);
         }
     }
 

@@ -7,7 +7,6 @@ import type { FC } from "react";
 import { formatRate, getVariantColor } from "./ab-tests.operations";
 import {
   VariantCard,
-  VariantCardWrapper,
   VariantFooter,
   VariantHeader,
   VariantLetter,
@@ -30,47 +29,47 @@ export const ABTestCard: FC<Props> = ({ variant, test }) => {
   const variantIndex = test.variants.indexOf(variant);
 
   return (
-    <VariantCardWrapper key={variant.id}>
-      {isWinner && (
-        <Winner>
-          <div>
-            <CheckIcon /> {translate(isInPast ? "Winner" : "Winning")}
-          </div>
-        </Winner>
-      )}
+    <VariantCard className={classes(isWinner && "winner")}>
+      <VariantHeader>
+        <VariantLetter
+          style={{
+            backgroundColor: `color-mix(in srgb, ${getVariantColor(variant, variantIndex)} 22%, var(--pane-bg, white))`,
+            border: `2px solid ${getVariantColor(variant, variantIndex)}`,
+          }}
+        >
+          {String.fromCharCode(65 + variantIndex)}
+        </VariantLetter>
 
-      <VariantCard className={classes(isWinner && "winner")}>
-        <VariantHeader>
-          <VariantLetter
-            style={{
-              backgroundColor: getVariantColor(variant, variantIndex),
-            }}
-          >
-            {String.fromCharCode(65 + variantIndex)}
-          </VariantLetter>
+        <h3>
+          {variant.formName ||
+            translate("Variant {number}", { number: variantIndex + 1 })}
+        </h3>
+        {isWinner && (
+          <Winner>
+            <CheckIcon aria-hidden="true" />
+            {translate(isInPast ? "Winner" : "Winning")}
+          </Winner>
+        )}
+      </VariantHeader>
 
-          {variant.formName}
-        </VariantHeader>
-
-        <VariantStats>
-          <span>{translate("Weight")}</span>
-          <strong>{variant.weight}%</strong>
-          <span>{translate("Impressions")}</span>
-          <strong>{variant.stats.served.toLocaleString()}</strong>
-          <span>{translate("Interactions")}</span>
-          <strong>{variant.stats.interacted.toLocaleString()}</strong>
-          <span>{translate("Failures")}</span>
-          <strong>{variant.stats.failed.toLocaleString()}</strong>
-          <span>{translate("Conversions")}</span>
-          <strong>{variant.stats.completed.toLocaleString()}</strong>
-        </VariantStats>
-        <VariantFooter>
-          <span>{translate("Conversion Rate")}</span>
-          <span className="thick">
-            {formatRate(variant.stats.conversionRate)}
-          </span>
-        </VariantFooter>
-      </VariantCard>
-    </VariantCardWrapper>
+      <VariantStats>
+        <dt>{translate("Weight")}</dt>
+        <dd>{variant.weight}%</dd>
+        <dt>{translate("Impressions")}</dt>
+        <dd>{variant.stats.served.toLocaleString()}</dd>
+        <dt>{translate("Interactions")}</dt>
+        <dd>{variant.stats.interacted.toLocaleString()}</dd>
+        <dt>{translate("Failures")}</dt>
+        <dd>{variant.stats.failed.toLocaleString()}</dd>
+        <dt>{translate("Conversions")}</dt>
+        <dd>{variant.stats.completed.toLocaleString()}</dd>
+      </VariantStats>
+      <VariantFooter>
+        <span>{translate("Conversion Rate")}</span>
+        <span className="thick">
+          {formatRate(variant.stats.conversionRate)}
+        </span>
+      </VariantFooter>
+    </VariantCard>
   );
 };

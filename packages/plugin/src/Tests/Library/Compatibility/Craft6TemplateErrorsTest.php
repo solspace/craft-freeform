@@ -157,8 +157,9 @@ class Craft6TemplateErrorsTest extends TestCase
         $twig = $this->twig();
         $source = file_get_contents(\dirname(__DIR__, 3).'/templates/pdf-templates/edit.twig');
         $source = str_replace(['{% js %}', '{% endjs %}'], ['{% block script %}', '{% endblock %}'], $source);
-        $twig->getLoader()->addLoader(new ArrayLoader(['pdf-edit.twig' => $source]));
+        $twig->getLoader()->addLoader(new ArrayLoader(['pdf-edit.twig' => $source, 'freeform/notifications/_layout' => '{% block actionButton %}{% endblock %}{% block content %}{% endblock %}{% block script %}{% endblock %}']));
         $twig->addFilter(new TwigFilter('hash', static fn ($value) => $value));
+        $twig->addFunction(new TwigFunction('ui', static fn () => ''));
         $html = $twig->render('pdf-edit.twig', [
             'template' => $template,
             'title' => 'New PDF Template',

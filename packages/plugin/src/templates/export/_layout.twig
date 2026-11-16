@@ -5,15 +5,4 @@
 {% set selectedSubnavItem = 'export' %}
 {% set currentUrl = craft.app.request.absoluteUrl %}
 
-{% block sidebar %}
-    {% set items = [] %}
-    {% for item in freeform.plugin.export.navigation %}
-        {% set items = items|merge([item.heading is defined ? item : item|merge({
-            selected: item.url in currentUrl,
-        })]) %}
-    {% endfor %}
-    {% include 'freeform/_components/secondary-navigation' with {
-        label: 'Import / Export'|t('freeform'),
-        items: items,
-    } only %}
-{% endblock %}
+{% block sidebar %}{% endblock %}

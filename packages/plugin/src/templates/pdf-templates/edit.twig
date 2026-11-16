@@ -1,16 +1,27 @@
-{% extends "freeform/_layouts/settings" %}
+{% extends "freeform/notifications/_layout" %}
 {% import "_includes/forms" as forms %}
 
-{% set selectedSubnavItem = "general" %}
-{% set saveShortcutRedirect = 'freeform/settings/pdf-templates/{id}' %}
+{% set selectedSubnavItem = "notifications" %}
+{% set saveShortcutRedirect = 'freeform/notifications/pdf-templates/{id}' %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
-    { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
-    { label: title, url: url("freeform/settings/pdf-templates/" ~ (template.getAttribute('id') ?: 'new') ) },
+    { label: "PDF Templates"|t("freeform"), url: url("freeform/notifications/pdf-templates") },
+    { label: title, url: url("freeform/notifications/pdf-templates/" ~ (template.getAttribute('id') ?: 'new') ) },
 ] %}
 
 {% set fullPageForm = true %}
+
+{% set additionalButtons %}
+    {% if previewForms|length %}
+        {{ ui('button', {
+            id: 'pdf-preview-open',
+            type: 'button',
+            variant: 'outline',
+            label: 'Preview PDF'|t('freeform'),
+        }) }}
+    {% endif %}
+{% endset %}
 
 {% set formActions = [
     {
@@ -21,7 +32,7 @@
     },
     {
         label: 'Save and add another'|t('app'),
-        redirect: cpUrl('freeform/settings/pdf-templates/new')|hash,
+        redirect: cpUrl('freeform/notifications/pdf-templates/new')|hash,
     },
 ] %}
 
@@ -29,7 +40,7 @@
 
     <input type="hidden" name="action" value="freeform/pdf/pdf-templates/save">
     <input type="hidden" name="id" value="{{ template.getAttribute('id') }}" />
-    {{ redirectInput('freeform/settings/pdf-templates') }}
+    {{ redirectInput('freeform/notifications/pdf-templates') }}
     {{ csrfInput() }}
 
     {{ forms.textField({
@@ -79,6 +90,10 @@
     }) }}
 
     <style>
+        .content-footer:has(#pdf-preview-open) > .flex > .flex-1 {
+            display: none;
+        }
+
         #editor {
             display: none;
             overflow: hidden;
@@ -104,6 +119,10 @@
         }
     </style>
     <div id="editor">{{ template.getAttribute('body') }}</div>
+
+    {% if previewForms|length %}
+        {% include 'freeform/pdf-templates/_preview' %}
+    {% endif %}
 
 {% endblock %}
 

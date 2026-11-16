@@ -1,7 +1,10 @@
 import { Control } from "@components/form-controls/control";
 import type { ControlType } from "@components/form-controls/types";
 import { TestEmailModal } from "@ff-client/app/components/form-controls/control-types/namespaced/integrations/form-monitor/test-email-modal";
-import { WarningMessage } from "@ff-client/app/components/form-controls/control-types/namespaced/integrations/form-monitor/test-email-modal.styles";
+import {
+  TestEmailButton,
+  WarningMessage,
+} from "@ff-client/app/components/form-controls/control-types/namespaced/integrations/form-monitor/test-email-modal.styles";
 import { useMailerInfoQuery } from "@ff-client/queries/form-monitor";
 import type { FormMonitorToolsProperty } from "@ff-client/types/properties";
 import translate from "@ff-client/utils/translations";
@@ -25,8 +28,8 @@ const FormMonitorTools: React.FC<ControlType<FormMonitorToolsProperty>> = ({
   return (
     <>
       <Control property={property} errors={errors}>
-        <button
-          className="btn small submit"
+        <TestEmailButton
+          className="btn"
           type="button"
           disabled={!canTestEmail}
           onClick={() => {
@@ -38,7 +41,7 @@ const FormMonitorTools: React.FC<ControlType<FormMonitorToolsProperty>> = ({
           }}
         >
           {translate("Test Email Notifications")}
-        </button>
+        </TestEmailButton>
         {isSendmail && (
           <WarningMessage>
             {translate(

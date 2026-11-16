@@ -86,6 +86,11 @@ class FreeformConfig implements \JsonSerializable
                 ),
             ],
             'permissions' => [
+                'settings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
+                'abTests' => $plugin->isPro() && $settings->isAbTestsEnabled() ? $this->getPermission(
+                    Freeform::PERMISSION_AB_ACCESS,
+                    Freeform::PERMISSION_AB_MANAGE,
+                ) : 'none',
                 'integrations' => $this->getPermission(
                     Freeform::PERMISSION_INTEGRATIONS_ACCESS,
                     Freeform::PERMISSION_INTEGRATIONS_MANAGE,

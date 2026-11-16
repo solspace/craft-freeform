@@ -1,21 +1,44 @@
-.action-buttons {
-  display: flex;
+.ff-notification-filename {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: var(--c-radius-sm);
+  background: var(--c-surface-sunken);
+  color: var(--light-text-color, #667789);
+  font-size: 12px;
+  line-height: 20px;
+}
 
-  > * {
-    padding: 0 0 0 5px;
-  }
+#content:has(> [data-notification-empty]:not([hidden])) { padding: 0; }
+#content:has(> .ff-notification-tablepane:not([hidden])) { padding-bottom: 0; }
+.ff-notification-tablepane { overflow: visible; margin-block-end: 0; }
+.ff-notification-table {
+  width: 100%;
+  table-layout: fixed;
+  .ff-notification-name-column { width: 48%; }
+  .ff-notification-actions-column { width: 60px; }
+  .ff-notification-actions.menubtn::after { display: none; }
 
-  .icon.clone {
-    &:before {
-      font-family: "solspace-freeform-craft", sans-serif;
-      color: rgba(0, 0, 0, 0.2);
-      content: "\e819";
-    }
-
-    &:hover {
-      &:before {
-        color: #0a0d0f;
-      }
-    }
+}
+.ff-notification-heading { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+.ff-notification-heading > a, .ff-notification-heading > span:first-child { min-width: 0; font-size: 14px; font-weight: 600; line-height: 20px; overflow-wrap: anywhere; }
+.ff-notification-id { flex-shrink: 0; font-size: 11px; line-height: 18px; font-weight: normal; color: var(--light-text-color, #667789); opacity: .8; }
+.ff-notification-description { margin: 3px 0 0; max-width: 72ch; font-size: 13px; line-height: 1.45; font-weight: normal; color: var(--light-text-color, #667789); overflow-wrap: anywhere; }
+.ff-notification-actions-cell { text-align: end; }
+@media (max-width: 900px) {
+  .ff-notification-table {
+    thead { display: none; }
+    tbody > tr { display: grid; grid-template-columns: minmax(0, 1fr) 40px; border-bottom: 1px solid var(--hairline-color, #dfe5ec); }
+    tbody > tr:last-child { border-bottom: 0; }
+    tbody > tr > th, tbody > tr > td { border: 0; box-shadow: none; padding: 16px; }
+    .ff-notification-name-cell { grid-column: 1; grid-row: 1; }
+    .ff-notification-filename-cell { grid-column: 1 / -1; padding-top: 0; }
+    .ff-notification-actions-cell { grid-column: 2; grid-row: 1; padding-inline: 0 8px; }
   }
 }

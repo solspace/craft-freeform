@@ -21,7 +21,8 @@
       "@ff-icons/*": ["./src/assets/icons/*"],
       "@ff-client/*": ["./src/*"],
       "@ff-widgets/*": ["../scripts/src/lib/cp/widgets/*"],
-      "@ff-chart-styles": ["../styles/src/shared/chart.css"]
+      "@ff-chart-styles": ["../styles/src/shared/chart.css"],
+      "@ff-empty-state-styles": ["../styles/src/shared/empty-state.css"]
     }
   },
   "exclude": ["node_modules"]

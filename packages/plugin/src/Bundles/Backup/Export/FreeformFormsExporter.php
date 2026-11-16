@@ -130,7 +130,7 @@ class FreeformFormsExporter extends BaseExporter
             ->select("COUNT({$table}.[[id]]) as count")
             ->innerJoin(FormRecord::TABLE.' f', "[[f]].[[id]] = {$table}.[[formId]]")
             ->groupBy('f.[[uid]]')
-            ->orderBy([])
+            ->reorder()
             ->indexBy('f.uid')
             ->column()
         ;

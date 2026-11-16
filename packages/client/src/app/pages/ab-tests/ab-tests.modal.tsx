@@ -14,13 +14,14 @@ import { useQueryFormsWithStats } from "@ff-client/queries/forms";
 import { PropertyType } from "@ff-client/types/properties";
 import { notifications } from "@ff-client/utils/notifications";
 import translate from "@ff-client/utils/translations";
+import TrashIcon from "@ff-icons/actions/trash-can";
 import type React from "react";
 import { useMemo, useState } from "react";
 import { v4 } from "uuid";
 
 import { generateABTestHandle } from "./ab-tests.operations";
 import { useAbTestUpsertMutation } from "./ab-tests.queries";
-import { DateRow, ModalBody } from "./ab-tests.styles";
+import { DateRow, ModalBody, VariantDeleteButton } from "./ab-tests.styles";
 import type { ABTestWithVariants } from "./ab-tests.types";
 
 type ModalData = {
@@ -200,10 +201,10 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                       />
                     </td>
                     <td className="thin action">
-                      <button
+                      <VariantDeleteButton
                         type="button"
                         title={translate("Delete")}
-                        className="delete icon"
+                        aria-label={translate("Delete")}
                         onClick={() =>
                           setState((prev) => ({
                             ...prev,
@@ -212,7 +213,9 @@ export const ABTestModal: React.FC<ModalContainerProps<ModalData>> = ({
                             ),
                           }))
                         }
-                      />
+                      >
+                        <TrashIcon aria-hidden="true" />
+                      </VariantDeleteButton>
                     </td>
                   </tr>
                 ))}

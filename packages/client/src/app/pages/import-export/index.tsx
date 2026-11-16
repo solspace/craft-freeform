@@ -4,7 +4,6 @@ import translate from "@ff-client/utils/translations";
 import type { FC } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
-import { Sidebar } from "./common/sidebar/sidebar";
 import { ImportExportWrapper } from "./index.styles";
 
 export const ImportExport: FC = () => {
@@ -31,8 +30,7 @@ export const ImportExport: FC = () => {
   }
 
   return (
-    <div className="freeform-secondary-layout">
-      <Sidebar />
+    <div>
       <HeaderContainer>{translate(title)}</HeaderContainer>
       <ImportExportWrapper>
         <Outlet />

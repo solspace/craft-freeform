@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Services\SquarePriceService;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Square;
@@ -24,6 +25,7 @@ class PaymentsController extends BaseApiController
         $module,
         $config,
         private IntegrationClientProvider $clientProvider,
+        private PaymentStorageService $storageService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -44,8 +46,6 @@ class PaymentsController extends BaseApiController
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
         }
 
-        $client = $this->clientProvider->getAuthorizedClient($integration);
-
         $body = json_decode($this->request->getRawBody() ?: '[]', true) ?: [];
         $values = $body['values'] ?? null;
         if (\is_array($values)) {
@@ -55,6 +55,12 @@ class PaymentsController extends BaseApiController
                     $formField->setValue($values[$handle]);
                 }
             }
+        }
+
+        try {
+            $this->storageService->assertCanStore($form, $integration, 'Square');
+        } catch (\InvalidArgumentException $exception) {
+            return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 400);
         }
 
         $priceService = new SquarePriceService();
@@ -83,6 +89,7 @@ class PaymentsController extends BaseApiController
         ];
 
         try {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
             $response = $client->post('/v2/payments', [
                 RequestOptions::JSON => $payload,
             ]);

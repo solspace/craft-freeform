@@ -1,3 +1,4 @@
+import { colors } from "@ff-client/styles/variables";
 import type { TestGroup } from "@ff-client/types/form-monitor";
 import translate from "@ff-client/utils/translations";
 import type React from "react";
@@ -155,10 +156,15 @@ export const SubmissionDurationChart: React.FC<
                 <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke={`light-dark(#f0f0f0, ${colors.border})`}
+              vertical={false}
+            />
             <XAxis
               dataKey="date"
-              tick={{ fontSize: 11 }}
+              tick={{ fontSize: 11, fill: colors.muted }}
+              stroke={colors.border}
               angle={-45}
               textAnchor="end"
               height={60}
@@ -176,7 +182,8 @@ export const SubmissionDurationChart: React.FC<
               }}
             />
             <YAxis
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: colors.muted }}
+              stroke={colors.border}
               domain={[0, Y_MAX_SECONDS]}
               ticks={[2, 4, 6, 8, 10]}
               tickFormatter={(value) => `${value}s`}
@@ -184,7 +191,7 @@ export const SubmissionDurationChart: React.FC<
                 value: translate("Submit Time"),
                 angle: -90,
                 position: "insideLeft",
-                style: { textAnchor: "middle" },
+                style: { textAnchor: "middle", fill: colors.muted },
               }}
             />
             <RechartsTooltip content={<CustomTooltip />} />

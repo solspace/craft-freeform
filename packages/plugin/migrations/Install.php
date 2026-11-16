@@ -320,6 +320,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fields', $this->longText()->notNull())
                 ->addField('filters', $this->longText())
                 ->addField('statuses', $this->text()->notNull())
+                ->addField('allowedExportTypes', $this->json()->null())
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_export_notifications'))

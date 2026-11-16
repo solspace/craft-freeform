@@ -23,13 +23,16 @@ class ClientAssetsService extends BaseService
     private ?array $manifest = null;
     private ?bool $devServerAvailable = null;
 
-    public function registerAssets(View $view, string $resourceBaseUrl, string $resourceSourcePath): void
+    public function registerAssets(View $view, string $resourceBaseUrl, string $resourceSourcePath, ?string $resourcePublishedPath = null): void
     {
         if ($this->registerDevServerAssets($view)) {
             return;
         }
 
         $manifest = $this->getManifest($resourceSourcePath);
+        if (null !== $resourcePublishedPath) {
+            $this->ensurePublishedFiles($manifest, $resourceSourcePath, $resourcePublishedPath);
+        }
         $entry = $this->getChunk($manifest, self::ENTRY_FILE);
 
         $visited = [];
@@ -69,6 +72,48 @@ class ClientAssetsService extends BaseService
             ],
             'ff-client-entry'
         );
+    }
+
+    /** Repair incomplete Craft snapshots, including chunks only used on navigation. */
+    private function ensurePublishedFiles(array $manifest, string $sourcePath, string $publishedPath): void
+    {
+        $files = [];
+        foreach ($manifest as $chunk) {
+            $files = array_merge($files, [$chunk['file']], $chunk['css'] ?? [], $chunk['assets'] ?? []);
+        }
+
+        foreach (array_unique($files) as $file) {
+            if (!\is_string($file) || str_starts_with($file, '/') || str_contains($file, '\\') || \in_array('..', explode('/', $file), true)) {
+                throw new \RuntimeException('Invalid Freeform client asset path.');
+            }
+            $relative = self::BUILD_DIRECTORY.'/'.$file;
+            $target = $publishedPath.'/'.$relative;
+            if (is_file($target)) {
+                continue;
+            }
+            $source = $sourcePath.'/'.$relative;
+            if (!is_file($source)) {
+                throw new \RuntimeException(\sprintf('Freeform client asset not found at "%s"', $source));
+            }
+            $directory = \dirname($target);
+            if (!is_dir($directory) && !@mkdir($directory, 0775, true) && !is_dir($directory)) {
+                throw new \RuntimeException(\sprintf('Cannot create Freeform client asset directory "%s"', $directory));
+            }
+            $temporary = tempnam($directory, '.ff-client-');
+            if (false === $temporary) {
+                throw new \RuntimeException('Cannot create a temporary Freeform client asset.');
+            }
+
+            try {
+                if (!copy($source, $temporary) || !chmod($temporary, 0644) || !rename($temporary, $target)) {
+                    throw new \RuntimeException(\sprintf('Cannot publish Freeform client asset "%s"', $file));
+                }
+            } finally {
+                if (is_file($temporary)) {
+                    unlink($temporary);
+                }
+            }
+        }
     }
 
     private function registerDevServerAssets(View $view): bool

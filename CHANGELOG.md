@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed the Activity Log's **Resolved** status colors in dark mode.
+- Prevented client rebuilds from temporarily removing live assets, and repaired incomplete published client assets automatically before loading the Forms app.
 
 ### Changed
 - Softened resolved Activity Log entries while retaining their original severity, and moved resolution actions into the event header with a more prominent **Mark resolved** button.

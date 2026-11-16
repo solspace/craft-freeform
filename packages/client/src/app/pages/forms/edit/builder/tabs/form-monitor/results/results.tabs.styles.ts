@@ -27,15 +27,15 @@ export const TabButton = styled.button`
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
-  border-bottom: 2px solid ${colors.gray100};
+  border-bottom: 2px solid light-dark(${colors.gray100}, color-mix(in srgb, ${colors.muted} 20%, transparent));
 
   &:hover {
     color: ${colors.gray800};
   }
 
   &.active {
-    color: ${colors.blue600};
-    border-bottom-color: ${colors.blue600};
+    color: ${colors.link};
+    border-bottom-color: ${colors.link};
   }
 
   &:focus {

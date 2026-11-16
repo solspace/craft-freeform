@@ -70,6 +70,7 @@ export const StatusIndicator = styled.div<{
   display: inline-flex;
   align-items: center;
   font-weight: 500;
+  line-height: 1.5;
   text-transform: uppercase;
   border-radius: 999px;
   ${({ $size = "sm" }) => sizeStyles[$size]}
@@ -77,9 +78,9 @@ export const StatusIndicator = styled.div<{
     switch ($status) {
       case "success":
       case "active":
-        return "rgba(34, 197, 94, 0.2)";
+        return "light-dark(rgba(34, 197, 94, 0.2), var(--bg-success))";
       case "failed":
-        return "rgba(239, 68, 68, 0.2)";
+        return "light-dark(rgba(239, 68, 68, 0.2), var(--bg-error))";
       case "pending":
         return "rgba(55, 65, 81, 0.2)";
       case "inactive":
@@ -92,9 +93,9 @@ export const StatusIndicator = styled.div<{
     switch ($status) {
       case "success":
       case "active":
-        return colors.green600;
+        return `light-dark(${colors.green600}, var(--fg-success))`;
       case "failed":
-        return colors.red600;
+        return colors.error;
       case "pending":
         return colors.gray700;
       case "inactive":
@@ -116,6 +117,7 @@ export const StatusDot = styled.span<{
     | "inactive";
 }>`
   display: inline-block;
+  flex-shrink: 0;
   border-radius: 50%;
   background-color: currentColor;
   position: relative;

@@ -230,6 +230,7 @@ const TestRow: React.FC<TestRowProps> = ({
         <Tooltip title={translate("Delete Test")} {...tooltipProps}>
           <RemoveButton
             active={isHovering}
+            aria-label={translate("Delete Test")}
             onClick={() =>
               onDelete({
                 formId,

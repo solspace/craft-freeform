@@ -63,7 +63,8 @@ export const Controls = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.sm};
-  background: rgba(255, 255, 255, 0.95);
+  background: light-dark(rgba(255, 255, 255, 0.95), color-mix(in srgb, ${colors.overlay} 95%, transparent));
+  color: ${colors.text};
   padding: ${spacings.xs};
   border-radius: 6px;
   backdrop-filter: blur(4px);
@@ -72,6 +73,15 @@ export const Controls = styled.div`
 
   .rzpp-mini-map {
     border-radius: 4px;
+    overflow: hidden;
+    background: ${colors.surface};
+  }
+
+  .rzpp-minimap-wrapper > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 `;
 
@@ -83,8 +93,11 @@ export const ZoomButtons = styled.div`
 export const ZoomButton = styled.button`
   width: 32px;
   height: 32px;
+  box-sizing: border-box;
+  padding: 0;
   border: 1px solid light-dark(${colors.gray300}, ${colors.border});
-  background: ${colors.white};
+  background: light-dark(${colors.white}, var(--ui-control-bg-color));
+  color: ${colors.text};
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -92,16 +105,22 @@ export const ZoomButton = styled.button`
   justify-content: center;
   font-size: 16px;
   font-weight: bold;
+  line-height: 1;
   transition: all 0.2s ease;
 
   &:hover {
-    background: ${colors.gray100};
+    background: light-dark(${colors.gray100}, var(--ui-control-hover-bg-color));
     border-color: ${colors.muted};
   }
 
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid ${colors.link};
+    outline-offset: 2px;
   }
 `;
 

@@ -23,6 +23,7 @@ import {
   DescriptionText,
   EmptyState,
   ErrorMessage,
+  HistoryContent,
   HistorySection,
   StatusBadge,
   SuccessMessage,
@@ -163,7 +164,6 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
               <TestButton
                 className={classes(
                   "btn",
-                  "submit",
                   (isTestInProgress || isTestComplete) && "disabled",
                 )}
                 onClick={handleTestNow}
@@ -201,8 +201,38 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
 
           <HistorySection>
             <h3>{translate("Test Email History")}</h3>
-            {isLoadingHistory ? (
-              <ThemedSkeleton>
+            <HistoryContent>
+              {isLoadingHistory ? (
+                <ThemedSkeleton>
+                  <TestEmailTable>
+                    <thead>
+                      <tr>
+                        <th>{translate("ID")}</th>
+                        <th>{translate("Status")}</th>
+                        <th>{translate("Date & Time")}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[1, 2, 3].map((i) => (
+                        <tr key={i}>
+                          <td>
+                            <Skeleton width={40} />
+                          </td>
+                          <td>
+                            <Skeleton width={80} />
+                          </td>
+                          <td>
+                            <Skeleton width={150} />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </TestEmailTable>
+                </ThemedSkeleton>
+              ) : !historyData?.testEmails ||
+                historyData.testEmails.length === 0 ? (
+                <EmptyState>{translate("No test emails sent yet.")}</EmptyState>
+              ) : (
                 <TestEmailTable>
                   <thead>
                     <tr>
@@ -212,57 +242,29 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {[1, 2, 3].map((i) => (
-                      <tr key={i}>
+                    {historyData.testEmails.map((item) => (
+                      <tr key={item.id}>
+                        <td className="no-break">{item.id}</td>
                         <td>
-                          <Skeleton width={40} />
+                          <StatusBadge
+                            className={getStatusBadgeClass(item.status)}
+                          >
+                            {item.status === "success"
+                              ? translate("Success")
+                              : item.status === "failed"
+                                ? translate("Failed")
+                                : translate("Pending")}
+                          </StatusBadge>
                         </td>
-                        <td>
-                          <Skeleton width={80} />
-                        </td>
-                        <td>
-                          <Skeleton width={150} />
+                        <td title={item.createdAt}>
+                          {formatDate(item.createdAt)}
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </TestEmailTable>
-              </ThemedSkeleton>
-            ) : !historyData?.testEmails ||
-              historyData.testEmails.length === 0 ? (
-              <EmptyState>{translate("No test emails sent yet.")}</EmptyState>
-            ) : (
-              <TestEmailTable>
-                <thead>
-                  <tr>
-                    <th>{translate("ID")}</th>
-                    <th>{translate("Status")}</th>
-                    <th>{translate("Date & Time")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {historyData.testEmails.map((item) => (
-                    <tr key={item.id}>
-                      <td className="no-break">{item.id}</td>
-                      <td>
-                        <StatusBadge
-                          className={getStatusBadgeClass(item.status)}
-                        >
-                          {item.status === "success"
-                            ? translate("Success")
-                            : item.status === "failed"
-                              ? translate("Failed")
-                              : translate("Pending")}
-                        </StatusBadge>
-                      </td>
-                      <td className="no-break" title={item.createdAt}>
-                        {formatDate(item.createdAt)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </TestEmailTable>
-            )}
+              )}
+            </HistoryContent>
           </HistorySection>
         </div>
 

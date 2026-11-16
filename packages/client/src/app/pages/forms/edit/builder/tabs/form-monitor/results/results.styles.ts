@@ -269,11 +269,13 @@ export const DailyTestsContainer = styled.div`
   }
 `;
 
+const emptyDayColor = `light-dark(${colors.gray100}, color-mix(in srgb, ${colors.muted} 20%, ${colors.surface}))`;
+
 export const DayColumn = styled.div`
   position: relative;
   height: 100%;
   min-width: 4px;
-  background: ${colors.gray100};
+  background: ${emptyDayColor};
   border-radius: ${borderRadius.lg};
   overflow: hidden;
 `;
@@ -297,11 +299,13 @@ export const TestSegment = styled.div<{
       : $status === "failed"
         ? colors.red600
         : $status === "pending"
-          ? colors.gray700
-          : colors.gray100};
+          ? `light-dark(${colors.gray700}, ${colors.muted})`
+          : emptyDayColor};
   box-sizing: border-box;
   border-top: ${({ $isLast }) =>
-    $isLast ? "none" : `1px solid ${colors.white}`};
+    $isLast
+      ? "none"
+      : `1px solid light-dark(${colors.white}, ${colors.surface})`};
   transition: opacity 0.2s ease-in-out;
   cursor: pointer;
 
@@ -377,15 +381,15 @@ export const FormSubmitStatus = styled.div<{
   border-radius: 50%;
   background-color: ${({ $status }) =>
     $status === "success"
-      ? "rgba(34, 197, 94, 0.2)"
+      ? "light-dark(rgba(34, 197, 94, 0.2), var(--bg-success))"
       : $status === "failed"
-        ? "rgba(239, 68, 68, 0.2)"
+        ? "light-dark(rgba(239, 68, 68, 0.2), var(--bg-error))"
         : "rgba(55, 65, 81, 0.2)"};
   color: ${({ $status }) =>
     $status === "success"
-      ? colors.green600
+      ? `light-dark(${colors.green600}, var(--fg-success))`
       : $status === "failed"
-        ? colors.red600
+        ? colors.error
         : colors.gray700};
   margin-right: ${spacings.sm};
 `;
@@ -404,8 +408,6 @@ export const DurationBadge = styled.div`
   margin-right: ${spacings.sm};
   height: 16px;
   line-height: 1;
-  position: relative;
-  top: -1px;
 `;
 
 export const ScreenshotButton = styled.button`
@@ -415,18 +417,18 @@ export const ScreenshotButton = styled.button`
   width: 24px;
   height: 24px;
   padding: 0;
-  background: #3f4d5a;
+  background: light-dark(#3f4d5a, var(--ui-control-bg-color));
   border: none;
   border-radius: 50%;
   cursor: pointer;
-  color: white;
+  color: light-dark(white, ${colors.text});
   opacity: 0.9;
   transition: all 0.2s ease;
   margin-right: ${spacings.sm};
 
   &:hover {
     opacity: 1;
-    background: #4a5a6a;
+    background: light-dark(#4a5a6a, var(--ui-control-hover-bg-color));
   }
 
   svg {

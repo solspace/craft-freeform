@@ -11,6 +11,11 @@ if (!class_exists(Craft::class)) {
 
         public static $container;
 
+        public static function createObject($type, array $params = [])
+        {
+            return Yii::createObject($type, $params);
+        }
+
         public static function t($category, $string, $variables = [], $language = null)
         {
             return $string;

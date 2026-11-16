@@ -50,6 +50,7 @@ To use this integration on your form(s), configure each form individually:
 - Click **Square** in the list of available integrations.
 - Toggle the _Enable_ setting ON.
 - Add a **Square** field to your form layout and configure as needed.
+- Enable **Store Submitted Data** under the form's data storage settings. If a data storage opt-in checkbox is configured, the visitor must select it before payment.
 - Save the form.
 
 <span class="note warning">Please refer to the [Freeform Square integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/square/) for the complete setup guide.</span>

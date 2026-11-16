@@ -393,6 +393,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface, SkipGi
             'required' => $this->isRequired(),
             'integration' => $id,
             'amountFields' => $amountFields,
+            'storageOptInField' => $this->getForm()->getOptInDataTargetField()?->getHandle(),
             'layout' => $this->getLayout(),
             'theme' => $this->getTheme(),
             'floatingLabels' => $this->isFloatingLabels(),

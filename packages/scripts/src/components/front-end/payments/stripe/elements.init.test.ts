@@ -2,22 +2,28 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   create: vi.fn(),
+  updateAmount: vi.fn(),
   mount: vi.fn(),
   on: vi.fn(),
   elements: vi.fn(),
+  amountFields: ["amount"] as string[],
+  storageOptInField: null as string | null,
 }));
 
 vi.mock("./elements.config", () => ({
   default: () => ({
     site: "default",
     integration: "integration",
-    amountFields: ["amount"],
+    amountFields: mocks.amountFields,
+    storageOptInField: mocks.storageOptInField,
     fieldMapping: [],
     loadStripe: async () => ({ elements: mocks.elements }),
   }),
 }));
 vi.mock("./elements.queries", () => ({
-  default: { paymentIntents: { create: mocks.create } },
+  default: {
+    paymentIntents: { create: mocks.create, updateAmount: mocks.updateAmount },
+  },
 }));
 vi.mock("./elements.appearance", () => ({
   generateElementOptions: () => ({ elementOptions: {}, paymentOptions: {} }),
@@ -29,6 +35,8 @@ import type { StripeFunctionConstructorProps } from "./elements.types";
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.amountFields = ["amount"];
+  mocks.storageOptInField = null;
   mocks.elements.mockReturnValue({
     create: () => ({ mount: mocks.mount, on: mocks.on }),
   });
@@ -39,6 +47,31 @@ afterEach(() => {
 });
 
 describe("Stripe dynamic payment initialization", () => {
+  it("shows storage validation errors when an existing payment amount changes", async () => {
+    const { form, container, props, renderErrors } = fixture(
+      '<input name="amount" value="10">',
+    );
+    mocks.create.mockResolvedValue({
+      data: { id: "pi_valid", secret: "secret" },
+    });
+    mocks.updateAmount.mockRejectedValue({
+      response: {
+        data: { errors: ["Stripe payments require stored submissions."] },
+      },
+    });
+    await initStripe(props)(container);
+    await vi.waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
+    form
+      .querySelector<HTMLInputElement>('input[name="amount"]')!
+      .dispatchEvent(new Event("change"));
+    await vi.waitFor(() =>
+      expect(renderErrors).toHaveBeenCalledWith({
+        amount: ["Stripe payments require stored submissions."],
+      }),
+    );
+    await vi.waitFor(() => expect(form.freeform.enableForm).toHaveBeenCalled());
+  });
+
   it.each([
     ['<input name="amount" value="">', "input"],
     [
@@ -73,6 +106,10 @@ describe("Stripe dynamic payment initialization", () => {
       input.dispatchEvent(new Event("change"));
 
       await vi.waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
+      expect(form.freeform._removeMessageFrom).toHaveBeenCalledWith(
+        input,
+        true,
+      );
       expect(mocks.create).toHaveBeenCalledTimes(2);
       expect(props.elementMap.get(field)?.paymentIntent.id).toBe("pi_valid");
       expect(
@@ -83,6 +120,36 @@ describe("Stripe dynamic payment initialization", () => {
       expect(mocks.create).toHaveBeenCalledTimes(2);
     },
   );
+
+  it("retries a fixed payment when storage opt-in is checked", async () => {
+    mocks.amountFields = [];
+    mocks.storageOptInField = "consent";
+    const { form, container, props, field } = fixture(
+      '<input type="hidden" name="consent" value=""><input type="checkbox" name="consent" value="yes">',
+    );
+    mocks.create
+      .mockRejectedValueOnce({
+        response: {
+          data: { errors: ["Stripe payments require stored submissions."] },
+        },
+      })
+      .mockResolvedValueOnce({ data: { id: "pi_valid", secret: "secret" } });
+
+    await initStripe(props)(container);
+    await vi.waitFor(() =>
+      expect(field.textContent).toBe(
+        "Stripe payments require stored submissions.",
+      ),
+    );
+    const checkbox = form.querySelector<HTMLInputElement>(
+      'input[type="checkbox"]',
+    )!;
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event("change"));
+    await vi.waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
+    expect(mocks.create).toHaveBeenCalledTimes(2);
+    expect(props.elementMap.get(field)?.paymentIntent.id).toBe("pi_valid");
+  });
 
   it("keeps recovery available after repeated validation failures", async () => {
     const { form, container, props, renderErrors } = fixture(
@@ -120,8 +187,11 @@ function fixture(inputs: string) {
   Object.assign(form, {
     freeform: {
       disableSubmit: vi.fn(),
+      disableForm: vi.fn(),
       enableSubmit: vi.fn(),
+      enableForm: vi.fn(),
       _renderFieldErrors: renderErrors,
+      _removeMessageFrom: vi.fn(),
     },
   });
   const props: StripeFunctionConstructorProps = {

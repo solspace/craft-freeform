@@ -8,6 +8,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Fields\PayPalField;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\PayPal;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Services\PayPalPaymentService;
@@ -25,6 +26,7 @@ class FinalizePayment extends FeatureBundle
         private FormIntegrationsProvider $integrationsProvider,
         private PayPalPaymentService $paymentService,
         private RuleValidator $ruleValidator,
+        private PaymentStorageService $storageService,
     ) {
         Event::on(Form::class, Form::EVENT_SUBMIT, [$this, 'onSubmit']);
         Event::on(Submission::class, Submission::EVENT_AFTER_SAVE, [$this, 'onSubmissionSaved']);
@@ -58,10 +60,6 @@ class FinalizePayment extends FeatureBundle
                 if (!\is_string($orderId) || '' === $orderId) {
                     throw new \InvalidArgumentException('A completed PayPal payment is required.');
                 }
-                if (!$form->getSettings()->getGeneral()->storeData || !$form->hasOptInPermission()) {
-                    throw new \InvalidArgumentException('PayPal payments require stored submissions.');
-                }
-
                 $configured = $field->getIntegration();
                 $integration = $configured ? $this->integrationsProvider->getFirstForForm(
                     $form,
@@ -71,6 +69,8 @@ class FinalizePayment extends FeatureBundle
                 if (!$integration) {
                     throw new \InvalidArgumentException('PayPal integration is unavailable.');
                 }
+
+                $this->storageService->assertCanStore($form, $integration, 'PayPal');
 
                 $key = 'freeform-paypal-'.hash('sha256', $integration->getId().'|'.$orderId);
                 $formId = spl_object_id($form);

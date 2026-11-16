@@ -10,6 +10,10 @@
 
 ### Changed
 - Softened resolved Activity Log entries while retaining their original severity, and moved resolution actions into the event header with a more prominent **Mark resolved** button.
+- Payment forms using **Stripe**, **Mollie**, **Square**, or **PayPal** now require **Store Submitted Data** to be enabled and, when configured, the visitor's data storage opt-in before payment. Blocked requests include actionable diagnostics in the configured Activity or Classic log.
+
+### Security
+- Fixed a PayPal payment verification bypass that could allow unpaid or underpaid submissions. Completed payments are now verified against the final submitted amount, currency, and form before acceptance, and reused orders are rejected. Credit to [hgrgr](https://github.com/hgrgr) for reporting.
 
 ## 5.18.3 - 2026-11-13
 

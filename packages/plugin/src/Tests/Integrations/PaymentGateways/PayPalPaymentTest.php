@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
@@ -20,6 +21,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Solspace\Freeform\Form\Settings\Settings;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentStorageService;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Controllers\OrdersController;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\EventListeners\FinalizePayment;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Fields\PayPalField;
@@ -30,6 +32,7 @@ use Solspace\Freeform\Integrations\PaymentGateways\PayPal\Services\PayPalPriceSe
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
+use Solspace\Freeform\Services\ActivityService;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\base\Event;
 use yii\base\ModelEvent;
@@ -52,6 +55,7 @@ class PayPalPaymentTest extends TestCase
     private GeneralSettings $general;
     private MockHandler $http;
     private FinalizePayment $listener;
+    private PaymentStorageService $storage;
     private array $heldLocks = [];
     private bool $lockAvailable = true;
     private bool $hidden = false;
@@ -118,7 +122,12 @@ class PayPalPaymentTest extends TestCase
         });
         $rules = $this->createMock(RuleValidator::class);
         $rules->method('isFieldHidden')->willReturnCallback(fn () => $this->hidden);
-        $this->listener = new FinalizePayment($integrations, $service, $rules);
+        $this->storage = $this->getMockBuilder(PaymentStorageService::class)
+            ->setConstructorArgs([$this->createMock(IntegrationLoggerProvider::class)])
+            ->onlyMethods(['getActivity'])->getMock()
+        ;
+        $this->storage->method('getActivity')->willReturn($this->createMock(ActivityService::class));
+        $this->listener = new FinalizePayment($integrations, $service, $rules, $this->storage);
     }
 
     protected function tearDown(): void
@@ -377,7 +386,7 @@ class PayPalPaymentTest extends TestCase
         $orders = $this->createMock(PayPalOrderService::class);
         $orders->expects($this->never())->method('createOrder');
         $prices = new PayPalPriceService();
-        foreach (['isolatedTwig' => $twig, 'orderService' => $orders, 'priceService' => $prices] as $name => $value) {
+        foreach (['isolatedTwig' => $twig, 'orderService' => $orders, 'priceService' => $prices, 'storageService' => $this->storage] as $name => $value) {
             (new \ReflectionProperty(OrdersController::class, $name))->setValue($controller, $value);
         }
         self::assertSame($response, $controller->actionCreate());

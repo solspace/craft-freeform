@@ -42,10 +42,12 @@ use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
+use Twig\Error\Error as TwigError;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
 use Twig\Markup;
+use Twig\Source;
 
 class MailerService extends BaseService implements MailHandlerInterface
 {
@@ -210,20 +212,21 @@ class MailerService extends BaseService implements MailHandlerInterface
         $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $values);
         $fromName = htmlspecialchars_decode($fromName, \ENT_QUOTES);
         $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $values);
-        $text = $this->renderString($notification->getTextBody(), $values);
-        $html = $this->renderString($notification->getBody(), $values);
-        $subject = $this->renderString($notification->getSubject(), $values);
+        $text = $this->renderNotificationString($notification->getTextBody(), $values, 'Plain-text body');
+        $html = $this->renderNotificationString($notification->getBody(), $values, 'HTML body');
+        $subject = $this->renderNotificationString($notification->getSubject(), $values, 'Subject');
         $subject = htmlspecialchars_decode($subject, \ENT_QUOTES);
 
         if ($notification->getWrapperId()) {
             $wrapper = Freeform::getInstance()->notificationWrappers->getById($notification->getWrapperId());
             if ($wrapper) {
-                $html = $this->renderString(
+                $html = $this->renderNotificationString(
                     $wrapper->content,
                     array_merge(
                         $values,
                         ['emailBody' => new Markup($html, 'UTF-8')],
                     ),
+                    'Wrapper',
                 );
             }
         }
@@ -254,7 +257,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         if ($notification->getCc()) {
-            $cc = $this->renderString($notification->getCc(), $values);
+            $cc = $this->renderNotificationString($notification->getCc(), $values, 'CC');
             $cc = StringHelper::extractSeparatedValues($cc);
             if (!empty($cc)) {
                 $message->setCc($this->parseEnvInArray($cc));
@@ -262,7 +265,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         if ($notification->getBcc()) {
-            $bcc = $this->renderString($notification->getBcc(), $values);
+            $bcc = $this->renderNotificationString($notification->getBcc(), $values, 'BCC');
             $bcc = StringHelper::extractSeparatedValues($bcc);
             if (!empty($bcc)) {
                 $message->setBcc($this->parseEnvInArray($bcc));
@@ -270,7 +273,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         if ($notification->getReplyToEmail()) {
-            $replyToName = trim(App::parseEnv($this->renderString($notification->getReplyToName() ?? '', $values)));
+            $replyToName = trim(App::parseEnv($this->renderNotificationString($notification->getReplyToName() ?? '', $values, 'Reply-To Name')));
             $replyToName = htmlspecialchars_decode($replyToName, \ENT_QUOTES);
             $replyTo = $this->getSystemDefault('replyToEmail', $notification->getReplyToEmail(), $values);
             if (!empty($replyTo)) {
@@ -286,7 +289,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         if ($presetAssets && Freeform::getInstance()->isPro()) {
             if (!\is_array($presetAssets) && TwigHelper::isTwigValue($presetAssets)) {
-                $presetAssets = trim(App::parseEnv($this->renderString($presetAssets, $values)));
+                $presetAssets = trim(App::parseEnv($this->renderNotificationString($presetAssets, $values, 'Predefined Assets')));
 
                 $delimiters = [',', '.', '|', '!', '?'];
 
@@ -404,8 +407,8 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     public function renderPdf(string $body, string $fileName, array $variables): array
     {
-        $fileName = $this->renderString($fileName, $variables);
-        $body = $this->renderString($body, $variables);
+        $fileName = $this->renderNotificationString($fileName, $variables, 'PDF attachment filename');
+        $body = $this->renderNotificationString($body, $variables, 'PDF attachment body');
 
         if (!preg_match('/\.pdf$/i', $fileName)) {
             $fileName .= '.pdf';
@@ -604,6 +607,29 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
         }
 
-        return trim(App::parseEnv($this->renderString($address, $twigVariables)));
+        $field = match ($key) {
+            'fromName' => 'From Name',
+            'fromEmail' => 'From Email',
+            'replyToEmail' => 'Reply-To Email',
+        };
+
+        return trim(App::parseEnv($this->renderNotificationString($address, $twigVariables, $field)));
+    }
+
+    private function renderNotificationString(string $template, array $variables, string $field): string
+    {
+        try {
+            return $this->renderString($template, $variables);
+        } catch (TwigError $exception) {
+            $source = $exception->getSourceContext();
+            $name = 'Notification: '.$field;
+            // Retain the origin of errors in included templates, but omit generated IDs.
+            if ($source && $source->getName() && !str_starts_with($source->getName(), '__string_template__')) {
+                $name .= ' ('.$source->getName().')';
+            }
+            $exception->setSourceContext(new Source($source?->getCode() ?? $template, $name, $source?->getPath() ?? ''));
+
+            throw $exception;
+        }
     }
 }
